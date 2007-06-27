@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+ 	"-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+	"http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<!--
+    Copyright (c) 2002-2003 The European Bioinformatics Institute, and others.
+    All rights reserved. Please see the file LICENSE in the root directory of
+    this distribution.
+
+    Struts configuration file for the predict application.
+    Version: $Id$
+    Authors: Konrad Paszkiewicz (konrad.paszkiewicz@ebi.ac.uk),
+             Sugath Mudali (smudali@ebi.ac.uk)
+-->
+
+<struts-config>
+
+    <!-- ========== Form Bean Definitions =================================== -->
+
+    <form-beans>
+        <!-- logon form bean -->
+        <form-bean name="specieForm" type="org.apache.struts.action.DynaActionForm">
+            <form-property name="specie" type="java.lang.String"/>
+        </form-bean>
+    </form-beans>
+
+    <!-- ========== Global Exceptions ======================================= -->
+
+    <global-exceptions>
+
+        <exception
+            key="error.session"
+            path="error.layout"
+            type="uk.ac.ebi.intact.application.commons.exception.SessionExpiredException"/>
+
+        <!-- For errors in accessing the data store -->
+        <exception
+            key="error.data.access"
+            path="error.layout"
+            type="uk.ac.ebi.intact.persistence.DataSourceException"/>
+
+        <exception
+            key="error.data.access"
+            path="error.layout"
+            type="uk.ac.ebi.intact.business.IntactException"/>
+
+        <exception
+            key="error.data.sql"
+            path="error.layout"
+            type="java.sql.SQLException"/>
+    </global-exceptions>
+
+    <!-- ========== Global Forward Definitions ============================== -->
+
+    <global-forwards>
+        <!-- Need this global forward from the welcome.jsp -->
+        <forward name="welcome" path="/welcome.do"/>
+
+        <forward name="failure" path="error.layout"/>
+    </global-forwards>
+
+    <!-- ========== Action Mapping Definitions ============================== -->
+
+    <action-mappings>
+
+        <!-- The starting point for the application; creates a predict user. THis
+             action is invoked only once at the beginning.
+        -->
+        <action path="/welcome"
+            type="uk.ac.ebi.intact.application.predict.struts.action.WelcomeAction">
+            <forward name="success" path="/start.do"/>
+        </action>
+
+        <!-- This is the starting point for the application after the welcome action. -->
+        <action path="/start"
+            type="org.apache.struts.actions.ForwardAction"
+            parameter="welcome.layout">
+        </action>
+
+        <!-- Displays the prediction results. The form must be in a session scope
+             for display libary to access when clicking on the page links.
+         -->
+        <action path="/predict"
+            type="uk.ac.ebi.intact.application.predict.struts.action.PredictionAction"
+            name="specieForm"
+            scope="session">
+            <forward name="success" path="predict.layout"/>
+            <forward name="failure" path="/start.do"/>
+        </action>
+
+    </action-mappings>
+
+    <!-- ========== Message Resources Definitions =========================== -->
+
+    <message-resources parameter="uk.ac.ebi.intact.application.predict.MessageResources"/>
+    <message-resources key="buildInfo" parameter="uk.ac.ebi.intact.application.predict.BuildInfo"/>
+
+    <!-- ============ Plug Ins Configuration ================================== -->
+
+    <!-- Declaration of the use of Tiles (where to find its configuration file) -->
+    <plug-in className="org.apache.struts.tiles.TilesPlugin">
+        <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml"/>
+        <set-property property="moduleAware" value="true"/>
+    </plug-in>
+
+</struts-config>

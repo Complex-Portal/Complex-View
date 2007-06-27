@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE web-app
+  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+  "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+
+<web-app>
+
+    <description>
+        Prediction application
+    </description>
+
+    <!-- Filter to open the session at the beginning of the request and close on end -->
+    <filter>
+        <filter-name>hibernateFilter</filter-name>
+        <filter-class>uk.ac.ebi.intact.application.commons.util.HibernateSessionRequestFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>hibernateFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- =================================================================== -->
+
+    <!-- Action Servlet Configuration for Struts -->
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.application.predict.struts.framework.PredictActionServlet</servlet-class>
+
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/struts-config.xml</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>2</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>detail</param-name>
+            <param-value>2</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>validate</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- =================================================================== -->
+
+    <!-- Action Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+
+    <!-- =================================================================== -->
+
+    <!-- The Welcome File List -->
+    <welcome-file-list>
+        <welcome-file>welcome.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!-- =================================================================== -->
+
+    <!-- JSTL Tag Library Descriptor  -->
+    <taglib>
+        <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+        <taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+    </taglib>
+
+    <!-- JSTL Tag Library Descriptor  -->
+    <taglib>
+        <taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+        <taglib-location>/WEB-INF/tld/fmt.tld</taglib-location>
+    </taglib>
+
+    <!-- Display tag library -->
+    <taglib>
+        <taglib-uri>http://jakarta.apache.org/taglibs/display</taglib-uri>
+        <taglib-location>/WEB-INF/tld/display.tld</taglib-location>
+    </taglib>
+
+
+</web-app>

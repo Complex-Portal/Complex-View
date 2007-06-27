@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+<!--
+    Tiles definitions for the predict application.
+    Authors: Konrad Paszkiewicz (konrad.paszkiewicz@ic.ac.uk),
+             Sugath Mudali (smudali@ebi.ac.uk)
+
+    Sidebar layout :
+    _________________
+    |   IntAct      |
+    |    logo       |
+    |_______________|
+    |    Links      |
+    |    menu       |
+    |_______________|
+
+
+    Main layout :
+     __________________________________________
+    |       |                                 |
+    |       |           header                |
+    | side  |_________________________________|
+    | bar   |                                 |
+    |       |                                 |
+    |       |           content               |
+    |       |         (see below)             |
+    |       |                                 |
+    |       |                                 |
+    |       |_________________________________|
+    |       |           footer                |
+    |_______|_________________________________|
+
+ -->
+<tiles-definitions>
+
+    <!-- =============== Menu Links ====================================== -->
+
+    <!-- Menu links for the welcome (first) page. -->
+    <definition name="welcome.menu.links" path="/layouts/menu.jsp">
+        <put name="title" value="Links"/>
+        <putList name="items">
+            <item value="IntAct Home" link="http://www.ebi.ac.uk/intact"/>
+        </putList>
+    </definition>
+
+    <!-- Menu links for the prediction page. -->
+    <definition name="predict.menu.links" path="/layouts/menu.jsp">
+        <put name="title" value="Links"/>
+        <putList name="items">
+            <item value="IntAct Home" link="http://www.ebi.ac.uk/intact"/>
+            <item value="Home" link="/targets/welcome.do"/>
+        </putList>
+    </definition>
+
+    <!-- =============== Sidebars ====================================== -->
+
+    <!-- Sidebar for the welcome page -->
+    <definition name="welcome.sidebar.layout" path="/layouts/sidebarLayout.jsp">
+        <put name="menu" value="welcome.menu.links"/>
+        <put name="footer" value="/pages/sidebarFooter.jsp"/>
+    </definition>
+
+    <!-- Sidebar for the prediction page -->
+    <definition name="predict.sidebar.layout" extends="welcome.sidebar.layout">
+        <put name="menu" value="predict.menu.links"/>
+    </definition>
+
+    <!-- =============== Definitions related to pages ================= -->
+
+    <!-- The header layout. -->
+    <definition name="header.layout" path="/layouts/headerLayout.jsp">
+        <put name="header.title" value="Predicting targets for pull-down experiments"/>
+    </definition>
+
+    <!-- Welcome page layout -->
+    <definition name="welcome.layout" path="/layouts/intactLayout.jsp">
+        <put name="title"   value="IntAct - Covering Interaction Space"/>
+        <put name="sidebar" value="welcome.sidebar.layout"/>
+        <put name="header"  value="header.layout"/>
+        <put name="footer"  value="/pages/footer.jsp"/>
+        <put name="content" value="/pages/welcome.jsp"/>
+    </definition>
+
+    <!-- The prediction layout -->
+    <definition name="predict.layout" extends="welcome.layout">
+        <put name="sidebar" value="predict.sidebar.layout"/>
+        <put name="content" value="/pages/predict.jsp"/>
+    </definition>
+
+    <!-- Error page layout. -->
+    <definition name="error.layout" extends="welcome.layout">
+        <put name="content" value="/pages/error.jsp"/>
+    </definition>
+
+</tiles-definitions>
