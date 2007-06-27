@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib
+        PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+        "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+
+<taglib>
+
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>1.2</jsp-version>
+    <short-name>hierarchView</short-name>
+    <uri>http://www.ebi.ac.uk/intact/hierarch-view</uri>
+    <display-name>hierarchView Tag Library</display-name>
+    <description>
+        This tag library contains classes for hierarchView web application
+        in order to facilitate display on web pages.
+    </description>
+
+
+    <tag>
+        <name>displayInteractionNetwork</name>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.DisplayInteractionNetworkTag</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            Displays the interaction network if the picture has been generated
+            and stored in the session.
+        </description>
+    </tag>
+
+
+    <tag>
+        <name>displayHighlightOptions</name>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.DisplayHighlightOptions</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            Include HTML code to Displays current highlight source options.
+        </description>
+    </tag>
+
+
+    <tag>
+        <name>displaySource</name>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.DisplaySourceTag</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            Displays available source for the selected protein.
+        </description>
+    </tag>
+
+
+    <tag>
+        <name>displayHttpContent</name>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.DisplayHttpContentTag</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            Displays the content of the URL stored in the session.
+        </description>
+    </tag>
+
+
+    <tag>
+        <name>saveContextInCookie</name>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.SaveContextInCookieTag</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            Allows to save in a cookie (stored in the client side)
+            all needed data to restore later the user context.
+        </description>
+    </tag>
+
+
+    <tag>
+        <name>restoreContextFromCookie</name>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.RestoreContextFromCookieTag</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            allows to restore the eventual user context of the user from a cookie
+            which has been created and updated by SaveContextInCookieTag.
+        </description>
+    </tag>
+
+</taglib>
+
+
+

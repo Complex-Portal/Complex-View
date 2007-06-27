@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+<!--
+    Tiles definitions for hierarchView.
+    Author: Samuel Kerrien (skerrien@ebi.ac.uk) & Alexandre Liban (aliban@ebi.ac.uk)
+    version: $Id$
+
+    The header and footer are common to all IntAct application and just need to
+    receive proper value in defined key
+    (e.g. display the String defined in the header.title property)
+
+
+    Sidebar layout :
+    _________________
+    |   IntAct      |
+    |    logo       |
+    |_______________|
+    |   Search      |
+    |    form       |
+    |_______________|
+    |    Graph      |
+    |    tools      |
+    |_______________|
+    |    PSI-XML    |
+    |   Download    |
+    |_______________|
+    |    Links      |
+    |    menu       |
+    _________________
+
+
+    Main layout :
+     __________________________________________
+    |       |                                 |
+    |       |           header                |
+    | side  |_________________________________|
+    | bar   |                                 |
+    |       |                                 |
+    | see   |           content               |     (!) each part is a frame
+    | below |         (see below)             |
+    |       |                                 |
+    |       |                                 |
+    |       |_________________________________|
+    |       |           footer                |
+    |_______|_________________________________|
+
+    Result Content layout :
+     _________________________________________
+    |                   |  Highlight title   |
+    |    Graph title    |                    |
+    |...................|    source list     |
+    |                   |                    |
+    |                   |___________________ |
+    |       Graph       |     Highlight      |      (!) each part is a frame
+    |                   |      source        |
+    |                   |                    |
+    |                   |                    |
+    |                   |                    |
+    |___________________|____________________|
+
+ -->
+
+<tiles-definitions>
+
+    <!-- ============ Menu Links ========================================== -->
+
+    <!-- Menu links for the hierarchView page. -->
+    <definition name="hierarchView.menu.links" path="/layouts/menu.jsp">
+        <put name="title" value="Links"/>
+        <putList name="items">
+            <item value="IntAct home" link="/"/>
+            <item value="Back to search" link="/search/welcome.jsp"/>
+        </putList>
+    </definition>
+
+    <!-- ============ Sidebars ============================================ -->
+
+    <!-- Sidebar for the search page -->
+    <definition name="hv.intact.sidebar" path="/layouts/sidebar.jsp">
+        <put name="search" value="/pages/sidebarSearch.jsp"/>
+        <put name="graph"  value="/pages/sidebarGraph.jsp"/>
+        <put name="click"  value="/pages/sidebarClickBehaviour.jsp"/>
+        <put name="psi"    value="/pages/sidebarPsiDownload.jsp"/>
+		<put name="mine"   value="/pages/sidebarMine.jsp"/>
+    </definition>
+
+    <!-- Sidebar for the search page -->
+    <definition name="intact.sidebar.layout" path="/layouts/sidebarLayout.jsp">
+        <put name="input-dialog" value="hv.intact.sidebar"/>
+        <put name="menu"         value="hierarchView.menu.links"/>
+        <put name="footer"       value="/pages/sidebarFooter.jsp"/>
+    </definition>
+
+    <!-- ============ Commons to all IntAct pplication ==================== -->
+
+    <!-- The header layout. -->
+    <definition name="intact.header.layout" path="/layouts/hvHeaderLayout.jsp">
+        <put name="header.title" value="HierarchView"/>
+    </definition>
+
+    <!-- The footer layout -->
+    <definition name="intact.footer.layout" path="/pages/footer.jsp">
+    </definition>
+
+    <!-- ============ Definitions of hierarchView screens ================= -->
+
+    <!-- hierarchView page description -->
+    <definition name="hierarchView.layout" path="/layouts/intactLayoutFrame.jsp">
+        <put name="title"     value="IntAct - hierarchView"/>
+        <put name="header"    value="layouts/headerFrame.jsp"/>
+        <put name="content"   value="pages/blank.jsp"/>
+        <put name="sidebar"   value="layouts/sidebarFrame.jsp"/>
+    </definition>
+
+    <!-- General content for result layout
+         It simply overwrite the content definition and keep all other
+         tiles of hierarchView.layout
+      -->
+    <definition name="hierarchView.result.layout" extends="hierarchView.layout">
+        <put name="content" value="layouts/contentFrame.jsp"/>
+    </definition>
+
+    <!-- General error layout
+         It simply overwrite the content definition and keep all other
+         tiles of hierarchView.layout
+      -->
+    <definition name="hierarchView.error.layout" extends="hierarchView.layout">
+        <put name="content" value="pages/errorFrame.jsp"/>
+    </definition>
+
+    <!-- ============ Definition of tiles used in the content frame ======= -->
+
+    <!-- Used when the user request a highlighting, so we only refresh the graph layout -->
+    <definition name="hierarchView.graphAndTitle.layout" path="layouts/graphFrame.jsp"/>
+
+    <definition name="hierarchView.graphError.layout" path="../pages/errorFrame.jsp"/>
+
+    <definition name="hierarchView.graphTitle.layout" path="../pages/graphTitle.jsp"/>
+
+    <definition name="hierarchView.graph.layout" path="../pages/graph.jsp"/>
+
+    <definition name="highlightTitle" path="../pages/highlightTitle.jsp"/>
+
+    <definition name="highlight" path="../pages/highlight.jsp">
+        <put name="selectedIndex" value="0" />
+        <put name="parameterName" value="selected" />
+        <putList name="tabList">
+            <item value="All" link="/pages/allTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem" />
+            <item value="GO" link="/pages/goTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem" />
+            <item value="Interpro" link="/pages/interproTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem" />            
+        </putList>
+    </definition>
+
+    <definition name="hierarchView.selectedSource.layout" path="../pages/selectedSource.jsp"/>
+
+    <!-- ===== Definition of the forward page to the search application === -->
+
+    <definition name="search.result.layout" path="/pages/forwardToSearch.jsp"/>
+
+</tiles-definitions>

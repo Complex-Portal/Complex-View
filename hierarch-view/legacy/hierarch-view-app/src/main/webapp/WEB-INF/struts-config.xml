@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC
+ 	"-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+	"http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<!--
+        Struts v1.1 configuration file for the hierarchView application
+-->
+
+<struts-config>
+
+    <!-- ========== Form Bean Definitions =================================== -->
+    <form-beans>
+
+        <!-- highlightment form bean -->
+        <form-bean name="highlightmentForm"
+                   type="uk.ac.ebi.intact.application.hierarchview.struts.view.HighlightmentForm"/>
+
+        <!-- The searchbar form -->
+        <form-bean name="searchForm"
+                   type="uk.ac.ebi.intact.application.hierarchview.struts.view.SearchForm"/>
+
+        <!-- form container for the graph management -->
+        <form-bean name="InteractionNetworkForm"
+                   type="uk.ac.ebi.intact.application.hierarchview.struts.view.InteractionNetworkForm"/>
+
+        <!-- form container for the click behaviour management -->
+        <form-bean name="ClickBehaviourForm"
+                   type="uk.ac.ebi.intact.application.hierarchview.struts.view.ClickBehaviourForm"/>
+
+        <!-- form container for the hostname management -->
+        <form-bean name="initForm"
+                   type="uk.ac.ebi.intact.application.hierarchview.struts.view.InitForm"/>
+
+    </form-beans>
+
+    <!-- ========== Global Exceptions ======================================= -->
+    <global-exceptions>
+
+        <exception
+            key="error.session.expired"
+            path="hierarchView.error.layout"
+            scope="request"
+            type="uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException"
+        />
+
+    </global-exceptions>
+
+    <!-- ========== Global Forward Definitions ============================== -->
+    <global-forwards>
+
+        <forward  name="success"            path="hierarchView.result.layout"/>
+        <forward  name="error"              path="hierarchView.error.layout"/>
+        <forward  name="displayWithSearch"  path="search.result.layout"/>
+
+    </global-forwards>
+
+    <!-- ========== Action Mapping Definitions ============================== -->
+    <action-mappings>
+
+        <!-- Action mapping for the hierarchView application -->
+        <!-- Entrance of the application -->
+        <action path="/init"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.InitAction"
+                name="initForm"
+                scope="request">
+
+            <forward name="success" path="hierarchView.layout"/>
+        </action>
+
+        <!-- Processes the user search -->
+        <action path="/search"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.SearchAction"
+                name="searchForm"
+                validate="true"
+                scope="request"
+                input="hierarchView.error.layout"/>
+
+        <!-- Processes the user search for an external application -->
+        <action path="/display"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.DisplayAction"
+                scope="request"
+                input="hierarchView.error.layout"/>
+
+        <!-- Processes the highlightment form
+             allowing to change the current behaviour, options
+          -->
+        <action path="/highlightment"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.HighlightmentAction"
+                name="highlightmentForm"
+                scope="request"/>
+
+        <!-- Processes the user's action allowing to select an object in an external application -->
+        <action path="/source"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.SourceAction"
+                scope="request"
+                input="hierarchView.result.layout"/>
+
+        <!-- Processes the setting of the current click behaviour -->
+        <action path="/clickBehaviour"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.ClickBehaviourAction"
+                name="ClickBehaviourForm"
+                scope="request">
+
+            <!-- refresh only the sidebar -->
+            <forward name="success" path="/layouts/sidebarFrame.jsp"/>
+
+        </action>
+
+        <!-- Processes the click action -->
+        <action path="/click"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.ClickAction"
+                scope="request"
+                input="hierarchView.result.layout"/>
+
+        <!-- Processes the Contraction/Expansion of the interaction network -->
+        <action path="/interactionNetwork"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.InteractionNetworkAction"
+                name="InteractionNetworkForm"
+                scope="request"/>
+
+        <!-- Processes the request to display the content of a highlight source-->
+        <action path="/displaySourceContent"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.DisplaySourceAction"
+                scope="request">
+
+            <forward name="success" path="hierarchView.selectedSource.layout"/>
+
+        </action>
+		
+		<!-- Clears the path highlighting if the application was called by MiNe -->
+		<action path="/clearMinePath"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.ClearMinePathAction"
+                scope="request"/>
+    </action-mappings>
+
+    <!-- ========== Message Resources ================================== -->
+    <message-resources parameter="config.Struts"/>
+    <message-resources key="buildInfo" parameter="uk.ac.ebi.intact.app.hierarchview.BuildInfo"/>
+
+    <!-- ============ Plug Ins Configuration ================================== -->
+
+    <!-- Declaration of the use of Tiles (where to find its configuration file) -->
+    <plug-in className="org.apache.struts.tiles.TilesPlugin" >
+
+        <set-property  property="definitions-config"  value="/WEB-INF/tiles-defs.xml"/>
+        <set-property  property="moduleAware"         value="true" />
+
+    </plug-in>
+
+</struts-config>
