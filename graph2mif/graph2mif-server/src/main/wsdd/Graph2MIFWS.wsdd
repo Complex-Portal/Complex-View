@@ -1,0 +1,10 @@
+<deployment xmlns="http://xml.apache.org/axis/wsdd/"
+            xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+   <service name="mif" provider="java:RPC">
+      <parameter name="className" value="uk.ac.ebi.intact.application.graph2MIF.Graph2MIFWSService"/>
+      <parameter name="scope" value="session"/>
+      <parameter name="allowedMethods" value="getMIF"/>
+   </service>
+
+</deployment>

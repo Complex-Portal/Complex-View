@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2.3.dtd">
+
+<web-app>
+
+
+    <display-name>IntAct Graph2MIF</display-name>
+
+    <!-- IntAct Init parameters -->
+    <context-param>
+        <param-name>uk.ac.ebi.intact.AC_PREFIX</param-name>
+        <param-value>EBI</param-value>
+        <description>
+            The Accession Number Prefix for the objects created
+            by the application and stored in the database.
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.INSTITUTION_LABEL</param-name>
+        <param-value>ebi</param-value>
+        <description>
+            The label of the institution, used to retrieve the Institution object
+            if it already exists, or to create a new institution
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.PRELOAD_COMMON_CVOBJECTS</param-name>
+        <param-value>false</param-value>
+        <description>
+            Preload the most common CvObjects on application start, so it is
+            faster to retrieve them later
+        </description>
+    </context-param>
+
+    <!-- Filter to open the session at the beginning of the request and close on end -->
+    <filter>
+        <filter-name>intactFilter</filter-name>
+        <filter-class>uk.ac.ebi.intact.webapp.IntactSessionRequestFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>intactFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    
+    <listener>
+            <listener-class>org.apache.axis.transport.http.AxisHTTPSessionListener</listener-class>
+      </listener>
+
+    <servlet>
+        <servlet-name>Servlet</servlet-name>
+        <display-name>getXML</display-name>
+        <servlet-class>
+            uk.ac.ebi.intact.application.graph2MIF.Graph2MIFWSServlet
+        </servlet-class>
+        <load-on-startup>100</load-on-startup>
+    </servlet>
+
+      <servlet>
+        <servlet-name>AxisServlet</servlet-name>
+        <display-name>Apache-Axis Servlet</display-name>
+        <servlet-class>
+            org.apache.axis.transport.http.AxisServlet
+        </servlet-class>
+      </servlet>
+
+      <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <display-name>Axis Admin Servlet</display-name>
+        <servlet-class>
+            org.apache.axis.transport.http.AdminServlet
+        </servlet-class>
+        <load-on-startup>100</load-on-startup>
+      </servlet>
+
+      <servlet>
+        <servlet-name>SOAPMonitorService</servlet-name>
+        <display-name>SOAPMonitorService</display-name>
+        <servlet-class>
+            org.apache.axis.monitor.SOAPMonitorService
+        </servlet-class>
+        <init-param>
+          <param-name>SOAPMonitorPort</param-name>
+          <param-value>5001</param-value>
+        </init-param>
+        <load-on-startup>100</load-on-startup>
+      </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Servlet</servlet-name>
+        <url-pattern>/getXML</url-pattern>
+    </servlet-mapping>
+
+      <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>/servlet/AxisServlet</url-pattern>
+      </servlet-mapping>
+
+      <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>*.jws</url-pattern>
+      </servlet-mapping>
+
+      <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+      </servlet-mapping>
+
+      <servlet-mapping>
+        <servlet-name>SOAPMonitorService</servlet-name>
+        <url-pattern>/SOAPMonitor</url-pattern>
+      </servlet-mapping>
+
+</web-app>
