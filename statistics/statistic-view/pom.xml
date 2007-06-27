@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/**
+ * Copyright (c) 2006 The European Bioinformatics Institute, and others.
+ * All rights reserved.
+ */
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>uk.ac.ebi.intact.maven</groupId>
+        <artifactId>intact-master-webapp</artifactId>
+        <version>2.1.1</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>uk.ac.ebi.intact.app</groupId>
+    <artifactId>statistic-view</artifactId>
+    <packaging>war</packaging>
+    <version>1.5-SNAPSHOT</version>
+
+    <name>Statistic View</name>
+    <description>Statistic View Application</description>
+    <url>http://www.ebi.ac.uk/~intact/devsite/${artifactId}</url>
+
+    <scm>
+        <connection>scm:svn:https://svn.sourceforge.net/svnroot/intact/repo/statistic-view/trunk</connection>
+        <developerConnection>scm:svn:https://svn.sourceforge.net/svnroot/intact/repo/statistic-view/trunk
+        </developerConnection>
+        <url>http://svn.sourceforge.net/viewcvs.cgi/intact/repo/statistic-view/trunk/</url>
+    </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>uk.ac.ebi.intact.plugins</groupId>
+                <artifactId>hibernateconfig-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <site.remote.basedir>scp://quanea2.ebi.ac.uk/ebi/sp/pro6/intact/local/doc/devsite</site.remote.basedir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>uk.ac.ebi.intact</groupId>
+            <artifactId>intact-core</artifactId>
+            <version>1.5.0-beta-9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jdsl</groupId>
+            <artifactId>jdsl</artifactId>
+            <version>2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.1</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>displaytag</groupId>
+            <artifactId>displaytag</artifactId>
+            <version>1.0-unknown</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+
+    <!-- EBI repositories -->
+    <repositories>
+        <repository>
+            <id>ebi-repo</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <site>
+            <id>intact-site</id>
+            <name>Intact site</name>
+            <url>${site.remote.basedir}/${artifactId}</url>
+        </site>
+    </distributionManagement>
+
+</project>
