@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<struts-config>
+	<!-- ========== Form Bean Definitions =================================== -->
+	<!-- ========== Global Forward Definitions ============================== -->
+	<global-forwards>
+		<forward name="start" path="/do/welcome"/>
+		<forward name="error" path="mine.error.layout"/>
+	</global-forwards>
+	<!-- ========== Action Mapping Definitions ============================== -->
+	<action-mappings>
+		<action path="/display" 
+			type="uk.ac.ebi.intact.application.mine.struts.controller.DisplayAction" 
+			name="display" scope="request">
+			<forward name="success" path="mine.result.layout"/>
+		</action>
+		<action path="/search" 
+			type="uk.ac.ebi.intact.application.mine.struts.controller.SearchAction" 
+			name="search" scope="request">
+			<forward name="success" path="/do/display"/>
+			<forward name="ambiguous" path="mine.ambiguous.layout"/>
+		</action>
+		<!-- Process when user clicks on the logo to enter the application. -->
+		<action path="/welcome" 
+			type="uk.ac.ebi.intact.application.mine.struts.controller.WelcomeAction" 
+			scope="request" name="welcome">
+			<forward name="success" path="mine.welcome.layout"/>
+		</action>
+	</action-mappings>
+	<!-- ========== Plug Ins Configuration ================================== -->
+	<message-resources parameter="config.Struts"/>
+
+    <!-- ========== Message Resources ================================== -->
+
+    <message-resources key="buildInfo" parameter="uk.ac.ebi.intact.app.mine.BuildInfo"/>
+
+    <!--
+        Add multiple validator resource files by setting the pathnames property
+        with a comma delimitted list of resource files to load.
+    -->
+	<plug-in className="org.apache.struts.tiles.TilesPlugin" >
+		<set-property property="definitions-config" 
+			value="/WEB-INF/tiles-defs.xml"/>
+		<set-property property="moduleAware" value="true" />
+	</plug-in>
+</struts-config>

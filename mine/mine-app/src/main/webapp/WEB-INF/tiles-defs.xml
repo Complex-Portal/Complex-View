@@ -1,0 +1,66 @@
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+<!--
+    Tiles definitions for search.
+    Author: Andreas Groscurth (groscurt@ebi.ac.uk)
+ -->
+ <tiles-definitions>
+
+    <!-- =============== Sidebars ====================================== -->
+
+    <!-- Sidebar for the mine page -->
+    <definition name="mine.sidebar.layout" path="/layouts/sidebarLayout.jsp">
+        <put name="footer" value="/pages/sidebarFooter.jsp" />
+    </definition>
+
+    <!-- =============== Definitions related to pages ================= -->
+
+    <!-- The header layout. -->
+    <definition name="mine.header.layout" path="/layouts/headerLayout.jsp">
+        <put name="header.title" value="Mine" />
+    </definition>
+
+	<!-- =============== Menu Links ====================================== -->
+
+    <!-- Menu links for the search page. -->
+    <definition name="mine.menu.links" path="/layouts/menu.jsp">
+        <put name="title" value="Links"/>
+        <putList name="items">
+            <item value="New Search"  link="/mine/do/welcome"/>
+            <item value="Intact Home" link="http://www.ebi.ac.uk/intact"/>
+        </putList>
+    </definition>
+
+    <!-- =============== Sidebars ====================================== -->
+
+    <!-- Sidebar for the search page -->
+    <definition name="mine.sidebar.layout" path="/layouts/sidebarLayout.jsp">
+        <put name="input-dialog" value="/pages/sidebarInput.jsp"/>
+        <put name="menu"         value="mine.menu.links"/>
+        <put name="footer"       value="/pages/sidebarFooter.jsp"/>
+    </definition>
+
+    <!-- mine page description  -->
+    <definition name="mine.layout" path="/layouts/intactLayout.jsp">
+        <put name="title" value="Mine" />
+        <put name="sidebar" value="mine.sidebar.layout" />
+        <put name="header" value="mine.header.layout" />
+        <put name="footer" value="/pages/footer.jsp" />
+    </definition>
+    
+    <definition name="mine.result.layout" extends="mine.layout">
+    	<put name="content" value="/pages/result.jsp"/>
+    </definition>
+	
+	<definition name="mine.welcome.layout" extends="mine.layout">
+		<put name="content" value="/pages/start.jsp"/>		
+	</definition>
+	
+	<definition name="mine.ambiguous.layout" extends="mine.layout">
+		<put name="content" value="/pages/ambiguous.jsp"/>
+	</definition>
+    
+    <definition name="mine.error.layout" extends="mine.layout">
+    	<put name="content" value="/pages/error.jsp"/>
+    </definition>
+
+</tiles-definitions>

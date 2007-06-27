@@ -1,0 +1,65 @@
+**********************************************************************
+README for MiNe (intactCore/application/mine)
+**********************************************************************
+
+DIRECTORIES:
+/ (root)        : JSP and css files.
+WEB-INF/lib     : Library files for web. All the files in this location are
+                  included in the WAR file.
+WEB-INF/classes : mine specific (non Intact core) class files.
+WEB-INF/tld     : The tag libraries.
+WEB-INF/config  : Configuration/Property files for the application.
+dist/           : Where the WAR file is created.
+
+INSTALLATION
+    Please read the README in the intactCore directory to find how to configure
+    the database access. We assume that if you are trying to install MiNe, the
+    basic configuration has been done before and work.
+
+DATA
+    MiNe application relies on some precalculated data (namely in the table
+    IA_INTERACTIONS). In order to have that application working, you have to
+    fill that table. A script is dedicated to that task:
+
+        config/runMineFill.sh
+
+    Please run that script if you want to initialise or refresh the content of
+    that table.
+
+BUILD
+    ant war
+        prepares a WAR file to be deployed in a WEB container. The WAR file is
+        created in the dist/ directory.
+
+OTHER USEFUL COMMANDS
+    ant deploy (Tomcat specific)
+        deploys the WAR file in the dist/ location to the CATALINA_HOME/webapps. The
+        environment variable CATALINA_HOME must be set for this command to work
+        correctly.
+
+    ant undeploy (Tomcat specific)
+        reverses the effects of 'ant deploy' command. In addition to that, this
+        command also stops the WEB server (Tomcat) if it is running. As with
+        deploy command, the environment variable CATALINA_HOME must be set for
+        this command to work correctly. An error message, displayed when trying
+        to shutdown the WEB server if it is not running, can be safely ignored. In
+        addition to removing the WAR file, this command also removes the
+        expanded directory as well. For example, CATALINA_HOME/webapps/mine
+        directory is removed in addition to CATALINA_HOME/webapps/mine.war file.
+
+    ant undeploy war deploy (Tomcat specific)
+        runs all three targets in the specified order. Undeploys the last deployment,
+        creates a new war file and deploy it again.
+
+NOTES
+    The WAR file is being built using jar and class file from various locations.
+    Given below are locations where it looks for these files:
+        / (root)        - jsp and css files.
+        WEB-INF/        - web.xml, struts-config.xml files and tld libraries.
+        WEB-INF/lib     - all the jar files in this location.
+        ../../dist/     - intact-core.jar file.
+        ../../lib       - application common jar files (only a subset).
+        WEB-INF/classes - mine class files.
+
+COMMENTS
+    Send any comments/feedbacks to skerrien@ebi.ac.uk, groscurt@ebi.ac.uk, hhe@ebi.ac.uk

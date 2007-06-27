@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+  "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+  <!--  NB XML config files for the DB MUST be referred to here relative
+        to the WEB-INF/classes directory as that is where the class loader
+        will start to look. The leading "/" MUST be present if the config
+        files are in a sub-directory of WEB-INF/classes, otherwise
+        the class loader will only check in the package in which the servlet
+        instance resides (which may not be the same as the config file
+        location....). The exception to this rule seems to be the struts-config.xml
+        file....
+    -->
+    <context-param>
+        <param-name>mappingfile</param-name>
+        <param-value>/config/repository.xml</param-value>
+    </context-param>
+
+    <!-- Where configuration files are stored. -->
+    <context-param>
+        <param-name>configdir</param-name>
+        <param-value>/config/</param-value>
+    </context-param>
+
+    <!-- Filter to open the session at the beginning of the request and close on end -->
+    <filter>
+        <filter-name>hibernateFilter</filter-name>
+        <filter-class>uk.ac.ebi.intact.application.commons.util.HibernateSessionRequestFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>hibernateFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+        <!-- Action Servlet Configuration -->
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/struts-config.xml</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>2</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>detail</param-name>
+            <param-value>2</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>validate</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- Clear OJB cache of the application -->
+    <servlet>
+        <servlet-name>clearOJBCache</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.application.commons.util.ResetOjbCacheServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>clearOJBCache</servlet-name>
+        <url-pattern>/clearOjbCache</url-pattern>
+    </servlet-mapping>
+
+    <!-- Action Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>/do/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- The Welcome File List -->
+    <welcome-file-list>
+        <welcome-file>welcome.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!-- =================================================================== -->
+
+    <!-- JSTL Tag Library Descriptor  -->
+    <taglib>
+        <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+        <taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+    </taglib>
+
+</web-app>

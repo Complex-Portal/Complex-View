@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+     ANT build configuration file for search module.
+     Author: Andreas Groscurth, groscurt@ebi.ac.uk.
+     Verison: $Id$
+-->
+
+<project name="mine" basedir="." default="compile">
+    <property name="project.version" value="1.0"/>
+
+    <!-- Intact core locations -->
+    <property name="intact.root" value="../.."/>
+    <property name="root.lib.dir" value="${intact.root}/lib"/>
+    <property name="root.src.dir" value="${intact.root}/src"/>
+    <property name="root.dest.dir" value="${intact.root}/classes"/>
+    <property name="root.config.dir" value="${intact.root}/config"/>
+    <property name="root.dist.dir" value="${intact.root}/dist"/>
+    <property name="root.jar.file" value="${root.dist.dir}/intact-core.jar"/>
+
+    <!-- Intact application location. -->
+    <property name="intact.app.dir" value=".."/>
+
+    <!-- Context path for mine -->
+    <property name="intact.context.dir" value="${intact.app.dir}/context"/>
+    <property name="mine-context-file" value="mine-context.xml"/>
+
+    <property environment="env"/>
+    <property name="tomcat.home" value="${env.CATALINA_HOME}"/>
+    <property name="webapps.dir" value="${tomcat.home}/webapps"/>
+
+    <!-- The build properties. -->
+    <property file="${intact.root}/config/build.properties"/>
+
+    <!-- The jdbc properties. -->
+    <property file="${intact.root}/config/jdbc.properties"/>
+
+    <property name="dist.dir" value="dist"/>
+    <property name="pg.war.file" value="${ant.project.name}.war"/>
+
+    <!-- This project specific paths. -->
+    <property name="src.dir" value="src"/>
+    <property name="layouts.dir" value="layouts"/>
+    <property name="pages.dir" value="pages"/>
+    <property name="images.dir" value="images"/>
+    <property name="lib.dir" value="WEB-INF/lib"/>
+    <property name="tld.dir" value="WEB-INF/tld"/>
+    <property name="dest.dir" value="WEB-INF/classes"/>
+    <property name="docs.dir" value="doc/api"/>
+
+    <!-- The name of the last modified file -->
+    <property name="last.modified.file" value="last-modified.txt"/>
+
+    <!-- Build working classpath -->
+    <path id="project.class.path">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+
+        <!-- Where the classes are compiled to. -->
+        <pathelement path="${dest.dir}"/>
+
+        <!-- Intact core at root. -->
+        <pathelement path="${root.dest.dir}"/>
+
+        <!-- Common jar files. -->
+        <pathelement path="${root.lib.dir}/db-ojb-1.0.rc6.jar"/>
+        <pathelement path="${root.lib.dir}/junit.jar"/>
+        <pathelement path="${root.lib.dir}/servlet.jar"/>
+        <pathelement path="${root.lib.dir}/log4j-1.2.11.jar"/>
+        <pathelement path="${root.lib.dir}/commons-dbcp-1.1.jar"/>
+        <pathelement path="${root.lib.dir}/commons-logging-1.0.4.jar"/>
+
+        <!-- NB these probably need upgrading from the intact lib directory.. -->
+        <pathelement path="${intact.app.dir}/lib/struts.jar"/>
+        <pathelement path="$${root.lib.dir}/commons-collections-3.0.jar"/>
+        <pathelement path="${intact.app.dir}/lib/commons-lang.jar"/>
+
+        <!-- hibernate -->
+        <fileset dir="${root.lib.dir}/hibernate">
+            <include name="**/*.jar"/>
+        </fileset>
+
+        <!-- hibernate -->
+        <fileset dir="${root.lib.dir}/hibernate">
+            <include name="**/*.jar"/>
+        </fileset>
+
+    </path>
+
+    <!-- =================================================================== -->
+
+    <!-- Sets the time stamp and various 'present' properties. -->
+    <target name="prepare">
+        <tstamp/>
+        <available file="${root.jar.file}" type="file" property="intact.jar.present"/>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Sets the time stamp. -->
+    <target name="set-tstamp">
+        <tstamp>
+            <format property="TODAY" pattern="yyyy-MM-dd" locale="en"/>
+        </tstamp>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Creates the 'docs' directory. -->
+    <target name="mk-docs">
+        <mkdir dir="${docs.dir}"/>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Remove 'dest' and docs directories for clean build -->
+    <target name="clean" description="Prepare for clean build">
+        <!-- Delete directories first -->
+        <delete dir="${dest.dir}"/>
+        <delete dir="${dist.dir}"/>
+        <delete dir="${docs.dir}"/>
+        <delete dir="${layouts.dir}/styles"/>
+
+
+        <!-- layout commons files -->
+        <delete>
+            <fileset dir="${layouts.dir}">
+                <exclude name="headerLayout.jsp"/>
+                <exclude name="menu.jsp"/>
+                <exclude name="sidebarLayout.jsp"/>
+            </fileset>
+        </delete>
+
+        <!-- pages commons files -->
+        <delete>
+            <fileset dir="${pages.dir}">
+                <!-- Do not remove mine specific files -->
+                <exclude name="error.jsp"/>
+                <exclude name="result.jsp"/>
+                <exclude name="start.jsp"/>
+                <exclude name="ambiguous.jsp"/>
+                <exclude name="sidebarInput.jsp"/>
+            </fileset>
+        </delete>
+
+        <!-- images commons files -->
+        <delete>
+            <fileset dir="${images.dir}">
+                <!-- Do not remove mine specific files -->
+                <exclude name="djikstra.gif"/>
+            </fileset>
+        </delete>
+
+        <delete dir="${tld.dir}"/>
+
+        <delete file="${last.modified.file}" quiet="true"/>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Calls the jar task from core build file if intact core jar file
+         is missing.
+    -->
+    <target name="make-jar" depends="prepare" unless="intact.jar.present">
+        <ant dir="${intact.root}" target="jar-core" inheritAll="false"/>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Copy configuration files. -->
+    <target name="cpConfigFiles">
+        <!-- Copy repository files -->
+        <copy todir="${dest.dir}/config">
+            <fileset dir="${root.config.dir}">
+                <include name="repository*.xml"/>
+                <include name="repository.dtd"/>
+                <include name="Institution.properties"/>
+            </fileset>
+        </copy>
+
+        <!-- Copy mine property files and XML mapping file-->
+        <copy todir="${dest.dir}/config">
+            <fileset dir="WEB-INF/config">
+                <include name="*.properties"/>
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+
+        <!-- the OJB and log4J properties files should be at the top level in 'dest' -->
+        <copy todir="${dest.dir}" file="${root.config.dir}/OJB.properties"/>
+        <copy todir="${dest.dir}" file="${root.config.dir}/log4j.properties"/>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Compile the source tree; creates the dest dir if it doesn't exist. -->
+    <target name="compile">
+
+        <!-- Create the dest dir if it doesn't exist. -->
+        <mkdir dir="${dest.dir}"/>
+
+        <!-- Only compile mine sources only. -->
+        <javac srcdir="${root.src.dir}" destdir="${dest.dir}" deprecation="on"
+            includes="**/application/mine/**,
+                      **/application/commons/**"
+            debug="on" source="1.5"
+            excludes="**/test/**">
+            <classpath refid="project.class.path"/>
+        </javac>
+
+        <!-- Copy configuration files -->
+        <antcall target="cpConfigFiles"/>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Builds a war file using the current database setup. -->
+
+    <target name="war" description="Builds a war file"
+        depends="set-tstamp, set-db-type, war-postgres, war-oracle"/>
+
+    <!-- =================================================================== -->
+
+    <!-- Builds a war file. The database to include is specified as a parameter. -->
+
+    <target name="build-war" depends="compile, make-jar, gen-last-modified-file"
+        description="Builds a war file">
+        <echo message="Generating ${war.file} file"/>
+
+        <!-- Create the distribution dir if it doesn't exist. -->
+        <mkdir dir="${dist.dir}"/>
+
+        <!-- Create local directories to copy common files. -->
+        <mkdir dir="${layouts.dir}/styles"/>
+        <mkdir dir="${images.dir}"/>
+        <mkdir dir="${basedir}/${tld.dir}"/>
+
+        <!-- Common layouts -->
+        <copy todir="${layouts.dir}">
+            <fileset dir="${intact.app.dir}/layouts">
+                <!-- Don't need any frame layouts for this application -->
+                <exclude name="*Frame.jsp"/>
+                <exclude name="intactTestLayout.jsp"/>
+                <exclude name="headerLayout.jsp"/>
+
+                <!--  No EBI header for this application (yet) -->
+                <exclude name="ebiHeaderLayout.jsp"/>
+            </fileset>
+        </copy>
+
+        <!-- Common images -->
+        <copy todir="${images.dir}">
+            <fileset dir="${intact.app.dir}/images"/>
+        </copy>
+
+        <!-- Common jsp files -->
+        <copy todir="${pages.dir}">
+            <fileset dir="${intact.app.dir}/pages">
+                <!-- Don't need error frame JSP -->
+                <exclude name="errorFrame.jsp"/>
+            </fileset>
+        </copy>
+
+        <!-- Delete the war file or else it will keep the old one -->
+        <delete file="${dist.dir}/${war.file}" quiet="true"/>
+
+        <!-- Copy struts standard tld files -->
+        <copy todir="${tld.dir}">
+            <fileset dir="${intact.app.dir}/tld">
+                <include name="*.tld"/>
+            </fileset>
+        </copy>
+
+        <war destfile="${dist.dir}/${war.file}" webxml="WEB-INF/web.xml">
+            <fileset dir="${basedir}">
+                <include name="*.jsp"/>
+                <include name="*.jpg"/>
+                <include name="*.css"/>
+                <include name="*.xsl"/>
+                <include name="*.html"/>
+                <include name="WEB-INF/struts-config.xml"/>
+                <include name="WEB-INF/tiles-defs.xml"/>
+                <include name="${tld.dir}/**"/>
+                <include name="images/*"/>
+                <include name="pages/**"/>
+                <include name="layouts/**"/>
+                <include name="${last.modified.file}"/>
+                <exclude name="hibernate.cfg.xml"/>
+            </fileset>
+
+
+            <!-- Currently no JAR file use in mine -->
+            <!-- Include mine specific jar files. -->
+            <lib dir="${lib.dir}">
+                <include name="*.jar"/>
+            </lib>
+
+            <!-- Inlcude the intact core -->
+            <lib dir="${root.dist.dir}"/>
+
+            <!-- Include application common jar files but exclude test files -->
+            <lib dir="${intact.app.dir}/lib">
+                <exclude name="test/**"/>
+            </lib>
+
+            <!-- Include common jar files from intact core. -->
+            <lib dir="${root.lib.dir}">
+                <include name="db-ojb-1.0.rc6.jar"/>
+                <include name="log4j-1.2.11.jar"/>
+                <include name="${db}"/>
+                <include name="commons-pool-1.1.jar"/>
+                <include name="commons-dbcp-1.1.jar"/>
+                <include name="commons-logging-1.0.4.jar"/>
+                <include name="commons-collections-3.0.jar"/>
+            </lib>
+
+            <!-- hibernate -->
+            <lib dir="${root.lib.dir}/hibernate" />
+            <lib dir="${root.lib.dir}/hibernate/transitive-deps"/>
+
+            <!-- mine specific classes -->
+            <classes dir="${dest.dir}"/>
+        </war>
+
+        <antcall target="gen-context-file"/>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Sets the database type using the values given in build.properties. -->
+
+    <target name="set-db-type">
+        <condition property="postgres">
+            <contains string="${target.env}" substring="-postgres-"/>
+        </condition>
+        <condition property="oracle">
+            <contains string="${target.env}" substring="-oracle-"/>
+        </condition>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!--
+         Builds a war file with postgres;
+         should be called only after calling set-db-type.
+      -->
+
+    <target name="war-postgres" if="postgres">
+        <!-- Load postgres properties. -->
+        <property file="${intact.root}/config/postgres.properties"/>
+
+        <echo message="Building a war for postgres ${dbalias} database"/>
+        <property name="war.name" value="${ant.project.name}-${dbalias}-${TODAY}.war"/>
+
+        <antcall target="build-war">
+            <param name="db" value="${postgresql.jar}"/>
+            <param name="war.file" value="${war.name}"/>
+        </antcall>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!--
+        Builds a war file for oracle database;
+        should be called only after calling set-db-type.
+      -->
+
+    <target name="war-oracle" description="Builds a war file for oracle" if="oracle">
+        <!-- Load oracle properties. -->
+        <property file="${intact.root}/config/oracle.properties"/>
+
+        <echo message="Building a war for oracle ${dbalias} database"/>
+        <property name="war.name" value="${ant.project.name}-${dbalias}-${TODAY}.war"/>
+
+        <antcall target="build-war">
+            <param name="db" value="${oracle.jar}"/>
+            <param name="war.file" value="${war.name}"/>
+        </antcall>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Deploys the war file on the Tomcat server. -->
+    <target name="deploy" description="Deploys the WAR file on the Tomcat server">
+        <ant dir=".." inheritAll="false" target="deploy">
+            <property name="war" value="mine/${dist.dir}/${war.name}"/>
+        </ant>
+
+        <!-- Copy context files in the Tomcat's webapps directory -->
+        <copy file="${dist.dir}/${mine-context-file}"
+            todir="${webapps.dir}" overwrite="yes"/>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Undeploys the war file from the Tomcat server. -->
+    <target name="undeploy"
+        description="Undeploys the WAR file from the Tomcat server">
+        <ant dir=".." inheritAll="false" target="undeploy">
+            <property name="war" value="mine"/>
+        </ant>
+
+        <!-- Delete context files from the Tomcat's webapps directory -->
+        <delete file="${webapps.dir}/${mine-context-file}" quiet="true"/>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- These unit tests only run one tests in a single package; we need to add
+         a utility class which can run all the unit tests together.
+     -->
+    <!-- Runs tests using junit. -->
+    <target name="junit-test" depends="compile" description="Run JUnit tests">
+        <junit printsummary="withOutAndErr">
+            <test name=
+                "uk.ac.ebi.intact.application.mine.struts.framework.util.test.AllJUnitTests"/>
+            <classpath refid="project.class.path"/>
+        </junit>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Runs the JUnit tester directly. The output is redirected to std out -->
+    <target name="junit-test-stdout" depends="compile"
+        description="Runs JUnit directly with output directed to stdout">
+        <java classname="junit.textui.TestRunner">
+            <arg value=
+                "uk.ac.ebi.intact.application.mine.struts.framework.util.test.AllJUnitTests"/>
+            <classpath refid="project.class.path"/>
+        </java>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Generates the last modified date file. -->
+
+    <target name="gen-last-modified-file">
+        <ant dir=".." inheritAll="false" target="gen-last-modified-file">
+            <property name="file" value="mine/${last.modified.file}"/>
+        </ant>
+    </target>
+
+    <!-- =================================================================== -->
+
+    <!-- Create the context file. -->
+
+    <target name="gen-context-file">
+        <echo message="Creating the context file..."/>
+
+        <!-- Copy the template file -->
+        <copy todir="${dist.dir}"
+            file="${intact.context.dir}/${mine-context-file}"
+            overwrite="true"/>
+
+        <!-- Customize the context file -->
+        <replace file="${dist.dir}/${mine-context-file}"
+            token="[WAR.FILE.NAME]"
+            value="${war.file}"/>
+        <replace file="${dist.dir}/${mine-context-file}"
+            token="[server.name]"
+            value="${server.name}"/>
+    </target>
+
+</project>
