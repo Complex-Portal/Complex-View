@@ -25,13 +25,6 @@
         </td>
     </tr>
 
-    <%-- Sidebar menu links --%>
-    <tr>
-		<td>
-            <tiles:insert attribute="menu" ignore="true"/>
-        </td>
-	</tr>
-
     <%-- The footer --%>
     <%-- Sidebar footer --%>
     <tr>

@@ -47,6 +47,14 @@
         </description>
     </context-param>
 
+    <context-param>
+        <param-name>uk.ac.ebi.intact.FORCE_NO_SCHEMA_VERSION_CHECK</param-name>
+        <param-value>true</param-value>
+        <description>
+            If true, don't check the schema version agains the intact-core version. Default: false
+        </description>
+    </context-param>
+
     <!-- Where the log file is stored -->
     <context-param>
         <param-name>logfile</param-name>

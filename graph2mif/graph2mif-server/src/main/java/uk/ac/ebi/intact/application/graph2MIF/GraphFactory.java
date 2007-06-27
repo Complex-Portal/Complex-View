@@ -14,6 +14,7 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.Constants;
 import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.ProteinImpl;
 import uk.ac.ebi.intact.util.simplegraph.Graph;
 
 import java.util.ArrayList;
@@ -63,8 +64,13 @@ public class GraphFactory {
             logger.info( "Retrieve Interactor from queryString("+ queryString +")" );
             for ( Iterator iterator = queries.iterator (); iterator.hasNext (); ) {
                 String query = (String) iterator.next ();
-                interactors.add( IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
-                    .getInteractorDao().getByAc(query) );
+
+                Interactor interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+                    .getInteractorDao().getByAc(query);
+
+                if (interactor != null) {
+                    interactors.add( interactor );
+                }
             }
         } catch (IntactException e) {
             logger.error( "Could not search for Interactor AC: " + queryString, e );
@@ -81,7 +87,7 @@ public class GraphFactory {
             Interactor interactor = (Interactor) interactorIterator.next();
             interactionNetwork = new FusionableGraph();
             try {
-                logger.info ( "Start building an Interaction Network from AC: "+ interactor.getAc() +
+                logger.info ( "Start building an Interaction Network from Interactor: "+ interactor.getAc() +
                         ", depth: "+ depth +"." );
                 graphHelper.subGraph( interactor,
                         depth,

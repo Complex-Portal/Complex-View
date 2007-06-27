@@ -45,13 +45,6 @@
     <td valign="top" height="100%" width="*">
         <table width="100%" height="100%">
 
-            <%-- Application Header section --%>
-            <tr>
-                <td valign="top" height="5%">
-                    <tiles:insert attribute="header"/>
-                </td>
-
-            </tr>
             <tr>
                 <td height="3" background="<%=request.getContextPath()%>/images/hor.gif"></td>
             </tr>
@@ -63,12 +56,7 @@
                 </td>
             </tr>
 
-            <%-- The footer --%>
-            <tr>
-                <td valign="bottom" height="10%">
-                    <tiles:insert attribute="footer"/>
-                </td>
-            </tr>
+
         </table>
     </td>
 </tr>

@@ -9,11 +9,15 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uk.ac.ebi.intact.service.statisticview</groupId>
+    <groupId>uk.ac.ebi.intact.service.statistics</groupId>
     <artifactId>statisticview-master</artifactId>
     <packaging>pom</packaging>
     <version>1.6.0-SNAPSHOT</version>
 
     <name>IntAct Services :: Statistics</name>
+
+    <modules>
+        <module>statistic-view</module>
+    </modules>
 
 </project>

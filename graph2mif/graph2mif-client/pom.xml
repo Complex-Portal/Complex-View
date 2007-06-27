@@ -12,28 +12,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>uk.ac.ebi.intact.maven</groupId>
-        <artifactId>intact-master</artifactId>
-        <version>6</version>
+        <groupId>uk.ac.ebi.intact.service.graph2mif</groupId>
+        <artifactId>graph2mif-master</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uk.ac.ebi.intact.app.graph2mif</groupId>
     <artifactId>graph2mif-client</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
     
-    <name>Graph2MIF Client</name>
+    <name>IntAct Services :: Graph2MIF :: Client</name>
     <description>Graph2MIF Web Service Client</description>
     <url>http://www.ebi.ac.uk/~intact/devsite/${artifactId}</url>
-
-    <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/graph2mif/client/trunk</connection>
-        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/graph2mif/client/trunk
-        </developerConnection>
-        <url>http://svn.sourceforge.net/viewcvs.cgi/intact/repo/graph2mif/client/trunk/</url>
-    </scm>
 
     <build>
         <plugins>
@@ -43,7 +35,7 @@
                 <version>1.0</version>
                 <configuration>
                     <urls>
-                        <url>file:./src/main/wsdl/graph2mif.wsdl</url>
+                        <url>file:${project.basedir}/src/main/wsdl/graph2mif.wsdl</url>
                     </urls>
                     <packageSpace>uk.ac.ebi.intact.application.graph2mif.client</packageSpace>
                     <testCases>false</testCases>
@@ -73,39 +65,5 @@
             <version>1.4</version>
         </dependency>
     </dependencies>
-
-    <!-- EBI repositories -->
-    <repositories>
-       <repository>
-            <id>ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ebi-repo-snapshots</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <site>
-            <id>intact-site</id>
-            <name>Intact site</name>
-            <url>${site.remote.basedir}/${artifactId}</url>
-        </site>
-    </distributionManagement>
 
 </project>

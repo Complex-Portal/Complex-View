@@ -20,6 +20,7 @@
     <properties>
         <currentVersion>${version}</currentVersion>
         <jetty.port>9090</jetty.port>
+        <tempH2>/tmp/intact-${artifactId}-${jetty.port}-h2</tempH2>
     </properties>
 
     <modules>
@@ -29,7 +30,7 @@
         <module>hierarch-view</module>
         <module>mine</module>
         <module>predict</module>
-        <module>statistic-view</module>
+        <module>statistics</module>
     </modules>
 
     <scm>
@@ -43,6 +44,7 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
+                <version>6.1.2</version>
                 <configuration>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
@@ -103,6 +105,35 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>imex</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>uk.ac.ebi.intact.datasets</groupId>
+                        <artifactId>dataset-import-maven-plugin</artifactId>
+                        <configuration>
+                            <id>IMEX</id>
+                            <provider>uk.ac.ebi.intact.unitdataset.ImexDatasetProvider</provider>
+                            <tempH2>${tempH2}</tempH2>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>uk.ac.ebi.intact.datasets</groupId>
+                    <artifactId>intact-dataset-imex</artifactId>
+                    <version>1.6.0-SNAPSHOT</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <version>1.0.20070429</version>
+                </dependency>
+            </dependencies>
+        </profile>
          <profile>
              <id>ebi-db</id>
              <activation>

@@ -16,4 +16,9 @@
 
     <name>IntAct Services :: Graph2MIF</name>
 
+    <modules>
+        <module>graph2mif-server</module>
+        <module>graph2mif-client</module>
+    </modules>
+
 </project>

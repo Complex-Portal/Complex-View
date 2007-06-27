@@ -8,6 +8,7 @@ package uk.ac.ebi.intact.application.statisticView.webapp;
 import com.keypoint.PngEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.beanutils.converters.ByteArrayConverter;
 import org.jfree.chart.JFreeChart;
 
 import javax.servlet.ServletException;
@@ -16,6 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+
+import sun.io.ByteToCharConverter;
+import sun.io.ByteToCharUnicode;
 
 /**
  * TODO comment this!
@@ -57,6 +62,7 @@ public class ChartProviderServlet extends HttpServlet {
             log.debug( "Encoded image: " + bytes.length + " byte(s)" );
         }
 
-        response.getOutputStream().write( bytes );
+
+        response.getWriter().write( new String(bytes, response.getCharacterEncoding()) );
     }
 }
