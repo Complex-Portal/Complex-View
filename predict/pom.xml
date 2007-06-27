@@ -16,4 +16,8 @@
 
     <name>IntAct Services :: Predict</name>
 
+    <modules>
+        <module>predict-app</module>
+    </modules>
+
 </project>

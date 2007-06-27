@@ -13,7 +13,6 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpSessionBindingListener;
 
-import uk.ac.ebi.intact.business.IntactHelper;
 import uk.ac.ebi.intact.util.PropertyLoader;
 
 /**
@@ -87,10 +86,4 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener,
      */
     public String getHVLink(String context);
 
-    /**
-     * Returns the intact helper
-     * 
-     * @return the intact helper
-     */
-    public IntactHelper getIntactHelper();
 }

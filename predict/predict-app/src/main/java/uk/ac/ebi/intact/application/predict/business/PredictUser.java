@@ -14,8 +14,8 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.model.Protein;
-import uk.ac.ebi.intact.persistence.DataSourceException;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
@@ -64,15 +64,15 @@ public abstract class PredictUser implements IntactUserI,
      * @return an instance of this class created using the JDBC subprotocol.
      * A null object is returned for an unknown JDBC subprotocol. Currently
      * oracle and postgres are known types.
-     * @exception DataSourceException for error in getting the data source; probably due to
-     * missing mapping file.
      * @exception IntactException for errors in creating IntactHelper; problem with reading
      * the repository file.
      */
-    public static PredictUser create() throws DataSourceException,
+    public static PredictUser create() throws
             IntactException {
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+
         // Connection to get the JDBC url.
-        Connection conn = ((Session)DaoFactory.getBaseDao().getSession()).connection();
+        Connection conn = daoFactory.connection();
 
         // The URL to extract the subprotocol.
         String url = null;
@@ -125,7 +125,7 @@ public abstract class PredictUser implements IntactUserI,
 	public String getUserName() {
 		try
         {
-            return DaoFactory.getBaseDao().getDbUserName();
+            return getDaoFactory().getBaseDao().getDbUserName();
         }
         catch (SQLException e)
         {
@@ -142,7 +142,7 @@ public abstract class PredictUser implements IntactUserI,
 	public String getDatabaseName() {
         try
         {
-            return DaoFactory.getBaseDao().getDbName();
+            return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getBaseDao().getDbName();
         }
         catch (SQLException e)
         {
@@ -153,7 +153,7 @@ public abstract class PredictUser implements IntactUserI,
 
     public <T extends IntactObject> Collection<T> search(Class<T> objectType, String searchParam,
                              String searchValue) throws IntactException {
-        return DaoFactory.getIntactObjectDao(objectType).getColByPropertyName(searchParam, searchValue);
+        return getDaoFactory().getIntactObjectDao(objectType).getColByPropertyName(searchParam, searchValue);
     }
 
     /**
@@ -180,7 +180,7 @@ public abstract class PredictUser implements IntactUserI,
                     log.debug("Looking for the biosource with taxid: "+taxid);
                 }
 
-                Collection<BioSource> biosources = DaoFactory.getBioSourceDao().getByTaxonId(taxid);
+                Collection<BioSource> biosources = getDaoFactory().getBioSourceDao().getByTaxonId(taxid);
 
                 log.debug(biosources);
 
@@ -274,7 +274,7 @@ public abstract class PredictUser implements IntactUserI,
      * Closes the connection to the database.
      */
     public void closeConnection() {
-        ((Session)DaoFactory.getBaseDao().getSession()).close();
+        // nothing
     }
 
     // Set/Get methods for the current specie.
@@ -300,7 +300,7 @@ public abstract class PredictUser implements IntactUserI,
      * @throws IntactException for errors in getting the connection.
      */
     private Connection getConnection() throws IntactException {
-        return ((Session)DaoFactory.getBaseDao().getSession()).connection();
+        return getDaoFactory().connection();
     }
 
     /**
@@ -313,7 +313,7 @@ public abstract class PredictUser implements IntactUserI,
      */
     private Protein getProteinForTaxId(String label, String tax)
             throws IntactException {
-        Collection proteins = DaoFactory.getProteinDao().getByShortLabelLike(label);
+        Collection proteins = getDaoFactory().getProteinDao().getByShortLabelLike(label);
 
         for (Iterator iter = proteins.iterator(); iter.hasNext(); ) {
             Protein protein = (Protein) iter.next();
@@ -333,7 +333,11 @@ public abstract class PredictUser implements IntactUserI,
      * @throws IntactException for errors in searching the database.
      */
     private String getTaxId(String shortLabel) throws IntactException {
-        BioSource biosrc = DaoFactory.getBioSourceDao().getByShortLabel(shortLabel);
+        BioSource biosrc = getDaoFactory().getBioSourceDao().getByShortLabel(shortLabel);
         return biosrc.getTaxId();
+    }
+
+    private DaoFactory getDaoFactory() {
+        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
     }
 }

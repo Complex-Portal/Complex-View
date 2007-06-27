@@ -43,6 +43,14 @@
         </description>
     </context-param>
 
+    <context-param>
+        <param-name>uk.ac.ebi.intact.FORCE_NO_SCHEMA_VERSION_CHECK</param-name>
+        <param-value>true</param-value>
+        <description>
+            If true, don't check the schema version agains the intact-core version. Default: false
+        </description>
+    </context-param>
+
     <!-- Filter to init the IntactContext at the beginning of the request and close the
         transaction at the end -->
     <filter>

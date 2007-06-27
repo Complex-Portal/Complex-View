@@ -16,4 +16,8 @@
 
     <name>IntAct Services :: MiNe</name>
 
+    <modules>
+        <module>mine-app</module>
+    </modules>
+
 </project>

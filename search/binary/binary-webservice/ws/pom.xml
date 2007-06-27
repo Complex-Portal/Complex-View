@@ -70,16 +70,6 @@
                 </dependencies>
 
             </plugin>
-
-            <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <configuration>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <contextPath>${build.finalName}</contextPath>
-                </configuration>
-            </plugin>
-
         </plugins>
     </build>
 

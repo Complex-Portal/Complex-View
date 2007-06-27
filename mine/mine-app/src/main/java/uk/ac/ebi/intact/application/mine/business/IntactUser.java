@@ -9,7 +9,6 @@ package uk.ac.ebi.intact.application.mine.business;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.mine.business.graph.model.NodeObject;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.business.IntactHelper;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
@@ -50,15 +49,6 @@ public class IntactUser implements IntactUserI {
       */
     public Collection getPaths() {
         return paths;
-    }
-
-    /*
-      * (non-Javadoc)
-      *
-      * @see uk.ac.ebi.intact.application.mine.business.IntactUserI#getIntactHelper()
-      */
-    public IntactHelper getIntactHelper() {
-        return null;
     }
 
     /*

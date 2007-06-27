@@ -10,10 +10,47 @@
         Prediction application
     </description>
 
+    <distributable/>
+
+    <!-- IntAct Init parameters -->
+    <context-param>
+        <param-name>uk.ac.ebi.intact.INSTITUTION_LABEL</param-name>
+        <param-value>ebi</param-value>
+        <description>
+            The label of the institution, used to retrieve the Institution object
+            if it already exists, or to create a new institution
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.PRELOAD_COMMON_CVOBJECTS</param-name>
+        <param-value>false</param-value>
+        <description>
+            Preload the most common CvObjects on application start, so it is
+            faster to retrieve them later
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.READ_ONLY</param-name>
+        <param-value>true</param-value>
+        <description>
+            If read-only, an application cannot persist data in the database
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.FORCE_NO_SCHEMA_VERSION_CHECK</param-name>
+        <param-value>true</param-value>
+        <description>
+            If true, don't check the schema version agains the intact-core version. Default: false
+        </description>
+    </context-param>
+
     <!-- Filter to open the session at the beginning of the request and close on end -->
     <filter>
         <filter-name>hibernateFilter</filter-name>
-        <filter-class>uk.ac.ebi.intact.application.commons.util.HibernateSessionRequestFilter</filter-class>
+        <filter-class>uk.ac.ebi.intact.webapp.IntactSessionRequestFilter</filter-class>
     </filter>
 
     <filter-mapping>

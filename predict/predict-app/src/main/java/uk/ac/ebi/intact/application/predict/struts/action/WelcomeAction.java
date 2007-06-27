@@ -15,7 +15,6 @@ import uk.ac.ebi.intact.application.predict.business.PredictUser;
 import uk.ac.ebi.intact.application.predict.struts.framework.AbstractPredictAction;
 import uk.ac.ebi.intact.application.predict.struts.framework.PredictConstants;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.persistence.DataSourceException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -67,10 +66,6 @@ public class WelcomeAction extends AbstractPredictAction {
             try {
                 user = PredictUser.create();
                 log.info("Predict user created");
-            }
-            catch (DataSourceException dse) {
-                // Unable to get a data source...can't proceed
-                dse.printStackTrace();
             }
             catch (IntactException ie) {
                 // Can't create the helper.. can't proceed

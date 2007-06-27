@@ -15,6 +15,8 @@ import uk.ac.ebi.intact.application.mine.business.graph.model.GraphData;
 import uk.ac.ebi.intact.application.mine.business.graph.model.NodeObject;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.persistence.dao.IntactTransaction;
+import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.business.IntactTransactionException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,9 +84,10 @@ public class GraphBuildThread extends Thread {
 	private GraphData buildGraph(Integer graphid) throws SQLException {
 		logger.info("build graph for " + graphid);
 
-        IntactTransaction tx = DaoFactory.beginTransaction();
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        IntactTransaction tx = daoFactory.beginTransaction();
 
-        Statement stm = DaoFactory.connection().createStatement();
+        Statement stm = daoFactory.connection().createStatement();
 		ResultSet set = null;
 		IncidenceListGraph graph = null;
 		Vertex v1, v2;
@@ -143,7 +146,11 @@ public class GraphBuildThread extends Thread {
 		stm.close();
 
         // commit the transaction
-        tx.commit();
+        try {
+            tx.commit();
+        } catch (IntactTransactionException e) {
+            e.printStackTrace();
+        }
 
         return new GraphData(graph, nodeLabelMap);
 	}
