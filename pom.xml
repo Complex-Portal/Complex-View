@@ -3,7 +3,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>11</version>
+        <version>12</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -20,6 +20,16 @@
     <properties>
         <currentVersion>${version}</currentVersion>
     </properties>
+
+    <modules>
+        <module>search</module>
+        <module>editor</module>
+        <module>graph2mif</module>
+        <module>hierarch-view</module>
+        <module>mine</module>
+        <module>predict</module>
+        <module>statistic-view</module>
+    </modules>
 
     <scm>
         <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk</connection>
