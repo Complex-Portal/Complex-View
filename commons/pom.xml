@@ -17,10 +17,8 @@
     <name>IntAct Services :: Commons</name>
     <description>Common utilities for the web applications</description>
 
-    <!--
     <modules>
         <module>app-commons</module>
     </modules>
-    -->
 
 </project>

@@ -38,7 +38,7 @@
             <version>1.5.0</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.ebi.intact.app</groupId>
+            <groupId>uk.ac.ebi.intact.service.commons</groupId>
             <artifactId>app-commons</artifactId>
         </dependency>
 
