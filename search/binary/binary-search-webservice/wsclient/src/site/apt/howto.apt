@@ -1,0 +1,48 @@
+ -----
+ How to use the client
+ -----
+ $Id$
+ -----
+
+What do I need?
+
+ Basically, to use the service you need to have the client jar in your classpath.
+
+* Using Maven
+
+ If you are using Maven (recommended), in your <<<pom.xml>>> descriptor check that you have the EBI repository
+ already define and  put this dependency:
+
++--------------+
+<dependencies>
+    ...
+    <dependency>
+        <groupId>uk.ac.ebi.intact.app.search</groupId>
+        <artifactId>search-wsclient</artifactId>
+        <version>1.2.0</version>
+        <scope>runtime</scope>
+    </dependency>
+    ...
+</dependencies>
++--------------+
+
+ and include the EBI repository, if you hadn't done that yet:
+
++--------------+
+<repositories>
+    ...
+    <!-- EBI repository -->
+    <repository>
+        <id>ebi-repo</id>
+        <name>The EBI internal repository</name>
+        <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+    </repository>
+    ...
+</repositories>
++--------------+
+
+* Without maven
+
+ If you are not a happy Maven user, then you can download the binaries from {{{http://sourceforge.net/project/showfiles.php?group_id=62732&package_id=204087}SourceForge}}.
+ You can choose whether to download a jar which includes all the dependencies inside, the client jar separated from the dependencies
+ or the sources.

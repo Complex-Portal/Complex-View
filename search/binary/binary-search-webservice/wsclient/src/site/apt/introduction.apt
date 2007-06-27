@@ -1,0 +1,24 @@
+ -----
+ Introduction
+ -----
+ $Id$
+ -----
+
+Introduction
+
+ This is the client for the {{{search-ws}IntAct Search Web Service}}, which is the best way to access the service and
+ get interesting results. By default, it will use the search web service at {{{www.ebi.ac.uk}EBI}} but it can be
+ configured to use alternative locations or your own instances of the Web Service.
+
+ Currently, the service provide methods to:
+
+ * Get the information for the interaction for a pair of proteins provided.
+
+ * Get all the protein IDs for which a provided protein has interactions in common.
+
+ []
+
+ See the {{{howto.html}How to Use page}} to know how to setup everything and to start using the service.
+
+ Note that you could generate a different client using the Web Service WSDL, but it is recommended to use this client,
+ because it has some convenient methods, simplifies the use and is maintained by the IntAct Developers.

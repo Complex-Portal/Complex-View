@@ -1,0 +1,39 @@
+ -----
+ Examples
+ -----
+ $Id$
+ -----
+
+Examples
+
+ Getting the interaction information for a protein pair:
+
++---------+
+SearchServiceClient client = new SearchServiceClient();
+
+List<InteractionInfo> interInfos = client.getInteractionInfoUsingIntactIds("EBI-1004115","EBI-710997");
+
+for (InteractionInfo interInfo : interInfos)
+{
+    System.out.println(interInfo.getIntactAc());
+}
++---------+
+
+ Getting the partners of a protein:
+
++----------+
+SearchServiceClient client = new SearchServiceClient();
+List<String> uniprotIds = client.findPartnersUsingUniprotIds("Q9VZ59");
+
+for (String id : uniprotIds)
+{
+    System.out.println(id);
+}
++----------+
+
+ To specify an alternative location of the web service:
+
++----------+
+SearchServiceClient client = new SearchServiceClient("http://www.myorganization.org/search-ws/search?wsdl");
++----------+
+
