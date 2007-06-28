@@ -1,0 +1,251 @@
+   <entrySet level="1" version="1" xmlns="net:sf:psidev:mi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="net:sf:psidev:mi http://psidev.sourceforge.net/mi/xml/src/MIF.xsd">
+     <entry>
+       <source releaseDate="2006-12-16">
+         <names>
+           <shortLabel>European Bioinformatics Institute</shortLabel>
+         </names>
+         <bibref>
+           <xref>
+             <primaryRef db="pubmed" id="14681455"/>
+           </xref>
+         </bibref>
+         <xref>
+           <primaryRef db="psi-mi" id="MI:0469"/>
+         </xref>
+         <attributeList>
+           <attribute name="postalAddress">Wellcome Trust Genome Campus, Hinxton, Cambridge, CB10 1SD, United Kingdom</attribute>
+           <attribute name="url">http://www.ebi.ac.uk</attribute>
+         </attributeList>
+       </source>
+       <experimentList>
+         <experimentDescription id="EBI-489686">
+           <names>
+             <shortLabel>hersh-1999-1</shortLabel>
+             <fullName>The Salmonella invasin SipB induces macrophage apoptosis by binding to caspase-1.</fullName>
+           </names>
+           <bibref>
+             <xref>
+               <primaryRef db="pubmed" id="10051653"/>
+             </xref>
+           </bibref>
+           <xref>
+             <primaryRef db="intact" id="EBI-489686" secondary="hersh-1999-1"/>
+             <secondaryRef db="newt" id="10090" secondary="mouse"/>
+             <secondaryRef db="newt" id="601" secondary="salti"/>
+           </xref>
+           <hostOrganism ncbiTaxId="-1">
+             <names>
+               <shortLabel>in vitro</shortLabel>
+             </names>
+           </hostOrganism>
+           <interactionDetection>
+             <names>
+               <shortLabel>pull down</shortLabel>
+               <fullName>pull down</fullName>
+             </names>
+             <xref>
+               <primaryRef db="psi-mi" id="MI:0096"/>
+               <secondaryRef db="pubmed" id="14755292"/>
+             </xref>
+           </interactionDetection>
+           <participantDetection>
+             <names>
+               <shortLabel>polyclonal western</shortLabel>
+               <fullName>polyclonal antibody western blot</fullName>
+             </names>
+             <xref>
+               <primaryRef db="psi-mi" id="MI:0086"/>
+               <secondaryRef db="pubmed" id="14755292"/>
+             </xref>
+           </participantDetection>
+           <attributeList>
+             <attribute name="author-list">Hersh D., Monack DM., Smith MR., Ghori N., Falkow S., Zychlinsky A.</attribute>
+             <attribute name="publication-year">1999</attribute>
+             <attribute name="journal">Proc. Natl. Acad. Sci. U.S.A. (0027-8424)</attribute>
+           </attributeList>
+         </experimentDescription>
+         <experimentDescription id="EBI-489725">
+           <names>
+             <shortLabel>hersh-1999-2</shortLabel>
+             <fullName>The Salmonella invasin SipB induces macrophage apoptosis by binding to caspase-1.</fullName>
+           </names>
+           <bibref>
+             <xref>
+               <primaryRef db="pubmed" id="10051653"/>
+             </xref>
+           </bibref>
+           <xref>
+             <primaryRef db="intact" id="EBI-489725" secondary="hersh-1999-2"/>
+             <secondaryRef db="intact" id="EBI-490598"/>
+             <secondaryRef db="newt" id="10090" secondary="mouse"/>
+             <secondaryRef db="newt" id="601" secondary="salti"/>
+           </xref>
+           <hostOrganism ncbiTaxId="10090">
+             <names>
+               <shortLabel>mouse-j774a_1</shortLabel>
+               <fullName>Mus musculus macrophage</fullName>
+             </names>
+             <cellType>
+               <names>
+                 <shortLabel>j774a-1</shortLabel>
+                 <fullName>Mus musculus macrophage</fullName>
+               </names>
+               <xref>
+                 <primaryRef db="cabri" id="ECACC 91051511"/>
+                 <secondaryRef db="intact" id="IA:0105"/>
+               </xref>
+             </cellType>
+           </hostOrganism>
+           <interactionDetection>
+             <names>
+               <shortLabel>coip</shortLabel>
+               <fullName>coimmunoprecipitation</fullName>
+             </names>
+             <xref>
+               <primaryRef db="psi-mi" id="MI:0019"/>
+               <secondaryRef db="pubmed" id="7708014"/>
+             </xref>
+           </interactionDetection>
+           <participantDetection>
+             <names>
+               <shortLabel>monoclonal western</shortLabel>
+               <fullName>monoclonal antibody western blot</fullName>
+             </names>
+             <xref>
+               <primaryRef db="psi-mi" id="MI:0072"/>
+               <secondaryRef db="pubmed" id="14755292"/>
+             </xref>
+           </participantDetection>
+           <attributeList>
+             <attribute name="exp-modification">Salmonella typhi protein SipB is expressed in the Shigella flexneri strain M90T defective of its homolgue virulence gene (Ipa-B). This shigella strain recovers virulence after the transfection of SipB.</attribute>
+             <attribute name="author-list">Hersh D., Monack DM., Smith MR., Ghori N., Falkow S., Zychlinsky A.</attribute>
+             <attribute name="publication-year">1999</attribute>
+             <attribute name="journal">Proc. Natl. Acad. Sci. U.S.A. (0027-8424)</attribute>
+           </attributeList>
+         </experimentDescription>
+       </experimentList>
+       <interactorList>
+         <proteinInteractor id="EBI-489689">
+           <names>
+             <shortLabel>sipb_salti</shortLabel>
+             <fullName>Cell invasion protein sipB</fullName>
+           </names>
+           <xref>
+             <primaryRef db="uniprotkb" id="Q56134" secondary="sipb_salti" version="SP_49"/>
+             <secondaryRef db="interpro" id="IPR003895" secondary="Invas_B"/>
+             <secondaryRef db="uniprotkb" id="Q7AME0" secondary="sipb_salti" version="SP_49"/>
+             <secondaryRef db="uniprotkb" id="Q7C7N1" secondary="sipb_salti" version="SP_49"/>
+             <secondaryRef db="go" id="GO:0005515" secondary="F:protein binding"/>
+             <secondaryRef db="intact" id="EBI-489689" secondary="sipb_salti"/>
+           </xref>
+           <organism ncbiTaxId="601">
+             <names>
+               <shortLabel>salti</shortLabel>
+               <fullName>Salmonella typhi</fullName>
+             </names>
+           </organism>
+           <sequence>MVNDASSISRSGYTQNPRLAEAAFEGVRKNTDFLKAADKAFKDVVATKAGDLKAGTKSGESAINTVGLKPPTDAAREKLSSEGQLTLLLGKLMTLLGDVSLSQLESRLAVWQAMIESQKEMGIQVSKEFQTALGEAQEATDLYEASIKKTDTAKSVYDAAAKKLTQAQNKLQSLDPADPGYAQAEAAVEQAGKEATEAKEALDKATDATVKAGTDAKAKAEKADNILTKFQGTANAASQNQVSQGEQDNLSNVARLTMLMAMFIEIVGKNTEESLQNDLALFNALQEGRQAEMEKKSAEFQEETRKAEETNRIMGCIGKVLGALLTIVSVVAAVFTGGASLALAAVGLAVMVADEIVKAATGVSFIQQALNPIMEHVLKPLMELIGKAITKALEGLGVDKKTAEMAGSIVGAIVAAIAMVAVIVVVAVVGKGAAAKLGNALSKMMGETIKKLVPNVLKQLAQNGSKLFTQGMQRITSGLGNVGSKMGLQTNALSKELVGNTLNKVALGMEVTNTAAQSAGGVAEGVFIKNASEALADFMLARFAMDQIQQWLKQSVEIFGENQKVTAELQKAMSSAVQQNADASRFILRQSRA</sequence>
+         </proteinInteractor>
+         <proteinInteractor id="EBI-489700">
+           <names>
+             <shortLabel>casp1_mouse</shortLabel>
+             <fullName>Caspase-1 precursor</fullName>
+           </names>
+           <xref>
+             <primaryRef db="uniprotkb" id="P29452" secondary="casp1_mouse" version="SP_48"/>
+             <secondaryRef db="go" id="GO:0005737" secondary="C:cytoplasm"/>
+             <secondaryRef db="go" id="GO:0005576" secondary="C:extracellular region"/>
+             <secondaryRef db="go" id="GO:0005515" secondary="F:protein binding"/>
+             <secondaryRef db="go" id="GO:0006917" secondary="P:induction of apoptosis"/>
+             <secondaryRef db="go" id="GO:0016485" secondary="P:protein processing"/>
+             <secondaryRef db="go" id="GO:0001666" secondary="P:response to hypoxia"/>
+             <secondaryRef db="interpro" id="IPR001315" secondary="CARD"/>
+             <secondaryRef db="interpro" id="IPR011029" secondary="DEATH_like"/>
+             <secondaryRef db="interpro" id="IPR002138" secondary="ICE_p10"/>
+             <secondaryRef db="interpro" id="IPR001309" secondary="ICE_p20"/>
+             <secondaryRef db="interpro" id="IPR002398" secondary="Peptidase_C14"/>
+             <secondaryRef db="interpro" id="IPR011600" secondary="Pept_C14_p20"/>
+             <secondaryRef db="intact" id="EBI-489700" secondary="casp1_mouse"/>
+           </xref>
+           <organism ncbiTaxId="10090">
+             <names>
+               <shortLabel>mouse</shortLabel>
+               <fullName>Mus musculus</fullName>
+             </names>
+           </organism>
+           <sequence>MADKILRAKRKQFINSVSIGTINGLLDELLEKRVLNQEEMDKIKLANITAMDKARDLCDHVSKKGPQASQIFITYICNEDCYLAGILELQSAPSAETFVATEDSKGGHPSSSETKEEQNKEDGTFPGLTGTLKFCPLEKAQKLWKENPSEIYPIMNTTTRTRLALIICNTEFQHLSPRVGAQVDLREMKLLLEDLGYTVKVKENLTALEMVKEVKEFAACPEHKTSDSTFLVFMSHGIQEGICGTTYSNEVSDILKVDTIFQMMNTLKCPSLKDKPKVIIIQACRGEKQGVVLLKDSVRDSEEDFLTDAIFEDDGIKKAHIEKDFIAFCSSTPDNVSWRHPVRGSLFIESLIKHMKEYAWSCDLEDIFRKVRFSFEQPEFRLQMPTADRVTLTKRFYLFPGH</sequence>
+         </proteinInteractor>
+       </interactorList>
+       <interactionList>
+         <interaction>
+           <names>
+             <shortLabel>sipb-casp1-1</shortLabel>
+             <fullName>pull down of  GST-sipb and endogenous mouse caspase-1</fullName>
+           </names>
+           <experimentList>
+             <experimentRef ref="EBI-489686"/>
+           </experimentList>
+           <participantList>
+             <proteinParticipant>
+               <proteinInteractorRef ref="EBI-489689"/>
+               <role>bait</role>
+             </proteinParticipant>
+             <proteinParticipant>
+               <proteinInteractorRef ref="EBI-489700"/>
+               <role>prey</role>
+             </proteinParticipant>
+           </participantList>
+           <interactionType>
+             <names>
+               <shortLabel>aggregation</shortLabel>
+               <fullName>aggregation</fullName>
+             </names>
+             <xref>
+               <primaryRef db="psi-mi" id="MI:0191"/>
+             </xref>
+           </interactionType>
+           <xref>
+             <primaryRef db="intact" id="EBI-489717" secondary="sipb-casp1-1"/>
+           </xref>
+           <attributeList>
+             <attribute name="kd">0.0</attribute>
+           </attributeList>
+         </interaction>
+         <interaction>
+           <names>
+             <shortLabel>sipb-casp1-2</shortLabel>
+             <fullName>coimmuniprecipiation of  flag-sipb and endogenous mouse caspase-1 after infection</fullName>
+           </names>
+           <experimentList>
+             <experimentRef ref="EBI-489725"/>
+           </experimentList>
+           <participantList>
+             <proteinParticipant>
+               <proteinInteractorRef ref="EBI-489700"/>
+               <role>prey</role>
+             </proteinParticipant>
+             <proteinParticipant>
+               <proteinInteractorRef ref="EBI-489689"/>
+               <role>bait</role>
+             </proteinParticipant>
+           </participantList>
+           <interactionType>
+             <names>
+               <shortLabel>aggregation</shortLabel>
+               <fullName>aggregation</fullName>
+             </names>
+             <xref>
+               <primaryRef db="psi-mi" id="MI:0191"/>
+             </xref>
+           </interactionType>
+           <xref>
+             <primaryRef db="intact" id="EBI-489736" secondary="sipb-casp1-2"/>
+           </xref>
+           <attributeList>
+             <attribute name="comment">The co-ip is carried out after infection of mouse macrophage j77a4.1 by the shigella strain (defective of sipb homologue IpaB) expressing salmonella sipb.</attribute>
+             <attribute name="kd">0.0</attribute>
+           </attributeList>
+         </interaction>
+       </interactionList>
+     </entry>
+   </entrySet>

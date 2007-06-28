@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="2.4"
+   xmlns="http://java.sun.com/xml/ns/j2ee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+
+    <display-name>IntAct Search WS</display-name>
+
+    <context-param>
+        <description>
+            The label of the institution, used to retrieve the Institution object
+            if it already exists, or to create a new institution
+        </description>
+        <param-name>uk.ac.ebi.intact.INSTITUTION_LABEL</param-name>
+        <param-value>ebi</param-value>
+    </context-param>
+ 
+    <!-- This listener controls the initialization of the application (e.g. reading init params, etc)
+    The listener should be started automatically from intact-core, but if you don't declare it here again
+    if fails on redeploy  -->
+    <listener>
+        <listener-class>uk.ac.ebi.intact.webapp.StartupIntactListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>search</servlet-name>
+        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>search</servlet-name>
+        <url-pattern>/search</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>

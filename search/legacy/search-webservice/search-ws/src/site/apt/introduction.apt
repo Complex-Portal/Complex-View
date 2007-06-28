@@ -1,0 +1,24 @@
+ -----
+ Overview
+ -----
+ $Id$
+ -----
+
+Introduction
+
+ This is the page for the IntAct Search Web Service, a web service developed using the JAX-WS 2.0 technology
+ that perform, currently, simple and specific tasks, such as:
+
+ * Get the information for the interaction for a pair of proteins provided.
+
+ * Get all the protein IDs for which a provided protein has interactions in common.
+
+ []
+
+ There is an instance of this Web Service running at the {{{www.ebi.ac.uk}EBI}} in {{{http://www.ebi.ac.uk/intact/search-ws/search}this location}}.
+
+ To use the service, the best approach is to use the {{{../search-wsclient}Web Service Client}} provided
+ by the IntAct developers. It is the easiest way to get started.
+
+ Optionally, you can generate a client yourself using the JAX-WS <<wsimport>> task, using the WSDL
+ provided by a running service, like the {{{http://www.ebi.ac.uk/intact/search-ws/search?wsdl}EBI one}}.
