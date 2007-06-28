@@ -1,0 +1,169 @@
+<%@ page import="uk.ac.ebi.intact.searchengine.SearchClass" %>
+<%@ page import="uk.ac.ebi.intact.webapp.search.SearchWebappContext" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<!--
+Renders a pagination table for the data shown. The attribute SearchConstants.TOTAL_RESULTS_ATT_NAME
+has to be already in request scope, so the paginator knows which is the total results and can
+calculate the pages to render. The results per page is determined by SearchConstants.RESULTS_PER_PAGE
+
+@author Bruno Aranda (baranda@ebi.ac.uk)
+@version $Id$
+-->
+
+
+<%
+    {   // opening block so there is no variable name clash if there is more than one paginator per view
+
+        SearchWebappContext swc = SearchWebappContext.getCurrentInstance();
+
+        // pagination use the parameter "page"
+
+        Integer currentPage = swc.getCurrentPage();
+
+        int pageCount = 0;
+        Integer totalResults = 0;
+        int resultsPerPage = swc.getResultsPerPage();
+
+        if (currentPage != null && currentPage > 0)
+        {
+            totalResults = swc.getTotalResults();
+
+            if (totalResults != null)
+            {
+                pageCount = (totalResults / resultsPerPage) + 1;
+            }
+            else
+            {
+                pageCount = 1;
+                totalResults = 0;
+            }
+
+            if (totalResults <= swc.getMaxResultsPerPage())
+            {
+                currentPage = 0;
+                swc.setPaginatedSearch(false);
+                swc.setCurrentPage(0);
+                pageCount = 1;
+            }
+        }
+
+        // The url without the page parameter. We use this variable to generate the url for each page
+
+        String urlWithoutPage = "";
+
+        if (request.getQueryString() != null)
+        {
+            urlWithoutPage = request.getQueryString().replaceAll("&page=", "&previous=");
+        }
+
+        if (!urlWithoutPage.contains("searchString="))
+        {
+            urlWithoutPage = urlWithoutPage + "&searchString=" + request.getParameter("searchString");
+        }
+
+        SearchClass searchClass = null;
+
+        if (!urlWithoutPage.contains("searchClass="))
+        {
+            String searchClassName = (String) request.getAttribute("searchClass");
+
+            if (request.getAttribute("searchClass") != null)
+            {
+                searchClass = SearchClass.valueOfShortName(searchClassName);
+                urlWithoutPage = urlWithoutPage + "&searchClass=" + searchClassName;
+            }
+            else
+            {
+                if (request.getParameter("searchClass") != null)
+                {
+                    searchClass = SearchClass.valueOfShortName(searchClassName);
+                    urlWithoutPage = urlWithoutPage + "&searchClass=" + searchClassName;
+                }
+            }
+        }
+
+        // special case. When clicking on a page after looking a experiment, the search
+        // should be for interactions (event the search class is experiment)
+        if (searchClass != null && searchClass == SearchClass.EXPERIMENT && request.getAttribute("currentAc") != null)
+        {
+            urlWithoutPage = urlWithoutPage + "&view=intraExp";
+        }
+
+        // the variables are put in the request scope so we will be able to use them with the jstl tags
+
+        request.setAttribute("page", currentPage);
+
+        request.setAttribute("resultsPerPage", resultsPerPage);
+        request.setAttribute("totalResults", totalResults);
+
+        request.setAttribute("pageCount", pageCount);
+        request.setAttribute("urlWithoutPage", urlWithoutPage);
+    }
+%>
+
+<c:if test="${page > 0}">
+
+    <table style="width:100%;">
+        <tr>
+          <c:if test="${page-1 > 0}">
+              <td>
+                  <c:out value="<a href='search?${urlWithoutPage}&page=1'><b>&lt;&lt;First</b></a>" escapeXml="false"/>
+              </td>
+              <td>
+                  <c:out value="<a href='search?${urlWithoutPage}&page=${page-1}'><b>&lt;Previous</b></a>" escapeXml="false"/>
+              </td>
+          </c:if>
+
+           <c:forEach var="i" begin="1" end="${pageCount}" step="1">
+               <c:if test="${i <= 5 || i >= pageCount-5 || (i >= page-6 && i <= page+6)}">
+                    <td>
+                        <c:choose>
+                            <c:when test="${i == page}">
+                                <span style="color: red">
+                                    <c:out value="${i}" />
+                                </span>
+                            </c:when>
+                            <c:otherwise>
+                                <c:out value="<a href='search?${urlWithoutPage}&page=${i}'>${i}</a>" escapeXml="false"/>
+                            </c:otherwise>
+                        </c:choose>
+                     </td>
+                 </c:if>
+                 <c:if test="${(i == page-6-1 && page-6-1 > 5) || (i == page+6 && page+6 < pageCount-5)}">
+                     <td>...</td>
+                 </c:if>
+            </c:forEach>
+
+            <c:if test="${page+1 <= pageCount}">
+              <td>
+                  <c:out value="<a href='search?${urlWithoutPage}&page=${page+1}'><b>Next&gt;</b></a>" escapeXml="false"/>
+              </td>
+              <td>
+                  <c:out value="<a href='search?${urlWithoutPage}&page=${pageCount}'><b>Last&gt;&gt;</b></a>" escapeXml="false"/>
+              </td>
+          </c:if>
+
+            <td class="data" style="width: 100%; text-align: right; vertical-align: bottom; white-space: nowrap;">
+                <c:out value="&nbsp;&nbsp;Results from <b>${((page-1)*resultsPerPage)+1}</b>" escapeXml="false"/>
+                <c:choose>
+                    <c:when test="${page*resultsPerPage < totalResults}">
+                        <c:out value="to <b>${page*resultsPerPage}</b>." escapeXml="false"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:out value="to <b>${totalResults}</b>." escapeXml="false"/>
+                    </c:otherwise>
+                </c:choose>
+                <c:out value="&nbsp;Total: <b>${totalResults}</b>" escapeXml="false"/>
+            </td>
+
+         </tr>
+    </table>
+</c:if>
+
+<%-- If no pagination is rendered, render a BR tag--%>
+<c:if test="${page == 0}">
+  <br>
+</c:if>
+
+
+<!-- End pagination -->

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+        "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<!--
+Copyright (c) 2002 The European Bioinformatics Institute, and others.
+All rights reserved. Please see the file LICENSE
+in the root directory of this distribution.
+-->
+
+<!--
+This is the Struts configuration file for the example application,
+using the proposed new syntax.
+
+NOTE:  You would only flesh out the details in the "form-bean"
+declarations if you had a generator tool that used them to create
+the corresponding Java classes for you.  Otherwise, you would
+need only the "form-bean" element itself, with the corresponding
+"name" and "type" attributes.
+
+Workflow:                                         __________      _____________
+              ================================>  | tooLarge |==> |tooLarge.jsp |
+              |                                  |__________|    |_____________|
+              |                                   _________      _____________
+              |                              ==> | partner  |==> | partner.jsp|
+              |                             |    |_________ |    |____________|
+Query     _________       ____________      |     _________      _____________
+=======>  | Search | ===> | Dispatcher | ===|==>  | Single  |==> | single.jsp  |
+          |________|      |____________|    |     |_________|    |_____________|
+                              |             |     _________      ____________
+                              |             |==> | Details |==> | detail.jsp |
+                              |             |    |_________|    |____________|
+                          ____|____         |    _________      ____________
+                          |binary  |         ==> | simple  |==> | simple.jsp |
+                          |________|===========> |_________|    |____________|
+
+
+-->
+
+
+<struts-config>
+
+    <!-- ========== Form Bean Definitions =================================== -->
+    <form-beans>
+        <!-- The sidebar form -->
+        <form-bean name="sidebarForm"
+                   type="org.apache.struts.action.DynaActionForm">
+            <!--  <form-property name="searchString" type="java.lang.String"/> -->
+            <form-property name="searchString" type="java.lang.String" initial="*"/>
+            <form-property name="searchClass" type="java.lang.String"/>
+            <form-property name="binary" type="java.lang.String"/>
+            <form-property name="view" type="java.lang.String" initial="partner"/>
+            <form-property name="filter" type="java.lang.String" initial="all"/>
+        </form-bean>
+
+
+        <!-- form bean for the advanced search -->
+        <form-bean name="advancedForm"
+                   type="org.apache.struts.action.DynaActionForm">
+            <form-property name="searchObject" type="java.lang.String" initial="any"/>
+            <form-property name="acNumber" type="java.lang.String"/>
+            <form-property name="shortlabel" type="java.lang.String"/>
+            <form-property name="description" type="java.lang.String"/>
+            <form-property name="connection" type="java.lang.String" initial="and"/>
+            <form-property name="cvDB" type="java.lang.String"/>
+            <form-property name="cvDatabases" type="java.util.Collection"/>
+            <form-property name="xRef" type="java.lang.String"/>
+            <form-property name="cvTopic" type="java.lang.String"/>
+            <form-property name="cvTopics" type="java.util.Collection"/>
+            <form-property name="annotation" type="java.lang.String"/>
+            <form-property name="fulltext" type="java.lang.String"/>
+            <form-property name="cvInteraction" type="java.lang.String"/>
+            <form-property name="cvInteractions" type="java.util.Collection"/>
+            <form-property name="cvIdentification" type="java.lang.String"/>
+            <form-property name="cvIdentifications" type="java.util.Collection"/>
+            <form-property name="cvInteractionType" type="java.lang.String"/>
+            <form-property name="cvInteractionTypes" type="java.util.Collection"/>
+            <form-property name="cvTest" type="java.util.Collection"/>
+            <form-property name="cvName" type="java.lang.String"/>
+            <form-property name="cvIdentificationIncludeChildren" type="java.lang.Boolean" initial="true"/>
+            <form-property name="cvInteractionIncludeChildren" type="java.lang.Boolean" initial="true"/>
+            <form-property name="cvInteractionTypeIncludeChildren" type="java.lang.Boolean" initial="true"/>
+
+        </form-bean>
+
+    </form-beans>
+    <!-- ========== Global Forward Definitions ============================== -->
+    <global-forwards>
+        <forward name="start" path="/do/welcome"/>
+        <forward name="failure" path="error.layout"/>
+        <forward name="warning" path="warning.layout"/>
+    </global-forwards>
+
+    <!-- ========== Action Mapping Definitions ============================== -->
+
+    <action-mappings>
+
+        <!-- ========== Url Mapping Actions for entering ================== -->
+
+        <!-- Process when user clicks on the logo to enter the application. -->
+        <action path="/welcome"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.WelcomeAction"
+                scope="request">
+            <forward name="success" path="search.layout"/>
+            <forward name="noResource" path="no.resource.layout"/>
+        </action>
+
+
+        <!-- Process when user accesses search via HierarchView application -->
+        <action path="/hvWelcome"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.WelcomeAction"
+                scope="request">
+            <forward name="success" path="/do/search"/>
+        </action>
+
+        <!-- ========== Buisness Logic ================================== -->
+
+        <!-- Process the dispatch action th the view. The form is in a session because we reuse search details
+        from view action. Currently once a search has been successful, we delegate the
+        choice of choosing the relevant action to a dispatcher.
+          -->
+
+        <action path="/search"
+                name="sidebarForm"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.NewSearchAction"
+                scope="request">
+            <forward name="noMatch" path="no.match.layout"/>
+            <forward name="sessionLost" path="/do/welcome"/>
+            <forward name="tooLarge" path="/do/tooLarge"/>
+            <forward name="dispatcher" path="/do/dispatcher"/>
+            <!--<forward name="binary" path="binary.layout"/>-->
+            <!--<forward name="pairwise" path="pairwise.layout"/>-->
+            <forward name="noInteractor" path="no.interactor.layout"/>
+            <forward name="false" path="no.resource.layout"/>
+            <forward name="binaryInteractor" path="/do/binaryInteractor"/>
+        </action>
+
+        <!-- Process a user the forward to the secific view site -->
+
+        <action path="/dispatcher"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.DispatcherAction"
+                scope="session">
+            <forward name="sessionLost" path="/do/welcome"/>
+            <forward name="single" path="/do/single"/>
+            <forward name="binary" path="/do/binary"/>
+            <forward name="details" path="/do/details"/>
+            <forward name="simple" path="/do/simple"/>
+            <forward name="binaryInteractor" path="/do/binaryInteractor"/>
+        </action>
+
+        <!-- ========== View Actions ================================== -->
+
+        <!-- Process when user accesses search via a pairwise query -->
+
+        <action path="/pairwise"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.WelcomeAction"
+                scope="request">
+            <forward name="success" path="/do/search"/>
+        </action>
+
+        <!-- Process when user accesses search via a pairwise query -->
+
+        <action path="/single"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.SingleResultAction"
+                scope="session">
+            <forward name="noMatch" path="no.match.layout"/>
+            <forward name="singleInteractor" path="singleInteractor.layout"/>
+            <forward name="cvObject" path="cvObject.layout"/>
+            <forward name="bioSource" path="bioSource.layout"/>
+            <forward name="sessionLost" path="/do/welcome"/>
+        </action>
+
+        <action path="/binary"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.BinaryResultAction"
+                scope="session">
+            <forward name="noMatch" path="no.match.layout"/>
+            <forward name="sessionLost" path="/do/welcome"/>
+            <forward name="partner" path="partners.layout"/>
+        </action>
+
+        <action path="/simple"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.SimpleResultAction"
+                scope="session">
+            <forward name="noMatch" path="no.match.layout"/>
+            <forward name="sessionLost" path="/do/welcome"/>
+            <forward name="simpleResults" path="simple.layout"/>
+        </action>
+
+        <action path="/binaryInteractor"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.BinaryProteinAction"
+                scope="session">
+            <forward name="noMatch" path="no.match.layout"/>    <!-- IT DOESN'T SEEM TO BE USED -->
+            <forward name="noInteractions" path="no.interactions.layout"/>
+            <forward name="tooManyInteractors" path="too.many.interactors.layout"/>
+            <forward name="simple" path="/do/simple"/>
+            <forward name="partner" path="partners.layout"/>
+        </action>
+
+        <action path="/details"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.DetailsResultAction"
+                scope="session">
+            <forward name="noMatch" path="no.match.layout"/>
+            <forward name="sessionLost" path="/do/welcome"/>
+            <forward name="detailPage" path="detail.layout"/>
+        </action>
+
+        <!-- ========== Error Actions ================================== -->
+
+        <action path="/tooLarge"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.TooLargeAction"
+                scope="session">
+            <forward name="results" path="too.large.layout"/>
+        </action>
+
+        <!-- ========== advanced search specific actions ================================== -->
+
+        <!-- Entrance of the advanced search application -->
+
+        <action path="/initAdvSearch"
+                type="uk.ac.ebi.intact.webapp.search.advancedSearch.powerSearch.struts.controller.InitAction"
+                scope="session">
+
+            <forward name="success" path="adv.search.layout"/>
+            <forward name="noResource" path="no.resource.layout"/>
+        </action>
+
+        <!-- Processes the advanced search-->
+
+        <action path="/advsearch"
+                type="uk.ac.ebi.intact.webapp.search.advancedSearch.powerSearch.struts.controller.AdvancedSearchAction"
+                name="advancedForm"
+                validate="true"
+                scope="request">
+
+            <forward name="noMatch" path="no.match.layout"/>
+            <forward name="sessionLost" path="/do/welcome"/>
+            <forward name="tooLarge" path="/do/tooLarge"/>
+            <forward name="dispatcher" path="/do/dispatcher"/>
+            <!--<forward name="binary" path="binary.layout"/>-->
+            <!--<forward name="pairwise" path="pairwise.layout"/>-->
+            <forward name="noInteractor" path="no.interactor.layout"/>
+            <forward name="false" path="no.resource.layout"/>
+             <!--
+            <forward name="tooLarge" path="/do/advTooLarge"/>
+            <forward name="error" path="adv.search.layout"/>
+            <forward name="advDispatcher" path="/do/advDispatcher"/>
+            <forward name="indexError" path="adv.no.index.layout"/>
+            -->
+
+        </action>
+
+        <action path="/showGraph"
+                type="uk.ac.ebi.intact.webapp.search.advancedSearch.powerSearch.struts.controller.ShowCvGraphAction"
+                name="advancedForm"
+                scope="session">
+            <forward name="showCvDag" path="/pages/cvBrowser.jsp"/>
+        </action>
+
+        <!--  InterProSearchAction -->
+
+        <action path="/interProSearch"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.InterProSearchAction"
+                scope="request">
+            <forward name="waiting_page" path="waiting.page.layout"/>
+        </action>
+
+        <!--  WaitingInterProSearchAction -->
+
+        <action path="/waitingInterProSearch"
+                type="uk.ac.ebi.intact.webapp.search.struts.controller.WaitingInterProSearchAction"
+                scope="request">
+            <forward name="waiting_page" path="waiting.page.layout"/>
+        </action>
+        
+    </action-mappings>
+
+    <!-- ========== Message Resources ================================== -->
+    <message-resources parameter="config.IntactResources"/>
+    <message-resources key="buildInfo" parameter="config.BuildInfo"/>
+
+    <!-- ========== Plug Ins Configuration ================================== -->
+
+    <!--
+    Add multiple validator resource files by setting the pathnames property
+    with a comma delimitted list of resource files to load.
+    -->
+    <plug-in className="org.apache.struts.tiles.TilesPlugin">
+        <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml"/>
+        <set-property property="moduleAware" value="true"/>
+    </plug-in>
+
+</struts-config>

@@ -1,0 +1,110 @@
+<!---<<<<<<< jscript.html -->
+<script language="JavaScript" type="text/javascript">
+
+// Returns true if a checkbox has been checked.
+function checkAC(form, msg) {
+    for (var i = 0; i < form.elements.length; i++) {
+        // Only interested in 'checkbox' fields.
+        if (form.elements[i].type == "checkbox") {
+            // Only porcess if they are checked.
+            if (form.elements[i].checked) {
+                return true;
+            }
+        }
+    }
+    window.alert(msg);
+    return false;
+}
+
+// This is a global variable to setup a window.
+var newWindow;
+
+// Create a new window if it hasnt' created before and bring it to the
+// front if it is focusable.
+function makeNewWindow(link) {
+    if (!newWindow || newWindow.closed) {
+        newWindow = window.open(link, "hvWindow");
+    }
+    else if (newWindow.focus) {
+        newWindow.location.href = link;
+        newWindow.focus();
+    }
+}
+
+function writeToWindow(form, msg, id) {
+    // An AC must have been selected.
+    if (!checkAC(form, msg)) {
+        return;
+    }
+    var ac;
+    for (var i = 0; i < form.elements.length; i++) {
+        // Only interested in 'checkbox' fields.
+        if (form.elements[i].type == "checkbox") {
+            // Only process if they are checked.
+            //TODO: This should handle multiple checkboxes....
+            if (form.elements[i].checked) {
+                var name = form.elements[i].name;
+                // Remove the table identifer from name to get ac.
+                if (ac == null) {
+                    ac = name;
+                }
+                else {
+                    ac = ac + "," + name;
+                }
+            }
+        }
+    }
+    if (id == 0) {
+        var link = "<%=hvPath%>"
+                + "?AC=" + ac + "&depth=" + "<%= webappContext.getHierarchViewDepth()%>"
+                                                 + "&method=" + "<%=webappContext.getHierarchViewMethod()%>";
+        //window.alert(link);
+        makeNewWindow(link);
+    }
+    else if (id == 1) {
+        var link = "<%=minePath%>?AC=" + ac ;
+        //window.alert(link);
+        makeNewWindow(link);
+    }
+
+    else if (id == 2)
+    {
+
+        var link="../do/waitingInterProSearch?ac="+ac;
+        makeNewWindow(link);
+    }
+}
+
+// Checks all the check boxes.
+function checkAll() {
+    var form = document.viewForm;
+    for (var i = 0; i < form.elements.length; i++) {
+        // Only interested in 'checkbox' fields.
+        if (form.elements[i].type == "checkbox") {
+            // Only check it if it isn't already checked.
+            if (!form.elements[i].checked) {
+                form.elements[i].checked = true;
+            }
+        }
+    }
+}
+
+// Clears all the check boxes.
+function clearAll(form) {
+    //var form = document.viewForm;
+    for (var i = 0; i < form.elements.length; i++) {
+        // Only interested in 'checkbox' fields.
+        if (form.elements[i].type == "checkbox") {
+            // Only clear it if it is checked.
+            if (form.elements[i].checked) {
+                form.elements[i].checked = false;
+            }
+        }
+    }
+}
+
+
+</script>
+
+
+

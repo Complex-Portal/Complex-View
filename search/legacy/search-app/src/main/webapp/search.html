@@ -1,0 +1,251 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (WinNT; I) [Netscape]">
+   <meta name="Author" content="Chris Lewington">
+   <title>Intact Search Application Help Pages</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+&nbsp;
+<h3>
+Intact Search Application</h3>
+
+<ol>
+<h4>
+1) Basi<a NAME="search.Overview"></a>c Overview</h4>
+The search application currently allows a text-based search by entering
+a text string into the search text box. It is possible to obtain information
+on experiments, protein interactions and the proteins themselves, with
+various views used to display the data. Intact uses the concept of short
+label which is intended to provide a way of 'more memorable identification'
+compared to a standard Accession Number (AC), although searches by AC are
+obviously allowed. For example a particular Experiment may have an AC of
+EBI-14, but its short label is 'gavin' indicating a more meaningful reference
+to the physical experiment which the entry represents. Basic points on
+usage:</ol>
+
+<ul>
+<ul>
+<li>
+Wildcard searching is supported - for example matches will be retrieved
+for strings such as EBI*, *BI-14, E*4, etc etc.</li>
+
+<li>
+upper or lower case strings are acceptable and will be matched if they
+exist</li>
+
+<li>
+currently searches progress in a certain order: proteins, then interactions,
+then experiments. At a lower level, specific attributes are searched by
+AC, short label, Xref primary ID and finally full name. This algorithm
+may change as the intact project matures.</li>
+
+<li>
+Note that whilst CvObject details can be displayed via the click of a link,
+currently it is not possible to search for CvObjects via the text box search
+entry point.</li>
+</ul>
+</ul>
+
+<ol>
+<h4>
+<a NAME="search.TableLayout"></a>2) Structure of Search Results</h4>
+The basic layout of the main results page follows the structure below:</ol>
+
+<table BORDER COLS=4 WIDTH="94%" >
+<tr>
+<td><b>Experiment</b></td>
+
+<td><u>AC</u></td>
+
+<td><u>ShortLabel</u></td>
+
+<td>full name</td>
+</tr>
+
+<tr>
+<td><u>CvInteraction</u></td>
+
+<td><u>CvIdentification</u></td>
+
+<td>BioSource</td>
+
+<td></td>
+</tr>
+
+<tr>
+<td>Comment topic</td>
+
+<td>Comment description</td>
+
+<td></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td><u>xref database</u></td>
+
+<td>primaryId</td>
+
+<td>secondaryId</td>
+
+<td></td>
+</tr>
+
+<tr>
+<td><b>Interaction</b></td>
+
+<td><u>AC</u></td>
+
+<td><u>ShortLabel</u></td>
+
+<td>full name</td>
+</tr>
+
+<tr>
+<td><u>shortLabel1</u> [<u>b</u>], <u>shortLabel2</u> [<u>p</u>],</td>
+
+<td><u>shortLabel3</u> [<u>p</u>], <u>shortLabel4</u> [p],&nbsp;</td>
+
+<td>......................................</td>
+
+<td></td>
+</tr>
+
+<tr>
+<td><b>Interaction</b></td>
+
+<td><u>AC</u></td>
+
+<td><u>ShortLabel</u></td>
+
+<td>full name</td>
+</tr>
+
+<tr>
+<td><u>shortLabel5</u> [<u>b</u>], <u>shortLabel6</u> [<u>p</u>],</td>
+
+<td><u>shortLabel7</u> [<u>p</u>], <u>shortLabel8</u> [<u>p</u>],&nbsp;</td>
+
+<td>...........................</td>
+
+<td></td>
+</tr>
+</table>
+
+<h4>
+Definition of Table Items</h4>
+The items displayed in the above table format have the following descriptions:
+<p><a NAME="search.ac"></a><b>AC</b> - The Accession Number of the Experiment,
+Interaction etc.
+<p><a NAME="search.ShortLabel"></a><b>ShortLabel</b> - a 'more memorable' way
+of identifying the Experiment, Interaction etc other than by its AC. A
+short label should be unique within particular classes of objects (for
+example within CvTopics) but in general they may not be.
+<p><a NAME="FullName"></a><b>full name</b> - the complete name of the Interaction,
+Protein etc (eg ????)
+<p><a NAME="search.CvInteraction"></a><b>CvInteraction</b> - a link to a page
+displaying the controlled vocabulary information for the term 'Interaction'
+<p><a NAME="CvIdentification"></a><b>CvIdentification</b> - a link to the
+controlled vocabulary information for the means of identifying an item
+(eg ???)
+<p><a NAME="search.BioSource"></a><b>BioSource</b> - the biological source of
+the interaction information (eg the organism it was observed in)
+<p><a NAME="Comment"></a><b>Comment</b> - annotation text, usually split
+into categories of annotation topic,&nbsp; describing further details of
+the interaction, experiment etc.
+<p><a NAME="search.XrefDb"></a><b>xref database</b> - a link to the information
+describing a cross-reference in another database (eg swissprot, GO etc)
+<p><a NAME="search.XrefPrimaryId"></a><b>primaryId</b> - the original source of information
+<p><a NAME="search.XrefSecondId"></a><b>secondaryId</b> - ???
+<p><a NAME="search.DbRelease"></a><b>DbRelease</b> - the version of the cross-reference
+database that the data relates to
+<p>There is also:
+<br><a NAME="search.ProteinList"></a>A row listing the short labels of the proteins
+involved in a particular interaction - each short label has a link to the
+controlled vocabulary describing the role that the protein plays in this
+interaction (see below). Each short label is a link to more detailed data
+on a particular protein.
+<p>In addition to these there are a number of other items which may be
+displayed in various views, particularly with respect to interaction data:
+<p><a NAME="search.CvComponentRole"></a><b>CvComponentRole</b> - a link to the
+controlled vocabulary information describing the role that an interactor
+plays in the interaction (eg for a protein it may have a role of 'bait'
+or 'prey' in a 2-hybrid experiment)
+<p><a NAME="search.CvInteractionType"></a><b>CvInteractionType</b> - a link to
+the controlled vocabulary information describing the type of interaction
+observed (eg ???)
+<p><a NAME="search.Stoichiometry"></a><b>Stoichiometry</b> - a numberical value
+attributed to a component of an interaction, signifying ?????
+<br>&nbsp;
+<br>&nbsp;
+<p><a NAME="search.ResultsExample"></a>Searching for interactions, proteins or
+experiments typically results in the same view - a table detailing all
+the interactions for a particular experiment, with the short labels listed
+of the proteins involved in the interactions. An example result screen
+is shown below:
+<p><img SRC="images/imageV3F.JPG" height=768 width=1024>
+<p><a NAME="search.ExampleProteinView"></a>An example result view from clicking
+on a Protein link is shown below:
+<p><img SRC="images/image23F.JPG" height=768 width=1024>
+<br>&nbsp;
+<p><a NAME="search.ExampleCvView"></a>If for example in the above screen you click
+on 'SPTR', this will display the controlled vocabulary information for
+the database identified with a short label of 'SPTR'. The screen looks
+like this:
+<p><img SRC="images/imageE0A.JPG" height=768 width=1024>
+<br>&nbsp;
+<p><a NAME="search.ShortLabelHelp"></a>Protein short labels are links you can
+click to get a view of the protein details. Also each protein short label
+has a term in brackets (eg '[p]') which denotes the role that the protein
+plays in the interaction. These terms have tooltips associated with them
+to display the role name, and also the term is a clickable link from which
+you can view the full details of the controlled vocabulary term which presents
+the controlled vocabulary information for that term (eg the details held
+to define the meaning of the term 'bait').
+<p>Since the items displayed for a search result include many items not
+actually queried for, the items that matched the oringinal search string
+are highlighted in <b><i>bold italic</i></b> - there is even a helpful
+little message at the top of the results page to remind you of this. Specifically
+the *short labels* of the matching items are highlighted, since these are
+always displayed in every view.
+<p>Where a protein (for example) might actually occur more than once in
+an experiment, the display is rationalised to avoid multiple presentations
+of the same experiment - therefore all occurrences within an experiment
+are gathered together into one experiment view.
+<p><a NAME="search.ButtonDefinition"></a>At the bottom of the page are a number
+of buttons:
+<ul>
+<ul>
+<li>
+a button to view the full details of what is on the results page (this
+expands all the information currently on the page, apart from the controlled
+vocabulary details);</li>
+
+<li>
+a reset button to uncheck any textboxes;</li>
+
+<li>
+a graph button to display a graph of any selected proteins, which can be
+chosen by clicking the appropriate checkboxes.</li>
+</ul>
+</ul>
+<a NAME="search.ExamplDetailView"></a>Clicking on the 'Detail View' button expands
+all protein details - a partial view of an example resulting page is shown
+below:
+<p><img SRC="images/imageGKH.JPG" height=768 width=1024>
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>

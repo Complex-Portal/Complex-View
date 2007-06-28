@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+  "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+    <distributable/>
+
+    <!-- IntAct Init parameters -->
+    <context-param>
+        <param-name>uk.ac.ebi.intact.AC_PREFIX</param-name>
+        <param-value>EBI</param-value>
+        <description>
+            The Accession Number Prefix for the objects created
+            by the application and stored in the database.
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.INSTITUTION_LABEL</param-name>
+        <param-value>ebi</param-value>
+        <description>
+            The label of the institution, used to retrieve the Institution object
+            if it already exists, or to create a new institution
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.PRELOAD_COMMON_CVOBJECTS</param-name>
+        <param-value>false</param-value>
+        <description>
+            Preload the most common CvObjects on application start, so it is
+            faster to retrieve them later
+        </description>
+    </context-param>
+        
+     <context-param>
+        <param-name>uk.ac.ebi.intact.FORCE_NO_SCHEMA_VERSION_CHECK</param-name>
+        <param-value>true</param-value>
+        <description>
+            If true, don't check the schema version agains the intact-core version. Default: false
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.search.MAX_RESULTS_PER_PAGE</param-name>
+        <param-value>50</param-value>
+        <description>
+            Number of results shown per page, by default
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.search.HELP_LINK</param-name>
+        <param-value>site/displayDoc.jsp?section=</param-value>
+        <description>
+            The help link (relative to intact root)
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.search.SEARCH_LINK</param-name>
+        <param-value>/do/search?searchString=</param-value>
+        <description>
+            The search link (relative to context root)
+        </description>
+    </context-param>
+
+    <!-- HierarchView related params -->
+    <context-param>
+        <param-name>uk.ac.ebi.intact.search.HIERARCH_VIEW_URL</param-name>
+        <param-value>hierarchView/display.jsp</param-value>
+        <description>
+            Relative URL for hierarchView
+        </description>
+    </context-param>
+    <context-param>
+        <param-name>uk.ac.ebi.intact.search.HIERARCH_VIEW_DEPTH</param-name>
+        <param-value>1</param-value>
+        <description>
+            Default depth
+        </description>
+    </context-param>
+    <context-param>
+        <param-name>uk.ac.ebi.intact.search.HIERARCH_VIEW_METHOD</param-name>
+        <param-value>All</param-value>
+        <description>
+            Hierarch view method to use
+        </description>
+    </context-param>
+
+    <!-- Mine related params -->
+    <context-param>
+        <param-name>uk.ac.ebi.intact.search.MINE_URL</param-name>
+        <param-value>mine/display.jsp</param-value>
+        <description>
+            Relative URL for mine
+        </description>
+    </context-param>
+
+    <!--  NB XML config files for the DB MUST be referred to here relative
+          to the WEB-INF/classes directory as that is where the class loader
+          will start to look. The leading "/" MUST be present if the config
+          files are in a sub-directory of WEB-INF/classes, otherwise
+          the class loader will only check in the package in which the servlet
+          instance resides (which may not be the same as the config file
+          location....). The exception to this rule seems to be the struts-config.xml
+          file....
+      -->
+
+    <!-- Where configuration files are stored. -->
+    <context-param>
+        <param-name>configdir</param-name>
+        <param-value>/config/</param-value>
+    </context-param>
+
+    <!-- The search link (relative to context root)-->
+    <context-param>
+        <param-name>searchLink</param-name>
+        <param-value>/do/search?searchString=</param-value>
+    </context-param>
+
+    <!-- The help link (relative to intact context root)-->
+    <context-param>
+        <param-name>helpLink</param-name>
+        <param-value>site/displayDoc.jsp?section=</param-value>
+    </context-param>
+
+    <!-- Filter to init the IntactContext at the beginning of the request and close the
+    transaction at the end -->
+    <filter>
+        <filter-name>intactFilter</filter-name>
+        <filter-class>uk.ac.ebi.intact.webapp.IntactSessionRequestFilter</filter-class>
+        <init-param>
+            <param-name>uk.ac.ebi.intact.filter.EXCLUDED_EXTENSIONS</param-name>
+            <param-value>*.jpg,*.gif,*.png</param-value>
+            <description>
+                List of extensions. If the request URL ends with one of the params provided,
+                it won't be filtered by the IntactSessionRequestFilter and no IntactContext
+                will be created for those requests.
+            </description>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>intactFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Action Servlet Configuration -->
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+        <init-param>
+            <param-name>application</param-name>
+            <param-value>/config/IntactResources</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/struts-config.xml</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>detail</param-name>
+            <param-value>2</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>validate</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- Drawing dynamic Images -->
+    <servlet>
+        <servlet-name>dynamicImage</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.webapp.search.advancedSearch.powerSearch.business.graphdraw.servlet.ImageServlet</servlet-class>
+    </servlet>
+
+
+    <!-- Action Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>/do/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Drawing dynamic Images -->
+    <servlet-mapping>
+        <servlet-name>dynamicImage</servlet-name>
+        <url-pattern>/image</url-pattern>
+    </servlet-mapping>
+
+    <!-- The Welcome File List -->
+    <welcome-file-list>
+        <welcome-file>welcome.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!-- JSTL Tag Library Descriptors  -->
+
+    <taglib>
+        <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+        <taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>http://struts.apache.org/tags-html</taglib-uri>
+        <taglib-location>/WEB-INF/tld/struts-html.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>http://struts.apache.org/tags-bean</taglib-uri>
+        <taglib-location>/WEB-INF/tld/struts-bean.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>http://struts.apache.org/tags-logic</taglib-uri>
+        <taglib-location>/WEB-INF/tld/struts-logic.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>http://ebi.ac.uk/intact/commons</taglib-uri>
+        <taglib-location>/WEB-INF/tld/intact.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>http://ebi.ac.uk/intact/advanced-search</taglib-uri>
+        <taglib-location>/WEB-INF/tld/cvGraph.tld</taglib-location>
+    </taglib>
+
+</web-app>
