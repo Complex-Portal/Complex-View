@@ -1,0 +1,7 @@
+// $ANTLR 2.7.2: search3/antlr/valuelexer.g -> valtagTokenTypes.txt$
+valtag    // output token vocab name
+Whitespace=4
+Letter=5
+Digit=6
+SpecialChar=7
+VALUE=8

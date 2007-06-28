@@ -1,0 +1,111 @@
+// $ANTLR 2.7.2: search3/antlr/iql2lucene.g -> Iql2LuceneParserTokenTypes.txt$
+Iql2LuceneParser    // output token vocab name
+Whitespace=4
+Letter=5
+Digit=6
+SpecialChar=7
+VALUE=8
+SEMICOLON=9
+SELECT="select"=10
+WHERE="where"=11
+AND="and"=12
+OR="or"=13
+LPAREN=14
+RPAREN=15
+EQUALS=16
+LIKE="like"=17
+AC="ac"=18
+SHORTLABEL="shortlabel"=19
+FULLNAME="fullname"=20
+ALIAS="alias"=21
+ANNOTATION="annotation"=22
+XREF="xref"=23
+CVINTERACTION_AC="interaction_ac"=24
+CVINTERACTION_SHORTLABEL="interaction_shortlabel"=25
+CVINTERACTION_FULLNAME="interaction_fullname"=26
+CVIDENTIFICATION_AC="identification_ac"=27
+CVIDENTIFICATION_SHORTLABEL="identification_shortlabel"=28
+CVIDENTIFICATION_FULLNAME="identification_fullname"=29
+CVINTERACTION_TYPE_AC="interactiontype_ac"=30
+CVINTERACTION_TYPE_SHORTLABEL="interactiontype_shortlabel"=31
+CVINTERACTION_TYPE_FULLNAME="interactiontype_fullname"=32
+AFCS="afcs"=33
+CABRI="cabri"=34
+ENSEMBL="ensembl"=35
+FLYBASE="flybase"=36
+GO="go"=37
+HUGE="huge"=38
+IMEX="imex"=39
+INTACT="intact"=40
+INTERPRO="interpro"=41
+NEWT="newt"=42
+OMIM="omim"=43
+PDB="pdb"=44
+PSIMI="psi-mi"=45
+PUBMED="pubmed"=46
+REACTOMECOMPLEX="reactome-complex"=47
+REACTOMEPROTEIN="reactome-protein"=48
+RESID="resid"=49
+SGD="sgd"=50
+UNIPARC="uniparc"=51
+UNIPROTKB="uniprotkb"=52
+THREEDRFACTORS="3d-r-factors"=53
+THREEDRESOLUTION="3d-resolution"=54
+THREEDSTRUCTURE="3d-structure"=55
+ACCEPTED="accepted"=56
+AGONIST="agonist"=57
+ANTAGONIST="antagonist"=58
+AUTHORCONFIDENCE="author-confidence"=59
+AUTHORLIST="author-list"=60
+CAUTION="caution"=61
+COMMENT="comment"=62
+COMPLEXPROPERTIES="complex-properties"=63
+CONFIDENCEMAPPING="confidence-mapping"=64
+CONTACTCOMMENT="contact-comment"=65
+CONTACTEMAIL="contact-email"=66
+COPYRIGHT="copyright"=67
+DATAPROCESSING="data-processing"=68
+DATASET="dataset"=69
+DEFINITION="definition"=70
+DISEASE="disease"=71
+EXAMPLE="example"=72
+EXPMODIFICATION="exp-modification"=73
+FIGURELEGEND="figure-legend"=74
+FUNCTION="function"=75
+INHIBITION="inhibition"=76
+ISOFORMCOMMENT="isoform-comment"=77
+KINETICS="kinetics"=78
+NEGATIVE="negative"=79
+ONHOLD="on-hold"=80
+PATHWAY="pathway"=81
+PREREQUISITEPTM="prerequisite-ptm"=82
+REMARKINTERNAL="remark-internal"=83
+RESULTINGPTM="resulting-ptm"=84
+SEARCHURL="search-url"=85
+SEARCHURLASCII="search-url-ascii"=86
+STIMULATION="stimulation"=87
+SUBMITTED="submitted"=88
+TOBEREVIEWED="to-be-reviewed"=89
+UNIPROTCCNOTE="uniprot-cc-note"=90
+UNIPROTDREXPORT="uniprot-dr-export"=91
+URL="url"=92
+USEDINCLASS="used-in-class"=93
+AUTHORASSIGNEDNAME="author assigned-name"=94
+GENENAME="gene name"=95
+GENENAMESYNONYM="gene name synonym"=96
+GOSYNONYM="go synonym"=97
+ISOFORMSYNONYM="isoform synonym"=98
+LOCUSNAME="locus name"=99
+ORFNAME="orf name"=100
+QUOTE=101
+PROTEIN="protein"=102
+INTERACTION="interaction"=103
+EXPERIMENT="experiment"=104
+CV="cv"=105
+ANY="any"=106
+FROM="from"=107
+DATABASE="database"=108
+NOUNIPROTUPDATE="no-uniprot-update"=109
+OBSOLETETERM="obsolete term"=110
+Identifier=111
+THREEDFACTORS=112
