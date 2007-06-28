@@ -12,83 +12,43 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>uk.ac.ebi.intact.maven</groupId>
-        <artifactId>intact-master-webapp</artifactId>
-        <version>2.4-SNAPSHOT</version>
+        <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
+        <artifactId>search-legacy-master</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uk.ac.ebi.intact.app.search</groupId>
     <artifactId>search-app</artifactId>
     <packaging>war</packaging>
     <version>1.6.0-SNAPSHOT</version>
 
-    <name>Search application</name>
+    <name>IntAct Services :: Search :: Legacy :: Search Webapp</name>
     <description>Search web interface</description>
     <url>http://www.ebi.ac.uk/~intact/devsite/${artifactId}</url>
 
-    <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/search/search-app/trunk</connection>
-        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/search/search-app/trunk
-        </developerConnection>
-        <url>http://intact.svn.sourceforge.net/svnroot/intact/repo/search/search-app/trunk/</url>
-    </scm>
-
     <properties>
-        <site.remote.basedir>scp://quanea2.ebi.ac.uk/ebi/sp/pro6/intact/local/doc/devsite</site.remote.basedir>
         <jetty.port>8081</jetty.port>
-        <tempH2>/tmp/intact-h2-${jetty.port}</tempH2>
     </properties>
 
     <build>
         <finalName>search</finalName>
     </build>
 
-    <profiles>
-        <profile>
-            <id>imex</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>uk.ac.ebi.intact.datasets</groupId>
-                        <artifactId>dataset-import-maven-plugin</artifactId>
-                        <configuration>
-                            <id>IMEX</id>
-                            <provider>uk.ac.ebi.intact.unitdataset.ImexDatasetProvider</provider>
-                            <tempH2>${tempH2}</tempH2>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <dependencies>
-                <dependency>
-                    <groupId>uk.ac.ebi.intact.datasets</groupId>
-                    <artifactId>intact-dataset-imex</artifactId>
-                    <version>1.6.0-SNAPSHOT</version>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
-
     <dependencies>
         <dependency>
             <groupId>uk.ac.ebi.intact</groupId>
             <artifactId>intact-core</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.ebi.intact.app.search</groupId>
+            <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
             <artifactId>search-engine</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
         </dependency>
 
         <!-- third party -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.0.20070429</version>
         </dependency>
 
         <!-- dependency to draw the graph schemas in the advanced search -->
@@ -97,58 +57,42 @@
             <artifactId>jimi</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--
+
+        <!-- Web development-->
         <dependency>
-              <groupId>displaytag</groupId>
-              <artifactId>displaytag</artifactId>
-              <version>1.0-unknown</version>
-          </dependency>
-          -->
+            <groupId>struts</groupId>
+            <artifactId>struts</artifactId>
+        </dependency>
+
         <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>1.1.2</version>
+            <groupId>displaytag</groupId>
+            <artifactId>displaytag</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- server -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.1.2</version>
+            <version>1.0</version>
         </dependency>
 
     </dependencies>
-
-    <!-- EBI repositories -->
-    <repositories>
-        <repository>
-            <id>ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ebi-repo-snapshots</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <site>
-            <id>intact-site</id>
-            <name>Intact site</name>
-            <url>${site.remote.basedir}/${artifactId}</url>
-        </site>
-    </distributionManagement>
 
 </project>

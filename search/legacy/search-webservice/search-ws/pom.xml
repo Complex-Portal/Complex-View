@@ -12,122 +12,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>uk.ac.ebi.intact.maven</groupId>
-        <artifactId>intact-hibernate-master</artifactId>
-        <version>9</version>
+        <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
+        <artifactId>search-ws-master</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>uk.ac.ebi.intact.app.search</groupId>
+
     <artifactId>search-ws</artifactId>
     <packaging>war</packaging>
     <version>1.5.1-SNAPSHOT</version>
 
-    <name>Intact Search Web Service</name>
+    <name>IntAct Services :: Search :: Legacy :: Search WebService :: Service</name>
     <description>A web service interface to retrieve data from intact</description>
 
-    <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/search/search-ws/trunk</connection>
-        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/search-ws/trunk
-        </developerConnection>
-        <url>http://svn.sourceforge.net/viewcvs.cgi/intact/repo/search-ws/trunk/</url>
-    </scm>
-
-    <profiles>
-        <!-- This profile is used when running the tests. If
-        maven.test.skip property is true, don't import the H2 test db -->
-        <profile>
-            <id>test</id>
-            <activation>
-                <property>
-                    <name>!maven.test.skip</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>uk.ac.ebi.intact.plugins</groupId>
-                        <artifactId>dbtest-maven-plugin</artifactId>
-                        <version>1.1.2</version>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!-- Profile to run jetty, so the tomcat jars are included in the bundle. They are not included by default -->
-        <profile>
-            <id>jettyConfig</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>maven-jetty-plugin</artifactId>
-                        <configuration>
-                            <scanIntervalSeconds>10</scanIntervalSeconds>
-                            <contextPath>${build.finalName}</contextPath>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-
-            <dependencies>
-                <dependency>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                    <version>1.1</version>
-                    <type>jar</type>
-                </dependency>
-                <dependency>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                    <version>1.2.13</version>
-                    <type>jar</type>
-                </dependency>
-                <dependency>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>jsp-api</artifactId>
-                    <version>2.0</version>
-                    <scope>compile</scope>
-                </dependency>
-                <dependency>
-                    <groupId>tomcat</groupId>
-                    <artifactId>jasper-compiler</artifactId>
-                    <version>5.5.9</version>
-                    <scope>compile</scope>
-                </dependency>
-                <dependency>
-                    <groupId>tomcat</groupId>
-                    <artifactId>jasper-runtime</artifactId>
-                    <version>5.5.9</version>
-                    <scope>compile</scope>
-                </dependency>
-                <dependency>
-                    <groupId>tomcat</groupId>
-                    <artifactId>jasper-compiler-jdt</artifactId>
-                    <version>5.5.9</version>
-                    <scope>compile</scope>
-                </dependency>
-            </dependencies>
-
-            <pluginRepositories>
-                <!-- Repository to get the jetty plugin -->
-                <pluginRepository>
-                    <id>mortbay-repo</id>
-                    <name>mortbay-repo</name>
-                    <url>http://www.mortbay.org/maven2/snapshot</url>
-                </pluginRepository>
-            </pluginRepositories>
-
-        </profile>
-
-    </profiles>
+    <properties>
+        <maven.test.skip>true</maven.test.skip>
+    </properties>
 
     <build>
         <finalName>${artifactId}-${version}</finalName>
         <plugins>
-            <plugin>
-                <groupId>uk.ac.ebi.intact.plugins</groupId>
-                <artifactId>hibernateconfig-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -144,7 +49,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
-                <version>1.0-beta-1-SNAPSHOT</version>
+                <version>1.0-beta-1-EBI-20070310</version>
                 <executions>
                     <execution>
                         <goals>
@@ -188,7 +93,6 @@
         <dependency>
             <groupId>uk.ac.ebi.intact</groupId>
             <artifactId>intact-core</artifactId>
-            <version>1.5.0-rc3-SNAPSHOT</version>
         </dependency>
 
         <!-- JAX-WS -->
@@ -234,56 +138,5 @@
         </dependency>
     </dependencies>
 
-    <!-- EBI repositories -->
-    <repositories>
-        <repository>
-            <id>ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ebi-repo-snapshots</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>mergere</id>
-            <url>http://repo.mergere.com/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <layout>legacy</layout>
-        </repository>
-
-        <repository>
-            <id>java.net</id>
-            <url>https://maven-repository.dev.java.net/repository</url>
-            <layout>legacy</layout>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <site>
-            <id>intact-site</id>
-            <name>Intact site</name>
-            <url>${site.remote.basedir}/${artifactId}</url>
-        </site>
-    </distributionManagement>
 
 </project>

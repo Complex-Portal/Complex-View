@@ -33,9 +33,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>uk.ac.ebi.intact.app.search</groupId>
+            <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
             <artifactId>search-engine</artifactId>
-            <version>1.5.0</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.service.commons</groupId>

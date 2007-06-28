@@ -1,26 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>uk.ac.ebi.intact.maven</groupId>
-        <artifactId>intact-master</artifactId>
-        <version>6</version>
+        <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
+        <artifactId>search-ws-master</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>uk.ac.ebi.intact.app.search</groupId>
+    
     <artifactId>search-wsclient</artifactId>
     <packaging>jar</packaging>
     <version>1.5.1-SNAPSHOT</version>
 
-    <name>Search WS Client</name>
+    <name>IntAct Services :: Search :: Legacy :: Search WebService :: Client</name>
     <description>Client for the Search Web Services</description>
-    <url>http://www.ebi.ac.uk/~intact/devsite/${artifactId}</url>
-
-    <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/search/search-wsclient/trunk</connection>
-        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/search/search-wsclient/trunk</developerConnection>
-        <url>http://svn.sourceforge.net/viewcvs.cgi/intact/repo/search/search-wsclient/trunk</url>
-    </scm>
 
     <properties>
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
@@ -31,6 +24,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
+                <version>1.0-beta-1-EBI-20070310</version>
                 <executions>
                     <execution>
                         <goals>
@@ -69,57 +63,5 @@
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
     </dependencies>
-
-    <!-- EBI repositories -->
-    <repositories>
-        <repository>
-            <id>ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ebi-repo-snapshots</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>mergere</id>
-            <url>http://repo.mergere.com/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <layout>legacy</layout>
-        </repository>
-
-        <repository>
-            <id>java.net</id>
-            <url>https://maven-repository.dev.java.net/repository</url>
-            <layout>legacy</layout>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <site>
-            <id>intact-site</id>
-            <name>Intact site</name>
-            <url>${site.remote.basedir}/${artifactId}</url>
-        </site>
-    </distributionManagement>
 
 </project>
