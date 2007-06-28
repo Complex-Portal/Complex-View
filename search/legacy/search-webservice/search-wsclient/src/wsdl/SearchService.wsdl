@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://ebi.ac.uk/intact/search/wsclient/generated" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             targetNamespace="http://ebi.ac.uk/intact/search/wsclient/generated" name="SearchService">
+    <types>
+        <xsd:schema>
+            <xsd:import namespace="http://ebi.ac.uk/intact/search/wsclient/generated"
+                        schemaLocation="http://www.ebi.ac.uk/intact/search-ws/search?xsd=1"></xsd:import>
+        </xsd:schema>
+    </types>
+    <message name="getInteractionInfoUsingUniprotIds">
+        <part name="parameters" element="tns:getInteractionInfoUsingUniprotIds"></part>
+    </message>
+    <message name="getInteractionInfoUsingUniprotIdsResponse">
+        <part name="parameters" element="tns:getInteractionInfoUsingUniprotIdsResponse"></part>
+    </message>
+    <message name="getInteractionInfoUsingIntactIds">
+        <part name="parameters" element="tns:getInteractionInfoUsingIntactIds"></part>
+    </message>
+    <message name="getInteractionInfoUsingIntactIdsResponse">
+        <part name="parameters" element="tns:getInteractionInfoUsingIntactIdsResponse"></part>
+    </message>
+    <message name="findPartnersUsingUniprotIds">
+        <part name="parameters" element="tns:findPartnersUsingUniprotIds"></part>
+    </message>
+    <message name="findPartnersUsingUniprotIdsResponse">
+        <part name="parameters" element="tns:findPartnersUsingUniprotIdsResponse"></part>
+    </message>
+    <message name="countExperimentsUsingIntactQuery">
+        <part name="parameters" element="tns:countExperimentsUsingIntactQuery"></part>
+    </message>
+    <message name="countExperimentsUsingIntactQueryResponse">
+        <part name="parameters" element="tns:countExperimentsUsingIntactQueryResponse"></part>
+    </message>
+    <message name="countProteinsUsingIntactQuery">
+        <part name="parameters" element="tns:countProteinsUsingIntactQuery"></part>
+    </message>
+    <message name="countProteinsUsingIntactQueryResponse">
+        <part name="parameters" element="tns:countProteinsUsingIntactQueryResponse"></part>
+    </message>
+    <message name="countNucleicAcidsUsingIntactQuery">
+        <part name="parameters" element="tns:countNucleicAcidsUsingIntactQuery"></part>
+    </message>
+    <message name="countNucleicAcidsUsingIntactQueryResponse">
+        <part name="parameters" element="tns:countNucleicAcidsUsingIntactQueryResponse"></part>
+    </message>
+    <message name="countSmallMoleculesUsingIntactQuery">
+        <part name="parameters" element="tns:countSmallMoleculesUsingIntactQuery"></part>
+    </message>
+    <message name="countSmallMoleculesUsingIntactQueryResponse">
+        <part name="parameters" element="tns:countSmallMoleculesUsingIntactQueryResponse"></part>
+    </message>
+    <message name="countInteractionsUsingIntactQuery">
+        <part name="parameters" element="tns:countInteractionsUsingIntactQuery"></part>
+    </message>
+    <message name="countInteractionsUsingIntactQueryResponse">
+        <part name="parameters" element="tns:countInteractionsUsingIntactQueryResponse"></part>
+    </message>
+    <message name="countCvObjectsUsingIntactQuery">
+        <part name="parameters" element="tns:countCvObjectsUsingIntactQuery"></part>
+    </message>
+    <message name="countCvObjectsUsingIntactQueryResponse">
+        <part name="parameters" element="tns:countCvObjectsUsingIntactQueryResponse"></part>
+    </message>
+    <message name="countAllBinaryInteractions">
+        <part name="parameters" element="tns:countAllBinaryInteractions"></part>
+    </message>
+    <message name="countAllBinaryInteractionsResponse">
+        <part name="parameters" element="tns:countAllBinaryInteractionsResponse"></part>
+    </message>
+    <message name="searchExperimentsUsingQuery">
+        <part name="parameters" element="tns:searchExperimentsUsingQuery"></part>
+    </message>
+    <message name="searchExperimentsUsingQueryResponse">
+        <part name="parameters" element="tns:searchExperimentsUsingQueryResponse"></part>
+    </message>
+    <message name="searchProteinsUsingQuery">
+        <part name="parameters" element="tns:searchProteinsUsingQuery"></part>
+    </message>
+    <message name="searchProteinsUsingQueryResponse">
+        <part name="parameters" element="tns:searchProteinsUsingQueryResponse"></part>
+    </message>
+    <message name="searchNucleicAcidsUsingQuery">
+        <part name="parameters" element="tns:searchNucleicAcidsUsingQuery"></part>
+    </message>
+    <message name="searchNucleicAcidsUsingQueryResponse">
+        <part name="parameters" element="tns:searchNucleicAcidsUsingQueryResponse"></part>
+    </message>
+    <message name="searchSmallMoleculesUsingQuery">
+        <part name="parameters" element="tns:searchSmallMoleculesUsingQuery"></part>
+    </message>
+    <message name="searchSmallMoleculesUsingQueryResponse">
+        <part name="parameters" element="tns:searchSmallMoleculesUsingQueryResponse"></part>
+    </message>
+    <message name="searchInteractionsUsingQuery">
+        <part name="parameters" element="tns:searchInteractionsUsingQuery"></part>
+    </message>
+    <message name="searchInteractionsUsingQueryResponse">
+        <part name="parameters" element="tns:searchInteractionsUsingQueryResponse"></part>
+    </message>
+    <message name="searchCvObjectsUsingQuery">
+        <part name="parameters" element="tns:searchCvObjectsUsingQuery"></part>
+    </message>
+    <message name="searchCvObjectsUsingQueryResponse">
+        <part name="parameters" element="tns:searchCvObjectsUsingQueryResponse"></part>
+    </message>
+    <message name="searchUsingQuery">
+        <part name="parameters" element="tns:searchUsingQuery"></part>
+    </message>
+    <message name="searchUsingQueryResponse">
+        <part name="parameters" element="tns:searchUsingQueryResponse"></part>
+    </message>
+    <message name="getVersion">
+        <part name="parameters" element="tns:getVersion"></part>
+    </message>
+    <message name="getVersionResponse">
+        <part name="parameters" element="tns:getVersionResponse"></part>
+    </message>
+    <portType name="Search">
+        <operation name="getInteractionInfoUsingUniprotIds">
+            <input message="tns:getInteractionInfoUsingUniprotIds"></input>
+            <output message="tns:getInteractionInfoUsingUniprotIdsResponse"></output>
+        </operation>
+        <operation name="getInteractionInfoUsingIntactIds">
+            <input message="tns:getInteractionInfoUsingIntactIds"></input>
+            <output message="tns:getInteractionInfoUsingIntactIdsResponse"></output>
+        </operation>
+        <operation name="findPartnersUsingUniprotIds">
+            <input message="tns:findPartnersUsingUniprotIds"></input>
+            <output message="tns:findPartnersUsingUniprotIdsResponse"></output>
+        </operation>
+        <operation name="countExperimentsUsingIntactQuery">
+            <input message="tns:countExperimentsUsingIntactQuery"></input>
+            <output message="tns:countExperimentsUsingIntactQueryResponse"></output>
+        </operation>
+        <operation name="countProteinsUsingIntactQuery">
+            <input message="tns:countProteinsUsingIntactQuery"></input>
+            <output message="tns:countProteinsUsingIntactQueryResponse"></output>
+        </operation>
+        <operation name="countNucleicAcidsUsingIntactQuery">
+            <input message="tns:countNucleicAcidsUsingIntactQuery"></input>
+            <output message="tns:countNucleicAcidsUsingIntactQueryResponse"></output>
+        </operation>
+        <operation name="countSmallMoleculesUsingIntactQuery">
+            <input message="tns:countSmallMoleculesUsingIntactQuery"></input>
+            <output message="tns:countSmallMoleculesUsingIntactQueryResponse"></output>
+        </operation>
+        <operation name="countInteractionsUsingIntactQuery">
+            <input message="tns:countInteractionsUsingIntactQuery"></input>
+            <output message="tns:countInteractionsUsingIntactQueryResponse"></output>
+        </operation>
+        <operation name="countCvObjectsUsingIntactQuery">
+            <input message="tns:countCvObjectsUsingIntactQuery"></input>
+            <output message="tns:countCvObjectsUsingIntactQueryResponse"></output>
+        </operation>
+        <operation name="countAllBinaryInteractions">
+            <input message="tns:countAllBinaryInteractions"></input>
+            <output message="tns:countAllBinaryInteractionsResponse"></output>
+        </operation>
+        <operation name="searchExperimentsUsingQuery">
+            <input message="tns:searchExperimentsUsingQuery"></input>
+            <output message="tns:searchExperimentsUsingQueryResponse"></output>
+        </operation>
+        <operation name="searchProteinsUsingQuery">
+            <input message="tns:searchProteinsUsingQuery"></input>
+            <output message="tns:searchProteinsUsingQueryResponse"></output>
+        </operation>
+        <operation name="searchNucleicAcidsUsingQuery">
+            <input message="tns:searchNucleicAcidsUsingQuery"></input>
+            <output message="tns:searchNucleicAcidsUsingQueryResponse"></output>
+        </operation>
+        <operation name="searchSmallMoleculesUsingQuery">
+            <input message="tns:searchSmallMoleculesUsingQuery"></input>
+            <output message="tns:searchSmallMoleculesUsingQueryResponse"></output>
+        </operation>
+        <operation name="searchInteractionsUsingQuery">
+            <input message="tns:searchInteractionsUsingQuery"></input>
+            <output message="tns:searchInteractionsUsingQueryResponse"></output>
+        </operation>
+        <operation name="searchCvObjectsUsingQuery">
+            <input message="tns:searchCvObjectsUsingQuery"></input>
+            <output message="tns:searchCvObjectsUsingQueryResponse"></output>
+        </operation>
+        <operation name="searchUsingQuery">
+            <input message="tns:searchUsingQuery"></input>
+            <output message="tns:searchUsingQueryResponse"></output>
+        </operation>
+        <operation name="getVersion">
+            <input message="tns:getVersion"></input>
+            <output message="tns:getVersionResponse"></output>
+        </operation>
+    </portType>
+    <binding name="SearchPortBinding" type="tns:Search">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"></soap:binding>
+        <operation name="getInteractionInfoUsingUniprotIds">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="getInteractionInfoUsingIntactIds">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="findPartnersUsingUniprotIds">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="countExperimentsUsingIntactQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="countProteinsUsingIntactQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="countNucleicAcidsUsingIntactQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="countSmallMoleculesUsingIntactQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="countInteractionsUsingIntactQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="countCvObjectsUsingIntactQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="countAllBinaryInteractions">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="searchExperimentsUsingQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="searchProteinsUsingQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="searchNucleicAcidsUsingQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="searchSmallMoleculesUsingQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="searchInteractionsUsingQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="searchCvObjectsUsingQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="searchUsingQuery">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+        <operation name="getVersion">
+            <soap:operation soapAction=""></soap:operation>
+            <input>
+                <soap:body use="literal"></soap:body>
+            </input>
+            <output>
+                <soap:body use="literal"></soap:body>
+            </output>
+        </operation>
+    </binding>
+    <service name="SearchService">
+        <port name="SearchPort" binding="tns:SearchPortBinding">
+            <soap:address location="http://www.ebi.ac.uk/intact/search-ws/search"></soap:address>
+        </port>
+    </service>
+</definitions>
