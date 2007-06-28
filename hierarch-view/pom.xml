@@ -17,6 +17,7 @@
     <name>IntAct Services :: HierarchView</name>
 
     <modules>
+        <module>tulip-webservice</module>
         <module>legacy</module>
     </modules>
 

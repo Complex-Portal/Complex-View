@@ -12,9 +12,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>uk.ac.ebi.intact.maven</groupId>
-        <artifactId>intact-master</artifactId>
-        <version>6</version>
+         <groupId>uk.ac.ebi.intact.service.hierarchview</groupId>
+         <artifactId>tulip-ws-master</artifactId>
+         <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -22,20 +22,10 @@
     <groupId>uk.ac.ebi.intact.app.hierarchview</groupId>
     <artifactId>tulip-client</artifactId>
     <packaging>jar</packaging>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
-    <name>Tulip WS Client</name>
+    <name>IntAct Services :: HierarchView :: Tulip WebService :: Client</name>
     <description>Tulip Web Service Client</description>
-    <url>http://www.ebi.ac.uk/~intact/devsite/${artifactId}</url>
-
-    <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/hierarch-view/tulip-client/trunk
-        </connection>
-        <developerConnection>
-            scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/hierarch-view/tulip-client/trunk
-        </developerConnection>
-        <url>http://svn.sourceforge.net/viewcvs.cgi/intact/repo/hierarch-view/tulip-client/trunk/</url>
-    </scm>
 
     <build>
         <plugins>
@@ -90,43 +80,5 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-
-    <!-- EBI repositories -->
-    <repositories>
-        <repository>
-            <id>ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>Codehaus Snapshots</id>
-            <url>http://snapshots.repository.codehaus.org/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>java.net</id>
-            <url>https://maven-repository.dev.java.net/repository</url>
-            <layout>legacy</layout>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <site>
-            <id>intact-site</id>
-            <name>Intact site</name>
-            <url>${site.remote.basedir}/${artifactId}</url>
-        </site>
-    </distributionManagement>
 
 </project>
