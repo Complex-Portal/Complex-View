@@ -1,0 +1,60 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from TulipAccessService WSDL service -->
+
+  <service name="Tulip" provider="java:RPC">
+      <parameter name="wsdlTargetNamespace" value="urn:tulip"/>
+      <parameter name="wsdlServiceElement" value="TulipAccessService"/>
+      <parameter name="schemaUnqualified" value="urn:tulip"/>
+      <parameter name="wsdlServicePort" value="tulip"/>
+      <parameter name="className" value="uk.ac.ebi.intact.tulip.ws.GVFImpl"/>
+      <parameter name="wsdlPortType" value="TulipAccess"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="getComputedTlpContent" qname="operNS:getComputedTlpContent" xmlns:operNS="urn:tulip" returnQName="getComputedTlpContentReturn" returnType="rtns:ArrayOfProteinCoordinate" xmlns:rtns="urn:tulip" returnItemType="tns2:ProteinCoordinate" xmlns:tns2="urn:tulip" soapAction="" >
+        <parameter qname="tlpContent" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="optionMask" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getErrorMessages" qname="operNS:getErrorMessages" xmlns:operNS="urn:tulip" returnQName="getErrorMessagesReturn" returnType="rtns:ArrayOf_xsd_string" xmlns:rtns="urn:tulip" returnItemType="tns2:string" xmlns:tns2="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="hasToBeCleaned" type="tns:boolean" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="cleanErrorMessages" qname="operNS:cleanErrorMessages" xmlns:operNS="urn:tulip" soapAction="" >
+      </operation>
+      <parameter name="allowedMethods" value="getErrorMessages cleanErrorMessages getComputedTlpContent"/>
+      <parameter name="scope" value="Application"/>
+
+      <typeMapping
+        xmlns:ns="urn:tulip"
+        qname="ns:ArrayOf_xsd_string"
+        type="java:java.lang.String[]"
+        serializer="org.apache.axis.encoding.ser.ArraySerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.ArrayDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="urn:tulip"
+        qname="ns:ProteinCoordinate"
+        type="java:uk.ac.ebi.intact.tulip.ws.ProteinCoordinate"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="urn:tulip"
+        qname="ns:ArrayOfProteinCoordinate"
+        type="java:uk.ac.ebi.intact.tulip.ws.ProteinCoordinate[]"
+        serializer="org.apache.axis.encoding.ser.ArraySerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.ArrayDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+  </service>
+</deployment>
