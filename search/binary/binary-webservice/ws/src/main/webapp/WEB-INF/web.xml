@@ -13,7 +13,7 @@
             IntAct PSIMITAB index
         </description>
         <param-name>uk.ac.ebi.intact.binarysearch.INDEX_DIR</param-name>
-        <param-value>/homes/baranda/tmp_pub/binary-idx-current</param-value>
+        <param-value>/ebi/sp/misc1/vusers/intact/production/binary-indexes/current</param-value>
     </context-param>
 
     <!-- This listener controls the initialization of the application (e.g. reading init params, etc)
