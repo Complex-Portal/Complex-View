@@ -220,19 +220,19 @@
         <dependency>
             <groupId>uk.ac.ebi.faces</groupId>
             <artifactId>ebifaces-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.faces.ext</groupId>
             <artifactId>tomahawk-facelets</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.faces.renderkit</groupId>
             <artifactId>ebi-basic</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
