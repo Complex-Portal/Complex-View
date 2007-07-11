@@ -5,8 +5,8 @@
 
     if (configFile != null && new File(configFile).exists()) {
         response.sendRedirect("faces/search.xhtml");
+    } else {
+        response.sendRedirect("faces/first_time_config.xhtml");
     }
-
-    response.sendRedirect("faces/first_time_config.xhtml");
 
 %>
