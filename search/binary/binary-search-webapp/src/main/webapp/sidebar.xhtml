@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:tr="http://myfaces.apache.org/trinidad"
+      xmlns:s="http://myfaces.apache.org/sandbox"
+      xmlns:ebi="http://ebi.ac.uk/faces/components"
+      xmlns:bs="http://intact.ebi.ac.uk/binarysearch">
+
+<f:view>
+
+    Nothing rendered before this
+
+    <ui:composition>
+
+        <f:loadBundle basename="uk.ac.ebi.intact.binarysearch.BuildInfo" var="buildInfo"/>
+
+        <h:outputLink value="http://www.ebi.ac.uk/intact">
+            <h:graphicImage alt="IntAct Logo" url="/images/logo_intact_small.gif" style="border:0"/>
+        </h:outputLink>
+
+        <bs:searchBox id="sideSearchBox" value="#{searchBean.query}"/>
+
+        <ebi:dynamicMenu id="menu1" sourceUrl="#{initParam['uk.ac.ebi.faces.MENU_URL']}"/>
+
+        <ebi:news id="news1"
+                  sourceUrl="#{initParam['uk.ac.ebi.faces.NEWS_URL']}"
+                  maxShown="#{initParam['uk.ac.ebi.intact.NEWS_SHOWN_NUM']}"
+                  newsFeedUrl="http://www.ebi.ac.uk/intact/feed"
+                  archiveUrl="http://www.ebi.ac.uk/intact/contents/news_archive.jsf"/>
+
+
+        <!-- InstanceEndEditable -->
+        <script type="text/javascript" src="http://www.ebi.ac.uk/inc/js/sidebars.js"></script>
+        <img src="http://www.ebi.ac.uk/inc/images/spacer.gif" class="spacer" alt="spacer"/>
+        
+        <h:panelGrid columns="1">
+            <h:outputText value="Index: #{searchBean.defaultIndex.name}"/>
+            <h:outputText value="Version: #{buildInfo.version}"/>
+        </h:panelGrid>
+
+    </ui:composition>
+
+    Nothing rendered after this
+
+</f:view>
+
+</html>

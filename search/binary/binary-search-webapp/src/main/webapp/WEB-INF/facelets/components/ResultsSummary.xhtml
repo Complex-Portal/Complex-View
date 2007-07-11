@@ -1,0 +1,77 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:t="http://myfaces.apache.org/tomahawk"
+        xmlns:c="http://java.sun.com/jstl/core"
+        xmlns:s="http://myfaces.apache.org/sandbox"
+        xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+        xmlns:sf="http://www.ebi.ac.uk/faces/site"
+        xmlns:ebi="http://ebi.ac.uk/faces/components">
+
+    <f:view>
+
+        <ui:component>
+
+            <h:panelGrid columns="2" width="100%"
+                         styleClass="intact_table"
+                         columnClasses="intact_summaryCol,intact_summaryCol">
+                <h:panelGroup id="searchSummary">
+
+                    <strong>Query: </strong>
+                    <ebi:outputText id="queryText" value="#{searchBean.query}" maxLength="50"
+                                    expandMessage="(see entire query)" collapseMessage="(collapse)"/>
+                    <br/>
+
+                    <strong>Binary Interactions: </strong>#{searchBean.results.rowCount}<br/>
+                    <strong>Search time: </strong>
+
+                    <h:outputText value="#{searchBean.results.elapsedTimeSecs}">
+                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+                    </h:outputText>
+                    <h:outputText value=" seconds"/>
+                    <br/><br/>
+                </h:panelGroup>
+
+                <h:panelGroup id="relatedResultsPanel">
+
+                    <ebi:panelRound rendered="#{!searchBean.advancedMode and
+                              searchBean.relatedResults != null and
+                              (searchBean.relatedResults.numOfExperiments > 0 or searchBean.relatedResults.numOfInteractors > 0)}">
+                        <h:panelGroup>
+                            <p style="letter-spacing:0px">
+                                <h:outputText value="This search has identified "/>
+
+                                <h:outputLink rendered="#{searchBean.relatedResults.numOfExperiments > 0}"
+                                              value="#{initParam['psidev.SEARCH_QUERY_URL']}#{searchBean.query}&amp;searchClass=Experiment&amp;page=1"
+                                              target="oldsearch">
+                                    <h:outputText value="#{searchBean.relatedResults.numOfExperiments} experiments"/>
+                                </h:outputLink>
+                                <h:outputText value="0 experiments"
+                                              rendered="#{searchBean.relatedResults.numOfExperiments == 0}"/>
+
+                                <h:outputText
+                                        value=", which contain a match to your query in the title or description, and "/>
+                                <h:outputLink rendered="#{searchBean.relatedResults.numOfInteractors > 0}"
+                                              value="#{initParam['psidev.SEARCH_QUERY_URL']}#{searchBean.query}&amp;searchClass=Protein&amp;page=1"
+                                              target="oldsearch">
+                                    <h:outputText value="#{searchBean.relatedResults.numOfInteractors} proteins"/>
+                                </h:outputLink>
+                                <h:outputText value="0 proteins"
+                                              rendered="#{searchBean.relatedResults.numOfInteractors == 0}"/>
+
+                                <h:outputText value=" containing a match in their name or description. "/>
+
+                                <br/>
+                            </p>
+                        </h:panelGroup>
+                    </ebi:panelRound>
+                </h:panelGroup>
+            </h:panelGrid>
+
+        </ui:component>
+
+    </f:view>
+
+</ui:composition>

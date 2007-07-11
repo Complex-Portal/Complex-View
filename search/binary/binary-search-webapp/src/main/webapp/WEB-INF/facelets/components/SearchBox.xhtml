@@ -1,0 +1,59 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:t="http://myfaces.apache.org/tomahawk"
+        xmlns:c="http://java.sun.com/jstl/core"
+        xmlns:s="http://myfaces.apache.org/sandbox"
+        xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+        xmlns:ebi="http://ebi.ac.uk/faces/components">
+
+    <ui:component>
+
+        <c:set var="id" value="#{id}"/>
+
+        <ebi:panelBox id="#{id}_searchBox" title="Search IntAct">
+
+            <script type="text/javascript">
+                function intact_${id}_clearAndFocusField(id)
+                {
+                    var elem = document.getElementById(id);
+                    elem.value = '';
+                    elem.focus();
+                }
+            </script>
+
+            <t:inputText id="searchQuery"
+                         value="#{value}"
+                         size="12"
+                         forceId="true"
+                         onkeypress="return submitEnter('searchForm:sideSearchBox_searchBox',event)"/>
+
+            <ebi:help onlyIcon="true" width="800px" height="400px">
+                <h:panelGrid columns="1" width="700px">
+                <ui:include src="../../../search_help_content.xhtml"/>
+                </h:panelGrid>
+            </ebi:help>
+
+            <h:panelGrid columns="2">
+                <a4j:commandButton id="#{id}" styleClass="submit_button"
+                                   value="Search"
+                                   actionListener="#{searchBean.doSearch}"
+                                   ignoreDupResponses="true"
+                                   reRender="stateRegion,advancedSearchRegion,summaryRegion,relatedResultsPanel,resultsRegion">
+                    <a4j:support event="oncomplete"
+                                 limitToList="true"
+                                 actionListener="#{searchBean.doCalculateRelatedResults}"
+                                 ignoreDupResponses="true"
+                                 reRender="stateRegion,relatedResultsPanel"/>
+                </a4j:commandButton>
+
+                <a href="#" onclick="intact_${id}_clearAndFocusField('searchQuery')">Clear</a>
+            </h:panelGrid>
+
+        </ebi:panelBox>
+
+    </ui:component>
+
+</ui:composition>

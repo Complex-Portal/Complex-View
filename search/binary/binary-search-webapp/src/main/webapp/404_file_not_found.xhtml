@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+<body>
+
+<f:view>
+
+    <ui:composition template="WEB-INF/facelets/layout/template-ajaxified.xhtml">
+
+        <ui:param name="sectionTitle" value="Error"/>
+
+        <ui:define name="contents">
+            <h:form>
+                <div align="center">
+                    <br/>
+                    <br/>
+
+                    <h3>An error has occurred when dealing with your request:</h3>
+
+                    <h3>404:File Not Found</h3>
+
+                    <table width="250" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <br/>
+                                <br/>
+                                The document you were searching for was not found. It has either been moved, never
+                                existed,
+                                or you might just have mistyped it. To find documents which have moved, you might try
+                                starting from the home page:
+                                <br/><br/>
+
+                                <div style="text-align: center;">
+                                    <h:commandLink value="IntAct home page" action="home"/>
+                                </div>
+                                <br/><br/>
+                                Also, if you feel this page should exist, send us an <a
+                                    href="mailto:intact-help@ebi.ac.uk">email</a>.
+                                <br/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </h:form>
+        </ui:define>
+
+    </ui:composition>
+
+
+</f:view>
+
+</body>
+
+</html>

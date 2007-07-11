@@ -1,0 +1,54 @@
+td.intact_table {
+    vertical-align: top;
+}
+
+.intact_loading {
+    color: gray;
+}
+
+.intact_error {
+    color: red;
+}
+
+/* RESULT TABLE */
+.intact_resultTable {
+    border-right: 1px solid #ADADAF;
+    border-bottom: 1px solid #ADADAF;
+}
+
+.intact_tableResultsOn {
+    background-color: #BDD7D7;
+    border-bottom: 1px solid #ADADAF;
+}
+
+.contents th a:link, .contents th a:visited{
+    color: white;
+    text-decoration: none; 
+}
+
+.intact_right {
+    text-align: right;
+}
+
+.intact_left {
+    text-align: left;
+}
+
+.intact_summaryCol {
+    width: 50%;
+    vertical-align:top;
+}
+
+.intact_button_disabled {
+    background:#DEDEDE none repeat scroll 0% 50%;
+    border-width:1px;
+    color:#FFFFFF;
+    cursor:pointer;
+    font-size:8pt;
+    font-weight:bold;
+    margin:0pt;
+    padding:0pt;
+    text-align:center;
+    vertical-align:text-bottom;
+    width:80px;
+}

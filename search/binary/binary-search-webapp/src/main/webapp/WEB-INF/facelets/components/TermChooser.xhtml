@@ -1,0 +1,55 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:t="http://myfaces.apache.org/tomahawk"
+        xmlns:c="http://java.sun.com/jstl/core"
+        xmlns:s="http://myfaces.apache.org/sandbox"
+        xmlns:sf="http://www.ebi.ac.uk/faces/site"
+        xmlns:ebi="http://ebi.ac.uk/faces/components"
+        xmlns:bs="http://intact.ebi.ac.uk/binarysearch">
+
+    <f:view>
+
+        <ui:component rendered="#{rendered == null? true : sf:convertToBoolean(rendered)}">
+            <c:set var="id" value="#{forClientId}_termChooser"/>
+
+            <h:panelGroup>
+                <!--<t:inputText id="#{id}" value="#{term}" forceId="true"/>-->
+                <h:commandButton value="..." onclick="${id}_panel.show()" type="button"/>
+
+                <h:panelGroup style="display:none;">
+                    <s:modalDialog dialogId="${id}_panelId" dialogVar="${id}_panel"
+                                   dialogAttr="bgColor='white' bgOpacity='0.5' toggle='fade' toggleDuration='250'"
+                                   hiderIds="${id}_panelCloseButton">
+
+                        <div style="width:350px;height:400px;overflow-y:scroll;">
+
+                            <h3>Click on a Term:</h3>
+
+                            <c:set var="tree" value="#{bs:newTree(treeModel,true)}"/>
+
+                            <t:tree2 var="term" varNodeToggler="t" binding="#{tree}" transient="true">
+                                <f:facet name="term">
+                                    <h:panelGroup>
+                                        <h:outputText value="#{term.description}" styleClass="nodeFolder"
+                                                      onclick="document.getElementById('${forClientId}').value='${term.description}'; ${id}_panel.hide()"/>
+                                    </h:panelGroup>
+                                </f:facet>
+                            </t:tree2>
+
+                        </div>
+
+                        <t:commandButton id="${id}_panelCloseButton" value="Close" forceId="true"
+                                         onclick="${id}_panel.hide()"/>
+
+                    </s:modalDialog>
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </ui:component>
+
+    </f:view>
+
+</ui:composition>

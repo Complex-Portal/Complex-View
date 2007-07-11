@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE facelet-taglib PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+  "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+
+<facelet-taglib>
+    <namespace>http://intact.ebi.ac.uk/binarysearch</namespace>
+    <tag>
+        <tag-name>advancedSearch</tag-name>
+        <source>facelets/components/AdvancedSearch.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>queryLink</tag-name>
+        <source>facelets/components/QueryLink.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>resultsSummary</tag-name>
+        <source>facelets/components/ResultsSummary.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>resultsTable</tag-name>
+        <source>facelets/components/ResultsTable.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>searchBox</tag-name>
+        <source>facelets/components/SearchBox.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>termChooser</tag-name>
+        <source>facelets/components/TermChooser.xhtml</source>
+    </tag>
+
+    <function>
+        <function-name>newTree</function-name>
+        <function-class>uk.ac.ebi.intact.binarysearch.webapp.util.ComponentUtils</function-class>
+        <function-signature>javax.faces.component.UIComponent newTree(org.apache.myfaces.custom.tree2.TreeModel,boolean)</function-signature>
+    </function>
+</facelet-taglib>

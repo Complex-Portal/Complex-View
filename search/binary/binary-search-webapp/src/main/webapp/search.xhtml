@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:tr="http://myfaces.apache.org/trinidad"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:s="http://myfaces.apache.org/sandbox"
+      xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+      xmlns:sf="http://www.ebi.ac.uk/faces/site"
+      xmlns:ebi="http://ebi.ac.uk/faces/components"
+      xmlns:bs="http://intact.ebi.ac.uk/binarysearch">
+<body>
+
+<f:view>
+
+    Nothing before this is rendered
+
+    <ui:composition template="WEB-INF/facelets/layout/template-ajaxified.xhtml">
+
+        <ui:define name="contents">
+
+        <t:dojoInitializer />
+
+            <h:panelGroup id="stateRegion">
+                <t:saveState value="#{searchBean.query}"/>
+                <t:saveState value="#{searchBean.results}"/>
+                <t:saveState value="#{searchBean.searchDone}"/>
+                <t:saveState value="#{searchBean.advancedSearch}"/>
+                <t:saveState value="#{searchBean.relatedResults}"/>
+            </h:panelGroup>
+
+            &nbsp;
+
+            <h:panelGroup style="float:left">
+                <a4j:status id="pageStatus" layout="inline">
+                    <f:facet name="start">
+                        <h:panelGroup>
+                            <h:panelGroup>
+                                <h:graphicImage value="/images/wait_red_indicator.gif" style="vertical-align:middle"/>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </f:facet>
+                    <f:facet name="stop">
+                        <h:graphicImage value="/images/status_off.gif" style="vertical-align:middle"/>
+                    </f:facet>
+                </a4j:status>
+            </h:panelGroup>
+
+            <!-- rendered only if there is a new query via url (e.g. from an external application) -->
+            <c:set var="executeQueryOnLoad" value="#{param.query != null and (param.query ne searchBean.query)}"/>
+               <h:panelGroup rendered="#{executeQueryOnLoad}">
+                <script type="text/javascript">
+                    function searchWithQuery() {
+                        document.getElementById('searchQuery').value='#{param.query}';
+                        document.getElementById('searchForm:sideSearchBox_searchBox').click();
+                    }
+                    dojo.addOnLoad(searchWithQuery);
+                </script>
+            </h:panelGroup>
+            
+            <h:panelGroup id="advancedSearchRegion"
+                          style="#{searchBean.advancedMode? 'display:block' : 'display:none'}">
+
+                <br/><br/>
+
+                <bs:advancedSearch/>
+
+            </h:panelGroup>
+
+            <h:panelGroup id="summaryRegion" style="#{searchBean.searchDone? 'display:block' : 'display:none'}">
+                <h:panelGroup id="summaryHeader">
+                    <h2>Results
+                        <ebi:help id="resultsHelp" title="Results Table" onlyIcon="true">
+                            <p>
+                                Shown below are a full list of interactions in which a match to your query was found
+                                anywhere in the entry. In the results table:
+
+                                <ul>
+                                    <li>Columns are sortable, by clicking on the column header.</li>
+                                    <li>Cell values are linked by cross-reference to its details in other IntAct
+                                        databases or external sources.
+                                    </li>
+                                </ul>
+                            </p>
+                        </ebi:help>
+                    </h2>
+
+                     </h:panelGroup>
+
+                    <bs:resultsSummary/>
+
+                    <p style="#{searchBean.results.rowCount > 0? 'display:block' : 'display:none'}">
+                        <strong>Export Options: </strong>
+
+                        <h:outputLink target="_blank" value="#{appConfigBean.absoluteContextPath}/export.jsp">
+                            <f:param name="q" value="#{searchBean.query}"/>
+                            <f:param name="d" value="#{searchBean.defaultIndex.location}"/>
+                            <f:param name="sort" value="#{searchBean.sortColumn}"/>
+                            <f:param name="asc" value="#{searchBean.sortAscending}"/>
+                            <t:graphicImage url="#{appConfigBean.absoluteContextPath}/images/mitab.png"
+                                            style="vertical-align:middle"
+                                            border="0"/>
+                        </h:outputLink>
+                    </p>
+
+                <h:panelGroup rendered="#{searchBean.results.rowCount == 0}">
+                    <p>
+                        <strong>No Interactions found matching the query.</strong>
+                    </p>
+                </h:panelGroup>
+
+            </h:panelGroup>
+
+            <!--Test List: #{searchBean.testList}-->
+            <h:panelGroup id="resultsRegion" style="#{searchBean.searchDone? 'display:block' : 'display:none'}">
+
+                <bs:resultsTable value="#{searchBean.results}"
+                                 pageSize="#{searchBean.pageSize}"
+                                 sortColumn="#{searchBean.sortColumn}"
+                                 sortAscending="#{searchBean.sortAscending}"/>
+
+            </h:panelGroup>
+
+        </ui:define>
+
+    </ui:composition>
+
+    Nothing after this is rendered
+
+</f:view>
+
+</body>
+</html>

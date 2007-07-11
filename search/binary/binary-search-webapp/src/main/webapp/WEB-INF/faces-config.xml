@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE faces-config PUBLIC
+        "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN"
+        "http://java.sun.com/dtd/web-facesconfig_1_0.dtd" >
+<faces-config>
+
+    <application>
+        <view-handler>com.sun.facelets.FaceletViewHandler</view-handler> <!-- comment out if using trinidad -->
+        <!--<default-render-kit-id>-->
+            <!--org.apache.myfaces.trinidad.core-->
+        <!--</default-render-kit-id>-->
+        <variable-resolver>
+            org.springframework.web.jsf.DelegatingVariableResolver
+        </variable-resolver>
+    </application>
+
+    <!-- view controllers / backing beans -->
+    <managed-bean>
+        <managed-bean-name>appConfigBean</managed-bean-name>
+        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean</managed-bean-class>
+        <managed-bean-scope>application</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>olsBean</managed-bean-name>
+        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean</managed-bean-class>
+        <managed-bean-scope>application</managed-bean-scope>
+    </managed-bean>
+     <managed-bean>
+        <managed-bean-name>adminBean</managed-bean-name>
+        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.view.AdminBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+        <managed-property>
+            <property-name>config</property-name>
+            <value>#{appConfigBean.config}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>configFileLocation</property-name>
+            <value>#{appConfigBean.configFileLocation}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>firstTimeBean</managed-bean-name>
+        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.view.FirstTimeBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>config</property-name>
+            <value>#{appConfigBean.config}</value>
+        </managed-property>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>searchBean</managed-bean-name>
+        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.view.SearchBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>config</property-name>
+            <value>#{appConfigBean.config}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>olsBean</property-name>
+            <value>#{olsBean}</value>
+        </managed-property>
+    </managed-bean>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>home</from-outcome>
+            <to-view-id>/search.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>search</from-outcome>
+            <to-view-id>/search.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>login</from-outcome>
+            <to-view-id>/admin/login.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>admin.index.manage</from-outcome>
+            <to-view-id>/admin/index_management.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+
+</faces-config>

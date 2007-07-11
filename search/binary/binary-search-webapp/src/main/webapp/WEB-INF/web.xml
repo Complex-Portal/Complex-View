@@ -1,0 +1,357 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1'?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+    <description>Binary Search</description>
+
+    <distributable/>
+
+    <!-- intact specific params -->
+    <context-param>
+        <description>
+            If standalone, the application won't show some of the layout and interface aspects
+            related to EBI/IntAct
+        </description>
+        <param-name>psidev.STANDALONE</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Configuration file
+        </description>
+        <param-name>psidev.DEFAULT_CONFIG_FILE</param-name>
+        <param-value>/tmp/binary-search.cfg.xml</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Default index location
+        </description>
+        <param-name>psidev.DEFAULT_INDEX</param-name>
+        <param-value>/tmp/intact-binary-idx</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            URL to do a search query
+        </description>
+        <param-name>psidev.SEARCH_QUERY_URL</param-name>
+        <param-value>http://www.ebi.ac.uk/tc-test/intact/search/do/search?searchString=</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Secret key to decode
+        </description>
+        <param-name>psidev.SECRET</param-name>
+        <param-value>Nzk4NDMyMTW=</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Maximum number of results after executing a search query. Default: 153600 (150*1024)
+        </description>
+        <param-name>psidev.MAX_SEARCH_RESULTS</param-name>
+        <param-value>153600</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Don't fetch the Controlled vocabularies from OLS. Note that if this is true, the ability
+            to get the children of a detection method or interaction type is not possible. Default: false
+        </description>
+        <param-name>psidev.DO_NOT_USE_OLS</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <description>
+            Where to find the Menu XML file
+        </description>
+        <param-name>uk.ac.ebi.faces.MENU_URL</param-name>
+        <param-value>http://www.ebi.ac.uk/~intact/site/menu/menu-dev.xml</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Where to find the News XML file
+        </description>
+        <param-name>uk.ac.ebi.faces.NEWS_URL</param-name>
+        <param-value>http://www.ebi.ac.uk/~intact/site/news/news-1.2.xml</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Number of pieces of news shown in the sidebar panel
+        </description>
+        <param-name>uk.ac.ebi.intact.NEWS_SHOWN_NUM</param-name>
+        <param-value>2</param-value>
+    </context-param>
+
+     <!-- JSF - MyFaces -->
+    <context-param>
+        <description>State saving method: "client" or "server" (= default)
+            See JSF Specification 2.5.3
+        </description>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+
+    <context-param>
+        <description>If true, rendered HTML code will be formatted, so that it is "human readable".
+            i.e. additional line separators and whitespace will be written, that do not
+            influence the HTML code.
+            Default: "true"
+        </description>
+        <param-name>org.apache.myfaces.PRETTY_HTML</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <description>If true, a javascript function will be rendered that is able to restore the
+            former vertical scroll on every request. Convenient feature if you have pages
+            with long lists and you do not want the browser page to always jump to the top
+            if you trigger a link or button action that stays on the same page.
+            Default: "false"
+        </description>
+        <param-name>org.apache.myfaces.AUTO_SCROLL</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <description>Used for encrypting view state. Only relevant for client side
+            state saving. See MyFaces wiki/web site documentation for instructions
+            on how to configure an application for diffenent encryption strengths.
+        </description>
+        <param-name>org.apache.myfaces.SECRET</param-name>
+        <param-value>NzY1NDMyMTA=</param-value>
+    </context-param>
+
+    <context-param>
+        <description>
+            Validate managed beans, navigation rules and ensure that forms are not nested.
+        </description>
+        <param-name>org.apache.myfaces.VALIDATE</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- Trinidad params -->
+    <context-param>
+        <param-name>org.apache.myfaces.trinidadinternal.DISABLE_CONTENT_COMPRESSION</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.apache.myfaces.trinidad.ALTERNATE_VIEW_HANDLER</param-name>
+        <param-value>com.sun.facelets.FaceletViewHandler</param-value>
+    </context-param>
+
+
+    <context-param>
+        <param-name>org.apache.myfaces.trinidad.USE_APPLICATION_VIEW_CACHE</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.apache.myfaces.trinidad.CHANGE_PERSISTENCE</param-name>
+        <param-value>session</param-value>
+    </context-param>
+
+    <!-- Commons Chain Configuration Resources -->
+    <context-param>
+        <param-name>org.apache.commons.chain.CONFIG_WEB_RESOURCE</param-name>
+        <param-value>/WEB-INF/chain-config.xml</param-value>
+    </context-param>
+
+    <!-- Apache Shale Remoting -->
+    <context-param>
+        <param-name>
+            org.apache.shale.remoting.CLASS_RESOURCES
+        </param-name>
+        <param-value>
+            /static/*:org.apache.shale.remoting.impl.ClassResourceProcessor
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>
+            org.apache.shale.remoting.DYNAMIC_RESOURCES
+        </param-name>
+        <param-value>
+            /dynamic/*:org.apache.shale.remoting.impl.MethodBindingProcessor
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>
+            org.apache.shale.remoting.WEBAPP_RESOURCES
+        </param-name>
+        <param-value>
+            /webapp/*:org.apache.shale.remoting.impl.WebResourceProcessor
+        </param-value>
+    </context-param>
+
+    <!-- Facelets -->
+    <!-- Use Documents Saved as *.xhtml -->
+    <context-param>
+        <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+        <param-value>.xhtml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>facelets.LIBRARIES</param-name>
+        <param-value>/WEB-INF/binarysearch.taglib.xml;
+                     /WEB-INF/psimitab.taglib.xml
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- ajax4jsf -->
+    <filter>
+        <display-name>Ajax4jsf Filter</display-name>
+        <filter-name>ajax4jsf</filter-name>
+        <filter-class>org.ajax4jsf.Filter</filter-class>
+        <init-param>
+            <param-name>forceparser</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ajax4jsf</filter-name>
+        <servlet-name>faces</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+
+    <!-- Extensions Filter -->
+    <filter>
+        <filter-name>extensionsFilter</filter-name>
+        <filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
+        <init-param>
+            <description>Set the size limit for uploaded files.
+                Format: 10 - 10 bytes
+                10k - 10 KB
+                10m - 10 MB
+                1g - 1 GB
+            </description>
+            <param-name>uploadMaxFileSize</param-name>
+            <param-value>100m</param-value>
+        </init-param>
+        <init-param>
+            <description>Set the threshold size - files
+                below this limit are stored in memory, files above
+                this limit are stored on disk.
+
+                Format: 10 - 10 bytes
+                10k - 10 KB
+                10m - 10 MB
+                1g - 1 GB
+            </description>
+            <param-name>uploadThresholdSize</param-name>
+            <param-value>100k</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>extensionsFilter</filter-name>
+        <url-pattern>*.jsf</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>extensionsFilter</filter-name>
+        <url-pattern>/faces/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Shale Application Controller Filter --> 
+    <filter>
+        <filter-name>shale</filter-name>
+        <filter-class>
+            org.apache.shale.faces.ShaleApplicationFilter
+        </filter-class>
+    </filter>
+
+    <!-- Shale Application Controller Filter Mapping -->
+    <filter-mapping>
+        <filter-name>shale</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--<filter>-->
+        <!--<filter-name>trinidad</filter-name>-->
+        <!--<filter-class>org.apache.myfaces.trinidad.webapp.TrinidadFilter</filter-class>-->
+    <!--</filter>-->
+
+    <!--<filter-mapping>-->
+        <!--<filter-name>trinidad</filter-name>-->
+        <!--<servlet-name>faces</servlet-name>-->
+    <!--</filter-mapping>-->
+
+    <!-- Search webapp filters -->
+    <!-- Security -->
+    <filter>
+        <filter-name>securityFilter</filter-name>
+        <filter-class>uk.ac.ebi.intact.binarysearch.webapp.filter.SecurityFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>securityFilter</filter-name>
+        <url-pattern>/faces/admin/*</url-pattern>
+    </filter-mapping>
+
+    <!-- App startup listener -->
+    <listener>
+        <description>Listener to startup the application</description>
+        <listener-class>uk.ac.ebi.intact.binarysearch.webapp.StartupListener</listener-class>
+    </listener>
+
+    <!-- Commons Chain Configuration Listener -->
+    <listener>
+        <listener-class>
+            org.apache.commons.chain.web.ChainListener
+        </listener-class>
+    </listener>
+
+    <!-- Spring Framework 2.0 -->
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+
+
+    <!-- Faces Servlet -->
+    <servlet>
+        <servlet-name>faces</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+
+    <!-- resource loader servlet -->
+    <!--<servlet>-->
+        <!--<servlet-name>resources</servlet-name>-->
+        <!--<servlet-class>org.apache.myfaces.trinidad.webapp.ResourceServlet</servlet-class>-->
+    <!--</servlet>-->
+
+    <!-- Faces Servlet Mappings -->
+    <servlet-mapping>
+        <servlet-name>faces</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
+
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>resources</servlet-name>-->
+        <!--<url-pattern>/adf/*</url-pattern>-->
+    <!--</servlet-mapping>-->
+
+    <!-- Welcome files -->
+    <welcome-file-list>
+        <welcome-file>/index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+    <!-- Handling of the HTTP error 404 -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/faces/404_file_not_found.xhtml</location>
+    </error-page>
+</web-app>

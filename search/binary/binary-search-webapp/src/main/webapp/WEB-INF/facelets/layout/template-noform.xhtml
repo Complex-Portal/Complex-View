@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:ebi="http://ebi.ac.uk/faces/components">
+<f:view>
+    <ui:composition>
+        <ui:param name="standalone" value="#{initParam['psidev.STANDALONE']}"/>
+
+        <ebi:page title="IntAct - Search" showFooter="#{!standalone}" showHeader="#{!standalone}">
+            <ui:define name="headsection">
+                <link rel="stylesheet" href="#{appConfigBean.absoluteContextPath}/css/intact.css" type="text/css"/>
+
+                <!-- Feeds -->
+                <link rel="alternate" type="application/rss+xml" title="IntAct News RSS feed" href="feed"/>
+
+                <script type="text/javascript" src="#{appConfigBean.absoluteContextPath}/js/intact.js"></script>
+
+                <link rel="SHORTCUT ICON" href="#{appConfigBean.absoluteContextPath}/images/logo_intact_small.gif"/>
+                <link rel="search" href="http://www.ebi.ac.uk/intact/site/plugins/plugins/openSearch/openSearch.xml"
+                      type="application/opensearchdescription+xml" title="IntAct"/>
+            </ui:define>
+
+            <ui:define name="body">
+                        <ebi:pageBodyContent>
+                            <ui:define name="left">
+                                <ui:insert name="sidebar"/>
+                            </ui:define>
+
+                            <ui:define name="breadcrumbs">
+                                <a href="http://www.ebi.ac.uk/" class="firstbreadcrumb">EBI</a><a
+                                    href="http://www.ebi.ac.uk/Databases/">Databases</a><a
+                                    href="http://www.ebi.ac.uk/Databases/proteomic.html">Proteomic Databases</a>
+                            </ui:define>
+
+                            <ui:define name="content">
+                                <h:panelGroup id="contentRegion">
+                                    <ui:insert name="contents"/>
+                                </h:panelGroup>
+                            </ui:define>
+
+                        </ebi:pageBodyContent>
+            </ui:define>
+
+        </ebi:page>
+    </ui:composition>
+</f:view>
+</html>

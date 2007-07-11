@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>psidev.psi.mi</groupId>
+        <artifactId>psimi-master</artifactId>
+        <version>2</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>psimitab-search-webapp</artifactId>
+    <packaging>war</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+
+    <name>IntAct Services :: Search :: Binary</name>
+    <description>Interface for the PSIMITAB search</description>
+
+    <properties>
+        <jetty.port>9191</jetty.port>
+    </properties>
+
+    <build>
+        <finalName>binary-search</finalName>
+
+         <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>com.sun.tools.xjc.maven2</groupId>
+                <artifactId>maven-jaxb-plugin</artifactId>
+                <configuration>
+                    <generatePackage>uk.ac.ebi.intact.binarysearch.webapp.generated</generatePackage>
+                    <extension>true</extension>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>com.sun.xml.bind</groupId>
+                        <artifactId>jaxb-impl</artifactId>
+                        <version>2.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                        <version>2.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>jsf-1.1</id>
+            <activation>
+                <property>
+                    <name>!jsf</name>
+                </property>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.myfaces.core</groupId>
+                        <artifactId>myfaces-api</artifactId>
+                        <version>1.1.5</version>
+                        <scope>compile</scope>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.myfaces.core</groupId>
+                        <artifactId>myfaces-impl</artifactId>
+                        <version>1.1.5</version>
+                        <scope>compile</scope>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.myfaces.tomahawk</groupId>
+                        <artifactId>tomahawk</artifactId>
+                        <version>1.1.7-SNAPSHOT</version>
+                        <scope>compile</scope>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.myfaces.tomahawk</groupId>
+                        <artifactId>tomahawk-sandbox</artifactId>
+                        <version>1.1.6</version>
+                        <scope>compile</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>javax.el</groupId>
+                    <artifactId>el-api</artifactId>
+                    <version>1.0</version>
+                    <scope>optional</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.el</groupId>
+                    <artifactId>el-ri</artifactId>
+                    <version>1.0</version>
+                    <scope>optional</scope>
+                </dependency>
+                <!-- server -->
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                    <version>2.4</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jsp-api</artifactId>
+                    <version>2.0</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>jsf-1.2</id>
+            <activation>
+                <property>
+                    <name>jsf</name>
+                    <value>1.2</value>
+                </property>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.myfaces.core</groupId>
+                        <artifactId>myfaces-api</artifactId>
+                        <version>1.2.0-SNAPSHOT</version>
+                        <scope>compile</scope>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.myfaces.core</groupId>
+                        <artifactId>myfaces-impl</artifactId>
+                        <version>1.2.0-SNAPSHOT</version>
+                        <scope>compile</scope>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.myfaces.tomahawk</groupId>
+                        <artifactId>tomahawk</artifactId>
+                        <version>1.1.6</version>
+                        <scope>compile</scope>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>commons-el</groupId>
+                                <artifactId>commons-el</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.apache.myfaces.tomahawk</groupId>
+                        <artifactId>tomahawk-sandbox</artifactId>
+                        <version>1.1.6</version>
+                        <scope>provided</scope>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>commons-el</groupId>
+                                <artifactId>commons-el</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+            <dependencies>
+                <!-- server -->
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                    <version>2.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>javax.servlet.jsp</groupId>
+                    <artifactId>jsp-api</artifactId>
+                    <version>2.1</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <!-- Project dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>psidev.psi.mi</groupId>
+            <artifactId>psimitab-search</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.ebi.intact.commons</groupId>
+            <artifactId>intact-commons</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.ebi.intact.app.search</groupId>
+            <artifactId>search-wsclient</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.faces</groupId>
+            <artifactId>ebifaces-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.faces.ext</groupId>
+            <artifactId>tomahawk-facelets</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.faces.renderkit</groupId>
+            <artifactId>ebi-basic</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.util</groupId>
+            <artifactId>intact-ols</artifactId>
+            <version>1.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.axis</groupId>
+                    <artifactId>axis-saaj</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+            <version>2.0.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.facelets</groupId>
+            <artifactId>jsf-facelets</artifactId>
+            <version>1.1.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.tomahawk</groupId>
+            <artifactId>tomahawk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.tomahawk</groupId>
+            <artifactId>tomahawk-sandbox</artifactId>
+        </dependency>
+        <!--
+            <dependency>
+               <groupId>javax.faces</groupId>
+               <artifactId>jsf-api</artifactId>
+               <version>1.2_04</version>
+               <scope>compile</scope>
+             </dependency>
+
+             <dependency>
+               <groupId>javax.faces</groupId>
+               <artifactId>jsf-impl</artifactId>
+               <version>1.2_04</version>
+               <scope>compile</scope>
+             </dependency>
+        -->
+
+
+        <!-- Apache Trinidad -->
+        <dependency>
+            <groupId>org.apache.myfaces.trinidad</groupId>
+            <artifactId>trinidad-api</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.trinidad</groupId>
+            <artifactId>trinidad-impl</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.shale</groupId>-->
+        <!--<artifactId>shale-view</artifactId>-->
+        <!--<version>1.1.0-SNAPSHOT</version>-->
+        <!--<scope>compile</scope>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>org.apache.shale</groupId>-->
+        <!--<artifactId>shale-application</artifactId>-->
+        <!--<version>1.1.0-SNAPSHOT</version>-->
+        <!--<scope>compile</scope>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.apache.shale</groupId>
+            <artifactId>shale-core</artifactId>
+            <version>1.0.3</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                     <groupId>myfaces</groupId>
+                     <artifactId>myfaces-api</artifactId>
+                </exclusion>
+                <exclusion>
+                     <groupId>myfaces</groupId>
+                     <artifactId>myfaces-impl</artifactId>
+                </exclusion>
+            </exclusions>
+
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.struts.shale</groupId>
+            <artifactId>shale-tiger</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                     <groupId>myfaces</groupId>
+                     <artifactId>myfaces-api</artifactId>
+                </exclusion>
+                <exclusion>
+                     <groupId>myfaces</groupId>
+                     <artifactId>myfaces-impl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.ajax4jsf</groupId>
+            <artifactId>ajax4jsf</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ajax4jsf</groupId>
+            <artifactId>ajax4jsf-trinidad</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>oscache</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+        </dependency>
+
+        <!-- TopLink dependencies -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>toplink-essentials</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>java.net.2</id>
+            <url>http://download.java.net/maven/2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>
