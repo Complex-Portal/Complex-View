@@ -22,14 +22,14 @@
             Configuration file
         </description>
         <param-name>psidev.DEFAULT_CONFIG_FILE</param-name>
-        <param-value>/homes/baranda/production/webapp-conf/binary-search.cfg.xml</param-value>
+        <param-value>/ebi/sp/misc1/vusers/intact/production/webapp-conf/binary-search.cfg.xml</param-value>
     </context-param>
     <context-param>
         <description>
             Default index location
         </description>
         <param-name>psidev.DEFAULT_INDEX</param-name>
-        <param-value>/homes/baranda/production/binary-indexes/current</param-value>
+        <param-value>/ebi/sp/misc1/vusers/intact/production/binary-indexes/current</param-value>
     </context-param>
     <context-param>
         <description>
