@@ -26,7 +26,12 @@
 
 <ui:define name="sidebar">
     <h:form>
-        <h:commandLink value="Exit" action="home"/>
+        <h:panelGrid columns="1">
+            <h:commandLink value="Exit" action="home"/>
+            <h:outputText value=" "/>
+            <h:commandLink value="Reload OLS" actionListener="#{olsBean.reloadOls}"/>
+        </h:panelGrid>
+
     </h:form>
 </ui:define>
 

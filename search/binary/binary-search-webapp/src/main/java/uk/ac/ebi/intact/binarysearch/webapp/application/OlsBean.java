@@ -8,16 +8,20 @@ package uk.ac.ebi.intact.binarysearch.webapp.application;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.custom.tree2.TreeModel;
-import uk.ac.ebi.intact.binarysearch.webapp.StartupListener;
 import uk.ac.ebi.intact.binarysearch.webapp.model.tree.TreeBuilder;
+import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.util.ols.Term;
 
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.FacesException;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.rmi.RemoteException;
 
 /**
  * Application-scope backing bean with the information for OLS
@@ -44,14 +48,23 @@ public class OlsBean implements Serializable {
     public OlsBean() {
         ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 
-        interactionTypeTerm = (Term) context.getAttribute(StartupListener.INTERACTION_TYPE_TERM);
-        interactionTypeTerms = (List<Term>) context.getAttribute(StartupListener.INTERACTION_TYPES);
-        detectionMethodTerm = (Term) context.getAttribute(StartupListener.DETECTION_METHOD_TERM);
-        detectionMethodTerms = (List<Term>) context.getAttribute(StartupListener.DETECTION_METHODS);
+        interactionTypeTerm = (Term) context.getAttribute(WebappUtils.INTERACTION_TYPE_TERM);
+        interactionTypeTerms = (List<Term>) context.getAttribute(WebappUtils.INTERACTION_TYPES);
+        detectionMethodTerm = (Term) context.getAttribute(WebappUtils.DETECTION_METHOD_TERM);
+        detectionMethodTerms = (List<Term>) context.getAttribute(WebappUtils.DETECTION_METHODS);
 
         interactionTypeTreeModel = new TreeBuilder().createModel(interactionTypeTerm);
         detectionMethodTreeModel = new TreeBuilder().createModel(detectionMethodTerm);
 
+    }
+
+    public void reloadOls(ActionEvent evt) {
+        ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        try {
+            WebappUtils.loadOlsTerms(ctx);
+        } catch (RemoteException e) {
+            throw new FacesException(e);
+        }
     }
 
     public List<String> suggestInteractionTypes(String prefix) {

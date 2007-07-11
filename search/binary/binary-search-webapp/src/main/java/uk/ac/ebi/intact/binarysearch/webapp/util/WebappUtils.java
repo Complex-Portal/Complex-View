@@ -16,22 +16,30 @@
 package uk.ac.ebi.intact.binarysearch.webapp.util;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import uk.ac.ebi.intact.binarysearch.webapp.SearchWebappException;
+import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.util.DesEncrypter;
+import uk.ac.ebi.intact.util.ols.Term;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO comment this!
@@ -39,16 +47,22 @@ import java.io.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class WebappUtils
-{
+public class WebappUtils {
+
+    private static final Log log = LogFactory.getLog(WebappUtils.class);
+
+    public static final String INTERACTION_TYPE_TERM = WebappUtils.class + ".INTERACTION_TYPE_TERM";
+    public static final String INTERACTION_TYPES = WebappUtils.class + ".INTERACTION_TYPES";
+    public static final String DETECTION_METHOD_TERM = WebappUtils.class + ".DETECTION_METHOD_TERM";
+    public static final String DETECTION_METHODS = WebappUtils.class + ".DETECTION_METHODS";
+
 
     private static final String SECRET_INIT_PARAM_NAME = "psidev.SECRET";
 
     private WebappUtils() {
     }
 
-    public static SearchConfig readConfiguration(String configFileXml) throws SearchWebappException
-    {
+    public static SearchConfig readConfiguration(String configFileXml) throws SearchWebappException {
         File file = new File(configFileXml);
 
         if (!file.exists()) return null;
@@ -123,5 +137,23 @@ public class WebappUtils
         catch (Exception e) {
             throw new SearchWebappException(e);
         }
+    }
+
+    public static void loadOlsTerms(ServletContext ctx) throws RemoteException {
+        if (log.isInfoEnabled()) log.info("Loading OLS terms using the Web Service");
+
+        if (log.isDebugEnabled()) log.debug("\tLoading Interaction Types...");
+        Term interactionTypeTerm = uk.ac.ebi.intact.util.ols.OlsUtils.getMiTerm("MI:0190");
+
+        if (log.isDebugEnabled()) log.debug("\tLoading Interaction Detection Methods...");
+        Term detectionMethodTerm = uk.ac.ebi.intact.util.ols.OlsUtils.getMiTerm("MI:0001");
+
+        List<Term> interactionTypeTerms = OlsBean.childrenFor(interactionTypeTerm, new ArrayList<Term>());
+        List<Term> detectionMethodTerms = OlsBean.childrenFor(detectionMethodTerm, new ArrayList<Term>());
+
+        ctx.setAttribute(INTERACTION_TYPE_TERM, interactionTypeTerm);
+        ctx.setAttribute(INTERACTION_TYPES, interactionTypeTerms);
+        ctx.setAttribute(DETECTION_METHOD_TERM, detectionMethodTerm);
+        ctx.setAttribute(DETECTION_METHODS, detectionMethodTerms);
     }
 }
