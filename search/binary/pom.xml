@@ -18,6 +18,7 @@
 
     <modules>
         <module>binary-webservice</module>
+        <module>binary-search-webapp</module>
     </modules>
 
 </project>

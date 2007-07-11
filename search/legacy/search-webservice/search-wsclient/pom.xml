@@ -10,7 +10,7 @@
     
     <artifactId>search-wsclient</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <name>IntAct Services :: Search :: Legacy :: Search WebService :: Client</name>
     <description>Client for the Search Web Services</description>
