@@ -20,6 +20,7 @@ import uk.ac.ebi.intact.search.wsclient.SearchServiceClient;
 import javax.faces.component.UIData;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Map;
  * @version $Id$
  */
 @View
-public class SearchBean
+public class SearchBean implements Serializable
 {
     private static final Log log = LogFactory.getLog(SearchBean.class);
 

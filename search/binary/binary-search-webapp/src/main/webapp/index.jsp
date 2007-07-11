@@ -3,7 +3,7 @@
 <%
     String configFile = request.getSession().getServletContext().getInitParameter("psidev.DEFAULT_CONFIG_FILE");
 
-    if (new File(configFile).exists()) {
+    if (configFile != null && new File(configFile).exists()) {
         response.sendRedirect("faces/search.xhtml");
     }
 
