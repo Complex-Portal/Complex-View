@@ -24,6 +24,11 @@
                                     expandMessage="(see entire query)" collapseMessage="(collapse)"/>
                     <br/>
 
+                    <strong>Lucene Query: </strong>
+                    <ebi:outputText id="luceneQueryText" value="#{searchBean.results.result.luceneQuery}" maxLength="50"
+                                    expandMessage="(see entire query)" collapseMessage="(collapse)"/>
+                    <br/>
+
                     <strong>Binary Interactions: </strong>#{searchBean.results.rowCount}<br/>
                     <strong>Search time: </strong>
 

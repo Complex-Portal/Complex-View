@@ -22,7 +22,6 @@ import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
 import uk.ac.ebi.intact.util.ols.Term;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,10 +31,12 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class QueryHelper
-{
+public class QueryHelper {
+
     private static Log log = LogFactory.getLog(QueryHelper.class);
     private static final String WILDCARD = "*";
+    private static final String AND = "AND";
+    private static final String OR = "OR";
 
     public static String prepareQuery(String query) {
         if (query == null) {
@@ -50,16 +51,7 @@ public class QueryHelper
             return query;
         }
 
-        AdvancedSearch as = new AdvancedSearch();
-        as.setConjunction(false);
-        as.setDetectionMethod(query);
-        as.setIdentifier(query);
-        as.setInteractionType(query);
-        as.setPubFirstAuthor(query);
-        as.setPubId(query);
-        as.setTaxid(query);
-
-        return createQuery(as, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        return query;
     }
 
     public static boolean isLuceneQuery(String query) {
@@ -89,41 +81,48 @@ public class QueryHelper
             throw new NullPointerException("detectionMethodTerms");
         }
 
-        List<String> subQueries = new ArrayList<String>();
+        QueryStringBufferDecorator sb = new QueryStringBufferDecorator(new StringBuffer());
+        if (isValidValue(search.getIdentifier())) {
+            sb.append(concatFieldAndValue("identifiers", search.getIdentifier()));
+        }
 
-        createSubQuery(subQueries, search.getIdentifier(), "identifiers");
-
-        createSubQuery(subQueries, search.getPubId(), PsimiTabColumn.PUB_ID.getShortName());
-        createSubQuery(subQueries, search.getPubFirstAuthor(), PsimiTabColumn.PUB_1ST_AUTHORS.getShortName());
-        createSubQuery(subQueries, search.getTaxid(), "species");
+        if (isValidValue(search.getPubId())) {
+            sb.appendOperand(search);
+            sb.append(concatFieldAndValue(PsimiTabColumn.PUB_ID.getShortName(), search.getPubId()));
+        }
+        if (isValidValue(search.getPubFirstAuthor())) {
+            sb.appendOperand(search);
+            sb.append(concatFieldAndValue(PsimiTabColumn.PUB_1ST_AUTHORS.getShortName(), search.getPubFirstAuthor()));
+        }
+        if (isValidValue(search.getInteractionId())) {
+            sb.appendOperand(search);
+            sb.append(concatFieldAndValue(PsimiTabColumn.INTERACTION_ID.getShortName(), search.getInteractionId()));
+        }
 
         // interaction types
-        Term interactionTypeTerm = termForValue(search.getInteractionType(), interactionTypeTerms);
+        if (isValidValue(search.getInteractionType())) {
+            sb.appendOperand(search);
 
-        if (interactionTypeTerm != null) {
-            createTermSubQuery(subQueries, interactionTypeTerm, search.isIncludeInteractionTypeChildren(), PsimiTabColumn.INTERACTION_TYPES.getShortName());
-        } else {
-            createSubQuery(subQueries, putInQuotes(search.getInteractionType()), PsimiTabColumn.INTERACTION_TYPES.getShortName());
+            Term interactionTypeTerm = termForValue(search.getInteractionType(), interactionTypeTerms);
+
+            if (interactionTypeTerm != null) {
+                sb.append(concatFieldAndTerm(PsimiTabColumn.INTERACTION_TYPES.getShortName(), interactionTypeTerm, search.isIncludeInteractionTypeChildren()));
+            } else {
+                sb.append(concatFieldAndValue(PsimiTabColumn.INTERACTION_TYPES.getShortName(), search.getInteractionType()));
+
+            }
         }
 
-        // detection methods
-        Term detectionMethodTerm = termForValue(search.getDetectionMethod(), detectionMethodTerms);
+        if (isValidValue(search.getDetectionMethod())) {
+            sb.appendOperand(search);
 
-        if (detectionMethodTerm != null) {
-            createTermSubQuery(subQueries, detectionMethodTerm, search.isIncludeDetectionMethodChildren(), PsimiTabColumn.INTER_DETECTION_METHODS.getShortName());
-        } else {
-            createSubQuery(subQueries, putInQuotes(search.getDetectionMethod()), PsimiTabColumn.INTER_DETECTION_METHODS.getShortName());
-        }
+            // detection methods
+            Term detectionMethodTerm = termForValue(search.getDetectionMethod(), detectionMethodTerms);
 
-
-        StringBuffer sb = new StringBuffer();
-        String junction = (search.isConjunction()) ? " AND " : " OR ";
-        for (Iterator<String> iterator = subQueries.iterator(); iterator.hasNext();) {
-            String subQuery = iterator.next();
-            sb.append(subQuery);
-
-            if (iterator.hasNext()) {
-                sb.append(junction);
+            if (detectionMethodTerm != null) {
+                sb.append(concatFieldAndTerm(PsimiTabColumn.INTER_DETECTION_METHODS.getShortName(), detectionMethodTerm, search.isIncludeDetectionMethodChildren()));
+            } else {
+                sb.append(concatFieldAndValue(PsimiTabColumn.INTER_DETECTION_METHODS.getShortName(), search.getDetectionMethod()));
             }
         }
 
@@ -135,34 +134,37 @@ public class QueryHelper
         return query;
     }
 
-    private static void createSubQuery(List<String> subQueryList, String value, String... colShortNames) {
-        if (value != null && value.trim().length() > 0) {
-            if (colShortNames.length == 1) {
-                subQueryList.add(formatSubQuery(colShortNames[0], value));
-            } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append("(");
-                for (int i = 0; i < colShortNames.length; i++) {
-                    if (i > 0) {
-                        sb.append(" OR ");
-                    }
-                    sb.append(formatSubQuery(colShortNames[i], value));
-                }
-                sb.append(")");
-
-                subQueryList.add(sb.toString());
-            }
-        }
+    private static String concatFieldAndValue(String fieldName, String value) {
+        return fieldName + ":" + putInQuotes(value);
     }
 
-    private static void createTermSubQuery(List<String> subQueryList, Term term, boolean includeChildren, String colShortName) {
+
+
+    private static String concatFieldAndTerm(String fieldName, Term term, boolean includeChildren) {
+        List<Term> terms = new ArrayList<Term>();
+        terms.add(term);
+
         if (includeChildren) {
-            List<Term> termWithChildren = OlsBean.childrenFor(term, new ArrayList<Term>());
-            termWithChildren.add(term);
-            createSubQuery(subQueryList, termsToValue(termWithChildren, colShortName), colShortName);
-        } else {
-            createSubQuery(subQueryList, putInQuotes(term.getName()), colShortName);
+            terms.addAll(OlsBean.childrenFor(term, new ArrayList<Term>()));
         }
+
+        return fieldName + ":(" + termsToValue(terms) + ")";
+    }
+
+    private static String termsToValue(List<Term> terms) {
+        StringBuilder sb = new StringBuilder();
+
+        for (Iterator<Term> iterator = terms.iterator(); iterator.hasNext();) {
+            Term term = iterator.next();
+
+            sb.append(putInQuotes(term.getName()));
+
+            if (iterator.hasNext()) {
+                sb.append(" ");
+            }
+        }
+
+        return sb.toString();
     }
 
     private static String putInQuotes(String value) {
@@ -174,6 +176,10 @@ public class QueryHelper
             return value;
         }
         return "\"" + value + "\"";
+    }
+
+    private static boolean isValidValue(String value) {
+        return (value != null && value.length() > 0);
     }
 
 
@@ -196,65 +202,34 @@ public class QueryHelper
     }
 
     /**
-     * Converts a list of terms to a lucene accepted value
-     *
-     * @param terms the terms to process
-     *
-     * @return the terms as string and separated with "OR"
+     * Decoration of the StringBuffer to append the write operands only if necessary (always after a string has been added first)
      */
-    private static String termsToValue(List<Term> terms, String shortcolName) {
-        if (terms.isEmpty()) return "";
+    private static class QueryStringBufferDecorator {
 
-        StringBuilder sb = new StringBuilder();
+        private StringBuffer sb;
+        private boolean isOperandAllowed;
 
-        for (int i = 0; i < terms.size(); i++) {
-            Term term = terms.get(i);
-
-            if (i > 0) {
-                sb.append(" OR " + shortcolName + ":");
-            }
-
-            sb.append(putInQuotes(term.getName()));
+        public QueryStringBufferDecorator(StringBuffer sb) {
+            this.sb = sb;
         }
 
-        return sb.toString();
+        public StringBuffer append(String str) {
+            isOperandAllowed = true;
+            return sb.append(str);
+        }
+
+        public boolean appendOperand(AdvancedSearch advSearch) {
+            if (isOperandAllowed) {
+                String operand = advSearch.isConjunction() ? " AND " : " OR ";
+                sb.append(operand);
+            }
+
+            return !isOperandAllowed;
+        }
+
+        public String toString() {
+            return sb.toString();
+        }
     }
 
-    /**
-     * Splits the subquery by its spaces and prepends the column short name to each token
-     * If the passed value contains quotes, no split is done
-     *
-     * @param colShortName The column short name to use in the lucene search
-     * @param value        the value to process
-     *
-     * @return query for the value
-     */
-    private static String formatSubQuery(String colShortName, String value) {
-        if (value.contains("\"")) {
-            return colShortName + ":" + value;
-        }
-
-        String[] tokens = value.split(" ");
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < tokens.length; i++) {
-            String token = tokens[i];
-
-            // ignore "AND" and "OR"
-            if (token.equalsIgnoreCase("AND") || token.equalsIgnoreCase("OR")) {
-                continue;
-            }
-
-            // append OR between tokens
-            if (i > 0) {
-                sb.append(" OR ");
-            }
-
-            // append the token prepending the col name
-            sb.append(colShortName + ":" + token);
-        }
-
-        return sb.toString();
-    }
 }

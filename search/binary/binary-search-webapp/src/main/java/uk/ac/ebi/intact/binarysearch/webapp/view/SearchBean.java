@@ -82,6 +82,7 @@ public class SearchBean implements Serializable
         BooleanQuery.setMaxClauseCount(maxResults);
 
         this.resultsDataTable = (UIData) facesContext.getApplication().createComponent(HtmlDataTable.COMPONENT_TYPE);
+        this.resultsDataTable.setTransient(true);
 
         this.advancedSearch = new AdvancedSearch();
     }

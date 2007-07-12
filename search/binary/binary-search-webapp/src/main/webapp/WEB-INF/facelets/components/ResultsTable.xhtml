@@ -51,7 +51,7 @@
         <h:outputLink value="#{xrefUrl1}" target="_blank" rendered="#{xrefUrl1 != null}">
             <h:outputText value="#{xref.identifier}"/>
         </h:outputLink>
-        <h:outputText value="#{xref.identifier}" rendered="#{xrefUrl1 == null}"/>
+        <h:outputText value="#{xref.database}:#{xref.identifier}" rendered="#{xrefUrl1 == null}"/>
 
         <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
     </t:dataList>
@@ -71,7 +71,7 @@
         <h:outputLink value="#{xrefUrl2}" target="_blank" rendered="#{xrefUrl2 != null}">
             <h:outputText value="#{xref.identifier}"/>
         </h:outputLink>
-        <h:outputText value="#{xref.identifier}" rendered="#{xrefUrl2 == null}"/>
+        <h:outputText value="#{xref.database}:#{xref.identifier}" rendered="#{xrefUrl2 == null}"/>
 
         <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
     </t:dataList>

@@ -32,6 +32,7 @@ public class AdvancedSearch implements Serializable {
     private String pubFirstAuthor;
     private String taxid;
     private String interactionType;
+    private String interactionId;
     private boolean includeInteractionTypeChildren;
     private boolean conjunction = true;
 
@@ -111,6 +112,14 @@ public class AdvancedSearch implements Serializable {
         this.includeInteractionTypeChildren = includeInteractionTypeChildren;
     }
 
+    public String getInteractionId() {
+        return interactionId;
+    }
+
+    public void setInteractionId(String interactionId) {
+        this.interactionId = interactionId;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -122,6 +131,7 @@ public class AdvancedSearch implements Serializable {
         sb.append(", pubId='").append(pubId).append('\'');
         sb.append(", pubFirstAuthor='").append(pubFirstAuthor).append('\'');
         sb.append(", taxid='").append(taxid).append('\'');
+        sb.append(", interactionId='").append(interactionId).append('\'');
         sb.append(", interactionType='").append(interactionType).append('\'');
         sb.append(", includeInteractionTypeChildren=").append(includeInteractionTypeChildren);
         sb.append('}');
