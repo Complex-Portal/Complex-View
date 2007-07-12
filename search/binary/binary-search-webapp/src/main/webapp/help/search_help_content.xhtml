@@ -36,6 +36,13 @@
             <li>Wildcards (*,?) can be used between letters in a term or at the end of terms to do fuzzy queries,
                 <br/>but never at the beginning of a term
             </li>
+            <li>Optionally, you can prepend a symbol in from of your term.
+                <ul>
+                    <li>+ (plus): include this term. Equivalent to AND. e.g. +P12345</li>
+                    <li>- (minus): do not include this term. Equivalent to NOT. e.g. -P12345</li>
+                    <li>Nothing in front of the term. Equivalent to OR. e.g. P12345</li>
+                </ul>
+            </li>
         </ul>
 
         <p>For advanced searches the use of the Advanced Search form is recommended.
@@ -126,7 +133,6 @@
             <i>'P12345'</i> in the simple query box,
             this will mean the same as <i>identifiers:P12345 OR pubid:P12345 OR pubauth:P12345 OR species:P12345 OR
             type:"P12345" OR detmethod:"P12345" OR interaction_id="P12345"</i></p>
-
 
     </ui:composition>
 
