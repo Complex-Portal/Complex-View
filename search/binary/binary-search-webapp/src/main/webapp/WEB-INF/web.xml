@@ -36,7 +36,7 @@
             URL to do a search query
         </description>
         <param-name>psidev.SEARCH_QUERY_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/tc-test/intact/search/do/search?searchString=</param-value>
+        <param-value>http://www.ebi.ac.uk/intact/search/do/search?searchString=</param-value>
     </context-param>
     <context-param>
         <description>
