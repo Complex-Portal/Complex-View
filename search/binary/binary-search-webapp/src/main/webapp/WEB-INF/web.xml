@@ -354,4 +354,8 @@
         <error-code>404</error-code>
         <location>/faces/404_file_not_found.xhtml</location>
     </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/500_server_error.html</location>
+    </error-page>
 </web-app>
