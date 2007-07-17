@@ -5,10 +5,7 @@
  */
 package uk.ac.ebi.intact.search.wsclient;
 
-import uk.ac.ebi.intact.search.wsclient.generated.InteractionInfo;
-import uk.ac.ebi.intact.search.wsclient.generated.PartnerResult;
-import uk.ac.ebi.intact.search.wsclient.generated.Search;
-import uk.ac.ebi.intact.search.wsclient.generated.SearchService;
+import uk.ac.ebi.intact.search.wsclient.generated.*;
 
 import javax.xml.namespace.QName;
 import java.net.URL;
@@ -143,6 +140,24 @@ public class SearchServiceClient
     public List<InteractionInfo> getInteractionInfoUsingIntactIds(String id1, String id2) throws RemoteException
     {
         return search.getInteractionInfoUsingIntactIds(id1, id2);
+    }
+
+    public InteractionInfo getInteractionInfoForInteractionAc(String interactionAc) {
+        List<SimpleResult> results = search.searchInteractionsUsingQuery(interactionAc, null, null);
+
+        if (results == null) {
+            return null;
+        }
+
+        SimpleResult result = results.iterator().next();
+
+        InteractionInfo interInfo = new InteractionInfo();
+        interInfo.setFullName(result.getFullName());
+        interInfo.setIntactAc(result.getAc());
+        interInfo.setShortName(result.getLabel());
+        interInfo.setDescription(result.getType());
+        
+        return interInfo;
     }
 
     public String getServiceVersion() throws RemoteException

@@ -67,4 +67,13 @@ public class SearchClientTest extends TestCase
     {
         System.out.println(client.getSearchPort().countExperimentsUsingIntactQuery("brca2"));
     }
+
+    public void testGetInteractionInfoForInteractionAc() throws Exception {
+
+        InteractionInfo interactionInfo = client.getInteractionInfoForInteractionAc("EBI-1264463");
+        
+        System.out.println("Short name: "+interactionInfo.getShortName());
+        System.out.println("Full name: "+interactionInfo.getFullName());
+        System.out.println("IntAct AC: "+interactionInfo.getIntactAc());
+    }
 }
