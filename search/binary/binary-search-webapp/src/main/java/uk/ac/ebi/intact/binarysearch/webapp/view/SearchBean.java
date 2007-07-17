@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.component.html.ext.HtmlDataTable;
-import org.apache.myfaces.custom.datascroller.ScrollerActionEvent;
 import org.apache.shale.tiger.view.Init;
 import org.apache.shale.tiger.view.View;
 import psidev.psi.mi.tab.PsimiTabColumn;
@@ -82,7 +81,6 @@ public class SearchBean implements Serializable
         BooleanQuery.setMaxClauseCount(maxResults);
 
         this.resultsDataTable = (UIData) facesContext.getApplication().createComponent(HtmlDataTable.COMPONENT_TYPE);
-        this.resultsDataTable.setTransient(true);
 
         this.advancedSearch = new AdvancedSearch();
     }

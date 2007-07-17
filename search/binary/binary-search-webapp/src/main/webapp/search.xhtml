@@ -24,6 +24,10 @@
 
         <ui:define name="contents">
 
+        <h:panelGroup id="urgent">
+             <ebi:panelUrgentNews sourceUrl="#{initParam['uk.ac.ebi.faces.NEWS_URL']}" renderedIfEmpty="false" />
+        </h:panelGroup>
+
         <t:dojoInitializer />
 
             <h:panelGroup id="stateRegion">

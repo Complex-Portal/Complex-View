@@ -41,12 +41,12 @@
                                    value="Search"
                                    actionListener="#{searchBean.doSearch}"
                                    ignoreDupResponses="true"
-                                   reRender="stateRegion,advancedSearchRegion,summaryRegion,relatedResultsPanel,resultsRegion">
+                                   reRender="urgent,stateRegion,advancedSearchRegion,summaryRegion,relatedResultsPanel,resultsRegion">
                     <a4j:support event="oncomplete"
                                  limitToList="true"
                                  actionListener="#{searchBean.doCalculateRelatedResults}"
                                  ignoreDupResponses="true"
-                                 reRender="stateRegion,relatedResultsPanel"/>
+                                 reRender="urgent,stateRegion,relatedResultsPanel"/>
                 </a4j:commandButton>
 
                 <a href="#" onclick="intact_${id}_clearAndFocusField('searchQuery')">Clear</a>
