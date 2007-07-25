@@ -104,7 +104,7 @@
         <dependency>
             <groupId>com.sun.xml.stream</groupId>
             <artifactId>sjsxp</artifactId>
-            <version>SNAPSHOT</version>
+            <version>INTERNAL</version>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
