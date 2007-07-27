@@ -28,6 +28,7 @@ import javax.servlet.ServletContext;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * TODO comment this
@@ -56,6 +57,18 @@ public class BinarySearch {
     ) {
         SearchResult sr = Searcher.search(query, getIndexDirectory(), firstResult, maxResults);
         return sr;
+    }
+
+    @WebMethod()
+    public String getVersion() {
+        try {
+            Properties props = new Properties();
+            props.load(BinarySearch.class.getResourceAsStream("BuildInfo.properties"));
+            return (String) props.get("build.version");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     protected Directory getIndexDirectory() {
