@@ -19,6 +19,7 @@
 
     <modules>
         <module>app-commons</module>
+        <module>confidence-score</module>
     </modules>
 
 </project>
