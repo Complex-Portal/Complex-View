@@ -17,7 +17,8 @@
     <name>IntAct Services :: IMEx</name>
 
     <modules>
-        <module>imex-central</module>
+        <module>intact-imex-central</module>
+        <module>intact-imex-id-assigner</module>
     </modules>
 
 </project>

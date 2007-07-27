@@ -2,26 +2,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>uk.ac.ebi.intact.maven</groupId>
-        <artifactId>intact-hibernate-master</artifactId>
-        <version>8</version>
+        <groupId>uk.ac.ebi.intact.service.imex</groupId>
+        <artifactId>imex</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uk.ac.ebi.intact.util</groupId>
     <artifactId>intact-imex-central</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
 
-    <name>intact-imex-central</name>
-    <url>http://www.ebi.ac.uk/~intact/devsite/${artifactId}</url>
+    <name>IntAct Services :: IMEx :: Central</name>
 
-    <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/intact-imex-central/trunk</connection>
-        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/intact-imex-central/trunk</developerConnection>
-        <url>http://svn.sourceforge.net/viewcvs.cgi/intact/repo/intact-imex-central/trunk</url>
-    </scm>
+    <properties>
+       <maven.test.skip>true</maven.test.skip>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -32,13 +28,12 @@
         <dependency>
             <groupId>uk.ac.ebi.intact</groupId>
             <artifactId>intact-core</artifactId>
-            <version>1.5.0-beta-10</version>
         </dependency>
+
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-tools</artifactId>
+            <version>2.1</version>
         </dependency>
     </dependencies>
 
@@ -66,18 +61,5 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>java.net</id>
-            <url>https://maven-repository.dev.java.net/nonav/repository</url>
-            <layout>legacy</layout>
-        </repository>
     </repositories>
-
-    <distributionManagement>
-        <site>
-            <id>intact-site</id>
-            <name>Intact site</name>
-            <url>${site.remote.basedir}/${artifactId}</url>
-        </site>
-    </distributionManagement>
 </project>

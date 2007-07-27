@@ -1,9 +1,9 @@
 package uk.ac.ebi.intact.imex.idassigner.update;
 
-import junit.framework.JUnit4TestAdapter;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -30,14 +30,8 @@ import java.util.List;
  * @version $Id$
  * @since 1.0
  */
+@Ignore
 public class UpdatePublicationTest {
-
-    ////////////////////////////////
-    // Compatibility with JUnit 3
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter( UpdatePublicationTest.class );
-    }
 
     //////////////////////////
     // Initialisation
