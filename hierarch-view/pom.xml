@@ -18,6 +18,7 @@
 
     <modules>
         <module>tulip-webservice</module>
+        <module>intact-graph</module>
         <module>legacy</module>
     </modules>
 
