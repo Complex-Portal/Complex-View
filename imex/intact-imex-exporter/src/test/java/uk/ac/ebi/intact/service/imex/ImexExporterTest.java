@@ -1,7 +1,6 @@
 package uk.ac.ebi.intact.service.imex;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
@@ -18,16 +17,12 @@ import java.util.Collection;
  *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
- * @since TODO artifact version
+ * @since 1.6.0
  */
 public class ImexExporterTest extends IntactBasicTestCase {
 
-    @Test
-    @Ignore
-    public void exportImexFile() throws Exception {
-
-    }
-
+    //////////////////////////
+    // Utility methods
     private Publication buildPublication( String pmid, int experimentCount, int interactionCount ) {
         IntactMockBuilder mockBuilder = new IntactMockBuilder();
         Publication pub = mockBuilder.createPublication( pmid );
@@ -54,11 +49,28 @@ public class ImexExporterTest extends IntactBasicTestCase {
         return outputDir;
     }
 
+    //////////////////
+    // Tests
+
     @Test
     public void buildEntry() throws Exception {
 
+        final String pmid = "12345678";
+        Publication pub = buildPublication( pmid, 2, 3 );
+
+        ImexExporter imexExporter = new ImexExporter();
+        IntactEntry intactEntry = imexExporter.buildEntry( pub );
+        Assert.assertNotNull( intactEntry );
+
+        Assert.assertEquals( 2, intactEntry.getExperiments().size() );
+        for ( Experiment experiment : intactEntry.getExperiments() ) {
+            Assert.assertEquals( 3, experiment.getInteractions().size() );
+        }
+    }
+
+    @Test
+    public void exportImexFile() throws Exception {
         File target = getTargetDirectory();
-        System.out.println( target.getAbsolutePath() );
 
         final String pmid = "12345678";
         Publication pub1 = buildPublication( pmid, 2, 3 );
@@ -72,16 +84,28 @@ public class ImexExporterTest extends IntactBasicTestCase {
         entries.add( imexExporter.buildEntry( pub2 ) );
         entries.add( imexExporter.buildEntry( pub3 ) );
 
-        File outputFile = new File( "C:\\imex.xml" );
-        if ( outputFile.exists() ) {
-            outputFile.delete();
-        }
-
         imexExporter.exportImexFile( entries, target, true, true );
 
-        for ( int i = 0; i < target.listFiles().length; i++ ) {
-            File f = target.listFiles()[i];
-            System.out.println( f.getName() );
-        }
+        // check that the files are there
+        String today = imexExporter.getTodayImexExportFileName();
+
+        File xmlFile = new File( target, today + ".xml");
+        Assert.assertTrue( xmlFile.exists() );
+        Assert.assertTrue( xmlFile.length() > 0 );
+
+        File expandedXmlFile = new File( target, today + ".expanded.xml");
+        Assert.assertTrue( expandedXmlFile.exists() );
+        Assert.assertTrue( expandedXmlFile.length() > 0 );
+
+        File gzippedFile = new File( target, today + ".xml.gz");
+        Assert.assertTrue( gzippedFile.exists() );
+        Assert.assertTrue( gzippedFile.length() > 0 );
+
+        // uncompress the export file and check that the lenght is the same
+        File ungzippedFile = new File( target, "ungzipped.xml");
+        GzipUtils.gunzip( gzippedFile, ungzippedFile );
+        Assert.assertTrue( ungzippedFile.exists() );
+        Assert.assertTrue( ungzippedFile.length() > 0 );
+        Assert.assertEquals( expandedXmlFile.length(), ungzippedFile.length() );        
     }
 }

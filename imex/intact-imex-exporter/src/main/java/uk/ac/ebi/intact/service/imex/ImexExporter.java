@@ -4,11 +4,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.stylesheets.XslTransformException;
 import psidev.psi.mi.stylesheets.XslTransformerUtils;
+import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.IntactEntry;
-import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -208,7 +208,14 @@ public class ImexExporter {
     }
 
     public boolean hasImexIdentifier( Interaction interaction ) {
+        CvDatabase imex = getImex();
         return false;
+    }
+
+    private CvDatabase getImex() {
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        CvObjectDao<CvDatabase> dbDao = daoFactory.getCvObjectDao( CvDatabase.class );
+        return dbDao.getByPsiMiRef( CvDatabase.IMEX_MI_REF );
     }
 
     public boolean isAccepted( Experiment experiment ) {
