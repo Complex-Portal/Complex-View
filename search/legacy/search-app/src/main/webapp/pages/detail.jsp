@@ -941,9 +941,9 @@
 
             if (roleInfo.isBiologicalRoleUnspecified()){
         %>
-        <a href="<%= bean.getCvBiologicalRoleSearchURL(component)%>">
-            <%= component.getCvBiologicalRole().getShortLabel()%>
-        </a>
+                <a href="<%= bean.getCvExperimentalRoleSearchURL(component)%>">
+                    <%= component.getCvExperimentalRole().getShortLabel()%>
+                </a>
         <%
             }
             if (!roleInfo.isBiologicalRoleUnspecified() && !roleInfo.isExperimentalRoleUnspecified()) {
