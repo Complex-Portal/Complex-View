@@ -24,6 +24,11 @@ import uk.ac.ebi.intact.persistence.dao.AnnotationDao;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.persistence.dao.PublicationDao;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,7 +75,6 @@ public class IMExExport {
      *
      * @param document the XML document.
      * @param out      the output file.
-     *
      * @throws IOException if an I/O error occurs.
      */
     public static void save( Document document, File out ) throws IOException {
@@ -97,7 +101,6 @@ public class IMExExport {
      *
      * @param in  file to compress
      * @param out compressed file
-     *
      * @throws IOException if an I/O error occurs.
      */
     public static void compressUsingGZip( File in, File out ) throws IOException {
@@ -159,8 +162,6 @@ public class IMExExport {
                 System.out.println( "  > " + annotation );
             }
         }
-
-        //
 
         CvDatabase pubmed = CvHelper.getPubmed();
         CvXrefQualifier primaryReference = CvHelper.getPrimaryReference();
@@ -249,7 +250,6 @@ public class IMExExport {
         return false;
     }
 
-
     private static void buildPsiXml( UserSessionDownload session, Collection<Experiment> experiments ) {
 
         CvInteractorType proteinType = CvHelper.getProteinType();
@@ -279,17 +279,13 @@ public class IMExExport {
         }
     }
 
-
     public void exportIMExFile( Collection<String> pubmedIds ) throws IntactException, IOException {
 
         UserSessionDownload session = new UserSessionDownload( PsiVersion.getVersion25() );
-
-//            System.out.println( "Database: " + helper.getDbName() );
         int success = exportPublications( session, pubmedIds );
 
         if ( success > 0 ) {
             // continue only if some XML content has been generated
-
             // write it to File
             Document document = session.getPsiDocument();
 
@@ -298,10 +294,49 @@ public class IMExExport {
             File tempFile = new File( filenamePrefix + ".xml" ); // getTemporaryFile();
             save( document, tempFile );
 
+            File tempFileExpanded = new File( filenamePrefix + ".expanded.xml" );
+
+            System.out.println( "Expanding PSI-MI XML to comply to IMEx export rules." );
+            expandXmlFile( tempFile,
+                           new File( "C:\\MIF25_expand.xsl" ),
+                           tempFileExpanded );
+
             // GZip it
-            compressUsingGZip( tempFile, new File( filenamePrefix + ".xml.gz" ) );
+            compressUsingGZip( tempFileExpanded, new File( filenamePrefix + ".xml.gz" ) );
         } else {
             System.out.println( "No publication could be exported." );
+        }
+    }
+
+    public void expandXmlFile( File in, File xslt, File out ) {
+
+        if ( in == null ) {
+            throw new IllegalArgumentException( "The given input file was null, Abort." );
+        }
+
+        if ( out == null ) {
+            throw new IllegalArgumentException( "The given output file was null, Abort." );
+        }
+
+        if ( !in.exists() ) {
+            throw new IllegalArgumentException( "The given input file didn't exist. Abort." );
+        }
+
+        if ( out.exists() ) {
+            throw new IllegalArgumentException( "The given output file exist. Abort." );
+        }
+
+        // JAXP reads data using the Source interface
+        Source xmlSource = new StreamSource( in );
+        Source xsltSource = new StreamSource( xslt );
+
+        // the factory pattern supports different XSLT processors
+        TransformerFactory transFact = TransformerFactory.newInstance();
+        try {
+            Transformer trans = transFact.newTransformer( xsltSource );
+            trans.transform( xmlSource, new StreamResult( new FileOutputStream( out ) ) );
+        } catch ( Exception e ) {
+            throw new RuntimeException( "An unexpected error occured while transforming the XML file: " + in.getAbsolutePath() );
         }
     }
 

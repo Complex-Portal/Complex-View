@@ -3,18 +3,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>uk.ac.ebi.intact.service.imex</groupId>
-        <artifactId>imex</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
+        <groupId>uk.ac.ebi.intact.maven</groupId>
+        <artifactId>intact-hibernate-master</artifactId>
+        <version>9</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>uk.ac.ebi.intact.imex.idassigner</groupId>
     <artifactId>intact-imex-id-assigner</artifactId>
     <packaging>jar</packaging>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
 
-    <name>IntAct Services :: IMEx :: ID Assigner</name>
+    <name>intact-imex-id-assigner Module</name>
+    <description>Module for IntAct</description>
+    <url>http://www.ebi.ac.uk/~intact/devsite/intact-imex-id-assigner</url>
+
+    <scm>
+        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/intact-imex-id-assigner/trunk</connection>
+        <developerConnection> scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/intact-imex-id-assigner/trunk</developerConnection>
+        <url>http://svn.sourceforge.net/viewcvs.cgi/intact/repo/intact-imex-id-assigner/trunk/</url>
+    </scm>
 
     <build>
         <resources>
@@ -38,22 +47,36 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>psidev.psi.mi.stylesheets</groupId>
+            <artifactId>psimi-xslt</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.3.1</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- h2 database used for testing, with the cvs preloaded -->
         <dependency>
             <groupId>uk.ac.ebi.intact.templates</groupId>
             <artifactId>h2db-with-cv</artifactId>
-            <version>1.6-SNAPSHOT</version>
+            <version>1.3-20070410-test</version>
             <type>zip</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact</groupId>
             <artifactId>intact-core</artifactId>
+            <version>1.5.0</version>
         </dependency>
         <dependency>
-            <groupId>uk.ac.ebi.intact.dataexchange.psimi.legacy</groupId>
+            <groupId>uk.ac.ebi.intact.util</groupId>
             <artifactId>data-conversion</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>1.5.2</version>
         </dependency>
         <!--Web service deps-->
         <dependency>
@@ -108,5 +131,13 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <site>
+            <id>intact-site</id>
+            <name>Intact site</name>
+            <url>${site.remote.basedir}/intact-imex-id-assigner</url>
+        </site>
+    </distributionManagement>
 
 </project>
