@@ -17,6 +17,7 @@ import java.util.HashSet;
 /**
  * A simple graph class for temporary processing, for example to prepare output for graph analysis packages.
  */
+@Deprecated
 public class Graph extends uk.ac.ebi.intact.util.simplegraph.BasicGraph implements GraphI {
 
     /**

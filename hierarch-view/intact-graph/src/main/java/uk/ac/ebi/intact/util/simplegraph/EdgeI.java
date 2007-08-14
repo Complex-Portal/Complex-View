@@ -10,6 +10,7 @@ import uk.ac.ebi.intact.model.Component;
 /** An edge in the binary graph representation of an Interaction network.
  */
 
+@Deprecated
 public interface EdgeI extends uk.ac.ebi.intact.util.simplegraph.BasicGraphI
 {
 

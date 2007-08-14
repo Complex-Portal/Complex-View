@@ -12,6 +12,7 @@ import java.util.HashMap;
  * Common properties for objects in the SimpleGraph package. Extends HashMap to
  * allow easy implementation of key-value functionality.
  */
+@Deprecated
 public class BasicGraph extends HashMap implements BasicGraphI {
 
     ///////////////////////////////////////

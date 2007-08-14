@@ -10,12 +10,16 @@ import java.io.InputStream;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class GraphUtils
+public class GraphIOUtils
 {
 
-    private GraphUtils() {}
+    private GraphIOUtils() {}
 
     public static InputStream exportNetworkToGraphML(GraphNetwork graphNetwork) {
+        return null;
+    }
+
+    public static InputStream exportNetworkToCytoscape(GraphNetwork graphNetwork) {
         return null;
     }
 }

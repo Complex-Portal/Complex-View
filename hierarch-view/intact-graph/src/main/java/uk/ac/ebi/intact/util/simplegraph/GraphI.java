@@ -14,6 +14,7 @@ import java.util.HashMap;
 /**
  * A simple graph class for temporary processing, for example to prepare output for graph analysis packages.
  */
+@Deprecated
 public interface GraphI extends uk.ac.ebi.intact.util.simplegraph.BasicGraphI
 {
 

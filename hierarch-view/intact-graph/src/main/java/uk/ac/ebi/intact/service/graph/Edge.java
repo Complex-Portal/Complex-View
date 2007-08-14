@@ -6,6 +6,9 @@ package uk.ac.ebi.intact.service.graph;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public interface Edge
+public interface Edge<T extends Node>
 {
+    T getNodeA();
+
+    T getNodeB();
 }

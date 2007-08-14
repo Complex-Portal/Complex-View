@@ -5,6 +5,7 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.util.simplegraph;
 
+@Deprecated
 public interface NodeI {
     ///////////////////////////////////////
     // access methods for attributes

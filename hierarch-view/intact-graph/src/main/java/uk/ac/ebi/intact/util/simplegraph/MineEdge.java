@@ -14,6 +14,7 @@ import uk.ac.ebi.intact.model.Component;
  * 
  * @author Andreas Groscurth
  */
+@Deprecated
 public class MineEdge extends uk.ac.ebi.intact.util.simplegraph.BasicGraph implements EdgeI
 {
 

@@ -12,6 +12,7 @@ import java.util.Map;
  * Extends Map to allow easy implementation of key-value functionality.
  */
 
+@Deprecated
 public interface BasicGraphI extends Map{
 
     public String getId();
