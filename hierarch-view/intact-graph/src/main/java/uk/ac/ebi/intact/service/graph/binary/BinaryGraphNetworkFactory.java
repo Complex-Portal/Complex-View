@@ -29,7 +29,17 @@ public class BinaryGraphNetworkFactory {
 
     private BinaryGraphNetworkFactory() {}
 
+    /**
+     * This methods creates a BinaryGraphNetwork from a collection of BinaryInteractions.
+     * It identifies commons interactors and creates the necessary edges
+     * @param binaryInteractions
+     * @return
+     */
     public static BinaryGraphNetwork createBinaryGraphNetwork(Collection<BinaryInteraction> binaryInteractions) {
+
+        // the algorithm is a progressive algorigthm where we go checking each node
+        // for the provided interactions and create new Nodes/Edges with the partners.
+        // when an interation is done for a node, do the next node, and so on
         return null;
     }
 }

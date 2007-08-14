@@ -24,7 +24,13 @@ import uk.ac.ebi.intact.service.graph.Edge;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class BinaryEdge implements Edge<BinaryNode> {
+public class BinaryEdge implements Edge<BinaryNode,BinaryInteraction> {
+
+    private BinaryInteraction data;
+
+    public BinaryEdge(BinaryInteraction data) {
+        this.data = data;
+    }
 
     public BinaryNode getNodeA() {
         throw new UnsupportedOperationException();
@@ -32,5 +38,9 @@ public class BinaryEdge implements Edge<BinaryNode> {
 
     public BinaryNode getNodeB() {
         throw new UnsupportedOperationException();
+    }
+
+    public BinaryInteraction getData() {
+        return data;
     }
 }

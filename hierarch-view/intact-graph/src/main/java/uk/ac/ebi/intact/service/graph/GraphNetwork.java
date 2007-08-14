@@ -10,6 +10,5 @@ import java.util.Collection;
  */
 public interface GraphNetwork<T extends Node>{
 
-    Collection<T> getRootNodes();
 
 }

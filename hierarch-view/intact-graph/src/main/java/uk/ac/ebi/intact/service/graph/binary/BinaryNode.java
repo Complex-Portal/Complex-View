@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.service.graph.binary;
 
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.xml.model.Interactor;
 import uk.ac.ebi.intact.service.graph.Node;
 
 import java.util.Collection;
@@ -26,11 +27,11 @@ import java.util.Collection;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class BinaryNode implements Node<BinaryEdge,BinaryInteraction> {
+public class BinaryNode implements Node<BinaryEdge, Interactor> {
 
-    private BinaryInteraction data;
+    private Interactor data;
 
-    public BinaryNode(BinaryInteraction data) {
+    public BinaryNode(Interactor data) {
         this.data = data;
     }
 
@@ -38,8 +39,8 @@ public class BinaryNode implements Node<BinaryEdge,BinaryInteraction> {
         throw new UnsupportedOperationException();
     }
 
-    public BinaryInteraction getData() {
-        throw new UnsupportedOperationException();
+    public Interactor getData() {
+        return data;
     }
 
 }
