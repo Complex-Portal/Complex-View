@@ -11,7 +11,6 @@ import uk.ac.ebi.intact.confidence.ProteinPair;
 import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.regex.Pattern;
 
 /**
  * TODO comment that

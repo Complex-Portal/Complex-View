@@ -39,12 +39,12 @@ public class AlignTest02 implements TestConstants {
 
         try {
             ClassifierInputWriter ciw = new ClassifierInputWriter(
-//                    myDir + "highconf_alignment_attribs.txt",
-//                    myDir + "lowconf_alignment_attribs.txt",
-//                    myDir + "align_test.tadm",
                     myDir + "highconf_alignment_attribs.txt",
-                    myDir + "lc_alignment_attribs.txt",
+                    myDir + "lowconf_alignment_attribs.txt",
                     myDir + "align_test.tadm",
+//                    myDir + "highconf_alignment_attribs.txt",
+//                    myDir + "lc_alignment_attribs.txt",
+//                    myDir + "align_test.tadm",
                     "TADM");
                 ciw.writeAttribList(myDir+"align_test_attribs.txt");
         } catch (IllegalArgumentException iae) {
@@ -52,11 +52,15 @@ public class AlignTest02 implements TestConstants {
             System.out.println(comment);
         }
 
-//        String weightfile = myDir + "align_test_params.txt";
-//        String attribfile = myDir+"align_test_attribs.txt";
-//
-//       mec = new MaxEntClassifier(attribfile, weightfile);
-//        printTestScores(myDir+"medconf_alignment_attribs.txt",0.5,false);
+        // TODO: remove this after test-phase
+        //Iry: TADM should be called with the input align_test.tadm
+        // and store the output in align_test_params.txt
+        
+        String weightfile = myDir + "align_test_params.txt";
+        String attribfile = myDir+"align_test_attribs.txt";
+
+       mec = new MaxEntClassifier(attribfile, weightfile);
+        printTestScores(myDir+"medconf_alignment_attribs.txt",0.5,false);
 
     }
 

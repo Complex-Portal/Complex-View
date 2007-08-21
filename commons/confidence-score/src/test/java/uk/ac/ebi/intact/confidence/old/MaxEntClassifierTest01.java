@@ -46,7 +46,7 @@ public class MaxEntClassifierTest01 implements TestConstants {
         System.out.println("Score greater than or equal to 0.5:");
         System.out.println("High-confidence data:");
         printTestScores(hiConfAll, 0.5, true);
-        //printTestScores( dir + "highconf_ip_attribs.txt", 0.5, true);
+        printTestScores( dir + "highconf_ip_attribs.txt", 0.5, true);
         System.out.println("Low-confidence data:");
         printTestScores(lowConfAll, 0.5, true);
         System.out.println("Medium-confidence data (all):");
@@ -55,7 +55,7 @@ public class MaxEntClassifierTest01 implements TestConstants {
         System.out.println("\nScore greater than 0.5:");
         System.out.println("High-confidence data:");
         printTestScores(hiConfAll, 0.5, false);
-        //printTestScores( dir + "highconf_ip_attribs.txt", 0.5, true);
+        printTestScores( dir + "highconf_ip_attribs.txt", 0.5, true);
         System.out.println("Low-confidence data:");
         printTestScores(lowConfAll, 0.5, false);
         System.out.println("Medium-confidence data (all):");

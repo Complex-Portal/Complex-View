@@ -11,7 +11,9 @@ public interface TestConstants {
     // interface to store constants for testing classes
     // eg. pathnames
 
-    public static String dir = "/net/nfs6/vol1/homes/ibancarz/data/";
+    public static String dir = "H:\\projects\\temp\\data\\";
+    	//"H:\\projects\\ibancarz\\ibancarz\\data\\";
+    //"/net/nfs6/vol1/homes/ibancarz/data/";
     public static String highConfPairs = dir + "highconf_all.txt";
     public static String medConfPairs = dir + "medconf_all.txt";
     public static String lowConfPairs = dir + "lowconf.txt";

@@ -28,9 +28,14 @@ public class AlignTest03 implements TestConstants {
 //                    "-h", "/tmp/highconf_all.txt",
 //                    "-a", "/tmp/all_alignments2.txt",
 //                    "-o", "/tmp/all_align_attribs2.txt"};
-                    "-h", "/tmp/highconf_all.txt",
-                    "-a", "/tmp/lc_alignments2.txt",
-                    "-o", "/tmp/lc_align_attribs2.txt"};
+            		
+//                    "-h", "/tmp/highconf_all.txt",
+//                    "-a", "/tmp/lc_alignments2.txt",
+//                    "-o", "/tmp/lc_align_attribs2.txt"};
+
+            	  "-h", "H:\\projects\\temp\\alignTest3\\highconf_all.txt",
+                  "-a", "H:\\projects\\temp\\alignTest3\\lc_alignments.txt",
+                  "-o", "H:\\projects\\temp\\alignTest3\\lc_align_attribsTest3.txt"};
           GenerateAlignmentFile generator = new GenerateAlignmentFile(args);
     }
 

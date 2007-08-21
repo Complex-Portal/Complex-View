@@ -9,7 +9,6 @@ import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 
 import java.util.HashSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.io.*;
 

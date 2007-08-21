@@ -5,7 +5,7 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.confidence.old;
 
-import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
+import uk.ac.ebi.intact.confidence.attribute.FileCombiner;
 
 import java.io.IOException;
 
@@ -24,10 +24,10 @@ public class FileCombinerTest01 implements TestConstants {
 
     public FileCombinerTest01() throws IOException {
 
-        BinaryInteractionSet biSet = new BinaryInteractionSet(highConfPairs);
+//        BinaryInteractionSet biSet = new BinaryInteractionSet(highConfPairs);
         String[] paths = {hiConfGoAttribs, hiConfIpAttribs};
-        //FileCombiner fc = new FileCombiner(biSet, paths, dir+"highconf_all_attribs.txt");
-
+//        FileCombiner fc = new FileCombiner(biSet, paths, dir+"highconf_all_attribs.txt");
+        FileCombiner fc = new FileCombiner(paths, dir+"highconf_all_attribs.txt");
     }
 
 }

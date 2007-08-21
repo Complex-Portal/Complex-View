@@ -5,14 +5,12 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.confidence.attribute;
 
-import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.FileMethods;
 
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 import java.io.*;
 
 /**

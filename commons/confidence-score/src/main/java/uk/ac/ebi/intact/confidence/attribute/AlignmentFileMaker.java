@@ -5,6 +5,14 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.confidence.attribute;
 
+import java.util.Collection;
+import java.util.HashSet;
+
+import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+
+
+
 /**
  * TODO comment that
  *
@@ -48,6 +56,7 @@ public class AlignmentFileMaker
         // return string representation of hits
         // (uniprot IDs delimited by commas?) (entry numbers in FASTA reference file?)
 
+  
 
     }
 
@@ -58,5 +67,21 @@ public class AlignmentFileMaker
 
     }
 
+    public void blast(Collection<InteractionSimplified> intToBlast, Collection<InteractionSimplified> againstList){
+    	Collection<ProteinSimplified> proteins = getProteinList(intToBlast);
+    	Collection<ProteinSimplified> againstProteins = getProteinList(againstList);
+    	
+    	
+    	
+    }
+
+
+	private Collection<ProteinSimplified> getProteinList(Collection<InteractionSimplified> interactions) {
+		Collection<ProteinSimplified> proteins = new HashSet<ProteinSimplified>();
+		for (InteractionSimplified interactionSimplified : interactions) {
+			proteins.addAll(interactionSimplified.getInteractors());
+		}
+		return proteins;
+	}
 
 }

@@ -30,8 +30,8 @@ public class AlignTest01 implements TestConstants {
 
     public AlignTest01() throws IOException {
 
-        //getLowConfFile();
-        //getHighConfFile();
+//       getLowConfFile();
+//       getHighConfFile();
         getMedConfFile();
     }
 

@@ -7,7 +7,6 @@ package uk.ac.ebi.intact.confidence;
 
 
 import java.util.Arrays;
-import java.util.HashSet;
 
 /**
  * TODO comment that

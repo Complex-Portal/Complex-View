@@ -1,6 +1,5 @@
 package uk.ac.ebi.intact.confidence.attribute;
 
-import java.util.HashSet;
 
 /**
  * TODO comment that
