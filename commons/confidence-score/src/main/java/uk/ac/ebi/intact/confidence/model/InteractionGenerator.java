@@ -7,7 +7,7 @@ package uk.ac.ebi.intact.confidence.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -22,40 +22,40 @@ import java.util.Random;
  * </pre>
  */
 public class InteractionGenerator {
-	private Collection<InteractionSimplified> highconf;
-	private Collection<InteractionSimplified> lowconf;
-	private Collection<InteractionSimplified> medconf;
-	private Collection<String> proteinACs;
+	private List<InteractionSimplified> highconf;
+	private List<InteractionSimplified> lowconf;
+	private List<InteractionSimplified> medconf;
+	private List<String> proteinACs;
 
 	InteractionGenerator() {
 	}
 
-	public void setHighconfidence(Collection<InteractionSimplified> highconf2) {
+	public void setHighconfidence(List<InteractionSimplified> highconf2) {
 		if (isValid(highconf2))
 			this.highconf = highconf2;
 		else
 			throw new IllegalArgumentException();
 	}
 
-	public void setLowconfidence(Collection<InteractionSimplified> lowconfidence) {
+	public void setLowconfidence(List<InteractionSimplified> lowconfidence) {
 		if (isValid(lowconfidence))
 			this.lowconf = lowconfidence;
 		else
 			throw new IllegalArgumentException();
 	}
 
-	public void setMediumconfidence(Collection<InteractionSimplified> mediumconfidence) {
+	public void setMediumconfidence(List<InteractionSimplified> mediumconfidence) {
 		if (isValid(mediumconfidence))
 			this.medconf = mediumconfidence;
 		else
 			throw new IllegalArgumentException();
 	}
 
-	public void setProteinACs(Collection<String> proteinACs) {
+	public void setProteinACs(List<String> proteinACs) {
 		this.proteinACs = proteinACs;
 	}
 	
-	private boolean isValid(Collection<InteractionSimplified> interactList) {
+	private boolean isValid(List<InteractionSimplified> interactList) {
 		for (InteractionSimplified item : interactList) {
 			if (!isBinary(item))
 				return false;
@@ -76,8 +76,8 @@ public class InteractionGenerator {
 		return false;
 	}
 
-	public Collection<InteractionSimplified> generate(int nr) {
-		Collection<InteractionSimplified> generated = new ArrayList<InteractionSimplified>();
+	public List<InteractionSimplified> generate(int nr) {
+		List<InteractionSimplified> generated = new ArrayList<InteractionSimplified>();
 
 		Random random = new Random();
 
@@ -110,9 +110,9 @@ public class InteractionGenerator {
 				&& !in(lowconf, uniprotId1, uniprotId2);
 	}
 
-	private boolean in(Collection<InteractionSimplified> interactions, String uniprotId1, String uniprotId2) {
+	private boolean in(List<InteractionSimplified> interactions, String uniprotId1, String uniprotId2) {
 		for (InteractionSimplified item : interactions) {
-			Collection<ProteinSimplified> comps = item.getInteractors();
+			List<ProteinSimplified> comps = item.getInteractors();
 			
 			if (((ProteinSimplified) comps.toArray()[0]).getUniprotAc().equals(uniprotId1) && ((ProteinSimplified) comps.toArray()[1]).getUniprotAc().equals(uniprotId2) ||
 				((ProteinSimplified) comps.toArray()[1]).getUniprotAc().equals(uniprotId1) && ((ProteinSimplified) comps.toArray()[0]).getUniprotAc().equals(uniprotId2)	)
