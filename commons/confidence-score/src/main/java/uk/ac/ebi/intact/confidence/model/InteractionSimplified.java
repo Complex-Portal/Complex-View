@@ -5,7 +5,7 @@
  */
 package uk.ac.ebi.intact.confidence.model;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * TODO comment this
@@ -17,18 +17,18 @@ import java.util.Collection;
 public class InteractionSimplified {
 
 	private String ebiAc;
-	private Collection<ProteinSimplified> components;
+	private List<ProteinSimplified> components;
 	//private String type; //complex or binary
 	
 	public InteractionSimplified(){}
-	public InteractionSimplified(String ebiAC, Collection<ProteinSimplified> interactors){
+	public InteractionSimplified(String ebiAC, List<ProteinSimplified> interactors){
 		this.ebiAc = ebiAC;
 		this.components = interactors;
 	}
-	public Collection<ProteinSimplified> getInteractors() {
+	public List<ProteinSimplified> getInteractors() {
 		return components;
 	}
-	public void setInteractors(Collection<ProteinSimplified> interactors) {
+	public void setInteractors(List<ProteinSimplified> interactors) {
 		this.components = interactors;
 	}
 	public String getAc() {
