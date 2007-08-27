@@ -40,6 +40,11 @@ public interface SearchEnvironment
     static final String SEARCH_LINK = "uk.ac.ebi.intact.search.SEARCH_LINK";
 
     /**
+     * The binary search link
+     */
+    static final String BINARY_SEARCH_LINK = "uk.ac.ebi.intact.search.BINARY_SEARCH_LINK";
+
+    /**
      * Relative URL for hierarchView
      */
     static final String HIERARCH_VIEW_URL = "uk.ac.ebi.intact.search.HIERARCH_VIEW_URL";

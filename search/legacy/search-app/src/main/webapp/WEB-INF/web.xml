@@ -68,6 +68,14 @@
         </description>
     </context-param>
 
+    <context-param>
+        <param-name>uk.ac.ebi.intact.search.BINARY_SEARCH_LINK</param-name>
+        <param-value>http://www.ebi.ac.uk/intact/binary-search/faces/search.xhtml?query=</param-value>
+        <description>
+            The binary search link (absolute)
+        </description>
+    </context-param>
+
     <!-- HierarchView related params -->
     <context-param>
         <param-name>uk.ac.ebi.intact.search.HIERARCH_VIEW_URL</param-name>

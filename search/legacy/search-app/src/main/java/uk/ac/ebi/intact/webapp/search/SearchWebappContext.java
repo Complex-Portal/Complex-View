@@ -225,6 +225,12 @@ public class SearchWebappContext
         return ((WebappSession)session).getRequest().getContextPath().concat(appPath);
     }
 
+
+    public String getBinarySearchUrl(String query)
+    {
+        return session.getInitParam(SearchEnvironment.BINARY_SEARCH_LINK).concat(query);
+    }
+
     public Integer getMaxResultsPerPage()
     {
         String strMax = IntactContext.getCurrentInstance()
