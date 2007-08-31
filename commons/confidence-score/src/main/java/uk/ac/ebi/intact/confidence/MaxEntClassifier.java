@@ -128,7 +128,7 @@ public class MaxEntClassifier
 
     public double trueScoreFromLine(String line)
     {
-        ProteinPair pair = FileMethods.getProteinPair(line);
+      //  ProteinPair pair = FileMethods.getProteinPair(line);
         HashSet<Attribute> attribs = FileMethods.parseAttributeLine(line);
         Double[] probs = probs(attribs);
         Double tScore = probs[0];

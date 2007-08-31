@@ -15,6 +15,9 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * TODO comment that
  *
@@ -24,7 +27,10 @@ import java.io.FileReader;
  */
 public class BinaryInteractionSet
 {
-
+	/**
+	 * Sets up a logger for that class.
+	 */
+	public static final Log				log	= LogFactory.getLog(BinaryInteractionSet.class);	
     private HashSet<ProteinPair> biSet;  // set of non-identical binary interactions
     private static boolean verbose = false; // debugging switch
 
@@ -73,6 +79,16 @@ public class BinaryInteractionSet
         in.close();
     }
 
+    
+    public BinaryInteractionSet(Collection<ProteinPair> collection)
+    {
+        biSet = new HashSet<ProteinPair>();
+        for (ProteinPair pair : collection)
+        {
+            biSet.add(pair);
+        }
+    }
+
     public HashSet<String> getInteractionPartners(String prot)
     {
 
@@ -93,16 +109,7 @@ public class BinaryInteractionSet
         return partners;
 
     }
-
-    public BinaryInteractionSet(Collection<ProteinPair> collection)
-    {
-        biSet = new HashSet<ProteinPair>();
-        for (ProteinPair pair : collection)
-        {
-            biSet.add(pair);
-        }
-    }
-
+    
     public HashSet<String> getAllProtNames()
     {
         // get all UniProt IDs of proteins participating in this binary interaction set

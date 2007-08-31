@@ -8,6 +8,9 @@ package uk.ac.ebi.intact.confidence.dataRetriever;
 import java.io.Writer;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 
 /**
@@ -19,6 +22,10 @@ import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
  */
 public class WsRetriever implements DataRetrieverStrategy {
 
+	/**
+	 * Sets up a logger for that class.
+	 */
+	public static final Log				log	= LogFactory.getLog(WsRetriever.class);	
 	public List<InteractionSimplified> retrieveHighConfidenceSet() {
 		// TODO Auto-generated method stub
 		return null;

@@ -51,7 +51,9 @@ public class TadmContext
         for (int i = 0; i < fvPairs; i++)
         {
             attribIndex = attribs[i];
-            features1[i] = attribIndex * 2;
+            features1[i] = attribIndex * 2; //TODO: ask Iain why the index *2
+            // isn't an index the representation of an unique protein pair?
+            // is this just a way of representing the fearutes0. it could easily be some other way?
             features0[i] = (attribIndex * 2) + 1;
         }
 

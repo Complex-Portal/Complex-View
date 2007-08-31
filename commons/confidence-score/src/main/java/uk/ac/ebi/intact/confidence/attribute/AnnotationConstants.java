@@ -3,36 +3,44 @@ package uk.ac.ebi.intact.confidence.attribute;
 
 /**
  * TODO comment that
- *
+ * 
  * @author Iain Bancarz
  * @version $Id$
- * @since 31-Jul-2006
- *        <p/>
- *        Stores various constants related to protein annotation
- *        Useful for finding attributes
- *        Eg. regular expressions to denote GO and InterPro terms
+ * @since 31-Jul-2006 <p/> Stores various constants related to protein
+ *        annotation Useful for finding attributes Eg. regular expressions to
+ *        denote GO and InterPro terms
  */
 public interface AnnotationConstants
 {
-
+	// TODO: replace with a relative path
+	static String uniprotPath = "E:\\iarmean\\data\\uniprot_sprot.dat";
+	
+	// identify EBI accession number
+	static String ebiAcExpr = "^EBI-\\d*";
+	
     // identify protein accession number line in uniprot flatfile
     static String uniprotNameExpr = "^AC.*";
 
     // identify uniprot accession term
-    static String uniprotTermExpr = "\\w{6,6}";  // this also matches _ but should be OK
+    static String uniprotTermExpr = "\\w{6,6}";  // this also matches _ but
+													// should be OK
 
     // regexps to identify InterPro and GO accession numbers
-    static String ipTermExpr = "IPR\\d{6,6}"; // IPR followed by exactly 6 digits
-    static String goTermExpr = "GO:\\d{7,7}"; // GO: followed by exactly 7 digits
+    static String ipTermExpr = "IPR\\d{6,6}"; // IPR followed by exactly 6
+												// digits
+    static String goTermExpr = "GO:\\d{7,7}"; // GO: followed by exactly 7
+												// digits
 
     static String commentExpr = "^>.*"; // standard comment line starts with >
 
     // regexps to identify GO/Interpro lines in UniProt flatfiles
     static String ipLineExprUniProt = "^DR\\s+InterPro.*";
     static String goLineExprUniProt = "^DR\\s+GO.*";
-    static String endExprUniProt = "^//.*";      // marks end of a UniProt entry
+    static String endExprUniProt = "^//.*";      // marks end of a UniProt
+													// entry
 
-    static String forbiddenGoTerm = "GO:0005515"; // GO term for protein binding
+    static String forbiddenGoTerm = "GO:0005515"; // GO term for protein
+													// binding
     static String[] forbiddenGoTerms = {
             forbiddenGoTerm, // GO term for protein binding
             // the following are all children of "GO:0005515" as of 31/07/2006

@@ -54,6 +54,49 @@ public class ProteinSimplified {
 		this.seq = seq;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		result = prime * result + ((seq == null) ? 0 : seq.hashCode());
+		result = prime * result + ((uniprotAc == null) ? 0 : uniprotAc.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final ProteinSimplified other = (ProteinSimplified) obj;
+		if (role == null) {
+			if (other.role != null)
+				return false;
+		} else if (!role.equals(other.role))
+			return false;
+		if (seq == null) {
+			if (other.seq != null)
+				return false;
+		} else if (!seq.equals(other.seq))
+			return false;
+		if (uniprotAc == null) {
+			if (other.uniprotAc != null)
+				return false;
+		} else if (!uniprotAc.equals(other.uniprotAc))
+			return false;
+		return true;
+	}
+
 //	public Collection<String> getGOs() {
 //		return GOs;
 //	}
@@ -77,4 +120,6 @@ public class ProteinSimplified {
 //	public void setAlignments(Collection<String> alignments) {
 //		this.alignments = alignments;
 //	}	
+	
+	
 }

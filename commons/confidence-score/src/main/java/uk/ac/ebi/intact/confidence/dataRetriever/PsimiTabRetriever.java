@@ -15,6 +15,9 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import psidev.psi.mi.tab.PsimiTabReader;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.xml.converter.ConverterException;
@@ -29,7 +32,11 @@ import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
  * @since <pre>22 Aug 2007</pre>
  */
 public class PsimiTabRetriever implements DataRetrieverStrategy {
-
+	
+	/**
+	 * Sets up a logger for that class.
+	 */
+	public static final Log				log	= LogFactory.getLog(PsimiTabRetriever.class);
 	private PsimiTabReader psimiTabReader;
 	private Collection<BinaryInteraction> binaryInts;
 	private List<InteractionSimplified> highConfidence;
@@ -77,9 +84,9 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
 	}
 
 	public void retrieveMediumConfidenceSet(Writer osw) {
-			for (BinaryInteraction interaction : binaryInts) {
-				//TODO: ask Sam aount the psimi model for the interaction
-			}
+//			for (BinaryInteraction interaction : binaryInts) {
+//				//TODO: ask Sam aount the psimi model for the interaction
+//			}
 	}
 	
 

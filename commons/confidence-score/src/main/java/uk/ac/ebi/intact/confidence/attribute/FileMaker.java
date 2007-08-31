@@ -9,6 +9,7 @@ import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -25,6 +26,7 @@ public class FileMaker
     BinaryInteractionSet biSet;
     private boolean verbose = false; // debug switch
 
+    
     public FileMaker(BinaryInteractionSet biSet)
     {
 
@@ -89,6 +91,11 @@ public class FileMaker
 
     }
 
+    public void writeAnnotationAttributes(ProteinPair proteinPair, String notePath, String outPath) throws IOException{
+    	biSet = new BinaryInteractionSet(Arrays.asList(proteinPair));
+    	writeAnnotationAttributes(notePath, outPath);
+    }
+    
     public void writeAlignmentAttributes(String hitPath, String hiconfPath, String outPath)
             throws IOException
     {
@@ -148,7 +155,12 @@ public class FileMaker
 
     }
 
-
+    public void writeAlignmentAttributes(ProteinPair proteinPair, String hitPath, String hiconfPath, String outPath)
+    throws IOException {
+    	biSet = new BinaryInteractionSet(Arrays.asList(proteinPair));
+    	writeAlignmentAttributes(hitPath, hiconfPath, outPath);
+    }
+    
     private HashMap<String, String[]> getProteinAnnotations(String notePath) throws IOException
     {
 

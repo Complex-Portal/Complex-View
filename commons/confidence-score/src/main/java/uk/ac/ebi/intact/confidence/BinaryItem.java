@@ -129,4 +129,12 @@ public abstract class BinaryItem implements Comparable<BinaryItem>
         }
     }
 
+	public String getFirstId() {
+		return name1;
+	}
+
+	public String getSecondId() {
+		return name2;
+	}
+
 }

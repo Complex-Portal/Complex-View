@@ -8,11 +8,13 @@ package uk.ac.ebi.intact.confidence.dataRetriever;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -24,17 +26,19 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
-import uk.ac.ebi.intact.confidence.model.DataMethods;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.confidence.util.DataMethods;
 import uk.ac.ebi.intact.config.impl.AbstractHibernateDataConfig;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.Component;
 import uk.ac.ebi.intact.model.CvBiologicalRole;
+import uk.ac.ebi.intact.model.CvDatabase;
 import uk.ac.ebi.intact.model.CvExperimentalRole;
 import uk.ac.ebi.intact.model.CvObjectXref;
 import uk.ac.ebi.intact.model.CvTopic;
+import uk.ac.ebi.intact.model.CvXrefQualifier;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.InteractionImpl;
 import uk.ac.ebi.intact.model.Interactor;
@@ -83,10 +87,12 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 		if (highConfidenceSet == null) {
 			OutputStream os;
 			try {
-				//Date dateNow = new Date();
-				//String dateStr = dateNow.getHours() +":"+ dateNow.getMinutes();
-				//TODO: replace with smth more appropriate
-				//File f = File.createTempFile("mediumConfidence"+dateStr, "txt");
+				// Date dateNow = new Date();
+				// String dateStr = dateNow.getHours() +":"+
+				// dateNow.getMinutes();
+				// TODO: replace with smth more appropriate
+				// File f = File.createTempFile("mediumConfidence"+dateStr,
+				// "txt");
 				File file = new File(GlobalTestData.getInstance().getTmpDir() + "mediumConfidence.txt");
 				os = new FileOutputStream(file);
 				retrieveMediumConfidenceSet(new OutputStreamWriter(os));
@@ -147,7 +153,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 	 *            {@link String} ebiACs
 	 * @return List {@link InteractionSimplified}
 	 */
-	public List<InteractionSimplified> read(List<String> ebiACs) {
+	public List<InteractionSimplified> read(HashSet<String> ebiACs) {
 		List<InteractionSimplified> interactions = new ArrayList<InteractionSimplified>();
 		InteractionDao interactionDao = daoFactory.getInteractionDao();
 		for (String ac : ebiACs) {
@@ -170,9 +176,10 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 	 * interactions in IntAct which do not belong to the high confidence set, or
 	 * the low confidence set (sets defined through curators)
 	 * 
+	 * @param writer
 	 * @return List {@link InteractionSimplified}
 	 */
-	public List<InteractionSimplified> readMediumConfidenceSet(Writer w) {
+	public List<InteractionSimplified> readMediumConfidenceSet(Writer writer) {
 		highConfidenceSet = new ArrayList<InteractionSimplified>();
 		List<InteractionSimplified> medconf = new ArrayList<InteractionSimplified>();
 
@@ -180,7 +187,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
 		int totalNr = interactionDao.countAll();
 		System.out.println("nr total: " + totalNr);
-		//totalNr = 100; // TODO: remove after test
+		// totalNr = 100; // TODO: remove after test
 
 		if (log.isInfoEnabled()) {
 			beginTransaction();
@@ -194,17 +201,17 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 		final int maxResults = 50;
 
 		List<InteractionImpl> interactions = null;
-		for (int i=0; i<totalNr; i+=50){
-		//do {
+		for (int i = 0; i < totalNr; i += 50) {
+			// do {
 			beginTransaction();
 			interactionDao = daoFactory.getInteractionDao();
 			interactions = interactionDao.getAll(firstResult, maxResults);
 
 			medconf = checkInteractions(interactions);
-			
+
 			log.debug("\t\tProcessed medium confidence " + medconf.size());
 			medconf = dataMethods.expand(medconf, new SpokeExpansion());
-			dataMethods.export(medconf, w, true);
+			dataMethods.export(medconf, writer, true);
 
 			commitTransaction();
 
@@ -220,6 +227,12 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
 		}// while (!interactions.isEmpty());
 
+		try {
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return medconf;
 	}
 
@@ -265,8 +278,9 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
 		for (Component comp : interaction.getComponents()) {
 			Interactor interactor = comp.getInteractor();
-			if (Protein.class.isAssignableFrom(interactor.getClass())
-					&& ProteinUtils.isFromUniprot((Protein) interactor)) {
+			if (interactor != null && Protein.class.isAssignableFrom(interactor.getClass())
+					&& ProteinUtils.isFromUniprot((Protein) interactor)
+					&& fromUniprot(interactor)) {
 				nr += 1;
 			}
 			if (nr == 2) {
@@ -274,6 +288,29 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 			}
 		}
 
+		return false;
+	}
+
+	private boolean fromUniprot(Interactor interactor) {
+		if (interactor == null) {
+			return false;
+		}
+		Collection<InteractorXref> xrefs = interactor.getXrefs();
+		for (InteractorXref interactorXref : xrefs) {
+			CvDatabase db = interactorXref.getCvDatabase();
+			CvObjectXref dbXref = CvObjectUtils.getPsiMiIdentityXref(db);
+			if (dbXref == null){
+				log.info("dbXref == null, db: " + db + " interactor ac: "+ interactor.getAc());
+				return false;				
+			}
+			if (CvDatabase.UNIPROT_MI_REF.equals(dbXref.getPrimaryId())){
+				CvXrefQualifier qualifier = interactorXref.getCvXrefQualifier();
+				CvObjectXref qualifierXref = CvObjectUtils.getPsiMiIdentityXref(qualifier);
+				if (CvXrefQualifier.IDENTITY_MI_REF.equals(qualifierXref.getPrimaryId())){
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -368,8 +405,8 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 		List<ProteinSimplified> proteins = new ArrayList<ProteinSimplified>();
 		for (Component comp : components) {
 			Interactor interactor = comp.getInteractor();
-
-			String role = "neutral";
+			
+			String role = "-";
 			CvExperimentalRole expRole = comp.getCvExperimentalRole();
 			CvObjectXref psiMiXref = CvObjectUtils.getPsiMiIdentityXref(expRole);
 			if (CvExperimentalRole.BAIT_PSI_REF.equals(psiMiXref.getPrimaryId())) {
@@ -380,8 +417,9 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 			}
 
 			// this is because an interactor could be a small molecule, you want
-			// to make sure you have a protein
-			if (Protein.class.isAssignableFrom(interactor.getClass())) {
+			// to make sure you have a protein			
+			if (fromUniprot(interactor) && Protein.class.isAssignableFrom(interactor.getClass())
+					&& ProteinUtils.isFromUniprot((Protein) interactor)) {
 				ProteinSimplified protein = saveProteinInformation((Protein) interactor);
 				protein.setRole(role);
 				proteins.add(protein);

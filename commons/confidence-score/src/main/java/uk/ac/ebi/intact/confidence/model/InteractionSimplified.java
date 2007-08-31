@@ -37,4 +37,41 @@ public class InteractionSimplified {
 	public void setAc(String ebiAc) {
 		this.ebiAc = ebiAc;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((components == null) ? 0 : components.hashCode());
+		result = prime * result + ((ebiAc == null) ? 0 : ebiAc.hashCode());
+		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final InteractionSimplified other = (InteractionSimplified) obj;
+		if (components == null) {
+			if (other.components != null)
+				return false;
+		} else if (!components.equals(other.components))
+			return false;
+		if (ebiAc == null) {
+			if (other.ebiAc != null)
+				return false;
+		} else if (!ebiAc.equals(other.ebiAc))
+			return false;
+		return true;
+	}
 }

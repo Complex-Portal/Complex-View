@@ -33,10 +33,16 @@ public class FileCombiner implements AnnotationConstants
 
     private int rejected;  // count number of incorrectly formatted protein pairs rejected
 
+    public FileCombiner(){}
+    
     public FileCombiner(String[] attributePaths, String outPath)
             throws IOException
     {
-        // this version finds attributes for blocks of 1000 protein pairs
+       merge(attributePaths, outPath);
+    }
+
+    public void merge (String [] attributePaths, String outPath)   throws IOException{
+    	 // this version finds attributes for blocks of 1000 protein pairs
         // avoids out-of-memory errors
 
 
@@ -109,7 +115,6 @@ public class FileCombiner implements AnnotationConstants
             System.out.println(comment);
         }
     }
-
 
     public int getRejected()
     {
@@ -238,6 +243,5 @@ public class FileCombiner implements AnnotationConstants
         }
 
     */
-
 }
 
