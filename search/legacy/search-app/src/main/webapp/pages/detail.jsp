@@ -946,18 +946,21 @@
                 </a>
         <%
             }
+
+
             if (!roleInfo.isBiologicalRoleUnspecified() && !roleInfo.isExperimentalRoleUnspecified()) {
         %>
         /
         <%
+            }
+
 
             if (roleInfo.isExperimentalRoleUnspecified()) {
         %>
-        <a href="<%= bean.getCvBiologicalRoleSearchURL(component)%>">
-            <%= component.getCvBiologicalRole().getShortLabel()%>
-        </a>
+                <a href="<%= bean.getCvBiologicalRoleSearchURL(component)%>">
+                    <%= component.getCvBiologicalRole().getShortLabel()%>
+                </a>
         <%
-                }
             }
         %>
     </td>
