@@ -21,6 +21,8 @@
         <currentVersion>${version}</currentVersion>
         <jetty.port>9090</jetty.port>
         <tempH2>/tmp/intact-${artifactId}-${jetty.port}-h2</tempH2>
+
+        <core.version>1.6.3-SNAPSHOT</core.version>
     </properties>
 
     <modules>
@@ -160,22 +162,22 @@
             <dependency>
                 <groupId>uk.ac.ebi.intact</groupId>
                 <artifactId>intact-core</artifactId>
-                <version>1.6.1-SNAPSHOT</version>
+                <version>${core.version}</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.intact.core</groupId>
                 <artifactId>intact-annotations</artifactId>
-                <version>1.6.1-SNAPSHOT</version>
+                <version>${core.version}</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.intact.core</groupId>
                 <artifactId>intact-persister</artifactId>
-                <version>1.6.1-SNAPSHOT</version>
+                <version>${core.version}</version>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.intact.commons</groupId>
                 <artifactId>intact-commons</artifactId>
-                <version>2.1.0</version>
+                <version>2.1.2</version>
             </dependency>
 
             <!-- Inter-group dependencies: services -->
