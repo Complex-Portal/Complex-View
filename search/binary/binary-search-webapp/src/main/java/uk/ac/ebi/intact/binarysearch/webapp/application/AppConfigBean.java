@@ -77,7 +77,10 @@ public class AppConfigBean implements Serializable {
     }
 
     public String getAbsoluteContextPath() {
-        return absoluteContextPath;
+        return request.getScheme() + "://" +
+               request.getServerName() + ":" +
+               request.getServerPort() +
+               request.getContextPath();
     }
 
     public SearchConfig getConfig() {
