@@ -35,6 +35,7 @@
         <module>predict</module>
         <module>statistics</module>
         <module>imex</module>
+        <module>exporter</module>
     </modules>
 
     <scm>
