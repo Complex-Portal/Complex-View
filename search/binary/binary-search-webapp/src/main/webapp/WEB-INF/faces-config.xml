@@ -21,6 +21,11 @@
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
     <managed-bean>
+        <managed-bean-name>requestConfigBean</managed-bean-name>
+        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.application.RequestConfigBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
         <managed-bean-name>olsBean</managed-bean-name>
         <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>

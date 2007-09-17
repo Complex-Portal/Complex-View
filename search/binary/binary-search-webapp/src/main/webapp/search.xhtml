@@ -101,12 +101,12 @@
                     <p style="#{searchBean.results.rowCount > 0? 'display:block' : 'display:none'}">
                         <strong>Export Options: </strong>
 
-                        <h:outputLink target="_blank" value="#{appConfigBean.absoluteContextPath}/export.jsp">
+                        <h:outputLink target="_blank" value="#{requestConfigBean.absoluteContextPath}/export.jsp">
                             <f:param name="q" value="#{searchBean.query}"/>
                             <f:param name="d" value="#{searchBean.defaultIndex.location}"/>
                             <f:param name="sort" value="#{searchBean.sortColumn}"/>
                             <f:param name="asc" value="#{searchBean.sortAscending}"/>
-                            <t:graphicImage url="#{appConfigBean.absoluteContextPath}/images/mitab.png"
+                            <t:graphicImage url="#{requestConfigBean.absoluteContextPath}/images/mitab.png"
                                             style="vertical-align:middle"
                                             border="0"/>
                         </h:outputLink>

@@ -23,13 +23,13 @@ public class TreeBuilder
         return new TreeModelBase(rootNode);
     }
 
-    public TreeNode createNode(Term term) {
+    public TermTreeNode createNode(Term term) {
         if (term == null) {
-            return new TreeNodeBase("term", "not available", true);
+            return new TermTreeNode("term", "not available", true);
         }
 
         boolean isLeaf = term.getChildren() == null || term.getChildren().isEmpty();
-        TreeNode baseTerm = new TreeNodeBase("term", term.getName(), isLeaf);
+        TermTreeNode baseTerm = new TermTreeNode("term", term, isLeaf);
 
         if (!isLeaf) {
             for (Term childTerm : term.getChildren()) {

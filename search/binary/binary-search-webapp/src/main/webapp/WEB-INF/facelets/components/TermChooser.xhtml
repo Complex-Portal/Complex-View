@@ -33,8 +33,9 @@
                             <t:tree2 var="term" varNodeToggler="t" binding="#{tree}" transient="true">
                                 <f:facet name="term">
                                     <h:panelGroup>
-                                        <h:outputText value="#{term.description}" styleClass="nodeFolder"
-                                                      onclick="document.getElementById('${forClientId}').value='${term.description}'; ${id}_panel.hide()"/>
+                                        <ui:param name="termName" value="#{term.exactSynonim == null? term.description : term.exactSynonim}"/>
+                                        <h:outputText value="#{term.description}" styleClass="nodeFolder" title="#{termName}"
+                                                      onclick="document.getElementById('${forClientId}').value='${termName}'; ${id}_panel.hide()"/>
                                     </h:panelGroup>
                                 </f:facet>
                             </t:tree2>

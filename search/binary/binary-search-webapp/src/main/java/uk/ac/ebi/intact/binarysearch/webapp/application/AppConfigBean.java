@@ -38,8 +38,6 @@ public class AppConfigBean implements Serializable {
     public static final String DEFAULT_CONFIG_FILE_INIT_PARAM = "psidev.DEFAULT_CONFIG_FILE";
     public static final String DEFAULT_INDEX_LOCATION_INIT_PARAM = "psidev.DEFAULT_INDEX";
 
-    private String absoluteContextPath;
-    private HttpServletRequest request;
     private SearchConfig config;
     private String configFileLocation;
 
@@ -47,12 +45,6 @@ public class AppConfigBean implements Serializable {
 
     public AppConfigBean() {
         FacesContext context = FacesContext.getCurrentInstance();
-        this.request = (HttpServletRequest) context.getExternalContext().getRequest();
-
-        this.absoluteContextPath = request.getScheme() + "://" +
-                                   request.getServerName() + ":" +
-                                   request.getServerPort() +
-                                   request.getContextPath();
 
         configFileLocation = context.getExternalContext().getInitParameter(DEFAULT_CONFIG_FILE_INIT_PARAM);
 
@@ -70,17 +62,6 @@ public class AppConfigBean implements Serializable {
 
         if (log.isInfoEnabled()) log.info("Initializing xref link context...");
         this.linkContext = XrefLinkContextFactory.createDefaultXrefLinkContext();
-    }
-
-    public HttpServletRequest getRequest() {
-        return request;
-    }
-
-    public String getAbsoluteContextPath() {
-        return request.getScheme() + "://" +
-               request.getServerName() + ":" +
-               request.getServerPort() +
-               request.getContextPath();
     }
 
     public SearchConfig getConfig() {

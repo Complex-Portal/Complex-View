@@ -67,6 +67,7 @@ public class OlsBean implements Serializable {
         }
     }
 
+    @Deprecated
     public List<String> suggestInteractionTypes(String prefix) {
         if (log.isDebugEnabled()) log.debug("Interaction type Suggestions for: " + prefix);
 
@@ -85,6 +86,7 @@ public class OlsBean implements Serializable {
         return suggestions;
     }
 
+    @Deprecated
     public List<String> suggestInteractionDetectionMethods(String prefix) {
         if (log.isDebugEnabled()) log.debug("Detection methods Suggestions for: " + prefix);
 

@@ -157,7 +157,8 @@ public class QueryHelper {
         for (Iterator<Term> iterator = terms.iterator(); iterator.hasNext();) {
             Term term = iterator.next();
 
-            sb.append(putInQuotes(term.getName()));
+            String termName = (term.getExactSynonim() != null)? term.getExactSynonim() : term.getName();
+            sb.append(putInQuotes(termName));
 
             if (iterator.hasNext()) {
                 sb.append(" ");
@@ -193,7 +194,7 @@ public class QueryHelper {
         }
 
         for (Term term : terms) {
-            if (value.equals(term.getName())) {
+            if (value.equals(term.getName()) || value.equals(term.getExactSynonim())) {
                 return term;
             }
         }

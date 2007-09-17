@@ -17,14 +17,14 @@
 
         <ebi:page title="IntAct - Search" showFooter="#{!standalone}" showHeader="#{!standalone}">
             <ui:define name="headsection">
-                <link rel="stylesheet" href="#{appConfigBean.absoluteContextPath}/css/intact.css" type="text/css"/>
+                <link rel="stylesheet" href="#{requestConfigBean.absoluteContextPath}/css/intact.css" type="text/css"/>
 
                 <!-- Feeds -->
                 <link rel="alternate" type="application/rss+xml" title="IntAct News RSS feed" href="feed"/>
 
-                <script type="text/javascript" src="#{appConfigBean.absoluteContextPath}/js/intact.js"></script>
+                <script type="text/javascript" src="#{requestConfigBean.absoluteContextPath}/js/intact.js"></script>
 
-                <link rel="SHORTCUT ICON" href="#{appConfigBean.absoluteContextPath}/images/logo_intact_small.gif"/>
+                <link rel="SHORTCUT ICON" href="#{requestConfigBean.absoluteContextPath}/images/logo_intact_small.gif"/>
                 <link rel="search" href="http://www.ebi.ac.uk/intact/site/plugins/plugins/openSearch/openSearch.xml"
                       type="application/opensearchdescription+xml" title="IntAct"/>
             </ui:define>
