@@ -258,8 +258,8 @@ public class ChartBuilder {
         taxidFilter.add( new Item( "A. thaliana", new String[]{"3702"} ) );
         taxidFilter.add( new Item( "S. cerevisiae", new String[]{"4932"} ) );
         taxidFilter.add( new Item( "S. pombe", new String[]{"4896"} ) );
-        taxidFilter.add( new Item( "E. coli", new String[]{"562"} ) );
-        taxidFilter.add( new Item( "Rice (O. sativa)", new String[]{"4530"} ) );
+        taxidFilter.add( new Item( "E. coli (K12)", new String[]{"83333"} ) );
+        taxidFilter.add( new Item( "Rice (japonica)", new String[]{"39947"} ) );
     }
 
     /**
