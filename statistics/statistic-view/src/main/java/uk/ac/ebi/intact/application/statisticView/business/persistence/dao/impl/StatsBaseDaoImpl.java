@@ -13,8 +13,6 @@ import uk.ac.ebi.intact.application.statisticView.business.persistence.dao.Stats
 import uk.ac.ebi.intact.context.IntactSession;
 import uk.ac.ebi.intact.persistence.dao.impl.HibernateBaseDaoImpl;
 
-import java.util.Collection;
-
 /**
  * TODO comment this!
  *
@@ -32,9 +30,5 @@ public class StatsBaseDaoImpl<T extends StatsBase> extends HibernateBaseDaoImpl<
 
     public T getByAc( int ac ) {
         return ( T ) getSession().get( getEntityClass(), ac );
-    }
-
-    public Collection<T> getAll() {
-        return getSession().createCriteria( getEntityClass() ).list();
     }
 }
