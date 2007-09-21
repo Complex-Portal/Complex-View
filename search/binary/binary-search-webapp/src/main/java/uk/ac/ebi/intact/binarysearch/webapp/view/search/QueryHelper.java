@@ -135,7 +135,7 @@ public class QueryHelper {
     }
 
     private static String concatFieldAndValue(String fieldName, String value) {
-        return fieldName + ":" + putInQuotes(value);
+        return fieldName + ":" + value;
     }
 
 
@@ -192,6 +192,9 @@ public class QueryHelper {
         if (value == null) {
             return null;
         }
+
+        // remove quotes from the string, to be able to check the equals
+        value = value.replaceAll("\"", "");
 
         for (Term term : terms) {
             if (value.equals(term.getName()) || value.equals(term.getExactSynonim())) {

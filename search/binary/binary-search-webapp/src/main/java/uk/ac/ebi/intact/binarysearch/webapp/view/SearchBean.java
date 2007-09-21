@@ -4,8 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.component.html.ext.HtmlDataTable;
-import org.apache.shale.tiger.view.Init;
-import org.apache.shale.tiger.view.View;
 import psidev.psi.mi.tab.PsimiTabColumn;
 import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
@@ -28,7 +26,6 @@ import java.util.Map;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@View
 public class SearchBean implements Serializable
 {
     private static final Log log = LogFactory.getLog(SearchBean.class);
@@ -58,23 +55,6 @@ public class SearchBean implements Serializable
     private String sortColumn;
     private boolean sortAscending;
 
-    @Init
-    public void readUrlParams() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        Map<String, String> requestMap = facesContext.getExternalContext().getRequestParameterMap();
-        /*
-        if (requestMap.containsKey(QUERY_PARAM)) {
-            query = requestMap.get(QUERY_PARAM);
-
-            advancedMode = false;
-            //doSearch(null);
-        }
-         */
-        if (requestMap.containsKey(ADV_SEARCH_PARAM)) {
-            advancedMode = Boolean.valueOf(requestMap.get(ADV_SEARCH_PARAM));
-        }
-    }
-
     public SearchBean() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         int maxResults = Integer.parseInt(facesContext.getExternalContext().getInitParameter(MAX_RESULTS_INIT_PARAM));
@@ -83,11 +63,13 @@ public class SearchBean implements Serializable
         this.resultsDataTable = (UIData) facesContext.getApplication().createComponent(HtmlDataTable.COMPONENT_TYPE);
 
         this.advancedSearch = new AdvancedSearch();
+
+        this.advancedMode = facesContext.getExternalContext().getRequestParameterMap().get("advSearch") != null;
     }
 
     public void doSearch(ActionEvent evt) {
         relatedResults = null;
-        
+
         if (isAdvancedMode()) {
             query = QueryHelper.createQuery(advancedSearch, olsBean.getInteractionTypeTerms(), olsBean.getDetectionMethodTerms());
         } else {

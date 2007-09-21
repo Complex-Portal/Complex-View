@@ -31,7 +31,6 @@ import java.io.Serializable;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-//@View
 public class FirstTimeBean implements Serializable {
 
     private SearchConfig config;

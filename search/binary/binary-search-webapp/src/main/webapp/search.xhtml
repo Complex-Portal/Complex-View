@@ -66,13 +66,17 @@
                     dojo.addOnLoad(searchWithQuery);
                 </script>
             </h:panelGroup>
-            
-            <h:panelGroup id="advancedSearchRegion"
-                          style="#{searchBean.advancedMode? 'display:block' : 'display:none'}">
+
+            <h:panelGroup
+                          style="#{param.advSearch? 'display:block' : 'display:none'}">
+
+                <h:panelGroup id="advancedSearchRegion">
 
                 <br/><br/>
 
                 <bs:advancedSearch/>
+
+                </h:panelGroup>
 
             </h:panelGroup>
 

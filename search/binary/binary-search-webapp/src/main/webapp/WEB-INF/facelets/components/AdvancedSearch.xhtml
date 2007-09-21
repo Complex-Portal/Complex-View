@@ -19,6 +19,13 @@
 <ebi:panelRound rendered="#{rendered == null? true : sf:convertToBoolean(rendered)}">
 
 <h:panelGroup>
+
+    <div style="float:right">
+        <h:panelGroup>
+            <h:commandLink value="Close Advanced Search" action="home" />
+        </h:panelGroup>
+    </div>
+
     <h3>Advanced Search
         <ebi:help id="advHelp" title="Advanced Search" onlyIcon="true">
             <h:panelGroup>
@@ -48,6 +55,7 @@
             </ul>
         </ebi:help>
     </h3>
+
 </h:panelGroup>
 
 <h:panelGroup onkeypress="return submitEnter('searchForm:btnSearch',event)">
@@ -95,8 +103,7 @@
                     <t:inputText id="intTypeSuggestion" value="#{searchBean.advancedSearch.interactionType}"
                                  forceId="true"/>
                     <bs:termChooser forClientId="intTypeSuggestion"
-                                    treeModel="#{olsBean.interactionTypeTreeModel}"
-                                    rendered="#{searchBean.advancedMode}"/>
+                                    treeModel="#{olsBean.interactionTypeTreeModel}"/>
                 </h:panelGroup>
 
                 <h:outputLabel for="advIncludeTypeChildren" value="Include children"/>
@@ -112,8 +119,7 @@
                 <h:panelGroup>
                     <t:inputText id="advDetMethod" value="#{searchBean.advancedSearch.detectionMethod}" forceId="true"/>
                     <bs:termChooser forClientId="advDetMethod"
-                                    treeModel="#{olsBean.detectionMethodTreeModel}"
-                                    rendered="#{searchBean.advancedMode}"/>
+                                    treeModel="#{olsBean.detectionMethodTreeModel}"/>
                 </h:panelGroup>
 
                 <h:outputLabel for="advIncludeDetChildren" value="Include children"/>
