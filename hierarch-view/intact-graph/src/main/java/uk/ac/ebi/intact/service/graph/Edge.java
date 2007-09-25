@@ -1,16 +1,25 @@
 package uk.ac.ebi.intact.service.graph;
 
+
 /**
- * TODO comment this
+ * Interface for edge.
  *
- * @author Bruno Aranda (baranda@ebi.ac.uk)
+ * @author Bruno Aranda (baranda@ebi.ac.uk) & Nadin Neuhauser (nneuhauser@ebi.ac.uk)
  * @version $Id$
  */
-public interface Edge<T extends Node,D>
+public interface Edge<N extends Node,D>
 {
-    T getNodeA();
+    N getNodeA();
 
-    T getNodeB();
+    N getNodeB();
 
     D getData();
+    
+    boolean equals(Object o);
+    
+    int hashCode();
+    
+    String toString();
+    
+    
 }
