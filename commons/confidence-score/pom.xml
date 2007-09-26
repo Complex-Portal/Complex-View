@@ -38,14 +38,34 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!-- 		<plugin>
 				<groupId>uk.ac.ebi.intact.commons</groupId>
 				<artifactId>hibernateconfig-maven-plugin</artifactId>
-			</plugin>
+				</plugin>
+			-->
+
+
 		</plugins>
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>uk.ac.ebi.intact.bridges</groupId>
+			<artifactId>intact-blast</artifactId>
+			<version>2.0-beta-6-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>psidev.psi.mi</groupId>
+			<artifactId>psimitab</artifactId>
+			<version>1.0-rc2-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>psidev.psi.mi</groupId>
+			<artifactId>psi25-xml</artifactId>
+			<version>1.0-beta4</version>
+		</dependency>
+
 		<dependency>
 			<groupId>net.sourceforge.opennlp</groupId>
 			<artifactId>maxent</artifactId>
@@ -63,13 +83,27 @@
 			<artifactId>wsclient</artifactId>
 			<version>1.6.0-beta-1</version>
 		</dependency>
-		
-		<dependency>
-           <groupId>uk.ac.ebi.intact</groupId>
-           <artifactId>intact-core</artifactId>
-           <version>1.6.1</version>
-       </dependency>
 
+		<dependency>
+			<groupId>uk.ac.ebi.intact</groupId>
+			<artifactId>intact-core</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<!-- for xml parser -->
+<!-- 		<dependency>
+			<groupId>uk.ac.ebi.intact.confidence.blastmapping</groupId>
+			<artifactId>blast-mapping-parser</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+-->
+		<!-- for the blast h2 db -->
+		<!-- <dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.0.20070617</version>
+		</dependency>
+-->
 	</dependencies>
 
 
