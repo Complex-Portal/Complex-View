@@ -1,11 +1,16 @@
 package uk.ac.ebi.intact.confidence.global;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.attribute.AnnotationFileMaker;
@@ -38,32 +43,33 @@ public class GlobalTest {
 	 */
 	public static final Log		log	= LogFactory.getLog(GlobalTest.class);
 	
+	private String uniprotPathDir;
+	
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		getConfidenceListsFromDb();
-		getInterProAndGo();
-		
-		
-		//getAlignments();
-		
-		
-	}
+//	public static void main(String[] args) {
+//		getConfidenceListsFromDb();
+//		String uniprotPathDir	= args[0];
+//		getInterProAndGo(uniprotPathDir);
+//		//getAlignments();	
+//	}
 
-	private static void getConfidenceListsFromDb() {
-		IntactDbRetriever intactdb = new IntactDbRetriever();
+	@Test
+	@Ignore
+	public void getConfidenceListsFromDb() {
+		HashMap<String, File> paths = GlobalTestData.getInstance().getRightPahts();
+		String tmpDirPath = paths.get("workDir").getPath() + "/IntactDbRetriever/"; //GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetriever/";
+		IntactDbRetriever intactdb = new IntactDbRetriever(tmpDirPath);
 		long start = System.currentTimeMillis();
 		
 		try {
-			//TODO: replace with a proper way of writing to files
-			String fileName = GlobalTestData.getInstance().getTmpDir() +"mediumConfidence.txt";
-			FileWriter fw = new FileWriter(fileName);
+			File file = new File(GlobalTestData.getInstance().getTargetDirectory().getPath(), "mediumConfidence.txt");
+			FileWriter fw = new FileWriter(file);
 			intactdb.retrieveMediumConfidenceSet(fw);
 			fw.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail(e.toString());
 		}
 		long end = System.currentTimeMillis();
 		log.info ("time needed : " + (end-start));
@@ -71,25 +77,26 @@ public class GlobalTest {
 		
 		DataMethods dm = new DataMethods();
 		highconf =  dm.expand(highconf, new SpokeExpansion());
-		//TODO: replace with a proper way of writing to files
-		String filepath = GlobalTestData.getInstance().getTmpDir() +"highConf.txt";
-		dm.export(highconf, new File(filepath), true);		
+		File file = new File(GlobalTestData.getInstance().getTargetDirectory().getPath() + "highConf.txt");
+		dm.export(highconf, file, true);		
 	}
 	
-	private static void getInterProAndGo() {
-		String path = GlobalTestData.getInstance().getTmpDir() + "ProtPairsTest.txt";
+	@Test
+	@Ignore
+	public void getInterProAndGo() {
+		String path = GlobalTestData.getInstance().getTargetDirectory().getPath() + "/ProtPairsTest.txt";
 		BinaryInteractionSet biSet;
 		try {
 			biSet = new BinaryInteractionSet(path);
-			String uniprotPath = GlobalTestData.getInstance().getDataDir() + "uniprot_sprot.dat";
+			String uniprotPath = uniprotPathDir + "uniprot_sprot.dat";
 			AnnotationFileMaker afm = new AnnotationFileMaker(biSet, uniprotPath);
 			System.out.println("Finding Interpro annotation:");
-	        afm.writeInterproAnnotation(GlobalTestData.getInstance().getTmpDir() + "ProtTest_interpro.txt");
+	        afm.writeInterproAnnotation(GlobalTestData.getInstance().getTargetDirectory().getPath() + "/ProtTest_interpro.txt");
 	        System.out.println("Finding GO annotation:");
-	        afm.writeGoAnnotation(GlobalTestData.getInstance().getTmpDir() + "ProtTest_go.txt");
+	        File f = new File(GlobalTestData.getInstance().getTargetDirectory().getPath(), "ProtTest_go.txt");
+	        afm.writeGoAnnotation(f.getPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail(e.toString());
 		}				
 	}	
 }
