@@ -25,6 +25,7 @@ import psidev.psi.mi.tab.model.ConfidenceImpl;
 import psidev.psi.mi.tab.model.CrossReference;
 import psidev.psi.mi.tab.model.Confidence;
 import psidev.psi.mi.xml.converter.ConverterException;
+import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.FileMethods;
 import uk.ac.ebi.intact.confidence.MaxEntClassifier;
@@ -68,18 +69,21 @@ public class PsimiConfidence {
 		} catch (ConverterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (BlastServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 	}
 
-	private void computeScore(Collection<BinaryInteraction> psimiInts) {
-		BinaryInteractionSet biS = getBISet(psimiInts);
-		AttributeGetter  aG = new AttributeGetter(tmpDir + "uniprot_sprot.dat", null);
+	private void computeScore(Collection<BinaryInteraction> psimiInts) throws BlastServiceException {
+		BinaryInteractionSet biS = getBiSet(psimiInts);
+		AttributeGetter  aG = new AttributeGetter(tmpDir + "uniprot_sprot.dat", null, null, null, null);
 		String outPath = tmpDir + "psimi_all_attributes.txt";
 		aG.getAllAttribs(biS, againstProteins, outPath);
 		//TODO: read the all attribs, and for each do a getAttribs per line => score
 		FileReader fr;
-		try {
+		try {		
 			fr = new FileReader(new File(outPath));
 			BufferedReader br =  new BufferedReader(fr);
 			String line = "";
@@ -131,7 +135,7 @@ public class PsimiConfidence {
 		
 	}
 
-	private BinaryInteractionSet getBISet(Collection<BinaryInteraction> interactions) {
+	private BinaryInteractionSet getBiSet(Collection<BinaryInteraction> interactions) {
 		Collection<ProteinPair> proteinPairs = new ArrayList<ProteinPair>();
 		for (BinaryInteraction binaryInteraction : interactions) {
 		

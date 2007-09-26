@@ -71,6 +71,7 @@ public class DataMethods implements AnnotationConstants {
 		List<String> uniprotAcs = new ArrayList<String>();
 
 		File file = new File(filepath);
+		System.out.println(file.getAbsolutePath());
 		FileReader fr = null;
 		try {
 			fr = new FileReader(file);
@@ -137,9 +138,9 @@ public class DataMethods implements AnnotationConstants {
 	 * @param filepath
 	 * @return List of simplified interaction objects
 	 */
-	public List<InteractionSimplified> read(String filepath) throws IOException {
+	public List<InteractionSimplified> read(String filepath, String tmpDirPath) throws IOException {
 		HashSet<String> ebiACs = new HashSet<String>(readExact(filepath, true));
-		List<InteractionSimplified> interactions = getInteractions(ebiACs);
+		List<InteractionSimplified> interactions = getInteractions(tmpDirPath, ebiACs);
 		return interactions;
 	}
 
@@ -147,9 +148,9 @@ public class DataMethods implements AnnotationConstants {
 	 * gets the information out of the DB for each EBI-xxxx it retrievs the
 	 * uniprotAcs
 	 */
-	private List<InteractionSimplified> getInteractions(HashSet<String> ebiACs) {
+	private List<InteractionSimplified> getInteractions(String tmpDirPath, HashSet<String> ebiACs) {
 		ebiACs = checkFormat(ebiACs, true);
-		return (new IntactDbRetriever()).read(ebiACs);
+		return (new IntactDbRetriever(tmpDirPath)).read(ebiACs);
 	}
 
 	/**
@@ -240,6 +241,9 @@ public class DataMethods implements AnnotationConstants {
 	 */
 	public List<InteractionSimplified> expand(List<InteractionSimplified> interactions,
 			ExpansionStrategy expansionStrategy) {
+		if (interactions == null || expansionStrategy == null) {
+			throw new NullPointerException("check that the interactions and expansionStrategy are not null!");
+		}
 		List<InteractionSimplified> expanded = new ArrayList<InteractionSimplified>();
 		for (InteractionSimplified interaction : interactions) {
 			expanded.addAll(expansionStrategy.expand(interaction));
@@ -341,12 +345,12 @@ public class DataMethods implements AnnotationConstants {
 	 * 
 	 * @param interactions
 	 *            the exported list of interactions
-	 * @param osw
-	 *            the OutputStreamWriter
+	 * @param writer
+	 *            the Writer
 	 * @param uniprotAcsOnly
 	 *            a flag for exporting
 	 */
-	public void export(List<InteractionSimplified> interactions, Writer w, boolean uniprotAcsOnly) {
+	public void export(List<InteractionSimplified> interactions, Writer writer, boolean uniprotAcsOnly) {
 		log.info("\t\tGoing to export : " + interactions.size());
 		for (InteractionSimplified item : interactions) {
 
@@ -362,11 +366,40 @@ public class DataMethods implements AnnotationConstants {
 			sb.append(prot1.getUniprotAc() + ";" + prot2.getUniprotAc() + "\n");
 
 			try {
-				w.append(sb.toString());
+				writer.append(sb.toString());
 			} catch (IOException e) {
 				log.error("could not export : " + sb.toString());
 				e.printStackTrace();
 			}
+		}
+	}
+
+	/**
+	 * Exports the interaction and uniprot - accession numbers to an output
+	 * stream
+	 * 
+	 * @param proteinpairs
+	 *            the exported list of protein pairs
+	 * @param writer
+	 *            the Writer
+	 */
+	public void export(List<ProteinPair> proteinPairs, Writer writer) {
+		log.info("\t\tGoing to export : " + proteinPairs.size());
+		for (ProteinPair pp : proteinPairs) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(pp.getFirstId() + ";" + pp.getSecondId() + "\n");
+			try {
+				writer.append(sb.toString());
+			} catch (IOException e) {
+				log.error("could not export : " + sb.toString());
+				e.printStackTrace();
+			}
+		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -392,6 +425,7 @@ public class DataMethods implements AnnotationConstants {
 				intS.setAc(strs[0]);
 
 				String[] uniprotAcs = strs[1].split(";");
+
 				List<ProteinSimplified> proteins = new ArrayList<ProteinSimplified>();
 
 				for (String uniprot : uniprotAcs) {
@@ -413,6 +447,37 @@ public class DataMethods implements AnnotationConstants {
 		}
 
 		return interactions;
+	}
+
+	/**
+	 * retrieves a list of Protein Pairs form a fileF
+	 * 
+	 * @param inFile
+	 * @return List of ProteinPairs
+	 */
+	public List<ProteinPair> readImportProteinPairs(File inFile) {
+		List<ProteinPair> proteins = new ArrayList<ProteinPair>();
+		FileReader fr;
+		try {
+			fr = new FileReader(inFile);
+			BufferedReader br = new BufferedReader(fr);
+
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				String[] uniprotAcs = line.split(";");
+				if (Pattern.matches(uniprotTermExpr, uniprotAcs[0]) && Pattern.matches(uniprotTermExpr, uniprotAcs[1])) {
+					ProteinPair pp = new ProteinPair(uniprotAcs[0], uniprotAcs[1]);
+					proteins.add(pp);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return proteins;
 	}
 
 	/**

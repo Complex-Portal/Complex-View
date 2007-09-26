@@ -7,10 +7,8 @@ package uk.ac.ebi.intact.confidence.dataRetriever;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +23,7 @@ import org.hibernate.SessionFactory;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
-import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+//import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
@@ -72,10 +70,16 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
 	private DataMethods					dataMethods;
 	private DaoFactory					daoFactory;
+	private File tmpDir;
+	private boolean dbNrForTest = false;
 
-	public IntactDbRetriever() {
+	public IntactDbRetriever(String tmpDirPath) {
 		daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
 		dataMethods = new DataMethods();
+		//TODO: remove when it is not necessar anymore
+		//String tempDirPath = GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetriever/";
+		tmpDir = new File(tmpDirPath, "IntactDbRetriever");
+		tmpDir.mkdir();
 	}
 
 	/**
@@ -85,18 +89,15 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 	 */
 	public List<InteractionSimplified> retrieveHighConfidenceSet() {
 		if (highConfidenceSet == null) {
-			OutputStream os;
 			try {
-				// Date dateNow = new Date();
-				// String dateStr = dateNow.getHours() +":"+
-				// dateNow.getMinutes();
-				// TODO: replace with smth more appropriate
-				// File f = File.createTempFile("mediumConfidence"+dateStr,
-				// "txt");
-				File file = new File(GlobalTestData.getInstance().getTmpDir() + "mediumConfidence.txt");
-				os = new FileOutputStream(file);
-				retrieveMediumConfidenceSet(new OutputStreamWriter(os));
+				File file = new File(tmpDir.getAbsolutePath(),"mediumConfidence.txt");
+				FileWriter fw = new FileWriter(file);
+				retrieveMediumConfidenceSet(fw);
+				fw.close();
 			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -185,16 +186,19 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
 		InteractionDao interactionDao = daoFactory.getInteractionDao();
 
-		int totalNr = interactionDao.countAll();
-		System.out.println("nr total: " + totalNr);
-		// totalNr = 100; // TODO: remove after test
-
+		int totalNr =0;
+		// only for test purpose
+		
 		if (log.isInfoEnabled()) {
 			beginTransaction();
-			int total = interactionDao.countAll();
+			totalNr = interactionDao.countAll();
 			commitTransaction();
 
-			log.info("\tGoing to process: " + total);
+			log.info("\tGoing to process: " + totalNr);
+		}
+
+		if (dbNrForTest) {
+			totalNr = 100; // TODO: ask it there is a  more elegant way
 		}
 
 		int firstResult = 0;
@@ -484,5 +488,12 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 				.getCurrentInstance().getConfig().getDefaultDataConfig();
 		SessionFactory factory = abstractHibernateDataConfig.getSessionFactory();
 		return factory.getCurrentSession();
+	}
+
+	/**
+	 * @param dbNrForTest the dbNrForTest to set
+	 */
+	public void setDbNrForTest(boolean dbNrForTest) {
+		this.dbNrForTest = dbNrForTest;
 	}
 }

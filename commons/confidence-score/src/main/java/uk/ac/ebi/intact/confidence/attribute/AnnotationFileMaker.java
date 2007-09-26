@@ -11,8 +11,12 @@ import uk.ac.ebi.intact.confidence.ProteinPair;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.io.*;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * TODO comment that
@@ -24,11 +28,17 @@ import java.io.*;
  */
 public class AnnotationFileMaker implements AnnotationConstants {
 
+	/**
+	 * Sets up a logger for that class.
+	 */
+	public static final Log		log	= LogFactory.getLog(AnnotationFileMaker.class);
+	
 	File			uniprotFile;
-	HashSet<String>	allProts;
+	Set<String>	allProts;
 	static boolean	verbose		= true;					// debug switch
 
 	public AnnotationFileMaker(){
+		allProts = new HashSet<String>();
 	}
 	
 	public AnnotationFileMaker(BinaryInteractionSet biSet, String uniPath) {
@@ -36,7 +46,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		allProts = biSet.getAllProtNames(); // proteins to find annotation for
 
 		if (uniPath != null) {
-			uniprotFile = new File(uniPath); // path to uniprot flatfile
+			uniprotFile = new File(uniPath);
 		} else {
 			uniprotFile	= new File(uniprotPath);
 		}
@@ -107,7 +117,8 @@ public class AnnotationFileMaker implements AnnotationConstants {
 					protCount++;
 					String comment = termList.size() + " annotation term(s) found for protein " + protCount + " of "
 							+ totalProts + ".";
-					System.out.println(comment);
+					log.debug(comment);
+					//System.out.println(comment);
 				}
 
 				// clear collections for next protein
@@ -120,7 +131,8 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		// finally, print number of proteins for which no annotation was found
 		if (verbose) {
 			String comment = "No annotation found for " + noAnnotation.size() + " of " + totalProts + " proteins.";
-			System.out.println(comment);
+			log.debug(comment);
+			//System.out.println(comment);
 		}
 		fw.close();
 		fr.close();
@@ -132,7 +144,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		writeInterproAnnotation(outPath);
 	}
 	
-	public void writeGoAnnotation(String outPath) throws IOException {
+	public void writeGoAnnotation(String outFile) throws IOException {
 
 		HashSet<String> forbiddenGo = new HashSet<String>();
 		for (String goTerm : forbiddenGoTerms) {
@@ -152,7 +164,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		BufferedReader br = new BufferedReader(fr);
 		String line;
 		String[] items;
-		FileWriter fw = new FileWriter(outPath);
+		FileWriter fw = new FileWriter(outFile);
 		PrintWriter pw = new PrintWriter(fw);
 
 		int protCount = 0; // if debugging -- keep track of number of proteins
@@ -204,7 +216,8 @@ public class AnnotationFileMaker implements AnnotationConstants {
 					protCount++;
 					String comment = termList.size() + " annotation term(s) found for protein " + protCount + " of "
 							+ totalProts + ".";
-					System.out.println(comment);
+					//System.out.println(comment);
+					log.debug(comment);
 				}
 
 				// clear collections for next protein
@@ -217,9 +230,11 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		// finally, print proteins for which no annotation was found
 		if (verbose) {
 			String comment = "No annotation found for " + noAnnotation.size() + " of " + totalProts + " proteins.";
-			System.out.println(comment);
+			//System.out.println(comment);
+			log.debug(comment);
 			comment = forbidCount + " instances of GO terms on disallowed list.";
-			System.out.println(comment);
+			//System.out.println(comment);
+			log.debug(comment);
 		}
 
 		fw.close();
@@ -227,15 +242,17 @@ public class AnnotationFileMaker implements AnnotationConstants {
 
 	}
 
-	public void writeGoAnnotation(ProteinPair proteinPair, String outPath) throws IOException{
+	public void writeGoAnnotation(ProteinPair proteinPair, File outFile) throws IOException{
 		resetAllProteins(proteinPair);		
 		// call 
-		writeGoAnnotation(outPath);
+		writeGoAnnotation(outFile.getPath());
 	}
 
 	private void resetAllProteins(ProteinPair proteinPair) {
 		// setting the wanted proteins
-		allProts.clear();
+		if (this.allProts !=null){
+			allProts.clear();
+		}
 		allProts.addAll(Arrays.asList(proteinPair.getFirstId(), proteinPair.getSecondId()));	
 	}
 

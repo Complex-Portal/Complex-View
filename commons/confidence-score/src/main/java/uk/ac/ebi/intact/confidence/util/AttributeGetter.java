@@ -10,7 +10,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
+import uk.ac.ebi.intact.bridges.blast.BlastService;
+import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
+import uk.ac.ebi.intact.bridges.blast.EbiWsWUBlast;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.attribute.AlignmentFileMaker;
@@ -30,24 +35,32 @@ import uk.ac.ebi.intact.confidence.attribute.FileMaker;
  * </pre>
  */
 public class AttributeGetter {
-	private AnnotationFileMaker		annotationMaker;
-	private AlignmentFileMaker		alignmentMaker;
-	private FileMaker				fileMaker;
-	private FileCombiner			fileCombiner;
-	private String					tmpDir	= "E:\\tmp\\";
+	private AnnotationFileMaker	annotationMaker;
+	private AlignmentFileMaker	alignmentMaker;
+	private FileMaker			fileMaker;
+	private FileCombiner		fileCombiner;
+	private File				workDir;
+	private File				uniprotPath;
 
 	private AttributeGetter() {
 		annotationMaker = new AnnotationFileMaker();
-		alignmentMaker = new AlignmentFileMaker();
 		fileCombiner = new FileCombiner();
 	}
 
-	public AttributeGetter(String path, BinaryInteractionSet highConfSet){
+	public AttributeGetter(String uniprotPath, BinaryInteractionSet highConfSet, File workDir, File blastArchiveDir, String email) throws BlastServiceException {
 		this();
-		annotationMaker.setUniprotFile(new File(path));
+		annotationMaker.setUniprotFile(new File(uniprotPath));
+		String tableName = "job";
+		//TODO: remove the path
+		File workDirBlast = new File("E:\\20071016_iarmean");
+		BlastService bs = new EbiWsWUBlast(tableName, workDirBlast, email);//new File(workDir.getPath(), "/Blast/"), email);
+		alignmentMaker = new AlignmentFileMaker(new Float(0.001), blastArchiveDir, bs);
 		fileMaker = new FileMaker(highConfSet);
+		this.setWorkDir(workDir.getPath());
+		this.uniprotPath = new File(uniprotPath);
+		this.uniprotPath.mkdir();
 	}
-	
+
 	/**
 	 * for a given protein pair it gets the GoPair attributs
 	 * 
@@ -55,12 +68,14 @@ public class AttributeGetter {
 	 * @param outPath
 	 */
 	public void writeGoAttributes(ProteinPair proteinPair, String outPath) {
+		BinaryInteractionSet biSet = new BinaryInteractionSet(Arrays.asList(proteinPair));
+		AnnotationFileMaker afm = new AnnotationFileMaker(biSet, uniprotPath.getPath());
 		try {
-			String tmpOut = tmpDir + "set_go.txt";
+			File goFile = new File(workDir.getPath(), "set_go.txt");
 			// get GOs per protein
-			annotationMaker.writeGoAnnotation(proteinPair, tmpOut);
+			afm.writeGoAnnotation(proteinPair, goFile);
 			// build GO attributes for pair
-			fileMaker.writeAnnotationAttributes(tmpOut, outPath);
+			fileMaker.writeAnnotationAttributes(goFile.getPath(), outPath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,13 +89,15 @@ public class AttributeGetter {
 	 * @param outPath
 	 */
 	public void writeGoAttributes(BinaryInteractionSet biS, String outPath) {
-		annotationMaker.setAllProts(biS.getAllProtNames());
+		AnnotationFileMaker afm = new AnnotationFileMaker(biS, uniprotPath.getPath());
+		
+		//annotationMaker.setAllProts(biS.getAllProtNames());
 		try {
-			String tmpOut = tmpDir + "set_go.txt";
+			File goFile = new File(workDir.getPath(), "set_go.txt");
 			// get GOs
-			annotationMaker.writeGoAnnotation(outPath);
+			afm.writeGoAnnotation(goFile.getPath());
 			// build GO attributes
-			fileMaker.writeAnnotationAttributes(tmpOut, outPath);
+			fileMaker.writeAnnotationAttributes(goFile.getPath(), outPath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -94,74 +111,97 @@ public class AttributeGetter {
 	 * @param outPath
 	 */
 	public void writeIpAttributes(ProteinPair proteinPair, String outPath) {
+		BinaryInteractionSet biSet = new BinaryInteractionSet(Arrays.asList(proteinPair));
+		AnnotationFileMaker afm = new AnnotationFileMaker(biSet, uniprotPath.getPath());
 		try {
-			String tmpOut = tmpDir + "set_ip.txt";
+			File ipFile = new File(workDir.getPath(), "set_ip.txt");
 			// get Interpro domains per protein
-			annotationMaker.writeInterproAnnotation(proteinPair, tmpOut);
+			afm.writeInterproAnnotation(proteinPair, ipFile.getPath());
 			// build InterPro attributes for pair
-			fileMaker.writeAnnotationAttributes(tmpOut, outPath);
+			fileMaker.writeAnnotationAttributes(ipFile.getPath(), outPath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void writeIpAttributes(BinaryInteractionSet biS, String outPath){
+	public void writeIpAttributes(BinaryInteractionSet biS, String outPath) {
+		AnnotationFileMaker afm = new AnnotationFileMaker(biS, uniprotPath.getPath());
 		annotationMaker.setAllProts(biS.getAllProtNames());
 		try {
-			String tmpOut = tmpDir + "set_ip.txt";
+			File ipFile = new File(workDir.getPath(), "set_ip.txt");
 			// get Interpro domains per protein
-			annotationMaker.writeInterproAnnotation(tmpOut);
+			afm.writeInterproAnnotation(ipFile.getPath());
 			// build InterPro attributes for pair
-			fileMaker.writeAnnotationAttributes(tmpOut, outPath);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void writeAlignmentAttributes(ProteinPair proteinPair, String outPath, HashSet<String> againstProt) {
-		HashSet<String> proteins =  new HashSet<String>();
-		proteins.addAll(Arrays.asList(proteinPair.getFirstId(), proteinPair.getSecondId()));
-		try {
-			alignmentMaker.blast(proteins, againstProt, new FileWriter(new File(outPath)));
+			fileMaker.writeAnnotationAttributes(ipFile.getPath(), outPath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void writeAlignmentAttributes(BinaryInteractionSet biS, String outPath, HashSet<String> againstProt){
-		HashSet<String> proteins =  biS.getAllProtNames();
+	public void writeAlignmentAttributes(ProteinPair proteinPair, String outPath, Set<UniprotAc> againstProt) throws BlastServiceException {
+		Set<UniprotAc> proteins = new HashSet<UniprotAc>();
+		proteins.addAll(Arrays.asList(new UniprotAc(proteinPair.getFirstId()), new UniprotAc(proteinPair.getSecondId())));
 		try {
-			alignmentMaker.blast(proteins, againstProt, new FileWriter(new File(outPath)));
+			File alignFile = new File(workDir.getPath(), "set_align_pp.txt");
+			alignmentMaker.blast(proteins, againstProt, new FileWriter(alignFile));
+			fileMaker.writeAnnotationAttributes(alignFile.getPath(), outPath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void writeAlignmentAttributes(BinaryInteractionSet biS, String outPath, Set<String> againstProt) throws BlastServiceException {
+		Set<UniprotAc> proteins =  getUniprotAc(biS.getAllProtNames());
+		Set<UniprotAc> against = getUniprotAc(againstProt);
+		try {
+			File alignFile = new File(workDir.getPath(), "set_align_biSet.txt");
+			alignmentMaker.blast(proteins, against, new FileWriter(alignFile));
+			//TODO: solve once + for all the setting of the biSet for the filemaker
+			BinaryInteractionSet auxSet = fileMaker.getBiSet();
+			fileMaker.setBiSet(biS);
+			fileMaker.writeAnnotationAttributes(alignFile.getPath(), outPath);
+			fileMaker.setBiSet(auxSet);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private Set<UniprotAc> getUniprotAc(Set<String> protStr) {
+		Set<UniprotAc> proteins =  new HashSet<UniprotAc>(protStr.size());
+		for (String ac : protStr) {
+			proteins.add(new UniprotAc(ac));				
+		}
+		return proteins;
+	}
+
 	public void merge(String[] paths, String outPath) {
 		try {
-			fileCombiner.merge(paths, outPath);
+			//FIXME: merge -> merge2
+			fileCombiner.merge2(paths, outPath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	public void getAllAttribs(BinaryInteractionSet biS,HashSet<String> againstProteins, String outPath){
-		String goPath = tmpDir + "set_go_attributes.txt";
+
+	public void getAllAttribs(BinaryInteractionSet biS, Set<String> againstProteins, String outPath) throws BlastServiceException {
+		String goPath = workDir.getPath() + "/set_go_attributes.txt";
 		writeGoAttributes(biS, goPath);
-		String ipPath = tmpDir + "set_ip_attributes.txt";
+		String ipPath = workDir.getPath() + "/set_ip_attributes.txt";
 		writeIpAttributes(biS, ipPath);
-		String alignPath = tmpDir + "set_align_attributes.txt";
+		String alignPath = workDir.getPath() + "/set_align_attributes.txt";
 		writeAlignmentAttributes(biS, alignPath, againstProteins);
-		String[] paths = {goPath, ipPath, alignPath};
+		String[] paths = { goPath, ipPath, alignPath };
 		merge(paths, outPath);
 	}
 
-	public void setTmpDir(String tmpDir) {
-		this.tmpDir = tmpDir;
+	public void setWorkDir(String workDirPath) {
+		File tmpDir = new File(workDirPath, "AttributeGetter");
+		tmpDir.mkdir();
+		this.workDir = tmpDir;
 	}
 }

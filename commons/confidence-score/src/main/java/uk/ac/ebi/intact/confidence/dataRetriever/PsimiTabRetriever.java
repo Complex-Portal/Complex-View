@@ -85,7 +85,7 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
 
 	public void retrieveMediumConfidenceSet(Writer osw) {
 //			for (BinaryInteraction interaction : binaryInts) {
-//				//TODO: ask Sam aount the psimi model for the interaction
+//				//TODO: ask Sam about the psimi model for the interaction
 //			}
 	}
 	

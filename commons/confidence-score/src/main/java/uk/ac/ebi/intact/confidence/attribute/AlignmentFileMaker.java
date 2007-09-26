@@ -5,13 +5,24 @@
  */
 package uk.ac.ebi.intact.confidence.attribute;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import uk.ac.ebi.intact.bridges.blast.BlastClient;
-import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import uk.ac.ebi.intact.bridges.blast.BlastService;
+import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
+import uk.ac.ebi.intact.bridges.blast.jdbc.BlastJobEntity;
+import uk.ac.ebi.intact.bridges.blast.model.BlastResult;
+import uk.ac.ebi.intact.bridges.blast.model.Hit;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 
@@ -29,31 +40,52 @@ import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
  *        first hit to P, HQ1 first hit to Q, etc.
  */
 public class AlignmentFileMaker {
+	/**
+	 * Sets up a logger for that class.
+	 */
+	public static final Log	log	= LogFactory.getLog(AlignmentFileMaker.class);
+
+	private BlastService	blast;
+	private File			workDir;
+	private Float			threshold;
 
 	// private String fastaRefPath = "/scratch/blast/intact.fasta";
 	// private String blastPath = "/scratch/blast/blast-2.2.14/bin/blastall";
-	BlastClient		bc;
-	List<String>	results;
 
-	public AlignmentFileMaker(){
-		this(0.001);
-	}
-	
-	public AlignmentFileMaker(double threshold) {
-		bc = new BlastClient(threshold);
+	/**
+	 * Constructor
+	 */
+	public AlignmentFileMaker(BlastService blast) {
+		this(new Float(0.001), null, blast);
 	}
 
 	/**
-	 * returns the blast results in the following format:
-	 * uniprotAc,alignment1,alignment2 .... where all the alignments are
-	 * represented by the uniprotAc
+	 * Constructor
 	 * 
-	 * @return List of String
+	 * @param threshold
+	 * @param workingDirectory
 	 */
-	public List<String> getBlastHits() {
-		return results;
+	public AlignmentFileMaker(Float threshold, File workingDirectory, BlastService blast) {
+
+		this.blast = blast;
+		this.threshold = threshold;
+
+		if (workingDirectory == null) {
+			String workPath = AlignmentFileMaker.class.getResource("doNotRemoveThis.file").getPath();
+			workDir = new File(workPath);
+			HashMap<String, File> paths = GlobalTestData.getInstance().getRightPahts();//getTargetDirectory(); // new
+			workDir = paths.get("workDir");
+			// File(workDir.getParent());
+		} else {
+			this.workDir = workingDirectory;
+		}
+		if (!workDir.isDirectory()) {
+			workDir.mkdir();
+		}
 	}
 
+	// //////////////////
+	// // Public Methods
 	/**
 	 * Blasts the proteins in the first set against the proteins in the second
 	 * set. If the writer is not null, the result will be also written on it.
@@ -61,39 +93,100 @@ public class AlignmentFileMaker {
 	 * @param intToBlast
 	 * @param againstList
 	 * @param writer
+	 * @throws BlastServiceException
 	 */
-	public void blast(List<InteractionSimplified> intToBlast, List<InteractionSimplified> againstList, Writer writer) {
+	public void blast(List<InteractionSimplified> intToBlast, List<InteractionSimplified> againstList, Writer writer)
+			throws BlastServiceException {
 		if (intToBlast == null || againstList == null || writer == null) {
-			new NullPointerException("params must not be null!");
+			throw new NullPointerException("params must not be null!");
 		}
-		HashSet<String> proteins = getProteinList(intToBlast);
-		HashSet<String> againstProteins = getProteinList(againstList);
-		runBlast(proteins, againstProteins, writer);
+		Set<UniprotAc> proteins = getProteinList(intToBlast);
+		Set<UniprotAc> againstProteins = getProteinList(againstList);
 
+		blast(proteins, againstProteins, writer);
 	}
-	
-	public void blast(BinaryInteractionSet intToBlast, BinaryInteractionSet againstList, Writer writer) {
-		if (intToBlast == null || againstList == null || writer == null) {
-			new NullPointerException("params must not be null!");
+
+	/**
+	 * 
+	 * @param proteins
+	 * @param againstProteins
+	 * @param fileWriter
+	 * @throws BlastServiceException
+	 */
+	public void blast(Set<UniprotAc> proteins, Set<UniprotAc> againstProteins, Writer writer)
+			throws BlastServiceException {
+		if (proteins == null || againstProteins == null || writer == null) {
+			throw new NullPointerException("params must not be null!");
 		}
-		HashSet<String> proteins = getProteinList(intToBlast);
-		HashSet<String> againstProteins = getProteinList(againstList);
-		runBlast(proteins, againstProteins, writer);
+
+		List<BlastResult> results = blast.fetchAvailableBlasts(proteins);
+		processResults(results, againstProteins, writer);
+
+		Set<UniprotAc> missingProteins = notIncluded(results, proteins);
+		if (missingProteins.size() != 0) {
+			List<BlastJobEntity> submitted = blast.submitJobs(missingProteins);
+			List<BlastResult> tmpResults = blast.fetchAvailableBlasts(submitted);
+			results.addAll(tmpResults);
+			while (results.size() != proteins.size()) {
+				//TODO: reassess if it needs more time than the fetchBlast code
+				// try{
+				// Thread.sleep(5000);
+				// } catch(InterruptedException e){
+				// e.printStackTrace();
+				// }
+				missingProteins = notIncluded(results, proteins);
+				tmpResults = blast.fetchAvailableBlasts(missingProteins);
+				processResults(tmpResults, againstProteins, writer);
+				results.addAll(tmpResults);
+			}
+		}
 	}
 
-	public void blast(HashSet<String> uniprotAcToBlast, HashSet<String> uniprotAcAgainst, Writer writer){
-		runBlast(uniprotAcToBlast, uniprotAcAgainst, writer);
-	}
-	
-	private void runBlast(HashSet<String> uniprotAc1, HashSet<String> uniprotAc2, Writer writer) {
-		results = bc.blast(uniprotAc1, uniprotAc2);
-		writeResults(results, writer);
+	// ///////////////////
+	// // Private Methods
+	private HashSet<UniprotAc> getProteinList(List<InteractionSimplified> interactions) {
+		HashSet<UniprotAc> proteins = new HashSet<UniprotAc>();
+		for (InteractionSimplified intS : interactions) {
+			for (ProteinSimplified protS : intS.getInteractors()) {
+				proteins.add(new UniprotAc(protS.getUniprotAc()));
+			}
+		}
+		return proteins;
 	}
 
-	private void writeResults(List<String> results, Writer writer) {
-		for (String r : results) {
+	private Set<UniprotAc> notIncluded(List<BlastResult> results, Set<UniprotAc> proteins) {
+		Set<UniprotAc> protNotIn = new HashSet<UniprotAc>();
+
+		Set<UniprotAc> resultProt = new HashSet<UniprotAc>();
+		for (BlastResult blastResult : results) {
+			resultProt.add(new UniprotAc(blastResult.getUniprotAc()));
+		}
+
+		for (UniprotAc ac : proteins) {
+			if (!resultProt.contains(ac)) {
+				protNotIn.add(ac);
+			}
+		}
+		return protNotIn;
+	}
+
+	private void processResults(List<BlastResult> results, Set<UniprotAc> againstProteins, Writer writer) {
+		// TODO remove this after finalized
+		// process the results according to the thresholds : against
+		// proteins and eval < 0.001
+		// add to the alignmentLine
+		// append the alignmentLine to a writer
+		for (BlastResult result : results) {
+			String alignmentLine = result.getUniprotAc();
+			for (Hit hit : result.getHits()) {
+				Float evalue = hit.getEValue();
+				String ac = hit.getUniprotAc();
+				if (evalue < threshold && againstProteins.contains(new UniprotAc(ac))) {
+					alignmentLine += "," + ac;
+				}
+			}
 			try {
-				writer.append(r + "\n");
+				writer.append(alignmentLine + "\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -105,20 +198,5 @@ public class AlignmentFileMaker {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	private HashSet<String> getProteinList(List<InteractionSimplified> interactions) {
-		HashSet<String> proteins = new HashSet<String>();
-		for (InteractionSimplified intS : interactions) {
-			for (ProteinSimplified protS : intS.getInteractors()) {
-				proteins.add(protS.getUniprotAc());
-			}
-		}
-		return proteins;
-	}
-	
-	private HashSet<String> getProteinList(BinaryInteractionSet biS) {
-		HashSet<String> proteins =  biS.getAllProtNames();
-		return proteins;
 	}
 }
