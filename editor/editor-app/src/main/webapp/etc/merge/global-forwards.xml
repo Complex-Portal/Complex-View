@@ -1,0 +1,10 @@
+<global-forwards>
+    <!-- Need this global forward from the index.jsp -->
+    <forward name="login" path="/do/welcome"/>
+
+    <forward name="failure" path="error.layout"/>
+    <!-- Fill the form with search results -->
+    <forward name="result" path="/do/showResults"/>
+    <!-- Back to the search page. -->
+    <forward name="search" path="search.layout"/>
+</global-forwards>

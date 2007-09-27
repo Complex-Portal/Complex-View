@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+  "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+
+    <!-- IntAct Init parameters -->
+    <context-param>
+        <param-name>uk.ac.ebi.intact.AC_PREFIX</param-name>
+        <param-value>EBI</param-value>
+        <description>
+            The Accession Number Prefix for the objects created
+            by the application and stored in the database.
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.INSTITUTION_LABEL</param-name>
+        <param-value>ebi</param-value>
+        <description>
+            The label of the institution, used to retrieve the Institution object
+            if it already exists, or to create a new institution
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.PRELOAD_COMMON_CVOBJECTS</param-name>
+        <param-value>false</param-value>
+        <description>
+            Preload the most common CvObjects on application start, so it is
+            faster to retrieve them later
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.READ_ONLY_APP</param-name>
+        <param-value>false</param-value>
+        <description>
+            If read-only, an application cannot persist data in the database
+        </description>
+    </context-param>
+
+   <context-param>
+        <param-name>uk.ac.ebi.intact.FORCE_NO_SCHEMA_VERSION_CHECK</param-name>
+        <param-value>true</param-value>
+        <description>
+            If read-only, an application cannot persist data in the database
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>uk.ac.ebi.intact.AUTO_BEGIN_TRANSACTION</param-name>
+        <param-value>true</param-value>
+        <description>
+            If true, do open a transaction automatically when DataContext.getDaoFactory() is called.
+        </description>
+    </context-param>
+
+    <!-- =================================================================== -->
+
+    <!-- This filter is to stop users accessing edit pages without login first -->
+    <filter>
+      <filter-name>Security Filter</filter-name>
+      <filter-class>uk.ac.ebi.intact.application.editor.security.LoginCheckFilter</filter-class>
+    </filter>
+
+    <!-- Filter to open the session at the beginning of the request and close on end -->
+    <filter>
+        <filter-name>intactFilter</filter-name>
+        <filter-class>uk.ac.ebi.intact.webapp.IntactSessionRequestFilter</filter-class>
+
+        <init-param>
+            <param-name>uk.ac.ebi.intact.filter.EXCLUDED_EXTENSIONS</param-name>
+            <param-value>*.jpg,*.gif,*login</param-value>
+            <description>
+                List of extensions. If the request URL ends with one of the params provided,
+                it won't be filtered by the IntactSessionRequestFilter and no IntactContext
+                will be created for those requests.
+            </description>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>intactFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- map all requests to the SecurityFilter, control what it does with configuration settings -->
+    <filter-mapping>
+      <filter-name>Security Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- =================================================================== -->
+
+    <!-- This listener controls the initialization of the application (e.g. reading init params, etc)
+    The listener should be started automatically from intact-core, but if you don't declare it here again
+    if fails on redeploy -->
+    <listener>
+        <listener-class>uk.ac.ebi.intact.webapp.StartupIntactListener</listener-class>
+    </listener>
+
+    <!-- =================================================================== -->
+
+    <!-- Action Servlet Configuration -->
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.application.editor.struts.framework.EditorActionServlet</servlet-class>
+
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/struts-config.xml</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>2</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>detail</param-name>
+            <param-value>2</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>validate</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+
+
+    </servlet>
+
+    <!-- =================================================================== -->
+
+    <!-- Action Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>/do/*</url-pattern>
+    </servlet-mapping>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+    <!-- The Welcome File List -->
+    <welcome-file-list>
+        <welcome-file>welcome.jsp</welcome-file>
+    </welcome-file-list>
+
+    <error-page>
+        <exception-type>javax.servlet.ServletException</exception-type>
+        <location>/pages/errorCommiting.jsp</location>
+    </error-page>
+
+    <!-- JSTL Tag Library Descriptor  -->
+    <taglib>
+        <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+        <taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+    </taglib>
+
+    <!-- JSTL Tag Library Descriptor  -->
+    <taglib>
+        <taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+        <taglib-location>/WEB-INF/tld/fmt.tld</taglib-location>
+    </taglib>
+
+</web-app>

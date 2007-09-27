@@ -1,0 +1,66 @@
+/* For tables only; the cell is editable */
+td.editCell {
+    font-size: 8pt;
+    font-family: Arial, verdana, sans-serif;
+    text-align: left;
+    vertical-align: top;
+    background-color: #ff8c00
+}
+
+/* For tables only; error cell. */
+td.errorCell {
+    color: white;
+    background-color: red
+}
+
+/* Where the input is required. */
+.inputRequired {
+    background-color: #ccffcc
+}
+
+/* For errors to display in the input page */
+.error {
+    color: red;
+}
+
+/* For warning messages. */
+.warning {
+    background-color: #90ee90
+}
+
+/* For severe warnings such as read only experiments */
+.severe-warning {
+    background-color: red;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+/* For displaying the Feature header */
+tr.tableFeatureRowHeader {
+    font-family: Arial, verdana, sans-serif;
+    color: #ffffff;
+    background-color: #B0C4DE;
+}
+
+/* For displaying Features */
+tr.tableFeatureRow {
+    font-size: 8pt;
+    font-family: Arial, verdana, sans-serif;
+    text-align: left;
+    vertical-align: top;
+    background-color: #B0C4DE
+}
+
+/* For a table header with a link */
+tr.tableLinkRowHeader {
+    font-family: Arial, verdana, sans-serif;
+    color: #336666;
+    background-color: #cccccc;
+}
+
+/* The special border for add annotation/xref tables */
+.tableBorder {
+  border: 8px outset green;
+}

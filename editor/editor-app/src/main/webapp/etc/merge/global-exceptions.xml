@@ -1,0 +1,26 @@
+<global-exceptions>
+    <!-- IntAct internal error -->
+    <exception
+        handler="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler"
+        key="error.intact"
+        path="error.layout"
+        type="uk.ac.ebi.intact.business.IntactException"/>
+
+    <exception
+        key="error.session.expired"
+        path="login.error.layout"
+        type="uk.ac.ebi.intact.application.editor.exception.SessionExpiredException"/>
+
+    <!-- Uses the input for validation exceptions -->
+    <exception
+        handler="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler"
+        type="uk.ac.ebi.intact.application.editor.exception.validation.ValidationException"
+        key="dummy.key"/>
+
+    <!-- Any other exception -->
+    <exception
+        handler="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler"
+        key="error.intact"
+        path="error.layout"
+        type="java.lang.Exception"/>
+</global-exceptions>

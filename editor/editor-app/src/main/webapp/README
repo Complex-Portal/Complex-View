@@ -1,0 +1,110 @@
+$Id$
+**********************************************************************
+README for CvEdit (intactCore/application/cvedit)
+**********************************************************************
+
+DIRECTORIES:
+/ (root)        : JSP and css files.
+WEB-INF/lib     : Library files for web. All the files in this location are
+                  included in the WAR file.
+WEB-INF/classes : CvEdit specific (non Intact core) class files.
+WEB-INF/tld     : The tag libraries.
+WEB-INF/config  : Configuration/Property files for the application.
+dist/           : Where the WAR file is created.
+
+INSTALLATION
+    edit repository.xml and OJB.properties in the intact root directory
+    (intactCore/config) to suit your requirements (oracle vs postgres etc).
+    Instead of editing these files manually, you may just run ant set-target-env
+    from intactCore directory. The target environment is specified in the
+    build.properties file (intactCore directory). CvEdit has been tested
+    under Oracle 8.1.6 and PostGres 7.2 (local and remote).
+
+MAKE IT WORK UNDER TOMCAT
+
+    To make it work under tomcat you have two solutions :
+        1. you can build the war file and deploy the application into Tomcat file
+        architecture directory.
+        2. modify the server.xml file of Tomcat in order to tell him to point at the
+        temp-web directory under intactCore/application/editor directory
+
+    If you choose the second solution you will not have to re-deploy the application
+    each time you do a modification into the code. You will just have to compile the
+    code which automatically put the new class files in this temp-web directory.
+
+
+FIRST SOLUTION
+
+    Go under the /intactCore/application/editor directory and type "ant war deploy"
+    This will automatically create the war file and copy it under the
+    CATALINA_HOME\webapps\app-dir (CATALINA_HOME is the directory where you have
+    installed Tomcat)
+
+SECOND SOLUTION
+    TOMCAT 4
+        Open the xml file called server.xml in CATALINA_HOME/conf and add the following
+        lines :
+        <Context path="/intact/editor"
+         docBase="/homes/smudali/intact/intactCore/application/editor/temp-web"
+         debug="0"
+         reloadable="true"
+         />
+         Those lines should be at the good place in the server.xml file, i.e. with
+         the other "Context" declaration
+
+    TOMCAT 5
+        Use the Tomcat Web Application Manager and in the text area "XML configuration
+        file URL" put the URL corresponding to the intactCore/application/editor/temp-web
+        directory. This URL should looks like : "file:/C:/intactCore/application/editor/temp-web".
+        Then deploy the application.
+
+SOME USEFULL COMMAND
+    BUILD
+        ant war
+            prepares a WAR file to be deployed in a WEB container. The WAR file is
+            created in the dist/ directory.
+
+    OTHER USEFUL COMMANDS
+        ant deploy (Tomcat specific)
+            deploys the WAR file in the dist/ location to the CATALINA_HOME/webapps. The
+            environment variable CATALINA_HOME must be set for this command to work
+            correctly.
+
+        ant undeploy (Tomcat specific)
+            reverses the effects of 'ant deploy' command. In addition to that, this
+            command also stops the WEB server (Tomcat) if it is running. As with
+            deploy command, the environment variable CATALINA_HOME must be set for
+            this command to work correctly. An error message, displayed when trying
+            to shutdown the WEB server if it is not running, can be safely ignored. In
+            addition to removing the WAR file, this command also removes the
+            expanded directory as well. For example, CATALINA_HOME/webapps/cvedit
+            directory is removed in addition to CATALINA_HOME/webapps/cvedit.war file.
+
+        ant undeploy war deploy (Tomcat specific)
+            runs all three targets in the specified order. Undeploys the last deployment,
+            creates a new war file and deploy it again.
+
+        ant war-test
+            Not fully implemented yet. The purpose of this command is to create a WAR
+            file for testing. Other similar command, deploy-test and undeploy-test, are
+            also partially implemented.
+
+        ant generate-struts-xml
+            Generates struts-config.xml and validation.xml files. To use this target
+            you must define an environment variable XDOCLET_HOME. This environment variable
+            must point to the xdoclet installation. Visit
+            http://xdoclet.sourceforge.net/xdoclet/index.html for more info on xdoclet
+   
+    NOTES
+        The WAR file is being built using jar and class file from various locations.
+        Given below are locations where it looks for these files:
+            / (root)        - jsp and css files.
+            WEB-INF/        - web.xml, struts-config.xml files and tld libraries.
+            WEB-INF/lib     - all the jar files in this location.
+            ../../dist/     - intact-core.jar file.
+            ../lib          - struts specific common jar files.
+            ../../lib       - application common jar files (only a subset).
+            WEB-INF/classes - CvEdit class files.
+
+    COMMENTS
+        Send any comments/feedback to smudali@ebi.ac.uk

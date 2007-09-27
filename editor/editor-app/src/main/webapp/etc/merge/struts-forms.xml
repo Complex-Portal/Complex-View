@@ -1,0 +1,9 @@
+<!-- The sidebar form -->
+<form-bean name="sidebarForm"
+    type="org.apache.struts.action.DynaActionForm">
+    <form-property name="topic" type="java.lang.String"/>
+    <form-property name="searchString" initial="*" type="java.lang.String"/>
+</form-bean>
+
+<!-- For /results action -->
+<form-bean name="dummyForm" type="org.apache.struts.action.DynaActionForm"/>

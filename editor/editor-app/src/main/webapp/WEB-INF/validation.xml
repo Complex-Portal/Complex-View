@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE form-validation PUBLIC "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+  <global>
+    <!-- The pattern to filter out Select item in a drop down list. Note the
+         blank in the allowed list. This pattern is repeated till the end (+$).
+    -->
+    <constant>
+        <constant-name>menu-pat</constant-name>
+        <constant-value>^[a-z0-9\-:_\. ]+$</constant-value>
+    </constant>
+</global>
+  <formset>
+      <form name="expForm">
+              <field property="organism"
+                     depends="mask">
+                  <msg
+                    name="mask"
+                    key="error.biosrc"/>
+
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>${menu-pat}</var-value>
+                  </var>
+              </field>
+              <field property="inter"
+                     depends="mask">
+                  <msg
+                    name="mask"
+                    key="error.exp.inter"/>
+
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>${menu-pat}</var-value>
+                  </var>
+              </field>
+              <field property="ident"
+                     depends="mask">
+                  <msg
+                    name="mask"
+                    key="error.exp.ident"/>
+
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>${menu-pat}</var-value>
+                  </var>
+              </field>
+              <field property="shortLabel"
+                     depends="required,mask,maxlength">
+                  <msg
+                    name="mask"
+                    key="error.shortlabel.mask"/>
+                  <msg
+                    name="maxlength"
+                    key="error.shortlabel.maxlength"/>
+
+                  <arg position="0"
+                    key="label.shortlabel"
+                  />
+                  <arg position="1"
+                    key="${var:maxlength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>^[a-z0-9\-:_]+ ?[a-z0-9\-:_]+$</var-value>
+                  </var>
+                  <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                  </var>
+              </field>
+      </form>
+      <form name="loginForm">
+              <field property="username"
+                     depends="required">
+
+                  <arg position="0"
+                    key="loginForm.label.username"
+                  />
+              </field>
+              <field property="password"
+                     depends="required">
+
+                  <arg position="0"
+                    key="loginForm.label.password"
+                  />
+              </field>
+      </form>
+      <form name="featureForm">
+              <field property="shortLabel"
+                     depends="required,mask,maxlength">
+                  <msg
+                    name="mask"
+                    key="error.shortlabel.mask"/>
+                  <msg
+                    name="maxlength"
+                    key="error.shortlabel.maxlength"/>
+
+                  <arg position="0"
+                    key="label.shortlabel"
+                  />
+                  <arg position="1"
+                    key="${var:maxlength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>^[a-z0-9][a-z0-9\-:_\s]*[a-z0-9]$</var-value>
+                  </var>
+                  <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                  </var>
+              </field>
+              <field property="featureType"
+                     depends="mask">
+                  <msg
+                    name="mask"
+                    key="error.feature.cvtype"/>
+
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>${menu-pat}</var-value>
+                  </var>
+              </field>
+      </form>
+      <form name="intForm">
+              <field property="interactionType"
+                     depends="mask">
+                  <msg
+                    name="mask"
+                    key="error.int.cvtype"/>
+
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>${menu-pat}</var-value>
+                  </var>
+              </field>
+              <field property="shortLabel"
+                     depends="required,mask,maxlength">
+                  <msg
+                    name="mask"
+                    key="error.shortlabel.mask"/>
+                  <msg
+                    name="maxlength"
+                    key="error.shortlabel.maxlength"/>
+
+                  <arg position="0"
+                    key="label.shortlabel"
+                  />
+                  <arg position="1"
+                    key="${var:maxlength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>^[a-z0-9\-:_]+ ?[a-z0-9\-:_]+$</var-value>
+                  </var>
+                  <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                  </var>
+              </field>
+      </form>
+      <form name="cvForm">
+              <field property="shortLabel"
+                     depends="required,mask,maxlength">
+                  <msg
+                    name="mask"
+                    key="error.shortlabel.mask"/>
+                  <msg
+                    name="maxlength"
+                    key="error.shortlabel.maxlength"/>
+
+                  <arg position="0"
+                    key="label.shortlabel"
+                  />
+                  <arg position="1"
+                    key="${var:maxlength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>^[a-z0-9\-:_]+ ?[a-z0-9\-:_]+$</var-value>
+                  </var>
+                  <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                  </var>
+              </field>
+      </form>
+      <form name="smForm">
+              <field property="shortLabel"
+                     depends="required,mask,maxlength">
+                  <msg
+                    name="mask"
+                    key="error.shortlabel.mask"/>
+                  <msg
+                    name="maxlength"
+                    key="error.shortlabel.maxlength"/>
+
+                  <arg position="0"
+                    key="label.shortlabel"
+                  />
+                  <arg position="1"
+                    key="${var:maxlength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>^[a-z0-9\-:_]+ ?[a-z0-9\-:_]+$</var-value>
+                  </var>
+                  <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                  </var>
+              </field>
+      </form>
+      <form name="bsForm">
+              <field property="taxId"
+                     depends="required,mask">
+                  <msg
+                    name="mask"
+                    key="error.taxid.mask"/>
+
+                  <arg position="0"
+                    key="biosource.label.tax"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>^[0-9\-]+$</var-value>
+                  </var>
+              </field>
+              <field property="shortLabel"
+                     depends="required,mask,maxlength">
+                  <msg
+                    name="mask"
+                    key="error.shortlabel.mask"/>
+                  <msg
+                    name="maxlength"
+                    key="error.shortlabel.maxlength"/>
+
+                  <arg position="0"
+                    key="label.shortlabel"
+                  />
+                  <arg position="1"
+                    key="${var:maxlength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>^[a-z0-9\-:_]+ ?[a-z0-9\-:_]+$</var-value>
+                  </var>
+                  <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                  </var>
+              </field>
+      </form>
+      <form name="seqForm">
+              <field property="sequence"
+                     depends="mask">
+                  <msg
+                    name="mask"
+                    key="error.seq.sequence.mask"/>
+
+                  <arg position="0"
+                    key="seq.sequence.label"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>^[A-Z]*$</var-value>
+                  </var>
+              </field>
+              <field property="organism"
+                     depends="mask">
+                  <msg
+                    name="mask"
+                    key="error.biosrc"/>
+
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>${menu-pat}</var-value>
+                  </var>
+              </field>
+              <field property="shortLabel"
+                     depends="required,mask,maxlength">
+                  <msg
+                    name="mask"
+                    key="error.shortlabel.mask"/>
+                  <msg
+                    name="maxlength"
+                    key="error.shortlabel.maxlength"/>
+
+                  <arg position="0"
+                    key="label.shortlabel"
+                  />
+                  <arg position="1"
+                    key="${var:maxlength}"
+                      resource="false"
+                  />
+                  <var>
+                    <var-name>mask</var-name>
+                    <var-value>^[a-z0-9\-:_]+ ?[a-z0-9\-:_]+$</var-value>
+                  </var>
+                  <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                  </var>
+              </field>
+      </form>
+  </formset>
+</form-validation>

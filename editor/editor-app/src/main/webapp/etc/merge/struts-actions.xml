@@ -1,0 +1,57 @@
+<!-- The starting point for the application; display the login layout. -->
+<action path="/welcome"
+    type="org.apache.struts.actions.ForwardAction"
+    parameter="login.layout">
+</action>
+
+<!-- Fill the form with search results for the JSP to display. -->
+<action path="/showResults"
+    type="org.apache.struts.actions.ForwardAction"
+    parameter="match.layout">
+</action>
+
+<!-- This common action is for displaying the editor when clicked on
+     next link (from the tab entries above a table)
+-->
+<action path="/next"
+    type="org.apache.struts.actions.ForwardAction"
+    parameter="edit.layout">
+</action>
+
+<!-- This common action is for displaying the current edit page.
+     Need this separate action to distinguish between input and success
+     actions.
+-->
+<action path="/display"
+    type="org.apache.struts.actions.ForwardAction"
+    parameter="edit.layout">
+</action>
+
+<!-- ============================================================== -->
+
+<!-- Displays current users logged into on the system. -->
+<action path="/show/users"
+    type="org.apache.struts.actions.ForwardAction"
+    parameter="user.layout">
+</action>
+
+<!-- ========== Common actions shared by various editors ========== -->
+
+<!-- Action to handle when the current edit is cancelled. -->
+<action path="/cancel"
+    type="uk.ac.ebi.intact.application.editor.struts.action.CancelFormAction"
+    validate="false"
+    scope="session">
+    <!-- Back to the results page as we got here from a search result (global) -->
+</action>
+
+<!-- Action to handle when the current edit record is deleted. -->
+<action path="/delete"
+    type="uk.ac.ebi.intact.application.editor.struts.action.DeleteFormAction"
+    validate="false"
+    scope="session">
+    <!-- Back to the search page  (global) -->
+    <!-- error goes to the global error action -->
+    <!-- Back to the experiment editor (Interaction editor) -->
+    <forward name="experiment" path="/do/exp/fill/form"/>
+</action>

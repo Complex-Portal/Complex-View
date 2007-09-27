@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+<!--
+    Tiles definitions for the Editor.
+    Author: Sugath Mudali (smudali@ebi.ac.uk)
+    Version: $Id$
+ -->
+
+<tiles-definitions>
+
+    <!-- =============== Menu Links ====================================== -->
+
+    <!-- Menu links for the search page. -->
+    <definition name="search.menu.links" path="/layouts/menu.jsp">
+        <putList name="items">
+            <item value="Show Users" link="javascript:showUsers();"/>
+        </putList>
+    </definition>
+
+    <!-- =============== Sidebars ====================================== -->
+
+    <!-- Sidebar for the login page -->
+    <definition name="login.sidebar.layout" path="/layouts/sidebarLayout.jsp">
+        <put name="input-dialog" value="/pages/loginInput.jsp"/>
+    </definition>
+
+    <!-- Sidebar for the search page -->
+    <definition name="search.sidebar.layout" extends="login.sidebar.layout">
+        <put name="input-dialog" value="/pages/sidebar.jsp"/>
+        <put name="menu" value="search.menu.links"/>
+        <put name="footer" value="/pages/sidebarFooter.jsp"/>
+    </definition>
+
+    <!-- Sidebar for the ediit page -->
+    <definition name="edit.sidebar.layout" path="/layouts/sidebarLayout.jsp">
+        <put name="menu" value="search.menu.links"/>
+        <put name="footer" value="/pages/sidebarFooter.jsp"/>
+    </definition>
+
+    <!-- =============== Editor Layouts =================================== -->
+
+    <!-- The CV page layout. -->
+    <definition name="edit.cv.layout" path="/layouts/cvLayout.jsp">
+        <put name="error" value="/pages/editorErrors.jsp"/>
+        <put name="cv" value="/pages/cv/cv.jsp"/>
+    </definition>
+
+    <!-- The Biosource page layout. -->
+    <definition name="edit.biosrc.layout" extends="edit.cv.layout">
+        <put name="cv" value="/pages/bs/bs.jsp"/>
+    </definition>
+
+    <!-- The Experiment page layout. -->
+    <definition name="edit.exp.layout" extends="edit.cv.layout">
+        <put name="cv" value="/pages/exp/exp.jsp"/>
+    </definition>
+
+    <!-- The Interaction page layout. -->
+    <definition name="edit.int.layout" extends="edit.cv.layout">
+        <put name="cv" value="/pages/int/int.jsp"/>
+    </definition>
+
+    <!-- The Feature page layout. -->
+    <definition name="edit.feature.layout" extends="edit.cv.layout">
+        <put name="cv" value="/pages/feature/feature.jsp"/>
+    </definition>
+
+    <!-- The Mutation Feature page layout. -->
+    <definition name="edit.feature.mutation.layout" extends="edit.cv.layout">
+        <put name="cv" value="/pages/feature/feature_mutation.jsp"/>
+    </definition>
+
+    <!-- The Sequence page layout. -->
+    <definition name="edit.sequence.layout" extends="edit.cv.layout">
+        <put name="cv" value="/pages/sequence/seq.jsp"/>
+    </definition>
+
+     <!-- The  page layout. -->
+    <definition name="edit.sm.layout" extends="edit.cv.layout">
+        <put name="cv" value="/pages/sm/sm.jsp"/>
+    </definition>
+    <!-- =============== Definitions related to pages ================= -->
+
+    <!-- The header layout. The controller may change the header when editing
+         the CV object.
+    -->
+    <definition name="header.layout" path="/layouts/headerLayout.jsp"
+        controllerUrl="/do/tiles/headerSwitch">
+        <put name="header.title" value="Editor"/>
+    </definition>
+
+    <!-- Login page description  -->
+    <definition name="login.layout" path="/layouts/intactLayout.jsp">
+<!--        <put name="stylesheet" value="layouts/styles/cvedit.css"/>-->
+        <put name="title"  value="Editor"/>
+        <put name="sidebar" value="login.sidebar.layout"/>
+        <put name="header" value="header.layout"/>
+        <put name="footer" value="/pages/misc/footer.jsp"/>
+    </definition>
+
+    <!-- Login failure page description  -->
+    <definition name="login.error.layout" extends="login.layout">
+        <put name="content" value="/pages/error.jsp"/>
+    </definition>
+
+    <!-- Search page description  -->
+    <definition name="search.layout" extends="login.layout">
+<!--        <put name="stylesheet" value="styles/cvedit.css"/>-->
+        <put name="sidebar" value="search.sidebar.layout"/>
+    </definition>
+
+    <!-- Match page description. -->
+    <definition name="match.layout" extends="search.layout">
+        <put name="content" value="/pages/results.jsp"/>
+        <put name="sidebar" value="search.sidebar.layout"/>
+    </definition>
+
+    <!-- General error layout -->
+    <definition name="error.layout" extends="login.layout">
+        <put name="content" value="/pages/error.jsp"/>
+        <put name="sidebar" value="search.sidebar.layout"/>
+    </definition>
+
+    <!-- General error layout -->
+        <definition name="error.commit.layout" extends="login.layout">
+            <put name="content" value="/pages/errorCommit.jsp"/>
+            <put name="sidebar" value="search.sidebar.layout"/>
+        </definition>
+
+
+
+    <!-- Super layout for editor pages  -->
+<!--    <definition name="editor.layout" path="/layouts/editorLayout.jsp">-->
+<!--        <put name="header" value="header.layout"/>-->
+<!--        <put name="footer" value="/pages/footer.jsp"/>-->
+<!--    </definition>-->
+
+    <!-- Super layout for editor pages  -->
+    <definition name="edit.layout" path="/layouts/editorLayout.jsp"
+        controllerUrl="/do/tiles/editorSwitch">
+        <put name="header" value="header.layout"/>
+        <put name="sidebar" value="edit.sidebar.layout"/>
+        <put name="content" value="edit.cv.layout"/>
+        <put name="footer" value="/pages/misc/footer.jsp"/>
+    </definition>
+
+    <!-- ===================================================================-->
+
+    <!-- Layout for the show user page -->
+
+    <!-- show user header layout  -->
+    <definition name="user.header.layout" path="/layouts/headerUserLayout.jsp">
+        <put name="header.title" value="Editor - Users"/>
+    </definition>
+
+    <!-- Layout for the user display -->
+    <definition name="user.layout" path="/layouts/intactLayout.jsp">
+        <put name="title"  value="Editor"/>
+        <put name="sidebar" value="/layouts/sidebarLayout.jsp"/>
+        <put name="header" value="user.header.layout"/>
+        <put name="content" value="/pages/misc/show_users.jsp"/>
+        <put name="footer" value="/pages/misc/footer.jsp"/>
+    </definition>
+
+</tiles-definitions>

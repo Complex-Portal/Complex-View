@@ -1,0 +1,9 @@
+<global>
+    <!-- The pattern to filter out Select item in a drop down list. Note the
+         blank in the allowed list. This pattern is repeated till the end (+$).
+    -->
+    <constant>
+        <constant-name>menu-pat</constant-name>
+        <constant-value>^[a-z0-9\-:_\. ]+$</constant-value>
+    </constant>
+</global>
