@@ -6,23 +6,24 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.action.interaction;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.*;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorAction;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.InteractionActionForm;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.InteractionViewBean;
+import uk.ac.ebi.intact.bridges.taxonomy.NewtTaxonomyService;
 import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.searchengine.ResultWrapper;
+import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
+import uk.ac.ebi.intact.uniprot.service.UniprotService;
+import uk.ac.ebi.intact.util.biosource.BioSourceServiceFactory;
 import uk.ac.ebi.intact.util.protein.ProteinService;
 import uk.ac.ebi.intact.util.protein.ProteinServiceFactory;
 import uk.ac.ebi.intact.util.protein.utils.UniprotServiceResult;
-import uk.ac.ebi.intact.util.MailSender;
-import uk.ac.ebi.intact.util.biosource.BioSourceServiceFactory;
-import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
-import uk.ac.ebi.intact.uniprot.service.UniprotService;
-import uk.ac.ebi.intact.bridges.taxonomy.NewtTaxonomyService;
-import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +47,11 @@ import java.util.regex.Pattern;
  *      validate="false"
  */
 public class ProteinSearchAction extends AbstractEditorAction {
+
+    /**
+     * Sets up a log for that class.
+     */
+    private static final Log log = LogFactory.getLog(ProteinSearchAction.class);
 
     /**
      * SP AC. 10 characters allowed.
@@ -140,38 +146,26 @@ public class ProteinSearchAction extends AbstractEditorAction {
         ProteinService proteinService = ProteinServiceFactory.getInstance().buildProteinService( uniprotRemoteService );
         proteinService.setBioSourceService( BioSourceServiceFactory.getInstance().buildBioSourceService( new NewtTaxonomyService() ) );
 
-        LOGGER.debug("Getting horse biosource");
-        BioSource horse = BioSourceServiceFactory.getInstance().buildBioSourceService( new NewtTaxonomyService() ).getBiosourceByTaxid("9796");
-        if(horse == null){
-            LOGGER.debug("!!!!!!!!! HORSE NULL !!!!!!!!!!");
-        }
-        LOGGER.debug("Horse biosource got : " + horse.getShortLabel());
-
-//        UniprotRemoteService uniprotRemoteService = new UniprotRemoteService();
-//        // The wrapper to hold lookup result.
-//        ProteinService proteinService = ProteinServiceFactory.getInstance().buildProteinService(uniprotRemoteService);
-
-        LOGGER.debug("ProteinSearchAction.execute 1");
+        log.debug("ProteinSearchAction.execute 1");
         ResultWrapper rw = null;
         UniprotServiceResult uniprotServiceResult = null;
 
-        LOGGER.debug("Searching for the intactSecondary");
+        log.debug("Searching for the intactSecondary");
         CvXrefQualifier intactSecondary = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao().getByShortLabel(CvXrefQualifier.class,"intact-secondary");
 //        CvXrefQualifier intactSecondary = IntactContext.getCurrentInstance().getCvContext().getByLabel(CvXrefQualifier.class,"intact-secondary");
-        LOGGER.debug("intactSecondary.getShortLabel()" + intactSecondary.getShortLabel());
+        log.debug("intactSecondary.getShortLabel()" + intactSecondary.getShortLabel());
                 
         if (param.equals("spAc")) {
             try{
-                LOGGER.debug("ProteinSearchAction.execute 2");
+                log.debug("ProteinSearchAction.execute 2");
                 uniprotServiceResult = proteinService.retrieve(value);
-                LOGGER.debug("uniprotServiceResult.getProteins().size()" + uniprotServiceResult.getProteins().size());
+                log.debug("uniprotServiceResult.getProteins().size()" + uniprotServiceResult.getProteins().size());
                 for(Protein protein : uniprotServiceResult.getProteins()){
-                    LOGGER.debug("uniprotServiceResult protein.getShortLabel() = " + protein.getShortLabel());
-                    LOGGER.debug("uniprotServiceResult protein.getAc() = " + protein.getAc());   
+                    log.debug("uniprotServiceResult protein.getShortLabel() = " + protein.getShortLabel());
+                    log.debug("uniprotServiceResult protein.getAc() = " + protein.getAc());
                 }
             }catch(Exception e){
-                LOGGER.error(e.getMessage() + e.getStackTrace() + e.getCause());
-                // This can only happen when problems with creating an internal helper
+                log.error(e.getMessage(), e);
                 // This error is already logged from the User class.
                 ActionMessages errors = new ActionMessages();
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.intact"));
@@ -180,20 +174,20 @@ public class ProteinSearchAction extends AbstractEditorAction {
             }
         }
         else {
-            LOGGER.debug("ProteinSearchAction.execute 3");
+            log.debug("ProteinSearchAction.execute 3");
             try {
                 rw = user.lookup(ProteinImpl.class, param, value, max);
                 if(rw.isEmpty()){
                     rw = user.lookup(NucleicAcidImpl.class, param, value,max);
-                    LOGGER.debug("ProteinSearchAction.execute 4");
+                    log.debug("ProteinSearchAction.execute 4");
                 }
                 if(rw.isEmpty()){
                     rw = user.lookup(SmallMoleculeImpl.class, param, value,max);
-                    LOGGER.debug("ProteinSearchAction.execute 5");
+                    log.debug("ProteinSearchAction.execute 5");
                 }
             }
             catch (IntactException ie) {
-                LOGGER.error(ie);
+                log.error(ie);
                 // This can only happen when problems with creating an internal helper
                 // This error is already logged from the User class.
                 ActionMessages errors = new ActionMessages();
@@ -204,7 +198,7 @@ public class ProteinSearchAction extends AbstractEditorAction {
         }
         // Check the size
         if ((rw != null && rw.isTooLarge()) || (uniprotServiceResult != null && uniprotServiceResult.getProteins().size() > max )) {
-            LOGGER.debug("ProteinSearchAction.execute 6");
+            log.debug("ProteinSearchAction.execute 6");
             ActionMessages errors = new ActionMessages();
             errors.add("int.interact.search", new ActionMessage("error.int.interact.search.many",
                     Integer.toString(rw.getPossibleResultSize()), param, Integer.toString(max)));
@@ -222,7 +216,7 @@ public class ProteinSearchAction extends AbstractEditorAction {
             // Log the error if we have one.
 //            Exception exp = user.getProteinParseException();
 //            if (exp != null) {
-//                LOGGER.error("", exp);
+//                log.error("", exp);
 //                errors.add("int.interact.search",
 //                        new ActionMessage("error.int.interact.search.empty.parse", param + " : " + ac));
 //            }else
@@ -235,7 +229,7 @@ public class ProteinSearchAction extends AbstractEditorAction {
                     Map.Entry<String,String> entry = iterator.next();
                     message = message +   value + " : \n" + entry.getKey() +
                             "\n" + entry.getValue();
-                    LOGGER.error("An error occured while searching for protein : " + value + " : \n" + entry.getKey() +
+                    log.error("An error occured while searching for protein : " + value + " : \n" + entry.getKey() +
                             "\n" + entry.getValue());
                 }
                 errors.add("int.interact.search",

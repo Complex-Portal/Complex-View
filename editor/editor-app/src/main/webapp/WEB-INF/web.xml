@@ -28,7 +28,7 @@
 
     <context-param>
         <param-name>uk.ac.ebi.intact.PRELOAD_COMMON_CVOBJECTS</param-name>
-        <param-value>false</param-value>
+        <param-value>true</param-value>
         <description>
             Preload the most common CvObjects on application start, so it is
             faster to retrieve them later

@@ -44,14 +44,15 @@
    <global>
 
       <validator name="required"
-            classname="org.apache.struts.validator.FieldChecks"
-               method="validateRequired"
-         methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
-                  msg="errors.required">
+        classname="org.apache.struts.validator.FieldChecks"
+        method="validateRequired"
+        methodParams="java.lang.Object,
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
+        msg="errors.required">
 
          <javascript><![CDATA[
             function validateRequired(form) {
@@ -140,11 +141,11 @@
                  classname="org.apache.struts.validator.FieldChecks"
                  method="validateRequiredIf"
                  methodParams="java.lang.Object,
-                               org.apache.commons.validator.ValidatorAction,
-                               org.apache.commons.validator.Field,
-                               org.apache.struts.action.ActionMessages,
-                               org.apache.commons.validator.Validator,
-                               javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
                  msg="errors.required">
       </validator>
 
@@ -152,10 +153,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateMinLength"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.minlength">
 
@@ -197,10 +199,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateMaxLength"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.maxlength">
 
@@ -271,10 +274,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateMask"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.invalid">
 
@@ -349,10 +353,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateByte"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.byte"
        jsFunctionName="ByteValidations">
@@ -421,10 +426,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateShort"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.short"
        jsFunctionName="ShortValidations">
@@ -492,10 +498,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateInteger"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.integer"
        jsFunctionName="IntegerValidations">
@@ -583,10 +590,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateLong"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.long"/>
 
@@ -595,10 +603,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateFloat"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.float"
        jsFunctionName="FloatValidations">
@@ -669,10 +678,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateDouble"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.double"/>
 
@@ -681,10 +691,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateDate"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.date"
        jsFunctionName="DateValidations">
@@ -844,10 +855,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateIntRange"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends="integer"
                   msg="errors.range">
 
@@ -863,10 +875,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateIntRange"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends="integer"
                   msg="errors.range">
 
@@ -910,10 +923,11 @@
             classname="org.apache.struts.validator.FieldChecks"
                method="validateFloatRange"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends="float"
                   msg="errors.range">
 
@@ -953,92 +967,16 @@
 
       </validator>
 
-      <validator name="creditCard"
-            classname="org.apache.struts.validator.FieldChecks"
-               method="validateCreditCard"
-         methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
-              depends=""
-                  msg="errors.creditcard">
-
-         <javascript><![CDATA[
-            function validateCreditCard(form) {
-                var bValid = true;
-                var focusField = null;
-                var i = 0;
-                var fields = new Array();
-                oCreditCard = new creditCard();
-                for (x in oCreditCard) {
-                    if ((form[oCreditCard[x][0]].type == 'text' ||
-                         form[oCreditCard[x][0]].type == 'textarea') &&
-                        (form[oCreditCard[x][0]].value.length > 0)) {
-                        if (!luhnCheck(form[oCreditCard[x][0]].value)) {
-                            if (i == 0) {
-                                focusField = form[oCreditCard[x][0]];
-                            }
-                            fields[i++] = oCreditCard[x][1];
-                            bValid = false;
-                        }
-                    }
-                }
-                if (fields.length > 0) {
-                    focusField.focus();
-                    alert(fields.join('\n'));
-                }
-                return bValid;
-            }
-
-            /**
-             * Reference: http://www.ling.nwu.edu/~sburke/pub/luhn_lib.pl
-             */
-            function luhnCheck(cardNumber) {
-                if (isLuhnNum(cardNumber)) {
-                    var no_digit = cardNumber.length;
-                    var oddoeven = no_digit & 1;
-                    var sum = 0;
-                    for (var count = 0; count < no_digit; count++) {
-                        var digit = parseInt(cardNumber.charAt(count));
-                        if (!((count & 1) ^ oddoeven)) {
-                            digit *= 2;
-                            if (digit > 9) digit -= 9;
-                        };
-                        sum += digit;
-                    };
-                    if (sum == 0) return false;
-                    if (sum % 10 == 0) return true;
-                };
-                return false;
-            }
-
-            function isLuhnNum(argvalue) {
-                argvalue = argvalue.toString();
-                if (argvalue.length == 0) {
-                    return false;
-                }
-                for (var n = 0; n < argvalue.length; n++) {
-                    if ((argvalue.substring(n, n+1) < "0") ||
-                        (argvalue.substring(n,n+1) > "9")) {
-                        return false;
-                    }
-                }
-                return true;
-            }]]>
-         </javascript>
-
-      </validator>
-
-
+     
       <validator name="email"
             classname="org.apache.struts.validator.FieldChecks"
                method="validateEmail"
          methodParams="java.lang.Object,
-                       org.apache.commons.validator.ValidatorAction,
-                       org.apache.commons.validator.Field,
-                       org.apache.struts.action.ActionMessages,
-                       javax.servlet.http.HttpServletRequest"
+        org.apache.commons.validator.ValidatorAction,
+        org.apache.commons.validator.Field,
+        org.apache.struts.action.ActionMessages,
+        org.apache.commons.validator.Validator,
+        javax.servlet.http.HttpServletRequest"
               depends=""
                   msg="errors.email">
 

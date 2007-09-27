@@ -72,6 +72,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact</groupId>
             <artifactId>intact-core</artifactId>
+            <version>1.6.2</version>
         </dependency>
 
          <dependency>
