@@ -16,4 +16,7 @@
 
     <name>IntAct Services :: Editor</name>
 
+    <modules>
+       <module>editor-app</module>
+    </modules>
 </project>
