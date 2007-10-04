@@ -134,7 +134,15 @@ mockups, June 2004
 
                 <!-- The text is the Protein description...-->
                 <td class="lefttop" rowspan="1" colspan="4">
-                   <%= bean.getInteractorDescription() %>&nbsp;
+                    <%
+                        String desc = bean.getInteractorDescription();
+                        if ( desc == null ) {
+                            out.write( "-" );
+                        } else {
+                            out.write( desc );
+                        }
+
+                    %>
                 </td>
             </tr>
 
