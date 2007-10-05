@@ -1,4 +1,4 @@
-package uk.ac.ebi.confidence.plugin;
+package uk.ac.ebi.intact.confidence.plugin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,14 +46,21 @@ public class ConfMojo extends AbstractMojo {
      * @parameter expression="${email}" default-value="${iarmean@ebi.ac.uk}"
      */
     private String email;
+    /**
+     * The path to the blast archive directory
+     *
+     * @parameter expression="${nrPerSubmission}" default-value="${20}"
+     */
+    private int nrPerSubmission;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		System.out.println("Mojo started ...");
 		System.out.println("uniprot: "+ uniprotDirPath);
 		System.out.println("workDir: "+ workDirPath);
 		System.out.println("blast archive: " + blastArchivePath);
-
-		ConfidenceModel cm = new ConfidenceModel(uniprotDirPath, workDirPath, blastArchivePath, email);
+		System.out.println("nrPerSubmission(for blast): " + nrPerSubmission);
+		
+		ConfidenceModel cm =new ConfidenceModel(uniprotDirPath, workDirPath, blastArchivePath, email, nrPerSubmission);
 	//	cm.buildModel();
 		//or
 		classify(cm);
@@ -63,33 +70,33 @@ public class ConfMojo extends AbstractMojo {
 	
 	private void classify(ConfidenceModel cm){
 		long start = System.currentTimeMillis();
-		cm.getConfidenceListsFromDb();
+	//	cm.getConfidenceListsFromDb();
 		long aux1 = System.currentTimeMillis();
 		long timeDb = aux1 - start;
 		log.info("time for db retrieve (milisec): " + timeDb);
 
 		aux1 = System.currentTimeMillis();
-		cm.generateLowconf(10000);
+	//	cm.generateLowconf(9000);
 		long aux2 = System.currentTimeMillis();
 		long timeGenerate = aux2 - aux1;
 		log.info("time for generating lowconf (milisec): " + timeGenerate);
 
 		aux1 = System.currentTimeMillis();
-		//cm.getInterProGoAndAlign();
+		cm.getInterProGoAndAlign();
 		aux2 = System.currentTimeMillis();
 		long timeAttribs = aux2 - aux1;
 		log.info("time for getting the attributes (milisec): " + timeAttribs);
 
 		aux1 = System.currentTimeMillis();
-//		cm.createTadmClassifierInput();
-//		cm.runTadm();
-//		cm.createModel();
-//		aux2 = System.currentTimeMillis();
+		cm.createTadmClassifierInput();
+		cm.runTadm();
+		cm.createModel();
+		aux2 = System.currentTimeMillis();
 		long timeCreateModel = aux2 - aux1;
 		log.info("time for training the model (milisec): " + timeCreateModel);
 
 		aux1 = System.currentTimeMillis();
-	//	cm.classifyMedConfSet();
+		cm.classifyMedConfSet();
 		long stop = System.currentTimeMillis();
 
 		log.info("time for db read (milisec): " + timeDb);

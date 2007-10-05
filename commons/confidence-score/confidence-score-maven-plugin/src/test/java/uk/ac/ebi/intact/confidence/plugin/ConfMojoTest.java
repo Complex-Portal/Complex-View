@@ -1,4 +1,4 @@
-package uk.ac.ebi.confidence.plugin;
+package uk.ac.ebi.intact.confidence.plugin;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -26,7 +26,7 @@ public class ConfMojoTest extends TestCase {
 	}
 
 	/**
-	 * Rigourous Test :-)
+	 * Rigorous Test :-)
 	 */
 	public void testApp() {
 		assertTrue(true);
