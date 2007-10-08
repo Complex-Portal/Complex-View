@@ -15,9 +15,10 @@
  */
 package uk.ac.ebi.intact.search.ws;
 
-import junit.framework.TestCase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 
 /**
  * TODO comment this!
@@ -26,29 +27,23 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  * @since <pre>05-Oct-2006</pre>
  */
-public class SearchTest extends TestCase
+public class SearchTest extends IntactBasicTestCase
 {
-
-    private static final Log log = LogFactory.getLog(SearchTest.class);
-
     private Search search;
 
     public SearchTest()
     {
-        super();
     }
 
-    @Override
+    @Before
     protected void setUp() throws Exception
     {
-        super.setUp();
         search = new Search();
     }
 
-    @Override
+    @After
     protected void tearDown() throws Exception
     {
-        super.tearDown();
         search = null;
     }
 
@@ -56,34 +51,34 @@ public class SearchTest extends TestCase
     {
         PartnerResult[] results = search.findPartnersUsingUniprotIds(new String[] {"P29452"});
 
-        assertEquals(1, results.length);
-        assertEquals(1, results[0].getPartnerUniprotAcs().length);
-        assertEquals("Q56134", results[0].getPartnerUniprotAcs()[0]);
+        Assert.assertEquals(1, results.length);
+        Assert.assertEquals(1, results[0].getPartnerUniprotAcs().length);
+        Assert.assertEquals("Q56134", results[0].getPartnerUniprotAcs()[0]);
     }
 
     public void testCountExperimentsUsingIntactQuery()
     {
-        assertEquals(2, search.countExperimentsUsingIntactQuery("*"));
+        Assert.assertEquals(2, search.countExperimentsUsingIntactQuery("*"));
     }
 
     public void testCountInteractionsUsingIntactQuery()
     {
-        assertEquals(2, search.countInteractionsUsingIntactQuery("*"));
+        Assert.assertEquals(2, search.countInteractionsUsingIntactQuery("*"));
     }
 
     public void testCountProteinsUsingIntactQuery()
     {
-        assertEquals(2, search.countProteinsUsingIntactQuery("*"));
+        Assert.assertEquals(2, search.countProteinsUsingIntactQuery("*"));
     }
 
     public void testCountAllBinaryInteractions()
     {
-        assertEquals(2, search.countAllBinaryInteractions());
+        Assert.assertEquals(2, search.countAllBinaryInteractions());
     }
 
     public void testSearchExperimentsUsingIntactQuery()
     {
-        assertEquals(2, search.searchExperimentsUsingQuery("*", null, null).size());
+        Assert.assertEquals(2, search.searchExperimentsUsingQuery("*", null, null).size());
     }
 
     public void testSearchProteinsUsingIntactQuery()

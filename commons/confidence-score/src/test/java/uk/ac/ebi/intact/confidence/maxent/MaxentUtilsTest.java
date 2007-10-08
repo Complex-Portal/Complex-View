@@ -30,7 +30,6 @@ import java.io.*;
 public class MaxentUtilsTest {
 
     @Test
-    @Ignore
     public void createModel() throws Exception {
 
         File file = new File(MaxentUtilsTest.class.getResource("gameLocation.dat").getFile());

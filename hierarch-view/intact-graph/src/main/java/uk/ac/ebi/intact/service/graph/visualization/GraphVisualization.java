@@ -1,30 +1,21 @@
 package uk.ac.ebi.intact.service.graph.visualization;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.decorators.*;
+import edu.uci.ics.jung.io.GraphMLFile;
+import edu.uci.ics.jung.io.GraphMLFileHandler;
+import edu.uci.ics.jung.utils.TestGraphs;
+import edu.uci.ics.jung.visualization.*;
+import edu.uci.ics.jung.visualization.Renderer;
+import edu.uci.ics.jung.visualization.contrib.KKLayout;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.decorators.EdgePaintFunction;
-import edu.uci.ics.jung.graph.decorators.EdgeShape;
-import edu.uci.ics.jung.graph.decorators.PickableEdgePaintFunction;
-import edu.uci.ics.jung.graph.decorators.PickableVertexPaintFunction;
-import edu.uci.ics.jung.graph.decorators.StringLabeller;
-import edu.uci.ics.jung.graph.decorators.VertexPaintFunction;
-import edu.uci.ics.jung.io.GraphMLFile;
-import edu.uci.ics.jung.io.GraphMLFileHandler;
-import edu.uci.ics.jung.visualization.FRLayout;
-import edu.uci.ics.jung.visualization.Layout;
-import edu.uci.ics.jung.visualization.PluggableRenderer;
-import edu.uci.ics.jung.visualization.Renderer;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
 
 public class GraphVisualization {
 
@@ -75,7 +66,7 @@ public class GraphVisualization {
 				new Color(0, 150, 100), null);
 		renderer.setEdgePaintFunction(epf);
 
-		renderer.setEdgeShapeFunction(new EdgeShape.Line());
+		renderer.setEdgeShapeFunction(new EdgeShape.QuadCurve());
 
 		return renderer;
 	}
@@ -115,8 +106,9 @@ public class GraphVisualization {
 	 * Reads the GraphML File and create the VisualizationViewer
 	 */
 	public void run() {
-		GraphMLFileHandler handler = new MyGraphMLFileHandler();
-		GraphMLFile file = new GraphMLFile(handler);
+
+        GraphMLFileHandler handler = new MyGraphMLFileHandler();
+        GraphMLFile file = new GraphMLFile(handler);
 		graph = file.load(graphMLFileName);
 
 		Layout layout = getLayout();
@@ -186,20 +178,22 @@ public class GraphVisualization {
 	public static void main(String[] args) {
 		JFrame jf = new JFrame();
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		String fileName = "src/test/java/uk/ac/ebi/intact/service/graph/binary/graphml.xml";
+		String fileName = "/homes/baranda/My Downloads/graphml.xml";
 		GraphVisualization vis = new GraphVisualization(fileName);
-		vis.setDimension(1500, 1500);
+		//vis.setDimension(1000, 1000);
 		jf.getContentPane().add(vis.getViewer());
 		jf.pack();
 		jf.setVisible(true);
-
+         /*
 		File jpegFile = new File(
 				"src/main/java/uk/ac/ebi/intact/service/graph/visualization/graphml.jpg");
 		vis.writeImage(jpegFile, "jpg");
-
+          */
 		File pngFile = new File(
 				"src/main/java/uk/ac/ebi/intact/service/graph/visualization/graphml.png");
 		vis.writeImage(pngFile, "png");
 	}
+
+
 
 }

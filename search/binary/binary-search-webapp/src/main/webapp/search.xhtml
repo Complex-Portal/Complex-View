@@ -67,8 +67,7 @@
                 </script>
             </h:panelGroup>
 
-            <h:panelGroup
-                          rendered="#{param.advSearch}">
+            <h:panelGroup style="#{param.advSearch? 'display:block' : 'display:none'}">
 
                 <h:panelGroup id="advancedSearchRegion">
 

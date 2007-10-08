@@ -26,10 +26,6 @@
     <name>IntAct Services :: Search :: Legacy :: Search WebService :: Service</name>
     <description>A web service interface to retrieve data from intact</description>
 
-    <properties>
-        <maven.test.skip>true</maven.test.skip>
-    </properties>
-
     <build>
         <finalName>${artifactId}-${version}</finalName>
         <plugins>
@@ -84,15 +80,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>uk.ac.ebi.intact.templates</groupId>
-            <artifactId>h2db-with-cv</artifactId>
-            <version>1.3-20070410</version>
-            <type>zip</type>
-        </dependency>
-
-        <dependency>
-            <groupId>uk.ac.ebi.intact</groupId>
-            <artifactId>intact-core</artifactId>
+            <groupId>uk.ac.ebi.intact.core</groupId>
+            <artifactId>intact-persister</artifactId>
         </dependency>
 
         <!-- JAX-WS -->
@@ -128,7 +117,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.4</version>
-            <scope>provided</scope>
+            <scope>provided</scope>                
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

@@ -26,10 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * TODO comment this!
@@ -71,15 +68,15 @@ public class Search
         // start the intact application (e.g. load Institution, etc)
         IntactConfigurator.createIntactContext(intactSession);
     }
-    /*
-    @PreDestroy
-    public void closeSessionFactory()
-    {
-        log.info("Closing Search WS");
 
-        //IntactSession intactSession = new WebappSession(servletContextEvent.getServletContext(), null, null);
-        RuntimeConfig.getCurrentInstance(intactSession).getDefaultDataConfig().closeSessionFactory();
-    }  */
+    public synchronized void initialize(IntactSession intactSession)
+    {
+        this.intactSession = intactSession;
+
+        // start the intact application (e.g. load Institution, etc)
+        IntactConfigurator.createIntactContext(intactSession);
+    }
+
 
     @WebMethod()
     public InteractionInfo[] getInteractionInfoUsingUniprotIds(String uniprotId1, String uniprotId2)
@@ -97,10 +94,7 @@ public class Search
             for (Protein prot2 : protsForId2)
             {
                 InteractionInfo[] results = getInteractionInfoUsingIntactIds(prot1.getAc(), prot2.getAc());
-                for (InteractionInfo result : results)
-                {
-                    interInfos.add(result);
-                }
+                interInfos.addAll(Arrays.asList(results));
             }
         }
 
