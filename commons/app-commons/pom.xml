@@ -17,6 +17,12 @@
     <description>Common classes for IntAct Web Applications</description>
 
     <dependencies>
+        <!-- intact -->
+        <dependency>
+            <groupId>uk.ac.ebi.intact.core</groupId>
+            <artifactId>intact-core</artifactId>
+        </dependency>
+
         <!-- server -->
         <dependency>
             <groupId>struts</groupId>
