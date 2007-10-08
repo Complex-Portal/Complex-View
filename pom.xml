@@ -3,7 +3,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>17</version>
+        <version>18-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -22,7 +22,7 @@
         <jetty.port>9090</jetty.port>
         <tempH2>/tmp/intact-${artifactId}-${jetty.port}-h2</tempH2>
 
-        <core.version>1.6.3-SNAPSHOT</core.version>
+        <core.version>1.7.0</core.version>
     </properties>
 
     <modules>
@@ -161,7 +161,7 @@
         <dependencies>
             <!-- IntAct dependencies -->
             <dependency>
-                <groupId>uk.ac.ebi.intact</groupId>
+                <groupId>uk.ac.ebi.intact.core</groupId>
                 <artifactId>intact-core</artifactId>
                 <version>${core.version}</version>
             </dependency>
@@ -253,10 +253,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>uk.ac.ebi.intact</groupId>
-            <artifactId>intact-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.3.1</version>
@@ -269,7 +265,7 @@
         <repository>
             <id>ebi-repo</id>
             <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
+            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
