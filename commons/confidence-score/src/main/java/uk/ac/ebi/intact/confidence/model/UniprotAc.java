@@ -16,8 +16,7 @@ import java.util.regex.Pattern;
  */
 public class UniprotAc {
 	private String	acNr;
-	// TODO: ask sam for a proper regex
-	private String	uniprotTermExpr	= "\\w{6,6}-\\d";
+	private String	uniprotTermExpr = "[A-Z][0-9][A-Z0-9]{3}[0-9]|[A-Z][0-9][A-Z0-9]{3}[0-9]-[0-9]+|[A-Z][0-9][A-Z0-9]{3}[0-9]-PRO_[0-9]{10}";
 
 	public UniprotAc(String accessionNr) {
 		if (accessionNr == null) {

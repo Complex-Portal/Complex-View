@@ -78,7 +78,10 @@ public class PsimiConfidence {
 
 	private void computeScore(Collection<BinaryInteraction> psimiInts) throws BlastServiceException {
 		BinaryInteractionSet biS = getBiSet(psimiInts);
-		AttributeGetter  aG = new AttributeGetter(tmpDir + "uniprot_sprot.dat", null, null, null, null);
+		int nr = -2;
+		File dbFolder = new File(tmpDir,"dbFolder");
+		dbFolder.mkdir();
+		AttributeGetter  aG = new AttributeGetter(dbFolder,tmpDir + "uniprot_sprot.dat", null, null, null, null, nr);
 		String outPath = tmpDir + "psimi_all_attributes.txt";
 		aG.getAllAttribs(biS, againstProteins, outPath);
 		//TODO: read the all attribs, and for each do a getAttribs per line => score

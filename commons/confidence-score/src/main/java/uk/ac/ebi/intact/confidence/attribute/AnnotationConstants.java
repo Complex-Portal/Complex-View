@@ -22,7 +22,8 @@ public interface AnnotationConstants
     static String uniprotNameExpr = "^AC.*";
 
     // identify uniprot accession term
-    static String uniprotTermExpr = "\\w{6,6}";  // this also matches _ but
+    static String uniprotTermExpr = "[A-Z][0-9][A-Z0-9]{3}[0-9]|[A-Z][0-9][A-Z0-9]{3}[0-9]-[0-9]+|[A-Z][0-9][A-Z0-9]{3}[0-9]-PRO_[0-9]{10}";
+    //"\\w{6,6}";  // this also matches _ but
 													// should be OK
 
     // regexps to identify InterPro and GO accession numbers

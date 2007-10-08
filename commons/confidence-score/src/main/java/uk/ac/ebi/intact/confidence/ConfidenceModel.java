@@ -44,30 +44,41 @@ public class ConfidenceModel {
 	public static final Log		log	= LogFactory.getLog(ConfidenceModel.class);
 	private String				uniprotPath;
 	private MaxEntClassifier	classifier;
-	private File				tmpDir;
+	private File				workDir;
 	private File				blastArchiveDir;
+	private File				dbFolder;
 	private String				email;
+	private int					nrPerSubmission;
 
 	public ConfidenceModel() {
 	}
 
-	public ConfidenceModel(String uniprotSwissprotPath, String tmpDirPath, String blastArchivePath, String email) {
-		if (uniprotSwissprotPath == null) {
+	public ConfidenceModel(String dbFolderPath, String uniprotSwissprotPath, String tmpDirPath, String blastArchivePath,
+			String email, int nrPerSubmission) {
+		if (uniprotSwissprotPath == null || dbFolderPath == null) {
 			throw new NullPointerException();
 		}
+		dbFolder = new File(dbFolderPath);
+		dbFolder.mkdir();
+		log.info("dbFolder: " + dbFolder.getPath());
 		uniprotPath = uniprotSwissprotPath;
 
-		tmpDir = new File(tmpDirPath, "ConfidenceModel");
-		tmpDir.mkdir();
+		workDir = new File(tmpDirPath, "ConfidenceModel");
+		workDir.mkdir();
 
 		blastArchiveDir = new File(blastArchivePath);
 		blastArchiveDir.mkdir();
+		
 		this.email = email;
+		testDir(dbFolder);
+		testDir(workDir);
+		testDir(blastArchiveDir);
+		this.nrPerSubmission = nrPerSubmission;
 	}
 
 	/**
-	 * gets data from db, generates LC set, gets the attributes, createsTadm input, 
-	 * runs Tadm, trains the model , classifies the medium confidence set
+	 * gets data from db, generates LC set, gets the attributes, createsTadm
+	 * input, runs Tadm, trains the model , classifies the medium confidence set
 	 */
 	public void buildModel() {
 		long start = System.currentTimeMillis();
@@ -109,12 +120,12 @@ public class ConfidenceModel {
 	}
 
 	public void getConfidenceListsFromDb() {
-		IntactDbRetriever intactdb = new IntactDbRetriever(tmpDir.getPath());
+		IntactDbRetriever intactdb = new IntactDbRetriever(workDir.getPath());
 		long start = System.currentTimeMillis();
 
 		try {
 			// TODO: replace with a proper way of writing to files
-			File file = new File(tmpDir.getPath(), "medconf_all.txt");
+			File file = new File(workDir.getPath(), "medconf_all.txt");
 			// TODO: remove after plugin-debug phase is working
 			log.info("file MC: " + file.getPath());
 			FileWriter fw = new FileWriter(file);
@@ -130,27 +141,27 @@ public class ConfidenceModel {
 
 		DataMethods dm = new DataMethods();
 		highconf = dm.expand(highconf, new SpokeExpansion());
-		dm.export(highconf, new File(tmpDir.getPath(), "highconf_all.txt"), true);
+		dm.export(highconf, new File(workDir.getPath(), "highconf_all.txt"), true);
 	}
 
 	public void generateLowconf(int nr) {
 		DataMethods dm = new DataMethods();
-		// TODO: be sure the fasta file is in that directory + create uniprot
+		// TODO: make sure the fasta file is in that directory + create uniprot
 		// remote get Proteins ->fasta
-		File inFile = new File(tmpDir.getParent(), "40.S_cerevisiae.fasta");
+		File inFile = new File(workDir.getParent(), "40.S_cerevisiae.fasta");
 		if (!inFile.exists()) {
 			throw new RuntimeException(inFile.getAbsolutePath());
 		}
 		HashSet<String> yeastProteins = dm.readFasta(inFile, null);
 		try {
-			BinaryInteractionSet highConfBiSet = new BinaryInteractionSet(tmpDir.getPath() + "/highconf_all.txt");
-			BinaryInteractionSet medConfBiSet = new BinaryInteractionSet(tmpDir.getPath() + "/medconf_all.txt");
+			BinaryInteractionSet highConfBiSet = new BinaryInteractionSet(workDir.getPath() + "/highconf_all.txt");
+			BinaryInteractionSet medConfBiSet = new BinaryInteractionSet(workDir.getPath() + "/medconf_all.txt");
 			Collection<ProteinPair> all = highConfBiSet.getSet();
 			all.addAll(medConfBiSet.getSet());
 			BinaryInteractionSet forbidden = new BinaryInteractionSet(all);
 			BinaryInteractionSet lowConf = dm.generateLowConf(yeastProteins, forbidden, nr);
 
-			dm.export(lowConf, new File(tmpDir.getPath(), "lowconf_all.txt"));
+			dm.export(lowConf, new File(workDir.getPath(), "lowconf_all.txt"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -159,18 +170,20 @@ public class ConfidenceModel {
 
 	public void getInterProGoAndAlign() {
 		try {
-			BinaryInteractionSet biSet = new BinaryInteractionSet(tmpDir.getPath() + "/highconf_all.txt");
-			AttributeGetter aG = new AttributeGetter(uniprotPath + "/uniprot_sprot.dat", biSet, tmpDir,
-					blastArchiveDir, this.email);
-			biSet = new BinaryInteractionSet(tmpDir.getPath() + "/highconf_all.txt");
+			BinaryInteractionSet biSet = new BinaryInteractionSet(workDir.getPath() + "/highconf_all.txt");
+			AttributeGetter aG = new AttributeGetter(dbFolder,uniprotPath + "/uniprot_sprot.dat", biSet, workDir,
+					blastArchiveDir, this.email, nrPerSubmission);
+			biSet = new BinaryInteractionSet(workDir.getPath() + "/highconf_all.txt");
 			HashSet<String> againstProteins = biSet.getAllProtNames();
-			aG.getAllAttribs(biSet, againstProteins, tmpDir.getPath() + "/highconf_all_attribs.txt");
+			aG.getAllAttribs(biSet, againstProteins, workDir.getPath() + "/highconf_all_attribs.txt");
 
-			biSet = new BinaryInteractionSet(tmpDir.getPath() + "/medconf_all.txt");
-			aG.getAllAttribs(biSet, againstProteins, tmpDir.getPath() + "/medconf_all_attribs.txt");
+			biSet = new BinaryInteractionSet(workDir.getPath() + "/medconf_all.txt");
+			aG.getAllAttribs(biSet, againstProteins, workDir.getPath() + "/medconf_all_attribs.txt");
 
-			biSet = new BinaryInteractionSet(tmpDir.getPath() + "/lowconf_all.txt");
-			aG.getAllAttribs(biSet, againstProteins, tmpDir.getPath() + "/lowconf_all_attribs.txt");
+			biSet = new BinaryInteractionSet(workDir.getPath() + "/lowconf_all.txt");
+			aG.getAllAttribs(biSet, againstProteins, workDir.getPath() + "/lowconf_all_attribs.txt");
+			
+			aG.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -182,9 +195,9 @@ public class ConfidenceModel {
 
 	public void createTadmClassifierInput() {
 		try {
-			ClassifierInputWriter ciw = new ClassifierInputWriter(tmpDir.getPath() + "/highconf_all_attribs.txt",
-					tmpDir.getPath() + "/lowconf_all_attribs.txt", tmpDir.getPath() + "/tadm.input", "TADM");
-			ciw.writeAttribList(tmpDir.getPath() + "/all_attribs.txt");
+			ClassifierInputWriter ciw = new ClassifierInputWriter(workDir.getPath() + "/highconf_all_attribs.txt",
+					workDir.getPath() + "/lowconf_all_attribs.txt", workDir.getPath() + "/tadm.input", "TADM");
+			ciw.writeAttribList(workDir.getPath() + "/all_attribs.txt");
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -195,11 +208,15 @@ public class ConfidenceModel {
 	}
 
 	public void runTadm() {
-		String cmd = "tadm -events_in " + tmpDir.getPath() + "/tadm.input" + " -params_out " + tmpDir.getPath()
+		String cmd = "tadm -events_in " + workDir.getPath() + "/tadm.input" + " -params_out " + workDir.getPath()
 				+ "/weights.txt";
 		try {
-			Runtime.getRuntime().exec(cmd);
+			Process process = Runtime.getRuntime().exec(cmd);
+			process.waitFor();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -207,7 +224,8 @@ public class ConfidenceModel {
 
 	public void createModel() {
 		try {
-			classifier = new MaxEntClassifier(tmpDir.getPath() + "/all_attribs.txt", tmpDir.getPath() + "/weights.txt");
+			classifier = new MaxEntClassifier(workDir.getPath() + "/all_attribs.txt", workDir.getPath()
+					+ "/weights.txt");
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -218,10 +236,10 @@ public class ConfidenceModel {
 	}
 
 	public void classifyMedConfSet() {
-		File file = new File(tmpDir.getPath(), "medconf_all_attribs.txt");
+		File file = new File(workDir.getPath(), "medconf_all_attribs.txt");
 		BufferedReader br;
 		try {
-			FileWriter fw = new FileWriter(new File(tmpDir.getPath(), "medconf_FINAL_score.txt"));
+			FileWriter fw = new FileWriter(new File(workDir.getPath(), "medconf_FINAL_score.txt"));
 
 			br = new BufferedReader(new FileReader(file));
 			String line;
@@ -229,7 +247,7 @@ public class ConfidenceModel {
 			while ((line = br.readLine()) != null) {
 				double tScore = classifier.trueScoreFromLine(line);
 				String[] str = line.split(",");
-				fw.append(str[0] + ": " + tScore);
+				fw.append(str[0] + ": " + tScore + "\n");
 			}
 			fw.close();
 		} catch (FileNotFoundException e) {
@@ -238,6 +256,18 @@ public class ConfidenceModel {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	private void testDir(File workDir) {
+		if (!workDir.exists()) {
+			throw new IllegalArgumentException("WorkDir must exist! " + workDir.getPath());
+		}
+		if (!workDir.isDirectory()) {
+			throw new IllegalArgumentException("WorkDir must be a directory! " + workDir.getPath());
+		}
+		if (!workDir.canWrite()) {
+			throw new IllegalArgumentException("WorkDir must be writable! " + workDir.getPath());
 		}
 	}
 }

@@ -57,7 +57,9 @@ public class BinaryInteractionSet
             {
                 continue;  // skip comment lines
             }
-            items = line.split("\\W+"); // split by nonword characters
+            //TODO: by Irina: test, that everything is still working
+          //  items = line.split("\\W+"); // split by nonword characters
+            items = line.split(";");
             totalProts = items.length;
             if (totalProts <= 1)
             {

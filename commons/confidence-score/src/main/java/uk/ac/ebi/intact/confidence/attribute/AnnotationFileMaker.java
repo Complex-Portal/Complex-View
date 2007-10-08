@@ -18,6 +18,8 @@ import java.io.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.sun.tools.javac.code.Type.ForAll;
+
 /**
  * TODO comment that
  * 
@@ -31,26 +33,45 @@ public class AnnotationFileMaker implements AnnotationConstants {
 	/**
 	 * Sets up a logger for that class.
 	 */
-	public static final Log		log	= LogFactory.getLog(AnnotationFileMaker.class);
-	
-	File			uniprotFile;
-	Set<String>	allProts;
-	static boolean	verbose		= true;					// debug switch
+	public static final Log	log		= LogFactory.getLog(AnnotationFileMaker.class);
 
-	public AnnotationFileMaker(){
+	File					uniprotFile;
+	Set<String>				allProts; // without isoform
+	Set<String>				isoformProts; // only isofroms
+	static boolean			verbose	= true;										// debug
+
+	// switch
+
+	public AnnotationFileMaker() {
 		allProts = new HashSet<String>();
 	}
-	
+
 	public AnnotationFileMaker(BinaryInteractionSet biSet, String uniPath) {
 
 		allProts = biSet.getAllProtNames(); // proteins to find annotation for
 
+		// TODO: added by me
+		processAllProts();
+
 		if (uniPath != null) {
 			uniprotFile = new File(uniPath);
 		} else {
-			uniprotFile	= new File(uniprotPath);
+			uniprotFile = new File(uniprotPath);
 		}
 
+	}
+
+	private void processAllProts() {
+		Set<String> newAllProts = new HashSet<String>();
+		isoformProts = new HashSet<String>();
+		for (String prot : allProts) {
+			String[] auxs = prot.split("-");
+			if (auxs.length != 1){
+				isoformProts.add(prot);
+			}
+			newAllProts.add(auxs[0]);
+		}
+		allProts = newAllProts;
 	}
 
 	public void writeInterproAnnotation(String outPath) throws IOException {
@@ -71,7 +92,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		PrintWriter pw = new PrintWriter(fw);
 
 		int protCount = 0; // if debugging -- keep track of number of proteins
-							// read
+		// read
 		int totalProts = allProts.size();
 		while ((line = br.readLine()) != null) {
 
@@ -102,7 +123,12 @@ public class AnnotationFileMaker implements AnnotationConstants {
 					if (termList.isEmpty()) {
 						noAnnotation.add(name);
 					}
+					String isoform = checkIfHasIsoform(name);
+					if (isoform != null){
+						name = isoform;
+					}
 					outBuf = new StringBuffer(name);
+					
 					outBuf.append(",");
 					for (String term : termList) {
 						term = term + ",";
@@ -118,7 +144,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 					String comment = termList.size() + " annotation term(s) found for protein " + protCount + " of "
 							+ totalProts + ".";
 					log.debug(comment);
-					//System.out.println(comment);
+					// System.out.println(comment);
 				}
 
 				// clear collections for next protein
@@ -132,18 +158,29 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		if (verbose) {
 			String comment = "No annotation found for " + noAnnotation.size() + " of " + totalProts + " proteins.";
 			log.debug(comment);
-			//System.out.println(comment);
+			// System.out.println(comment);
 		}
 		fw.close();
 		fr.close();
 
 	}
 
-	public void writeInterproAnnotation(ProteinPair proteinPair, String outPath) throws IOException{
+	//TODO: added by me
+	private String checkIfHasIsoform(String name) {
+		for (String prot : isoformProts) {
+			String[] auxs = prot.split("-");
+			if (name.equals(auxs[0])){
+				return prot;
+			}
+		}
+		return null;
+	}
+
+	public void writeInterproAnnotation(ProteinPair proteinPair, String outPath) throws IOException {
 		resetAllProteins(proteinPair);
 		writeInterproAnnotation(outPath);
 	}
-	
+
 	public void writeGoAnnotation(String outFile) throws IOException {
 
 		HashSet<String> forbiddenGo = new HashSet<String>();
@@ -168,7 +205,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		PrintWriter pw = new PrintWriter(fw);
 
 		int protCount = 0; // if debugging -- keep track of number of proteins
-							// read
+		// read
 		int forbidCount = 0; // also number of disallowed GO terms
 		int totalProts = allProts.size();
 
@@ -202,6 +239,11 @@ public class AnnotationFileMaker implements AnnotationConstants {
 						noAnnotation.add(name);
 					}
 
+					String isoform = checkIfHasIsoform(name);
+					if (isoform != null){
+						name = isoform;
+					}
+					
 					outBuf = new StringBuffer(name);
 					outBuf.append(",");
 					for (String term : termList) {
@@ -216,7 +258,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 					protCount++;
 					String comment = termList.size() + " annotation term(s) found for protein " + protCount + " of "
 							+ totalProts + ".";
-					//System.out.println(comment);
+					// System.out.println(comment);
 					log.debug(comment);
 				}
 
@@ -230,10 +272,10 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		// finally, print proteins for which no annotation was found
 		if (verbose) {
 			String comment = "No annotation found for " + noAnnotation.size() + " of " + totalProts + " proteins.";
-			//System.out.println(comment);
+			// System.out.println(comment);
 			log.debug(comment);
 			comment = forbidCount + " instances of GO terms on disallowed list.";
-			//System.out.println(comment);
+			// System.out.println(comment);
 			log.debug(comment);
 		}
 
@@ -242,18 +284,19 @@ public class AnnotationFileMaker implements AnnotationConstants {
 
 	}
 
-	public void writeGoAnnotation(ProteinPair proteinPair, File outFile) throws IOException{
-		resetAllProteins(proteinPair);		
-		// call 
+	public void writeGoAnnotation(ProteinPair proteinPair, File outFile) throws IOException {
+		resetAllProteins(proteinPair);
+		// call
 		writeGoAnnotation(outFile.getPath());
 	}
 
 	private void resetAllProteins(ProteinPair proteinPair) {
 		// setting the wanted proteins
-		if (this.allProts !=null){
+		if (this.allProts != null) {
 			allProts.clear();
 		}
-		allProts.addAll(Arrays.asList(proteinPair.getFirstId(), proteinPair.getSecondId()));	
+		allProts.addAll(Arrays.asList(proteinPair.getFirstId(), proteinPair.getSecondId()));
+		processAllProts();
 	}
 
 	public void setUniprotFile(File uniprotFile) {
@@ -262,6 +305,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 
 	public void setAllProts(HashSet<String> allProts) {
 		this.allProts = allProts;
+		processAllProts();
 	}
-	
+
 }

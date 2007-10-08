@@ -22,9 +22,9 @@ import uk.ac.ebi.intact.bridges.blast.jdbc.BlastJobEntity;
 import uk.ac.ebi.intact.bridges.blast.model.BlastResult;
 import uk.ac.ebi.intact.bridges.blast.model.Hit;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.confidence.util.GlobalData;
 
 /**
  * TODO comment that
@@ -73,7 +73,7 @@ public class AlignmentFileMaker {
 		if (workingDirectory == null) {
 			String workPath = AlignmentFileMaker.class.getResource("doNotRemoveThis.file").getPath();
 			workDir = new File(workPath);
-			HashMap<String, File> paths = GlobalTestData.getInstance().getRightPahts();//getTargetDirectory(); // new
+			HashMap<String, File> paths = GlobalData.getRightPahts();// GlobalTestData.getInstance().getRightPahts();//getTargetDirectory(); // new
 			workDir = paths.get("workDir");
 			// File(workDir.getParent());
 		} else {
@@ -82,6 +82,8 @@ public class AlignmentFileMaker {
 		if (!workDir.isDirectory()) {
 			workDir.mkdir();
 		}
+		
+		GlobalData.setCount(0);
 	}
 
 	// //////////////////
@@ -116,9 +118,14 @@ public class AlignmentFileMaker {
 	public void blast(Set<UniprotAc> proteins, Set<UniprotAc> againstProteins, Writer writer)
 			throws BlastServiceException {
 		if (proteins == null || againstProteins == null || writer == null) {
-			throw new NullPointerException("params must not be null!");
+			throw new NullPointerException("Params must not be null!");
 		}
 
+		GlobalData.setCount(0);
+		GlobalData.startTime =-1;
+		GlobalData.totalProts = proteins.size();
+		log.info("total nr of proteins : " + GlobalData.totalProts);
+		
 		List<BlastResult> results = blast.fetchAvailableBlasts(proteins);
 		processResults(results, againstProteins, writer);
 
@@ -126,6 +133,7 @@ public class AlignmentFileMaker {
 		if (missingProteins.size() != 0) {
 			List<BlastJobEntity> submitted = blast.submitJobs(missingProteins);
 			List<BlastResult> tmpResults = blast.fetchAvailableBlasts(submitted);
+			processResults(tmpResults, againstProteins, writer);
 			results.addAll(tmpResults);
 			while (results.size() != proteins.size()) {
 				//TODO: reassess if it needs more time than the fetchBlast code
@@ -133,13 +141,24 @@ public class AlignmentFileMaker {
 				// Thread.sleep(5000);
 				// } catch(InterruptedException e){
 				// e.printStackTrace();
-				// }
+				// } //TODO: remove this notIncluded () ... put it after the result.addAll
 				missingProteins = notIncluded(results, proteins);
 				tmpResults = blast.fetchAvailableBlasts(missingProteins);
 				processResults(tmpResults, againstProteins, writer);
 				results.addAll(tmpResults);
 			}
 		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		GlobalData.endTime = System.currentTimeMillis();
+		long time = GlobalData.endTime - GlobalData.startTime;
+		log.info("for " + GlobalData.getCount() + " prots: " + time);
+		log.info("ETA: " + GlobalData.eta(GlobalData.getCount(), time, GlobalData.totalProts) + " (milisec)");
 	}
 
 	// ///////////////////
@@ -176,14 +195,35 @@ public class AlignmentFileMaker {
 		// proteins and eval < 0.001
 		// add to the alignmentLine
 		// append the alignmentLine to a writer
+		if (GlobalData.startTime == -1) {
+			GlobalData.startTime = System.currentTimeMillis();
+		}
 		for (BlastResult result : results) {
+			GlobalData.increment(1);
+			if ((GlobalData.getCount() %20) == 0){
+				GlobalData.endTime = System.currentTimeMillis();
+				long time = GlobalData.endTime - GlobalData.startTime;
+				log.info("for " + GlobalData.getCount() + " prots: " + time);
+				log.info("ETA: " + GlobalData.eta(GlobalData.getCount(), time, GlobalData.totalProts) + " (milisec)");
+			}
 			String alignmentLine = result.getUniprotAc();
 			for (Hit hit : result.getHits()) {
 				Float evalue = hit.getEValue();
 				String ac = hit.getUniprotAc();
-				if (evalue < threshold && againstProteins.contains(new UniprotAc(ac))) {
-					alignmentLine += "," + ac;
+				if (ac == null){
+					log.debug("Ac is null, in a hit list!" + result.getUniprotAc() +": " + hit);
 				}
+				
+				//TODO: remove try/catch block after test
+				try{
+					UniprotAc uniprotAc = new UniprotAc(ac);
+					if (evalue < threshold && againstProteins.contains(uniprotAc)) {
+						alignmentLine += "," + ac;
+					}
+				} catch (IllegalArgumentException e){
+					log.debug(e.toString() + "\n" + alignmentLine + " : " + evalue + ": " + ac);
+				}	
+				
 			}
 			try {
 				writer.append(alignmentLine + "\n");
@@ -192,9 +232,19 @@ public class AlignmentFileMaker {
 				e.printStackTrace();
 			}
 		}
+	}
+
+//	/* (non-Javadoc)
+//	 * @see java.lang.Object#finalize()
+//	 */
+//	@Override
+//	protected void finalize() throws Throwable {
+//		blast.close();
+//	}	
+	public void close(){
 		try {
-			writer.close();
-		} catch (IOException e) {
+			blast.close();
+		} catch (BlastServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

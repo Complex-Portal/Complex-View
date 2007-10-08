@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,13 +48,21 @@ public class AttributeGetter {
 		fileCombiner = new FileCombiner();
 	}
 
-	public AttributeGetter(String uniprotPath, BinaryInteractionSet highConfSet, File workDir, File blastArchiveDir, String email) throws BlastServiceException {
+	public void close(){
+		alignmentMaker.close();
+	}
+	
+	public AttributeGetter(File dbFolder, String uniprotPath, BinaryInteractionSet highConfSet, File workDir, File blastArchiveDir, String email, int nrPerSubmission) throws BlastServiceException {
 		this();
 		annotationMaker.setUniprotFile(new File(uniprotPath));
 		String tableName = "job";
 		//TODO: remove the path
-		File workDirBlast = new File("E:\\20071016_iarmean");
-		BlastService bs = new EbiWsWUBlast(tableName, workDirBlast, email);//new File(workDir.getPath(), "/Blast/"), email);
+		HashMap<String, File> paths = GlobalData.getRightPahts();
+		File workDirBlast =  paths.get("blastArchive");//new File("E:\\20071016_iarmean");
+		if (nrPerSubmission < 1){
+			nrPerSubmission = 20;
+		}
+		BlastService bs = new EbiWsWUBlast(dbFolder, tableName, workDirBlast, email, nrPerSubmission);//new File(workDir.getPath(), "/Blast/"), email);
 		alignmentMaker = new AlignmentFileMaker(new Float(0.001), blastArchiveDir, bs);
 		fileMaker = new FileMaker(highConfSet);
 		this.setWorkDir(workDir.getPath());
@@ -97,7 +106,11 @@ public class AttributeGetter {
 			// get GOs
 			afm.writeGoAnnotation(goFile.getPath());
 			// build GO attributes
+			//TODO: solve once + for all the setting of the biSet for the filemaker
+			BinaryInteractionSet auxBiSet = fileMaker.getBiSet();
+			fileMaker.setBiSet(biS);
 			fileMaker.writeAnnotationAttributes(goFile.getPath(), outPath);
+			fileMaker.setBiSet(auxBiSet);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -133,7 +146,11 @@ public class AttributeGetter {
 			// get Interpro domains per protein
 			afm.writeInterproAnnotation(ipFile.getPath());
 			// build InterPro attributes for pair
+			BinaryInteractionSet auxSet = fileMaker.getBiSet();
+			//TODO: solve once + for all the setting of the biSet for the filemaker
+			fileMaker.setBiSet(biS);
 			fileMaker.writeAnnotationAttributes(ipFile.getPath(), outPath);
+			fileMaker.setBiSet(auxSet);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -193,8 +210,10 @@ public class AttributeGetter {
 		writeGoAttributes(biS, goPath);
 		String ipPath = workDir.getPath() + "/set_ip_attributes.txt";
 		writeIpAttributes(biS, ipPath);
+		
 		String alignPath = workDir.getPath() + "/set_align_attributes.txt";
 		writeAlignmentAttributes(biS, alignPath, againstProteins);
+		
 		String[] paths = { goPath, ipPath, alignPath };
 		merge(paths, outPath);
 	}

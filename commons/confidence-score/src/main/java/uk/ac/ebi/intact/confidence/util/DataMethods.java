@@ -165,9 +165,6 @@ public class DataMethods implements AnnotationConstants {
 	 * @return List of checked strings
 	 */
 	public HashSet<String> checkFormat(HashSet<String> acs, boolean ebiACs) {
-		// TODO: ask why the ArrayList does not support remove()
-		// + what datatype should one use to be able to use remove
-		// see unsupportedOperationException
 		HashSet<String> checkedACs = new HashSet<String>();
 		if (ebiACs) {
 
