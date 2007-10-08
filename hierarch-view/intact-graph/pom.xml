@@ -8,13 +8,20 @@
   <artifactId>intact-graph</artifactId>
   <name>IntAct Services :: HierarchView :: Graph</name>
   <version>1.6.0-SNAPSHOT</version>
+
   <dependencies>
+    <dependency>
+        <groupId>uk.ac.ebi.intact.core</groupId>
+        <artifactId>intact-core</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>psidev.psi.mi</groupId>
       <artifactId>psimitab</artifactId>
       <version>1.0-rc2-SNAPSHOT</version>
     </dependency>
-	<dependency>
+
+    <dependency>
     	<groupId>jung</groupId>
     	<artifactId>jung</artifactId>
    	 	<version>1.7.6</version>
