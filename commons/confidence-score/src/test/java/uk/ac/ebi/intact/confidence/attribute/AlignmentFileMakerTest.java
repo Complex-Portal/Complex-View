@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,8 @@ import uk.ac.ebi.intact.confidence.blastmapping.BlastMappingReader;
 import uk.ac.ebi.intact.confidence.blastmapping.jaxb.EBIApplicationResult;
 import uk.ac.ebi.intact.confidence.blastmapping.jaxb.TAlignment;
 import uk.ac.ebi.intact.confidence.blastmapping.jaxb.THit;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+import uk.ac.ebi.intact.confidence.util.GlobalData;
 
 /**
  * TODO comment this
@@ -55,8 +58,12 @@ public class AlignmentFileMakerTest {
 		testDir = testDir.getParentFile();
 		String email = "iarmean@ebi.ac.uk";
 		String tableName  = "job";
-		File workDir  = new File("/homes/iarmean/blastXml");
-		BlastService bs = new EbiWsWUBlast(tableName, workDir, email);//new File(testDir.getPath(), "/Blast/"), email);
+		HashMap<String, File> paths = GlobalData.getRightPahts();
+		File workDir  = paths.get("blastArchive");//new File("/homes/iarmean/blastXml");
+		int nr =20;
+		File dbFolder = new File(GlobalTestData.getInstance().getTargetDirectory().getParent(), "dbFolder");
+		dbFolder.mkdir();
+		BlastService bs = new EbiWsWUBlast(dbFolder, tableName, workDir, email, nr);//new File(testDir.getPath(), "/Blast/"), email);
 		afm = new AlignmentFileMaker(new Float(0.001),testDir, bs);
 	}
 
@@ -101,10 +108,8 @@ public class AlignmentFileMakerTest {
 				String accession = hit.getAc();
 				if (accession.equals("Q862R2")){
 					List<TAlignment> alignments = hit.getAlignments().getAlignment();
-					//TODO: change :takes the last alignment
-					for (TAlignment align : alignments) {
-						System.out.println(align.getExpectation());
-					}
+					//changed :takes the last alignment
+					System.out.println(alignments.get(0).getExpectation());
 				}
 			}
 		} catch (BlastMappingException e) {

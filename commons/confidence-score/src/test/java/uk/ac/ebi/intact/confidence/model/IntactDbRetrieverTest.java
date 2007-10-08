@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -24,8 +25,9 @@ import org.junit.Test;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
-import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+//import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
+import uk.ac.ebi.intact.confidence.util.GlobalData;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.core.unit.mock.MockIntactContext;
@@ -55,9 +57,10 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	@Before
 	public void setUp() throws Exception {
 		acs = new HashSet<String>(Arrays.asList("EBI-987097", "EBI-446104", "EBI-79835", "EBI-297231", "EBI-1034130"));
-		String tmpDirPath = GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetriever/";
+		HashMap<String, File> paths = GlobalData.getRightPahts();
+		String tmpDirPath = paths.get("workDir").getPath();//GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetriever/";
 		intactdb = new IntactDbRetriever(tmpDirPath);
-		String testDirPath = GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetrieverTest/";
+		String testDirPath = paths.get("workDir").getPath();//GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetrieverTest/";
 		testDir = new File(testDirPath);
 		testDir.mkdir();
 	}

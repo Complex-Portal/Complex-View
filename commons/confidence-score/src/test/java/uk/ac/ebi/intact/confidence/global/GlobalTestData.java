@@ -60,8 +60,14 @@ public class GlobalTestData {
 		File outputDir = new File(outputDirPath);
 		// we are in src/main/resources , move 3 up
 
-		// TODO: for eclipse use : 
-		outputDir = outputDir.getParentFile().getParentFile().getParentFile();
+//		String osName = System.getProperty("os.name");
+//		if (osName.startsWith("Linux")){
+//			
+//		}else if (osName.startsWith("Windows")){
+//			
+//		}
+		
+		// TODO: for eclipse use : outputDir = outputDir.getParentFile().getParentFile().getParentFile();
 		// TODO: for unix, cygwin use: 
 		outputDir = outputDir.getParentFile();
 

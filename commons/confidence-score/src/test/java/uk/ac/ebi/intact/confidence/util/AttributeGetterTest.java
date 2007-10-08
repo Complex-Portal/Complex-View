@@ -6,18 +6,22 @@
 package uk.ac.ebi.intact.confidence.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
+import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.attribute.FileCombiner;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+
 
 /**
  * TODO comment this
@@ -41,9 +45,12 @@ public class AttributeGetterTest {
 		String uniprotPath = AttributeGetterTest.class.getResource("uniprot_sprot_small.dat").getPath();
 		//TODO: for eclipse: File blastArchive = new File("H:/blastXml/");
 		// for unix:
-		File blastArchive = new File("/homes/iarmean/blastXml/");
+		File blastArchive = new File(System.getProperty("user.home"),"/blastXml/");
 		String email = "iarmean@ebi.ac.uk";
-		aG = new AttributeGetter(uniprotPath, GlobalTestData.getInstance().getBinaryInteractionSet(), blastDir.getParentFile(),blastArchive, email);		
+		int nr = 20;
+		File dbFolder = new File(GlobalTestData.getInstance().getTargetDirectory().getParent(), "dbFolder");
+		dbFolder.mkdir();
+		aG = new AttributeGetter(dbFolder, uniprotPath, GlobalTestData.getInstance().getBinaryInteractionSet(), blastDir.getParentFile(),blastArchive, email, nr);		
 	}
 
 	/**
@@ -51,6 +58,8 @@ public class AttributeGetterTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
+		aG.close();
+		
 	}
 
 	/**
@@ -165,5 +174,33 @@ public class AttributeGetterTest {
 		againstProt.add("P00506"); // for P12345
 		aG.getAllAttribs(GlobalTestData.getInstance().getBinaryInteractionSet(), againstProt, outPath);
 	}
-
+	
+	/**
+	 * Test method for getting all attribs for a file of interactions
+	 * @throws BlastServiceException
+	 */
+	@Test
+	@Ignore
+	public final void testGetAllAttrbisFile() throws BlastServiceException {
+		BinaryInteractionSet biSet;
+		try {
+			biSet = new BinaryInteractionSet("E:\\tmp\\ConfidenceModel\\highconf_all.txt");
+			File workDir = new File("E:\\tmp\\ConfidenceModel");
+			File blastArchiveDir = new File("E:\\20071016_iarmean");
+			String email = "iarmean@ebi.ac.uk";
+			int nr =20;
+			File dbFolder = new File(GlobalTestData.getInstance().getTargetDirectory().getParent(), "dbFolder");
+			dbFolder.mkdir();
+			AttributeGetter aG = new AttributeGetter(dbFolder, "E:\\tmp\\uniprot_sprot.dat", biSet, workDir,
+					blastArchiveDir, email, nr);
+			
+			BinaryInteractionSet biSet2 = new BinaryInteractionSet(workDir.getPath() + "/medconf_all.txt");
+			HashSet<String> againstProteins = biSet.getAllProtNames();
+			aG.getAllAttribs(biSet2, againstProteins, workDir.getPath() + "/medconf_all_attribs_test.txt");
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
 }

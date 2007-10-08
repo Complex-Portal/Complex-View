@@ -200,7 +200,7 @@ public class DataMethodTest extends IntactBasicTestCase {
 		HashSet<String> uniprotACs = new HashSet(Arrays.asList("P12345", "PQ1234", "Q123456", "EBI297", "EBI-1034130"));
 		uniprotACs = d.checkFormat(uniprotACs, false);
 		// TODO: check if the regex is corect for uniprot
-		Assert.assertEquals(3, uniprotACs.size());
+		Assert.assertEquals(1, uniprotACs.size());
 	}
 
 	@Test
