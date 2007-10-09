@@ -98,10 +98,10 @@ public class LoginCheckFilter implements Filter {
                 ourLog.debug("Plain html request, lets server serve it");
                 // Just a plain HTML page. Let's pass thru.
                 chain.doFilter(req, res);
-            } else if (containsAuthCookies(request)) {
-                ourLog.debug("User information found in cookies");
-                session = request.getSession(true);
-                getSecureEditDispatcher().forward(req, res);
+//            } else if (containsAuthCookies(request)) {
+//                ourLog.debug("User information found in cookies");
+//                session = request.getSession(true);
+//                getSecureEditDispatcher().forward(req, res);
             } else {
                 ourLog.debug("New unauthenticated request, let's forward to the welcome action");
                 // Make sure to forward to the welcome action.
