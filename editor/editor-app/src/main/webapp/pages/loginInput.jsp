@@ -1,3 +1,5 @@
+<%@ page import="uk.ac.ebi.intact.application.editor.struts.security.LoginAction" %>
+<%@ page import="uk.ac.ebi.intact.util.DesEncrypter" %>
 <%@ taglib uri="/WEB-INF/tld/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/tld/struts-html.tld" prefix="html"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
@@ -8,7 +10,18 @@
     Version: $Id$
 --%>
 
+
+
 <html:form action="/login" focus="username" onsubmit="return validateLoginForm(this)">
+
+    <bean:cookie id="uname" name="editor_username" value=""/>
+    <bean:cookie id="pword" name="editor_password" value=""/>
+
+    <%
+        DesEncrypter encrypter = new DesEncrypter(LoginAction.secretKey());
+        String cookieUserName = encrypter.decrypt(uname.getValue());
+        String cookiePassword = encrypter.decrypt(pword.getValue());
+    %>
 
     <%-- Append ac and search class parameters if they are present --%>
     <c:if test="${not empty param.ac and not empty param.type}">
@@ -23,7 +36,7 @@
                 <bean:message key="loginForm.label.username"/>
             </th>
             <td align="left">
-                <html:text property="username" size="10" maxlength="16"/>
+                <html:text property="username" value="<%=cookieUserName%>" size="10" maxlength="16"/>
             </td>
         </tr>
 
@@ -32,8 +45,17 @@
                 <bean:message key="loginForm.label.password"/>
             </th>
             <td align="left">
-                <html:password property="password"
+                <html:password property="password" value="<%=cookiePassword%>"
                         size="10" maxlength="16" redisplay="false"/>
+            </td>
+        </tr>
+
+        <tr>
+            <th align="right">
+                <bean:message key="loginForm.label.rememberme" />
+            </th>
+            <td align="left">
+                <html:checkbox property="rememberMe"/>
             </td>
         </tr>
 

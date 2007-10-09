@@ -59,6 +59,14 @@
         </description>
     </context-param>
 
+    <context-param>
+        <param-name>uk.ac.ebi.intact.SECRET</param-name>
+        <param-value>Nzk4NDMyMTW=</param-value>
+        <description>
+            Secret key to decode
+        </description>
+    </context-param>
+
     <!-- =================================================================== -->
 
     <!-- This filter is to stop users accessing edit pages without login first -->

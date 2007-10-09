@@ -38,6 +38,8 @@ public class LoginForm extends ValidatorForm {
      */
     private String myType;
 
+    private boolean rememberMe;
+
     // Getter/Setter methods
 
     public String getUsername() {
@@ -78,5 +80,13 @@ public class LoginForm extends ValidatorForm {
 
     public void setType(String type) {
         myType = type;
+    }
+
+    public boolean isRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(boolean rememberMe) {
+        this.rememberMe = rememberMe;
     }
 }
