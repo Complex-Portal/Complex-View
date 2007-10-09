@@ -32,8 +32,6 @@
     <link rel="stylesheet" type="text/css"
         href="<%= request.getContextPath() %>/layouts/styles/intact.css"/>
 
-    <!-- Needed to setup Tooltip for buttonBar.html. -->
-    <script type="text/javascript" src="<%= request.getContextPath() %>/layouts/overLIB/overlib.js"></script>
 </head>
 
 <body bgcolor="#FFFFFF" topmargin="0" leftmargin="0">

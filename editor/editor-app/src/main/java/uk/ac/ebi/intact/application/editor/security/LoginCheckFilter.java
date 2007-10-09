@@ -6,12 +6,13 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.security;
 
-import org.apache.log4j.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
+import uk.ac.ebi.intact.application.editor.struts.security.LoginAction;
 
 import javax.servlet.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -71,21 +72,13 @@ public class LoginCheckFilter implements Filter {
         String uri = request.getRequestURI();
         ourLog.debug("Requested URI " + uri);
 
-        // Lets struts handle when there is no session.
-        if (session == null) {
-            // Check for static HTML pages.
-            if (uri.endsWith("html")) {
-                ourLog.debug("Plain html request, lets server serve it");
-                // Just a plain HTML page. Let's pass thru.
-                chain.doFilter(req, res);
+        if (containsAuthCookies(request)) {
+                ourLog.debug("User information found in cookies");
+                session = request.getSession(true);
+                getSecureEditDispatcher().forward(req, res);
             }
-            else {
-                ourLog.debug("New session, let's forward to the welcome action");
-                // Make sure to forward to the welcome action.
-                getWelcomeDispatcher().forward(req, res);
-            }
-        }
-        else {
+
+        if (session != null) {
             // Got a session; check the URI.
             if (uri.indexOf("editor/do/secure/edit") == -1) {
                 // Trying to access non secure part of the editor. Lets Struts take
@@ -105,6 +98,21 @@ public class LoginCheckFilter implements Filter {
                 }
             }
         }
+
+        // Check for static HTML pages.
+            if (uri.endsWith("html")) {
+                ourLog.debug("Plain html request, lets server serve it");
+                // Just a plain HTML page. Let's pass thru.
+                chain.doFilter(req, res);
+            } else if (containsAuthCookies(request)) {
+                ourLog.debug("User information found in cookies");
+                session = request.getSession(true);
+                getSecureEditDispatcher().forward(req, res);
+            } else {
+                ourLog.debug("New unauthenticated request, let's forward to the welcome action");
+                // Make sure to forward to the welcome action.
+                getWelcomeDispatcher().forward(req, res);
+            }
     }
 
 
@@ -126,5 +134,25 @@ public class LoginCheckFilter implements Filter {
     private RequestDispatcher getWelcomeDispatcher() {
         ServletContext ctx = myFilterConfig.getServletContext();
         return ctx.getRequestDispatcher("/do/welcome");
+    }
+
+    private RequestDispatcher getSecureEditDispatcher() {
+        ServletContext ctx = myFilterConfig.getServletContext();
+        return ctx.getRequestDispatcher("/do/secure/edit");
+    }
+
+    private boolean containsAuthCookies(HttpServletRequest request) {
+        Cookie userNameCookie = null;
+        Cookie passwordCookie = null;
+
+        for (Cookie cookie : request.getCookies()) {
+             if (cookie.getName().equals(LoginAction.COOKIE_USERNAME)) {
+                 userNameCookie = cookie;
+             } else if (cookie.getName().equals(LoginAction.COOKIE_PASSWORD)) {
+                 passwordCookie = cookie;
+             }
+        }
+
+        return userNameCookie != null && passwordCookie != null;
     }
 }

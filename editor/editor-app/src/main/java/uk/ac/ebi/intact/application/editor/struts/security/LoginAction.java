@@ -50,8 +50,8 @@ public class LoginAction extends AbstractEditorAction {
 
     private static final Log log = LogFactory.getLog(LoginAction.class);
 
-    private static final String COOKIE_USERNAME = "editor_username";
-    private static final String COOKIE_PASSWORD = "editor_password";
+    public static final String COOKIE_USERNAME = "editor_username";
+    public static final String COOKIE_PASSWORD = "editor_password";
 
     /**
      * Process the specified HTTP request, and create the corresponding HTTP
