@@ -72,12 +72,6 @@ public class LoginCheckFilter implements Filter {
         String uri = request.getRequestURI();
         ourLog.debug("Requested URI " + uri);
 
-        if (containsAuthCookies(request)) {
-                ourLog.debug("User information found in cookies");
-                session = request.getSession(true);
-                getSecureEditDispatcher().forward(req, res);
-            }
-
         if (session != null) {
             // Got a session; check the URI.
             if (uri.indexOf("editor/do/secure/edit") == -1) {
