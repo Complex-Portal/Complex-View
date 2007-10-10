@@ -1144,10 +1144,15 @@
     </action>
 
    <!-- The starting point for the application; display the login layout. -->
-<action path="/welcome"
-    type="org.apache.struts.actions.ForwardAction"
-    parameter="login.layout">
-</action>
+    <action path="/welcome"
+        type="org.apache.struts.actions.ForwardAction"
+        parameter="login.layout">
+    </action>
+
+    <action path="/welcome-auth"
+        type="org.apache.struts.actions.ForwardAction"
+        parameter="search.layout">
+    </action>
 
 <!-- Fill the form with search results for the JSP to display. -->
 <action path="/showResults"

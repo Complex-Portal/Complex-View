@@ -122,6 +122,12 @@ public class LoginCheckFilter implements Filter {
             if (uri.indexOf("editor/do/secure/edit") == -1) {
                 // Trying to access non secure part of the editor. Lets Struts take
                 // care of it.
+
+                if (uri.indexOf("welcome") > -1 && session.getAttribute(EditorConstants.LOGGED_IN) != null) {
+                    ServletContext ctx = myFilterConfig.getServletContext();
+                    ctx.getRequestDispatcher("/do/welcome-auth").forward(request, response);
+                }
+
                 ourLog.debug("Allow access to non secure area, lets Struts to handle this URL");
                 chain.doFilter(req, res);
             }
