@@ -642,19 +642,28 @@
       path="/tiles/editorSwitch"
       type="uk.ac.ebi.intact.application.editor.struts.action.util.EditorSwitchAction"
       unknown="false"
-      validate="true"
     >
     </action>
     <action
       path="/logout"
       type="uk.ac.ebi.intact.application.editor.struts.security.LogoutAction"
       unknown="false"
-      validate="false"
     >
       <forward
         name="success"
         path="/do/welcome"
         redirect="false"
+      />
+     </action>
+    <action
+      path="/secure/logout"
+      type="uk.ac.ebi.intact.application.editor.struts.security.LogoutAction"
+      unknown="false"
+    >
+      <forward
+        name="success"
+        path="/do/welcome"
+        redirect="true"
       />
     </action>
     <action
