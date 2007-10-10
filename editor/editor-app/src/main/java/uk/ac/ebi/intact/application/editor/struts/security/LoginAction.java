@@ -104,7 +104,7 @@ public class LoginAction extends AbstractEditorAction {
         session.setAttribute(EditorConstants.INTACT_USER, user);
 
         // Save the context to avoid repeat calls.
-        ServletContext ctx = super.getServlet().getServletContext();
+        ServletContext ctx = session.getServletContext();
 
         // Notify the event listener.
         EventListener listener = (EventListener) ctx.getAttribute(
