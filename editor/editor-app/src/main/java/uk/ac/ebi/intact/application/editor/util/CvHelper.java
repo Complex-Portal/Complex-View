@@ -8,7 +8,6 @@ package uk.ac.ebi.intact.application.editor.util;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.persistence.dao.IntactTransaction;
 
 import java.util.Collection;
@@ -168,7 +167,6 @@ public class CvHelper {
                 String miRef = getPsiMiRef(child);
                 if( miRef != null){
                     allChildrenMiRefs.add(miRef);
-                    System.out.println("adding " + miRef);
                 }else throw new IntactException("Could not find any PSI-MI xref whith qualifier equal to identity for " +
                         "the CvDagObject[" + child.getAc() + "," + child.getShortLabel() + "] ");
             }

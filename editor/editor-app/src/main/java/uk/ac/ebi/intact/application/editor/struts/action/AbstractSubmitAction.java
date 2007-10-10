@@ -9,6 +9,7 @@ package uk.ac.ebi.intact.application.editor.struts.action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorAction;
 import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 
@@ -83,7 +84,13 @@ public abstract class AbstractSubmitAction extends AbstractEditorAction {
         // Cast the form.
         EditorFormI editorForm = (EditorFormI) form;
         //
-        getIntactUser(request).getView().copyPropertiesFrom(editorForm);
+        final EditUserI editUser = getIntactUser(request);
+
+        if (editUser == null) {
+            throw new IllegalStateException("Current user is null");
+        }
+
+        editUser.getView().copyPropertiesFrom(editorForm);
         // The dispatch value holds the button label.
         String dispatch = editorForm.getDispatch();
         LOGGER.debug("Dispatch received " + dispatch);

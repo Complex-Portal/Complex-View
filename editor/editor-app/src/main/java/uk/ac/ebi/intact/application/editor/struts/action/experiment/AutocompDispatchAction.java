@@ -26,9 +26,9 @@ previous one.
 
 package uk.ac.ebi.intact.application.editor.struts.action.experiment;
 
-import org.apache.struts.action.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorDispatchAction;
 import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
@@ -447,10 +447,10 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
         Annotation pubYearAnnot;
 
         CvObjectDao<CvTopic> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvTopic.class);
-        CvTopic publicationYear = cvObjectDao.getByShortLabel(CvTopic.PUBLICATION_YEAR );
-        if ( publicationYear == null ) {
-            System.err.println( "Could not find CvTopic(" + CvTopic.PUBLICATION_YEAR +
-                                ")... no author list will be attached/updated to the experiment." );
+        CvTopic publicationYear = cvObjectDao.getByPsiMiRef(CvTopic.PUBLICATION_YEAR_MI_REF );
+
+        if (publicationYear == null) {
+            throw new IllegalStateException("Could not find CvTopic: " + CvTopic.PUBLICATION_YEAR_MI_REF);
         }
 
         pubYearAnnot = new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(), publicationYear ,pubYear);

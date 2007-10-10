@@ -8,17 +8,14 @@ package uk.ac.ebi.intact.application.editor.security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.RequestActionMapping;
-import org.apache.struts.config.impl.ModuleConfigImpl;
+import uk.ac.ebi.intact.application.editor.business.EditUserI;
+import uk.ac.ebi.intact.application.editor.event.EventListener;
+import uk.ac.ebi.intact.application.editor.event.LoginEvent;
+import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
 import uk.ac.ebi.intact.application.editor.struts.security.LoginAction;
 import uk.ac.ebi.intact.application.editor.struts.security.LoginForm;
 import uk.ac.ebi.intact.application.editor.struts.security.UserAuthenticator;
-import uk.ac.ebi.intact.application.editor.business.EditUserI;
-import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
-import uk.ac.ebi.intact.application.editor.event.EventListener;
-import uk.ac.ebi.intact.application.editor.event.LoginEvent;
 import uk.ac.ebi.intact.util.DesEncrypter;
 
 import javax.servlet.*;
@@ -87,22 +84,29 @@ public class LoginCheckFilter implements Filter {
         LoginForm loginForm = createLoginForm(request);
 
         if (loginForm.getUsername() != null && loginForm.getPassword() != null) {
-            ourLog.debug("User information found in cookies");
 
-            try {
-                EditUserI user = UserAuthenticator.authenticate(loginForm.getUsername(), loginForm.getPassword(), request);
-                session.setAttribute(EditorConstants.LOGGED_IN, Boolean.TRUE);
-                session.setAttribute(EditorConstants.INTACT_USER, user);
+            if (session != null && session.getAttribute(EditorConstants.LOGGED_IN) != null) {
 
-                // Notify the event listener.
-                EventListener listener = (EventListener) request.getSession().getServletContext().getAttribute(EditorConstants.EVENT_LISTENER);
-                listener.notifyObservers(new LoginEvent(loginForm.getUsername()));
-            } catch (AuthenticateException e) {
-                e.printStackTrace();
+            } else {
+                ourLog.debug("User information found in cookies");
+
+                try {
+                    EditUserI user = UserAuthenticator.authenticate(loginForm.getUsername(), loginForm.getPassword(), request);
+                    session.setAttribute(EditorConstants.LOGGED_IN, Boolean.TRUE);
+                    session.setAttribute(EditorConstants.INTACT_USER, user);
+
+                    // Notify the event listener.
+                    EventListener listener = (EventListener) request.getSession().getServletContext().getAttribute(EditorConstants.EVENT_LISTENER);
+                    listener.notifyObservers(new LoginEvent(loginForm.getUsername()));
+                } catch (AuthenticateException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
+
         if (session == null) {
+
             // Check for static HTML pages.
             if (uri.endsWith("html")) {
                 ourLog.debug("Plain html request, lets server serve it");
