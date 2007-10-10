@@ -471,10 +471,10 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
             Annotation journalAnnot;
 
             CvObjectDao<CvTopic> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvTopic.class);
-            CvTopic journalTopic = cvObjectDao.getByShortLabel(CvTopic.JOURNAL );
-            if ( journalTopic == null ) {
-                System.err.println( "Could not find CvTopic(" + CvTopic.JOURNAL +
-                                    ")... no author list will be attached/updated to the experiment." );
+            CvTopic journalTopic = cvObjectDao.getByPsiMiRef(CvTopic.JOURNAL_MI_REF );
+
+            if (journalTopic == null) {
+                throw new IllegalStateException("CvTopic not found: "+journalTopic);
             }
 
             journalAnnot = new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(), journalTopic ,journal);
@@ -494,12 +494,12 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
         Annotation authorEmailAnnot;
 
         CvObjectDao<CvTopic> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvTopic.class);
-        CvTopic authorEmailTopic = cvObjectDao.getByShortLabel(CvTopic.CONTACT_EMAIL );
+        CvTopic authorEmailTopic = cvObjectDao.getByPsiMiRef(CvTopic.CONTACT_EMAIL_MI_REF );
 
-        if ( authorEmailTopic == null ) {
-            System.err.println( "Could not find CvTopic(" + CvTopic.CONTACT_EMAIL +
-                                ")... no email will be attached/updated to the experiments." );
+        if (authorEmailTopic == null) {
+            throw new IllegalStateException("CvTopic not found: "+authorEmailTopic);
         }
+
         authorEmailAnnot = new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(), authorEmailTopic ,authorEmail);
 
         return authorEmailAnnot;
