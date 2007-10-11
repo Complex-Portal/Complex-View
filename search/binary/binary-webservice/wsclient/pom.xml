@@ -12,7 +12,7 @@
     <groupId>uk.ac.ebi.intact.service.search.binary</groupId>
     <artifactId>wsclient</artifactId>
     <packaging>jar</packaging>
-    <version>1.6.0-beta-1</version>
+    <version>1.6.0-beta-3-SNAPSHOT</version>
 
     <name>IntAct Services :: Search :: Binary :: Web Service :: Client</name>
     <description>A web service interface to retrieve data from intact</description>
