@@ -1,5 +1,5 @@
-<%@ page import="org.apache.struts.util.PropertyMessageResources,
-                 org.apache.struts.Globals"%>
+<%@ page import="org.apache.struts.Globals,
+                 org.apache.struts.util.PropertyMessageResources"%>
 <!--
   - Author: Sugath Mudali (smudali@ebi.ac.uk)
   - Version: $Id$
@@ -15,10 +15,10 @@
 <%@ page language="java"%>
 
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
-<%@ taglib uri="/WEB-INF/tld/struts-html.tld" prefix="html"%>
-<%@ taglib uri="/WEB-INF/tld/struts-bean.tld" prefix="bean"%>
-<%@ taglib uri="/WEB-INF/tld/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="/WEB-INF/tld/struts-nested.tld" prefix="nested"%>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
+<%@ taglib uri="http://struts.apache.org/tags-nested" prefix="nested"%>
 
 <%-- The menus --%>
 <c:set var="menus" value="${user.view.menus}"/>

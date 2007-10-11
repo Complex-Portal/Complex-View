@@ -12,7 +12,7 @@
   - Version: $Id$
   --%>
 
-<%@ taglib uri="/WEB-INF/tld/struts-tiles.tld" prefix="tiles"%>
+<%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 
 <%-- CSS for editor --%>
 <style type="text/css">

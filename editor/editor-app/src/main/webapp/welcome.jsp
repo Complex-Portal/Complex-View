@@ -1,5 +1,5 @@
 <%@ page language="java" %>
-<%@ taglib uri="/WEB-INF/tld/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
 
  <%--
     Forwards the request to the login page.

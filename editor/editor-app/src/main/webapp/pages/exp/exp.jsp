@@ -12,7 +12,7 @@
 
 <%@ page language="java"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
-<%@ taglib uri="/WEB-INF/tld/struts-html.tld" prefix="html"%>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 
 <script language="JavaScript" type="text/javascript">
     // Set the hidden interaction field when the user clicks on any Interaction

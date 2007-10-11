@@ -13,8 +13,8 @@
 
 <%@ page language="java"%>
 
-<%@ taglib uri="/WEB-INF/tld/struts-html.tld" prefix="html"%>
-<%@ taglib uri="/WEB-INF/tld/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/tld/intact.tld" prefix="intact"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
 

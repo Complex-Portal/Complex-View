@@ -12,7 +12,7 @@
 
 <%@ page language="java"%>
 
-<%@ taglib uri="/WEB-INF/tld/struts-html.tld" prefix="html"%>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 
 <jsp:include page="../js.jsp" />
 

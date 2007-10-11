@@ -11,8 +11,8 @@
   --%>
 
 <%@ page language="java"%>
-<%@ taglib uri="/WEB-INF/tld/struts-html.tld" prefix="html"%>
-<%@ taglib uri="/WEB-INF/tld/struts-tiles.tld" prefix="tiles"%>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 
 <%--
     Some strange reasons, the scope has to be in page not application with

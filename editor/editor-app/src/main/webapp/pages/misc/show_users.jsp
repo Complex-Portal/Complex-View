@@ -1,5 +1,3 @@
-<%@ page import="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants"%>
-
 <!--
   - Author: Sugath Mudali (smudali@ebi.ac.uk)
   - Version: $Id$
@@ -14,7 +12,7 @@
 
 <%@ page language="java"%>
 
-<%@ taglib uri="/WEB-INF/tld/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 <%@ taglib uri="http://jakarta.apache.org/taglibs/display" prefix="display" %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt"%>
 

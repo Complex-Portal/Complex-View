@@ -1,5 +1,5 @@
 <%@ page language="java" %>
-<%@ taglib uri="/WEB-INF/tld/struts-tiles.tld" prefix="tiles"%>
+<%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 
  <%--
     Logon page. Prompts a user with with user name and password.

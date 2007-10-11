@@ -14,8 +14,8 @@
 <%@ page language="java" %>
 <%@ page import="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants"%>
 
-<%@ taglib uri="/WEB-INF/tld/struts-html.tld" prefix="html"%>
-<%@ taglib uri="/WEB-INF/tld/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/tld/intact.tld" prefix="intact"%>
 
 <jsp:include page="misc/user_js.jsp" />
