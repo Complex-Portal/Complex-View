@@ -133,6 +133,10 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
         eaf.getAuthorEmail()        =====> it will return the author email
         */
 
+        //reset first
+        view.setFullName(null);
+        view.setShortLabel(null);
+        view.getAnnotations().clear();
 
         try{
 
@@ -160,6 +164,7 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
             /******************************************************************************************
             C r e a t i n g   a u t h o r - l i s t   a n n o t a t i o n   a n d   a d d i n g   i t
             ******************************************************************************************/
+
             String authorList = eaf.getAuthorList();
             if(!("".equals(authorList) || null==authorList)){
 
