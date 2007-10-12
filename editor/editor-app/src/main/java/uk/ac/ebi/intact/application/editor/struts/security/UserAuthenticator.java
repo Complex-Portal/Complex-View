@@ -13,18 +13,17 @@ import org.hibernate.cfg.Environment;
 import uk.ac.ebi.intact.application.editor.business.EditUser;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.business.IntactTransactionException;
-import uk.ac.ebi.intact.context.*;
+import uk.ac.ebi.intact.context.IntactConfigurator;
+import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.context.IntactSession;
+import uk.ac.ebi.intact.context.UserContext;
 import uk.ac.ebi.intact.context.impl.WebappSession;
-import uk.ac.ebi.intact.webapp.IntactSessionRequestFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * The custom authenticator for Intact editor.
@@ -68,13 +67,12 @@ public class UserAuthenticator {
 
         // Set the userId and userPassword of the UserContext
         UserContext userContext = context.getUserContext();
-        userContext.setUserId(username.toUpperCase());
         userContext.setUserPassword(password);
 
         String databaseName = "";
         try {
             // Get the Connection for the given username and password.
-            connection = getConnection(username.toUpperCase(), password);
+            connection = getConnection(username, password);
             // Get the databaseName to give it to the EditUser constructor, this value will be used to display the
             // database name on the side bar of the editor page. I'm taking it from the url, but I guess it could
             // be taken from somewhere else.
