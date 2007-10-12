@@ -22,7 +22,7 @@
         <jetty.port>9090</jetty.port>
         <tempH2>/tmp/intact-${artifactId}-${jetty.port}-h2</tempH2>
 
-        <core.version>1.7.0</core.version>
+        <core.version>1.7.1</core.version>
     </properties>
 
     <modules>
@@ -67,7 +67,7 @@
                 <plugin>
                     <groupId>uk.ac.ebi.intact.datasets</groupId>
                     <artifactId>dataset-import-maven-plugin</artifactId>
-                    <version>1.6.0-SNAPSHOT</version>
+                    <version>1.7.0</version>
                     <executions>
                         <execution>
                             <phase>generate-sources</phase>
@@ -190,11 +190,6 @@
             <dependency>
                 <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
                 <artifactId>search-engine</artifactId>
-                <version>${currentVersion}</version>
-            </dependency>
-            <dependency>
-                <groupId>uk.ac.ebi.intact.app</groupId>
-                <artifactId>app-commons</artifactId>
                 <version>${currentVersion}</version>
             </dependency>
             <dependency>
