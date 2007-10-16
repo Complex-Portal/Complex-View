@@ -72,7 +72,7 @@
             <h:panelGrid columns="3">
                 <h:outputLabel for="advIdentifier" value="Identifier: acs, ids, aliases"/>
                 <h:inputText id="advIdentifier" value="#{searchBean.advancedSearch.identifier}"/>
-                <h:outputText value="e.g. 'P12345'"/>
+                <h:outputText value="e.g. 'Q06609'"/>
 
                 <h:outputLabel for="advInteractionId" value="Interaction ID"/>
                 <h:inputText id="advInteractionId" value="#{searchBean.advancedSearch.interactionId}"/>
@@ -82,10 +82,9 @@
                 <h:inputText id="advTaxid" value="#{searchBean.advancedSearch.taxid}"/>
                 <h:outputText value="e.g. 'human'"/>
 
-                <!--
                 <h:outputLabel for="advPubAuthor" value="Publication Author"/>
                 <h:inputText id="advPubAuthor" value="#{searchBean.advancedSearch.pubFirstAuthor}"/>
-                -->
+                <h:outputText value="e.g. 'Gavin'"/>
 
                 <h:outputLabel for="advPubId" value="Publication ID"/>
                 <h:inputText id="advPubId" value="#{searchBean.advancedSearch.pubId}"/>

@@ -168,12 +168,12 @@
         <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
     </t:dataList>
 </h:column>
-<!--
+
 <h:column>
     <f:facet name="header">
         <t:commandSortHeader columnName="pubauth_s" immediate="true"
                              actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="results_table_sorticons.xhtml"/>
+            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
             <h:outputText value="First Author"/>
         </t:commandSortHeader>
     </f:facet>
@@ -182,7 +182,7 @@
     </t:dataList>
     <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
 </h:column>
--->
+
 <h:column>
     <f:facet name="header">
         <t:commandSortHeader columnName="pubid_s" immediate="true"
