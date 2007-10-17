@@ -1,7 +1,6 @@
 <ui:composition
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:tr="http://myfaces.apache.org/trinidad"
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:t="http://myfaces.apache.org/tomahawk"
         xmlns:c="http://java.sun.com/jstl/core"
@@ -9,8 +8,8 @@
         xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
         xmlns:ebi="http://ebi.ac.uk/faces/components"
         xmlns:sf="http://www.ebi.ac.uk/faces/site"
-        xmlns:psimitab="http://www.ebi.ac.uk/psi/mitab">
-
+        xmlns:psimitab="http://www.ebi.ac.uk/psi/mitab"
+        xmlns:bs="http://intact.ebi.ac.uk/binarysearch">
 
 
 <!-- table is buffered, so we can put the navigation on top and on bottom -->
@@ -177,10 +176,12 @@
             <h:outputText value="First Author"/>
         </t:commandSortHeader>
     </f:facet>
-    <t:dataList var="author" value="#{binaryInteraction.authors}">
-        <h:outputText value="#{author.name}"/>
+    <t:dataList var="author" value="#{binaryInteraction.authors}" rowCountVar="rowCount" rowIndexVar="rowIndex">
+        <bs:hilightableRowElement text="#{author.name}"
+                                  columnAlias="pubauth" index="#{index}"
+                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
     </t:dataList>
-    <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
+
 </h:column>
 
 <h:column>
@@ -192,10 +193,12 @@
         </t:commandSortHeader>
     </f:facet>
     <t:dataList var="xref" value="#{binaryInteraction.publications}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-        <h:outputLink value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}" target="_blank">
-            <h:outputText value="#{xref.identifier}"/>
-        </h:outputLink>
-        <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
+
+         <bs:hilightableRowElement url="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"
+                                  text="#{xref.identifier}"
+                                  columnAlias="pubid" index="#{index}"
+                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
+
     </t:dataList>
 </h:column>
 <h:column>
@@ -208,10 +211,10 @@
     </f:facet>
     <t:dataList var="interactionType" value="#{binaryInteraction.interactionTypes}" rowCountVar="rowCount"
                 rowIndexVar="rowIndex">
-        <h:outputLink value="#{psimitab:xrefUrl(appConfigBean.linkContext, interactionType)}" target="_blank">
-            <h:outputText value="#{interactionType.text}"/>
-        </h:outputLink>
-        <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
+        <bs:hilightableRowElement url="#{psimitab:xrefUrl(appConfigBean.linkContext, interactionType)}"
+                                  text="#{interactionType.text}"
+                                  columnAlias="interactionType" index="#{index}"
+                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
     </t:dataList>
 </h:column>
 <h:column>
@@ -224,10 +227,11 @@
     </f:facet>
     <t:dataList var="detMethod" value="#{binaryInteraction.detectionMethods}" rowCountVar="rowCount"
                 rowIndexVar="rowIndex">
-        <h:outputLink value="#{psimitab:xrefUrl(appConfigBean.linkContext, detMethod)}" target="_blank">
-            <h:outputText value="#{detMethod.text}"/>
-        </h:outputLink>
-        <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
+        <bs:hilightableRowElement url="#{psimitab:xrefUrl(appConfigBean.linkContext, detMethod)}"
+                                  text="#{detMethod.text}"
+                                  columnAlias="detMethod" index="#{index}"
+                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
+
     </t:dataList>
 </h:column>
 <h:column>
@@ -240,10 +244,12 @@
     </f:facet>
     <t:dataList var="sourceDb" value="#{binaryInteraction.sourceDatabases}" rowCountVar="rowCount"
                 rowIndexVar="rowIndex">
-        <h:outputLink value="#{psimitab:xrefUrl(appConfigBean.linkContext, sourceDb)}" target="_blank">
-            <h:outputText value="#{sourceDb.text}"/>
-        </h:outputLink>
-        <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
+
+        <bs:hilightableRowElement url="#{psimitab:xrefUrl(appConfigBean.linkContext, sourceDb)}"
+                                  text="#{sourceDb.text}"
+                                  columnAlias="sourceDb" index="#{index}"
+                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
+
     </t:dataList>
 </h:column>
 <h:column>
@@ -257,12 +263,11 @@
     <t:dataList var="xref" value="#{binaryInteraction.interactionAcs}" rowCountVar="rowCount" rowIndexVar="rowIndex">
         <c:set var="xrefUrl3" value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"/>
 
-        <h:outputLink value="#{xrefUrl3}" target="_blank" rendered="#{xrefUrl3 != null}">
-            <h:outputText value="#{xref.identifier}"/>
-        </h:outputLink>
-        <h:outputText value="#{xref.identifier}" rendered="#{xrefUrl3 == null}"/>
+        <bs:hilightableRowElement url="#{xrefUrl3}"
+                                  text="#{xref.identifier}"
+                                  columnAlias="interaction_ac" index="#{index}"
+                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
 
-        <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
         <!--
         <h:outputText value="  "/>
         <h:outputLink value="#{psimitab:xrefUrlForDb(appConfigBean.linkContext, 'hierarchView', xref.identifier)}"

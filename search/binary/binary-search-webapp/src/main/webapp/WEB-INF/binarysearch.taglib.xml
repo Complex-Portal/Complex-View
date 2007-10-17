@@ -10,6 +10,10 @@
         <source>facelets/components/AdvancedSearch.xhtml</source>
     </tag>
     <tag>
+        <tag-name>hilightableRowElement</tag-name>
+        <source>facelets/components/HilightableRowElement.xhtml</source>
+    </tag>
+    <tag>
         <tag-name>queryLink</tag-name>
         <source>facelets/components/QueryLink.xhtml</source>
     </tag>

@@ -19,6 +19,35 @@
         </attribute>
     </tag>
     <tag>
+        <name>hilightableRowElement</name>
+        <attribute>
+            <name>rendered</name>
+        </attribute>
+        <attribute>
+            <name>url</name>
+        </attribute>
+        <attribute>
+            <name>text</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>columnAlias</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>index</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>rowIndex</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>rowCount</name>
+            <required>true</required>
+        </attribute>
+    </tag>
+    <tag>
         <name>queryLink</name>
         <attribute>
             <name>rendered</name>
