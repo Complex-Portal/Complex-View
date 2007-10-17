@@ -67,7 +67,7 @@
     <!--</h:selectOneMenu>-->
     <!--</h:panelGrid>-->
 
-    <h:panelGrid columns="2">
+    <h:panelGrid columns="2" styleClass="default">
         <h:panelGroup>
             <h:panelGrid columns="3">
                 <h:outputLabel for="advIdentifier" value="Identifier: acs, ids, aliases"/>
@@ -101,8 +101,10 @@
                 <h:panelGroup>
                     <t:inputText id="intTypeSuggestion" value="#{searchBean.advancedSearch.interactionType}"
                                  forceId="true"/>
+                    <h:panelGroup rendered="#{param.advSearch}">
                     <bs:termChooser forClientId="intTypeSuggestion"
                                     treeModel="#{olsBean.interactionTypeTreeModel}"/>
+                    </h:panelGroup>
                 </h:panelGroup>
 
                 <h:outputLabel for="advIncludeTypeChildren" value="Include children"/>
@@ -117,8 +119,11 @@
                 <!--charset="utf-8"/>-->
                 <h:panelGroup>
                     <t:inputText id="advDetMethod" value="#{searchBean.advancedSearch.detectionMethod}" forceId="true"/>
+
+                    <h:panelGroup rendered="#{param.advSearch}">
                     <bs:termChooser forClientId="advDetMethod"
                                     treeModel="#{olsBean.detectionMethodTreeModel}"/>
+                    </h:panelGroup>
                 </h:panelGroup>
 
                 <h:outputLabel for="advIncludeDetChildren" value="Include children"/>
