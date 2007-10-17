@@ -43,6 +43,8 @@
         <h:panelGrid styleClass="default">
             <h:outputText value="Index: #{searchBean.defaultIndex.name}"/>
             <h:outputText value="Version: #{buildInfo.version}"/>
+            <h:outputText value="Build: #{buildInfo.buildNumber}"/>
+            <h:outputText value="By: #{buildInfo.builtBy}"/>
         </h:panelGrid>
 
     </ui:composition>

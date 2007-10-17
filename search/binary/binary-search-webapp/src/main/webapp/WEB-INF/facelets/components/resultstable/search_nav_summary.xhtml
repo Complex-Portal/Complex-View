@@ -27,7 +27,7 @@
                                 immediate="true"
                                 pageIndexVar="pageIndex">
 
-                    <h:outputText rendered="#{pageCount > 1}"
+                    <h:outputText rendered="#{pageCount > 1}" styleClass="default"
                             value="Displaying #{displayedRowsCountVar} interactions, from #{firstRowIndex} to #{lastRowIndex}. Page #{pageIndex} / #{pageCount}"/>
                 </t:dataScroller>
 

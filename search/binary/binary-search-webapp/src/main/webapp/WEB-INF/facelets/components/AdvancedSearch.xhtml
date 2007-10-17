@@ -22,12 +22,13 @@
 
     <div style="float:right">
         <h:panelGroup>
-            <h:commandLink value="Close Advanced Search" action="home" />
+            <h:commandLink value="Close Advanced Search" action="home" styleClass="default"/>
         </h:panelGroup>
     </div>
 
     <h3>Advanced Search
         <ebi:help id="advHelp" title="Advanced Search" onlyIcon="true">
+            <div class="default">
             <h:panelGroup>
                 <h:outputText value="As with the Simple Search, for any field of the advance search you can use the "/>
 
@@ -53,6 +54,7 @@
                 </li>
                 <li>Combine the different fields with AND or OR, by changing the <i>Query type</i> radio button</li>
             </ul>
+            </div>
         </ebi:help>
     </h3>
 
@@ -60,16 +62,9 @@
 
 <h:panelGroup onkeypress="return submitEnter('searchForm:btnSearch',event)">
 
-    <!--<h:panelGrid columns="2" rendered="#{adminBean.userAdmin}">-->
-    <!--<h:outputLabel for="advIndex" value="Index"/>-->
-    <!--<h:selectOneMenu id="advIndex" value="#{searchBean.currentIndexLocation}">-->
-    <!--<f:selectItems value="#{searchBean.indexSelectItems}"/>-->
-    <!--</h:selectOneMenu>-->
-    <!--</h:panelGrid>-->
-
     <h:panelGrid columns="2" styleClass="default">
         <h:panelGroup>
-            <h:panelGrid columns="3">
+            <h:panelGrid columns="3" styleClass="default">
                 <h:outputLabel for="advIdentifier" value="Identifier: acs, ids, aliases"/>
                 <h:inputText id="advIdentifier" value="#{searchBean.advancedSearch.identifier}"/>
                 <h:outputText value="e.g. 'Q06609'"/>
@@ -91,13 +86,9 @@
                 <h:outputText value="e.g. '14605208'"/>
 
             </h:panelGrid>
-            <h:panelGrid columns="4">
+            <h:panelGrid columns="4" styleClass="default">
                 <h:outputLabel for="intTypeSuggestion" value="Interaction type"/>
-                <!--<s:inputSuggestAjax id="intTypeSuggestion"-->
-                <!--suggestedItemsMethod="#{olsBean.suggestInteractionTypes}"-->
-                <!--style="width:150px;"-->
-                <!--value="#{searchBean.advancedSearch.interactionType}"-->
-                <!--charset="utf-8"/>-->
+
                 <h:panelGroup>
                     <t:inputText id="intTypeSuggestion" value="#{searchBean.advancedSearch.interactionType}"
                                  forceId="true"/>
@@ -112,11 +103,7 @@
                                          value="#{searchBean.advancedSearch.includeInteractionTypeChildren}"/>
 
                 <h:outputLabel for="advDetMethod" value="Detection method"/>
-                <!--<s:inputSuggestAjax id="advDetMethod"-->
-                <!--suggestedItemsMethod="#{olsBean.suggestInteractionDetectionMethods}"-->
-                <!--style="width:150px;"-->
-                <!--value="#{searchBean.advancedSearch.detectionMethod}"-->
-                <!--charset="utf-8"/>-->
+
                 <h:panelGroup>
                     <t:inputText id="advDetMethod" value="#{searchBean.advancedSearch.detectionMethod}" forceId="true"/>
 
@@ -132,7 +119,7 @@
                                          value="#{searchBean.advancedSearch.includeDetectionMethodChildren}"/>
 
                 <h:outputLabel for="advQueryType" value="Query type"/>
-                <h:selectOneRadio id="advQueryType" value="#{searchBean.advancedSearch.conjunction}">
+                <h:selectOneRadio id="advQueryType" value="#{searchBean.advancedSearch.conjunction}" styleClass="default">
                     <s:convertBoolean/>
                     <f:selectItem itemLabel="OR" itemValue="#{false}"/>
                     <f:selectItem itemLabel="AND" itemValue="#{true}"/>
@@ -150,7 +137,8 @@
                                        actionListener="#{searchBean.doAdvancedSearch}"
                                        ignoreDupResponses="true"
                                        reRender="stateRegion,summaryRegion,relatedResultsPanel,resultsRegion,searchQuery"/>
-                    <a4j:commandLink value="Clear" actionListener="#{searchBean.doClearAdvancedForm}" reRender="advancedSearchRegion"/>
+                    <a4j:commandLink value="Clear" styleClass="default"
+                                     actionListener="#{searchBean.doClearAdvancedForm}" reRender="advancedSearchRegion"/>
                 </h:panelGrid>
 
             </h:panelGrid>

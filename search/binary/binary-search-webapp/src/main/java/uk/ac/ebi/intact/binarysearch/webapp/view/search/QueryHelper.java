@@ -98,6 +98,10 @@ public class QueryHelper {
             sb.appendOperand(search);
             sb.append(concatFieldAndValue(PsimiTabColumn.INTERACTION_ID.getShortName(), search.getInteractionId()));
         }
+        if (isValidValue(search.getTaxid())) {
+            sb.appendOperand(search);
+            sb.append(concatFieldAndValue("species", search.getTaxid()));
+        }
 
         // interaction types
         if (isValidValue(search.getInteractionType())) {
