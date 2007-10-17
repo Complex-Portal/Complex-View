@@ -32,7 +32,7 @@
 
             <ui:define name="body">
                 <a4j:form id="searchForm" ajaxSubmit="true" reRender="contentRegion" status="pageStatus">
-                    <a4j:region id="wholePageRegion">
+                    <a4j:region id="wholePageRegion" selfRendered="false" renderRegionOnly="true">
                         <ebi:pageBodyContent>
                             <ui:define name="left">
                                 <ui:include src="../../../sidebar.xhtml"/>
