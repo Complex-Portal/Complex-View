@@ -22,6 +22,8 @@
         <jetty.port>9090</jetty.port>
         <tempH2>/tmp/intact-${artifactId}-${jetty.port}-h2</tempH2>
 
+        <user>${env.USERNAME}</user>
+
         <core.version>1.7.1</core.version>
     </properties>
 
@@ -46,6 +48,24 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>maven-buildnumber-plugin</artifactId>
+                <version>0.9.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
