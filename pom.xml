@@ -20,11 +20,11 @@
     <properties>
         <currentVersion>${version}</currentVersion>
         <jetty.port>9090</jetty.port>
-        <tempH2>/tmp/intact-${artifactId}-${jetty.port}-h2</tempH2>
+        <tempH2>${project.build.directory}/db/intact-${artifactId}-${jetty.port}-h2</tempH2>
 
         <user>${env.USERNAME}</user>
 
-        <core.version>1.7.1</core.version>
+        <core.version>1.7.2-SNAPSHOT</core.version>
     </properties>
 
     <modules>

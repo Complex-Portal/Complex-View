@@ -40,10 +40,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>uk.ac.ebi.intact.commons</groupId>
-                <artifactId>hibernateconfig-maven-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 
