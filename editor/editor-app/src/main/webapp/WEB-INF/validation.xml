@@ -80,13 +80,13 @@
                     key="loginForm.label.username"
                   />
               </field>
-              <field property="password"
-                     depends="required">
+              <!--<field property="password"-->
+                     <!--depends="required">-->
 
-                  <arg position="0"
-                    key="loginForm.label.password"
-                  />
-              </field>
+                  <!--<arg position="0"-->
+                    <!--key="loginForm.label.password"-->
+                  <!--/>-->
+              <!--</field>-->
       </form>
       <form name="featureForm">
               <field property="shortLabel"
