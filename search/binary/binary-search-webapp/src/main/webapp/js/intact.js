@@ -36,8 +36,6 @@ function hilightElements(idPrefix, idSuffix, tag, color)
         {
             if (endsWith(objs[i].id, idSuffix)) {
                 document.getElementById(objs[i].id).style.color = color;
-            //} else {
-            //    document.getElementById(objs[i].id).style.color = 'inherit';
             }
         }
     }
@@ -51,7 +49,7 @@ function stopHilighting(idPrefix, tag)
 
         if (startsWith(objs[i].id, idPrefix))
         {
-           document.getElementById(objs[i].id).style.color = 'inherit';
+           document.getElementById(objs[i].id).style.color = 'black';
         }
     }
 }
