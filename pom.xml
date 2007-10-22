@@ -48,7 +48,7 @@
 
     <build>
 
-        <finalName>${artifactId}-${db.alias}-${version}-${buildNumber}</finalName>
+        <finalName>intact-${artifactId}-${db.alias}-${version}-${buildNumber}</finalName>
 
         <plugins>
             <plugin>
