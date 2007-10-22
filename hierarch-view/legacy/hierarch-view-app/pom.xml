@@ -25,6 +25,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>uk.ac.ebi.intact.core</groupId>
+            <artifactId>intact-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>uk.ac.ebi.intact.app.hierarchview</groupId>
             <artifactId>tulip-client</artifactId>
             <version>1.1.0</version>
