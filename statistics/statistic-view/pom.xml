@@ -31,6 +31,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>uk.ac.ebi.intact.core</groupId>
+            <artifactId>intact-core</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>jfree</groupId>

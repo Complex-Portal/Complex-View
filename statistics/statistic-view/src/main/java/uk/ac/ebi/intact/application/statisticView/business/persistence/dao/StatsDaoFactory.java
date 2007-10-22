@@ -5,12 +5,13 @@
  */
 package uk.ac.ebi.intact.application.statisticView.business.persistence.dao;
 
-import org.hibernate.Session;
+import org.hibernate.ejb.HibernateEntityManager;
 import uk.ac.ebi.intact.application.statisticView.business.model.StatsBase;
 import uk.ac.ebi.intact.application.statisticView.business.persistence.dao.impl.StatsBaseDaoImpl;
-import uk.ac.ebi.intact.config.impl.AbstractHibernateDataConfig;
+import uk.ac.ebi.intact.config.DataConfig;
 import uk.ac.ebi.intact.context.IntactContext;
 
+import javax.persistence.EntityManager;
 import java.sql.Connection;
 
 /**
@@ -23,21 +24,16 @@ import java.sql.Connection;
 public class StatsDaoFactory {
 
     public static <T extends StatsBase> StatsBaseDao getStatsBaseDao( Class<T> stats ) {
-        checkTransaction();
-        return new StatsBaseDaoImpl<T>( stats, getCurrentSession(), IntactContext.getCurrentInstance().getSession() );
+        return new StatsBaseDaoImpl<T>( stats, getEntityManager(), IntactContext.getCurrentInstance().getSession() );
     }
 
     public static Connection connection() {
-        return getCurrentSession().connection();
+        return ((HibernateEntityManager)getEntityManager()).getSession().connection();
     }
 
-    public static void checkTransaction() {
-        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-    }
-
-    private static Session getCurrentSession() {
-        AbstractHibernateDataConfig config = ( AbstractHibernateDataConfig ) IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig();
-        return config.getSessionFactory().getCurrentSession();
+    private static EntityManager getEntityManager() {
+        DataConfig config = IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig();
+        return config.getEntityManagerFactory().createEntityManager();
     }
 
 }
