@@ -45,6 +45,15 @@
     <filter>
         <filter-name>hibernateFilter</filter-name>
         <filter-class>uk.ac.ebi.intact.webapp.IntactSessionRequestFilter</filter-class>
+
+        <init-param>
+            <param-name>uk.ac.ebi.intact.filter.EXCLUDED_EXTENSIONS</param-name>
+            <param-value>*.gif,*.png,*.jpg</param-value>
+            <description>
+                List of extensions. If the request URL ends with one of the params provided, it won't be filtered by
+                the IntactSessionRequestFilter and no IntactContext will be created for those requests.
+            </description>
+        </init-param>
     </filter>
 
     <filter-mapping>

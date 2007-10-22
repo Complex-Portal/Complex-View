@@ -147,7 +147,7 @@
         <delete>
             <fileset dir="${images.dir}">
                 <!-- Do not remove mine specific files -->
-                <exclude name="djikstra.gif"/>
+                <exclude name="djikstra.png"/>
             </fileset>
         </delete>
 
