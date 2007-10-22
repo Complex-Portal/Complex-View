@@ -42,7 +42,14 @@ public class SaveErrorsTag extends TagSupport {
     public int doEndTag() throws JspException {
 
         ActionErrors errors = (ActionErrors) pageContext.findAttribute (Globals.ERROR_KEY);
-        ActionMessages messages = (ActionMessages) pageContext.findAttribute (Globals.MESSAGE_KEY);
+
+        ActionMessages messages = null;
+
+        if (pageContext.findAttribute (Globals.MESSAGE_KEY) instanceof ActionMessages) {
+            messages = (ActionMessages) pageContext.findAttribute (Globals.MESSAGE_KEY);
+        } 
+
+
         HttpSession session = pageContext.getSession();
 
         if ( null != errors ) {
