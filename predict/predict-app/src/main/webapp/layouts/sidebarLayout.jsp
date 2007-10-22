@@ -17,7 +17,7 @@
                 <%-- Sidebar logo --%>
                 <tr>
                     <td valign="top" align="left" width="113" height="75">
-                        <img src="<%=request.getContextPath()%>/images/logo_intact.gif" border="0">
+                        <img src="<%=request.getContextPath()%>/images/logo_intact.png" border="0" width="113">
                     </td>
                 </tr>
 

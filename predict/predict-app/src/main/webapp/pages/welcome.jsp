@@ -4,7 +4,7 @@
    - All rights reserved. Please see the file LICENSE
    - in the root directory of this distribution.
    -
-   - Hello World form page
+   - Predict home page
    -
    - @author Samuel Kerrien (skerrien@ebi.ac.uk)
    - @version $Id$
@@ -22,8 +22,7 @@
 <%-- The context path. --%>
 <%
     PredictUser user = (PredictUser) session.getAttribute("user");
-
-    String ctxpath = request.getContextPath();
+    final String ctxpath = request.getContextPath();
 %>
 
 </br>
@@ -35,19 +34,19 @@
 </p>
 Uncovering the interactome is one of the primary challenges in the
 post-genomic era. The topology information gained from the coverage of
-interaction 		space can shed light on the likely function and
+interaction space can shed light on the likely function and
 structure of proteins within the network (Vitkup et al, 2001). Here we present
-a list of the 'best baits' 		which give the highest return on
+a list of the 'best baits' which give the highest return on
 experimental effort - i.e. those proteins which form 'hubs' in the interaction
-network. These lists are 		generated using the Pay-As-You-Go
-strategy (Lappe, M. Holm, L. 2004) which detects	and prioritises those
-proteins which have the highest likelihood of 		being hubs based on the
+network. These lists are generated using the Pay-As-You-Go
+strategy (Lappe, M. Holm, L. 2004) which detects and prioritises those
+proteins which have the highest likelihood of being hubs based on the
 current data within IntAct for various species. To illustrate the experimental
-effort which could be saved by using 		the strategy recommended here,
+effort which could be saved by using the strategy recommended here,
 take the Human interactome as an example. It is estimated that 50,000 experiments
-would be required to cover the 		entire human interactome following a
+would be required to cover the entire human interactome following a
 purely random strategy for the selection of targets. The information gain here
-is close to linear for 		each experiment. This could be drastically
+is close to linear for each experiment. This could be drastically
 reduced to less than 10,000 for 90% coverage of the entire human interactome by
 using the proteins listed here as baits. This would save years of experimental
 effort. This of course relies on the timely deposition of experimental data
@@ -131,9 +130,9 @@ of interactomes.
 <br/>
 <center>
 <img border="0" align="center"
-    src="<%=ctxpath%>/images/PAYG_random_relative_performance.gif" width="350" height="400">
+    src="<%=ctxpath%>/images/PAYG_random_relative_performance.png" width="350" height="400">
 <img border="0" align="center"
-    src="<%=ctxpath%>/images/PAYG_random_relative_performance_2.gif" width="350" height="400">
+    src="<%=ctxpath%>/images/PAYG_random_relative_performance_2.png" width="350" height="400">
 <font size="2">
 <br/>
 <br/>
@@ -221,7 +220,7 @@ are similar to those shown above.
 <center>
 <br/>
     <img border="0" align="center"
-    src="<%=ctxpath%>/images/PAYG_Outline.jpg" width="700" height="500">
+    src="<%=ctxpath%>/images/PAYG_Outline.png" width="700" height="500">
 <font size="2">
 <br/>
 <br/>
@@ -267,9 +266,9 @@ of a network.
 </p>
 <center>
      <img border="0" align="center"
-        src="<%=ctxpath%>/images/PQRprincipiA.gif" width="300" height="250">
+        src="<%=ctxpath%>/images/PQRprincipiA.png" width="300" height="250">
      <img border="0" align="center"
-        src="<%=ctxpath%>/images/PQRprincipiB.gif" width="300" height="250">
+        src="<%=ctxpath%>/images/PQRprincipiB.png" width="300" height="250">
 <br/>
 <br/>
 <br/>
