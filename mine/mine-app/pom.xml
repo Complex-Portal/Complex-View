@@ -33,6 +33,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>uk.ac.ebi.intact.core</groupId>
+            <artifactId>intact-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
             <artifactId>search-engine</artifactId>
         </dependency>
