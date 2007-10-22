@@ -80,7 +80,7 @@
                         </connector>
                     </connectors>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <contextPath>intact/${build.artifactId}</contextPath>
+                    <contextPath>intact/${pom.artifactId}</contextPath>
                 </configuration>
             </plugin>
         </plugins>
