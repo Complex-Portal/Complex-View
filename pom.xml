@@ -20,6 +20,7 @@
     <properties>
         <currentVersion>${version}</currentVersion>
         <jetty.port>9090</jetty.port>
+        <jetty.context>${pom.artifactId}</jetty.context>
         <tempH2>${project.build.directory}/db/intact-${artifactId}-${jetty.port}-h2</tempH2>
 
         <user>${env.USERNAME}</user>
@@ -80,7 +81,7 @@
                         </connector>
                     </connectors>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <contextPath>intact/${pom.artifactId}</contextPath>
+                    <contextPath>intact/${jetty.context}</contextPath>
                 </configuration>
             </plugin>
         </plugins>
