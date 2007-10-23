@@ -25,7 +25,7 @@
     </properties>
 
     <build>
-        <finalName>binary-search</finalName>
+        <finalName>intact-binary-search-${buildNumber}</finalName>
 
          <resources>
             <resource>
