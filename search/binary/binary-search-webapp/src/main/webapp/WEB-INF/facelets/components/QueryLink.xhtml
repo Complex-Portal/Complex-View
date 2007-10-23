@@ -14,7 +14,7 @@
     <f:view>
 
         <ui:component rendered="#{rendered == null? true : sf:convertToBoolean(rendered)}">
-            <c:set var="searchQueryUrl" value="/intact/binary-search/faces/search.xhtml?query="/>
+            <c:set var="searchQueryUrl" value="#{requestConfigBean.absoluteContextPath}/faces/search.xhtml?query="/>
 
             <h:outputLink value="#{searchQueryUrl}#{sf:urlEncode(value)}">
                 <h:outputText value="#{value}"/>
