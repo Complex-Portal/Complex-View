@@ -7,6 +7,7 @@
         xmlns:c="http://java.sun.com/jstl/core"
         xmlns:s="http://myfaces.apache.org/sandbox"
         xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+        xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
         xmlns:ebi="http://ebi.ac.uk/faces/components">
 
     <ui:component>
@@ -25,12 +26,13 @@
             </script>
 
             <t:inputText id="searchQuery"
+                         styleClass="contentsarea"
                          value="#{value}"
-                         size="12"
+                         size="#{ebisf:isBrowserExplorer()? '14' : '12'}"
                          forceId="true"
                          onkeypress="return submitEnter('searchForm:sideSearchBox_searchBox',event)"/>
-
-            <ebi:help onlyIcon="true" width="800px" height="400px">
+            
+            <ebi:help id="searchHelp" onlyIcon="true" title="Search IntAct" width="800px" height="400px">
                 <h:panelGrid columns="1" width="700px">
                 <ui:include src="../../../help/search_help_content.xhtml"/>
                 </h:panelGrid>
