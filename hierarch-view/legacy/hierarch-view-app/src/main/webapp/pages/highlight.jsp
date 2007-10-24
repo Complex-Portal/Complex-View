@@ -40,7 +40,7 @@
     IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession().getAttribute(Constants.USER_KEY);
 
     // get the list of nodes coordinates
-    String nodeCoordinates = user.getNodeCoordinates();
+    //String nodeCoordinates = user.getNodeCoordinates();
 
     String selectedSourceType = user.getSelectedKeyType();
 
@@ -109,7 +109,7 @@
                 // compute href
                 String href = request.getRequestURI() + "?" + parameterName + "=" + index;
                 String target = "sourceListFrame";
-                String currentTab = (String) tab.getValue();
+                String currentTab = tab.getValue();
 
                 // will generate a different link in the tab to avoid the highlighting
                 // of a source term not compatible with the selected type tab

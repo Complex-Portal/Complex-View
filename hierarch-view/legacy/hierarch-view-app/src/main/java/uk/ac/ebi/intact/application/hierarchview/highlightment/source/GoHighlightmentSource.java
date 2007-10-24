@@ -20,6 +20,7 @@ import uk.ac.ebi.intact.util.SearchReplace;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.persistence.Query;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.sql.Connection;
@@ -61,8 +62,7 @@ public class GoHighlightmentSource extends HighlightmentSource {
         String htmlCode;
         IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession()
                 .getAttribute( uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY );
-        String check = (String) user
-                .getHighlightOption( ATTRIBUTE_OPTION_CHILDREN );
+        String check = (String) user.getHighlightOption( ATTRIBUTE_OPTION_CHILDREN );
 
         //String check = (String) aSession.getAttribute
         // (ATTRIBUTE_OPTION_CHILDREN);
@@ -71,9 +71,8 @@ public class GoHighlightmentSource extends HighlightmentSource {
             check = "";
         }
 
-        htmlCode = "<input type=\"checkbox\" name=\""
-                + ATTRIBUTE_OPTION_CHILDREN + "\" " + check
-                + " value=\"checked\">" + PROMPT_OPTION_CHILDREN;
+        htmlCode = "<input type=\"checkbox\" name=\"" + ATTRIBUTE_OPTION_CHILDREN + "\" " + check
+                   + " value=\"checked\">" + PROMPT_OPTION_CHILDREN;
 
         return htmlCode;
     }
@@ -103,7 +102,7 @@ public class GoHighlightmentSource extends HighlightmentSource {
         }
 
         try {
-            logger.info( "Try to get a list of GO term (from protein AC="
+            if ( logger.isInfoEnabled() ) logger.info( "Try to get a list of GO term (from protein AC="
                     + aProteinAC + ")" );
             result = getDaoFactory().getProteinDao().getByAcLike(aProteinAC);
         }
@@ -121,7 +120,7 @@ public class GoHighlightmentSource extends HighlightmentSource {
 
         // get Xref collection
         Collection xRef = interactor.getXrefs();
-        logger.info( xRef.size() + " Xref found" );
+        if ( logger.isInfoEnabled() ) logger.info( xRef.size() + " Xref found" );
         listGOTerm = filterInteractorXref( xRef );
 
         return listGOTerm;
@@ -147,7 +146,7 @@ public class GoHighlightmentSource extends HighlightmentSource {
                 goTerm[1] = xref.getPrimaryId();
                 goTerm[2] = xref.getSecondaryId();
                 listGOTerm.add( goTerm );
-                logger.info( xref.getPrimaryId() );
+                if ( logger.isInfoEnabled() ) logger.info( xref.getPrimaryId() );
             }
         }
 
@@ -308,16 +307,15 @@ public class GoHighlightmentSource extends HighlightmentSource {
      * @return
      */
     private Collection proteinToHighlightSourceMap(InteractionNetwork aGraph,
-            Collection children, String selectedGOTerm,
-            boolean searchForChildren) {
+                                                   Collection children, String selectedGOTerm,
+                                                   boolean searchForChildren) {
 
         Collection nodeList = new ArrayList( 20 ); // should be enough for 90%
         // cases
 
         // retrieve the set of proteins to highlight for the source key (e.g.
         // GO) and the selected GO Term
-        Set proteinsToHighlight = aGraph.getProteinsForHighlight( SOURCE_KEY,
-                selectedGOTerm );
+        Set proteinsToHighlight = aGraph.getProteinsForHighlight( SOURCE_KEY, selectedGOTerm );
 
         // if we found any proteins we add all of them to the collection
         if ( proteinsToHighlight != null ) {
@@ -331,8 +329,7 @@ public class GoHighlightmentSource extends HighlightmentSource {
          */
         if ( searchForChildren ) {
             for (Iterator iter = children.iterator(); iter.hasNext();) {
-                proteinsToHighlight = aGraph.getProteinsForHighlight(
-                        SOURCE_KEY, (String) iter.next() );
+                proteinsToHighlight = aGraph.getProteinsForHighlight( SOURCE_KEY, ( String ) iter.next() );
                 if ( proteinsToHighlight != null ) {
                     nodeList.addAll( proteinsToHighlight );
                 }
@@ -362,7 +359,7 @@ public class GoHighlightmentSource extends HighlightmentSource {
         String selectedGOTerm = user.getSelectedKey();
 
         if ( children.remove( selectedGOTerm ) ) {
-            logger.info( selectedGOTerm + " removed from children collection" );
+            if ( logger.isInfoEnabled() ) logger.info( selectedGOTerm + " removed from children collection" );
         }
 
         // get source option
@@ -374,7 +371,7 @@ public class GoHighlightmentSource extends HighlightmentSource {
         else {
             searchForChildren = false;
         }
-        logger.info( "Children option activated ? " + searchForChildren );
+        if ( logger.isInfoEnabled() ) logger.info( "Children option activated ? " + searchForChildren );
         /**
          * T E S T
          */
@@ -419,14 +416,8 @@ public class GoHighlightmentSource extends HighlightmentSource {
     } // saveOptions
 
     
-    public List getSourceUrls(Collection xRefs, Collection selectedXRefs, String applicationPath,
-                              IntactUserI user) throws IntactException, SQLException {
-
-        // connection to database
-        Connection con = getDaoFactory().connection();
-
-        //PreparedStatement sourceStm = con.prepareStatement( "SELECT count(X.ac) FROM ia_xref X, ia_controlledvocab C "
-        //  + "WHERE C.ac = X.database_ac AND X.primaryid=? AND X.parent_ac in ?" );
+    public List getSourceUrls( Collection xRefs, Collection selectedXRefs, String applicationPath, IntactUserI user )
+            throws IntactException, SQLException {
 
         // get in the Highlightment properties file where is go
         Properties props = IntactUserI.HIGHLIGHTING_PROPERTIES;
@@ -452,16 +443,15 @@ public class GoHighlightmentSource extends HighlightmentSource {
         }
 
         // filter to keep only GO terms
-        logger.info( xRefs.size() + " Xref before filtering" );
+        if ( logger.isInfoEnabled() ) logger.info( xRefs.size() + " Xref before filtering" );
         Collection listGOTerm = null;
         if ( GraphHelper.BUILT_WITH_MINE_TABLE ) {
             listGOTerm = filterXref( xRefs );
-        }
-        else {
+        } else {
             listGOTerm = filterInteractorXref( xRefs );
         }
 
-        logger.info( listGOTerm.size() + " GO term(s) after filtering" );
+        if ( logger.isInfoEnabled() ) logger.info( listGOTerm.size() + " GO term(s) after filtering" );
 
         // create url collection with exact size
         List urls = new ArrayList( listGOTerm.size() );
@@ -469,45 +459,23 @@ public class GoHighlightmentSource extends HighlightmentSource {
         // list of Nodes of the Graph
         InteractionNetwork aGraph = user.getInteractionNetwork();
         ArrayList listOfNode = aGraph.getOrderedNodes();
-        String listOfNodesSQL = null;
 
-
-        // transform the list of nodes in SQL syntax
-        for( int i=0; i<listOfNode.size(); i++ ) {
-            if ( i > 0 ) {
-                 listOfNodesSQL = "'" + listOfNode.get(i).toString() + "'," + listOfNodesSQL;
-            }
-            else {
-                 listOfNodesSQL = "'" + listOfNode.get(i).toString() + "'";
-            }
+        List<String> nodeAcs = new ArrayList<String>( listOfNode.size() );
+        for ( Iterator iterator = listOfNode.iterator(); iterator.hasNext(); ) {
+            Node node = ( Node ) iterator.next();
+            nodeAcs.add( node.getAc() );
         }
 
-        String[] tmpList = listOfNodesSQL.split(",");
-        listOfNodesSQL = "";
-        for( int i=0; i<tmpList.length ; i++ ) {
-            tmpList[i] = tmpList[i].replaceAll( "Node:\\s","" );
-            tmpList[i] = tmpList[i].replaceAll( "\\[","" );
-            tmpList[i] = tmpList[i].replaceAll( "\\]","" );
-            if( i > 0) {
-                listOfNodesSQL = listOfNodesSQL + "," + tmpList[i];
-            }
-            else {
-                listOfNodesSQL = listOfNodesSQL + tmpList[i];
-            }
-        }
-        listOfNodesSQL = "(" + listOfNodesSQL + ")";
-        // list of Nodes "SQL ready"
-
-
-        // SQL request to fill the "count" column
-        PreparedStatement sourceStm = con.prepareStatement( "SELECT count(X.ac) FROM ia_xref X, ia_controlledvocab C "
-                + "WHERE C.ac = X.database_ac AND X.primaryid=? AND X.parent_ac in " + listOfNodesSQL );
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        final Query query = daoFactory.getEntityManager().createQuery( "select count(*) " +
+                                                                       "from InteractorXref x " +
+                                                                       "where x.parent.ac in (:acs) and x.primaryId = :id" );
+        query.setParameter( "acs", nodeAcs );
 
         // Create a collection of label-value object (GOterm, URL to access a
         // nice display in go)
         String[] goTermInfo;
         String goTermId, goTermType, goTermDescription;
-        int goTermCount = 0;
 
         /*
          * In order to avoid the browser to cache the response to that request
@@ -523,20 +491,12 @@ public class GoHighlightmentSource extends HighlightmentSource {
                 goTermType = goTermInfo[0];
                 goTermDescription = goTermInfo[2];
 
-                ResultSet set;
-
-                // the current source is fetched (e.g. GO)
-                sourceStm.setString( 1, goTermId );
-                // sourceStm.setString( 2, listOfNodesSQL );
-                set = sourceStm.executeQuery();
-                logger.info( "query for (" + goTermId + "," + listOfNodesSQL + ") done" );
-                while ( set.next() ) {
-                    goTermCount = set.getInt( 1 );
-                }
-                set.close();
+                query.setParameter( "id", goTermId );
+                int goTermCount = ((Long) query.getSingleResult()).intValue();
+                if ( logger.isInfoEnabled() ) logger.info( "goTermCount: " + goTermCount );
 
                 // to summarize
-                logger.info("goTermType=" + goTermType + " | goTermId=" + goTermId
+                if ( logger.isInfoEnabled() ) logger.info("goTermType=" + goTermType + " | goTermId=" + goTermId
                 + " | goTermDescription=" + goTermDescription + " | goTermCount="
                 + goTermCount);
 
@@ -553,28 +513,28 @@ public class GoHighlightmentSource extends HighlightmentSource {
                 }
 
                 // replace ${selected-children}, ${id} by the GO id and ${type} by Go
-                logger.info( "direct highlight URL: " + directHighlightUrl );
-                directHighlightUrl = SearchReplace.replace( directHighlightUrl,
-                        "${selected-children}", goTermId );
-                directHighlightUrl = SearchReplace.replace( directHighlightUrl,
-                        "${id}", goTermId );
-                directHighlightUrl = SearchReplace.replace( directHighlightUrl,
-                        "${type}", goTermType );
-                logger.info( "direct highlight URL (modified): "
-                        + directHighlightUrl );
+                if ( logger.isInfoEnabled() ) logger.info( "direct highlight URL: " + directHighlightUrl );
+
+                directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${selected-children}", goTermId );
+                directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${id}", goTermId );
+                directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${type}", goTermType );
+
+                if ( logger.isInfoEnabled() ) logger.info( "direct highlight URL (modified): " + directHighlightUrl );
 
                 String quickGoUrl = goPath + "/DisplayGoTerm?id=" + goTermId +"&format=contentonly";
 
                 String quickGoGraphUrl = goPath + "/DisplayGoTerm?selected="
                         + goTermId + "&intact=true&format=contentonly&url="
                         + hierarchViewURL + "&frame=_top";
-                logger.info( "Xref: " + goTermId );
+                if ( logger.isInfoEnabled() ) logger.info( "Xref: " + goTermId );
 
                 boolean selected = false;
                 if ( selectedXRefs != null && selectedXRefs.contains( goTermId ) ) {
-                    logger.info( goTermId + " SELECTED" );
+                    if ( logger.isInfoEnabled() ) logger.info( goTermId + " SELECTED" );
                     selected = true;
                 }
+
+                if ( logger.isInfoEnabled() ) logger.info( "Count of GO("+ goTermDescription +") is " + goTermCount );
 
                 urls.add( new SourceBean( goTermId, goTermType, goTermDescription, goTermCount,
                         quickGoUrl, quickGoGraphUrl, directHighlightUrl, selected,
@@ -582,14 +542,11 @@ public class GoHighlightmentSource extends HighlightmentSource {
             }
         }
 
-        sourceStm.close();
-        //con.close();
-
         // sort the source list by count
         Collections.sort(urls);
 
         return urls;
-    } // getSourceUrls
+    }
 
 
     /**
