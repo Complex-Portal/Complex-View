@@ -1,9 +1,8 @@
 package uk.ac.ebi.intact.service.graph;
 
-import java.util.Collection;
+import edu.uci.ics.jung.graph.Vertex;
 
-import psidev.psi.mi.tab.model.BinaryInteraction;
-import psidev.psi.mi.tab.model.Interactor;
+import java.util.Collection;
 
 /**
  * Interface for nodes.
@@ -11,23 +10,9 @@ import psidev.psi.mi.tab.model.Interactor;
  * @author Bruno Aranda (baranda@ebi.ac.uk)& Nadin Neuhauser (nneuhauser@ebi.ac.uk)
  * @version $Id$
  */
-public interface Node<E extends Edge, D extends BinaryInteraction, I extends Interactor> {
- 
-	boolean equals(Object o);
-	
-	int hashCode();
-    
-	D getData();
-    
-    void addInteractor(I interactor);
-    
-    I getInteractor();
+public interface Node<T extends Edge> extends Vertex {
         
-    Collection<I> getInteractors();
-   
-    void addBinaryEdge(E edge);
+    Collection<T> getEdges();
     
-    Collection<E> getBinaryEdges();
-    
-    String getNodeId();    
+    String getId();    
 }

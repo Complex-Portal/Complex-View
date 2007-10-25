@@ -1,9 +1,13 @@
 package uk.ac.ebi.intact.service.graph.binary;
 
-import java.util.Collection;
-import java.util.HashSet;
-
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.decorators.StringLabeller;
+import edu.uci.ics.jung.graph.impl.UndirectedSparseGraph;
 import uk.ac.ebi.intact.service.graph.GraphNetwork;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represent a GraphNetwork of BinaryInteractions (includes BinaryNode & BinaryEdge)
@@ -11,75 +15,54 @@ import uk.ac.ebi.intact.service.graph.GraphNetwork;
  * @author Bruno Aranda (baranda@ebi.ac.uk) & Nadin Neuhauser (nneuhaus@ebi.ac.uk)
  * @version $Id$
  */
-public class BinaryGraphNetwork implements GraphNetwork<BinaryNode>
+public class BinaryGraphNetwork extends UndirectedSparseGraph implements GraphNetwork<InteractorVertex,BinaryInteractionEdge>, Graph
 {
-	///////////////////////////////////////////////////
-	// Instance variable
-	private Collection<BinaryNode> listOfAllNodes;
-	
-	///////////////////////////////////////////////////
-	// Constructors
-	public BinaryGraphNetwork(Collection<BinaryNode> nodes){
-		this.listOfAllNodes = nodes;
-		//getRootNodes();
-	}
-	
-	public Collection<BinaryNode> getNodes(){
-		return listOfAllNodes;
-	}
-	
-    public Collection<BinaryNode> getRootNodes() {
-    	Collection<BinaryNode> listRootNode = new HashSet<BinaryNode>();
-    	Collection<BinaryNode> potentialListRootNode = new HashSet<BinaryNode>();
-    	
-    	BinaryNode rootNode = null;
-    	for (BinaryNode node : listOfAllNodes){
-    		int nodeSize = node.getBinaryEdges().size();
-    		if (nodeSize > 1){
-    			potentialListRootNode.add(node);
-    		}
-    	}
-    	rootNode = potentialListRootNode.iterator().next();
-    	listRootNode.add(rootNode);
-    	for (BinaryNode node : potentialListRootNode){
-    		Collection<BinaryEdge> rootEdges = rootNode.getBinaryEdges();   	
-        	int numberOfRootEdge = rootEdges.size();
-        	
-        	Collection<BinaryEdge> nodeEdges = node.getBinaryEdges(); 
-    		int numberOfEdge = nodeEdges.size();
 
-    		if(nodeEdges.containsAll(rootEdges)){
-    			if(numberOfRootEdge < numberOfEdge){
-    				rootNode = node;
-    			}
-    		} else {
-    			for (BinaryNode rNode : listRootNode){
-    		  		Collection<BinaryEdge> rEdges = rNode.getBinaryEdges();   	
-    	        	int numberOfrEdge = rEdges.size();
-    	        	
-    				if (nodeEdges.containsAll(rEdges) && numberOfrEdge < numberOfEdge){
-    					listRootNode.remove(rNode);
-    					listRootNode.add(node);
-    				} else if (numberOfrEdge < numberOfEdge){
-    					listRootNode.add(node);
-    					break;
-    				}
-    			}
-    		}
-    	}
-    	if (listRootNode.isEmpty()) listRootNode.add(rootNode);
-        System.out.println("rootNode is: " + listRootNode);
-        return listRootNode;
+    private Map<String, InteractorVertex> vertices;
+    private Map<String, BinaryInteractionEdge> edges;
+
+    public BinaryGraphNetwork() {
+        vertices = new HashMap<String, InteractorVertex>();
+        edges = new HashMap<String, BinaryInteractionEdge>();
     }
-    
+
+    public Collection<InteractorVertex> getNodes() {
+        return vertices.values();
+    }
+
+    public void addNode(InteractorVertex vertex) {
+        if (!vertices.containsKey(vertex.getId())) {
+            vertices.put(vertex.getId(), vertex);
+            super.addVertex(vertex);
+        }
+    }
+
+    public void addEdge(BinaryInteractionEdge edge) {
+        if (!edges.containsKey(edge.getId())) {
+            edges.put(edge.getId(), edge);
+            super.addEdge(edge);
+
+            findNode(edge.getNodeA().getId()).getEdges().add(edge);
+            findNode(edge.getNodeB().getId()).getEdges().add(edge);
+        }
+    }
+
+    public InteractorVertex findNode(String id) {
+        return vertices.get(id);
+    }
+
     @Override
-    public String toString(){
-    	String result = "";
-    	for (BinaryNode node : listOfAllNodes){
-    		result += node.getNodeId() + "  \t" + node.getBinaryEdges() +"\n";
-    	}
-    	
-    	return result;
-    }
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
 
+        sb.append("graph{");
+
+        for (InteractorVertex vertex : getNodes()) {
+            sb.append(vertex);
+            sb.append(",");
+        }
+
+        sb.replace(sb.length()-1, sb.length(), "}");
+        return sb.toString();
+    }
 }
