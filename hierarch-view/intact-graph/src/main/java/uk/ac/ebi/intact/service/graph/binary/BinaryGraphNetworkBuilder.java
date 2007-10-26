@@ -84,7 +84,7 @@ public class BinaryGraphNetworkBuilder {
         } catch (StringLabeller.UniqueLabelException e) {
             throw new GraphException("Problem setting the label to vertex: "+vertex, e);
         }
-        
+
 
         return vertex;
     }
