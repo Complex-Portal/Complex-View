@@ -24,8 +24,8 @@ import edu.uci.ics.jung.graph.impl.UndirectedSparseEdge;
 import edu.uci.ics.jung.graph.Vertex;
 
 /**
- *
- *
+ * Implementation of Edge that stores the InteractorVertex
+ * 
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */

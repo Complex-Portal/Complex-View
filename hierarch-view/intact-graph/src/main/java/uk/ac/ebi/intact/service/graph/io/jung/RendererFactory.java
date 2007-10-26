@@ -21,7 +21,7 @@ import edu.uci.ics.jung.graph.decorators.StringLabeller;
 import uk.ac.ebi.intact.service.graph.GraphNetwork;
 
 /**
- * TODO comment this
+ * Factory that contains out-of-the-box renderers
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$

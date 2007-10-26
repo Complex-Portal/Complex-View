@@ -25,7 +25,7 @@ import edu.uci.ics.jung.graph.impl.SimpleSparseVertex;
 import edu.uci.ics.jung.utils.UserData;
 
 /**
- * TODO comment this
+ * Implementation of Vertex that holds the interactor information
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$

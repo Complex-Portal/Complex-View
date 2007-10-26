@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.io.Writer;
 
 /**
- * TODO comment this
+ * Utility class to export GraphNetworks to other formats or frameworks
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$

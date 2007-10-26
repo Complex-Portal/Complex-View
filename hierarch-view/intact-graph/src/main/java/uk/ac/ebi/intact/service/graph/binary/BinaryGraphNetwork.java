@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represent a GraphNetwork of BinaryInteractions (includes BinaryNode & BinaryEdge)
+ * Represent a GraphNetwork of BinaryInteractions
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk) & Nadin Neuhauser (nneuhaus@ebi.ac.uk)
  * @version $Id$
