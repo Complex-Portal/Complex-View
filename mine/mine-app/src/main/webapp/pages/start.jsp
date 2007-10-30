@@ -76,7 +76,7 @@ was modified due to the fact that it is not computing the distance from the sour
 other nodes, but to compute the distance from the source node to a given end node.<br><br>
 How the implementation of the JDSL library works can be understood in the following image (its searching
 for the shortest path from node <i>a</i> to node <i>e</i>):<br>
-<div align="center"><img src="<%=request.getContextPath()%>/images/djikstra.gif"></div>
+<div align="center"><img src="<%=request.getContextPath()%>/images/djikstra.png"></div>
 <ol><li>the algorithm starts at node <i>a</i>. All outgoing edges are inspected.</li>
 <li>the shortest path from <i>a</i> is the edge to node <i>d</i>, which then is marked as visited, because
 there is no shorter path to node <i>d</i>. All outgoing edges from <i>d</i> are inspected.</li>

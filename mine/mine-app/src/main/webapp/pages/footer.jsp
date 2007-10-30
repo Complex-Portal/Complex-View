@@ -28,7 +28,7 @@
         Version: <i><bean:message bundle="buildInfo" key="build.version"/></i>
     </td>
     <td class="tableCell">
-        <img border="0" align="right" src="<%=request.getContextPath()%>/images/struts-power.gif">
+        <img border="0" align="right" src="<%=request.getContextPath()%>/images/struts-power.png">
     </td>
 </tr>
 </table>
