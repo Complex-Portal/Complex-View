@@ -8,8 +8,11 @@ package uk.ac.ebi.intact.webapp.search.struts.view.beans;
 
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.util.SearchReplace;
+import uk.ac.ebi.intact.webapp.search.SearchWebappContext;
 
 import java.util.*;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This view bean is used to access the information relating to Features for display by JSPs. For every Component of an
@@ -55,7 +58,7 @@ public class FeatureViewBean extends AbstractViewBean {
      */
     public FeatureViewBean( Feature feature ) {
         super( );
-        this.searchURL = searchURL;
+        this.searchURL = SearchWebappContext.getCurrentInstance().getSearchUrl();
         this.feature = feature;
         dbUrls = new HashMap<CvObject, String>();
     }
@@ -130,13 +133,7 @@ public class FeatureViewBean extends AbstractViewBean {
             type = feature.getCvFeatureType().getShortLabel();
 
             if ( capitalizeFirstLetter ) {
-                // get the first char
-                String begin = type.substring( 0, 1 );
-                // put it to uppercase
-                begin = begin.toUpperCase();
-                // get the rest and add it to the beginning
-                String rest = type.substring( 1, type.length() );
-                type = begin + rest;
+                type = StringUtils.capitalize(type);
             }
         }
         return type;
@@ -193,7 +190,7 @@ public class FeatureViewBean extends AbstractViewBean {
      */
     public String getCvFeatureTypeSearchURL() {
 
-        if ( ( cvFeatureTypeSearchURL == "" ) && ( feature.getCvFeatureType() != null ) ) {
+        if ( ( cvFeatureTypeSearchURL.length() == 0 ) && ( feature.getCvFeatureType() != null ) ) {
             //set it on the first call
             //get the CvInteraction object and pull out its AC
             cvFeatureTypeSearchURL = searchURL + feature.getCvFeatureType().getAc()

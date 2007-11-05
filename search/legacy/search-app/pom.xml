@@ -31,10 +31,6 @@
         <jetty.port>8081</jetty.port>
     </properties>
 
-    <build>
-        <finalName>search</finalName>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
