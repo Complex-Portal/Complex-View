@@ -15,15 +15,15 @@ import org.apache.commons.logging.LogFactory;
  * @version
  * @since <pre>11 Sep 2007</pre>
  */
-public class ConfidenceModeMain {
+public class ConfidenceModelMain {
 	/**
 	 * Sets up a logger for that class.
 	 */
-	public static final Log		log	= LogFactory.getLog(ConfidenceModeMain.class);
+	public static final Log		log	= LogFactory.getLog( ConfidenceModelMain.class);
 
 	/**
 	 * @param args
-	 * for test only unter eclipse
+	 * for test only under eclipse
 	 */
 	public static void main(String[] args) {
 		String uniprotPath = "E:\\tmp";
@@ -40,7 +40,7 @@ public class ConfidenceModeMain {
 	
 	private static void classify(ConfidenceModel cm){
 		long start = System.currentTimeMillis();
-//		cm.getConfidenceListsFromDb();
+		cm.getConfidenceListsFromDb();
 		long aux1 = System.currentTimeMillis();
 		long timeDb = aux1 - start;
 		log.info("time for db retrieve (milisec): " + timeDb);
@@ -52,7 +52,7 @@ public class ConfidenceModeMain {
 		log.info("time for generating lowconf (milisec): " + timeGenerate);
 
 		aux1 = System.currentTimeMillis();
-		cm.getInterProGoAndAlign();
+		//cm.getInterProGoAndAlign();
 		aux2 = System.currentTimeMillis();
 		long timeAttribs = aux2 - aux1;
 		log.info("time for getting the attributes (milisec): " + timeAttribs);

@@ -57,10 +57,10 @@ public class DBcon {
 	                       IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCurrentTransaction().rollback();
 	                   } catch (IntactTransactionException e1) {
 	                       // If rollback was not successfull do what you want : printStackTrace, throw Exception...
-	                       throw new IntactException("Problem at commit time, couldn't rollback : " + e1);
+	                       throw new IntactException("Problem at commit time, couldn't rollback : ", e1);
 	                   }
 	                   // If commit is it could not commit do what you want : printStackTrace, throw Exception...
-	                   throw new IntactException("Problem at commit time, rollback done : " + e);
+	                   throw new IntactException("Problem at commit time, rollback done : ", e);
 	               }finally{
 	                   // Commiting the transaction close as well the session if everything goes fine but in case of an exception
 	                   // sent at commit time then the session would not be closed, so it's really important that you close it here

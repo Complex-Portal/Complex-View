@@ -183,7 +183,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 
 	public void writeGoAnnotation(String outFile) throws IOException {
 
-		HashSet<String> forbiddenGo = new HashSet<String>();
+		HashSet<String> forbiddenGo = new HashSet<String>(forbiddenGoTerms.length);
 		for (String goTerm : forbiddenGoTerms) {
 			// use static array of forbidden GO terms, recorded in
 			// AnnotationConstants interface
@@ -303,7 +303,7 @@ public class AnnotationFileMaker implements AnnotationConstants {
 		this.uniprotFile = uniprotFile;
 	}
 
-	public void setAllProts(HashSet<String> allProts) {
+	public void setAllProts(Set<String> allProts) {
 		this.allProts = allProts;
 		processAllProts();
 	}

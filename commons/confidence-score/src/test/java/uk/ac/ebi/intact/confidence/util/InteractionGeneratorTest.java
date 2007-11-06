@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
 import uk.ac.ebi.intact.confidence.util.InteractionGenerator;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
@@ -49,10 +50,10 @@ public class InteractionGeneratorTest extends IntactBasicTestCase{
 	}
 
 	private List<InteractionSimplified> initInteract(){
-		ProteinSimplified comp1 = new ProteinSimplified("P12345", "prey");
-		ProteinSimplified comp2 = new ProteinSimplified("Q12345", "bait");
-		ProteinSimplified comp3 = new ProteinSimplified("R12345", "bait");
-		ProteinSimplified comp4 = new ProteinSimplified("S12345", "prey");
+		ProteinSimplified comp1 = new ProteinSimplified(new UniprotAc("P12345"), "prey");
+		ProteinSimplified comp2 = new ProteinSimplified(new UniprotAc("Q12345"), "bait");
+		ProteinSimplified comp3 = new ProteinSimplified(new UniprotAc("R12345"), "bait");
+		ProteinSimplified comp4 = new ProteinSimplified(new UniprotAc("S12345"), "prey");
 		
 		InteractionSimplified int1 = new InteractionSimplified("int1", Arrays.asList(comp1, comp2));
 		InteractionSimplified int2 = new InteractionSimplified("int1", Arrays.asList(comp3, comp4));

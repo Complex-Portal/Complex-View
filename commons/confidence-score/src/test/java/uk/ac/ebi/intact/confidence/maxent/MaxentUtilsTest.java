@@ -50,11 +50,24 @@ public class MaxentUtilsTest {
 
         MaxentUtils.writeModelToFile(model, outputFile);
 
+
+
         System.out.println("\n\n==== OUTPUT =====\n\n");
 
         printFile(outputFile);
 
 
+    }
+
+    @Test
+    public void writeParameters() throws Exception{
+        File file = new File(MaxentUtilsTest.class.getResource("gameLocation.dat").getFile());
+        File outputFile = File.createTempFile("gameLocation", "out");
+
+        GISModel model = MaxentUtils.createModel(new FileInputStream(file));
+
+        Object [] structures = model.getDataStructures();
+        System.out.println(structures);
     }
 
     private static void printFile(File file) throws IOException {

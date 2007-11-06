@@ -83,7 +83,7 @@ public class PsimiConfidence {
 		dbFolder.mkdir();
 		AttributeGetter  aG = new AttributeGetter(dbFolder,tmpDir + "uniprot_sprot.dat", null, null, null, null, nr);
 		String outPath = tmpDir + "psimi_all_attributes.txt";
-		aG.getAllAttribs(biS, againstProteins, outPath);
+		aG.getAllAttribs(biS, againstProteins, outPath, null);
 		//TODO: read the all attribs, and for each do a getAttribs per line => score
 		FileReader fr;
 		try {		

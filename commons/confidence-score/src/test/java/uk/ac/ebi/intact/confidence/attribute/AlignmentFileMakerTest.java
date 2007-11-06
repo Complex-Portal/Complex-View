@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.ac.ebi.intact.bridges.blast.BlastService;
@@ -54,16 +53,19 @@ public class AlignmentFileMakerTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		testDir = new File(AlignmentFileMakerTest.class.getResource("P12345.xml").getPath());
-		testDir = testDir.getParentFile();
+		testDir = new File(GlobalTestData.getInstance().getTargetDirectory(), "AlignmentFileMakerTest");
+		testDir.mkdir();
 		String email = "iarmean@ebi.ac.uk";
 		String tableName  = "job";
-		HashMap<String, File> paths = GlobalData.getRightPahts();
-		File workDir  = paths.get("blastArchive");//new File("/homes/iarmean/blastXml");
+		File workDir  = new File(AlignmentFileMakerTest.class.getResource("P12345.xml").getPath()).getParentFile(); 
 		int nr =20;
-		File dbFolder = new File(GlobalTestData.getInstance().getTargetDirectory().getParent(), "dbFolder");
+		File dbFolder = new File(GlobalTestData.getInstance().getTargetDirectory(), "dbFolder");
 		dbFolder.mkdir();
-		BlastService bs = new EbiWsWUBlast(dbFolder, tableName, workDir, email, nr);//new File(testDir.getPath(), "/Blast/"), email);
+		BlastService bs = new EbiWsWUBlast(dbFolder, tableName, workDir, email, nr);
+		//new File(testDir.getPath(), "/Blast/"), email);
+		File csvFile = new File(AlignmentFileMakerTest.class.getResource("testDbDump.csv").getPath());
+		bs.deleteJobsAll();
+		bs.importCsv(csvFile);
 		afm = new AlignmentFileMaker(new Float(0.001),testDir, bs);
 	}
 
@@ -78,17 +80,20 @@ public class AlignmentFileMakerTest {
 	/**
 	 * Test method for
 	 * {@link uk.ac.ebi.intact.confidence.attribute.AlignmentFileMaker#blast(java.util.Set, java.util.Set, java.io.Writer)}.
+	 * @throws Exception 
 	 */
 	@Test
-	public final void testBlastSetSetWriter() {
+	public final void testBlastSetSetWriter() throws Exception {
 		Set<UniprotAc> proteins = new HashSet<UniprotAc>(3);
-		proteins.addAll(Arrays.asList(new UniprotAc("P43609"),new UniprotAc("P06730"),new UniprotAc("P12345")));
+		proteins.addAll(Arrays.asList(new UniprotAc("P43609"),new UniprotAc("P06730")));
 		Set<UniprotAc> againstProteins = new HashSet<UniprotAc>(7);
 		againstProteins.addAll(Arrays.asList(new UniprotAc("A7A277"), new UniprotAc("Q75AM0"), 
 				new UniprotAc("Q4R7N0"), new UniprotAc("P63074"), 
 				new UniprotAc("P08907"), new UniprotAc("Q8IPY3"), new UniprotAc("Q75BC5")));
 		try {
-			afm.blast(proteins, againstProteins, new FileWriter(new File(testDir,"blastProteins.txt")));
+			File outFile = new File(testDir,"blastProteins.txt");
+			afm.blastProt(proteins, againstProteins, new FileWriter(outFile));
+			assertTrue(outFile.exists());
 		} catch (IOException e) {
 			fail();
 		} catch (BlastServiceException e) {
@@ -100,15 +105,15 @@ public class AlignmentFileMakerTest {
 	@Test
 	public void testExpectationValue(){
 		BlastMappingReader	bmr = new BlastMappingReader();
-		String fileName = "P12345.xml";
+		File file = new File(AlignmentFileMakerTest.class.getResource("P12345.xml").getPath());
 		try {
-			EBIApplicationResult appResult = bmr.read(new File(testDir.getPath(), fileName));
+			EBIApplicationResult appResult = bmr.read(file);
 			List<THit> hits = appResult.getSequenceSimilaritySearchResult().getHits().getHit();
 			for (THit hit : hits) {
 				String accession = hit.getAc();
 				if (accession.equals("Q862R2")){
 					List<TAlignment> alignments = hit.getAlignments().getAlignment();
-					//changed :takes the last alignment
+					//changed: takes the last alignment
 					System.out.println(alignments.get(0).getExpectation());
 				}
 			}

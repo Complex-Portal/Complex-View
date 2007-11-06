@@ -5,7 +5,9 @@
  */
 package uk.ac.ebi.intact.confidence.model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * TODO comment this
@@ -36,6 +38,10 @@ public class InteractionSimplified {
 	}
 	public void setAc(String ebiAc) {
 		this.ebiAc = ebiAc;
+	}
+	
+	public List<ProteinSimplified> getComponents(){
+		return components;
 	}
 	
 	/* (non-Javadoc)

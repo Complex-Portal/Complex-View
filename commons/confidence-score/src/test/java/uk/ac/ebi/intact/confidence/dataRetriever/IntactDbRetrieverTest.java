@@ -3,7 +3,7 @@
  * rights reserved. Please see the file LICENSE in the root directory of this
  * distribution.
  */
-package uk.ac.ebi.intact.confidence.model;
+package uk.ac.ebi.intact.confidence.dataRetriever;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -25,9 +24,10 @@ import org.junit.Test;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
-//import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
-import uk.ac.ebi.intact.confidence.util.GlobalData;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.core.unit.mock.MockIntactContext;
@@ -57,12 +57,8 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	@Before
 	public void setUp() throws Exception {
 		acs = new HashSet<String>(Arrays.asList("EBI-987097", "EBI-446104", "EBI-79835", "EBI-297231", "EBI-1034130"));
-		HashMap<String, File> paths = GlobalData.getRightPahts();
-		String tmpDirPath = paths.get("workDir").getPath();//GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetriever/";
-		intactdb = new IntactDbRetriever(tmpDirPath);
-		String testDirPath = paths.get("workDir").getPath();//GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetrieverTest/";
-		testDir = new File(testDirPath);
-		testDir.mkdir();
+		testDir = GlobalTestData.getInstance().getTargetDirectory();
+		intactdb = new IntactDbRetriever(testDir.getPath(), new SpokeExpansion());
 	}
 
 	/**
@@ -84,7 +80,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	}
 
 	@Test
-	public final void testReadConfidenceSets() {
+	public final void testReadConfidenceSets() throws DataRetrieverException {
 		File file = new File(testDir.getPath(), "medconf_test.txt");
 		try {
 
@@ -108,21 +104,10 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 			e.printStackTrace();
 		}
 
-		List<InteractionSimplified> interactionsHC = intactdb.retrieveHighConfidenceSet();
-
-		Assert.assertNotNull(interactionsHC);
 		DataMethods dm = new DataMethods();
 		List<ProteinPair> interactionsMC = dm.readImportProteinPairs(file);
-		// interactionsMC is already expanded
-		long startExpand = System.currentTimeMillis();
-		interactionsHC = dm.expand(interactionsHC, new SpokeExpansion());
-		long stopExpand = System.currentTimeMillis();
-		long time = stopExpand - startExpand;
-		System.out.println("time for expand retrieve in milis: " + time);
-		dm.export(interactionsHC, new File(testDir.getPath(), "hc.txt"), false);
-		dm.export(interactionsHC, new File(testDir.getPath(), "hc_ebiAc.txt"), true);
 		try {
-			dm.export(interactionsMC, new FileWriter(new File(testDir.getPath(), "mc.txt")));
+			dm.export(interactionsMC, new FileWriter(new File(testDir.getPath(), "mc_test.txt")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -132,7 +117,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 
 	@Test
 	@Ignore
-	public final void testReadMediumConf() {
+	public final void testReadMediumConf() throws DataRetrieverException {
 		MockIntactContext.initMockContext();
 		MockIntactContext.configureMockDaoFactory().setMockInteractionDao(new ConfMockInteractionDao());
 		// TODO: set up a mock CvContext

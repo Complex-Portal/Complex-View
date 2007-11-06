@@ -8,9 +8,9 @@ package uk.ac.ebi.intact.confidence.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +19,7 @@ import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 
 /**
  * TODO comment this ... someday
@@ -40,12 +41,12 @@ public class InteractionGenerator {
 	private List<InteractionSimplified> highconf;
 	private List<InteractionSimplified> lowconf;
 	private List<InteractionSimplified> medconf;
-	private HashSet<String> proteinACs;
+	private Set<String> proteinACs;
 	
 	InteractionGenerator() {
 	}
 
-	public BinaryInteractionSet generate(HashSet<String> yeastProt, BinaryInteractionSet forbiddenBiSet, int nr){
+	public BinaryInteractionSet generate(Set<String> yeastProt, BinaryInteractionSet forbiddenBiSet, int nr){
 		Collection<ProteinPair> generated = new ArrayList<ProteinPair>();
 
 		Random random = new Random();
@@ -101,7 +102,7 @@ public class InteractionGenerator {
 			throw new IllegalArgumentException();
 	}
 
-	public void setProteinACs(HashSet<String> proteinACs) {
+	public void setProteinACs(Set<String> proteinACs) {
 		this.proteinACs = proteinACs;
 	}
 	
@@ -127,7 +128,7 @@ public class InteractionGenerator {
 	}
 
 	public List<InteractionSimplified> generate(int nr) {
-		List<InteractionSimplified> generated = new ArrayList<InteractionSimplified>();
+		List<InteractionSimplified> generated = new ArrayList<InteractionSimplified>(nr);
 
 		Random random = new Random();
 
@@ -142,8 +143,8 @@ public class InteractionGenerator {
 
 			if (validInteraction(uniprotId1, uniprotId2)) {
 				// create interactor objects
-				ProteinSimplified int1 = new ProteinSimplified(uniprotId1, "neutral");
-				ProteinSimplified int2 = new ProteinSimplified(uniprotId2, "neutral");
+				ProteinSimplified int1 = new ProteinSimplified(new UniprotAc(uniprotId1), "neutral");
+				ProteinSimplified int2 = new ProteinSimplified(new UniprotAc(uniprotId2), "neutral");
 
 				// create an interaction
 				InteractionSimplified intAux = new InteractionSimplified("generated" + i, Arrays.asList(int1, int2));

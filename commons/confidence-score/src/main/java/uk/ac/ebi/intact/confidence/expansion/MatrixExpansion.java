@@ -12,6 +12,7 @@ import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+import uk.ac.ebi.intact.confidence.model.UniprotAc;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +34,7 @@ public class MatrixExpansion extends BinaryExpansionStrategy {
 
     /**
      * Apply the matrix expansion to the given interaction. Essentially, an interaction is created between any two
-     * partitipant.
+     * participant.
      *
      * @param interaction the interaction to expand.
      *
@@ -82,7 +83,7 @@ public class MatrixExpansion extends BinaryExpansionStrategy {
         String role = p.getRole();
 
         // fetch interactor
-        String interactor = p.getUniprotAc();
+        String interactor = p.getUniprotAc().getAcNr();
 
         return interactor + ":" + role;
     }
@@ -96,7 +97,7 @@ public class MatrixExpansion extends BinaryExpansionStrategy {
 			}
 			ProteinSimplified prot1 = (ProteinSimplified)intS.getInteractors().toArray()[0];
 			ProteinSimplified prot2 = (ProteinSimplified)intS.getInteractors().toArray()[1];
-			ProteinPair pp = new ProteinPair(prot1.getUniprotAc(), prot2.getUniprotAc());
+			ProteinPair pp = new ProteinPair(prot1.getUniprotAc().getAcNr(), prot2.getUniprotAc().getAcNr());
 			proteinPairs.add(pp);
 		}
 		return new BinaryInteractionSet(proteinPairs);

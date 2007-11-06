@@ -127,8 +127,8 @@ public class SpokeWithoutBaitExpansion extends SpokeExpansion {
                     throw new IllegalArgumentException( "Both participant should hold a valid interactor." );
                 }
 
-                String name1 = p1.getUniprotAc();
-                String name2 = p2.getUniprotAc();
+                String name1 = p1.getUniprotAc().getAcNr();
+                String name2 = p2.getUniprotAc().getAcNr();
 
                 int result;
                 if ( name1 == null ) {

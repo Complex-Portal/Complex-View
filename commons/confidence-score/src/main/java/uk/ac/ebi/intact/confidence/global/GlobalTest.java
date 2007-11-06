@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,10 +13,9 @@ import org.junit.Test;
 
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.attribute.AnnotationFileMaker;
+import uk.ac.ebi.intact.confidence.dataRetriever.DataRetrieverException;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
-import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
-import uk.ac.ebi.intact.confidence.util.DataMethods;
 
 /*
  * Copyright (c) 2002 The European Bioinformatics Institute, and others. All
@@ -43,24 +41,22 @@ public class GlobalTest {
 	 */
 	public static final Log		log	= LogFactory.getLog(GlobalTest.class);
 	
-	private String uniprotPathDir;
+	private static String uniprotPathDir;
 	
 	/**
 	 * @param args
 	 */
-//	public static void main(String[] args) {
-//		getConfidenceListsFromDb();
-//		String uniprotPathDir	= args[0];
-//		getInterProAndGo(uniprotPathDir);
-//		//getAlignments();	
-//	}
+	public static void main(String[] args) {
+		getConfidenceListsFromDb();
+		String uniprotPathDir	= args[0];
+		getInterProAndGo();
+		//getAlignments();	
+	}
 
-	@Test
-	@Ignore
-	public void getConfidenceListsFromDb() {
+	public static void getConfidenceListsFromDb() {
 		HashMap<String, File> paths = GlobalTestData.getInstance().getRightPahts();
 		String tmpDirPath = paths.get("workDir").getPath() + "/IntactDbRetriever/"; //GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetriever/";
-		IntactDbRetriever intactdb = new IntactDbRetriever(tmpDirPath);
+		IntactDbRetriever intactdb = new IntactDbRetriever(tmpDirPath, new SpokeExpansion());
 		long start = System.currentTimeMillis();
 		
 		try {
@@ -70,20 +66,21 @@ public class GlobalTest {
 			fw.close();
 		} catch (IOException e) {
 			fail(e.toString());
+		} catch (DataRetrieverException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		long end = System.currentTimeMillis();
 		log.info ("time needed : " + (end-start));
-		List<InteractionSimplified> highconf = intactdb.retrieveHighConfidenceSet();
+	//	List<InteractionSimplified> highconf = intactdb.retrieveHighConfidenceSet();
 		
-		DataMethods dm = new DataMethods();
-		highconf =  dm.expand(highconf, new SpokeExpansion());
-		File file = new File(GlobalTestData.getInstance().getTargetDirectory().getPath() + "highConf.txt");
-		dm.export(highconf, file, true);		
+//		DataMethods dm = new DataMethods();
+//		highconf =  dm.expand(highconf, new SpokeExpansion());
+//		File file = new File(GlobalTestData.getInstance().getTargetDirectory().getPath() + "highConf.txt");
+//		dm.export(highconf, file, true);		
 	}
 	
-	@Test
-	@Ignore
-	public void getInterProAndGo() {
+	public static void getInterProAndGo() {
 		String path = GlobalTestData.getInstance().getTargetDirectory().getPath() + "/ProtPairsTest.txt";
 		BinaryInteractionSet biSet;
 		try {

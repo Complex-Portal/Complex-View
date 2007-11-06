@@ -96,7 +96,7 @@ public class SpokeExpansion extends BinaryExpansionStrategy {
         // fetch role
         String name = p.getRole();      
         // fetch interactor
-        String interactor = p.getUniprotAc();
+        String interactor = p.getUniprotAc().getAcNr();
 
         return interactor + ":" + name;
     }
@@ -140,7 +140,7 @@ public class SpokeExpansion extends BinaryExpansionStrategy {
 			}
 			ProteinSimplified prot1 = (ProteinSimplified)intS.getInteractors().toArray()[0];
 			ProteinSimplified prot2 = (ProteinSimplified)intS.getInteractors().toArray()[1];
-			ProteinPair pp = new ProteinPair(prot1.getUniprotAc(), prot2.getUniprotAc());
+			ProteinPair pp = new ProteinPair(prot1.getUniprotAc().getAcNr(), prot2.getUniprotAc().getAcNr());
 			proteinPairs.add(pp);
 		}
 		return new BinaryInteractionSet(proteinPairs);

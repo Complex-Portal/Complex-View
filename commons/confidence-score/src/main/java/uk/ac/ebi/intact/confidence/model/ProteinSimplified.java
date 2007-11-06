@@ -1,36 +1,55 @@
 /*
- * Copyright (c) 2002 The European Bioinformatics Institute, and others.
- * All rights reserved. Please see the file LICENSE
- * in the root directory of this distribution.
+ * Copyright (c) 2002 The European Bioinformatics Institute, and others. All
+ * rights reserved. Please see the file LICENSE in the root directory of this
+ * distribution.
  */
 package uk.ac.ebi.intact.confidence.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
+import uk.ac.ebi.intact.bridges.blast.model.Sequence;
+
 /**
  * TODO comment this
- *
+ * 
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version
- * @since <pre>14-Aug-2007</pre>
+ * @since
+ * 
+ * <pre>
+ * 14 - Aug - 2007
+ * </pre>
  */
 public class ProteinSimplified {
 
-	private String uniprotAc;
-	private String role; // bait or prey or neutral
-	private String seq;
-//	private Collection<String> GOs;
-//	private Collection<String> domains;
-//	private Collection<String> alignments;
-	
-	
-	public ProteinSimplified(){
+	private UniprotAc		uniprotAc;
+	private String			role;			// bait or prey or neutral
+	private Sequence		seq;
+	private Set<GoId>		goSet;
+	private Set<InterProId>	interProSet;
+
+	// private Collection<String> alignments;
+
+	public ProteinSimplified() {
+	}
+
+	public ProteinSimplified(UniprotAc uniprotAc){
+		this.uniprotAc = uniprotAc;
 	}
 	
-	public ProteinSimplified(String uniprotAc, String role){
+	public ProteinSimplified(UniprotAc uniprotAc, String role) {
 		this.uniprotAc = uniprotAc;
 		this.role = role;
 	}
 
-	public String getUniprotAc() {
+	public ProteinSimplified(UniprotAc uniprotAc, Sequence seq) {
+		this.uniprotAc = uniprotAc;
+		this.seq = seq;
+	}
+
+	public UniprotAc getUniprotAc() {
 		return uniprotAc;
 	}
 
@@ -38,7 +57,7 @@ public class ProteinSimplified {
 		return role;
 	}
 
-	public void setUniprotAc(String uniprotAc) {
+	public void setUniprotAc(UniprotAc uniprotAc) {
 		this.uniprotAc = uniprotAc;
 	}
 
@@ -46,15 +65,69 @@ public class ProteinSimplified {
 		this.role = role;
 	}
 
-	public String getSeq() {
+	public Sequence getSequence() {
 		return seq;
 	}
 
-	public void setSeq(String seq) {
+	public void setSequence(Sequence seq) {
 		this.seq = seq;
 	}
 
-	/* (non-Javadoc)
+	public Set<GoId> getGoSet() {
+		return goSet;
+	}
+
+	public void setGoSet(Set<GoId> goSet) {
+		this.goSet = goSet;
+	}
+
+	public void addGo(GoId go) {
+		if (goSet == null) {
+			goSet = new HashSet<GoId>();
+		}
+		goSet.add(go);
+	}
+
+	/**
+	 * @return the interProSet
+	 */
+	public Set<InterProId> getInterProSet() {
+		return interProSet;
+	}
+
+	/**
+	 * @param interProSet
+	 *            the interProSet to set
+	 */
+	public void setInterProSet(Set<InterProId> interProSet) {
+		this.interProSet = interProSet;
+	}
+
+	public void addInterProId(InterProId ip) {
+		if (interProSet == null) {
+			interProSet = new HashSet<InterProId>();
+		}
+		interProSet.add(ip);
+	}
+
+	// public Collection<String> getDomains() {
+	// return domains;
+	// }
+	//
+	// public void setDomains(Collection<String> domains) {
+	// this.domains = domains;
+	// }
+	//
+	// public Collection<String> getAlignments() {
+	// return alignments;
+	// }
+	//
+	// public void setAlignments(Collection<String> alignments) {
+	// this.alignments = alignments;
+	// }
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -67,7 +140,9 @@ public class ProteinSimplified {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -97,29 +172,12 @@ public class ProteinSimplified {
 		return true;
 	}
 
-//	public Collection<String> getGOs() {
-//		return GOs;
-//	}
-//
-//	public void setGOs(Collection<String> os) {
-//		GOs = os;
-//	}
-//
-//	public Collection<String> getDomains() {
-//		return domains;
-//	}
-//
-//	public void setDomains(Collection<String> domains) {
-//		this.domains = domains;
-//	}
-//
-//	public Collection<String> getAlignments() {
-//		return alignments;
-//	}
-//
-//	public void setAlignments(Collection<String> alignments) {
-//		this.alignments = alignments;
-//	}	
-	
-	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return uniprotAc.toString();
+	}
+
 }

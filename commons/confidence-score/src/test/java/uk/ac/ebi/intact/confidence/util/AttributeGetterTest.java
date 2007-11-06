@@ -19,7 +19,6 @@ import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
-import uk.ac.ebi.intact.confidence.attribute.FileCombiner;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 
 
@@ -30,6 +29,7 @@ import uk.ac.ebi.intact.confidence.global.GlobalTestData;
  * @version
  * @since <pre>5 Sep 2007</pre>
  */
+@Ignore
 public class AttributeGetterTest {
 
 	private AttributeGetter aG;
@@ -39,18 +39,16 @@ public class AttributeGetterTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		tmpDir = new File (GlobalTestData.getInstance().getTargetDirectory().getPath(), "/AttributeGetterTest/");
+		tmpDir = new File (GlobalTestData.getInstance().getTargetDirectory(), "/AttributeGetterTest/");
 		tmpDir.mkdir();
-		File blastDir = new File(AttributeGetterTest.class.getResource("P43609.xml").getPath());
+		File workDir = new File(AttributeGetterTest.class.getResource("P43609.xml").getPath()).getParentFile();
 		String uniprotPath = AttributeGetterTest.class.getResource("uniprot_sprot_small.dat").getPath();
-		//TODO: for eclipse: File blastArchive = new File("H:/blastXml/");
-		// for unix:
-		File blastArchive = new File(System.getProperty("user.home"),"/blastXml/");
+		File blastArchive = workDir;
 		String email = "iarmean@ebi.ac.uk";
 		int nr = 20;
-		File dbFolder = new File(GlobalTestData.getInstance().getTargetDirectory().getParent(), "dbFolder");
+		File dbFolder = new File(GlobalTestData.getInstance().getTargetDirectory(), "dbFolder");
 		dbFolder.mkdir();
-		aG = new AttributeGetter(dbFolder, uniprotPath, GlobalTestData.getInstance().getBinaryInteractionSet(), blastDir.getParentFile(),blastArchive, email, nr);		
+		aG = new AttributeGetter(dbFolder, uniprotPath, GlobalTestData.getInstance().getBinaryInteractionSet(), workDir ,blastArchive, email, nr);		
 	}
 
 	/**
@@ -125,7 +123,7 @@ public class AttributeGetterTest {
 		againstProt.add(new UniprotAc("Q6FPM5")); // for P43609
 		againstProt.add(new UniprotAc("P08907")); // for P12345 - rabit :)
 		againstProt.add(new UniprotAc("P00506")); // for P12345
-		aG.writeAlignmentAttributes(pp, outPath, againstProt);
+		aG.writeAlignmentAttributes(pp, outPath, againstProt, null);
 	}
 
 	/**
@@ -141,7 +139,7 @@ public class AttributeGetterTest {
 		againstProt.add("Q6FPM5"); // for P43609
 		againstProt.add("P08907"); // for P12345 - rabit :)
 		againstProt.add("P00506"); // for P12345
-		aG.writeAlignmentAttributes(GlobalTestData.getInstance().getBinaryInteractionSet(), outPath, againstProt);
+		aG.writeAlignmentAttributes(GlobalTestData.getInstance().getBinaryInteractionSet(), outPath, againstProt, null);
 	}
 
 	/**
@@ -172,7 +170,7 @@ public class AttributeGetterTest {
 		againstProt.add("Q6FPM5"); // for P43609
 		againstProt.add("P08907"); // for P12345 - rabit :)
 		againstProt.add("P00506"); // for P12345
-		aG.getAllAttribs(GlobalTestData.getInstance().getBinaryInteractionSet(), againstProt, outPath);
+		aG.getAllAttribs(GlobalTestData.getInstance().getBinaryInteractionSet(), againstProt, outPath, null);
 	}
 	
 	/**
@@ -195,8 +193,8 @@ public class AttributeGetterTest {
 					blastArchiveDir, email, nr);
 			
 			BinaryInteractionSet biSet2 = new BinaryInteractionSet(workDir.getPath() + "/medconf_all.txt");
-			HashSet<String> againstProteins = biSet.getAllProtNames();
-			aG.getAllAttribs(biSet2, againstProteins, workDir.getPath() + "/medconf_all_attribs_test.txt");
+			Set<String> againstProteins = biSet.getAllProtNames();
+			aG.getAllAttribs(biSet2, againstProteins, workDir.getPath() + "/medconf_all_attribs_test.txt", null);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

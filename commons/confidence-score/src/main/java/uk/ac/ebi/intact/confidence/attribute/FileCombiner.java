@@ -30,18 +30,9 @@ public class FileCombiner implements AnnotationConstants {
 	 */
 	public static final Log	log				= LogFactory.getLog(FileCombiner.class);
 
-	private boolean			verbose			= true;
-
 	private int				maxBufferSize	= 1000;
-
-	private int				rejected;													// count
-																						// number
-																						// of
-																						// incorrectly
-																						// formatted
-																						// protein
-																						// pairs
-																						// rejected
+	// count number of incorrectly formatted protein pairs rejected
+	private int				rejected;
 
 	public FileCombiner() {
 	}
@@ -56,8 +47,8 @@ public class FileCombiner implements AnnotationConstants {
 		HashSet<ProteinPair> allPairs = new HashSet<ProteinPair>();
 		HashSet<ProteinPair> pairBuffer = new HashSet<ProteinPair>();
 
-		rejected = 0; // count number of incorrectly formatted protein pairs
-						// rejected
+		// count number of incorrectly formatted protein pairs rejected
+		rejected = 0;
 
 		for (String path : attributePaths) {
 			FileReader fr = new FileReader(path);
@@ -66,40 +57,37 @@ public class FileCombiner implements AnnotationConstants {
 			boolean firstBuffer = true;
 			while ((line = br.readLine()) != null) {
 				ProteinPair pair = FileMethods.getProteinPair(line);
-				if (allPairs.contains(pair)) {
-					continue;
-				}
-				// ignore pairs for which annotation has already been written
-				if (!FileMethods.correctUniprotFormats(pair)) {
-					// also ignore pairs containing incorrectly formatted
-					// uniprot names
-					rejected++;
-					if (verbose) {
-						String comment = pair.toString() + " rejected -- badly formatted UniProt ID.";
-						log.debug(comment);
-						// System.out.println(comment);
-						comment = rejected + " pairs of " + allPairs.size() + " rejected so far.";
-						log.debug(comment);
-						// System.out.println(comment);
-					}
-					continue;
-				}
-
 				allPairs.add(pair);
 				pairBuffer.add(pair);
-				if (pairBuffer.size() == maxBufferSize) {
-					if (firstBuffer) {
-						appendAttributeInfo(pairBuffer, attributePaths, outPath, false);
-						firstBuffer = false;
-						// open new output file instead of appending to old one
+				if (!allPairs.contains(pair)) {
+
+					if (!FileMethods.correctUniprotFormats(pair)) {
+						rejected++;
+						if (log.isDebugEnabled()) {
+							String comment = pair.toString() + " rejected -- badly formatted UniProt ID.";
+							log.debug(comment);
+							comment = rejected + " pairs of " + allPairs.size() + " rejected so far.";
+							log.debug(comment);
+						}
 					} else {
-						appendAttributeInfo(pairBuffer, attributePaths, outPath, true);
-					}
-					pairBuffer.clear();
-					if (verbose) {
-						String comment = "Annotation for " + allPairs.size() + " protein pairs found.";
-						log.debug(comment);
-						// System.out.println(comment);
+						allPairs.add(pair);
+						pairBuffer.add(pair);
+						if (pairBuffer.size() == maxBufferSize) {
+							if (firstBuffer) {
+								appendAttributeInfo(pairBuffer, attributePaths, outPath, false);
+								firstBuffer = false;
+								// open new output file instead of appending to
+								// old
+								// one
+							} else {
+								appendAttributeInfo(pairBuffer, attributePaths, outPath, true);
+							}
+							pairBuffer.clear();
+							if (log.isDebugEnabled()) {
+								String comment = "Annotation for " + allPairs.size() + " protein pairs found.";
+								log.debug(comment);
+							}
+						}
 					}
 				}
 			}
@@ -107,9 +95,7 @@ public class FileCombiner implements AnnotationConstants {
 		}
 		appendAttributeInfo(pairBuffer, attributePaths, outPath, true);
 
-		
-
-		if (verbose) {
+		if (log.isDebugEnabled()) {
 			String comment = allPairs.size() + " protein pairs found.";
 			log.debug(comment);
 			// System.out.println(comment);
@@ -124,7 +110,7 @@ public class FileCombiner implements AnnotationConstants {
 		HashSet<ProteinPair> pairBuffer = new HashSet<ProteinPair>();
 
 		rejected = 0; // count number of incorrectly formatted protein pairs
-						// rejected
+		// rejected
 
 		for (String path : attributePaths) {
 			FileReader fr = new FileReader(path);
@@ -141,7 +127,7 @@ public class FileCombiner implements AnnotationConstants {
 					// also ignore pairs containing incorrectly formatted
 					// uniprot names
 					rejected++;
-					if (verbose) {
+					if (log.isDebugEnabled()) {
 						String comment = pair.toString() + " rejected -- badly formatted UniProt ID.";
 						log.debug(comment);
 						// System.out.println(comment);
@@ -163,7 +149,7 @@ public class FileCombiner implements AnnotationConstants {
 						appendAttributeInfo(pairBuffer, attributePaths, outPath, true);
 					}
 					pairBuffer.clear();
-					if (verbose) {
+					if (log.isDebugEnabled()) {
 						String comment = "Annotation for " + allPairs.size() + " protein pairs found.";
 						log.debug(comment);
 						// System.out.println(comment);
@@ -174,7 +160,7 @@ public class FileCombiner implements AnnotationConstants {
 
 			fr.close();
 		}
-		if (verbose) {
+		if (log.isDebugEnabled()) {
 			String comment = allPairs.size() + " protein pairs found.";
 			log.debug(comment);
 			// System.out.println(comment);
@@ -211,7 +197,7 @@ public class FileCombiner implements AnnotationConstants {
 		}
 
 		FileWriter fw = new FileWriter(outPath, append); // open FileWriter
-															// for appending
+		// for appending
 		PrintWriter pw = new PrintWriter(fw);
 		StringBuilder out;
 		for (ProteinPair pair : pairToAttribs.keySet()) {
@@ -263,16 +249,13 @@ public class FileCombiner implements AnnotationConstants {
 	 * combinedOutput.append(foo); } break; } } }
 	 * pw.println(combinedOutput.toString()); if (verbose) { pairCount++; String
 	 * comment = "Combined annotation written for interaction " + pairCount + "
-	 * of " + interactions.size(); System.out.println(comment);
-	 *  } }
+	 * of " + interactions.size(); System.out.println(comment); } }
 	 * 
 	 * 
 	 * String comment = rejects + " badly formed UniProt IDs rejected.";
 	 * System.out.println(comment);
 	 * 
-	 * fw.close();
-	 * 
-	 *  }
+	 * fw.close(); }
 	 * 
 	 */
 }

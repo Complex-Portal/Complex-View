@@ -5,30 +5,27 @@
  */
 package uk.ac.ebi.intact.confidence.attribute;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import uk.ac.ebi.intact.bridges.blast.BlastService;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.jdbc.BlastJobEntity;
-import uk.ac.ebi.intact.bridges.blast.model.BlastResult;
-import uk.ac.ebi.intact.bridges.blast.model.Hit;
-import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
+import uk.ac.ebi.intact.bridges.blast.model.*;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 import uk.ac.ebi.intact.confidence.util.GlobalData;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.*;
+
 /**
  * TODO comment that
- * 
+ *
  * @author Iain Bancarz
  * @version $Id$
  * @since 09-Aug-2006 <p/> <p/> Input proteins in FASTA format For each protein
@@ -40,212 +37,339 @@ import uk.ac.ebi.intact.confidence.util.GlobalData;
  *        first hit to P, HQ1 first hit to Q, etc.
  */
 public class AlignmentFileMaker {
-	/**
-	 * Sets up a logger for that class.
-	 */
-	public static final Log	log	= LogFactory.getLog(AlignmentFileMaker.class);
+    /**
+     * Sets up a logger for that class.
+     */
+    public static final Log log = LogFactory.getLog( AlignmentFileMaker.class );
 
-	private BlastService	blast;
-	private File			workDir;
-	private Float			threshold;
+    private static int count = 0;
 
-	// private String fastaRefPath = "/scratch/blast/intact.fasta";
-	// private String blastPath = "/scratch/blast/blast-2.2.14/bin/blastall";
+    private BlastService blast;
+    private File workDir;
+    // private File blastArchive;
+    private Float threshold;
 
-	/**
-	 * Constructor
-	 */
-	public AlignmentFileMaker(BlastService blast) {
-		this(new Float(0.001), null, blast);
-	}
+    // private String fastaRefPath = "/scratch/blast/intact.fasta";
+    // private String blastPath = "/scratch/blast/blast-2.2.14/bin/blastall";
 
-	/**
-	 * Constructor
-	 * 
-	 * @param threshold
-	 * @param workingDirectory
-	 */
-	public AlignmentFileMaker(Float threshold, File workingDirectory, BlastService blast) {
+    /**
+     * Constructor
+     */
+    public AlignmentFileMaker( BlastService blast ) {
+        this( new Float( 0.001 ), null, blast );
+    }
 
-		this.blast = blast;
-		this.threshold = threshold;
+    /**
+     * Constructor
+     *
+     * @param threshold
+     * @param workingDirectory
+     */
+    public AlignmentFileMaker( Float threshold, File workingDirectory, BlastService blast ) {
 
-		if (workingDirectory == null) {
-			String workPath = AlignmentFileMaker.class.getResource("doNotRemoveThis.file").getPath();
-			workDir = new File(workPath);
-			HashMap<String, File> paths = GlobalData.getRightPahts();// GlobalTestData.getInstance().getRightPahts();//getTargetDirectory(); // new
-			workDir = paths.get("workDir");
-			// File(workDir.getParent());
-		} else {
-			this.workDir = workingDirectory;
-		}
-		if (!workDir.isDirectory()) {
-			workDir.mkdir();
-		}
-		
-		GlobalData.setCount(0);
-	}
+        this.blast = blast;
+        this.threshold = threshold;
 
-	// //////////////////
-	// // Public Methods
-	/**
-	 * Blasts the proteins in the first set against the proteins in the second
-	 * set. If the writer is not null, the result will be also written on it.
-	 * 
-	 * @param intToBlast
-	 * @param againstList
-	 * @param writer
-	 * @throws BlastServiceException
-	 */
-	public void blast(List<InteractionSimplified> intToBlast, List<InteractionSimplified> againstList, Writer writer)
-			throws BlastServiceException {
-		if (intToBlast == null || againstList == null || writer == null) {
-			throw new NullPointerException("params must not be null!");
-		}
-		Set<UniprotAc> proteins = getProteinList(intToBlast);
-		Set<UniprotAc> againstProteins = getProteinList(againstList);
+        if ( workingDirectory == null ) {
+            // String workPath =
+            // AlignmentFileMaker.class.getResource("doNotRemoveThis.file").getPath();
+            // workDir = new File(getTargetDirectory(), "AlignmentFileMaker");
+            // workDir.mkdir();
+        //    HashMap<String, File> paths = GlobalData.getRightPahts();// GlobalTestData.getInstance().getRightPahts();//getTargetDirectory();
+            // //
+            // new
+         //   workDir = paths.get( "workDir" );
+            // File(workDir.getParent());
+        } else {
+            this.workDir = new File( workingDirectory, "AlignmentFileMaker" );
+        }
+        if ( !workDir.isDirectory() ) {
+            workDir.mkdir();
+        }
 
-		blast(proteins, againstProteins, writer);
-	}
+        GlobalData.setCount( 0 );
+    }
 
-	/**
-	 * 
-	 * @param proteins
-	 * @param againstProteins
-	 * @param fileWriter
-	 * @throws BlastServiceException
-	 */
-	public void blast(Set<UniprotAc> proteins, Set<UniprotAc> againstProteins, Writer writer)
-			throws BlastServiceException {
-		if (proteins == null || againstProteins == null || writer == null) {
-			throw new NullPointerException("Params must not be null!");
-		}
+    // //////////////////
+    // // Public Methods
+    /**
+     * Blasts the proteins in the first set against the proteins in the second
+     * set. If the writer is not null, the result will be also written on it.
+     *
+     * @param intToBlast
+     * @param againstList
+     * @param writer
+     * @throws BlastServiceException
+     */
+    public void blast( List<InteractionSimplified> intToBlast, List<InteractionSimplified> againstList, Writer writer )
+            throws BlastServiceException {
+        if ( intToBlast == null || againstList == null || writer == null ) {
+            throw new NullPointerException( "Params must not be null!" );
+        }
+        Set<ProteinSimplified> proteins = getProteinList( intToBlast );
+        Set<ProteinSimplified> againstProteins = getProteinList( againstList );
 
-		GlobalData.setCount(0);
-		GlobalData.startTime =-1;
-		GlobalData.totalProts = proteins.size();
-		log.info("total nr of proteins : " + GlobalData.totalProts);
-		
-		List<BlastResult> results = blast.fetchAvailableBlasts(proteins);
-		processResults(results, againstProteins, writer);
+        blast( proteins, againstProteins, writer );
+    }
 
-		Set<UniprotAc> missingProteins = notIncluded(results, proteins);
-		if (missingProteins.size() != 0) {
-			List<BlastJobEntity> submitted = blast.submitJobs(missingProteins);
-			List<BlastResult> tmpResults = blast.fetchAvailableBlasts(submitted);
-			processResults(tmpResults, againstProteins, writer);
-			results.addAll(tmpResults);
-			while (results.size() != proteins.size()) {
-				//TODO: reassess if it needs more time than the fetchBlast code
-				// try{
-				// Thread.sleep(5000);
-				// } catch(InterruptedException e){
-				// e.printStackTrace();
-				// } //TODO: remove this notIncluded () ... put it after the result.addAll
-				missingProteins = notIncluded(results, proteins);
-				tmpResults = blast.fetchAvailableBlasts(missingProteins);
-				processResults(tmpResults, againstProteins, writer);
-				results.addAll(tmpResults);
-			}
-		}
-		try {
-			writer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		GlobalData.endTime = System.currentTimeMillis();
-		long time = GlobalData.endTime - GlobalData.startTime;
-		log.info("for " + GlobalData.getCount() + " prots: " + time);
-		log.info("ETA: " + GlobalData.eta(GlobalData.getCount(), time, GlobalData.totalProts) + " (milisec)");
-	}
+    public void blastProt( Set<UniprotAc> proteins, Set<UniprotAc> againstProteins, Writer writer )
+            throws BlastServiceException {
+        if ( proteins == null || againstProteins == null || writer == null ) {
+            throw new NullPointerException( "Params must not be null!" );
+        }
+        Set<ProteinSimplified> proteinsS = getProteinList( proteins );
+        Set<ProteinSimplified> againstProteinsS = getProteinList( againstProteins );
 
-	// ///////////////////
-	// // Private Methods
-	private HashSet<UniprotAc> getProteinList(List<InteractionSimplified> interactions) {
-		HashSet<UniprotAc> proteins = new HashSet<UniprotAc>();
-		for (InteractionSimplified intS : interactions) {
-			for (ProteinSimplified protS : intS.getInteractors()) {
-				proteins.add(new UniprotAc(protS.getUniprotAc()));
-			}
-		}
-		return proteins;
-	}
+        blast( proteinsS, againstProteinsS, writer );
 
-	private Set<UniprotAc> notIncluded(List<BlastResult> results, Set<UniprotAc> proteins) {
-		Set<UniprotAc> protNotIn = new HashSet<UniprotAc>();
+    }
 
-		Set<UniprotAc> resultProt = new HashSet<UniprotAc>();
-		for (BlastResult blastResult : results) {
-			resultProt.add(new UniprotAc(blastResult.getUniprotAc()));
-		}
+    public void blastProt( Set<UniprotAc> proteins, Writer writer )
+            throws BlastServiceException {
+        if ( proteins == null || writer == null ) {
+            throw new NullPointerException( "Params must not be null!" );
+        }
+        Set<ProteinSimplified> proteinsS = getProteinList( proteins );
 
-		for (UniprotAc ac : proteins) {
-			if (!resultProt.contains(ac)) {
-				protNotIn.add(ac);
-			}
-		}
-		return protNotIn;
-	}
+        blast( proteinsS, new HashSet<ProteinSimplified>( 0 ), writer );
 
-	private void processResults(List<BlastResult> results, Set<UniprotAc> againstProteins, Writer writer) {
-		// TODO remove this after finalized
-		// process the results according to the thresholds : against
-		// proteins and eval < 0.001
-		// add to the alignmentLine
-		// append the alignmentLine to a writer
-		if (GlobalData.startTime == -1) {
-			GlobalData.startTime = System.currentTimeMillis();
-		}
-		for (BlastResult result : results) {
-			GlobalData.increment(1);
-			if ((GlobalData.getCount() %20) == 0){
-				GlobalData.endTime = System.currentTimeMillis();
-				long time = GlobalData.endTime - GlobalData.startTime;
-				log.info("for " + GlobalData.getCount() + " prots: " + time);
-				log.info("ETA: " + GlobalData.eta(GlobalData.getCount(), time, GlobalData.totalProts) + " (milisec)");
-			}
-			String alignmentLine = result.getUniprotAc();
-			for (Hit hit : result.getHits()) {
-				Float evalue = hit.getEValue();
-				String ac = hit.getUniprotAc();
-				if (ac == null){
-					log.debug("Ac is null, in a hit list!" + result.getUniprotAc() +": " + hit);
-				}
-				
-				//TODO: remove try/catch block after test
-				try{
-					UniprotAc uniprotAc = new UniprotAc(ac);
-					if (evalue < threshold && againstProteins.contains(uniprotAc)) {
-						alignmentLine += "," + ac;
-					}
-				} catch (IllegalArgumentException e){
-					log.debug(e.toString() + "\n" + alignmentLine + " : " + evalue + ": " + ac);
-				}	
-				
-			}
-			try {
-				writer.append(alignmentLine + "\n");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
+    }
 
-//	/* (non-Javadoc)
-//	 * @see java.lang.Object#finalize()
-//	 */
-//	@Override
-//	protected void finalize() throws Throwable {
-//		blast.close();
-//	}	
-	public void close(){
-		try {
-			blast.close();
-		} catch (BlastServiceException e) {
-			// TODO Auto-generated catch block
+    /**
+     * @param proteins
+     * @param againstProteins
+     * @param writer
+     * @throws BlastServiceException
+     */
+    public void blast( Set<ProteinSimplified> proteins, Set<ProteinSimplified> againstProteins, Writer writer )
+            throws BlastServiceException {
+        if ( proteins == null || againstProteins == null || writer == null ) {
+            throw new NullPointerException( "Params must not be null!" );
+        }
+
+        GlobalData.setCount( 0 );
+        GlobalData.startTime = -1;
+        GlobalData.totalProts = proteins.size();
+        if ( log.isInfoEnabled() ) {
+            log.info( "total nr of proteins : " + GlobalData.totalProts );
+            count++;
+            File f = new File( workDir, "listOfProteins" + count + ".txt" );
+            printToFile( proteins, f );
+        }
+
+        while ( proteins.size() != 0 ) {
+            Set<UniprotAc> againstProt = getUniprotAcs( againstProteins );
+            for ( Iterator<ProteinSimplified> iterator = proteins.iterator(); iterator.hasNext(); ) {
+                ProteinSimplified prot = iterator.next();
+                if ( log.isInfoEnabled() ) {
+                    log.info( "fetching " + prot );
+                }
+                BlastResult result = blast.fetchAvailableBlast( new UniprotAc( prot.getUniprotAc().getAcNr() ) );
+                if ( result != null ) {
+                    processsResult( result, againstProt, writer );
+                    if ( log.isInfoEnabled() ) {
+                        log.info( "processed: " + GlobalData.getCount() + " out of " + GlobalData.totalProts );
+                    }
+                    iterator.remove();
+                } else {
+                    //TODO: implement a way for the client not to wait
+                    //if (blast.okToSubmit( 1)) {}
+                    BlastInput bi = formatBlastInput( prot );
+                    BlastJobEntity job = blast.submitJob( bi );
+                    if ( log.isInfoEnabled() ) {
+                        log.info( "job submitted: " + job );
+                    }
+                }
+            }
+
+        }
+
+        try {
+            writer.close();
+        } catch ( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        GlobalData.endTime = System.currentTimeMillis();
+        long time = GlobalData.endTime - GlobalData.startTime;
+        log.info( "for " + GlobalData.getCount() + " prots: " + time );
+        log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+    }
+
+    private void printToFile( Set<ProteinSimplified> proteins, File f ) {
+        try {
+            Writer w = new FileWriter( f );
+            for ( ProteinSimplified protein : proteins ) {
+                w.append( protein.getUniprotAc() + "\n" );
+            }
+
+            w.close();
+        } catch ( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    // ///////////////////
+    // // Private Methods
+    private Set<ProteinSimplified> getProteinList( Set<UniprotAc> proteins ) {
+        Set<ProteinSimplified> prots = new HashSet<ProteinSimplified>( proteins.size() );
+        for ( UniprotAc uniprotAc : proteins ) {
+            prots.add( new ProteinSimplified( uniprotAc ) );
+        }
+        return prots;
+    }
+
+    private BlastInput formatBlastInput( ProteinSimplified prot ) {
+        UniprotAc ac = new UniprotAc( prot.getUniprotAc().getAcNr() );
+        if ( prot.getSequence() != null ) {
+            Sequence seq = new Sequence( prot.getSequence().getSeq() );
+            return new BlastInput( ac, seq );
+        } else {
+            return new BlastInput( ac );
+        }
+    }
+
+    private Set<UniprotAc> getUniprotAcs( Set<ProteinSimplified> againstProteins ) {
+        Set<UniprotAc> againstProts = new HashSet<UniprotAc>( againstProteins.size() );
+        for ( ProteinSimplified proteinSimplified : againstProteins ) {
+            againstProts.add( new UniprotAc( proteinSimplified.getUniprotAc().getAcNr() ) );
+        }
+        return againstProts;
+    }
+
+    private Set<ProteinSimplified> getProteinList( List<InteractionSimplified> interactions ) {
+        Set<ProteinSimplified> proteins = new HashSet<ProteinSimplified>();
+        for ( InteractionSimplified intS : interactions ) {
+            proteins.addAll( intS.getInteractors() );
+        }
+        return proteins;
+    }
+
+    private Set<UniprotAc> notIncluded( List<BlastResult> results, Set<UniprotAc> proteins ) {
+        Set<UniprotAc> protNotIn = new HashSet<UniprotAc>();
+
+        Set<UniprotAc> resultProt = new HashSet<UniprotAc>( results.size() );
+        for ( BlastResult blastResult : results ) {
+            resultProt.add( new UniprotAc( blastResult.getUniprotAc() ) );
+        }
+
+        for ( UniprotAc ac : proteins ) {
+            if ( !resultProt.contains( ac ) ) {
+                protNotIn.add( ac );
+            }
+        }
+        return protNotIn;
+    }
+
+    private void processsResult( BlastResult result, Set<UniprotAc> againstProteins, Writer writer ) {
+        GlobalData.increment( 1 );
+        if ( ( GlobalData.getCount() % 20 ) == 0 ) {
+            GlobalData.endTime = System.currentTimeMillis();
+            long time = GlobalData.endTime - GlobalData.startTime;
+            log.info( "for " + GlobalData.getCount() + " prots: " + ( ( time ) / 60000 ) );
+            log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+        }
+        String alignmentLine = result.getUniprotAc();
+        for ( Hit hit : result.getHits() ) {
+            Float evalue = hit.getEValue();
+            String ac = hit.getUniprotAc();
+            if ( ac == null ) {
+                log.debug( "Ac is null, in a hit list!" + result.getUniprotAc() + ": " + hit );
+            }
+
+            // TODO: remove try/catch block after test
+            try {
+                UniprotAc uniprotAc = new UniprotAc( ac );
+                if ( evalue < threshold && againstProteins.contains( uniprotAc ) ) {
+                    alignmentLine += "," + ac;
+                }
+            } catch ( IllegalArgumentException e ) {
+                log.debug( e.toString() + "\n" + alignmentLine + " : " + evalue + ": " + ac );
+            }
+
+        }
+        try {
+            writer.append( alignmentLine + "\n" );
+        } catch ( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    private void processResults( List<BlastResult> results, Set<UniprotAc> againstProteins, Writer writer ) {
+        // TODO remove this after finalized
+        // process the results according to the thresholds : against
+        // proteins and eval < 0.001
+        // add to the alignmentLine
+        // append the alignmentLine to a writer
+        if ( GlobalData.startTime == -1 ) {
+            GlobalData.startTime = System.currentTimeMillis();
+        }
+        for ( BlastResult result : results ) {
+            GlobalData.increment( 1 );
+            if ( ( GlobalData.getCount() % 20 ) == 0 ) {
+                GlobalData.endTime = System.currentTimeMillis();
+                long time = GlobalData.endTime - GlobalData.startTime;
+                log.info( "for " + GlobalData.getCount() + " prots: " + time );
+                log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+            }
+            String alignmentLine = result.getUniprotAc();
+            for ( Hit hit : result.getHits() ) {
+                Float evalue = hit.getEValue();
+                String ac = hit.getUniprotAc();
+                if ( ac == null ) {
+                    log.debug( "Ac is null, in a hit list!" + result.getUniprotAc() + ": " + hit );
+                }
+
+                // TODO: remove try/catch block after test
+                try {
+                    UniprotAc uniprotAc = new UniprotAc( ac );
+                    if ( evalue < threshold && againstProteins.contains( uniprotAc ) ) {
+                        alignmentLine += "," + ac;
+                    }
+                } catch ( IllegalArgumentException e ) {
+                    log.debug( e.toString() + "\n" + alignmentLine + " : " + evalue + ": " + ac );
+                }
+
+            }
+            try {
+                writer.append( alignmentLine + "\n" );
+            } catch ( IOException e ) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private File getTargetDirectory() {
+        String outputDirPath = GlobalTestData.class.getResource( "/" ).getFile();
+        System.out.println( "targetDir: " + outputDirPath );
+        Assert.assertNotNull( outputDirPath );
+        File outputDir = new File( outputDirPath );
+        // we are in confidence-score\target\test-classes , move 1 up
+        outputDir = outputDir.getParentFile();
+        Assert.assertNotNull( outputDir );
+        Assert.assertTrue( outputDir.getAbsolutePath(), outputDir.isDirectory() );
+        Assert.assertEquals( "target", outputDir.getName() );
+        return outputDir;
+    }
+
+    // /* (non-Javadoc)
+    // * @see java.lang.Object#finalize()
+    // */
+    // @Override
+    // protected void finalize() throws Throwable {
+    // blast.close();
+    // }
+    public void close() {
+        try {
+            blast.close();
+        } catch ( BlastServiceException e ) {
+            // TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

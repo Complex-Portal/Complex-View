@@ -29,8 +29,6 @@ public class FileMaker {
 	 */
 	public static final Log	log		= LogFactory.getLog(FileMaker.class);
 	BinaryInteractionSet	biSet;
-	private boolean			verbose	= false;									// debug
-																				// switch
 
 	public FileMaker(BinaryInteractionSet biSet) {
 
@@ -79,7 +77,7 @@ public class FileMaker {
 				}
 			}
 			pw.println(sb.toString());
-			if (verbose) {
+			if (log.isDebugEnabled()) {
 				String comment = "Annotation written for protein pair " + bi.toString();
 				log.debug(comment);
 				// System.out.println(comment);
@@ -108,7 +106,7 @@ public class FileMaker {
 		HashMap<String, String[]> hitMap = getAlignmentMap(hitPath);
 
 		HashSet<ProteinPair> hiConfSet = new BinaryInteractionSet(hiconfPath).getSet();
-		if (verbose) {
+		if (log.isInfoEnabled()) {
 			String comment = hiConfSet.size() + " high-confidence protein pairs found.\n";
 			log.info(comment);
 			//System.out.println(comment);
@@ -191,7 +189,7 @@ public class FileMaker {
 			// if (!Pattern.matches("\\w+", prot)) continue;
 			if (items.length == 1) {
 				hitMap.put(prot, null);
-				if (verbose) {
+				if (log.isInfoEnabled()) {
 					String comment = "No alignments found for protein " + prot;
 					log.info(comment);
 					//System.out.println(comment);
@@ -202,7 +200,7 @@ public class FileMaker {
 					hits[i - 1] = items[i];
 				}
 				hitMap.put(prot, hits);
-				if (verbose) {
+				if (log.isDebugEnabled()) {
 					int some = items.length - 1;
 					String comment = some + " alignments found for protein " + prot;
 					log.debug(comment);

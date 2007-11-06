@@ -40,7 +40,6 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
 	private PsimiTabReader psimiTabReader;
 	private Collection<BinaryInteraction> binaryInts;
 	private List<InteractionSimplified> highConfidence;
-	private List<InteractionSimplified> lowConfidence;
 
 	public PsimiTabRetriever(File file, boolean hasHeaderLine){
 		psimiTabReader = new PsimiTabReader(hasHeaderLine);
@@ -55,7 +54,7 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
 		}
 	}
 
-	public List<InteractionSimplified> retrieveHighConfidenceSet() {
+	public void retrieveHighConfidenceSet(Writer w) {
 		if(highConfidence == null){
 			OutputStream os;
 			try {
@@ -66,24 +65,9 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
 				e.printStackTrace();
 			}
 		}
-		return highConfidence;
 	}
 
-	public List<InteractionSimplified> retrieveLowConfidenceSet() {
-		if(lowConfidence == null){
-			OutputStream os;
-			try {
-				os = new FileOutputStream("medConf.txt");
-				retrieveMediumConfidenceSet(new OutputStreamWriter(os));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return lowConfidence;
-	}
-
-	public void retrieveMediumConfidenceSet(Writer osw) {
+	public void retrieveMediumConfidenceSet(Writer w) {
 //			for (BinaryInteraction interaction : binaryInts) {
 //				//TODO: ask Sam about the psimi model for the interaction
 //			}

@@ -11,18 +11,23 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.attribute.ClassifierInputWriter;
+import uk.ac.ebi.intact.confidence.dataRetriever.DataRetrieverException;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
+import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
-import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+import uk.ac.ebi.intact.confidence.model.GoId;
+import uk.ac.ebi.intact.confidence.model.InterProId;
 import uk.ac.ebi.intact.confidence.util.AttributeGetter;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
 
@@ -53,22 +58,24 @@ public class ConfidenceModel {
 	public ConfidenceModel() {
 	}
 
-	public ConfidenceModel(String dbFolderPath, String uniprotSwissprotPath, String tmpDirPath, String blastArchivePath,
-			String email, int nrPerSubmission) {
+	public ConfidenceModel(String dbFolderPath, String uniprotSwissprotPath, String workDirPath,
+			String blastArchivePath, String email, int nrPerSubmission) {
 		if (uniprotSwissprotPath == null || dbFolderPath == null) {
 			throw new NullPointerException();
 		}
 		dbFolder = new File(dbFolderPath);
 		dbFolder.mkdir();
-		log.info("dbFolder: " + dbFolder.getPath());
+		if (log.isInfoEnabled()) {
+			log.info("dbFolder: " + dbFolder.getPath());
+		}
 		uniprotPath = uniprotSwissprotPath;
 
-		workDir = new File(tmpDirPath, "ConfidenceModel");
+		workDir = new File(workDirPath, "ConfidenceModel");
 		workDir.mkdir();
 
 		blastArchiveDir = new File(blastArchivePath);
 		blastArchiveDir.mkdir();
-		
+
 		this.email = email;
 		testDir(dbFolder);
 		testDir(workDir);
@@ -91,13 +98,17 @@ public class ConfidenceModel {
 		generateLowconf(10000);
 		long aux2 = System.currentTimeMillis();
 		long timeGenerate = aux2 - aux1;
-		log.info("time for generating lowconf (milisec): " + timeGenerate);
+		if (log.isInfoEnabled()) {
+			log.info("time for generating lowconf (milisec): " + timeGenerate);
+		}
 
 		aux1 = System.currentTimeMillis();
 		getInterProGoAndAlign();
 		aux2 = System.currentTimeMillis();
 		long timeAttribs = aux2 - aux1;
-		log.info("time for getting the attributes (milisec): " + timeAttribs);
+		if (log.isInfoEnabled()) {
+			log.info("time for getting the attributes (milisec): " + timeAttribs);
+		}
 
 		aux1 = System.currentTimeMillis();
 		createTadmClassifierInput();
@@ -105,43 +116,57 @@ public class ConfidenceModel {
 		createModel();
 		aux2 = System.currentTimeMillis();
 		long timeCreateModel = aux2 - aux1;
-		log.info("time for training the model (milisec): " + timeCreateModel);
+		if (log.isInfoEnabled()) {
+			log.info("time for training the model (milisec): " + timeCreateModel);
+		}
 
 		aux1 = System.currentTimeMillis();
 		classifyMedConfSet();
 		long stop = System.currentTimeMillis();
 
-		log.info("time for db read (milisec): " + timeDb);
-		log.info("time to generate lowconf (milisec): " + timeGenerate);
-		log.info("time for getting the attributes (milisec): " + timeAttribs);
-		log.info("time for training the model (milisec): " + timeCreateModel);
-		log.info("time for classifying the medconf set (milisec): " + (stop - aux1));
-		log.info("total time in milisec: " + (stop - start));
+		if (log.isInfoEnabled()) {
+			log.info("time for db read (milisec): " + timeDb);
+			log.info("time to generate lowconf (milisec): " + timeGenerate);
+			log.info("time for getting the attributes (milisec): " + timeAttribs);
+			log.info("time for training the model (milisec): " + timeCreateModel);
+			log.info("time for classifying the medconf set (milisec): " + (stop - aux1));
+			log.info("total time in milisec: " + (stop - start));
+		}
 	}
 
 	public void getConfidenceListsFromDb() {
-		IntactDbRetriever intactdb = new IntactDbRetriever(workDir.getPath());
+		IntactDbRetriever intactdb = new IntactDbRetriever(workDir.getPath(), new SpokeExpansion());
 		long start = System.currentTimeMillis();
 
 		try {
 			// TODO: replace with a proper way of writing to files
 			File file = new File(workDir.getPath(), "medconf_all.txt");
 			// TODO: remove after plugin-debug phase is working
-			log.info("file MC: " + file.getPath());
+			if (log.isInfoEnabled()) {
+				log.info("file MC: " + file.getPath());
+			}
 			FileWriter fw = new FileWriter(file);
 			intactdb.retrieveMediumConfidenceSet(fw);
 			fw.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (DataRetrieverException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		long end = System.currentTimeMillis();
-		log.info("time needed : " + (end - start));
-		List<InteractionSimplified> highconf = intactdb.retrieveHighConfidenceSet();
-
-		DataMethods dm = new DataMethods();
-		highconf = dm.expand(highconf, new SpokeExpansion());
-		dm.export(highconf, new File(workDir.getPath(), "highconf_all.txt"), true);
+		if (log.isInfoEnabled()) {
+			log.info("time needed : " + (end - start));
+		}
+		// TODO: remove after it is sure it works the around work
+		// List<InteractionSimplified> highconf =
+		// intactdb.retrieveHighConfidenceSet();
+		//
+		// DataMethods dm = new DataMethods();
+		// highconf = dm.expand(highconf, new SpokeExpansion());
+		// dm.export(highconf, new File(workDir.getPath(), "highconf_all.txt"),
+		// true);
 	}
 
 	public void generateLowconf(int nr) {
@@ -152,7 +177,7 @@ public class ConfidenceModel {
 		if (!inFile.exists()) {
 			throw new RuntimeException(inFile.getAbsolutePath());
 		}
-		HashSet<String> yeastProteins = dm.readFasta(inFile, null);
+		Set<String> yeastProteins = dm.readFastaToProts(inFile, null);
 		try {
 			BinaryInteractionSet highConfBiSet = new BinaryInteractionSet(workDir.getPath() + "/highconf_all.txt");
 			BinaryInteractionSet medConfBiSet = new BinaryInteractionSet(workDir.getPath() + "/medconf_all.txt");
@@ -162,27 +187,80 @@ public class ConfidenceModel {
 			BinaryInteractionSet lowConf = dm.generateLowConf(yeastProteins, forbidden, nr);
 
 			dm.export(lowConf, new File(workDir.getPath(), "lowconf_all.txt"));
+			
+			// retrieval of InterPro and GO annotation for the low confidence set
+			File dirForAttrib = new File(workDir,"DataRetriever");
+			getIpGoForLc(lowConf.getAllProtNames(), dirForAttrib);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	private void getIpGoForLc(Set<String> lowConfProt, File dirForAttrib) {
+		UniprotDataRetriever uniprot = new UniprotDataRetriever();
+		try {
+			getGo(uniprot,lowConfProt, new FileWriter(new File(dirForAttrib,"lowconf_uniprot_go.txt")));
+			getIp(uniprot,lowConfProt, new FileWriter(new File(dirForAttrib,"lowconf_uniprot_ip.txt")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	private void getIp(UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter) {
+		try {	
+			for (String ac : lowConfProt) {
+				Set<InterProId> ips = uniprot.getIps(new UniprotAc(ac));
+				fileWriter.append(ac + ",");
+				for (InterProId ipId : ips) {
+					fileWriter.append(ipId.getId() +",");
+				}
+				fileWriter.append("\n");
+			}
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void getGo(UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter) {
+		try {	
+			for (String ac : lowConfProt) {
+				Set<GoId> gos = uniprot.getGos(new UniprotAc(ac));
+				fileWriter.append(ac + ",");
+				for (GoId goId : gos) {
+					fileWriter.append(goId.getId() +",");
+				}
+				fileWriter.append("\n");
+			}
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+
 	public void getInterProGoAndAlign() {
 		try {
 			BinaryInteractionSet biSet = new BinaryInteractionSet(workDir.getPath() + "/highconf_all.txt");
-			AttributeGetter aG = new AttributeGetter(dbFolder,uniprotPath + "/uniprot_sprot.dat", biSet, workDir,
+			AttributeGetter aG = new AttributeGetter(dbFolder, uniprotPath + "/uniprot_sprot.dat", biSet, workDir,
 					blastArchiveDir, this.email, nrPerSubmission);
-			biSet = new BinaryInteractionSet(workDir.getPath() + "/highconf_all.txt");
-			HashSet<String> againstProteins = biSet.getAllProtNames();
-			aG.getAllAttribs(biSet, againstProteins, workDir.getPath() + "/highconf_all_attribs.txt");
+			Set<String> againstProteins = biSet.getAllProtNames();
+			// TODO: make sure it findes the seqFiles
+			File seqFile = new File(workDir, "/IntactDbRetriever/highconf_db_seq.txt");
+			aG.getAllAttribs(biSet, againstProteins, workDir.getPath() + "/highconf_all_attribs.txt", seqFile);
 
+			seqFile = new File(workDir, "/IntactDbRetriever/medconf_db_seq.txt");
 			biSet = new BinaryInteractionSet(workDir.getPath() + "/medconf_all.txt");
-			aG.getAllAttribs(biSet, againstProteins, workDir.getPath() + "/medconf_all_attribs.txt");
+			aG.getAllAttribs(biSet, againstProteins, workDir.getPath() + "/medconf_all_attribs.txt", seqFile);
 
+			seqFile = new File(workDir, "/IntactDbRetriever/lowconf_db_seq.txt");
 			biSet = new BinaryInteractionSet(workDir.getPath() + "/lowconf_all.txt");
-			aG.getAllAttribs(biSet, againstProteins, workDir.getPath() + "/lowconf_all_attribs.txt");
-			
+			aG.getAllAttribs(biSet, againstProteins, workDir.getPath() + "/lowconf_all_attribs.txt", null);
+
 			aG.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -258,7 +336,7 @@ public class ConfidenceModel {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void testDir(File workDir) {
 		if (!workDir.exists()) {
 			throw new IllegalArgumentException("WorkDir must exist! " + workDir.getPath());

@@ -7,6 +7,7 @@ package uk.ac.ebi.intact.confidence;
 
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -112,11 +113,11 @@ public class BinaryInteractionSet
 
     }
     
-    public HashSet<String> getAllProtNames()
+    public Set<String> getAllProtNames()
     {
         // get all UniProt IDs of proteins participating in this binary interaction set
 
-        HashSet<String> allNames = new HashSet<String>();
+        Set<String> allNames = new HashSet<String>();
         for (ProteinPair bi : biSet)
         {
             String[] names = bi.getNames();

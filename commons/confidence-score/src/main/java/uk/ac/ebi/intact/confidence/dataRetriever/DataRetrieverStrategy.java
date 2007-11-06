@@ -6,9 +6,6 @@
 package uk.ac.ebi.intact.confidence.dataRetriever;
 
 import java.io.Writer;
-import java.util.List;
-
-import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 
 /**
  * Defines a data retrieving strategy
@@ -25,13 +22,11 @@ public interface DataRetrieverStrategy {
 
 	// TODO: ask if there is not an elegant way to implement the rules for
 	// high confidence and low confidence sets at a global level
-	public List<InteractionSimplified> retrieveHighConfidenceSet();
-	
-	public List<InteractionSimplified> retrieveLowConfidenceSet();
+	public void retrieveHighConfidenceSet(Writer w) throws DataRetrieverException;
 	
 	/*
 	 * because it is a very high number of medium confidence interactions,
 	 * these will be persisted to a file
 	 */
-	public void retrieveMediumConfidenceSet(Writer w);
+	public void retrieveMediumConfidenceSet(Writer w) throws DataRetrieverException;
 }

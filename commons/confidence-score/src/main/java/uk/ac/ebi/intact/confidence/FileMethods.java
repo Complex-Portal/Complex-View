@@ -369,6 +369,8 @@ public class FileMethods implements AnnotationConstants
         String goPairAttribExpr = goTermExpr + ";" + goTermExpr;
         //String alignAttribExpr = uniprotTermExpr + ";" + uniprotTermExpr;
         String alignAttribExpr = "\\w+;\\w+";
+        //TODO: added by me : make sure is better and not worse
+         alignAttribExpr = uniprotTermExpr + ";" + uniprotTermExpr;
 
         if (Pattern.matches(ipAttribExpr, input))
         {
@@ -382,8 +384,8 @@ public class FileMethods implements AnnotationConstants
             GoPairAttribute gpa = new GoPairAttribute(new GoTermPair(terms[0], terms[1]));
             return gpa;
         }
-        else if (Pattern.matches(alignAttribExpr, input))
-        {
+        else if (matchesAlignExpr(input)){
+        		//Pattern.matches(alignAttribExpr, input))
             String[] terms = input.split(";");
             AlignmentAttribute aa = new AlignmentAttribute(
                     new ProteinPair(terms[0], terms[1]));
@@ -397,7 +399,18 @@ public class FileMethods implements AnnotationConstants
     }
 
 
-    public static String getDateTime()
+    private static boolean matchesAlignExpr(String align) {
+		String [] aux = align.split(";");
+		if (aux.length != 2){
+			return false;
+		}
+		if (Pattern.matches(uniprotTermExpr, aux[0]) && Pattern.matches(uniprotTermExpr, aux[1])){
+			return true;
+		}
+		return false;
+	}
+
+	public static String getDateTime()
     {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
