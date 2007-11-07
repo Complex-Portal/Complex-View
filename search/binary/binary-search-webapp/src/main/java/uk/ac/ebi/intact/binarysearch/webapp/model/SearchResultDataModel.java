@@ -69,6 +69,7 @@ public class SearchResultDataModel extends DataModel implements Serializable {
     }
 
     public void fetchResults(Integer firstResult, Integer maxResults) throws SearchEngineException {
+        if (log.isDebugEnabled()) log.debug("Fetching results: "+searchQuery+" - First: "+firstResult+" - Sorting: "+sortColumn+" "+(ascending? "ASC)" : "DESC)"));
 
         Sort sort = new Sort(sortColumn, !ascending);
 

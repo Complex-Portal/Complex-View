@@ -205,7 +205,7 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab-search</artifactId>
-            <version>1.2.2</version>
+            <version>1.5.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.commons</groupId>
@@ -280,86 +280,6 @@
             <groupId>org.apache.myfaces.tomahawk</groupId>
             <artifactId>tomahawk-sandbox</artifactId>
         </dependency>
-        <!--
-            <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-api</artifactId>
-               <version>1.2_04</version>
-               <scope>compile</scope>
-             </dependency>
-
-             <dependency>
-               <groupId>javax.faces</groupId>
-               <artifactId>jsf-impl</artifactId>
-               <version>1.2_04</version>
-               <scope>compile</scope>
-             </dependency>
-        -->
-
-
-        <!-- Apache Trinidad -->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.trinidad</groupId>-->
-            <!--<artifactId>trinidad-api</artifactId>-->
-            <!--<version>1.0.1</version>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.trinidad</groupId>-->
-            <!--<artifactId>trinidad-impl</artifactId>-->
-            <!--<version>1.0.1</version>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-        <!--<groupId>org.apache.shale</groupId>-->
-        <!--<artifactId>shale-view</artifactId>-->
-        <!--<version>1.1.0-SNAPSHOT</version>-->
-        <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-        <!--<groupId>org.apache.shale</groupId>-->
-        <!--<artifactId>shale-application</artifactId>-->
-        <!--<version>1.1.0-SNAPSHOT</version>-->
-        <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.shale</groupId>-->
-            <!--<artifactId>shale-core</artifactId>-->
-            <!--<version>1.0.3</version>-->
-            <!--<scope>compile</scope>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                     <!--<groupId>myfaces</groupId>-->
-                     <!--<artifactId>myfaces-api</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                     <!--<groupId>myfaces</groupId>-->
-                     <!--<artifactId>myfaces-impl</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.struts.shale</groupId>-->
-            <!--<artifactId>shale-tiger</artifactId>-->
-            <!--<version>1.0.3-SNAPSHOT</version>-->
-            <!--<scope>compile</scope>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                     <!--<groupId>myfaces</groupId>-->
-                     <!--<artifactId>myfaces-api</artifactId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                     <!--<groupId>myfaces</groupId>-->
-                     <!--<artifactId>myfaces-impl</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>net.java.dev.ajax4jsf</groupId>
@@ -382,19 +302,6 @@
             <artifactId>jaxb-impl</artifactId>
             <version>2.1</version>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>hsqldb</groupId>-->
-            <!--<artifactId>hsqldb</artifactId>-->
-            <!--<version>1.8.0.7</version>-->
-        <!--</dependency>-->
-
-        <!-- TopLink dependencies -->
-        <!--<dependency>-->
-            <!--<groupId>javax.persistence</groupId>-->
-            <!--<artifactId>toplink-essentials</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>xerces</groupId>
