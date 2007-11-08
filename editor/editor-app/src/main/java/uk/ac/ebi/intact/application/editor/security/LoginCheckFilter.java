@@ -178,7 +178,7 @@ public class LoginCheckFilter implements Filter {
         DesEncrypter encrypter = new DesEncrypter(LoginAction.secretKey());
 
         for (Cookie cookie : request.getCookies()) {
-             if (cookie.getName().equals(LoginAction.COOKIE_USERNAME)) {
+             if (LoginAction.COOKIE_USERNAME.equals(cookie.getName())) {
                  loginForm.setUsername(encrypter.decrypt(cookie.getValue()));
              } else if (cookie.getName().equals(LoginAction.COOKIE_PASSWORD)) {
                  loginForm.setPassword(encrypter.decrypt(cookie.getValue()));
