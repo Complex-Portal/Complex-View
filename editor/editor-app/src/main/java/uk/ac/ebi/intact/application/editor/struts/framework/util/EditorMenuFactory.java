@@ -167,14 +167,19 @@ public class EditorMenuFactory {
 
     private static void buildProteinAndNucleicAcidCriteria(){
         CvHelper cvHelper = null;
-        Collection<String> nucleicAcidMIs = new ArrayList();
+        Collection<String> nucleicAcidMIs = new ArrayList<String>();
         try {
             cvHelper = new CvHelper();
 
             // Get the interactor type menu list for the NucleicAcid - Editor
             CvInteractorType nucleicAcid = IntactContext.getCurrentInstance().getCvContext().getByMiRef(CvInteractorType.class, CvInteractorType.NUCLEIC_ACID_MI_REF);
-            ourNucleicAcidMiRefs = cvHelper.getChildrenMiRefs(nucleicAcid, nucleicAcidMIs);
-            ourNucleicAcidMiRefs.add(CvInteractorType.NUCLEIC_ACID_MI_REF);
+
+            if (nucleicAcid != null) {
+                ourNucleicAcidMiRefs = cvHelper.getChildrenMiRefs(nucleicAcid, nucleicAcidMIs);
+                ourNucleicAcidMiRefs.add(CvInteractorType.NUCLEIC_ACID_MI_REF);
+            } else {
+                LOGGER.error("CvInteractor type could not be found in the database: "+CvInteractorType.NUCLEIC_ACID_MI_REF);
+            }
 
             // Get the interactor type menu list for the Protein - Editor
             List<String> proteinMis = CvInteractorType.getProteinMIs();
