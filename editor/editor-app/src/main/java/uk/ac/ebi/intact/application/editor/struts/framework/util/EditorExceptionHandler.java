@@ -26,9 +26,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class EditorExceptionHandler extends ExceptionHandler {
 
-    /**
-     * The Editor logger for logging.
-     */
     protected static final Log myLogger = LogFactory.getLog(EditorExceptionHandler.class);
 
     public ActionForward execute(Exception ex,
@@ -36,12 +33,11 @@ public class EditorExceptionHandler extends ExceptionHandler {
                                  ActionMapping mapping,
                                  ActionForm form,
                                  HttpServletRequest request,
-                                 HttpServletResponse response)
-            throws ServletException {
+                                 HttpServletResponse response) throws ServletException {
+
         // The path for the forward either from the exception element or from
         // the input attribute.
-        String path = (config.getPath() != null)
-                ? config.getPath() : mapping.getInput();
+        String path = (config.getPath() != null) ? config.getPath() : mapping.getInput();
         // The forward object.
         ActionForward forward = new ActionForward(path);
 
@@ -50,28 +46,27 @@ public class EditorExceptionHandler extends ExceptionHandler {
         // The prtoperty name for this error.
         String property = null;
 
-
         // Figure out what type of exception has been thrown.
         if (ex instanceof ValidationException) {
             // Logs the error.
-            myLogger.info(ex);
+            myLogger.info("a ValidationException occured", ex);
             ValidationException valex = (ValidationException) ex;
             property = valex.getFilterKey();
             error = new ActionMessage(valex.getMessageKey());
-        }
-        else if (ex instanceof BaseException) {
-            System.out.println("Encountered a base exception");
-            // Logs the error.
-            myLogger.error("", ex);
+
+        } else if (ex instanceof BaseException) {
+
+            myLogger.error("a BaseException occured", ex);
             // Editor specific exception.
             BaseException baseEx = (BaseException) ex;
             error = new ActionMessage(baseEx.getMessageKey(), baseEx.getMessage());
-        }
-        else {
+
+        } else {
+
             error = new ActionMessage(config.getKey());
             property = error.getKey();
             // Unexpected error. Log it.
-            myLogger.error("", ex);
+            myLogger.error("An unexpected exception occured", ex);
         }
         // Store the error in the proper action using the super method.
         storeException(request, property, error, forward, config.getScope());
