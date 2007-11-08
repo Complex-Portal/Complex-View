@@ -55,30 +55,26 @@
     <jsp:include page="../xrefs.jsp" />
     <jsp:include page="../addXrefs.jsp" />
 
-
-
-
     <c:choose>
-    <c:when test="${user == 'davet'}" >
-        <p></p>
-        <jsp:include page="../reviewAccept.jsp"/>
-    </c:when>
-    <c:when test="${user == 'krobbe'}" >
-        <p></p>
-        <jsp:include page="../reviewAccept.jsp" />
-    </c:when>
-    <c:when test="${user == 'orchard'}" >
+        <c:when test="${user == 'davet'}" >
+            <p></p>
+            <jsp:include page="../reviewAccept.jsp"/>
+        </c:when>
+        <c:when test="${user == 'cderow'}" >
             <p></p>
             <jsp:include page="../reviewAccept.jsp" />
-    </c:when>
-    <c:when test="${user == 'jyoti'}" >
+        </c:when>
+        <c:when test="${user == 'orchard'}" >
             <p></p>
             <jsp:include page="../reviewAccept.jsp" />
-    </c:when>
-    <c:otherwise>
-    </c:otherwise>
+        </c:when>
+        <c:when test="${user == 'jyoti'}" >
+            <p></p>
+            <jsp:include page="../reviewAccept.jsp" />
+        </c:when>
+        <c:otherwise>
+        </c:otherwise>
     </c:choose>
-
 
     <p></p>
     <jsp:include page="../action.jsp" />
