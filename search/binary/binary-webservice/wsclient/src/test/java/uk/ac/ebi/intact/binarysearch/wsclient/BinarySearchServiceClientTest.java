@@ -18,8 +18,8 @@ package uk.ac.ebi.intact.binarysearch.wsclient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import psidev.psi.mi.search.SearchResult;
 import uk.ac.ebi.intact.binarysearch.wsclient.generated.BinarySearch;
-import uk.ac.ebi.intact.binarysearch.wsclient.generated.SearchResult;
 
 /**
  * TODO comment this
@@ -29,7 +29,8 @@ import uk.ac.ebi.intact.binarysearch.wsclient.generated.SearchResult;
  */
 public class BinarySearchServiceClientTest {
 
-    private static final String LOCAHOST_URL = "http://localhost:24521/ws/binarysearch?wsdl";
+    //private static final String LOCAHOST_URL = "http://localhost:24521/ws/binarysearch?wsdl";
+    private static final String LOCAHOST_URL = "http://localhost:9090/intact/ws/binarysearch?wsdl";
 
     private BinarySearchServiceClient client;
 
@@ -46,9 +47,8 @@ public class BinarySearchServiceClientTest {
     @Test
     public void testPort() throws Exception {
 
-        BinarySearch port = client.getBinarySearchPort();
 
-        SearchResult sr = port.findBinaryInteractions("P12345");
+        SearchResult sr = client.findBinaryInteractions("brca2");
 
         System.out.println(sr.getInteractions().size());
 

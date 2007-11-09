@@ -12,7 +12,7 @@
     <groupId>uk.ac.ebi.intact.service.search.binary</groupId>
     <artifactId>wsclient</artifactId>
     <packaging>jar</packaging>
-    <version>1.6.0-beta-3-SNAPSHOT</version>
+    <version>1.6.0-rc1-SNAPSHOT</version>
 
     <name>IntAct Services :: Search :: Binary :: Web Service :: Client</name>
     <description>A web service interface to retrieve data from intact</description>
@@ -32,6 +32,7 @@
                 <configuration>
                     <wsdlUrls>
                         <wsdlUrl>http://localhost:${jetty.port}/${ws.context}/binarysearch?wsdl</wsdlUrl>
+                        <!--<wsdlUrl>http://localhost:9090/intact/ws/binarysearch?wsdl</wsdlUrl>-->
                     </wsdlUrls>
                 </configuration>
                 <executions>
@@ -56,27 +57,6 @@
 
                 <configuration>
                     <wait>false</wait>
-                    <!--
-                    <container>
-                        <containerId>jetty5x</containerId>
-                        <type>embedded</type>
-                    </container>
-                    <configuration>
-                        <properties>
-                            <cargo.servlet.port>${jetty.port}</cargo.servlet.port>
-                        </properties>
-                        <deployables>
-                            <deployable>
-                                <groupId>uk.ac.ebi.intact.service.search.binary</groupId>
-                                <artifactId>ws</artifactId>
-                                <type>war</type>
-                                <properties>
-                                    <context>${ws.context}</context>
-                                </properties>
-                            </deployable>
-                        </deployables>
-                    </configuration>
-                    -->
                     <container>
                         <containerId>tomcat5x</containerId>
                         <home>${catalina.home}</home>
@@ -127,6 +107,12 @@
     </build>
 
     <dependencies>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
+            <artifactId>intact-psimitab</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- Dependencies for cargo -->
         <dependency>

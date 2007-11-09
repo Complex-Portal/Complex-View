@@ -19,6 +19,11 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.Searcher;
+import psidev.psi.mi.tab.formatter.TabulatedLineFormatter;
+import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
+import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
+import uk.ac.ebi.intact.psimitab.search.IntActDocumentBuilder;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -28,7 +33,10 @@ import javax.servlet.ServletContext;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+
 
 /**
  * TODO comment this
@@ -42,21 +50,36 @@ public class BinarySearch {
     @Resource
     WebServiceContext context;
 
-    public BinarySearch() {
-    }
-
-    @WebMethod()
-    public SearchResult findBinaryInteractions(@WebParam(name = "query")String query) {
+    @WebMethod(operationName = "findBinaryInteractions")
+    public SimplifiedSearchResult findBinaryInteractions(@WebParam(name = "query")String query) {
         return findBinaryInteractionsLimited(query, null, null);
     }
 
-    @WebMethod()
-    public SearchResult findBinaryInteractionsLimited(@WebParam(name = "query")String query,
+    @WebMethod(operationName = "findBinaryInteractionsLimited")
+    public SimplifiedSearchResult findBinaryInteractionsLimited(@WebParam(name = "query")String query,
                                                       @WebParam(name = "firstResult")Integer firstResult,
                                                       @WebParam(name = "maxResults")Integer maxResults
     ) {
-        SearchResult sr = Searcher.search(query, getIndexDirectory(), firstResult, maxResults);
-        return sr;
+        IntActSearchEngine searchEngine = null;
+        try {
+            searchEngine = new IntActSearchEngine(getIndexDirectory());
+        } catch (IOException e) {
+            throw new RuntimeException("Problem reading index", e);
+        }
+        SearchResult<IntActBinaryInteraction> sr = Searcher.search(query, firstResult, maxResults, null, searchEngine);
+
+        List<String> interactionLines = new ArrayList<String>(sr.getInteractions().size());
+
+        TabulatedLineFormatter lineFormatter = new TabulatedLineFormatter();
+        lineFormatter.setBinaryInteractionClass(IntActBinaryInteraction.class);
+        lineFormatter.setColumnHandler(new IntActColumnHandler());
+
+        for (IntActBinaryInteraction intactBinaryInteraction : sr.getInteractions()) {
+            String line = lineFormatter.format(intactBinaryInteraction);
+            interactionLines.add(line);
+        }
+
+        return new SimplifiedSearchResult(firstResult, interactionLines, sr.getLuceneQuery(), maxResults, sr.getTotalCount());
     }
 
     @WebMethod()
