@@ -12,9 +12,9 @@ import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
+import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.util.Chrono;
-import uk.ac.ebi.intact.business.IntactTransactionException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

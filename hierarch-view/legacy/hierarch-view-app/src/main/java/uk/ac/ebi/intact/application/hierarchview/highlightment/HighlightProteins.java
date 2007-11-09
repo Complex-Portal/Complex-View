@@ -40,8 +40,7 @@ public class HighlightProteins {
      * @param session The current session
      * @param in The interaction network
      */
-    public static void perform(String source, String behaviourClass,
-            HttpSession session, InteractionNetwork in) {
+    public static void perform(String source, String behaviourClass, HttpSession session, InteractionNetwork in) {
         /*
          * Put the default color and default visibility in the interaction
          * network before to highlight this one.

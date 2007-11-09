@@ -45,7 +45,6 @@ You must correct the following error(s) before proceeding:
          </html:messages>
     </ul>
 </logic:messagesPresent>
-</hr>
 
 <%-- Clear errors to avoid their accumulation --%>
 <intact:clearErrors/>

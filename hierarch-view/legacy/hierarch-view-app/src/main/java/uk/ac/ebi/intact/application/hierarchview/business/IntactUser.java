@@ -8,21 +8,21 @@ package uk.ac.ebi.intact.application.hierarchview.business;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DatabaseService;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.IntactGraphHelper;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
-import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
-import uk.ac.ebi.intact.application.hierarchview.business.data.DatabaseService;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.ClickBehaviourForm;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.util.Chrono;
 import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
 import uk.ac.ebi.intact.util.simplegraph.Graph;
 import uk.ac.ebi.intact.util.simplegraph.Node;
-import uk.ac.ebi.intact.util.Chrono;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import java.sql.SQLException;

@@ -1,20 +1,18 @@
 package uk.ac.ebi.intact.application.hierarchview.business.graph;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
 import uk.ac.ebi.intact.util.simplegraph.Edge;
 import uk.ac.ebi.intact.util.simplegraph.EdgeI;
 import uk.ac.ebi.intact.util.simplegraph.Graph;
-import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * This class handles Intact graph routines which were previouslt part of

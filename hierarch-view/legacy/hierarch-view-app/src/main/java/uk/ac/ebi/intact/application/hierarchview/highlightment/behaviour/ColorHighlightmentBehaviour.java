@@ -52,8 +52,7 @@ public class ColorHighlightmentBehaviour extends HighlightmentBehaviour {
 
         // the highlighting is parsed. if the colorString is not initialised or
         // the parsing failed the DEFAULT_COLOR_HIGHLIGHTING is taken
-        COLOR_HIGHLIGHTING = Utilities.parseColor( colorString,
-                DEFAULT_COLOR_HIGHLIGHTING );
+        COLOR_HIGHLIGHTING = Utilities.parseColor( colorString, DEFAULT_COLOR_HIGHLIGHTING );
     }
 
     /**

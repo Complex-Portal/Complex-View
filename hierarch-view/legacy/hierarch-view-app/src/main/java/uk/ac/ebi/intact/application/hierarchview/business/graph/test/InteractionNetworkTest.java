@@ -137,15 +137,15 @@ public class InteractionNetworkTest extends TestCase {
         prot8 = createProtein( institution, bio1, "8", "P8", "test protein 8", "dummy 8 crc64", protType );
         prot9 = createProtein( institution, bio1, "9", "P9", "test protein 9", "dummy 9 crc64", protType );
 
-        comp1 = new Component( institution, int1, prot1, bait);
-        comp2 = new Component( institution, int1, prot2, prey);
-        comp3 = new Component( institution, int1, prot3, prey);
-        comp4 = new Component( institution, int1, prot4, prey);
-        comp5 = new Component( institution, int1, prot5, prey);
-        comp6 = new Component( institution, int1, prot6, prey);
-        comp7 = new Component( institution, int1, prot7, prey);
-        comp8 = new Component( institution, int1, prot8, prey);
-        comp9 = new Component( institution, int1, prot9, prey);
+        comp1 = new Component( institution, int1, prot1, bait, null);
+        comp2 = new Component( institution, int1, prot2, prey, null);
+        comp3 = new Component( institution, int1, prot3, prey, null);
+        comp4 = new Component( institution, int1, prot4, prey, null);
+        comp5 = new Component( institution, int1, prot5, prey, null);
+        comp6 = new Component( institution, int1, prot6, prey, null);
+        comp7 = new Component( institution, int1, prot7, prey, null);
+        comp8 = new Component( institution, int1, prot8, prey, null);
+        comp9 = new Component( institution, int1, prot9, prey, null);
 
         // Build networks
         network1 = new InteractionNetwork( prot1 );
@@ -159,15 +159,15 @@ public class InteractionNetworkTest extends TestCase {
         criteria1 = new CriteriaBean( "prot1", "shortlabel" );
         network1.addCriteria( criteria1 );
 
-        comp1 = new Component( institution, int2, prot1, prey);
-        comp2 = new Component( institution, int2, prot2, prey);
-        comp3 = new Component( institution, int2, prot3, prey);
-        comp4 = new Component( institution, int2, prot4, prey);
-        comp5 = new Component( institution, int2, prot5, prey);
-        comp6 = new Component( institution, int2, prot6, prey);
-        comp7 = new Component( institution, int2, prot7, prey);
-        comp8 = new Component( institution, int2, prot8, prey);
-        comp9 = new Component( institution, int2, prot9, bait);
+        comp1 = new Component( institution, int2, prot1, prey, null);
+        comp2 = new Component( institution, int2, prot2, prey, null);
+        comp3 = new Component( institution, int2, prot3, prey, null);
+        comp4 = new Component( institution, int2, prot4, prey, null);
+        comp5 = new Component( institution, int2, prot5, prey, null);
+        comp6 = new Component( institution, int2, prot6, prey, null);
+        comp7 = new Component( institution, int2, prot7, prey, null);
+        comp8 = new Component( institution, int2, prot8, prey, null);
+        comp9 = new Component( institution, int2, prot9, bait, null);
 
         network2 = new InteractionNetwork( prot9 );
         createEdge( network2, comp9, comp8 );

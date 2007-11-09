@@ -22,13 +22,13 @@ import uk.ac.ebi.intact.application.hierarchview.business.image.ImageDimension;
 import uk.ac.ebi.intact.application.hierarchview.business.image.Utilities;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
+import uk.ac.ebi.intact.tulip.client.TulipClient;
+import uk.ac.ebi.intact.tulip.client.generated.ProteinCoordinate;
+import uk.ac.ebi.intact.util.Chrono;
 import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
 import uk.ac.ebi.intact.util.simplegraph.EdgeI;
 import uk.ac.ebi.intact.util.simplegraph.Graph;
 import uk.ac.ebi.intact.util.simplegraph.Node;
-import uk.ac.ebi.intact.tulip.client.TulipClient;
-import uk.ac.ebi.intact.tulip.client.generated.ProteinCoordinate;
-import uk.ac.ebi.intact.util.Chrono;
 
 import java.awt.*;
 import java.rmi.RemoteException;
@@ -600,14 +600,10 @@ public class InteractionNetwork extends Graph {
 
         for( int i=0; i < proteinList.size(); i++ ) {
             BasicGraphI currentProtein = (BasicGraphI) proteinList.get(i);
-            float proteinX = ( (Float) currentProtein.get( Constants.ATTRIBUTE_COORDINATE_X ) )
-                .floatValue();
-            float proteinY = ( (Float) currentProtein.get( Constants.ATTRIBUTE_COORDINATE_Y ) )
-                .floatValue();
-            float proteinLength = ( (Float) currentProtein.get( Constants.ATTRIBUTE_LENGTH ) )
-                 .floatValue();
-            float proteinHeight = ( (Float) currentProtein.get( Constants.ATTRIBUTE_HEIGHT ) )
-                 .floatValue();
+            float proteinX = ( (Float) currentProtein.get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
+            float proteinY = ( (Float) currentProtein.get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
+            float proteinLength = ( (Float) currentProtein.get( Constants.ATTRIBUTE_LENGTH ) ).floatValue();
+            float proteinHeight = ( (Float) currentProtein.get( Constants.ATTRIBUTE_HEIGHT ) ).floatValue();
 
             logger.debug( "Initial coordinates of node : " + currentProtein.getAc() + " | X=" + proteinX + " | Y=" + proteinY);
 

@@ -1,8 +1,8 @@
 <%@ page import="uk.ac.ebi.intact.application.hierarchview.business.Constants,
                  uk.ac.ebi.intact.application.hierarchview.business.IntactUserI,
                  uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean,
-                 uk.ac.ebi.intact.context.IntactContext"%>
-<%@ page import="java.util.ArrayList" %>
+                 uk.ac.ebi.intact.context.IntactContext,
+                 java.util.ArrayList" %>
 <%@ page language="java" %>
 
 <!--
@@ -37,7 +37,7 @@
 <hierarchView:displaySource />
 
 <%
-    IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession().getAttribute(Constants.USER_KEY);
+    IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY);
 
     // get the list of nodes coordinates
     //String nodeCoordinates = user.getNodeCoordinates();

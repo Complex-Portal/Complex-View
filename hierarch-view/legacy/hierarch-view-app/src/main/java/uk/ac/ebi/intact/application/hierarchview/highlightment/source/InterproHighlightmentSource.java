@@ -2,8 +2,8 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source;
 
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
-import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.GraphHelper;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
@@ -13,7 +13,6 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.Xref;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.util.SearchReplace;
 import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
 import uk.ac.ebi.intact.util.simplegraph.Node;

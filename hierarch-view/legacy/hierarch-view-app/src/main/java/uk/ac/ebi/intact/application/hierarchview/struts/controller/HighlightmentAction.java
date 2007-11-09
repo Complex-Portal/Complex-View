@@ -96,8 +96,7 @@ public final class HighlightmentAction extends IntactBaseAction {
         user.setBehaviour (behaviour);
 
         // Print debug in the log file
-        logger.info ("HighlightmentAction: behaviour=" + behaviour +
-                     "\nlogged on in session " + session.getId());
+        logger.warn ("HighlightmentAction: behaviour=" + behaviour + " logged on in session " + session.getId());
 
         // Remove the obsolete form bean
         if (mapping.getAttribute() != null) {

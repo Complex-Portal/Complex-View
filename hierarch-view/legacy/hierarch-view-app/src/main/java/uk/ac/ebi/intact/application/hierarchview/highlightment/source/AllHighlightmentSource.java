@@ -2,8 +2,8 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source;
 
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
-import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.GraphHelper;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
@@ -11,7 +11,6 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.Xref;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
 import uk.ac.ebi.intact.util.simplegraph.Node;
 
@@ -21,18 +20,13 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: alex
- * Date: 24 juin 2005
- * Time: 11:07:24
- * To change this template use File | Settings | File Templates.
- */
-
- /**
- * Interface allowing to wrap an highlightment source.
+ *  Interface allowing to wrap an highlightment source.
  *
  * @author Alexandre Liban (aliban@ebi.ac.uk)
+ * @version $Id
+ * @since 24 juni 2005
  */
+
 public class AllHighlightmentSource extends HighlightmentSource {
 
         static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
@@ -105,7 +99,7 @@ public class AllHighlightmentSource extends HighlightmentSource {
             
             // get Xref collection
             Collection xRef = interactor.getXrefs();
-            logger.info( xRef.size() + " Xref found" );
+            if (logger.isDebugEnabled()) logger.debug( xRef.size() + " Xref found" );
             listInterproTerm = filterInteractorXref( xRef );
 
             return listInterproTerm;
@@ -138,7 +132,7 @@ public class AllHighlightmentSource extends HighlightmentSource {
                         allSourceTerm[1] = xref.getPrimaryId();
                         allSourceTerm[2] = xref.getSecondaryId();
                         listAllSourceTerm.add( allSourceTerm );
-                        logger.info( "Type : " + listSource[i] + " | Xref : " + xref.getPrimaryId() );
+                        if (logger.isDebugEnabled()) logger.debug( "Type : " + listSource[i] + " | Xref : " + xref.getPrimaryId() );
                     }
                 }
             }
@@ -216,10 +210,13 @@ public class AllHighlightmentSource extends HighlightmentSource {
          * @throws IntactException
          * @throws java.sql.SQLException
          */
-        private Collection proteinToHighlightInteractor(InteractionNetwork aGraph,
-                String selectedSourceTerm, String selectedSourceTermType, Collection children,
-                boolean searchForChildren, IntactUserI user) throws SQLException,
-                IntactException {
+        private Collection<Set> proteinToHighlightInteractor(InteractionNetwork aGraph,
+                                                        String selectedSourceTerm,
+                                                        String selectedSourceTermType,
+                                                        Collection children,
+                                                        boolean searchForChildren,
+                                                        IntactUserI user)
+                                    throws SQLException, IntactException {
 
             // if the source highlight map of the network is empty
             // it is filled with the source informations from each
@@ -229,8 +226,6 @@ public class AllHighlightmentSource extends HighlightmentSource {
 
                 ArrayList listOfNode = aGraph.getOrderedNodes();
                 int size = listOfNode.size();
-                logger.info("Size of list of nodes : " + size);
-
                 for (int i = 0; i < size; i++) {
                     BasicGraphI node = (BasicGraphI) listOfNode.get( i );
                     // add all sources to the source highglighting map
@@ -238,8 +233,8 @@ public class AllHighlightmentSource extends HighlightmentSource {
                     // this was done because the additional information which is
                     // added to the central node is not used when the graph is not
                     // built by the mine database table
-                    logger.info("node " + node + " added");
-                    gh.addSourcesToNode( node, false, aGraph );
+                    gh.addSourcesToNode( node, true, aGraph );
+                    logger.debug("node " + node + " added");
                 }
             }
             // return the set of proteins to highlight based on the source
@@ -310,9 +305,8 @@ public class AllHighlightmentSource extends HighlightmentSource {
 
             // retrieve the set of proteins to highlight for the source key (e.g.
             // GO) and the source Term
-            logger.info("Source = " + SOURCE_KEY + " | selectedSourceTerm = " + selectedSourceTerm);
-            Set proteinsToHighlight = aGraph.getProteinsForHighlight( SOURCE_KEY,
-                    selectedSourceTerm );
+            if (logger.isDebugEnabled()) logger.debug("Source = " + SOURCE_KEY + " | selectedSourceTerm = " + selectedSourceTerm);
+            Set proteinsToHighlight = aGraph.getProteinsForHighlight( SOURCE_KEY, selectedSourceTerm );
             logger.info("proteinsToHighlight = " + proteinsToHighlight);
 
             // if we found any proteins we add all of them to the collection
@@ -352,18 +346,17 @@ public class AllHighlightmentSource extends HighlightmentSource {
          * @param aGraph the graph we want to highlight
          * @return a collection of node to highlight
          */
-        public Collection proteinToHightlight(HttpSession aSession,
-                InteractionNetwork aGraph) {
+        public Collection proteinToHightlight(HttpSession aSession, InteractionNetwork aGraph) {
 
             IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
             Collection children = user.getKeys();
             String selectedSourceTerm = user.getSelectedKey();
             String selectedSourceTermType = user.getSelectedKeyType();
 
-            logger.info("getKeys="+ children);
+            if (logger.isDebugEnabled()) logger.debug("getKeys="+ children +" | selectedSourceTerm="+ selectedSourceTerm + " | selectedSourceTermType="+selectedSourceTermType);
 
-            if ( children.remove( selectedSourceTerm ) ) {
-                logger.info( selectedSourceTerm + " removed from children collection" );
+            if ( children.remove( selectedSourceTerm )) {
+                if (logger.isDebugEnabled()) logger.debug( selectedSourceTerm + " removed from children collection" );
             }
 
             // get source option
@@ -375,7 +368,7 @@ public class AllHighlightmentSource extends HighlightmentSource {
             else {
                 searchForChildren = false;
             }
-            logger.info( "Children option activated ? " + searchForChildren );
+            if (logger.isDebugEnabled()) logger.debug( "Children option activated ? " + searchForChildren );
             /**
              * T E S T
              */
@@ -384,20 +377,19 @@ public class AllHighlightmentSource extends HighlightmentSource {
             // if the graph was built the mine dabase table a differen way to
             // retrieve the proteins to be highlighted are used
             if ( GraphHelper.BUILT_WITH_MINE_TABLE ) {
-                logger.info("return to : proteinToHighlightSourceMap");
+                logger.debug("return to : proteinToHighlightSourceMap");
                 return proteinToHighlightSourceMap( aGraph, children,
                         selectedSourceTerm, selectedSourceTermType, searchForChildren );
             }
             else {
                 try {
-                    logger.info("return to : proteinToHighlightInteractor");
+                    logger.debug("return to : proteinToHighlightInteractor");
                     return proteinToHighlightInteractor( aGraph, selectedSourceTerm,
                             selectedSourceTermType, children, searchForChildren, user );
                 }
                 catch ( Exception e ) {
-                    logger.info("return to : proteinToHighlightDatabase");
-                    return proteinToHighlightDatabase( aSession, aGraph,
-                            selectedSourceTerm, children, searchForChildren );
+                    logger.error("return to : proteinToHighlightDatabase",e);
+                    return proteinToHighlightDatabase( aSession, aGraph, selectedSourceTerm, children, searchForChildren );
                 }
             }
         }
@@ -427,7 +419,7 @@ public class AllHighlightmentSource extends HighlightmentSource {
                                   IntactUserI user) throws IntactException, SQLException {
 
             // filter to keep only the allowed source terms
-            logger.info( xRefs.size() + " Xref before filtering" );
+            logger.debug( xRefs.size() + " Xref before filtering" );
             Collection listAllSourceTerm = null;
             if ( GraphHelper.BUILT_WITH_MINE_TABLE ) {
                 listAllSourceTerm = filterXref( xRefs );
@@ -436,7 +428,7 @@ public class AllHighlightmentSource extends HighlightmentSource {
                 listAllSourceTerm = filterInteractorXref( xRefs );
             }
 
-            logger.info( listAllSourceTerm.size() + " source term(s) after filtering" );
+            logger.debug( listAllSourceTerm.size() + " source term(s) after filtering" );
 
 
             // create url collection with exact size
@@ -455,7 +447,7 @@ public class AllHighlightmentSource extends HighlightmentSource {
             
             // sent the source terms to their implementation classes
             List tmp = null;
-            logger.info("sending source terms to their implementation classes...");
+            logger.debug("sending source terms to their implementation classes...");
 
             for(int i=1; i<listSource.length; i++) {
                 HighlightmentSource source = HighlightmentSource.getHighlightmentSource(properties.getProperty("highlightment.source." + listSource[i] + ".class"));
@@ -464,7 +456,7 @@ public class AllHighlightmentSource extends HighlightmentSource {
                 tmp = null;
             }
 
-            logger.info("all source terms have been sent successfully");
+            logger.debug("all source terms have been sent successfully");
 
             // sort the source list by count
             Collections.sort(urls);

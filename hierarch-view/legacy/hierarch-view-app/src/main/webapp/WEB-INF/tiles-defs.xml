@@ -135,7 +135,7 @@
     <!-- ============ Definition of tiles used in the content frame ======= -->
 
     <!-- Used when the user request a highlighting, so we only refresh the graph layout -->
-    <definition name="hierarchView.graphAndTitle.layout" path="layouts/graphFrame.jsp"/>
+    <definition name="hierarchView.graphAndTitle.layout" path="../layouts/graphFrame.jsp"/>
 
     <definition name="hierarchView.graphError.layout" path="../pages/errorFrame.jsp"/>
 

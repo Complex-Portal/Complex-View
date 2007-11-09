@@ -186,58 +186,36 @@ public class DrawGraph {
 
         // read all the needed properties in the file
         if ( null != properties ) {
-            stringBgColor = properties
-                    .getProperty( "hierarchView.image.color.default.background" );
-            stringBorderColor = properties
-                    .getProperty( "hierarchView.image.color.default.border" );
-            stringNodeColorDefault = properties
-                    .getProperty( "hierarchView.image.color.default.node" );
-            stringEdgeColorDefault = properties
-                    .getProperty( "hierarchView.image.color.default.edge" );
-            stringEdgeHighlightColor = properties
-                    .getProperty( "hierarchView.image.color.highlight.edge" );
+            stringBgColor = properties.getProperty( "hierarchView.image.color.default.background" );
+            stringBorderColor = properties.getProperty( "hierarchView.image.color.default.border" );
+            stringNodeColorDefault = properties.getProperty( "hierarchView.image.color.default.node" );
+            stringEdgeColorDefault = properties.getProperty( "hierarchView.image.color.default.edge" );
+            stringEdgeHighlightColor = properties.getProperty( "hierarchView.image.color.highlight.edge" );
             borderEnable = properties.getProperty( "hierarchView.image.border" );
-            border = properties
-                    .getProperty( "hierarchView.image.size.default.border" );
-            xSize = properties
-                    .getProperty( "hierarchView.image.size.default.image.length" );
-            ySize = properties
-                    .getProperty( "hierarchView.image.size.default.image.height" );
-            fontName = properties
-                    .getProperty( "hierarchView.image.font.name.label" );
-            fontSize = properties
-                    .getProperty( "hierarchView.image.font.size.label" );
+            border = properties.getProperty( "hierarchView.image.size.default.border" );
+            xSize = properties.getProperty( "hierarchView.image.size.default.image.length" );
+            ySize = properties.getProperty( "hierarchView.image.size.default.image.height" );
+            fontName = properties.getProperty( "hierarchView.image.font.name.label" );
+            fontSize = properties.getProperty( "hierarchView.image.font.size.label" );
             mapName = properties.getProperty( "hierarchView.image.map.name" );
-            edgeAntialiased = properties
-                    .getProperty( "hierarchView.image.edge.antialiased" );
-            textAntialiased = properties
-                    .getProperty( "hierarchView.image.font.antialiased" );
-            thicknessStr = properties
-                    .getProperty( "hierarchView.image.edge.thickness" );
-            nodeAntialiased = properties
-                    .getProperty( "hierarchView.image.node.antialiased" );
+            edgeAntialiased = properties.getProperty( "hierarchView.image.edge.antialiased" );
+            textAntialiased = properties.getProperty( "hierarchView.image.font.antialiased" );
+            thicknessStr = properties.getProperty( "hierarchView.image.edge.thickness" );
+            nodeAntialiased = properties.getProperty( "hierarchView.image.node.antialiased" );
             shapeEnable = properties.getProperty( "hierarchView.image.shape" );
-            internalTopMarginStr = properties
-                    .getProperty( "hierarchView.image.node.internalTopMargin" );
-            internalBottomMarginStr = properties
-                    .getProperty( "hierarchView.image.node.internalBottomMargin" );
-            internalLeftMarginStr = properties
-                    .getProperty( "hierarchView.image.node.internalLeftMargin" );
-            internalRightMarginStr = properties
-                    .getProperty( "hierarchView.image.node.internalRightMargin" );
+            internalTopMarginStr = properties.getProperty( "hierarchView.image.node.internalTopMargin" );
+            internalBottomMarginStr = properties.getProperty( "hierarchView.image.node.internalBottomMargin" );
+            internalLeftMarginStr = properties.getProperty( "hierarchView.image.node.internalLeftMargin" );
+            internalRightMarginStr = properties.getProperty( "hierarchView.image.node.internalRightMargin" );
         }
 
-        backgroundColor = Utilities.parseColor( stringBgColor,
-                DEFAULT_BACKGROUND_COLOR );
+        backgroundColor = Utilities.parseColor( stringBgColor, DEFAULT_BACKGROUND_COLOR );
 
-        nodeDefaultColor = Utilities.parseColor( stringNodeColorDefault,
-                DEFAULT_NODE_COLOR );
+        nodeDefaultColor = Utilities.parseColor( stringNodeColorDefault, DEFAULT_NODE_COLOR );
 
-        edgeDefaultColor = Utilities.parseColor( stringEdgeColorDefault,
-                DEFAULT_EDGE_COLOR );
+        edgeDefaultColor = Utilities.parseColor( stringEdgeColorDefault, DEFAULT_EDGE_COLOR );
 
-        edgeHighlightDefaultColor = Utilities.parseColor(
-                stringEdgeHighlightColor, DEFAULT_HIGHLIGHT_EDGE_COLOR );
+        edgeHighlightDefaultColor = Utilities.parseColor(stringEdgeHighlightColor, DEFAULT_HIGHLIGHT_EDGE_COLOR );
 
         borderColor = Utilities.parseColor( stringBorderColor,
                 DEFAULT_BORDER_COLOR );
@@ -283,21 +261,16 @@ public class DrawGraph {
             shapeEnable = DEFAULT_SHAPE_STATE;
         }
 
-        internalTopMargin = Utilities.parseProperty( internalTopMarginStr,
-                DEFAULT_INTERNAL_TOP_MARGIN );
-        internalBottomMargin = Utilities.parseProperty(
-                internalBottomMarginStr, DEFAULT_INTERNAL_BOTTOM_MARGIN );
-        internalLeftMargin = Utilities.parseProperty( internalLeftMarginStr,
-                DEFAULT_INTERNAL_LEFT_MARGIN );
-        internalRightMargin = Utilities.parseProperty( internalRightMarginStr,
-                DEFAULT_INTERNAL_RIGHT_MARGIN );
+        internalTopMargin = Utilities.parseProperty( internalTopMarginStr,DEFAULT_INTERNAL_TOP_MARGIN );
+        internalBottomMargin = Utilities.parseProperty(internalBottomMarginStr, DEFAULT_INTERNAL_BOTTOM_MARGIN );
+        internalLeftMargin = Utilities.parseProperty( internalLeftMarginStr, DEFAULT_INTERNAL_LEFT_MARGIN );
+        internalRightMargin = Utilities.parseProperty( internalRightMarginStr, DEFAULT_INTERNAL_RIGHT_MARGIN );
     }
 
     /**
      * Constructor
      */
-    public DrawGraph(InteractionNetwork in, String applicationPath,
-            String minePath) {
+    public DrawGraph(InteractionNetwork in, String applicationPath, String minePath) {
         graph = in;
         centralNodes = in.getCentralProteins();
         this.minePath = minePath;
@@ -350,10 +323,8 @@ public class DrawGraph {
             if ( protein.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
                 // get the protein label
                 // get Tulip coordinate
-                float proteinX = ( (Float) protein
-                        .get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
-                float proteinY = ( (Float) protein
-                        .get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
+                float proteinX = ( (Float) protein.get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
+                float proteinY = ( (Float) protein.get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
 
                 dimension.adjust( proteinX, proteinY );
 
@@ -367,10 +338,8 @@ public class DrawGraph {
                 fontMetrics = g.getFontMetrics();
 
                 // calculate height and width
-                float height = fontMetrics.getHeight() + internalTopMargin
-                        + internalBottomMargin;
-                float length = fontMetrics.stringWidth( protein.getLabel() )
-                        + internalLeftMargin + internalRightMargin;
+                float height = fontMetrics.getHeight() + internalTopMargin + internalBottomMargin;
+                float length = fontMetrics.stringWidth( protein.getLabel() ) + internalLeftMargin + internalRightMargin;
 
                 // The dimension rate depends of the size of the picture.
                 // so, we have to calculate at each iteration to keep a right
@@ -384,8 +353,7 @@ public class DrawGraph {
 
                 // update the image dimension according to the protein label
                 // size
-                dimension.adjustCadre( length * dimensionRateX, height
-                        * dimensionRateY, proteinX, proteinY );
+                dimension.adjustCadre( length * dimensionRateX, height * dimensionRateY, proteinX, proteinY );
             }
         } //  for
 
@@ -450,30 +418,23 @@ public class DrawGraph {
     private void drawNode(BasicGraphI protein, Graphics2D g, Font labelFont) {
         String proteinLabel = protein.getLabel();
 
-        float proteinLength = ( (Float) protein
-                .get( Constants.ATTRIBUTE_LENGTH ) ).floatValue();
-        float proteinHeight = ( (Float) protein
-                .get( Constants.ATTRIBUTE_HEIGHT ) ).floatValue();
-        float proteinX = ( (Float) protein
-                .get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
-        float proteinY = ( (Float) protein
-                .get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
+        float proteinLength = ( (Float) protein.get( Constants.ATTRIBUTE_LENGTH ) ).floatValue();
+        float proteinHeight = ( (Float) protein.get( Constants.ATTRIBUTE_HEIGHT ) ).floatValue();
+        float proteinX = ( (Float) protein.get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
+        float proteinY = ( (Float) protein.get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
 
         ImageDimension dimension = graph.getImageDimension();
 
         // Convert coordinates from Tulip space to hierarchview space
-        float x1 = newCoordinateNode( proteinX, dimension.xmin(),
-                proteinLength, getDimensionRateX() );
-        float y1 = newCoordinateNode( proteinY, dimension.ymin(),
-                proteinHeight, getDimensionRateY() );
+        float x1 = newCoordinateNode( proteinX, dimension.xmin(), proteinLength, getDimensionRateX() );
+        float y1 = newCoordinateNode( proteinY, dimension.ymin(), proteinHeight, getDimensionRateY() );
 
         int x2 = (int) x1 + ( (int) proteinLength );
         int y2 = (int) y1 + ( (int) proteinHeight );
 
         if ( nodeAntialiased.equalsIgnoreCase( "enable" ) ) {
             // Enable antialiasing for shape
-            g.setRenderingHint( RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON );
+            g.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
         }
 
         if ( shapeEnable.equalsIgnoreCase( "enable" ) ) {
@@ -483,16 +444,13 @@ public class DrawGraph {
             // create a transparent color to allow to see edges
             // opacity : 0=transparent, 255=opaque
             // dont display the node but clear edges to display label
-            g.setColor( new Color( backgroundColor.getRed(), backgroundColor
-                    .getGreen(), backgroundColor.getBlue(), 180 ) );
+            g.setColor( new Color( backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 180 ) );
         }
 
-        g.fillOval( (int) x1, (int) y1, (int) proteinLength,
-                (int) proteinHeight );
+        g.fillOval( (int) x1, (int) y1, (int) proteinLength, (int) proteinHeight );
 
         // In anycase turn the shape antialiasing off.
-        g.setRenderingHint( RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_OFF );
+        g.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF );
 
         // Write the map
         mapCode.append( "<area shape=\"rect\" href=\"" + applicationPath
@@ -503,8 +461,7 @@ public class DrawGraph {
         // Write label
         g.setFont( labelFont );
         g.setColor( (Color) protein.get( Constants.ATTRIBUTE_COLOR_LABEL ) );
-        g.drawString( proteinLabel, (int) x1 + internalLeftMargin,
-                (int) ( y1 + proteinHeight / 2 ) + internalTopMargin );
+        g.drawString( proteinLabel, (int) x1 + internalLeftMargin, (int) ( y1 + proteinHeight / 2 ) + internalTopMargin );
     } // drawNode
 
     /**
@@ -523,17 +480,13 @@ public class DrawGraph {
 
         // proteinRight
         proteinR = (BasicGraphI) interaction.getNode1();
-        proteinRx = ( (Float) proteinR.get( Constants.ATTRIBUTE_COORDINATE_X ) )
-                .floatValue();
-        proteinRy = ( (Float) proteinR.get( Constants.ATTRIBUTE_COORDINATE_Y ) )
-                .floatValue();
+        proteinRx = ( (Float) proteinR.get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
+        proteinRy = ( (Float) proteinR.get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
 
         // proteinLeft
         proteinL = (BasicGraphI) interaction.getNode2();
-        proteinLx = ( (Float) proteinL.get( Constants.ATTRIBUTE_COORDINATE_X ) )
-                .floatValue();
-        proteinLy = ( (Float) proteinL.get( Constants.ATTRIBUTE_COORDINATE_Y ) )
-                .floatValue();
+        proteinLx = ( (Float) proteinL.get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
+        proteinLy = ( (Float) proteinL.get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
 
         // calcul
         xline1 = newCoordinateEdge( proteinRx, dimension.xmin(),
@@ -597,8 +550,7 @@ public class DrawGraph {
         EdgeI interaction;
         BasicGraphI proteinR, proteinL;
 
-        bufferedImage = new BufferedImage( imageSizex, imageSizey,
-                BufferedImage.TYPE_INT_RGB );
+        bufferedImage = new BufferedImage( imageSizex, imageSizey, BufferedImage.TYPE_INT_RGB );
 
         Graphics2D g = (Graphics2D) bufferedImage.getGraphics();
 
@@ -608,13 +560,11 @@ public class DrawGraph {
 
         if ( textAntialiased.equalsIgnoreCase( "enable" ) ) {
             // Enable antialiasing for text
-            g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
-                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
+            g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
         }
         else {
             // Disable antialiasing for text
-            g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
-                    RenderingHints.VALUE_TEXT_ANTIALIAS_OFF );
+            g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF );
         }
 
         Stroke defaultStroke = g.getStroke();

@@ -27,8 +27,8 @@ import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.searchengine.SearchClass;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
-import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
 import uk.ac.ebi.intact.util.Chrono;
+import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

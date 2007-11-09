@@ -48,7 +48,7 @@
           </th>
         </tr>
 
-        </tr>
+        <tr>
             <td>
                 <html:submit property="action" titleKey="sidebar.mine.button.submit.title">
                     <bean:message key="sidebar.mine.button.submit"/>

@@ -8,8 +8,8 @@ package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
-import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.GraphHelper;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.HighlightmentSource;
@@ -127,9 +127,7 @@ public class DisplaySourceTag extends TagSupport {
             // BasicGraphI interactor = in.getCentralProtein();
             ArrayList<BasicGraphI> centrals = in.getCentralProteins();
             // logger.info( "Central protein AC: " + interactor.getAc() );
-            logger.info( centrals.size()
-                         + " central protein(s) referenced in the"
-                         + " interaction network." );
+            if (logger.isInfoEnabled()) logger.info( centrals.size() + " central protein(s) referenced in the interaction network." );
 
             // collect the xrefs from the central node
             Collection xRefs = getXRefFromCentralNodes( centrals );
@@ -142,16 +140,10 @@ public class DisplaySourceTag extends TagSupport {
                 HighlightmentSource source = HighlightmentSource.getHighlightmentSource( method_class );
 
                 if ( null == source ) {
-                    pageContext
-                            .getOut()
-                            .write(
-                                    "An error occured when trying to retreive source.<br />" );
-                    logger
-                            .error( "Error when trying to load the source class: "
-                                    + method_class );
+                    pageContext.getOut().write("An error occured when trying to retreive source.<br />" );
+                    logger.error( "Error when trying to load the source class: " + method_class );
                 } else {
-                    logger.info( "Display highlight source items for query = "
-                                 + queryString + " SourceClass = " + method_class );
+                    logger.info( "Display highlight source items for query = " + queryString + " SourceClass = " + method_class );
 
                     List urls = null;
 
