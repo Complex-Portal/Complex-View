@@ -15,15 +15,15 @@
  */
 package uk.ac.ebi.intact.application.hierarchview.business.data;
 
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.Collection;
 import java.sql.SQLException;
-import java.sql.Connection;
+import java.util.Collection;
 
 /**
  * TODO comment that class header
@@ -66,7 +66,7 @@ public class DatabaseService implements DataService{
         return getDaoFactory().getEntityManager().createQuery( query );
     }
 
-    public Connection connection() {
-        return getDaoFactory().connection();
-    }    
+    public EntityManager getEntityManager() {
+        return getDaoFactory().getEntityManager();
+    }
 }

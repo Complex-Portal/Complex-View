@@ -9,21 +9,17 @@ package uk.ac.ebi.intact.application.hierarchview.business.graph;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
-import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
+import uk.ac.ebi.intact.application.hierarchview.business.dao.HierarchViewDao;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.InteractorXref;
 import uk.ac.ebi.intact.persistence.SearchException;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.util.simplegraph.BasicGraph;
 import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
 import uk.ac.ebi.intact.util.simplegraph.EdgeI;
 import uk.ac.ebi.intact.util.simplegraph.MineEdge;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -37,7 +33,7 @@ import java.util.*;
 public class GraphHelper {
     static transient Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
-    // query to retrieve all preys (accession number and shortlabel) for a bait
+    /*// query to retrieve all preys (accession number and shortlabel) for a bait
     private static final String PREY_QUERY = "SELECT protein2_ac, shortlabel2 FROM ia_interactions "
             + "WHERE protein1_ac=?";
 
@@ -48,7 +44,7 @@ public class GraphHelper {
     // query to retrieve all source information for a specific database
     // (e.g. GO) and a given protein
     private static final String SOURCE_QUERY = "SELECT X.primaryId, X.secondaryId FROM ia_xref X, ia_controlledvocab C "
-            + "WHERE C.ac = X.database_ac and C.shortLabel=? AND x.parent_ac=?";
+            + "WHERE C.ac = X.database_ac and C.shortLabel=? AND x.parent_ac=?";*/
 
     // list of all available sources (e.g. GO) - it is declared public to enable
     // other classes to use the same information and to avoid redundant look ups
@@ -68,11 +64,8 @@ public class GraphHelper {
 
         if ( null != properties ) {
             // stores all allowed sources provided by the property
-            String allowedSources = IntactUserI.HIGHLIGHTING_PROPERTIES
-                    .getProperty( "highlightment.source.allowed" );
-
-            String delimiter = IntactUserI.HIGHLIGHTING_PROPERTIES
-                    .getProperty( "highlightment.source.token" );
+            String allowedSources = IntactUserI.HIGHLIGHTING_PROPERTIES.getProperty( "highlightment.source.allowed" );
+            String delimiter = IntactUserI.HIGHLIGHTING_PROPERTIES.getProperty( "highlightment.source.token" );
 
             // if sources are found and if a delimiter token was found
             // the sources are split and each source is added to the source list
@@ -86,13 +79,11 @@ public class GraphHelper {
                     }
                 }
                 else {
-                    logger.warn( "Unable to find the property "
-                            + "highlightment.source.token" );
+                    logger.warn( "Unable to find the property highlightment.source.token" );
                 }
             }
             else {
-                logger.warn( "Unable to find the property "
-                        + "highlightment.source.allowed" );
+                logger.warn( "Unable to find the property highlightment.source.allowed" );
             }
         }
         else {
@@ -248,8 +239,9 @@ public class GraphHelper {
      * @throws IntactException
      */
     private InteractionNetwork buildNetwork(BasicGraphI baitNode,
-            InteractionNetwork network, int depth) throws SQLException,
-            IntactException {
+                                            InteractionNetwork network,
+                                            int depth)
+                        throws IntactException {
         // if the depth is 0 we have reached the maximal depth in the network
         // and therefore we dont build more
         if ( depth == 0 ) {
@@ -267,9 +259,7 @@ public class GraphHelper {
         addSourcesToNode( baitNode, true, network );
         network.addNode( baitNode );
 
-        //TODO remove one!
-        Connection con = getDataService().connection();
-        //Connection con = getDaoFactory().connection();
+        HierarchViewDao dao = new HierarchViewDao();
 
         /**
          * I1 is a bait in an interaction: -> all preys are collected of that
@@ -281,18 +271,18 @@ public class GraphHelper {
          * 
          * I1 - P3
          */
-        PreparedStatement psm = con.prepareStatement( PREY_QUERY );
-        psm.setString( 1, centralAc );
-        ResultSet set = psm.executeQuery();
+
+        List<String[]> preyResults = dao.getAllPreysByBaitAc( centralAc );
 
         BasicGraphI preyNode;
         EdgeI edge;
         Map nodes;
         String ac;
-        while ( set.next() ) {
+        for (String[] preyAcAndShortLabel : preyResults) {
             edge = new MineEdge();
 
-            ac = set.getString( 1 );
+            ac = preyAcAndShortLabel[0];
+            String preyShortLabel = preyAcAndShortLabel[1];
 
             /*
              * to avoid that we create a new object with the same accession
@@ -309,8 +299,7 @@ public class GraphHelper {
             else {
                 // a new node is created and the accession number and the
                 // shortlabel are set
-                preyNode = new BasicGraph( set.getString( "protein2_ac" ), set
-                        .getString( "shortlabel2" ) );
+                preyNode = new BasicGraph( ac, preyShortLabel );
                 // the new node is added to the the set of the interactors of
                 // the central node
                 interactors.add( preyNode );
@@ -325,8 +314,6 @@ public class GraphHelper {
             // the highlighting sources are added to the node
             addSourcesToNode( preyNode, false, network );
         }
-        set.close();
-        psm.close();
 
         /**
          * If I1 and I2 are interactions as follows:
@@ -349,13 +336,12 @@ public class GraphHelper {
          * 
          * are added.
          */
-        psm = con.prepareStatement( BAIT_QUERY );
-        psm.setString( 1, centralAc );
-        set = psm.executeQuery();
-        while ( set.next() ) {
+        List<String[]> baitAcAndShortLabels = dao.getAllBaitsByPreyAc( centralAc );
+        for (String[] baitAcAndShortLabel : baitAcAndShortLabels) {
             edge = new MineEdge();
 
-            ac = set.getString( 1 );
+            ac = baitAcAndShortLabel[0];
+            String baitShortLabel = baitAcAndShortLabel[1];
             nodes = network.getNodes();
 
             /*
@@ -370,8 +356,7 @@ public class GraphHelper {
                 preyNode = (BasicGraphI) nodes.get( ac );
             }
             else {
-                preyNode = new BasicGraph( set.getString( "protein1_ac" ), set
-                        .getString( "shortlabel1" ) );
+                preyNode = new BasicGraph( ac, baitShortLabel );
 
                 network.addNode( preyNode );
                 interactors.add( preyNode );
@@ -382,8 +367,6 @@ public class GraphHelper {
             network.addEdge( edge );
             addSourcesToNode( preyNode, false, network );
         }
-        set.close();
-        psm.close();
 
         if ( depth > 1 ) {
             // recursive call of the building with a decreased depth
@@ -393,6 +376,7 @@ public class GraphHelper {
                         depth - 1 );
             }
         }
+        dao.getEntityManager().clear();
         return network;
     }
 
@@ -408,8 +392,10 @@ public class GraphHelper {
      *             database error
      * @throws IntactException
      */
-    public void addSourcesToNode(BasicGraphI node, boolean central,
-            InteractionNetwork network) throws SQLException, IntactException {
+    public void addSourcesToNode(BasicGraphI node,
+                                 boolean central,
+                                 InteractionNetwork network)
+                throws IntactException {
         /*
          * The method stores the source informations in two different ways
          * depending whether a central node is given or not.
@@ -424,14 +410,9 @@ public class GraphHelper {
          * all available source to highlight on the right top corner of the HV
          * result page.
          */
+        HierarchViewDao dao = new HierarchViewDao();
 
-        //TODO remove one!
-        Connection con = getDataService().connection();
-        //Connection con = getDaoFactory().connection();
-
-        PreparedStatement sourceStm = con.prepareStatement( SOURCE_QUERY );
-        sourceStm.setString( 2, node.getAc() );
-        logger.info( "node.getAc() = " + node.getAc() );
+        if (logger.isInfoEnabled()) logger.info( "node.getAc() = " + node.getAc() );
 
         String source, sourceID;
         Collection proteinSources = null;
@@ -439,7 +420,7 @@ public class GraphHelper {
         for (int i = 0; i < SOURCES.size(); i++) {
             // the current source is fetched (e.g. GO)
             source = (String) SOURCES.get( i );
-            logger.info("Current source = " + source);
+            logger.debug("Current source = " + source);
 
             /*
              * the collection stores all source informations for the current
@@ -458,17 +439,16 @@ public class GraphHelper {
                 proteinSources = new ArrayList();
             }
 
-            sourceStm.setString( 1, source );
-            set = sourceStm.executeQuery();
+            List<InteractorXref> interactorXrefs = dao.getInteractorXrefsByDatabaseLabelAndProtAc( source, node.getAc());
 
-            while ( set.next() ) {
-                sourceID = set.getString( "primaryId" );
-                logger.info( "sourceID=" + sourceID );
+            for (InteractorXref interactorXref : interactorXrefs) {
+                sourceID = interactorXref.getPrimaryId();
+                logger.debug( "sourceID=" + sourceID );
                 /*
                  * the retrieved information is added to the highlight map of
                  * the network.
                  */
-                logger.info( "addToSourceHighlightMap : source=" + source + " | sourceID="
+                logger.debug( "addToSourceHighlightMap : source=" + source + " | sourceID="
                 + sourceID + " | node=" + node );
                 network.addToSourceHighlightMap( source, sourceID, node );
 
@@ -476,30 +456,19 @@ public class GraphHelper {
                 // in a collection to enable fast access to display the
                 // Existing highlight source for the central protein(s)
                 if ( central ) {
+                    final String secondaryId = interactorXref.getSecondaryId();
                     proteinSources.add( sourceID );
-                    proteinSources.add( set.getString( "secondaryId" ) );
-                    logger.info( "secondaryID=" + set.getString( "secondaryId" ) );
+                    proteinSources.add( secondaryId );
+                    logger.debug( "secondaryID=" + secondaryId );
                 }
             }
-            set.close();
 
             // if the node is a central protein the information are stored in
             // the node
             if ( central ) {
-                node.put( source, proteinSources );
+                logger.debug("proteinSources of " + node + "=" + proteinSources);
+                node.put( source, proteinSources ); 
             }
         }
-        sourceStm.close();
     }
-
-/*
-    private DaoFactory getDaoFactory()
-    {
-        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
-    }
-*/
-    private DataService getDataService(){
-        return IntactUser.getCurrentInstance().getDataService();
-    }
-
 }

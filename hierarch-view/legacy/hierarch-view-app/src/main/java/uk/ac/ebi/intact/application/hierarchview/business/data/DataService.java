@@ -16,13 +16,13 @@
 package uk.ac.ebi.intact.application.hierarchview.business.data;
 
 import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.IntactObject;
+import uk.ac.ebi.intact.model.Interactor;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.Collection;
 import java.sql.SQLException;
-import java.sql.Connection;
+import java.util.Collection;
 
 /**
  * TODO comment that class header
@@ -47,6 +47,6 @@ public interface DataService  <C extends CvTopic, I extends Interactor, T extend
 
     Query createQuery( String query);
 
-    Connection connection();
+    EntityManager getEntityManager();
     
 }
