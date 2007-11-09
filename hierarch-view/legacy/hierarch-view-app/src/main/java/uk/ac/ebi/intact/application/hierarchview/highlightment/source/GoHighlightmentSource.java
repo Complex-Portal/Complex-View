@@ -5,6 +5,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.GraphHelper;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
@@ -102,9 +104,12 @@ public class GoHighlightmentSource extends HighlightmentSource {
         }
 
         try {
-            if ( logger.isInfoEnabled() ) logger.info( "Try to get a list of GO term (from protein AC="
-                    + aProteinAC + ")" );
-            result = getDaoFactory().getProteinDao().getByAcLike(aProteinAC);
+            if ( logger.isInfoEnabled() ) logger.info( "Try to get a list of GO term (from protein AC="+ aProteinAC + ")" );
+
+            //TODO remove one!
+            result = getDataService().getProteinByAcLike( aProteinAC );
+            //result = getDaoFactory().getProteinDao().getByAcLike(aProteinAC);
+            
         }
         catch ( IntactException ie ) {
             logger.error( "When trying to get a list of GO", ie );
@@ -466,10 +471,13 @@ public class GoHighlightmentSource extends HighlightmentSource {
             nodeAcs.add( node.getAc() );
         }
 
-        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
-        final Query query = daoFactory.getEntityManager().createQuery( "select count(*) " +
-                                                                       "from InteractorXref x " +
-                                                                       "where x.parent.ac in (:acs) and x.primaryId = :id" );
+        //TODO remove one!
+        final Query query = getDataService().createQuery( "select count(*) from InteractorXref x " +
+                                                          "where x.parent.ac in (:acs) and x.primaryId = :id");
+
+        //final Query query = daoFactory.getEntityManager().createQuery( "select count(*) " +
+        //                                                               "from InteractorXref x " +
+        //                                                               "where x.parent.ac in (:acs) and x.primaryId = :id" );
         query.setParameter( "acs", nodeAcs );
 
         // Create a collection of label-value object (GOterm, URL to access a
@@ -574,9 +582,14 @@ public class GoHighlightmentSource extends HighlightmentSource {
         return keys;
     }
 
+/*
     private DaoFactory getDaoFactory()
     {
         return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+    }
+*/
+    private DataService getDataService(){
+        return IntactUser.getCurrentInstance().getDataService();
     }
 }
 

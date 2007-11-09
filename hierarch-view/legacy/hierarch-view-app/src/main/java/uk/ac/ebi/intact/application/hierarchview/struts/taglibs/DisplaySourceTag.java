@@ -9,6 +9,7 @@ package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.GraphHelper;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.HighlightmentSource;
@@ -87,8 +88,9 @@ public class DisplaySourceTag extends TagSupport {
 
                 // reload interactor
                 logger.debug("Reloading interactor: "+interactor.getAc() );
-                interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
-                        .getProteinDao().getByAc(interactor.getAc());
+                //TODO remove one!
+                interactor = IntactUser.getCurrentInstance().getDataService().getProteinByAc( interactor.getAc() );
+                //interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getProteinDao().getByAc(interactor.getAc());
 
                 Collection<InteractorXref> xRefs2 = interactor.getXrefs();
                 for (InteractorXref aXref : xRefs2)

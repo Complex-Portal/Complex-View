@@ -11,6 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.IntactGraphHelper;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DatabaseService;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.ClickBehaviourForm;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -103,6 +105,25 @@ public class IntactUser implements IntactUserI {
     private String methodClass;
     private String behaviour;
     private String applicationPath;
+
+
+    private DataService dataservice;
+
+    /**
+     * Constructs an instance of this class with given mapping file and the name
+     * of the data source class.
+     *
+     * @param applicationPath the current application path
+     * @exception IntactException thrown for any error in creating lists such as
+     *                topics, database names etc.
+     */
+    public IntactUser(String applicationPath) throws
+            IntactException {
+
+        init();
+
+        this.applicationPath = applicationPath;
+    }    
 
     public String getQueryString() {
         return queryString;
@@ -304,21 +325,7 @@ public class IntactUser implements IntactUserI {
         sourceURL = null;
     }
 
-    /**
-     * Constructs an instance of this class with given mapping file and the name
-     * of the data source class.
-     * 
-     * @param applicationPath the current application path
-     * @exception IntactException thrown for any error in creating lists such as
-     *                topics, database names etc.
-     */
-    public IntactUser(String applicationPath) throws
-            IntactException {
 
-        init();
-
-        this.applicationPath = applicationPath;
-    }
 
     /**
      * Set the default value of user's data
@@ -368,6 +375,14 @@ public class IntactUser implements IntactUserI {
         highlightOptions = new HashMap();
         //sourceURL = null;
         logger.info( "User's data set to default" );
+
+        if ( dataservice == null ) {
+            String source = SEARCH_PROPERTIES.getProperty( "search.source.name" );
+            if (source.equals( "database" )){
+                this.dataservice = new DatabaseService();
+            }
+            logger.debug( "Used data source=" + source );
+        }        
     }
 
     /**
@@ -516,7 +531,9 @@ public class IntactUser implements IntactUserI {
 
     public <T extends IntactObject> Collection<T> search(Class<T> objectType, String searchParam,
             String searchValue) throws IntactException {
-        return getDaoFactory().getIntactObjectDao(objectType).getColByPropertyName(searchParam, searchValue);
+       //TODO remove one!
+        return getDataService().getColByPropertyName( objectType, searchParam, searchValue );
+        //return getDaoFactory().getIntactObjectDao(objectType).getColByPropertyName(searchParam, searchValue);        
     }
 
     public String getUserName() {
@@ -526,7 +543,9 @@ public class IntactUser implements IntactUserI {
     public String getDatabaseName() {
         try
         {
-            return getDaoFactory().getBaseDao().getDbName();
+            //TODO remove one!
+            return getDataService().getDbName();
+            //return getDaoFactory().getBaseDao().getDbName();
         }
         catch (SQLException e)
         {
@@ -549,8 +568,16 @@ public class IntactUser implements IntactUserI {
        return minePath;
     }
 
-    private DaoFactory getDaoFactory()
+    public DaoFactory getDaoFactory()
     {
         return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
     }
-}
+
+    public static IntactUser getCurrentInstance() {
+        String user = uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY;
+        return (IntactUser) IntactContext.getCurrentInstance().getSession().getAttribute( user );
+    }
+
+    public DataService getDataService() {
+       return this.dataservice;
+    }}

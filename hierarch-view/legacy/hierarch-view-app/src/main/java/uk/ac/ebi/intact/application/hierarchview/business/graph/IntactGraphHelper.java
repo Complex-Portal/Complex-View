@@ -7,6 +7,7 @@ import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
 import uk.ac.ebi.intact.util.simplegraph.Edge;
 import uk.ac.ebi.intact.util.simplegraph.EdgeI;
 import uk.ac.ebi.intact.util.simplegraph.Graph;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,8 +90,9 @@ public class IntactGraphHelper {
         // get the necessary vocabulary (CvTopic: negative)
         if (!negativeAlreadySearched) {
             try {
-                negativeTopic = IntactContext.getCurrentInstance()
-                        .getDataContext().getDaoFactory().getCvObjectDao(CvTopic.class).getByShortLabel(CvTopic.NEGATIVE);
+                //TODO remove one!
+                negativeTopic = IntactUser.getCurrentInstance().getDataService().getCvObjectByShortLabel( CvTopic.NEGATIVE );
+                //negativeTopic = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao(CvTopic.class).getByShortLabel(CvTopic.NEGATIVE);
             }
             catch (IntactException e) {
                 e.printStackTrace();
@@ -148,8 +150,9 @@ public class IntactGraphHelper {
                                   Graph partialGraph) throws IntactException {
 
         // reload the interactor from the database
-        startNode = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
-                .getInteractorDao().getByAc(startNode.getAc());
+        //TODO remove one!
+        startNode = IntactUser.getCurrentInstance().getDataService().getInteractorByAc( startNode.getAc() );
+        //startNode = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getInteractorDao().getByAc(startNode.getAc());
 
         /* This should not occur, but is ok. */
         if (null == startNode) {

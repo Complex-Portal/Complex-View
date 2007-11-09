@@ -3,6 +3,8 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.GraphHelper;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
 import uk.ac.ebi.intact.business.IntactException;
@@ -97,8 +99,10 @@ public class AllHighlightmentSource extends HighlightmentSource {
                 return null;
             }
 
-            Interactor interactor = getDaoFactory().getProteinDao().getByAc(aProteinAC);
-
+           //TODO remove one!
+            Interactor interactor = getDataService().getProteinByAc( aProteinAC );
+            //Interactor interactor = getDaoFactory().getProteinDao().getByAc(aProteinAC);
+            
             // get Xref collection
             Collection xRef = interactor.getXrefs();
             logger.info( xRef.size() + " Xref found" );
@@ -493,8 +497,13 @@ public class AllHighlightmentSource extends HighlightmentSource {
             return keys;
         }
 
+/*
     private DaoFactory getDaoFactory()
     {
         return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+    }
+*/
+    private DataService getDataService(){
+        return IntactUser.getCurrentInstance().getDataService();
     }
 }

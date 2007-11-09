@@ -9,6 +9,8 @@ package uk.ac.ebi.intact.application.hierarchview.business.graph;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -265,7 +267,9 @@ public class GraphHelper {
         addSourcesToNode( baitNode, true, network );
         network.addNode( baitNode );
 
-        Connection con = getDaoFactory().connection();
+        //TODO remove one!
+        Connection con = getDataService().connection();
+        //Connection con = getDaoFactory().connection();
 
         /**
          * I1 is a bait in an interaction: -> all preys are collected of that
@@ -420,7 +424,10 @@ public class GraphHelper {
          * all available source to highlight on the right top corner of the HV
          * result page.
          */
-        Connection con = getDaoFactory().connection();
+
+        //TODO remove one!
+        Connection con = getDataService().connection();
+        //Connection con = getDaoFactory().connection();
 
         PreparedStatement sourceStm = con.prepareStatement( SOURCE_QUERY );
         sourceStm.setString( 2, node.getAc() );
@@ -485,9 +492,14 @@ public class GraphHelper {
         sourceStm.close();
     }
 
+/*
     private DaoFactory getDaoFactory()
     {
         return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+    }
+*/
+    private DataService getDataService(){
+        return IntactUser.getCurrentInstance().getDataService();
     }
 
 }

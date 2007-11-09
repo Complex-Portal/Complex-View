@@ -3,6 +3,8 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.GraphHelper;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
@@ -93,15 +95,15 @@ public class InterproHighlightmentSource extends HighlightmentSource {
                 .getAttribute( uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY );
 
         if ( null == user ) {
-            log
-                    .error( "No user found in the session, unable to search for Interpro terms" );
+            log.error( "No user found in the session, unable to search for Interpro terms" );
             return null;
         }
 
         try {
-            if ( log.isDebugEnabled() ) log.debug( "Try to get a list of Interpro term (from protein AC="
-                                                   + aProteinAC + ")" );
-            result = getDaoFactory().getProteinDao().getByAcLike( aProteinAC );
+            if ( log.isInfoEnabled() ) log.info( "Try to get a list of Interpro term (from protein AC="+ aProteinAC + ")" );
+            //TODO remove one!
+            result = getDataService().getProteinByAcLike( aProteinAC );
+            //result = getDaoFactory().getProteinDao().getByAcLike( aProteinAC );
         }
         catch ( IntactException ie ) {
             log.error( "When trying to get a list of Interpro", ie );
@@ -117,7 +119,7 @@ public class InterproHighlightmentSource extends HighlightmentSource {
 
         // get Xref collection
         Collection xRef = interactor.getXrefs();
-        log.info( xRef.size() + " Xref found" );
+        if ( log.isInfoEnabled() ) log.info( xRef.size() + " Xref found" );
         listInterproTerm = filterInteractorXref( xRef );
 
         return listInterproTerm;
@@ -143,7 +145,7 @@ public class InterproHighlightmentSource extends HighlightmentSource {
                 interproTerm[1] = xref.getPrimaryId();
                 interproTerm[2] = xref.getSecondaryId();
                 listInterproTerm.add( interproTerm );
-                log.info( xref.getPrimaryId() );
+                if ( logger.isInfoEnabled() ) log.info( xref.getPrimaryId() );
             }
         }
 
@@ -448,10 +450,12 @@ public class InterproHighlightmentSource extends HighlightmentSource {
             nodeAcs.add( node.getAc() );
         }
 
-        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
-        final Query query = daoFactory.getEntityManager().createQuery( "select count(*) " +
-                                                                       "from InteractorXref x " +
-                                                                       "where x.parent.ac in (:acs) and x.primaryId = :id" );
+        //TODO remove one!
+        final Query query = getDataService().createQuery( "select count(*) from InteractorXref x " +
+                                                          "where x.parent.ac in (:acs) and x.primaryId = :id");
+        //final Query query = daoFactory.getEntityManager().createQuery( "select count(*) " +
+        //                                                               "from InteractorXref x " +
+        //                                                               "where x.parent.ac in (:acs) and x.primaryId = :id" );
         query.setParameter( "acs", nodeAcs );
 
         // Create a collection of label-value object (Interpro term, URL to access a
@@ -554,7 +558,13 @@ public class InterproHighlightmentSource extends HighlightmentSource {
         return keys;
     }
 
-    private DaoFactory getDaoFactory() {
+/*
+    private DaoFactory getDaoFactory()
+    {
         return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+    }
+*/
+    private DataService getDataService(){
+        return IntactUser.getCurrentInstance().getDataService();
     }
 }
