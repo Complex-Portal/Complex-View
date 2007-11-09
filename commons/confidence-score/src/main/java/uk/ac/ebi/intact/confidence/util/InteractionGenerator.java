@@ -25,7 +25,7 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
  * TODO comment this ... someday
  * 
  * @author Irina Armean (iarmean@ebi.ac.uk)
- * @version
+ * @version 1.0
  * @since
  * 
  * <pre>
@@ -120,11 +120,7 @@ public class InteractionGenerator {
 			throw new IllegalArgumentException("Interaction must not be null.");
 		}
 
-		if (interaction.getInteractors().size() == 2) {
-			return true;
-		}
-
-		return false;
+		return interaction.getInteractors().size() == 2;
 	}
 
 	public List<InteractionSimplified> generate(int nr) {
@@ -165,8 +161,8 @@ public class InteractionGenerator {
 		for (InteractionSimplified item : interactions) {
 			List<ProteinSimplified> comps = item.getInteractors();
 			
-			if (((ProteinSimplified) comps.toArray()[0]).getUniprotAc().equals(uniprotId1) && ((ProteinSimplified) comps.toArray()[1]).getUniprotAc().equals(uniprotId2) ||
-				((ProteinSimplified) comps.toArray()[1]).getUniprotAc().equals(uniprotId1) && ((ProteinSimplified) comps.toArray()[0]).getUniprotAc().equals(uniprotId2)	)
+			if (((ProteinSimplified) comps.toArray()[0]).getUniprotAc().getAcNr().equalsIgnoreCase(uniprotId1) && ((ProteinSimplified) comps.toArray()[1]).getUniprotAc().getAcNr().equalsIgnoreCase(uniprotId2) ||
+				((ProteinSimplified) comps.toArray()[1]).getUniprotAc().getAcNr().equalsIgnoreCase(uniprotId1) && ((ProteinSimplified) comps.toArray()[0]).getUniprotAc().getAcNr().equalsIgnoreCase(uniprotId2))
 				return true;
 
 		}

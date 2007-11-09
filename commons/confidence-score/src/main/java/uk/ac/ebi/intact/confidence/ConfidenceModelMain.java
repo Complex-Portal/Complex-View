@@ -40,7 +40,7 @@ public class ConfidenceModelMain {
 	
 	private static void classify(ConfidenceModel cm){
 		long start = System.currentTimeMillis();
-		cm.getConfidenceListsFromDb();
+	//	cm.getConfidenceListsFromDb();
 		long aux1 = System.currentTimeMillis();
 		long timeDb = aux1 - start;
 		log.info("time for db retrieve (milisec): " + timeDb);
@@ -50,9 +50,12 @@ public class ConfidenceModelMain {
 		long aux2 = System.currentTimeMillis();
 		long timeGenerate = aux2 - aux1;
 		log.info("time for generating lowconf (milisec): " + timeGenerate);
+        cm.getIpGoSeqLowconf();
+        aux1 = System.currentTimeMillis();
+        log.info("time for getting IP, GO, Seq lowconf (milisec): " + (aux1-aux2));
 
-		aux1 = System.currentTimeMillis();
-		//cm.getInterProGoAndAlign();
+        aux1 = System.currentTimeMillis();
+		cm.getInterProGoAndAlign();
 		aux2 = System.currentTimeMillis();
 		long timeAttribs = aux2 - aux1;
 		log.info("time for getting the attributes (milisec): " + timeAttribs);

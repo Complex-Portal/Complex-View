@@ -5,17 +5,17 @@
  */
 package uk.ac.ebi.intact.confidence;
 
+import org.junit.Assert;
+import org.junit.Test;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
-import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 
 /**
  * TODO comment this ... someday
@@ -24,7 +24,7 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
  * @version
  * @since <pre>3 Oct 2007</pre>
  */
-@Ignore
+//@Ignore
 public class BinaryInteractionSetTest {
 
 
@@ -34,8 +34,8 @@ public class BinaryInteractionSetTest {
 	}
 	
 	@Test
-	public void uniqueProts() {
-		String path = "H:\\test\\medconf_test.txt";
+    public void uniqueProts() {
+		String path = BinaryInteractionSetTest.class.getResource("medconf_test.txt").getPath();
 		BinaryInteractionSet biS;
 		try {
 			biS = new BinaryInteractionSet(path);
@@ -45,8 +45,10 @@ public class BinaryInteractionSetTest {
 				prots.add(new UniprotAc(ac));
 			}
 
-			File protsFile = new File("H:\\proteinsOrderToBlast.txt");
-			System.out.println("protsOut: " + protsFile.getPath());
+            Assert.assertEquals(91, prots.size());
+
+            File protsFile = new File( GlobalTestData.getInstance().getTargetDirectory(),"proteinsOrderToBlast.txt");
+            System.out.println("protsOut: " + protsFile.getPath());
 			Writer w = new FileWriter(protsFile);
 			for (UniprotAc uniprotAc : prots) {
 				w.append(uniprotAc +"\n");
@@ -59,11 +61,13 @@ public class BinaryInteractionSetTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void Stat(){
-		String path = "E:\\tmp\\ConfidenceModel\\IntactDbRetriever\\highconf_all.txt";//"E:\\iarmean\\backupData\\highconf_all.txt";
-			//"H:\\tmp\\ConfidenceModel\\highconf_all.txt";//"E:\\tmp\\ConfidenceModel\\highconf_all.txt";
+		String path =  "E:\\iarmean\\backupData\\05.11\\highconf_all.txt";
+                //"E:\\tmp\\ConfidenceModel\\IntactDbRetriever\\highconf_all.txt";
+        //"E:\\iarmean\\backupData\\highconf_all.txt";
+			//"H:\\tmp\\ConfidenceModel\\highconf_all.txt";
+        // //"E:\\tmp\\ConfidenceModel\\highconf_all.txt";
 		BinaryInteractionSet biS;
 		try {
 			biS = new BinaryInteractionSet(path);
@@ -71,13 +75,13 @@ public class BinaryInteractionSetTest {
 			int nr = biS.getAllProtNames().size();
 			System.out.println("highconf prots : " + nr + " #int: " + biS.size());
 			
-			path = "E:\\tmp\\ConfidenceModel\\medconf_all.txt";
+			path = "E:\\iarmean\\backupData\\05.11\\medconf_all.txt";
 			BinaryInteractionSet biS2 = new BinaryInteractionSet(path);
 			prots.addAll(biS2.getAllProtNames());
 			nr = biS2.getAllProtNames().size();
 			System.out.println("medconf prots : " + nr + " #int: " + biS2.size());
 			
-			path = "E:\\tmp\\ConfidenceModel\\lowconf_all_all.txt";
+			path = "E:\\tmp\\ConfidenceModel\\lowconf_all.txt";
 			BinaryInteractionSet biS3 = new BinaryInteractionSet(path);
 			prots.addAll(biS3.getAllProtNames());
 			nr = biS3.getAllProtNames().size();
@@ -93,7 +97,7 @@ public class BinaryInteractionSetTest {
 
     @Test
     public void stats(){
-             String path ="E:\\iarmean\\backupData\\benchmark\\LC100.txt";
+             String path ="E:\\iarmean\\backupData\\benchmark\\from 15.10\\HC100.txt";
         //"E:\\iarmean\\backupData\\benchmark\\HC100-2310.txt";
 
 		BinaryInteractionSet biS;
@@ -101,22 +105,37 @@ public class BinaryInteractionSetTest {
 			biS = new BinaryInteractionSet(path);
 			Set<String> prots = biS.getAllProtNames();
 			int nr = biS.getAllProtNames().size();
-			System.out.println("LC100 prots : " + nr + " #int: " + biS.size());
+			System.out.println("HC100 prots : " + nr + " #int: " + biS.size());
 
-			path = "E:\\iarmean\\backupData\\benchmark\\LC050.txt";
+			path = "E:\\iarmean\\backupData\\benchmark\\from 15.10\\HC50.txt";
             //"E:\\iarmean\\backupData\\benchmark\\HC050-2310.txt";
 			BinaryInteractionSet biS2 = new BinaryInteractionSet(path);
 			prots.addAll(biS2.getAllProtNames());
 			nr = biS2.getAllProtNames().size();
-			System.out.println("LC50 prots : " + nr + " #int: " + biS2.size());
+			System.out.println("HC50 prots : " + nr + " #int: " + biS2.size());
 
-			path = "E:\\iarmean\\backupData\\benchmark\\LC025.txt";
+			path = "E:\\iarmean\\backupData\\benchmark\\from 15.10\\HC25.txt";
             //"E:\\iarmean\\backupData\\benchmark\\HC025-2310.txt";
 			BinaryInteractionSet biS3 = new BinaryInteractionSet(path);
 			prots.addAll(biS3.getAllProtNames());
 			nr = biS3.getAllProtNames().size();
-			System.out.println("LC25 prots : " + nr + " #int: " + biS3.size());
-			System.out.println("total unique prots: " + prots.size());
+			System.out.println("HC25 prots : " + nr + " #int: " + biS3.size());
+
+            path = "E:\\iarmean\\backupData\\benchmark\\from 15.10\\HC12-5.txt";
+            //"E:\\iarmean\\backupData\\benchmark\\HC025-2310.txt";
+			BinaryInteractionSet biS4 = new BinaryInteractionSet(path);
+			prots.addAll(biS4.getAllProtNames());
+			nr = biS4.getAllProtNames().size();
+			System.out.println("HC12-5 prots : " + nr + " #int: " + biS4.size());
+
+            path = "E:\\iarmean\\backupData\\benchmark\\from 15.10\\HC6-25.txt";
+            //"E:\\iarmean\\backupData\\benchmark\\HC025-2310.txt";
+			BinaryInteractionSet biS5 = new BinaryInteractionSet(path);
+			prots.addAll(biS5.getAllProtNames());
+			nr = biS5.getAllProtNames().size();
+			System.out.println("HC25 prots : " + nr + " #int: " + biS5.size());
+
+            System.out.println("total unique prots: " + prots.size());
 
 
 		} catch (IOException e) {

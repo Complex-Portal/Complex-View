@@ -193,8 +193,10 @@ public class AlignmentFileMaker {
 
         GlobalData.endTime = System.currentTimeMillis();
         long time = GlobalData.endTime - GlobalData.startTime;
-        log.info( "for " + GlobalData.getCount() + " prots: " + time );
-        log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+        if (log.isInfoEnabled()){
+            log.info( "for " + GlobalData.getCount() + " prots: " + time );
+            log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+        }
     }
 
     private void printToFile( Set<ProteinSimplified> proteins, File f ) {

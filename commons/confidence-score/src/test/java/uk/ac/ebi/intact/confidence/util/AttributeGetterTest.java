@@ -5,21 +5,17 @@
  */
 package uk.ac.ebi.intact.confidence.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
+import org.junit.*;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -29,7 +25,7 @@ import uk.ac.ebi.intact.confidence.global.GlobalTestData;
  * @version
  * @since <pre>5 Sep 2007</pre>
  */
-@Ignore
+//@Ignore
 public class AttributeGetterTest {
 
 	private AttributeGetter aG;
@@ -69,7 +65,8 @@ public class AttributeGetterTest {
 		ProteinPair pp = new ProteinPair("Q9W486", "P43609");
 		String outPath =  tmpDir.getPath() + "/go_attrib_test_onlyOneWithGo.txt";
 		aG.writeGoAttributes(pp, outPath);
-	}
+        Assert.assertTrue(new File(outPath).exists());
+    }
 	
 	@Test
 	public final void testWriteGoAttributesProteinPairStringBothWithGO() {
@@ -77,7 +74,8 @@ public class AttributeGetterTest {
 		ProteinPair pp = new ProteinPair("P43609","P12345");
 		String outPath =  tmpDir.getPath() + "/go_attrib_test_bothWithGo.txt";
 		aG.writeGoAttributes(pp, outPath);
-	}
+        Assert.assertTrue(new File(outPath).exists());
+    }
 	
 	/**
 	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeGoAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String)}.
@@ -86,7 +84,8 @@ public class AttributeGetterTest {
 	public final void testWriteGoAttributesBinaryInteractionSetString() {
 		String outPath = tmpDir.getPath() + "/go_attrib_test_binarySet.txt";
 		aG.writeGoAttributes(GlobalTestData.getInstance().getBinaryInteractionSet(),outPath);
-	}
+        Assert.assertTrue(new File(outPath).exists());
+    }
 
 	/**
 	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeIpAttributes(uk.ac.ebi.intact.confidence.ProteinPair, java.lang.String)}.
@@ -97,7 +96,8 @@ public class AttributeGetterTest {
 		ProteinPair pp = new ProteinPair("P43609","P12345");
 		String outPath =  tmpDir.getPath() + "/ip_attrib_test.txt";
 		aG.writeIpAttributes(pp, outPath);
-	}
+        Assert.assertTrue(new File(outPath).exists());
+    }
 
 	/**
 	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeIpAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String)}.
@@ -106,10 +106,11 @@ public class AttributeGetterTest {
 	public final void testWriteIpAttributesBinaryInteractionSetString() {
 		String outPath = tmpDir.getPath() + "/ip_attrib_test_binarySet.txt";
 		aG.writeIpAttributes(GlobalTestData.getInstance().getBinaryInteractionSet(),outPath);
-	}
+        Assert.assertTrue(new File(outPath).exists());
+    }
 
 	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeAlignmentAttributes(uk.ac.ebi.intact.confidence.ProteinPair, java.lang.String, java.util.HashSet)}.
+	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeAlignmentAttributes(uk.ac.ebi.intact.confidence.ProteinPair, java.lang.String, java.util.Set, java.io.File)}.
 	 * @throws BlastServiceException 
 	 */
 	@Test
@@ -124,10 +125,11 @@ public class AttributeGetterTest {
 		againstProt.add(new UniprotAc("P08907")); // for P12345 - rabit :)
 		againstProt.add(new UniprotAc("P00506")); // for P12345
 		aG.writeAlignmentAttributes(pp, outPath, againstProt, null);
-	}
+        Assert.assertTrue(new File(outPath).exists());
+    }
 
 	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeAlignmentAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String, java.util.HashSet)}.
+	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeAlignmentAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String, java.util.Set, java.io.File)}.
 	 * @throws BlastServiceException 
 	 */
 	@Test
@@ -140,7 +142,8 @@ public class AttributeGetterTest {
 		againstProt.add("P08907"); // for P12345 - rabit :)
 		againstProt.add("P00506"); // for P12345
 		aG.writeAlignmentAttributes(GlobalTestData.getInstance().getBinaryInteractionSet(), outPath, againstProt, null);
-	}
+        Assert.assertTrue(new File(outPath).exists());
+    }
 
 	/**
 	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#merge(java.lang.String[], java.lang.String)}.
@@ -154,12 +157,24 @@ public class AttributeGetterTest {
 		String pathAlign = tmpDir.getPath() + "/align_attrib_test_binarySet.txt";
 		String [] paths = {pathGo, pathIp, pathAlign};
 		aG.merge(paths, outPath);
+        Assert.assertTrue( new File(outPath).exists());
+    }
 
-	}
+    @Test
+    public void testMerge2() throws Exception {
+        String outPath = tmpDir.getPath() + "/merge_test_uniprotIPGO.txt";		
+		String pathGo= tmpDir.getPath() + "/go_attrib_test_binarySet.txt";
+		String pathIp = tmpDir.getPath() + "/ip_attrib_test_binarySet.txt";
+		String pathAlign = tmpDir.getPath() + "/align_attrib_test_binarySet.txt";
+		String [] paths = {pathGo, pathIp, pathAlign};
+		aG.merge(paths, outPath);
+        Assert.assertTrue( new File(outPath).exists());
+    }
 
-	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#getAllAttribs(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.util.HashSet, java.lang.String)}.
-	 * @throws BlastServiceException 
+
+    /**
+	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#getAllAttribs(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.util.Set, java.lang.String, java.io.File)}.
+	 * @throws BlastServiceException    : from the intact-blast module
 	 */
 	@Test
 	public final void testGetAllAttribs() throws BlastServiceException {
@@ -171,11 +186,12 @@ public class AttributeGetterTest {
 		againstProt.add("P08907"); // for P12345 - rabit :)
 		againstProt.add("P00506"); // for P12345
 		aG.getAllAttribs(GlobalTestData.getInstance().getBinaryInteractionSet(), againstProt, outPath, null);
-	}
+        Assert.assertTrue(new File(outPath).exists());
+    }
 	
 	/**
 	 * Test method for getting all attribs for a file of interactions
-	 * @throws BlastServiceException
+	 * @throws BlastServiceException    : from the intact-blast module
 	 */
 	@Test
 	@Ignore
@@ -194,9 +210,11 @@ public class AttributeGetterTest {
 			
 			BinaryInteractionSet biSet2 = new BinaryInteractionSet(workDir.getPath() + "/medconf_all.txt");
 			Set<String> againstProteins = biSet.getAllProtNames();
-			aG.getAllAttribs(biSet2, againstProteins, workDir.getPath() + "/medconf_all_attribs_test.txt", null);
-			
-		} catch (IOException e) {
+            String outPath= workDir.getPath() + "/medconf_all_attribs_test.txt";
+            aG.getAllAttribs(biSet2, againstProteins, outPath, null);
+			Assert.assertTrue(new File(outPath).exists());
+
+        } catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	

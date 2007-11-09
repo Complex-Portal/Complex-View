@@ -28,7 +28,7 @@ import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
  * TODO comment this ... and also implement this class
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
- * @version
+ * @version  1.0
  * @since <pre>22 Aug 2007</pre>
  */
 public class PsimiTabRetriever implements DataRetrieverStrategy {
