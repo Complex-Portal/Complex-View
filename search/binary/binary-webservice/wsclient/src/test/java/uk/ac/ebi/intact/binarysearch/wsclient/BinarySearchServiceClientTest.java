@@ -19,7 +19,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import psidev.psi.mi.search.SearchResult;
-import uk.ac.ebi.intact.binarysearch.wsclient.generated.BinarySearch;
 
 /**
  * TODO comment this
@@ -29,8 +28,7 @@ import uk.ac.ebi.intact.binarysearch.wsclient.generated.BinarySearch;
  */
 public class BinarySearchServiceClientTest {
 
-    //private static final String LOCAHOST_URL = "http://localhost:24521/ws/binarysearch?wsdl";
-    private static final String LOCAHOST_URL = "http://localhost:9090/intact/ws/binarysearch?wsdl";
+    private static final String LOCAHOST_URL = "http://localhost:24521/ws/binarysearch?wsdl";
 
     private BinarySearchServiceClient client;
 

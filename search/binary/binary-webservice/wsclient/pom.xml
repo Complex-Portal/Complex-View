@@ -61,7 +61,7 @@
                         <containerId>tomcat5x</containerId>
                         <home>${catalina.home}</home>
                         <zipUrlInstaller>
-                           <url>http://mirrors.ibiblio.org/pub/mirrors/apache/tomcat/tomcat-6/v6.0.13/bin/apache-tomcat-6.0.13.zip</url>
+                           <url>http://www.smudge-it.co.uk/pub/apache/tomcat/tomcat-6/v6.0.14/bin/apache-tomcat-6.0.14.zip</url>
                            <installDir>${project.build.directory}/tomcat-zip</installDir>
                         </zipUrlInstaller>
                         <log>target/tomcat5x.log</log>
@@ -152,14 +152,6 @@
                 <exclusion>
                     <groupId>commons-lang</groupId>
                     <artifactId>commons-lang</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>junit</groupId>
