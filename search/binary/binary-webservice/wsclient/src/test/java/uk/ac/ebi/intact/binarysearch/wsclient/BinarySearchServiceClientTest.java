@@ -49,11 +49,9 @@ public class BinarySearchServiceClientTest {
     public void testPort() throws Exception {
 
 
-        SearchResult sr = client.findBinaryInteractions("brca2");
+        SearchResult<IntActBinaryInteraction> sr = client.findBinaryInteractions("brca2");
 
-        List<IntActBinaryInteraction> interactions = sr.getInteractions();
-
-        for (IntActBinaryInteraction ibi : interactions) {
+        for (IntActBinaryInteraction ibi : sr.getInteractions()) {
             System.out.println(ibi.getInteractorA().getIdentifiers()+" - "+ibi.getInteractorB().getIdentifiers());
         }
 

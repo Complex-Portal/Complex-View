@@ -75,20 +75,20 @@ public class BinarySearchServiceClient {
         return binarySearch;
     }
 
-    public SearchResult findBinaryInteractions(String query) {
+    public SearchResult<IntActBinaryInteraction> findBinaryInteractions(String query) {
         return toSearchResult(binarySearch.findBinaryInteractions(query));
     }
 
-    public SearchResult findBinaryInteractionsLimited(String query, Integer firstResult, Integer maxResults) {
+    public SearchResult<IntActBinaryInteraction> findBinaryInteractionsLimited(String query, Integer firstResult, Integer maxResults) {
         return toSearchResult(binarySearch.findBinaryInteractionsLimited(query, firstResult, maxResults));
     }
 
-    public SearchResult findBinaryInteractionsByIdentifiers(String... identifiers) {
+    public SearchResult<IntActBinaryInteraction> findBinaryInteractionsByIdentifiers(String... identifiers) {
         String query = "identifiers:" + arrayElementsToOR(identifiers);
         return toSearchResult(binarySearch.findBinaryInteractions(query));
     }
 
-    private static SearchResult toSearchResult(SimplifiedSearchResult ssr) {
+    private static SearchResult<IntActBinaryInteraction> toSearchResult(SimplifiedSearchResult ssr) {
         List<IntActBinaryInteraction> interactions = new ArrayList<IntActBinaryInteraction>(ssr.getInteractionLines().size());
 
         MitabLineParser parser = new MitabLineParser();
@@ -106,7 +106,7 @@ public class BinarySearchServiceClient {
             interactions.add(interaction);
         }
 
-        return new SearchResult(interactions, ssr.getTotalResults(), ssr.getFirstResult(), ssr.getMaxResults(), ssr.getLuceneQuery());
+        return new SearchResult<IntActBinaryInteraction>(interactions, ssr.getTotalResults(), ssr.getFirstResult(), ssr.getMaxResults(), ssr.getLuceneQuery());
     }
 
 
