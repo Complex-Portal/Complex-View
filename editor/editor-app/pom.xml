@@ -25,7 +25,6 @@
     </properties>
 
     <build>
-        <finalName>editor</finalName>
         <plugins>
             <plugin>
                 <version>1.0</version>
