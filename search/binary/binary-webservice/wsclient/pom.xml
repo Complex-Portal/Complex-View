@@ -26,6 +26,7 @@
     </properties>
 
     <build>
+        <finalName>intact-binary-wsclient-${version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
