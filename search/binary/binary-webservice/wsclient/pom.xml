@@ -12,12 +12,14 @@
     <groupId>uk.ac.ebi.intact.service.search.binary</groupId>
     <artifactId>wsclient</artifactId>
     <packaging>jar</packaging>
-    <version>1.6.0-rc1-SNAPSHOT</version>
+    <version>1.6.0-rc1</version>
 
     <name>IntAct Services :: Search :: Binary :: Web Service :: Client</name>
     <description>A web service interface to retrieve data from intact</description>
 
     <properties>
+        <ws.version>1.6.0-rc1-SNAPSHOT</ws.version>
+
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
         <jetty.port>24521</jetty.port>
         <ws.context>ws</ws.context>
@@ -180,7 +182,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.service.search.binary</groupId>
             <artifactId>ws</artifactId>
-            <version>${version}</version>
+            <version>${ws.version}</version>
             <type>war</type>
             <scope>provided</scope>
         </dependency>
