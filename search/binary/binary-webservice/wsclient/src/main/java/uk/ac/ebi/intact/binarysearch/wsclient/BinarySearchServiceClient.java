@@ -17,8 +17,6 @@ package uk.ac.ebi.intact.binarysearch.wsclient;
 
 
 import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.tab.PsimiTabWriter;
-import psidev.psi.mi.tab.PsimiTabReader;
 import psidev.psi.mi.tab.converter.txt2tab.MitabLineParser;
 import psidev.psi.mi.tab.converter.txt2tab.MitabLineException;
 import uk.ac.ebi.intact.binarysearch.wsclient.generated.BinarySearch;
@@ -41,7 +39,7 @@ import java.util.List;
 public class BinarySearchServiceClient {
 
 
-    private static final String DEFAULT_URL = "http://www.ebi.ac.uk/intact/binarysearch-ws/binarysearch?wsdl";
+    private static final String DEFAULT_URL = "http://www.ebi.ac.uk/intact/binary-search-ws/binarysearch?wsdl";
 
     private static final String QNAME_TARGET_NAMESPACE = "http://ebi.ac.uk/intact/binarysearch/wsclient/generated";
     private static final String QNAME_PORT_NAME = "BinarySearchService";
