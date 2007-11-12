@@ -19,6 +19,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import psidev.psi.mi.search.SearchResult;
+import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
+
+import java.util.List;
 
 /**
  * TODO comment this
@@ -47,6 +50,12 @@ public class BinarySearchServiceClientTest {
 
 
         SearchResult sr = client.findBinaryInteractions("brca2");
+
+        List<IntActBinaryInteraction> interactions = sr.getInteractions();
+
+        for (IntActBinaryInteraction ibi : interactions) {
+            System.out.println(ibi.getInteractorA().getIdentifiers()+" - "+ibi.getInteractorB().getIdentifiers());
+        }
 
         System.out.println(sr.getInteractions().size());
 
