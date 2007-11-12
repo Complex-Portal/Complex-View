@@ -67,7 +67,8 @@ public class UserAuthenticator {
 
         // Set the userId and userPassword of the UserContext
         UserContext userContext = context.getUserContext();
-        userContext.setUserPassword(password);
+        userContext.setUserId( username );
+        userContext.setUserPassword( password );
 
         String databaseName = "";
         try {
