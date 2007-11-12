@@ -23,7 +23,6 @@ import psidev.psi.mi.tab.formatter.TabulatedLineFormatter;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
-import uk.ac.ebi.intact.psimitab.search.IntActDocumentBuilder;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -47,18 +46,23 @@ import java.util.Properties;
 @WebService(name = "BinarySearch", targetNamespace = "http://ebi.ac.uk/intact/binarysearch/wsclient/generated")
 public class BinarySearch {
 
+    private static final String NAMESPACE = "http://ebi.ac.uk/intact/binarysearch/wsclient/generated";
+
     @Resource
     WebServiceContext context;
 
     @WebMethod(operationName = "findBinaryInteractions")
-    public SimplifiedSearchResult findBinaryInteractions(@WebParam(name = "query")String query) {
+    public SimplifiedSearchResult findBinaryInteractions(@WebParam(name = "query", targetNamespace = NAMESPACE)
+                                                         String query) {
+        if (query == null) throw new NullPointerException("Query cannot be null");
+        
         return findBinaryInteractionsLimited(query, null, null);
     }
 
     @WebMethod(operationName = "findBinaryInteractionsLimited")
-    public SimplifiedSearchResult findBinaryInteractionsLimited(@WebParam(name = "query")String query,
-                                                      @WebParam(name = "firstResult")Integer firstResult,
-                                                      @WebParam(name = "maxResults")Integer maxResults
+    public SimplifiedSearchResult findBinaryInteractionsLimited(@WebParam(name = "query", targetNamespace = NAMESPACE) String query,
+                                                      @WebParam(name = "firstResult", targetNamespace = NAMESPACE)Integer firstResult,
+                                                      @WebParam(name = "maxResults", targetNamespace = NAMESPACE)Integer maxResults
     ) {
         IntActSearchEngine searchEngine = null;
         try {
