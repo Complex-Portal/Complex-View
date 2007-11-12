@@ -60,12 +60,9 @@ public class InteractionNetwork extends Graph {
         String maxCentralProtein = null;
         // it is tried to parse the colors from the properties file
         if ( null != properties ) {
-            stringColorNode = properties
-                    .getProperty( "hierarchView.image.color.default.node" );
-            stringColorLabel = properties
-                    .getProperty( "hierarchView.image.color.default.label" );
-            maxCentralProtein = properties
-                    .getProperty( "hierarchView.graph.max.cental.protein" );
+            stringColorNode = properties.getProperty( "hierarchView.image.color.default.node" );
+            stringColorLabel = properties.getProperty( "hierarchView.image.color.default.label" );
+            maxCentralProtein = properties.getProperty( "hierarchView.graph.max.cental.protein" );
         }
         else {
             logger.warn( "properties file GRAPH_PROPERTIES could not been read" );
@@ -106,8 +103,8 @@ public class InteractionNetwork extends Graph {
      * Protein from which has been created the interaction network.
      */
     //private Interactor centralProtein;
-    private String centralProteinAC; // avoid numerous call to
-    // interactor.getAc()
+
+    private String centralProteinAC; // avoid numerous call to interactor.getAc()
 
     /**
      * Stores a set of central nodes and interactor. There is one by fusioned
@@ -115,6 +112,7 @@ public class InteractionNetwork extends Graph {
      * interaction, no node are stored.
      */
     private ArrayList<BasicGraphI> centralNodes;
+
     private ArrayList centralInteractors;
 
     /**
@@ -135,6 +133,7 @@ public class InteractionNetwork extends Graph {
      * GO:001900) as key and a set of nodes which are related to this source id.
      */
     private Map sourceHighlightMap;
+
     private BasicGraphI centralNode;
 
     /**
@@ -144,9 +143,11 @@ public class InteractionNetwork extends Graph {
      */
     public InteractionNetwork(Interactor aCentralProtein) {
         Collection xrefs = aCentralProtein.getXrefs();
-        logger.info( "Create an Interaction Network with centralProtein:"
-                + aCentralProtein.getAc() + " #xref="
-                + ( xrefs == null ? 0 : xrefs.size() ) );
+        if( logger.isInfoEnabled() ) {
+            logger.info( "Create an Interaction Network with centralProtein:"
+                         + aCentralProtein.getAc() + " #xref="
+                         + ( xrefs == null ? 0 : xrefs.size() ) );
+        }
         initNetwork();
         //centralProtein = aCentralProtein;
         centralNode = new Node( aCentralProtein );
@@ -203,8 +204,7 @@ public class InteractionNetwork extends Graph {
      * @param sourceID the source id (e.g. GO:001900)
      * @param node the node which is related to the sourceID
      */
-    public void addToSourceHighlightMap(String source, String sourceID,
-            BasicGraphI node) {
+    public void addToSourceHighlightMap(String source, String sourceID, BasicGraphI node) {
 
         // the map for the given source is fetched
         Map sourceMap = (Map) sourceHighlightMap.get( source );
@@ -239,7 +239,9 @@ public class InteractionNetwork extends Graph {
      */
     public Set getProteinsForHighlight(String source, String sourceID) {
 
-        logger.info("in getProteinsForHighlight looking for sourceID=" + sourceID);
+        if ( logger.isDebugEnabled() ) {
+            logger.info("in getProteinsForHighlight looking for sourceID=" + sourceID);
+        }
 
         // get the list of all the source terms allowed
         Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;
@@ -266,7 +268,9 @@ public class InteractionNetwork extends Graph {
             sourceMapTmp = null;
         }
 
-        logger.info( "sourceMap = " + sourceMap );
+        if ( logger.isDebugEnabled() ) {
+            logger.debug( "sourceMap = " + sourceMap );
+        }
 
         // if no nodes are given for the provided source null is returned
         if ( sourceMap == null ) {
@@ -424,8 +428,7 @@ public class InteractionNetwork extends Graph {
         if ( null != aNode ) {
             if ( anInteractor.equals( ( (Node) centralNode ).getInteractor() ) ) {
                 addCentralProtein( aNode );
-                // TODO: could add the interactor in a Collection ... would
-                // solve the problem of an interaction
+                // TODO: could add the interactor in a Collection ... would solve the problem of an interaction
             }
             aNode.put( Constants.ATTRIBUTE_LABEL, anInteractor.getAc() );
             initNodeDisplay( aNode );
@@ -514,13 +517,9 @@ public class InteractionNetwork extends Graph {
      * @return an object String
      */
     public String exportTlp() {
-        /*
-         * TODO : could be possible to optimize the size of the string buffer to
-         * avoid as much as possible to extend the buffer size.
-         */
-
+        // TODO : could be possible to optimize the size of the string buffer to * avoid as much as possible to extend the buffer size.
         EdgeI edge;
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder( 512 );
         String separator = System.getProperty( "line.separator" );
         int i, max;
 
@@ -531,19 +530,17 @@ public class InteractionNetwork extends Graph {
 
         max = nodeList.size();
         for (i = 1; i <= max; i++)
-            out.append( i + " " );
+            out.append( i ).append( ' ' );
 
-        out.append( ")" + separator );
+        out.append( ')' ).append( separator );
 
         ArrayList myEdges = (ArrayList) super.getEdges();
 
         max = sizeEdges();
         for (i = 1; i <= max; i++) {
             edge = (EdgeI) myEdges.get( i - 1 );
-            out.append( "(edge " + i + " "
-                    + ( nodeList.indexOf( edge.getNode1() ) + 1 ) + " "
-                    + ( nodeList.indexOf( edge.getNode2() ) + 1 ) + ")"
-                    + separator );
+            out.append( "(edge " ).append( i ).append( " " ).append( nodeList.indexOf( edge.getNode1() ) + 1 )
+                    .append( " " ).append( nodeList.indexOf( edge.getNode2() ) + 1 ).append( ")" ).append( separator );
         }
 
         return out.toString();
@@ -559,7 +556,7 @@ public class InteractionNetwork extends Graph {
     public String exportBioLayout() {
 
         EdgeI edge;
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder( 512 );
         String separator = System.getProperty( "line.separator" );
         int i, max;
 
@@ -573,7 +570,7 @@ public class InteractionNetwork extends Graph {
             String label1 = ( (BasicGraphI) edge.getNode1() ).getLabel();
             String label2 = ( (BasicGraphI) edge.getNode2() ).getLabel();
 
-            out.append( label1 + "\t" + label2 + separator );
+            out.append( label1 ).append( '\t' ).append( label2 ).append( separator );
         }
 
         return out.toString();
@@ -586,7 +583,7 @@ public class InteractionNetwork extends Graph {
      * @return an object String
      */
     public String exportJavascript( float rateX, float rateY, int borderSize ) {
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder( 512 );
 
         if ( false == this.isInitialized )
             this.init();
@@ -605,15 +602,22 @@ public class InteractionNetwork extends Graph {
             float proteinLength = ( (Float) currentProtein.get( Constants.ATTRIBUTE_LENGTH ) ).floatValue();
             float proteinHeight = ( (Float) currentProtein.get( Constants.ATTRIBUTE_HEIGHT ) ).floatValue();
 
-            logger.debug( "Initial coordinates of node : " + currentProtein.getAc() + " | X=" + proteinX + " | Y=" + proteinY);
+            if ( logger.isDebugEnabled() ) {
+                logger.debug( "Initial coordinates of node : " + currentProtein.getAc() + " | X=" + proteinX + " | Y=" + proteinY);
+            }
 
             // convertion to real coordinates
             float x = ( proteinX - dimension.xmin() ) / rateX - ( proteinLength / 2 ) + borderSize;
             float y = ( proteinY - dimension.ymin() ) / rateY - ( proteinHeight / 2 ) + borderSize;
 
-            logger.debug( "Real coordinates : X=" + x + " | Y=" + y);
+            if ( logger.isDebugEnabled() ) {
+                logger.debug( "Real coordinates : X=" + x + " | Y=" + y);
+            }
 
-            out.append( "new Array(\"" + currentProtein.getAc() + "\",\"" + x + "\",\"" + y + "\")" );
+            out.append( "new Array(\"" ).append( currentProtein.getAc() )
+                    .append( "\",\"" ).append( x )
+                    .append( "\",\"" ).append( y )
+                    .append( "\")" );
             if ( i < proteinList.size() - 1 ) {
                  out.append(", ");
             }
@@ -634,8 +638,9 @@ public class InteractionNetwork extends Graph {
      */
     public String[] importDataToImage(String dataTlp) throws RemoteException {
 
-        if ( false == this.isInitialized )
+        if ( false == this.isInitialized ) {
             this.init();
+        }
 
         ProteinCoordinate[] result;
         TulipClient client = new TulipClient();
@@ -643,8 +648,7 @@ public class InteractionNetwork extends Graph {
         // Call Tulip Web Service : get
         try {
             result = client.getComputedTlpContent( dataTlp );
-        }
-        catch ( RemoteException e ) {
+        } catch ( RemoteException e ) {
             logger.error( "couldn't get coodinate from the TLP content", e );
             throw e;
         }
@@ -652,11 +656,11 @@ public class InteractionNetwork extends Graph {
         if ( null == result ) {
             // throw new IOException ("Tulip send back no data.");
             String[] errors = client.getErrorMessages( true );
-            logger.warn( errors.length
-                    + " error(s) returned by the Tulip web service" );
+            logger.warn( errors.length + " error(s) returned by the Tulip web service" );
             return errors;
-        }
-        else {
+
+        } else {
+
             // update protein coordinates
             ProteinCoordinate p = null;
             Float x, y;
@@ -724,7 +728,7 @@ public class InteractionNetwork extends Graph {
                 // see also the equals method of Node
                 if ( false == nodes.containsKey( ACNode ) ) {
                     nodes.put( ACNode, aNode );
-                    logger.info( "fusion: add node " + ACNode );
+                    if ( logger.isDebugEnabled() ) logger.debug( "fusion: add node " + ACNode );
                 }
                 else {
                     aNewEdge.setNode1( (BasicGraphI) nodes.get( ACNode ) );
@@ -734,15 +738,15 @@ public class InteractionNetwork extends Graph {
                 ACNode = aNode.getAc();
                 if ( false == nodes.containsKey( ACNode ) ) {
                     nodes.put( ACNode, aNode );
-                    logger.info( "fusion: add node " + ACNode );
+                    if ( logger.isDebugEnabled() ) logger.debug( "fusion: add node " + ACNode );
                 }
                 else {
                     aNewEdge.setNode2( (BasicGraphI) nodes.get( ACNode ) );
                 }
 
                 edges.add( aNewEdge );
-                logger.info( "fusion: add edge " + aNewEdge.getNode1().getAc()
-                        + "<->" + aNewEdge.getNode2().getAc() );
+                if ( logger.isDebugEnabled() ) logger.debug( "fusion: add edge " + aNewEdge.getNode1().getAc()
+                                                             + "<->" + aNewEdge.getNode2().getAc() );
             }
         }
 
@@ -822,11 +826,10 @@ public class InteractionNetwork extends Graph {
         }
 
         chrono.stop();
-        String msg = "Network Fusion took " + chrono;
-        logger.info( msg );
-
-        logger.info( "END fusion" );
+        if ( logger.isDebugEnabled() ) {
+            logger.info( "Network Fusion took " + chrono );
+            logger.info( "END fusion" );
+        }
     }
-
 } // InteractionNetwork
 
