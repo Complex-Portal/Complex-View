@@ -41,7 +41,6 @@ import java.net.MalformedURLException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.sql.SQLException;
 
 /**
  * This class stores information about an Intact Web user session. Instead of
@@ -476,7 +475,7 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
     }
 
     public void delete() throws IntactException {
-        AnnotatedObject annobj = myEditView.getAnnotatedObject();
+        AnnotatedObject annobj = myEditView.syncAnnotatedObject();
         if (annobj.getAc() == null) {
             return;
         }
@@ -599,7 +598,7 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
 
     public boolean shortLabelExists(String label) throws IntactException {
         // Holds the result from the search.
-        log.debug("Searching for an annotated object having shortlabel " + label + "and class " + myEditView.getEditClass());
+        log.debug("Searching for an annotated object having shortlabel " + label + " and class " + myEditView.getEditClass());
         AnnotatedObject annotObj = getAnnotatedObjectWithIdenticalShortlabel(label, myEditView.getEditClass());
         if(annotObj == null){
             log.debug("No annotated object found with shortlabel " + label);

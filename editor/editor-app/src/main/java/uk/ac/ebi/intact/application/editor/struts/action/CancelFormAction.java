@@ -48,7 +48,7 @@ public class CancelFormAction extends AbstractEditorAction {
         EditUserI user = getIntactUser(request);
 
         // Update the search cache to display the current object.
-        AnnotatedObject annobj = user.getView().getAnnotatedObject();
+        AnnotatedObject annobj = user.getView().syncAnnotatedObject();
         if ((annobj != null) && (annobj.getAc() != null)) {
             // Only update the persistent objects.
             user.updateSearchCache(annobj);

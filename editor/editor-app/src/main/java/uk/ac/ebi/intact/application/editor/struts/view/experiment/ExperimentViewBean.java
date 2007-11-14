@@ -145,7 +145,7 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
     // recent experiment list.
     @Override
     public void addToRecentList(EditUserI user) {
-        ExperimentRowData row = new ExperimentRowData(getAnnotatedObject());
+        ExperimentRowData row = new ExperimentRowData(syncAnnotatedObject());
         user.addToCurrentExperiment(row);
     }
 
@@ -489,7 +489,7 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
             log.debug("No CvInteraction found with shorlabel : " + myIdent);
         }
         // The current experiment.
-        Experiment exp = getAnnotatedObject();
+        Experiment exp = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
         if (exp == null) {

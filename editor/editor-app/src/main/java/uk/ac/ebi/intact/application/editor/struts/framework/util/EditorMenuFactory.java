@@ -123,7 +123,7 @@ public class EditorMenuFactory {
     /**
      * The only instance of this class.
      */
-    private static final EditorMenuFactory ourInstance = new EditorMenuFactory();
+    private static EditorMenuFactory ourInstance;
 
     /**
      * Maps: Menu Name -> Menu type. Common to all the users and it is immutable.
@@ -145,24 +145,7 @@ public class EditorMenuFactory {
     // Static initializer.
 
     static {
-        // Fill the maps with list names and their associated classes.
-        ourNameToType.put(TOPIC, CvTopic.class);
-        ourNameToType.put(DATABASE, CvDatabase.class);
-        ourNameToType.put(QUALIFIER, CvXrefQualifier.class);
-        ourNameToType.put(ORGANISM, BioSource.class);
-        ourNameToType.put(INTERACTION, CvInteraction.class);
-        ourNameToType.put(IDENTIFICATION, CvIdentification.class);
-        ourNameToType.put(INTERACTION_TYPE, CvInteractionType.class);
-        ourNameToType.put(EXPERIMENT, Experiment.class);
-        ourNameToType.put(EXPROLE, CvExperimentalRole.class);
-        ourNameToType.put(BIOROLE, CvBiologicalRole.class);
-        ourNameToType.put(CELL, CvCellType.class);
-        ourNameToType.put(TISSUE, CvTissue.class);
-        ourNameToType.put(FEATURE_TYPE, CvFeatureType.class);
-        ourNameToType.put(FEATURE_IDENTIFICATION, CvFeatureIdentification.class);
 
-        // Fill the criterias
-        buildProteinAndNucleicAcidCriteria();
     }
 
     private static void buildProteinAndNucleicAcidCriteria(){
@@ -200,7 +183,29 @@ public class EditorMenuFactory {
     /**
      * Returns the only instance of this class.
      */
-    public static EditorMenuFactory getInstance() {
+    public static synchronized EditorMenuFactory getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new EditorMenuFactory();
+
+            // Fill the maps with list names and their associated classes.
+            ourNameToType.put(TOPIC, CvTopic.class);
+            ourNameToType.put(DATABASE, CvDatabase.class);
+            ourNameToType.put(QUALIFIER, CvXrefQualifier.class);
+            ourNameToType.put(ORGANISM, BioSource.class);
+            ourNameToType.put(INTERACTION, CvInteraction.class);
+            ourNameToType.put(IDENTIFICATION, CvIdentification.class);
+            ourNameToType.put(INTERACTION_TYPE, CvInteractionType.class);
+            ourNameToType.put(EXPERIMENT, Experiment.class);
+            ourNameToType.put(EXPROLE, CvExperimentalRole.class);
+            ourNameToType.put(BIOROLE, CvBiologicalRole.class);
+            ourNameToType.put(CELL, CvCellType.class);
+            ourNameToType.put(TISSUE, CvTissue.class);
+            ourNameToType.put(FEATURE_TYPE, CvFeatureType.class);
+            ourNameToType.put(FEATURE_IDENTIFICATION, CvFeatureIdentification.class);
+
+            // Fill the criterias
+            buildProteinAndNucleicAcidCriteria();
+        }
         return ourInstance;
     }
 

@@ -52,24 +52,26 @@ public class EditorExceptionHandler extends ExceptionHandler {
             myLogger.info("a ValidationException occured", ex);
             ValidationException valex = (ValidationException) ex;
             property = valex.getFilterKey();
-            error = new ActionMessage(valex.getMessageKey());
+            error = new ActionMessage(valex.getMessageKey(), ex);
 
         } else if (ex instanceof BaseException) {
 
             myLogger.error("a BaseException occured", ex);
             // Editor specific exception.
             BaseException baseEx = (BaseException) ex;
-            error = new ActionMessage(baseEx.getMessageKey(), baseEx.getMessage());
+            error = new ActionMessage(baseEx.getMessageKey(), baseEx);
 
         } else {
 
-            error = new ActionMessage(config.getKey());
+            error = new ActionMessage(config.getKey(), ex);
             property = error.getKey();
             // Unexpected error. Log it.
             myLogger.error("An unexpected exception occured", ex);
         }
         // Store the error in the proper action using the super method.
         storeException(request, property, error, forward, config.getScope());
+
+        request.setAttribute("theException", ex);
 
         return forward;
     }

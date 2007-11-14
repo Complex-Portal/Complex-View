@@ -105,7 +105,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             AbstractEditViewBean view = user.getView();
 
             // Update the search cache.
-            user.updateSearchCache(view.getAnnotatedObject());
+            user.updateSearchCache(view.syncAnnotatedObject());
 
             // Add the current edited object to the recent list.
             view.addToRecentList(user);
@@ -185,7 +185,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
         AbstractEditViewBean view = user.getView();
 
         // Get the original object for clone.
-        AnnotatedObjectImpl orig = (AnnotatedObjectImpl) view.getAnnotatedObject();
+        AnnotatedObjectImpl orig = (AnnotatedObjectImpl) view.syncAnnotatedObject();
         // Clone it.
         AnnotatedObjectImpl copy = (AnnotatedObjectImpl) orig.clone();
 
@@ -477,7 +477,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             // We reset the view with the saved interaction so that the ac are reset as well.
             // !!!!BE CAREFULL !!!! when you reset the view all the isSelected boolean are reset to false, so you won't know anymore
             // if something has been selected.
-            AnnotatedObject annotatedObject = view.getAnnotatedObject();
+            AnnotatedObject annotatedObject = view.syncAnnotatedObject();
             view.reset(annotatedObject);
         }
         catch (IntactException ie) {

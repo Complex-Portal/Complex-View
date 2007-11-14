@@ -6,13 +6,12 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.framework;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.actions.LookupDispatchAction;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.business.EditorService;
 import uk.ac.ebi.intact.application.editor.exception.SessionExpiredException;
@@ -22,9 +21,12 @@ import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.application.editor.util.LockManager;
 import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.AnnotatedObjectImpl;
 import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
 
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -193,35 +195,34 @@ public abstract class AbstractEditorDispatchAction extends LookupDispatchAction
             saveErrors(request, errors);
             return Collections.EMPTY_LIST;
         }
-        List<AnnotatedObject> results = new ArrayList();//  annotatedObjectDao.getByShortlabelOrAcLike(searchString);
-        try {
-            results = annotatedObjectDao.getByShortlabelOrAcLike(searchString);
-        }
-        catch (IntactException ie) {
-            // This can only happen when problems with creating an internal helper
-            // This error is already logged from the User class.
-            ActionMessages errors = new ActionMessages();
-            errors.add(errorType, new ActionMessage("error.intact"));
-            saveErrors(request, errors);
-            return Collections.EMPTY_LIST;
-        }
 
-        if (results.size() > max) {
-            ActionMessages errors = new ActionMessages();
-            errors.add(errorType, new ActionMessage("error.search.large",
-                            Integer.toString(results.size())));
-            saveErrors(request, errors);
-            return Collections.EMPTY_LIST;
-        }
+           // count first
+           Query countQuery = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getEntityManager()
+                    .createQuery("select count(*) from "+ searchClass.getName()+" where ac like :ac or shortLabel like :shortLabel");
+            countQuery.setParameter("ac", searchString);
+            countQuery.setParameter("shortLabel", searchString);
+           
+           long totalResults = (Long) countQuery.getSingleResult();
 
-        if (results.isEmpty()) {
-            // No matches found - forward to a suitable page
-            ActionMessages errors = new ActionMessages();
-            errors.add(errorType, new ActionMessage("error.search.nomatch",
-                                                                           searchString, searchString));
-            saveErrors(request, errors);
-            return Collections.EMPTY_LIST;
-        }
+           if (totalResults > max) {
+                ActionMessages errors = new ActionMessages();
+                errors.add(errorType, new ActionMessage("error.search.large",
+                                Long.toString(totalResults)));
+                saveErrors(request, errors);
+                return Collections.EMPTY_LIST;
+            }
+
+           if (totalResults == 0) {
+               // No matches found - forward to a suitable page
+                ActionMessages errors = new ActionMessages();
+                errors.add(errorType, new ActionMessage("error.search.nomatch",
+                                                                               searchString, searchString));
+                saveErrors(request, errors);
+                return Collections.EMPTY_LIST;
+           }
+
+
+            List<AnnotatedObject> results = annotatedObjectDao.getByShortlabelOrAcLike(searchString);
 
         return makeRowData(results);
     }

@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorAction;
 import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
+import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -90,7 +91,13 @@ public abstract class AbstractSubmitAction extends AbstractEditorAction {
             throw new IllegalStateException("Current user is null");
         }
 
-        editUser.getView().copyPropertiesFrom(editorForm);
+        final AbstractEditViewBean view = editUser.getView();
+
+        if (view == null) {
+            throw new IllegalStateException("View is null");
+        }
+
+        view.copyPropertiesFrom(editorForm);
         // The dispatch value holds the button label.
         String dispatch = editorForm.getDispatch();
         LOGGER.debug("Dispatch received " + dispatch);

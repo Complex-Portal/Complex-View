@@ -18,7 +18,6 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.model.CvCellType;
 import uk.ac.ebi.intact.model.CvTissue;
-import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
@@ -187,7 +186,7 @@ public class BioSourceViewBean extends AbstractEditViewBean<BioSource> {
     @Override
     protected void updateAnnotatedObject() throws IntactException {
         // The current biosource.
-        BioSource bs = getAnnotatedObject();
+        BioSource bs = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
         if (bs == null) {

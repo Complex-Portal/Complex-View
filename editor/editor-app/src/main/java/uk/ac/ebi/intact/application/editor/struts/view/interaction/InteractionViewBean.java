@@ -10,14 +10,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import org.apache.struts.tiles.ComponentContext;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.exception.validation.InteractionException;
 import uk.ac.ebi.intact.application.editor.exception.validation.ValidationException;
 import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
-import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorMenuFactory;
 import uk.ac.ebi.intact.application.editor.struts.view.AbstractEditBean;
 import uk.ac.ebi.intact.application.editor.struts.view.experiment.InteractionRowData;
@@ -212,7 +210,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
     // recent interaction list.
     @Override
     public void addToRecentList(EditUserI user) {
-        InteractionRowData row = new InteractionRowData(getAnnotatedObject());
+        InteractionRowData row = new InteractionRowData(syncAnnotatedObject());
         user.addToCurrentInteraction(row);
     }
 
@@ -907,7 +905,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         CvInteractionType type =(CvInteractionType) cvObjectDao.getByShortLabel(myInteractionType);
 
         // The current Interaction.
-        Interaction intact = getAnnotatedObject();
+        Interaction intact = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
         if (intact == null) {
@@ -1067,16 +1065,16 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
     private void persistCurrentView() throws IntactException {
         // The current Interaction.
-        Interaction intact = getAnnotatedObject();
+        Interaction intact = syncAnnotatedObject();
 
         // Add experiments here. Make sure this is done after persisting the
         // Interaction first. - IMPORTANT. don't change the order.
         for (Iterator iter = getExperimentsToAdd().iterator(); iter.hasNext();) {
             ExperimentRowData row = (ExperimentRowData) iter.next();
             Experiment exp = null;
+            ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
             if (row.getAc() != null){
                 log.debug("row ac is " + row.getAc());
-                ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
                 exp = experimentDao.getByAc(row.getAc());
             }
             intact.addExperiment(exp);
@@ -1094,6 +1092,9 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
         log.debug("we have updated the components, now we save the interaction, it has " + intact.getComponents().size() + " components");
         interactionDao.update((InteractionImpl) intact);
+
+        // TODO: investigate this - try to put it in the filter
+        //IntactContext.getCurrentInstance().getDataContext().flushSession();
     }
 
     private void persistCurrentView2() throws IntactException {
@@ -1272,7 +1273,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
         // Update components.
         for(ComponentBean cb : myComponentsToUpdate){
-            cb.setInteraction(getAnnotatedObject());
+            cb.setInteraction(syncAnnotatedObject());
 
             // Disconnect any links between features in the component which are
             disconnectLinkedFeatures(cb);

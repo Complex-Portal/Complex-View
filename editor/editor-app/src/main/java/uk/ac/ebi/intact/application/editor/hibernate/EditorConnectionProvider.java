@@ -27,6 +27,8 @@ public class EditorConnectionProvider implements ConnectionProvider
     private boolean driverLoaded;
     private String currentUser;
 
+    private Connection connection;
+
     public void configure(Properties properties) throws HibernateException
     {
 
@@ -34,8 +36,11 @@ public class EditorConnectionProvider implements ConnectionProvider
 
     public Connection getConnection() throws SQLException
     {
+        //if (connection != null && !connection.isClosed()) {
+        //    return connection;
+        //}
+        
         log.debug("Getting connection for user: " + currentUser);
-        Connection connection;
 
         if (IntactContext.currentInstanceExists())
         {

@@ -119,34 +119,21 @@ public class ResultDisplayWrapper extends TableDecorator {
     }
 
     public String getCreationInfo(){
-        if((ResultRowData) getObject() != null){
-         //Created 2005-JAN-26 by LUISA.
-        log.debug("getShortlabel" + ((ResultRowData) getObject()).getShortLabel());
-        log.debug("getCreated" + ((ResultRowData) getObject()).getCreated());
-        log.debug("getCreator" + ((ResultRowData) getObject()).getCreator());
-        }
-        String creationInfo = new String();
+        String creationInfo = null;
         try{
             creationInfo = this.getCreated() + " by " + this.getCreator() + ".";
         }catch(Exception e){
-            log.debug(e.getMessage());
+            log.error("Error creating create info", e);
         }
         return creationInfo;
     }
 
     public String getUpdateInfo(){
-        if((ResultRowData) getObject() != null){
-        //Created 2005-JAN-26 by LUISA.
-        log.debug("getShortlabel" + ((ResultRowData) getObject()).getShortLabel());
-        log.debug("getUpdaed" + ((ResultRowData) getObject()).getUpdated());
-        log.debug("getUpdator" + ((ResultRowData) getObject()).getUpdator());
-        }
-        String updateInfo = new String();
+        String updateInfo = null;
         try{
             updateInfo= this.getUpdated() + " by " + this.getUpdator() + ".";
         }catch(Exception e){
-            log.debug(updateInfo);
-            log.debug(e.getMessage());
+            log.error("Error creating update info", e);
         }
         log.debug(updateInfo);
          

@@ -19,11 +19,9 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.model.Polymer;
-import uk.ac.ebi.intact.model.SequenceChunk;
 import uk.ac.ebi.intact.model.util.PolymerFactory;
 import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.util.Crc64;
 
 import java.util.HashMap;
@@ -162,7 +160,8 @@ public abstract class SequenceViewBean extends AbstractEditViewBean<Polymer> {
         CvObjectDao<CvInteractorType> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvInteractorType.class);
         CvInteractorType intType = cvObjectDao.getByShortLabel(myInteractorType);
         // The current polymer
-        Polymer polymer = getAnnotatedObject();
+        final Polymer annotatedObject = syncAnnotatedObject();
+        Polymer polymer = annotatedObject;
 
         // Have we set the annotated object for the view?
         if (polymer == null) {
@@ -172,15 +171,15 @@ public abstract class SequenceViewBean extends AbstractEditViewBean<Polymer> {
             setAnnotatedObject(polymer);
         }
         else {
-            getAnnotatedObject().setBioSource(biosrc);
-            getAnnotatedObject().setCvInteractorType(intType);
+            annotatedObject.setBioSource(biosrc);
+            annotatedObject.setCvInteractorType(intType);
         }
         // Set the sequence in the persistOthers method we can safely delete
         // unused sequences.
         
         if (getSequence().length() > 0) {
-            getAnnotatedObject().setSequence(getSequence());
-            getAnnotatedObject().setCrc64(Crc64.getCrc64(getSequence()));
+            annotatedObject.setSequence(getSequence());
+            annotatedObject.setCrc64(Crc64.getCrc64(getSequence()));
 
         }
     }

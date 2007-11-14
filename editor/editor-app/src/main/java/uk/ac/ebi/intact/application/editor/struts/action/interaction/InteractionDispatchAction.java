@@ -15,12 +15,9 @@ import uk.ac.ebi.intact.application.editor.struts.view.experiment.ExperimentView
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.InteractionViewBean;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
 import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collection;
 
 /**
  * An action to handle when an Interaction is submitted. This action overrides
@@ -80,7 +77,7 @@ public class InteractionDispatchAction extends CommonDispatchAction {
             ExperimentViewBean expView = (ExperimentViewBean) user.popPreviousView();
 
             // Update the experiment-Interaction view.
-            expView.updateInteractionRow((Interaction) view.getAnnotatedObject());
+            expView.updateInteractionRow((Interaction) view.syncAnnotatedObject());
 
             // Set the tpdated view.
             user.setView(expView);
@@ -89,7 +86,7 @@ public class InteractionDispatchAction extends CommonDispatchAction {
             return mapping.findForward(EXP);
         }
         // Update the search cache.
-        user.updateSearchCache(view.getAnnotatedObject());
+        user.updateSearchCache(view.syncAnnotatedObject());
 
         // Add the current edited object to the recent list.
         view.addToRecentList(user);
@@ -132,7 +129,7 @@ public class InteractionDispatchAction extends CommonDispatchAction {
                 ExperimentViewBean expView = (ExperimentViewBean) user.peekPreviousView();
 
                 // Update the experiment-Interaction view.
-                expView.updateInteractionRow((Interaction) user.getView().getAnnotatedObject());
+                expView.updateInteractionRow((Interaction) user.getView().syncAnnotatedObject());
 
                 log.info("The previous view of this Interaction was no an ExperimentView but a "
                         + view.getClass().getSimpleName());

@@ -9,12 +9,10 @@ package uk.ac.ebi.intact.application.editor.struts.view.feature;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import org.apache.struts.tiles.ComponentContext;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
-import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorMenuFactory;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
@@ -425,7 +423,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
         CvFeatureType featureType = cvObjectDao.getByShortLabel(getCvFeatureType());
 
         // The current feature.
-        Feature feature = getAnnotatedObject();
+        Feature feature = syncAnnotatedObject();
 
         // null if creating a new Feature.
         if (feature == null) {
@@ -532,7 +530,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
         FeatureDao featureDao = (FeatureDao) DaoProvider.getDaoFactory(Feature.class);
         RangeDao rangeDao = DaoProvider.getDaoFactory().getRangeDao();
         // The current feature.
-        Feature feature =  getAnnotatedObject();
+        Feature feature =  syncAnnotatedObject();
 
         // The sequence to set in Ranges.
         Polymer polymer = (Polymer) getComponent().getInteractor();
@@ -569,7 +567,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
         for (RangeBean rangeBean : getRangesToDel())
         {
             Range range = rangeBean.getRange();
-            Range correspondingRange = getCorrespondingRange(getAnnotatedObject(),range);
+            Range correspondingRange = getCorrespondingRange(feature,range);
             if(correspondingRange != null){
                feature.removeRange(correspondingRange);
                range.setFeature(null);
@@ -583,7 +581,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
         {
             // Update the 'updated' range.
             Range range = myRangeToUpdate.getUpdatedRange();
-            Range correspondingRange = getCorrespondingRange(getAnnotatedObject(),range);
+            Range correspondingRange = getCorrespondingRange(feature,range);
             if(correspondingRange == null){
                 range.setSequence(sequence);
                 rangeDao.update(range);

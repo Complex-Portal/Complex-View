@@ -15,7 +15,6 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.model.Institution;
-import uk.ac.ebi.intact.model.BioSource;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -56,7 +55,7 @@ public class CvViewBean extends AbstractEditViewBean<CvObject> {
     @Override
     protected void updateAnnotatedObject() throws IntactException{
         // The current CV object.
-        CvObject cvobj = getAnnotatedObject();
+        CvObject cvobj = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
         if (cvobj == null) {

@@ -5,12 +5,10 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.editor.struts.view.sm;
 
-import org.apache.log4j.Logger;
 import org.apache.struts.tiles.ComponentContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
-import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.business.IntactException;
@@ -62,7 +60,7 @@ public class SmallMoleculeViewBean extends AbstractEditViewBean<SmallMolecule>  
     @Override
     protected void updateAnnotatedObject() throws IntactException {
         // The current small molecule object.
-        SmallMolecule sm = getAnnotatedObject();
+        SmallMolecule sm = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
         if (sm == null) {

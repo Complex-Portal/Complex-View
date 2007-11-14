@@ -15,7 +15,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-bean"  prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 
-<h1><font color="red">Error when commiting</font></h1>
+<h1><font color="red">Error when committing</font></h1>
 
 <script type="text/javascript" language="JavaScript">
     var message = getMessage();
