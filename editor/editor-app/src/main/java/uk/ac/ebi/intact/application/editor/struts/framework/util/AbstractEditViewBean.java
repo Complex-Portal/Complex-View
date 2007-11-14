@@ -26,6 +26,9 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.util.CgLibUtil;
 import uk.ac.ebi.intact.persistence.dao.*;
 import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.standard.ExperimentPersister;
+import uk.ac.ebi.intact.core.persister.PersisterHelper;
+import uk.ac.ebi.intact.core.persister.PersisterException;
 
 import java.io.Serializable;
 import java.util.*;
@@ -367,7 +370,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      */
     public final T syncAnnotatedObject() {
         if (myAnnotObject == null) {
-            if (log.isWarnEnabled()) log.warn("Trying to sync a null object");
+            if (log.isDebugEnabled()) log.debug("Trying to sync a null object");
             return null;
         }
 
@@ -398,7 +401,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
         } else if (getOriginalAc() != null) {
 
-            //if (!(getSession().isOpen() && getSession().getTransaction().isActive() && getSession().contains(myOriginal))) {
+            if (getSession().contains(myOriginal)) {
                 log.debug("Recloning object (syncing)");
                 AnnotatedObjectDao<AnnotatedObjectImpl> annotatedObjectDao = DaoProvider.getDaoFactory(myAnnotObject.getClass());
                 myOriginal = annotatedObjectDao.getByAc(getOriginalAc());
@@ -416,12 +419,14 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
                     }
 
                     myAnnotObject = (T) copy;
+
+
                 } catch (CloneNotSupportedException e) {
                     log.error("Exception while cloning", e);
                 }
-            //} else {
-            //    log.debug("The annotated object attached is an already reloaded clone");
-            //}
+            } else {
+                log.debug("The annotated object attached is an already reloaded clone");
+            }
 
         }
 
@@ -1317,7 +1322,6 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     // Persist the current annotated object.
 
     private void persistCurrentView() throws IntactException {
-        AnnotationDao annotationDao = DaoProvider.getDaoFactory().getAnnotationDao();
         // First create/update the annotated object by the view.
         updateAnnotatedObject();
 
@@ -1326,9 +1330,13 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         annotatedObject.setShortLabel(getShortLabel());
         annotatedObject.setFullName(getFullName());
 
-        persistAnnotatedObject();
+        if (log.isDebugEnabled()) log.debug("Persisting current view for: "+getShortLabel());
 
-        log.debug("As I have persisted myAnnotObject ac is " + myAnnotObject.getAc());
+        AnnotationDao annotationDao = DaoProvider.getDaoFactory().getAnnotationDao();
+
+        //persistAnnotatedObject();
+
+        //log.debug("As I have persisted myAnnotObject ac is " + myAnnotObject.getAc());
 
         // Don't care whether annotated object exists or not because we don't
         // need an AC in the annotation table.
@@ -1345,7 +1353,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
                     //delAnnotation(commentBean);
                     annotatedObject.removeAnnotation(annot);
                     Annotation newAnnot = createAnnotation(annot);
-                    annotationDao.persist(newAnnot);
+                    //annotationDao.persist(newAnnot);
                     annotatedObject.addAnnotation(newAnnot);
                     CommentBean newCb = new CommentBean(newAnnot);
                     addAnnotation(newCb);
@@ -1384,17 +1392,19 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             if(correspondingAnnotation == null){
                 log.error("Add annot " +  annot.getAnnotationText());
                 // Need this to generate the PK for the indirection table.
-                annotationDao.persist(annot);
-                annotatedObject.addAnnotation(annot);
+                //annotationDao.persist(annot);
+                final Collection<Annotation> annotations = new ArrayList<Annotation>(annotatedObject.getAnnotations());
+                annotations.add(annot);
+                annotatedObject.setAnnotations(annotations);
             }
         }
         // Xref has a parent_ac column which is not a foreign key. So, the parent needs
         // to be persistent before we can create the Xrefs.
         persistAnnotatedObject();
-
+        /*
         // Create xrefs and add them to CV object.
         XrefDao xrefDao = DaoProvider.getDaoFactory().getXrefDao();
-        Collection<XreferenceBean> xrefBeans = getXrefsToAdd();
+
         for (XreferenceBean xreferenceBean : getXrefsToAdd())
         {
             Xref xref = xreferenceBean.getXref(annotatedObject);
@@ -1429,6 +1439,8 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             }
         }
         persistAnnotatedObject();
+        */
+            PersisterHelper.persisterFor(annotatedObject.getClass()).commit();
 
         // update the cvObject in the cvContext (application scope)
         if (annotatedObject instanceof CvObject) {
@@ -1530,13 +1542,21 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         if (annotatedObject == null) {
             throw new IllegalStateException("Trying to persist a null annotated object");
         }
-        
-        AnnotatedObjectDao annotatedObjectDao = DaoProvider.getDaoFactory(annotatedObject.getClass());
-        if( annotatedObject.getAc() != null ){
-            annotatedObjectDao.saveOrUpdate(annotatedObject);
-        }else{
-            annotatedObjectDao.persist(annotatedObject);
+
+        try {
+            PersisterHelper.persisterFor(annotatedObject.getClass()).saveOrUpdate(annotatedObject);
+        } catch (PersisterException e) {
+            throw new IntactException("Exception saving or updating object: "+annotatedObject.getShortLabel(), e);
         }
+
+        /*
+     AnnotatedObjectDao annotatedObjectDao = DaoProvider.getDaoFactory(annotatedObject.getClass());
+
+     if( annotatedObject.getAc() != null ){
+         annotatedObjectDao.saveOrUpdate(annotatedObject);
+     }else{
+         annotatedObjectDao.persist(annotatedObject);
+     }   */
     }
 
     private void resetAnnotatedObject(T annobj) {
