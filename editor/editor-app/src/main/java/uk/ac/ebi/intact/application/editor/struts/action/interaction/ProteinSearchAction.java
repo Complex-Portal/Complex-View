@@ -153,7 +153,10 @@ public class ProteinSearchAction extends AbstractEditorAction {
         log.debug("Searching for the intactSecondary");
         CvXrefQualifier intactSecondary = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao().getByShortLabel(CvXrefQualifier.class,"intact-secondary");
 //        CvXrefQualifier intactSecondary = IntactContext.getCurrentInstance().getCvContext().getByLabel(CvXrefQualifier.class,"intact-secondary");
-        log.debug("intactSecondary.getShortLabel()" + intactSecondary.getShortLabel());
+
+        if (log.isDebugEnabled()) {
+            log.debug("intactSecondary.getShortLabel()" + ((intactSecondary != null)? intactSecondary.getShortLabel() : null));
+        }
                 
         if (param.equals("spAc")) {
             try{

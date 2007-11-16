@@ -44,7 +44,7 @@
     <tr class="tableRowOdd">
         <td align="center" bgcolor="green">
             <html:submit property="dispatch"
-                disabled="<%=disable.equals(Boolean.TRUE)%>">
+                disabled="<%=disable%>">
                 <bean:message key="button.submit"/>
             </html:submit>
             <br/><bean:message key="button.submit.titleKey"/>
@@ -56,7 +56,7 @@
         <c:if test="${view.saveState}">
             <td align="center" bgcolor="palegreen">
                 <html:submit property="dispatch"
-                    disabled="<%=disable.equals(Boolean.TRUE)%>">
+                    disabled="<%=disable%>">
                     <bean:message key="button.save.continue"/>
                 </html:submit>
                 <br/><bean:message key="button.save.continue.titleKey"/>
@@ -66,7 +66,8 @@
         <%-- Clone button if the view says so --%>
         <c:if test="${view.cloneState}">
             <td align="center" bgcolor="limegreen">
-            <html:submit property="dispatch">
+            <html:submit property="dispatch"
+                    disabled="<%=disable%>">
                 <bean:message key="button.clone"/>
             </html:submit>
                 <br/><bean:message key="button.clone.titleKey"/>

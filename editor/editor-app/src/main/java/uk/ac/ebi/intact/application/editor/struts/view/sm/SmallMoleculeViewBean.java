@@ -58,8 +58,7 @@ public class SmallMoleculeViewBean extends AbstractEditViewBean<SmallMolecule>  
 
     // Implements abstract methods
     @Override
-    protected void updateAnnotatedObject() throws IntactException {
-        // The current small molecule object.
+    protected SmallMolecule createAnnotatedObjectFromView() throws IntactException {
         SmallMolecule sm = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
@@ -117,6 +116,8 @@ public class SmallMoleculeViewBean extends AbstractEditViewBean<SmallMolecule>  
 
             }
         }
+
+        return sm;
     }
 
     /**

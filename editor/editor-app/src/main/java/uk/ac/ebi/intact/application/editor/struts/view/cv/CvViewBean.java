@@ -53,8 +53,7 @@ public class CvViewBean extends AbstractEditViewBean<CvObject> {
 
     // Implements abstract methods
     @Override
-    protected void updateAnnotatedObject() throws IntactException{
-        // The current CV object.
+    protected CvObject createAnnotatedObjectFromView() throws IntactException{
         CvObject cvobj = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
@@ -89,6 +88,8 @@ public class CvViewBean extends AbstractEditViewBean<CvObject> {
             }
             setAnnotatedObject(cvobj);
         }
+
+        return cvobj;
     }
 
     /**

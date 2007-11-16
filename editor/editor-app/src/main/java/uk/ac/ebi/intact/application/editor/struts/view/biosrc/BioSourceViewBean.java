@@ -184,8 +184,7 @@ public class BioSourceViewBean extends AbstractEditViewBean<BioSource> {
 
     // Implements abstract methods
     @Override
-    protected void updateAnnotatedObject() throws IntactException {
-        // The current biosource.
+    protected BioSource createAnnotatedObjectFromView() throws IntactException {
         BioSource bs = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
@@ -201,6 +200,8 @@ public class BioSourceViewBean extends AbstractEditViewBean<BioSource> {
         bs.setCvTissue(getCvTissue());
         bs.setCvCellType(getCvCellType());
         //bs.setBioSourceXref();
+
+        return bs;
     }
 
     /**

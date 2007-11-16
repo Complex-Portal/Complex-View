@@ -27,7 +27,7 @@ public class EditorConnectionProvider implements ConnectionProvider
     private boolean driverLoaded;
     private String currentUser;
 
-    private Connection connection;
+    private Connection userConnection;
 
     public void configure(Properties properties) throws HibernateException
     {
@@ -36,11 +36,9 @@ public class EditorConnectionProvider implements ConnectionProvider
 
     public Connection getConnection() throws SQLException
     {
-        //if (connection != null && !connection.isClosed()) {
-        //    return connection;
-        //}
-        
         log.debug("Getting connection for user: " + currentUser);
+
+        Connection connection = null;
 
         if (IntactContext.currentInstanceExists())
         {
@@ -66,15 +64,27 @@ public class EditorConnectionProvider implements ConnectionProvider
 
             if (currentUser != null)
             {
-                connection = DriverManager.getConnection(url, currentUser, currentUserPassword);
+                /*
+                if (userConnection != null && !userConnection.isClosed()) {
+                    if (log.isDebugEnabled()) log.debug("Reusing user connection: "+currentUser);
+                    return userConnection;
+                }
+                if (log.isDebugEnabled()) log.debug("Creating new connection for user: "+currentUser);
+
+                userConnection = DriverManager.getConnection(url, currentUser, currentUserPassword);
+                connection = userConnection;
+                */
+                connection = ConnectionManager.getInstance().getCurrentConnectionForUser();
             }
             else
             {
+                if (log.isDebugEnabled()) log.debug("Creating default connection (IntactContext exists)");
                 connection = createDefaultConnection();
             }
         }
         else // currentInstance does not exist
         {
+            if (log.isDebugEnabled()) log.debug("Creating default connection (No IntactContext available)");
              connection = createDefaultConnection();
         }
 
@@ -83,8 +93,10 @@ public class EditorConnectionProvider implements ConnectionProvider
 
     public void closeConnection(Connection connection) throws SQLException
     {
-//        log.debug("Closing connection for user: "+IntactContext.getCurrentInstance().getUserContext().getUserId());
-        connection.close();
+        if (currentUser != null) {
+            //log.debug("Closing connection for user: "+IntactContext.getCurrentInstance().getUserContext().getUserId());
+            //connection.close();
+        }
     }
 
     public void close() throws HibernateException

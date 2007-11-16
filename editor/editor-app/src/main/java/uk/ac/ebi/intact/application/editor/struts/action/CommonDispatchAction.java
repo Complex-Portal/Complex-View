@@ -6,15 +6,16 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.action;
 
-import org.apache.struts.action.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
 import uk.ac.ebi.intact.application.commons.util.DateToolbox;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorDispatchAction;
 import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
+import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler;
 import uk.ac.ebi.intact.application.editor.struts.view.CommentBean;
 import uk.ac.ebi.intact.application.editor.struts.view.XreferenceBean;
 import uk.ac.ebi.intact.application.editor.struts.view.biosrc.BioSourceViewBean;
@@ -486,9 +487,10 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             // Error with updating.
             ActionMessages errors = new ActionMessages();
             // The error message.
-            String msg = ie.getRootCause() != null ? ie.getRootCause().getMessage()
-                    : "Update failure, root cause is not availabe";
-            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.update", msg));
+            String msg = ie != null ? ie.getMessage()
+                    : "Update failure, root cause is not available";
+            errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.update", msg, ie));
+            request.setAttribute(EditorExceptionHandler.EXCEPTION_PARAM, ie);
             saveErrors(request, errors);
             return mapping.findForward(FAILURE);
         }

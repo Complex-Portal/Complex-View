@@ -50,6 +50,8 @@ public interface EditUserI extends IntactUserI, Serializable {
     // Transaction Methods
     public void rollback() throws IntactException;
 
+    public void endEditing() throws IntactException;
+
     // Persistent Methods
 
     /**

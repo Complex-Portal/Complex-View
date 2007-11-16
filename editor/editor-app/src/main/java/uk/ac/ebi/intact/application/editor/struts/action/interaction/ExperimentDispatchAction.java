@@ -18,8 +18,10 @@ import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.model.CvXrefQualifier;
 import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Xref;
+import uk.ac.ebi.intact.model.ExperimentXref;
+import uk.ac.ebi.intact.model.util.ExperimentUtils;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -144,25 +146,15 @@ public class ExperimentDispatchAction extends AbstractEditorDispatchAction {
 
     private List makeExperimentRows(List rows) throws IntactException {
         // The collection to return; it consists of exp row data.
-        List expRows = new ArrayList();
-
-        // The query factory to get a query.
-        QueryFactory qf = QueryFactory.getInstance();
-
-        CvObjectDao<CvXrefQualifier> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvXrefQualifier.class);
-        // The primary reference AC.
-        String ac = (cvObjectDao.getByXref(CvXrefQualifier.PRIMARY_REFERENCE_MI_REF)).getAc();
+        List<ExperimentRowData> expRows = new ArrayList<ExperimentRowData>();
 
         for (Iterator iter = rows.iterator(); iter.hasNext(); ) {
             ResultRowData rrd = (ResultRowData) iter.next();
-            ExperimentRowData expRow = new ExperimentRowData(rrd.getAc(),
-                    rrd.getShortLabel(), rrd.getFullName(), rrd.getCreator(),
-                    rrd.getUpdator(), rrd.getCreated(), rrd.getUpdated());
-            Xref xref =  qf.getQualifierXrefQuery(ac, expRow.getAc());//(Xref) helper.getObjectByQuery(query);
-            // Xref is null if no primary reference found for the experiment.
-            if (xref != null) {
-                expRow.setPubMedLink(xref);
-            }
+
+            Experiment exp = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+                    .getExperimentDao().getByAc(rrd.getAc());
+
+            ExperimentRowData expRow = new ExperimentRowData(exp);
             expRows.add(expRow);
         }
         return expRows;

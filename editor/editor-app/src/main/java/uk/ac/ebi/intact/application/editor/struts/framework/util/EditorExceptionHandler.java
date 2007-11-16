@@ -28,6 +28,8 @@ public class EditorExceptionHandler extends ExceptionHandler {
 
     protected static final Log myLogger = LogFactory.getLog(EditorExceptionHandler.class);
 
+    public static final String EXCEPTION_PARAM = EditorExceptionHandler.class.getName()+".EXCEPTION";
+
     public ActionForward execute(Exception ex,
                                  ExceptionConfig config,
                                  ActionMapping mapping,
@@ -71,7 +73,7 @@ public class EditorExceptionHandler extends ExceptionHandler {
         // Store the error in the proper action using the super method.
         storeException(request, property, error, forward, config.getScope());
 
-        request.setAttribute("theException", ex);
+        request.setAttribute(EXCEPTION_PARAM, ex);
 
         return forward;
     }

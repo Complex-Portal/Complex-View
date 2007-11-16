@@ -899,13 +899,12 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
     // Implements abstract methods
     @Override
-    protected void updateAnnotatedObject() throws IntactException {
+    protected Interaction createAnnotatedObjectFromView() throws IntactException {
+        Interaction intact = syncAnnotatedObject();
+
         // The cv interaction type for the interaction.
         CvObjectDao<CvObject> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvObject.class);
         CvInteractionType type =(CvInteractionType) cvObjectDao.getByShortLabel(myInteractionType);
-
-        // The current Interaction.
-        Interaction intact = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
         if (intact == null) {
@@ -956,6 +955,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             }
             intact.removeExperiment(exp);
         }
+
+        return intact;
     }
 
     /**

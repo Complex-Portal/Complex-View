@@ -9,6 +9,7 @@ package uk.ac.ebi.intact.application.editor.struts.framework.util;
 import uk.ac.ebi.intact.model.Alias;
 import uk.ac.ebi.intact.model.ExperimentXref;
 import uk.ac.ebi.intact.model.InteractorAlias;
+import uk.ac.ebi.intact.model.util.ExperimentUtils;
 import uk.ac.ebi.intact.persistence.dao.XrefDao;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.persistence.dao.AliasDao;
@@ -55,34 +56,5 @@ public class QueryFactory {
         return aliasesToReturn;
     }
 
-    /**
-     * Returns the query to get the primary xref qualifier
-     * @param qualifier the AC of the primary xref qualifier.
-     * @param parent the AC of the parent
-     * @return the query to extract the primary Xref with given parent AC
-     */
-    public ExperimentXref getQualifierXrefQuery(String qualifier, String parent) {
-
-
-        Collection<ExperimentXref> experimentXrefToReturn = new ArrayList<ExperimentXref>();
-
-        XrefDao<ExperimentXref> xrefDao = DaoProvider.getDaoFactory().getXrefDao(ExperimentXref.class);
-
-        Collection<ExperimentXref> experimentXrefs = xrefDao.getByParentAc(parent);
-        for(ExperimentXref experimentXref : experimentXrefs){
-            if(experimentXref.getCvXrefQualifier() != null && experimentXref.getCvXrefQualifier().getAc().equals(qualifier)){
-                experimentXrefToReturn.add(experimentXref);
-            }
-        }
-
-        if (experimentXrefToReturn.size() > 1){
-            throw new IntactException("Find more then one experiment xref with parent_ac = " + parent +
-                    " and qualifier " + qualifier );
-        }else{
-             for (ExperimentXref experimentXref : experimentXrefToReturn){
-                 return experimentXref;
-             }
-            return null;
-        }
-    }
+   
 }

@@ -26,7 +26,6 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.util.CgLibUtil;
 import uk.ac.ebi.intact.persistence.dao.*;
 import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.core.persister.standard.ExperimentPersister;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
 import uk.ac.ebi.intact.core.persister.PersisterException;
 
@@ -824,7 +823,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     public void persist(EditUserI user) throws IntactException {
         try {
             persistCurrentView();
-            user.rollback(); //to end editing
+            user.endEditing(); //to end editing
         }
         catch (IntactException ie1) {
             user.rollback();
@@ -1157,10 +1156,8 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      *
      * <pre>
      * post: getAnnotatedObject() != null
-     * </pre>
-     */
-    protected abstract void updateAnnotatedObject() throws
-                                                                       IntactException, IntactException;
+     * </pre> */
+    protected abstract T createAnnotatedObjectFromView() throws IntactException;
 
     // Helper Methods
 
@@ -1322,11 +1319,12 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     // Persist the current annotated object.
 
     private void persistCurrentView() throws IntactException {
+        //IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
         // First create/update the annotated object by the view.
-        updateAnnotatedObject();
+        final T annotatedObject = createAnnotatedObjectFromView();
 
         // Update the short label and full name as they are common to all.
-        final T annotatedObject = syncAnnotatedObject();
         annotatedObject.setShortLabel(getShortLabel());
         annotatedObject.setFullName(getFullName());
 
@@ -1358,7 +1356,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
                     CommentBean newCb = new CommentBean(newAnnot);
                     addAnnotation(newCb);
                 }else{
-                    annotationDao.saveOrUpdate(annot);
+                    //annotationDao.saveOrUpdate(annot);
                 }
             }
         }
@@ -1400,8 +1398,8 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         }
         // Xref has a parent_ac column which is not a foreign key. So, the parent needs
         // to be persistent before we can create the Xrefs.
-        persistAnnotatedObject();
-        /*
+        //persistAnnotatedObject();
+
         // Create xrefs and add them to CV object.
         XrefDao xrefDao = DaoProvider.getDaoFactory().getXrefDao();
 
@@ -1413,7 +1411,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
                 if(xref == null){
                     log.debug ( "xref is null");
                 }
-                xrefDao.saveOrUpdate(xref);
+                //xrefDao.saveOrUpdate(xref);
                 annotatedObject.addXref(xref);
             }
         }
@@ -1431,16 +1429,24 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             }
         }
         // Update xrefs; see the comments for annotation update above.
+        /*
         for (XreferenceBean xreferenceBean : getXrefsToUpdate()) {
             Xref xref = xreferenceBean.getXref(annotatedObject);
             Xref correspondingXref = getCorrespondingXref(annotatedObject,xref);
-            if(correspondingXref == null){
-                xrefDao.saveOrUpdate(xref);
-            }
+            //if(correspondingXref == null){
+            //    xrefDao.saveOrUpdate(xref);
+            //}
         }
-        persistAnnotatedObject();
-        */
-            PersisterHelper.persisterFor(annotatedObject.getClass()).commit();
+         */
+        //persistAnnotatedObject();
+        //PersisterHelper.persisterFor(annotatedObject.getClass()).commit();
+        try {
+            PersisterHelper.saveOrUpdate(annotatedObject);
+            //IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+        } catch (Exception e) {
+            throw new IntactException("Exception saving object: "+annotatedObject.getShortLabel(), e);
+        } 
+
 
         // update the cvObject in the cvContext (application scope)
         if (annotatedObject instanceof CvObject) {

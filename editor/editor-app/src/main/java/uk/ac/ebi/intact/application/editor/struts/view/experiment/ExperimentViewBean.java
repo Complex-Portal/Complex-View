@@ -19,10 +19,13 @@ import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.PersisterException;
+import uk.ac.ebi.intact.core.persister.standard.InteractionPersister;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.persistence.dao.InteractionDao;
+import uk.ac.ebi.intact.util.DebugUtil;
 
 import java.util.*;
 
@@ -117,7 +120,14 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
         int maxLimit = getService().getInteractionLimit();
 
         // The number of interactions for the current experiment.
-        int intsSize = exp.getInteractions().size();
+        int intsSize;
+
+        if (exp.getAc() != null) {
+            intsSize = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+                .getExperimentDao().countInteractionsForExperimentWithAc(exp.getAc());
+        } else {
+            intsSize = exp.getInteractions().size();
+        }
 
         if (intsSize > maxLimit) {
             // Reached the maximum limit.
@@ -473,7 +483,9 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
 
     // Implements abstract methods
     @Override
-    protected void updateAnnotatedObject() throws IntactException {
+    protected Experiment createAnnotatedObjectFromView() throws IntactException {
+        Experiment exp = syncAnnotatedObject();
+
         // Get the objects using their short label.
         BioSourceDao bsDao = DaoProvider.getDaoFactory().getBioSourceDao();
         BioSource biosource = bsDao.getByShortLabel(myOrganism);
@@ -488,8 +500,6 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
         }else{
             log.debug("No CvInteraction found with shorlabel : " + myIdent);
         }
-        // The current experiment.
-        Experiment exp = syncAnnotatedObject();
 
         // Have we set the annotated object for the view?
         if (exp == null) {
@@ -511,8 +521,7 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
             // clearing interactions or else 'this' experiment wouldn't be removed
             // from interactions.
             InteractionDao interactionDao = DaoProvider.getDaoFactory().getInteractionDao();
-            for (Iterator iter = myInteractionsToDel.iterator(); iter.hasNext();) {
-                String ac = (String) iter.next();
+            for (String ac : myInteractionsToDel) {
                 Interaction intact = interactionDao.getByAc(ac);
                 exp.removeInteraction(intact);
             }
@@ -520,7 +529,9 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
             // --------------------------------------------------------------------
             // Need this fix to get around the proxies.
             // 1. Clear all the interaction proxies first.
-            exp.getInteractions().clear();
+
+            //exp.getInteractions().clear();
+            List<String> interactionAcs = DebugUtil.acList(exp.getInteractions());
 
             // 2. Now add the interaction as real objects.
             for (InteractionRowData row : myInteractions)
@@ -533,11 +544,24 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
                 }else{
                     inter = interactionDao.getByAc(inter.getAc());
                 }
-                inter.addExperiment(exp);
-                exp.addInteraction(inter);
+
+                if (!interactionAcs.contains(inter.getAc())) {
+                    inter.getExperiments().add(exp);
+                    exp.getInteractions().add(inter);
+                }
+
+//                try {
+//                    InteractionPersister.getInstance().saveOrUpdate(inter);
+//                } catch (PersisterException e) {
+//                    e.printStackTrace();
+//                }
             }
+
+
             // --------------------------------------------------------------------
         }
+
+        return exp;
     }
 
 

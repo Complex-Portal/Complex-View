@@ -724,7 +724,7 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
     /**
      * Finishes the editing session.
      */
-    private void endEditing() {
+    public void endEditing() {
         myEditState = false;
     }
 

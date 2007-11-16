@@ -1,4 +1,5 @@
 <%@ page import="org.apache.commons.lang.exception.ExceptionUtils" %>
+<%@ page import="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler" %>
 <!--
 - Author: Sugath Mudali (smudali@ebi.ac.uk)
 - Version: $Id: error.jsp,v 1.5 2003/03/27 17:34:08 skerrien Exp $
@@ -45,7 +46,7 @@ You must correct the following error(s) before proceeding:
     </script>
 
     <%
-        Throwable t = (Throwable) request.getAttribute("theException");
+        Throwable t = (Throwable) request.getAttribute(EditorExceptionHandler.EXCEPTION_PARAM);
 
         if (t != null) {
 

@@ -11,10 +11,12 @@ import uk.ac.ebi.intact.application.editor.business.EditorService;
 import uk.ac.ebi.intact.application.editor.struts.view.AbstractEditBean;
 import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
 import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.ExperimentXref;
 import uk.ac.ebi.intact.model.Xref;
+import uk.ac.ebi.intact.model.util.ExperimentUtils;
 
-import java.util.Iterator;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * This class contains data for an Experiment row in the Interaction editor.
@@ -56,11 +58,11 @@ public class ExperimentRowData extends ResultRowData {
         this(exp.getAc(), exp.getShortLabel(), exp.getFullName(), exp.getCreator(),
              exp.getUpdator(), exp.getCreated(),exp.getUpdated());
         myExperiment = exp;
-        for (Iterator iter = exp.getXrefs().iterator(); iter.hasNext(); ) {
-            Xref xref = (Xref) iter.next();
-            if (xref.getCvXrefQualifier().getShortLabel().equals("primary-reference")) {
-                setPubMedLink(xref);
-            }
+
+        ExperimentXref xref = ExperimentUtils.getPrimaryReferenceXref(exp);
+
+        if (xref != null) {
+            setPubMedLink(xref);
         }
     }
 

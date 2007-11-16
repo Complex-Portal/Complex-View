@@ -417,13 +417,12 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
 
     // Implements abstract methods
     @Override
-    protected void updateAnnotatedObject() throws IntactException {
+    protected Feature createAnnotatedObjectFromView() throws IntactException {
+        Feature feature = syncAnnotatedObject();
+
         // The feature type for the current feature.
         CvObjectDao<CvFeatureType> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvFeatureType.class);
         CvFeatureType featureType = cvObjectDao.getByShortLabel(getCvFeatureType());
-
-        // The current feature.
-        Feature feature = syncAnnotatedObject();
 
         // null if creating a new Feature.
         if (feature == null) {
@@ -437,6 +436,8 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
             feature.setCvFeatureType(featureType);
         }
         feature.setCvFeatureIdentification(getCvFeatureIndent());
+
+        return feature;
     }
 
     @Override

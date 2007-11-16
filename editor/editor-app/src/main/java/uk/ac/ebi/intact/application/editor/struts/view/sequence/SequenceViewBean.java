@@ -152,16 +152,15 @@ public abstract class SequenceViewBean extends AbstractEditViewBean<Polymer> {
 
     // Implements abstract methods
     @Override
-    protected void updateAnnotatedObject() throws IntactException {
+    protected Polymer createAnnotatedObjectFromView() throws IntactException {
+        Polymer polymer = syncAnnotatedObject();
+
         // Get the objects using their short label.
         BioSourceDao bioSourceDao = DaoProvider.getDaoFactory().getBioSourceDao();
         BioSource biosrc = bioSourceDao.getByShortLabel(myOrganism);
 
         CvObjectDao<CvInteractorType> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvInteractorType.class);
         CvInteractorType intType = cvObjectDao.getByShortLabel(myInteractorType);
-        // The current polymer
-        final Polymer annotatedObject = syncAnnotatedObject();
-        Polymer polymer = annotatedObject;
 
         // Have we set the annotated object for the view?
         if (polymer == null) {
@@ -171,17 +170,19 @@ public abstract class SequenceViewBean extends AbstractEditViewBean<Polymer> {
             setAnnotatedObject(polymer);
         }
         else {
-            annotatedObject.setBioSource(biosrc);
-            annotatedObject.setCvInteractorType(intType);
+            polymer.setBioSource(biosrc);
+            polymer.setCvInteractorType(intType);
         }
         // Set the sequence in the persistOthers method we can safely delete
         // unused sequences.
         
         if (getSequence().length() > 0) {
-            annotatedObject.setSequence(getSequence());
-            annotatedObject.setCrc64(Crc64.getCrc64(getSequence()));
+            polymer.setSequence(getSequence());
+            polymer.setCrc64(Crc64.getCrc64(getSequence()));
 
         }
+
+        return polymer;
     }
 
     protected String getInteractorType() {
