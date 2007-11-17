@@ -22,6 +22,8 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.persistence.dao.FeatureDao;
 import uk.ac.ebi.intact.persistence.dao.RangeDao;
+import uk.ac.ebi.intact.core.persister.PersisterHelper;
+import uk.ac.ebi.intact.core.persister.PersisterException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -211,7 +213,12 @@ public class FeatureDispatchAction extends CommonDispatchAction {
                     rangeDao.persist(range);
                     feature.addRange(range);
                 }
-                featureDao.saveOrUpdate(feature);
+                try {
+                    PersisterHelper.saveOrUpdate(feature);
+                }
+                catch (PersisterException e) {
+                    throw new IntactException("Problem persisting feature: "+feature.getShortLabel(), e);
+                }
             }
             catch (IntactException ie) {
                 // Log the stack trace.
