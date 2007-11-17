@@ -471,10 +471,12 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
         try {
             // Persist my current state (this takes care of updating the wrapped
             // object with values from the form).
+            IntactContext.getCurrentInstance().getDataContext().beginTransaction();
             view.persist(user);
 
             // Any other objects to persist in their own transaction.
             view.persistOthers(user);
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
             // We reset the view with the saved interaction so that the ac are reset as well.
             // !!!!BE CAREFULL !!!! when you reset the view all the isSelected boolean are reset to false, so you won't know anymore
             // if something has been selected.

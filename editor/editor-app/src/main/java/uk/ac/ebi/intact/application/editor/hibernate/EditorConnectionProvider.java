@@ -27,8 +27,6 @@ public class EditorConnectionProvider implements ConnectionProvider
     private boolean driverLoaded;
     private String currentUser;
 
-    private Connection userConnection;
-
     public void configure(Properties properties) throws HibernateException
     {
 
@@ -45,8 +43,6 @@ public class EditorConnectionProvider implements ConnectionProvider
             Configuration configuration = (Configuration)IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig().getConfiguration();
 
             currentUser = IntactContext.getCurrentInstance().getUserContext().getUserId();
-            String currentUserPassword = IntactContext.getCurrentInstance().getUserContext().getUserPassword();
-            String url = configuration.getProperty(Environment.URL);
 
             if (!driverLoaded)
             {
@@ -64,16 +60,6 @@ public class EditorConnectionProvider implements ConnectionProvider
 
             if (currentUser != null)
             {
-                /*
-                if (userConnection != null && !userConnection.isClosed()) {
-                    if (log.isDebugEnabled()) log.debug("Reusing user connection: "+currentUser);
-                    return userConnection;
-                }
-                if (log.isDebugEnabled()) log.debug("Creating new connection for user: "+currentUser);
-
-                userConnection = DriverManager.getConnection(url, currentUser, currentUserPassword);
-                connection = userConnection;
-                */
                 connection = ConnectionManager.getInstance().getCurrentConnectionForUser();
             }
             else

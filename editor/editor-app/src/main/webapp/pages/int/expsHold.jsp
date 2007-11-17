@@ -16,9 +16,9 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 
-<h3>Experiments not yet added to the Interaction</h3>
-
 <c:if test="${not empty intForm.expsOnHold}">
+
+    <h3>Experiments not yet added to the Interaction</h3>
 
     <table width="100%" border="0" cellspacing="1" cellpadding="2">
         <tr class="tableRowHeader">

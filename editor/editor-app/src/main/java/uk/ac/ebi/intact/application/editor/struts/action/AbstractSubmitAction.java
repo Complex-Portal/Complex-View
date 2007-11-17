@@ -94,7 +94,7 @@ public abstract class AbstractSubmitAction extends AbstractEditorAction {
         final AbstractEditViewBean view = editUser.getView();
 
         if (view == null) {
-            throw new IllegalStateException("View is null");
+            throw new IllegalStateException("View is null. Probably the session has expired?");
         }
 
         view.copyPropertiesFrom(editorForm);

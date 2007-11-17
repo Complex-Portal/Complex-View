@@ -161,7 +161,9 @@ public class ProteinSearchAction extends AbstractEditorAction {
         if (param.equals("spAc")) {
             try{
                 log.debug("ProteinSearchAction.execute 2");
+                IntactContext.getCurrentInstance().getDataContext().beginTransaction();
                 uniprotServiceResult = proteinService.retrieve(value);
+                IntactContext.getCurrentInstance().getDataContext().commitTransaction();
                 log.debug("uniprotServiceResult.getProteins().size()" + uniprotServiceResult.getProteins().size());
                 for(Protein protein : uniprotServiceResult.getProteins()){
                     log.debug("uniprotServiceResult protein.getShortLabel() = " + protein.getShortLabel());

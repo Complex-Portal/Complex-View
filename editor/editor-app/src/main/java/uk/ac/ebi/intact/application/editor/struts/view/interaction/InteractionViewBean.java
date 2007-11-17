@@ -182,7 +182,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         try {
             // persist the view.
             persistCurrentView();
-            user.rollback(); //to end editing
+            user.endEditing(); //to end editing
         }
         catch (IntactException ie1) {
             log.error("", ie1);
@@ -955,7 +955,22 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             }
             intact.removeExperiment(exp);
         }
+        /*
+        // clear any component for the interaction and re-attach the existing ones
+        intact.getComponents().clear();
 
+        for (ComponentBean componentBean : myComponents) {
+            Component component = componentBean.getComponent(true); // boolean is ignored
+
+            if (component == null) {
+                Interactor interactor = DaoProvider.getDaoFactory().getInteractorDao().getByAc(componentBean.getInteractorAc());
+                CvExperimentalRole experimentalRole = DaoProvider.getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByShortLabel(componentBean.getExpRole());
+                CvBiologicalRole biologicalRole = DaoProvider.getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByShortLabel(componentBean.getBioRole());
+                component = new Component(intact.getOwner(), intact, interactor, experimentalRole, biologicalRole);
+            }
+            intact.addComponent(component);
+        }
+        */
         return intact;
     }
 

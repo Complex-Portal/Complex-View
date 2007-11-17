@@ -1,4 +1,5 @@
 <%@ page import="org.apache.commons.lang.exception.ExceptionUtils" %>
+<%@ page import="org.joda.time.DateTime" %>
 <%@ page import="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler" %>
 <!--
 - Author: Sugath Mudali (smudali@ebi.ac.uk)
@@ -57,7 +58,7 @@ You must correct the following error(s) before proceeding:
 
     <div id="exception" style="color:gray; display:none;">
         <%
-                out.println(ExceptionUtils.getFullStackTrace(t));
+                out.println("["+new DateTime()+"] "+ExceptionUtils.getFullStackTrace(t));
             }
         %>
 

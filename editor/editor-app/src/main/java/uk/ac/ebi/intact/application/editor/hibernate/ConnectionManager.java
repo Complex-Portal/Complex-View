@@ -22,6 +22,7 @@ import org.hibernate.cfg.Environment;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 
+import javax.servlet.ServletContext;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -56,19 +57,36 @@ public class ConnectionManager implements Serializable {
             }
 
         } else {
-            throw new IllegalStateException("ConnectionManager is only available if the IntactContext exists");
+            throw new IllegalStateException("ConnectionManager is only available if the IntactContext exists when using the ConnectionManager.getInstance() method" +
+                    " without parameters");
         }
+
+        return cm;
+    }
+
+    public static ConnectionManager getInstance(ServletContext servletContext) {
+        ConnectionManager cm = null;
+
+            cm = (ConnectionManager) servletContext.getAttribute(CONNECTION_MANAGER_PARAM);
+
+            if (cm == null) {
+                cm = new ConnectionManager();
+                servletContext.setAttribute(CONNECTION_MANAGER_PARAM, cm);
+            }
 
         return cm;
     }
 
     private Map<String, Connection> connectionMap;
     private Configuration configuration;
+    private String defaultUser;
 
     private ConnectionManager() {
         this.connectionMap = new HashMap<String,Connection>();
 
         this.configuration = (Configuration) IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig().getConfiguration();
+
+        this.defaultUser = configuration.getProperty(Environment.USER);
 
         String driverClass = configuration.getProperty(Environment.DRIVER);
         try {
@@ -104,6 +122,11 @@ public class ConnectionManager implements Serializable {
 
 
     protected void evictConnectionForUser(String user) {
+        if (user.equals(defaultUser)) {
+            if (log.isDebugEnabled()) log.debug("Not evicting and closing connection for default user: "+user);
+            return;
+        }
+
         if (log.isDebugEnabled()) log.debug("Evicting and closing connection for user: "+user);
 
         Connection userConnection = connectionMap.get(user);
