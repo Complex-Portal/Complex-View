@@ -54,8 +54,8 @@ public class DeleteFormAction extends AbstractEditorAction {
 
         try {
             // No need to delete if the object is not yet persisted.
-            if ( view.syncAnnotatedObject() == null ||
-                 (view.syncAnnotatedObject() != null && view.syncAnnotatedObject().getAc() == null)) {
+            if ( view.getAnnotatedObject() == null ||
+                 (view.getAnnotatedObject() != null && view.getAnnotatedObject().getAc() == null)) {
                 // Back to the search page.
                 return mapping.findForward(SEARCH);
             }

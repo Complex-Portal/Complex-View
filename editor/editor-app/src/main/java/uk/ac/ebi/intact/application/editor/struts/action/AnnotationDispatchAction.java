@@ -12,6 +12,7 @@ import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
 import uk.ac.ebi.intact.application.editor.struts.view.AbstractEditBean;
 import uk.ac.ebi.intact.application.editor.struts.view.CommentBean;
+import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -158,7 +159,10 @@ public class AnnotationDispatchAction extends AbstractEditorAction {
 
         // The current view of the edit session.
         AbstractEditViewBean view = getIntactUser(request).getView();
+
+        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         view.delAnnotation(cb);
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction();
 
         // Back to the edit form.
         return mapping.getInputForward();

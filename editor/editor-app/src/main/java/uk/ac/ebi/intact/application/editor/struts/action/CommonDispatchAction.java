@@ -35,6 +35,7 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.persistence.dao.ExperimentDao;
+import uk.ac.ebi.intact.core.persister.PersisterHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -106,7 +107,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             AbstractEditViewBean view = user.getView();
 
             // Update the search cache.
-            user.updateSearchCache(view.syncAnnotatedObject());
+            user.updateSearchCache(view.getAnnotatedObject());
 
             // Add the current edited object to the recent list.
             view.addToRecentList(user);
@@ -476,11 +477,19 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
 
             // Any other objects to persist in their own transaction.
             view.persistOthers(user);
+
+            final AnnotatedObject annotatedObject = view.syncAnnotatedObject();
+            try {
+                PersisterHelper.saveOrUpdate(annotatedObject);
+        } catch (Exception e) {
+            throw new IntactException("Exception saving object: "+annotatedObject.getShortLabel(), e);
+        }
+
             IntactContext.getCurrentInstance().getDataContext().commitTransaction();
             // We reset the view with the saved interaction so that the ac are reset as well.
             // !!!!BE CAREFULL !!!! when you reset the view all the isSelected boolean are reset to false, so you won't know anymore
             // if something has been selected.
-            AnnotatedObject annotatedObject = view.syncAnnotatedObject();
+            //AnnotatedObject annotatedObject = view.getAnnotatedObject();
             view.reset(annotatedObject);
         }
         catch (IntactException ie) {
@@ -503,6 +512,8 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             }
             // Clear any left overs from previous transaction.
             view.clearTransactions();
+
+            IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getEntityManager().close();
         }
         // All are up todate except for AC which still can be null for a new object.
         editForm.setAc(view.getAcLink());

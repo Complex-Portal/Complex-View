@@ -134,7 +134,7 @@ public class FeatureDispatchAction extends CommonDispatchAction {
         }
         else {
             // Update the feature in the interaction view (only for non mutation mode)
-            intView.saveFeature(view.syncAnnotatedObject());
+            intView.saveFeature(view.getAnnotatedObject());
         }
         // Turn off mutation mode (or else you will get mutation screen again)
         view.turnOffMutationMode();

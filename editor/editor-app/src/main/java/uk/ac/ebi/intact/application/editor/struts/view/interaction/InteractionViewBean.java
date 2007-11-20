@@ -23,7 +23,11 @@ import uk.ac.ebi.intact.application.editor.struts.view.feature.FeatureBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.AbstractPersister;
+import uk.ac.ebi.intact.core.persister.PersisterException;
+import uk.ac.ebi.intact.core.persister.PersisterHelper;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.InteractionUtils;
 import uk.ac.ebi.intact.persistence.dao.*;
 
 import java.util.*;
@@ -178,25 +182,33 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
     // Override the super to persist others.
     @Override
     public void persistOthers(EditUserI user) throws IntactException {
+        Interaction interaction = getAnnotatedObject();
+
         // First transaction for
         try {
             // persist the view.
             persistCurrentView();
-            user.endEditing(); //to end editing
-        }
-        catch (IntactException ie1) {
-            log.error("", ie1);
-            user.rollback();
-            // Rethrow the exception to be logged.
-            throw ie1;
-        }
-        // Need another transaction to delete features.
-        try {
-
-            // persist the view in a second transaction
+//            user.endEditing(); //to end editing
+//        }
+//        catch (IntactException ie1) {
+//            log.error("", ie1);
+//            user.rollback();
+//            // Rethrow the exception to be logged.
+//            throw ie1;
+//        }
+//        // Need another transaction to delete features.
+//        try {
+//
+//            // persist the view in a second transaction
             persistCurrentView2();
 
-            user.rollback(); //to end editing
+//            try {
+//                PersisterHelper.saveOrUpdate(interaction);
+//            } catch (PersisterException e) {
+//                throw new IntactException("Problem persisting interaction: "+interaction.getShortLabel(), e);
+//            }
+
+            user.endEditing(); //to end editing
 
         }
         catch (IntactException ie1) {
@@ -483,6 +495,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             myComponents.add(new ComponentBean((NucleicAcid)interactor));
         }else if (interactor instanceof SmallMolecule ){
             myComponents.add(new ComponentBean((SmallMolecule)interactor));
+        } else {
+            throw new IllegalArgumentException("Interactor of type '"+interactor.getClass().getSimpleName()+"' was not expected");
         }
     }
 
@@ -607,6 +621,10 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
         // The ac to match to retrieve the component.
         String compAc = feature.getComponent().getAc();
+
+        if (myComponents.isEmpty()) {
+            throw new IllegalStateException("No components were found for the current object");
+        }
 
         // Find the component bean this feature bean belongs to.
         log.debug("myComponents.size()" + myComponents.size());
@@ -900,14 +918,14 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
     // Implements abstract methods
     @Override
     protected Interaction createAnnotatedObjectFromView() throws IntactException {
-        Interaction intact = syncAnnotatedObject();
+        Interaction intact = null;
 
         // The cv interaction type for the interaction.
         CvObjectDao<CvObject> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvObject.class);
         CvInteractionType type =(CvInteractionType) cvObjectDao.getByShortLabel(myInteractionType);
 
         // Have we set the annotated object for the view?
-        if (intact == null) {
+        //if (intact == null) {
             // Collect experiments from beans.
             List<Experiment> exps = new ArrayList<Experiment>();
             for (ExperimentRowData row : getExperimentsToAdd())
@@ -926,13 +944,18 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             // Not persisted. Create a new Interaction.
             intact = new InteractionImpl(exps, new ArrayList(),
                     type, intType, getShortLabel(), IntactContext.getCurrentInstance().getConfig().getInstitution());
+
+            if (getAc() != null) {
+                intact.setAc(getAc());
+            }
+
             // Set this interaction as the annotated object.
             setAnnotatedObject(intact);
-        }
-        else {
+        //}
+        //else {
             // Update the existing interaction.
-            intact.setCvInteractionType(type);
-        }
+        //    intact.setCvInteractionType(type);
+        //}
         // Get the objects using their short label.
         if (myOrganism != null) {
             BioSourceDao bioSourceDao = DaoProvider.getDaoFactory().getBioSourceDao();
@@ -955,22 +978,9 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             }
             intact.removeExperiment(exp);
         }
-        /*
-        // clear any component for the interaction and re-attach the existing ones
-        intact.getComponents().clear();
 
-        for (ComponentBean componentBean : myComponents) {
-            Component component = componentBean.getComponent(true); // boolean is ignored
+        super.setAnnotatedObject(intact);
 
-            if (component == null) {
-                Interactor interactor = DaoProvider.getDaoFactory().getInteractorDao().getByAc(componentBean.getInteractorAc());
-                CvExperimentalRole experimentalRole = DaoProvider.getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByShortLabel(componentBean.getExpRole());
-                CvBiologicalRole biologicalRole = DaoProvider.getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByShortLabel(componentBean.getBioRole());
-                component = new Component(intact.getOwner(), intact, interactor, experimentalRole, biologicalRole);
-            }
-            intact.addComponent(component);
-        }
-        */
         return intact;
     }
 
@@ -1037,6 +1047,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         myExperiments.clear();
         for (Experiment exp : exps)
         {
+            IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getExperimentDao()
+                    .refresh(exp);
             myExperiments.add(new ExperimentRowData(exp));
         }
     }
@@ -1081,7 +1093,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
     private void persistCurrentView() throws IntactException {
         // The current Interaction.
-        Interaction intact = syncAnnotatedObject();
+        Interaction intact = getAnnotatedObject();
 
         // Add experiments here. Make sure this is done after persisting the
         // Interaction first. - IMPORTANT. don't change the order.
@@ -1101,16 +1113,6 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
         // Update components.
         updateComponents(intact);
-
-        // No need to test whether this 'intact' persistent or not because we
-        // know it has been already persisted by persist() call.
-        InteractionDao interactionDao = DaoProvider.getDaoFactory().getInteractionDao();
-
-        log.debug("we have updated the components, now we save the interaction, it has " + intact.getComponents().size() + " components");
-        interactionDao.update((InteractionImpl) intact);
-
-        // TODO: investigate this - try to put it in the filter
-        //IntactContext.getCurrentInstance().getDataContext().flushSession();
     }
 
     private void persistCurrentView2() throws IntactException {

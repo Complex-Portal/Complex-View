@@ -71,7 +71,7 @@ public class CancelFeatureAction extends AbstractEditorAction {
 
         // If it is a new feature then we need to delete this feature if it has
         // been persisted.
-        if (view.isNewFeature() && view.syncAnnotatedObject() != null) {
+        if (view.isNewFeature() && view.getAnnotatedObject() != null) {
             return mapping.findForward("delete");
         }
         // Restore the previous view (interaction view).

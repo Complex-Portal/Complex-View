@@ -65,6 +65,8 @@ public class ProteinDispatchAction extends AbstractEditorDispatchAction {
         InteractionViewBean view =
                 (InteractionViewBean) getIntactUser(request).getView();
 
+        view.recalculateShortLabel(view.syncAnnotatedObject());
+
         // Update the form.
         return updateForm(mapping, intform, request, view);
     }

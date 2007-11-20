@@ -77,7 +77,7 @@ public class InteractionDispatchAction extends CommonDispatchAction {
             ExperimentViewBean expView = (ExperimentViewBean) user.popPreviousView();
 
             // Update the experiment-Interaction view.
-            expView.updateInteractionRow((Interaction) view.syncAnnotatedObject());
+            expView.updateInteractionRow(view.getAnnotatedObject());
 
             // Set the tpdated view.
             user.setView(expView);
@@ -86,7 +86,7 @@ public class InteractionDispatchAction extends CommonDispatchAction {
             return mapping.findForward(EXP);
         }
         // Update the search cache.
-        user.updateSearchCache(view.syncAnnotatedObject());
+        user.updateSearchCache(view.getAnnotatedObject());
 
         // Add the current edited object to the recent list.
         view.addToRecentList(user);
@@ -129,7 +129,7 @@ public class InteractionDispatchAction extends CommonDispatchAction {
                 ExperimentViewBean expView = (ExperimentViewBean) user.peekPreviousView();
 
                 // Update the experiment-Interaction view.
-                expView.updateInteractionRow((Interaction) user.getView().syncAnnotatedObject());
+                expView.updateInteractionRow((Interaction) user.getView().getAnnotatedObject());
 
                 log.info("The previous view of this Interaction was no an ExperimentView but a "
                         + view.getClass().getSimpleName());

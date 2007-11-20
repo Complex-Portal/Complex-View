@@ -10,7 +10,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.tiles.ComponentContext;
-import org.hibernate.Session;
 import uk.ac.ebi.intact.application.commons.util.AnnotationSection;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.business.EditorService;
@@ -21,14 +20,15 @@ import uk.ac.ebi.intact.application.editor.struts.view.XreferenceBean;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.ComponentBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
-
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.util.CgLibUtil;
-import uk.ac.ebi.intact.persistence.dao.*;
 import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.core.persister.PersisterHelper;
 import uk.ac.ebi.intact.core.persister.PersisterException;
+import uk.ac.ebi.intact.core.persister.PersisterHelper;
+import uk.ac.ebi.intact.core.persister.AbstractPersister;
+import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.persistence.dao.*;
+import uk.ac.ebi.intact.persistence.util.CgLibUtil;
 
+import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.*;
 
@@ -234,6 +234,8 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      * Deletes all the links to sub objects of the current edit object.
      */
     public void reset() {
+        if (log.isDebugEnabled()) log.debug("Resetting view");
+        
         // Clear Transaction containers.
         clearTransactions();
 
@@ -272,7 +274,8 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      * @param annobj <code>AnnotatedObject</code> object to set this bean.
      */
     public void reset(T annobj) {
-        // reset() methid is called before passivating the object and hence
+        if (log.isDebugEnabled()) log.debug("Resetting view, with object: "+annobj.getShortLabel()+" ("+annobj.getAc()+")");
+
         // no need to call it from here.
         setShortLabel(annobj.getShortLabel());
         setCreator(annobj.getCreator());
@@ -286,15 +289,6 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         makeCommentBeans(annobj.getAnnotations());
         makeXrefBeans(annobj.getXrefs());
 
-        // Remove the current short label from the menu. Menus are already loaded
-        // via activateObject method call of the EditViewBeanFactory class.
-        //try {
-        //    removeCurrentSLFromMenus();
-        //}
-//        catch (IntactException ie) {
-//            // Log the error; the editor will display without menus!
-//            log.error("loadMenus() error", ie);
-//        }
     }
 
     /**
@@ -350,8 +344,12 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      * this method returns the hibernate Session  object that is attached to this request.
      * @return the Hibernate Session
      */
-     private Session getSession(){
-        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCurrentSession();
+     private EntityManager getEntityManager(){
+        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getEntityManager();
+    }
+
+    public final T getAnnotatedObject() {
+        return myAnnotObject;
     }
 
     /**
@@ -368,15 +366,19 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      * @return <code>AnnotatedObject</code> this instace is wrapped around.
      */
     public final T syncAnnotatedObject() {
+
         if (myAnnotObject == null) {
             if (log.isDebugEnabled()) log.debug("Trying to sync a null object");
             return null;
         }
+        //} else if (myAnnotObject.getAc() != null) {
+        //    myAnnotObject = (T) ((AbstractPersister) PersisterHelper.persisterFor(myAnnotObject.getClass())).syncIfTransient(myAnnotObject);
+        //}
 
         if (myAnnotObject.getAc() != null) {
 
             // If myAnnotObject is contained in the session, we don't reload it but return it directly, otherwise continue.
-            if (!getSession().contains(myAnnotObject)) {
+            if (!getEntityManager().contains(myAnnotObject)) {
 
                 // If this part of the code is riched it means that myAnnotObject was not contained in the Session. It if has an
                 // an ac, we reload it. If it has no ac, it means that myAnnotObject is a clone we go to the next "if" statement
@@ -400,7 +402,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
         } else if (getOriginalAc() != null) {
 
-            if (getSession().contains(myOriginal)) {
+            if (getEntityManager().contains(myOriginal)) {
                 log.debug("Recloning object (syncing)");
                 AnnotatedObjectDao<AnnotatedObjectImpl> annotatedObjectDao = DaoProvider.getDaoFactory(myAnnotObject.getClass());
                 myOriginal = annotatedObjectDao.getByAc(getOriginalAc());
@@ -428,7 +430,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             }
 
         }
-
+          
         return myAnnotObject;
     }
 
@@ -1319,8 +1321,6 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     // Persist the current annotated object.
 
     private void persistCurrentView() throws IntactException {
-        //IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-
         // First create/update the annotated object by the view.
         final T annotatedObject = createAnnotatedObjectFromView();
 
@@ -1438,14 +1438,11 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             //}
         }
          */
-        //persistAnnotatedObject();
-        //PersisterHelper.persisterFor(annotatedObject.getClass()).commit();
-        try {
-            PersisterHelper.saveOrUpdate(annotatedObject);
-            //IntactContext.getCurrentInstance().getDataContext().commitTransaction();
-        } catch (Exception e) {
-            throw new IntactException("Exception saving object: "+annotatedObject.getShortLabel(), e);
-        } 
+//        try {
+//            PersisterHelper.saveOrUpdate(annotatedObject);
+//        } catch (Exception e) {
+//            throw new IntactException("Exception saving object: "+annotatedObject.getShortLabel(), e);
+//        }
 
 
         // update the cvObject in the cvContext (application scope)
@@ -1566,15 +1563,9 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     }
 
     private void resetAnnotatedObject(T annobj) {
-        // Need to get the real object for a proxy type.
-        if (Polymer.class.isAssignableFrom(annobj.getClass())) {
-            setAnnotatedObject( /*helper.materializeIntactObject(*/annobj/*)*/);
-            myEditClass = (Class<T>) syncAnnotatedObject().getClass();
-        }
-        else {
-            setAnnotatedObject(annobj);
-            myEditClass = CgLibUtil.getRealClassName(annobj);
-        }
+        setAnnotatedObject(annobj);
+        myEditClass = CgLibUtil.getRealClassName(annobj);
+
         setFullName(annobj.getFullName());
     }
 

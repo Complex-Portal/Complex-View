@@ -163,7 +163,7 @@ public class ProteinSearchAction extends AbstractEditorAction {
                 log.debug("ProteinSearchAction.execute 2");
                 IntactContext.getCurrentInstance().getDataContext().beginTransaction();
                 uniprotServiceResult = proteinService.retrieve(value);
-                IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+
                 log.debug("uniprotServiceResult.getProteins().size()" + uniprotServiceResult.getProteins().size());
                 for(Protein protein : uniprotServiceResult.getProteins()){
                     log.debug("uniprotServiceResult protein.getShortLabel() = " + protein.getShortLabel());
@@ -176,6 +176,8 @@ public class ProteinSearchAction extends AbstractEditorAction {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.intact"));
                 saveErrors(request, errors);
                 return mapping.findForward(FAILURE);
+            } finally {
+                IntactContext.getCurrentInstance().getDataContext().commitTransaction();
             }
         }
         else {

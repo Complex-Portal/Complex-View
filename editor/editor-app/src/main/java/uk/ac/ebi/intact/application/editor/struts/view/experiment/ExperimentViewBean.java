@@ -155,7 +155,7 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
     // recent experiment list.
     @Override
     public void addToRecentList(EditUserI user) {
-        ExperimentRowData row = new ExperimentRowData(syncAnnotatedObject());
+        ExperimentRowData row = new ExperimentRowData(getAnnotatedObject());
         user.addToCurrentExperiment(row);
     }
 

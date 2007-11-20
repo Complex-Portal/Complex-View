@@ -20,7 +20,9 @@ import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.application.editor.util.LockManager;
 import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
 import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.context.DataContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.*;
 import uk.ac.ebi.intact.persistence.util.CgLibUtil;
@@ -422,7 +424,10 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
         myEditView = EditViewBeanFactory.getInstance().borrowObject(
                 CgLibUtil.getRealClassName(obj), 0);
         myEditView.resetClonedObject(obj, this);
-        myEditView.setOriginalAc(originalAc);
+
+
+        //myEditView.setOriginalAc(originalAc);
+
         // Load menus after setting the annotated object.
         myEditView.loadMenus();
     }
@@ -475,41 +480,27 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
     }
 
     public void delete() throws IntactException {
-        AnnotatedObject annobj = myEditView.syncAnnotatedObject();
+        AnnotatedObject annobj = myEditView.getAnnotatedObject();
         if (annobj.getAc() == null) {
             return;
         }
 
-        delete(annobj);
-    }
+        final DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
+        dataContext.beginTransaction();
 
-    private void delete(AnnotatedObject annobj){
-        if(annobj.getAc() == null){
-            return;
-        }
+        if (log.isDebugEnabled())
+            log.debug("Deleting annotated object: "+annobj.getShortLabel()+" ("+annobj.getAc()+")");
 
-        if(annobj instanceof Experiment){
-            log.debug("myAnnotObject is instanceof Experiment");
-            ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
-            experimentDao.delete((Experiment) annobj);
-        }else if(annobj instanceof Interactor){
-            log.debug("myAnnotObject is instanceof Interactor");
-            InteractorDao interactorDao = DaoProvider.getDaoFactory().getInteractorDao();
-            interactorDao.delete((Interactor)annobj);
-        }else if(annobj instanceof Feature){
-            log.debug("myAnnotObject is instanceof Feature");
-            FeatureDao featureDao = DaoProvider.getDaoFactory().getFeatureDao();
-            featureDao.delete((Feature) annobj);
-        }else if(annobj instanceof CvObject){
-            log.debug("myAnnotObject is instanceof CvObject");
-            CvObjectDao<CvObject> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvObject.class);
-            cvObjectDao.delete((CvObject) annobj);
-        }else if(annobj instanceof BioSource){
-            log.debug("myAnnotObject is instanceof BioSource");
-            BioSourceDao bioSourceDao = DaoProvider.getDaoFactory().getBioSourceDao();
-            bioSourceDao.delete((BioSource) annobj);
+
+        dataContext.getDaoFactory().getAnnotatedObjectDao(annobj.getClass()).deleteByAc(annobj.getAc());
+
+        try {
+            dataContext.commitTransaction();
+        } catch (IntactTransactionException e) {
+            throw new IntactException("Problem deleting object: "+annobj.getShortLabel(), e);
         }
     }
+
 
     public void cancelEdit() {
         endEditing();
