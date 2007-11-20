@@ -29,9 +29,9 @@
     <build>
         <plugins>
             <plugin>
-                <version>1.0</version>
                 <groupId>uk.ac.ebi.intact.editor</groupId>
                 <artifactId>maven-editortopics-plugin</artifactId>
+                <version>1.6.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>

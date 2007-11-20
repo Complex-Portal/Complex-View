@@ -140,7 +140,7 @@ public class SidebarDispatchAction extends AbstractEditorDispatchAction {
             return mapping.findForward("secure");
         }
         // Multiple results found. Cache the search results.
-        user.addToSearchCache(results);
+        user.setSearchResults(results);
 
         // Move to the results page.
         return mapping.findForward(RESULT);

@@ -102,13 +102,12 @@ public class ResultDisplayWrapper extends TableDecorator {
     }
 
     public String getCreated(){
-        String created = new String();
+        String created = null;
         try {
          created = DateToolbox.formatDate(((ResultRowData) getObject()).getCreated());
         }
         catch(Exception e){
-            log.debug(e.getCause().getMessage());
-            log.debug(e.getCause().getMessage());
+            log.error("Problem parsing created date", e);
         }
         return created;
     }
@@ -135,7 +134,6 @@ public class ResultDisplayWrapper extends TableDecorator {
         }catch(Exception e){
             log.error("Error creating update info", e);
         }
-        log.debug(updateInfo);
          
          return updateInfo;
     }

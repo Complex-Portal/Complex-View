@@ -106,8 +106,11 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             // The current view.
             AbstractEditViewBean view = user.getView();
 
-            // Update the search cache.
-            user.updateSearchCache(view.getAnnotatedObject());
+            AnnotatedObject annobj = user.getView().syncAnnotatedObject();
+            if ((annobj != null) && (annobj.getAc() != null)) {
+                // Only update the persistent objects.
+                user.updateSearchCache(annobj);
+            }
 
             // Add the current edited object to the recent list.
             view.addToRecentList(user);
@@ -478,14 +481,21 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             // Any other objects to persist in their own transaction.
             view.persistOthers(user);
 
-            final AnnotatedObject annotatedObject = view.syncAnnotatedObject();
+            final AnnotatedObject annotatedObject = view.getAnnotatedObject();
             try {
                 PersisterHelper.saveOrUpdate(annotatedObject);
-        } catch (Exception e) {
-            throw new IntactException("Exception saving object: "+annotatedObject.getShortLabel(), e);
-        }
+            } catch (Exception e) {
+                throw new IntactException("Exception saving object: " + annotatedObject.getShortLabel(), e);
+            }
 
             IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+
+            // update the cvObject in the cvContext (application scope)
+            if (annotatedObject instanceof CvObject) {
+                IntactContext.getCurrentInstance().getCvContext().updateCvObject((CvObject) annotatedObject);
+                log.info("CvObject updated: " + annotatedObject);
+            }
+
             // We reset the view with the saved interaction so that the ac are reset as well.
             // !!!!BE CAREFULL !!!! when you reset the view all the isSelected boolean are reset to false, so you won't know anymore
             // if something has been selected.

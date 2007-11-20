@@ -199,7 +199,7 @@ public interface EditUserI extends IntactUserI, Serializable {
      * pre: results->forall(obj: Object | obj.oclIsTypeOf(AnnotatedObjects))
      * </pre>
      */
-    public void addToSearchCache(Collection<ResultRowData> results);
+    public void setSearchResults(Collection<ResultRowData> results);
 
     /**
      * Clears existing search cache and replace it with given bean.
@@ -240,7 +240,7 @@ public interface EditUserI extends IntactUserI, Serializable {
      * post: return->forall(obj: Object | obj.oclIsTypeOf(ResultBean))
      * </pre>
      */
-    public List getSearchResult();
+    public Collection getSearchResult();
 
     /**
      * Returns the Newt server proxy assigned for the current session.

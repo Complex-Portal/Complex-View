@@ -123,6 +123,9 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
         super.copyPropertiesFrom(form);
 
         // Cast to the feature form to get feature data.
+        if (!(form instanceof FeatureActionForm)) {
+            throw new IllegalStateException("Trying to copy properties from a feature form, but found: "+form.getClass().getName());
+        }
         FeatureActionForm featureForm = (FeatureActionForm) form;
         setCvFeatureType(featureForm.getFeatureType());
         setCvFeatureIdentification(featureForm.getFeatureIdent());

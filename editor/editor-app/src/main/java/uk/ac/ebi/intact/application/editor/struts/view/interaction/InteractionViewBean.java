@@ -928,7 +928,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         //if (intact == null) {
             // Collect experiments from beans.
             List<Experiment> exps = new ArrayList<Experiment>();
-            for (ExperimentRowData row : getExperimentsToAdd())
+
+            for (ExperimentRowData row : getExperiments())
             {
                 Experiment exp = row.getExperiment();
                 if (exp == null)
@@ -945,12 +946,6 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             intact = new InteractionImpl(exps, new ArrayList(),
                     type, intType, getShortLabel(), IntactContext.getCurrentInstance().getConfig().getInstitution());
 
-            if (getAc() != null) {
-                intact.setAc(getAc());
-            }
-
-            // Set this interaction as the annotated object.
-            setAnnotatedObject(intact);
         //}
         //else {
             // Update the existing interaction.
@@ -978,8 +973,6 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             }
             intact.removeExperiment(exp);
         }
-
-        super.setAnnotatedObject(intact);
 
         return intact;
     }
@@ -1139,11 +1132,11 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
         for (ComponentBean cb : myComponentsToUpdate)
         {
-            ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
+            //ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
             Component comp = cb.getComponent();
 
             // Process features deleted from the current component.
-            for (FeatureBean fb : (Iterable<FeatureBean>) cb.getFeaturesToDelete())
+            for (FeatureBean fb : cb.getFeaturesToDelete())
             {
                 Feature featureToDel = fb.getUpdatedFeature();
                 if(featureToDel != null && featureToDel.getAc() != null){
@@ -1154,7 +1147,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                 log.debug("Remove feature from component");
                 comp.removeBindingDomain(featureToDel);
                 log.debug("Save or update comp");
-                componentDao.saveOrUpdate(comp);
+                //componentDao.saveOrUpdate(comp);
                 log.debug("Delete feature");
                 featureDao.delete(featureToDel);
 
@@ -1176,7 +1169,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                 linkedFeature.setBoundDomain(null);
                 featureDao.update(linkedFeature);
             }
-            componentDao.update(comp);
+            //componentDao.update(comp);
         }
     }
 
@@ -1287,7 +1280,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
     private void updateComponents(Interaction intact) throws IntactException {
 
         FeatureDao featureDao = DaoProvider.getDaoFactory().getFeatureDao();
-        RangeDao rangeDao = DaoProvider.getDaoFactory().getRangeDao();
+
         ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
         // Update components.
         for(ComponentBean cb : myComponentsToUpdate){
@@ -1297,7 +1290,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             disconnectLinkedFeatures(cb);
 
             Component comp = cb.getComponent(true);
-            componentDao.saveOrUpdate(comp);
+            //componentDao.saveOrUpdate(comp);
 
             // Add features
             for (FeatureBean featureBean : cb.getFeaturesToAdd())
@@ -1308,7 +1301,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                 // Feature AC is null for a cloned interaction.
                 if (feature.getAc() == null) {
                     // Create a new Feature.
-                    featureDao.persist(feature);
+                    //featureDao.persist(feature);
                     // Create ranges for the feature.
                     for (Range range : feature.getRanges()) {
                         range.setFeature(feature);
@@ -1345,7 +1338,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                 log.debug("intact.getComponents().size() =" + intact.getComponents().size());
                 while(compIterator.hasNext()){
                     Component component = compIterator.next();
-                    System.out.println("component.getAc()=" + component.getAc() + ".");
+                    
                     if(comp.getAc().equals(component.getAc())){
                         log.debug("Removing the component =" + comp.getAc());
                         compIterator.remove();
@@ -1355,7 +1348,12 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
             intact.addComponent(comp);
 
-            componentDao.saveOrUpdate(comp);
+            //componentDao.saveOrUpdate(comp);
+            try {
+                PersisterHelper.saveOrUpdate(comp);
+            } catch (PersisterException e) {
+                throw new IntactException("Problem updating component: "+comp.getAc(), e);
+            }
 
 //            iterator.remove();
         }

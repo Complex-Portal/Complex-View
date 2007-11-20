@@ -1322,11 +1322,30 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
     private void persistCurrentView() throws IntactException {
         // First create/update the annotated object by the view.
-        final T annotatedObject = createAnnotatedObjectFromView();
+        myAnnotObject = createAnnotatedObjectFromView();
+
+        // add the ac, from the view
+        if (getAc() != null) {
+            myAnnotObject.setAc(getAc());
+        }
+
+        // audit info
+        if (getCreated() != null) {
+            myAnnotObject.setCreated(getCreated());
+        }
+        if (getUpdated() != null) {
+            myAnnotObject.setUpdated(getUpdated());
+        }
+        if (getCreator() != null) {
+            myAnnotObject.setCreator(getCreator());
+        }
+        if (getUpdator() != null) {
+            myAnnotObject.setUpdator(getUpdator());
+        }
 
         // Update the short label and full name as they are common to all.
-        annotatedObject.setShortLabel(getShortLabel());
-        annotatedObject.setFullName(getFullName());
+        myAnnotObject.setShortLabel(getShortLabel());
+        myAnnotObject.setFullName(getFullName());
 
         if (log.isDebugEnabled()) log.debug("Persisting current view for: "+getShortLabel());
 
@@ -1344,15 +1363,15 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         for (CommentBean commentBean : getAnnotationsToUpdate())
         {
             Annotation annot = commentBean.getAnnotation();
-            Annotation correspondingAnnotation = getCorrespondingAnnotation(annotatedObject, annot);
+            Annotation correspondingAnnotation = getCorrespondingAnnotation(myAnnotObject, annot);
             if(correspondingAnnotation == null){
                 if(annotateOtherObject(annot)){
                     log.info("The annotation " + annot.getAc() + " is shared amongst several other object.");
                     //delAnnotation(commentBean);
-                    annotatedObject.removeAnnotation(annot);
+                    myAnnotObject.removeAnnotation(annot);
                     Annotation newAnnot = createAnnotation(annot);
                     //annotationDao.persist(newAnnot);
-                    annotatedObject.addAnnotation(newAnnot);
+                    myAnnotObject.addAnnotation(newAnnot);
                     CommentBean newCb = new CommentBean(newAnnot);
                     addAnnotation(newCb);
                 }else{
@@ -1367,11 +1386,11 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             Annotation annot = commentBean.getAnnotation();
             if(annotateOtherObject(annot)){
                 log.info("We are going to unlink, the shared annotation "+ annot.getAc() + " from this annotated object.");
-                annotatedObject.removeAnnotation(annot);
+                myAnnotObject.removeAnnotation(annot);
             }else{
                 log.error("Not shared annotation, we delete it.");
                 annotationDao.delete(annot);
-                annotatedObject.removeAnnotation(annot);
+                myAnnotObject.removeAnnotation(annot);
             }
 
             Annotation correspondingAnnotation = getCorrespondingAnnotation(myAnnotObject, annot);
@@ -1391,9 +1410,9 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
                 log.error("Add annot " +  annot.getAnnotationText());
                 // Need this to generate the PK for the indirection table.
                 //annotationDao.persist(annot);
-                final Collection<Annotation> annotations = new ArrayList<Annotation>(annotatedObject.getAnnotations());
+                final Collection<Annotation> annotations = new ArrayList<Annotation>(myAnnotObject.getAnnotations());
                 annotations.add(annot);
-                annotatedObject.setAnnotations(annotations);
+                myAnnotObject.setAnnotations(annotations);
             }
         }
         // Xref has a parent_ac column which is not a foreign key. So, the parent needs
@@ -1405,26 +1424,26 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
         for (XreferenceBean xreferenceBean : getXrefsToAdd())
         {
-            Xref xref = xreferenceBean.getXref(annotatedObject);
-            Xref correspondingXref = getCorrespondingXref(annotatedObject,xref);
+            Xref xref = xreferenceBean.getXref(myAnnotObject);
+            Xref correspondingXref = getCorrespondingXref(myAnnotObject,xref);
             if(correspondingXref == null){
                 if(xref == null){
                     log.debug ( "xref is null");
                 }
                 //xrefDao.saveOrUpdate(xref);
-                annotatedObject.addXref(xref);
+                myAnnotObject.addXref(xref);
             }
         }
         // Delete xrefs and remove them from CV object.
         for (XreferenceBean xreferenceBean : getXrefsToDel())
         {
-            Xref xref = xreferenceBean.getXref(annotatedObject);
+            Xref xref = xreferenceBean.getXref(myAnnotObject);
 
-            Xref correspondingXref = getCorrespondingXref(annotatedObject,xref);
+            Xref correspondingXref = getCorrespondingXref(myAnnotObject,xref);
             if(correspondingXref != null){
                 xref = null;
                 correspondingXref.setParent(null);
-                annotatedObject.removeXref(correspondingXref);
+                myAnnotObject.removeXref(correspondingXref);
                 xrefDao.delete(correspondingXref);
             }
         }
@@ -1443,13 +1462,6 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 //        } catch (Exception e) {
 //            throw new IntactException("Exception saving object: "+annotatedObject.getShortLabel(), e);
 //        }
-
-
-        // update the cvObject in the cvContext (application scope)
-        if (annotatedObject instanceof CvObject) {
-            IntactContext.getCurrentInstance().getCvContext().updateCvObject((CvObject) annotatedObject);
-            log.info("CvObject updated: "+myAnnotObject);
-        }
     }
 
 

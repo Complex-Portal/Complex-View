@@ -27,11 +27,8 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.*;
 import uk.ac.ebi.intact.persistence.util.CgLibUtil;
 import uk.ac.ebi.intact.searchengine.ResultWrapper;
-import uk.ac.ebi.intact.searchengine.SearchHelper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
 import uk.ac.ebi.intact.util.NewtServerProxy;
-import uk.ac.ebi.intact.util.protein.UpdateProteinsI;
-import uk.ac.ebi.intact.util.protein.UpdateProteins;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
 
 import javax.servlet.ServletContext;
@@ -58,6 +55,8 @@ import java.util.regex.Pattern;
 public class EditUser implements EditUserI, HttpSessionBindingListener {
 
     private static final Log log = LogFactory.getLog(EditUser.class);
+
+    private static final int MAX_RESULTS_IN_LIST = 30;
 
     // -------------------------------------------------------------------------
 
@@ -183,9 +182,14 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
     private AbstractEditViewBean myEditView;
 
     /**
+     * Holds the user results cache
+     */
+    private LinkedList<ResultRowData> mySearchCache = new LinkedList<ResultRowData>();
+
+    /**
      * Holds the last search results.
      */
-    private Collection mySearchCache = new ArrayList();
+    private Collection<ResultRowData> searchResults = new ArrayList<ResultRowData>();
 
     /**
      * The name of the current user.
@@ -218,11 +222,6 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
      * if required.
      */
     private transient GoServerProxy myGoServer;
-
-    /**
-     * Reference to the Protein factory.
-     */
-    private transient UpdateProteinsI myProteinFactory;
 
     /**
      * A set of currently edited/added experiments.
@@ -543,26 +542,19 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
 //        return null;
 //    }
 
-    public UpdateProteinsI getMyProteinFactory(){
-        if(IntactContext.getCurrentInstance().getDataContext().isTransactionActive()){
-            log.debug("Transaction is active");
-        }
-        if(myProteinFactory == null){
-            myProteinFactory = new UpdateProteins();
-        }
-        return myProteinFactory;
-    }
-
-    public void addToSearchCache(Collection<ResultRowData> results) {
+    public void setSearchResults(Collection<ResultRowData> searchResults) {
         // Clear previous results.
-        mySearchCache.clear();
-        mySearchCache.addAll(results);
+        //mySearchCache.clear();
+        this.searchResults = searchResults;
     }
 
     public void updateSearchCache(AnnotatedObject annotobj) {
         // Clear previous results.
-        mySearchCache.clear();
-        mySearchCache.add(new ResultRowData(annotobj));
+        //mySearchCache.clear();
+        if (mySearchCache.size() > MAX_RESULTS_IN_LIST) {
+            mySearchCache.removeLast();
+        }
+        mySearchCache.addFirst(new ResultRowData(annotobj));
     }
 
     public ResultWrapper lookup(Class clazz, String param, String value, int max)
@@ -644,8 +636,11 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
         return label;
     }
 
-    public List getSearchResult() {
-        return (List) mySearchCache;
+    public Collection<ResultRowData> getSearchResult() {
+        if (!searchResults.isEmpty()) {
+            return searchResults;
+        }
+        return mySearchCache;
     }
 
     public NewtServerProxy getNewtProxy() {
@@ -702,20 +697,10 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
     }
 
     /**
-     * @return returns an instance of search helper. A new object is created
-     * if the current search helper is null.
-     */
-    private SearchHelperI getSearchHelper() {
-        if (mySearchHelper == null) {
-            mySearchHelper = new SearchHelper();
-        }
-        return mySearchHelper;
-    }
-
-    /**
      * Finishes the editing session.
      */
     public void endEditing() {
+        searchResults.clear();
         myEditState = false;
     }
 
