@@ -33,6 +33,7 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
+import uk.ac.ebi.intact.model.util.XrefUtils;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.persistence.dao.ExperimentDao;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
@@ -406,10 +407,13 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
      */
 
     public Xref createXref(XreferenceBean xb, AbstractEditViewBean view) throws IntactException {
-        Institution institution = IntactContext.getCurrentInstance().getInstitution();//new Institution("ebi");
-        CvObjectDao cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao();
-        CvDatabase cvDatabase = (CvDatabase) cvObjectDao.getByShortLabel(xb.getDatabase());//CvDatabase) helper.getObjectByLabel(CvDatabase.class , xb.getDatabase()));
-        CvXrefQualifier cvXrefQualifier = (CvXrefQualifier) cvObjectDao.getByShortLabel(xb.getQualifier());//new CvXrefQualifier(institution, xb.getQualifier());
+
+        Institution institution = IntactContext.getCurrentInstance().getInstitution();
+        CvDatabase cvDatabase = DaoProvider.getDaoFactory().getCvObjectDao(CvDatabase.class)
+                .getByShortLabel(CvDatabase.class, xb.getDatabase());
+        CvXrefQualifier cvXrefQualifier = DaoProvider.getDaoFactory().getCvObjectDao(CvXrefQualifier.class)
+                .getByShortLabel(CvXrefQualifier.class, xb.getQualifier());
+
         Xref xref;
         if( view instanceof BioSourceViewBean ){
             xref = new BioSourceXref(institution,cvDatabase,xb.getPrimaryId(),xb.getSecondaryId(),xb.getReleaseNumber(),cvXrefQualifier);
