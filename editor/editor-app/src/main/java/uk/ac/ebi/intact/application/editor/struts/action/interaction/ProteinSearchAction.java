@@ -24,6 +24,7 @@ import uk.ac.ebi.intact.util.biosource.BioSourceServiceFactory;
 import uk.ac.ebi.intact.util.protein.ProteinService;
 import uk.ac.ebi.intact.util.protein.ProteinServiceFactory;
 import uk.ac.ebi.intact.util.protein.utils.UniprotServiceResult;
+import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -151,8 +152,7 @@ public class ProteinSearchAction extends AbstractEditorAction {
         UniprotServiceResult uniprotServiceResult = null;
 
         log.debug("Searching for the intactSecondary");
-        CvXrefQualifier intactSecondary = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao().getByShortLabel(CvXrefQualifier.class,"intact-secondary");
-//        CvXrefQualifier intactSecondary = IntactContext.getCurrentInstance().getCvContext().getByLabel(CvXrefQualifier.class,"intact-secondary");
+        CvXrefQualifier intactSecondary = getDaoFactory().getCvObjectDao(CvXrefQualifier.class).getByShortLabel(CvXrefQualifier.class,"intact-secondary");
 
         if (log.isDebugEnabled()) {
             log.debug("intactSecondary.getShortLabel()" + ((intactSecondary != null)? intactSecondary.getShortLabel() : null));
@@ -271,5 +271,9 @@ public class ProteinSearchAction extends AbstractEditorAction {
         // The anchor is set via the Search protein button.
         setAnchor(request, intform);
         return mapping.getInputForward();
+    }
+
+    protected DaoFactory getDaoFactory() {
+        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
     }
 }

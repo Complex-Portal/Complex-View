@@ -587,14 +587,14 @@ public class RangeBeanTest extends TestCase {
     }
 
     private void doTestGetRange() throws IntactException {
-        CvContext cvContext = IntactContext.getCurrentInstance().getCvContext();
+        CvObjectDao<CvFuzzyType> dao = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao(CvFuzzyType.class);
 
-        CvFuzzyType lessThan = cvContext.getByLabel(CvFuzzyType.class,CvFuzzyType.LESS_THAN);
-        CvFuzzyType greaterThan =  cvContext.getByLabel(CvFuzzyType.class,CvFuzzyType.GREATER_THAN);
-        CvFuzzyType undetermined = cvContext.getByLabel(CvFuzzyType.class,CvFuzzyType.UNDETERMINED);
-        CvFuzzyType range = cvContext.getByLabel(CvFuzzyType.class,CvFuzzyType.RANGE);
-        CvFuzzyType ct = cvContext.getByLabel(CvFuzzyType.class,CvFuzzyType.C_TERMINAL);
-        CvFuzzyType nt = cvContext.getByLabel(CvFuzzyType.class,CvFuzzyType.N_TERMINAL);
+        CvFuzzyType lessThan = dao.getByPsiMiRef(CvFuzzyType.LESS_THAN_MI_REF);
+        CvFuzzyType greaterThan =  dao.getByPsiMiRef(CvFuzzyType.GREATER_THAN_MI_REF);
+        CvFuzzyType undetermined = dao.getByPsiMiRef(CvFuzzyType.UNDETERMINED_MI_REF);
+        CvFuzzyType range = dao.getByPsiMiRef(CvFuzzyType.RANGE_MI_REF);
+        CvFuzzyType ct = dao.getByPsiMiRef(CvFuzzyType.C_TERMINAL_MI_REF);
+        CvFuzzyType nt = dao.getByPsiMiRef(CvFuzzyType.N_TERMINAL_MI_REF);
 
         RangeBean bean = null;
 

@@ -104,11 +104,12 @@
 
     <!-- =================================================================== -->
 
-    <!-- This listener controls the initialization of the application (e.g. reading init params, etc)
-    The listener should be started automatically from intact-core, but if you don't declare it here again
-    if fails on redeploy -->
+    <!-- Listeners -->
     <listener>
-        <listener-class>uk.ac.ebi.intact.webapp.StartupIntactListener</listener-class>
+        <listener-class>uk.ac.ebi.intact.webapp.BasicStartupIntactListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>uk.ac.ebi.intact.application.editor.hibernate.ConnectionSessionListener</listener-class>
     </listener>
 
     <!-- =================================================================== -->
@@ -143,22 +144,17 @@
 
     </servlet>
 
-    <!-- =================================================================== -->
-    <!-- Listeners -->
-    <listener>
-        <listener-class>uk.ac.ebi.intact.webapp.BasicStartupIntactListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>uk.ac.ebi.intact.application.editor.hibernate.ConnectionSessionListener</listener-class>
-    </listener>
-
-    <!-- =================================================================== -->
-
     <!-- Action Servlet Mapping -->
     <servlet-mapping>
         <servlet-name>action</servlet-name>
         <url-pattern>/do/*</url-pattern>
     </servlet-mapping>
+
+
+
+    <!-- =================================================================== -->
+
+
 
     <session-config>
         <session-timeout>30</session-timeout>

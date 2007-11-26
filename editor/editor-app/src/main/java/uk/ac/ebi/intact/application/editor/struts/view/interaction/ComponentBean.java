@@ -545,7 +545,11 @@ public class ComponentBean extends AbstractEditKeyBean {
 
     private String stripCloneSuffix(String label) {
         int idx = label.indexOf("-x");
-        // suffix is always present, so we can safely assume that idx is never -1
-        return label.substring(0, idx);
+
+        if (idx > -1) {
+            return label.substring(0, idx);
+        } else {
+            throw new IllegalArgumentException("Could not strip the -x from the label: "+label);
+        }
     }
 }

@@ -7,6 +7,7 @@ package uk.ac.ebi.intact.application.editor.util;
 
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.CvObjectUtils;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.persistence.dao.IntactTransaction;
 
@@ -150,32 +151,6 @@ public class CvHelper {
         return cvObjects.get(0);
     }
 
-
-    /**
-     * Given a CvDagObject, it returns a collection containing all it's children and grand children.
-     * @param dag the CvDagObject you want to get the children from.
-     * @param allChildrenMiRefs a collection in which the children will be put.
-     * @return a Collection containing the children cvDagObject.
-     * @throws IntactException
-     */
-    public Collection<String> getChildrenMiRefs(CvDagObject dag, Collection allChildrenMiRefs) throws IntactException {
-        //Collection<String> miRefs = new ArrayList();
-        Collection<CvDagObject> children = dag.getChildren();
-        for (CvDagObject child : children){
-            getChildrenMiRefs(child, allChildrenMiRefs);
-            if(!isHiddenOrObsolete(child)){
-                String miRef = getPsiMiRef(child);
-                if( miRef != null){
-                    allChildrenMiRefs.add(miRef);
-                }else throw new IntactException("Could not find any PSI-MI xref whith qualifier equal to identity for " +
-                        "the CvDagObject[" + child.getAc() + "," + child.getShortLabel() + "] ");
-            }
-        }
-
-        return allChildrenMiRefs;
-    }
-
-
     /**
      * Return true if an annotatedObject is hidden or obsolete, false otherwise.
      * @param annotatedObj
@@ -194,28 +169,6 @@ public class CvHelper {
             }
         }
         return hiddenOrObsolete;
-    }
-
-    /**
-     * Return a string containing the psi-mi id of a dag.
-     * @param dag
-     * @return
-     * @throws IntactException
-     */
-    public String getPsiMiRef(CvDagObject dag) throws IntactException {
-        String miRef = new String();
-        boolean psiMiRefFound = false;
-        Collection<CvObjectXref> xrefs = dag.getXrefs();
-        for ( Xref xref : xrefs ){
-            if(getPsiMi().getAc().equals(xref.getCvDatabase().getAc()) && getIdentity().getAc().equals(xref.getCvXrefQualifier().getAc())){
-                psiMiRefFound = true;
-                miRef = xref.getPrimaryId();
-                break;
-            }
-        }
-        if(psiMiRefFound = true){
-            return miRef;
-        }else return null;
     }
 
     public static void main(String[] args) throws IntactException {

@@ -1281,7 +1281,6 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
         FeatureDao featureDao = DaoProvider.getDaoFactory().getFeatureDao();
 
-        ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
         // Update components.
         for(ComponentBean cb : myComponentsToUpdate){
             cb.setInteraction(syncAnnotatedObject());

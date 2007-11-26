@@ -6,15 +6,16 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.framework.util;
 
-import org.apache.log4j.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.editor.util.CvHelper;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
 import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.CvObjectUtils;
+import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
+import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 
 import java.util.*;
 
@@ -149,23 +150,21 @@ public class EditorMenuFactory {
     }
 
     private static void buildProteinAndNucleicAcidCriteria(){
-        CvHelper cvHelper = null;
-        Collection<String> nucleicAcidMIs = new ArrayList<String>();
         try {
-            cvHelper = new CvHelper();
-
             // Get the interactor type menu list for the NucleicAcid - Editor
-            CvInteractorType nucleicAcid = IntactContext.getCurrentInstance().getCvContext().getByMiRef(CvInteractorType.class, CvInteractorType.NUCLEIC_ACID_MI_REF);
+            CvInteractorType nucleicAcid = getDaoFactory().getCvObjectDao(CvInteractorType.class).getByPsiMiRef(CvInteractorType.NUCLEIC_ACID_MI_REF);
 
             if (nucleicAcid != null) {
-                ourNucleicAcidMiRefs = cvHelper.getChildrenMiRefs(nucleicAcid, nucleicAcidMIs);
+                ourNucleicAcidMiRefs = CvObjectUtils.getChildrenMIs(nucleicAcid);
                 ourNucleicAcidMiRefs.add(CvInteractorType.NUCLEIC_ACID_MI_REF);
             } else {
                 LOGGER.error("CvInteractor type could not be found in the database: "+CvInteractorType.NUCLEIC_ACID_MI_REF);
             }
 
             // Get the interactor type menu list for the Protein - Editor
-            List<String> proteinMis = CvInteractorType.getProteinMIs();
+            CvInteractorType proteinType = getDaoFactory().getCvObjectDao(CvInteractorType.class).getByPsiMiRef(CvInteractorType.PROTEIN_MI_REF);
+
+            Set<String> proteinMis = CvObjectUtils.getChildrenMIs(proteinType);
             for( String proteinMi : proteinMis){
                 ourProteinMiRefs.add(proteinMi);
             }
@@ -175,6 +174,10 @@ public class EditorMenuFactory {
                     "and nucleic acid : ", e);
             e.printStackTrace();
         }
+    }
+
+    private static DaoFactory getDaoFactory() {
+        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
     }
 
     // No instantiation from outside.
@@ -350,10 +353,9 @@ public class EditorMenuFactory {
      * create an Intact helper to access persistent system.
      */
     public List<String> getNucleicAcidMenu(int mode) throws IntactException {
-        CvHelper cvHelper = new CvHelper();
-        CvInteractorType nucleicAcid = IntactContext.getCurrentInstance().getCvContext().getByMiRef(CvInteractorType.class, CvInteractorType.NUCLEIC_ACID_MI_REF);
-        Collection<String> nucleicAcidMIs = new ArrayList<String>();
-        ourNucleicAcidMiRefs = cvHelper.getChildrenMiRefs(nucleicAcid, nucleicAcidMIs);
+        CvInteractorType nucleicAcid = getDaoFactory().getCvObjectDao(CvInteractorType.class).getByPsiMiRef(CvInteractorType.NUCLEIC_ACID_MI_REF);
+
+        ourNucleicAcidMiRefs = CvObjectUtils.getChildrenMIs(nucleicAcid);
                     ourNucleicAcidMiRefs.add(CvInteractorType.NUCLEIC_ACID_MI_REF);
 
         return getPolymerMenu(mode, ourNucleicAcidMiRefs);
@@ -368,8 +370,8 @@ public class EditorMenuFactory {
      * create an Intact helper to access persistent system.
      */
     public List<String> getProteinMenu(int mode) throws IntactException {
-        ourProteinMiRefs.add("MI:0327");
-        ourProteinMiRefs.add("MI:0326");
+        //ourProteinMiRefs.add("MI:0327");
+        //ourProteinMiRefs.add("MI:0326");
         return getPolymerMenu(mode, ourProteinMiRefs);
     }
 
@@ -443,7 +445,7 @@ public class EditorMenuFactory {
      * @throws IntactException for errors in contructing the menu or unable to
      * create an Intact helper to access persistent system.
      */
-    private List<String> getPolymerMenu(int mode, Collection<String> ourPolymerMiRefs/*Criteria criteria*/) throws IntactException {
+    private List<String> getPolymerMenu(int mode, Collection<String> ourPolymerMiRefs) throws IntactException {
         // The menu to return.
         List<String> menu = new ArrayList<String>();
 
