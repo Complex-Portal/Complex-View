@@ -50,13 +50,15 @@ public class ConfidenceModelMain {
 		long aux2 = System.currentTimeMillis();
 		long timeGenerate = aux2 - aux1;
 		log.info("time for generating lowconf (milisec): " + timeGenerate);
-        cm.getIpGoSeqLowconf();
+        //cm.getIpGoSeqLowconf();
         aux1 = System.currentTimeMillis();
         log.info("time for getting IP, GO, Seq lowconf (milisec): " + (aux1-aux2));
 
         aux1 = System.currentTimeMillis();
-		cm.getInterProGoAndAlign();
-		aux2 = System.currentTimeMillis();
+	//	cm.getInterProGoAndAlign();
+        //cm.getInterProGoAlignLC();
+        cm.getInterProGoAlignHC();
+        aux2 = System.currentTimeMillis();
 		long timeAttribs = aux2 - aux1;
 		log.info("time for getting the attributes (milisec): " + timeAttribs);
 

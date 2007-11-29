@@ -5,8 +5,6 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.confidence.old;
 
-import uk.ac.ebi.intact.confidence.util.GenerateAlignmentFile;
-
 /**
  * TODO comment that
  *

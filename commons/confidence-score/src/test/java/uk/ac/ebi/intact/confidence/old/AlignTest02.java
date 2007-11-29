@@ -5,17 +5,17 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.confidence.old;
 
-import uk.ac.ebi.intact.confidence.attribute.ClassifierInputWriter;
+import uk.ac.ebi.intact.confidence.FileMethods;
+import uk.ac.ebi.intact.confidence.MaxEntClassifier;
 import uk.ac.ebi.intact.confidence.attribute.AnnotationConstants;
 import uk.ac.ebi.intact.confidence.attribute.Attribute;
-import uk.ac.ebi.intact.confidence.MaxEntClassifier;
-import uk.ac.ebi.intact.confidence.FileMethods;
+import uk.ac.ebi.intact.confidence.weights.ClassifierInputWriter;
 
-import java.io.IOException;
-import java.io.FileReader;
 import java.io.BufferedReader;
-import java.util.regex.Pattern;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 /**
  * TODO comment that

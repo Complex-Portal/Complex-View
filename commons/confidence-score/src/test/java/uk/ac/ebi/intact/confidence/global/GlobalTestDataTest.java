@@ -5,15 +5,14 @@
  */
 package uk.ac.ebi.intact.confidence.global;
 
-import static org.junit.Assert.*;
+import org.junit.After;
+import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * TODO comment this
@@ -60,5 +59,4 @@ public class GlobalTestDataTest {
 			e.printStackTrace();
 		}
 	}
-
 }

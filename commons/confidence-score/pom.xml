@@ -8,143 +8,164 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>uk.ac.ebi.intact.service.commons</groupId>
-		<artifactId>commons-master</artifactId>
-		<version>1.6.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>uk.ac.ebi.intact.service.commons</groupId>
+        <artifactId>commons-master</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
+    </parent>
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<artifactId>confidence-score</artifactId>
-	<packaging>jar</packaging>
-	<version>1.6.0-SNAPSHOT</version>
+    <artifactId>confidence-score</artifactId>
+    <packaging>jar</packaging>
+    <version>1.6.0-SNAPSHOT</version>
 
-	<name>IntAct Services :: Commons :: Confidence Score</name>
-	<description>
-		Calculates a confidence score for the interactions
-	</description>
+    <name>IntAct Services :: Commons :: Confidence Score</name>
+    <description>
+        Calculates a confidence score for the interactions
+    </description>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>-Xmx512M -Dinstitution=ebi</argLine>
-				</configuration>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Xmx512M -Dinstitution=ebi</argLine>
+                </configuration>
+            </plugin>
 
-			<!-- 		<plugin>
-				<groupId>uk.ac.ebi.intact.commons</groupId>
-				<artifactId>hibernateconfig-maven-plugin</artifactId>
-				</plugin>
-			-->
-
-
-		</plugins>
-	</build>
-
-	<dependencies>
-		<dependency>
-			<groupId>uk.ac.ebi.intact.bridges</groupId>
-			<artifactId>intact-blast</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>uk.ac.ebi.intact.bridges</groupId>
-			<artifactId>intact-uniprot</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>psidev.psi.mi</groupId>
-			<artifactId>psimitab</artifactId>
-			<version>1.0-rc2-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>psidev.psi.mi</groupId>
-			<artifactId>psi25-xml</artifactId>
-			<version>1.0-beta4</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sourceforge.opennlp</groupId>
-			<artifactId>maxent</artifactId>
-			<version>2.4.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>oracle-thin</artifactId>
-			<version>9.2.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.3.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>uk.ac.ebi.intact.service.search.binary</groupId>
-			<artifactId>wsclient</artifactId>
-			<version>1.6.0-beta-1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>uk.ac.ebi.intact.core</groupId>
-			<artifactId>intact-core</artifactId>
-			<version>1.7.1</version>
-		</dependency>
-
-		<!-- for xml parser -->
-		<!-- 		<dependency>
-			<groupId>uk.ac.ebi.intact.confidence.blastmapping</groupId>
-			<artifactId>blast-mapping-parser</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			</dependency>
-		-->
-		<!-- for the blast h2 db -->
-		<!-- <dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.0.20070617</version>
-			</dependency>
-		-->
-	</dependencies>
+            <!-- 		<plugin>
+                   <groupId>uk.ac.ebi.intact.commons</groupId>
+                   <artifactId>hibernateconfig-maven-plugin</artifactId>
+                   </plugin>
+               -->
 
 
-	<!-- EBI repositories -->
-	<repositories>
-		<repository>
-			<id>ebi-repo</id>
-			<name>The EBI internal repository</name>
-			<url>http://www.ebi.ac.uk/~maven/m2repo</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>ebi-repo-snapshots</id>
-			<name>The EBI internal repository</name>
-			<url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
+        </plugins>
+    </build>
 
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+    <dependencies>
+        <dependency>
+            <groupId>uk.ac.ebi.intact.bridges</groupId>
+            <artifactId>intact-blast</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.bridges</groupId>
+            <artifactId>intact-uniprot</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- for PSI-MI TAB enrichment-->
+        <dependency>
+            <groupId>psidev.psi.mi</groupId>
+            <artifactId>psimitab</artifactId>
+            <version>1.5.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
+            <artifactId>intact-psimitab</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>psidev.psi.mi</groupId>
+            <artifactId>psi25-xml</artifactId>
+            <version>1.0-beta4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.opennlp</groupId>
+            <artifactId>maxent</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>oracle-thin</artifactId>
+            <version>9.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.service.search.binary</groupId>
+            <artifactId>wsclient</artifactId>
+            <version>1.6.0-beta-1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.core</groupId>
+            <artifactId>intact-core</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
+        <!-- for xml parser -->
+        <!-- 		<dependency>
+              <groupId>uk.ac.ebi.intact.confidence.blastmapping</groupId>
+              <artifactId>blast-mapping-parser</artifactId>
+              <version>1.0-SNAPSHOT</version>
+              </dependency>
+          -->
+        <!-- for the blast h2 db -->
+        <!-- <dependency>
+              <groupId>com.h2database</groupId>
+              <artifactId>h2</artifactId>
+              <version>1.0.20070617</version>
+              </dependency>
+          -->
+        <!-- for GainRatioEvalutaion of the attributes-->
+          <dependency>
+           <groupId>weka</groupId>
+           <artifactId>weka</artifactId>
+           <version>3.4.11</version>
+       </dependency>
+
+        <!-- for merge with lucene-->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <!-- EBI repositories -->
+    <repositories>
+        <repository>
+            <id>ebi-repo</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>ebi-repo-snapshots</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
+
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>

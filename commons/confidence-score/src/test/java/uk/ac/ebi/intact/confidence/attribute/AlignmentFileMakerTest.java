@@ -5,21 +5,12 @@
  */
 package uk.ac.ebi.intact.confidence.attribute;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.After;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-
 import uk.ac.ebi.intact.bridges.blast.BlastService;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.EbiWsWUBlast;
@@ -30,7 +21,14 @@ import uk.ac.ebi.intact.confidence.blastmapping.jaxb.EBIApplicationResult;
 import uk.ac.ebi.intact.confidence.blastmapping.jaxb.TAlignment;
 import uk.ac.ebi.intact.confidence.blastmapping.jaxb.THit;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
-import uk.ac.ebi.intact.confidence.util.GlobalData;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * TODO comment this
@@ -53,7 +51,7 @@ public class AlignmentFileMakerTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		testDir = new File(GlobalTestData.getInstance().getTargetDirectory(), "AlignmentFileMakerTest");
+		testDir = new File( GlobalTestData.getInstance().getTargetDirectory(), "AlignmentFileMakerTest");
 		testDir.mkdir();
 		String email = "iarmean@ebi.ac.uk";
 		String tableName  = "job";
@@ -83,7 +81,8 @@ public class AlignmentFileMakerTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public final void testBlastSetSetWriter() throws Exception {
+    @Ignore
+    public final void testBlastSetSetWriter() throws Exception {
 		Set<UniprotAc> proteins = new HashSet<UniprotAc>(3);
 		proteins.addAll(Arrays.asList(new UniprotAc("P43609"),new UniprotAc("P06730")));
 		Set<UniprotAc> againstProteins = new HashSet<UniprotAc>(7);

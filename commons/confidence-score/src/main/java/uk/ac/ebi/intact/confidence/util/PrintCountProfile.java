@@ -6,6 +6,7 @@ in the root directory of this distribution.
 package uk.ac.ebi.intact.confidence.util;
 
 import uk.ac.ebi.intact.confidence.FileMethods;
+import uk.ac.ebi.intact.confidence.old.UtilConstants;
 
 import java.io.IOException;
 

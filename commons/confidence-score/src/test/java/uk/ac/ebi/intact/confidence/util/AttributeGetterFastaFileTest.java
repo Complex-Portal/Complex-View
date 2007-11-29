@@ -25,26 +25,26 @@ import java.util.Set;
  * @version
  * @since <pre>5 Sep 2007</pre>
  */
-//@Ignore
-public class AttributeGetterTest {
+@Ignore
+public class AttributeGetterFastaFileTest {
 
-	private AttributeGetter aG;
+	private AttributeGetterFastaFile aG;
 	private File tmpDir;
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		tmpDir = new File (GlobalTestData.getInstance().getTargetDirectory(), "/AttributeGetterTest/");
+		tmpDir = new File (GlobalTestData.getInstance().getTargetDirectory(), "/AttributeGetterFastaFileTest/");
 		tmpDir.mkdir();
-		File workDir = new File(AttributeGetterTest.class.getResource("P43609.xml").getPath()).getParentFile();
-		String uniprotPath = AttributeGetterTest.class.getResource("uniprot_sprot_small.dat").getPath();
+		File workDir = new File( AttributeGetterFastaFileTest.class.getResource("P43609.xml").getPath()).getParentFile();
+		String uniprotPath = AttributeGetterFastaFileTest.class.getResource("uniprot_sprot_small.dat").getPath();
 		File blastArchive = workDir;
 		String email = "iarmean@ebi.ac.uk";
 		int nr = 20;
 		File dbFolder = new File(GlobalTestData.getInstance().getTargetDirectory(), "dbFolder");
 		dbFolder.mkdir();
-		aG = new AttributeGetter(dbFolder, uniprotPath, GlobalTestData.getInstance().getBinaryInteractionSet(), workDir ,blastArchive, email, nr);		
+		aG = new AttributeGetterFastaFile(dbFolder, uniprotPath, GlobalTestData.getInstance().getBinaryInteractionSet(), workDir ,blastArchive, email, nr);
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class AttributeGetterTest {
 	}
 
 	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeGoAttributes(uk.ac.ebi.intact.confidence.ProteinPair, java.lang.String)}.
+	 * Test method for {@link AttributeGetterFastaFile#writeGoAttributes(uk.ac.ebi.intact.confidence.ProteinPair, java.lang.String)}.
 	 */
 	@Test
 	public final void testWriteGoAttributesProteinPairStringOneWithGO() {
@@ -78,17 +78,17 @@ public class AttributeGetterTest {
     }
 	
 	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeGoAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String)}.
+	 * Test method for {@link AttributeGetterFastaFile#writeGoAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String, java.io.File)}.
 	 */
 	@Test
 	public final void testWriteGoAttributesBinaryInteractionSetString() {
 		String outPath = tmpDir.getPath() + "/go_attrib_test_binarySet.txt";
-		aG.writeGoAttributes(GlobalTestData.getInstance().getBinaryInteractionSet(),outPath);
+		aG.writeGoAttributes(GlobalTestData.getInstance().getBinaryInteractionSet(),outPath, null);
         Assert.assertTrue(new File(outPath).exists());
     }
 
 	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeIpAttributes(uk.ac.ebi.intact.confidence.ProteinPair, java.lang.String)}.
+	 * Test method for {@link AttributeGetterFastaFile#writeIpAttributes(uk.ac.ebi.intact.confidence.ProteinPair, java.lang.String)}.
 	 */
 	@Test
 	public final void testWriteIpAttributesProteinPairStringBothWithIp() {
@@ -100,21 +100,22 @@ public class AttributeGetterTest {
     }
 
 	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeIpAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String)}.
+	 * Test method for {@link AttributeGetterFastaFile#writeIpAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String, java.io.File)}.
 	 */
 	@Test
 	public final void testWriteIpAttributesBinaryInteractionSetString() {
 		String outPath = tmpDir.getPath() + "/ip_attrib_test_binarySet.txt";
-		aG.writeIpAttributes(GlobalTestData.getInstance().getBinaryInteractionSet(),outPath);
+		aG.writeIpAttributes(GlobalTestData.getInstance().getBinaryInteractionSet(),outPath, null);
         Assert.assertTrue(new File(outPath).exists());
     }
 
 	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeAlignmentAttributes(uk.ac.ebi.intact.confidence.ProteinPair, java.lang.String, java.util.Set, java.io.File)}.
+	 * Test method for {@link AttributeGetterFastaFile#writeAlignmentAttributes(uk.ac.ebi.intact.confidence.ProteinPair, java.lang.String, java.util.Set, java.io.File)}.
 	 * @throws BlastServiceException 
 	 */
 	@Test
-	public final void testWriteAlignmentAttributesProteinPairStringHashSetOfString() throws BlastServiceException {
+    @Ignore
+    public final void testWriteAlignmentAttributesProteinPairStringHashSetOfString() throws BlastServiceException {
 		//the proteins should be also in the binaryInteractionSet
 		ProteinPair pp = new ProteinPair("P43609","P12345");
 		String outPath = tmpDir.getPath() + "/align_attrib_test_ProteinPair.txt";
@@ -129,7 +130,7 @@ public class AttributeGetterTest {
     }
 
 	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#writeAlignmentAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String, java.util.Set, java.io.File)}.
+	 * Test method for {@link AttributeGetterFastaFile#writeAlignmentAttributes(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.lang.String, java.util.Set, java.io.File)}.
 	 * @throws BlastServiceException 
 	 */
 	@Test
@@ -146,11 +147,11 @@ public class AttributeGetterTest {
     }
 
 	/**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#merge(java.lang.String[], java.lang.String)}.
+	 * Test method for {@link AttributeGetterFastaFile#merge(java.lang.String[], java.lang.String)}.
 	 */
 	@Test
 	//TODO: retest it does not work ... only go and align?!? 
-	public final void testMerge() {
+	public final void testMerge() throws IOException{
 		String outPath = tmpDir.getPath() + "/merge_test_binarySet.txt";		
 		String pathGo= tmpDir.getPath() + "/go_attrib_test_binarySet.txt";
 		String pathIp = tmpDir.getPath() + "/ip_attrib_test_binarySet.txt";
@@ -173,11 +174,11 @@ public class AttributeGetterTest {
 
 
     /**
-	 * Test method for {@link uk.ac.ebi.intact.confidence.util.AttributeGetter#getAllAttribs(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.util.Set, java.lang.String, java.io.File)}.
+	 * Test method for {@link AttributeGetterFastaFile#getAllAttribs(uk.ac.ebi.intact.confidence.BinaryInteractionSet, java.util.Set, java.lang.String, java.io.File)}.
 	 * @throws BlastServiceException    : from the intact-blast module
 	 */
 	@Test
-	public final void testGetAllAttribs() throws BlastServiceException {
+	public final void testGetAllAttribs() throws BlastServiceException, IOException {
 		String outPath = tmpDir.getPath() + "/getAllAtribs_test_binarySet.txt";
 		Set<String> againstProt = new HashSet<String>();
 		againstProt.add("A4K2P4"); // for non of the pp acs
@@ -205,7 +206,7 @@ public class AttributeGetterTest {
 			int nr =20;
 			File dbFolder = new File(GlobalTestData.getInstance().getTargetDirectory().getParent(), "dbFolder");
 			dbFolder.mkdir();
-			AttributeGetter aG = new AttributeGetter(dbFolder, "E:\\tmp\\uniprot_sprot.dat", biSet, workDir,
+			AttributeGetterFastaFile aG = new AttributeGetterFastaFile(dbFolder, "E:\\tmp\\uniprot_sprot.dat", biSet, workDir,
 					blastArchiveDir, email, nr);
 			
 			BinaryInteractionSet biSet2 = new BinaryInteractionSet(workDir.getPath() + "/medconf_all.txt");

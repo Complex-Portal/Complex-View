@@ -5,6 +5,8 @@
  */
 package uk.ac.ebi.intact.confidence;
 
+import uk.ac.ebi.intact.confidence.attribute.BinaryItem;
+
 /**
  * TODO comment that
  * 
@@ -15,7 +17,7 @@ package uk.ac.ebi.intact.confidence;
 public class ProteinPair extends BinaryItem {
 
 	public ProteinPair(String name1, String name2) {
-		super(name1, name2);
+	    super(name1, name2);
 	}
 
 }

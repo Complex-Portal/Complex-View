@@ -5,16 +5,15 @@
  */
 package uk.ac.ebi.intact.confidence.attribute;
 
-import uk.ac.ebi.intact.confidence.ProteinPair;
-import uk.ac.ebi.intact.confidence.FileMethods;
-
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.io.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.confidence.FileMethods;
+import uk.ac.ebi.intact.confidence.ProteinPair;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * TODO comment that
@@ -49,7 +48,7 @@ public class FileCombiner implements AnnotationConstants {
 
 		// count number of incorrectly formatted protein pairs rejected
 		rejected = 0;
-
+          try {
 		for (String path : attributePaths) {
 			FileReader fr = new FileReader(path);
 			BufferedReader br = new BufferedReader(fr);
@@ -100,7 +99,10 @@ public class FileCombiner implements AnnotationConstants {
 			log.debug(comment);
 			// System.out.println(comment);
 		}
-	}
+          } catch (OutOfMemoryError e) {
+
+          }
+    }
 
 	public void merge(String[] attributePaths, String outPath) throws IOException {
 		// this version finds attributes for blocks of 1000 protein pairs

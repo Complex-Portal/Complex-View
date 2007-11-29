@@ -10,15 +10,18 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.attribute.ClassifierInputWriter;
 import uk.ac.ebi.intact.confidence.dataRetriever.DataRetrieverException;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.model.GoId;
 import uk.ac.ebi.intact.confidence.model.InterProId;
-import uk.ac.ebi.intact.confidence.util.AttributeGetter;
+import uk.ac.ebi.intact.confidence.util.AttributeGetterFastaFile;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
+import uk.ac.ebi.intact.confidence.weights.ClassifierInputWriter;
+import uk.ac.ebi.intact.confidence.weights.TadmWeightsImpl;
+import uk.ac.ebi.intact.confidence.weights.WeightsStrategy;
+import uk.ac.ebi.intact.confidence.weights.WeightsStrategyException;
 
 import java.io.*;
 import java.util.Collection;
@@ -103,8 +106,18 @@ public class ConfidenceModel {
         }
 
         aux1 = System.currentTimeMillis();
-        createTadmClassifierInput();
-        runTadm();
+        WeightsStrategy weights = new TadmWeightsImpl(workDir);
+        String hcAttribPath = "";
+        String lcAttribPath = "";
+        String outAttribPath = "";
+        String outWeightPath = "";
+        try {
+            weights.computeWeights( hcAttribPath, lcAttribPath, outAttribPath, outWeightPath);
+        } catch ( WeightsStrategyException e ) {
+            e.printStackTrace();
+        }
+//        createTadmClassifierInput();
+//        runTadm();
         createModel();
         aux2 = System.currentTimeMillis();
         long timeCreateModel = aux2 - aux1;
@@ -278,7 +291,7 @@ public class ConfidenceModel {
     public void getInterProGoAndAlign() {
         try {
             BinaryInteractionSet biSet = new BinaryInteractionSet( workDir.getPath() + "/highconf_all.txt" );
-            AttributeGetter aG = new AttributeGetter( dbFolder, uniprotPath + "/uniprot_sprot.dat", biSet, workDir,
+            AttributeGetterFastaFile aG = new AttributeGetterFastaFile( dbFolder, uniprotPath + "/uniprot_sprot.dat", biSet, workDir,
                                                       blastArchiveDir, this.email, nrPerSubmission );
             Set<String> againstProteins = biSet.getAllProtNames();
 
@@ -304,17 +317,127 @@ public class ConfidenceModel {
         }
     }
 
-//    public void getInterProGoAlignHC(){
-//
-//    }
-//
-//    public void getInterProGoAlignLC(){
-//
-//    }
-//
-//    public void getInterProGoAlignMC(){
-//
-//    }
+    public void getInterProGoAlignHC(){
+          try {
+            File thisWorkDir =  new File(workDir, "HcAttribs");
+            if (!thisWorkDir.isDirectory()){
+                thisWorkDir.mkdir();
+            }
+
+            BinaryInteractionSet biSet = new BinaryInteractionSet( workDir.getPath() + "/highconf_all.txt" );
+            AttributeGetterFastaFile aG = new AttributeGetterFastaFile( dbFolder, uniprotPath + "/uniprot_sprot.dat", biSet, workDir,
+                                                      blastArchiveDir, this.email, nrPerSubmission );
+            Set<String> againstProteins = biSet.getAllProtNames();
+
+            File seqFile = new File( workDir, "/IntactDbRetriever/highconf_db_seq.txt" );
+            biSet = new BinaryInteractionSet( workDir.getPath() + "/highconf_all.txt" );
+
+            String alignPath = thisWorkDir.getPath() + "/set_align_attributes.txt";
+		    aG.writeAlignmentAttributes(biSet, alignPath, againstProteins, seqFile);
+
+		    String goPath = thisWorkDir.getPath() + "/set_go_attributes.txt";
+            File goFile = new File(workDir, "/IntactDbRetriever/highconf_db_go.txt");
+            aG.writeGoAttributes(biSet, goPath, goFile);
+
+		    String ipPath = thisWorkDir.getPath() + "/set_ip_attributes.txt";
+            File ipFile = new File(workDir, "/IntactDbRetriever/highconf_db_ip.txt");
+            aG.writeIpAttributes(biSet, ipPath, ipFile);
+
+		    String[] paths = { goPath, ipPath, alignPath };
+            String outPath = workDir.getPath() + "/highconf_all_attribs.txt";
+            aG.merge(paths, outPath);
+
+            aG.close();
+        } catch ( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch ( BlastServiceException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getInterProGoAlignLC(){
+        try {
+            File thisWorkDir =  new File(workDir, "LcAttribs");
+            if (!thisWorkDir.isDirectory()){
+                thisWorkDir.mkdir();
+            }
+
+            BinaryInteractionSet biSet = new BinaryInteractionSet( workDir.getPath() + "/highconf_all.txt" );
+            AttributeGetterFastaFile aG = new AttributeGetterFastaFile( dbFolder, uniprotPath + "/uniprot_sprot.dat", biSet, workDir,
+                                                      blastArchiveDir, this.email, nrPerSubmission );
+            Set<String> againstProteins = biSet.getAllProtNames();
+
+            File seqFile = new File( workDir, "/DataRetriever/lowconf_uniprot_seq.txt" );
+            biSet = new BinaryInteractionSet( workDir.getPath() + "/lowconf_all.txt" );
+
+            String alignPath = thisWorkDir.getPath() + "/set_align_attributes.txt";
+		   // aG.writeAlignmentAttributes(biSet, alignPath, againstProteins, seqFile);
+
+		    String goPath = thisWorkDir.getPath() + "/set_go_attributes.txt";
+            File goFile = new File(workDir, "/DataRetriever/lowconf_uniprot_go.txt");
+            aG.writeGoAttributes(biSet, goPath, goFile);
+
+		    String ipPath = thisWorkDir.getPath() + "/set_ip_attributes.txt";
+            File ipFile = new File(workDir, "/DataRetriever/lowconf_uniprot_ip.txt");
+            aG.writeIpAttributes(biSet, ipPath, ipFile);
+
+		    String[] paths = { goPath, ipPath, alignPath };
+            String outPath = workDir.getPath() + "/lowconf_all_attribs.txt";
+            aG.merge(paths, outPath);
+
+           // aG.getAllAttribs( biSet, againstProteins, workDir.getPath() + "/lowconf_all_attribs.txt", seqFile );
+
+            aG.close();
+        } catch ( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch ( BlastServiceException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void getInterProGoAlignMC(){
+           try {
+           File thisWorkDir =  new File(workDir, "McAttribs");
+            if (!thisWorkDir.isDirectory()){
+                thisWorkDir.mkdir();
+            }
+
+            BinaryInteractionSet biSet = new BinaryInteractionSet( workDir.getPath() + "/highconf_all.txt" );
+            AttributeGetterFastaFile aG = new AttributeGetterFastaFile( dbFolder, uniprotPath + "/uniprot_sprot.dat", biSet, workDir,
+                                                      blastArchiveDir, this.email, nrPerSubmission );
+            Set<String> againstProteins = biSet.getAllProtNames();
+
+            File seqFile = new File( workDir, "/IntactDbRetriever/medconf_db_seq.txt" );
+            biSet = new BinaryInteractionSet( workDir.getPath() + "/medconf_all.txt" );
+
+            String alignPath = thisWorkDir.getPath() + "/set_align_attributes.txt";
+		    aG.writeAlignmentAttributes(biSet, alignPath, againstProteins, seqFile);
+
+		    String goPath = thisWorkDir.getPath() + "/set_go_attributes.txt";
+            File goFile = new File(workDir, "/IntactDbRetriever/medconf_db_go.txt");
+            aG.writeGoAttributes(biSet, goPath, goFile);
+
+		    String ipPath = thisWorkDir.getPath() + "/set_ip_attributes.txt";
+            File ipFile = new File(workDir, "/IntactDbRetriever/medconf_db_ip.txt");
+            aG.writeIpAttributes(biSet, ipPath, ipFile);
+
+		    String[] paths = { goPath, ipPath, alignPath };
+            String outPath = workDir.getPath() + "/medconf_all_attribs.txt";
+            aG.merge(paths, outPath);
+            aG.close();
+        } catch ( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch ( BlastServiceException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
     public void createTadmClassifierInput() {
         try {
@@ -339,7 +462,7 @@ public class ConfidenceModel {
         } catch ( IOException e ) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch ( InterruptedException e ) {
+        } catch ( InterruptedException e ) {         
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

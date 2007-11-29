@@ -201,7 +201,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         }
 
         if ( dbNrForTest ) {
-            totalNr = 100; // TODO: ask it there is a more elegant way
+            totalNr = 10; // TODO: ask it there is a more elegant way
         }
 
         int firstResult = 0;

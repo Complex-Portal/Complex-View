@@ -5,8 +5,6 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.confidence.attribute;
 
-import uk.ac.ebi.intact.confidence.BinaryItem;
-
 import java.util.regex.Pattern;
 
 /**
@@ -18,7 +16,6 @@ import java.util.regex.Pattern;
  */
 public class IpTermPair extends BinaryItem implements AnnotationConstants
 {
-
 
     public IpTermPair(String name1, String name2) throws IllegalArgumentException
     {

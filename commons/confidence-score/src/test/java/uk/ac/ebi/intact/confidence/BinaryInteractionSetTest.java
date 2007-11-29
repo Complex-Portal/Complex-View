@@ -6,6 +6,7 @@
 package uk.ac.ebi.intact.confidence;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
@@ -24,7 +25,7 @@ import java.util.Set;
  * @version
  * @since <pre>3 Oct 2007</pre>
  */
-//@Ignore
+@Ignore
 public class BinaryInteractionSetTest {
 
 
@@ -62,8 +63,10 @@ public class BinaryInteractionSetTest {
 	}
 
 	@Test
-	public void Stat(){
-		String path =  "E:\\iarmean\\backupData\\05.11\\highconf_all.txt";
+    @Ignore
+    public void Stat(){
+		String path =  "H:\\tmp\\ConfidenceModel\\highconf_all.txt";
+        //"E:\\iarmean\\backupData\\05.11\\highconf_all.txt";
                 //"E:\\tmp\\ConfidenceModel\\IntactDbRetriever\\highconf_all.txt";
         //"E:\\iarmean\\backupData\\highconf_all.txt";
 			//"H:\\tmp\\ConfidenceModel\\highconf_all.txt";
@@ -75,13 +78,15 @@ public class BinaryInteractionSetTest {
 			int nr = biS.getAllProtNames().size();
 			System.out.println("highconf prots : " + nr + " #int: " + biS.size());
 			
-			path = "E:\\iarmean\\backupData\\05.11\\medconf_all.txt";
+			path =  "H:\\tmp\\ConfidenceModel\\medconf_all.txt";
+                    //"E:\\iarmean\\backupData\\05.11\\medconf_all.txt";
 			BinaryInteractionSet biS2 = new BinaryInteractionSet(path);
 			prots.addAll(biS2.getAllProtNames());
 			nr = biS2.getAllProtNames().size();
 			System.out.println("medconf prots : " + nr + " #int: " + biS2.size());
 			
-			path = "E:\\tmp\\ConfidenceModel\\lowconf_all.txt";
+			path = "H:\\tmp\\ConfidenceModel\\lowconf_all.txt";
+                    //"E:\\tmp\\ConfidenceModel\\lowconf_all.txt";
 			BinaryInteractionSet biS3 = new BinaryInteractionSet(path);
 			prots.addAll(biS3.getAllProtNames());
 			nr = biS3.getAllProtNames().size();
@@ -96,6 +101,7 @@ public class BinaryInteractionSetTest {
 	}
 
     @Test
+    @Ignore
     public void stats(){
              String path ="E:\\iarmean\\backupData\\benchmark\\from 15.10\\HC100.txt";
         //"E:\\iarmean\\backupData\\benchmark\\HC100-2310.txt";

@@ -5,16 +5,16 @@
  */
 package uk.ac.ebi.intact.confidence.attribute;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
-import uk.ac.ebi.intact.confidence.util.AttributeGetterTest;
+import uk.ac.ebi.intact.confidence.util.AttributeGetterFastaFileTest;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * TODO comment this ... someday
@@ -38,7 +38,7 @@ public class AnnotationFileMakerTest {
 	public void setUp() throws Exception {
 		BinaryInteractionSet biS = new BinaryInteractionSet(AnnotationFileMakerTest.class.getResource("binaryInt.txt")
 				.getPath());
-		String uniprotPath = AttributeGetterTest.class.getResource("uniprot_sprot_small.dat").getPath();
+		String uniprotPath = AttributeGetterFastaFileTest.class.getResource("uniprot_sprot_small.dat").getPath();
 		afm = new AnnotationFileMaker(biS, uniprotPath);
 	}
 
@@ -57,9 +57,10 @@ public class AnnotationFileMakerTest {
 	public final void testWriteGoAnnotationString() {
 		// TODO: only for eclipse test
 		try {
-			File outFile = new File (GlobalTestData.getInstance().getTargetDirectory(), "testAnnotationFileMakerGo.txt");
+			File outFile = new File ( GlobalTestData.getInstance().getTargetDirectory(), "testAnnotationFileMakerGo.txt");
 			afm.writeGoAnnotation(outFile.getPath());
-		} catch (IOException e) {
+            Assert.assertTrue(outFile.exists());
+        } catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

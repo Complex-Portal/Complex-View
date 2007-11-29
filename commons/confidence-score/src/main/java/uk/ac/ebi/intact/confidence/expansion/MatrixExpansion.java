@@ -7,12 +7,10 @@ package uk.ac.ebi.intact.confidence.expansion;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
-import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
-import uk.ac.ebi.intact.confidence.model.UniprotAc;
+import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 
 import java.util.ArrayList;
 import java.util.Collection;

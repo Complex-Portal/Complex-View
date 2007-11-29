@@ -5,20 +5,16 @@
  */
 package uk.ac.ebi.intact.confidence.expansion;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
-import uk.ac.ebi.intact.confidence.expansion.MatrixExpansion;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * TODO comment this

@@ -38,6 +38,7 @@ public class MaxentUtils {
     private static final boolean USE_SMOOTHING = false;
     private static final double SMOOTHING_OBSERVATION = 0.1;
 
+
     public static GISModel createModel(InputStream inputData) {
 
         Reader datafr = new InputStreamReader(inputData);
@@ -55,5 +56,8 @@ public class MaxentUtils {
           new SuffixSensitiveGISModelWriter(model, outputFile);
         writer.persist();
     }
-
+   
+    public static final double [] evaluate (GISModel model, String[] attribs){
+        return  model.eval( attribs);
+    }
 }

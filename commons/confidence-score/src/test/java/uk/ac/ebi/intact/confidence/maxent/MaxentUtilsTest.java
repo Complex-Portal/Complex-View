@@ -15,9 +15,10 @@
  */
 package uk.ac.ebi.intact.confidence.maxent;
 
+import opennlp.maxent.Context;
 import opennlp.maxent.GISModel;
+import opennlp.maxent.MutableContext;
 import org.junit.Test;
-import org.junit.Ignore;
 
 import java.io.*;
 
@@ -46,17 +47,22 @@ public class MaxentUtilsTest {
         File file = new File(MaxentUtilsTest.class.getResource("gameLocation.dat").getFile());
         File outputFile = File.createTempFile("gameLocation", "out");
 
+     //  file = new File(MaxentUtilsTest.class.getResource("confScore.txt").getFile());
+
         GISModel model = MaxentUtils.createModel(new FileInputStream(file));
 
         MaxentUtils.writeModelToFile(model, outputFile);
-
-
 
         System.out.println("\n\n==== OUTPUT =====\n\n");
 
         printFile(outputFile);
 
-
+       String [] attrib = {"Sunny", "Happy", "Dry"};
+       double []  eval = model.eval( attrib);
+        System.out.println("for 'Sunny Happy Dry' =" + eval[0]);
+        String [] attribs = new String [0];
+        eval = model.eval(attribs);
+       System.out.println(" for '' =" + eval[0]);
     }
 
     @Test
@@ -64,10 +70,20 @@ public class MaxentUtilsTest {
         File file = new File(MaxentUtilsTest.class.getResource("gameLocation.dat").getFile());
         File outputFile = File.createTempFile("gameLocation", "out");
 
+       // file = new File(MaxentUtilsTest.class.getResource("confScore.txt").getFile());
+
         GISModel model = MaxentUtils.createModel(new FileInputStream(file));
 
         Object [] structures = model.getDataStructures();
-        System.out.println(structures);
+        for (int i = 0; i<structures.length; i++){
+            System.out.println("data structure nr : " + i);
+            if (structures[i] instanceof MutableContext) {
+                Context con = (MutableContext) (structures[i]);
+                double [] p = con.getParameters();
+            }
+            System.out.println(structures[i]);
+            System.out.println("nr outcomes: " + model.getNumOutcomes());
+        }
     }
 
     private static void printFile(File file) throws IOException {

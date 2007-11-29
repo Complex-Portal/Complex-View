@@ -5,16 +5,15 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.confidence;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.confidence.attribute.AnnotationConstants;
 import uk.ac.ebi.intact.confidence.attribute.Attribute;
 import uk.ac.ebi.intact.confidence.attribute.NullAttribute;
-import uk.ac.ebi.intact.confidence.attribute.AnnotationConstants;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.regex.Pattern;
 import java.io.*;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * TODO comment that
@@ -29,8 +28,12 @@ import java.io.*;
  *        <p/>
  *        Also classify new data
  */
-public class MaxEntClassifier
+public class MaxEntClassifier /*extends AbstractMaxEnt*/
 {
+        /**
+     * Sets up a logger for that class.
+     */
+    public static final Log log = LogFactory.getLog( MaxEntClassifier.class );
 
     private HashMap<Attribute, Double> trueWeightMap;
     private HashMap<Attribute, Double> falseWeightMap;
@@ -47,7 +50,7 @@ public class MaxEntClassifier
         this.weightPath = weightPath;
 
         ArrayList<Attribute> attribList = readAttribs(attribPath);
-        ArrayList<Double> weights = readWeights(weightPath);
+        List<Double> weights = readWeights(weightPath);
         if ((attribList.size() * 2) != weights.size())
         {
             throw new IllegalArgumentException(
@@ -66,10 +69,10 @@ public class MaxEntClassifier
         int j = 0;
         for (int i = 0; i < attribList.size(); i++)
         {
-            Attribute a = attribList.get(i);
+            Attribute a = attribList.get(j);
             trueWeightMap.put(a, weights.get(j));
             j++;
-            falseWeightMap.put(a, weights.get(j));
+            falseWeightMap.put(a, -weights.get(j));
             j++;
         }
         if (verbose)
@@ -221,8 +224,6 @@ public class MaxEntClassifier
         probs[0] = tScore / normalizer;
         probs[1] = fScore / normalizer;
         return probs;
-
-
     }
 
 

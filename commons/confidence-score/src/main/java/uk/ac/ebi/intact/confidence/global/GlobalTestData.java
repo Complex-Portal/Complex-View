@@ -5,21 +5,19 @@
  */
 package uk.ac.ebi.intact.confidence.global;
 
+import junit.framework.Assert;
+import org.apache.commons.collections.ListUtils;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
+import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
+import uk.ac.ebi.intact.confidence.ProteinPair;
+import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-
-import junit.framework.Assert;
-
-import org.apache.commons.collections.ListUtils;
-
-import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
-import uk.ac.ebi.intact.confidence.ProteinPair;
-import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
-import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
-import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 
 /**
  * TODO comment this
@@ -53,38 +51,6 @@ public class GlobalTestData {
 	public static GlobalTestData getInstance() {
 		return SingletonHolder.INSTANCE;
 	}
-
-	// public File getTargetDirectory() {
-	// String outputDirPath = GlobalTestData.class.getResource("/").getFile();
-	// Assert.assertNotNull(outputDirPath);
-	// File outputDir = new File(outputDirPath);
-	// // we are in src/main/resources , move 3 up
-	//
-	// // String osName = System.getProperty("os.name");
-	// // if (osName.startsWith("Linux")){
-	// //
-	// // }else if (osName.startsWith("Windows")){
-	// //
-	// // }
-	//		
-	// // TODO: for eclipse use : outputDir =
-	// outputDir.getParentFile().getParentFile().getParentFile();
-	// // TODO: for unix, cygwin use:
-	// outputDir = outputDir.getParentFile();
-	//
-	// // we are in confidence-score folder, move 1 down, in target folder
-	// String outputPath;
-	// // TODO: for eclipse use: outputPath = outputDir.getPath() + "/target/";
-	// // TODO: for unix, cygwin use:
-	// outputPath = outputDir.getPath();
-	//
-	// outputDir = new File(outputPath);
-	//
-	// Assert.assertNotNull(outputDir);
-	// Assert.assertTrue(outputDir.getAbsolutePath(), outputDir.isDirectory());
-	// Assert.assertEquals("target", outputDir.getName());
-	// return outputDir;
-	// }
 
 	public File getTargetDirectory() {
 		String outputDirPath = GlobalTestData.class.getResource("/").getFile();

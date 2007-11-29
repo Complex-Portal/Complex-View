@@ -12,12 +12,12 @@ package uk.ac.ebi.intact.confidence.attribute;
  * @version $Id$
  * @since 21-Jun-2006
  */
-public class IpAttribute extends Attribute
+public class IpPairAttribute extends Attribute
 {
 
     private IpTermPair pair;
 
-    public IpAttribute(IpTermPair pair)
+    public IpPairAttribute(IpTermPair pair)
     {
         // type and name are instance variables inherited from superclass
         type = Attribute.INTERPRO_TYPE;
@@ -28,9 +28,9 @@ public class IpAttribute extends Attribute
     public int compareTo(Attribute other)
     {
 
-        if (other instanceof IpAttribute)
+        if (other instanceof IpPairAttribute )
         {
-            IpAttribute otherAtt = (IpAttribute) other;
+            IpPairAttribute otherAtt = ( IpPairAttribute ) other;
             return pair.compareTo(otherAtt.getTermPair());
         }
         else
@@ -48,9 +48,9 @@ public class IpAttribute extends Attribute
         {
             return false;
         }
-        else if (other instanceof IpAttribute)
+        else if (other instanceof IpPairAttribute )
         {
-            IpAttribute otherAtt = (IpAttribute) other;
+            IpPairAttribute otherAtt = ( IpPairAttribute ) other;
             IpTermPair otherTermPair = otherAtt.getTermPair();
             return pair.equals(otherTermPair);
         }
@@ -78,7 +78,7 @@ public class IpAttribute extends Attribute
 
     public String getTypeName()
     {
-        return Attribute.INTERPRO_TYPENAME;
+        return Attribute.INTERPRO_PAIR_TYPENAME;
     }
 
 

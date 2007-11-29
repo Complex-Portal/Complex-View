@@ -5,20 +5,18 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.confidence;
 
-import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
-import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.attribute.*;
 
-import java.util.HashSet;
-import java.util.TreeSet;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.regex.Pattern;
-import java.io.IOException;
-import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 /**
  * TODO comment that
@@ -375,7 +373,7 @@ public class FileMethods implements AnnotationConstants
         if (Pattern.matches(ipAttribExpr, input))
         {
             String[] terms = input.split(";");
-            IpAttribute ipa = new IpAttribute(new IpTermPair(terms[0], terms[1]));
+            IpPairAttribute ipa = new IpPairAttribute(new IpTermPair(terms[0], terms[1]));
             return ipa;
         }
         else if (Pattern.matches(goPairAttribExpr, input))

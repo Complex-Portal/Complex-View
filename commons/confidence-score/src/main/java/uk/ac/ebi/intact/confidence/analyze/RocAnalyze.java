@@ -3,10 +3,9 @@ Copyright (c) 2002 The European Bioinformatics Institute, and others.
 All rights reserved. Please see the file LICENSE
 in the root directory of this distribution.
 */
-package uk.ac.ebi.intact.confidence.util;
+package uk.ac.ebi.intact.confidence.analyze;
 
-import uk.ac.ebi.intact.confidence.RocAnalyzer;
-
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -41,15 +40,18 @@ public class RocAnalyze
         for (int i = 0; i < 10; i++)
         {  // loop between 1 and 10 times
 
-            String attribPath = dir + "attribs" + i + ".txt";
-            String weightPath = dir + "params" + i + ".txt";
+//            String attribPath = dir + "attribs" + i + ".txt";
+//            String weightPath = dir + "params" + i + ".txt";
+            File gisInput = new File("blabla");  //only so intellij shuts up
+
             String posTest = dir + "highconf" + i + ".txt";
             String negTest = dir + "lowconf" + i + ".txt";
 
             try
             {
-                RocAnalyzer ra = new RocAnalyzer(attribPath, weightPath, posTest, negTest);
-                ra.printSummary();
+               // RocAnalyzer ra = new RocAnalyzer(attribPath, weightPath, posTest, negTest);
+                 RocAnalyzer ra = new RocAnalyzer(gisInput, posTest, negTest);
+                ra.printSummary(0.5, true);
 //                double correct = ra.getFractionCorrect();
 //                runningtotal = runningtotal + correct;
 //                int step = i+1;

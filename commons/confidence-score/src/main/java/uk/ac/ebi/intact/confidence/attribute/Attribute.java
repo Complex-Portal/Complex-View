@@ -18,7 +18,7 @@ package uk.ac.ebi.intact.confidence.attribute;
  *        need to sort attributes into a consistent order
  *        eg. GO ancestor terms, GO term pairs, then InterPro term pairs, then coexp distances
  */
-public abstract class Attribute implements Comparable<uk.ac.ebi.intact.confidence.attribute.Attribute>
+public abstract class Attribute implements Comparable<Attribute>
 {
 
     // assign a constant integer to each type of attribute
@@ -34,7 +34,7 @@ public abstract class Attribute implements Comparable<uk.ac.ebi.intact.confidenc
 
     // similarly, assign name strings to each type (more readable than numbers)
     public static final String NULL_TYPENAME = "NULL";
-    public static final String INTERPRO_TYPENAME = "INTERPRO";
+    public static final String INTERPRO_PAIR_TYPENAME = "INTERPRO";
     public static final String GO_PAIR_TYPENAME = "GO TERM PAIR";
 
     public static final String ALIGNMENT_TYPENAME = "SEQUENCE ALIGNMENT";
@@ -90,7 +90,7 @@ public abstract class Attribute implements Comparable<uk.ac.ebi.intact.confidenc
     public boolean equals(Object other)
     {
         // override standard equals() method
-        // further overridden by IpAttribute subclass
+        // further overridden by IpPairAttribute subclass
         if (other == null)
         {
             return false;

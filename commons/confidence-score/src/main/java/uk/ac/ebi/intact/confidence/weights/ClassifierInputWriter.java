@@ -3,14 +3,20 @@ Copyright (c) 2002 The European Bioinformatics Institute, and others.
 All rights reserved. Please see the file LICENSE
 in the root directory of this distribution.
 */
-package uk.ac.ebi.intact.confidence.attribute;
+package uk.ac.ebi.intact.confidence.weights;
 
 
 import uk.ac.ebi.intact.confidence.FileMethods;
+import uk.ac.ebi.intact.confidence.attribute.AnnotationConstants;
+import uk.ac.ebi.intact.confidence.attribute.Attribute;
+import uk.ac.ebi.intact.confidence.attribute.NullAttribute;
+import uk.ac.ebi.intact.confidence.attribute.TadmContext;
 
-import java.util.*;
-import java.util.regex.Pattern;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 /**
  * TODO comment that

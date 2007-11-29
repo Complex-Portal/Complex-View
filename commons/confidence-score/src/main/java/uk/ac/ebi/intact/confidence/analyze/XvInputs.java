@@ -3,9 +3,9 @@ Copyright (c) 2002 The European Bioinformatics Institute, and others.
 All rights reserved. Please see the file LICENSE
 in the root directory of this distribution.
 */
-package uk.ac.ebi.intact.confidence.old;
+package uk.ac.ebi.intact.confidence.analyze;
 
-import uk.ac.ebi.intact.confidence.attribute.ClassifierInputWriter;
+import uk.ac.ebi.intact.confidence.weights.ClassifierInputWriter;
 
 import java.io.IOException;
 
@@ -20,7 +20,8 @@ public class XvInputs {
 
     // create multiple TADM input files for cross-validation
 
-    static String dir = "/scratch/classify/xvalidate/";
+    static String dir ="~\\tmp\\ConfidenceModel\\bkup\\XvFoldTest"; 
+            //"/scratch/classify/xvalidate/";
 
     static String hcAll = dir + "highconf_all_attribs.txt";
     static String lcAll = dir + "lowconf_all_attribs.txt";
@@ -50,9 +51,5 @@ public class XvInputs {
             }
 
         }
-
-
     }
-
-
 }

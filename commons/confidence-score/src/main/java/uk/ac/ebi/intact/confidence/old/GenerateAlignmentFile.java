@@ -3,10 +3,10 @@ Copyright (c) 2002 The European Bioinformatics Institute, and others.
 All rights reserved. Please see the file LICENSE
 in the root directory of this distribution.
 */
-package uk.ac.ebi.intact.confidence.util;
+package uk.ac.ebi.intact.confidence.old;
 
-import uk.ac.ebi.intact.confidence.attribute.FileMaker;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
+import uk.ac.ebi.intact.confidence.attribute.FileMaker;
 
 import java.io.File;
 import java.io.IOException;

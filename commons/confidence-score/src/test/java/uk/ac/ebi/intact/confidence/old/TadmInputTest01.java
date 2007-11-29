@@ -5,7 +5,7 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.confidence.old;
 
-import uk.ac.ebi.intact.confidence.attribute.ClassifierInputWriter;
+import uk.ac.ebi.intact.confidence.weights.ClassifierInputWriter;
 
 import java.io.IOException;
 

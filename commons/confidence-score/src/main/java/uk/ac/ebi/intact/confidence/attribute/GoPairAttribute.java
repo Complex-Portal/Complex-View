@@ -18,8 +18,12 @@ public class GoPairAttribute extends Attribute
 
     private GoTermPair pair;
 
-    public GoPairAttribute(GoTermPair pair)
+    public GoPairAttribute( GoTermPair pair)
     {
+        if(pair == null){
+            throw new IllegalArgumentException( "BinaryItem must not be null!");
+        }
+        
         // type and name are instance variables inherited from superclass
         type = Attribute.GO_PAIR_TYPE;
         this.pair = pair;
