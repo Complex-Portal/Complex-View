@@ -25,6 +25,18 @@
         </td>
     </tr>
 
+    <!-- filter -->
+    <tr>
+        <td>
+            <tiles:insert attribute="menu" ignore="true"/>
+        </td>
+    </tr>
+</table>        
+
+<hr/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
     <%-- The footer --%>
     <%-- Sidebar footer --%>
     <tr>

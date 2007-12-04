@@ -33,11 +33,6 @@
 
     <!-- ============ Definitions of StatisticView screens ================= -->
 
-    <!-- The header layout. -->
-    <definition name="header.layout" path="/layouts/headerLayout.jsp">
-        <put name="header.title" value="Statistics"/>
-    </definition>
-
     <!-- StatisticView page description -->
     <definition name="statisticView.layout" path="/layouts/intactLayout.jsp">
         <put name="title" value="Statistics"/>
