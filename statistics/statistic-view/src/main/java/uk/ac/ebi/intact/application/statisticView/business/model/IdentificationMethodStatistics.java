@@ -16,7 +16,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table( name = "ia_detectionmethodsstatistics" )
-public class IdentificationMethodStatistics extends StatsBase implements Comparable {
+public class IdentificationMethodStatistics extends StatsBase {
 
     private String detectionName;
     private int numberInteractions;
@@ -41,11 +41,4 @@ public class IdentificationMethodStatistics extends StatsBase implements Compara
     public void setNumberInteractions( int numberInteractions ) {
         this.numberInteractions = numberInteractions;
     }
-
-    public int compareTo( Object o ) {
-        String detectionName = ( ( IdentificationMethodStatistics ) o ).getDetectionName();
-        return detectionName.compareTo( detectionName );
-    }
-
-
 }

@@ -391,22 +391,13 @@ public class ChartBuilder {
         // sort the data, to have a nicer chart
         Collections.sort( ( List ) identificationStatistics, new IdentificationComparator() );
         final DefaultPieDataset dataSet = new DefaultPieDataset();
-        int count;
-        int rest = 0;
+
         // create the dataset
         for ( Iterator iterator = identificationStatistics.iterator(); iterator.hasNext(); ) {
             IdentificationMethodStatistics method = ( IdentificationMethodStatistics ) iterator.next();
-            count = method.getNumberInteractions();
-            // sort out the threshold which are unter the limit
-            if ( count > Constants.MIN_DETECTION_METHODS ) {
-                dataSet.setValue( method.getDetectionName(), method.getNumberInteractions() );
-            } else {
-                // summ the threshold up
-                rest = rest + count;
-            }
+            dataSet.setValue( method.getDetectionName(), method.getNumberInteractions() );
         }
-        // add the threshold as "other methods"
-        dataSet.setValue( "other methods", rest );
+
         // create the chart
         final JFreeChart chart = ChartFactory.getPieChart( dataSet, IDENTIFICATION_CHART_TITLE );
         chart.setAntiAlias( true );

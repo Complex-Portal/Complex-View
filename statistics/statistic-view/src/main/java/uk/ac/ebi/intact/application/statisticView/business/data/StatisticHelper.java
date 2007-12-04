@@ -26,6 +26,8 @@ import java.util.*;
  */
 public class StatisticHelper {
 
+    public static final int INTERACTION_DETECTION_METHOD_PERCENTAGE_CUTOFF = 1;
+
     private static final Log log = LogFactory.getLog( StatisticHelper.class );
 
     private List intactStatistics = null;
@@ -87,11 +89,39 @@ public class StatisticHelper {
         Collection<IdentificationMethodStatistics> result =
                 StatsDaoFactory.getStatsBaseDao( IdentificationMethodStatistics.class ).getAll();
 
-        List toSort = new ArrayList( result );
-        Collections.sort( toSort );
+        // cut off methods that represent below 10% of the data we hold
+        int sum = 0;
+        for ( IdentificationMethodStatistics method : result ) {
+            sum += method.getNumberInteractions();
+        }
+
+        int onePercentCount = (sum / 100) * INTERACTION_DETECTION_METHOD_PERCENTAGE_CUTOFF;
+        if ( log.isDebugEnabled() ) {
+            log.debug( "Applying "+INTERACTION_DETECTION_METHOD_PERCENTAGE_CUTOFF+
+                       "% cut-off ("+ onePercentCount +" interactions of less) ... methods representing less than that are reclassified under others..." );
+        }
+
+        IdentificationMethodStatistics others = new IdentificationMethodStatistics();
+        others.setDetectionName( "Other methods" );
+        others.setNumberInteractions( 0 );
+        for ( Iterator<IdentificationMethodStatistics> iterator = result.iterator(); iterator.hasNext(); )
+        {
+            IdentificationMethodStatistics method = iterator.next();
+            final int interactionCount = method.getNumberInteractions();
+            if( interactionCount <= onePercentCount ) {
+                iterator.remove();
+                others.setNumberInteractions( others.getNumberInteractions() + interactionCount );
+                if ( log.isDebugEnabled() ) {
+                    log.debug( "Moving method '"+ method.getDetectionName() +"' under others ("+ others.getNumberInteractions() +")" );
+                }
+            }
+        }
+        if( others.getNumberInteractions( ) > 0 ) {
+            result.add( others );
+        }
 
         ChartBuilder chartBuilder = new ChartBuilder();
-        JFreeChart chart = chartBuilder.identificationMethods( toSort );
+        JFreeChart chart = chartBuilder.identificationMethods( result );
 
         return chart;
     }
