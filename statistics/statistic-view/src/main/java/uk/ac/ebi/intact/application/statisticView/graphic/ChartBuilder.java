@@ -6,6 +6,8 @@ in the root directory of this distribution.
 package uk.ac.ebi.intact.application.statisticView.graphic;
 
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.plot.PieLabelDistributor;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYDataset;
@@ -382,33 +384,53 @@ public class ChartBuilder {
      *
      * @throws IntactException
      */
-    public JFreeChart identificationMethods( final Collection identificationStatistics ) throws IntactException {
-        // first check if it is not null
+    public JFreeChart identificationMethods( final Collection<IdentificationMethodStatistics> identificationStatistics ) throws IntactException {
         if ( identificationStatistics == null ) {
             throw new IntactException( "DataSource of identificationStatistics must no be null" );
         }
 
-        // sort the data, to have a nicer chart
+        // Sort the data by decreasing count of interaction
         Collections.sort( ( List ) identificationStatistics, new IdentificationComparator() );
         final DefaultPieDataset dataSet = new DefaultPieDataset();
 
-        // create the dataset
-        for ( Iterator iterator = identificationStatistics.iterator(); iterator.hasNext(); ) {
-            IdentificationMethodStatistics method = ( IdentificationMethodStatistics ) iterator.next();
-            dataSet.setValue( method.getDetectionName(), method.getNumberInteractions() );
+        // Create the dataset
+        for ( IdentificationMethodStatistics method : identificationStatistics ) {
+            dataSet.setValue( method.getDetectionName() + " ("+ method.getNumberInteractions() +")", method.getNumberInteractions() );
         }
 
-        // create the chart
+        // Create the chart
         final JFreeChart chart = ChartFactory.getPieChart( dataSet, IDENTIFICATION_CHART_TITLE );
         chart.setAntiAlias( true );
 
         // Set the default colors for the chart
-        ( ( org.jfree.chart.plot.PiePlot ) chart.getPlot() ).setSectionPaint( 0, Color.red );
-        ( ( org.jfree.chart.plot.PiePlot ) chart.getPlot() ).setSectionPaint( 1, Color.blue );
-        ( ( org.jfree.chart.plot.PiePlot ) chart.getPlot() ).setSectionPaint( 2, Color.green );
+        final PiePlot piePlot = ( PiePlot ) chart.getPlot();
+
+        // problems with label in JFreeChart 1.0.7: the labels are drawn outside the chart (so we use 1.0.5 instead)
+        // http://www.jfree.org/phpBB2/viewtopic.php?p=65865&sid=c9cb34ac517fcd03d10f9da6d7b5b1cf
+        int i = 0;
+        final int colorCount = chartColors.size();
+        for ( IdentificationMethodStatistics method : identificationStatistics ) {
+            piePlot.setSectionPaint( method.getDetectionName() + " ("+ method.getNumberInteractions() +")",
+                                     chartColors.get( i ) );
+            i++;
+            if( i == colorCount ) {
+                // enforce rotation of colors
+                i = 0;
+            }
+        }
 
         return chart;
     }
+
+    static List<Paint> chartColors = new ArrayList<Paint>( );
+
+    static {
+        chartColors.add( new Color( 238, 228, 83 ) );  // yellow
+        chartColors.add( new Color( 204, 219, 237 ) ); // light blue
+        chartColors.add( new Color( 214, 179, 214 ) ); // pink
+        chartColors.add( new Color( 238, 143, 126 ) ); // redish
+    }
+
 
     /**
      * Creates a time series graph over experiments based on the given intactstatistic objects.

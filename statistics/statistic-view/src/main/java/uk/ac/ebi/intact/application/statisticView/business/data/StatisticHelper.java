@@ -8,6 +8,7 @@ package uk.ac.ebi.intact.application.statisticView.business.data;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
 import uk.ac.ebi.intact.application.statisticView.business.model.BioSourceStatistics;
 import uk.ac.ebi.intact.application.statisticView.business.model.IdentificationMethodStatistics;
 import uk.ac.ebi.intact.application.statisticView.business.model.IntactStatistics;
@@ -16,10 +17,12 @@ import uk.ac.ebi.intact.application.statisticView.business.util.IntactStatisticC
 import uk.ac.ebi.intact.application.statisticView.graphic.ChartBuilder;
 import uk.ac.ebi.intact.business.IntactException;
 
+import java.awt.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 /**
  * User: Michael Kleen mkleen@ebi.ac.uk Date: Mar 14, 2005 Time: 11:24:07 PM
