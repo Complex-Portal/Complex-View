@@ -18,13 +18,8 @@
 <table width="100%">
 <tr>
     <td>
-        Please send any questions or suggestions to
-            <a href="mailto:intact-help@ebi.ac.uk">intact-help@ebi.ac.uk</a>
-        <br/>
-        <%-- commented during the reorg to maven
-        Last modified: <i><%@ include file="../last-modified.txt" %></i>
-        <br/>
-        --%>
+        Please <a href="http://www.ebi.ac.uk/support/index.php?query=intact " target="_blank">contact us</a>
+        should you have any questions or suggestions.
         Version: <i><bean:message bundle="buildInfo" key="build.version"/></i>
     </td>
     <td class="tableCell">
