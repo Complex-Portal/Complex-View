@@ -15,14 +15,19 @@
  */
 package uk.ac.ebi.intact.service.graph.binary;
 
+import edu.uci.ics.jung.graph.impl.SimpleSparseVertex;
+import edu.uci.ics.jung.utils.UserData;
+import psidev.psi.mi.tab.model.Alias;
+import psidev.psi.mi.tab.model.CrossReference;
 import psidev.psi.mi.tab.model.Interactor;
 import uk.ac.ebi.intact.service.graph.Node;
+import uk.ac.ebi.intact.service.graph.binary.label.IdentifierLabelBuilder;
+import uk.ac.ebi.intact.service.graph.binary.label.LabelBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import edu.uci.ics.jung.graph.impl.SimpleSparseVertex;
-import edu.uci.ics.jung.utils.UserData;
 
 /**
  * Implementation of Vertex that holds the interactor information
@@ -34,10 +39,17 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
 
     private Interactor interactor;
     private Collection<BinaryInteractionEdge> edges;
+    private Collection<CrossReference> experimentalRole;
+    private Collection<CrossReference> properties;
+    private LabelBuilder labelBuilder = new IdentifierLabelBuilder();
 
-    protected InteractorVertex(Interactor interactor) {
+    private String nodeID;
+
+    private boolean isCentral = false;
+
+     protected InteractorVertex(Interactor interactor) {
         this.interactor = interactor;
-
+        setId();
         addUserDatum("id", getId(), UserData.SHARED);
     }
 
@@ -48,8 +60,92 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         return edges;
     }
 
-    public String getId() {
-        return interactor.getIdentifiers().iterator().next().getIdentifier();
+    public void setExperimentalRole( Collection<CrossReference> experimentalRole ) {
+        this.experimentalRole = experimentalRole;
+    }
+
+    public void setProperties( Collection<CrossReference> properties ) {
+        this.properties = properties;
+    }
+
+    public void setCentral( boolean central ) {
+        isCentral = central;
+    }
+
+    public Collection<CrossReference> getProperties(){
+        return properties;
+    }
+
+    public String getId(){
+        return nodeID;
+    }
+
+    private void setId() {
+
+        for ( CrossReference id : interactor.getIdentifiers() ) {
+            if ( nodeID == null ) {
+                nodeID = id.getIdentifier();
+            }
+            if ( id.getDatabase().equals( "intact" ) ) {
+                nodeID =  id.getIdentifier();
+            }
+        }        
+    }
+
+    public void setLabelBuilder( LabelBuilder labelBuilder ) {
+        this.labelBuilder = labelBuilder;
+    }
+
+    public boolean isCentralNode() {
+        return isCentral;
+    }
+
+    public boolean isBait() {
+        if ( experimentalRole != null && !experimentalRole.isEmpty() ) {
+            for ( CrossReference xref : experimentalRole ) {
+                if ( xref.getDatabase().equals("MI") && xref.getIdentifier().equals("0496")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isPrey() {
+        if ( experimentalRole != null && !experimentalRole.isEmpty() ) {
+            for ( CrossReference xref : experimentalRole ) {
+                if ( xref.getDatabase().equals("MI") && xref.getIdentifier().equals("0498")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isNeutralComponent() {
+        if ( experimentalRole != null && !experimentalRole.isEmpty() ) {
+            for ( CrossReference xref : experimentalRole ) {
+                if ( xref.getDatabase().equals("MI") && xref.getIdentifier().equals("0497")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+
+    public String getLabel() {
+        return labelBuilder.buildLabel( interactor, "intact");
+    }
+
+    public Collection<String> getPropertiesIds(){
+        Collection<String> propteriesIds = new ArrayList<String>(properties.size());
+        for ( CrossReference property : properties) {
+            propteriesIds.add(property.getIdentifier());
+        }
+
+        return propteriesIds;
     }
 
     public Interactor getInteractor() {
@@ -64,9 +160,8 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
 
         InteractorVertex that = (InteractorVertex) o;
 
-        if (interactor != null ? !interactor.equals(that.interactor) : that.interactor != null) return false;
+        return !( interactor != null ? !interactor.equals( that.interactor ) : that.interactor != null );
 
-        return true;
     }
 
     @Override

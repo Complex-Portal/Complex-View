@@ -13,14 +13,14 @@ import java.util.Collection;
 public class SimpleGraphDraw {
 
     public static void main(String[] args) throws Exception {
-        File file = new File(BinaryGraphNetworkFactoryTest.class.getResource("/test-files/brca2.txt").getFile());
+        File file = TestHelper.getFileByResources("/test-files/brca2.txt", BinaryGraphNetworkFactoryTest.class);
+        //File file = new File(BinaryGraphNetworkFactoryTest.class.getResource("/test-files/brca2.txt").getFile());
         PsimiTabReader reader = new PsimiTabReader(true);
 
         Collection<BinaryInteraction> binaryInteractions = reader.read(file);
         BinaryGraphNetwork graphNetwork = new BinaryGraphNetworkBuilder().createGraphNetwork(binaryInteractions);
 
         System.out.println(graphNetwork);
-
 
         JFrame jf = new JFrame();
 

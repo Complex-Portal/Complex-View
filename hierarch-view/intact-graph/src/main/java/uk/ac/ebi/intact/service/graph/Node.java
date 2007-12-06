@@ -14,5 +14,9 @@ public interface Node<T extends Edge> extends Vertex {
         
     Collection<T> getEdges();
     
-    String getId();    
+    String getId();
+
+    String getLabel();
+
+    boolean isCentralNode();
 }

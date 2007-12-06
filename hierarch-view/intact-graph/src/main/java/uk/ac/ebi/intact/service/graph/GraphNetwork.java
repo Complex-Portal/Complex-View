@@ -14,6 +14,8 @@ import java.util.Collection;
  */
 public interface GraphNetwork<N extends Node, E extends Edge> extends Graph {
 
-    Collection<N> getNodes();
+    public Collection<N> getNodes();
+
+    public Collection<N> getCentralNodes();
 
 }

@@ -15,22 +15,14 @@
  */
 package uk.ac.ebi.intact.service.graph.binary;
 
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.Vertex;
 import edu.uci.ics.jung.graph.decorators.StringLabeller;
-import edu.uci.ics.jung.graph.impl.UndirectedSparseEdge;
-import edu.uci.ics.jung.graph.impl.UndirectedSparseVertex;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.Interactor;
-import uk.ac.ebi.intact.service.graph.Edge;
-import uk.ac.ebi.intact.service.graph.GraphNetwork;
-import uk.ac.ebi.intact.service.graph.Node;
+import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
 import uk.ac.ebi.intact.service.graph.GraphException;
+import uk.ac.ebi.intact.service.graph.binary.label.LabelBuilder;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Creates <code>BinaryGraphNetwork</code>s
@@ -41,7 +33,53 @@ import java.util.Map;
  */
 public class BinaryGraphNetworkBuilder {
 
+    private LabelBuilder labelBuilder;
+
     public BinaryGraphNetworkBuilder() {
+    }
+
+    public LabelBuilder getLabelBuilder() {
+        return labelBuilder;
+    }
+
+    public void setLabelBuilder( LabelBuilder labelBuilder ) {
+        this.labelBuilder = labelBuilder;
+    }
+
+    public BinaryGraphNetwork createGraphNetwork(Collection<BinaryInteraction> binaryInteractions,
+                                                 Collection<String> centralProteinAcs) {
+
+        BinaryGraphNetwork graphNetwork = new BinaryGraphNetwork();
+
+        for (BinaryInteraction interaction : binaryInteractions) {
+            InteractorVertex vertexA = createVertex(interaction.getInteractorA(), graphNetwork);
+            InteractorVertex vertexB = createVertex(interaction.getInteractorB(), graphNetwork);
+
+            try {
+                IntActBinaryInteraction bi = (IntActBinaryInteraction) interaction;
+
+                vertexA.setProperties(bi.getPropertiesA());
+                vertexA.setExperimentalRole(bi.getExperimentalRolesInteractorA());
+                if (centralProteinAcs != null && centralProteinAcs.contains(vertexA.getId())){
+                    graphNetwork.addCentralNode(vertexA);
+                }
+
+                vertexB.setProperties(bi.getPropertiesB());
+                vertexB.setExperimentalRole(bi.getExperimentalRolesInteractorB());
+                if (centralProteinAcs != null &&  centralProteinAcs.contains(vertexB.getId())){
+                    graphNetwork.addCentralNode(vertexB);
+                }
+
+            } catch (ClassCastException e){
+
+            }
+
+            BinaryInteractionEdge edge = new BinaryInteractionEdge(interaction, vertexA, vertexB);
+            graphNetwork.addEdge(edge);
+        }
+
+         return graphNetwork;
+
     }
 
     /**
@@ -55,21 +93,13 @@ public class BinaryGraphNetworkBuilder {
      * @throws Exception
      */
     public BinaryGraphNetwork createGraphNetwork(Collection<BinaryInteraction> binaryInteractions) {
-        BinaryGraphNetwork graphNetwork = new BinaryGraphNetwork();
-
-        for (BinaryInteraction interaction : binaryInteractions) {
-            InteractorVertex vertexA = createVertex(interaction.getInteractorA(), graphNetwork);
-            InteractorVertex vertexB = createVertex(interaction.getInteractorB(), graphNetwork);
-
-            BinaryInteractionEdge edge = new BinaryInteractionEdge(interaction, vertexA, vertexB);
-            graphNetwork.addEdge(edge);
-        }
-
-        return graphNetwork;
+        return this.createGraphNetwork(binaryInteractions, null);
     }
 
-    protected static InteractorVertex createVertex(Interactor interactor, BinaryGraphNetwork graph) {
+    private InteractorVertex createVertex(Interactor interactor, BinaryGraphNetwork graph ) {
         InteractorVertex vertex = new InteractorVertex(interactor);
+        vertex.setLabelBuilder( labelBuilder );
+
         InteractorVertex existingVertex = graph.findNode(vertex.getId());
 
         if (existingVertex != null) {
@@ -85,10 +115,7 @@ public class BinaryGraphNetworkBuilder {
             throw new GraphException("Problem setting the label to vertex: "+vertex, e);
         }
 
-
         return vertex;
     }
-
-
 
 }
