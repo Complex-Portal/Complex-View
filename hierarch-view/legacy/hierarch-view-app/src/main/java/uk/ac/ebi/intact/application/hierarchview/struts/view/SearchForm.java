@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Form bean for the main form of the view.jsp page.  
+ * Form bean for the main form of the view.jsp page.
  * This form has the following fields, with default values in square brackets:
  * <ul>
  * <li><b>queryString</b> - Entered queryString value
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpSession;
 
 public final class SearchForm extends IntactBaseForm {
 
-    public static Logger logger = Logger.getLogger (Constants.LOGGER_NAME);
+    public static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
     /**
      */
@@ -61,42 +61,42 @@ public final class SearchForm extends IntactBaseForm {
 
     /**
      * Sets the action.
+     *
      * @param action the action for the form. If this contains the word
-     * 'AC' then the search is by AC otherwise the search is by label.
+     *               'AC' then the search is by AC otherwise the search is by label.
      */
-    public void setAction(String action) {
+    public void setAction( String action ) {
         actionName = action;
 
-        if (action.equals("Add")) {
+        if ( action.equals( "Add" ) ) {
             myAction = ADD;
-        }
-        else if (action.equals("Search")) {
+        } else if ( action.equals( "Search" ) ) {
             myAction = SEARCH;
         }
     }
 
 
-    public String getAction () {
+    public String getAction() {
         return actionName;
     }
 
 
     public String getQueryString() {
-        return (this.queryString);
+        return ( this.queryString );
     }
 
 
-    public void setQueryString(String queryString) {
+    public void setQueryString( String queryString ) {
         this.queryString = queryString;
     }
 
 
     public String getMethod() {
-        return (this.method);
+        return ( this.method );
     }
 
 
-    public void setMethod (String method) {
+    public void setMethod( String method ) {
         this.method = method;
     }
 
@@ -123,7 +123,7 @@ public final class SearchForm extends IntactBaseForm {
      * @param mapping The mapping used to select this instance
      * @param request The servlet request we are processing
      */
-    public void reset(ActionMapping mapping, HttpServletRequest request) {
+    public void reset( ActionMapping mapping, HttpServletRequest request ) {
         this.queryString = null;
         this.method = null;
     } // reset
@@ -139,54 +139,54 @@ public final class SearchForm extends IntactBaseForm {
      * @param mapping The mapping used to select this instance
      * @param request The servlet request we are processing
      */
-    public ActionErrors validate(ActionMapping mapping,
-                                 HttpServletRequest request) {
+    public ActionErrors validate( ActionMapping mapping,
+                                  HttpServletRequest request ) {
 
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession( false );
         boolean networkExists = false;
 
         // in the case the network already exists and the user ADD with an
         // EMPTY searchString ... we display a warning MESSAGE instead of ERROR
-        if ((addSelected()) && (null != session)) {
-            IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession().getAttribute(Constants.USER_KEY);
-            if (user != null) {
-                if (null != user.getInteractionNetwork()) {
+        if ( ( addSelected() ) && ( null != session ) ) {
+            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+            if ( user != null ) {
+                if ( null != user.getInteractionNetwork() ) {
                     networkExists = true;
                 }
             }
         }
 
-        if ((queryString == null) || (queryString.trim().length() == 0)) {
-            if (networkExists)
-                 addMessage ("error.queryString.required");
-            else addError ("error.queryString.required");
+        if ( ( queryString == null ) || ( queryString.trim().length() == 0 ) ) {
+            if ( networkExists )
+                addMessage( "error.queryString.required" );
+            else addError( "error.queryString.required" );
         }
 
-        if ((method == null) || (method.trim().length() == 0)) {
-            if (networkExists)
-                 addMessage ("error.method.required");
-            else addError ("error.method.required");
+        if ( ( method == null ) || ( method.trim().length() == 0 ) ) {
+            if ( networkExists )
+                addMessage( "error.method.required" );
+            else addError( "error.method.required" );
         }
 
-        if (false == isMessagesEmpty()) {
+        if ( !isMessagesEmpty() ) {
             /* save messages in the context, that feature is not included in Struts 1.1
              * currently it's only possible to manage ActionErrors when validating a form.
              */
-            saveMessages (request);
+            saveMessages( request );
         }
 
         return getErrors();
     }
 
 
-    public String toString () {
-        StringBuffer sb = new StringBuffer("SearchForm[queryString=");
-        sb.append(queryString);
-        if (method != null) {
-            sb.append(", method=");
-            sb.append(method);
+    public String toString() {
+        StringBuffer sb = new StringBuffer( "SearchForm[queryString=" );
+        sb.append( queryString );
+        if ( method != null ) {
+            sb.append( ", method=" );
+            sb.append( method );
         }
-        sb.append("]");
-        return (sb.toString());
+        sb.append( "]" );
+        return ( sb.toString() );
     }
 }

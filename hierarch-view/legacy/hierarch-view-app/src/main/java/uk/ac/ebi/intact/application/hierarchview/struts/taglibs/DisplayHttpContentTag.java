@@ -9,7 +9,6 @@ import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.context.IntactContext;
 
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -43,53 +42,53 @@ public class DisplayHttpContentTag extends TagSupport {
      * option list.
      */
     public int doEndTag() throws JspException {
-        HttpSession session = pageContext.getSession();
+        //HttpSession session = pageContext.getSession();
 
         try {
-            IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession().getAttribute (Constants.USER_KEY);
+            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
             String urlStr = user.getSourceURL();
 
-            if (urlStr == null) {
+            if ( urlStr == null ) {
                 // nothing to display
                 return EVAL_PAGE;
             }
 
-            URL url = null;
+            URL url;
             try {
-                url = new URL (urlStr);
-            } catch (MalformedURLException me) {
-                String decodedUrl = URLDecoder.decode (urlStr, "UTF-8");
-                pageContext.getOut().write ("The source is malformed : <a href=\"" + decodedUrl +
-                                             "\" target=\"_blank\">" + decodedUrl + "</a>" );
+                url = new URL( urlStr );
+            } catch ( MalformedURLException me ) {
+                String decodedUrl = URLDecoder.decode( urlStr, "UTF-8" );
+                pageContext.getOut().write( "The source is malformed : <a href=\"" + decodedUrl +
+                                            "\" target=\"_blank\">" + decodedUrl + "</a>" );
                 return EVAL_PAGE;
             }
 
             // Retrieve the content of the URL
             StringBuffer httpContent = new StringBuffer();
-            httpContent.append ("<!-- URL : " + urlStr + "-->");
+            httpContent.append( "<!-- URL : " ).append( urlStr ).append( "-->" );
             String tmpLine;
             try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-                while ((tmpLine = reader.readLine()) != null) {
-                    httpContent.append(tmpLine);
+                BufferedReader reader = new BufferedReader( new InputStreamReader( url.openStream() ) );
+                while ( ( tmpLine = reader.readLine() ) != null ) {
+                    httpContent.append( tmpLine );
                 }
                 reader.close();
-            } catch (IOException ioe) {
-                 user.resetSourceURL();
-                String decodedUrl = URLDecoder.decode (urlStr, "UTF-8");
-                 pageContext.getOut().write ("Unable to display the source at : <a href=\"" + decodedUrl +
-                                             "\" target=\"_blank\">" + decodedUrl + "</a>" );
-                 return EVAL_PAGE;
+            } catch ( IOException ioe ) {
+                user.resetSourceURL();
+                String decodedUrl = URLDecoder.decode( urlStr, "UTF-8" );
+                pageContext.getOut().write( "Unable to display the source at : <a href=\"" + decodedUrl +
+                                            "\" target=\"_blank\">" + decodedUrl + "</a>" );
+                return EVAL_PAGE;
             }
 
             // return the content to the browser
-            pageContext.getOut().write (httpContent.toString());
+            pageContext.getOut().write( httpContent.toString() );
 
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             e.printStackTrace();
-            throw new JspException ("Error when trying to get HTTP content");
+            throw new JspException( "Error when trying to get HTTP content" );
         }
 
-       return EVAL_PAGE;  // the rest of the calling JSP is evaluated
+        return EVAL_PAGE;  // the rest of the calling JSP is evaluated
     } // doEndTag
 }

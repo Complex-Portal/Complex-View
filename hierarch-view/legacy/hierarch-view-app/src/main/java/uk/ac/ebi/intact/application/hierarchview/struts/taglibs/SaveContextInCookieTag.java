@@ -8,7 +8,7 @@ package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 
@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -41,41 +41,41 @@ import java.util.ArrayList;
  */
 public class SaveContextInCookieTag extends TagSupport {
 
-    static Logger logger = Logger.getLogger (Constants.LOGGER_NAME);
+    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
     private final static int KEEP_UNTIL_BROWSER_IS_CLOSED = -1;
 
     /**
      * Create/update a persistent cookie
      *
-     * @param name name the name of the cookie to create
+     * @param name  name the name of the cookie to create
      * @param value the associated value
      */
-    private void saveCookie (String applicationPath, String name, String value) {
-        Cookie cookie = new Cookie (name, value);
-        cookie.setPath (applicationPath);
-        cookie.setMaxAge(KEEP_UNTIL_BROWSER_IS_CLOSED);
-        ((HttpServletResponse) pageContext.getResponse()).addCookie(cookie);
+    private void saveCookie( String applicationPath, String name, String value ) {
+        Cookie cookie = new Cookie( name, value );
+        cookie.setPath( applicationPath );
+        cookie.setMaxAge( KEEP_UNTIL_BROWSER_IS_CLOSED );
+        ( ( HttpServletResponse ) pageContext.getResponse() ).addCookie( cookie );
 
-        logger.info (name + " saved in the cookie ("+ applicationPath +") with value: " + value);
+        logger.info( name + " saved in the cookie (" + applicationPath + ") with value: " + value );
     }
 
     /**
      * For Debugging Purpose.
      * display the content of the current user cookie.
      */
-    public void displayCookieContent () {
-        Cookie cookies[] = ((HttpServletRequest) pageContext.getRequest()).getCookies();
-        if (cookies == null) {
-            logger.info("The cookie contains no data.");
+    public void displayCookieContent() {
+        Cookie cookies[] = ( ( HttpServletRequest ) pageContext.getRequest() ).getCookies();
+        if ( cookies == null ) {
+            logger.info( "The cookie contains no data." );
             return;
         }
 
         Cookie aCookie = null;
-        logger.info("The cookie contains :");
-        for (int i = 0; i < cookies.length; i++) {
-            aCookie = cookies[i];
-            logger.info ( aCookie.getName() + " = " + aCookie.getValue() );
+        logger.info( "The cookie contains :" );
+        for ( Cookie cooky : cookies ) {
+            aCookie = cooky;
+            logger.info( aCookie.getName() + " = " + aCookie.getValue() );
         }
     }
 
@@ -92,42 +92,42 @@ public class SaveContextInCookieTag extends TagSupport {
     public int doEndTag() throws JspException {
 
         HttpSession session = pageContext.getSession();
-        if (session == null) return EVAL_PAGE;
+        if ( session == null ) return EVAL_PAGE;
 
-        IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession().getAttribute (Constants.USER_KEY);
-        if (user == null) return EVAL_PAGE;
+        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+        if ( user == null ) return EVAL_PAGE;
 
-        InteractionNetwork network = user.getInteractionNetwork();
-        if (network == null) return EVAL_PAGE;
+        Network network = user.getInteractionNetwork();
+        if ( network == null ) return EVAL_PAGE;
 
-        displayCookieContent ();
+        displayCookieContent();
 
         // get the application path
-        HttpServletRequest request = ((HttpServletRequest) pageContext.getRequest());
+        HttpServletRequest request = ( ( HttpServletRequest ) pageContext.getRequest() );
         String applicationPath = request.getContextPath();
 
         // save our context
-        ArrayList criterias = network.getCriteria();
+        List criterias = network.getCriteria();
         int max = criterias.size();
         StringBuffer sb = new StringBuffer( 128 );
-        for (int i = 0; i < max; i++) {
-            sb.append ( ( (CriteriaBean) criterias.get(i) ).getQuery() ).append(',');
+        for ( int i = 0; i < max; i++ ) {
+            sb.append( ( ( CriteriaBean ) criterias.get( i ) ).getQuery() ).append( ',' );
         }
 
         // save queries without the last comma
         String queryString = null;
-        if( sb.length() > 0 ) {
+        if ( sb.length() > 0 ) {
             try {
                 queryString = URLEncoder.encode( sb.substring( 0, sb.length() - 1 ), "UTF-8" );
-            } catch (UnsupportedEncodingException uee) {
-                logger.error ("Unsupported encoding system");
+            } catch ( UnsupportedEncodingException uee ) {
+                logger.error( "Unsupported encoding system" );
                 return EVAL_PAGE;
             }
         }
 
-        saveCookie (applicationPath, "QUERY",  queryString);
-        saveCookie (applicationPath, "DEPTH",  ""+user.getCurrentDepth());
-        saveCookie (applicationPath, "METHOD", user.getMethodLabel());
+        saveCookie( applicationPath, "QUERY", queryString );
+        saveCookie( applicationPath, "DEPTH", "" + user.getCurrentDepth() );
+        saveCookie( applicationPath, "METHOD", user.getMethodLabel() );
 
         return EVAL_PAGE;
     }

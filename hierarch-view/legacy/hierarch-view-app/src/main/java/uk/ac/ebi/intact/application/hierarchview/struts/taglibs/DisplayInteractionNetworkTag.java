@@ -8,7 +8,7 @@ package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.HighlightProteins;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -32,7 +32,7 @@ import java.util.Properties;
 
 public class DisplayInteractionNetworkTag extends TagSupport {
 
-    static Logger logger = Logger.getLogger (Constants.LOGGER_NAME);
+    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
     /**
      * Skip the body content.
@@ -50,57 +50,56 @@ public class DisplayInteractionNetworkTag extends TagSupport {
         HttpSession session = pageContext.getSession();
 
         try {
-            IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession().getAttribute (Constants.USER_KEY);
+            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
             // Retrieve user's data
-            if (user == null) {
-                logger.error("User was null, exit the tag.");
+            if ( user == null ) {
+                logger.error( "User was null, exit the tag." );
                 return EVAL_PAGE;
             }
 
-            ImageBean imageBean   = user.getImageBean();
-            String behaviour      = user.getBehaviour();
-            InteractionNetwork in = user.getInteractionNetwork();
-            int imageHeight       = imageBean.getImageHeight();
-            int imageWidth        = imageBean.getImageWidth();
+            ImageBean imageBean = user.getImageBean();
+            String behaviour = user.getBehaviour();
+            Network in = user.getInteractionNetwork();
 
+            int imageHeight = imageBean.getImageHeight();
+            int imageWidth = imageBean.getImageWidth();
             /**
              * Apply an highlight if needed data are available
              */
-            if (user.InteractionNetworkReadyToBeHighlighted()) {
+            if ( user.InteractionNetworkReadyToBeHighlighted() ) {
                 String methodClass = user.getMethodClass();
-                HighlightProteins.perform (methodClass, behaviour, session, in) ;
+                HighlightProteins.perform( methodClass, behaviour, session, in );
             }
 
             /**
              *  Display only the picture if needed data are available
              */
-            if (user.InteractionNetworkReadyToBeDisplayed()) {
+            if ( user.InteractionNetworkReadyToBeDisplayed() ) {
                 // Display the HTML code map
-                pageContext.getOut().write (imageBean.getMapCode());
+                pageContext.getOut().write( imageBean.getMapCode() );
 
                 // read the Graph.properties file
                 String mapName = null;
 
-                Properties properties = IntactUserI.GRAPH_PROPERTIES;;
+                Properties properties = IntactUserI.GRAPH_PROPERTIES;
 
-                if (null != properties) {
-                    mapName = properties.getProperty ("hierarchView.image.map.name");
+                if ( null != properties ) {
+                    mapName = properties.getProperty( "hierarchView.image.map.name" );
                 } else {
-                    logger.error("Unable to load properties from " +
-                                 uk.ac.ebi.intact.application.hierarchview.business.Constants.PROPERTY_FILE);
+                    logger.error( "Unable to load properties from " + Constants.PROPERTY_FILE );
                 }
 
                 /*
                  * Prepare an identifier unique for the generated image name, it will allows
                  * to take advantage of the client side caching.
                  */
-                InteractionNetwork network = user.getInteractionNetwork();
+                Network network = user.getInteractionNetwork();
 
-                ArrayList criterias = network.getCriteria();
+                List<CriteriaBean> criterias = network.getCriteria();
                 int max = criterias.size();
                 StringBuffer sb = new StringBuffer( 256 );
-                for (int i = 0; i < max; i++) {
-                    sb.append ( ( (CriteriaBean) criterias.get(i) ).getQuery() ).append(',');
+                for ( int i = 0; i < max; i++ ) {
+                    sb.append( ( criterias.get( i ) ).getQuery() ).append( ',' );
                 }
 
                 String queryString = sb.toString();
@@ -108,7 +107,7 @@ public class DisplayInteractionNetworkTag extends TagSupport {
                 String method = user.getMethodClass();
                 String key = user.getSelectedKey();
                 String highlightContext = "";
-                if (key != null) {
+                if ( key != null ) {
                     // a highlight has been requested
                     highlightContext = key;
                     // only relevant to add the behaviour if one is applied
@@ -117,7 +116,7 @@ public class DisplayInteractionNetworkTag extends TagSupport {
 
                 String userContext = queryString + depth + method + highlightContext;
 
-                String contextPath = ((HttpServletRequest) pageContext.getRequest()).getContextPath();
+                String contextPath = ( ( HttpServletRequest ) pageContext.getRequest() ).getContextPath();
                 /* The context parameter in the URL is also given to prevent some browser
                  * (eg. Netscape 4.7) to cache image wrongly.
                  * If the image link were /hierarchview/GenerateImage, netscape don't even
@@ -125,20 +124,20 @@ public class DisplayInteractionNetworkTag extends TagSupport {
                  */
                 String randomParam = "&now=" + System.currentTimeMillis();
                 String msg = "<p align=\"left\">\n"
-                        + "  <center>"
-                        + "     <img src=\""+ contextPath +"/GenerateImage?context="+ userContext
-                        + randomParam
-                        +"\" "
-                        + "      usemap=\"#" + mapName +"\" width=\""+ imageWidth +"\" "
-                        +        "height=\""+ imageHeight +"\"  border =\"0\" />"
-                        + "     <br />"
-                        + "  </center>"
-                        + "</p>";
+                             + "  <center>"
+                             + "     <img src=\"" + contextPath + "/GenerateImage?context=" + userContext
+                             + randomParam
+                             + "\" "
+                             + "      usemap=\"#" + mapName + "\" width=\"" + imageWidth + "\" "
+                             + "height=\"" + imageHeight + "\"  border =\"0\" />"
+                             + "     <br />"
+                             + "  </center>"
+                             + "</p>";
 
                 pageContext.getOut().write( msg );
             }
 
-        } catch (Exception ioe) {
+        } catch ( Exception ioe ) {
             logger.error( "could not display interaction network", ioe );
             throw new JspException( "Error: could not display interaction network.", ioe );
         }

@@ -32,7 +32,7 @@ import java.util.Collection;
 
 public final class SourceAction extends IntactBaseAction {
 
-    private static final Log logger = LogFactory.getLog(SourceAction.class);
+    private static final Log logger = LogFactory.getLog( SourceAction.class );
 
     /**
      * Process the specified HTTP request, and create the corresponding HTTP
@@ -41,18 +41,17 @@ public final class SourceAction extends IntactBaseAction {
      * control should be forwarded, or <code>null</code> if the response has
      * already been completed.
      *
-     * @param mapping The ActionMapping used to select this instance
-     * @param form The optional ActionForm bean for this request (if any)
-     * @param request The HTTP request we are processing
+     * @param mapping  The ActionMapping used to select this instance
+     * @param form     The optional ActionForm bean for this request (if any)
+     * @param request  The HTTP request we are processing
      * @param response The HTTP response we are creating
-     *
-     * @exception java.io.IOException if an input/output error occurs
-     * @exception javax.servlet.ServletException if a servlet exception occurs
+     * @throws java.io.IOException            if an input/output error occurs
+     * @throws javax.servlet.ServletException if a servlet exception occurs
      */
-    public ActionForward execute (ActionMapping mapping,
+    public ActionForward execute( ActionMapping mapping,
                                   ActionForm form,
                                   HttpServletRequest request,
-                                  HttpServletResponse response)
+                                  HttpServletResponse response )
             throws IOException, ServletException {
 
         // Clear any previous errors.
@@ -63,57 +62,57 @@ public final class SourceAction extends IntactBaseAction {
 
         try {
             // get the current session
-            session = getSession(request);
+            session = getSession( request );
 
             // retreive user fron the session
-            user = getIntactUser(session);
-        } catch (SessionExpiredException see) {
+            user = getIntactUser( session );
+        } catch ( SessionExpiredException see ) {
             String applicationPath = request.getContextPath();
-            if (applicationPath == null) applicationPath = "";
-            logger.error("Session expired, gives a link to "+ applicationPath);
-            addError ("error.session.expired", applicationPath);
-            saveErrors(request);
-            return (mapping.findForward("error"));
+            if ( applicationPath == null ) applicationPath = "";
+            logger.error( "Session expired, gives a link to " + applicationPath );
+            addError( "error.session.expired", applicationPath );
+            saveErrors( request );
+            return ( mapping.findForward( "error" ) );
         }
 
-        String someKeys         = request.getParameter(StrutsConstants.ATTRIBUTE_KEYS_LIST);
-        String clickedKeys      = request.getParameter(StrutsConstants.ATTRIBUTE_KEY_CLICKED);
-        String keyType          = request.getParameter(StrutsConstants.ATTRIBUTE_KEY_TYPE);
+        String someKeys = request.getParameter( StrutsConstants.ATTRIBUTE_KEYS_LIST );
+        String clickedKeys = request.getParameter( StrutsConstants.ATTRIBUTE_KEY_CLICKED );
+        String keyType = request.getParameter( StrutsConstants.ATTRIBUTE_KEY_TYPE );
         String selectedTabIndex = request.getParameter( "selected" );
 
-        if ((null == clickedKeys) || (clickedKeys.trim().length() == 0)) {
-            addError ("error.keys.required");
-            saveErrors(request);
-            return (mapping.findForward("error"));
+        if ( ( null == clickedKeys ) || ( clickedKeys.trim().length() == 0 ) ) {
+            addError( "error.keys.required" );
+            saveErrors( request );
+            return ( mapping.findForward( "error" ) );
         }
 
         // get the class method name to create an instance
         String source = user.getMethodClass();
 
-        HighlightmentSource highlightmentSource = HighlightmentSource.getHighlightmentSource(source);
-        Collection keys = highlightmentSource.parseKeys (someKeys);
+        HighlightmentSource highlightmentSource = HighlightmentSource.getHighlightmentSource( source );
+        Collection<String> keys = highlightmentSource.parseKeys( someKeys );
 
-        user.setKeys(keys);
-        user.setSelectedKey(clickedKeys);
-        user.setSelectedKeyType(keyType);
+        user.setKeys( keys );
+        user.setSelectedKey( clickedKeys );
+        user.setSelectedKeyType( keyType );
 
         // Print debug in the log file
-        logger.info ("SourceAction: selectedKey=" + clickedKeys + " | keys=" + someKeys +
-                     " | keys type=" + keyType + " | selectedTabIndex=" + selectedTabIndex + "\nlogged on in session " + session.getId());
+        logger.info( "SourceAction: selectedKey=" + clickedKeys + " | keys=" + someKeys +
+                     " | keys type=" + keyType + " | selectedTabIndex=" + selectedTabIndex + "\nlogged on in session " + session.getId() );
 
         // Remove the obsolete form bean
-        if (mapping.getAttribute() != null) {
-            if ("request".equals(mapping.getScope()))
-                request.removeAttribute(mapping.getAttribute());
+        if ( mapping.getAttribute() != null ) {
+            if ( "request".equals( mapping.getScope() ) )
+                request.removeAttribute( mapping.getAttribute() );
             else
-                session.removeAttribute(mapping.getAttribute());
+                session.removeAttribute( mapping.getAttribute() );
         }
 
-        if( selectedTabIndex != null ) {
+        if ( selectedTabIndex != null ) {
             session.setAttribute( "selectedTabIndex", selectedTabIndex );
         }
 
         // Forward control to the specified success URI
-        return (mapping.findForward("success"));
+        return ( mapping.findForward( "success" ) );
     }
 }

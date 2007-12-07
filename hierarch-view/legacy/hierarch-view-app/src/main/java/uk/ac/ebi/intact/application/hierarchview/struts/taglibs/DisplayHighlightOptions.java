@@ -17,7 +17,6 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 
-
 /**
  * That class allows to include HTML code to Displays current highlight source options.
  *
@@ -27,7 +26,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class DisplayHighlightOptions extends TagSupport {
 
-    static Logger logger = Logger.getLogger (Constants.LOGGER_NAME);
+    static final Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
     /**
      * Skip the body content.
@@ -44,22 +43,22 @@ public class DisplayHighlightOptions extends TagSupport {
         HttpSession session = pageContext.getSession();
 
         try {
-            IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession().getAttribute (Constants.USER_KEY);
+            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
             String methodClass = user.getMethodClass();
 
             // Search the list of protein to highlight
-            HighlightmentSource highlightmentSource = HighlightmentSource.getHighlightmentSource(methodClass);
+            HighlightmentSource highlightmentSource = HighlightmentSource.getHighlightmentSource( methodClass );
             String htmlCode = "";
-            if (null != highlightmentSource) {
-                htmlCode = highlightmentSource.getHtmlCodeOption(session);
+            if ( null != highlightmentSource ) {
+                htmlCode = highlightmentSource.getHtmlCodeOption( session );
             } else {
-                logger.error ("Unable to instanciate the current source: " + methodClass);
+                logger.error( "Unable to instanciate the current source: " + methodClass );
             }
 
             // write it
-            pageContext.getOut().write (htmlCode);
-        } catch (Exception ioe) {
-            throw new JspException ("Error: could not display highlight options.");
+            pageContext.getOut().write( htmlCode );
+        } catch ( Exception ioe ) {
+            throw new JspException( "Error: could not display highlight options." );
         }
 
         return EVAL_PAGE; // the rest of the calling JSP is evaluated

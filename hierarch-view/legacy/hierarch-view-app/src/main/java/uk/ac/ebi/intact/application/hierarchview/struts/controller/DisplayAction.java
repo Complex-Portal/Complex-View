@@ -31,14 +31,14 @@ import java.util.Properties;
  * environment initialisation so that action can be called eventually by an
  * external application. URL : <action>?AC= <YOUR_AC>&method=
  * <YOUR_METHOD>&depth= <YOUR_DEPTH>
- * 
+ *
  * @author Samuel Kerrien
  * @version $Id$
  */
 
 public final class DisplayAction extends IntactBaseAction {
 
-    private static final Log logger = LogFactory.getLog(DisplayAction.class);
+    private static final Log logger = LogFactory.getLog( DisplayAction.class );
 
     // --------------------------------------------------------- Public Methods
 
@@ -48,16 +48,16 @@ public final class DisplayAction extends IntactBaseAction {
      * Return an <code>ActionForward</code> instance describing where and how
      * control should be forwarded, or <code>null</code> if the response has
      * already been completed.
-     * 
-     * @param mapping The ActionMapping used to select this instance
-     * @param form The optional ActionForm bean for this request (if any)
-     * @param request The HTTP request we are processing
+     *
+     * @param mapping  The ActionMapping used to select this instance
+     * @param form     The optional ActionForm bean for this request (if any)
+     * @param request  The HTTP request we are processing
      * @param response The HTTP response we are creating
-     * @exception IOException if an input/output error occurs
-     * @exception ServletException if a servlet exception occurs
+     * @throws IOException      if an input/output error occurs
+     * @throws ServletException if a servlet exception occurs
      */
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute( ActionMapping mapping, ActionForm form,
+                                  HttpServletRequest request, HttpServletResponse response )
             throws IOException, ServletException, SessionExpiredException {
 
         // Clear any previous errors.
@@ -67,7 +67,7 @@ public final class DisplayAction extends IntactBaseAction {
         HttpSession session = getNewSession( request );
         IntactUserI user = null;
 
-        if ( false == intactUserExists( session ) ) {
+        if ( !intactUserExists( session ) ) {
             /*
              * Happens in the case hierarchview is called by an external
              * applciation in order to perform a search. e.g. by using
@@ -75,18 +75,16 @@ public final class DisplayAction extends IntactBaseAction {
              */
             user = createIntactUser( session, request );
 
-            if ( false == isErrorsEmpty() ) {
+            if ( !isErrorsEmpty() ) {
                 // Report any errors we have discovered back to the original
                 // form
                 saveErrors( request );
                 return ( mapping.findForward( "error" ) );
             }
-        }
-        else {
+        } else {
             // no need to create a new one
             user = getIntactUser( session );
         }
-
         String AC = request.getParameter( "AC" );
         String methodLabel = request.getParameter( "method" );
         String depth = request.getParameter( "depth" );
@@ -104,8 +102,7 @@ public final class DisplayAction extends IntactBaseAction {
             lvb = OptionGenerator.getDefaultSource();
             methodLabel = lvb.getLabel();
             methodClass = lvb.getValue();
-        }
-        else {
+        } else {
             // get the associated name
             lvb = OptionGenerator.getSource( methodLabel );
             if ( lvb == null ) {
@@ -116,21 +113,19 @@ public final class DisplayAction extends IntactBaseAction {
 
         // read the highlighting.proterties file
         Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;
-        ;
 
         if ( null != properties ) {
             methodClass = properties.getProperty( "highlightment.source."
-                    + methodLabel + ".class" );
+                                                  + methodLabel + ".class" );
             behaviourDefault = properties
                     .getProperty( "highlighting.behaviour.default.class" );
         }
 
-        if ( false == isErrorsEmpty() ) {
+        if ( !isErrorsEmpty() ) {
             // Report any errors we have discovered back to the original form
             saveErrors( request );
             return ( mapping.findForward( "error" ) );
-        }
-        else {
+        } else {
             // set default values
             user.init();
 
@@ -138,14 +133,13 @@ public final class DisplayAction extends IntactBaseAction {
             System.out.println( "THE HOST GIVEN BY JAVASCRIPT: " + host );
 
             String protocol = request.getParameter( "protocol" );
-            System.out
-                    .println( "THE PROTOCOL GIVEN BY JAVASCRIPT: " + protocol );
+            System.out.println( "THE PROTOCOL GIVEN BY JAVASCRIPT: " + protocol );
 
             session.setAttribute( StrutsConstants.HOST, host );
             session.setAttribute( StrutsConstants.PROTOCOL, protocol );
 
-            String network = (String) request.getParameter( "network" );
-            String singletons = (String) request.getParameter( "singletons" );
+            String network = request.getParameter( "network" );
+            String singletons = request.getParameter( "singletons" );
             // the information about MiNe are stored in the session,
             // although they should be stored in the request. But every attempt
             // to put it into the request failed because the request got lost
@@ -178,29 +172,28 @@ public final class DisplayAction extends IntactBaseAction {
 
             // Creation of the graph and the image
             try {
-                updateInteractionNetwork( user,
-                        StrutsConstants.CREATE_INTERACTION_NETWORK );
+                updateInteractionNetwork( user, StrutsConstants.CREATE_INTERACTION_NETWORK );
                 produceImage( user );
-            }
-            catch ( MultipleResultException e ) {
+
+            } catch ( MultipleResultException e ) {
                 return ( mapping.findForward( "displayWithSearch" ) );
             }
 
-            if ( false == isErrorsEmpty() ) {
+            if ( !isErrorsEmpty() ) {
                 // Report any errors we have discovered during the interaction
                 // network producing
                 saveErrors( request );
                 return ( mapping.findForward( "error" ) );
             }
 
-            if ( false == isMessagesEmpty() ) {
+            if ( !isMessagesEmpty() ) {
                 // Report any messages we have discovered
                 saveMessages( request );
             }
         }
 
         logger.info( "DisplayAction: AC=" + AC + " depth=" + depth
-                + " methodLabel=" + methodLabel + " methodClass=" + methodClass );
+                     + " methodLabel=" + methodLabel + " methodClass=" + methodClass );
 
         // Forward control to the specified success URI
         return ( mapping.findForward( "success" ) );

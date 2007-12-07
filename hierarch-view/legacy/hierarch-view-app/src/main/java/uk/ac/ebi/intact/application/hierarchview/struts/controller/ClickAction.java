@@ -32,7 +32,7 @@ import java.io.IOException;
 
 public final class ClickAction extends IntactBaseAction {
 
-    private static final Log logger = LogFactory.getLog(ClickAction.class);
+    private static final Log logger = LogFactory.getLog( ClickAction.class );
 
     /**
      * Process the specified HTTP request, and create the corresponding HTTP
@@ -41,52 +41,51 @@ public final class ClickAction extends IntactBaseAction {
      * control should be forwarded, or <code>null</code> if the response has
      * already been completed.
      *
-     * @param mapping The ActionMapping used to select this instance
-     * @param form The optional ActionForm bean for this request (if any)
-     * @param request The HTTP request we are processing
+     * @param mapping  The ActionMapping used to select this instance
+     * @param form     The optional ActionForm bean for this request (if any)
+     * @param request  The HTTP request we are processing
      * @param response The HTTP response we are creating
-     *
-     * @exception IOException if an input/output error occurs
-     * @exception ServletException if a servlet exception occurs
+     * @throws IOException      if an input/output error occurs
+     * @throws ServletException if a servlet exception occurs
      */
-    public ActionForward execute (ActionMapping mapping,
+    public ActionForward execute( ActionMapping mapping,
                                   ActionForm form,
                                   HttpServletRequest request,
-                                  HttpServletResponse response)
+                                  HttpServletResponse response )
             throws IOException, ServletException, SessionExpiredException {
 
         // Clear any previous errors.
         clearErrors();
 
         // get the current session
-        HttpSession session = getSession(request);
+        HttpSession session = getSession( request );
 
         // retreive user fron the session
-        IntactUserI user = getIntactUser(session);
+        IntactUserI user = getIntactUser( session );
 
-        String AC = null;
+        String AC;
 
         // look in the request ...
-        AC = request.getParameter ("AC");
+        AC = request.getParameter( "AC" );
 
-        if ((null == AC) || (AC.trim().length() == 0)) {
+        if ( ( null == AC ) || ( AC.trim().length() == 0 ) ) {
             /* we display an error page is the network doesn't exists
              * else just a warning message.
              */
             String errorKey = "error.centeredAC.required"; // default is center
-            if (user.clickBehaviourIsAdd()) {
-               errorKey = "error.addAC.required"; // default is center
+            if ( user.clickBehaviourIsAdd() ) {
+                errorKey = "error.addAC.required"; // default is center
             }
 
-            if (user.getInteractionNetwork() == null) {
-                addError (errorKey);
-                saveErrors (request);
-                return (mapping.findForward("error"));
+            if ( user.getInteractionNetwork() == null ) {
+                addError( errorKey );
+                saveErrors( request );
+                return ( mapping.findForward( "error" ) );
             } else {
-                addMessage (errorKey);
-                saveMessages (request);
+                addMessage( errorKey );
+                saveMessages( request );
                 // no processing to do ... just redisplay the interaction network.
-                return (mapping.findForward("success"));
+                return ( mapping.findForward( "success" ) );
             }
         }
 
@@ -100,51 +99,49 @@ public final class ClickAction extends IntactBaseAction {
             // Center the view
             // Creation of the graph and the image
             try {
-                updateInteractionNetwork (user, StrutsConstants.CREATE_INTERACTION_NETWORK);
-                produceImage (user);
-            } catch (MultipleResultException e) {
-                return (mapping.findForward("displayWithSearch"));
+                updateInteractionNetwork( user, StrutsConstants.CREATE_INTERACTION_NETWORK );
+                produceImage( user );
+            } catch ( MultipleResultException e ) {
+                return ( mapping.findForward( "displayWithSearch" ) );
             }
 
         } else if ( user.clickBehaviourIsAdd() ) {
             // Add the network for which the central protein is the one the user clicked
-            user.setQueryString (AC);
+            user.setQueryString( AC );
 
             // Creation of the graph and the image
             try {
                 updateInteractionNetwork( user, StrutsConstants.ADD_INTERACTION_NETWORK );
                 produceImage( user );
-            } catch (MultipleResultException e) {
-                // should not happen
-                return (mapping.findForward("displayWithSearch"));
+            } catch ( MultipleResultException e ) {
+                return ( mapping.findForward( "displayWithSearch" ) );
             }
         }
 
 
-        if (false == isErrorsEmpty()) {
+        if ( !isErrorsEmpty() ) {
             // Report any errors we have discovered during the interaction network producing
-            saveErrors(request);
-            return (mapping.findForward("error"));
+            saveErrors( request );
+            return ( mapping.findForward( "error" ) );
         }
 
-        if (false == isMessagesEmpty()) {
+        if ( !isMessagesEmpty() ) {
             // Report any messages we have discovered
-            saveMessages(request);
+            saveMessages( request );
         }
 
         // Print debug in the log file
-        logger.info ("ClickAction: AC=" + AC);
-
+        logger.info( "ClickAction: AC=" + AC );
 
         // Remove the obsolete form bean
-        if (mapping.getAttribute() != null) {
-            if ("request".equals(mapping.getScope()))
-                request.removeAttribute(mapping.getAttribute());
+        if ( mapping.getAttribute() != null ) {
+            if ( "request".equals( mapping.getScope() ) )
+                request.removeAttribute( mapping.getAttribute() );
             else
-                session.removeAttribute(mapping.getAttribute());
+                session.removeAttribute( mapping.getAttribute() );
         }
 
         // Forward control to the specified success URI
-        return (mapping.findForward("success"));
+        return ( mapping.findForward( "success" ) );
     }
 }
