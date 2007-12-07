@@ -137,7 +137,7 @@ public class HVNetworkBuilder {
         Collection<BinaryInteraction> bis = dataservice.getBinaryInteractionsByQueryString( queryString );
         Collection<String> centralProteinAcs = dataservice.getCentralProteins();
 
-        Network network = new InteractionNetwork( builder.createGraphNetwork( bis, centralProteinAcs ) );
+        Network network = new BinaryInteractionNetwork( builder.createGraphNetwork( bis, centralProteinAcs ) );
         network.setBinaryInteractions( bis );
 
         return network;
@@ -154,7 +154,7 @@ public class HVNetworkBuilder {
             try {
                 BinaryGraphNetwork network2 = builder.createGraphNetwork( bis, centralProteinAcs );
                 BinaryGraphNetworkMerger merger = new InteractionBasedMerger();
-                Network network = new InteractionNetwork( merger.mergeGraphNetworks( network1, network2 ) );
+                Network network = new BinaryInteractionNetwork( merger.mergeGraphNetworks( network1, network2 ) );
                 network.setBinaryInteractions( bis );
 
                 return network;
