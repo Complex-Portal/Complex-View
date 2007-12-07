@@ -15,12 +15,12 @@
  */
 package uk.ac.ebi.intact.application.hierarchview.business.data;
 
-import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.model.IntactObject;
-import uk.ac.ebi.intact.model.Interactor;
+import psidev.psi.mi.tab.model.BinaryInteraction;
+import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
+import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
+import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
+import uk.ac.ebi.intact.searchengine.CriteriaBean;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -31,22 +31,13 @@ import java.util.Collection;
  * @version $Id
  * @since 1.6.0-SNAPSHOT
  */
-public interface DataService  <C extends CvTopic, I extends Interactor, T extends IntactObject> {
+public interface DataService  {
 
-    C getCvObjectByShortLabel( String shortlabel );
+    Collection<String> getCentralProteins();
 
-    I getInteractorByAc( String ac );
+    Collection<BinaryInteraction> getBinaryInteractionsByQueryString(String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException;
 
-    I getProteinByAc( String ac );
-
-    Collection getProteinByAcLike( String ac );
-
-    Collection<T> getColByPropertyName( Class<T> objectType, String searchParam, String searchValue );
+    Collection<CriteriaBean> getSearchCritera();
 
     String getDbName() throws SQLException;
-
-    Query createQuery( String query);
-
-    EntityManager getEntityManager();
-    
 }
