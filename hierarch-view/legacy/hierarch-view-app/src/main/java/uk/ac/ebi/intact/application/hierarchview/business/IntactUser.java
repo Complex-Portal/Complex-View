@@ -9,20 +9,16 @@ package uk.ac.ebi.intact.application.hierarchview.business;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
-import uk.ac.ebi.intact.application.hierarchview.business.data.DatabaseService;
-import uk.ac.ebi.intact.application.hierarchview.business.graph.IntactGraphHelper;
-import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DataServiceFactory;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.ClickBehaviourForm;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.IntactObject;
-import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.util.Chrono;
-import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
-import uk.ac.ebi.intact.util.simplegraph.Graph;
-import uk.ac.ebi.intact.util.simplegraph.Node;
+import uk.ac.ebi.intact.service.graph.Node;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import java.sql.SQLException;
@@ -32,27 +28,27 @@ import java.util.*;
  * This class stores information about an Intact Web user session. <br>
  * Instead of binding multiple objects, only an object of this class is bound to
  * a session, thus serving a single access point for multiple information.
- * <p>
+ * <p/>
  * This class implements the <tt>HttpSessionBindingListener</tt> interface for
  * it can be notified of session time outs.
- * 
+ *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
  */
 public class IntactUser implements IntactUserI {
 
-    private static final Log logger = LogFactory.getLog(IntactUser.class);
+    private static final Log logger = LogFactory.getLog( IntactUser.class );
 
     private static final int MINIMAL_DEPTH = 1;
     private static final int MAXIMAL_DEPTH = 2;
     private static final int DEFAULT_DEPTH = 1;
-    
+
     private String minePath;
 
     /**
      * The current network with which the user is working
      */
-    private InteractionNetwork interactionNetwork;
+    private Network network;
 
     /**
      * The current click behaviour
@@ -109,21 +105,22 @@ public class IntactUser implements IntactUserI {
 
     private DataService dataservice;
 
+    private HVNetworkBuilder networkBuilder;
+
     /**
      * Constructs an instance of this class with given mapping file and the name
      * of the data source class.
      *
      * @param applicationPath the current application path
-     * @exception IntactException thrown for any error in creating lists such as
-     *                topics, database names etc.
+     * @throws IntactException thrown for any error in creating lists such as
+     *                         topics, database names etc.
      */
-    public IntactUser(String applicationPath) throws
-            IntactException {
+    public IntactUser( String applicationPath ) throws IntactException {
 
         init();
 
         this.applicationPath = applicationPath;
-    }    
+    }
 
     public String getQueryString() {
         return queryString;
@@ -137,6 +134,10 @@ public class IntactUser implements IntactUserI {
         return currentDepth;
     }
 
+    public int getDefaultDepth() {
+        return defaultDepth;
+    }
+
     public int getMinimalDepth() {
         return minimalDepth;
     }
@@ -147,7 +148,7 @@ public class IntactUser implements IntactUserI {
 
     /**
      * says if the current depth is minimal
-     * 
+     *
      * @return boolean true is the current depth is minimal, esle false.
      */
     public boolean minimalDepthReached() {
@@ -156,7 +157,7 @@ public class IntactUser implements IntactUserI {
 
     /**
      * says if the current depth is maximal
-     * 
+     *
      * @return boolean true is the current depth is maximal, esle false.
      */
     public boolean maximalDepthReached() {
@@ -177,7 +178,7 @@ public class IntactUser implements IntactUserI {
 
     /**
      * Allows the user to know if an interaction network will be displayed
-     * 
+     *
      * @return
      */
     public boolean InteractionNetworkReadyToBeDisplayed() {
@@ -188,22 +189,22 @@ public class IntactUser implements IntactUserI {
      * Allows the user to know if an interaction network is ready to be
      * highlighted. i.e. all data needed to highlight the current interaction
      * network are available.
-     * 
+     *
      * @return boolean true if the interaction network can be highlighted, esle
      *         false.
      */
     public boolean InteractionNetworkReadyToBeHighlighted() {
         return ( null != queryString ) && ( null != keys )
-                && ( behaviour != null ) && ( null != interactionNetwork );
+               && ( behaviour != null ) && ( null != network );
     }
 
-    public void setClickBehaviour(ClickBehaviourForm form) {
+    public void setClickBehaviour( ClickBehaviourForm form ) {
         clickBehaviour = form;
     }
 
     /**
      * is the current behaviour is to Add when the user click on the image map
-     * 
+     *
      * @return true if Add the view is the current behaviour
      */
     public boolean clickBehaviourIsAdd() {
@@ -215,7 +216,7 @@ public class IntactUser implements IntactUserI {
     /**
      * is the current behaviour is to Center the view when the user click on the
      * image map
-     * 
+     *
      * @return true if Center the view is the current behaviour
      */
     public boolean clickBehaviourIsCenter() {
@@ -224,8 +225,8 @@ public class IntactUser implements IntactUserI {
         return clickBehaviour.centerSelected();
     }
 
-    public InteractionNetwork getInteractionNetwork() {
-        return interactionNetwork;
+    public Network getInteractionNetwork() {
+        return network;
     }
 
     public ImageBean getImageBean() {
@@ -236,7 +237,7 @@ public class IntactUser implements IntactUserI {
         return nodeCoordinates;
     }
 
-    public Collection getKeys() {
+    public Collection<String> getKeys() {
         return keys;
     }
 
@@ -256,7 +257,7 @@ public class IntactUser implements IntactUserI {
         return ( sourceURL != null );
     }
 
-    public void setQueryString(String queryString) {
+    public void setQueryString( String queryString ) {
         this.queryString = queryString;
     }
 
@@ -281,43 +282,43 @@ public class IntactUser implements IntactUserI {
         currentDepth = defaultDepth;
     }
 
-    public void setMethodLabel(String methodLabel) {
+    public void setMethodLabel( String methodLabel ) {
         this.methodLabel = methodLabel;
     }
 
-    public void setMethodClass(String methodClass) {
+    public void setMethodClass( String methodClass ) {
         this.methodClass = methodClass;
     }
 
-    public void setBehaviour(String behaviour) {
+    public void setBehaviour( String behaviour ) {
         this.behaviour = behaviour;
     }
 
-    public void setInteractionNetwork(InteractionNetwork in) {
-        this.interactionNetwork = in;
+    public void setInteractionNetwork( Network in ) {
+        this.network = in;
     }
 
-    public void setImageBean(ImageBean imageBean) {
+    public void setImageBean( ImageBean imageBean ) {
         this.imageBean = imageBean;
     }
 
-    public void setNodeCoordinates(String nodeCoordinates) {
+    public void setNodeCoordinates( String nodeCoordinates ) {
         this.nodeCoordinates = nodeCoordinates;
     }
 
-    public void setKeys(Collection keys) {
+    public void setKeys( Collection keys ) {
         this.keys = keys;
     }
 
-    public void setSelectedKey(String key) {
+    public void setSelectedKey( String key ) {
         selectedKey = key;
     }
 
-    public void setSelectedKeyType(String keyType) {
+    public void setSelectedKeyType( String keyType ) {
         selectedKeyType = keyType;
     }
 
-    public void setSourceURL(String aSourceURL) {
+    public void setSourceURL( String aSourceURL ) {
         sourceURL = aSourceURL;
     }
 
@@ -325,6 +326,9 @@ public class IntactUser implements IntactUserI {
         sourceURL = null;
     }
 
+    public HVNetworkBuilder getHVNetworkBuilder() {
+        return networkBuilder;
+    }
 
 
     /**
@@ -341,8 +345,7 @@ public class IntactUser implements IntactUserI {
                     .getProperty( "hierarchView.graph.depth.default" );
             if ( depth != null ) {
                 defaultDepth = Integer.parseInt( depth );
-            }
-            else {
+            } else {
                 defaultDepth = DEFAULT_DEPTH;
             }
             currentDepth = defaultDepth;
@@ -350,16 +353,14 @@ public class IntactUser implements IntactUserI {
             depth = properties.getProperty( "hierarchView.graph.depth.minimum" );
             if ( depth != null ) {
                 minimalDepth = Integer.parseInt( depth );
-            }
-            else {
+            } else {
                 minimalDepth = MINIMAL_DEPTH;
             }
 
             depth = properties.getProperty( "hierarchView.graph.depth.maximum" );
             if ( depth != null ) {
                 maximalDepth = Integer.parseInt( depth );
-            }
-            else {
+            } else {
                 maximalDepth = MAXIMAL_DEPTH;
             }
         }
@@ -368,94 +369,39 @@ public class IntactUser implements IntactUserI {
         methodClass = null;
         behaviour = null;
 
-        interactionNetwork = null;
+        network = null;
         imageBean = null;
         keys = null;
         selectedKey = null;
         highlightOptions = new HashMap();
         //sourceURL = null;
         logger.info( "User's data set to default" );
-
-        if ( dataservice == null ) {
-            String source = SEARCH_PROPERTIES.getProperty( "search.source.name" );
-            if (source.equals( "database" )){
-                this.dataservice = new DatabaseService();
-            }
-            logger.debug( "Used data source=" + source );
-        }        
+        dataservice = DataServiceFactory.buildDataService( SEARCH_PROPERTIES.getProperty( "search.source.name" ) );
+        if ( dataservice != null ) {
+            networkBuilder = new HVNetworkBuilder( this );
+        }
     }
-
-    /**
-     * Returns a subgraph centered on startNode (stored in the interaction
-     * network). The subgraph will contain all nodes which are up to graphDepth
-     * interactions away from startNode. Only Interactions which belong to one
-     * of the Experiments in experiments will be taken into account. If
-     * experiments is empty, all Interactions are taken into account.
-     * 
-     * Graph depth: This parameter limits the size of the returned interaction
-     * graph. All baits are shown with all the interacting preys, even if they
-     * would normally be on the "rim" of the graph. Therefore the actual
-     * diameter of the graph may be 2*(graphDepth+1).
-     * 
-     * Expansion: If an Interaction has more than two interactors, it has to be
-     * defined how pairwise interactions are generated from the complex data.
-     * The possible values are defined in the beginning of this file.
-     * 
-     * @param in - the interaction network.
-     * @param graphDepth - depth of the graph
-     * @param experiments - Experiments which should be taken into account
-     * @param complexExpansion - Mode of expansion of complexes into pairwise
-     *            interactions
-     * 
-     * @return a InteractionNetwork object.
-     * 
-     * @exception IntactException - thrown if problems are encountered
-     */
-    public InteractionNetwork subGraph(InteractionNetwork in, int graphDepth,
-            Collection experiments, int complexExpansion)
-            throws IntactException {
-
-        logger.info( "Starting graph generation (" + in.getCentralProteinAC()
-                + ", depth=" + graphDepth + ")" );
-        Graph graph = in;
-
-        Chrono chrono = new Chrono();
-        chrono.start();
-
-        IntactGraphHelper graphHelper = new IntactGraphHelper();
-        graph = graphHelper.subGraph( ( (Node) in.getCentralProtein() )
-                .getInteractor(), graphDepth, experiments, complexExpansion,
-                graph );
-
-        chrono.stop();
-        String msg = "Creating the interaction network took: " + chrono;
-        logger.info( msg );
-
-        logger.debug( "Graph generation complete\n" + graph );
-
-        return (InteractionNetwork) graph;
-    } // subGraph
 
     public void resetHighlightOptions() {
         highlightOptions.clear();
     }
 
-    public void addHighlightOption(String name, Object value) {
+    public void addHighlightOption( String name, Object value ) {
         highlightOptions.put( name, value );
     }
 
-    public Object getHighlightOption(String name) {
+    public Object getHighlightOption( String name ) {
         return highlightOptions.get( name );
     }
 
-    public void setCurrentDepth(int depth) {
+    public void setCurrentDepth( int depth ) {
         if ( depth > maximalDepth || depth < minimalDepth )
             currentDepth = defaultDepth;
         else
             currentDepth = depth;
     }
 
-    public String getSearchUrl(String query, boolean addFullContext) {
+    public String getSearchUrl( String query, boolean addFullContext ) {
         String searchURL = null;
 
         // read the Search.properties file
@@ -463,37 +409,27 @@ public class IntactUser implements IntactUserI {
 
         if ( null != properties ) {
             String url = properties.getProperty( "search.url" );
-            String queryParameter = properties
-                    .getProperty( "search.parameter.query.name" );
-            if ( addFullContext && ( interactionNetwork != null ) ) {
+            String queryParameter = properties.getProperty( "search.parameter.query.name" );
+            if ( addFullContext && ( network != null ) ) {
                 StringBuffer buffer = new StringBuffer( 64 );
-                Collection interactors = interactionNetwork
-                        .getCentralInteractors();
+                //List<Node> interactors = network.getCentralInteractors();
 
-                if ( interactors == null ) {
-                    interactors = interactionNetwork.getCentralProteins();
-                }
+                //if ( interactors == null ) {
+                List<Node> interactors = network.getCentralNodes();
 
-                for (Iterator iterator = interactors.iterator(); iterator
-                        .hasNext();) {
-                    Object interactor = iterator.next();
-                    if ( interactor instanceof BasicGraphI ) {
-                        buffer.append( ',' ).append(
-                                ( (BasicGraphI) interactor ).getAc() );
-                    }
-                    else {
-                        buffer.append( ',' ).append(
-                                ( (Interactor) interactor ).getAc() );
-                    }
+                //}
+
+                for ( Node interactor : interactors ) {
+                    String interactorAc = interactor.getId();
+                    buffer.append( ',' ).append( interactorAc );
                 }
 
                 // forward to search giving the spec of the current interaction
                 // network plus the current query.
                 searchURL = url + "?" + queryParameter + "=" + query
-                        + buffer.toString(); //  + "&" + classParameter + "=" +
+                            + buffer.toString(); //  + "&" + classParameter + "=" +
                 // classValue
-            }
-            else {
+            } else {
                 // forward to search giving the spec of the current interaction
                 // network plus the current query.
                 searchURL = url + "?" + queryParameter + "=" + query; //  + "&" +
@@ -517,23 +453,21 @@ public class IntactUser implements IntactUserI {
      * Will call this method when an object is bound to a session. Not doing
      * anything.
      */
-    public void valueBound(HttpSessionBindingEvent event) {
+    public void valueBound( HttpSessionBindingEvent event ) {
     }
 
     /**
      * Will call this method when an object is unbound from a session.
      */
-    public void valueUnbound(HttpSessionBindingEvent event) {
-       // nothing here
+    public void valueUnbound( HttpSessionBindingEvent event ) {
+        // nothing here
     }
 
-    // Implementation of IntactUserI interface.
-
-    public <T extends IntactObject> Collection<T> search(Class<T> objectType, String searchParam,
-            String searchValue) throws IntactException {
-       //TODO remove one!
-        return getDataService().getColByPropertyName( objectType, searchParam, searchValue );
-        //return getDaoFactory().getIntactObjectDao(objectType).getColByPropertyName(searchParam, searchValue);        
+    // Implementation of IntactUserI interface
+    public <T extends IntactObject> Collection<T> search( Class<T> objectType,
+                                                          String searchParam,
+                                                          String searchValue ) throws IntactException {
+        throw new UnsupportedOperationException();
     }
 
     public String getUserName() {
@@ -541,14 +475,10 @@ public class IntactUser implements IntactUserI {
     }
 
     public String getDatabaseName() {
-        try
-        {
-            //TODO remove one!
+        try {
             return getDataService().getDbName();
-            //return getDaoFactory().getBaseDao().getDbName();
         }
-        catch (SQLException e)
-        {
+        catch ( SQLException e ) {
             e.printStackTrace();
         }
         return null;
@@ -557,27 +487,27 @@ public class IntactUser implements IntactUserI {
     /* (non-Javadoc)
      * @see uk.ac.ebi.intact.application.hierarchview.business.IntactUserI#setMinePath(java.lang.String)
      */
-    public void setMinePath(String path) {
-        minePath = path;        
+    public void setMinePath( String path ) {
+        minePath = path;
     }
 
     /* (non-Javadoc)
      * @see uk.ac.ebi.intact.application.hierarchview.business.IntactUserI#getMinePath()
      */
     public String getMinePath() {
-       return minePath;
+        return minePath;
     }
 
-    public DaoFactory getDaoFactory()
-    {
+    public DaoFactory getDaoFactory() {
         return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
     }
 
     public static IntactUser getCurrentInstance() {
         String user = uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY;
-        return (IntactUser) IntactContext.getCurrentInstance().getSession().getAttribute( user );
+        return ( IntactUser ) IntactContext.getCurrentInstance().getSession().getAttribute( user );
     }
 
     public DataService getDataService() {
-       return this.dataservice;
-    }}
+        return this.dataservice;
+    }
+}

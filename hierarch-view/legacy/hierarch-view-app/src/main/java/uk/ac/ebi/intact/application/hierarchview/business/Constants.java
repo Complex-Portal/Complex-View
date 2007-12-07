@@ -25,8 +25,6 @@ public final class Constants {
      */
     public static final String BENCHMARK_LOGGER_NAME = "benchmark";
 
-
-
     /**
      * Where to find the property file
      */

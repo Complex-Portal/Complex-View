@@ -11,42 +11,45 @@ package uk.ac.ebi.intact.application.hierarchview.business.image;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
-import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
-import uk.ac.ebi.intact.util.simplegraph.EdgeI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.NodeAttributes;
+import uk.ac.ebi.intact.service.graph.Edge;
+import uk.ac.ebi.intact.service.graph.Node;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Purpose : ------- This class allows to tranform a graph to an image (binary
  * content)
- * 
+ *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
  */
 
 public class DrawGraph {
 
-    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+    static final Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
-    /** ******** CONSTANTS *********** */
+    /**
+     * ******* CONSTANTS ***********
+     */
     private final static int DEFAULT_BORDER_SIZE = 5;
     private final static int DEFAULT_IMAGE_LENGTH = 300;
     private final static int DEFAULT_IMAGE_HEIGHT = 300;
     private final static String DEFAULT_MAP_NAME = "networkMap";
 
-    private final static Color DEFAULT_BACKGROUND_COLOR = new Color( 255, 255,
-            255 );
+    private final static Color DEFAULT_BACKGROUND_COLOR = new Color( 255, 255, 255 );
 
     private final static Color DEFAULT_NODE_COLOR = new Color( 75, 158, 179 );
 
     private final static Color DEFAULT_EDGE_COLOR = new Color( 75, 158, 179 );
 
     private final static Color DEFAULT_HIGHLIGHT_EDGE_COLOR = new Color( 255,
-            0, 0 );
+                                                                         0, 0 );
     private final static String DEFAULT_SHAPE_STATE = "disable";
     private final static String DEFAULT_BORDER_STATE = "enable";
 
@@ -91,12 +94,12 @@ public class DrawGraph {
     /**
      * The Interaction Network graph which will allow to create the image
      */
-    private InteractionNetwork graph = null;
+    private Network graph = null;
 
     /**
      * The centralnodes of the network
      */
-    private Collection centralNodes;
+    private List<Node> centralNodes;
 
     /**
      * Size of the image
@@ -114,7 +117,7 @@ public class DrawGraph {
     private String currentTime;
 
     /**
-     *  
+     *
      */
     private static int borderSize;
 
@@ -131,7 +134,6 @@ public class DrawGraph {
     private static Font boldFontLabel;
 
     private static Color backgroundColor;
-    private static Color nodeDefaultColor;
     private static Color edgeDefaultColor;
     private static Color edgeHighlightDefaultColor;
     private static Color borderColor;
@@ -166,7 +168,7 @@ public class DrawGraph {
         String fontName = null;
         String fontSize = null;
         String thicknessStr = null;
-        int intFontSize = 0;
+        int intFontSize;
 
         String internalTopMarginStr = null;
         String internalBottomMarginStr = null;
@@ -211,14 +213,14 @@ public class DrawGraph {
 
         backgroundColor = Utilities.parseColor( stringBgColor, DEFAULT_BACKGROUND_COLOR );
 
-        nodeDefaultColor = Utilities.parseColor( stringNodeColorDefault, DEFAULT_NODE_COLOR );
+        Color nodeDefaultColor = Utilities.parseColor( stringNodeColorDefault, DEFAULT_NODE_COLOR );
 
         edgeDefaultColor = Utilities.parseColor( stringEdgeColorDefault, DEFAULT_EDGE_COLOR );
 
-        edgeHighlightDefaultColor = Utilities.parseColor(stringEdgeHighlightColor, DEFAULT_HIGHLIGHT_EDGE_COLOR );
+        edgeHighlightDefaultColor = Utilities.parseColor( stringEdgeHighlightColor, DEFAULT_HIGHLIGHT_EDGE_COLOR );
 
         borderColor = Utilities.parseColor( stringBorderColor,
-                DEFAULT_BORDER_COLOR );
+                                            DEFAULT_BORDER_COLOR );
 
         if ( null == borderEnable ) {
             borderEnable = DEFAULT_BORDER_STATE;
@@ -237,7 +239,7 @@ public class DrawGraph {
         }
 
         intFontSize = Utilities.parseProperty( fontSize,
-                DEFAULT_LABEL_FONT_SIZE );
+                                               DEFAULT_LABEL_FONT_SIZE );
 
         fontLabel = new Font( fontName, Font.PLAIN, intFontSize );
         boldFontLabel = new Font( fontName, Font.BOLD, intFontSize + 1 );
@@ -251,7 +253,7 @@ public class DrawGraph {
         }
 
         edgeThickness = Utilities.parseProperty( thicknessStr,
-                DEFAULT_EDGE_THICKNESS );
+                                                 DEFAULT_EDGE_THICKNESS );
 
         if ( null == nodeAntialiased ) {
             nodeAntialiased = DEFAULT_NODE_ANTIALIASED;
@@ -261,8 +263,8 @@ public class DrawGraph {
             shapeEnable = DEFAULT_SHAPE_STATE;
         }
 
-        internalTopMargin = Utilities.parseProperty( internalTopMarginStr,DEFAULT_INTERNAL_TOP_MARGIN );
-        internalBottomMargin = Utilities.parseProperty(internalBottomMarginStr, DEFAULT_INTERNAL_BOTTOM_MARGIN );
+        internalTopMargin = Utilities.parseProperty( internalTopMarginStr, DEFAULT_INTERNAL_TOP_MARGIN );
+        internalBottomMargin = Utilities.parseProperty( internalBottomMarginStr, DEFAULT_INTERNAL_BOTTOM_MARGIN );
         internalLeftMargin = Utilities.parseProperty( internalLeftMarginStr, DEFAULT_INTERNAL_LEFT_MARGIN );
         internalRightMargin = Utilities.parseProperty( internalRightMarginStr, DEFAULT_INTERNAL_RIGHT_MARGIN );
     }
@@ -270,9 +272,9 @@ public class DrawGraph {
     /**
      * Constructor
      */
-    public DrawGraph(InteractionNetwork in, String applicationPath, String minePath) {
+    public DrawGraph( Network in, String applicationPath, String minePath ) {
         graph = in;
-        centralNodes = in.getCentralProteins();
+        centralNodes = in.getCentralNodes();
         this.minePath = minePath;
         this.applicationPath = applicationPath;
 
@@ -294,52 +296,44 @@ public class DrawGraph {
     /**
      * Compute the size of the image according to proteins data (coordinates,
      * size).
-     * 
+     *
      * @param in the interaction network we build the SVG DOM from
      */
-    private void updateProteinData(InteractionNetwork in) {
-        FontMetrics fontMetrics = null;
-
-        ArrayList listOfProtein = graph.getOrderedNodes();
-        int numberOfProtein = in.sizeNodes();
-
-        BasicGraphI protein;
+    private void updateProteinData( Network in ) {
 
         // that's a fake to precalculate the image size
         bufferedImage = new BufferedImage( 1, 1, BufferedImage.TYPE_BYTE_BINARY );
-        Graphics2D g = (Graphics2D) bufferedImage.getGraphics();
+        Graphics2D g = ( Graphics2D ) bufferedImage.getGraphics();
 
         g.setFont( fontLabel );
-        fontMetrics = g.getFontMetrics();
+        FontMetrics fontMetrics = g.getFontMetrics();
 
         ImageDimension dimension = in.getImageDimension();
-        int j;
 
         // update the image dimension according to the proteins coordinates and
         // their size's label
-        for (j = 0; j < numberOfProtein; j++) {
-            protein = (BasicGraphI) listOfProtein.get( j );
+        for ( Node node : graph.getNodes() ) {
+            NodeAttributes attributes = in.getNodeAttributes( node );
 
-            if ( protein.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
+            if ( attributes.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
                 // get the protein label
                 // get Tulip coordinate
-                float proteinX = ( (Float) protein.get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
-                float proteinY = ( (Float) protein.get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
+                float proteinX = ( Float ) attributes.get( Constants.ATTRIBUTE_COORDINATE_X );
+                float proteinY = ( Float ) attributes.get( Constants.ATTRIBUTE_COORDINATE_Y );
 
                 dimension.adjust( proteinX, proteinY );
 
-                if ( centralNodes.contains( protein ) ) {
+                if ( centralNodes.contains( node ) ) {
                     g.setFont( boldFontLabel );
-                }
-                else {
+                } else {
                     g.setFont( fontLabel );
                 }
 
-                fontMetrics = g.getFontMetrics();
+                //fontMetrics = g.getFontMetrics();
 
                 // calculate height and width
                 float height = fontMetrics.getHeight() + internalTopMargin + internalBottomMargin;
-                float length = fontMetrics.stringWidth( protein.getLabel() ) + internalLeftMargin + internalRightMargin;
+                float length = fontMetrics.stringWidth( node.getId() ) + internalLeftMargin + internalRightMargin;
 
                 // The dimension rate depends of the size of the picture.
                 // so, we have to calculate at each iteration to keep a right
@@ -348,8 +342,8 @@ public class DrawGraph {
                 this.dimensionRateY = dimension.height() / imageHeight;
 
                 // update data in the protein
-                protein.put( Constants.ATTRIBUTE_LENGTH, new Float( length ) );
-                protein.put( Constants.ATTRIBUTE_HEIGHT, new Float( height ) );
+                attributes.put( Constants.ATTRIBUTE_LENGTH, length );
+                attributes.put( Constants.ATTRIBUTE_HEIGHT, height );
 
                 // update the image dimension according to the protein label
                 // size
@@ -379,14 +373,13 @@ public class DrawGraph {
      * the image coordinate (the one we will draw). The coordinate we want to
      * use is in the middle of the node. This modification allows to create a
      * border in the image by applying a shift to the coordinate.
-     * 
-     * @param old The tulip coordinate
-     * @param min The coordinate minimal in the graph
+     *
+     * @param old  The tulip coordinate
+     * @param min  The coordinate minimal in the graph
      * @param rate The rate
-     * 
      * @return float
      */
-    private float newCoordinateEdge(float old, float min, float rate) {
+    private float newCoordinateEdge( float old, float min, float rate ) {
         return ( old - min ) / rate + borderSize;
     }
 
@@ -395,33 +388,34 @@ public class DrawGraph {
      * the image coordinate (the one we will draw). The coordinate we want to
      * use is the upper left corner of the node. This modification allows to
      * create a border in the image by applying a shift to the coordinate.
-     * 
-     * @param old The tulip coordinate
-     * @param min The coordinate minimal in the graph
+     *
+     * @param old    The tulip coordinate
+     * @param min    The coordinate minimal in the graph
      * @param length The length
-     * @param rate The rate
-     * 
+     * @param rate   The rate
      * @return the new coordinate
      */
-    private float newCoordinateNode(float old, float min, float length,
-            float rate) {
+    private float newCoordinateNode( float old, float min, float length,
+                                     float rate ) {
         return ( old - min ) / rate - length / 2 + borderSize;
     }
 
     /**
      * Allows to draw an element "node" in the image
-     * 
-     * @param protein The protein to draw
-     * @param g The graphic where we draw
+     *
+     * @param node      The node to draw
+     * @param g         The graphic where we draw
      * @param labelFont the Font with which to draw the label
      */
-    private void drawNode(BasicGraphI protein, Graphics2D g, Font labelFont) {
-        String proteinLabel = protein.getLabel();
+    private void drawNode( Node node, Graphics2D g, Font labelFont ) {
 
-        float proteinLength = ( (Float) protein.get( Constants.ATTRIBUTE_LENGTH ) ).floatValue();
-        float proteinHeight = ( (Float) protein.get( Constants.ATTRIBUTE_HEIGHT ) ).floatValue();
-        float proteinX = ( (Float) protein.get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
-        float proteinY = ( (Float) protein.get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
+        String proteinLabel = node.getLabel();
+
+        NodeAttributes attributes = graph.getNodeAttributes( node );
+        float proteinLength = ( Float ) attributes.get( Constants.ATTRIBUTE_LENGTH );
+        float proteinHeight = ( Float ) attributes.get( Constants.ATTRIBUTE_HEIGHT );
+        float proteinX = ( Float ) attributes.get( Constants.ATTRIBUTE_COORDINATE_X );
+        float proteinY = ( Float ) attributes.get( Constants.ATTRIBUTE_COORDINATE_Y );
 
         ImageDimension dimension = graph.getImageDimension();
 
@@ -429,8 +423,8 @@ public class DrawGraph {
         float x1 = newCoordinateNode( proteinX, dimension.xmin(), proteinLength, getDimensionRateX() );
         float y1 = newCoordinateNode( proteinY, dimension.ymin(), proteinHeight, getDimensionRateY() );
 
-        int x2 = (int) x1 + ( (int) proteinLength );
-        int y2 = (int) y1 + ( (int) proteinHeight );
+        int x2 = ( int ) x1 + ( ( int ) proteinLength );
+        int y2 = ( int ) y1 + ( ( int ) proteinHeight );
 
         if ( nodeAntialiased.equalsIgnoreCase( "enable" ) ) {
             // Enable antialiasing for shape
@@ -438,40 +432,40 @@ public class DrawGraph {
         }
 
         if ( shapeEnable.equalsIgnoreCase( "enable" ) ) {
-            g.setColor( (Color) protein.get( Constants.ATTRIBUTE_COLOR_NODE ) );
-        }
-        else {
+            g.setColor( ( Color ) attributes.get( Constants.ATTRIBUTE_COLOR_NODE ) );
+        } else {
             // create a transparent color to allow to see edges
             // opacity : 0=transparent, 255=opaque
             // dont display the node but clear edges to display label
             g.setColor( new Color( backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 180 ) );
         }
 
-        g.fillOval( (int) x1, (int) y1, (int) proteinLength, (int) proteinHeight );
+        g.fillOval( ( int ) x1, ( int ) y1, ( int ) proteinLength, ( int ) proteinHeight );
 
         // In anycase turn the shape antialiasing off.
         g.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF );
 
         // Write the map
-        mapCode.append( "<area shape=\"rect\" href=\"" + applicationPath
-                + "/click.do?AC=" + protein.getAc() + currentTime
-                + "\" COORDS=" + (int) x1 + "," + (int) y1 + "," + x2 + ","
-                + y2 + ">" );
+        mapCode.append( "<area shape=\"rect\" href=\"" ).append( applicationPath )
+                .append( "/click.do?AC=" ).append( node.getId() )
+                .append( currentTime ).append( "\" COORDS=" )
+                .append( ( int ) x1 ).append( "," ).append( ( int ) y1 )
+                .append( "," ).append( x2 ).append( "," ).append( y2 ).append( ">" );
 
         // Write label
         g.setFont( labelFont );
-        g.setColor( (Color) protein.get( Constants.ATTRIBUTE_COLOR_LABEL ) );
-        g.drawString( proteinLabel, (int) x1 + internalLeftMargin, (int) ( y1 + proteinHeight / 2 ) + internalTopMargin );
+        g.setColor( ( Color ) attributes.get( Constants.ATTRIBUTE_COLOR_LABEL ) );
+        g.drawString( proteinLabel, ( int ) x1 + internalLeftMargin, ( int ) ( y1 + proteinHeight / 2 ) + internalTopMargin );
     } // drawNode
 
     /**
      * Allows to draw an element "edge" in the image
-     * 
+     *
      * @param interaction The interaction to draw
-     * @param g The graphic where we draw
+     * @param g           The graphic where we draw
      */
-    private void drawEdge(EdgeI interaction, Graphics2D g) {
-        BasicGraphI proteinR, proteinL;
+    private void drawEdge( Edge interaction, Graphics2D g ) {
+        Node proteinR, proteinL;
         float xline1, xline2, yline1, yline2;
 
         float proteinRx, proteinRy, proteinLx, proteinLy;
@@ -479,42 +473,37 @@ public class DrawGraph {
         ImageDimension dimension = graph.getImageDimension();
 
         // proteinRight
-        proteinR = (BasicGraphI) interaction.getNode1();
-        proteinRx = ( (Float) proteinR.get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
-        proteinRy = ( (Float) proteinR.get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
+        proteinR = interaction.getNodeA();
+        NodeAttributes attributesA = graph.getNodeAttributes( proteinR );
+        proteinRx = ( Float ) attributesA.get( Constants.ATTRIBUTE_COORDINATE_X );
+        proteinRy = ( Float ) attributesA.get( Constants.ATTRIBUTE_COORDINATE_Y );
 
         // proteinLeft
-        proteinL = (BasicGraphI) interaction.getNode2();
-        proteinLx = ( (Float) proteinL.get( Constants.ATTRIBUTE_COORDINATE_X ) ).floatValue();
-        proteinLy = ( (Float) proteinL.get( Constants.ATTRIBUTE_COORDINATE_Y ) ).floatValue();
+        proteinL = interaction.getNodeB();
+        NodeAttributes attributesB = graph.getNodeAttributes( proteinL );
+        proteinLx = ( Float ) attributesB.get( Constants.ATTRIBUTE_COORDINATE_X );
+        proteinLy = ( Float ) attributesB.get( Constants.ATTRIBUTE_COORDINATE_Y );
 
         // calcul
-        xline1 = newCoordinateEdge( proteinRx, dimension.xmin(),
-                getDimensionRateX() );
+        xline1 = newCoordinateEdge( proteinRx, dimension.xmin(), getDimensionRateX() );
+        xline2 = newCoordinateEdge( proteinLx, dimension.xmin(), getDimensionRateX() );
 
-        xline2 = newCoordinateEdge( proteinLx, dimension.xmin(),
-                getDimensionRateX() );
-
-        yline1 = newCoordinateEdge( proteinRy, dimension.ymin(),
-                getDimensionRateY() );
-        yline2 = newCoordinateEdge( proteinLy, dimension.ymin(),
-                getDimensionRateY() );
+        yline1 = newCoordinateEdge( proteinRy, dimension.ymin(), getDimensionRateY() );
+        yline2 = newCoordinateEdge( proteinLy, dimension.ymin(), getDimensionRateY() );
 
         if ( edgeAntialiased.equalsIgnoreCase( "enable" ) ) {
             // Enable antialiasing for shape
-            g.setRenderingHint( RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON );
+            g.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
         }
 
         // if a path was given by mine (the application was called from mine)
         if ( minePath != null ) {
             // if either of the proteins are part of the minimal connecting
             // network -> the edge between the proteins is highlighted
-            if ( minePath.indexOf( proteinL.getLabel() ) != -1
-                    && minePath.indexOf( proteinR.getLabel() ) != -1 ) {
+            if ( minePath.indexOf( proteinL.getId() ) != -1
+                 && minePath.indexOf( proteinR.getId() ) != -1 ) {
                 g.setColor( edgeHighlightDefaultColor );
-            }
-            else {
+            } else {
                 g.setColor( edgeDefaultColor );
             }
         }
@@ -525,34 +514,29 @@ public class DrawGraph {
         }
 
         // draw the edge
-        g.drawLine( (int) xline1, (int) yline1, (int) xline2, (int) yline2 );
+        g.drawLine( ( int ) xline1, ( int ) yline1, ( int ) xline2, ( int ) yline2 );
 
         // In anycase turn the antialiasing off.
-        g.setRenderingHint( RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_OFF );
+        g.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF );
     } // drawEdge
 
     /**
      * drawing process, call methods to draw nodes, edges ...
-     *  
      */
     public void draw() {
         int i;
-        int numberOfProtein = graph.sizeNodes();
-        int numberOfInteraction = graph.sizeEdges();
+        int numberOfInteraction = graph.getEdges().size();
         currentTime = "&now=" + System.currentTimeMillis(); // this will be
         // added at each
         // link of the graph
+        List listOfInteraction = new ArrayList( graph.getEdges() );
 
-        List listOfProtein = graph.getOrderedNodes();
-        List listOfInteraction = (List) graph.getEdges();
-
-        EdgeI interaction;
-        BasicGraphI proteinR, proteinL;
+        Edge interaction;
+        Node proteinR, proteinL;
 
         bufferedImage = new BufferedImage( imageSizex, imageSizey, BufferedImage.TYPE_INT_RGB );
 
-        Graphics2D g = (Graphics2D) bufferedImage.getGraphics();
+        Graphics2D g = ( Graphics2D ) bufferedImage.getGraphics();
 
         // Display the background
         g.setColor( backgroundColor );
@@ -561,8 +545,7 @@ public class DrawGraph {
         if ( textAntialiased.equalsIgnoreCase( "enable" ) ) {
             // Enable antialiasing for text
             g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
-        }
-        else {
+        } else {
             // Disable antialiasing for text
             g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF );
         }
@@ -572,15 +555,17 @@ public class DrawGraph {
         g.setStroke( stroke );
 
         // We draw edges whose nodes are visible
-        for (i = 0; i < numberOfInteraction; i++) {
-            interaction = (EdgeI) listOfInteraction.get( i );
+        for ( i = 0; i < numberOfInteraction; i++ ) {
+            interaction = ( Edge ) listOfInteraction.get( i );
 
-            proteinR = (BasicGraphI) interaction.getNode1();
-            proteinL = (BasicGraphI) interaction.getNode2();
+            proteinR = interaction.getNodeA();
+            NodeAttributes attributesA = graph.getNodeAttributes( proteinR );
+            proteinL = interaction.getNodeB();
+            NodeAttributes attributesB = graph.getNodeAttributes( proteinL );
 
             // draw edge only if both nodes are visible
-            if ( proteinR.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE
-                    && proteinL.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
+            if ( attributesA.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE
+                 && attributesB.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
                 drawEdge( interaction, g );
             }
         } // for
@@ -588,33 +573,31 @@ public class DrawGraph {
         // restore the default Stroke (thickness)
         g.setStroke( defaultStroke );
 
-        BasicGraphI currentNode;
+        Node currentNode;
 
         // We draw all visible nodes
-        mapCode.append( "<map name=\"" + mapName + "\">" );
+        mapCode.append( "<map name=\"" ).append( mapName ).append( "\">" );
 
         // iterate over the nodes of the network to draw them
         // if the current node is a central protein it is not drawn now
         // so that the central proteins are at the top layer of the image
-        for (int j = 0; j < numberOfProtein; j++) {
-            currentNode = (BasicGraphI) listOfProtein.get( j );
-
+        for ( Node node : graph.getNodes() ) {
+            NodeAttributes attributes = graph.getNodeAttributes( node );
             // if the current node is not a central protein
-            if ( !centralNodes.contains( currentNode ) ) {
+            if ( !centralNodes.contains( node ) ) {
                 // if the current node is visible
                 // to avoid drawing the node : uncomment the following line
-                // currentNode.put ( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );
-                if ( ( currentNode.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) ) {
-                    drawNode( currentNode, g, fontLabel );
+                if ( ( attributes.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) ) {
+                    drawNode( node, g, fontLabel );
                 }
             }
         }
 
         // Draw the central node with a bold font to be sure it is visible and
         // distinguishable.
-        for (Iterator iter = centralNodes.iterator(); iter.hasNext();) {
+        for ( Node centralNode : centralNodes ) {
             // draw visible central protein over the rest, with bold font.
-            currentNode = (BasicGraphI) iter.next();
+            currentNode = centralNode;
 
             if ( currentNode == null ) {
                 continue;
@@ -622,7 +605,8 @@ public class DrawGraph {
 
             // to avoid drawing the node : uncomment the following line
             // currentNode.put( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );
-            if ( currentNode.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
+            NodeAttributes attributes = graph.getNodeAttributes( currentNode );
+            if ( attributes.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
                 drawNode( currentNode, g, boldFontLabel );
             }
         }
@@ -642,7 +626,7 @@ public class DrawGraph {
 
     /**
      * Create an Container with the image and the HTML MAP code.
-     * 
+     *
      * @return the bean initialized with the SVG DOM and the MAP code.
      */
     public ImageBean getImageBean() {

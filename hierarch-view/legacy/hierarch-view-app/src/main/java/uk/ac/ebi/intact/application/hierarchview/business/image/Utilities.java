@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 /**
  * This class give some usefull methods
- * 
+ *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
  */
@@ -19,15 +19,15 @@ import java.util.StringTokenizer;
 public class Utilities {
     /**
      * Parses the string (a number) and returns the content as an integer.
-     * 
+     * <p/>
      * If the string is not a number or not initialised the default integer is
      * returned.
-     * 
-     * @param property the string to parse
+     *
+     * @param property        the string to parse
      * @param defaultProperty the default integer
      * @return an integer given by the string
      */
-    public static int parseProperty(String property, int defaultProperty) {
+    public static int parseProperty( String property, int defaultProperty ) {
         try {
             return Integer.parseInt( property );
         }
@@ -35,18 +35,18 @@ public class Utilities {
             return defaultProperty;
         }
     }
-    
+
     /**
      * Parses the string (a number) and returns the content as a float.
-     * 
+     * <p/>
      * If the string is not a number or not initialised the default float is
      * returned.
-     * 
-     * @param property the string to parse
+     *
+     * @param property        the string to parse
      * @param defaultProperty the default float
      * @return a float given by the string
      */
-    public static float parseProperty(String property, float defaultProperty) {
+    public static float parseProperty( String property, float defaultProperty ) {
         try {
             return Float.parseFloat( property );
         }
@@ -58,17 +58,18 @@ public class Utilities {
     /**
      * Parse a string (number separated by comma) and create a Color Object The
      * string has to be initialized
-     * 
-     * @param stringColor the string to parse
-     * @param defaultRed default RED composite
+     *
+     * @param stringColor  the string to parse
+     * @param defaultRed   default RED composite
      * @param defaultGreen default GREEN composite
-     * @param defaultBlue default BLUE composite
+     * @param defaultBlue  default BLUE composite
      * @return the parsed object color
      */
-    public static Color parseColor(String stringColor, int defaultRed,
-            int defaultGreen, int defaultBlue) {
+    public static Color parseColor( String stringColor, int defaultRed,
+                                    int defaultGreen, int defaultBlue ) {
 
-        StringTokenizer tokens = null;
+        StringTokenizer tokens;
+        tokens = null;
 
         int red = defaultRed;
         int green = defaultGreen;
@@ -78,11 +79,11 @@ public class Utilities {
 
         try {
             if ( tokens.hasMoreTokens() )
-                red = new Integer( tokens.nextToken() ).intValue();
+                red = new Integer( tokens.nextToken() );
             if ( tokens.hasMoreTokens() )
-                green = new Integer( tokens.nextToken() ).intValue();
+                green = new Integer( tokens.nextToken() );
             if ( tokens.hasMoreTokens() )
-                blue = new Integer( tokens.nextToken() ).intValue();
+                blue = new Integer( tokens.nextToken() );
         }
         catch ( NumberFormatException e ) {
             // let the default value
@@ -93,19 +94,19 @@ public class Utilities {
 
     /**
      * Parse a string (number separated by comma) and create a color object.
-     * 
+     * <p/>
      * If the string is not initialised or the string cant be parsed the given
      * default color is returned
-     * 
-     * @param stringColor the string to parse
+     *
+     * @param stringColor  the string to parse
      * @param defaultColor the default color
      * @return the parsed object color
      */
-    public static Color parseColor(String stringColor, final Color defaultColor) {
+    public static Color parseColor( String stringColor, final Color defaultColor ) {
         if ( stringColor == null ) {
             return defaultColor;
         }
-        StringTokenizer tokens = null;
+        StringTokenizer tokens;
 
         int red = defaultColor.getRed();
         int green = defaultColor.getGreen();
@@ -115,16 +116,16 @@ public class Utilities {
 
         try {
             if ( tokens.hasMoreTokens() )
-                red = new Integer( tokens.nextToken() ).intValue();
+                red = new Integer( tokens.nextToken() );
             if ( tokens.hasMoreTokens() )
-                green = new Integer( tokens.nextToken() ).intValue();
+                green = new Integer( tokens.nextToken() );
             if ( tokens.hasMoreTokens() )
-                blue = new Integer( tokens.nextToken() ).intValue();
+                blue = new Integer( tokens.nextToken() );
         }
         catch ( NumberFormatException e ) {
             // let the default value
         }
-        
+
         return new Color( red, green, blue );
     }
 }

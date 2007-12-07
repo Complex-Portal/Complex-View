@@ -38,14 +38,15 @@ import java.io.OutputStream;
 
 public class GenerateImage extends HttpServlet {
 
-    static Logger logger = Logger.getLogger (Constants.LOGGER_NAME);
+    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+
     private final static String ERROR_MESSAGE = "Unable to produce the interaction network, please warn your administrator";
 
     /**
      * Servlet allowing to get image data, rasterize into JPEG and send
      * to the browser the image by taking care of the MIME type.
      */
-    public void doGet (HttpServletRequest aRequest, HttpServletResponse aResponse)
+    public void doGet( HttpServletRequest aRequest, HttpServletResponse aResponse )
             throws ServletException {
         OutputStream outputStream = null;
 
@@ -53,40 +54,40 @@ public class GenerateImage extends HttpServlet {
 
         try {
             // get the current user session
-            HttpSession session = aRequest.getSession (false);
+            HttpSession session = aRequest.getSession( false );
 
-            if (session == null) {
-                logger.error ("No session available, don't displays interaction network");
+            if ( session == null ) {
+                logger.error( "No session available, don't displays interaction network" );
                 return;
             }
 
-            IntactUserI user = (IntactUserI) IntactContext.getCurrentInstance().getSession().getAttribute (Constants.USER_KEY);
+            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
 
-            if (user == null) {
-                aResponse.getOutputStream().print(ERROR_MESSAGE);
-                logger.error ("No user in the session, don't displays interaction network");
-                 return;
+            if ( user == null ) {
+                aResponse.getOutputStream().print( ERROR_MESSAGE );
+                logger.error( "No user in the session, don't displays interaction network" );
+                return;
             }
 
             ImageBean imageBean = user.getImageBean();
 
-            if (null == imageBean) {
-                logger.error ("ImageBean in the session is null");
+            if ( null == imageBean ) {
+                logger.error( "ImageBean in the session is null" );
                 return;
             }
 
             BufferedImage image = imageBean.getImageData();
-            outputStream = new BufferedOutputStream(aResponse.getOutputStream(), 1024);
+            outputStream = new BufferedOutputStream( aResponse.getOutputStream(), 1024 );
 
             // Send browser MIME type
-            aResponse.setContentType("image/jpg");
-            logger.info ("MIME type: image/jpg");
+            aResponse.setContentType( "image/jpg" );
+            logger.info( "MIME type: image/jpg" );
 
             // JPEG encoding
-            JPEGEncodeParam  jpegEncodeParam  = null;
-            jpegEncodeParam  = JPEGCodec.getDefaultJPEGEncodeParam (image);
+            JPEGEncodeParam jpegEncodeParam;
+            jpegEncodeParam = JPEGCodec.getDefaultJPEGEncodeParam( image );
 
-            Chrono chrono = new Chrono ();
+            Chrono chrono = new Chrono();
             chrono.start();
 
             /*
@@ -96,34 +97,33 @@ public class GenerateImage extends HttpServlet {
             *   0.5  : medium quality
             *   0.25 : low quality
             */
-            jpegEncodeParam.setQuality (0.7F, false);
-            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(outputStream, jpegEncodeParam);
-            encoder.encode(image);
+            jpegEncodeParam.setQuality( 0.7F, false );
+            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder( outputStream, jpegEncodeParam );
+            encoder.encode( image );
 
             chrono.stop();
-            logger.info("Time for rasterizing " + chrono);
+            logger.info( "Time for rasterizing " + chrono );
 
             outputStream.close();
 
         }
-        catch (IOException e) {
-            logger.error ("Error during the image producing process", e);
+        catch ( IOException e ) {
+            logger.error( "Error during the image producing process", e );
             return;
         }
         finally {
             try {
-                if (outputStream != null)
-                {
+                if ( outputStream != null ) {
                     outputStream.close();
                 }
-            } catch (IOException ioe) {
+            } catch ( IOException ioe ) {
                 ioe.printStackTrace();
             }
         }
 
         try {
             IntactContext.getCurrentInstance().getDataContext().commitTransaction();
-        } catch (IntactTransactionException e) {
+        } catch ( IntactTransactionException e ) {
             e.printStackTrace();
         }
     } // doGet
