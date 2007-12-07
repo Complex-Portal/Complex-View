@@ -401,6 +401,7 @@ public class ChartBuilder {
         // Create the chart
         final JFreeChart chart = ChartFactory.getPieChart( dataSet, IDENTIFICATION_CHART_TITLE );
         chart.setAntiAlias( true );
+        chart.setTextAntiAlias( true );
 
         // Set the default colors for the chart
         final PiePlot piePlot = ( PiePlot ) chart.getPlot();
