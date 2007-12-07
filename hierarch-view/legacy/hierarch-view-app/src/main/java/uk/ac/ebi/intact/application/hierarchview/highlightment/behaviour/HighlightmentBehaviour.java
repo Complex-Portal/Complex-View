@@ -7,11 +7,10 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.behaviour;
 
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
-import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
-import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
+import uk.ac.ebi.intact.service.graph.Node;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 
 /**
@@ -25,7 +24,7 @@ import java.util.Iterator;
 
 public abstract class HighlightmentBehaviour {
 
-    static Logger logger = Logger.getLogger (Constants.LOGGER_NAME);
+    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
     /**
      * Provides a implementation of HighlightmentBehaviour from its name.<br>
@@ -40,27 +39,27 @@ public abstract class HighlightmentBehaviour {
      * @param aClassName the name of the implementation class you want to get
      * @return an HighlightmentBehaviour object, or null if an error occurs.
      */
-    public static HighlightmentBehaviour getHighlightmentBehaviour (String aClassName) {
+    public static HighlightmentBehaviour getHighlightmentBehaviour( String aClassName ) {
 
         Object object = null;
 
         try {
             // create a class by its name
-            Class cls = Class.forName(aClassName);
+            Class cls = Class.forName( aClassName );
 
             // Create an instance of the class invoked
             object = cls.newInstance();
 
-            if (false == (object instanceof HighlightmentBehaviour)) {
+            if ( !( object instanceof HighlightmentBehaviour ) ) {
                 // my object is not from the proper type
-                logger.error (aClassName + " is not a HighlightmentBehaviour");
+                logger.error( aClassName + " is not a HighlightmentBehaviour" );
                 return null;
             }
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             // nothing to do, object is already setted to null
         }
 
-        return (HighlightmentBehaviour) object;
+        return ( HighlightmentBehaviour ) object;
     } // getHighlightmentBehaviour
 
 
@@ -69,21 +68,20 @@ public abstract class HighlightmentBehaviour {
      *
      * @param aProtein the node on which we want to apply the behaviour
      */
-    abstract public void applyBehaviour (BasicGraphI aProtein);
+    abstract public void applyBehaviour( Node aProtein, Network aGraph );
 
     /**
      * Allow to apply a modification on the collection of protein to highlight.
      * for example select all the graph proteins which are not in the given collection
-     *
+     * <p/>
      * The default behaviour of that method is to return the given Collection,
      * to change that you have to overwrite that method in your implementation.
      *
      * @param proteins the list of protein to highlight
-     * @param aGraph the current interaction network
-     *
+     * @param aGraph   the current interaction network
      * @return the new collection of protein to highlight
      */
-    public Collection modifyCollection (Collection proteins, InteractionNetwork aGraph) {
+    public Collection<Node> modifyCollection( Collection proteins, Network aGraph ) {
         return proteins;
     }
 
@@ -91,16 +89,14 @@ public abstract class HighlightmentBehaviour {
      * Apply the implemented behaviour to a set of nodes.
      *
      * @param proteins the set of protein on which to apply the behaviour
-     * @param aGraph the interaction network they come from
+     * @param aGraph   the interaction network they come from
      */
-    public void apply (Collection proteins, InteractionNetwork aGraph) {
+    public void apply( Collection<Node> proteins, Network aGraph ) {
+        proteins = modifyCollection( proteins, aGraph );
 
-        proteins = modifyCollection (proteins, aGraph);
-
-        if (null != proteins) {
-            Iterator iterator = proteins.iterator();
-            while (iterator.hasNext()) {
-                applyBehaviour ((BasicGraphI) iterator.next());
+        if ( null != proteins ) {
+            for ( Node protein : proteins ) {
+                applyBehaviour( protein, aGraph );
             }
         } // if
     }

@@ -2,14 +2,14 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source;
 
 
 import org.apache.log4j.Logger;
+import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
-import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
+import uk.ac.ebi.intact.service.graph.Node;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
 
 public abstract class HighlightmentSource {
 
-    static Logger logger = Logger.getLogger (Constants.LOGGER_NAME);
+    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
     /**
      * Provides a implementation of HighlightmentSource by its name.
@@ -37,30 +37,30 @@ public abstract class HighlightmentSource {
      * @param aClassName the name of the implementation class you want to get
      * @return an HighlightmentSource object, or null if an error occurs.
      */
-    public static HighlightmentSource getHighlightmentSource (String aClassName) {
+    public static HighlightmentSource getHighlightmentSource( String aClassName ) {
 
         Object object = null;
 
         try {
 
             // create a class by its name
-            Class cls = Class.forName(aClassName);
+            Class cls = Class.forName( aClassName );
 
             // Create an instance of the class invoked
             object = cls.newInstance();
 
-            if (false == (object instanceof HighlightmentSource)) {
+            if ( !( object instanceof HighlightmentSource ) ) {
                 // my object is not from the proper type
-                logger.error (aClassName + " is not a HighlightmentSource");
+                logger.error( aClassName + " is not a HighlightmentSource" );
                 return null;
             }
 
-        } catch (Exception e) {
-            logger.error ("Unable to instanciate object:" + aClassName);
+        } catch ( Exception e ) {
+            logger.error( "Unable to instanciate object:" + aClassName );
             // nothing to do, object is already setted to null
         }
 
-        return (HighlightmentSource) object;
+        return ( HighlightmentSource ) object;
 
     } // HighlightmentSource
 
@@ -72,7 +72,7 @@ public abstract class HighlightmentSource {
      * @param aSession the current session.
      * @return the html code for specific options of the source.
      */
-    abstract public String getHtmlCodeOption(HttpSession aSession);
+    abstract public String getHtmlCodeOption( HttpSession aSession );
 
 
     /**
@@ -80,11 +80,11 @@ public abstract class HighlightmentSource {
      * e.g. If the source is GO, we will send the collection of GO term owned by the given protein.
      * Those informations are retreived from the Intact database
      *
-     * @param aProteinAC a protein identifier (AC).
+     * @param node     a node of the network.
      * @param aSession session in which we'll retreive the datasource
      * @return a collection of keys
      */
-    abstract public Collection getKeysFromIntAct (String aProteinAC, HttpSession aSession);
+    abstract public Collection getKeysFromIntAct( Node node, HttpSession aSession );
 
 
     /**
@@ -94,10 +94,10 @@ public abstract class HighlightmentSource {
      * session, that method has to get them and care about.
      *
      * @param aSession the session where to find selected keys.
-     * @param aGraph the graph we want to highlight.
+     * @param aGraph   the graph we want to highlight.
      * @return a collection of nodes to highlight.
      */
-    abstract public Collection proteinToHightlight (HttpSession aSession, InteractionNetwork aGraph);
+    abstract public Collection<Node> proteinToHightlight( HttpSession aSession, Network aGraph );
 
 
     /**
@@ -107,7 +107,7 @@ public abstract class HighlightmentSource {
      * @param aRequest request in which we have to get parameters to save in the session.
      * @param aSession session in which we have to save the parameter.
      */
-    abstract public void saveOptions (HttpServletRequest aRequest, HttpSession aSession);
+    abstract public void saveOptions( HttpServletRequest aRequest, HttpSession aSession );
 
 
     /**
@@ -115,15 +115,15 @@ public abstract class HighlightmentSource {
      * eg. produce a list of GO terms if GO is the source.<br>
      * if the method send back no URL, the given parameter is wrong.
      *
-     * @param xRefs The collection of XRef from which we want to get the list of corresponding URL
-     * @param selectedXRefs The collection of selected XRef
+     * @param xRefs           The collection of XRef from which we want to get the list of corresponding URL
+     * @param selectedXRefs   The collection of selected XRef
      * @param applicationPath our application path
-     * @param user the current user
+     * @param user            the current user
      * @return a set of URL pointing on the highlightment source.
      */
-    abstract public List getSourceUrls (Collection xRefs, Collection selectedXRefs,
-                                        String applicationPath, IntactUserI user)
-            throws IntactException, SQLException;
+    abstract public List getSourceUrls( Collection<CrossReference> xRefs,
+                                        Collection<String> selectedXRefs,
+                                        String applicationPath, IntactUserI user );
 
 
     /**
@@ -132,6 +132,6 @@ public abstract class HighlightmentSource {
      * @param someKeys a string which contains some key separates by a character.
      * @return the splitted version of the key string as a collection of String.
      */
-    abstract public Collection parseKeys (String someKeys);
+    abstract public Collection<String> parseKeys( String someKeys );
 
 } // HighlightmentSource

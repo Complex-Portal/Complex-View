@@ -6,11 +6,11 @@ in the root directory of this distribution.
 package uk.ac.ebi.intact.application.hierarchview.highlightment.behaviour;
 
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
-import uk.ac.ebi.intact.application.hierarchview.business.graph.InteractionNetwork;
-import uk.ac.ebi.intact.util.simplegraph.BasicGraphI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
+import uk.ac.ebi.intact.service.graph.Node;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Behaviour allowing to display only highlighted protein and hide all others.
@@ -20,26 +20,26 @@ import java.util.Collection;
  */
 
 public class VisibleHighlightmentBehaviour extends HighlightmentBehaviour {
+
     /**
      * Select all the graph's protein which are not in the given collection.<br>
      * The aim of that behaviour is to display only se selected protein, so we
      * have to set the VISIBLE flag of all other proteins to false.
      *
      * @param proteins the list of protein to highlight
-     * @param aGraph the current interaction network
-     *
+     * @param aGraph   the current interaction network
      * @return the new collection of protein to highlight
      */
-    public Collection modifyCollection (Collection proteins, InteractionNetwork aGraph) {
+    public Collection<Node> modifyCollection( Collection proteins, Network aGraph ) {
 
-        /* Get the list of proteins in the current InteractionNetwork */
-        ArrayList listAllProteins = new ArrayList (aGraph.getNodes().values());
+        /* Get the list of proteins in the current Network */
+        List<Node> listAllProteins = aGraph.getNodes();
 
         /* Make a clone of the list */
-        Collection newList = (Collection) listAllProteins.clone();
+        Collection newList = listAllProteins;
 
         /* Remove all proteins of the collection "proteins" */
-        newList.removeAll(proteins);
+        newList.removeAll( proteins );
 
         return newList;
     }
@@ -51,8 +51,9 @@ public class VisibleHighlightmentBehaviour extends HighlightmentBehaviour {
      *
      * @param aProtein the node on which we want to apply the behaviour
      */
-    public void applyBehaviour (BasicGraphI aProtein) {
-        aProtein.put(Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE);
+    public void applyBehaviour( Node aProtein, Network aGraph ) {
+        aGraph.getNodeAttributes( aProtein ).put( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );
+        //aProtein.put(Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE);
     }
 }
 
