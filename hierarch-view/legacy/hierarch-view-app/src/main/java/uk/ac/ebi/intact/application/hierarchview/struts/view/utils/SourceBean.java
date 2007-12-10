@@ -13,8 +13,7 @@ import java.io.Serializable;
  * @author Samuel Kerrien (skerrien@ebi.ac.uk) & Alexandre Liban (aliban@ebi.ac.uk)
  * @version $Id$
  */
-public class SourceBean implements java.lang.Comparable, Serializable
-{
+public class SourceBean implements java.lang.Comparable, Serializable {
 
     // ----------------------------------------------------------- Instance variables
 
@@ -38,7 +37,7 @@ public class SourceBean implements java.lang.Comparable, Serializable
 
     // ----------------------------------------------------------- Constructors
 
-    public SourceBean (String id,
+    public SourceBean( String id,
                        String type,
                        String description,
                        int count,
@@ -46,7 +45,7 @@ public class SourceBean implements java.lang.Comparable, Serializable
                        String sourceBrowseGraphUrl,
                        String directHighlightUrl,
                        boolean clickable,
-                       String applicationPath) {
+                       String applicationPath ) {
         this.id = id;
         this.type = type;
         this.description = description;
@@ -64,7 +63,7 @@ public class SourceBean implements java.lang.Comparable, Serializable
         return id;
     }
 
-    public void setId(String id) {
+    public void setId( String id ) {
         this.id = id;
     }
 
@@ -72,7 +71,7 @@ public class SourceBean implements java.lang.Comparable, Serializable
         return type;
     }
 
-    public void setType(String type) {
+    public void setType( String type ) {
         this.type = type;
     }
 
@@ -80,7 +79,7 @@ public class SourceBean implements java.lang.Comparable, Serializable
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription( String description ) {
         this.description = description;
     }
 
@@ -88,7 +87,7 @@ public class SourceBean implements java.lang.Comparable, Serializable
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount( int count ) {
         this.count = count;
     }
 
@@ -100,11 +99,11 @@ public class SourceBean implements java.lang.Comparable, Serializable
         return SourceBrowserGraphUrl;
     }
 
-    public void setSourceBrowserUrl(String sourceBrowserUrl) {
+    public void setSourceBrowserUrl( String sourceBrowserUrl ) {
         this.SourceBrowserUrl = sourceBrowserUrl;
     }
 
-    public void setSourceBrowserGraphUrl(String sourceBrowserGraphUrl) {
+    public void setSourceBrowserGraphUrl( String sourceBrowserGraphUrl ) {
         this.SourceBrowserGraphUrl = sourceBrowserGraphUrl;
     }
 
@@ -112,7 +111,7 @@ public class SourceBean implements java.lang.Comparable, Serializable
         return directHighlightUrl;
     }
 
-    public void setDirectHighlightUrl(String directHighlightUrl) {
+    public void setDirectHighlightUrl( String directHighlightUrl ) {
         this.directHighlightUrl = directHighlightUrl;
     }
 
@@ -120,7 +119,7 @@ public class SourceBean implements java.lang.Comparable, Serializable
         return selected;
     }
 
-    public void setSelected(boolean selected) {
+    public void setSelected( boolean selected ) {
         this.selected = selected;
     }
 
@@ -128,7 +127,7 @@ public class SourceBean implements java.lang.Comparable, Serializable
         return applicationPath;
     }
 
-    public void setApplicationPath(String applicationPath) {
+    public void setApplicationPath( String applicationPath ) {
         this.applicationPath = applicationPath;
     }
 
@@ -139,24 +138,24 @@ public class SourceBean implements java.lang.Comparable, Serializable
      * Return a string representation of this object.
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer("SourceBean[Id=");
-        sb.append(id);
-        sb.append(", type=");
-        sb.append(type);
-        sb.append(", description=");
-        sb.append(description);
-        sb.append(", count=");
-        sb.append(count);
-        sb.append(", selected=");
-        sb.append(selected);
-        sb.append("]");
-        return (sb.toString());
+        StringBuffer sb = new StringBuffer( "SourceBean[Id=" );
+        sb.append( id );
+        sb.append( ", type=" );
+        sb.append( type );
+        sb.append( ", description=" );
+        sb.append( description );
+        sb.append( ", count=" );
+        sb.append( count );
+        sb.append( ", selected=" );
+        sb.append( selected );
+        sb.append( "]" );
+        return ( sb.toString() );
     }
 
 
     // to allow to sort the list of sources (by count)
-    public int compareTo(Object o) {
-        int count1 = ( (SourceBean) o ).getCount();
+    public int compareTo( Object o ) {
+        int count1 = ( ( SourceBean ) o ).getCount();
         int count2 = this.getCount();
 
         if ( count1 > count2 ) return 1;

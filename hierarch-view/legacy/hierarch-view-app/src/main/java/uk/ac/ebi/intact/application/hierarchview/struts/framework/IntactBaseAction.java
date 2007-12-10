@@ -8,9 +8,7 @@ package uk.ac.ebi.intact.application.hierarchview.struts.framework;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
+import org.apache.struts.action.*;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
@@ -50,8 +48,7 @@ public abstract class IntactBaseAction extends Action {
     /**
      * Error container
      */
-    private ActionMessages myErrors = new ActionMessages();
-    //private ActionErrors myErrors = new ActionErrors();
+    private ActionErrors myErrors = new ActionErrors();
 
     /**
      * The global Intact message key.
@@ -71,7 +68,6 @@ public abstract class IntactBaseAction extends Action {
      */
     protected boolean intactUserExists( HttpSession session ) {
         IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
-        //IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
         return ( null != user );
     }
 
@@ -144,8 +140,7 @@ public abstract class IntactBaseAction extends Action {
      *            IntactResources.properties bundle.
      */
     protected void addError( String key ) {
-        // myErrors.add( INTACT_ERROR, new ActionError( key ) );
-        myErrors.add( INTACT_ERROR, new ActionMessage( key ) );
+        myErrors.add( INTACT_ERROR, new ActionError( key ) );
     }
 
     /**
@@ -157,8 +152,7 @@ public abstract class IntactBaseAction extends Action {
      *              IntactResources.properties bundle.
      */
     protected void addError( String key, String value ) {
-        //myErrors.add( INTACT_ERROR, new ActionError( key, value ) );
-        myErrors.add( INTACT_ERROR, new ActionMessage( key, value ) );
+        myErrors.add( INTACT_ERROR, new ActionError( key, value ) );
     }
 
     /**
@@ -377,7 +371,7 @@ public abstract class IntactBaseAction extends Action {
                         in = builder.buildBinaryGraphNetwork( queryString );
 
                         if ( logger.isDebugEnabled() ) {
-                            logger.debug( "Creating a new Network with " + in.getBinaryInteractionSize() + " BinaryInteractions." );
+                            logger.debug( "Creating a new Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
                             logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
                         }
                     } catch ( ProteinNotFoundException e ) {
@@ -422,10 +416,10 @@ public abstract class IntactBaseAction extends Action {
                 case StrutsConstants.ADD_INTERACTION_NETWORK:
 
                     try {
-                        int size_before = in.getBinaryInteractionSize();
+                        int size_before = in.getBinaryInteraction().size();
                         in = builder.fusionBinaryGraphNetwork( in, queryString );
                         if ( logger.isDebugEnabled() ) {
-                            logger.debug( "Adding a new Network with " + in.getBinaryInteractionSize() + " BinaryInteractions " +
+                            logger.debug( "Adding a new Network with " + in.getBinaryInteraction().size() + " BinaryInteractions " +
                                           "to existing Network with " + size_before + " BinaryInteractions." );
                             logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
                         }
@@ -455,16 +449,16 @@ public abstract class IntactBaseAction extends Action {
                 case StrutsConstants.UPDATE_INTERACTION_NETWORK:
                     try {
                         if ( user.getDefaultDepth() < user.getCurrentDepth() ) {
-                            in = builder.expandBinaryGraphNetwork( in );
+                            in = builder.expandBinaryGraphNetwork( in, Constants.ALL_WITHOUT_PREY_EXPANSION );
                             if ( logger.isDebugEnabled() ) {
-                                logger.debug( "Update/Expand current Network with " + in.getBinaryInteractionSize() + " BinaryInteractions." );
+                                logger.debug( "Update/Expand current Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
                                 logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
                             }
                         } else {
                             logger.info( queryString );
                             in = builder.buildBinaryGraphNetwork( queryString );
                             if ( logger.isDebugEnabled() ) {
-                                logger.debug( "Update/Decrease current Network with " + in.getBinaryInteractionSize() + " BinaryInteractions." );
+                                logger.debug( "Update/Decrease current Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
                                 logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
                             }
                         }

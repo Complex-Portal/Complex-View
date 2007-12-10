@@ -16,7 +16,7 @@ public class ProteinNotFoundException extends Exception {
     public ProteinNotFoundException() {
     }
 
-    public ProteinNotFoundException(String message) {
-        super(message);
+    public ProteinNotFoundException( String message ) {
+        super( message );
     }
 }

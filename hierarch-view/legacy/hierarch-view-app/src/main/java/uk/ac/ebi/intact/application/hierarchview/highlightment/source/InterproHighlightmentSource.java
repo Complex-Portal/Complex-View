@@ -11,7 +11,6 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Node;
-import uk.ac.ebi.intact.service.graph.binary.InteractorVertex;
 import uk.ac.ebi.intact.util.SearchReplace;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,53 +66,6 @@ public class InterproHighlightmentSource extends HighlightmentSource {
 
         return htmlCode;
     }
-
-    /**
-     * Return a collection of keys specific to the selected protein and the
-     * current source. e.g. If the source is GO, we will send the collection of
-     * GO term owned by the given protein. Those informations are retreived from
-     * the Intact database
-     *
-     * @param node a node of the network
-     * @return a set of keys (this keys are a String) (this Keys are a String[]
-     *         which contains the GOterm and a description)
-     */
-    public Collection<String[]> getKeysFromIntAct( Node node, HttpSession aSession ) {
-
-        Collection<CrossReference> result;
-        Collection<String[]> listInterproTerm;
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession()
-                .getAttribute( uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY );
-
-        if ( null == user ) {
-            logger.error( "No user found in the session, unable to search for Interpro terms" );
-            return null;
-        }
-
-        try {
-            if ( logger.isInfoEnabled() )
-                logger.info( "Try to get a list of Interpro term (from interactor=" + node.getId() + ")" );
-
-            result = ( ( InteractorVertex ) node ).getProperties();
-
-        }
-        catch ( IntactException ie ) {
-            logger.error( "When trying to get a list of Interpro", ie );
-            return null;
-        }
-
-        // no object
-        if ( result.isEmpty() )
-            return null;
-
-        // get Xref collection
-        Collection<CrossReference> xRef = result;
-        if ( logger.isDebugEnabled() ) logger.debug( xRef.size() + " Xref found" );
-
-        listInterproTerm = filterInteractorCrossReference( xRef );
-
-        return listInterproTerm;
-    } // getKeysFromIntAct
 
     /**
      * get a collection of XRef and filter to keep only GO terms
@@ -181,7 +133,7 @@ public class InterproHighlightmentSource extends HighlightmentSource {
     private Collection proteinToHighlightSourceMap( Network aGraph, Collection children,
                                                     String selectedInterproTerm, boolean searchForChildren ) {
 
-        Collection nodeList = new ArrayList();
+        Collection nodeList = new ArrayList( 20 ); // should be enough for 90% cases
         // cases
 
         // retrieve the set of proteins to highlight for the source key (e.g.

@@ -115,10 +115,8 @@ public final class DisplayAction extends IntactBaseAction {
         Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;
 
         if ( null != properties ) {
-            methodClass = properties.getProperty( "highlightment.source."
-                                                  + methodLabel + ".class" );
-            behaviourDefault = properties
-                    .getProperty( "highlighting.behaviour.default.class" );
+            methodClass = properties.getProperty( "highlightment.source." + methodLabel + ".class" );
+            behaviourDefault = properties.getProperty( "highlighting.behaviour.default.class" );
         }
 
         if ( !isErrorsEmpty() ) {

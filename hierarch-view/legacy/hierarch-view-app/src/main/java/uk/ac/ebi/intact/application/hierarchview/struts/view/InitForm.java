@@ -8,7 +8,7 @@ package uk.ac.ebi.intact.application.hierarchview.struts.view;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseForm;
 
 /**
- * Form bean for the main form of the view.jsp page.  
+ * Form bean for the main form of the view.jsp page.
  * This form has the following fields, with default values in square brackets:
  * <ul>
  * <li><b>queryString</b> - Entered queryString value
@@ -30,7 +30,7 @@ public final class InitForm extends IntactBaseForm {
         return host;
     }
 
-    public void setHost(String host) {
+    public void setHost( String host ) {
         this.host = host;
     }
 
@@ -38,7 +38,7 @@ public final class InitForm extends IntactBaseForm {
         return protocol;
     }
 
-    public void setProtocol(String protocol) {
+    public void setProtocol( String protocol ) {
         this.protocol = protocol;
     }
 

@@ -86,4 +86,13 @@ public final class Constants {
      * is deifned in the web.xml file as a servlet context parameter
      */
     public static final String DATA_SOURCE = "datasource";
+
+
+    public static final int ALL_EXPANSION = 1;
+
+    public static final int BAIT_EXPANSION = 2;
+
+    public static final int NEUTRAL_COMPONENT_EXPANSION = 3;
+
+    public static final int ALL_WITHOUT_PREY_EXPANSION = 4;
 }

@@ -65,7 +65,6 @@ package uk.ac.ebi.intact.application.hierarchview.struts.view.utils;
 */
 
 
-
 /**
  * Simple JavaBean to represent label-value pairs for use in collections
  * that are utilized by the <code>&lt;form:options&gt;</code> tag.
@@ -93,37 +92,34 @@ public class LabelValueBean {
      */
     protected String description = null;
 
-
-
     // ----------------------------------------------------------- Constructors
 
     /**
      * Construct a new LabelValueBean with the specified values.
      *
-     * @param label The label to be displayed to the user
-     * @param value The value to be returned to the server
+     * @param label       The label to be displayed to the user
+     * @param value       The value to be returned to the server
      * @param description The description to be returned to the server
      */
-    public LabelValueBean(String label, String value, String description) {
+    public LabelValueBean( String label, String value, String description ) {
         this.label = label;
         this.value = value;
         this.description = description;
     }
 
-
     // ------------------------------------------------------------- Properties
 
 
     public String getLabel() {
-        return (this.label);
+        return ( this.label );
     }
 
     public String getValue() {
-        return (this.value);
+        return ( this.value );
     }
 
     public String getDescription() {
-        return (this.description);
+        return ( this.description );
     }
 
     // --------------------------------------------------------- Public Methods
@@ -133,14 +129,14 @@ public class LabelValueBean {
      * Return a string representation of this object.
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer("LabelValueBean[label=");
-        sb.append(this.label);
-        sb.append(", value=");
-        sb.append(this.value);
-        sb.append(", description=");
-        sb.append(this.description);
-        sb.append("]");
-        return (sb.toString());
+        StringBuffer sb = new StringBuffer( "LabelValueBean[label=" );
+        sb.append( this.label );
+        sb.append( ", value=" );
+        sb.append( this.value );
+        sb.append( ", description=" );
+        sb.append( this.description );
+        sb.append( "]" );
+        return ( sb.toString() );
     }
 }
 

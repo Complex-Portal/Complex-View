@@ -17,10 +17,8 @@ package uk.ac.ebi.intact.application.hierarchview.business.data;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import psidev.psi.mi.tab.PsimiTabWriter;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.processor.ClusterInteractorPairProcessor;
-import psidev.psi.mi.xml.converter.ConverterException;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
@@ -31,7 +29,6 @@ import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 import uk.ac.ebi.intact.psimitab.converters.Intact2Tab;
 import uk.ac.ebi.intact.psimitab.converters.Intact2TabException;
 import uk.ac.ebi.intact.psimitab.converters.IntactBinaryInteractionHandler;
@@ -41,14 +38,12 @@ import uk.ac.ebi.intact.searchengine.SearchHelper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
 import uk.ac.ebi.intact.util.Chrono;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * TODO comment that class header
+ * Uses DatabaseQueries to get Information for building graph.
  *
  * @author Nadin Neuhauser
  * @version $Id
@@ -124,7 +119,7 @@ public class DatabaseService implements DataService {
         Chrono chrono = new Chrono();
         chrono.start();
 
-        centralProteins = new ArrayList<String>();
+        centralProteins = new ArrayList<String>( HVNetworkBuilder.getMaxCentralProtein() );
 
         Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
         Collection<Interactor> interactors = getInteractorByQuery( query );
@@ -158,17 +153,6 @@ public class DatabaseService implements DataService {
                     .append( chrono ).toString();
         }
         logger.info( msg );
-
-        try {
-            PsimiTabWriter writer = new PsimiTabWriter();
-            writer.setBinaryInteractionClass( IntActBinaryInteraction.class );
-            writer.setColumnHandler( new IntActColumnHandler() );
-            writer.write(binaryInteractions, new File("C:\\Documents and Settings\\nneuhaus\\Desktop\\database.txt"));
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        } catch ( ConverterException e ) {
-            e.printStackTrace();
-        }
 
         return binaryInteractions;
     }
@@ -204,14 +188,14 @@ public class DatabaseService implements DataService {
         int maxInteractor = HVNetworkBuilder.getMaxCentralProtein();
         int interactorsFound = results.size();
         int currentCount = 0;
-        if (user.getInteractionNetwork() != null) {
+        if ( user.getInteractionNetwork() != null ) {
             currentCount = user.getInteractionNetwork().getCentralNodes().size();
         }
 
         if ( ( interactorsFound + currentCount ) > maxInteractor ) {
             logger.error( queryString + " gave us too many results (max set to " + maxInteractor + ")" );
             throw new MultipleResultException();
-        }  else if ( interactorsFound == 0 ) {
+        } else if ( interactorsFound == 0 ) {
             throw new ProteinNotFoundException();
         }
 
@@ -219,8 +203,16 @@ public class DatabaseService implements DataService {
         return results;
     }
 
-    public String getDbName() throws SQLException {
-        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getBaseDao().getDbName();
+    public String getDbName() throws HierarchViewDataException {
+        try {
+            return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getBaseDao().getDbName();
+        } catch ( SQLException e ) {
+            throw new HierarchViewDataException( "Could not find Database Name." );
+        }
+    }
+
+    public static Collection getColByPropertyName( Class objectType, String searchParam, String searchValue ) {
+        return IntactUser.getCurrentInstance().getDaoFactory().getIntactObjectDao( objectType ).getColByPropertyName( searchParam, searchValue );
     }
 
 }
@@ -305,6 +297,3 @@ public class DatabaseService implements DataService {
 //        return getDaoFactory().getEntityManager();
 //    }
 
-//    public Collection getColByPropertyName( Class objectType, String searchParam, String searchValue ) {
-//        return getDaoFactory().getIntactObjectDao( objectType ).getColByPropertyName( searchParam, searchValue );
-//    }

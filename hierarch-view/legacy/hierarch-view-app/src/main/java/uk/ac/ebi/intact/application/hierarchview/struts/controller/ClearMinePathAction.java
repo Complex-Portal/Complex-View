@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Implementation of <strong>Action </strong> that perform hndling of the
  * current interaction network.
- * 
+ *
  * @author Samuel Kerrien
  * @version $Id: InteractionNetworkAction.java,v 1.4 2003/11/13 14:15:34
  *          skerrien Exp $
@@ -36,17 +36,16 @@ public final class ClearMinePathAction extends IntactBaseAction {
      * Return an <code>ActionForward</code> instance describing where and how
      * control should be forwarded, or <code>null</code> if the response has
      * already been completed.
-     * 
-     * @param mapping The ActionMapping used to select this instance
-     * @param form The optional ActionForm bean for this request (if any)
-     * @param request The HTTP request we are processing
+     *
+     * @param mapping  The ActionMapping used to select this instance
+     * @param form     The optional ActionForm bean for this request (if any)
+     * @param request  The HTTP request we are processing
      * @param response The HTTP response we are creating
-     * 
-     * @exception IOException if an input/output error occurs
-     * @exception ServletException if a servlet exception occurs
+     * @throws IOException      if an input/output error occurs
+     * @throws ServletException if a servlet exception occurs
      */
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response)
+    public ActionForward execute( ActionMapping mapping, ActionForm form,
+                                  HttpServletRequest request, HttpServletResponse response )
             throws IOException, ServletException, SessionExpiredException {
 
         // Clear any previous errors.
@@ -60,7 +59,7 @@ public final class ClearMinePathAction extends IntactBaseAction {
 
         // clear the path given by MiNe to disable the highlighting
         // of the edges connecting nodes which occur in the MiNe path
-        user.setMinePath(null);
+        user.setMinePath( null );
         // draw the image again without the highlighted edges
         produceImage( user );
 

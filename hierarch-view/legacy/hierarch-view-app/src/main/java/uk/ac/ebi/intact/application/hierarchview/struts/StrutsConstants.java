@@ -27,9 +27,8 @@ public final class StrutsConstants {
 
     // ********************************************************* session keys
 
-    public static final String HOST     = "intact.hierarchview.host";
+    public static final String HOST = "intact.hierarchview.host";
     public static final String PROTOCOL = "intact.hierarchview.protocol";
-
 
     // ********************************************************* Request parameters
 
@@ -47,7 +46,7 @@ public final class StrutsConstants {
      */
     public static final String ATTRIBUTE_KEY_CLICKED = "clicked";
 
-/**
+    /**
      * The name of the attribute in the session which represents
      * the type of the element selected in the external application which
      * allows to highlight.

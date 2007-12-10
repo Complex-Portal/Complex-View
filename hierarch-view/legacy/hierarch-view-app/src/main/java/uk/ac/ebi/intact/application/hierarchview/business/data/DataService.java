@@ -21,23 +21,23 @@ import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultExcepti
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 
-import java.sql.SQLException;
 import java.util.Collection;
 
 /**
- * TODO comment that class header
+ * Interface define getting data for building Graph.
  *
  * @author Nadin Neuhauser
  * @version $Id
  * @since 1.6.0-SNAPSHOT
  */
-public interface DataService  {
+public interface DataService {
 
     Collection<String> getCentralProteins();
 
-    Collection<BinaryInteraction> getBinaryInteractionsByQueryString(String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException;
+    Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException;
 
     Collection<CriteriaBean> getSearchCritera();
 
-    String getDbName() throws SQLException;
+    String getDbName() throws HierarchViewDataException;
+
 }

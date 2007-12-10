@@ -28,10 +28,9 @@ public class ImageBean implements Serializable {
         return imageData;
     }
 
-    public void setImageData(BufferedImage imageData) {
+    public void setImageData( BufferedImage imageData ) {
         this.imageData = imageData;
     }
-
 
 
     /**
@@ -39,14 +38,13 @@ public class ImageBean implements Serializable {
      */
     private String mapCode;
 
-    public void setMapCode (String aMapCode) {
+    public void setMapCode( String aMapCode ) {
         mapCode = aMapCode;
     }
 
-    public String getMapCode () {
+    public String getMapCode() {
         return mapCode;
     }
-
 
 
     /**
@@ -59,7 +57,7 @@ public class ImageBean implements Serializable {
         return imageHeight;
     }
 
-    public void setImageHeight(int imageHeight) {
+    public void setImageHeight( int imageHeight ) {
         this.imageHeight = imageHeight;
     }
 
@@ -67,7 +65,7 @@ public class ImageBean implements Serializable {
         return imageWidth;
     }
 
-    public void setImageWidth(int imageWidth) {
+    public void setImageWidth( int imageWidth ) {
         this.imageWidth = imageWidth;
     }
 }

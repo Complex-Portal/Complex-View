@@ -23,7 +23,6 @@ import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Node;
-import uk.ac.ebi.intact.service.graph.binary.InteractorVertex;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -72,37 +71,6 @@ public class AllHighlightmentSource extends HighlightmentSource {
                    + " value=\"checked\">" + PROMPT_OPTION_CHILDREN;
 
         return htmlCode;
-    }
-
-    /**
-     * Return a collection of keys specific to the selected protein and the
-     * current source. e.g. If the source is GO, we will send the collection of
-     * GO term owned by the given protein. Those informations are retreived from
-     * the Intact database
-     *
-     * @param node a node of the network
-     * @return a set of keys (this keys are a String) (this Keys are a String[]
-     *         which contains the GOterm and a description)
-     */
-    public Collection<String[]> getKeysFromIntAct( Node node, HttpSession aSession ) {
-
-        Collection<String[]> listInterproTerm;
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession()
-                .getAttribute( uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY );
-
-        if ( null == user ) {
-            logger.error( "No user found in the session, unable to search for all allowed source terms" );
-            return null;
-        }
-
-        // getXref collection
-        Collection<CrossReference> xRef = ( ( InteractorVertex ) node ).getProperties();
-
-        if ( logger.isDebugEnabled() ) logger.debug( xRef.size() + " Xref found" );
-
-        listInterproTerm = filterInteractorXref( xRef );
-
-        return listInterproTerm;
     }
 
     /**

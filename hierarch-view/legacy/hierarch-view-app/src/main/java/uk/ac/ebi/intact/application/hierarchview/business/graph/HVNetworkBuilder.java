@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.application.hierarchview.business.graph;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
@@ -28,14 +29,13 @@ import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundExcept
 import uk.ac.ebi.intact.service.graph.Node;
 import uk.ac.ebi.intact.service.graph.binary.BinaryGraphNetwork;
 import uk.ac.ebi.intact.service.graph.binary.BinaryGraphNetworkBuilder;
-import uk.ac.ebi.intact.service.graph.binary.label.AliasLabelBuilder;
-import uk.ac.ebi.intact.service.graph.binary.merger.BinaryGraphNetworkMerger;
+import uk.ac.ebi.intact.service.graph.binary.label.AliasLabelStrategy;
 import uk.ac.ebi.intact.service.graph.binary.merger.InteractionBasedMerger;
 
 import java.util.*;
 
 /**
- * TODO comment that class header
+ * Builds the Network and contains general information about the graph.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -110,13 +110,17 @@ public class HVNetworkBuilder {
     private DataService dataservice;
 
     private BinaryGraphNetworkBuilder builder;
+    private InteractionBasedMerger merger;
     private IntactUser user;
 
     public HVNetworkBuilder( DataService dataservice ) {
         this.dataservice = dataservice;
 
         builder = new BinaryGraphNetworkBuilder();
-        builder.setLabelBuilder( new AliasLabelBuilder() );
+        builder.setLabelStrategy( new AliasLabelStrategy() );
+
+        merger = new InteractionBasedMerger();
+        merger.setLabelStrategy( new AliasLabelStrategy() );
     }
 
 
@@ -125,7 +129,10 @@ public class HVNetworkBuilder {
         dataservice = intactUser.getDataService();
 
         builder = new BinaryGraphNetworkBuilder();
-        builder.setLabelBuilder( new AliasLabelBuilder() );
+        builder.setLabelStrategy( new AliasLabelStrategy() );
+
+        merger = new InteractionBasedMerger();
+        merger.setLabelStrategy( new AliasLabelStrategy() );
     }
 
     public static int getMaxCentralProtein() {
@@ -153,7 +160,6 @@ public class HVNetworkBuilder {
 
             try {
                 BinaryGraphNetwork network2 = builder.createGraphNetwork( bis, centralProteinAcs );
-                BinaryGraphNetworkMerger merger = new InteractionBasedMerger();
                 Network network = new InteractionNetwork( merger.mergeGraphNetworks( network1, network2 ) );
                 network.setBinaryInteractions( bis );
 
@@ -167,19 +173,51 @@ public class HVNetworkBuilder {
         return in;
     }
 
-    public Network expandBinaryGraphNetwork( Network network ) throws HierarchViewDataException, NetworkBuildException, MultipleResultException, ProteinNotFoundException {
+    public Network expandBinaryGraphNetwork( Network network, int complexExpansion ) throws HierarchViewDataException, NetworkBuildException, MultipleResultException, ProteinNotFoundException {
         if ( network == null ) {
             throw new IllegalArgumentException( "Network must not be null. " );
         }
 
         StringBuffer query = new StringBuffer();
-        Iterator<Node> iterator = network.getBaitNodes().iterator();
-        while ( iterator.hasNext() ) {
-            query.append( iterator.next().getId() );
-            if ( iterator.hasNext() ) query.append( ", " );
+        switch ( complexExpansion ) {
+            case Constants.ALL_EXPANSION: {
+                Iterator<Node> iterator = network.getNodes().iterator();
+                while ( iterator.hasNext() ) {
+                    query.append( iterator.next().getId() );
+                    if ( iterator.hasNext() ) query.append( ", " );
+                }
+            }
+            case Constants.BAIT_EXPANSION: {
+                Iterator<Node> iterator = network.getBaitNodes().iterator();
+                while ( iterator.hasNext() ) {
+                    query.append( iterator.next().getId() );
+                    if ( iterator.hasNext() ) query.append( ", " );
+                }
+            }
+            case Constants.NEUTRAL_COMPONENT_EXPANSION: {
+                Iterator<Node> iterator = network.getNeutralComponentNodes().iterator();
+                while ( iterator.hasNext() ) {
+                    query.append( iterator.next().getId() );
+                    if ( iterator.hasNext() ) query.append( ", " );
+                }
+            }
+            case Constants.ALL_WITHOUT_PREY_EXPANSION: {
+                Iterator<Node> iterator = network.getBaitNodes().iterator();
+                while ( iterator.hasNext() ) {
+                    query.append( iterator.next().getId() );
+                    if ( iterator.hasNext() ) query.append( ", " );
+                }
+                iterator = network.getNeutralComponentNodes().iterator();
+                if ( iterator.hasNext() ) query.append( ", " );
+                while ( iterator.hasNext() ) {
+                    query.append( iterator.next().getId() );
+                    if ( iterator.hasNext() ) query.append( ", " );
+                }
+            }
         }
-        user.setQueryString( query.toString() );
 
+        //user.setQueryString( query.toString() );
+        logger.info( "New QueryString " + query.toString() );
         return fusionBinaryGraphNetwork( network, query.toString() );
     }
 }

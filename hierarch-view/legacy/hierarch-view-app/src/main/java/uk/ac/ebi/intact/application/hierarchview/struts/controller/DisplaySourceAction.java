@@ -32,7 +32,7 @@ import java.io.IOException;
 
 public final class DisplaySourceAction extends IntactBaseAction {
 
-    private static final Log logger = LogFactory.getLog(DisplaySourceAction.class);
+    private static final Log logger = LogFactory.getLog( DisplaySourceAction.class );
 
     /**
      * Process the specified HTTP request, and create the corresponding HTTP
@@ -41,48 +41,47 @@ public final class DisplaySourceAction extends IntactBaseAction {
      * control should be forwarded, or <code>null</code> if the response has
      * already been completed.
      *
-     * @param mapping The ActionMapping used to select this instance
-     * @param form The optional ActionForm bean for this request (if any)
-     * @param request The HTTP request we are processing
+     * @param mapping  The ActionMapping used to select this instance
+     * @param form     The optional ActionForm bean for this request (if any)
+     * @param request  The HTTP request we are processing
      * @param response The HTTP response we are creating
-     *
-     * @exception IOException if an input/output error occurs
-     * @exception ServletException if a servlet exception occurs
+     * @throws IOException      if an input/output error occurs
+     * @throws ServletException if a servlet exception occurs
      */
-    public ActionForward execute (ActionMapping mapping,
+    public ActionForward execute( ActionMapping mapping,
                                   ActionForm form,
                                   HttpServletRequest request,
-                                  HttpServletResponse response)
+                                  HttpServletResponse response )
             throws IOException, ServletException, SessionExpiredException {
 
         // Clear any previous errors.
         clearErrors();
 
         // get the current session
-        HttpSession session = getSession(request);
+        HttpSession session = getSession( request );
 
         // retreive user from the session
-        IntactUserI user = getIntactUser(session);
+        IntactUserI user = getIntactUser( session );
 
         // get the URL given in parameter
-        String url = request.getParameter(StrutsConstants.ATTRIBUTE_SOURCE_URL);
+        String url = request.getParameter( StrutsConstants.ATTRIBUTE_SOURCE_URL );
 
-        if (url != null) {
+        if ( url != null ) {
             // save URL in the user
-            user.setSourceURL (url);
+            user.setSourceURL( url );
 
-            logger.info ("SourceAction: url=" + url);
+            logger.info( "SourceAction: url=" + url );
         }
 
         // Remove the obsolete form bean
-        if (mapping.getAttribute() != null) {
-            if ("request".equals(mapping.getScope()))
-                request.removeAttribute(mapping.getAttribute());
+        if ( mapping.getAttribute() != null ) {
+            if ( "request".equals( mapping.getScope() ) )
+                request.removeAttribute( mapping.getAttribute() );
             else
-                session.removeAttribute(mapping.getAttribute());
+                session.removeAttribute( mapping.getAttribute() );
         }
 
         // Forward control to the specified success URI
-        return (mapping.findForward("success"));
+        return ( mapping.findForward( "success" ) );
     }
 }

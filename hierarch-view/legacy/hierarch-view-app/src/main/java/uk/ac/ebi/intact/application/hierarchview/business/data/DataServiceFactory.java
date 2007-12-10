@@ -29,18 +29,22 @@ public class DataServiceFactory {
 
     public static final Log logger = LogFactory.getLog( DataServiceFactory.class );
 
-    public static DataService buildDataService(String source){
+    public static DataService buildDataService( String source ) {
         DataService dataservice = null;
 
-        if (source.equals( "database" )){
+        if ( source.equals( "database" ) ) {
             dataservice = new DatabaseService();
         }
 
-        if (source.equals( "webservice")) {
+        if ( source.equals( "webservice" ) ) {
             dataservice = new BinaryWebService();
         }
 
-        if (logger.isDebugEnabled()) logger.debug( "Used data source=" + source );
+        if ( source.equals( "mock" ) ) {
+            dataservice = new DataServiceMock();
+        }
+
+        if ( logger.isDebugEnabled() ) logger.debug( "Used data source=" + source );
 
         return dataservice;
     }

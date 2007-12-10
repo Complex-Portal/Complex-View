@@ -74,19 +74,6 @@ public abstract class HighlightmentSource {
      */
     abstract public String getHtmlCodeOption( HttpSession aSession );
 
-
-    /**
-     * Return a collection of keys specific to the selected protein and the current source.
-     * e.g. If the source is GO, we will send the collection of GO term owned by the given protein.
-     * Those informations are retreived from the Intact database
-     *
-     * @param node     a node of the network.
-     * @param aSession session in which we'll retreive the datasource
-     * @return a collection of keys
-     */
-    abstract public Collection getKeysFromIntAct( Node node, HttpSession aSession );
-
-
     /**
      * Create a set of protein we must highlight in the graph given in parameter.
      * The protein selection is done according to the source keys stored in the IntactUser.

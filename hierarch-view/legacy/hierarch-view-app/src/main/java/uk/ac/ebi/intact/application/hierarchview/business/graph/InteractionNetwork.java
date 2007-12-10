@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.application.hierarchview.business.graph;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.tab.model.Confidence;
 import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
@@ -28,6 +29,7 @@ import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.GraphNetwork;
 import uk.ac.ebi.intact.service.graph.Node;
 import uk.ac.ebi.intact.service.graph.binary.BinaryGraphNetwork;
+import uk.ac.ebi.intact.service.graph.binary.BinaryInteractionEdge;
 import uk.ac.ebi.intact.service.graph.binary.InteractorVertex;
 import uk.ac.ebi.intact.tulip.client.TulipClient;
 import uk.ac.ebi.intact.tulip.client.generated.ProteinCoordinate;
@@ -84,7 +86,7 @@ public class InteractionNetwork implements Network {
 
     public InteractionNetwork( BinaryGraphNetwork network ) {
         this.network = network;
-        centralProteins = new ArrayList<Node>();
+        centralProteins = new ArrayList<Node>( HVNetworkBuilder.getMaxCentralProtein() );
         nodeAttributMap = new HashMap<Node, NodeAttributes>();
 
         for ( Node node : network.getNodes() ) {
@@ -111,12 +113,16 @@ public class InteractionNetwork implements Network {
         return network;
     }
 
+    public Collection<CrossReference> getProperties( Node node ) {
+        return ( ( InteractorVertex ) node ).getProperties();
+    }
+
     public NodeAttributes getNodeAttributes( Node node ) {
         return nodeAttributMap.get( node );
     }
 
-    public int getBinaryInteractionSize() {
-        return binaryInteractions.size();
+    public Collection getBinaryInteraction() {
+        return binaryInteractions;
     }
 
     public void setBinaryInteractions( Collection binaryInteractions ) {
@@ -143,11 +149,26 @@ public class InteractionNetwork implements Network {
         List<Node> baitNodes = new ArrayList<Node>();
         for ( Node node : network.getNodes() ) {
             InteractorVertex vertex = ( InteractorVertex ) node;
-            if ( vertex.isBait() || vertex.isNeutralComponent() ) {
+            if ( vertex.isBait() ) {
                 baitNodes.add( node );
             }
         }
         return baitNodes;
+    }
+
+    public List<Node> getNeutralComponentNodes() {
+        List<Node> neutralNodes = new ArrayList<Node>();
+        for ( Node node : network.getNodes() ) {
+            InteractorVertex vertex = ( InteractorVertex ) node;
+            if ( vertex.isNeutralComponent() ) {
+                neutralNodes.add( node );
+            }
+        }
+        return neutralNodes;
+    }
+
+    public List<Confidence> getConfidenceValues( Edge edge ) {
+        return ( ( BinaryInteractionEdge ) edge ).getConfidenceValues();
     }
 
     public ImageDimension getImageDimension() {
@@ -275,7 +296,7 @@ public class InteractionNetwork implements Network {
                 //sourceMapTmp = null;
             }
         } else {
-            sourceMap = ( Map ) sourceHighlightMap.get( source );
+            sourceMap = ( Map ) sourceHighlightMap.get( source.toLowerCase() );
         }
 
         if ( logger.isDebugEnabled() ) {

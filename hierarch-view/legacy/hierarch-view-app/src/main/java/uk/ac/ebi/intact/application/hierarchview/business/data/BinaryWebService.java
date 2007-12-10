@@ -21,27 +21,22 @@ import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.CrossReference;
-import psidev.psi.mi.tab.PsimiTabWriter;
-import psidev.psi.mi.xml.converter.ConverterException;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
 import uk.ac.ebi.intact.binarysearch.wsclient.BinarySearchServiceClient;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
 import uk.ac.ebi.intact.util.Chrono;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.io.File;
-import java.io.IOException;
 
 /**
- * TODO comment that class header
+ * Uses BinarySearchServiceClient to get Information for building graph.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -64,12 +59,18 @@ public class BinaryWebService implements DataService {
     public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
         Chrono chrono = new Chrono();
         chrono.start();
-        centralProteins = new ArrayList<String>();
-        Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>( );        
-        SearchResult<IntActBinaryInteraction> result = client.findBinaryInteractionsByIdentifiers(query);
+        centralProteins = new ArrayList<String>( HVNetworkBuilder.getMaxCentralProtein() );
+        Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
+        SearchResult<IntActBinaryInteraction> result = client.findBinaryInteractions( query );
         System.out.println( "query " + result.getLuceneQuery() );
-        binaryInteractions.addAll(result.getInteractions());
-        findCentralProteins(binaryInteractions, query);
+        binaryInteractions.addAll( result.getInteractions() );
+        if ( query.contains( ", " ) ) {
+            for ( String q : query.split( "," ) ) {
+                findCentralProteins( binaryInteractions, q.trim() );
+            }
+        } else {
+            findCentralProteins( binaryInteractions, query );
+        }
 
         chrono.stop();
 
@@ -84,22 +85,11 @@ public class BinaryWebService implements DataService {
         }
         logger.info( msg );
 
-        try {
-            PsimiTabWriter writer = new PsimiTabWriter();
-            writer.setBinaryInteractionClass( IntActBinaryInteraction.class );
-            writer.setColumnHandler( new IntActColumnHandler() );
-            writer.write(binaryInteractions, new File("C:\\Documents and Settings\\nneuhaus\\Desktop\\webservice.txt"));
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        } catch ( ConverterException e ) {
-            e.printStackTrace();
-        }
-
         return binaryInteractions;
     }
 
-    private void findCentralProteins( Collection<BinaryInteraction> binaryInteractions, String query) {
-        for ( BinaryInteraction bi : binaryInteractions ) {            
+    private void findCentralProteins( Collection<BinaryInteraction> binaryInteractions, String query ) {
+        for ( BinaryInteraction bi : binaryInteractions ) {
             for ( CrossReference xref : bi.getInteractorA().getIdentifiers() ) {
                 if ( xref.getIdentifier().equalsIgnoreCase( query ) ) {
                     setCentralProtein( bi, true, false );
@@ -146,34 +136,34 @@ public class BinaryWebService implements DataService {
 
     private void setCentralProtein( BinaryInteraction bi, boolean a, boolean b ) {
         String id = null;
-        if (a){
-            for (CrossReference xref : bi.getInteractorA().getIdentifiers()){
-                if (id == null){
+        if ( a ) {
+            for ( CrossReference xref : bi.getInteractorA().getIdentifiers() ) {
+                if ( id == null ) {
                     id = xref.getIdentifier();
                 }
-                if (xref.getDatabase().equals("intact")){
-                    id = xref.getIdentifier();
-                }
-            }
-        }
-        if (b){
-            for (CrossReference xref : bi.getInteractorB().getIdentifiers()){
-                if (id == null){
-                    id = xref.getIdentifier();
-                }
-                if (xref.getDatabase().equals("intact")){
+                if ( xref.getDatabase().equals( "intact" ) ) {
                     id = xref.getIdentifier();
                 }
             }
         }
-        centralProteins.add(id);
+        if ( b ) {
+            for ( CrossReference xref : bi.getInteractorB().getIdentifiers() ) {
+                if ( id == null ) {
+                    id = xref.getIdentifier();
+                }
+                if ( xref.getDatabase().equals( "intact" ) ) {
+                    id = xref.getIdentifier();
+                }
+            }
+        }
+        centralProteins.add( id );
     }
 
     public Collection<CriteriaBean> getSearchCritera() {
         return searchHelper.getSearchCritera();
     }
 
-    public String getDbName() throws SQLException {
+    public String getDbName() throws HierarchViewDataException {
         return client.getBinarySearchPort().getVersion();
     }
 }

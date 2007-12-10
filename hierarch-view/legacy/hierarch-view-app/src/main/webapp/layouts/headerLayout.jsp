@@ -1,4 +1,4 @@
-<%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
+<%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles" %>
 
 <%--
     Intact default look & feel layout for the header.

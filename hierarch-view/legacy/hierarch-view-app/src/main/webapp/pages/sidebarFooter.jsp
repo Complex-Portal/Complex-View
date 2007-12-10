@@ -1,18 +1,18 @@
-<%@ page language="java"%>
+<%@ page language="java" %>
 
 <!--
-  - Author: Sugath Mudali (smudali@ebi.ac.uk)
-  - Version: $Id$
-  - Copyright (c) 2002-2003 The European Bioinformatics Institute, and others.
-  - All rights reserved. Please see the file LICENSE in the root directory of
-  - this distribution.
-  -->
+- Author: Sugath Mudali (smudali@ebi.ac.uk)
+- Version: $Id$
+- Copyright (c) 2002-2003 The European Bioinformatics Institute, and others.
+- All rights reserved. Please see the file LICENSE in the root directory of
+- this distribution.
+-->
 
 <%--
   - The common footer for the sidebar.
 --%>
 
-<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 
 <c:if test="${not empty sessionScope.user}">
 

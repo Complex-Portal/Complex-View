@@ -16,7 +16,7 @@ public class MultipleResultException extends Exception {
     public MultipleResultException() {
     }
 
-    public MultipleResultException(String message) {
-        super(message);
+    public MultipleResultException( String message ) {
+        super( message );
     }
 }

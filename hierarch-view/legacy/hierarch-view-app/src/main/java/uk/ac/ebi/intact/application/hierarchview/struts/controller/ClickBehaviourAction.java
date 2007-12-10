@@ -37,41 +37,40 @@ public final class ClickBehaviourAction extends IntactBaseAction {
      * control should be forwarded, or <code>null</code> if the response has
      * already been completed.
      *
-     * @param mapping The ActionMapping used to select this instance
-     * @param form The optional ActionForm bean for this request (if any)
-     * @param request The HTTP request we are processing
+     * @param mapping  The ActionMapping used to select this instance
+     * @param form     The optional ActionForm bean for this request (if any)
+     * @param request  The HTTP request we are processing
      * @param response The HTTP response we are creating
-     *
-     * @exception IOException if an input/output error occurs
-     * @exception ServletException if a servlet exception occurs
+     * @throws IOException      if an input/output error occurs
+     * @throws ServletException if a servlet exception occurs
      */
-    public ActionForward execute (ActionMapping mapping,
+    public ActionForward execute( ActionMapping mapping,
                                   ActionForm form,
                                   HttpServletRequest request,
-                                  HttpServletResponse response)
+                                  HttpServletResponse response )
             throws IOException, ServletException, SessionExpiredException {
 
         // Clear any previous errors.
         clearErrors();
 
         // get the current session
-        HttpSession session = getSession(request);
+        HttpSession session = getSession( request );
 
         // retreive user from the session
-        IntactUserI user = getIntactUser(session);
+        IntactUserI user = getIntactUser( session );
 
-        String action = request.getParameter("action");
+        String action = request.getParameter( "action" );
 
-        ClickBehaviourForm myForm = (ClickBehaviourForm) form;
-        if (myForm == null) {
+        ClickBehaviourForm myForm = ( ClickBehaviourForm ) form;
+        if ( myForm == null ) {
             // should not happen, but ok
-            myForm = new ClickBehaviourForm ();
-            myForm.setAction(action);
+            myForm = new ClickBehaviourForm();
+            myForm.setAction( action );
         }
 
-        user.setClickBehaviour(myForm);
+        user.setClickBehaviour( myForm );
 
         // Forward control to the specified success URI
-        return (mapping.findForward("success"));
+        return ( mapping.findForward( "success" ) );
     }
 }

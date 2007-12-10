@@ -16,8 +16,11 @@
 package uk.ac.ebi.intact.application.hierarchview.business.graph;
 
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.tab.model.Confidence;
+import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageDimension;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
+import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.GraphNetwork;
 import uk.ac.ebi.intact.service.graph.Node;
 
@@ -37,11 +40,13 @@ public interface Network {
 
     NodeAttributes getNodeAttributes( Node node );
 
-    int getBinaryInteractionSize();
+    Collection<BinaryInteraction> getBinaryInteraction();
 
     GraphNetwork getGraphNetwork();
 
     void setBinaryInteractions( Collection<BinaryInteraction> binaryInteractions );
+
+    Collection<CrossReference> getProperties( Node node );
 
     boolean isSourceHighlightMapEmpty();
 
@@ -67,10 +72,14 @@ public interface Network {
 
     String[] importDataToImage( String dataTlp ) throws RemoteException;
 
-    Collection getEdges();
+    Collection<Edge> getEdges();
 
     List<Node> getNodes();
 
     List<Node> getBaitNodes();
+
+    List<Node> getNeutralComponentNodes();
+
+    List<Confidence> getConfidenceValues( Edge edge );
 
 }

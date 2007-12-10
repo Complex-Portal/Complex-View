@@ -10,9 +10,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataServiceFactory;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DatabaseService;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
+import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.ClickBehaviourForm;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -21,7 +23,6 @@ import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.service.graph.Node;
 
 import javax.servlet.http.HttpSessionBindingEvent;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -467,7 +468,7 @@ public class IntactUser implements IntactUserI {
     public <T extends IntactObject> Collection<T> search( Class<T> objectType,
                                                           String searchParam,
                                                           String searchValue ) throws IntactException {
-        throw new UnsupportedOperationException();
+        return DatabaseService.getColByPropertyName( objectType, searchParam, searchValue );
     }
 
     public String getUserName() {
@@ -478,7 +479,7 @@ public class IntactUser implements IntactUserI {
         try {
             return getDataService().getDbName();
         }
-        catch ( SQLException e ) {
+        catch ( HierarchViewDataException e ) {
             e.printStackTrace();
         }
         return null;

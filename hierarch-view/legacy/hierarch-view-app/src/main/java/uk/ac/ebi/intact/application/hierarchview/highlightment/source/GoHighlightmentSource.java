@@ -11,7 +11,6 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Node;
-import uk.ac.ebi.intact.service.graph.binary.InteractorVertex;
 import uk.ac.ebi.intact.util.SearchReplace;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,53 +63,6 @@ public class GoHighlightmentSource extends HighlightmentSource {
 
         return htmlCode;
     }
-
-
-    /**
-     * Return a collection of keys specific to the selected protein and the
-     * current source. e.g. If the source is GO, we will send the collection of
-     * GO term owned by the given protein. Those informations are retreived from
-     * the Intact database
-     *
-     * @param node a node of the network
-     * @return a set of keys (this keys are a String) (this Keys are a String[]
-     *         which contains the GOterm and a description)
-     */
-    public Collection<String[]> getKeysFromIntAct( Node node, HttpSession aSession ) {
-
-        Collection<CrossReference> result;
-        Collection<String[]> listGOTerm;
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession()
-                .getAttribute( uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY );
-
-        if ( null == user ) {
-            logger.error( "No user found in the session, unable to search for GO terms" );
-            return null;
-        }
-
-        try {
-            if ( logger.isDebugEnabled() )
-                logger.debug( "Try to get a list of GO term (from Interactor=" + node.getId() + ")" );
-
-            result = ( ( InteractorVertex ) node ).getProperties();
-        }
-        catch ( IntactException ie ) {
-            logger.error( "When trying to get a list of GO", ie );
-            return null;
-        }
-
-        // no object
-        if ( result.isEmpty() )
-            return null;
-
-        // getXref collection
-        Collection<CrossReference> xRef = result;
-        if ( logger.isDebugEnabled() ) logger.debug( xRef.size() + " Xref found" );
-        listGOTerm = filterInteractorCrossReference( xRef );
-
-        return listGOTerm;
-    } // getKeysFromIntAct
-
 
     /**
      * get a collection of XRef and filter to keep only GO terms
@@ -300,12 +252,6 @@ public class GoHighlightmentSource extends HighlightmentSource {
 
         // list of Nodes of the Graph
         Network aGraph = user.getInteractionNetwork();
-//        List<Node> listOfNode = aGraph.getNodes();
-//
-//        List<String> interactorAcs = new ArrayList<String>( listOfNode.size() );
-//        for ( Node node : listOfNode ) {
-//            interactorAcs.add( node.getId() );
-//        }
 
         // Create a collection of label-value object (GOterm, URL to access a
         // nice display in go)

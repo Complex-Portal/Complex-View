@@ -18,7 +18,6 @@ import uk.ac.ebi.intact.service.graph.Node;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -526,12 +525,8 @@ public class DrawGraph {
     public void draw() {
         int i;
         int numberOfInteraction = graph.getEdges().size();
-        currentTime = "&now=" + System.currentTimeMillis(); // this will be
-        // added at each
-        // link of the graph
-        List listOfInteraction = new ArrayList( graph.getEdges() );
+        currentTime = "&now=" + System.currentTimeMillis(); // this will be added at each link of the graph
 
-        Edge interaction;
         Node proteinR, proteinL;
 
         bufferedImage = new BufferedImage( imageSizex, imageSizey, BufferedImage.TYPE_INT_RGB );
@@ -555,18 +550,17 @@ public class DrawGraph {
         g.setStroke( stroke );
 
         // We draw edges whose nodes are visible
-        for ( i = 0; i < numberOfInteraction; i++ ) {
-            interaction = ( Edge ) listOfInteraction.get( i );
+        for ( Edge edge : graph.getEdges() ) {
 
-            proteinR = interaction.getNodeA();
+            proteinR = edge.getNodeA();
             NodeAttributes attributesA = graph.getNodeAttributes( proteinR );
-            proteinL = interaction.getNodeB();
+            proteinL = edge.getNodeB();
             NodeAttributes attributesB = graph.getNodeAttributes( proteinL );
 
             // draw edge only if both nodes are visible
             if ( attributesA.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE
                  && attributesB.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
-                drawEdge( interaction, g );
+                drawEdge( edge, g );
             }
         } // for
 

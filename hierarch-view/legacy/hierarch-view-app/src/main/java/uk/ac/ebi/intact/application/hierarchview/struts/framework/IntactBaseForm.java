@@ -20,22 +20,29 @@ import javax.servlet.http.HttpServletRequest;
 
 public class IntactBaseForm extends ActionForm {
 
-    public static Logger logger = Logger.getLogger (Constants.LOGGER_NAME);
+    public static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
 
-    /** The global Intact error key. */
+    /**
+     * The global Intact error key.
+     */
     public static final String INTACT_ERROR = "IntactError";
 
-    /** Error container */
+    /**
+     * Error container
+     */
     private ActionErrors myErrors = new ActionErrors();
 
 
-    /** The global Intact message key. */
+    /**
+     * The global Intact message key.
+     */
     public static final String INTACT_MESSAGE = "IntactMessage";
 
-    /** Message container */
+    /**
+     * Message container
+     */
     private ActionMessages myMessages = new ActionMessages();
-
 
     /**
      * Error managment
@@ -43,9 +50,10 @@ public class IntactBaseForm extends ActionForm {
 
     /**
      * return the error set
+     *
      * @return the error set
      */
-    protected ActionErrors getErrors () {
+    protected ActionErrors getErrors() {
         return myErrors;
     }
 
@@ -53,21 +61,21 @@ public class IntactBaseForm extends ActionForm {
      * Adds an error with given key.
      *
      * @param key the error key. This value is looked up in the
-     * IntactResources.properties bundle.
+     *            IntactResources.properties bundle.
      */
-    protected void addError(String key) {
-        myErrors.add(INTACT_ERROR, new ActionError(key));
+    protected void addError( String key ) {
+        myErrors.add( INTACT_ERROR, new ActionError( key ) );
     }
 
     /**
      * Adds an error with given key and value.
      *
-     * @param key the error key. This value is looked up in the
-     * IntactResources.properties bundle.
+     * @param key   the error key. This value is looked up in the
+     *              IntactResources.properties bundle.
      * @param value the value to substitute for the first place holder in the
-     * IntactResources.properties bundle.
+     *              IntactResources.properties bundle.
      */
-    protected void addError(String key, String value) {
+    protected void addError( String key, String value ) {
         myErrors.add( INTACT_ERROR, new ActionError( key, value ) );
     }
 
@@ -76,10 +84,9 @@ public class IntactBaseForm extends ActionForm {
      *
      * @return boolean false is there are any error registered, else true
      */
-    protected boolean isErrorsEmpty () {
+    protected boolean isErrorsEmpty() {
         return myErrors.isEmpty();
     }
-
 
     /**
      * Message managment
@@ -87,9 +94,10 @@ public class IntactBaseForm extends ActionForm {
 
     /**
      * return the error set
+     *
      * @return the error set
      */
-    protected ActionMessages getMessages () {
+    protected ActionMessages getMessages() {
         return myMessages;
     }
 
@@ -97,21 +105,21 @@ public class IntactBaseForm extends ActionForm {
      * Adds an error with given key.
      *
      * @param key the error key. This value is looked up in the
-     * IntactResources.properties bundle.
+     *            IntactResources.properties bundle.
      */
-    protected void addMessage (String key) {
+    protected void addMessage( String key ) {
         myMessages.add( INTACT_MESSAGE, new ActionMessage( key ) );
     }
 
     /**
      * Adds an error with given key and value.
      *
-     * @param key the error key. This value is looked up in the
-     * IntactResources.properties bundle.
+     * @param key   the error key. This value is looked up in the
+     *              IntactResources.properties bundle.
      * @param value the value to substitute for the first place holder in the
-     * IntactResources.properties bundle.
+     *              IntactResources.properties bundle.
      */
-    protected void addMessage (String key, String value) {
+    protected void addMessage( String key, String value ) {
         myMessages.add( INTACT_MESSAGE, new ActionMessage( key, value ) );
     }
 
@@ -120,7 +128,7 @@ public class IntactBaseForm extends ActionForm {
      *
      * @return boolean false is there are any error registered, else true
      */
-    protected boolean isMessagesEmpty () {
+    protected boolean isMessagesEmpty() {
         return myMessages.isEmpty();
     }
 
@@ -129,7 +137,7 @@ public class IntactBaseForm extends ActionForm {
      *
      * @param request the request to save errors.
      */
-    protected void saveMessages(HttpServletRequest request) {
+    protected void saveMessages( HttpServletRequest request ) {
         request.setAttribute( org.apache.struts.action.ActionMessages.GLOBAL_MESSAGE, getMessages() );
     }
 }

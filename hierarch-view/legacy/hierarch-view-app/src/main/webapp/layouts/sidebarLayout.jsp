@@ -1,12 +1,12 @@
-<%@ page language="java"%>
-<%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
+<%@ page language="java" %>
+<%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles" %>
 
 <!--
-    The layout for the side bar, which consists of intact logo, contents and the footer.
-    and menu.
+The layout for the side bar, which consists of intact logo, contents and the footer.
+and menu.
 
-    Author: Sugath Mudali (smudali@ebi.ac.uk)
-    Version: $Id$
+Author: Sugath Mudali (smudali@ebi.ac.uk)
+Version: $Id$
 -->
 
 <table width="100%" height="100%">

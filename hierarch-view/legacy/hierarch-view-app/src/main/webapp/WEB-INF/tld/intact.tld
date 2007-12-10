@@ -42,7 +42,7 @@
         <tag-class>uk.ac.ebi.intact.application.commons.struts.taglibs.SaveErrorsTag</tag-class>
         <body-content>empty</body-content>
         <description>
-                Save in the session scope any ActionErrors available in the request scope.
+            Save in the session scope any ActionErrors available in the request scope.
         </description>
     </tag>
 
@@ -51,8 +51,8 @@
         <tag-class>uk.ac.ebi.intact.application.commons.struts.taglibs.RestoreErrorsTag</tag-class>
         <body-content>empty</body-content>
         <description>
-                Restore in the request scope any errors saved in the session scope via
-                the tag saveErrors.
+            Restore in the request scope any errors saved in the session scope via
+            the tag saveErrors.
         </description>
     </tag>
 
@@ -61,7 +61,7 @@
         <tag-class>uk.ac.ebi.intact.application.commons.struts.taglibs.ClearErrorsTag</tag-class>
         <body-content>empty</body-content>
         <description>
-                Clear from the request scope (in pageRequest) any errors collected by struts.
+            Clear from the request scope (in pageRequest) any errors collected by struts.
         </description>
     </tag>
 
@@ -72,9 +72,9 @@
         <body-content>empty</body-content>
 
         <description>
-               Displays the IntAct documentation in a popup window.
-               If requensted, the ducumentation can directly show a
-               section.
+            Displays the IntAct documentation in a popup window.
+            If requensted, the ducumentation can directly show a
+            section.
         </description>
 
         <attribute>

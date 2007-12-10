@@ -36,20 +36,20 @@ public class ClickBehaviourForm extends IntactBaseForm {
 
     /**
      * Sets the action.
+     *
      * @param action the action for the form.
      */
-    public void setAction(String action) {
+    public void setAction( String action ) {
         actionName = action;
 
-        if (action.equals("center")) {
+        if ( action.equals( "center" ) ) {
             myAction = CENTER;
-        }
-        else if (action.equals("add")) {
+        } else if ( action.equals( "add" ) ) {
             myAction = ADD;
         }
     }
 
-    public String getAction () {
+    public String getAction() {
         return actionName;
     }
 

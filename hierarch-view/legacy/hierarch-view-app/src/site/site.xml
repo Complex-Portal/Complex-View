@@ -17,7 +17,7 @@
         </links>
 
         <menu name="Site">
-            <item name="Go Back Home" href="http://www.ebi.ac.uk/~intact/devsite" />
+            <item name="Go Back Home" href="http://www.ebi.ac.uk/~intact/devsite"/>
         </menu>
 
         ${reports}

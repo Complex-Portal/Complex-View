@@ -27,45 +27,45 @@ public class ImageDimension implements Serializable {
     /**
      * initialize all coordinate to zero
      */
-    public ImageDimension () {
+    public ImageDimension() {
         xmin = xmax = ymin = ymax = 0;
     }
 
     // ---------------------------------------------------------------- Accessors
-    public float length () { return xmax - xmin; }
+    public float length() { return xmax - xmin; }
 
-    public float height () { return ymax - ymin; }
+    public float height() { return ymax - ymin; }
 
-    public float xmin ()   { return xmin; }
+    public float xmin() { return xmin; }
 
-    public float ymin ()   { return ymin; }
+    public float ymin() { return ymin; }
 
     // ---------------------------------------------------------------- public methods
     /**
      * Widen the size if the new coordinate is out of the usable space.
      * After adding a set of points we should have obtain something like below.<br>
-     *     +-----------------------4-----+<br>
-     *     +                             +<br>
-     *     +        1 (x1,y1)            +<br>
-     *     +                             +<br>
-     *     +                             +<br>
-     *     +                             +<br>
-     *     +                             +<br>
-     *     5                             +<br>
-     *     +              6              2 (x2,y2)<br>
-     *     +                             +<br>
-     *     +                             +<br>
-     *     +                             +<br>
-     *     +------3----------------------+<br>
+     * +-----------------------4-----+<br>
+     * +                             +<br>
+     * +        1 (x1,y1)            +<br>
+     * +                             +<br>
+     * +                             +<br>
+     * +                             +<br>
+     * +                             +<br>
+     * 5                             +<br>
+     * +              6              2 (x2,y2)<br>
+     * +                             +<br>
+     * +                             +<br>
+     * +                             +<br>
+     * +------3----------------------+<br>
      *
      * @param x the X coordinate
      * @param y the Y coordinate
      */
-    public void adjust (float x, float y) {
-        if (x < xmin) xmin = x;
-        if (y < ymin) ymin = y;
-        if (x > xmax) xmax = x;
-        if (y > ymax) ymax = y;
+    public void adjust( float x, float y ) {
+        if ( x < xmin ) xmin = x;
+        if ( y < ymin ) ymin = y;
+        if ( x > xmax ) xmax = x;
+        if ( y > ymax ) ymax = y;
     }
 
 
@@ -73,28 +73,28 @@ public class ImageDimension implements Serializable {
      * Adjust width and height according to components size.
      * This is efficient only if node have already been set.<br>
      * <br>
-     *     +------------------+    ^ <br>
-     *     +                  +    | <br>
-     *     +        * (x,y)   +    | height <br>
-     *     +                  +    | <br>
-     *     +------------------+    - <br>
-     *  <br>
-     *     <----- width ------> <br>
+     * +------------------+    ^ <br>
+     * +                  +    | <br>
+     * +        * (x,y)   +    | height <br>
+     * +                  +    | <br>
+     * +------------------+    - <br>
+     * <br>
+     * <----- width ------> <br>
      *
-     * @param width width of the conponent
+     * @param width  width of the conponent
      * @param height height of the component
-     * @param x the X coordinate
-     * @param y the Y coordinate
+     * @param x      the X coordinate
+     * @param y      the Y coordinate
      */
-    public void adjustCadre (float width, float height, float x, float y) {
+    public void adjustCadre( float width, float height, float x, float y ) {
         float tmp = 0;
-        if ((tmp = x  - width/2) < xmin)
+        if ( ( tmp = x - width / 2 ) < xmin )
             xmin = tmp;
-        if ((tmp = x  + width/2) > xmax)
+        if ( ( tmp = x + width / 2 ) > xmax )
             xmax = tmp;
-        if ((tmp = y  - height/2) < ymin)
+        if ( ( tmp = y - height / 2 ) < ymin )
             ymin = tmp;
-        if ((tmp = y  + height/2) > ymax)
+        if ( ( tmp = y + height / 2 ) > ymax )
             ymax = tmp;
     }
 }

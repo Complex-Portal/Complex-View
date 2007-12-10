@@ -11,6 +11,7 @@ import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -31,9 +32,9 @@ public class OptionGenerator {
      *
      * @return a collection of LabelValueBean object
      */
-    public static ArrayList getHighlightmentSources() {
+    public static List<LabelValueBean> getHighlightmentSources() {
 
-        ArrayList sources = new ArrayList();
+        List<LabelValueBean> sources = new ArrayList<LabelValueBean>();
 
         // read the Highlighting.proterties file
         Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;
@@ -190,9 +191,9 @@ public class OptionGenerator {
      * @param anHighlightmentMethod
      * @return a collection of LabelValueBean object specific of an highlightment method
      */
-    public static ArrayList getAuthorizedBehaviour( String anHighlightmentMethod ) {
+    public static List<LabelValueBean> getAuthorizedBehaviour( String anHighlightmentMethod ) {
 
-        ArrayList behaviours = new ArrayList();
+        List<LabelValueBean> behaviours = new ArrayList<LabelValueBean>();
 
         // read the Highlighting.proterties file
         Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;

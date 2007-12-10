@@ -39,21 +39,21 @@ public class InteractionNetworkForm extends IntactBaseForm {
 
     /**
      * Sets the action.
+     *
      * @param action the action for the form. If this contains the word
-     * 'AC' then the search is by AC otherwise the search is by label.
+     *               'AC' then the search is by AC otherwise the search is by label.
      */
-    public void setAction(String action) {
+    public void setAction( String action ) {
         actionName = action;
 
-        if (action.equals("Expand")) {
+        if ( action.equals( "Expand" ) ) {
             myAction = EXPAND;
-        }
-        else if (action.equals("Contract")) {
+        } else if ( action.equals( "Contract" ) ) {
             myAction = CONTRACT;
         }
     }
 
-    public String getAction () {
+    public String getAction() {
         return actionName;
     }
 

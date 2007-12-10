@@ -17,7 +17,6 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Node;
-import uk.ac.ebi.intact.service.graph.binary.InteractorVertex;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +48,7 @@ public class DisplaySourceTag extends TagSupport {
         return SKIP_BODY;
     } // doStartTag
 
-    private Collection<CrossReference> getXRefFromCentralNodes( List<Node> centralNodes ) {
+    private Collection<CrossReference> getXRefFromCentralNodes( Network network ) {
         Collection<CrossReference> xRefs;
 
         /*
@@ -63,11 +62,11 @@ public class DisplaySourceTag extends TagSupport {
 
         xRefs = new ArrayList( 50 );
 
-        for ( Node centralNode : centralNodes ) {
+        for ( Node centralNode : network.getCentralNodes() ) {
             // reload interactor
             logger.debug( "Reloading node: " + centralNode.getId() );
 
-            Collection<CrossReference> xRefs2 = ( ( InteractorVertex ) centralNode ).getProperties();
+            Collection<CrossReference> xRefs2 = network.getProperties( centralNode );
             for ( CrossReference aXref : xRefs2 ) {
                 if ( !xRefs.contains( aXref ) ) {
                     xRefs.add( aXref );
@@ -104,7 +103,7 @@ public class DisplaySourceTag extends TagSupport {
                 logger.info( centrals.size() + " central protein(s) referenced in the interaction network." );
 
             // collect the xrefs from the central node
-            Collection<CrossReference> xRefs = getXRefFromCentralNodes( centrals );
+            Collection<CrossReference> xRefs = getXRefFromCentralNodes( in );
 
             String queryString = user.getQueryString();
             String method_class = user.getMethodClass();
