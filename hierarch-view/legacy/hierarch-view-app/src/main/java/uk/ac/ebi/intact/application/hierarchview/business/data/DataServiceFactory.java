@@ -44,6 +44,10 @@ public class DataServiceFactory {
             dataservice = new DataServiceMock();
         }
 
+        if ( source.equals( "local" ) ) {
+            dataservice = new LocalIndexDataSevice();
+        }
+
         if ( logger.isDebugEnabled() ) logger.debug( "Used data source=" + source );
 
         return dataservice;
