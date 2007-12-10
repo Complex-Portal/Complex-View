@@ -20,6 +20,7 @@ import uk.ac.ebi.intact.service.graph.Node;
 import uk.ac.ebi.intact.service.graph.binary.BinaryGraphNetwork;
 import uk.ac.ebi.intact.service.graph.binary.BinaryGraphNetworkBuilder;
 import uk.ac.ebi.intact.service.graph.binary.BinaryInteractionEdge;
+import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +33,22 @@ import java.util.Collection;
  */
 public class InteractionBasedMerger implements BinaryGraphNetworkMerger {
 
+    private LabelStrategy labelStrategy;
+
+
+    public InteractionBasedMerger (){
+
+    }
+
+    public LabelStrategy getLabelStrategy() {
+        return labelStrategy;
+    }
+
+    public void setLabelStrategy( LabelStrategy labelStrategy ) {
+        this.labelStrategy = labelStrategy;
+    }
+
+
     public BinaryGraphNetwork mergeGraphNetworks( BinaryGraphNetwork network1, BinaryGraphNetwork network2 ) {
 
         Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
@@ -43,7 +60,7 @@ public class InteractionBasedMerger implements BinaryGraphNetworkMerger {
             }
         }
         if (network1.getCentralNodes() != null) {
-            for ( Node node :network1.getCentralNodes()){
+            for ( Node node : network1.getCentralNodes()){
                 centralAcs.add(node.getId());
             }
         }
@@ -63,6 +80,7 @@ public class InteractionBasedMerger implements BinaryGraphNetworkMerger {
 
         if (!binaryInteractions.isEmpty()){
             BinaryGraphNetworkBuilder builder = new BinaryGraphNetworkBuilder();
+            builder.setLabelStrategy(labelStrategy);
             if (!centralAcs.isEmpty()) {
                 return builder.createGraphNetwork(binaryInteractions, centralAcs);
             } else {

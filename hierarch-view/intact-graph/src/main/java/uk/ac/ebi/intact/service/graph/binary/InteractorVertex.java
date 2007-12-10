@@ -17,12 +17,11 @@ package uk.ac.ebi.intact.service.graph.binary;
 
 import edu.uci.ics.jung.graph.impl.SimpleSparseVertex;
 import edu.uci.ics.jung.utils.UserData;
-import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.CrossReference;
 import psidev.psi.mi.tab.model.Interactor;
 import uk.ac.ebi.intact.service.graph.Node;
-import uk.ac.ebi.intact.service.graph.binary.label.IdentifierLabelBuilder;
-import uk.ac.ebi.intact.service.graph.binary.label.LabelBuilder;
+import uk.ac.ebi.intact.service.graph.binary.label.IdentifierLabelStrategy;
+import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +40,7 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
     private Collection<BinaryInteractionEdge> edges;
     private Collection<CrossReference> experimentalRole;
     private Collection<CrossReference> properties;
-    private LabelBuilder labelBuilder = new IdentifierLabelBuilder();
+    private LabelStrategy labelStrategy = new IdentifierLabelStrategy();
 
     private String nodeID;
 
@@ -92,8 +91,8 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         }        
     }
 
-    public void setLabelBuilder( LabelBuilder labelBuilder ) {
-        this.labelBuilder = labelBuilder;
+    public void setLabelBuilder( LabelStrategy labelStrategy ) {
+        this.labelStrategy = labelStrategy;
     }
 
     public boolean isCentralNode() {
@@ -136,7 +135,7 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
 
 
     public String getLabel() {
-        return labelBuilder.buildLabel( interactor, "intact");
+        return labelStrategy.buildLabel( interactor, "intact");
     }
 
     public Collection<String> getPropertiesIds(){

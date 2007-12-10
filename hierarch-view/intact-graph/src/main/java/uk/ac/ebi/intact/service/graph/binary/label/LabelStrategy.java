@@ -18,13 +18,13 @@ package uk.ac.ebi.intact.service.graph.binary.label;
 import psidev.psi.mi.tab.model.Interactor;
 
 /**
- * TODO comment that class header
+ * Strategy how to create a Label for a Node.
  *
  * @author Nadin Neuhauser
  * @version $Id$
  * @since 1.6.0-SNAPSHOT
  */
-public interface LabelBuilder {
+public interface LabelStrategy {
 
     String buildLabel( Interactor interactor, String database );
 

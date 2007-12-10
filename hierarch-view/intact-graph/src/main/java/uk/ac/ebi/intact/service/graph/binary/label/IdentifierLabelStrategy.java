@@ -25,7 +25,7 @@ import psidev.psi.mi.tab.model.Interactor;
  * @version $Id$
  * @since 1.6.0-Snapshot
  */
-public class IdentifierLabelBuilder implements LabelBuilder {
+public class IdentifierLabelStrategy implements LabelStrategy {
 
     /**
      * Picks the first Identifier of the Interactor

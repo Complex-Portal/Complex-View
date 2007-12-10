@@ -25,7 +25,7 @@ import psidev.psi.mi.tab.model.Interactor;
  * @version $Id$
  * @since 1.6.0-Snapshot
  */
-public class AliasLabelBuilder implements LabelBuilder {
+public class AliasLabelStrategy implements LabelStrategy {
 
     public String buildDefaultLabel( Interactor interactor ) {
 
@@ -48,8 +48,8 @@ public class AliasLabelBuilder implements LabelBuilder {
             return id;
 
         } else {
-            LabelBuilder builder = new IdentifierLabelBuilder();
-            return builder.buildDefaultLabel( interactor );
+            LabelStrategy strategy = new IdentifierLabelStrategy();
+            return strategy.buildDefaultLabel( interactor );
         }
     }
 

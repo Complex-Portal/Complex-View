@@ -21,7 +21,6 @@ import uk.ac.ebi.intact.service.graph.Edge;
 import java.util.List;
 
 import edu.uci.ics.jung.graph.impl.UndirectedSparseEdge;
-import edu.uci.ics.jung.graph.Vertex;
 
 /**
  * Implementation of Edge that stores the InteractorVertex
@@ -61,6 +60,10 @@ public class BinaryInteractionEdge extends UndirectedSparseEdge implements Edge<
 
     public BinaryInteraction getBinaryInteraction() {
         return binaryInteraction;
+    }
+
+    public List<Confidence> getConfidenceValues(){
+        return binaryInteraction.getConfidenceValues();
     }
 
     ////////////////////////////////////////////////////////

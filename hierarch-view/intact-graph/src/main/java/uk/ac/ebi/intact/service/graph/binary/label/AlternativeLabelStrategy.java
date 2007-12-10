@@ -25,7 +25,7 @@ import psidev.psi.mi.tab.model.Interactor;
  * @version $Id$
  * @since 1.6.0-Snapshot
  */
-public class AlternativeLabelBuilder implements LabelBuilder {
+public class AlternativeLabelStrategy implements LabelStrategy {
 
     public String buildDefaultLabel( Interactor interactor ) {
         return buildLabel( interactor, "uniprotkb");
@@ -53,8 +53,8 @@ public class AlternativeLabelBuilder implements LabelBuilder {
             }
             return id;
         } else {
-            LabelBuilder builder = new IdentifierLabelBuilder();
-            return builder.buildDefaultLabel( interactor );
+            LabelStrategy strategy = new IdentifierLabelStrategy();
+            return strategy.buildDefaultLabel( interactor );
         }
     }
 

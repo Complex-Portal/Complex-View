@@ -20,7 +20,7 @@ import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.Interactor;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
 import uk.ac.ebi.intact.service.graph.GraphException;
-import uk.ac.ebi.intact.service.graph.binary.label.LabelBuilder;
+import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
 
 import java.util.Collection;
 
@@ -33,17 +33,17 @@ import java.util.Collection;
  */
 public class BinaryGraphNetworkBuilder {
 
-    private LabelBuilder labelBuilder;
+    private LabelStrategy labelStrategy;
 
     public BinaryGraphNetworkBuilder() {
     }
 
-    public LabelBuilder getLabelBuilder() {
-        return labelBuilder;
+    public LabelStrategy getLabelStrategy() {
+        return labelStrategy;
     }
 
-    public void setLabelBuilder( LabelBuilder labelBuilder ) {
-        this.labelBuilder = labelBuilder;
+    public void setLabelStrategy( LabelStrategy labelStrategy ) {
+        this.labelStrategy = labelStrategy;
     }
 
     public BinaryGraphNetwork createGraphNetwork(Collection<BinaryInteraction> binaryInteractions,
@@ -61,13 +61,13 @@ public class BinaryGraphNetworkBuilder {
                 vertexA.setProperties(bi.getPropertiesA());
                 vertexA.setExperimentalRole(bi.getExperimentalRolesInteractorA());
                 if (centralProteinAcs != null && centralProteinAcs.contains(vertexA.getId())){
-                    graphNetwork.addCentralNode(vertexA);
+                    vertexA.setCentral(true);
                 }
 
                 vertexB.setProperties(bi.getPropertiesB());
                 vertexB.setExperimentalRole(bi.getExperimentalRolesInteractorB());
                 if (centralProteinAcs != null &&  centralProteinAcs.contains(vertexB.getId())){
-                    graphNetwork.addCentralNode(vertexB);
+                    vertexB.setCentral(true);
                 }
 
             } catch (ClassCastException e){
@@ -98,7 +98,7 @@ public class BinaryGraphNetworkBuilder {
 
     private InteractorVertex createVertex(Interactor interactor, BinaryGraphNetwork graph ) {
         InteractorVertex vertex = new InteractorVertex(interactor);
-        vertex.setLabelBuilder( labelBuilder );
+        vertex.setLabelBuilder( labelStrategy );
 
         InteractorVertex existingVertex = graph.findNode(vertex.getId());
 

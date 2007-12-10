@@ -21,12 +21,9 @@ public class BinaryGraphNetwork extends UndirectedSparseGraph implements GraphNe
     private Map<String, InteractorVertex> vertices;
     private Map<String, BinaryInteractionEdge> edges;
 
-    private HashSet<InteractorVertex> centralNodes;
-
     public BinaryGraphNetwork() {
         vertices = new HashMap<String, InteractorVertex>();
         edges = new HashMap<String, BinaryInteractionEdge>();
-        centralNodes =  new HashSet<InteractorVertex>();
     }
 
     public Collection<InteractorVertex> getNodes() {
@@ -58,15 +55,18 @@ public class BinaryGraphNetwork extends UndirectedSparseGraph implements GraphNe
         }
     }
 
-    void addCentralNode( InteractorVertex centralNode ) {
-        this.centralNodes.add(centralNode);
-    }
 
     public InteractorVertex findNode(String id) {
         return vertices.get(id);
     }
 
     public Collection<InteractorVertex> getCentralNodes() {
+        Collection<InteractorVertex> centralNodes = new HashSet<InteractorVertex>();
+        for (InteractorVertex node : getNodes()){
+            if (node.isCentralNode()){
+                centralNodes.add(node);
+            }
+        }
         return centralNodes;
     }
 
