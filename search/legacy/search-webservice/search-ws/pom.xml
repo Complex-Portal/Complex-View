@@ -79,11 +79,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>uk.ac.ebi.intact.core</groupId>
-            <artifactId>intact-persister</artifactId>
-        </dependency>
-
         <!-- JAX-WS -->
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
