@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * TODO comment this
+ * Test-class for the MatrixExpansion.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version
@@ -64,7 +64,6 @@ public class MatrixExpansionTest extends IntactBasicTestCase {
 
 		Assert.assertNotNull(interactions);
 		Assert.assertTrue(interactions.size() != complIntS.size());
-		//TODO: replace the fix nr '12' with a function
 		Assert.assertEquals(12, interactions.size());
 	}
 }

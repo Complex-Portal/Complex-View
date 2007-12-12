@@ -123,8 +123,16 @@ public class InteractionGenerator {
 		return interaction.getInteractors().size() == 2;
 	}
 
-	public List<InteractionSimplified> generate(int nr) {
-		List<InteractionSimplified> generated = new ArrayList<InteractionSimplified>(nr);
+    /**
+     *
+     * @param nr  : if nr<=0,  nr = high_confidences.size()
+     * @return
+     */
+    public List<InteractionSimplified> generate(int nr) {
+		if (nr<=0){
+            nr = highconf.size();
+        }
+        List<InteractionSimplified> generated = new ArrayList<InteractionSimplified>(nr);
 
 		Random random = new Random();
 

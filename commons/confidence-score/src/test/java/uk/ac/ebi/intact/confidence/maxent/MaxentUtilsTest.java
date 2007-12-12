@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.confidence.maxent;
 import opennlp.maxent.Context;
 import opennlp.maxent.GISModel;
 import opennlp.maxent.MutableContext;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
@@ -33,67 +34,94 @@ public class MaxentUtilsTest {
     @Test
     public void createModel() throws Exception {
 
-        File file = new File(MaxentUtilsTest.class.getResource("gameLocation.dat").getFile());
+        File file = new File( MaxentUtilsTest.class.getResource( "gameLocation.dat" ).getFile() );
 
-        GISModel model = MaxentUtils.createModel(new FileInputStream(file));
+        GISModel model = MaxentUtils.createModel( new FileInputStream( file ) );
 
-        System.out.println(model.getNumOutcomes());
+        System.out.println( model.getNumOutcomes() );
 
     }
 
     @Test
     public void writeModel() throws Exception {
 
-        File file = new File(MaxentUtilsTest.class.getResource("gameLocation.dat").getFile());
-        File outputFile = File.createTempFile("gameLocation", "out");
+        File file = new File( MaxentUtilsTest.class.getResource( "gisModel.txt" ).getFile() );
+        File outputFile = File.createTempFile( "gisModel", "out" );
 
-     //  file = new File(MaxentUtilsTest.class.getResource("confScore.txt").getFile());
+        //  file = new File(MaxentUtilsTest.class.getResource("confScore.txt").getFile());
 
-        GISModel model = MaxentUtils.createModel(new FileInputStream(file));
+        GISModel model = MaxentUtils.readModelFromFile( file);
 
-        MaxentUtils.writeModelToFile(model, outputFile);
+        MaxentUtils.writeModelToFile( model, outputFile );
 
-        System.out.println("\n\n==== OUTPUT =====\n\n");
+        System.out.println( "\n\n==== OUTPUT =====\n\n" );
 
-        printFile(outputFile);
+        printFile( outputFile );
 
-       String [] attrib = {"Sunny", "Happy", "Dry"};
-       double []  eval = model.eval( attrib);
-        System.out.println("for 'Sunny Happy Dry' =" + eval[0]);
-        String [] attribs = new String [0];
-        eval = model.eval(attribs);
-       System.out.println(" for '' =" + eval[0]);
+//        String[] attrib = {"Sunny", "Happy", "Dry"};
+//        double[] eval = model.eval( attrib );
+//        System.out.println( "for 'Sunny Happy Dry' =" + eval[0] );
+//        String[] attribs = new String[0];
+//        eval = model.eval( attribs );
+//        System.out.println( " for '' =" + eval[0] );
+//
+//        attrib = new String[]{"Sunny", "Sunny", "Happy", "Dry"};
+//        eval = model.eval( attrib );
+//        System.out.println( "for 'Sunny Sunny Happy Dry' =" + eval[0] );
     }
 
     @Test
-    public void writeParameters() throws Exception{
-        File file = new File(MaxentUtilsTest.class.getResource("gameLocation.dat").getFile());
-        File outputFile = File.createTempFile("gameLocation", "out");
+    public void writeParameters() throws Exception {
+        File file = new File( MaxentUtilsTest.class.getResource( "gisModel.txt" ).getFile() );
 
-       // file = new File(MaxentUtilsTest.class.getResource("confScore.txt").getFile());
+        GISModel model = MaxentUtils.readModelFromFile( file );
 
-        GISModel model = MaxentUtils.createModel(new FileInputStream(file));
-
-        Object [] structures = model.getDataStructures();
-        for (int i = 0; i<structures.length; i++){
-            System.out.println("data structure nr : " + i);
-            if (structures[i] instanceof MutableContext) {
-                Context con = (MutableContext) (structures[i]);
-                double [] p = con.getParameters();
+        Object[] structures = model.getDataStructures();
+        for ( int i = 0; i < structures.length; i++ ) {
+            System.out.println( "data structure nr : " + i );
+            if ( structures[i] instanceof MutableContext ) {
+                Context con = ( MutableContext ) ( structures[i] );
+                double[] p = con.getParameters();
             }
-            System.out.println(structures[i]);
-            System.out.println("nr outcomes: " + model.getNumOutcomes());
+            System.out.println( structures[i] );
+            System.out.println( "nr outcomes: " + model.getNumOutcomes() );
         }
     }
 
-    private static void printFile(File file) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+    private static void printFile( File file ) throws IOException {
+        BufferedReader reader = new BufferedReader( new FileReader( file ) );
 
         String line;
-        while ((line = reader.readLine()) != null)
-        {
-            System.out.println(line);
+        while ( ( line = reader.readLine() ) != null ) {
+            System.out.println( line );
         }
     }
 
+    @Test
+    public void testWriteReadeModel() throws Exception {
+        File file = new File (MaxentUtilsTest.class.getResource( "gameLocation.dat" ).getPath());
+        File outputFile = File.createTempFile( "gameLocation", "out" );
+        
+        GISModel model = MaxentUtils.createModel( new FileInputStream( file ) );
+
+        MaxentUtils.writeModelToFile( model, outputFile );
+
+        GISModel model2 = MaxentUtils.readModelFromFile( outputFile );
+        String[] attrib = {"Sunny", "Happy", "Dry"};
+        double[] eval = model.eval( attrib );
+        double[] eval2 = model2.eval( attrib );
+        Assert.assertEquals( eval[0], eval2[0] );
+        Assert.assertEquals( eval[1], eval2[1] );
+
+    }
+
+    @Test
+    public void testReadModel() throws Exception {
+        File gisModel = new File( MaxentUtilsTest.class.getResource( "gisModel.txt").getPath());
+        GISModel model = MaxentUtils.readModelFromFile( gisModel);
+        String[] attrib = {"Sunny", "Happy", "Dry"};
+        double[] eval = model.eval( attrib );
+        Assert.assertEquals(0.5,eval[0]);
+        Assert.assertEquals(0.5,eval[1]);
+    }
 }

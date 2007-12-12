@@ -18,14 +18,12 @@ import uk.ac.ebi.intact.core.unit.mock.MockIntactContext;
 import uk.ac.ebi.intact.core.unit.mock.MockInteractionDao;
 import uk.ac.ebi.intact.model.InteractionImpl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
- * Tests the IntActDb class
+ * Tests the IntActDb class.
  * 
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version
@@ -37,7 +35,7 @@ import java.util.*;
  */
 public class IntactDbRetrieverTest extends IntactBasicTestCase {
 
-	private HashSet<String>		acs;
+	private Set<String>		acs;
 	private IntactDbRetriever	intactdb;
 	private File				testDir;
 
@@ -48,7 +46,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	public void setUp() throws Exception {
 		acs = new HashSet<String>(Arrays.asList("EBI-987097", "EBI-446104", "EBI-79835", "EBI-297231", "EBI-1034130"));
 		testDir = GlobalTestData.getInstance().getTargetDirectory();
-		intactdb = new IntactDbRetriever(testDir.getPath(), new SpokeExpansion());
+		intactdb = new IntactDbRetriever(testDir, new SpokeExpansion());
 	}
 
 	/**
@@ -61,12 +59,13 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	/**
 	 * 
 	 */
-	// @Test
+	@Test
 	public final void testRead() {
 		List<InteractionSimplified> interactions = intactdb.read(acs);
 		Assert.assertEquals(acs.size(), interactions.size());
-
-		printout(interactions);
+        for (int i = 0; i <  interactions.size() ; i++){
+            Assert.assertTrue(acs.contains( interactions.get( i).getAc()));
+        }
 	}
 
 	@Test
@@ -83,15 +82,15 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 			long time = end - start;
 			System.out.println("time for intact retrieve in milis: " + time);
 
-			FileWriter fw2 = new FileWriter(new File(testDir.getPath(), "time.txt"));
+            checkOutput(file);
+
+            FileWriter fw2 = new FileWriter(new File(testDir.getPath(), "time.txt"));
 			fw2.write("time in milis: " + time);
 			fw2.close();
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new DataRetrieverException( e1);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DataRetrieverException( e);
 		}
 
 		DataMethods dm = new DataMethods();
@@ -99,13 +98,28 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 		try {
 			dm.export(interactionsMC, new FileWriter(new File(testDir.getPath(), "mc_test.txt")));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DataRetrieverException( e);
 		}
 		
 	}
 
-	@Test
+    private void checkOutput( File file ) {
+        try {
+            String regex = ".*;.*";
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line = "";
+            while((line =br.readLine()) != null ){
+                Assert.assertTrue(Pattern.matches(regex, line));
+            }
+        } catch ( FileNotFoundException e ) {
+            e.printStackTrace();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
 	@Ignore
 	public final void testReadMediumConf() throws DataRetrieverException {
 		MockIntactContext.initMockContext();
@@ -174,13 +188,6 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	// return super.getCvContext();
 	// }
 	// //getByLabel
-
-	private void printout(Collection<InteractionSimplified> expandedInteractions) {
-		for (InteractionSimplified item : expandedInteractions) {
-			System.out.print(item.getAc() + ": ");
-			printProtein(item);
-		}
-	}
 
 	private void printProtein(InteractionSimplified interaction) {
 		for (ProteinSimplified item : interaction.getInteractors()) {

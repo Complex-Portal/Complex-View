@@ -22,24 +22,11 @@ package uk.ac.ebi.intact.confidence.model;
  * @version $Id$
  * @since TODO specify the maven artifact version
  *        <pre>
- *                             29-Nov-2007
- *                             </pre>
+ *        12-Dec-2007
+ *        </pre>
  */
-public abstract class Id {
-    protected String id;
-
-    protected Id() {
-    }
-
-    abstract public String getId();
-
-    @Override
-    public boolean equals( Object obj ) {
-        if ( ( obj == null ) || ( obj.getClass() != this.getClass() ) ) {
-            return false;
-        }
-        Id oId = ( Id ) obj;
-        return id.equalsIgnoreCase( oId.getId() );
-    }
-
+public enum Confidence {
+    HIGH,
+    LOW,
+    UNKNOWN
 }

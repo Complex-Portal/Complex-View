@@ -13,33 +13,21 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.analyze;
-
-import uk.ac.ebi.intact.confidence.ProteinPair;
+package uk.ac.ebi.intact.confidence.model;
 
 /**
- * Class that parses attribute files
+ * TODO comment that class header
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
  * @since TODO specify the maven artifact version
  *        <pre>
- *        12-Nov-2007
+ *        30-Nov-2007
  *        </pre>
  */
-public class Parser {
-
-    public static void parseAttribLine(String line){
-        // line of the format : P31946;P33176,O60282;Q04917,IPR000308;IPR001752
-        // it does not check if the information makes sence aslong it is of the format .*;.*,{ .*;.*,}
-
-        String [] components = line.split(",");
-        String [] proteins = components[0].split(";");
-        ProteinPair pp = new ProteinPair(proteins[0], proteins[1]);
-        for(int i=1; i< components.length; i++){
-            String [] attrib = components[i].split(";");
-//            Attribute attribute = new IpPairAttribute(attrib[0], attrib[1]);
-        }
-    }
-    
+public enum ConfidenceType {
+    GO,
+    InterPRO,
+    Alignment,
+    ALL
 }

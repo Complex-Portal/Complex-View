@@ -56,7 +56,7 @@ public class GlobalTest {
 	public static void getConfidenceListsFromDb() {
 		HashMap<String, File> paths = GlobalTestData.getInstance().getRightPahts();
 		String tmpDirPath = paths.get("workDir").getPath() + "/IntactDbRetriever/"; //GlobalTestData.getInstance().getTargetDirectory().getPath() + "/IntactDbRetriever/";
-		IntactDbRetriever intactdb = new IntactDbRetriever(tmpDirPath, new SpokeExpansion());
+		IntactDbRetriever intactdb = new IntactDbRetriever(new File(tmpDirPath), new SpokeExpansion());
 		long start = System.currentTimeMillis();
 		
 		try {

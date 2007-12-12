@@ -65,7 +65,8 @@ public class BinaryInteractionSetTest {
 	@Test
     @Ignore
     public void Stat(){
-		String path =  "H:\\tmp\\ConfidenceModel\\highconf_all.txt";
+		String path ="E:\\tmp\\highconf_all.txt";
+        //"H:\\tmp\\ConfidenceModel\\highconf_all.txt";
         //"E:\\iarmean\\backupData\\05.11\\highconf_all.txt";
                 //"E:\\tmp\\ConfidenceModel\\IntactDbRetriever\\highconf_all.txt";
         //"E:\\iarmean\\backupData\\highconf_all.txt";
@@ -78,14 +79,15 @@ public class BinaryInteractionSetTest {
 			int nr = biS.getAllProtNames().size();
 			System.out.println("highconf prots : " + nr + " #int: " + biS.size());
 			
-			path =  "H:\\tmp\\ConfidenceModel\\medconf_all.txt";
-                    //"E:\\iarmean\\backupData\\05.11\\medconf_all.txt";
-			BinaryInteractionSet biS2 = new BinaryInteractionSet(path);
-			prots.addAll(biS2.getAllProtNames());
-			nr = biS2.getAllProtNames().size();
-			System.out.println("medconf prots : " + nr + " #int: " + biS2.size());
-			
-			path = "H:\\tmp\\ConfidenceModel\\lowconf_all.txt";
+//			path =  "H:\\tmp\\ConfidenceModel\\medconf_all.txt";
+//                    //"E:\\iarmean\\backupData\\05.11\\medconf_all.txt";
+//			BinaryInteractionSet biS2 = new BinaryInteractionSet(path);
+//			prots.addAll(biS2.getAllProtNames());
+//			nr = biS2.getAllProtNames().size();
+//			System.out.println("medconf prots : " + nr + " #int: " + biS2.size());
+//
+			path = "E:\\tmp\\lowconf_all.txt";
+                    //"H:\\tmp\\ConfidenceModel\\lowconf_all.txt";
                     //"E:\\tmp\\ConfidenceModel\\lowconf_all.txt";
 			BinaryInteractionSet biS3 = new BinaryInteractionSet(path);
 			prots.addAll(biS3.getAllProtNames());

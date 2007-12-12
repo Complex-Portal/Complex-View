@@ -14,10 +14,7 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
-import uk.ac.ebi.intact.confidence.model.GoId;
-import uk.ac.ebi.intact.confidence.model.InterProId;
-import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
-import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
 import uk.ac.ebi.intact.config.impl.AbstractHibernateDataConfig;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -34,7 +31,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * TODO comment this
+ * Class to retrieve the high confidence set from IntAct.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @since <pre>
@@ -54,11 +51,12 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
     private ExpansionStrategy expansionStrategy;
     private boolean dbNrForTest = false;
 
-    public IntactDbRetriever( String tmpDirPath, ExpansionStrategy expansion ) {
+    public IntactDbRetriever( File workDir, ExpansionStrategy expansion ) {
         daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
         dataMethods = new DataMethods();
-        workDir = new File( tmpDirPath, "IntactDbRetriever" );
-        workDir.mkdir();
+      //  workDir = new File( tmpDirPath, "IntactDbRetriever" );
+        this.workDir = workDir;
+       // workDir.mkdir();
         this.expansionStrategy = expansion;
     }
 
@@ -70,10 +68,10 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
      * @return List InteractionSimplified
      * @throws DataRetrieverException
      */
-    public void retrieveHighConfidenceSet( Writer w ) throws DataRetrieverException {
+    public int retrieveHighConfidenceSet( Writer w ) throws DataRetrieverException {
         if ( highConfidenceSet == null ) {
             try {
-                File file = new File( workDir.getAbsolutePath(), "mediumConfidence.txt" );
+                File file = new File( workDir.getPath(), "mediumConfidence.txt" );
                 FileWriter fw = new FileWriter( file );
                 readMediumConfidenceSet( null, fw );
                 fw.close();
@@ -83,6 +81,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                 throw new DataRetrieverException( e );
             }
         }
+        return highConfidenceSet.size();
     }
 
     /**
@@ -542,7 +541,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         }
         Collection<Xref> goRefs = AnnotatedObjectUtils.searchXrefs( protein, cvGo );
         for ( Xref xref : goRefs ) {
-            GoId go = new GoId( xref.getPrimaryId() );
+            GoIdentifierImpl go = new GoIdentifierImpl( xref.getPrimaryId() );
             proteinS.addGo( go );
         }
 
@@ -553,7 +552,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         }
         Collection<Xref> ipRefs = AnnotatedObjectUtils.searchXrefs( protein, cvIp );
         for ( Xref xref : ipRefs ) {
-            InterProId ip = new InterProId( xref.getPrimaryId() );
+            InterProIdentifierImpl ip = new InterProIdentifierImpl( xref.getPrimaryId() );
             proteinS.addInterProId( ip );
         }
 

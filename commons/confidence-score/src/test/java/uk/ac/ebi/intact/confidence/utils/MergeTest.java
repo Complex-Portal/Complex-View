@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.confidence.utils;
 
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 
@@ -61,5 +62,8 @@ public class MergeTest {
         }
         Assert.assertEquals(11, i);
     }
+
+    
+
 
 }

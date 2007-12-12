@@ -16,7 +16,9 @@
 package uk.ac.ebi.intact.confidence.maxent;
 
 import opennlp.maxent.*;
+import opennlp.maxent.io.GISModelReader;
 import opennlp.maxent.io.GISModelWriter;
+import opennlp.maxent.io.SuffixSensitiveGISModelReader;
 import opennlp.maxent.io.SuffixSensitiveGISModelWriter;
 
 import java.io.*;
@@ -55,6 +57,11 @@ public class MaxentUtils {
         GISModelWriter writer =
           new SuffixSensitiveGISModelWriter(model, outputFile);
         writer.persist();
+    }
+
+    public static GISModel readModelFromFile(File inputFile) throws IOException {
+        GISModelReader reader = new SuffixSensitiveGISModelReader(inputFile);
+        return reader.getModel();        
     }
    
     public static final double [] evaluate (GISModel model, String[] attribs){

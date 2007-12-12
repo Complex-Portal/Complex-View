@@ -32,13 +32,13 @@ public class ConfidenceModelMain {
 		String dbFolderPath = "E:\\dbFoder";
 		String email = "iarmean@ebi.ac.uk";
 		int nr = 20;
-		ConfidenceModel cm = new ConfidenceModel(dbFolderPath, uniprotPath,workDir, blastArchive, email, nr);
+		ConfidenceModelImpl cm = new ConfidenceModelImpl(dbFolderPath, uniprotPath,workDir, blastArchive, email, nr);
 		//cm.buildModel();
 		classify(cm);
 		System.out.println("Done.");
 	}
 	
-	private static void classify(ConfidenceModel cm){
+	private static void classify( ConfidenceModelImpl cm){
 		long start = System.currentTimeMillis();
 	//	cm.getConfidenceListsFromDb();
 		long aux1 = System.currentTimeMillis();

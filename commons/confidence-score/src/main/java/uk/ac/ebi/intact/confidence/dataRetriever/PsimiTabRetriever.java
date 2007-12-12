@@ -25,7 +25,7 @@ import psidev.psi.mi.xml.converter.ConverterException;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 
 /**
- * TODO comment this ... and also implement this class
+ * DataRetriever strategy out of a PSI- MI TAB file.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version  1.0
@@ -41,31 +41,29 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
 	private Collection<BinaryInteraction> binaryInts;
 	private List<InteractionSimplified> highConfidence;
 
-	public PsimiTabRetriever(File file, boolean hasHeaderLine){
+	public PsimiTabRetriever(File file, boolean hasHeaderLine) throws DataRetrieverException {
 		psimiTabReader = new PsimiTabReader(hasHeaderLine);
 		try {
 			binaryInts = psimiTabReader.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DataRetrieverException( e);
 		} catch (ConverterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DataRetrieverException( e);
 		}
 	}
 
-	public void retrieveHighConfidenceSet(Writer w) {
+	public int retrieveHighConfidenceSet(Writer w) throws DataRetrieverException {
 		if(highConfidence == null){
 			OutputStream os;
 			try {
 				os = new FileOutputStream("medConf.txt");
 				retrieveMediumConfidenceSet(new OutputStreamWriter(os));
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new DataRetrieverException( e);
 			}
 		}
-	}
+        return highConfidence.size();
+    }
 
 	public void retrieveMediumConfidenceSet(Writer w) {
 //			for (BinaryInteraction interaction : binaryInts) {

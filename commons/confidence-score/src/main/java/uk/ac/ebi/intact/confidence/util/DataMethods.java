@@ -15,10 +15,7 @@ import uk.ac.ebi.intact.confidence.attribute.AnnotationConstants;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
-import uk.ac.ebi.intact.confidence.model.GoId;
-import uk.ac.ebi.intact.confidence.model.InterProId;
-import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
-import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.confidence.model.*;
 
 import java.io.*;
 import java.util.*;
@@ -165,7 +162,7 @@ public class DataMethods implements AnnotationConstants {
       */
     private List<InteractionSimplified> getInteractions( String tmpDirPath, Set<String> ebiACs ) {
         ebiACs = checkFormat( ebiACs, true );
-        return ( new IntactDbRetriever( tmpDirPath, new SpokeExpansion() ) ).read( ebiACs );
+        return ( new IntactDbRetriever( new File(tmpDirPath), new SpokeExpansion() ) ).read( ebiACs );
     }
 
     /**
@@ -447,12 +444,12 @@ public class DataMethods implements AnnotationConstants {
             forbiddenGo.add( goTerm );
         }
 
-        Set<GoId> gos = proteinS.getGoSet();
+        Set<Identifier> gos = proteinS.getGoSet();
         String ac = proteinS.getUniprotAc().getAcNr();
         try {
             writer.append( ac + "," );
             if ( gos != null ) {
-                for ( GoId goId : gos ) {
+                for ( Identifier goId : gos ) {
                     if ( !forbiddenGo.contains( goId ) ) {
                         writer.append( goId + "," );
                     }
@@ -472,7 +469,7 @@ public class DataMethods implements AnnotationConstants {
     }
 
     private void exportInterPro( ProteinSimplified proteinS, Writer writer ) {
-        Set<InterProId> ips = proteinS.getInterProSet();
+        Set<Identifier> ips = proteinS.getInterProSet();
         if ( proteinS.getUniprotAc() == null ) {
             log.info( "protein withouth ac!: " + proteinS );
         }
@@ -480,7 +477,7 @@ public class DataMethods implements AnnotationConstants {
         try {
             writer.append( ac + "," );
             if ( ips != null ) {
-                for ( InterProId ipId : ips ) {
+                for ( Identifier ipId : ips ) {
                     writer.append( ipId + "," );
                 }
             }

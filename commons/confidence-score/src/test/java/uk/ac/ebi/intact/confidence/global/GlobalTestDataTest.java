@@ -59,4 +59,10 @@ public class GlobalTestDataTest {
 			e.printStackTrace();
 		}
 	}
+
+    @Test
+    public void testAllPipeline() throws Exception {
+        
+    }
+
 }

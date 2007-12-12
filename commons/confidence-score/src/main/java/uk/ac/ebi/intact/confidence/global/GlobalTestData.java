@@ -52,7 +52,7 @@ public class GlobalTestData {
 		return SingletonHolder.INSTANCE;
 	}
 
-	public File getTargetDirectory() {
+	public static File getTargetDirectory() {
 		String outputDirPath = GlobalTestData.class.getResource("/").getFile();
 		Assert.assertNotNull(outputDirPath);
 		File outputDir = new File(outputDirPath);

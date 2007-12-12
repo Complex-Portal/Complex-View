@@ -16,11 +16,16 @@
 package uk.ac.ebi.intact.confidence.maxent;
 
 import opennlp.maxent.GISModel;
+import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * TODO comment that class header
@@ -29,29 +34,43 @@ import java.io.FileNotFoundException;
  * @version $Id$
  * @since TODO specify the maven artifact version
  *        <pre>
- *               27-Nov-2007
- *               </pre>
+ *                      27-Nov-2007
+ *                      </pre>
  */
 public class OpenNLPMaxEntClassifier /*extends AbstractMaxEnt*/ {
     private GISModel model;
-    private File workDir;
 
-    public OpenNLPMaxEntClassifier( String hcSetPath, String lcSetPath, File workDir ) {
+    public OpenNLPMaxEntClassifier( File gisModel) throws IOException {
+        model = MaxentUtils.readModelFromFile( gisModel );
+    }
+
+    public OpenNLPMaxEntClassifier( String hcSetPath, String lcSetPath, File workDir ) throws IOException {
         File gisInput = new File( workDir, "gisInput.txt" );
         OpenNLP.createInput( hcSetPath, lcSetPath, gisInput.getPath() );
-        try {
-            model = MaxentUtils.createModel( new FileInputStream( gisInput ) );
-        } catch ( FileNotFoundException e ) {
-            e.printStackTrace();
-        }
+        model = MaxentUtils.createModel( new FileInputStream( gisInput ) );
     }
 
     public GISModel getModel() {
         return model;
     }
 
-    public double[] evaluate(String[] attributes){
-        return model.eval( attributes);
+    public double[] evaluate( List<Attribute> attributes ) {
+        String[] names = attributesNames( attributes );
+        return model.eval( names );
     }
 
+    private String[] attributesNames( List<Attribute> attributes ) {
+        Set<String> names = new HashSet<String>( attributes.size() );
+        for ( Iterator<Attribute> attrIter = attributes.iterator(); attrIter.hasNext(); ) {
+            Attribute attr = attrIter.next();
+            if (attr != null){
+                names.add( attr.toString() );
+            }
+        }
+        return names.toArray( new String[names.size()] );
+    }
+
+    public int getIndex( String type ) {
+        return model.getIndex( type );
+    }
 }

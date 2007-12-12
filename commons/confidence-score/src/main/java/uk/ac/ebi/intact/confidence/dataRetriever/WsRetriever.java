@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * TODO comment this ... and also implement this class
+ * DataRetriever strategy using the web service.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version
@@ -24,12 +24,13 @@ public class WsRetriever implements DataRetrieverStrategy {
 	 * Sets up a logger for that class.
 	 */
 	public static final Log				log	= LogFactory.getLog(WsRetriever.class);	
-	public void retrieveHighConfidenceSet(Writer w) {
-		// TODO Auto-generated method stub
-	}
+	public int retrieveHighConfidenceSet(Writer w) {
+		// TODO: implement method
+        return 0;
+    }
 
 	public void retrieveMediumConfidenceSet(Writer osw) {
-		// TODO Auto-generated method stub
+		// TODO: implement method
 		
 	}
 

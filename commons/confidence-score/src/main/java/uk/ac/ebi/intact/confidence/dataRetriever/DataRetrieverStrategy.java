@@ -22,7 +22,7 @@ public interface DataRetrieverStrategy {
 
 	// TODO: ask if there is not an elegant way to implement the rules for
 	// high confidence and low confidence sets at a global level
-	public void retrieveHighConfidenceSet(Writer w) throws DataRetrieverException;
+	public int retrieveHighConfidenceSet(Writer w) throws DataRetrieverException;
 	
 	/*
 	 * because it is a very high number of medium confidence interactions,

@@ -78,10 +78,10 @@ public class AlignmentFileMaker {
             // AlignmentFileMaker.class.getResource("doNotRemoveThis.file").getPath();
             // workDir = new File(getTargetDirectory(), "AlignmentFileMaker");
             // workDir.mkdir();
-        //    HashMap<String, File> paths = GlobalData.getRightPahts();// GlobalTestData.getInstance().getRightPahts();//getTargetDirectory();
+            //    HashMap<String, File> paths = GlobalData.getRightPahts();// GlobalTestData.getInstance().getRightPahts();//getTargetDirectory();
             // //
             // new
-         //   workDir = paths.get( "workDir" );
+            //   workDir = paths.get( "workDir" );
             // File(workDir.getParent());
         } else {
             this.workDir = new File( workingDirectory, "AlignmentFileMaker" );
@@ -136,6 +136,53 @@ public class AlignmentFileMaker {
 
         blast( proteinsS, new HashSet<ProteinSimplified>( 0 ), writer );
 
+    }
+
+    /**
+     * The results will be saved in the proteins objects as alignments.
+     *
+     * @param proteins        : set of proteins to be blasted
+     * @param againstProteins : proteins filtered in the blast result
+     * @throws BlastServiceException
+     */
+    public Set<ProteinSimplified> blast( Set<ProteinSimplified> proteins, Set<UniprotAc> againstProteins ) throws BlastServiceException {
+        if ( proteins == null || againstProteins == null ) {
+            throw new NullPointerException( "Params must not be null!" );
+        }
+        GlobalData.totalProts = proteins.size();
+        //TODO: make smth smarter than this
+        int nr = 20;
+
+        if ( proteins.size() < nr ) {
+            Set<ProteinSimplified> doneProteins = new HashSet<ProteinSimplified>();
+            while ( proteins.size() != 0 ) {
+                for ( Iterator<ProteinSimplified> iterator = proteins.iterator(); iterator.hasNext(); ) {
+                    ProteinSimplified prot = iterator.next();
+                    if ( log.isInfoEnabled() ) {
+                        log.info( "fetching " + prot );
+                    }
+                    BlastResult result = blast.fetchAvailableBlast( new UniprotAc( prot.getUniprotAc().getAcNr() ) );
+                    if ( result != null ) {
+                        processsResult( prot, result, againstProteins );
+                        if ( log.isInfoEnabled() ) {
+                            log.info( "processed: " + GlobalData.getCount() + " out of " + GlobalData.totalProts );
+                        }
+                        doneProteins.add( prot);
+                        iterator.remove();
+                    } else {
+                        //TODO: implement a way for the client not to wait
+                        //if (blast.okToSubmit( 1)) {}
+                        BlastInput bi = formatBlastInput( prot );
+                        BlastJobEntity job = blast.submitJob( bi );
+                        if ( log.isInfoEnabled() ) {
+                            log.info( "job submitted: " + job );
+                        }
+                    }
+                }
+            }
+           return doneProteins;
+        }
+        return null;
     }
 
     /**
@@ -196,7 +243,7 @@ public class AlignmentFileMaker {
 
         GlobalData.endTime = System.currentTimeMillis();
         long time = GlobalData.endTime - GlobalData.startTime;
-        if (log.isInfoEnabled()){
+        if ( log.isInfoEnabled() ) {
             log.info( "for " + GlobalData.getCount() + " prots: " + time );
             log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
         }
@@ -267,6 +314,33 @@ public class AlignmentFileMaker {
             }
         }
         return protNotIn;
+    }
+
+    private void processsResult( ProteinSimplified protein, BlastResult result, Set<UniprotAc> againstProteins ) {
+        GlobalData.increment( 1 );
+        if ( ( GlobalData.getCount() % 20 ) == 0 ) {
+            GlobalData.endTime = System.currentTimeMillis();
+            long time = GlobalData.endTime - GlobalData.startTime;
+            log.info( "for " + GlobalData.getCount() + " prots: " + ( ( time ) / 60000 ) );
+            log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+        }
+        for ( Hit hit : result.getHits() ) {
+            Float evalue = hit.getEValue();
+            String ac = hit.getUniprotAc();
+            if ( ac == null ) {
+                log.debug( "Ac is null, in a hit list!" + result.getUniprotAc() + ": " + hit );
+            }
+
+            // TODO: remove try/catch block after test
+            try {
+                UniprotAc uniprotAc = new UniprotAc( ac );
+                if ( evalue < threshold && againstProteins.contains( uniprotAc ) ) {
+                    protein.addAlignment( uniprotAc );
+                }
+            } catch ( IllegalArgumentException e ) {
+                log.debug( e.toString() + "\n" + " : " + evalue + ": " + ac );
+            }
+        }
     }
 
     private void processsResult( BlastResult result, Set<UniprotAc> againstProteins, Writer writer ) {
@@ -375,7 +449,7 @@ public class AlignmentFileMaker {
             blast.close();
         } catch ( BlastServiceException e ) {
             // TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+            e.printStackTrace();
+        }
+    }
 }

@@ -15,10 +15,13 @@
  */
 package uk.ac.ebi.intact.confidence.util;
 
+import uk.ac.ebi.intact.bridges.blast.BlastConfig;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
-import uk.ac.ebi.intact.confidence.attribute.Attribute;
+import uk.ac.ebi.intact.confidence.model.Attribute;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * TODO comment that class header
@@ -34,8 +37,8 @@ public interface AttributeGetter {
 
     public List<Attribute> fetchGoAttributes(ProteinPair proteinPair);
     public List<Attribute> fetchIpAttributes(ProteinPair proteinPair);
-    public List<Attribute> fetchAlignAttributes(ProteinPair proteinPair);
+    public List<Attribute> fetchAlignAttributes(ProteinPair proteinPair, Set<UniprotAc> againstProteins, BlastConfig blastConfig );
 
-    public List<Attribute> fetchAllAttributes(ProteinPair proteinPair);
+    public List<Attribute> fetchAllAttributes(ProteinPair proteinPair, Set<UniprotAc> againstProteins, BlastConfig blastConfig );
 
 }

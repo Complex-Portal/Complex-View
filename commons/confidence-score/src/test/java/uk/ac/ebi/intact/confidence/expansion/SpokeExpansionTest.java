@@ -21,7 +21,7 @@ import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.confidence.global.*;
 
 /**
- * TODO comment this
+ * Test-class for SpokeExpansion.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version
@@ -109,7 +109,6 @@ public class SpokeExpansionTest extends IntactBasicTestCase{
 
 		Assert.assertNotNull(interactions);
 		Assert.assertTrue(interactions.size() != complIntS.size());
-		//TODO: replace the fix nr '6' with a function
 		Assert.assertEquals(6, interactions.size());
 	}
 }

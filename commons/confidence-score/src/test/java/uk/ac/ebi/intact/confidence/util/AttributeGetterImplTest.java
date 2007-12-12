@@ -17,10 +17,13 @@ package uk.ac.ebi.intact.confidence.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.ac.ebi.intact.confidence.attribute.Attribute;
-import uk.ac.ebi.intact.confidence.model.GoId;
-import uk.ac.ebi.intact.confidence.model.Id;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+import uk.ac.ebi.intact.confidence.model.Attribute;
+import uk.ac.ebi.intact.confidence.model.GoIdentifierImpl;
+import uk.ac.ebi.intact.confidence.model.Identifier;
+import uk.ac.ebi.intact.confidence.utils.CombineToAttribs;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,17 +41,19 @@ import java.util.Set;
 public class AttributeGetterImplTest {
     @Test
     public void testCombine() throws Exception {
-        AttributeGetterImpl ag = new AttributeGetterImpl();
-        Set<Id> goA = new HashSet<Id>(3);
-        goA.add( new GoId("GO:0000001"));
-        goA.add( new GoId("GO:0000002"));
-        goA.add( new GoId("GO:0000003"));
-        Set<Id> goB = new HashSet<Id>(5);
-        goB.add( new GoId("GO:0000001"));
-        goB.add( new GoId("GO:0000002"));
-        goB.add( new GoId("GO:0000004"));
-        goB.add( new GoId("GO:0000005"));
-        List<Attribute> attrs = ag.combine(goA, goB);
+        File workDir = GlobalTestData.getInstance().getTargetDirectory();
+        AttributeGetterImpl ag = new AttributeGetterImpl(workDir);
+        Set<Identifier> goA = new HashSet<Identifier>(3);
+        goA.add( new GoIdentifierImpl("GO:0000001"));
+        goA.add( new GoIdentifierImpl("GO:0000002"));
+        goA.add( new GoIdentifierImpl("GO:0000003"));
+        Set<Identifier> goB = new HashSet<Identifier>(5);
+        goB.add( new GoIdentifierImpl("GO:0000001"));
+        goB.add( new GoIdentifierImpl("GO:0000002"));
+        goB.add( new GoIdentifierImpl("GO:0000004"));
+        goB.add( new GoIdentifierImpl("GO:0000005"));
+        List<Attribute> attrs = CombineToAttribs.combine( goA, goB);
+                //ag.combine(goA, goB);
         Assert.assertEquals( 9, attrs.size());
     }
 
