@@ -29,9 +29,11 @@ import uk.ac.ebi.intact.application.editor.struts.view.sequence.ProteinViewBean;
 import uk.ac.ebi.intact.application.editor.struts.view.sequence.SequenceViewBean;
 import uk.ac.ebi.intact.application.editor.struts.view.sm.SmallMoleculeViewBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
+import uk.ac.ebi.intact.application.editor.util.EditorIntactCloner;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
@@ -192,10 +194,14 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
         // The current view.
         AbstractEditViewBean view = user.getView();
 
+        // Clone
+        IntactCloner cloner = new EditorIntactCloner();
+
         // Get the original object for clone.
-        AnnotatedObjectImpl orig = (AnnotatedObjectImpl) view.syncAnnotatedObject();
-        // Clone it.
-        AnnotatedObjectImpl copy = (AnnotatedObjectImpl) orig.clone();
+        final AnnotatedObject orig = view.syncAnnotatedObject();
+
+        if (log.isDebugEnabled()) log.debug("Cloning: "+orig.getShortLabel()+" ("+orig.getAc()+")");
+        AnnotatedObject copy = cloner.clone(orig);
 
         // Release the lock first.
         getLockManager().release(view.getAc());

@@ -26,9 +26,8 @@
         Last modified: <i><%@ include file="../last-modified.txt" %></i>
         <br/>
         --%>
-        Version: <i><bean:message bundle="buildInfo" key="build.version"/></i>
-        <br/>
-        Core: <i><bean:message bundle="buildInfo" key="core.version"/></i>
+         Version: <i><bean:message bundle="buildInfo" key="build.version"/></i> (Core: <i><bean:message bundle="buildInfo" key="core.version"/></i>) -&nbsp;
+        Build: <bean:message bundle="buildInfo" key="buildNumber"/> (<bean:message bundle="buildInfo" key="builtBy"/>)
     </td>
     <td class="tableCell">
         <img border="0" align="right" src="<%=request.getContextPath()%>/images/struts-power.gif">
