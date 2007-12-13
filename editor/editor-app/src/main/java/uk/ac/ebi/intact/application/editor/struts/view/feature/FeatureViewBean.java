@@ -337,22 +337,6 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
         return false;
     }
 
-    // Override the super to persist others.
-    @Override
-    public void persistOthers(EditUserI user) throws IntactException {
-        try {
-            // persist the view.
-            persistCurrentView();
-            user.rollback(); //to end editing
-        }
-        catch (IntactException ie1) {
-            log.error("", ie1);
-            ie1.printStackTrace();
-            user.rollback();
-            // Rethrow the exception to be logged.
-            throw ie1;
-        }
-    }
 
     /**
      * Return the status (new or old) of the current feature.
@@ -439,6 +423,63 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
             feature.setCvFeatureType(featureType);
         }
         feature.setCvFeatureIdentification(getCvFeatureIndent());
+
+        // The sequence to set in Ranges.
+        Polymer polymer = (Polymer) getComponent().getInteractor();
+        if(polymer != null && polymer.getAc()!= null && (!"".equals(polymer.getAc()))){
+            InteractorDao interactorDao = (InteractorDao) DaoProvider.getDaoFactory(polymer.getClass());
+            polymer = (Polymer) interactorDao.getByAc(polymer.getAc());
+        }
+        String sequence = polymer.getSequence();
+
+        // Add new ranges.
+        log.debug("getRangesToAdd.size()" + getRangesToAdd().size());
+        for (RangeBean rangeBean : getRangesToAdd())
+        {
+            // Create the updated range.
+            Range range = rangeBean.getUpdatedRange();
+            //From the sequence of the protein, taking into account the caracteristics of the protein (cvFuzzyType,
+            //from interval start... the prepareSequence prepare and return the sequence that should be the range sequen-
+            //ce
+            sequence = range.prepareSequence(sequence);
+            // Set the sequence for the range.
+            range.setSequence(sequence);
+
+            if(getCorrespondingRange(feature, range) != null){
+                continue;
+            }
+            range.setFeature(feature);
+            feature.addRange(range);
+        }
+        setAnnotatedObject(feature);
+
+        // Delete ranges.
+        for (RangeBean rangeBean : getRangesToDel())
+        {
+            Range range = rangeBean.getRange();
+            Range correspondingRange = getCorrespondingRange(feature,range);
+            if(correspondingRange != null){
+               feature.removeRange(correspondingRange);
+               range.setFeature(null);
+            }
+        }
+
+        // Update existing ranges.
+        for (RangeBean myRangeToUpdate : myRangesToUpdate)
+        {
+            // Update the 'updated' range.
+            Range range = myRangeToUpdate.getUpdatedRange();
+            Range correspondingRange = getCorrespondingRange(feature,range);
+            if(correspondingRange == null){
+                range.setSequence(sequence);
+            }
+        }
+        setAnnotatedObject(feature);
+        // No need to test whether this 'feature' persistent or not because we
+        // know it has been already persisted by persist() call.
+        // Looks like we can do without this method call.
+//        user.update(feature);
+
 
         return feature;
     }
@@ -528,75 +569,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
 //        return CollectionUtils.subtract(myRangesToDel, common);
         return myRangesToDel;
     }
-    
-    private void persistCurrentView() throws IntactException {
-        // The helper to access persistence API.
-        FeatureDao featureDao = (FeatureDao) DaoProvider.getDaoFactory(Feature.class);
-        RangeDao rangeDao = DaoProvider.getDaoFactory().getRangeDao();
-        // The current feature.
-        Feature feature =  syncAnnotatedObject();
 
-        // The sequence to set in Ranges.
-        Polymer polymer = (Polymer) getComponent().getInteractor();
-        if(polymer != null && polymer.getAc()!= null && (!"".equals(polymer.getAc()))){
-            InteractorDao interactorDao = (InteractorDao) DaoProvider.getDaoFactory(polymer.getClass());
-            polymer = (Polymer) interactorDao.getByAc(polymer.getAc());
-        }
-        String sequence = polymer.getSequence();
-
-        // Add new ranges.
-        log.debug("getRangesToAdd.size()" + getRangesToAdd().size());
-        for (RangeBean rangeBean : getRangesToAdd())
-        {
-            // Create the updated range.
-            Range range = rangeBean.getUpdatedRange();
-            //From the sequence of the protein, taking into account the caracteristics of the protein (cvFuzzyType,
-            //from interval start... the prepareSequence prepare and return the sequence that should be the range sequen-
-            //ce
-            sequence = range.prepareSequence(sequence);
-            // Set the sequence for the range.
-            range.setSequence(sequence);
-
-            if(getCorrespondingRange(feature, range) != null){
-                continue;
-            }
-            range.setFeature(feature);
-            rangeDao.persist(range);
-            feature.addRange(range);
-            featureDao.saveOrUpdate(feature);
-        }
-        setAnnotatedObject(feature);
-         
-        // Delete ranges.
-        for (RangeBean rangeBean : getRangesToDel())
-        {
-            Range range = rangeBean.getRange();
-            Range correspondingRange = getCorrespondingRange(feature,range);
-            if(correspondingRange != null){
-               feature.removeRange(correspondingRange);
-               range.setFeature(null);
-               rangeDao.delete(correspondingRange);
-               featureDao.saveOrUpdate(feature);
-            }
-        }
-
-        // Update existing ranges.
-        for (RangeBean myRangeToUpdate : myRangesToUpdate)
-        {
-            // Update the 'updated' range.
-            Range range = myRangeToUpdate.getUpdatedRange();
-            Range correspondingRange = getCorrespondingRange(feature,range);
-            if(correspondingRange == null){
-                range.setSequence(sequence);
-                rangeDao.update(range);
-            }
-        }
-        setAnnotatedObject(feature);
-        // No need to test whether this 'feature' persistent or not because we
-        // know it has been already persisted by persist() call.
-        // Looks like we can do without this method call.
-//        user.update(feature);
-    }
 
     /**
      * Return the feature range corresponding to the searchedRange

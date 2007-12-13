@@ -91,6 +91,8 @@ public class InteractionDispatchAction extends CommonDispatchAction {
         // Add the current edited object to the recent list.
         view.addToRecentList(user);
 
+        view.reset();
+
         // Only show the submitted record.
         return mapping.findForward(RESULT);
     }

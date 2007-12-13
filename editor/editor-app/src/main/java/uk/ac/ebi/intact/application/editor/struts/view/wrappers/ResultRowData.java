@@ -51,7 +51,6 @@ public class ResultRowData {
      * @param annobj the Annotated object to represent a row
      */
     public ResultRowData(AnnotatedObject annobj) {
-
         this(annobj.getAc(), annobj.getShortLabel(), annobj.getFullName(), annobj.getCreator(), annobj.getUpdator(), annobj.getCreated(), annobj.getUpdated());
         myType = CgLibUtil.getDisplayableClassName(annobj.getClass());
     }

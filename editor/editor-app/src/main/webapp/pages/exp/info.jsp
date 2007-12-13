@@ -43,7 +43,8 @@
     </tr>
     <tr class="tableRowEven">
         <td class="tableCell">
-            <bean:write property="ac" name="expForm" filter="false"/>
+            <html:hidden property="ac" name="expForm"/>
+            <bean:write property="acLink" name="expForm" filter="false"/>
         </td>
         <td class="tableCell">
             <html:text property="shortLabel" size="20" maxlength="20" name="expForm"

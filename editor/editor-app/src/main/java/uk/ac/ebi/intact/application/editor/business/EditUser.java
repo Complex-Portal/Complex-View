@@ -549,11 +549,21 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
     }
 
     public void updateSearchCache(AnnotatedObject annotobj) {
-        // Clear previous results.
-        //mySearchCache.clear();
+        // remove the same object if already is in the list
+        for (Iterator<ResultRowData> resultRowDataIterator = mySearchCache.iterator(); resultRowDataIterator.hasNext();)
+        {
+            ResultRowData data =  resultRowDataIterator.next();
+            if (data.getAc().equals(annotobj.getAc())) {
+                resultRowDataIterator.remove();
+            }
+        }
+
+        // remove the last item if the maximum is reached
         if (mySearchCache.size() > MAX_RESULTS_IN_LIST) {
             mySearchCache.removeLast();
         }
+
+        // add the object at the beginning of the list
         mySearchCache.addFirst(new ResultRowData(annotobj));
     }
 

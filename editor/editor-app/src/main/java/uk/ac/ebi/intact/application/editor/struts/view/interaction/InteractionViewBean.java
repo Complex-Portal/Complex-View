@@ -23,11 +23,7 @@ import uk.ac.ebi.intact.application.editor.struts.view.feature.FeatureBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.core.persister.AbstractPersister;
-import uk.ac.ebi.intact.core.persister.PersisterException;
-import uk.ac.ebi.intact.core.persister.PersisterHelper;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.InteractionUtils;
 import uk.ac.ebi.intact.persistence.dao.*;
 
 import java.util.*;
@@ -179,50 +175,11 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
     }
 
 
-    // Override the super to persist others.
-    @Override
-    public void persistOthers(EditUserI user) throws IntactException {
-        Interaction interaction = getAnnotatedObject();
-
-        // First transaction for
-        try {
-            // persist the view.
-            persistCurrentView();
-//            user.endEditing(); //to end editing
-//        }
-//        catch (IntactException ie1) {
-//            log.error("", ie1);
-//            user.rollback();
-//            // Rethrow the exception to be logged.
-//            throw ie1;
-//        }
-//        // Need another transaction to delete features.
-//        try {
-//
-//            // persist the view in a second transaction
-            persistCurrentView2();
-
-//            try {
-//                PersisterHelper.saveOrUpdate(interaction);
-//            } catch (PersisterException e) {
-//                throw new IntactException("Problem persisting interaction: "+interaction.getShortLabel(), e);
-//            }
-
-            user.endEditing(); //to end editing
-
-        }
-        catch (IntactException ie1) {
-            log.error("", ie1);
-            user.rollback();
-            throw ie1;
-        }
-    }
-
     // Override the super method as the current interaction is added to the
     // recent interaction list.
     @Override
     public void addToRecentList(EditUserI user) {
-        InteractionRowData row = new InteractionRowData(syncAnnotatedObject());
+        InteractionRowData row = new InteractionRowData(getAnnotatedObject());
         user.addToCurrentInteraction(row);
     }
 
@@ -974,6 +931,31 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             intact.removeExperiment(exp);
         }
 
+
+
+         // Add experiments here. Make sure this is done after persisting the
+        // Interaction first. - IMPORTANT. don't change the order.
+        for (Iterator iter = getExperimentsToAdd().iterator(); iter.hasNext();) {
+            ExperimentRowData row = (ExperimentRowData) iter.next();
+            Experiment exp = null;
+            ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
+            if (row.getAc() != null){
+                log.debug("row ac is " + row.getAc());
+                exp = experimentDao.getByAc(row.getAc());
+            }
+            intact.addExperiment(exp);
+        }
+
+        // Delete components and remove it from the interaction.
+        deleteComponents(intact);
+
+        // Update components.
+        updateComponents(intact);
+
+        // Features
+        updateFeatures();
+
+
         return intact;
     }
 
@@ -1084,31 +1066,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         return CollectionUtils.subtract(myExperimentsToDel, common);
     }
 
-    private void persistCurrentView() throws IntactException {
-        // The current Interaction.
-        Interaction intact = getAnnotatedObject();
 
-        // Add experiments here. Make sure this is done after persisting the
-        // Interaction first. - IMPORTANT. don't change the order.
-        for (Iterator iter = getExperimentsToAdd().iterator(); iter.hasNext();) {
-            ExperimentRowData row = (ExperimentRowData) iter.next();
-            Experiment exp = null;
-            ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
-            if (row.getAc() != null){
-                log.debug("row ac is " + row.getAc());
-                exp = experimentDao.getByAc(row.getAc());
-            }
-            intact.addExperiment(exp);
-        }
-
-        // Delete components and remove it from the interaction.
-        deleteComponents(intact);
-
-        // Update components.
-        updateComponents(intact);
-    }
-
-    private void persistCurrentView2() throws IntactException {
+    private void updateFeatures() throws IntactException {
         FeatureDao featureDao = DaoProvider.getDaoFactory().getFeatureDao();
         // Keeps a track of Features to update. This avoids multiple updates to the
         // same feature.
@@ -1283,7 +1242,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
         // Update components.
         for(ComponentBean cb : myComponentsToUpdate){
-            cb.setInteraction(syncAnnotatedObject());
+            cb.setInteraction(intact);
 
             // Disconnect any links between features in the component which are
             disconnectLinkedFeatures(cb);
@@ -1330,29 +1289,34 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                 }
             }
 
+            if (comp != null) {
+                if(comp.getAc()!= null){
+                    log.debug("comp.getAc() =" + comp.getAc() + ".");
+                    Iterator<Component> compIterator = intact.getComponents().iterator();
+                    log.debug("intact.getComponents().size() =" + intact.getComponents().size());
+                    while(compIterator.hasNext()){
+                        Component component = compIterator.next();
 
-            if(comp.getAc()!= null){
-                log.debug("comp.getAc() =" + comp.getAc() + ".");
-                Iterator<Component> compIterator = intact.getComponents().iterator();
-                log.debug("intact.getComponents().size() =" + intact.getComponents().size());
-                while(compIterator.hasNext()){
-                    Component component = compIterator.next();
-                    
-                    if(comp.getAc().equals(component.getAc())){
-                        log.debug("Removing the component =" + comp.getAc());
-                        compIterator.remove();
+                        if(comp.getAc().equals(component.getAc())){
+                            log.debug("Removing the component =" + comp.getAc());
+                            compIterator.remove();
+                        }
                     }
                 }
+
+                intact.addComponent(comp);
+            } else {
+                throw new IllegalStateException("Component was null, whereas "+myComponentsToUpdate.size()+" components " +
+                                                "have been introduced by the user.");
             }
 
-            intact.addComponent(comp);
-
             //componentDao.saveOrUpdate(comp);
+            /*
             try {
                 PersisterHelper.saveOrUpdate(comp);
             } catch (PersisterException e) {
                 throw new IntactException("Problem updating component: "+comp.getAc(), e);
-            }
+            } */
 
 //            iterator.remove();
         }

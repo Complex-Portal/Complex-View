@@ -33,7 +33,8 @@
    </tr>
    <tr class="tableRowEven">
        <td class="tableCell">
-           <bean:write property="ac" name="smForm" filter="false"/>
+           <html:hidden property="ac" name="smForm"/>
+           <bean:write property="acLink" name="smForm" filter="false"/>
        </td>
        <td class="tableCell">
            <html:text property="shortLabel" size="20" maxlength="20" name="smForm"

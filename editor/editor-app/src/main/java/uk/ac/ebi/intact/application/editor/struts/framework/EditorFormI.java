@@ -47,6 +47,10 @@ public interface EditorFormI {
 
     String getAc();
 
+    void setAcLink(String acLink);
+
+    String getAcLink();
+
     void setAnnotations(List annotations);
 
     List getAnnotations();

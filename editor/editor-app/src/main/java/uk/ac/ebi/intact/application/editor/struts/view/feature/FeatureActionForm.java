@@ -176,6 +176,14 @@ public class    FeatureActionForm extends DispatchActionForm implements EditorFo
         return myDelegate.getAc();
     }
 
+    public void setAcLink(String acLink) {
+        myDelegate.setAcLink(acLink);
+    }
+
+    public String getAcLink() {
+        return myDelegate.getAcLink();
+    }
+
     public void setAnnotations(List annotations) {
         // No annotations for Feature
     }

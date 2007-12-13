@@ -68,6 +68,11 @@ public class EditorActionForm extends DispatchActionForm implements EditorFormI 
     private String myAc;
 
     /**
+     * Contains a link to the AC
+     */
+    private String myAcLink;
+
+    /**
      * The list of annotations.
      */
     private List myAnnotations;
@@ -160,6 +165,14 @@ public class EditorActionForm extends DispatchActionForm implements EditorFormI 
 
     public String getAc() {
         return myAc;
+    }
+
+    public String getAcLink() {
+        return myAcLink;
+    }
+
+    public void setAcLink(String acLink) {
+        this.myAcLink = acLink;
     }
 
     public void setAnnotations(List annotations) {

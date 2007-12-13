@@ -20,10 +20,10 @@ import uk.ac.ebi.intact.application.editor.struts.view.XreferenceBean;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.ComponentBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.PersisterException;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
-import uk.ac.ebi.intact.core.persister.AbstractPersister;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.*;
 import uk.ac.ebi.intact.persistence.util.CgLibUtil;
@@ -46,6 +46,8 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     // Ac of the object from which the clone was created. (this should be null when myAnnotObject is persistent and
     // not a clone).
     private String originalAc;
+
+    private String ac;
 
     // AnnotatedObject from which the clone was created, this should be null if myAnnotObject is persistent and
     // not a clone).
@@ -244,6 +246,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         myXrefs.clear();
 
         // Set them to null as they may have previous values.
+        setAc(null);
         setAnnotatedObject(null);
         setShortLabel(null);
         setFullName(null);
@@ -252,9 +255,6 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         setCreated(null);
         setUpdated(null);
         setOriginalAc(null);
-
-        // editclass is not set to null because passivateObject (EditViewBeanFactory)
-        // method relies on this value (key in the object pool).
     }
 
     /**
@@ -276,6 +276,11 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     public void reset(T annobj) {
         if (log.isDebugEnabled()) log.debug("Resetting view, with object: "+annobj.getShortLabel()+" ("+annobj.getAc()+")");
 
+        if (annobj.getAc() != null) {
+            annobj = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+                    .getAnnotatedObjectDao((Class<T>)annobj.getClass()).getByAc(annobj.getAc());
+        }
+        
         // no need to call it from here.
         setShortLabel(annobj.getShortLabel());
         setCreator(annobj.getCreator());
@@ -468,10 +473,14 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      * the current view is not persisted.
      */
     public final String getAc() {
-        if (myAnnotObject != null) {
-            return myAnnotObject.getAc();
+        if (ac == null && myAnnotObject != null && myAnnotObject.getAc() != null) {
+            ac = myAnnotObject.getAc();
         }
-        return null;
+        return ac;
+    }
+
+    public void setAc(String ac) {
+        this.ac = ac;
     }
 
     /**
@@ -819,19 +828,37 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     /**
      * Persists the current state to the persistent system. After this
      * method is called the persistent view is as same as the current view.
-     * @param user handler to access the persistent method calls.
      * @exception IntactException for errors in updating the persistent system.
      */
-    public void persist(EditUserI user) throws IntactException {
+    public void persist() {
+        // Persist my current state (this takes care of updating the wrapped
+        // object with values from the form).
+        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+        myAnnotObject = createAnnotatedObjectFromView();
+        populateAnnotatedObjectFromView();
+
         try {
-            persistCurrentView();
-            user.endEditing(); //to end editing
+            PersisterHelper.saveOrUpdate(myAnnotObject);
+        } catch (Exception e) {
+            throw new IntactException("Exception saving object: " + myAnnotObject.getShortLabel(), e);
         }
-        catch (IntactException ie1) {
-            user.rollback();
-            // Rethrow the exception to be logged.
-            throw ie1;
+
+        reset(myAnnotObject);
+
+        try {
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+        } catch (IntactTransactionException e) {
+            throw new IntactException("Problem during commit", e);
         }
+
+        // update the cvObject in the cvContext (application scope)
+        if (myAnnotObject instanceof CvObject) {
+            IntactContext.getCurrentInstance().getCvContext().updateCvObject((CvObject) myAnnotObject);
+            log.info("CvObject updated: " + myAnnotObject);
+        }
+
+
     }
 
     /**
@@ -870,7 +897,8 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      * @param form the form to copy properties to.
      */
     public void copyPropertiesTo(EditorFormI form) {
-        form.setAc(getAcLink());
+        form.setAc(getAc());
+        form.setAcLink(getAcLink());
         form.setShortLabel(getShortLabel());
 
         form.setFullName(getFullName());
@@ -1151,15 +1179,10 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     // Abstract method
 
     /**
-     * Gathers values in the view bean and updates the existing AnnotatedObject
-     * if it exists or create a new annotated object for the view and sets the
-     * annotated object.
-     * @throws IntactException for errors in searching the persistent system.
+     * Gathers values in the view bean and creates an AnnotatedObject from it
      *
-     * <pre>
-     * post: getAnnotatedObject() != null
-     * </pre> */
-    protected abstract T createAnnotatedObjectFromView() throws IntactException;
+     */
+    protected abstract T createAnnotatedObjectFromView();
 
     // Helper Methods
 
@@ -1320,12 +1343,9 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
     // Persist the current annotated object.
 
-    private void persistCurrentView() throws IntactException {
-        // First create/update the annotated object by the view.
-        myAnnotObject = createAnnotatedObjectFromView();
-
+    protected void populateAnnotatedObjectFromView() throws IntactException {
         // add the ac, from the view
-        if (getAc() != null) {
+        if (getAc() != null && myAnnotObject.getAc() == null) {
             myAnnotObject.setAc(getAc());
         }
 
@@ -1559,7 +1579,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         }
 
         try {
-            PersisterHelper.persisterFor(annotatedObject.getClass()).saveOrUpdate(annotatedObject);
+            PersisterHelper.saveOrUpdate(annotatedObject);
         } catch (PersisterException e) {
             throw new IntactException("Exception saving or updating object: "+annotatedObject.getShortLabel(), e);
         }

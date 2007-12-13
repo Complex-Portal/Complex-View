@@ -116,6 +116,8 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             // Add the current edited object to the recent list.
             view.addToRecentList(user);
 
+            view.reset();
+
             // Only show the submitted record.
             forward = mapping.findForward(RESULT);
         }
@@ -477,34 +479,8 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
         view.sanityCheck();
 
         try {
-            // Persist my current state (this takes care of updating the wrapped
-            // object with values from the form).
-            IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-            view.persist(user);
-
-            // Any other objects to persist in their own transaction.
-            view.persistOthers(user);
-
-            final AnnotatedObject annotatedObject = view.getAnnotatedObject();
-            try {
-                PersisterHelper.saveOrUpdate(annotatedObject);
-            } catch (Exception e) {
-                throw new IntactException("Exception saving object: " + annotatedObject.getShortLabel(), e);
-            }
-
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
-
-            // update the cvObject in the cvContext (application scope)
-            if (annotatedObject instanceof CvObject) {
-                IntactContext.getCurrentInstance().getCvContext().updateCvObject((CvObject) annotatedObject);
-                log.info("CvObject updated: " + annotatedObject);
-            }
-
-            // We reset the view with the saved interaction so that the ac are reset as well.
-            // !!!!BE CAREFULL !!!! when you reset the view all the isSelected boolean are reset to false, so you won't know anymore
-            // if something has been selected.
-            //AnnotatedObject annotatedObject = view.getAnnotatedObject();
-            view.reset(annotatedObject);
+            view.persist();
+            user.endEditing();
         }
         catch (IntactException ie) {
             // Log the stack trace.
@@ -527,9 +503,9 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             // Clear any left overs from previous transaction.
             view.clearTransactions();
 
-            IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getEntityManager().close();
         }
         // All are up todate except for AC which still can be null for a new object.
+        editForm.setAc(view.getAc());
         editForm.setAc(view.getAcLink());
 
         // We can't use mapping.getInputForward here as this return value

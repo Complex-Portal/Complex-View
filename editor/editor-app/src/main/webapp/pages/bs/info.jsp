@@ -45,7 +45,8 @@
     </tr>
     <tr class="tableRowEven">
         <td class="tableCell">
-            <bean:write property="ac" name="bsForm" filter="false"/>
+            <html:hidden property="ac" name="bsForm"/>
+            <bean:write property="acLink" name="bsForm" filter="false"/>
         </td>
 
         <td class="tableCell">
