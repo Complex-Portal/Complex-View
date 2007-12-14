@@ -28,25 +28,10 @@ public class EditorIntactCloner extends IntactCloner {
     public EditorIntactCloner() {
         setExcludeACs(true);
     }
-
-    @Override
-    public Experiment cloneExperiment(Experiment experiment) throws IntactClonerException {
-        return experiment; // they will be cleared
-    }
-
-    @Override
-    public Component cloneComponent(Component component) throws IntactClonerException {
-        return component; // they will be cleared
-    }
-
+    
     @Override
     public BioSource cloneBioSource(BioSource bioSource) throws IntactClonerException {
         return bioSource;
-    }
-
-    @Override
-    public CvObject cloneCvObject(CvObject cvObject) throws IntactClonerException {
-        return cvObject;
     }
 
     @Override
@@ -60,11 +45,6 @@ public class EditorIntactCloner extends IntactCloner {
         if (clone instanceof Interaction) {
             Interaction interaction = (Interaction)clone;
             interaction.getExperiments().clear();
-            interaction.getComponents().clear();
-
-//            if (interaction.getShortLabel().length() <= 18) {
-//                interaction.setShortLabel(interaction.getShortLabel()+"-x");
-//            }
         }
 
         if (ao == clone) {

@@ -158,7 +158,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         resetInteraction(copy);
 
         // Add cloned proteins as new proteins.
-        /*
+
         for (Component component : copy.getComponents())
         {
             ComponentBean cb = new ComponentBean();
@@ -167,7 +167,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             myComponents.add(cb);
             // The componen needs to be updated as well.
             myComponentsToUpdate.add(cb);
-        }    */
+        }
     }
 
 

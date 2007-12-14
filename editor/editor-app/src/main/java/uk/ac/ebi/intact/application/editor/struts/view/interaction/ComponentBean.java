@@ -20,6 +20,7 @@ import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
 import uk.ac.ebi.intact.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
@@ -426,7 +427,7 @@ public class ComponentBean extends AbstractEditKeyBean {
             // Add to the view.
             myFeatures.add(fb);
             // Features need to be added to the component.
-            myFeaturesToAdd.add(fb);
+            //myFeaturesToAdd.add(fb);
         }
     }
 
@@ -476,7 +477,11 @@ public class ComponentBean extends AbstractEditKeyBean {
         // The alias AC.
         CvObjectDao<CvAliasType> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvAliasType.class);
         String ac = cvObjectDao.getByXref(CvAliasType.GENE_NAME_MI_REF).getAc();
-        /*Query query*/Collection<InteractorAlias> aliases = qf.getGeneNameQuery(ac, myInteractor.getAc());
+        /*Query query*/Collection<InteractorAlias> aliases = new ArrayList<InteractorAlias>();
+
+        if (myInteractor.getAc() != null) {
+            aliases.addAll(qf.getGeneNameQuery(ac, myInteractor.getAc()));
+        }
 
         // The flag to say that we are processing the first gene name.
         boolean first = true;
@@ -548,8 +553,8 @@ public class ComponentBean extends AbstractEditKeyBean {
 
         if (idx > -1) {
             return label.substring(0, idx);
-        } else {
-            throw new IllegalArgumentException("Could not strip the -x from the label: "+label);
         }
+
+        return label;
     }
 }
