@@ -25,6 +25,9 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.PersisterException;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.ExperimentUtils;
+import uk.ac.ebi.intact.model.util.InteractionUtils;
+import uk.ac.ebi.intact.model.util.IllegalLabelFormatException;
 import uk.ac.ebi.intact.persistence.dao.*;
 import uk.ac.ebi.intact.persistence.util.CgLibUtil;
 
@@ -275,12 +278,13 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      */
     public void reset(T annobj) {
         if (log.isDebugEnabled()) log.debug("Resetting view, with object: "+annobj.getShortLabel()+" ("+annobj.getAc()+")");
-
+        /*
         if (annobj.getAc() != null) {
             annobj = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
                     .getAnnotatedObjectDao((Class<T>)annobj.getClass()).getByAc(annobj.getAc());
-        }
-        
+        }  */
+        setAc(annobj.getAc());
+
         // no need to call it from here.
         setShortLabel(annobj.getShortLabel());
         setCreator(annobj.getCreator());
@@ -312,15 +316,30 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         myAnnotations.clear();
         myXrefs.clear();
 
+        // reset creator
+        copy.setCreated(new Date());
+        copy.setCreator(user.getUserName().toUpperCase());
+
         // Set it with most likely next short label from the database.
         String newSL = null;
-        if(copy instanceof Component){
-            newSL = Component.NON_APPLICABLE;
-        }
-        newSL = user.getNextAvailableShortLabel(copy.getClass(),
-                                                       copy.getShortLabel());
-        setShortLabel(newSL);
 
+        if (copy instanceof Experiment) {
+            Experiment exp = (Experiment) copy;
+            String pubId = ExperimentUtils.getPubmedId(exp);
+            newSL = ExperimentUtils.syncShortLabelWithDb(exp.getShortLabel(), pubId);
+        } else if (copy instanceof Interaction) {
+            try {
+                newSL = InteractionUtils.syncShortLabelWithDb(copy.getShortLabel());
+            } catch (IllegalLabelFormatException e) {
+                e.printStackTrace();
+            }
+        } else if (copy instanceof Component) {
+            newSL = Component.NON_APPLICABLE;
+        } else {
+            newSL = copy.getShortLabel();
+        }
+
+        setShortLabel(newSL);
 
         // Add the annotations in the cloned as new annotations to add.
         Collection<Annotation> annotations = copy.getAnnotations();
@@ -844,13 +863,13 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             throw new IntactException("Exception saving object: " + myAnnotObject.getShortLabel(), e);
         }
 
-        reset(myAnnotObject);
-
         try {
             IntactContext.getCurrentInstance().getDataContext().commitTransaction();
         } catch (IntactTransactionException e) {
             throw new IntactException("Problem during commit", e);
         }
+
+        reset(myAnnotObject);
 
         // update the cvObject in the cvContext (application scope)
         if (myAnnotObject instanceof CvObject) {
@@ -1536,7 +1555,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         Collection<Xref> xrefs =  annotatedObject.getXrefs();
         String searchedAc = searchedXref.getAc();
         for( Xref xref : xrefs){
-            if(xref.getAc().equals(searchedAc)){
+            if(searchedAc != null && searchedAc.equals(xref.getAc())){
                 log.debug("We found an xref with the same ac");
                 xref.setPrimaryId(searchedXref.getPrimaryId());
                 xref.setSecondaryId(searchedXref.getSecondaryId());
@@ -1550,48 +1569,18 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         for( Xref xref : xrefs){
             if( !((xref.getPrimaryId() == null && searchedXref.getPrimaryId() == null) ||
                     (xref.getPrimaryId()!= null && xref.getPrimaryId().equals(searchedXref.getPrimaryId()))) ) {
-                continue;
             } else if( !((xref.getSecondaryId() == null && searchedXref.getSecondaryId() == null) ||
                     (xref.getSecondaryId()!= null && xref.getSecondaryId().equals(searchedXref.getSecondaryId()))) ) {
-                continue;
             }else if( !((xref.getCvDatabase() == null && searchedXref.getCvDatabase() == null) ||
                     (xref.getCvDatabase()!= null && xref.getCvDatabase().getAc().equals(searchedXref.getCvDatabase().getAc()))) ) {
-                continue;
             } else if( !((xref.getCvXrefQualifier() == null && searchedXref.getCvXrefQualifier() == null) ||
                     (xref.getCvXrefQualifier()!= null && xref.getCvXrefQualifier().getAc().equals(searchedXref.getCvXrefQualifier().getAc()))) ) {
-                continue;
             }else{
                 correspondingXref = xref;
                 break;
             }
         }
         return correspondingXref;
-    }
-
-    /**
-     * Persist myAnnotObject in the database if it does not have an ac, update it if it has an ac.
-     */
-    public void persistAnnotatedObject() {
-        final T annotatedObject = syncAnnotatedObject();
-
-        if (annotatedObject == null) {
-            throw new IllegalStateException("Trying to persist a null annotated object");
-        }
-
-        try {
-            PersisterHelper.saveOrUpdate(annotatedObject);
-        } catch (PersisterException e) {
-            throw new IntactException("Exception saving or updating object: "+annotatedObject.getShortLabel(), e);
-        }
-
-        /*
-     AnnotatedObjectDao annotatedObjectDao = DaoProvider.getDaoFactory(annotatedObject.getClass());
-
-     if( annotatedObject.getAc() != null ){
-         annotatedObjectDao.saveOrUpdate(annotatedObject);
-     }else{
-         annotatedObjectDao.persist(annotatedObject);
-     }   */
     }
 
     private void resetAnnotatedObject(T annobj) {

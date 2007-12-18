@@ -18,6 +18,10 @@ package uk.ac.ebi.intact.application.editor.util;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
+import uk.ac.ebi.intact.context.IntactContext;
+import org.joda.time.DateTime;
+
+import java.util.Date;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -45,6 +49,9 @@ public class EditorIntactCloner extends IntactCloner {
         if (clone instanceof Interaction) {
             Interaction interaction = (Interaction)clone;
             interaction.getExperiments().clear();
+        } else if (clone instanceof Experiment) {
+            Experiment experiment = (Experiment)clone;
+            experiment.getInteractions().clear();
         }
 
         if (ao == clone) {

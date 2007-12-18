@@ -158,6 +158,11 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
 
         getLockManager().acquire(view.getAc(),user.getUserName());
 
+        if (form instanceof EditorFormI) {
+            EditorFormI editForm = (EditorFormI)form;
+            view.copyPropertiesTo(editForm);
+        }
+
         return forward;
     }
 
