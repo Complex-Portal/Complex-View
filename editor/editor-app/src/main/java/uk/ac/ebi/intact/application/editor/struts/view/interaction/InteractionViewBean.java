@@ -1306,9 +1306,11 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                 }
 
                 // refresh interactor in component
-                Interactor interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
-                        .getInteractorDao().getByAc(comp.getInteractor().getAc());
-                comp.setInteractor(interactor);
+                if (comp.getInteractor().getAc() != null) {
+                    Interactor interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+                            .getInteractorDao().getByAc(comp.getInteractor().getAc());
+                    comp.setInteractor(interactor);
+                }
 
                 intact.addComponent(comp);
             } else {
