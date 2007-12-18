@@ -163,9 +163,9 @@ public class LockManager {
     public LockObject getLock(String id) {
         try {
             myRWLock.readLock().acquire();
-            for (Iterator iter = myLocks.iterator(); iter.hasNext();) {
-                LockObject lo = (LockObject) iter.next();
-                if (lo.getId().equals(id)) {
+            for (Object myLock : myLocks) {
+                LockObject lo = (LockObject) myLock;
+                if (lo != null && id.equals(lo.getId())) {
                     return lo;
                 }
             }
