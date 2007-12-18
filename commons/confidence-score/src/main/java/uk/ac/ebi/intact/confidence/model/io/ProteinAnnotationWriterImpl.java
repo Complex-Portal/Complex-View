@@ -42,6 +42,15 @@ public class ProteinAnnotationWriterImpl implements ProteinAnnotationWriter {
         writer.close();
     }
 
+    public void append( List<ProteinAnnotation> proteins, File outFile) throws IOException{
+        Writer writer = new FileWriter(outFile,true);
+        for ( Iterator<ProteinAnnotation> iterator = proteins.iterator(); iterator.hasNext(); ) {
+            ProteinAnnotation proteinAnnotation = iterator.next();
+            writer.append(proteinAnnotation.convertToString() + "\n");
+        }
+        writer.close();
+    }
+
     public void write( List<ProteinAnnotation> proteinAnnotations, File inFile ) throws IOException{
         Writer writer = new FileWriter(inFile);
         for ( Iterator<ProteinAnnotation> proteinAnnotationIterator = proteinAnnotations.iterator(); proteinAnnotationIterator.hasNext(); )

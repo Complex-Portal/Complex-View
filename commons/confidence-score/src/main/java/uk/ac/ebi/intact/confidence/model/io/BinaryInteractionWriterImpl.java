@@ -43,6 +43,14 @@ public class BinaryInteractionWriterImpl implements BinaryInteractionWriter {
         writer.close();
     }
 
+    public void append (List<BinaryInteraction> binaryInteractions, File outFile) throws IOException{
+        Writer writer = new FileWriter(outFile, true);
+        for ( Iterator<BinaryInteraction> iterator = binaryInteractions.iterator(); iterator.hasNext(); ) {
+            BinaryInteraction binaryInteraction = iterator.next();
+            writer.append( binaryInteraction.convertToString() + "\n");
+        }
+    }
+
     public void write( List<BinaryInteraction> binaryInteractions, File outFile ) throws IOException {
          Writer writer = new FileWriter(outFile);
         for ( Iterator<BinaryInteraction> interactionIterator = binaryInteractions.iterator(); interactionIterator.hasNext(); )

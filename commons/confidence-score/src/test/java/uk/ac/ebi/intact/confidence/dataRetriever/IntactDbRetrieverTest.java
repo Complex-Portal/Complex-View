@@ -56,7 +56,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	public void tearDown() throws Exception {
 	}
 
-	/**
+    /**
 	 * 
 	 */
 	@Test
@@ -70,7 +70,8 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 
 	@Test
 	public final void testReadConfidenceSets() throws DataRetrieverException {
-		File file = new File(testDir.getPath(), "medconf_test.txt");
+      //  testDir = new File ("E:\\Retrieve12");
+        File file = new File(testDir.getPath(), "medconf_test.txt");
 		try {
 
 			FileWriter fw = new FileWriter(file);
@@ -102,6 +103,17 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 		}
 		
 	}
+
+    @Test
+    public void testReadConfidencesFileFile() throws Exception {
+        File hcFile = new File( GlobalTestData.getTargetDirectory(), "hcFileTest.txt");
+        File mcFile = new File( GlobalTestData.getTargetDirectory(), "mcFileTest.txt");
+        intactdb.setDbNrForTest( true);
+        intactdb.readConfidences(hcFile, mcFile);
+        checkOutput(hcFile);
+        checkOutput(mcFile);
+    }
+
 
     private void checkOutput( File file ) {
         try {

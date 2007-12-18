@@ -42,6 +42,15 @@ public class GisAttributesWriterImpl implements BinaryInteractionAttributesWrite
         writer.close();
     }
 
+    public void append(List<BinaryInteractionAttributes> binrayInteractions, File outFile) throws IOException{
+        Writer writer = new FileWriter(outFile, true);
+        for ( Iterator<BinaryInteractionAttributes> iterator = binrayInteractions.iterator(); iterator.hasNext(); ) {
+             BinaryInteractionAttributes binaryInt =  iterator.next();
+             writer.append( gisLine( binaryInt) +"\n");             
+         }
+         writer.close();
+    }
+
     public void write( List<BinaryInteractionAttributes> binaryInteractionsWithAttributes, File outFile ) throws IOException {
         Writer writer = new FileWriter(outFile);
         for ( Iterator<BinaryInteractionAttributes> attrIter = binaryInteractionsWithAttributes.iterator(); attrIter.hasNext(); )

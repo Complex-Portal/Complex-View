@@ -37,7 +37,7 @@ public interface ProteinAnnotationReader {
 
     /**
      *
-     * @param inFile
+     * @param inFile : reads annotations andnot sequences into a Protein annotation object.
      * @return list of ProteinAnnotations : never null
      * @throws IOException
      */

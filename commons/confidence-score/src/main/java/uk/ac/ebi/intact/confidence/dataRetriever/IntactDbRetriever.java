@@ -15,6 +15,10 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
 import uk.ac.ebi.intact.confidence.model.*;
+import uk.ac.ebi.intact.confidence.model.io.CompactInteractionSWriterImpl;
+import uk.ac.ebi.intact.confidence.model.io.InteractionSimplifiedWriter;
+import uk.ac.ebi.intact.confidence.model.io.ProteinSimplifiedWriter;
+import uk.ac.ebi.intact.confidence.model.io.ProteinSimplifiedWriterImpl;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
 import uk.ac.ebi.intact.config.impl.AbstractHibernateDataConfig;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -61,7 +65,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
     }
 
     // //////////////////
-    // // Public Methods
+    // // Inherited method(s)
     /**
      * returns the list of the high confidence interactions
      *
@@ -94,6 +98,12 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         readMediumConfidenceSet( w, null );
     }
 
+    public void retrieveHighConfidenceSet( List<BinaryInteraction> binaryInts, List<ProteinAnnotation> annotations ){
+         //TODO: implement it
+    }
+
+     // //////////////////
+    // // Public method(s).
     /**
      * reads only the protein information(uniprotAc and sequence and role) out
      * of the DB
@@ -109,8 +119,6 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             ProteinSimplified proteinS = saveProteinInformation( protein );
             proteins.add( proteinS );
         }
-
-        closeDb();
 
         return proteins;
     }
@@ -134,8 +142,6 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             } else
                 log.debug( "interaction accession nr not found : " + ac );
         }
-
-        closeDb();
 
         return interactions;
     }
@@ -194,7 +200,6 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
         beginTransaction();
         totalNr = interactionDao.countAll();
-        commitTransaction();
         if ( log.isInfoEnabled() ) {
             log.info( "\tGoing to process: " + totalNr );
         }
@@ -214,8 +219,6 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             interactions = interactionDao.getAll( firstResult, maxResults );
 
             medconf = checkInteractions( interactions );
-
-            commitTransaction();
 
             if ( log.isInfoEnabled() ) {
                 log.info( "\t\tProcessed medium confidence " + medconf.size() );
@@ -270,8 +273,108 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         return medconf;
     }
 
+    public void readConfidences(File hcFile, File mcFile) throws IOException {
+        if ( hcFile.exists() ) {
+            hcFile.delete();
+        }
+        if ( mcFile.exists() ) {
+            mcFile.delete();
+        }
+
+        int totalNr = 0;
+        // only for test purpose
+
+        InteractionDao interactionDao = daoFactory.getInteractionDao();
+        totalNr = interactionDao.countAll();
+        if ( log.isInfoEnabled() ) {
+            log.info( "\tGoing to process: " + totalNr );
+        }
+
+        if ( dbNrForTest ) {
+            totalNr = 10; // TODO: ask it there is a more elegant way
+        }
+
+        int firstResult = 0;
+        final int maxResults = 50;
+
+        List<InteractionImpl> interactions = null;
+        for ( int i = 0; i < totalNr; i += 50 ) {
+             beginTransaction();
+            interactions = interactionDao.getAll( firstResult, maxResults );
+
+            process( interactions, hcFile, mcFile );
+            
+            if ( log.isInfoEnabled() ) {
+                int processed = firstResult + interactions.size();
+
+                if ( firstResult != processed ) {
+                    log.info( "\t\tProcessed " + ( firstResult + interactions.size() +" out of " + totalNr) );
+                }
+            }
+
+            firstResult = firstResult + maxResults;
+           endTransaction();
+        }
+        if (log.isInfoEnabled()){
+            log.info( "Processed " + totalNr + " IntAct interactions.");
+        }
+    }
+
+    private void endTransaction() {
+        try {
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+        } catch ( IntactTransactionException e ) {
+            throw new IntactException( e);
+        }
+    }
+
+    private void process( List<InteractionImpl> interactions, File hcFile, File mcFile ) throws IOException {
+        for ( Iterator<InteractionImpl> iterator = interactions.iterator(); iterator.hasNext(); ) {
+            InteractionImpl interaction =  iterator.next();
+             if ( isInteractionEligible( interaction ) ) {
+                if ( isHighConfidenceOrComplexes( interaction ) || isEnzymeOrFluorescenceRole( interaction ) ) {
+                    InteractionSimplified intS = saveInteractionInformation( interaction );
+                    // expand intS
+                    Collection<InteractionSimplified> intSsimpl = expansionStrategy.expand( intS);
+                    //outPut intS to hcFile
+                    outputData(intSsimpl, hcFile);
+                } else {
+                    InteractionSimplified intS = saveInteractionInformation( interaction );
+                    // expand intS
+                     Collection<InteractionSimplified> intSsimpl = expansionStrategy.expand( intS);
+                    //outPut intS to mcFile
+                    outputData(intSsimpl, mcFile);
+                }
+            }
+        }
+    }
+
     // ///////////////////
     // // Private Methods
+     private void outputData(Collection<InteractionSimplified> interactions, File outFile) throws IOException {
+        File goFile = new File( fileName( outFile ) + "_go.txt" );
+        File ipFile = new File( fileName( outFile ) + "_ip.txt" );
+        File seqFile = new File( fileName( outFile ) + "_seq.txt" );
+
+        InteractionSimplifiedWriter writer = new CompactInteractionSWriterImpl();
+        ProteinSimplifiedWriter protWriter = new ProteinSimplifiedWriterImpl();
+        for ( Iterator<InteractionSimplified> iterator = interactions.iterator(); iterator.hasNext(); ) {
+            InteractionSimplified interactionSimplified = iterator.next();
+            writer.append( interactionSimplified, outFile );
+            protWriter.appendGO( interactionSimplified.getComponents(), goFile );
+            protWriter.appendIp( interactionSimplified.getComponents(), ipFile );
+            protWriter.appendSeq( interactionSimplified.getComponents(), seqFile );
+        }
+    }
+
+    private String fileName(File outFile){
+        String fileName = outFile.getPath();
+        int i = fileName.lastIndexOf( ".");
+        fileName = fileName.substring( 0, i);
+        return fileName;
+    }
+
+
 
     private Set<UniprotAc> getUniprotAc( Set<ProteinSimplified> newProts ) {
         Set<UniprotAc> prots = new HashSet<UniprotAc>( newProts.size() );
@@ -294,23 +397,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         }
         return newProteins;
     }
-
-    private Set<ProteinSimplified> getProteinList( List<InteractionSimplified> medconf ) {
-        Set<ProteinSimplified> proteinList = new HashSet<ProteinSimplified>();
-        for ( InteractionSimplified interaction : medconf ) {
-            proteinList.addAll( interaction.getComponents() );
-        }
-        return proteinList;
-    }
-
-    private void commitTransaction() {
-        try {
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
-        } catch ( IntactTransactionException e ) {
-            throw new IntactException( e );
-        }
-    }
-
+    
     private void beginTransaction() {
         IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
@@ -375,7 +462,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                 // if the uniprotAc are marked for removal
                 if ( qualifierXref == null ) {
                     if ( log.isWarnEnabled() ) {
-                        log.warn( "interactor :" + interactor.getAc() + " db qualifier: " + qualifier.getAc() );
+                        log.warn( "qualifierXref is null for interactor :" + interactor.getAc() + " db qualifier: " + qualifier.getAc() );
                     }
                     return false;
                 }
@@ -557,38 +644,6 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         }
 
         return proteinS;
-    }
-
-    private void closeDb() {
-        try {
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
-        } catch ( IntactTransactionException e ) {
-            // If committing the transaction failed (ex : a shortlabel was
-            // longer
-            // then 20 characters), try to rollback.
-            try {
-                IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCurrentTransaction().rollback();
-            } catch ( IntactTransactionException e1 ) {
-                // If rollback was not successful do what you want :
-                // printStackTrace, throw Exception...
-                throw new IntactException( "Problem at commit time, couldn't rollback : ", e1 );
-            }
-            // If commit is it could not commit do what you want :
-            // printStackTrace, throw Exception...
-            throw new IntactException( "Problem at commit time, rollback done : ", e );
-        } finally {
-            // Committing the transaction close as well the session if
-            // everything
-            // goes fine but in case of an exception
-            // sent at commit time then the session would not be closed, so it's
-            // really important that you close it here
-            // otherwise you might get again this fishy connection and have very
-            // nasty bugs.
-            Session hibernateSession = getSession();
-            if ( hibernateSession.isOpen() ) {
-                hibernateSession.close();
-            }
-        }
     }
 
     private static Session getSession() {

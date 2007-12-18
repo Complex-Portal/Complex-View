@@ -36,5 +36,7 @@ public interface BinaryInteractionAttributesWriter {
 
     void append ( BinaryInteractionAttributes binaryInteractionAttributes, File outFile ) throws IOException;
 
+    void append(List<BinaryInteractionAttributes> binrayInteractions, File outFile) throws IOException;
+
     void write ( List<BinaryInteractionAttributes> binaryInteractionsWithAttributes, File outFile ) throws IOException;
 }

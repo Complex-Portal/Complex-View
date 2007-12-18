@@ -45,11 +45,11 @@ import java.util.Set;
  */
 public class InfoGatheringTest {
     @Test
-   // @Ignore
+    @Ignore
     public void testRetrieve() throws Exception {
         InfoGathering infoG = new InfoGathering( new SpokeExpansion());
         File workDir=  new File( GlobalTestData.getInstance().getTargetDirectory(), "InfoGatheringTest");
-        infoG.getConfidenceListsFromDb(workDir);
+       
     }
 
    

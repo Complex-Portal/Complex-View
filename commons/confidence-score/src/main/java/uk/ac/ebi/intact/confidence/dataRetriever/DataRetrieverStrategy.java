@@ -5,7 +5,11 @@
  */
 package uk.ac.ebi.intact.confidence.dataRetriever;
 
+import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
+import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+
 import java.io.Writer;
+import java.util.List;
 
 /**
  * Defines a data retrieving strategy
@@ -29,4 +33,7 @@ public interface DataRetrieverStrategy {
 	 * these will be persisted to a file
 	 */
 	public void retrieveMediumConfidenceSet(Writer w) throws DataRetrieverException;
+
+
+    public void retrieveHighConfidenceSet( List<BinaryInteraction> binaryInts, List<ProteinAnnotation> annotations );
 }

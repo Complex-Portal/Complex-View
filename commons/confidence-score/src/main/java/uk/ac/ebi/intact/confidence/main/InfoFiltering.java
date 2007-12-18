@@ -34,11 +34,11 @@ import java.util.Set;
  */
 public class InfoFiltering {
 
-    public void filterGO( Set<Identifier>gos){
+    public static void filterGO( Set<Identifier>gos){
         GoFilter.filterForbiddenGos( gos);
     }
 
-    public void filterBlastHits(Set<Identifier> uniprotAcs, File highConf){
+    public static void filterBlastHits(Set<Identifier> uniprotAcs, File highConf){
         // finlaize the filter
         BlastFilter.filterBlastHits( uniprotAcs, highConf);
     }

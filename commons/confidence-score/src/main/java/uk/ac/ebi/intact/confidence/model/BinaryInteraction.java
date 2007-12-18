@@ -72,4 +72,27 @@ public class BinaryInteraction {
     public String convertToString(){
         return firstId + ";" + secondId;
     }
+
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( !( o instanceof BinaryInteraction ) ) return false;
+
+        BinaryInteraction that = ( BinaryInteraction ) o;
+
+        if ( firstId != null ? !firstId.equals( that.firstId ) : that.firstId != null ) return false;
+        if ( secondId != null ? !secondId.equals( that.secondId ) : that.secondId != null ) return false;
+
+        if ( firstId != null ? !firstId.equals( that.secondId ) : that.firstId != null ) return false;
+        if ( secondId != null ? !secondId.equals( that.firstId ) : that.secondId != null ) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result;
+        result = ( firstId != null ? firstId.hashCode() : 0 );
+        result = 31 * result + ( secondId != null ? secondId.hashCode() : 0 );
+        result = 31 * result + ( confidence != null ? confidence.hashCode() : 0 );
+        return result;
+    }
 }

@@ -10,6 +10,7 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Iterator;
 
 /**
  * TODO comment this
@@ -31,6 +32,9 @@ public class ProteinSimplified {
     //// Constructors
     //
     public ProteinSimplified() {
+        goSet = new HashSet<Identifier>(0);
+        interProSet = new HashSet<Identifier>(0);
+        alignments = new HashSet<UniprotAc>(0);
     }
 
     public ProteinSimplified( UniprotAc uniprotAc ) {
@@ -124,6 +128,36 @@ public class ProteinSimplified {
         this.alignments.add( ac);
     }
 
+
+    public String convertToString(){
+        return this.getUniprotAc().getAcNr() + "-" + this.role;
+    }
+
+    public String convertGOAnnotationToString(){
+        String result = uniprotAc.getAcNr();
+        for ( Iterator<Identifier> identifierIterator = goSet.iterator(); identifierIterator.hasNext(); ) {
+            Identifier identifier = identifierIterator.next();
+            result +="," + identifier.getId();
+        }
+
+        return result;
+    }
+
+    public String convertIpAnnotationToString(){
+        String result = uniprotAc.getAcNr();
+        for ( Iterator<Identifier> identifierIterator = interProSet.iterator(); identifierIterator.hasNext(); ) {
+            Identifier identifier = identifierIterator.next();
+            result +="," + identifier.getId();
+        }
+
+        return result;
+    }
+
+    public String convertSeqAnnotationToFasta(){
+        String result = ">" + uniprotAc.getAcNr() +"|description\n";
+        result += seq.getSeq();
+        return result;
+    }
 
     // public Collection<String> getDomains() {
     // return domains;

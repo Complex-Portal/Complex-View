@@ -8,6 +8,7 @@ package uk.ac.ebi.intact.confidence.model;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Iterator;
 
 /**
  * TODO comment this
@@ -43,8 +44,18 @@ public class InteractionSimplified {
 	public List<ProteinSimplified> getComponents(){
 		return components;
 	}
-	
-	/* (non-Javadoc)
+
+    public String convertToString(){
+        StringBuilder result =new StringBuilder( ebiAc + ":");
+        for ( Iterator<ProteinSimplified> proteinSimplifiedIterator = components.iterator(); proteinSimplifiedIterator.hasNext(); )
+        {
+            ProteinSimplified proteinSimplified =  proteinSimplifiedIterator.next();
+            result.append( proteinSimplified.convertToString() +",");
+        }
+        return result.toString();
+    }
+
+    /* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

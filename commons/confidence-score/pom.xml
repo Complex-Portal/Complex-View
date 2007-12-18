@@ -125,7 +125,7 @@
               </dependency>
           -->
         <!-- for GainRatioEvalutaion of the attributes-->
-          <dependency>
+        <dependency>
            <groupId>weka</groupId>
            <artifactId>weka</artifactId>
            <version>3.4.11</version>

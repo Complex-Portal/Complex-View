@@ -35,7 +35,8 @@ import java.io.IOException;
 public interface ProteinAnnotationWriter {
 
     void append (ProteinAnnotation proteinAnnotation, File outFile ) throws IOException;
-    
-    void write ( List<ProteinAnnotation> proteinAnnotations, File outFile ) throws IOException;
 
+    void append( List<ProteinAnnotation> proteins, File outFile) throws IOException;
+
+    void write ( List<ProteinAnnotation> proteinAnnotations, File outFile ) throws IOException;
 }

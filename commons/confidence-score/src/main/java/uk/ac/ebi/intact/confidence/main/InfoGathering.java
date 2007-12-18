@@ -22,13 +22,15 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.attribute.GoFilter;
-import uk.ac.ebi.intact.confidence.dataRetriever.DataRetrieverException;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.main.exception.InfoGatheringException;
+import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 import uk.ac.ebi.intact.confidence.model.Identifier;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReaderImpl;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
 
 import java.io.File;
@@ -36,6 +38,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -60,14 +64,13 @@ public class InfoGathering {
 
     }
 
-   public void retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( File workDir) throws InfoGatheringException {
-      getConfidenceListsFromDb(workDir);
+   public void retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( File workDir) throws InfoGatheringException, IOException {
+       IntactDbRetriever intactdb = new IntactDbRetriever( workDir, expansion);
+       File hcFile = new File(workDir, "hc_set.txt");
+       File mcFile = new File(workDir, "lc_set.txt");
+       intactdb.readConfidences(hcFile, mcFile );
    }
-
-//    public void retrieveHighConfidenceSetSetWithAnnotations(File workDir){
-//        //TODO: make sure i do not need this method
-//   }
-
+    
     /**
      *
      * @param workDir : must contain a highconf_set.txt and a medconf_set.txt file
@@ -87,32 +90,6 @@ public class InfoGathering {
             e.printStackTrace();
         }
     }
-
-
-
-    public void getConfidenceListsFromDb(File workDir) throws InfoGatheringException {
-          IntactDbRetriever intactdb = new IntactDbRetriever( workDir, expansion );
-          long start = System.currentTimeMillis();
-
-          try {
-              File file = new File( workDir.getPath(), "medconf_all.txt" );
-              if ( log.isInfoEnabled() ) {
-                  log.info( "file MC: " + file.getPath() );
-              }
-              FileWriter fw = new FileWriter( file );
-              intactdb.retrieveMediumConfidenceSet( fw );
-              fw.close();
-          } catch ( IOException e ) {
-              throw new InfoGatheringException(e);
-          } catch ( DataRetrieverException e ) {
-              throw new InfoGatheringException( e);
-          }
-          long end = System.currentTimeMillis();
-          if ( log.isInfoEnabled() ) {
-              log.info( "time needed : " + ( end - start ) );
-          }
-      }
-
 
      protected File generateLowconf( File workDir, File inFile, int nr ) {
         DataMethods dm = new DataMethods();
@@ -213,16 +190,30 @@ public class InfoGathering {
            }
        }
     
-       public static void main(String[] args){
+       public static void main(String[] args) {
             // 1. InfoGathering
-        InfoGathering infoG = new InfoGathering( new SpokeExpansion());
-        File workDir =  new File ("E:\\tmp", "ConfMain");
-//        infoG.retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( workDir);
-        File fastaFile = new File("yeast fasta path in here");
-        File lcFile = infoG.retrieveLowConfidenceSet( workDir, fastaFile, -1);
-        if (lcFile != null){
-            infoG.retrieveLowConfidenceSetAnnotations( workDir, lcFile );
-        }
+           InfoGathering infoG = new InfoGathering( new SpokeExpansion() );
+           File workDir = new File( "E:\\tmp", "ConfMain" );
+           workDir.mkdir();
+           try {
+               infoG.retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( workDir );
+           } catch ( InfoGatheringException e ) {
+               e.printStackTrace();
+           } catch ( IOException e ) {
+               e.printStackTrace();
+           }
+
+//           BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
+//           File inFile = new File( workDir, "hc_set.txt" );
+//           //File inFile = new File("H:\\projects\\intact-current\\service\\commons\\confidence-score\\target\\test.txt");
+//           Set<BinaryInteraction> setInts = new HashSet<BinaryInteraction>(bir.read( inFile ));
+//           int lcNr = setInts.size();
+//
+//           File fastaFile = new File( "yeast fasta path in here" );
+//           File lcFile = infoG.retrieveLowConfidenceSet( workDir, fastaFile, lcNr );
+//           if ( lcFile != null ) {
+//               infoG.retrieveLowConfidenceSetAnnotations( workDir, lcFile );
+//           }
        }
 
 }

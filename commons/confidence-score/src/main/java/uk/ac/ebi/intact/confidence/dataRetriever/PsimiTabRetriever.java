@@ -23,6 +23,7 @@ import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.xml.converter.ConverterException;
 
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 
 /**
  * DataRetriever strategy out of a PSI- MI TAB file.
@@ -70,6 +71,10 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
 //				//TODO: ask Sam about the psimi model for the interaction
 //			}
 	}
-	
+
+    public void retrieveHighConfidenceSet( List<uk.ac.ebi.intact.confidence.model.BinaryInteraction> binaryInts, List<ProteinAnnotation> annotations ) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
 
 }

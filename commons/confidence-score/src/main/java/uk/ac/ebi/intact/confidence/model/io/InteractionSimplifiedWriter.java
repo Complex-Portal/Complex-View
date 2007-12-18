@@ -15,11 +15,11 @@
  */
 package uk.ac.ebi.intact.confidence.model.io;
 
-import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
+import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * TODO comment that class header
@@ -28,12 +28,14 @@ import java.util.List;
  * @version $Id$
  * @since TODO specify the maven artifact version
  *        <pre>
- *        11-Dec-2007
+ *        13-Dec-2007
  *        </pre>
  */
-public interface BinaryInteractionWriter {
-    void append ( BinaryInteraction binaryInteraction, File outFile ) throws IOException;
-    void append (List<BinaryInteraction> binaryInteractions, File outFile) throws IOException;
-    void write ( List<BinaryInteraction> binaryInteraction, File outFile ) throws IOException;
+public interface InteractionSimplifiedWriter {
 
+    void append ( InteractionSimplified interactionSimplified, File outFile ) throws IOException;
+
+    void append ( Collection<InteractionSimplified> interactions, File outFile) throws IOException;
+
+    void write ( Collection<InteractionSimplified> interactions, File outFile) throws IOException;
 }

@@ -6,21 +6,15 @@
 package uk.ac.ebi.intact.confidence.util;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
-import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.util.DataMethods;
-import uk.ac.ebi.intact.confidence.util.InteractionGenerator;
+import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
+
+import java.util.*;
 
 /**
  * TODO comment this
@@ -104,4 +98,38 @@ public class InteractionGeneratorTest extends IntactBasicTestCase{
 			System.out.println(out);
 		}
 	}
+
+    @Test
+    public void testGenerateNewObjectSt() throws Exception {
+        Set<Identifier> yeastProts = new HashSet<Identifier>();
+        Identifier id1 = new UniprotIdentifierImpl("P12345");
+        Identifier id2 = new UniprotIdentifierImpl("P12346");
+        Identifier id3 = new UniprotIdentifierImpl("P12347");
+        Identifier id4 = new UniprotIdentifierImpl("P12348");
+        Identifier id5 = new UniprotIdentifierImpl("P12349");
+        Identifier id6 = new UniprotIdentifierImpl("P12340");
+
+        yeastProts.add( id1);
+        yeastProts.add( id2);
+        yeastProts.add( id3);
+        yeastProts.add( id4);
+        yeastProts.add( id5);
+        yeastProts.add( id6);
+
+        List<BinaryInteraction> forbidden = new ArrayList<BinaryInteraction>();
+        forbidden.add( new BinaryInteraction(id1, id2, Confidence.HIGH));
+        forbidden.add( new BinaryInteraction( id1, id3, Confidence.HIGH));
+        forbidden.add( new BinaryInteraction( id1, id4, Confidence.UNKNOWN));
+        forbidden.add( new BinaryInteraction( id1, id5, Confidence.LOW));
+        forbidden.add( new BinaryInteraction( id1, id6, Confidence.LOW));
+
+        List<BinaryInteraction> generated = intGen.generate( yeastProts,forbidden, 2);
+        Assert.assertNotNull( generated); // should never be null
+        Assert.assertEquals(2, generated.size());
+        for(BinaryInteraction bi : generated){
+            Assert.assertFalse( forbidden.contains( bi));
+            Assert.assertFalse( bi.getFirstId().equals( id1));
+        }
+    }
+
 }

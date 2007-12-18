@@ -312,7 +312,7 @@ public class DataMethods implements AnnotationConstants {
         }
         return expanded;
     }
-
+    
     /**
      * Generates a random number of interactions that are not present in the
      * highconf, medconf or lowconf list. The random interactions are build out

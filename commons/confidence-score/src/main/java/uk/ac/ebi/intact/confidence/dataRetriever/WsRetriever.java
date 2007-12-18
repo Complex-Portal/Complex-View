@@ -6,9 +6,12 @@
 package uk.ac.ebi.intact.confidence.dataRetriever;
 
 import java.io.Writer;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
+import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 
 
 /**
@@ -33,5 +36,9 @@ public class WsRetriever implements DataRetrieverStrategy {
 		// TODO: implement method
 		
 	}
+
+    public void retrieveHighConfidenceSet( List<BinaryInteraction> binaryInts, List<ProteinAnnotation> annotations ) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 
 }

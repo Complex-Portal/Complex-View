@@ -27,11 +27,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * TODO comment that class header
+ * BinaryInteraction reader iterator.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 0.1
  *        <pre>
  *        12-Dec-2007
  *        </pre>

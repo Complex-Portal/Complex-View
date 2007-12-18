@@ -15,16 +15,19 @@
  */
 package uk.ac.ebi.intact.confidence.model;
 
+import uk.ac.ebi.intact.bridges.blast.model.Sequence;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * TODO comment that class header
+ * Protein class holding the protien data.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 0.1
  *        <pre>
  *        07-Dec-2007
  *        </pre>
@@ -32,6 +35,8 @@ import java.util.Iterator;
 public class ProteinAnnotation {
     private Identifier id;
     private Collection<Identifier> annotations;
+//    //TODO: reconsider if its good to have the sequence here (seq is ignored by reader/writer
+//    private Sequence sequence;
 
     public ProteinAnnotation(Identifier id){
         this.id = id;
@@ -49,6 +54,14 @@ public class ProteinAnnotation {
         return id;
     }
 
+//    public Sequence getSeqeunce(){
+//        return this.sequence;
+//    }
+//
+//    public void setSequence(Sequence seq){
+//        sequence = seq;
+//    }
+
     public Collection<Identifier> getAnnotations() {
           return annotations;
     }
@@ -63,6 +76,39 @@ public class ProteinAnnotation {
 
     public void removeAnnotation(Identifier annotation){
         annotations.remove( annotation);
+    }
+
+    public Collection<Identifier> getGOAnnotations(){
+        List<Identifier> gos = new ArrayList<Identifier>();
+        for ( Iterator<Identifier> iterator = annotations.iterator(); iterator.hasNext(); ) {
+            Identifier identifier = iterator.next();
+            if (identifier instanceof GoIdentifierImpl){
+                gos.add( identifier);
+            }
+        }
+        return gos;
+    }
+
+     public Collection<Identifier> getIpAnnotations(){
+        List<Identifier> ips = new ArrayList<Identifier>();
+        for ( Iterator<Identifier> iterator = annotations.iterator(); iterator.hasNext(); ) {
+            Identifier identifier = iterator.next();
+            if (identifier instanceof InterProIdentifierImpl){
+                ips.add( identifier);
+            }
+        }
+        return ips;
+    }
+
+     public Collection<Identifier> getBlastHitsAnnotations(){
+        List<Identifier> uniprotAcs = new ArrayList<Identifier>();
+        for ( Iterator<Identifier> iterator = annotations.iterator(); iterator.hasNext(); ) {
+            Identifier identifier = iterator.next();
+            if (identifier instanceof UniprotIdentifierImpl){
+                uniprotAcs.add( identifier);
+            }
+        }
+        return uniprotAcs;
     }
 
     public String convertToString() {
