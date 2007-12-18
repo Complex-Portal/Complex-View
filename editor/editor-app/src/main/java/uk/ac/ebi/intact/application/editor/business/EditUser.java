@@ -683,11 +683,11 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
     }
 
     public void addToCurrentExperiment(ExperimentRowData row) {
-        myCurrentExperiments.add(row);
+        if (row.getAc() != null) myCurrentExperiments.add(row);
     }
 
     public void removeFromCurrentExperiment(ExperimentRowData row) {
-        myCurrentExperiments.remove(row);
+        if (row.getAc() != null) myCurrentExperiments.remove(row);
     }
 
     public Set<ExperimentRowData> getCurrentExperiments() {
@@ -695,11 +695,11 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
     }
 
     public void addToCurrentInteraction(InteractionRowData row) {
-        myCurrentInteractions.add(row);
+        if (row.getAc() != null) myCurrentInteractions.add(row);
     }
 
     public void removeFromCurrentInteraction(InteractionRowData row) {
-        myCurrentInteractions.remove(row);
+        if (row.getAc() != null) myCurrentInteractions.remove(row);
     }
 
     public Set<InteractionRowData> getCurrentInteractions() {

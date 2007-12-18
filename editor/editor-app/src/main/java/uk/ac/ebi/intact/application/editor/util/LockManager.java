@@ -8,10 +8,8 @@ package uk.ac.ebi.intact.application.editor.util;
 
 import EDU.oswego.cs.dl.util.concurrent.ReadWriteLock;
 import EDU.oswego.cs.dl.util.concurrent.WriterPreferenceReadWriteLock;
-import org.apache.log4j.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
 
 import java.util.ArrayList;
 import java.util.Date;
