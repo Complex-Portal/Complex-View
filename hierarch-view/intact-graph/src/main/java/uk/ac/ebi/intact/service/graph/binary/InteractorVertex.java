@@ -125,7 +125,7 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         return isCentral;
     }
 
-    public boolean isBait_Experimental() {
+    public boolean isBaitWithExperimental() {
         if ( experimentalRoles != null && !experimentalRoles.isEmpty() ) {
             for ( CrossReference xref : experimentalRoles ) {
                 if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0496" ) ) {
@@ -136,7 +136,7 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         return false;
     }
 
-    public boolean isPrey_Experimental() {
+    public boolean isPreyWithExperimental() {
         if ( experimentalRoles != null && !experimentalRoles.isEmpty() ) {
             for ( CrossReference xref : experimentalRoles ) {
                 if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0498" ) ) {
@@ -147,7 +147,7 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         return false;
     }
 
-    public boolean isBait_Biological() {
+    public boolean isBaitWithBiological() {
         if ( biologicalRoles != null && !biologicalRoles.isEmpty() ) {
             for ( CrossReference xref : biologicalRoles ) {
                 if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0496" ) ) {
@@ -158,7 +158,7 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         return false;
     }
 
-    public boolean isPrey_Biological() {
+    public boolean isPreyWithBiological() {
         if ( biologicalRoles != null && !biologicalRoles.isEmpty() ) {
             for ( CrossReference xref : biologicalRoles ) {
                 if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0498" ) ) {
@@ -168,18 +168,6 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         }
         return false;
     }
-
-//    public boolean isNeutralComponent() {
-//        if ( experimentalRole != null && !experimentalRole.isEmpty() ) {
-//            for ( CrossReference xref : experimentalRole ) {
-//                if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0497" ) ) {
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-//    }
-
 
     public String getLabel() {
         return labelStrategy.buildLabel( interactor, "intact" );
