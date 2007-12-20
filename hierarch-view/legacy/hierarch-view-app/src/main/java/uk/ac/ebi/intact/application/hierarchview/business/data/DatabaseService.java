@@ -92,7 +92,6 @@ public class DatabaseService implements DataService {
                     i2t.setExpansionStrategy( new SpokeWithoutBaitExpansion() );
                     i2t.setPostProssesorStrategy( new ClusterInteractorPairProcessor() );
 
-
                     binaryInteractions = i2t.convert( interactions );
 
                     chrono.stop();
@@ -119,10 +118,11 @@ public class DatabaseService implements DataService {
         Chrono chrono = new Chrono();
         chrono.start();
 
-        centralProteins = new ArrayList<String>( HVNetworkBuilder.getMaxCentralProtein() );
+        centralProteins = new ArrayList<String>();
 
         Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
         Collection<Interactor> interactors = getInteractorByQuery( query );
+
 
         if ( interactors != null && !interactors.isEmpty() ) {
             for ( Interactor interactor : interactors ) {
@@ -154,6 +154,10 @@ public class DatabaseService implements DataService {
         }
         logger.info( msg );
 
+        if ( binaryInteractions.size() > HVNetworkBuilder.getMaxInteractions() ) {
+            throw new MultipleResultException( "Result of " + query + " get more than " + HVNetworkBuilder.getMaxInteractions() + " interactions." );
+        }
+
         return binaryInteractions;
     }
 
@@ -165,7 +169,7 @@ public class DatabaseService implements DataService {
      * @throws uk.ac.ebi.intact.business.IntactException
      *          in case of search error.
      */
-    private Collection<Interactor> getInteractorByQuery( String queryString ) throws MultipleResultException, ProteinNotFoundException {
+    private Collection<Interactor> getInteractorByQuery( String queryString ) throws ProteinNotFoundException {
 
         Collection results;
 
@@ -185,17 +189,9 @@ public class DatabaseService implements DataService {
             logger.debug( "Found " + results.size() + " interactors for SearchQuery=" + queryString );
         }
 
-        int maxInteractor = HVNetworkBuilder.getMaxCentralProtein();
         int interactorsFound = results.size();
-        int currentCount = 0;
-        if ( user.getInteractionNetwork() != null ) {
-            currentCount = user.getInteractionNetwork().getCentralNodes().size();
-        }
 
-        if ( ( interactorsFound + currentCount ) > maxInteractor ) {
-            logger.error( queryString + " gave us too many results (max set to " + maxInteractor + ")" );
-            throw new MultipleResultException();
-        } else if ( interactorsFound == 0 ) {
+        if ( interactorsFound == 0 ) {
             throw new ProteinNotFoundException();
         }
 

@@ -15,24 +15,22 @@
  */
 package uk.ac.ebi.intact.application.hierarchview.business.data;
 
+import psidev.psi.mi.search.SearchResult;
+import psidev.psi.mi.search.Searcher;
+import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.CrossReference;
-import psidev.psi.mi.tab.model.Alias;
-import psidev.psi.mi.search.Searcher;
-import psidev.psi.mi.search.SearchResult;
-
-import java.util.Collection;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.io.IOException;
-
+import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
+import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
-import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -58,31 +56,35 @@ public class LocalIndexDataSevice implements DataService {
         //return centralProts;
 
         if ( query.contains( ", " ) ) {
-                    for ( String q : query.split( "," ) ) {
-                        findCentralProteins( searchResult.getInteractions(), q.trim() );
-                    }
-                } else {
-                    findCentralProteins( searchResult.getInteractions(), query );
-                }
+            for ( String q : query.split( "," ) ) {
+                findCentralProteins( searchResult.getInteractions(), q.trim() );
+            }
+        } else {
+            findCentralProteins( searchResult.getInteractions(), query );
+        }
 
         return centralProteins;
 
     }
 
-    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString(String query) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
+    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
         this.query = query;
         try {
-            IntActSearchEngine searchEngine = new IntActSearchEngine("/ebi/sp/pro6/intact/public-tomcat/psimitab-index/psimitab-index-20071210");
-            this.searchResult = Searcher.search(query, searchEngine);
-        } catch (IOException e) {
-            e.printStackTrace();
+            IntActSearchEngine searchEngine = new IntActSearchEngine( "/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current" );
+            this.searchResult = Searcher.search( query, searchEngine );
+        } catch ( IOException e ) {
+            throw new HierarchViewDataException( "Could not find index-files" );
         }
 
-        return (Collection<BinaryInteraction>) searchResult.getInteractions();
+        if ( searchResult.getTotalCount() > HVNetworkBuilder.getMaxInteractions() ) {
+            throw new MultipleResultException( "Result of " + query + " get more than " + HVNetworkBuilder.getMaxInteractions() + " interactions." );
+        }
+
+        return ( Collection<BinaryInteraction> ) searchResult.getInteractions();
     }
 
     public Collection<CriteriaBean> getSearchCritera() {
-         return new SearchHelper().getSearchCritera();
+        return new SearchHelper().getSearchCritera();
     }
 
     public String getDbName() throws HierarchViewDataException {

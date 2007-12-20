@@ -59,10 +59,13 @@ public class BinaryWebService implements DataService {
     public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
         Chrono chrono = new Chrono();
         chrono.start();
-        centralProteins = new ArrayList<String>( HVNetworkBuilder.getMaxCentralProtein() );
+        centralProteins = new ArrayList<String>();
         Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
         SearchResult<IntActBinaryInteraction> result = client.findBinaryInteractions( query );
-        System.out.println( "query " + result.getLuceneQuery() );
+        if ( result.getTotalCount() > HVNetworkBuilder.getMaxInteractions() ) {
+            throw new MultipleResultException( "Result of " + query + " get more than " + HVNetworkBuilder.getMaxInteractions() + " interactions" );
+        }
+
         binaryInteractions.addAll( result.getInteractions() );
         if ( query.contains( ", " ) ) {
             for ( String q : query.split( "," ) ) {

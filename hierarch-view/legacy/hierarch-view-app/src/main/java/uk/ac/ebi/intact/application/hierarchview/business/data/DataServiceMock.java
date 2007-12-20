@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.application.hierarchview.business.data;
 import psidev.psi.mi.tab.PsimiTabReader;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.xml.converter.ConverterException;
-import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
@@ -50,7 +49,7 @@ public class DataServiceMock implements DataService {
     private final SearchHelperI searchHelper = new SearchHelper();
 
     public Collection<String> getCentralProteins() {
-        List<String> centralProteins = new ArrayList<String>( HVNetworkBuilder.getMaxCentralProtein() );
+        List<String> centralProteins = new ArrayList<String>();
         if ( query.equals( "brca2" ) ) {
             centralProteins.add( "EBI-1034100" );
             centralProteins.add( "EBI-79792" );
@@ -74,14 +73,14 @@ public class DataServiceMock implements DataService {
 
         try {
             File file = null;
-            System.out.println( "Query to Mock: " + query );
+
             if ( query.equals( "brca2" ) ) {
                 file = getFileByResources( "/test-files/brca2.txt", DataServiceMock.class );
             }
             if ( query.equals( "rad51" ) ) {
                 file = getFileByResources( "/test-files/rad51.txt", DataServiceMock.class );
             }
-            if ( query.equals( "EBI-359343, EBI-297202, EBI-1034100, EBI-79792, EBI-539895, EBI-297202" ) ) {
+            if ( query.equals( "EBI-359343, EBI-297202, EBI-79792, EBI-539895, EBI-297202" ) ) {
                 file = getFileByResources( "/test-files/brca2_expanded.txt", DataServiceMock.class );
             }
             PsimiTabReader reader = new PsimiTabReader( true );
