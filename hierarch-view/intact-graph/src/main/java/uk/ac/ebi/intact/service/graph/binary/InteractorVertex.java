@@ -26,6 +26,7 @@ import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 
 /**
@@ -38,44 +39,69 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
 
     private Interactor interactor;
     private Collection<BinaryInteractionEdge> edges;
-    private Collection<CrossReference> experimentalRole;
+    private Collection<CrossReference> experimentalRoles;
+    private Collection<CrossReference> biologicalRoles;
     private Collection<CrossReference> properties;
+    private List<CrossReference> interactorType;
     private LabelStrategy labelStrategy = new IdentifierLabelStrategy();
 
     private String nodeID;
 
     private boolean isCentral = false;
 
-     protected InteractorVertex(Interactor interactor) {
+
+    protected InteractorVertex( Interactor interactor ) {
         this.interactor = interactor;
         setId();
-        addUserDatum("id", getId(), UserData.SHARED);
+        addUserDatum( "id", getId(), UserData.SHARED );
     }
 
     public Collection<BinaryInteractionEdge> getEdges() {
-        if (edges == null) {
+        if ( edges == null ) {
             edges = new HashSet<BinaryInteractionEdge>();
         }
         return edges;
     }
 
-    public void setExperimentalRole( Collection<CrossReference> experimentalRole ) {
-        this.experimentalRole = experimentalRole;
+    public void setExperimentalRoles( Collection<CrossReference> experimentalRoles ) {
+        this.experimentalRoles = experimentalRoles;
+    }
+
+    public Collection<CrossReference> getExperimentalRoles() {
+        return experimentalRoles;
+    }
+
+    public void setBiologicalRoles( Collection<CrossReference> biologicalRoles ) {
+        this.biologicalRoles = biologicalRoles;
+    }
+
+    public Collection<CrossReference> getBiologicalRoles() {
+        return biologicalRoles;
     }
 
     public void setProperties( Collection<CrossReference> properties ) {
         this.properties = properties;
     }
 
+    public Collection<CrossReference> getProperties() {
+        return properties;
+    }
+
+    public void setInteractorType( List<CrossReference> interactorType ) {
+        this.interactorType = interactorType;
+    }
+
+
+    public List<CrossReference> getInteractorType() {
+        return interactorType;
+    }
+
     public void setCentral( boolean central ) {
         isCentral = central;
     }
 
-    public Collection<CrossReference> getProperties(){
-        return properties;
-    }
 
-    public String getId(){
+    public String getId() {
         return nodeID;
     }
 
@@ -86,9 +112,9 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
                 nodeID = id.getIdentifier();
             }
             if ( id.getDatabase().equals( "intact" ) ) {
-                nodeID =  id.getIdentifier();
+                nodeID = id.getIdentifier();
             }
-        }        
+        }
     }
 
     public void setLabelBuilder( LabelStrategy labelStrategy ) {
@@ -99,10 +125,10 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         return isCentral;
     }
 
-    public boolean isBait() {
-        if ( experimentalRole != null && !experimentalRole.isEmpty() ) {
-            for ( CrossReference xref : experimentalRole ) {
-                if ( xref.getDatabase().equals("MI") && xref.getIdentifier().equals("0496")) {
+    public boolean isBait_Experimental() {
+        if ( experimentalRoles != null && !experimentalRoles.isEmpty() ) {
+            for ( CrossReference xref : experimentalRoles ) {
+                if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0496" ) ) {
                     return true;
                 }
             }
@@ -110,10 +136,10 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         return false;
     }
 
-    public boolean isPrey() {
-        if ( experimentalRole != null && !experimentalRole.isEmpty() ) {
-            for ( CrossReference xref : experimentalRole ) {
-                if ( xref.getDatabase().equals("MI") && xref.getIdentifier().equals("0498")) {
+    public boolean isPrey_Experimental() {
+        if ( experimentalRoles != null && !experimentalRoles.isEmpty() ) {
+            for ( CrossReference xref : experimentalRoles ) {
+                if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0498" ) ) {
                     return true;
                 }
             }
@@ -121,10 +147,10 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         return false;
     }
 
-    public boolean isNeutralComponent() {
-        if ( experimentalRole != null && !experimentalRole.isEmpty() ) {
-            for ( CrossReference xref : experimentalRole ) {
-                if ( xref.getDatabase().equals("MI") && xref.getIdentifier().equals("0497")) {
+    public boolean isBait_Biological() {
+        if ( biologicalRoles != null && !biologicalRoles.isEmpty() ) {
+            for ( CrossReference xref : biologicalRoles ) {
+                if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0496" ) ) {
                     return true;
                 }
             }
@@ -132,16 +158,37 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
         return false;
     }
 
+    public boolean isPrey_Biological() {
+        if ( biologicalRoles != null && !biologicalRoles.isEmpty() ) {
+            for ( CrossReference xref : biologicalRoles ) {
+                if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0498" ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+//    public boolean isNeutralComponent() {
+//        if ( experimentalRole != null && !experimentalRole.isEmpty() ) {
+//            for ( CrossReference xref : experimentalRole ) {
+//                if ( xref.getDatabase().equals( "MI" ) && xref.getIdentifier().equals( "0497" ) ) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
 
     public String getLabel() {
-        return labelStrategy.buildLabel( interactor, "intact");
+        return labelStrategy.buildLabel( interactor, "intact" );
     }
 
-    public Collection<String> getPropertiesIds(){
-        Collection<String> propteriesIds = new ArrayList<String>(properties.size());
-        for ( CrossReference property : properties) {
-            propteriesIds.add(property.getIdentifier());
+    public Collection<String> getPropertiesIds() {
+        Collection<String> propteriesIds = new ArrayList<String>( properties.size() );
+        for ( CrossReference property : properties ) {
+            propteriesIds.add( property.getIdentifier() );
         }
 
         return propteriesIds;
@@ -152,12 +199,12 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+        if ( !super.equals( o ) ) return false;
 
-        InteractorVertex that = (InteractorVertex) o;
+        InteractorVertex that = ( InteractorVertex ) o;
 
         return !( interactor != null ? !interactor.equals( that.interactor ) : that.interactor != null );
 
@@ -166,12 +213,12 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (interactor != null ? interactor.hashCode() : 0);
+        result = 31 * result + ( interactor != null ? interactor.hashCode() : 0 );
         return result;
     }
 
     @Override
     public String toString() {
-        return getId()+getEdges();
+        return getId() + getEdges();
     }
 }

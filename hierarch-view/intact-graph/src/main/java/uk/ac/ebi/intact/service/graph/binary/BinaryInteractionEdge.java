@@ -66,6 +66,14 @@ public class BinaryInteractionEdge extends UndirectedSparseEdge implements Edge<
         return binaryInteraction.getConfidenceValues();
     }
 
+    public List<Author> getAuthors(){
+        return binaryInteraction.getAuthors();
+    }
+
+    public List<CrossReference> getPublication(){
+        return binaryInteraction.getPublications();
+    }
+
     ////////////////////////////////////////////////////////
     // Overriden methods
 

@@ -58,14 +58,18 @@ public class BinaryGraphNetworkBuilder {
             try {
                 IntActBinaryInteraction bi = (IntActBinaryInteraction) interaction;
 
-                vertexA.setProperties(bi.getPropertiesA());
-                vertexA.setExperimentalRole(bi.getExperimentalRolesInteractorA());
+                vertexA.setProperties(bi.getPropertiesA());                
+                vertexA.setExperimentalRoles(bi.getExperimentalRolesInteractorA());
+                vertexA.setBiologicalRoles( bi.getBiologicalRolesInteractorA() );
+                vertexA.setInteractorType(bi.getInteractorTypeA());
                 if (centralProteinAcs != null && centralProteinAcs.contains(vertexA.getId())){
                     vertexA.setCentral(true);
                 }
 
                 vertexB.setProperties(bi.getPropertiesB());
-                vertexB.setExperimentalRole(bi.getExperimentalRolesInteractorB());
+                vertexB.setExperimentalRoles(bi.getExperimentalRolesInteractorB());
+                vertexB.setBiologicalRoles( bi.getBiologicalRolesInteractorB());
+                vertexB.setInteractorType(bi.getInteractorTypeB());
                 if (centralProteinAcs != null &&  centralProteinAcs.contains(vertexB.getId())){
                     vertexB.setCentral(true);
                 }
