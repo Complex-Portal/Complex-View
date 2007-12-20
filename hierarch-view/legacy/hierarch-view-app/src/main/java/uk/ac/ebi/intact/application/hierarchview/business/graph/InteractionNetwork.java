@@ -339,7 +339,7 @@ public class InteractionNetwork implements Network {
                     addToReferenceList( key, role );
                     addToNodeHighlightMap( ROLE, key, node );
                 }
-                if ( vertex.isBait_Experimental() && vertex.isPrey_Experimental() ) {
+                if ( vertex.isBaitWithExperimental() && vertex.isPreyWithExperimental() ) {
                     String key = "E|" + Constants.BOTH;
                     addToReferenceList( key, factory.build( "MI", Constants.BOTH, Constants.BAIT + "&" + Constants.PREY ) );
                     addToNodeHighlightMap( ROLE, key, node );
@@ -358,7 +358,7 @@ public class InteractionNetwork implements Network {
                     addToReferenceList( key, role );
                     addToNodeHighlightMap( ROLE, key, node );
                 }
-                if ( vertex.isBait_Biological() && vertex.isPrey_Biological() ) {
+                if ( vertex.isBaitWithBiological() && vertex.isPreyWithBiological() ) {
                     String key = "B|" + Constants.BOTH;
                     addToReferenceList( key, factory.build( "MI", Constants.BOTH, Constants.BAIT + "&" + Constants.PREY ) );
                     addToNodeHighlightMap( ROLE, key, node );
