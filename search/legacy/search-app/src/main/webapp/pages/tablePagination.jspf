@@ -80,6 +80,12 @@ calculate the pages to render. The results per page is determined by SearchConst
                     urlWithoutPage = urlWithoutPage + "&searchClass=" + searchClassName;
                 }
             }
+        } else {
+            if (request.getParameter("searchClass") != null)
+                {
+                    searchClass = SearchClass.valueOfShortName(request.getParameter("searchClass"));
+                    urlWithoutPage = urlWithoutPage + "&searchClass=" + searchClass.getShortName();
+                }
         }
 
         // special case. When clicking on a page after looking a experiment, the search
