@@ -7,6 +7,7 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.behaviour;
 
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
+import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.Node;
 
 import java.util.Collection;
@@ -26,22 +27,38 @@ public class VisibleHighlightmentBehaviour extends HighlightmentBehaviour {
      * The aim of that behaviour is to display only se selected protein, so we
      * have to set the VISIBLE flag of all other proteins to false.
      *
-     * @param proteins the list of protein to highlight
-     * @param aGraph   the current interaction network
+     * @param objects the list of protein to highlight
+     * @param aGraph  the current interaction network
      * @return the new collection of protein to highlight
      */
-    public Collection<Node> modifyCollection( Collection proteins, Network aGraph ) {
+    public Collection<?> modifyCollection( Collection objects, Network aGraph ) {
 
-        /* Get the list of proteins in the current Network */
-        List<Node> listAllProteins = aGraph.getNodes();
+        if ( objects != null && !objects.isEmpty() ) {
+            Class objectClass = objects.iterator().next().getClass();
+            if ( objectClass.isAssignableFrom( Node.class ) ) {
+                /* Get the list of proteins in the current Network */
+                List<Node> listAllProteins = aGraph.getNodes();
+                /* Make a clone of the list */
+                Collection newList = listAllProteins;
+                /* Remove all proteins of the collection "proteins" */
+                newList.removeAll( objects );
 
-        /* Make a clone of the list */
-        Collection newList = listAllProteins;
+                return newList;
+            }
+            if ( objectClass.isAssignableFrom( Edge.class ) ) {
+                /* Get the list of edges in the current Network */
+                Collection<Edge> listAllEdges = aGraph.getEdges();
+                /* Make a clone of the list */
+                Collection newList = listAllEdges;
+                /* Remove all proteins of the collection "proteins" */
+                newList.removeAll( objects );
 
-        /* Remove all proteins of the collection "proteins" */
-        newList.removeAll( proteins );
+                return newList;
+            }
+        }
+        logger.error( "Collection which should be modified is null or empty!" );
+        return objects;
 
-        return newList;
     }
 
 
@@ -49,11 +66,16 @@ public class VisibleHighlightmentBehaviour extends HighlightmentBehaviour {
      * Apply the implemented behaviour to the specific Node of the graph.
      * Here, we change the visibility to false for the given node.
      *
-     * @param aProtein the node on which we want to apply the behaviour
+     * @param aObject the node on which we want to apply the behaviour
      */
-    public void applyBehaviour( Node aProtein, Network aGraph ) {
-        aGraph.getNodeAttributes( aProtein ).put( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );
-        //aProtein.put(Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE);
+    public void applyBehaviour( Object aObject, Network aGraph ) {
+
+        if ( Node.class.isInstance( aObject ) ) {
+            aGraph.getNodeAttributes( ( Node ) aObject ).put( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );
+        }
+        if ( Edge.class.isInstance( aObject ) ) {
+            aGraph.getEdgeAttributes( ( Edge ) aObject ).put( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );
+        }
     }
 }
 

@@ -8,7 +8,6 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.behaviour;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
-import uk.ac.ebi.intact.service.graph.Node;
 
 import java.util.Collection;
 
@@ -66,9 +65,9 @@ public abstract class HighlightmentBehaviour {
     /**
      * Apply the implemented behaviour to the specific Node of the graph
      *
-     * @param aProtein the node on which we want to apply the behaviour
+     * @param aObject the node on which we want to apply the behaviour
      */
-    abstract public void applyBehaviour( Node aProtein, Network aGraph );
+    abstract public void applyBehaviour( Object aObject, Network aGraph );
 
     /**
      * Allow to apply a modification on the collection of protein to highlight.
@@ -81,22 +80,22 @@ public abstract class HighlightmentBehaviour {
      * @param aGraph   the current interaction network
      * @return the new collection of protein to highlight
      */
-    public Collection<Node> modifyCollection( Collection proteins, Network aGraph ) {
+    public Collection<?> modifyCollection( Collection<?> proteins, Network aGraph ) {
         return proteins;
     }
 
     /**
      * Apply the implemented behaviour to a set of nodes.
      *
-     * @param proteins the set of protein on which to apply the behaviour
-     * @param aGraph   the interaction network they come from
+     * @param objects the set of protein on which to apply the behaviour
+     * @param aGraph  the interaction network they come from
      */
-    public void apply( Collection<Node> proteins, Network aGraph ) {
-        proteins = modifyCollection( proteins, aGraph );
+    public void apply( Collection<?> objects, Network aGraph ) {
+        objects = modifyCollection( objects, aGraph );
 
-        if ( null != proteins ) {
-            for ( Node protein : proteins ) {
-                applyBehaviour( protein, aGraph );
+        if ( null != objects ) {
+            for ( Object object : objects ) {
+                applyBehaviour( object, aGraph );
             }
         } // if
     }

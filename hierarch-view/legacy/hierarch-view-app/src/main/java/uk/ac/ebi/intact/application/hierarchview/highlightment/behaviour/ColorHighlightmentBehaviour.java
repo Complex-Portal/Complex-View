@@ -6,11 +6,13 @@
 
 package uk.ac.ebi.intact.application.hierarchview.highlightment.behaviour;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.Utilities;
+import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.Node;
 
 import java.awt.*;
@@ -26,7 +28,7 @@ import java.util.Properties;
 
 public class ColorHighlightmentBehaviour extends HighlightmentBehaviour {
 
-    static final Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+    private static final Log logger = LogFactory.getLog( ColorHighlightmentBehaviour.class );
 
     /**
      * ******* CONSTANTS ***********
@@ -56,15 +58,22 @@ public class ColorHighlightmentBehaviour extends HighlightmentBehaviour {
     }
 
     /**
-     * Apply the implemented behaviour to the specific Node of the graph. Here,
-     * we change the color of the highlighted node.
+     * Apply the implemented behaviour to the specific Object of the graph. Here,
+     * we change the color of the highlighted object.
      *
-     * @param aProtein the node on which we want to apply the behaviour
+     * @param aObject the object on which we want to apply the behaviour
      */
-    public void applyBehaviour( Node aProtein, Network aGraph ) {
-        aGraph.getNodeAttributes( aProtein ).put( Constants.ATTRIBUTE_COLOR_LABEL, COLOR_HIGHLIGHTING );
+    public void applyBehaviour( Object aObject, Network aGraph ) {
 
-        logger.info( "Protein (" + aProtein + ") receives this behaviour : "
-                     + Constants.ATTRIBUTE_COLOR_LABEL + "-" + COLOR_HIGHLIGHTING );
+        if ( Node.class.isInstance( aObject ) ) {
+            aGraph.getNodeAttributes( ( Node ) aObject ).put( Constants.ATTRIBUTE_COLOR_NODE, COLOR_HIGHLIGHTING );
+            aGraph.getNodeAttributes( ( Node ) aObject ).put( Constants.ATTRIBUTE_COLOR_LABEL, COLOR_HIGHLIGHTING );
+            logger.info( "Protein (" + aObject + ") receives this behaviour : " + Constants.ATTRIBUTE_COLOR_LABEL + "-" + COLOR_HIGHLIGHTING );
+        }
+
+        if ( Edge.class.isInstance( aObject ) ) {
+            aGraph.getEdgeAttributes( ( Edge ) aObject ).put( Constants.ATTRIBUTE_COLOR_EDGE, COLOR_HIGHLIGHTING );
+            logger.info( "Interaction (" + aObject + ") receives this behaviour : " + Constants.ATTRIBUTE_COLOR_EDGE + "-" + COLOR_HIGHLIGHTING );
+        }
     }
 }
