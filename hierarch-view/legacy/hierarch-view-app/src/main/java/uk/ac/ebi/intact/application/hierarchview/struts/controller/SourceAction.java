@@ -11,8 +11,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
-import uk.ac.ebi.intact.application.hierarchview.highlightment.source.HighlightmentSource;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.EdgeHighlightmentSource;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.NodeHighlightmentSource;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
 
@@ -52,28 +54,31 @@ public final class SourceAction extends IntactBaseAction {
                                   ActionForm form,
                                   HttpServletRequest request,
                                   HttpServletResponse response )
-            throws IOException, ServletException {
+            throws IOException, ServletException, SessionExpiredException {
 
         // Clear any previous errors.
         clearErrors();
+
         HttpSession session = null;
         IntactUserI user = null;
 
+//        try {
+        // get the current session
+        session = getSession( request );
 
-        try {
-            // get the current session
-            session = getSession( request );
+        // retreive user fron the session
+        user = getIntactUser( session );
 
-            // retreive user fron the session
-            user = getIntactUser( session );
-        } catch ( SessionExpiredException see ) {
-            String applicationPath = request.getContextPath();
-            if ( applicationPath == null ) applicationPath = "";
-            logger.error( "Session expired, gives a link to " + applicationPath );
-            addError( "error.session.expired", applicationPath );
-            saveErrors( request );
-            return ( mapping.findForward( "error" ) );
-        }
+//        } catch ( SessionExpiredException see ) {
+//            String applicationPath = request.getContextPath();
+//            if ( applicationPath == null ) {
+//                applicationPath = "";
+//            }
+//            logger.error( "Session expired, gives a link to " + applicationPath );
+//            addError( "error.session.expired", applicationPath );
+//            saveErrors( request );
+//            return ( mapping.findForward( "error" ) );
+//        }
 
         String someKeys = request.getParameter( StrutsConstants.ATTRIBUTE_KEYS_LIST );
         String clickedKeys = request.getParameter( StrutsConstants.ATTRIBUTE_KEY_CLICKED );
@@ -87,18 +92,25 @@ public final class SourceAction extends IntactBaseAction {
         }
 
         // get the class method name to create an instance
-        String source = user.getMethodClass();
+        Collection<String> keys = null;
 
-        HighlightmentSource highlightmentSource = HighlightmentSource.getHighlightmentSource( source );
-        Collection<String> keys = highlightmentSource.parseKeys( someKeys );
+        if ( HVNetworkBuilder.NODE_SOURCES.contains( keyType ) ) {
+            keys = NodeHighlightmentSource.parseKeys( someKeys );
+        }
+        if ( HVNetworkBuilder.EDGE_SOURCES.contains( keyType ) ) {
+            keys = EdgeHighlightmentSource.parseKeys( someKeys );
+        }
 
-        user.setKeys( keys );
-        user.setSelectedKey( clickedKeys );
-        user.setSelectedKeyType( keyType );
+        if ( keys != null ) {
+            user.setKeys( keys );
+            user.setSelectedKey( clickedKeys );
+            user.setSelectedKeyType( keyType );
+        } else {
+            logger.error( "No Keys available for " + someKeys );
+        }
 
-        // Print debug in the log file
-        logger.info( "SourceAction: selectedKey=" + clickedKeys + " | keys=" + someKeys +
-                     " | keys type=" + keyType + " | selectedTabIndex=" + selectedTabIndex + "\nlogged on in session " + session.getId() );
+        logger.debug( "SourceAction: selectedKey=" + clickedKeys + " | keys=" + someKeys +
+                      " | keys type=" + keyType + " | selectedTabIndex=" + selectedTabIndex + "\nlogged on in session " + session.getId() );
 
         // Remove the obsolete form bean
         if ( mapping.getAttribute() != null ) {

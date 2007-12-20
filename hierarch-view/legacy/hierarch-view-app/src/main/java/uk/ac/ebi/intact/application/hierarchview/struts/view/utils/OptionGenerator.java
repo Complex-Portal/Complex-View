@@ -32,7 +32,7 @@ public class OptionGenerator {
      *
      * @return a collection of LabelValueBean object
      */
-    public static List<LabelValueBean> getHighlightmentSources() {
+    public static List<LabelValueBean> getHighlightmentSources( String option ) {
 
         List<LabelValueBean> sources = new ArrayList<LabelValueBean>();
 
@@ -40,39 +40,60 @@ public class OptionGenerator {
         Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;
 
         if ( null != properties ) {
-
-            String sourceList = properties.getProperty( "highlightment.source.allowed" );
-
-            if ( ( null == sourceList ) || ( sourceList.length() < 1 ) ) {
-                logger.warn( "Unable to find the property: highlightment.source.allowed (" +
-                             StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
-                return null;
-            }
-
-            // parse source list
-            String token = properties.getProperty( "highlightment.source.token" );
-
-            if ( ( null == token ) || ( token.length() < 1 ) ) {
-                logger.warn( "Unable to find the property: highlightment.source.token (" +
-                             StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
-                return null;
-            }
-
-            StringTokenizer st = new StringTokenizer( sourceList, token );
-
-            while ( st.hasMoreTokens() ) {
-                String sourceKey = st.nextToken();
-                String propName = "highlightment.source." + sourceKey + ".label";
-                String label = properties.getProperty( propName );
-
-                if ( ( null == label ) || ( label.length() < 1 ) ) {
-                    logger.warn( "Unable to find the property: " + propName + " (" +
-                                 StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
-                    continue;
+            if ( !option.equals( "all" ) ) {
+                String highlightmentPath = null;
+                if ( option.equals( "node" ) ) {
+                    highlightmentPath = "highlightment.source.node.";
+                }
+                if ( option.equals( "edge" ) ) {
+                    highlightmentPath = "highlightment.source.edge.";
                 }
 
-                sources.add( new LabelValueBean( label, sourceKey, "" ) );
-            } // while
+                String sourceList = properties.getProperty( highlightmentPath + "allowed" );
+
+                if ( ( null == sourceList ) || ( sourceList.length() < 1 ) ) {
+                    logger.warn( "Unable to find the property: +" + highlightmentPath + "allowed (" +
+                                 StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
+                    return null;
+                }
+
+                // parse source list
+                String token = properties.getProperty( highlightmentPath + "token" );
+
+                if ( ( null == token ) || ( token.length() < 1 ) ) {
+                    logger.warn( "Unable to find the property: " + highlightmentPath + "token (" +
+                                 StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
+                    return null;
+                }
+
+                StringTokenizer st = new StringTokenizer( sourceList, token );
+
+                while ( st.hasMoreTokens() ) {
+                    String sourceKey = st.nextToken();
+                    String propName = highlightmentPath + sourceKey + ".label";
+                    String label = properties.getProperty( propName );
+
+                    if ( ( null == label ) || ( label.length() < 1 ) ) {
+                        logger.warn( "Unable to find the property: " + propName + " (" +
+                                     StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
+                        continue;
+                    }
+                    String clazz = properties.getProperty( highlightmentPath + sourceKey + ".class" );
+
+                    sources.add( new LabelValueBean( label, sourceKey, clazz ) );
+                } // while
+            } else {
+
+                List<LabelValueBean> values = getHighlightmentSources( "node" );
+                if ( values != null && !values.isEmpty() ) {
+                    sources.addAll( values );
+                }
+
+                values = getHighlightmentSources( "edge" );
+                if ( values != null && !values.isEmpty() ) {
+                    sources.addAll( values );
+                }
+            }
         } else {
             logger.warn( "Unable to load the properties file: " + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE );
         }
@@ -93,19 +114,19 @@ public class OptionGenerator {
 
         if ( null != properties ) {
 
-            String sourceList = properties.getProperty( "highlightment.source.allowed" );
+            String sourceList = properties.getProperty( "highlightment.source.node.allowed" );
 
             if ( ( null == sourceList ) || ( sourceList.length() < 1 ) ) {
-                logger.warn( "Unable to find the property: highlightment.source.allowed (" +
+                logger.warn( "Unable to find the property: highlightment.source.node.allowed (" +
                              StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
                 return null;
             }
 
             // parse source list
-            String token = properties.getProperty( "highlightment.source.token" );
+            String token = properties.getProperty( "highlightment.source.node.token" );
 
             if ( ( null == token ) || ( token.length() < 1 ) ) {
-                logger.warn( "Unable to find the property: highlightment.source.token (" +
+                logger.warn( "Unable to find the property: highlightment.source.node.token (" +
                              StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
                 return null;
             }
@@ -114,7 +135,7 @@ public class OptionGenerator {
 
             if ( st.hasMoreTokens() ) {
                 String sourceKey = st.nextToken();
-                String propName = "highlightment.source." + sourceKey + ".label";
+                String propName = "highlightment.source.node." + sourceKey + ".label";
                 String label = properties.getProperty( propName );
 
                 if ( ( null == label ) || ( label.length() < 1 ) ) {
@@ -143,19 +164,19 @@ public class OptionGenerator {
 
         if ( null != properties ) {
 
-            String sourceList = properties.getProperty( "highlightment.source.allowed" );
+            String sourceList = properties.getProperty( "highlightment.source.node.allowed" );
 
             if ( ( null == sourceList ) || ( sourceList.length() < 1 ) ) {
-                logger.warn( "Unable to find the property: highlightment.source.allowed (" +
+                logger.warn( "Unable to find the property: highlightment.source.node.allowed (" +
                              StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
                 return null;
             }
 
             // parse source list
-            String token = properties.getProperty( "highlightment.source.token" );
+            String token = properties.getProperty( "highlightment.source.node.token" );
 
             if ( ( null == token ) || ( token.length() < 1 ) ) {
-                logger.warn( "Unable to find the property: highlightment.source.token (" +
+                logger.warn( "Unable to find the property: highlightment.source.node.token (" +
                              StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
                 return null;
             }
@@ -165,7 +186,7 @@ public class OptionGenerator {
             while ( st.hasMoreTokens() ) {
                 String sourceKey = st.nextToken();
                 if ( sourceKey.equals( sourceName ) ) {
-                    String propName = "highlightment.source." + sourceKey + ".label";
+                    String propName = "highlightment.source.node." + sourceKey + ".label";
                     String label = properties.getProperty( propName );
 
                     if ( ( null == label ) || ( label.length() < 1 ) ) {

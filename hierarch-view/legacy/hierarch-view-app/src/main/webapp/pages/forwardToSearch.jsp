@@ -29,7 +29,7 @@
              * Retreive user's data from the session
              */
             IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
-            int maxInteractor = HVNetworkBuilder.getMaxCentralProtein();
+            int maxInteractions = HVNetworkBuilder.getMaxInteractions();
             // Displays Http content if URL updated in the session -->
             String searchUrl = user.getSearchUrl();
             if ( searchUrl != null ) {
@@ -58,7 +58,8 @@
                             <strong>
                                 <font color="#000080">
                                     Your request gave too many results, hierarchView is configured to handle a
-                                    maximum of <%= maxInteractor %> interactor<%= ( maxInteractor > 1 ? "s" : "" ) %>
+                                    maximum of <%= maxInteractions %>
+                                    interaction<%= ( maxInteractions > 1 ? "s" : "" ) %>
                                     simultaneously.
                                     <br>
                                     Please wait whilst your query is forwarded to the search application.

@@ -5,12 +5,17 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.HighlightInteractions;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.HighlightProteins;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.EdgeHighlightmentSource;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.NodeHighlightmentSource;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 
@@ -32,7 +37,7 @@ import java.util.Properties;
 
 public class DisplayInteractionNetworkTag extends TagSupport {
 
-    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+    private static final Log logger = LogFactory.getLog( DisplayInteractionNetworkTag.class );
 
     /**
      * Skip the body content.
@@ -57,24 +62,34 @@ public class DisplayInteractionNetworkTag extends TagSupport {
                 return EVAL_PAGE;
             }
 
-            ImageBean imageBean = user.getImageBean();
             String behaviour = user.getBehaviour();
             Network in = user.getInteractionNetwork();
-
-            int imageHeight = imageBean.getImageHeight();
-            int imageWidth = imageBean.getImageWidth();
             /**
              * Apply an highlight if needed data are available
              */
             if ( user.InteractionNetworkReadyToBeHighlighted() ) {
-                String methodClass = user.getMethodClass();
-                HighlightProteins.perform( methodClass, behaviour, session, in );
+
+                String methodLabel = user.getMethodLabel();
+
+                if ( HVNetworkBuilder.NODE_SOURCES.contains( methodLabel ) ) {
+                    NodeHighlightmentSource nodeHighlightmentSource = NodeHighlightmentSource.getHighlightmentSourceBySourceKey( methodLabel );
+                    HighlightProteins.perform( nodeHighlightmentSource, behaviour, session, in );
+                }
+                if ( HVNetworkBuilder.EDGE_SOURCES.contains( methodLabel ) ) {
+                    EdgeHighlightmentSource edgeHighlightmentSource = EdgeHighlightmentSource.getHighlightmentSourceBySourceKey( methodLabel );
+                    HighlightInteractions.perform( edgeHighlightmentSource, behaviour, session, in );
+                }
             }
 
             /**
              *  Display only the picture if needed data are available
              */
             if ( user.InteractionNetworkReadyToBeDisplayed() ) {
+
+                ImageBean imageBean = user.getImageBean();
+                int imageHeight = imageBean.getImageHeight();
+                int imageWidth = imageBean.getImageWidth();
+
                 // Display the HTML code map
                 pageContext.getOut().write( imageBean.getMapCode() );
 

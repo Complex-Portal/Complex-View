@@ -6,11 +6,12 @@ in the root directory of this distribution.
 package uk.ac.ebi.intact.application.hierarchview.struts.controller;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
@@ -30,6 +31,8 @@ import java.io.IOException;
  */
 
 public final class InteractionNetworkAction extends IntactBaseAction {
+
+    private static final Log logger = LogFactory.getLog( InteractionNetworkAction.class );
 
     /**
      * Process the specified HTTP request, and create the corresponding HTTP
@@ -63,8 +66,10 @@ public final class InteractionNetworkAction extends IntactBaseAction {
         InteractionNetworkForm myForm = ( InteractionNetworkForm ) form;
 
         if ( myForm.expandSelected() ) {
+            user.setNetworkUpdateOption( StrutsConstants.EXPAND_NETWORK );
             user.increaseDepth();
         } else if ( myForm.contractSelected() ) {
+            user.setNetworkUpdateOption( StrutsConstants.CONTRACT_NETWORK );
             user.desacreaseDepth();
         } else {
             addError( "error.graph.command.notRecognized", myForm.getAction() );
@@ -72,12 +77,9 @@ public final class InteractionNetworkAction extends IntactBaseAction {
             return ( mapping.findForward( "error" ) );
         }
 
-        try {
-            updateInteractionNetwork( user, StrutsConstants.UPDATE_INTERACTION_NETWORK );
-            produceImage( user );
-        } catch ( MultipleResultException e ) {
-            return ( mapping.findForward( "displayWithSearch" ) );
-        }
+
+        updateInteractionNetwork( user, StrutsConstants.UPDATE_INTERACTION_NETWORK );
+        produceImage( user );
 
         // Forward control to the specified success URI
         return ( mapping.findForward( "success" ) );

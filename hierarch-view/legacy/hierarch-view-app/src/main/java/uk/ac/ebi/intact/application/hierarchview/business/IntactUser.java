@@ -40,8 +40,6 @@ public class IntactUser implements IntactUserI {
 
     private static final Log logger = LogFactory.getLog( IntactUser.class );
 
-    private static final int MINIMAL_DEPTH = 1;
-    private static final int MAXIMAL_DEPTH = 2;
     private static final int DEFAULT_DEPTH = 1;
 
     private String minePath;
@@ -92,12 +90,12 @@ public class IntactUser implements IntactUserI {
 
     // User's form fields
     private String queryString;
+
+    private String errorMessage;
+    private int networkUpdateOption;
     private int currentDepth;
     private int defaultDepth;
-    private int minimalDepth;
-    private int maximalDepth;
 
-    //private boolean hasNoDepthLimit;
     private String methodLabel;
     private String methodClass;
     private String behaviour;
@@ -127,42 +125,20 @@ public class IntactUser implements IntactUserI {
         return queryString;
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public boolean hasErrorMessage() {
+        return errorMessage != null;
+    }
+
     public String getApplicationPath() {
         return applicationPath;
     }
 
     public int getCurrentDepth() {
         return currentDepth;
-    }
-
-    public int getDefaultDepth() {
-        return defaultDepth;
-    }
-
-    public int getMinimalDepth() {
-        return minimalDepth;
-    }
-
-    public int getMaximalDepth() {
-        return maximalDepth;
-    }
-
-    /**
-     * says if the current depth is minimal
-     *
-     * @return boolean true is the current depth is minimal, esle false.
-     */
-    public boolean minimalDepthReached() {
-        return ( currentDepth == minimalDepth );
-    }
-
-    /**
-     * says if the current depth is maximal
-     *
-     * @return boolean true is the current depth is maximal, esle false.
-     */
-    public boolean maximalDepthReached() {
-        return ( currentDepth == maximalDepth );
     }
 
     public String getMethodLabel() {
@@ -266,8 +242,8 @@ public class IntactUser implements IntactUserI {
      * Increase the depth of the interraction network up to the defined maximum.
      */
     public void increaseDepth() {
-        if ( currentDepth < maximalDepth )
-            currentDepth++;
+        //if ( currentDepth < maximalDepth )
+        currentDepth++;
     }
 
     /**
@@ -275,7 +251,7 @@ public class IntactUser implements IntactUserI {
      * minimum.
      */
     public void desacreaseDepth() {
-        if ( currentDepth > minimalDepth )
+        if ( currentDepth > 1 )
             currentDepth--;
     }
 
@@ -339,32 +315,34 @@ public class IntactUser implements IntactUserI {
         this.queryString = null;
 
         // read the Graph.properties file
+        //TODO remove code if not longer used
+
         Properties properties = GRAPH_PROPERTIES;
 
         if ( null != properties ) {
-            String depth = properties
-                    .getProperty( "hierarchView.graph.depth.default" );
+            String depth = properties.getProperty( "hierarchView.graph.depth.default" );
             if ( depth != null ) {
                 defaultDepth = Integer.parseInt( depth );
             } else {
                 defaultDepth = DEFAULT_DEPTH;
             }
             currentDepth = defaultDepth;
-
-            depth = properties.getProperty( "hierarchView.graph.depth.minimum" );
-            if ( depth != null ) {
-                minimalDepth = Integer.parseInt( depth );
-            } else {
-                minimalDepth = MINIMAL_DEPTH;
-            }
-
-            depth = properties.getProperty( "hierarchView.graph.depth.maximum" );
-            if ( depth != null ) {
-                maximalDepth = Integer.parseInt( depth );
-            } else {
-                maximalDepth = MAXIMAL_DEPTH;
-            }
         }
+//
+//            depth = properties.getProperty( "hierarchView.graph.depth.minimum" );
+//            if ( depth != null ) {
+//                minimalDepth = Integer.parseInt( depth );
+//            } else {
+//                minimalDepth = MINIMAL_DEPTH;
+//            }
+//
+//            depth = properties.getProperty( "hierarchView.graph.depth.maximum" );
+//            if ( depth != null ) {
+//                maximalDepth = Integer.parseInt( depth );
+//            } else {
+//                maximalDepth = MAXIMAL_DEPTH;
+//            }
+//        }
 
         methodLabel = null;
         methodClass = null;
@@ -396,10 +374,15 @@ public class IntactUser implements IntactUserI {
     }
 
     public void setCurrentDepth( int depth ) {
-        if ( depth > maximalDepth || depth < minimalDepth )
-            currentDepth = defaultDepth;
-        else
-            currentDepth = depth;
+        currentDepth = depth;
+    }
+
+    public void setErrorMessage( String errorMessage ) {
+        this.errorMessage = errorMessage;
+    }
+
+    public void clearErrorMessage() {
+        this.errorMessage = null;
     }
 
     public String getSearchUrl( String query, boolean addFullContext ) {
@@ -413,12 +396,8 @@ public class IntactUser implements IntactUserI {
             String queryParameter = properties.getProperty( "search.parameter.query.name" );
             if ( addFullContext && ( network != null ) ) {
                 StringBuffer buffer = new StringBuffer( 64 );
-                //List<Node> interactors = network.getCentralInteractors();
 
-                //if ( interactors == null ) {
-                List<Node> interactors = network.getCentralNodes();
-
-                //}
+                List<Node> interactors = network.getNodes();
 
                 for ( Node interactor : interactors ) {
                     String interactorAc = interactor.getId();
@@ -427,14 +406,11 @@ public class IntactUser implements IntactUserI {
 
                 // forward to search giving the spec of the current interaction
                 // network plus the current query.
-                searchURL = url + "?" + queryParameter + "=" + query
-                            + buffer.toString(); //  + "&" + classParameter + "=" +
+                searchURL = url + "?" + queryParameter + "=" + query + buffer.toString() + "&filter=ac";
                 // classValue
             } else {
-                // forward to search giving the spec of the current interaction
-                // network plus the current query.
-                searchURL = url + "?" + queryParameter + "=" + query; //  + "&" +
-                // classParameter
+                // forward to search giving the spec of the current interaction network plus the current query.
+                searchURL = url + "?" + queryParameter + "=" + query + "&filter=ac"; //  + "&" + // classParameter
                 // + "=" +
                 // classValue
             }
@@ -510,5 +486,13 @@ public class IntactUser implements IntactUserI {
 
     public DataService getDataService() {
         return this.dataservice;
+    }
+
+    public int getNetworkUpdateOption() {
+        return networkUpdateOption;
+    }
+
+    public void setNetworkUpdateOption( int option ) {
+        networkUpdateOption = option;
     }
 }

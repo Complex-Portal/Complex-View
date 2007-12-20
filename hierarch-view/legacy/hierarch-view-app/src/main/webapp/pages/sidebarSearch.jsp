@@ -71,36 +71,17 @@
             /**
              * get a collection of highlightment sources.
              */
-            List<LabelValueBean> sources = OptionGenerator.getHighlightmentSources();
-
-            // by default, all available source are selected ("All")
+            List<LabelValueBean> sources = OptionGenerator.getHighlightmentSources( "all" );
+            // by default, all available source are selected ("GO")
             if ( sources.size() > 1 ) {
                 // set the item collection and display it
                 pageContext.setAttribute( "sources", sources, PageContext.PAGE_SCOPE );
 
         %>
 
-        <html:hidden property="method" value="All"/>
+        <html:hidden property="method" value="GO"/>
 
         <%
-            /*
-
-            <table border=0>
-              <tr>
-                 <td align="right">
-                   <h4> highlight sources </h4>
-                 </td>
-              </tr>
-              <tr>
-                 <td>
-                    <html:select property="method" size="1" value="= fieldMethod">
-                      <html:options collection="sources" property="value" labelProperty="< % =label % >" />
-                    </html:select>
-                 </td>
-              </tr>
-            </table>
-
-            */
         } else if ( sources.size() == 1 ) {
             LabelValueBean lvb = sources.get( 0 );
             String methodClassName = lvb.getValue();

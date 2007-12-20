@@ -1,4 +1,5 @@
-<%@ page import="uk.ac.ebi.intact.application.hierarchview.business.Constants,
+<%@ page import="org.apache.struts.tiles.beans.MenuItem,
+                 uk.ac.ebi.intact.application.hierarchview.business.Constants,
                  uk.ac.ebi.intact.application.hierarchview.business.IntactUserI,
                  uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean,
                  uk.ac.ebi.intact.context.IntactContext,
@@ -34,17 +35,13 @@ New sources available : "All" and Interpro
 <tiles:useAttribute name="tabList" classname="java.util.List"/>
 
 
-<%-- Prepare available highlightment source for the selected protein in the session --%>
+<!--Prepare available highlightment source for the selected protein in the session -->
 <hierarchView:displaySource/>
 
 <%
     IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
 
-    // get the list of nodes coordinates
-    //String nodeCoordinates = user.getNodeCoordinates();
-
     String selectedSourceType = user.getSelectedKeyType();
-
     String selectedColor = "#336666";
     String notSelectedColor = "#CCCCCC";
 
@@ -68,7 +65,6 @@ New sources available : "All" and Interpro
             selectedIndex = ( Integer.parseInt( selectedTabIndex ) );
             session.removeAttribute( "selectedTabIndex" );
         }
-
     }
     catch ( java.lang.NumberFormatException ex ) {
         // do nothing
@@ -82,11 +78,14 @@ New sources available : "All" and Interpro
         selectedIndex = 0;
     }
     // Selected body
-    String selectedBody = ( ( org.apache.struts.tiles.beans.MenuItem ) tabList.get( selectedIndex ) ).getLink();
-    String tabType = ( ( org.apache.struts.tiles.beans.MenuItem ) tabList.get( selectedIndex ) ).getValue();
+    String selectedBody = ( ( MenuItem ) tabList.get( selectedIndex ) ).getLink();
+    String tabType = ( ( MenuItem ) tabList.get( selectedIndex ) ).getValue();
+
     // Store selected index for future references
     session.setAttribute( request.getRequestURI() + parameterName, selectedIndex );
     session.setAttribute( "tabType", tabType );
+
+    user.setMethodLabel( tabType );
 %>
 
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
@@ -106,7 +105,8 @@ New sources available : "All" and Interpro
 
                             // will generate a different link in the tab to avoid the highlighting
                             // of a source term not compatible with the selected type tab
-                            if ( !selectedSourceType.equals( "null" ) && !currentTab.equals( "All" )
+                            if ( selectedSourceType != null
+                                 && !selectedSourceType.equals( "null" )
                                  && !selectedSourceType.toLowerCase().equals( currentTab.toLowerCase() ) ) {
                                 String applicationPath = user.getApplicationPath();
                                 String randomParam = "&now=" + System.currentTimeMillis();
@@ -125,16 +125,20 @@ New sources available : "All" and Interpro
                             List<SourceBean> ListSources = ( ArrayList ) session.getAttribute( "sources" );
 
                             int nbResults = 0;
+                            String tabValue = tab.getValue().toLowerCase();
                             for ( SourceBean source : ListSources ) {
-                                if ( source.getType().toLowerCase().equals( tab.getValue().toLowerCase() ) || ( tab.getValue().equals( "All" ) ) ) {
+                                String type = source.getType().toLowerCase();
+
+                                if ( type.equals( tabValue ) ) {
                                     nbResults++;
                                 }
                             }
                         %>
 
                         <td bgcolor="<%=color%>"><a href="<%=href%>" target="<%=target%>" style="text-decoration:none;">
-                            &nbsp;<span
-                                style="font-size:14px;font-weight:bold;color:#FFFFFF;"><%=tab.getValue()%> (<%=nbResults%>)</span>&nbsp;
+                            &nbsp;
+                            <span style="font-size:14px;font-weight:bold;color:#FFFFFF;"><%=tab.getValue()%> (<%=nbResults%>)</span>
+                            &nbsp;
                         </a></td>
 
                     </logic:iterate>

@@ -1,12 +1,16 @@
-<%@ page import="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean,
-                 java.util.ArrayList" %>
+<%@ page import="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
-<%@ page language="java" %>
-
+<%--
+  Created by IntelliJ IDEA.
+  User: nneuhaus
+  Date: 10-Dec-2007
+  Time: 16:13:31
+  To change this template use File | Settings | File Templates.
+--%>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
-
-<table border="0" cellspacing="0" cellpadding="3" width="100%">
+<table border="0" cellspacing="0" cellpadding="3" width="100%" style="margin-width:0;">
 
     <tr>
         <!-- Displays the available highlightment source -->
@@ -16,9 +20,9 @@
             List<SourceBean> tmpListSources = new ArrayList( ListSources.size() );
 
             int j = 0;
-            for ( SourceBean source : ListSources ) {
-                if ( source.getType().equalsIgnoreCase( "Interpro" ) ) {
-                    tmpListSources.add( j, source );
+            for ( SourceBean sourceBean : ListSources ) {
+                if ( sourceBean.getType().equals( "Confidence" ) ) {
+                    tmpListSources.add( j, sourceBean );
                     j++;
                 }
             }
@@ -27,7 +31,7 @@
 
         <td valign="top">
 
-            <!-- Interpro terms -->
+            <!-- Confidence terms -->
             <display:table
                     name="sessionScope.tmpListSources" width="100%" class="tsources"
                     decorator="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceDecorator">

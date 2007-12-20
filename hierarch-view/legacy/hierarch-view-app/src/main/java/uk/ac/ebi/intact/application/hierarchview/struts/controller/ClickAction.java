@@ -11,7 +11,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
@@ -91,31 +90,25 @@ public final class ClickAction extends IntactBaseAction {
 
         if ( user.clickBehaviourIsCenter() ) {
             // Save our data
-            user.setInteractionNetwork( null );
+            //user.setInteractionNetwork( null );
             user.setQueryString( AC );
             user.setDepthToDefault();
             user.resetSourceURL();
 
             // Center the view
             // Creation of the graph and the image
-            try {
-                updateInteractionNetwork( user, StrutsConstants.CREATE_INTERACTION_NETWORK );
-                produceImage( user );
-            } catch ( MultipleResultException e ) {
-                return ( mapping.findForward( "displayWithSearch" ) );
-            }
+
+            updateInteractionNetwork( user, StrutsConstants.CREATE_INTERACTION_NETWORK );
+            produceImage( user );
 
         } else if ( user.clickBehaviourIsAdd() ) {
             // Add the network for which the central protein is the one the user clicked
             user.setQueryString( AC );
 
             // Creation of the graph and the image
-            try {
-                updateInteractionNetwork( user, StrutsConstants.ADD_INTERACTION_NETWORK );
-                produceImage( user );
-            } catch ( MultipleResultException e ) {
-                return ( mapping.findForward( "displayWithSearch" ) );
-            }
+
+            updateInteractionNetwork( user, StrutsConstants.ADD_INTERACTION_NETWORK );
+            produceImage( user );
         }
 
 

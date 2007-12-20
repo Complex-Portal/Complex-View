@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
@@ -76,8 +75,7 @@ public final class DisplayAction extends IntactBaseAction {
             user = createIntactUser( session, request );
 
             if ( !isErrorsEmpty() ) {
-                // Report any errors we have discovered back to the original
-                // form
+                // Report any errors we have discovered back to the original form
                 saveErrors( request );
                 return ( mapping.findForward( "error" ) );
             }
@@ -87,7 +85,7 @@ public final class DisplayAction extends IntactBaseAction {
         }
         String AC = request.getParameter( "AC" );
         String methodLabel = request.getParameter( "method" );
-        String depth = request.getParameter( "depth" );
+//        String depth = request.getParameter( "depth" );
 
         String methodClass = null;
         String behaviourDefault = null;
@@ -97,6 +95,7 @@ public final class DisplayAction extends IntactBaseAction {
         }
 
         LabelValueBean lvb = null;
+
         if ( methodLabel == null ) {
             // in case the method is not provided, get the default one.
             lvb = OptionGenerator.getDefaultSource();
@@ -115,7 +114,7 @@ public final class DisplayAction extends IntactBaseAction {
         Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;
 
         if ( null != properties ) {
-            methodClass = properties.getProperty( "highlightment.source." + methodLabel + ".class" );
+            methodClass = properties.getProperty( "highlightment.source.node." + methodLabel + ".class" );
             behaviourDefault = properties.getProperty( "highlighting.behaviour.default.class" );
         }
 
@@ -128,10 +127,10 @@ public final class DisplayAction extends IntactBaseAction {
             user.init();
 
             String host = request.getParameter( "host" );
-            System.out.println( "THE HOST GIVEN BY JAVASCRIPT: " + host );
+            logger.info( "THE HOST GIVEN BY JAVASCRIPT: " + host );
 
             String protocol = request.getParameter( "protocol" );
-            System.out.println( "THE PROTOCOL GIVEN BY JAVASCRIPT: " + protocol );
+            logger.info( "THE PROTOCOL GIVEN BY JAVASCRIPT: " + protocol );
 
             session.setAttribute( StrutsConstants.HOST, host );
             session.setAttribute( StrutsConstants.PROTOCOL, protocol );
@@ -157,25 +156,22 @@ public final class DisplayAction extends IntactBaseAction {
             if ( singletons != null && !"null".equals( singletons ) ) {
                 session.setAttribute( "singletons", singletons );
             }
-            try {
-                int d = Integer.parseInt( depth );
-                user.setCurrentDepth( d );
-            }
-            catch ( NumberFormatException nfe ) {
-                user.setDepthToDefault();
-            }
+//            try {
+//                int d = Integer.parseInt( depth );
+//                user.setCurrentDepth( d );
+//            }
+//            catch ( NumberFormatException nfe ) {
+//                user.setDepthToDefault();
+//            }
             user.setMethodLabel( methodLabel );
             user.setMethodClass( methodClass );
             user.setBehaviour( behaviourDefault );
 
             // Creation of the graph and the image
-            try {
-                updateInteractionNetwork( user, StrutsConstants.CREATE_INTERACTION_NETWORK );
-                produceImage( user );
 
-            } catch ( MultipleResultException e ) {
-                return ( mapping.findForward( "displayWithSearch" ) );
-            }
+            updateInteractionNetwork( user, StrutsConstants.CREATE_INTERACTION_NETWORK );
+            produceImage( user );
+
 
             if ( !isErrorsEmpty() ) {
                 // Report any errors we have discovered during the interaction
@@ -190,7 +186,7 @@ public final class DisplayAction extends IntactBaseAction {
             }
         }
 
-        logger.info( "DisplayAction: AC=" + AC + " depth=" + depth
+        logger.info( "DisplayAction: AC=" + AC /*+ " depth=" + depth*/
                      + " methodLabel=" + methodLabel + " methodClass=" + methodClass );
 
         // Forward control to the specified success URI

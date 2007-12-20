@@ -11,7 +11,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
@@ -57,12 +56,14 @@ public final class SearchAction extends IntactBaseAction {
 
         // Clear any previous errors.
         clearErrors();
+        HttpSession session = null;
+        IntactUserI user = null;
 
         // get the current session
-        HttpSession session = getSession( request );
+        session = getSession( request );
 
         // retreive user fron the session
-        IntactUserI user = getIntactUser( session );
+        user = getIntactUser( session );
 
         String queryString = null;
         String methodLabel = null;
@@ -79,16 +80,18 @@ public final class SearchAction extends IntactBaseAction {
             Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;
 
             if ( null != properties ) {
-                methodClass = properties.getProperty( "highlightment.source." + methodLabel + ".class" );
+                methodClass = properties.getProperty( "highlightment.source.node." + methodLabel + ".class" );
                 behaviourDefault = properties.getProperty( "highlighting.behaviour.default.class" );
             }
         }
 
         // store the bean (by taking care of the scope)
-        if ( "request".equals( mapping.getScope() ) )
+
+        if ( "request".equals( mapping.getScope() ) ) {
             request.setAttribute( mapping.getAttribute(), form );
-        else
+        } else {
             session.setAttribute( mapping.getAttribute(), form );
+        }
 
         if ( !isErrorsEmpty() ) {
             // Report any errors we have discovered back to the original form
@@ -107,20 +110,18 @@ public final class SearchAction extends IntactBaseAction {
             }
 
             user.setQueryString( queryString );
+            user.setMinePath( null );
 
             // Creation of the graph and the image
-            try {
-                int action = StrutsConstants.CREATE_INTERACTION_NETWORK;
-                if ( searchForm.addSelected() ) {
-                    action = StrutsConstants.ADD_INTERACTION_NETWORK;
-                }
 
-                updateInteractionNetwork( user, action );
-                produceImage( user );
-
-            } catch ( MultipleResultException e ) {
-                return ( mapping.findForward( "displayWithSearch" ) );
+            int action = StrutsConstants.CREATE_INTERACTION_NETWORK;
+            if ( searchForm.addSelected() ) {
+                action = StrutsConstants.ADD_INTERACTION_NETWORK;
             }
+
+            updateInteractionNetwork( user, action );
+            produceImage( user );
+
 
             if ( !isErrorsEmpty() ) {
                 // Report any errors we have discovered during the interaction network producing

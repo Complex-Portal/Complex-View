@@ -6,7 +6,10 @@ in the root directory of this distribution.
 package uk.ac.ebi.intact.application.hierarchview.struts.framework;
 
 import org.apache.log4j.Logger;
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,7 +67,7 @@ public class IntactBaseForm extends ActionForm {
      *            IntactResources.properties bundle.
      */
     protected void addError( String key ) {
-        myErrors.add( INTACT_ERROR, new ActionError( key ) );
+        myErrors.add( INTACT_ERROR, new ActionMessage( key ) );
     }
 
     /**
@@ -76,7 +79,7 @@ public class IntactBaseForm extends ActionForm {
      *              IntactResources.properties bundle.
      */
     protected void addError( String key, String value ) {
-        myErrors.add( INTACT_ERROR, new ActionError( key, value ) );
+        myErrors.add( INTACT_ERROR, new ActionMessage( key, value ) );
     }
 
     /**

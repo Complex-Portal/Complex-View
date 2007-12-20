@@ -16,10 +16,18 @@
 <%@ page import="uk.ac.ebi.intact.application.hierarchview.business.Constants,
                  uk.ac.ebi.intact.application.hierarchview.business.IntactUserI,
                  uk.ac.ebi.intact.application.hierarchview.business.graph.Network,
-                 uk.ac.ebi.intact.context.IntactContext,
-                 uk.ac.ebi.intact.searchengine.CriteriaBean,
-                 java.util.List" %>
-<%@ page import="java.util.StringTokenizer" %>
+                 uk.ac.ebi.intact.context.IntactContext" %>
+<%@ page import="uk.ac.ebi.intact.service.graph.Node" %>
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Iterator" %>
+
+<head>
+    <%--    <html:base target="_top"/>--%>
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/layouts/styles/intact.css"/>
+</head>
 
 <%
     /**
@@ -31,97 +39,64 @@
     Network in = user.getInteractionNetwork();
     if ( in == null ) return;
 
-    String prefix = "<b>";
-    String suffix = "</b>";
+    if ( user.getQueryString() == null ) return;
 
-    List<CriteriaBean> criterias = in.getCriteria();
-    StringBuffer context = new StringBuffer( 512 );
-    for ( CriteriaBean criteria : criterias ) {
-
-        context.append( prefix ).append( criteria.getTarget() ).append( ": " );
-        context.append( "<a href=\"" ).append( user.getSearchUrl( criteria.getQuery(), false ) );
-        context.append( "\" target=\"_blank\">" ).append( criteria.getQuery() ).append( "</a>" );
-        context.append( suffix ).append( ", " );
-    }
-
-    int max = criterias.size();
-    // remove the last comma and white space
     StringBuffer contextToDisplay = new StringBuffer( 256 );
-    if ( ( max = context.length() ) > 0 ) {
-        String network = ( String ) session.getAttribute( "network" );
-        String singletons = ( String ) session.getAttribute( "singletons" );
+    StringBuffer infoToDisplay = null;
+    StringBuffer errorToDisplay = null;
 
-        String tmp = context.substring( 0, max - 2 );
-        // if no MiNe parameters are given the default HV display is used
-        if ( null == network && null == singletons ) {
-            // the normal hv display
-            contextToDisplay.append( "Interaction network for " );
-            contextToDisplay.append( tmp ).append( "<br>" );
-        } else {
-            String net = "This is the minimal connecting network for ";
-            // the string containing the borders of the networks is split
-            StringTokenizer tokens = new StringTokenizer( network, "," );
-            // the int array stores the length of the different
-            // connecting networks
-            int[] borders = new int[tokens.countTokens()];
-            int i = 0;
-            // the borders are parsed as an int and stored in the array
-            while ( tokens.hasMoreTokens() ) {
-                borders[i++] = Integer.parseInt( tokens.nextToken() );
-            }
-            // the string containing the shortlabels of the interactors
-            // of the minimal connecting networks are split
-            tokens = new StringTokenizer( tmp, "," );
-            contextToDisplay.append( net );
-            i = 1;
-            int j = 0;
-            while ( tokens.hasMoreTokens() ) {
-                // the current interactor is added
-                contextToDisplay.append( tokens.nextToken() );
-                // if the boundary of the current interaction network is reached
-                if ( i == borders[j] ) {
-                    // if there are more interactors are available
-                    if ( tokens.hasMoreTokens() ) {
-                        // because there are more interactors available
-                        // a newline is created and the beginning text
-                        // for each network is added
-                        contextToDisplay.append( "<br>" ).append( net );
-                    }
-                    j++;
-                }
-                i++;
-            }
-
-            // if there are also singletons available
-            // they are added to the comment line with a link
-            // to the search application
-            if ( null != singletons ) {
-                String tok;
-                contextToDisplay.append( "<br>The following proteins are not in " +
-                                         "a connecting network: " );
-                tokens = new StringTokenizer( singletons, "," );
-                while ( tokens.hasMoreTokens() ) {
-                    // the current singleton is fetched
-                    tok = tokens.nextToken().trim();
-                    contextToDisplay.append( prefix ).append( "shortLabel: " );
-                    // the search string for the current singleton is fetched
-                    contextToDisplay.append( "<a href=\"" ).append( user.getSearchUrl( tok, false ) ).append( "\"" );
-                    contextToDisplay.append( " target=\"_blank\">" ).append( tok ).append( "</a>" );
-                    contextToDisplay.append( suffix ).append( " " );
-                }
-                session.setAttribute( "singletons", null );
-            }
-            // the attribute is erazed to allow the user to work
-            // without problems without the mine informations
-            session.setAttribute( "network", null );
+    if ( user.getMinePath() == null ) {
+        infoToDisplay = new StringBuffer( 256 );
+        if ( in.getNodes() != null && in.getEdges() != null ) {
+            infoToDisplay.append( "Result: " );
+            infoToDisplay.append( "<strong>" ).append( in.getNodes().size() ).append( "</strong> molecules, " );
+            infoToDisplay.append( "<strong>" ).append( in.getEdges().size() ).append( "</strong> interactions." );
         }
-    }
-    String selectedKey = user.getSelectedKey();
-    if ( selectedKey == null ) selectedKey = "";
-    else {
-        selectedKey = "<br>Highlight by " + prefix + selectedKey + suffix;
+
+        contextToDisplay.append( "Query: " );
+    } else {
+        String net = "This is the minimal connecting network for ";
+        contextToDisplay.append( net );
     }
 
+    contextToDisplay.append( "<strong>" );
+    // the normal hv display
+    if ( in.getCentralNodes() != null && !in.getCentralNodes().isEmpty() ) {
+
+        Collection<Node> centralNodes = in.getCentralNodes();
+        Iterator<Node> iterator = centralNodes.iterator();
+        int index = 0;
+        int max = 6;
+        while ( iterator.hasNext() && index < max ) {
+            Node node = iterator.next();
+            contextToDisplay.append( "<a href=\"" );
+            contextToDisplay.append( user.getSearchUrl( node.getId(), false ) );
+            contextToDisplay.append( "\" target=\"_blank\">" );
+            contextToDisplay.append( node.getLabel() );
+            contextToDisplay.append( "</a>" );
+            if ( iterator.hasNext() ) {
+                contextToDisplay.append( ", " );
+            }
+            index++;
+        }
+
+        if ( centralNodes.size() > max ) {
+            contextToDisplay.append( " ... " );
+        }
+
+    } else {
+        contextToDisplay.append( user.getQueryString() );
+    }
+    contextToDisplay.append( "</strong>" );
+
+    if ( user.getErrorMessage() != null ) {
+        errorToDisplay = new StringBuffer();
+
+        errorToDisplay.append( "<strong><font color=\"red\">" );
+        errorToDisplay.append( user.getErrorMessage() );
+        errorToDisplay.append( "</font></strong>" );
+        user.clearErrorMessage();
+    }
 %>
 
 <table border="0" cellspacing="3" cellpadding="3" width="100%" height="100%">
@@ -131,5 +106,18 @@
             <%= contextToDisplay.toString() %>
         </td>
     </tr>
-
+    <% if ( infoToDisplay != null ) { %>
+    <tr>
+        <td>
+            <%= infoToDisplay.toString() %>
+        </td>
+    </tr>
+    <% }
+        if ( errorToDisplay != null ) { %>
+    <tr>
+        <td>
+            <%= errorToDisplay.toString() %>
+        </td>
+    </tr>
+    <% } %>
 </table>

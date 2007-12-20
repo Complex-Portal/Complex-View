@@ -13,7 +13,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
-import uk.ac.ebi.intact.application.hierarchview.highlightment.source.HighlightmentSource;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.NodeHighlightmentSource;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.HighlightmentForm;
 
@@ -72,11 +72,11 @@ public final class HighlightmentAction extends IntactBaseAction {
             String source = user.getMethodClass();
 
             // save options (given in this request) of the source in the user's session
-            HighlightmentSource highlightmentSource = HighlightmentSource.getHighlightmentSource( source );
-            if ( null != highlightmentSource ) {
-                highlightmentSource.saveOptions( request, session );
+            NodeHighlightmentSource nodeHighlightmentSource = NodeHighlightmentSource.getHighlightmentSource( source );
+            if ( null != nodeHighlightmentSource ) {
+                nodeHighlightmentSource.saveOptions( request, session );
             } else {
-                addError( "error.HighlightmentSource.unknown", source );
+                addError( "error.NodeHighlightmentSource.unknown", source );
             }
         }
 
@@ -95,7 +95,7 @@ public final class HighlightmentAction extends IntactBaseAction {
         user.setBehaviour( behaviour );
 
         // Print debug in the log file
-        logger.warn( "HighlightmentAction: behaviour=" + behaviour + " logged on in session " + session.getId() );
+        logger.debug( "HighlightmentAction: behaviour=" + behaviour + " logged on in session " + session.getId() );
 
         // Remove the obsolete form bean
         if ( mapping.getAttribute() != null ) {

@@ -63,7 +63,8 @@
         <action path="/init"
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.InitAction"
                 name="initForm"
-                scope="request">
+                scope="request"
+                input="hierarchView.error.layout">
 
             <forward name="success" path="hierarchView.layout"/>
         </action>
@@ -73,14 +74,16 @@
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.SearchAction"
                 name="searchForm"
                 validate="true"
-                scope="request"
-                input="hierarchView.error.layout"/>
+                scope="request"/>
+        <!--input="hierarchView.error.layout"-->
+        <!--/>-->
 
         <!-- Processes the user search for an external application -->
         <action path="/display"
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.DisplayAction"
                 scope="request"
-                input="hierarchView.error.layout"/>
+                input="hierarchView.error.layout"
+                />
 
         <!-- Processes the highlightment form
              allowing to change the current behaviour, options

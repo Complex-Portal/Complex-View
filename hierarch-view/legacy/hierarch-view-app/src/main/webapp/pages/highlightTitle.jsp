@@ -20,7 +20,8 @@
     <tr>
         <td>
             <!-- displays the interaction network title -->
-            Existing highlight sources for the central protein(s).
+            Annotation for molecules in network.
+            Click <a><img src="../images/ok-grey.png"/></a> to highlight molecules.
             <intact:documentation section="hierarchView.PPIN.highlight"/>
         </td>
     </tr>

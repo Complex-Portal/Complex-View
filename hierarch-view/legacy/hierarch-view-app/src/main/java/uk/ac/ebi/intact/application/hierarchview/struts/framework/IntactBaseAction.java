@@ -8,7 +8,9 @@ package uk.ac.ebi.intact.application.hierarchview.struts.framework;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.*;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
@@ -21,13 +23,11 @@ import uk.ac.ebi.intact.application.hierarchview.exception.*;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.util.Chrono;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.rmi.RemoteException;
-import java.util.Collection;
 
 /**
  * Super class for all hierarchview related action classes.
@@ -48,7 +48,7 @@ public abstract class IntactBaseAction extends Action {
     /**
      * Error container
      */
-    private ActionErrors myErrors = new ActionErrors();
+    private ActionMessages myErrors = new ActionMessages();
 
     /**
      * The global Intact message key.
@@ -78,8 +78,7 @@ public abstract class IntactBaseAction extends Action {
      * @return an instance of <code>IntactUserImpl</code> stored in
      *         <code>session</code>
      */
-    protected IntactUserI getIntactUser( HttpSession session )
-            throws SessionExpiredException {
+    protected IntactUserI getIntactUser( HttpSession session ) throws SessionExpiredException {
         IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
 
         if ( null == user ) {
@@ -97,8 +96,7 @@ public abstract class IntactBaseAction extends Action {
      * @return session associated with given request. Null is returned if there
      *         is no session associated with <code>request</code>.
      */
-    protected HttpSession getSession( HttpServletRequest request )
-            throws SessionExpiredException {
+    protected HttpSession getSession( HttpServletRequest request ) throws SessionExpiredException {
         // Don't create a new session.
         HttpSession session = request.getSession( false );
 
@@ -140,7 +138,7 @@ public abstract class IntactBaseAction extends Action {
      *            IntactResources.properties bundle.
      */
     protected void addError( String key ) {
-        myErrors.add( INTACT_ERROR, new ActionError( key ) );
+        myErrors.add( INTACT_ERROR, new ActionMessage( key ) );
     }
 
     /**
@@ -152,7 +150,7 @@ public abstract class IntactBaseAction extends Action {
      *              IntactResources.properties bundle.
      */
     protected void addError( String key, String value ) {
-        myErrors.add( INTACT_ERROR, new ActionError( key, value ) );
+        myErrors.add( INTACT_ERROR, new ActionMessage( key, value ) );
     }
 
     /**
@@ -349,19 +347,17 @@ public abstract class IntactBaseAction extends Action {
      *
      * @see uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants
      */
-    public void updateInteractionNetwork( IntactUserI user, int action ) throws MultipleResultException {
+    public void updateInteractionNetwork( IntactUserI user, int action ) {
 
         DataService dataservice = user.getDataService();
         HVNetworkBuilder builder = user.getHVNetworkBuilder();
         Network in = user.getInteractionNetwork();
-        String queryString = user.getQueryString();
-        Collection<CriteriaBean> criterias = null;
-
+        String queryString = formatQueryString( user.getQueryString() );
         Chrono chrono = new Chrono();
         chrono.start();
+        user.clearErrorMessage();
 
         if ( action != StrutsConstants.UPDATE_INTERACTION_NETWORK ) {
-            criterias = dataservice.getSearchCritera();
             user.resetSourceURL();
         }
         try {
@@ -377,37 +373,32 @@ public abstract class IntactBaseAction extends Action {
                     } catch ( ProteinNotFoundException e ) {
                         logger.error( "nothing found for: " + queryString );
 
-                        for ( CriteriaBean criteria1 : criterias ) {
-
-                            if ( in == null )
-                                addError( "error.protein.notFound", criteria1.getQuery() );
-                            else
-                                addMessage( "warning.protein.notFound", criteria1.getQuery() );
-                        }
+                        if ( in == null )
+                            addError( "error.protein.notFound", queryString );
+                        else
+                            addMessage( "warning.protein.notFound", queryString );
 
                         return; // stop there !
-                    }
+                    } catch ( MultipleResultException e ) {
+                        logger.error( "to much hits for: " + queryString );
 
-                    for ( CriteriaBean criteria1 : criterias ) {
-                        if ( criteria1.hasGivenResults() )
-                            in.addCriteria( criteria1 );
-                        else {
-                            addMessage( "warning.protein.notFound", criteria1.getQuery() );
-                            addError( "error.protein.notFound", criteria1.getQuery() );
+                        if ( in == null ) {
+                            addError( "error.max.interactions.reached", Integer.toString( HVNetworkBuilder.getMaxInteractions() ) );
+                        } else {
+                            addMessage( "warning.max.interactions.reached", Integer.toString( HVNetworkBuilder.getMaxInteractions() ) );
                         }
+
+                        user.setErrorMessage( "Sorry, but to much Interactions found!" );
+                        return;
                     }
 
                     // if no network built after processing all sub query,
                     // display any errors.
                     // Else any messages.
                     if ( in == null ) {
-                        if ( !myMessages.isEmpty() ) {
-                            myMessages.clear();
-                        }
+                        clearMessages(); // display only errors
                     } else {
-                        if ( !myErrors.isEmpty() ) {
-                            myErrors.clear();
-                        } // display only messages
+                        clearErrors(); // display only messages
                     }
 
                     user.setInteractionNetwork( in );
@@ -426,30 +417,34 @@ public abstract class IntactBaseAction extends Action {
                     } catch ( ProteinNotFoundException e ) {
                         logger.error( "nothing found for: " + queryString );
 
-                        for ( CriteriaBean criteria1 : criterias ) {
-
-                            if ( in == null )
-                                addError( "error.protein.notFound", criteria1.getQuery() );
-                            else
-                                addMessage( "warning.protein.notFound", criteria1.getQuery() );
+                        if ( in == null ) {
+                            addError( "error.protein.notFound", queryString );
+                        } else {
+                            addMessage( "warning.protein.notFound", queryString );
                         }
+
 
                         return; // stop there !
-                    }
-                    for ( CriteriaBean criteria1 : criterias ) {
-                        if ( criteria1.hasGivenResults() ) {
-                            in.addCriteria( criteria1 );
+
+                    } catch ( MultipleResultException e ) {
+                        logger.error( e.getMessage() );
+
+                        if ( in == null ) {
+                            addError( "error.max.interactions.reached", Integer.toString( HVNetworkBuilder.getMaxInteractions() ) );
                         } else {
-                            addMessage( "warning.protein.notFound", criteria1.getQuery() );
+                            addMessage( "warning.max.interactions.reached", Integer.toString( HVNetworkBuilder.getMaxInteractions() ) );
                         }
+                        user.setErrorMessage( "Sorry, but to much Interactions found!" );
+                        return; // stop there!
                     }
-                    user.setInteractionNetwork( in );
+
                     break;
 
                 case StrutsConstants.UPDATE_INTERACTION_NETWORK:
                     try {
-                        if ( user.getDefaultDepth() < user.getCurrentDepth() ) {
-                            in = builder.expandBinaryGraphNetwork( in, Constants.ALL_WITHOUT_PREY_EXPANSION );
+                        if ( user.getNetworkUpdateOption() == StrutsConstants.EXPAND_NETWORK ) {
+
+                            in = builder.expandBinaryGraphNetwork( in, Constants.ALL_EXPANSION );
                             if ( logger.isDebugEnabled() ) {
                                 logger.debug( "Update/Expand current Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
                                 logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
@@ -463,15 +458,24 @@ public abstract class IntactBaseAction extends Action {
                             }
                         }
                     } catch ( ProteinNotFoundException e ) {
+                        if ( in == null ) {
+                            addError( "error.protein.notFound", queryString );
+                        } else {
+                            addMessage( "warning.protein.notFound", queryString );
+                        }
+                        return;
+
+                    } catch ( MultipleResultException e ) {
+                        logger.error( e.getMessage() );
+                        if ( in == null ) {
+                            addError( "error.max.interactions.reached", Integer.toString( HVNetworkBuilder.getMaxInteractions() ) );
+                        } else {
+                            addMessage( "warning.max.interactions.reached", Integer.toString( HVNetworkBuilder.getMaxInteractions() ) );
+                        }
+                        user.setErrorMessage( "Sorry, but to much Interactions found!" );
                         return;
                     }
 
-                    criterias = in.getCriteria();
-
-                    for ( CriteriaBean criteria1 : criterias ) {
-                        in.addCriteria( criteria1 );
-                    }
-                    user.setInteractionNetwork( in );
                     break;
 
                 default:
@@ -486,7 +490,7 @@ public abstract class IntactBaseAction extends Action {
             return;
 
         } catch ( NetworkBuildException e ) {
-            addError( "error.interactionNetwork.notCreated", e.getMessage() );
+            addError( "error.interaction.network.not.created", e.getMessage() );
             return;
 
         }
@@ -515,5 +519,26 @@ public abstract class IntactBaseAction extends Action {
         }
 
         user.setInteractionNetwork( in );
+    }
+
+    /**
+     * QueryString has to be formated, because if there are no space between InteractorNames
+     * the WebService has problems
+     *
+     * @param queryString
+     * @return a formated String
+     */
+    private String formatQueryString( String queryString ) {
+        if ( queryString.contains( "," ) ) {
+            StringBuffer newQueryString = new StringBuffer();
+            for ( String query : queryString.split( "," ) ) {
+                newQueryString.append( query );
+                newQueryString.append( ", " );
+            }
+            queryString = newQueryString.toString();
+
+            return queryString.substring( 0, queryString.length() - 1 );
+        }
+        return queryString;
     }
 }

@@ -11,6 +11,7 @@ package uk.ac.ebi.intact.application.hierarchview.business.image;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.EdgeAttributes;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.NodeAttributes;
 import uk.ac.ebi.intact.service.graph.Edge;
@@ -37,8 +38,8 @@ public class DrawGraph {
      * ******* CONSTANTS ***********
      */
     private final static int DEFAULT_BORDER_SIZE = 5;
-    private final static int DEFAULT_IMAGE_LENGTH = 300;
-    private final static int DEFAULT_IMAGE_HEIGHT = 300;
+    private final static int DEFAULT_IMAGE_LENGTH = 400;
+    private final static int DEFAULT_IMAGE_HEIGHT = 400;
     private final static String DEFAULT_MAP_NAME = "networkMap";
 
     private final static Color DEFAULT_BACKGROUND_COLOR = new Color( 255, 255, 255 );
@@ -460,10 +461,10 @@ public class DrawGraph {
     /**
      * Allows to draw an element "edge" in the image
      *
-     * @param interaction The interaction to draw
-     * @param g           The graphic where we draw
+     * @param edge The edge to draw
+     * @param g    The graphic where we draw
      */
-    private void drawEdge( Edge interaction, Graphics2D g ) {
+    private void drawEdge( Edge edge, Graphics2D g ) {
         Node proteinR, proteinL;
         float xline1, xline2, yline1, yline2;
 
@@ -472,13 +473,13 @@ public class DrawGraph {
         ImageDimension dimension = graph.getImageDimension();
 
         // proteinRight
-        proteinR = interaction.getNodeA();
+        proteinR = edge.getNodeA();
         NodeAttributes attributesA = graph.getNodeAttributes( proteinR );
         proteinRx = ( Float ) attributesA.get( Constants.ATTRIBUTE_COORDINATE_X );
         proteinRy = ( Float ) attributesA.get( Constants.ATTRIBUTE_COORDINATE_Y );
 
         // proteinLeft
-        proteinL = interaction.getNodeB();
+        proteinL = edge.getNodeB();
         NodeAttributes attributesB = graph.getNodeAttributes( proteinL );
         proteinLx = ( Float ) attributesB.get( Constants.ATTRIBUTE_COORDINATE_X );
         proteinLy = ( Float ) attributesB.get( Constants.ATTRIBUTE_COORDINATE_Y );
@@ -503,13 +504,23 @@ public class DrawGraph {
                  && minePath.indexOf( proteinR.getId() ) != -1 ) {
                 g.setColor( edgeHighlightDefaultColor );
             } else {
-                g.setColor( edgeDefaultColor );
+                Color edgeColor = ( Color ) graph.getEdgeAttributes( edge ).get( Constants.ATTRIBUTE_COLOR_EDGE );
+                if ( edgeColor != null ) {
+                    g.setColor( edgeColor );
+                } else {
+                    g.setColor( EdgeAttributes.EDGE_COLOR );
+                }
             }
         }
         // the application was not called from MiNe -> so the edge colors are
         // the default color
         else {
-            g.setColor( edgeDefaultColor );
+            Color edgeColor = ( Color ) graph.getEdgeAttributes( edge ).get( Constants.ATTRIBUTE_COLOR_EDGE );
+            if ( edgeColor != null ) {
+                g.setColor( edgeColor );
+            } else {
+                g.setColor( EdgeAttributes.EDGE_COLOR );
+            }
         }
 
         // draw the edge
@@ -523,8 +534,7 @@ public class DrawGraph {
      * drawing process, call methods to draw nodes, edges ...
      */
     public void draw() {
-        int i;
-        int numberOfInteraction = graph.getEdges().size();
+
         currentTime = "&now=" + System.currentTimeMillis(); // this will be added at each link of the graph
 
         Node proteinR, proteinL;

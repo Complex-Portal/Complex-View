@@ -8,6 +8,10 @@
 --%>
 
 <table width="100%" height="100%">
+    <tr>
+        <td>
+        </td>
+    </tr>
 
     <%-- Application Header section --%>
     <tr>

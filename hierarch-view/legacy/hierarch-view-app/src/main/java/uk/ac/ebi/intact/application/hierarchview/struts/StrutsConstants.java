@@ -66,6 +66,12 @@ public final class StrutsConstants {
     public static final int ADD_INTERACTION_NETWORK = 1;
 
     public static final int UPDATE_INTERACTION_NETWORK = 2;
+
+
+    public static final int CONTRACT_NETWORK = 0;
+
+    public static final int EXPAND_NETWORK = 1;
+
 }
 
 

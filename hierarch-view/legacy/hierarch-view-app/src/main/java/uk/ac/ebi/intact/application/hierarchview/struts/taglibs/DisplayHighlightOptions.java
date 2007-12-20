@@ -8,7 +8,9 @@ package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.highlightment.source.HighlightmentSource;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.EdgeHighlightmentSource;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.NodeHighlightmentSource;
 import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.http.HttpSession;
@@ -47,12 +49,24 @@ public class DisplayHighlightOptions extends TagSupport {
             String methodClass = user.getMethodClass();
 
             // Search the list of protein to highlight
-            HighlightmentSource highlightmentSource = HighlightmentSource.getHighlightmentSource( methodClass );
             String htmlCode = "";
-            if ( null != highlightmentSource ) {
-                htmlCode = highlightmentSource.getHtmlCodeOption( session );
-            } else {
-                logger.error( "Unable to instanciate the current source: " + methodClass );
+            if ( HVNetworkBuilder.NODE_SOURCES.contains( methodClass ) ) {
+
+                NodeHighlightmentSource nodeHighlightmentSource = NodeHighlightmentSource.getHighlightmentSource( methodClass );
+                if ( null != nodeHighlightmentSource ) {
+                    htmlCode = nodeHighlightmentSource.getHtmlCodeOption( session );
+                } else {
+                    logger.error( "Unable to instanciate the current source: " + methodClass );
+                }
+            }
+            if ( HVNetworkBuilder.EDGE_SOURCES.contains( methodClass ) ) {
+                EdgeHighlightmentSource edgeHighlightmentSource = EdgeHighlightmentSource.getHighlightmentSource( methodClass );
+
+                if ( null != edgeHighlightmentSource ) {
+                    htmlCode = edgeHighlightmentSource.getHtmlCodeOption( session );
+                } else {
+                    logger.error( "Unable to instanciate the current source: " + methodClass );
+                }
             }
 
             // write it

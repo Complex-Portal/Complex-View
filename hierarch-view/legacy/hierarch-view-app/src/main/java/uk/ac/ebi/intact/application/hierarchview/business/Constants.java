@@ -66,6 +66,11 @@ public final class Constants {
     public static final String ATTRIBUTE_COLOR_LABEL = "colorLabel";
 
     /**
+     * The attribute which allows to access the color of a Node.
+     */
+    public static final String ATTRIBUTE_COLOR_EDGE = "colorEdge";
+
+    /**
      * The attribute which allows to access the visibility of a Node
      */
     public static final String ATTRIBUTE_VISIBLE = "visible";
@@ -90,9 +95,21 @@ public final class Constants {
 
     public static final int ALL_EXPANSION = 1;
 
-    public static final int BAIT_EXPANSION = 2;
+    public static final String EXPERMIENTAL_ROLE = "Experimental";
 
-    public static final int NEUTRAL_COMPONENT_EXPANSION = 3;
+    public static final String BIOLOGICAL_ROLE = "Biological";
 
-    public static final int ALL_WITHOUT_PREY_EXPANSION = 4;
+    public static final String DATABASE = "MI";
+
+    public static final String BAIT_REF = "0496";
+
+    public static final String PREY_REF = "0498";
+
+    public static final String BAIT = "bait";
+
+    public static final String PREY = "prey";
+
+    public static final String BOTH = "both";
+
+
 }

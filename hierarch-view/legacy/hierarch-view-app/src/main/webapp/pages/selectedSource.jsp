@@ -34,7 +34,6 @@
 
             // Displays Http content if URL updated in the session
             if ( user.hasSourceUrlToDisplay() ) {
-
         %>
         <script>
             setTimeout("top.contentFrame.selectedSourcetFrame.location = '<%= user.getSourceURL() %>'", 1000);

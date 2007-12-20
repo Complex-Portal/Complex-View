@@ -25,8 +25,7 @@
         <meta http-equiv="expires" content="-1">
         <title><tiles:getAsString name="title"/></title>
         <!-- Don't put the base tag here; let the browser sort out the URLs -->
-        <link rel="stylesheet" type="text/css"
-              href="<%=request.getContextPath()%>/layouts/styles/intact.css"/>
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/layouts/styles/intact.css"/>
     </head>
 
     <body bgcolor="#FFFFFF" topmargin="0" leftmargin="0">

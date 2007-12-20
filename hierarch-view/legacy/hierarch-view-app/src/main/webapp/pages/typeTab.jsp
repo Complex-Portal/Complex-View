@@ -1,10 +1,18 @@
-<%@ page import="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean,
-                 java.util.ArrayList" %>
+<%@ page import="uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.MoleculeTypeHighlightmentSource,
+                 uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <%@ page language="java" %>
 
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 
+
+<%--
+  Created by IntelliJ IDEA.
+  User: nneuhaus
+  Date: 17-Dec-2007
+  Time: 16:53:14
+--%>
 
 <table border="0" cellspacing="0" cellpadding="3" width="100%">
 
@@ -17,7 +25,7 @@
 
             int j = 0;
             for ( SourceBean source : ListSources ) {
-                if ( source.getType().equalsIgnoreCase( "Interpro" ) ) {
+                if ( source.getType().equalsIgnoreCase( MoleculeTypeHighlightmentSource.SOURCE_KEY ) ) {
                     tmpListSources.add( j, source );
                     j++;
                 }
@@ -27,7 +35,7 @@
 
         <td valign="top">
 
-            <!-- Interpro terms -->
+            <!-- Type terms -->
             <display:table
                     name="sessionScope.tmpListSources" width="100%" class="tsources"
                     decorator="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceDecorator">

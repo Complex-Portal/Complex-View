@@ -49,15 +49,21 @@ public class HVNetworkBuilder {
      * *********************************************************************
      * StrutsConstants
      */
-    public static final int DEFAULT_MAX_CENTRAL_PROTEIN = 7;
+    public static final int DEFAULT_MAX_PROTEIN = 500;
 
-    private static int MAX_CENTRAL_PROTEINS;
+    private static int MAX_PROTEINS;
 
-    public static final List<String> SOURCES;
+    public static final List<String> ALL_SOURCES;
+
+    public static final List<String> NODE_SOURCES;
+
+    public static final List<String> EDGE_SOURCES;
 
     static {
         // the default size should be big enough
-        SOURCES = new ArrayList<String>();
+        ALL_SOURCES = new ArrayList<String>( 4 );
+        NODE_SOURCES = new ArrayList<String>( 2 );
+        EDGE_SOURCES = new ArrayList<String>( 2 );
 
         // the properties which holds the information about the sources to
         // highlight
@@ -65,24 +71,48 @@ public class HVNetworkBuilder {
 
         if ( null != properties ) {
             // stores all allowed sources provided by the property
-            String allowedSources = IntactUserI.HIGHLIGHTING_PROPERTIES.getProperty( "highlightment.source.allowed" );
-            String delimiter = IntactUserI.HIGHLIGHTING_PROPERTIES.getProperty( "highlightment.source.token" );
+            String allowedNodeSources = IntactUserI.HIGHLIGHTING_PROPERTIES.getProperty( "highlightment.source.node.allowed" );
+            String NodeSourceDelimiter = IntactUserI.HIGHLIGHTING_PROPERTIES.getProperty( "highlightment.source.node.token" );
 
             // if sources are found and if a delimiter token was found
             // the sources are split and each source is added to the source list
-            if ( null != allowedSources ) {
-                if ( null != delimiter ) {
-                    StringTokenizer tokens = new StringTokenizer( allowedSources, delimiter );
+            if ( null != allowedNodeSources ) {
+                if ( null != NodeSourceDelimiter ) {
+                    StringTokenizer tokens = new StringTokenizer( allowedNodeSources, NodeSourceDelimiter );
                     while ( tokens.hasMoreTokens() ) {
                         // the current source is added to the source list
-                        SOURCES.add( tokens.nextToken().toLowerCase() );
+                        String nextToken = tokens.nextToken();
+                        ALL_SOURCES.add( nextToken );
+                        NODE_SOURCES.add( nextToken );
                     }
                 } else {
-                    logger.warn( "Unable to find the property highlightment.source.token" );
+                    logger.warn( "Unable to find the property highlightment.source.node.token" );
                 }
             } else {
-                logger.warn( "Unable to find the property highlightment.source.allowed" );
+                logger.warn( "Unable to find the property highlightment.source.node.allowed" );
             }
+
+            String allowedEdgeSources = IntactUserI.HIGHLIGHTING_PROPERTIES.getProperty( "highlightment.source.edge.allowed" );
+            String EdgeSourceDelimiter = IntactUserI.HIGHLIGHTING_PROPERTIES.getProperty( "highlightment.source.edge.token" );
+
+            // if sources are found and if a delimiter token was found
+            // the sources are split and each source is added to the source list
+            if ( null != allowedEdgeSources ) {
+                if ( null != EdgeSourceDelimiter ) {
+                    StringTokenizer tokens = new StringTokenizer( allowedEdgeSources, EdgeSourceDelimiter );
+                    while ( tokens.hasMoreTokens() ) {
+                        // the current source is added to the source list
+                        String nextToken = tokens.nextToken();
+                        ALL_SOURCES.add( nextToken );
+                        EDGE_SOURCES.add( nextToken );
+                    }
+                } else {
+                    logger.warn( "Unable to find the property highlightment.source.edge.token" );
+                }
+            } else {
+                logger.warn( "Unable to find the property highlightment.source.edge.allowed" );
+            }
+
         } else {
             logger.warn( "Unable to find the property files for the source highlight" );
         }
@@ -92,7 +122,7 @@ public class HVNetworkBuilder {
 
         // it is tried to parse the colors from the properties file
         if ( null != properties ) {
-            maxCentralProtein = properties.getProperty( "hierarchView.graph.max.cental.protein" );
+            maxCentralProtein = properties.getProperty( "hierarchView.graph.max.protein" );
         } else {
             logger.warn( "properties file GRAPH_PROPERTIES could not been read" );
         }
@@ -100,10 +130,10 @@ public class HVNetworkBuilder {
         // try to parse the maximal number of allowed central proteins
         // if the parsing fails the default value is taken
         try {
-            MAX_CENTRAL_PROTEINS = Integer.parseInt( maxCentralProtein );
+            MAX_PROTEINS = Integer.parseInt( maxCentralProtein );
         }
         catch ( NumberFormatException e ) {
-            MAX_CENTRAL_PROTEINS = DEFAULT_MAX_CENTRAL_PROTEIN;
+            MAX_PROTEINS = DEFAULT_MAX_PROTEIN;
         }
     }
 
@@ -135,8 +165,8 @@ public class HVNetworkBuilder {
         merger.setLabelStrategy( new AliasLabelStrategy() );
     }
 
-    public static int getMaxCentralProtein() {
-        return MAX_CENTRAL_PROTEINS;
+    public static int getMaxInteractions() {
+        return MAX_PROTEINS;
     }
 
     public Network buildBinaryGraphNetwork( String queryString ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
@@ -152,13 +182,16 @@ public class HVNetworkBuilder {
 
     public Network fusionBinaryGraphNetwork( Network in, String queryString ) throws HierarchViewDataException, NetworkBuildException, MultipleResultException, ProteinNotFoundException {
         in.initNodes();
+        in.initEdges();
         BinaryGraphNetwork network1 = ( BinaryGraphNetwork ) in.getGraphNetwork();
+
         Collection<BinaryInteraction> bis = dataservice.getBinaryInteractionsByQueryString( queryString );
 
         if ( bis != null && !bis.isEmpty() ) {
             Collection<String> centralProteinAcs = dataservice.getCentralProteins();
 
             try {
+
                 BinaryGraphNetwork network2 = builder.createGraphNetwork( bis, centralProteinAcs );
                 Network network = new InteractionNetwork( merger.mergeGraphNetworks( network1, network2 ) );
                 network.setBinaryInteractions( bis );
@@ -178,6 +211,8 @@ public class HVNetworkBuilder {
             throw new IllegalArgumentException( "Network must not be null. " );
         }
 
+        network.initNodes();
+        network.initEdges();
         StringBuffer query = new StringBuffer();
         switch ( complexExpansion ) {
             case Constants.ALL_EXPANSION: {
@@ -187,37 +222,8 @@ public class HVNetworkBuilder {
                     if ( iterator.hasNext() ) query.append( ", " );
                 }
             }
-            case Constants.BAIT_EXPANSION: {
-                Iterator<Node> iterator = network.getBaitNodes().iterator();
-                while ( iterator.hasNext() ) {
-                    query.append( iterator.next().getId() );
-                    if ( iterator.hasNext() ) query.append( ", " );
-                }
-            }
-            case Constants.NEUTRAL_COMPONENT_EXPANSION: {
-                Iterator<Node> iterator = network.getNeutralComponentNodes().iterator();
-                while ( iterator.hasNext() ) {
-                    query.append( iterator.next().getId() );
-                    if ( iterator.hasNext() ) query.append( ", " );
-                }
-            }
-            case Constants.ALL_WITHOUT_PREY_EXPANSION: {
-                Iterator<Node> iterator = network.getBaitNodes().iterator();
-                while ( iterator.hasNext() ) {
-                    query.append( iterator.next().getId() );
-                    if ( iterator.hasNext() ) query.append( ", " );
-                }
-                iterator = network.getNeutralComponentNodes().iterator();
-                if ( iterator.hasNext() ) query.append( ", " );
-                while ( iterator.hasNext() ) {
-                    query.append( iterator.next().getId() );
-                    if ( iterator.hasNext() ) query.append( ", " );
-                }
-            }
         }
 
-        //user.setQueryString( query.toString() );
-        logger.info( "New QueryString " + query.toString() );
         return fusionBinaryGraphNetwork( network, query.toString() );
     }
 }

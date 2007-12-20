@@ -51,8 +51,9 @@
         String url = graph2mif + "?ac=" + ac.toString()
                      + "&depth=" + user.getCurrentDepth()
                      + "&strict=false";
-        String url10 = url + "&version=1";
+//        String url10 = url + "&version=1";
         String url25 = url + "&version=" + HtmlEncoder.encode( "2.5" );
+        String mitab = request.getContextPath() + "/MitabExport";
 %>
 
 <hr>
@@ -67,7 +68,7 @@
         </th>
     </tr>
 
-    <tr>
+    <%--    <tr>
         <td valign="bottom" align="center">
             <nobr>
                 <img border="0" src="<%= request.getContextPath() %>/images/psi10.png"
@@ -75,13 +76,23 @@
                      onclick="w=window.open('<%= url10 %>', 'graph2mif');w.focus();">
             </nobr>
         </td>
-    </tr>
+    </tr>--%>
     <tr>
         <td valign="bottom" align="center">
             <nobr>
                 <img border="0" src="<%= request.getContextPath() %>/images/psi25.png"
                      alt="PSI-MI 2.5 Download"
                      onclick="w=window.open('<%= url25 %>', 'graph2mif');w.focus();">
+            </nobr>
+        </td>
+
+    </tr>
+    <tr>
+        <td valign="bottom" align="center">
+            <nobr>
+                <img border="0" src="<%= request.getContextPath() %>/images/mitab.png"
+                     alt="PSI-MI TAB Download"
+                     onclick="w=window.open('<%= mitab %>', 'graph2mif');w.focus();">
             </nobr>
         </td>
 

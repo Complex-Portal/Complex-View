@@ -43,15 +43,17 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
 
     public String getQueryString();
 
+    public String getErrorMessage();
+
+    public boolean hasErrorMessage();
+
     public String getApplicationPath();
 
     public int getCurrentDepth();
 
-    public int getDefaultDepth();
+    public void increaseDepth();
 
-    public boolean minimalDepthReached();
-
-    public boolean maximalDepthReached();
+    public void desacreaseDepth();
 
     public String getMethodLabel();
 
@@ -89,13 +91,15 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
 
     public String getSearchUrl();
 
-    public void setQueryString( String aQueryString );
-
-    public void increaseDepth();
-
-    public void desacreaseDepth();
-
     public void setDepthToDefault();
+
+    public void setCurrentDepth( int i );
+
+    public void setErrorMessage( String errorMessage );
+
+    public void clearErrorMessage();
+
+    public void setQueryString( String aQueryString );
 
     public void setMethodLabel( String methodLabel );
 
@@ -113,8 +117,6 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
 
     public void setSelectedKeyType( String keyType );
 
-    public void setCurrentDepth( int i );
-
     public void setInteractionNetwork( Network in );
 
     public void setSourceURL( String url );
@@ -124,6 +126,10 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
     public HVNetworkBuilder getHVNetworkBuilder();
 
     public DataService getDataService();
+
+    public int getNetworkUpdateOption();
+
+    public void setNetworkUpdateOption( int option );
 
 
     /**

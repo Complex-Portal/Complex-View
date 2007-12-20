@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.InitForm;
@@ -53,14 +52,18 @@ public final class InitAction extends IntactBaseAction {
     public ActionForward execute( ActionMapping mapping,
                                   ActionForm form,
                                   HttpServletRequest request,
-                                  HttpServletResponse response )
-            throws IOException, ServletException, SessionExpiredException {
+                                  HttpServletResponse response ) throws IOException, ServletException {
 
         // Clear any previous errors.
         clearErrors();
 
         // get a session
         HttpSession session = getNewSession( request );
+
+//        if (!IntactContext.currentInstanceExists()) {
+//            IntactContext.initContext( "intact-core-mem", new WebappSession(session.getServletContext(), session, request) );
+//        }
+
         IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
 
         if ( null != user ) {

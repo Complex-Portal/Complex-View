@@ -49,7 +49,6 @@ public class HVNetworkBuilderTest {
             assertNotNull( node.getId() );
             assertNotNull( node.getLabel() );
         }
-        assertEquals( 2, network.getBaitNodes().size() );
 
         assertEquals( 7, network.getEdges().size() );
 
@@ -57,10 +56,10 @@ public class HVNetworkBuilderTest {
         assertEquals( 28, network.getProperties( centralNode1 ).size() );
         assertEquals( 27, network.getProperties( centralNode2 ).size() );
 
-        network.initSourceHighlightMap();
-        assertEquals( 2, network.getProteinsForHighlight( "All", "GO:0005634" ).size() );
-        assertEquals( 5, network.getProteinsForHighlight( "GO", "GO:0005515" ).size() );
-        assertEquals( 2, network.getProteinsForHighlight( "Interpro", "IPR015188" ).size() );
+        network.initHighlightMap();
+        assertEquals( 2, network.getNodesForHighlight( "All", "GO:0005634" ).size() );
+        assertEquals( 5, network.getNodesForHighlight( "GO", "GO:0005515" ).size() );
+        assertEquals( 2, network.getNodesForHighlight( "Interpro", "IPR015188" ).size() );
     }
 
     @Test

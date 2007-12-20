@@ -17,7 +17,7 @@
 
             int j = 0;
             for ( SourceBean sourceBean : ListSources ) {
-                if ( sourceBean.getType().equals( "Go" ) ) {
+                if ( sourceBean.getType().equalsIgnoreCase( "GO" ) ) {
                     tmpListSources.add( j, sourceBean );
                     j++;
                 }
@@ -33,7 +33,7 @@
                     decorator="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceDecorator">
                 <display:column property="description" title="Description" width="55%" align="left"/>
                 <display:column property="directHighlightUrl" title="Show" width="8%" align="center"/>
-                <display:column property="graph" title="Browse" width="8%" align="center"/>
+                <%--<display:column property="graph" title="Browse" width="8%" align="center"/>--%>
                 <display:column property="count" title="Count" width="9%" align="center"/>
                 <display:column property="id" title="ID" width="20%" align="left"/>
                 <display:setProperty name="basic.msg.empty_list"

@@ -57,7 +57,6 @@
         <filter-name>intactFilter</filter-name>
         <filter-class>uk.ac.ebi.intact.webapp.IntactSessionRequestFilter</filter-class>
     </filter>
-
     <filter-mapping>
         <filter-name>intactFilter</filter-name>
         <url-pattern>*.do</url-pattern>
@@ -101,9 +100,22 @@
         <servlet-class>uk.ac.ebi.intact.application.hierarchview.business.servlet.GenerateImage</servlet-class>
     </servlet>
 
+    <!-- Declaration of the TAB exporter servlet -->
+    <servlet>
+        <servlet-name>MitabExport</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.application.hierarchview.business.servlet.MitabExport</servlet-class>
+    </servlet>
+
+    <!-- =================================================================== -->
+
     <servlet-mapping>
         <servlet-name>GenerateImage</servlet-name>
         <url-pattern>/GenerateImage</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>MitabExport</servlet-name>
+        <url-pattern>/MitabExport</url-pattern>
     </servlet-mapping>
 
     <!-- =================================================================== -->
@@ -122,7 +134,7 @@
          HttpSession.getMaxInactiveInterval().
       -->
     <session-config>
-        <session-timeout>20</session-timeout>
+        <session-timeout>1</session-timeout>
         <!-- 20 minutes -->
     </session-config>
 

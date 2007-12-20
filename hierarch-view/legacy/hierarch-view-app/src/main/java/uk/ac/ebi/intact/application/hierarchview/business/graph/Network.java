@@ -15,8 +15,8 @@
  */
 package uk.ac.ebi.intact.application.hierarchview.business.graph;
 
+import psidev.psi.mi.tab.model.Author;
 import psidev.psi.mi.tab.model.BinaryInteraction;
-import psidev.psi.mi.tab.model.Confidence;
 import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageDimension;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
@@ -27,6 +27,7 @@ import uk.ac.ebi.intact.service.graph.Node;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -38,23 +39,37 @@ import java.util.Set;
  */
 public interface Network {
 
+    Author getAuthorByPMID( String pmid );
+
+    CrossReference getCrossReferenceById( String id );
+
     NodeAttributes getNodeAttributes( Node node );
+
+    EdgeAttributes getEdgeAttributes( Edge edge );
 
     Collection<BinaryInteraction> getBinaryInteraction();
 
     GraphNetwork getGraphNetwork();
 
+    Map getNodeHighlightMap();
+
+    Map getEdgeHighlightMap();
+
     void setBinaryInteractions( Collection<BinaryInteraction> binaryInteractions );
 
     Collection<CrossReference> getProperties( Node node );
 
-    boolean isSourceHighlightMapEmpty();
+    boolean isNodeHighlightMapEmpty();
 
-    void initSourceHighlightMap();
+    boolean isEdgeHighlightMapEmpty();
 
-    int getDatabaseTermCount( String TermId );
+    void initHighlightMap();
 
-    Set<Node> getProteinsForHighlight( String source, String sourceID );
+    int getDatabaseTermCount( String source, String TermId );
+
+    Set<Node> getNodesForHighlight( String source, String sourceID );
+
+    Set<Edge> getEdgesForHighlight( String source, String sourceID );
 
     List<Node> getCentralNodes();
 
@@ -63,6 +78,8 @@ public interface Network {
     void addCriteria( CriteriaBean aCriteria );
 
     void initNodes();
+
+    void initEdges();
 
     ImageDimension getImageDimension();
 
@@ -75,11 +92,4 @@ public interface Network {
     Collection<Edge> getEdges();
 
     List<Node> getNodes();
-
-    List<Node> getBaitNodes();
-
-    List<Node> getNeutralComponentNodes();
-
-    List<Confidence> getConfidenceValues( Edge edge );
-
 }

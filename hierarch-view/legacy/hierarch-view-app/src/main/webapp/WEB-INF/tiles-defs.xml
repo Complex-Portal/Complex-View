@@ -149,10 +149,15 @@
         <put name="selectedIndex" value="0"/>
         <put name="parameterName" value="selected"/>
         <putList name="tabList">
-            <item value="All" link="/pages/allTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
             <item value="GO" link="/pages/goTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
             <item value="Interpro" link="/pages/interproTab.jsp"
                   classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="Role" link="/pages/roleTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="MoleculeType" link="/pages/typeTab.jsp"
+                  classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="Confidence" link="/pages/confidenceTab.jsp"
+                  classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="PMID" link="/pages/pmidTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
         </putList>
     </definition>
 
