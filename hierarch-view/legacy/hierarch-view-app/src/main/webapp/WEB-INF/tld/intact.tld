@@ -39,7 +39,8 @@
 
     <tag>
         <name>saveErrors</name>
-        <tag-class>uk.ac.ebi.intact.application.commons.struts.taglibs.SaveErrorsTag</tag-class>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.SaveErrorsTag</tag-class>
+        <!--<tag-class>uk.ac.ebi.intact.application.commons.struts.taglibs.SaveErrorsTag</tag-class>-->
         <body-content>empty</body-content>
         <description>
             Save in the session scope any ActionErrors available in the request scope.
@@ -48,7 +49,8 @@
 
     <tag>
         <name>restoreErrors</name>
-        <tag-class>uk.ac.ebi.intact.application.commons.struts.taglibs.RestoreErrorsTag</tag-class>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.RestoreErrorsTag</tag-class>
+        <!--<tag-class>uk.ac.ebi.intact.application.commons.struts.taglibs.RestoreErrorsTag</tag-class>-->
         <body-content>empty</body-content>
         <description>
             Restore in the request scope any errors saved in the session scope via
@@ -58,7 +60,8 @@
 
     <tag>
         <name>clearErrors</name>
-        <tag-class>uk.ac.ebi.intact.application.commons.struts.taglibs.ClearErrorsTag</tag-class>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.ClearErrorsTag</tag-class>
+        <!--<tag-class>uk.ac.ebi.intact.application.commons.struts.taglibs.ClearErrorsTag</tag-class>-->
         <body-content>empty</body-content>
         <description>
             Clear from the request scope (in pageRequest) any errors collected by struts.
