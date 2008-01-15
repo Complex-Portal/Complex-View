@@ -35,7 +35,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 
 /**
- * TODO comment that class header
+ * Displays BinaryInteractions in a new Window.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -50,6 +50,7 @@ public class MitabExport extends HttpServlet {
         response.setContentType( "text/plain" );
 
         IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+
         if ( user != null ) {
             Network network = user.getInteractionNetwork();
             if ( network != null ) {
@@ -62,7 +63,6 @@ public class MitabExport extends HttpServlet {
                 try {
                     writer.write( interactions, out );
                 } catch ( Exception e ) {
-                    //e.printStackTrace();
                     throw new ServletException( e );
                 }
             }

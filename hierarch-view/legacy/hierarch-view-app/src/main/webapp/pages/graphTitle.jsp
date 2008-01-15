@@ -39,28 +39,26 @@
     Network in = user.getInteractionNetwork();
     if ( in == null ) return;
 
-    if ( user.getQueryString() == null ) return;
-
     StringBuffer contextToDisplay = new StringBuffer( 256 );
     StringBuffer infoToDisplay = null;
     StringBuffer errorToDisplay = null;
 
-    if ( user.getMinePath() == null ) {
+    // If there are nodes and edges display: <Result: x molecules, y interactions.>
+    if ( in.getNodes() != null && in.getEdges() != null ) {
         infoToDisplay = new StringBuffer( 256 );
-        if ( in.getNodes() != null && in.getEdges() != null ) {
-            infoToDisplay.append( "Result: " );
-            infoToDisplay.append( "<strong>" ).append( in.getNodes().size() ).append( "</strong> molecules, " );
-            infoToDisplay.append( "<strong>" ).append( in.getEdges().size() ).append( "</strong> interactions." );
-        }
 
+        infoToDisplay.append( "Result: " );
+        infoToDisplay.append( "<strong>" ).append( in.getNodes().size() ).append( "</strong> molecules, " );
+        infoToDisplay.append( "<strong>" ).append( in.getEdges().size() ).append( "</strong> interactions." );
+    }
+
+    if ( user.getMinePath() == null ) {
         contextToDisplay.append( "Query: " );
     } else {
-        String net = "This is the minimal connecting network for ";
-        contextToDisplay.append( net );
+        contextToDisplay.append( "This is the minimal connecting network for " );
     }
 
     contextToDisplay.append( "<strong>" );
-    // the normal hv display
     if ( in.getCentralNodes() != null && !in.getCentralNodes().isEmpty() ) {
 
         Collection<Node> centralNodes = in.getCentralNodes();
@@ -85,11 +83,13 @@
         }
 
     } else {
-        contextToDisplay.append( user.getQueryString() );
+        String query = user.getQueryString();
+        if ( query == null ) return;
+        contextToDisplay.append( query );
     }
     contextToDisplay.append( "</strong>" );
 
-    if ( user.getErrorMessage() != null ) {
+    if ( user.hasErrorMessage() ) {
         errorToDisplay = new StringBuffer();
 
         errorToDisplay.append( "<strong><font color=\"red\">" );

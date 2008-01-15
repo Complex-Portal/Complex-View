@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 The European Bioinformatics Institute, and others.
+ * Copyright 2008 The European Bioinformatics Institute, and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import uk.ac.ebi.intact.service.graph.Node;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Interface allowing to wrap an highlightment source.
@@ -37,22 +36,20 @@ import java.util.regex.Pattern;
  * @version $Id$
  * @since 1.6.0-Snapshot
  */
-public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
+public class SpeciesHighlightmentSource extends NodeHighlightmentSource {
 
-    private static final Log logger = LogFactory.getLog( RoleHighlightmentSource.class );
+    private static final Log logger = LogFactory.getLog( SpeciesHighlightmentSource.class );
 
     private static final String ATTRIBUTE_OPTION_CHILDREN = "CHILDREN";
-    private static final String PROMPT_OPTION_CHILDREN = "With children of the selected MoleculeType term";
-
-    private static final Pattern MI_REF_PATTERN = Pattern.compile( "MI:[0-9]{4}" );
+    private static final String PROMPT_OPTION_CHILDREN = "With children of the selected Species term";
 
     /**
-     * The key for this source 'moleculeType'
+     * The key for this source 'Species'
      */
     public static final String SOURCE_KEY;
 
     static final String SOURCE_CLASS;
-    private static final String MIRefPath;
+    private static final String path;
 
     static {
 
@@ -60,40 +57,40 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
         Properties props = IntactUserI.HIGHLIGHTING_PROPERTIES;
 
         if ( null == props ) {
-            String msg = "Unable to find the moleculeType hostname. "
+            String msg = "Unable to find the Species hostname. "
                          + "The properties file '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' couldn't be loaded.";
             logger.error( msg );
             throw new IntactException( msg );
         }
-        SOURCE_KEY = props.getProperty( "highlightment.source.node.MoleculeType.label" );
+        SOURCE_KEY = props.getProperty( "highlightment.source.node.Species.label" );
 
         if ( null == SOURCE_KEY ) {
-            String msg = "Unable to find the moleculeType Label. "
-                         + "Check the 'highlightment.source.node.MoleculeType.label' property in the '"
+            String msg = "Unable to find the Species Label. "
+                         + "Check the 'highlightment.source.node.Species.label' property in the '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' properties file";
             logger.error( msg );
             throw new IntactException( msg );
         }
 
-        MIRefPath = props.getProperty( "highlightment.source.node.MoleculeType.applicationPath" );
+        path = props.getProperty( "highlightment.source.node.Species.applicationPath" );
 
-        if ( null == MIRefPath ) {
-            String msg = "Unable to find the moleculeType MIRefPath. "
-                         + "Check the 'highlightment.source.node.MoleculeType.MIRefPath' property in the '"
+        if ( null == path ) {
+            String msg = "Unable to find the Species path. "
+                         + "Check the 'highlightment.source.node.Species.path' property in the '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' properties file";
             logger.error( msg );
             throw new IntactException( msg );
         }
 
-        SOURCE_CLASS = props.getProperty( "highlightment.source.node.MoleculeType.class" );
+        SOURCE_CLASS = props.getProperty( "highlightment.source.node.Species.class" );
 
         if ( null == SOURCE_CLASS ) {
-            String msg = "Unable to find the moleculeType Class. "
-                         + "Check the 'highlightment.source.node.MoleculeType.class' property in the '"
+            String msg = "Unable to find the Species Class. "
+                         + "Check the 'highlightment.source.node.Species.class' property in the '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' properties file";
             logger.error( msg );
@@ -129,14 +126,14 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
      * Returns a collection of proteins to be highlighted in the graph.
      *
      * @param network       the network
-     * @param selectedTerms the selected Term
+     * @param selectedTerms the selected Terms
      * @return
      */
     public Collection<Node> proteinToHighlightSourceMap( Network network, Collection<String> selectedTerms ) {
 
         Collection<Node> nodeList = new ArrayList( 20 ); // should be enough for 90% cases
 
-        // retrieve the set of proteins to highlight for the source key (e.g. MoleculeType) and the selected MoleculeType Terms
+        // retrieve the set of proteins to highlight for the source key (e.g. Role) and the selected Role Terms
         Set<Node> proteinsToHighlight = null;
         if ( selectedTerms != null ) {
             for ( String selectedGOTerm : selectedTerms ) {
@@ -151,48 +148,42 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
         return nodeList;
     }
 
-    public List<SourceBean> getSourceUrls( Network network,
-                                           Collection<String> selectedSourceTerms,
-                                           String applicationPath ) {
+    public List getSourceUrls( Network network,
+                               Collection<String> selectedSourceTerms,
+                               String applicationPath ) {
 
         List<SourceBean> urls = new ArrayList();
 
-        // filter to keep only MoleculeType terms
+        // filter to keep only Species terms
         if ( network.isNodeHighlightMapEmpty() ) {
             network.initHighlightMap();
         }
 
-        Map highlightMoleculeTypeMap = ( Map ) network.getNodeHighlightMap().get( SOURCE_KEY );
+        Map highlightSpeciesMap = ( Map ) network.getNodeHighlightMap().get( SOURCE_KEY );
 
-        if ( highlightMoleculeTypeMap != null && !highlightMoleculeTypeMap.isEmpty() ) {
-            Set<String> keySet = highlightMoleculeTypeMap.keySet();
+        if ( highlightSpeciesMap != null && !highlightSpeciesMap.isEmpty() ) {
+            Set<String> keySet = highlightSpeciesMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
-
-                for ( String termInfo : keySet ) {
+                for ( String termId : keySet ) {
 
                     String termType = SOURCE_KEY;
-                    String termId = termInfo;
                     String termDescription = null;
 
-                    CrossReference xref = network.getCrossReferenceById( termInfo );
+                    CrossReference xref = network.getCrossReferenceById( termId );
                     if ( xref != null ) {
-                        termId = xref.getDatabase() + ":" + xref.getIdentifier();
-
                         if ( xref.hasText() ) {
                             termDescription = xref.getText();
                         }
                     }
-
-
-                    int termCount = network.getDatabaseTermCount( termType, termInfo );
+                    int termCount = network.getDatabaseTermCount( termType, termId );
 
                     // to summarize
                     if ( logger.isDebugEnabled() )
-                        logger.info( "TermType=" + termType + " | " +
-                                     "TermId=" + termId + " | " +
-                                     "TermDescription=" + termDescription + " | " +
-                                     "TermCount=" + termCount );
+                        logger.debug( "TermType=" + termType + " | " +
+                                      "TermId=" + termId + " | " +
+                                      "TermDescription=" + termDescription + " | " +
+                                      "TermCount=" + termCount );
 
                     /*
                     * In order to avoid the browser to cache the response to that request
@@ -200,18 +191,20 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
                     */
                     String randomParam = "&now=" + System.currentTimeMillis();
 
+
                     String directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, termType, randomParam );
                     String hierarchViewURL = getHierarchViewUrl( randomParam, applicationPath );
 
                     String quickUrl = null;
                     String quickGraphUrl = null;
 
-                    if ( MI_REF_PATTERN.matcher( termId ).find() ) {
-                        quickUrl = MIRefPath + "/?termId=" + termId + "&format=contentonly";
-                        quickGraphUrl = MIRefPath + "/?termId="
-                                        + termId + "&intact=true&format=contentonly&url="
-                                        + hierarchViewURL + "&frame=_top";
-                    }
+
+                    quickUrl = path + "/?termId=" + termId + "&format=contentonly";
+
+                    quickGraphUrl = path + "/?termId="
+                                    + termId + "&intact=true&format=contentonly&url="
+                                    + hierarchViewURL + "&frame=_top";
+
 
                     boolean selected = false;
                     if ( selectedSourceTerms != null ) {

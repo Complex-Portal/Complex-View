@@ -36,7 +36,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * TODO comment that class header
+ * Uses a static psimitabfile to get Information for building graph.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class DataServiceMock implements DataService {
 
-    String query;
+    private String query;
 
     private final SearchHelperI searchHelper = new SearchHelper();
 
@@ -106,17 +106,7 @@ public class DataServiceMock implements DataService {
         return "mock";
     }
 
-    public File getTargetDirectory() throws UnsupportedEncodingException {
-        String outputDirPath = getFileByResources( "/", DataServiceMock.class ).getAbsolutePath();
-
-        File outputDir = new File( outputDirPath );
-        // we are in test-classes, move one up
-        outputDir = outputDir.getParentFile();
-
-        return outputDir;
-    }
-
-    public File getFileByResources( String fileName, Class clazz ) throws UnsupportedEncodingException {
+    File getFileByResources( String fileName, Class clazz ) throws UnsupportedEncodingException {
         String strFile = clazz.getResource( fileName ).getFile();
         return new File( URLDecoder.decode( strFile, "utf-8" ) );
     }

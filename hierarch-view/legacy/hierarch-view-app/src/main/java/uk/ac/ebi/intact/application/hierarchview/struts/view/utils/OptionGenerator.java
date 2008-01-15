@@ -8,6 +8,7 @@ package uk.ac.ebi.intact.application.hierarchview.struts.view.utils;
 import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 
 import java.util.ArrayList;
@@ -158,25 +159,39 @@ public class OptionGenerator {
      * @return a LabelValueBean object or null if it doesn't exists.
      */
     public static LabelValueBean getSource( String sourceName ) {
+        String sourceListPath = null;
+        String highlightmentPath = null;
+        String tokenPath = null;
+
+        if ( HVNetworkBuilder.NODE_SOURCES.contains( sourceName ) ) {
+            sourceListPath = "highlightment.source.node.allowed";
+            highlightmentPath = "highlightment.source.node.";
+            tokenPath = "highlightment.source.node.token";
+        }
+        if ( HVNetworkBuilder.EDGE_SOURCES.contains( sourceName ) ) {
+            sourceListPath = "highlightment.source.edge.allowed";
+            highlightmentPath = "highlightment.source.edge.";
+            tokenPath = "highlightment.source.edge.token";
+        }
 
         // read the Highlighting.proterties file
         Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;
 
         if ( null != properties ) {
 
-            String sourceList = properties.getProperty( "highlightment.source.node.allowed" );
+            String sourceList = properties.getProperty( sourceListPath );
 
             if ( ( null == sourceList ) || ( sourceList.length() < 1 ) ) {
-                logger.warn( "Unable to find the property: highlightment.source.node.allowed (" +
+                logger.warn( "Unable to find the property: " + sourceListPath + " (" +
                              StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
                 return null;
             }
 
             // parse source list
-            String token = properties.getProperty( "highlightment.source.node.token" );
+            String token = properties.getProperty( tokenPath );
 
             if ( ( null == token ) || ( token.length() < 1 ) ) {
-                logger.warn( "Unable to find the property: highlightment.source.node.token (" +
+                logger.warn( "Unable to find the property: " + tokenPath + " (" +
                              StrutsConstants.HIGHLIGHTING_PROPERTY_FILE + ")" );
                 return null;
             }
@@ -186,7 +201,7 @@ public class OptionGenerator {
             while ( st.hasMoreTokens() ) {
                 String sourceKey = st.nextToken();
                 if ( sourceKey.equals( sourceName ) ) {
-                    String propName = "highlightment.source.node." + sourceKey + ".label";
+                    String propName = highlightmentPath + sourceKey + ".label";
                     String label = properties.getProperty( propName );
 
                     if ( ( null == label ) || ( label.length() < 1 ) ) {

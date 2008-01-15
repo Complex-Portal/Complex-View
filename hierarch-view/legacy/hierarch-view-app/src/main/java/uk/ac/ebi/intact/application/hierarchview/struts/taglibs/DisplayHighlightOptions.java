@@ -5,7 +5,8 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
@@ -28,7 +29,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class DisplayHighlightOptions extends TagSupport {
 
-    static final Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+    private static final Log logger = LogFactory.getLog( DisplayHighlightOptions.class );
 
     /**
      * Skip the body content.

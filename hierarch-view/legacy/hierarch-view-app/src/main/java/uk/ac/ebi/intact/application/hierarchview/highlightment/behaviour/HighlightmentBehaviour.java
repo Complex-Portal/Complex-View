@@ -5,8 +5,8 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.hierarchview.highlightment.behaviour;
 
-import org.apache.log4j.Logger;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 
 import java.util.Collection;
@@ -23,7 +23,7 @@ import java.util.Collection;
 
 public abstract class HighlightmentBehaviour {
 
-    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+    private static final Log logger = LogFactory.getLog( HighlightmentBehaviour.class );
 
     /**
      * Provides a implementation of HighlightmentBehaviour from its name.<br>
@@ -67,7 +67,7 @@ public abstract class HighlightmentBehaviour {
      *
      * @param aObject the node on which we want to apply the behaviour
      */
-    abstract public void applyBehaviour( Object aObject, Network aGraph );
+    abstract protected void applyBehaviour( Object aObject, Network aGraph );
 
     /**
      * Allow to apply a modification on the collection of protein to highlight.
@@ -80,7 +80,7 @@ public abstract class HighlightmentBehaviour {
      * @param aGraph   the current interaction network
      * @return the new collection of protein to highlight
      */
-    public Collection<?> modifyCollection( Collection<?> proteins, Network aGraph ) {
+    Collection<?> modifyCollection( Collection<?> proteins, Network aGraph ) {
         return proteins;
     }
 

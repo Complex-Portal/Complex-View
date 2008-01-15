@@ -49,12 +49,6 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
 
     public String getApplicationPath();
 
-    public int getCurrentDepth();
-
-    public void increaseDepth();
-
-    public void desacreaseDepth();
-
     public String getMethodLabel();
 
     public String getMethodClass();
@@ -63,11 +57,9 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
 
     public ImageBean getImageBean();
 
-    public String getNodeCoordinates();
+    public Collection<String> getSelectedKeys();
 
-    public Collection<String> getKeys();
-
-    public String getSelectedKey();
+    public String getClickedKey();
 
     public String getSelectedKeyType();
 
@@ -91,10 +83,6 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
 
     public String getSearchUrl();
 
-    public void setDepthToDefault();
-
-    public void setCurrentDepth( int i );
-
     public void setErrorMessage( String errorMessage );
 
     public void clearErrorMessage();
@@ -111,9 +99,9 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
 
     public void setNodeCoordinates( String nodeCoordinates );
 
-    public void setKeys( Collection keys );
+    public void setSelectedKeys( Collection keys );
 
-    public void setSelectedKey( String key );
+    public void setClickedKey( String key );
 
     public void setSelectedKeyType( String keyType );
 
@@ -131,6 +119,9 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
 
     public void setNetworkUpdateOption( int option );
 
+    public void pushNetwork( Network network );
+
+    public Network popNetwork();
 
     /**
      * Set the default value of user's data

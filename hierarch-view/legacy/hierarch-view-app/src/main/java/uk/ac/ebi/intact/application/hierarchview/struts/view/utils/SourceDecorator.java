@@ -9,9 +9,10 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.hierarchview.struts.view.utils;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.displaytag.decorator.TableDecorator;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.GoHighlightmentSource;
 
 
 /**
@@ -41,7 +42,7 @@ import uk.ac.ebi.intact.application.hierarchview.business.Constants;
  */
 public class SourceDecorator extends TableDecorator {
 
-    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+    private static Log logger = LogFactory.getLog( SourceDecorator.class );
 
     /**
      * Transform the label and value data contained by the LabelValueBean being
@@ -59,10 +60,13 @@ public class SourceDecorator extends TableDecorator {
         final String sourceBrowserUrl = bean.getSourceBrowserUrl();
 
         logger.info( "getId() for " + id );
-
-        return "<a href=\"javascript:self.location();\" onClick=\"javascript:window.open('"
-               + sourceBrowserUrl + "','" + id + "',"
-               + "'width=600,height=500,scrollbars=yes');\">" + id + "</a>";
+        if ( sourceBrowserUrl != null ) {
+            return "<a href=\"javascript:self.location();\" onClick=\"javascript:window.open('"
+                   + sourceBrowserUrl + "','" + id + "',"
+                   + "'width=600,height=500,scrollbars=yes');\">" + id + "</a>";
+        } else {
+            return id;
+        }
     }
 
 
@@ -75,7 +79,7 @@ public class SourceDecorator extends TableDecorator {
         SourceBean bean = ( SourceBean ) this.getCurrentRowObject();
         if ( bean == null ) return "";
 
-        if ( bean.getType().equals( "Go" ) ) {
+        if ( bean.getType().equals( GoHighlightmentSource.SOURCE_KEY ) ) {
             final String sourceBrowserGraphUrl = bean.getSourceBrowserGraphUrl();
 
             String applicationPath = bean.getApplicationPath();
@@ -107,8 +111,11 @@ public class SourceDecorator extends TableDecorator {
             return "<a href=\"" + url + "\" target=\"_top\"><img src=\"" + applicationPath +
                    "/images/ok-grey.png\" border=\"0\" align=\"middle\" alt=\"(*)\" /></a>";
         } else {
-            return "<img src=\"" + applicationPath +
-                   "/images/ok-red.png\" border=\"0\" align=\"middle\" alt=\"(-)\" />";
+            final String url = bean.getDirectHighlightUrl();
+            return "<a href=\"" + url + "\" target=\"_top\"><img src=\"" + applicationPath +
+                   "/images/ok-red.png\" border=\"0\" align=\"middle\" alt=\"(*)\" /></a>";
+//            return "<img src=\"" + applicationPath +
+//                   "/images/ok-red.png\" border=\"0\" align=\"middle\" alt=\"(-)\" />";
         }
     }
 

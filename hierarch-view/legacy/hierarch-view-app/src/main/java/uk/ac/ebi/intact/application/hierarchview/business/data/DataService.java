@@ -19,7 +19,6 @@ import psidev.psi.mi.tab.model.BinaryInteraction;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
-import uk.ac.ebi.intact.searchengine.CriteriaBean;
 
 import java.util.Collection;
 
@@ -35,8 +34,6 @@ public interface DataService {
     Collection<String> getCentralProteins();
 
     Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException;
-
-    Collection<CriteriaBean> getSearchCritera();
 
     String getDbName() throws HierarchViewDataException;
 

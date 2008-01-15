@@ -19,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.image.Utilities;
-import uk.ac.ebi.intact.service.graph.Node;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -43,8 +42,8 @@ public class NodeAttributes {
      * *********************************************************************
      * StrutsConstants
      */
-    public final static Color DEFAULT_NODE_COLOR = new Color( 0, 0, 255 );
-    public final static Color DEFAULT_LABEL_COLOR = new Color( 255, 255, 255 );
+    private final static Color DEFAULT_NODE_COLOR = new Color( 0, 0, 255 );
+    private final static Color DEFAULT_LABEL_COLOR = new Color( 255, 255, 255 );
 
     public final static Color NODE_COLOR;
     public final static Color LABEL_COLOR;
@@ -69,7 +68,7 @@ public class NodeAttributes {
     private Map<String, Object> attributes;
 
 
-    public NodeAttributes( Node node ) {
+    public NodeAttributes() {
         //this.node = node;
         attributes = new HashMap();
     }

@@ -23,7 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implementation of <strong>Action</strong> that validates an highlightment submisson.
@@ -62,55 +63,61 @@ public final class SourceAction extends IntactBaseAction {
         HttpSession session = null;
         IntactUserI user = null;
 
-//        try {
         // get the current session
         session = getSession( request );
 
         // retreive user fron the session
         user = getIntactUser( session );
-
-//        } catch ( SessionExpiredException see ) {
-//            String applicationPath = request.getContextPath();
-//            if ( applicationPath == null ) {
-//                applicationPath = "";
-//            }
-//            logger.error( "Session expired, gives a link to " + applicationPath );
-//            addError( "error.session.expired", applicationPath );
-//            saveErrors( request );
-//            return ( mapping.findForward( "error" ) );
-//        }
-
         String someKeys = request.getParameter( StrutsConstants.ATTRIBUTE_KEYS_LIST );
-        String clickedKeys = request.getParameter( StrutsConstants.ATTRIBUTE_KEY_CLICKED );
+        String clickedKey = request.getParameter( StrutsConstants.ATTRIBUTE_KEY_CLICKED );
         String keyType = request.getParameter( StrutsConstants.ATTRIBUTE_KEY_TYPE );
         String selectedTabIndex = request.getParameter( "selected" );
 
-        if ( ( null == clickedKeys ) || ( clickedKeys.trim().length() == 0 ) ) {
-            addError( "error.keys.required" );
+        if ( clickedKey != null && clickedKey.trim().length() == 0 ) {
+            addError( "error.selectedKeys.required" );
             saveErrors( request );
             return ( mapping.findForward( "error" ) );
         }
 
         // get the class method name to create an instance
-        Collection<String> keys = null;
+        Set<String> selectedKeys = null;
 
         if ( HVNetworkBuilder.NODE_SOURCES.contains( keyType ) ) {
-            keys = NodeHighlightmentSource.parseKeys( someKeys );
+            selectedKeys = NodeHighlightmentSource.parseKeys( someKeys );
         }
         if ( HVNetworkBuilder.EDGE_SOURCES.contains( keyType ) ) {
-            keys = EdgeHighlightmentSource.parseKeys( someKeys );
+            selectedKeys = EdgeHighlightmentSource.parseKeys( someKeys );
         }
 
-        if ( keys != null ) {
-            user.setKeys( keys );
-            user.setSelectedKey( clickedKeys );
-            user.setSelectedKeyType( keyType );
-        } else {
-            logger.error( "No Keys available for " + someKeys );
+        if ( clickedKey != null ) {
+            if ( selectedKeys == null ) {
+                selectedKeys = new HashSet<String>();
+                selectedKeys.add( clickedKey );
+            } else {
+                if ( selectedKeys.isEmpty() ) {
+                    selectedKeys.add( clickedKey );
+                } else {
+                    // if sourceId already highlighted
+                    if ( selectedKeys.contains( clickedKey ) ) {
+                        // deselect sourceId
+                        selectedKeys.remove( clickedKey );
+                    } else {
+                        // do nothing
+                        selectedKeys.add( clickedKey );
+                    }
+                }
+            }
         }
 
-        logger.debug( "SourceAction: selectedKey=" + clickedKeys + " | keys=" + someKeys +
-                      " | keys type=" + keyType + " | selectedTabIndex=" + selectedTabIndex + "\nlogged on in session " + session.getId() );
+        user.setSelectedKeys( selectedKeys );
+        user.setClickedKey( clickedKey );
+        user.setSelectedKeyType( keyType );
+
+        if ( logger.isDebugEnabled() ) {
+            logger.debug( "SourceAction: clickedKey=" + clickedKey + " | selectedKeys=" + selectedKeys +
+                          " | selectedKeys type=" + keyType + " | selectedTabIndex=" + selectedTabIndex +
+                          "\nlogged on in session " + session.getId() );
+        }
 
         // Remove the obsolete form bean
         if ( mapping.getAttribute() != null ) {

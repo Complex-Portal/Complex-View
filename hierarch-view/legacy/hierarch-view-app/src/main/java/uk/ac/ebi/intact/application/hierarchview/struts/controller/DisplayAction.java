@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
@@ -85,7 +86,7 @@ public final class DisplayAction extends IntactBaseAction {
         }
         String AC = request.getParameter( "AC" );
         String methodLabel = request.getParameter( "method" );
-//        String depth = request.getParameter( "depth" );
+        String depth = request.getParameter( "depth" );
 
         String methodClass = null;
         String behaviourDefault = null;
@@ -156,19 +157,24 @@ public final class DisplayAction extends IntactBaseAction {
             if ( singletons != null && !"null".equals( singletons ) ) {
                 session.setAttribute( "singletons", singletons );
             }
-//            try {
-//                int d = Integer.parseInt( depth );
-//                user.setCurrentDepth( d );
-//            }
-//            catch ( NumberFormatException nfe ) {
-//                user.setDepthToDefault();
-//            }
+            Network in = user.getInteractionNetwork();
+
+            if ( in != null ) {
+                in.initEdges();
+                in.initNodes();
+                try {
+                    int d = Integer.parseInt( depth );
+                    in.setDepth( d );
+                }
+                catch ( NumberFormatException nfe ) {
+                    in.setDepthToDefault();
+                }
+            }
             user.setMethodLabel( methodLabel );
             user.setMethodClass( methodClass );
             user.setBehaviour( behaviourDefault );
 
             // Creation of the graph and the image
-
             updateInteractionNetwork( user, StrutsConstants.CREATE_INTERACTION_NETWORK );
             produceImage( user );
 
@@ -186,7 +192,7 @@ public final class DisplayAction extends IntactBaseAction {
             }
         }
 
-        logger.info( "DisplayAction: AC=" + AC /*+ " depth=" + depth*/
+        logger.info( "DisplayAction: AC=" + AC + " depth=" + depth
                      + " methodLabel=" + methodLabel + " methodClass=" + methodClass );
 
         // Forward control to the specified success URI

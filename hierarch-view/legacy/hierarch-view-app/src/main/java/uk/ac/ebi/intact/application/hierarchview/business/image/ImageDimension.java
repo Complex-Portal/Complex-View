@@ -14,8 +14,6 @@ import java.io.Serializable;
  * @version $Id$
  */
 public class ImageDimension implements Serializable {
-    // ---------------------------------------------------------------- Constants
-    public static float DEFAULT_BORDER = 5f;
 
     // ---------------------------------------------------------------- Instance Variables
     private float xmin;

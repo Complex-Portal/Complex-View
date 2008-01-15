@@ -22,8 +22,7 @@ import java.util.Properties;
  * Behaviour class allowing to change the color of highlighted proteins.
  *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
- * @version $Id: ColorHighlightmentBehaviour.java,v 1.9 2003/11/13 14:21:43
- *          skerrien Exp $
+ * @version $Id$
  */
 
 public class ColorHighlightmentBehaviour extends HighlightmentBehaviour {

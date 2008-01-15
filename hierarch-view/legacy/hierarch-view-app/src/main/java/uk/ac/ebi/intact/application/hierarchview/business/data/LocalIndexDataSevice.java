@@ -64,13 +64,13 @@ public class LocalIndexDataSevice implements DataService {
         }
 
         return centralProteins;
-
     }
 
     public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
         this.query = query;
         try {
-            IntActSearchEngine searchEngine = new IntActSearchEngine( "/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current" );
+//            IntActSearchEngine searchEngine = new IntActSearchEngine( "/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current" );
+            IntActSearchEngine searchEngine = new IntActSearchEngine( "C:\\Documents and Settings\\nneuhaus\\Desktop\\current" );
             this.searchResult = Searcher.search( query, searchEngine );
         } catch ( IOException e ) {
             throw new HierarchViewDataException( "Could not find index-files" );

@@ -43,9 +43,7 @@ import java.util.Properties;
 
 public class DisplaySourceTag extends TagSupport {
 
-    private static Log logger = LogFactory.getLog( DisplaySourceTag.class );
-
-    private String queryString;
+    private static final Log logger = LogFactory.getLog( DisplaySourceTag.class );
 
     /**
      * Skip the body content.
@@ -74,7 +72,6 @@ public class DisplaySourceTag extends TagSupport {
             }
 
             try {
-
                 ServletRequest request = pageContext.getRequest();
                 String host = ( String ) session.getAttribute( StrutsConstants.HOST );
                 String protocol = ( String ) session.getAttribute( StrutsConstants.PROTOCOL );
@@ -87,73 +84,51 @@ public class DisplaySourceTag extends TagSupport {
                 HttpServletRequest httpRequest = ( HttpServletRequest ) request;
 
                 String contextPath = httpRequest.getContextPath();
-                logger.info( "CONTEXT PATH : " + contextPath );
+                logger.debug( "CONTEXT PATH : " + contextPath );
 
                 String applicationPath = protocolAndHost + contextPath;
-                logger.info( "APPLICATION PATH: " + applicationPath );
+                logger.debug( "APPLICATION PATH: " + applicationPath );
 
-                Collection<String> selectedKeys = user.getKeys();
-                String theClickedKeys = user.getSelectedKey();
+                Collection<String> selectedKeys = user.getSelectedKeys();
+                String clickedKey = user.getClickedKey();
                 String selectedKeysType = user.getSelectedKeyType();
                 String tabType = ( String ) session.getAttribute( "tabType" );
 
-                logger.info( "selectedKeys=" + selectedKeys + " | theClickedKeys=" + theClickedKeys
+                logger.info( "clickedKey=" + clickedKey + " | selectedKeys=" + selectedKeys
                              + " | selectedKeysType=" + selectedKeysType + " | tabType=" + tabType );
 
-                Collection<String> allSelectedKeys = new ArrayList();
-
-                if ( selectedKeys != null && selectedKeysType != null && tabType != null
-                     && selectedKeysType.toLowerCase().equals( tabType.toLowerCase() ) ) {
-
-                    allSelectedKeys.addAll( selectedKeys );
-                } else {
-                    user.setKeys( null );
-                    user.setSelectedKey( "null" );
-                    user.setSelectedKeyType( "null" );
-                }
-
-                if ( theClickedKeys != null && tabType != null && selectedKeysType != null
-                     && selectedKeysType.toLowerCase().equals( tabType.toLowerCase() ) ) {
-
-                    allSelectedKeys.add( theClickedKeys );
-                } else {
-                    user.setKeys( null );
-                    user.setSelectedKey( "null" );
-                    user.setSelectedKeyType( "null" );
-                }
-
-                if ( null != user.getQueryString() ) {
-
-//                        if ( queryString != null && !queryString.equals(user.getQueryString())) {
-//                            queryString = user.getQueryString();
+//                Collection<String> allSelectedKeys = new ArrayList();
 //
-//                            HighlightmentSource source = getSourceClass( user.getMethodLabel() );
+//                if ( selectedKeys != null && selectedKeysType != null && tabType != null
+//                     && selectedKeysType.toLowerCase().equals( tabType.toLowerCase() ) ) {
 //
-//                                if(tabType != null && tabType.equalsIgnoreCase(user.getMethodLabel())){
-//                                    user.setMethodLabel(tabType);
-//                                    user.setMethodClass( source.getMethodClass() );
-//                                }
+//                    allSelectedKeys.addAll( selectedKeys );
+//                } else {
+//                    user.setSelectedKeys( null );
+//                    user.setClickedKey( "null" );
+//                    user.setSelectedKeyType( "null" );
+//                }
 //
-//                            List<SourceBean> urls = source.getSourceUrls( in, allSelectedKeys, applicationPath, user );
+//                if ( clickedKey != null && tabType != null && selectedKeysType != null
+//                     && selectedKeysType.toLowerCase().equals( tabType.toLowerCase() ) ) {
 //
-//                            session.setAttribute( "sources", urls );
-//
-//                            if ( urls.size() == 1 ) {
-//                                // only one source element, let's display automatically the relevant page.
-//                                SourceBean url = urls.get( 0 );
-//                                String absoluteUrl = url.getSourceBrowserGraphUrl(); // Value();
-//                                user.setSourceURL( absoluteUrl );
-//                            } else {
-//                                user.setSourceURL( null );
-//                            }
-//                        } else {
-                    queryString = user.getQueryString();
+//                    allSelectedKeys.add( clickedKey );
+//                } else {
+//                    user.setSelectedKeys( null );
+//                    user.setClickedKey( "null" );
+//                    user.setSelectedKeyType( "null" );
+//                }
+
+                String queryString = user.getQueryString();
+                if ( null != queryString ) {
+
                     session.setAttribute( "sources", new ArrayList<SourceBean>() );
+
                     for ( String method_label : HVNetworkBuilder.ALL_SOURCES ) {
 
                         HighlightmentSource source = getSourceClass( method_label );
 
-                        List<SourceBean> urls = source.getSourceUrls( in, allSelectedKeys, applicationPath, user );
+                        List<SourceBean> urls = source.getSourceUrls( in, selectedKeys, applicationPath, user );
 
                         /**
                          * We store the source collection in the session in order to
@@ -165,10 +140,7 @@ public class DisplaySourceTag extends TagSupport {
                         }
                         session.setAttribute( "sources", urls );
                     }
-//                        }
                 }
-                //  }
-
             }
             catch ( IntactException ie ) {
                 String msg = "ERROR<br />The hierarchview system is not properly configured. Please warn your administrator.<br />" + ie;

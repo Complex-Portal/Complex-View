@@ -67,10 +67,8 @@ public final class InteractionNetworkAction extends IntactBaseAction {
 
         if ( myForm.expandSelected() ) {
             user.setNetworkUpdateOption( StrutsConstants.EXPAND_NETWORK );
-            user.increaseDepth();
         } else if ( myForm.contractSelected() ) {
             user.setNetworkUpdateOption( StrutsConstants.CONTRACT_NETWORK );
-            user.desacreaseDepth();
         } else {
             addError( "error.graph.command.notRecognized", myForm.getAction() );
             saveErrors( request );

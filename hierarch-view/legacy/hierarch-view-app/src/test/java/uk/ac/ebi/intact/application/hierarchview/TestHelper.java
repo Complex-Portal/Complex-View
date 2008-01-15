@@ -14,37 +14,20 @@ package uk.ac.ebi.intact.application.hierarchview; /**
  *  limitations under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 /**
- * TODO comment that class header
+ * TestHelper.
  *
  * @author Nadin Neuhauser
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0-Snapshot
  */
-public abstract class TestHelper {
+abstract class TestHelper {
 
-
-    public static File getTargetDirectory() throws UnsupportedEncodingException {
-        String outputDirPath = getFileByResources( "/", TestHelper.class ).getAbsolutePath();
-
-        assertNotNull( outputDirPath );
-        File outputDir = new File( outputDirPath );
-        // we are in test-classes, move one up
-        outputDir = outputDir.getParentFile();
-        assertNotNull( outputDir );
-        assertTrue( outputDir.isDirectory() );
-        assertEquals( "target", outputDir.getName() );
-
-        return outputDir;
-    }
-
-    public static File getFileByResources( String fileName, Class clazz ) throws UnsupportedEncodingException {
+    private static File getFileByResources( String fileName, Class clazz ) throws UnsupportedEncodingException {
         String strFile = clazz.getResource( fileName ).getFile();
         return new File( URLDecoder.decode( strFile, "utf-8" ) );
     }

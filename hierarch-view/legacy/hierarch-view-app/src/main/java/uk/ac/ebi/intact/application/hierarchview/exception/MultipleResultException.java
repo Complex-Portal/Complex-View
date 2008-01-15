@@ -13,9 +13,6 @@ package uk.ac.ebi.intact.application.hierarchview.exception;
  */
 public class MultipleResultException extends Exception {
 
-    public MultipleResultException() {
-    }
-
     public MultipleResultException( String message ) {
         super( message );
     }

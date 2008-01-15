@@ -5,7 +5,8 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -18,8 +19,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 
 /**
@@ -33,7 +32,7 @@ import java.util.HashMap;
 
 public class RestoreContextFromCookieTag extends TagSupport {
 
-    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+    private static Log logger = LogFactory.getLog( RestoreContextFromCookieTag.class );
 
     /**
      * Skip the body content.
@@ -68,7 +67,7 @@ public class RestoreContextFromCookieTag extends TagSupport {
 
         String method = null;
         String depth = null;
-        String query = null;
+        String centrals = null;
 
         // firstly cache the cookie content to have direct access instead of traversing the collection
         HashMap cookieCache = new HashMap( cookies.length );
@@ -79,19 +78,14 @@ public class RestoreContextFromCookieTag extends TagSupport {
 
         depth = ( String ) cookieCache.get( "DEPTH" );
         method = ( String ) cookieCache.get( "METHOD" );
-        query = ( String ) cookieCache.get( "QUERY" );
+        centrals = ( String ) cookieCache.get( "CENTRALS" );
 
         final String contextPath = ( ( HttpServletRequest ) pageContext.getRequest() ).getContextPath();
         String url = null;
-        if ( query != null && method != null && depth != null ) {
-            try {
-                query = URLDecoder.decode( query, "UTF-8" );
-            } catch ( UnsupportedEncodingException uee ) {
-                logger.error( "Unsupported encoding system" );
-                return EVAL_PAGE;
-            }
 
-            url = contextPath + "/display.jsp?AC=" + query + "&method=" + method + "&depth=" + depth;
+        if ( method != null && depth != null && centrals != null ) {
+            url = contextPath + "/display.jsp?AC=" + centrals + "&method=" + method + "&depth=" + depth;
+            logger.debug( "New ContextPath " + url );
         } else {
             // simply display the current page
             return EVAL_PAGE;

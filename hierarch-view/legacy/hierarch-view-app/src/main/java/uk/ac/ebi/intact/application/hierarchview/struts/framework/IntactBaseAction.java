@@ -14,7 +14,6 @@ import org.apache.struts.action.ActionMessages;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.DrawGraph;
@@ -349,7 +348,6 @@ public abstract class IntactBaseAction extends Action {
      */
     public void updateInteractionNetwork( IntactUserI user, int action ) {
 
-        DataService dataservice = user.getDataService();
         HVNetworkBuilder builder = user.getHVNetworkBuilder();
         Network in = user.getInteractionNetwork();
         String queryString = formatQueryString( user.getQueryString() );
@@ -402,6 +400,7 @@ public abstract class IntactBaseAction extends Action {
                     }
 
                     user.setInteractionNetwork( in );
+                    user.pushNetwork( in );
                     break;
 
                 case StrutsConstants.ADD_INTERACTION_NETWORK:
@@ -409,6 +408,7 @@ public abstract class IntactBaseAction extends Action {
                     try {
                         int size_before = in.getBinaryInteraction().size();
                         in = builder.fusionBinaryGraphNetwork( in, queryString );
+                        user.pushNetwork( in );
                         if ( logger.isDebugEnabled() ) {
                             logger.debug( "Adding a new Network with " + in.getBinaryInteraction().size() + " BinaryInteractions " +
                                           "to existing Network with " + size_before + " BinaryInteractions." );
@@ -443,18 +443,35 @@ public abstract class IntactBaseAction extends Action {
                 case StrutsConstants.UPDATE_INTERACTION_NETWORK:
                     try {
                         if ( user.getNetworkUpdateOption() == StrutsConstants.EXPAND_NETWORK ) {
-
-                            in = builder.expandBinaryGraphNetwork( in, Constants.ALL_EXPANSION );
+                            in = builder.expandBinaryGraphNetwork( in );
+                            in.increaseDepth();
+                            user.pushNetwork( in );
                             if ( logger.isDebugEnabled() ) {
-                                logger.debug( "Update/Expand current Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
+                                logger.debug( "Expand current Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
                                 logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
                             }
                         } else {
-                            logger.info( queryString );
-                            in = builder.buildBinaryGraphNetwork( queryString );
-                            if ( logger.isDebugEnabled() ) {
-                                logger.debug( "Update/Decrease current Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
-                                logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
+                            if ( user.getNetworkUpdateOption() == StrutsConstants.CONTRACT_NETWORK ) {
+                                logger.info( "Current Depth: " + in.getCurrentDepth() );
+                                if ( in.getCurrentDepth() > 1 ) {
+                                    in = user.popNetwork();
+                                    in = user.popNetwork();
+                                    //in.decreaseDepth();
+                                    if ( logger.isDebugEnabled() ) {
+                                        logger.debug( "Decrease Network to " + in.getBinaryInteraction().size() + " BinaryInteractions." );
+                                        logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
+                                    }
+                                } else {
+                                    in = builder.buildBinaryGraphNetwork( queryString );
+                                    in.setDepthToDefault();
+                                }
+                            } else {
+                                logger.info( queryString );
+                                in = builder.buildBinaryGraphNetwork( queryString );
+                                if ( logger.isDebugEnabled() ) {
+                                    logger.debug( "Update current Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
+                                    logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
+                                }
                             }
                         }
                     } catch ( ProteinNotFoundException e ) {

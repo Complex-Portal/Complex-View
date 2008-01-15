@@ -40,8 +40,6 @@ public class IntactUser implements IntactUserI {
 
     private static final Log logger = LogFactory.getLog( IntactUser.class );
 
-    private static final int DEFAULT_DEPTH = 1;
-
     private String minePath;
 
     /**
@@ -93,8 +91,6 @@ public class IntactUser implements IntactUserI {
 
     private String errorMessage;
     private int networkUpdateOption;
-    private int currentDepth;
-    private int defaultDepth;
 
     private String methodLabel;
     private String methodClass;
@@ -103,8 +99,9 @@ public class IntactUser implements IntactUserI {
 
 
     private DataService dataservice;
-
     private HVNetworkBuilder networkBuilder;
+
+    private Stack<Network> userQueryHistory;
 
     /**
      * Constructs an instance of this class with given mapping file and the name
@@ -137,9 +134,9 @@ public class IntactUser implements IntactUserI {
         return applicationPath;
     }
 
-    public int getCurrentDepth() {
-        return currentDepth;
-    }
+//    public int getCurrentDepth() {
+//        return currentDepth;
+//    }
 
     public String getMethodLabel() {
         return methodLabel;
@@ -151,6 +148,14 @@ public class IntactUser implements IntactUserI {
 
     public String getBehaviour() {
         return behaviour;
+    }
+
+    public Network popNetwork() {
+        return userQueryHistory.pop();
+    }
+
+    public void pushNetwork( Network network ) {
+        userQueryHistory.push( network );
     }
 
     /**
@@ -185,9 +190,7 @@ public class IntactUser implements IntactUserI {
      * @return true if Add the view is the current behaviour
      */
     public boolean clickBehaviourIsAdd() {
-        if ( clickBehaviour == null )
-            return false;
-        return clickBehaviour.addSelected();
+        return clickBehaviour != null && clickBehaviour.addSelected();
     }
 
     /**
@@ -197,9 +200,7 @@ public class IntactUser implements IntactUserI {
      * @return true if Center the view is the current behaviour
      */
     public boolean clickBehaviourIsCenter() {
-        if ( clickBehaviour == null )
-            return true;
-        return clickBehaviour.centerSelected();
+        return clickBehaviour == null || clickBehaviour.centerSelected();
     }
 
     public Network getInteractionNetwork() {
@@ -214,11 +215,11 @@ public class IntactUser implements IntactUserI {
         return nodeCoordinates;
     }
 
-    public Collection<String> getKeys() {
+    public Collection<String> getSelectedKeys() {
         return keys;
     }
 
-    public String getSelectedKey() {
+    public String getClickedKey() {
         return selectedKey;
     }
 
@@ -236,27 +237,6 @@ public class IntactUser implements IntactUserI {
 
     public void setQueryString( String queryString ) {
         this.queryString = queryString;
-    }
-
-    /**
-     * Increase the depth of the interraction network up to the defined maximum.
-     */
-    public void increaseDepth() {
-        //if ( currentDepth < maximalDepth )
-        currentDepth++;
-    }
-
-    /**
-     * Desacrease the depth of the interraction network up to the defined
-     * minimum.
-     */
-    public void desacreaseDepth() {
-        if ( currentDepth > 1 )
-            currentDepth--;
-    }
-
-    public void setDepthToDefault() {
-        currentDepth = defaultDepth;
     }
 
     public void setMethodLabel( String methodLabel ) {
@@ -283,11 +263,11 @@ public class IntactUser implements IntactUserI {
         this.nodeCoordinates = nodeCoordinates;
     }
 
-    public void setKeys( Collection keys ) {
+    public void setSelectedKeys( Collection keys ) {
         this.keys = keys;
     }
 
-    public void setSelectedKey( String key ) {
+    public void setClickedKey( String key ) {
         selectedKey = key;
     }
 
@@ -314,34 +294,17 @@ public class IntactUser implements IntactUserI {
     public void init() {
         this.queryString = null;
 
-        // read the Graph.properties file
-        //TODO remove code if not longer used
-
-        Properties properties = GRAPH_PROPERTIES;
-
-        if ( null != properties ) {
-            String depth = properties.getProperty( "hierarchView.graph.depth.default" );
-            if ( depth != null ) {
-                defaultDepth = Integer.parseInt( depth );
-            } else {
-                defaultDepth = DEFAULT_DEPTH;
-            }
-            currentDepth = defaultDepth;
-        }
+//        // read the Graph.properties file
+//        Properties properties = GRAPH_PROPERTIES;
 //
-//            depth = properties.getProperty( "hierarchView.graph.depth.minimum" );
+//        if ( null != properties ) {
+//            String depth = properties.getProperty( "hierarchView.graph.depth.default" );
 //            if ( depth != null ) {
-//                minimalDepth = Integer.parseInt( depth );
+//                defaultDepth = Integer.parseInt( depth );
 //            } else {
-//                minimalDepth = MINIMAL_DEPTH;
+//                defaultDepth = DEFAULT_DEPTH;
 //            }
-//
-//            depth = properties.getProperty( "hierarchView.graph.depth.maximum" );
-//            if ( depth != null ) {
-//                maximalDepth = Integer.parseInt( depth );
-//            } else {
-//                maximalDepth = MAXIMAL_DEPTH;
-//            }
+//            currentDepth = defaultDepth;
 //        }
 
         methodLabel = null;
@@ -353,11 +316,12 @@ public class IntactUser implements IntactUserI {
         keys = null;
         selectedKey = null;
         highlightOptions = new HashMap();
-        //sourceURL = null;
+        sourceURL = null;
         logger.info( "User's data set to default" );
         dataservice = DataServiceFactory.buildDataService( SEARCH_PROPERTIES.getProperty( "search.source.name" ) );
         if ( dataservice != null ) {
             networkBuilder = new HVNetworkBuilder( this );
+            userQueryHistory = new Stack<Network>();
         }
     }
 
@@ -373,9 +337,9 @@ public class IntactUser implements IntactUserI {
         return highlightOptions.get( name );
     }
 
-    public void setCurrentDepth( int depth ) {
-        currentDepth = depth;
-    }
+//    public void setCurrentDepth( int depth ) {
+//        currentDepth = depth;
+//    }
 
     public void setErrorMessage( String errorMessage ) {
         this.errorMessage = errorMessage;

@@ -5,6 +5,8 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.hierarchview.highlightment.behaviour;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.service.graph.Edge;
@@ -21,6 +23,8 @@ import java.util.List;
  */
 
 public class VisibleHighlightmentBehaviour extends HighlightmentBehaviour {
+
+    private static final Log logger = LogFactory.getLog( VisibleHighlightmentBehaviour.class );
 
     /**
      * Select all the graph's protein which are not in the given collection.<br>

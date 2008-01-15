@@ -21,21 +21,22 @@ import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.HighlightmentSource;
+import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.LabelValueBean;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.OptionGenerator;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
+import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.util.SearchReplace;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
 /**
- * TODO comment that class header
+ * Abstract Class which define HighlightmentSource for Edges.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -43,11 +44,12 @@ import java.util.*;
  */
 public abstract class EdgeHighlightmentSource implements HighlightmentSource {
 
-    private static Log logger = LogFactory.getLog( EdgeHighlightmentSource.class );
+    private static final Log logger = LogFactory.getLog( EdgeHighlightmentSource.class );
 
     private static final String KEY_SEPARATOR = ",";
-    private static final String ATTRIBUTE_OPTION_CHILDREN = "CHILDREN";
+    private static final String ATTRIBUTE_OPTION_CUMULATIVE = "CUMULATIVE";
     private static final Map<String, String> edgeHighlightmentSources;
+    public static final boolean isCumulative;
 
     static {
 
@@ -57,7 +59,30 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
             edgeHighlightmentSources.put( labelBean.getLabel(), labelBean.getDescription() );
         }
         edgeHighlightmentSources.put( ConfidenceHighlightmentSource.SOURCE_KEY, ConfidenceHighlightmentSource.SOURCE_CLASS );
-        edgeHighlightmentSources.put( PMIDHighlightmentSource.SOURCE_KEY, PMIDHighlightmentSource.SOURCE_CLASS );
+        edgeHighlightmentSources.put( PublicationHighlightmentSource.SOURCE_KEY, PublicationHighlightmentSource.SOURCE_CLASS );
+
+        // get in the Highlightment properties file where is go
+        Properties props = IntactUserI.HIGHLIGHTING_PROPERTIES;
+
+        if ( null == props ) {
+            String msg = "Unable to find the go hostname. The properties file '"
+                         + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
+                         + "' couldn't be loaded.";
+            logger.error( msg );
+            throw new IntactException( msg );
+        }
+
+        String highlightOption = props.getProperty( "highlightment.option" );
+        isCumulative = highlightOption.equals( ATTRIBUTE_OPTION_CUMULATIVE );
+
+        if ( null == highlightOption ) {
+            String msg = "Unable to find the highlightOption. "
+                         + "Check the 'highlightment.option' property in the '"
+                         + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
+                         + "' properties file";
+            logger.error( msg );
+            throw new IntactException( msg );
+        }
     }
 
     public static EdgeHighlightmentSource getHighlightmentSourceBySourceKey( String sourceKey ) {
@@ -115,33 +140,31 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
     abstract public String getHtmlCodeOption( HttpSession aSession );
 
     /**
-     * Create a set of protein we must highlight in the graph given in parameter.
-     * The protein selection is done according to the source keys stored in the IntactUser.
-     * Some options (specific to each implementation) could have been set and stored in the
-     * session, that method has to get them and care about.
+     * Returns a collection of proteins to be highlighted in the graph.
+     * <p/>
+     * Method is called when the graph was built by the mine database table.
      *
-     * @param aSession the session where to find selected keys.
-     * @param aGraph   the graph we want to highlight.
-     * @return a collection of nodes to highlight.
+     * @param network       the network
+     * @param selectedTerms the selected Terms
+     * @return
      */
-    abstract public Collection<Edge> interactionToHightlight( HttpSession aSession, Network aGraph );
+    public abstract Collection<Edge> edgeToHighlightSourceMap( Network network, Collection<String> selectedTerms );
 
+    public Collection<Edge> interactionToHightlight( HttpSession session, Network network ) {
 
-    /**
-     * Allows to update the session object with options stored in the request.
-     * These parameters are specific of the implementation.
-     *
-     * @param aRequest request in which we have to get parameters to save in the session.
-     * @param aSession session in which we have to save the parameter.
-     */
-    public void saveOptions( HttpServletRequest aRequest, HttpSession aSession ) {
         IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
-        String[] result = aRequest.getParameterValues( ATTRIBUTE_OPTION_CHILDREN );
+        Collection<String> selectedTerms = user.getSelectedKeys();
 
-        if ( result != null )
-            user.addHighlightOption( ATTRIBUTE_OPTION_CHILDREN, result[0] );
+        if ( logger.isDebugEnabled() ) {
+            logger.debug( "Get Edges for Source(s): " + selectedTerms );
+        }
+
+        if ( network.isEdgeHighlightMapEmpty() ) {
+            network.initHighlightMap();
+        }
+
+        return edgeToHighlightSourceMap( network, selectedTerms );
     }
-
 
     /**
      * Return a collection of URL corresponding to the selected protein and source
@@ -151,12 +174,11 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
      * @param network
      * @param selectedXRefs   The collection of selected XRef
      * @param applicationPath our application path
-     * @param user            the current user
      * @return a set of URL pointing on the highlightment source.
      */
     abstract public List<SourceBean> getSourceUrls( Network network,
                                                     Collection<String> selectedXRefs,
-                                                    String applicationPath, IntactUserI user );
+                                                    String applicationPath );
 
 
     /**
@@ -165,34 +187,36 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
      * @param someKeys a string which contains some key separates by a character.
      * @return the splitted version of the key string as a collection of String.
      */
-    public static Collection<String> parseKeys( String someKeys ) {
+    public static Set<String> parseKeys( String someKeys ) {
 
-        Collection keys = new Vector();
-
-        if ( ( null == someKeys ) || ( someKeys.length() < 1 ) ) {
+        if ( ( null == someKeys ) || ( someKeys.length() < 1 ) || "null".equals( someKeys ) ) {
             return null;
         }
 
-        StringTokenizer st = new StringTokenizer( someKeys, KEY_SEPARATOR );
+        Set<String> keys = new HashSet<String>();
 
-        while ( st.hasMoreTokens() ) {
-            String key = st.nextToken();
-            keys.add( key );
+        if ( isCumulative ) {
+            StringTokenizer st = new StringTokenizer( someKeys, KEY_SEPARATOR );
+            while ( st.hasMoreTokens() ) {
+                String key = st.nextToken();
+                if ( !"null".equals( key ) ) {
+                    keys.add( key );
+                }
+            }
         }
-
         return keys;
     }
 
-    public String getDirectHighlightUrl( String applicationPath, String termId, String termType, String randomParam ) {
+    String getDirectHighlightUrl( String applicationPath, String termId, String termType, String randomParam ) {
 
         String directHighlightUrl = applicationPath
-                                    + "/source.do?keys=${selected-children}&clicked=${id}&type=${type}"
+                                    + "/source.do?keys=${selected-terms}&clicked=${id}&type=${type}"
                                     + randomParam;
 
         // replace ${selected-children}, ${id} by the term id and ${type} by term type
         if ( logger.isDebugEnabled() ) logger.debug( "direct highlight URL: " + directHighlightUrl );
 
-        directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${selected-children}", termId );
+        directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${selected-terms}", "null" );
         directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${id}", termId );
         directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${type}", termType );
 
@@ -202,7 +226,7 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
         return directHighlightUrl;
     }
 
-    public String getHierarchViewUrl( String randomParam, String applicationPath ) {
+    String getHierarchViewUrl( String randomParam, String applicationPath ) {
 
         String directHighlightUrl = applicationPath
                                     + "/source.do?keys=${selected-children}&clicked=${id}&type=${type}"
@@ -216,5 +240,38 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
             logger.error( e );
         }
         return hierarchViewURL;
+    }
+
+    String getDirectHighlightUrl( String applicationPath, String termId, Collection<String> selectedTermIds, String termType, String randomParam ) {
+
+        String directHighlightUrl = applicationPath
+                                    + "/source.do?keys=${selected-terms}&clicked=${id}&type=${type}"
+                                    + randomParam;
+
+        // replace ${selected-children}, ${id} by the term id and ${type} by term type
+        if ( logger.isDebugEnabled() ) logger.debug( "direct highlight URL: " + directHighlightUrl );
+
+        String selectedTerms = "null";
+        if ( selectedTermIds != null && !selectedTermIds.isEmpty() ) {
+            StringBuffer buffer = new StringBuffer();
+            Iterator<String> iterator = selectedTermIds.iterator();
+
+            while ( iterator.hasNext() ) {
+                String id = iterator.next();
+                buffer.append( id );
+                if ( iterator.hasNext() ) {
+                    buffer.append( KEY_SEPARATOR );
+                }
+            }
+            selectedTerms = buffer.toString();
+        }
+        directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${selected-terms}", selectedTerms );
+        directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${id}", termId );
+        directHighlightUrl = SearchReplace.replace( directHighlightUrl, "${type}", termType );
+
+        if ( logger.isDebugEnabled() )
+            logger.debug( "direct highlight URL (modified): " + directHighlightUrl );
+
+        return directHighlightUrl;
     }
 } // EdgeHighlightmentSource

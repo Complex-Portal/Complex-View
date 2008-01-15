@@ -22,7 +22,7 @@ import uk.ac.ebi.intact.application.hierarchview.business.data.DataServiceMock;
 import uk.ac.ebi.intact.service.graph.Node;
 
 /**
- * TODO comment that class header
+ * HVNetworkBuilder Test.
  *
  * @author Nadin Neuhauser
  * @version $Id$

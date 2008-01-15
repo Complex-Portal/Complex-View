@@ -31,7 +31,7 @@ some fixes on source code to allow the XHTML compatibility and improve the displ
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/layouts/styles/hv.css"/>
     </head>
 
-    <frameset cols="63%,*" border=0>
+    <frameset cols="60%,*" border=0>
 
         <frame src="<%=request.getContextPath()%>/layouts/graphFrame.jsp?<%= timestamp %>" name="FOO"/>
 

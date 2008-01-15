@@ -49,7 +49,6 @@ New sources available : "All" and Interpro
     int selectedIndex = 0;
     // Check if selected come from request parameter
     try {
-        //selectedIndex = Integer.parseInt( selectedIndexStr );
         // Try to retrieve from http parameter, or previous storage
         // Need to use a more unique id for storage name
         String paramValue = request.getParameter( parameterName );

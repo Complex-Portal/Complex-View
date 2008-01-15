@@ -153,11 +153,14 @@
             <item value="Interpro" link="/pages/interproTab.jsp"
                   classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
             <item value="Role" link="/pages/roleTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="Species" link="/pages/speciesTab.jsp"
+                  classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
             <item value="MoleculeType" link="/pages/typeTab.jsp"
                   classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
             <item value="Confidence" link="/pages/confidenceTab.jsp"
                   classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-            <item value="PMID" link="/pages/pmidTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="Publication" link="/pages/publicationTab.jsp"
+                  classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
         </putList>
     </definition>
 

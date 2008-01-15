@@ -92,7 +92,6 @@ public final class ClickAction extends IntactBaseAction {
             // Save our data
             //user.setInteractionNetwork( null );
             user.setQueryString( AC );
-            user.setDepthToDefault();
             user.resetSourceURL();
 
             // Center the view

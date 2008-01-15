@@ -20,7 +20,7 @@
 
             int j = 0;
             for ( SourceBean sourceBean : ListSources ) {
-                if ( sourceBean.getType().equalsIgnoreCase( "PMID" ) ) {
+                if ( sourceBean.getType().equalsIgnoreCase( "publication" ) ) {
                     tmpListSources.add( j, sourceBean );
                     j++;
                 }
@@ -30,14 +30,14 @@
 
         <td valign="top">
 
-            <!-- PMID terms -->
+            <!-- Publication terms -->
             <display:table
                     name="sessionScope.tmpListSources" width="100%" class="tsources"
                     decorator="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceDecorator">
-                <display:column property="description" title="Description" width="63%" align="left"/>
+                <display:column property="description" title="Author" width="63%" align="left"/>
                 <display:column property="directHighlightUrl" title="Show" width="8%" align="center"/>
                 <display:column property="count" title="Count" width="9%" align="center"/>
-                <display:column property="id" title="ID" width="20%" align="left"/>
+                <display:column property="id" title="Pubmed ID" width="20%" align="left"/>
                 <display:setProperty name="basic.msg.empty_list"
                                      value="No source available for that interaction network"/>
             </display:table>

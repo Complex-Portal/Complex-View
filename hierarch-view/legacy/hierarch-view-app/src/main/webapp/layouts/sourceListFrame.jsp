@@ -47,19 +47,19 @@
         if ( checkSession ) {
     %>
 
-    <body bgcolor="#FFFFFF" topmargin="0" leftmargin="0">
+    <body>
 
     <table border="1" cellpadding="2" cellspacing="0" width="100%" height="100%">
 
         <tr>
-            <td width="40%" height="15" valign="top">
+            <td width="35%" height="10" valign="top">
                 <!-- Top Right cell: Display the highligh tool title -->
                 <tiles:insert definition="highlightTitle"/>
             </td>
         </tr>
 
         <tr>
-            <td width="40%" valign="top">
+            <td width="35%" valign="top">
                 <!-- Bottom Right cell: Display the highligh tool -->
                 <tiles:insert definition="highlight"/>
             </td>

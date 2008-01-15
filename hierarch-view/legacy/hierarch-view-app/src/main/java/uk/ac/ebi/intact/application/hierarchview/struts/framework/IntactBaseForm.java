@@ -5,12 +5,12 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.hierarchview.struts.framework;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,8 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class IntactBaseForm extends ActionForm {
 
-    public static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
-
+    public static Log logger = LogFactory.getLog( IntactBaseForm.class );
 
     /**
      * The global Intact error key.

@@ -18,106 +18,80 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.Author;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Edge;
 
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
- * TODO comment that class header
+ * Interface allowing to wrap an highlightment source.
  *
  * @author Nadin Neuhauser
  * @version $Id$
  * @since 1.6.0-Snapshot
  */
-public class PMIDHighlightmentSource extends EdgeHighlightmentSource {
+public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
 
 
-    private static final Log logger = LogFactory.getLog( PMIDHighlightmentSource.class );
+    private static final Log logger = LogFactory.getLog( PublicationHighlightmentSource.class );
 
     /**
-     * The key for this source 'pmid'
+     * The key for this source 'publication'
      */
     public static final String SOURCE_KEY;
 
     public static final String SOURCE_CLASS;
 
-    private static final String applicationPath;
+    private static final String publicationPath;
 
     static {
         // get in the Highlightment properties file where is interpro
         Properties props = IntactUserI.HIGHLIGHTING_PROPERTIES;
 
         if ( null == props ) {
-            String msg = "Unable to find the PMID hostname. "
+            String msg = "Unable to find the Publication hostname. "
                          + "The properties file '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' couldn't be loaded.";
             logger.error( msg );
             throw new IntactException( msg );
         }
-        SOURCE_KEY = props.getProperty( "highlightment.source.edge.PMID.label" );
+        SOURCE_KEY = props.getProperty( "highlightment.source.edge.Publication.label" );
 
         if ( null == SOURCE_KEY ) {
-            String msg = "Unable to find the PMID Label. "
-                         + "Check the 'highlightment.source.edge.PMID.label' property in the '"
+            String msg = "Unable to find the Publication Label. "
+                         + "Check the 'highlightment.source.edge.Publication.label' property in the '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' properties file";
             logger.error( msg );
             throw new IntactException( msg );
         }
 
-        applicationPath = props.getProperty( "highlightment.source.edge.PMID.applicationPath" );
+        publicationPath = props.getProperty( "highlightment.source.edge.Publication.applicationPath" );
 
-        if ( null == applicationPath ) {
-            String msg = "Unable to find the interpro hostname. "
-                         + "Check the 'highlightment.source.edge.PMID.applicationPath' property in the '"
+        if ( null == publicationPath ) {
+            String msg = "Unable to find the Publication hostname. "
+                         + "Check the 'highlightment.source.edge.Publication.publicationPath' property in the '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' properties file";
             logger.error( msg );
             throw new IntactException( msg );
         }
 
-        SOURCE_CLASS = props.getProperty( "highlightment.source.edge.PMID.class" );
+        SOURCE_CLASS = props.getProperty( "highlightment.source.edge.Publication.class" );
 
         if ( null == SOURCE_CLASS ) {
-            String msg = "Unable to find the PMID Class. "
-                         + "Check the 'highlightment.source.edge.PMID.class' property in the '"
+            String msg = "Unable to find the Publication Class. "
+                         + "Check the 'highlightment.source.edge.Publication.class' property in the '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' properties file";
             logger.error( msg );
             throw new IntactException( msg );
         }
-    }
-
-    public String getHtmlCodeOption( HttpSession aSession ) {
-
-        return "a Html Code";
-    }
-
-    public Collection<Edge> interactionToHightlight( HttpSession aSession, Network aGraph ) {
-
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
-        Collection children = user.getKeys();
-        String selectedTerm = user.getSelectedKey();
-
-        logger.debug( "getKeys=" + children + " | selectedTerm=" + selectedTerm );
-        if ( children.remove( selectedTerm ) ) {
-            if ( logger.isDebugEnabled() ) logger.debug( selectedTerm + " removed from children collection" );
-        }
-
-        if ( aGraph.isEdgeHighlightMapEmpty() ) {
-            aGraph.initHighlightMap();
-        }
-
-        return edgeToHighlightSourceMap( aGraph, selectedTerm );
     }
 
     /**
@@ -125,33 +99,39 @@ public class PMIDHighlightmentSource extends EdgeHighlightmentSource {
      * <p/>
      * Method is called when the graph was built by the mine database table.
      *
-     * @param aGraph       the graph
-     * @param selectedTerm the selected PMID Term
+     * @param network       the network
+     * @param selectedTerms the selected Terms
      * @return
      */
-    private Collection<Edge> edgeToHighlightSourceMap( Network aGraph, String selectedTerm ) {
+    public Collection<Edge> edgeToHighlightSourceMap( Network network, Collection<String> selectedTerms ) {
 
         Collection<Edge> edgeList = new ArrayList( 20 ); // should be enough for 90% cases
 
-        // retrieve the set of proteins to highlight for the source key (e.g. PMID) and the selected PMID Term
-        Set<Edge> edgesToHighlight = aGraph.getEdgesForHighlight( SOURCE_KEY, selectedTerm );
-
-        // if we found any proteins we add all of them to the collection
-        if ( edgesToHighlight != null ) {
-            edgeList.addAll( edgesToHighlight );
+        // retrieve the set of proteins to highlight for the source key (e.g. GO) and the selected GO Terms
+        Set<Edge> edgesToHighlight = null;
+        if ( selectedTerms != null ) {
+            for ( String selectedGOTerm : selectedTerms ) {
+                edgesToHighlight = network.getEdgesForHighlight( SOURCE_KEY, selectedGOTerm );
+                // if we found any proteins we add all of them to the collection
+                if ( edgesToHighlight != null ) {
+                    edgeList.addAll( edgesToHighlight );
+                }
+            }
         }
 
         return edgeList;
     }
 
-    public List<SourceBean> getSourceUrls( Network network, Collection<String> selectedTerms, String applicationPath, IntactUserI user ) {
+    public List<SourceBean> getSourceUrls( Network network,
+                                           Collection<String> selectedSourceTerms,
+                                           String applicationPath ) {
 
         List<SourceBean> urls = new ArrayList();
-        Map highlightPMIDMap = ( Map ) network.getEdgeHighlightMap().get( SOURCE_KEY );
+        Map highlightPublicationMap = ( Map ) network.getEdgeHighlightMap().get( SOURCE_KEY );
 
-        if ( highlightPMIDMap != null && !highlightPMIDMap.isEmpty() ) {
+        if ( highlightPublicationMap != null && !highlightPublicationMap.isEmpty() ) {
 
-            Set<String> keySet = highlightPMIDMap.keySet();
+            Set<String> keySet = highlightPublicationMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
 
@@ -179,19 +159,25 @@ public class PMIDHighlightmentSource extends EdgeHighlightmentSource {
                     * we stick at its end of the generated URL.
                     */
                     String randomParam = "&now=" + System.currentTimeMillis();
-                    String directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, termType, randomParam );
                     String hierarchViewURL = getHierarchViewUrl( randomParam, applicationPath );
 
-                    String quickUrl = this.applicationPath + "/citationDetails.do?externalId=" + termId + "&dataSource=MED&format=contentonly";
+                    String quickUrl = publicationPath + "/citationDetails.do?externalId=" + termId + "&dataSource=MED&format=contentonly";
 
-                    String quickGraphUrl = this.applicationPath + "//citationDetails.do?externalId="
+                    String quickGraphUrl = publicationPath + "//citationDetails.do?externalId="
                                            + termId + "&dataSource=MED&intact=true&format=contentonly&url="
                                            + hierarchViewURL + "&frame=_top";
 
+                    String directHighlightUrl = null;
+
                     boolean selected = false;
-                    if ( selectedTerms != null && selectedTerms.contains( termId ) ) {
-                        if ( logger.isDebugEnabled() ) logger.debug( termId + " SELECTED" );
-                        selected = true;
+                    if ( selectedSourceTerms != null ) {
+                        if ( selectedSourceTerms.contains( termId ) ) {
+                            if ( logger.isInfoEnabled() ) logger.info( termId + " SELECTED" );
+                            selected = true;
+                        }
+                        directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, selectedSourceTerms, termType, randomParam );
+                    } else {
+                        directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, termType, randomParam );
                     }
 
                     urls.add( new SourceBean( termId, termType, termDescription, termCount,

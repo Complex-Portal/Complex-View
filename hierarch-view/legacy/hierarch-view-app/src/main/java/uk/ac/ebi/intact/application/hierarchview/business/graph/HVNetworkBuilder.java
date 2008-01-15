@@ -18,8 +18,6 @@ package uk.ac.ebi.intact.application.hierarchview.business.graph;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.BinaryInteraction;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
-import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
@@ -43,13 +41,13 @@ import java.util.*;
  */
 public class HVNetworkBuilder {
 
-    public static final Log logger = LogFactory.getLog( HVNetworkBuilder.class );
+    private static final Log logger = LogFactory.getLog( HVNetworkBuilder.class );
 
     /**
      * *********************************************************************
      * StrutsConstants
      */
-    public static final int DEFAULT_MAX_PROTEIN = 500;
+    private static final int DEFAULT_MAX_PROTEIN = 500;
 
     private static int MAX_PROTEINS;
 
@@ -58,6 +56,8 @@ public class HVNetworkBuilder {
     public static final List<String> NODE_SOURCES;
 
     public static final List<String> EDGE_SOURCES;
+
+    private String currentQuery;
 
     static {
         // the default size should be big enough
@@ -137,11 +137,12 @@ public class HVNetworkBuilder {
         }
     }
 
-    private DataService dataservice;
+    private final DataService dataservice;
 
-    private BinaryGraphNetworkBuilder builder;
-    private InteractionBasedMerger merger;
-    private IntactUser user;
+    private final BinaryGraphNetworkBuilder builder;
+
+    private final InteractionBasedMerger merger;
+//    private IntactUser user;
 
     public HVNetworkBuilder( DataService dataservice ) {
         this.dataservice = dataservice;
@@ -155,7 +156,7 @@ public class HVNetworkBuilder {
 
 
     public HVNetworkBuilder( IntactUserI intactUser ) {
-        user = ( IntactUser ) intactUser;
+//        user = ( IntactUser ) intactUser;
         dataservice = intactUser.getDataService();
 
         builder = new BinaryGraphNetworkBuilder();
@@ -170,7 +171,7 @@ public class HVNetworkBuilder {
     }
 
     public Network buildBinaryGraphNetwork( String queryString ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
-
+        currentQuery = queryString;
         Collection<BinaryInteraction> bis = dataservice.getBinaryInteractionsByQueryString( queryString );
         Collection<String> centralProteinAcs = dataservice.getCentralProteins();
 
@@ -181,6 +182,7 @@ public class HVNetworkBuilder {
     }
 
     public Network fusionBinaryGraphNetwork( Network in, String queryString ) throws HierarchViewDataException, NetworkBuildException, MultipleResultException, ProteinNotFoundException {
+
         in.initNodes();
         in.initEdges();
         BinaryGraphNetwork network1 = ( BinaryGraphNetwork ) in.getGraphNetwork();
@@ -195,6 +197,7 @@ public class HVNetworkBuilder {
                 BinaryGraphNetwork network2 = builder.createGraphNetwork( bis, centralProteinAcs );
                 Network network = new InteractionNetwork( merger.mergeGraphNetworks( network1, network2 ) );
                 network.setBinaryInteractions( bis );
+                currentQuery = queryString;
 
                 return network;
 
@@ -206,7 +209,7 @@ public class HVNetworkBuilder {
         return in;
     }
 
-    public Network expandBinaryGraphNetwork( Network network, int complexExpansion ) throws HierarchViewDataException, NetworkBuildException, MultipleResultException, ProteinNotFoundException {
+    public Network expandBinaryGraphNetwork( Network network ) throws HierarchViewDataException, NetworkBuildException, MultipleResultException, ProteinNotFoundException {
         if ( network == null ) {
             throw new IllegalArgumentException( "Network must not be null. " );
         }
@@ -214,17 +217,14 @@ public class HVNetworkBuilder {
         network.initNodes();
         network.initEdges();
         StringBuffer query = new StringBuffer();
-        switch ( complexExpansion ) {
-            case Constants.ALL_EXPANSION: {
-                Iterator<Node> iterator = network.getNodes().iterator();
-                while ( iterator.hasNext() ) {
-                    query.append( iterator.next().getId() );
-                    if ( iterator.hasNext() ) query.append( ", " );
-                }
-            }
+        Iterator<Node> iterator = network.getNodes().iterator();
+        while ( iterator.hasNext() ) {
+            query.append( iterator.next().getId() );
+            if ( iterator.hasNext() ) query.append( ", " );
         }
 
-        return fusionBinaryGraphNetwork( network, query.toString() );
+        network = fusionBinaryGraphNetwork( network, query.toString() );
+        return network;
     }
 }
 

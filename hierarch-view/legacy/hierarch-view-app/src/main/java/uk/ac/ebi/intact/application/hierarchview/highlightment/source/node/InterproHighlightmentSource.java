@@ -3,7 +3,6 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source.node;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.CrossReference;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
@@ -36,7 +35,7 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
     /**
      * The class for this source
      */
-    public static final String SOURCE_CLASS;
+    static final String SOURCE_CLASS;
 
 
     private static final String interproPath;
@@ -116,84 +115,32 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
     /**
      * Returns a collection of proteins to be highlighted in the graph.
      *
-     * @param aGraph               the graph
-     * @param children             the children of the selected Interpro Term
-     * @param selectedInterproTerm the selected Interpro Term
-     * @param searchForChildren    whether it shall be searched for the children
+     * @param network       the graph
+     * @param selectedTerms the selected Terms
      * @return
      */
-    private Collection proteinToHighlightSourceMap( Network aGraph, Collection children,
-                                                    String selectedInterproTerm, boolean searchForChildren ) {
+    public Collection proteinToHighlightSourceMap( Network network, Collection<String> selectedTerms ) {
 
         Collection<Node> nodeList = new ArrayList( 20 ); // should be enough for 90% cases
 
-        // retrieve the set of proteins to highlight for the source key (e.g. GO) and the selected Interpro Term
-        Set<Node> proteinsToHighlight = aGraph.getNodesForHighlight( SOURCE_KEY, selectedInterproTerm );
-
-        // if we found any proteins we add all of them to the collection
-        if ( proteinsToHighlight != null ) {
-            nodeList.addAll( proteinsToHighlight );
-        }
-
-        /*
-         * for every children all proteins related to the current Interpro Term are
-         * fetched from the source highlighting map of the graph and added to
-         * the collection
-         */
-        if ( searchForChildren ) {
-            for ( Object aChildren : children ) {
-                proteinsToHighlight = aGraph.getNodesForHighlight( SOURCE_KEY, ( String ) aChildren );
+        // retrieve the set of proteins to highlight for the source key (e.g. GO) and the selected GO Terms
+        Set<Node> proteinsToHighlight = null;
+        if ( selectedTerms != null ) {
+            for ( String selectedTerm : selectedTerms ) {
+                proteinsToHighlight = network.getNodesForHighlight( SOURCE_KEY, selectedTerm );
+                // if we found any proteins we add all of them to the collection
                 if ( proteinsToHighlight != null ) {
                     nodeList.addAll( proteinsToHighlight );
                 }
             }
         }
+
         return nodeList;
     }
 
-    /**
-     * Create a set of protein we must highlight in the graph given in
-     * parameter. The protein selection is done according to the source keys
-     * stored in the IntactUser. Keys are Interpro terms, so we select (and highlight)
-     * every protein which awned that Interpro term. If the children option is
-     * activated, all proteins which owned a children of the selected Interpro term
-     * are selected.
-     *
-     * @param aSession the session where to find selected keys.
-     * @param network  the graph we want to highlight
-     * @return a collection of node to highlight
-     */
-    public Collection<Node> proteinToHightlight( HttpSession aSession, Network network ) {
-
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
-        Collection children = user.getKeys();
-        String selectedInterproTerm = user.getSelectedKey();
-
-        if ( children.remove( selectedInterproTerm ) ) {
-            if ( logger.isInfoEnabled() ) logger.info( selectedInterproTerm + " removed from children collection" );
-        }
-
-        // get source option
-        String check = ( String ) user.getHighlightOption( ATTRIBUTE_OPTION_CHILDREN );
-        boolean searchForChildren;
-        if ( check != null ) {
-            searchForChildren = check.equals( "checked" );
-        } else {
-            searchForChildren = false;
-        }
-        if ( logger.isInfoEnabled() ) logger.info( "Children option activated ? " + searchForChildren );
-
-        if ( network.isNodeHighlightMapEmpty() ) {
-            network.initHighlightMap();
-        }
-
-        return proteinToHighlightSourceMap( network, children, selectedInterproTerm, searchForChildren );
-
-    }
-
-
-    public List<SourceBean> getSourceUrls( Network network, Collection<String> selectedTerm,
-                                           String applicationPath, IntactUserI user ) {
+    public List<SourceBean> getSourceUrls( Network network,
+                                           Collection<String> selectedSourceTerms,
+                                           String applicationPath ) {
 
         List<SourceBean> urls = new ArrayList();
 
@@ -235,24 +182,22 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
                     * we stick at its end of the generated URL.
                     */
                     String randomParam = "&now=" + System.currentTimeMillis();
-
-                    String directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, termType, randomParam );
-                    String hierarchViewURL = getHierarchViewUrl( randomParam, applicationPath );
-
-                    String quickInterproUrl = interproPath + "/DisplayIproEntry?ac=" + termId + "&format=normal";
-
-                    String quickInterproGraphUrl = interproPath + "/DisplayInterproTerm?selected="
-                                                   + termId + "&intact=true&format=contentonly&url="
-                                                   + hierarchViewURL + "&frame=_top";
+                    String directHighlightUrl = null;
+                    String quickInterproUrl = interproPath + "/ISearch?query=" + termId;
 
                     boolean selected = false;
-                    if ( selectedTerm != null && selectedTerm.contains( termId ) ) {
-                        if ( logger.isInfoEnabled() ) logger.info( termId + " SELECTED" );
-                        selected = true;
+                    if ( selectedSourceTerms != null ) {
+                        if ( selectedSourceTerms.contains( termId ) ) {
+                            if ( logger.isInfoEnabled() ) logger.info( termId + " SELECTED" );
+                            selected = true;
+                        }
+                        directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, selectedSourceTerms, termType, randomParam );
+                    } else {
+                        directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, termType, randomParam );
                     }
 
                     urls.add( new SourceBean( termId, termType, termDescription, interproTermCount,
-                                              quickInterproUrl, quickInterproGraphUrl, directHighlightUrl, selected,
+                                              quickInterproUrl, null, directHighlightUrl, selected,
                                               applicationPath ) );
                 }
 

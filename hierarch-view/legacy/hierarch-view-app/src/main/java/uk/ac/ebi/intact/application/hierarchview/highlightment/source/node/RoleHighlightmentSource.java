@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source.node;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.CrossReference;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
@@ -32,7 +31,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * TODO comment that class header
+ * Interface allowing to wrap an highlightment source.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -47,13 +46,17 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
 
     private static final Pattern MI_REF_PATTERN = Pattern.compile( "MI:[0-9]{4}" );
 
+    private static final String EXPERMIENTAL_ROLE = "Experimental";
+
+    private static final String BIOLOGICAL_ROLE = "Biological";
+
     /**
      * The key for this source 'Role'
      */
     public static final String SOURCE_KEY;
 
-    public static final String SOURCE_CLASS;
-    private static final String applicationPath;
+    static final String SOURCE_CLASS;
+    private static final String MIRefPath;
 
     static {
 
@@ -79,11 +82,11 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
             throw new IntactException( msg );
         }
 
-        applicationPath = props.getProperty( "highlightment.source.node.Role.applicationPath" );
+        MIRefPath = props.getProperty( "highlightment.source.node.Role.applicationPath" );
 
-        if ( null == applicationPath ) {
-            String msg = "Unable to find the Role applicationPath. "
-                         + "Check the 'highlightment.source.node.Role.applicationPath' property in the '"
+        if ( null == MIRefPath ) {
+            String msg = "Unable to find the Role MIRefPath. "
+                         + "Check the 'highlightment.source.node.Role.MIRefPath' property in the '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' properties file";
             logger.error( msg );
@@ -129,64 +132,33 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
     /**
      * Returns a collection of proteins to be highlighted in the graph.
      *
-     * @param aGraph           the graph
-     * @param selectedRoleTerm the selected Role Term
+     * @param network       the network
+     * @param selectedTerms the selected Terms
      * @return
      */
-    private Collection<Node> proteinToHighlightSourceMap( Network aGraph, String selectedRoleTerm ) {
+    public Collection<Node> proteinToHighlightSourceMap( Network network, Collection<String> selectedTerms ) {
 
         Collection<Node> nodeList = new ArrayList( 20 ); // should be enough for 90% cases
 
-        // retrieve the set of proteins to highlight for the source key (e.g. Role) and
-        // the selected Role Term
-        Set<Node> proteinsToHighlight = aGraph.getNodesForHighlight( SOURCE_KEY, selectedRoleTerm );
-
-        // if we found any proteins we add all of them to the collection
-        if ( proteinsToHighlight != null ) {
-            nodeList.addAll( proteinsToHighlight );
+        // retrieve the set of proteins to highlight for the source key (e.g. MoleculeType) and the selected MoleculeType Terms
+        Set<Node> proteinsToHighlight = null;
+        if ( selectedTerms != null ) {
+            for ( String selectedGOTerm : selectedTerms ) {
+                proteinsToHighlight = network.getNodesForHighlight( SOURCE_KEY, selectedGOTerm );
+                // if we found any proteins we add all of them to the collection
+                if ( proteinsToHighlight != null ) {
+                    nodeList.addAll( proteinsToHighlight );
+                }
+            }
         }
 
         return nodeList;
     }
 
 
-    /**
-     * Create a set of protein we must highlight in the graph given in
-     * parameter. The protein selection is done according to the source keys
-     * stored in the IntactUser. Keys are Role terms, so we select (and highlight)
-     * every protein which awned that Role term. If the children option is
-     * activated, all proteins which owned a children of the selected Role term
-     * are selected.
-     *
-     * @param aSession the session where to find selected keys.
-     * @param aGraph   the graph we want to highlight
-     * @return a collection of node to highlight
-     */
-    public Collection<Node> proteinToHightlight( HttpSession aSession, Network aGraph ) {
-
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
-        Collection children = user.getKeys();
-        String selectedRole = user.getSelectedKey();
-
-        logger.debug( "getKeys=" + children + " | selectedTerm=" + selectedRole );
-        if ( children.remove( selectedRole ) ) {
-            if ( logger.isDebugEnabled() ) logger.debug( selectedRole + " removed from children collection" );
-        }
-
-        // if the source highlight map of the network is empty
-        // it is filled with the source informations from each
-        // node of the graph
-        if ( aGraph.isNodeHighlightMapEmpty() ) {
-            aGraph.initHighlightMap();
-        }
-        logger.info( "Get Proteins for Hightlight " + proteinToHighlightSourceMap( aGraph, selectedRole ) );
-
-        return proteinToHighlightSourceMap( aGraph, selectedRole );
-    }
-
-
-    public List getSourceUrls( Network network, Collection<String> selectedIDs,
-                               String applicationPath, IntactUserI user ) {
+    public List getSourceUrls( Network network,
+                               Collection<String> selectedSourceTerms,
+                               String applicationPath ) {
 
         List<SourceBean> urls = new ArrayList();
 
@@ -201,35 +173,34 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
             Set<String> keySet = highlightRoleMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
-                for ( String termInfo : keySet ) {
+                for ( String termId : keySet ) {
                     String termType = SOURCE_KEY;
-                    CrossReference xref = network.getCrossReferenceById( termInfo );
-                    String termId = termInfo;
-                    String termDecription = null;
-                    if ( termInfo.startsWith( "E" ) ) {
-                        termDecription = Constants.EXPERMIENTAL_ROLE + " Role: ";
+                    CrossReference xref = network.getCrossReferenceById( termId );
+                    String termDescription = null;
+                    if ( termId.startsWith( "E" ) ) {
+                        termDescription = EXPERMIENTAL_ROLE + " Role: ";
                     }
-                    if ( termInfo.startsWith( "B" ) ) {
-                        termDecription = Constants.BIOLOGICAL_ROLE + " Role: ";
+                    if ( termId.startsWith( "B" ) ) {
+                        termDescription = BIOLOGICAL_ROLE + " Role: ";
                     }
 
                     if ( xref != null ) {
 
                         if ( xref.hasText() ) {
-                            if ( termDecription == null ) {
-                                termDecription = xref.getText();
+                            if ( termDescription == null ) {
+                                termDescription = xref.getText();
                             } else {
-                                termDecription += xref.getText();
+                                termDescription += xref.getText();
                             }
                         }
                     }
-                    int termCount = network.getDatabaseTermCount( termType, termInfo );
+                    int termCount = network.getDatabaseTermCount( termType, termId );
 
                     // to summarize
                     if ( logger.isDebugEnabled() )
                         logger.debug( "TermType=" + termType + " | " +
                                       "TermId=" + termId + " | " +
-                                      "TermDescription=" + termDecription + " | " +
+                                      "TermDescription=" + termDescription + " | " +
                                       "TermCount=" + termCount );
 
                     /*
@@ -247,21 +218,26 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
 
                     if ( MI_REF_PATTERN.matcher( termId ).find() ) {
                         String MI_REF = termId.split( "\\|" )[1];
-                        quickUrl = this.applicationPath + "/?termId=" + MI_REF + "&format=contentonly";
+                        quickUrl = MIRefPath + "/?termId=" + MI_REF + "&format=contentonly";
 
 
-                        quickGraphUrl = this.applicationPath + "/?termId="
+                        quickGraphUrl = MIRefPath + "/?termId="
                                         + MI_REF + "&intact=true&format=contentonly&url="
                                         + hierarchViewURL + "&frame=_top";
                     }
 
                     boolean selected = false;
-                    if ( selectedIDs != null && selectedIDs.contains( termId ) ) {
-                        if ( logger.isInfoEnabled() ) logger.info( termId + " SELECTED" );
-                        selected = true;
+                    if ( selectedSourceTerms != null ) {
+                        if ( selectedSourceTerms.contains( termId ) ) {
+                            if ( logger.isInfoEnabled() ) logger.info( termId + " SELECTED" );
+                            selected = true;
+                        }
+                        directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, selectedSourceTerms, termType, randomParam );
+                    } else {
+                        directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, termType, randomParam );
                     }
 
-                    urls.add( new SourceBean( termId, termType, termDecription, termCount,
+                    urls.add( new SourceBean( termId, termType, termDescription, termCount,
                                               quickUrl, quickGraphUrl, directHighlightUrl, selected, applicationPath ) );
 
                 }

@@ -5,12 +5,13 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.searchengine.CriteriaBean;
+import uk.ac.ebi.intact.service.graph.Node;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * <p>
@@ -41,7 +42,7 @@ import java.util.List;
  */
 public class SaveContextInCookieTag extends TagSupport {
 
-    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+    private static Log logger = LogFactory.getLog( SaveContextInCookieTag.class );
 
     private final static int KEEP_UNTIL_BROWSER_IS_CLOSED = -1;
 
@@ -64,7 +65,7 @@ public class SaveContextInCookieTag extends TagSupport {
      * For Debugging Purpose.
      * display the content of the current user cookie.
      */
-    public void displayCookieContent() {
+    void displayCookieContent() {
         Cookie cookies[] = ( ( HttpServletRequest ) pageContext.getRequest() ).getCookies();
         if ( cookies == null ) {
             logger.info( "The cookie contains no data." );
@@ -107,26 +108,29 @@ public class SaveContextInCookieTag extends TagSupport {
         String applicationPath = request.getContextPath();
 
         // save our context
-        List criterias = network.getCriteria();
-        int max = criterias.size();
-        StringBuffer sb = new StringBuffer( 128 );
-        for ( int i = 0; i < max; i++ ) {
-            sb.append( ( ( CriteriaBean ) criterias.get( i ) ).getQuery() ).append( ',' );
-        }
-
-        // save queries without the last comma
-        String queryString = null;
-        if ( sb.length() > 0 ) {
-            try {
-                queryString = URLEncoder.encode( sb.substring( 0, sb.length() - 1 ), "UTF-8" );
-            } catch ( UnsupportedEncodingException uee ) {
-                logger.error( "Unsupported encoding system" );
-                return EVAL_PAGE;
+//        String query = null;
+        String centralNodeIds = null;
+        StringBuffer centralNodes = new StringBuffer();
+        Iterator<Node> iterator = network.getCentralNodes().iterator();
+        while ( iterator.hasNext() ) {
+            Node centralNode = iterator.next();
+            centralNodes.append( centralNode.getId() );
+            if ( iterator.hasNext() ) {
+                centralNodes.append( ", " );
             }
         }
 
-        saveCookie( applicationPath, "QUERY", queryString );
-        saveCookie( applicationPath, "DEPTH", "" + user.getCurrentDepth() );
+        try {
+//            query =  URLEncoder.encode(user.getHVNetworkBuilder().getCurrentQuery(), "UTF-8");
+            centralNodeIds = URLEncoder.encode( centralNodes.toString(), "UTF-8" );
+        } catch ( UnsupportedEncodingException e ) {
+            e.printStackTrace();
+
+        }
+
+//        saveCookie( applicationPath, "QUERY", query );
+        saveCookie( applicationPath, "CENTRALS", centralNodeIds );
+        saveCookie( applicationPath, "DEPTH", "" + network.getCurrentDepth() );
         saveCookie( applicationPath, "METHOD", user.getMethodLabel() );
 
         return EVAL_PAGE;

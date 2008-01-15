@@ -17,14 +17,12 @@ import uk.ac.ebi.intact.application.hierarchview.highlightment.HighlightProteins
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.EdgeHighlightmentSource;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.NodeHighlightmentSource;
 import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.searchengine.CriteriaBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -110,17 +108,17 @@ public class DisplayInteractionNetworkTag extends TagSupport {
                  */
                 Network network = user.getInteractionNetwork();
 
-                List<CriteriaBean> criterias = network.getCriteria();
-                int max = criterias.size();
-                StringBuffer sb = new StringBuffer( 256 );
-                for ( int i = 0; i < max; i++ ) {
-                    sb.append( ( criterias.get( i ) ).getQuery() ).append( ',' );
-                }
-
-                String queryString = sb.toString();
-                int depth = user.getCurrentDepth();
+//                List<CriteriaBean> criterias = network.getCriteria();
+//                int max = criterias.size();
+//                StringBuffer sb = new StringBuffer( 256 );
+//                for ( int i = 0; i < max; i++ ) {
+//                    sb.append( ( criterias.get( i ) ).getQuery() ).append( ',' );
+//                }
+//
+//                String queryString = sb.toString();
+                int depth = network.getCurrentDepth();
                 String method = user.getMethodClass();
-                String key = user.getSelectedKey();
+                String key = user.getClickedKey();
                 String highlightContext = "";
                 if ( key != null ) {
                     // a highlight has been requested
@@ -129,7 +127,7 @@ public class DisplayInteractionNetworkTag extends TagSupport {
                     highlightContext += behaviour;
                 }
 
-                String userContext = queryString + depth + method + highlightContext;
+                String userContext = user.getQueryString() + depth + method + highlightContext;
 
                 String contextPath = ( ( HttpServletRequest ) pageContext.getRequest() ).getContextPath();
                 /* The context parameter in the URL is also given to prevent some browser

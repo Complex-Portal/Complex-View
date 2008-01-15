@@ -85,8 +85,7 @@
                 input="hierarchView.error.layout"
                 />
 
-        <!-- Processes the highlightment form
-             allowing to change the current behaviour, options
+        <!-- Processes the highlightment form allowing to change the current behaviour, options
           -->
         <action path="/highlightment"
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.HighlightmentAction"

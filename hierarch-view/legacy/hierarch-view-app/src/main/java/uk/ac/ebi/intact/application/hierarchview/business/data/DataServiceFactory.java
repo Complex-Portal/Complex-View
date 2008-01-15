@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DataServiceFactory {
 
-    public static final Log logger = LogFactory.getLog( DataServiceFactory.class );
+    private static final Log logger = LogFactory.getLog( DataServiceFactory.class );
 
     public static DataService buildDataService( String source ) {
         DataService dataservice = null;

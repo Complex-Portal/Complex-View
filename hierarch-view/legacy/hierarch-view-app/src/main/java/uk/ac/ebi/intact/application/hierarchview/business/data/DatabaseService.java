@@ -51,7 +51,7 @@ import java.util.Collection;
  */
 public class DatabaseService implements DataService {
 
-    static final Log logger = LogFactory.getLog( DatabaseService.class );
+    private static final Log logger = LogFactory.getLog( DatabaseService.class );
 
     private final IntactUser user;
 

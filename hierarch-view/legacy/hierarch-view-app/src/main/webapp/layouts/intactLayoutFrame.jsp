@@ -42,7 +42,7 @@
         <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="sidebar"/>?<%= timestamp %>"
                name="sidebarFrame">
 
-        <frameset rows="8%,*, 9%">
+        <frameset rows="7%,*, 8%">
             <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="header"/>?<%= timestamp %>"
                    name="headerFrame">
             <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="content"/>?<%= timestamp %>"

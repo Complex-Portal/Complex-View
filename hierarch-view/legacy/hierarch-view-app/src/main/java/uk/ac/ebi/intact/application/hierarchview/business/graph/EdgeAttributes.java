@@ -19,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.image.Utilities;
-import uk.ac.ebi.intact.service.graph.Edge;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -27,7 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * TODO comment that class header
+ * Contains the Attributes of a Edge.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -42,7 +41,7 @@ public class EdgeAttributes {
      * *********************************************************************
      * StrutsConstants
      */
-    public final static Color DEFAULT_EDGE_COLOR = new Color( 75, 158, 179 );
+    private final static Color DEFAULT_EDGE_COLOR = new Color( 75, 158, 179 );
 
     public final static Color EDGE_COLOR;
 
@@ -63,7 +62,7 @@ public class EdgeAttributes {
     private Map<String, Object> attributes;
 
 
-    public EdgeAttributes( Edge edge ) {
+    public EdgeAttributes() {
         //this.edge = edge;
         attributes = new HashMap();
     }

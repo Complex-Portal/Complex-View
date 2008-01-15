@@ -57,25 +57,25 @@
         <tr>
             <td width="50%">
                 <%
-                    //                  if ( !user.maximalDepthReached() ) {
+                    if ( user.hasErrorMessage() ) {
                 %>
                 <html:submit property="action" titleKey="sidebar.graph.button.expand.title">
                     <bean:message key="sidebar.graph.button.expand"/>
                 </html:submit>
                 <%
-                    //                  }
+                    }
                 %>
             </td>
 
             <td width="50%">
                 <%
-                    //                    if ( !user.minimalDepthReached() ) {
+                    if ( user.getMinePath() == null && user.getInteractionNetwork().getCurrentDepth() > 1 ) {
                 %>
                 <html:submit property="action" titleKey="sidebar.graph.button.contract.title">
                     <bean:message key="sidebar.graph.button.contract"/>
                 </html:submit>
                 <%
-                    //                    }
+                    }
                 %>
 
             </td>

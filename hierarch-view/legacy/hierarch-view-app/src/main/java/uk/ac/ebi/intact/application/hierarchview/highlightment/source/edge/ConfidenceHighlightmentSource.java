@@ -17,20 +17,18 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
+import psidev.psi.mi.tab.model.Confidence;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Edge;
 
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
- * TODO comment that class header
+ * Interface allowing to wrap an highlightment source.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -82,57 +80,43 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
         }
     }
 
-
-    public String getHtmlCodeOption( HttpSession aSession ) {
-
-        return "a Html Code";
-    }
-
-    public Collection<Edge> interactionToHightlight( HttpSession aSession, Network aGraph ) {
-
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
-        Collection children = user.getKeys();
-        String selectedTerm = user.getSelectedKey();
-
-        logger.debug( "getKeys=" + children + " | selectedConfidenceTerm=" + selectedTerm );
-        if ( children.remove( selectedTerm ) ) {
-            if ( logger.isDebugEnabled() ) logger.debug( selectedTerm + " removed from children collection" );
-        }
-
-        if ( aGraph.isEdgeHighlightMapEmpty() ) {
-            aGraph.initHighlightMap();
-        }
-
-        return edgeToHighlightSourceMap( aGraph, selectedTerm );
-    }
-
     /**
      * Returns a collection of proteins to be highlighted in the graph.
      * <p/>
      * Method is called when the graph was built by the mine database table.
      *
-     * @param aGraph       the graph
-     * @param selectedTerm the selected Confidence Term
+     * @param network       the network
+     * @param selectedTerms the selected Terms
      * @return
      */
-    private Collection<Edge> edgeToHighlightSourceMap( Network aGraph, String selectedTerm ) {
+    public Collection<Edge> edgeToHighlightSourceMap( Network network, Collection<String> selectedTerms ) {
 
         Collection<Edge> edgeList = new ArrayList( 20 ); // should be enough for 90% cases
 
-        // retrieve the set of proteins to highlight for the source key (e.g. Confidence) and the selected Confidence Term
-        Set<Edge> edgesToHighlight = aGraph.getEdgesForHighlight( SOURCE_KEY, selectedTerm );
+        // retrieve the set of proteins to highlight for the source key (e.g. GO) and the selected GO Terms
+        Set<Edge> edgesToHighlight = null;
+        if ( selectedTerms != null ) {
 
-        // if we found any proteins we add all of them to the collection
-        if ( edgesToHighlight != null ) {
-            edgeList.addAll( edgesToHighlight );
+            for ( String selectedTerm : selectedTerms ) {
+                edgesToHighlight = network.getEdgesForHighlight( SOURCE_KEY, selectedTerm );
+                // if we found any proteins we add all of them to the collection
+                if ( edgesToHighlight != null ) {
+                    edgeList.addAll( edgesToHighlight );
+                }
+            }
         }
 
         return edgeList;
     }
 
-    public List<SourceBean> getSourceUrls( Network network, Collection<String> selectedTerms, String applicationPath, IntactUserI user ) {
+    public List<SourceBean> getSourceUrls( Network network,
+                                           Collection<String> selectedSourceTerms,
+                                           String applicationPath ) {
 
         List<SourceBean> urls = new ArrayList();
+        if ( network.isEdgeHighlightMapEmpty() ) {
+            network.initHighlightMap();
+        }
         Map highlightConfidenceMap = ( Map ) network.getEdgeHighlightMap().get( SOURCE_KEY );
 
         if ( highlightConfidenceMap != null && !highlightConfidenceMap.isEmpty() ) {
@@ -141,17 +125,40 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
 
             if ( keySet != null && !keySet.isEmpty() ) {
 
+                List<double[]> ranges = new ArrayList<double[]>();
+                double max = 5;
+                for ( double i = 0; i < max; i++ ) {
+                    ranges.add( new double[]{i / max, ( i + 1 ) / max} );
+                }
+
                 for ( String termInfo : keySet ) {
                     String termType = SOURCE_KEY;
-                    String id = termInfo;
+
+                    Confidence confidence = network.getConfidenceByKey( termInfo );
+                    String termDescription = termInfo;
+                    String termId = null;
+                    if ( confidence != null && confidence.getValue() != null ) {
+                        double value = Double.valueOf( confidence.getValue() );
+                        termId = "";
+                        for ( double[] range : ranges ) {
+                            if ( value > range[0] && value <= range[1] ) {
+                                termDescription = confidence.getType() + ": " + range[0] + "..." + range[1];
+                                break;
+                            }
+                        }
+
+                        if ( confidence.getType() != null ) {
+                            termId = confidence.getValue();
+                        }
+                    }
 
                     int termCount = network.getDatabaseTermCount( SOURCE_KEY, termInfo );
 
                     // to summarize
                     if ( logger.isDebugEnabled() ) {
                         logger.debug( "TermType=" + termType + " | " +
-                                      "TermId=" + id + " | " +
-                                      "TermDescription=" + null + " | " +
+                                      "TermId=" + termId + " | " +
+                                      "TermDescription=" + termDescription + " | " +
                                       "TermCount=" + termCount );
                     }
 
@@ -160,17 +167,20 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
                     * we stick at its end of the generated URL.
                     */
                     String randomParam = "&now=" + System.currentTimeMillis();
-                    String directHighlightUrl = getDirectHighlightUrl( applicationPath, termInfo, termType, randomParam );
+                    String directHighlightUrl = null;
 
                     boolean selected = false;
-                    if ( selectedTerms != null && selectedTerms.contains( termInfo ) ) {
-                        if ( logger.isDebugEnabled() ) logger.debug( termInfo + " SELECTED" );
-                        selected = true;
-//                        user.setMethodLabel( SOURCE_KEY );
-//                        user.setMethodClass( confidenceClass );
+                    if ( selectedSourceTerms != null ) {
+                        if ( selectedSourceTerms.contains( termId ) ) {
+                            if ( logger.isInfoEnabled() ) logger.info( termId + " SELECTED" );
+                            selected = true;
+                        }
+                        directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, selectedSourceTerms, termType, randomParam );
+                    } else {
+                        directHighlightUrl = getDirectHighlightUrl( applicationPath, termId, termType, randomParam );
                     }
 
-                    urls.add( new SourceBean( id, termType, null, termCount,
+                    urls.add( new SourceBean( termId, termType, termDescription, termCount,
                                               null, null, directHighlightUrl, selected, applicationPath ) );
 
                 }
@@ -182,6 +192,4 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
 
         return urls;
     }
-
-
 }

@@ -49,7 +49,7 @@
         if ( l == 0 )
             ac.append( user.getQueryString() );
         String url = graph2mif + "?ac=" + ac.toString()
-                     + "&depth=" + user.getCurrentDepth()
+                     + "&depth=" + user.getInteractionNetwork().getCurrentDepth()
                      + "&strict=false";
 //        String url10 = url + "&version=1";
         String url25 = url + "&version=" + HtmlEncoder.encode( "2.5" );
@@ -82,7 +82,7 @@
             <nobr>
                 <img border="0" src="<%= request.getContextPath() %>/images/psi25.png"
                      alt="PSI-MI 2.5 Download"
-                     onclick="w=window.open('<%= url25 %>', 'graph2mif');w.focus();">
+                     onclick="var w=window.open('<%= url25 %>', 'graph2mif');w.focus();">
             </nobr>
         </td>
 
@@ -92,7 +92,7 @@
             <nobr>
                 <img border="0" src="<%= request.getContextPath() %>/images/mitab.png"
                      alt="PSI-MI TAB Download"
-                     onclick="w=window.open('<%= mitab %>', 'graph2mif');w.focus();">
+                     onclick="var w=window.open('<%= mitab %>', 'graph2mif');w.focus();">
             </nobr>
         </td>
 

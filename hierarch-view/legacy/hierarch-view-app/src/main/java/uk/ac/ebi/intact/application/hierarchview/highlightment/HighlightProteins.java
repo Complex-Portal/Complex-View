@@ -33,8 +33,15 @@ public class HighlightProteins {
 
     private static final Log logger = LogFactory.getLog( HighlightProteins.class );
 
-
-    public static void perform( NodeHighlightmentSource nodeHighlightmentSource, String behaviourClass, HttpSession session, Network in ) {
+    /**
+     * Constructor Allow to modify the current graph to highlight a part of this.
+     *
+     * @param source         The highlighting source
+     * @param behaviourClass The highlighting behaviour class name
+     * @param session        The current session
+     * @param in             The interaction network
+     */
+    public static void perform( NodeHighlightmentSource source, String behaviourClass, HttpSession session, Network in ) {
         /*
          * Put the default color and default visibility in the interaction
          * network before to highlight this one.
@@ -43,7 +50,7 @@ public class HighlightProteins {
         in.initEdges();
 
         // Search the protein to highlight
-        Collection<Node> proteinsToHighlight = nodeHighlightmentSource.proteinToHightlight( session, in );
+        Collection<Node> proteinsToHighlight = source.proteinToHightlight( session, in );
 
         // Check if the protein selected is in the selected tab
         IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
@@ -78,22 +85,5 @@ public class HighlightProteins {
         // TODO: needed ?! have to be tested !
         user.setInteractionNetwork( in );
 
-    }
-
-    /**
-     * Constructor Allow to modify the current graph to highlight a part of
-     * this.
-     *
-     * @param source         The highlighting source
-     * @param behaviourClass The highlighting behaviour class name
-     * @param session        The current session
-     * @param in             The interaction network
-     */
-    public static void perform( String source, String behaviourClass, HttpSession session, Network in ) {
-
-        // Search the highlight source implementation
-        NodeHighlightmentSource nodeHighlightmentSource = NodeHighlightmentSource.getHighlightmentSource( source );
-
-        perform( nodeHighlightmentSource, behaviourClass, session, in );
     }
 }

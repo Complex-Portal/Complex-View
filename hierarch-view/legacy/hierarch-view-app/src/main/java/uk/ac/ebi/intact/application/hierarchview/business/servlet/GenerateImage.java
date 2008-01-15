@@ -8,7 +8,8 @@ package uk.ac.ebi.intact.application.hierarchview.business.servlet;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
@@ -38,7 +39,7 @@ import java.io.OutputStream;
 
 public class GenerateImage extends HttpServlet {
 
-    static Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
+    private static final Log logger = LogFactory.getLog( GenerateImage.class );
 
     private final static String ERROR_MESSAGE = "Unable to produce the interaction network, please warn your administrator";
 

@@ -23,19 +23,9 @@ package uk.ac.ebi.intact.application.hierarchview.exception;
  * @since 1.6.0-SNAPSHOT
  */
 public class NetworkBuildException extends Exception {
-    public NetworkBuildException() {
-        super();
-    }
 
     public NetworkBuildException( String message ) {
         super( message );
     }
 
-    public NetworkBuildException( String message, Throwable cause ) {
-        super( message, cause );
-    }
-
-    public NetworkBuildException( Throwable cause ) {
-        super( cause );
-    }
 }

@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.application.hierarchview.highlightment.source;
 
-import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 
@@ -23,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * TODO comment that class header
+ * Interface which describes general functionality which used by several classes.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -31,5 +30,6 @@ import java.util.List;
  */
 public interface HighlightmentSource {
 
-    List<SourceBean> getSourceUrls( Network network, Collection<String> selectedXRefs, String applicationPath, IntactUserI user );
+    List<SourceBean> getSourceUrls( Network network, Collection<String> selectedXRefs, String applicationPath );
+
 }

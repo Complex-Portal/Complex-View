@@ -17,9 +17,9 @@ package uk.ac.ebi.intact.application.hierarchview.business.graph;
 
 import psidev.psi.mi.tab.model.Author;
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.tab.model.Confidence;
 import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageDimension;
-import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.GraphNetwork;
 import uk.ac.ebi.intact.service.graph.Node;
@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ * Interface which describes general functionality which will be used by several classes to run the webapp.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -39,9 +39,21 @@ import java.util.Set;
  */
 public interface Network {
 
+    void increaseDepth();
+
+//    void decreaseDepth();
+
+    int getCurrentDepth();
+
+    void setDepth( int i );
+
+    void setDepthToDefault();
+
     Author getAuthorByPMID( String pmid );
 
     CrossReference getCrossReferenceById( String id );
+
+    Confidence getConfidenceByKey( String key );
 
     NodeAttributes getNodeAttributes( Node node );
 
@@ -73,9 +85,7 @@ public interface Network {
 
     List<Node> getCentralNodes();
 
-    List getCriteria();
-
-    void addCriteria( CriteriaBean aCriteria );
+//    List getCriteria();
 
     void initNodes();
 

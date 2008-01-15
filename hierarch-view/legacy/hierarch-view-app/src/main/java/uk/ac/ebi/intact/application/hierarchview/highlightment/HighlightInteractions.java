@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Collection;
 
 /**
- * TODO comment that class header
+ * Performs the highlight of edges (interactions) in graph.
  *
  * @author Nadin Neuhauser
  * @version $Id$
@@ -41,7 +41,15 @@ public class HighlightInteractions {
 
     private static final Log logger = LogFactory.getLog( HighlightInteractions.class );
 
-    public static void perform( EdgeHighlightmentSource edgeHighlightmentSource, String behaviourClass, HttpSession session, Network in ) {
+    /**
+     * Constructor Allow to modify the current graph to highlight a part of this.
+     *
+     * @param source         The highlighting source
+     * @param behaviourClass The highlighting behaviour class name
+     * @param session        The current session
+     * @param in             The interaction network
+     */
+    public static void perform( EdgeHighlightmentSource source, String behaviourClass, HttpSession session, Network in ) {
         /*
          * Put the default color and default visibility in the interaction network before to highlight this one.
          */
@@ -49,7 +57,7 @@ public class HighlightInteractions {
         in.initNodes();
 
         // Search the interactions to highlight
-        Collection<Edge> interactionsToHighlight = edgeHighlightmentSource.interactionToHightlight( session, in );
+        Collection<Edge> interactionsToHighlight = source.interactionToHightlight( session, in );
 
         // Check if the interaction selected is in the selected tab
         IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
@@ -81,21 +89,5 @@ public class HighlightInteractions {
 
         // TODO: needed ?! have to be tested !
         user.setInteractionNetwork( in );
-    }
-
-    /**
-     * Constructor Allow to modify the current graph to highlight a part of this.
-     *
-     * @param source         The highlighting source
-     * @param behaviourClass The highlighting behaviour class name
-     * @param session        The current session
-     * @param in             The interaction network
-     */
-    public static void perform( String source, String behaviourClass, HttpSession session, Network in ) {
-
-        // Search the highlight source implementation
-        EdgeHighlightmentSource edgeHighlightmentSource = EdgeHighlightmentSource.getHighlightmentSource( source );
-
-        perform( edgeHighlightmentSource, behaviourClass, session, in );
     }
 }

@@ -8,7 +8,6 @@ package uk.ac.ebi.intact.application.hierarchview.business.image;
 
 // intact
 
-import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.EdgeAttributes;
@@ -32,7 +31,6 @@ import java.util.Properties;
 
 public class DrawGraph {
 
-    static final Logger logger = Logger.getLogger( Constants.LOGGER_NAME );
 
     /**
      * ******* CONSTANTS ***********
@@ -99,7 +97,7 @@ public class DrawGraph {
     /**
      * The centralnodes of the network
      */
-    private List<Node> centralNodes;
+    private final List<Node> centralNodes;
 
     /**
      * Size of the image

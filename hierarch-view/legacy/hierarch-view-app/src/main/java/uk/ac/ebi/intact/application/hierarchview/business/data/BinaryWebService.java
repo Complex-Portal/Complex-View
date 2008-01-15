@@ -44,7 +44,7 @@ import java.util.Collection;
  */
 public class BinaryWebService implements DataService {
 
-    public static final Log logger = LogFactory.getLog( BinaryWebService.class );
+    private static final Log logger = LogFactory.getLog( BinaryWebService.class );
 
     private final BinarySearchServiceClient client = new BinarySearchServiceClient();
 
@@ -91,7 +91,7 @@ public class BinaryWebService implements DataService {
         return binaryInteractions;
     }
 
-    protected void findCentralProteins( Collection<BinaryInteraction> binaryInteractions, String query ) {
+    void findCentralProteins( Collection<? extends BinaryInteraction> binaryInteractions, String query ) {
         for ( BinaryInteraction bi : binaryInteractions ) {
             for ( CrossReference xref : bi.getInteractorA().getIdentifiers() ) {
                 if ( xref.getIdentifier().equalsIgnoreCase( query ) ) {

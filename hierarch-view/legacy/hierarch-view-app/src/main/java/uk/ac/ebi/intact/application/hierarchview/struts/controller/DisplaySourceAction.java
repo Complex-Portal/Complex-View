@@ -70,7 +70,7 @@ public final class DisplaySourceAction extends IntactBaseAction {
             // save URL in the user
             user.setSourceURL( url );
 
-            logger.info( "SourceAction: url=" + url );
+            logger.warn( "SourceAction: url=" + url );
         }
 
         // Remove the obsolete form bean

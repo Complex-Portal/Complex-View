@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
@@ -81,6 +82,9 @@ public final class SearchAction extends IntactBaseAction {
 
             if ( null != properties ) {
                 methodClass = properties.getProperty( "highlightment.source.node." + methodLabel + ".class" );
+                if ( methodClass == null ) {
+                    methodClass = properties.getProperty( "highlightment.source.edge." + methodLabel + ".class" );
+                }
                 behaviourDefault = properties.getProperty( "highlighting.behaviour.default.class" );
             }
         }
@@ -103,7 +107,10 @@ public final class SearchAction extends IntactBaseAction {
             if ( searchForm.searchSelected() ) {
                 user.init();
                 // Save user's data
-                user.setDepthToDefault();
+                Network network = user.getInteractionNetwork();
+                if ( network != null ) {
+                    network.setDepthToDefault();
+                }
                 user.setMethodLabel( methodLabel );
                 user.setMethodClass( methodClass );
                 user.setBehaviour( behaviourDefault );

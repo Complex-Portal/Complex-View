@@ -19,13 +19,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.*;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageDimension;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.ConfidenceHighlightmentSource;
-import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.PMIDHighlightmentSource;
-import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.GoHighlightmentSource;
-import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.InterproHighlightmentSource;
-import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.MoleculeTypeHighlightmentSource;
-import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.RoleHighlightmentSource;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.PublicationHighlightmentSource;
+import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.*;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.GraphNetwork;
@@ -48,7 +46,7 @@ import java.util.*;
  */
 public class InteractionNetwork implements Network {
 
-    public static final Log logger = LogFactory.getLog( InteractionNetwork.class );
+    private static final Log logger = LogFactory.getLog( InteractionNetwork.class );
 
     /**
      * *********************************************************************
@@ -74,6 +72,10 @@ public class InteractionNetwork implements Network {
 
     private Map edgeHighlightMap;
 
+    private static final int DEFAULT_DEPTH = 1;
+
+    private int currentDepth;
+
     private Collection<BinaryInteraction> binaryInteractions;
 
     private static final String GO = GoHighlightmentSource.SOURCE_KEY;
@@ -84,9 +86,13 @@ public class InteractionNetwork implements Network {
 
     private static final String CONFIDENCE = ConfidenceHighlightmentSource.SOURCE_KEY;
 
-    private static final String PMID = PMIDHighlightmentSource.SOURCE_KEY;
+    private static final String PUBLICATION = PublicationHighlightmentSource.SOURCE_KEY;
 
     private static final String MOLECULE_TYPE = MoleculeTypeHighlightmentSource.SOURCE_KEY;
+
+    private static final String SPECIES = SpeciesHighlightmentSource.SOURCE_KEY;
+
+    private static final String BOTH = "both";
 
     /**
      * Describe how the interaction network has been built, from which query
@@ -95,7 +101,8 @@ public class InteractionNetwork implements Network {
      */
     private List<CriteriaBean> criteriaList;
     private Map<String, CrossReference> referenceMap;
-    private HashMap<String, Author> authorMap;
+    private Map<String, Confidence> confidenceMap;
+    private Map<String, Author> authorMap;
 
     public Author getAuthorByPMID( String pmid ) {
         return authorMap.get( pmid );
@@ -134,6 +141,47 @@ public class InteractionNetwork implements Network {
         edgeHighlightMap = new Hashtable( HVNetworkBuilder.EDGE_SOURCES.size() );
         initNodes();
         initEdges();
+        setDepthToDefault();
+    }
+    /////////////////////////
+    // Getters & Setters
+
+    /**
+     * Increase the currentDepth of the interaction network.
+     */
+    public void increaseDepth() {
+        currentDepth++;
+    }
+
+    /**
+     * Desacrease the currentDepth of the interraction network.
+     */
+    public void decreaseDepth() {
+        if ( currentDepth > 1 ) {
+            currentDepth--;
+        } else {
+            logger.error( "Could not decrease! Current currentDepth is " + currentDepth );
+        }
+    }
+
+    public void setDepth( int depth ) {
+        currentDepth = depth;
+    }
+
+    public void setDepthToDefault() {
+        // read the Graph.properties file
+        Properties properties = IntactUser.GRAPH_PROPERTIES;
+
+        if ( null != properties ) {
+            String depth = properties.getProperty( "hierarchView.graph.currentDepth.default" );
+            int defaultDepth;
+            if ( depth != null ) {
+                defaultDepth = Integer.parseInt( depth );
+            } else {
+                defaultDepth = DEFAULT_DEPTH;
+            }
+            currentDepth = defaultDepth;
+        }
     }
 
     public GraphNetwork getGraphNetwork() {
@@ -204,6 +252,10 @@ public class InteractionNetwork implements Network {
         return nodeList;
     }
 
+    public int getCurrentDepth() {
+        return currentDepth;
+    }
+
     public ImageDimension getImageDimension() {
         return this.dimension;
     }
@@ -229,19 +281,23 @@ public class InteractionNetwork implements Network {
     }
 
     public void initNodes() {
-        for ( Node node : network.getNodes() ) {
-            NodeAttributes attributes = getNodeAttributes( node );
-            attributes.put( Constants.ATTRIBUTE_COLOR_NODE, NodeAttributes.NODE_COLOR );
-            attributes.put( Constants.ATTRIBUTE_COLOR_LABEL, NodeAttributes.LABEL_COLOR );
-            attributes.put( Constants.ATTRIBUTE_VISIBLE, Boolean.TRUE );
+        if ( getNodes() != null ) {
+            for ( Node node : getNodes() ) {
+                NodeAttributes attributes = getNodeAttributes( node );
+                attributes.put( Constants.ATTRIBUTE_COLOR_NODE, NodeAttributes.NODE_COLOR );
+                attributes.put( Constants.ATTRIBUTE_COLOR_LABEL, NodeAttributes.LABEL_COLOR );
+                attributes.put( Constants.ATTRIBUTE_VISIBLE, Boolean.TRUE );
+            }
         }
     }
 
     public void initEdges() {
-        for ( Edge edge : getEdges() ) {
-            EdgeAttributes attributes = getEdgeAttributes( edge );
-            attributes.put( Constants.ATTRIBUTE_COLOR_EDGE, EdgeAttributes.EDGE_COLOR );
-            attributes.put( Constants.ATTRIBUTE_VISIBLE, Boolean.TRUE );
+        if ( getEdges() != null ) {
+            for ( Edge edge : getEdges() ) {
+                EdgeAttributes attributes = getEdgeAttributes( edge );
+                attributes.put( Constants.ATTRIBUTE_COLOR_EDGE, EdgeAttributes.EDGE_COLOR );
+                attributes.put( Constants.ATTRIBUTE_VISIBLE, Boolean.TRUE );
+            }
         }
     }
 
@@ -259,7 +315,7 @@ public class InteractionNetwork implements Network {
      * @param node     the node which is related to the sourceID
      */
 
-    public void addToNodeHighlightMap( String source, String sourceID, Node node ) {
+    void addToNodeHighlightMap( String source, String sourceID, Node node ) {
         // the map for the given source is fetched
         Map<String, Set<Node>> sourceMap = ( Map ) nodeHighlightMap.get( source );
 
@@ -281,7 +337,7 @@ public class InteractionNetwork implements Network {
         sourceNodes.add( node );
     }
 
-    public void addToEdgeHighlightMap( String source, String sourceID, Edge edge ) {
+    void addToEdgeHighlightMap( String source, String sourceID, Edge edge ) {
         // the map for the given source is fetched
         Map sourceMap = ( Map ) edgeHighlightMap.get( source );
 
@@ -340,8 +396,8 @@ public class InteractionNetwork implements Network {
                     addToNodeHighlightMap( ROLE, key, node );
                 }
                 if ( vertex.isBaitWithExperimental() && vertex.isPreyWithExperimental() ) {
-                    String key = "E|" + Constants.BOTH;
-                    addToReferenceList( key, factory.build( "MI", Constants.BOTH, Constants.BAIT + "&" + Constants.PREY ) );
+                    String key = "E|" + BOTH;
+                    addToReferenceList( key, factory.build( "MI", BOTH, BOTH ) );
                     addToNodeHighlightMap( ROLE, key, node );
                 }
             }
@@ -359,12 +415,11 @@ public class InteractionNetwork implements Network {
                     addToNodeHighlightMap( ROLE, key, node );
                 }
                 if ( vertex.isBaitWithBiological() && vertex.isPreyWithBiological() ) {
-                    String key = "B|" + Constants.BOTH;
-                    addToReferenceList( key, factory.build( "MI", Constants.BOTH, Constants.BAIT + "&" + Constants.PREY ) );
+                    String key = "B|" + BOTH;
+                    addToReferenceList( key, factory.build( "MI", BOTH, BOTH ) );
                     addToNodeHighlightMap( ROLE, key, node );
                 }
             }
-
 
             if ( vertex.getInteractorType() != null ) {
                 for ( CrossReference interactorType : vertex.getInteractorType() ) {
@@ -378,28 +433,21 @@ public class InteractionNetwork implements Network {
                     addToNodeHighlightMap( MOLECULE_TYPE, key, node );
                 }
             }
+            Organism organism = vertex.getOrganism();
+            if ( organism != null ) {
+                String key = organism.getTaxid();
+                addToReferenceList( key, organism.getIdentifiers().iterator().next() );
+                addToNodeHighlightMap( SPECIES, key, node );
+            }
         }
-
-        List<double[]> ranges = new ArrayList<double[]>();
-        ranges.add( new double[]{0.0, 0.2} );
-        ranges.add( new double[]{0.2, 0.4} );
-        ranges.add( new double[]{0.4, 0.6} );
-        ranges.add( new double[]{0.6, 0.8} );
-        ranges.add( new double[]{0.8, 1.0} );
 
         authorMap = new HashMap<String, Author>();
         for ( Object e : getEdges() ) {
             BinaryInteractionEdge edge = ( BinaryInteractionEdge ) e;
             for ( Confidence confidence : edge.getConfidenceValues() ) {
-                double value = Double.valueOf( confidence.getValue() );
-                String sourceId = "";
-                for ( double[] range : ranges ) {
-                    if ( value > range[0] && value <= range[1] ) {
-                        sourceId = "Range: from >" + range[0] + " to <=" + range[1];
-                        break;
-                    }
-                }
-                addToEdgeHighlightMap( CONFIDENCE, sourceId, edge );
+                String value = confidence.getValue();
+                addToEdgeHighlightMap( CONFIDENCE, value, edge );
+                addToConfidenceList( value, confidence );
             }
 
             List<Author> authors = edge.getAuthors();
@@ -413,7 +461,7 @@ public class InteractionNetwork implements Network {
                         authorMap.put( pmid, authors.get( i ) );
                         i++;
                     }
-                    addToEdgeHighlightMap( PMID, pmid, edge );
+                    addToEdgeHighlightMap( PUBLICATION, pmid, edge );
                 }
             }
         }
@@ -424,6 +472,17 @@ public class InteractionNetwork implements Network {
             referenceMap = new HashMap<String, CrossReference>();
         }
         referenceMap.put( key, value );
+    }
+
+    private void addToConfidenceList( String key, Confidence value ) {
+        if ( confidenceMap == null ) {
+            confidenceMap = new HashMap<String, Confidence>();
+        }
+        confidenceMap.put( key, value );
+    }
+
+    public Confidence getConfidenceByKey( String key ) {
+        return confidenceMap.get( key );
     }
 
     public CrossReference getCrossReferenceById( String key ) {

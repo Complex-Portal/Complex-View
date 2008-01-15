@@ -134,7 +134,7 @@
          HttpSession.getMaxInactiveInterval().
       -->
     <session-config>
-        <session-timeout>1</session-timeout>
+        <session-timeout>20</session-timeout>
         <!-- 20 minutes -->
     </session-config>
 
