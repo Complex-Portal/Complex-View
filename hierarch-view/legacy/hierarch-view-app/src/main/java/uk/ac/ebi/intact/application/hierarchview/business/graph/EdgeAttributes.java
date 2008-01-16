@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.image.Utilities;
+import uk.ac.ebi.intact.service.graph.Edge;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -62,7 +63,7 @@ public class EdgeAttributes {
     private Map<String, Object> attributes;
 
 
-    public EdgeAttributes() {
+    public EdgeAttributes( Edge edge ) {
         //this.edge = edge;
         attributes = new HashMap();
     }

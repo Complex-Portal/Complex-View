@@ -56,15 +56,9 @@
 
         <tr>
             <td width="50%">
-                <%
-                    if ( user.hasErrorMessage() ) {
-                %>
                 <html:submit property="action" titleKey="sidebar.graph.button.expand.title">
                     <bean:message key="sidebar.graph.button.expand"/>
                 </html:submit>
-                <%
-                    }
-                %>
             </td>
 
             <td width="50%">

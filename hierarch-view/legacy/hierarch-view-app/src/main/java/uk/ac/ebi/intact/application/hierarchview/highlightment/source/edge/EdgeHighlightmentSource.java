@@ -137,7 +137,9 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
      * @param aSession the current session.
      * @return the html code for specific options of the source.
      */
-    abstract public String getHtmlCodeOption( HttpSession aSession );
+    public String getHtmlCodeOption( HttpSession aSession ){
+        return "a HTML code";    
+    }
 
     /**
      * Returns a collection of proteins to be highlighted in the graph.

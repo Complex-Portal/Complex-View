@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.image.Utilities;
+import uk.ac.ebi.intact.service.graph.Node;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public class NodeAttributes {
     private Map<String, Object> attributes;
 
 
-    public NodeAttributes() {
+    public NodeAttributes( Node node ) {
         //this.node = node;
         attributes = new HashMap();
     }

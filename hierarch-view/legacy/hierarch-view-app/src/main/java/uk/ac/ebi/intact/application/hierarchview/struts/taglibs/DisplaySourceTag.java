@@ -128,7 +128,7 @@ public class DisplaySourceTag extends TagSupport {
 
                         HighlightmentSource source = getSourceClass( method_label );
 
-                        List<SourceBean> urls = source.getSourceUrls( in, selectedKeys, applicationPath, user );
+                        List<SourceBean> urls = source.getSourceUrls( in, selectedKeys, applicationPath );
 
                         /**
                          * We store the source collection in the session in order to

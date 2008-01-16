@@ -89,7 +89,7 @@
     }
     contextToDisplay.append( "</strong>" );
 
-    if ( user.hasErrorMessage() ) {
+    if ( user.getErrorMessage() != null) {
         errorToDisplay = new StringBuffer();
 
         errorToDisplay.append( "<strong><font color=\"red\">" );
