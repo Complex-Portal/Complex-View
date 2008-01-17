@@ -25,7 +25,7 @@
 
         <user>${env.USERNAME}</user>
 
-        <core.version>1.8.0-SNAPSHOT</core.version>
+        <core.version>1.8.0</core.version>
     </properties>
 
     <modules>
