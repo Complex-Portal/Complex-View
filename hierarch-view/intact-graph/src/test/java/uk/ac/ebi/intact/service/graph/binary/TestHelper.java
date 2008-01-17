@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 /**
- * TODO comment that class header
+ * Test Helper
  *
  * @author Nadin Neuhauser
  * @version $Id$
