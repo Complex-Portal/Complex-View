@@ -54,6 +54,8 @@ public class BinaryGraphNetworkBuilder {
         for (BinaryInteraction interaction : binaryInteractions) {
             InteractorVertex vertexA = createVertex(interaction.getInteractorA(), graphNetwork);
             InteractorVertex vertexB = createVertex(interaction.getInteractorB(), graphNetwork);
+            vertexA.setOrganism( interaction.getInteractorA().getOrganism() );
+            vertexB.setOrganism( interaction.getInteractorB().getOrganism() );
 
             try {
                 IntActBinaryInteraction bi = (IntActBinaryInteraction) interaction;
@@ -62,6 +64,7 @@ public class BinaryGraphNetworkBuilder {
                 vertexA.setExperimentalRoles(bi.getExperimentalRolesInteractorA());
                 vertexA.setBiologicalRoles( bi.getBiologicalRolesInteractorA() );
                 vertexA.setInteractorType(bi.getInteractorTypeA());
+
                 if (centralProteinAcs != null && centralProteinAcs.contains(vertexA.getId())){
                     vertexA.setCentral(true);
                 }

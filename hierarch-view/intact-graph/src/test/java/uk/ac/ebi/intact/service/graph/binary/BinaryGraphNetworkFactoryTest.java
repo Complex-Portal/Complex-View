@@ -48,21 +48,21 @@ public class BinaryGraphNetworkFactoryTest {
         System.out.println( graphNetwork.toString());
     }
 
-    @Test
-    public void exportTest() throws Exception {
-        File file = TestHelper.getFileByResources( "/test-files/brca2-simple.txt", BinaryGraphNetworkFactoryTest.class);
-        //File file = new File(BinaryGraphNetworkFactoryTest.class.getResource("/test-files/brca2-simple.txt").getFile());
-        PsimiTabReader reader = new PsimiTabReader(true);
-
-        Collection<BinaryInteraction> binaryInteractions = reader.read(file);
-        BinaryGraphNetwork graphNetwork = new BinaryGraphNetworkBuilder().createGraphNetwork(binaryInteractions);
-
-        Writer writer = new StringWriter();
-
-        GraphIOUtils.exportNetworkToGraphML(graphNetwork, writer);
-
-        System.out.println(writer.toString());
-    }
+//    @Test
+//    public void exportTest() throws Exception {
+//        File file = TestHelper.getFileByResources( "/test-files/brca2-simple.txt", BinaryGraphNetworkFactoryTest.class);
+//        //File file = new File(BinaryGraphNetworkFactoryTest.class.getResource("/test-files/brca2-simple.txt").getFile());
+//        PsimiTabReader reader = new PsimiTabReader(true);
+//
+//        Collection<BinaryInteraction> binaryInteractions = reader.read(file);
+//        BinaryGraphNetwork graphNetwork = new BinaryGraphNetworkBuilder().createGraphNetwork(binaryInteractions);
+//
+//        Writer writer = new StringWriter();
+//
+//        GraphIOUtils.exportNetworkToGraphML(graphNetwork, writer);
+//
+//        System.out.println(writer.toString());
+//    }
 
 
     @Test
@@ -79,8 +79,8 @@ public class BinaryGraphNetworkFactoryTest {
         centralAcs.add("EBI-79792");
         centralAcs.add("EBI-1034100");
         BinaryGraphNetwork graphNetwork1 = builder.createGraphNetwork(binaryInteractions, centralAcs);
-        assertEquals( 2, graphNetwork1.getCentralNodes().size());
-        assertEquals( 8, graphNetwork1.getNodes().size());
+        assertEquals( 1, graphNetwork1.getCentralNodes().size());
+        assertEquals( 7, graphNetwork1.getNodes().size());
 
         File fancd2 = TestHelper.getFileByResources( "/test-files/fancd2.txt", BinaryGraphNetworkFactoryTest.class);
         binaryInteractions = reader.read(fancd2);
@@ -92,7 +92,7 @@ public class BinaryGraphNetworkFactoryTest {
 
         BinaryGraphNetworkMerger merger = new InteractionBasedMerger();
         BinaryGraphNetwork network = merger.mergeGraphNetworks( graphNetwork1, graphNetwork2);
-        assertEquals(3, network.getCentralNodes().size());
+        assertEquals(2, network.getCentralNodes().size());
     }
 }
 

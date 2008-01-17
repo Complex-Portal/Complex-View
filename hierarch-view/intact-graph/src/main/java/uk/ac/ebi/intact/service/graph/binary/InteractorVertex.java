@@ -19,6 +19,7 @@ import edu.uci.ics.jung.graph.impl.SimpleSparseVertex;
 import edu.uci.ics.jung.utils.UserData;
 import psidev.psi.mi.tab.model.CrossReference;
 import psidev.psi.mi.tab.model.Interactor;
+import psidev.psi.mi.tab.model.Organism;
 import uk.ac.ebi.intact.service.graph.Node;
 import uk.ac.ebi.intact.service.graph.binary.label.IdentifierLabelStrategy;
 import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
@@ -39,6 +40,7 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
 
     private Interactor interactor;
     private Collection<BinaryInteractionEdge> edges;
+    private Organism organism;
     private Collection<CrossReference> experimentalRoles;
     private Collection<CrossReference> biologicalRoles;
     private Collection<CrossReference> properties;
@@ -48,7 +50,6 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
     private String nodeID;
 
     private boolean isCentral = false;
-
 
     protected InteractorVertex( Interactor interactor ) {
         this.interactor = interactor;
@@ -61,6 +62,14 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
             edges = new HashSet<BinaryInteractionEdge>();
         }
         return edges;
+    }
+
+    public void setOrganism( Organism organism ) {
+        this.organism = organism;
+    }
+
+    public Organism getOrganism(){
+        return organism;
     }
 
     public void setExperimentalRoles( Collection<CrossReference> experimentalRoles ) {
