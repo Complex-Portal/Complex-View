@@ -18,9 +18,12 @@ package uk.ac.ebi.intact.confidence.main;
 import uk.ac.ebi.intact.confidence.attribute.BlastFilter;
 import uk.ac.ebi.intact.confidence.attribute.GoFilter;
 import uk.ac.ebi.intact.confidence.model.Identifier;
+import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 
 import java.io.File;
 import java.util.Set;
+import java.util.Iterator;
+import java.util.HashSet;
 
 /**
  * Filter the Go, InterPro, Blast hits characteristics
@@ -33,6 +36,15 @@ import java.util.Set;
  *        </pre>
  */
 public class InfoFiltering {
+
+    public static void filterGo (Set<ProteinAnnotation> proteinAnnotations){
+         for ( Iterator<ProteinAnnotation> iter = proteinAnnotations.iterator(  ); iter.hasNext();){
+             ProteinAnnotation pa = iter.next();
+             Set<Identifier> gos = new HashSet<Identifier>( pa.getAnnotations() );
+             filterGO( gos );                                     // TODO: filter gos on collection
+             pa.setAnnotations( gos );
+         }
+    }
 
     public static void filterGO( Set<Identifier>gos){
         GoFilter.filterForbiddenGos( gos);

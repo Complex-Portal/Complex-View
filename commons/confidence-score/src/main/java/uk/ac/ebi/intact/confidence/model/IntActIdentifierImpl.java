@@ -18,11 +18,11 @@ package uk.ac.ebi.intact.confidence.model;
 import java.util.regex.Pattern;
 
 /**
- * TODO comment that class header
+ * IntAct identifier.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        30-Nov-2007
  *        </pre>
@@ -32,13 +32,14 @@ public class IntActIdentifierImpl implements Identifier {
     private static String intactTermExpr ="EBI-[0-9]+|IA:[0-9]+";
 
     public IntActIdentifierImpl(String id){
-             if (id == null) {
+        if (id == null) {
 			throw new IllegalArgumentException("IntAct Id must not be null! " + id);
 		}
-		if ( Pattern.matches(intactTermExpr, id)) {
+        id = id.trim();
+        if ( Pattern.matches(intactTermExpr, id)) {
 			this.identifier = id;
 		} else {
-			throw new IllegalArgumentException("IntAct Id must be a valid InterPro primaryId! " + id);
+			throw new IllegalArgumentException("IntAct Id must be a valid IntAct primaryId! " + id);
 
 		}
     }

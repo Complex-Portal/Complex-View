@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since 0.1
+ * @since 1.6.0
  *        <pre>
  *               12-Dec-2007
  *               </pre>
@@ -47,6 +47,6 @@ public class ProteinAnnotationParserUtils {
             }
             return new ProteinAnnotation(idA, annotations);
         }
-        return null;
+        return new ProteinAnnotation(idA);
     }
 }

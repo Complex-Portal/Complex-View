@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since 0.1
+ * @since 1.6.0
  *        <pre>
  *        12-Dec-2007
  *        </pre>
@@ -93,16 +93,21 @@ public class BinaryInteractionParserUtils {
 
     public static BinaryInteractionAttributes parseBinaryInteractionAttributes(String line, Confidence conf){
         BinaryInteractionAttributes intAttribs = null;
-        String [] aux = line.split( ";");
+        String [] aux = line.split( ",");
         BinaryInteraction biInt = parseBinaryInteraction( aux[0], conf);
+        intAttribs = new BinaryInteractionAttributes( biInt.getFirstId(), biInt.getSecondId(), conf);
         if (biInt != null && aux.length > 1){
             List<Attribute> attribs = new ArrayList<Attribute>(aux.length -1);
             for (int i =1; i< aux.length; i++){
-
+                Attribute<Identifier> attr = parseAttribute(aux[i]);
+                attribs.add( attr );
             }
+            //intAttribs  = new BinaryInteractionAttributes( biInt.getFirstId(), biInt.getSecondId(), attribs, conf);
+            intAttribs.setAttributes( attribs );
         }
         return intAttribs;
     }
+
 
 
     /////////////////////

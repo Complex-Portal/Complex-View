@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.model.io;
+package uk.ac.ebi.intact.confidence.model.io.impl;
 
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
 import uk.ac.ebi.intact.confidence.model.Confidence;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesReader;
 import uk.ac.ebi.intact.confidence.model.iterator.BinaryInteractionAttributesIterator;
 import uk.ac.ebi.intact.confidence.model.parser.BinaryInteractionParserUtils;
 
@@ -26,11 +27,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * TODO comment that class header
+ * Implementation for a BinaryInteractionAttributesReader.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        10-Dec-2007
  *        </pre>

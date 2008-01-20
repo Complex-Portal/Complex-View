@@ -14,11 +14,12 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
+import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.model.*;
-import uk.ac.ebi.intact.confidence.model.io.CompactInteractionSWriterImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.CompactInteractionSWriterImpl;
 import uk.ac.ebi.intact.confidence.model.io.InteractionSimplifiedWriter;
 import uk.ac.ebi.intact.confidence.model.io.ProteinSimplifiedWriter;
-import uk.ac.ebi.intact.confidence.model.io.ProteinSimplifiedWriterImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.ProteinSimplifiedWriterImpl;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
 import uk.ac.ebi.intact.config.impl.AbstractHibernateDataConfig;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -51,18 +52,49 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
     private DataMethods dataMethods;
     private DaoFactory daoFactory;
+
     private File workDir;
     private ExpansionStrategy expansionStrategy;
     private boolean dbNrForTest = false;
 
+    private int nrHC = 0;
+    private int nrMC = 0;
+    private int nrAuthorConf = 0;
+    private int nrComplexes = 0;
+    private int nrEnzyme = 0;
+    private int nrFluoresc = 0;
+
+
+    public IntactDbRetriever (){
+        expansionStrategy = new SpokeExpansion();
+        workDir = new File(System.getProperty( "java.io.tmpdir" ), "IntactDbRetriever");
+        workDir.mkdir();
+    }
+
     public IntactDbRetriever( File workDir, ExpansionStrategy expansion ) {
-        daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        this (workDir, expansion, IntactContext.getCurrentInstance().getDataContext().getDaoFactory());
+    }
+
+    public IntactDbRetriever (File workDir, ExpansionStrategy expansion, DaoFactory daoFactory){
+        this.daoFactory = daoFactory;
         dataMethods = new DataMethods();
-      //  workDir = new File( tmpDirPath, "IntactDbRetriever" );
-        this.workDir = workDir;
-       // workDir.mkdir();
+        if (workDir == null ){
+            workDir = new File(System.getProperty( "java.io.tmpdir" ), "IntactDbRetriever");
+            workDir.mkdir();
+        } else {
+            this.workDir = workDir;
+            workDir.mkdir();
+        }
+
         this.expansionStrategy = expansion;
     }
+
+    /////////////////////
+    // Getter(s) /Setter(s).
+    public void setWorkDir( File workDir ) {
+        this.workDir = workDir;
+    }
+
 
     // //////////////////
     // // Inherited method(s)
@@ -88,6 +120,16 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         return highConfidenceSet.size();
     }
 
+    public List<InteractionSimplified> retrieveHighConfidenceSet() {
+        if (highConfidenceSet == null){
+
+            return null;
+        } else {
+            return highConfidenceSet;
+        }
+    }
+
+
     /**
      * returns the list of the medium confidence interactions
      *
@@ -104,6 +146,21 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
      // //////////////////
     // // Public method(s).
+    public InteractionSimplified read (IntActIdentifierImpl intactId){
+        InteractionDao interactionDao = daoFactory.getInteractionDao();
+        InteractionImpl interaction = interactionDao.getByAc( intactId.convertToString() );
+         if (isInteractionEligible( interaction )){
+             if (isHighConfidenceOrComplexes( interaction )){
+                 return saveInteractionInformation( interaction );
+             }
+
+             if (isEnzymeOrFluorescenceRole( interaction )){
+                  return saveInteractionInformation( interaction );
+             }
+         }
+         return null;
+     }
+
     /**
      * reads only the protein information(uniprotAc and sequence and role) out
      * of the DB
@@ -203,7 +260,8 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         if ( log.isInfoEnabled() ) {
             log.info( "\tGoing to process: " + totalNr );
         }
-
+        endTransaction();
+        
         if ( dbNrForTest ) {
             totalNr = 10; // TODO: ask it there is a more elegant way
         }
@@ -233,6 +291,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             dataMethods.exportSeq( newProts, seqMcWriter );
             medconfProteins.addAll( getUniprotAc( newProts ) );
 
+
             // exports high confidence set
             if ( highConfidenceSet.size() != 0 ) {
                 highConfidenceSet = dataMethods.expand( highConfidenceSet, expansionStrategy );
@@ -252,7 +311,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                     log.info( "\t\tProcessed " + ( firstResult + interactions.size() ) );
                 }
             }
-
+             endTransaction();
             firstResult = firstResult + maxResults;
 
         }// while (!interactions.isEmpty());
@@ -273,15 +332,18 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         return medconf;
     }
 
-    public void readConfidences(File hcFile, File mcFile) throws IOException {
-        if ( hcFile.exists() ) {
-            hcFile.delete();
-        }
-        if ( mcFile.exists() ) {
-            mcFile.delete();
-        }
+    public void readConfidences(Report report ) throws Exception { //File hcFile, File mcFile) throws Exception {
+        cleanIfExists(report.getHighconfFile());
+        cleanIfExists(report.getMedconfFile());
+        nrHC =0;
+        nrMC = 0;
+         nrAuthorConf = 0;
+        nrComplexes =0;
+        nrEnzyme = 0;
+        nrFluoresc = 0;
 
         int totalNr = 0;
+        int paceNr = 50;
         // only for test purpose
 
         InteractionDao interactionDao = daoFactory.getInteractionDao();
@@ -290,20 +352,25 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             log.info( "\tGoing to process: " + totalNr );
         }
 
+        int firstResult = 0;
+        int maxResults = 50;
+
         if ( dbNrForTest ) {
             totalNr = 10; // TODO: ask it there is a more elegant way
+            paceNr = 2;
+            maxResults = 2;
         }
 
-        int firstResult = 0;
-        final int maxResults = 50;
-
+        boolean firstTime = true;
         List<InteractionImpl> interactions = null;
-        for ( int i = 0; i < totalNr; i += 50 ) {
-             beginTransaction();
+        for ( int i = 0; i < totalNr; i += paceNr ) {
+            beginTransaction();
             interactions = interactionDao.getAll( firstResult, maxResults );
 
-            process( interactions, hcFile, mcFile );
-            
+            process( interactions, report);//, mcFile);
+            if (firstTime){
+                firstTime = false;
+            }
             if ( log.isInfoEnabled() ) {
                 int processed = firstResult + interactions.size();
 
@@ -312,7 +379,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                 }
             }
 
-            firstResult = firstResult + maxResults;
+           firstResult = firstResult + maxResults;
            endTransaction();
         }
         if (log.isInfoEnabled()){
@@ -320,38 +387,82 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         }
     }
 
+     // ///////////////////
+    // // Private Methods
+    private void cleanIfExists( File hcFile ) {
+        existsDelete(hcFile);
+
+        String fileName = fileName( hcFile );
+        File ipFile = new File(fileName + "_ip.txt");
+        existsDelete( ipFile );
+
+        File goFile = new File(fileName + "_go.txt");
+        existsDelete( goFile );
+
+        File seqFile = new File(fileName + "_seq.txt");
+        existsDelete( seqFile );
+    }
+
+    private void existsDelete( File file ) {
+         if ( file.exists() ) {
+            file.delete();
+        }
+    }
+
     private void endTransaction() {
         try {
             IntactContext.getCurrentInstance().getDataContext().commitTransaction();
         } catch ( IntactTransactionException e ) {
-            throw new IntactException( e);
+             throw new IntactException( e);
         }
     }
 
-    private void process( List<InteractionImpl> interactions, File hcFile, File mcFile ) throws IOException {
+    private void process( List<InteractionImpl> interactions, Report report )throws Exception {//File hcFile, File mcFile) throws Exception {
         for ( Iterator<InteractionImpl> iterator = interactions.iterator(); iterator.hasNext(); ) {
             InteractionImpl interaction =  iterator.next();
              if ( isInteractionEligible( interaction ) ) {
-                if ( isHighConfidenceOrComplexes( interaction ) || isEnzymeOrFluorescenceRole( interaction ) ) {
+                 boolean highConfOrCompl = isHighConfidenceOrComplexes( interaction );
+                 boolean enzymeOrFluoresc = isEnzymeOrFluorescenceRole( interaction );
+                if ( highConfOrCompl || enzymeOrFluoresc ) {
                     InteractionSimplified intS = saveInteractionInformation( interaction );
                     // expand intS
                     Collection<InteractionSimplified> intSsimpl = expansionStrategy.expand( intS);
+                    nrHC += intSsimpl.size();
+                    if (log.isInfoEnabled()){
+                        if (highConfOrCompl){
+                            log.info( "HighConfOrComplex: " + intS.getAc() + " (authorConf: " + nrAuthorConf + ") (curated complex: " + nrComplexes + ")  total hc ( with dupplicates): " + nrHC );
+                        } else if ( enzymeOrFluoresc ) {
+                            log.info( "enzymeOrFluoresc: " + intS.getAc() + " (enzymes: " + nrEnzyme + ") ( flurophore " + nrFluoresc + ") total hc (with dupplicates): " + nrHC );
+                        }
+                    }
+
+
                     //outPut intS to hcFile
-                    outputData(intSsimpl, hcFile);
+                    outputData(intSsimpl, report.getHighconfFile());
+                    report.setHighconfGOFile( new File (fileName(report.getHighconfFile()), "_go.txt" ));
+                    report.setHighconfIpFile( new File (fileName(report.getHighconfFile()), "_ip.txt" ));
+                    report.setHighconfSeqFile( new File (fileName(report.getHighconfFile()), "_seq.txt" ));
                 } else {
                     InteractionSimplified intS = saveInteractionInformation( interaction );
                     // expand intS
                      Collection<InteractionSimplified> intSsimpl = expansionStrategy.expand( intS);
+                    nrMC +=intSsimpl.size();
+                     if (log.isInfoEnabled()){
+                       // log.info ("Medium Conf : " + intS.getAc() + " total mc (with dupplicates): " + nrMC);
+                    }
+
                     //outPut intS to mcFile
-                    outputData(intSsimpl, mcFile);
+                    outputData(intSsimpl, report.getMedconfFile());
+                    report.setMedconfGOFile( new File(fileName(report.getMedconfFile()), "_go.txt") );
+                    report.setMedconfIpFile( new File(fileName(report.getMedconfFile()), "_ip.txt") );
+                    report.setMedconfSeqFile( new File(fileName(report.getMedconfFile()), "_seq.txt") );
+
                 }
             }
         }
     }
-
-    // ///////////////////
-    // // Private Methods
-     private void outputData(Collection<InteractionSimplified> interactions, File outFile) throws IOException {
+  
+     private void outputData(Collection<InteractionSimplified> interactions, File outFile) throws Exception {
         File goFile = new File( fileName( outFile ) + "_go.txt" );
         File ipFile = new File( fileName( outFile ) + "_ip.txt" );
         File seqFile = new File( fileName( outFile ) + "_seq.txt" );
@@ -367,7 +478,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         }
     }
 
-    private String fileName(File outFile){
+    protected String fileName(File outFile){
         String fileName = outFile.getPath();
         int i = fileName.lastIndexOf( ".");
         fileName = fileName.substring( 0, i);
@@ -435,6 +546,9 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             if ( interactor != null && Protein.class.isAssignableFrom( interactor.getClass() )
                  && ProteinUtils.isFromUniprot( ( Protein ) interactor ) && fromUniprot( interactor ) ) {
                 nr += 1;
+                if (comp.getStoichiometry() > 1 ){
+                    return true;
+                }
             }
             if ( nr == 2 ) {
                 return true;
@@ -456,7 +570,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                 log.info( "dbXref == null, db: " + db + " interactor ac: " + interactor.getAc() );
                 return false;
             }
-            if ( CvDatabase.UNIPROT_MI_REF.equals( dbXref.getPrimaryId() ) ) {
+            if ( CvDatabase.UNIPROT_MI_REF.equals( db.getMiIdentifier() ) ) { 
                 CvXrefQualifier qualifier = interactorXref.getCvXrefQualifier();
                 CvObjectXref qualifierXref = CvObjectUtils.getPsiMiIdentityXref( qualifier );
                 // if the uniprotAc are marked for removal
@@ -483,16 +597,16 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
      * @return true or false
      */
     private boolean isHighConfidenceOrComplexes( InteractionImpl interaction ) {
+        String authorConfDesc = "high";
         for ( Annotation item : interaction.getAnnotations() ) {
-            CvTopic authorConf = IntactContext.getCurrentInstance().getCvContext().getByMiRef( CvTopic.class,
-                                                                                               CvTopic.AUTHOR_CONFIDENCE_MI_REF );
-            CvTopic curatedComplex = IntactContext.getCurrentInstance().getCvContext().getByLabel( CvTopic.class,
-                                                                                                   CvTopic.CURATED_COMPLEX );
-            String authorConfDesc = "high";
-            if ( curatedComplex.equals( item.getCvTopic() ) ) {
+          //  if ( CvTopic.CURATED_COMPLEX.equals( item.getCvTopic().getMiIdentifier() ) ) {     //TODO:
+            if ( CvTopic.CURATED_COMPLEX.equals( item.getCvTopic().getShortLabel() ) ) {           
+                nrComplexes++;
                 return true;
             }
-            if ( authorConf.equals( item.getCvTopic() ) && authorConfDesc.equals( item.getAnnotationText() ) ) {
+            
+            if ( CvTopic.AUTHOR_CONFIDENCE_MI_REF.equals( item.getCvTopic().getMiIdentifier() ) && authorConfDesc.equals( item.getAnnotationText() ) ) {
+                nrAuthorConf++;
                 return true;
             }
         }
@@ -508,31 +622,19 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
      * @return true or false
      */
     private boolean isEnzymeOrFluorescenceRole( InteractionImpl interaction ) {
-        CvBiologicalRole enzymeRole = IntactContext.getCurrentInstance().getCvContext().getByMiRef(
-                CvBiologicalRole.class, CvBiologicalRole.ENZYME_PSI_REF );
-        CvBiologicalRole enzymeTargetRole = IntactContext.getCurrentInstance().getCvContext().getByMiRef(
-                CvBiologicalRole.class, CvBiologicalRole.ENZYME_TARGET_PSI_REF );
-        CvExperimentalRole fluorescenceAcceptorRole = IntactContext.getCurrentInstance().getCvContext().getByMiRef(
-                CvExperimentalRole.class, CvExperimentalRole.FLUROPHORE_ACCEPTOR_MI_REF );
-        CvExperimentalRole fluorescenceDonorRole = IntactContext.getCurrentInstance().getCvContext().getByMiRef(
-                CvExperimentalRole.class, CvExperimentalRole.FLUROPHORE_DONOR_MI_REF );
-
         int enzymeNr = 0;
         int enzymeTargetNr = 0;
         int fluorescenceAcceptorNr = 0;
         int fluorescenceDonorNr = 0;
 
         for ( Component component : interaction.getComponents() ) {
-            if ( enzymeRole.equals( component.getCvBiologicalRole() ) ) {
+            if ( CvBiologicalRole.ENZYME_PSI_REF.equals( component.getCvBiologicalRole().getMiIdentifier() ) ) {
                 enzymeNr++;
-            }
-            if ( enzymeTargetRole.equals( component.getCvBiologicalRole() ) ) {
+            } else if ( CvBiologicalRole.ENZYME_TARGET_PSI_REF.equals( component.getCvBiologicalRole().getMiIdentifier() ) ) {
                 enzymeTargetNr++;
-            }
-            if ( fluorescenceAcceptorRole.equals( component.getCvExperimentalRole() ) ) {
+            } else if ( CvExperimentalRole.FLUROPHORE_ACCEPTOR_MI_REF.equals( component.getCvExperimentalRole().getMiIdentifier() ) ) {
                 fluorescenceAcceptorNr++;
-            }
-            if ( fluorescenceDonorRole.equals( component.getCvExperimentalRole() ) ) {
+            } else if ( CvExperimentalRole.FLUROPHORE_DONOR_MI_REF.equals( component.getCvExperimentalRole().getMiIdentifier() ) ) {
                 fluorescenceDonorNr++;
             }
         }
@@ -541,9 +643,11 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         // and another protein (but not a target enzyme), if yes, are these
         // considered as high confidence?
         if ( enzymeNr + enzymeTargetNr >= 2 ) {
+            nrEnzyme++;
             return true;
         }
         if ( fluorescenceAcceptorNr + fluorescenceDonorNr >= 2 ) {
+            nrFluoresc++;
             return true;
         }
 
@@ -588,6 +692,9 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                 }
             }
         }
+        if (proteins.size() == 1){
+            proteins.add( proteins.get( 0 ));
+        }
         interactionS.setInteractors( proteins );
 
         return interactionS;
@@ -624,7 +731,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         CvObjectDao<CvDatabase> cvDatabase = daoFactory.getCvObjectDao( CvDatabase.class );
         CvDatabase cvGo = cvDatabase.getByPsiMiRef( CvDatabase.GO_MI_REF );
         if ( cvGo == null ) {
-            throw new NullPointerException( "CvDatabase GO must not be null, check that the it exists in the database!" );
+            throw new NullPointerException( "CvDatabase GO must not be null, check that it exists in the database!" );
         }
         Collection<Xref> goRefs = AnnotatedObjectUtils.searchXrefs( protein, cvGo );
         for ( Xref xref : goRefs ) {

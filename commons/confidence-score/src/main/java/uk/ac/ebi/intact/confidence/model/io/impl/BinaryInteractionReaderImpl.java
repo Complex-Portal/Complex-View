@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.model.io;
+package uk.ac.ebi.intact.confidence.model.io.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 import uk.ac.ebi.intact.confidence.model.Confidence;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
 import uk.ac.ebi.intact.confidence.model.iterator.BinaryInteractionIterator;
 import uk.ac.ebi.intact.confidence.model.parser.BinaryInteractionParserUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
- * TODO comment that class header
+ * Reader for BinaryInteraction files.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        11-Dec-2007
  *        </pre>
@@ -51,6 +50,20 @@ public class BinaryInteractionReaderImpl implements BinaryInteractionReader {
 
     public List<BinaryInteraction> read( File inFile ) throws IOException {
         List<BinaryInteraction> interactions = new ArrayList<BinaryInteraction>();
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        String line ="";
+        while ((line = br.readLine() ) !=null){
+            BinaryInteraction binaryInteraction = BinaryInteractionParserUtils.parseBinaryInteraction( line, conf);
+            if (binaryInteraction != null){
+                interactions.add( binaryInteraction);
+            }
+        }
+        br.close();
+        return interactions;
+    }
+
+    public Set<BinaryInteraction> read2Set (File inFile) throws IOException{
+        Set<BinaryInteraction> interactions = new HashSet<BinaryInteraction>();
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         String line ="";
         while ((line = br.readLine() ) !=null){

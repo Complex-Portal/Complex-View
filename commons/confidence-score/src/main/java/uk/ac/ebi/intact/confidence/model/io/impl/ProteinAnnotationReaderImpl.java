@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.model.io;
+package uk.ac.ebi.intact.confidence.model.io.impl;
 
 import org.junit.Assert;
 import uk.ac.ebi.intact.confidence.model.*;
+import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
 import uk.ac.ebi.intact.confidence.model.iterator.ProteinAnnotationIterator;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * TODO comment that class header
+ * ProteinAnnotation File reader.
+ * File format >uniprotAc(,annotation)*<
+ * annoatation = {uniprotAc|GoId|InterProId}
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        07-Dec-2007
  *        </pre>
@@ -78,6 +79,18 @@ public class ProteinAnnotationReaderImpl implements ProteinAnnotationReader {
         }
         ProteinAnnotation protAnno = new ProteinAnnotation(id, annotations);
         return protAnno;
+    }
+
+    public Set<ProteinAnnotation> read2Set (File inFile) throws IOException{
+          Set<ProteinAnnotation> proteins = new HashSet<ProteinAnnotation>();
+        BufferedReader br = new BufferedReader( new FileReader( inFile ) );
+        String line = "";
+        while ( ( line = br.readLine() ) != null ) {
+            ProteinAnnotation protAnno = parseProteinAnnotation( line );
+            proteins.add( protAnno );
+        }
+        br.close();
+        return proteins;
     }
 
     public Iterator<ProteinAnnotation> iterate( File inFile ) throws FileNotFoundException {

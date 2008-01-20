@@ -31,18 +31,28 @@ import java.util.NoSuchElementException;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since 0.1
+ * @since 1.6.0
  *        <pre>
  *        12-Dec-2007
  *        </pre>
  */
 public class BinaryInteractionAttributesIterator implements Iterator<BinaryInteractionAttributes> {
 
+    /**
+     * Reader on the data we are going to iterate.
+     */
     private BufferedReader interactionAttribsStreamReader;
     private Confidence conf = Confidence.UNKNOWN;
 
+     /**
+     * Next line to be processed.
+     */
     private String nextLine;
-    private boolean lineConsummed;
+
+    /**
+     * indicate if the line that has been read was already consummed by the user via the next() nethod.
+     */
+    private boolean lineConsummed = true;
 
     public BinaryInteractionAttributesIterator( InputStream binaryInteractionStream){
         interactionAttribsStreamReader = new BufferedReader(new InputStreamReader(binaryInteractionStream));

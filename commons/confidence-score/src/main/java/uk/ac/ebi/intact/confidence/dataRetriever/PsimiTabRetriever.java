@@ -66,7 +66,11 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
         return highConfidence.size();
     }
 
-	public void retrieveMediumConfidenceSet(Writer w) {
+    public List<InteractionSimplified> retrieveHighConfidenceSet() throws DataRetrieverException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void retrieveMediumConfidenceSet(Writer w) {
 //			for (BinaryInteraction interaction : binaryInts) {
 //				//TODO: ask Sam about the psimi model for the interaction
 //			}

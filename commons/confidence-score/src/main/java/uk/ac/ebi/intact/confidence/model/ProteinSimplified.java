@@ -16,7 +16,8 @@ import java.util.Iterator;
  * TODO comment this
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
- * @since <pre>
+ * @since 1.6.0
+ * <pre>
  *               14 - Aug - 2007
  *               </pre>
  */
@@ -38,6 +39,7 @@ public class ProteinSimplified {
     }
 
     public ProteinSimplified( UniprotAc uniprotAc ) {
+        this();
         this.uniprotAc = uniprotAc;
     }
 
@@ -154,9 +156,14 @@ public class ProteinSimplified {
     }
 
     public String convertSeqAnnotationToFasta(){
-        String result = ">" + uniprotAc.getAcNr() +"|description\n";
-        result += seq.getSeq();
-        return result;
+        if (seq != null) {
+            String result = ">" + uniprotAc.getAcNr() + "|description\n";
+            result += seq.getSeq();
+            return result;
+        } else {
+            return null;
+        }
+        
     }
 
     // public Collection<String> getDomains() {

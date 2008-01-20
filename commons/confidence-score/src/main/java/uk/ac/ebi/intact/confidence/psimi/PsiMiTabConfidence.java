@@ -34,7 +34,8 @@ import java.util.*;
  * writes to the psimi-tab file the score values
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
- * @since <pre>28 Aug 2007</pre>
+ * @since 1.6.0
+ * <pre>28 Aug 2007</pre>
  */
 public class PsiMiTabConfidence {
     /**
@@ -76,7 +77,7 @@ public class PsiMiTabConfidence {
 
     }
 
-    public void appendConfidence( File inPsiMiFile, boolean hasHeaderLine, File outPsiMiFile, Set<ConfidenceType> type ) {
+    public void appendConfidence( File inPsiMiFile, boolean hasHeaderLine, File outPsiMiFile, Set<ConfidenceType> type ) throws PsiMiException {
         PsimiTabReader reader = new PsimiTabReader( hasHeaderLine );
         reader.setBinaryInteractionClass( IntActBinaryInteraction.class );
         reader.setColumnHandler( new IntActColumnHandler() );
@@ -86,9 +87,9 @@ public class PsiMiTabConfidence {
 
             writeScores( interactions, hasHeaderLine, outPsiMiFile );
         } catch ( IOException e ) {
-            e.printStackTrace();
+            throw new PsiMiException( e);
         } catch ( ConverterException e ) {
-            e.printStackTrace();
+            throw new PsiMiException( e );
         }
     }
 
@@ -171,9 +172,7 @@ public class PsiMiTabConfidence {
 
     private void save( BinaryInteraction interaction, double[] scores ) {
         List<Confidence> confVals = new ArrayList<Confidence>( 1 );
-        // TODO: i should get the cvConfidence type from the database and
-        // write the short label instead of "intact conf score"
-        Confidence conf1 = new ConfidenceImpl( "intact conf score", Double.toString( scores[classifier.getIndex( "high" )] ) );
+        Confidence conf1 = new ConfidenceImpl( "intact confidence", Double.toString( scores[classifier.getIndex( "high" )] ) );
         confVals.add( conf1 );
         interaction.setConfidenceValues( confVals );
     }

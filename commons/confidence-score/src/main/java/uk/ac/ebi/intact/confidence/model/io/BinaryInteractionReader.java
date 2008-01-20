@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ * BinaryInteraction reading strategy.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        11-Dec-2007
  *        </pre>
@@ -45,6 +45,8 @@ public interface BinaryInteractionReader {
      * @throws IOException
      */
     List<BinaryInteraction> read ( File inFile ) throws IOException;
+
+    Set<BinaryInteraction> read2Set (File inFile) throws IOException;
 
     Iterator<BinaryInteraction> iterate(File inFile) throws FileNotFoundException;
 }

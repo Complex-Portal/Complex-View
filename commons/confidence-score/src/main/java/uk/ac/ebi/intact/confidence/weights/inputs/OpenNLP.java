@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.confidence.weights.inputs;
 
+import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
+
 import java.io.*;
 
 /**
@@ -22,7 +24,7 @@ import java.io.*;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        26-Nov-2007
  *        </pre>
@@ -41,6 +43,11 @@ public class OpenNLP {
         } catch ( IOException e ) {
             e.printStackTrace();
         }
+    }
+
+    public static void createInput( ConfidenceSet highconf, ConfidenceSet lowconf){
+        //File outFile = new File()
+        //TODO: implement method                
     }
 
     private static void createInput( String hcAttribsPath, Writer writer , String type) {

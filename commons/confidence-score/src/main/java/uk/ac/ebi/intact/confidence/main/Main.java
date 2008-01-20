@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.confidence.main;
 
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.main.exception.InfoGatheringException;
+import uk.ac.ebi.intact.confidence.model.Report;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,19 +36,19 @@ import junit.framework.Assert;
  */
 public class Main {
 
-    public static void main( String[] args ) throws InfoGatheringException, IOException {
+    public static void main( String[] args ) throws InfoGatheringException, Exception {
         // 1. InfoGathering
         InfoGathering infoG = new InfoGathering( new SpokeExpansion());
         File workDir =  new File (getTargetDirectory(), "ConfMain");
-        infoG.retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( workDir);
+        Report report =infoG.retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( workDir);
 
         File fastaFile = new File("yeast fasta path in here");
         File lcFile = infoG.retrieveLowConfidenceSet( workDir, fastaFile, -1);
         if (lcFile != null){
-            infoG.retrieveLowConfidenceSetAnnotations( workDir, lcFile );
+            infoG.retrieveLowConfidenceSetAnnotations( report);//workDir, lcFile );
         }
         // 2. InfoProcessing ~ Blast
-           InfoProcessing blast = new InfoProcessing();
+           //InfoProcessing blast = new InfoProcessing();
         // 3. Info Filtering - GO Filter
 
      //   InfoFiltering .filterGO( );
@@ -55,6 +56,7 @@ public class Main {
         // 4. Attribute generation
          InfoModelInput infoMI = new InfoModelInput();
          //infoMI.combine( )
+        // merge
 
         // 5. training model
 

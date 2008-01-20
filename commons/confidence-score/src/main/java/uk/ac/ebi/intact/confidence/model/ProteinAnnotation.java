@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since 0.1
+ * @since 1.6.0
  *        <pre>
  *        07-Dec-2007
  *        </pre>
@@ -112,10 +112,10 @@ public class ProteinAnnotation {
     }
 
     public String convertToString() {
-        String result = id.convertToString() + ",";
+        String result = id.convertToString();
         for ( Iterator<Identifier> identifierIterator = annotations.iterator(); identifierIterator.hasNext(); ) {
             Identifier identifier =  identifierIterator.next();
-            result += identifier.convertToString()+",";
+            result += "," +identifier.convertToString();
         }
        return result;
     }
@@ -127,6 +127,19 @@ public class ProteinAnnotation {
         ProteinAnnotation that = ( ProteinAnnotation ) o;
 
         if ( id != null ? !id.equals( that.id ) : that.id != null ) return false;
+
+        if (annotations.size() != that.annotations.size( )){
+            return false;
+        }
+        
+        Iterator<Identifier> thatIter = that.annotations.iterator();
+        for ( Iterator<Identifier> iterator = annotations.iterator(); iterator.hasNext(); ) {
+            Identifier anno =  iterator.next();
+            Identifier thatAnno = thatIter.next();
+            if(!anno.equals( thatAnno )){
+                return false;
+            }
+        }
 
         return true;
     }

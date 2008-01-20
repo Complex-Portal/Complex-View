@@ -24,7 +24,7 @@ import java.util.Iterator;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since 0.1
+ * @since 1.6.0
  *        <pre>
  *        07-Dec-2007
  *        </pre>
@@ -56,8 +56,45 @@ public class BinaryInteractionAttributes extends BinaryInteraction{
         return super.getConfidence();
     }
 
+    public void setConfidence(Confidence conf){
+        super.setConfidence( conf );
+    }
+
     public List<Attribute> getAttributes() {
         return attributes;
+    }
+
+    public List<Attribute> getGoAttributes(){
+        List<Attribute> gos = new ArrayList<Attribute>();
+        for ( Iterator<Attribute> iterator = attributes.iterator(); iterator.hasNext(); ) {
+            Attribute attribute = iterator.next();
+            if (attribute.getFirstElement().getClass().equals( GoIdentifierImpl.class )) {
+                gos.add( attribute );
+            }
+        }
+        return gos;
+    }
+
+     public List<Attribute> getIpAttributes(){
+        List<Attribute> ips = new ArrayList<Attribute>();
+        for ( Iterator<Attribute> iterator = attributes.iterator(); iterator.hasNext(); ) {
+            Attribute attribute = iterator.next();
+            if (attribute.getFirstElement().getClass().equals( InterProIdentifierImpl.class )) {
+                ips.add( attribute );
+            }
+        }
+        return ips;
+    }
+
+     public List<Attribute> getSeqAttributes(){
+        List<Attribute> seqs = new ArrayList<Attribute>();
+        for ( Iterator<Attribute> iterator = attributes.iterator(); iterator.hasNext(); ) {
+            Attribute attribute = iterator.next();
+            if (attribute.getFirstElement().getClass().equals( UniprotIdentifierImpl.class )) {
+                seqs.add( attribute );
+            }
+        }
+        return seqs;
     }
 
     public void setAttributes( List<Attribute> attributes ) {
@@ -65,7 +102,10 @@ public class BinaryInteractionAttributes extends BinaryInteraction{
     }
 
     public void addAttributes(List<Attribute> attributes){
-        attributes.addAll( attributes);
+       // attributes.addAll( attributes);
+        for ( int i = 0; i< attributes.size(); i++ ){
+            addAttribute( attributes.get( i ));
+        }
     }
 
     public void addAttribute(Attribute attribute){
@@ -86,5 +126,14 @@ public class BinaryInteractionAttributes extends BinaryInteraction{
 
        return result;
    }
-    
+
+    public String convertToModleInputString(){
+        String result = "";
+        for ( Iterator<Attribute> attributeIterator = attributes.iterator(); attributeIterator.hasNext(); ) {
+           Attribute attribute =  attributeIterator.next();
+           result += attribute.convertToString() + " ";
+       }
+        result += this.getConfidence();
+        return result;
+    }
 }

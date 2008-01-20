@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.model.io;
+package uk.ac.ebi.intact.confidence.model.io.impl;
 
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.confidence.model.io.ProteinSimplifiedWriter;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -25,11 +26,12 @@ import java.util.List;
 import java.util.Iterator;
 
 /**
- * TODO comment that class header
+ * Persists the ProteinSimplified objects in 3 files.
+ * The information ist splited in a goFile, ip-File and seq-File.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        13-Dec-2007
  *        </pre>
@@ -38,38 +40,38 @@ public class ProteinSimplifiedWriterImpl implements ProteinSimplifiedWriter {
 
     public void append( ProteinSimplified protein, File outFile ) throws IOException {
         //write protein annotations  -GO
-        String goFileName = fileName(outFile) + "_go.txt";
+        String fileName = fileName(outFile);
+        String goFileName = fileName + "_go.txt";
         Writer writer = new FileWriter(goFileName, true);
         writer.append( protein.convertGOAnnotationToString() +"\n");
         writer.close();
 
         //write protein annotations  -InterPro
-        String ipFileName = fileName(outFile) + "_ip.txt";
+        String ipFileName = fileName + "_ip.txt";
         writer = new FileWriter(ipFileName, true);
         writer.append( protein.convertIpAnnotationToString() +"\n");
         writer.close();
 
-        //write protein annotations  -InterPro
-        String seqFileName = fileName(outFile) + "_seq.txt";
+        //write protein annotations  -Seq
+        String seqFileName = fileName + "_seq.txt";
         writer = new FileWriter(seqFileName, true);
         writer.append( protein.convertSeqAnnotationToFasta() +"\n");
         writer.close();
     }
 
     public void append( List<ProteinSimplified> proteins, File outFile ) throws IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        for ( Iterator<ProteinSimplified> iterator = proteins.iterator(); iterator.hasNext(); ) {
+            ProteinSimplified proteinSimplified = iterator.next();
+            append(proteinSimplified, outFile);
+        }
     }
 
     public void write( List<ProteinSimplified> proteins, File outFile ) throws IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
+         cleanIfExists(outFile);
+         append(proteins, outFile);
     }
 
-     private String fileName( File outFile ) {
-        String fileName = outFile.getPath();
-        int index = fileName.lastIndexOf( ".");
-        String result = fileName.substring( 0, index);
-        return result;
-    }
+
 
     public void appendGO( ProteinSimplified protein, File outFile ) throws IOException {
         Writer writer = new FileWriter(outFile, true);
@@ -112,7 +114,34 @@ public class ProteinSimplifiedWriterImpl implements ProteinSimplifiedWriter {
     public void writeSeq( List<ProteinSimplified> proteins, File outFile ) throws IOException {
         writeSeq(proteins, outFile, false);
     }
+    //////////////////////
+    // Protected method(s)
+     protected void cleanIfExists( File outFile ) {
+        existsDelete(outFile);
+        String fileName = fileName( outFile );
 
+        File ipFile = new File(fileName + "_ip.txt");
+        existsDelete(ipFile);
+
+        File goFile = new File(fileName + "_go.txt");
+        existsDelete(goFile);
+
+        File seqFile = new File(fileName + "_seq.txt");
+        existsDelete(seqFile);
+    }
+
+    protected void existsDelete( File outFile ) {
+        if (outFile.exists()){
+            outFile.delete();
+        }
+    }
+
+     protected String fileName( File outFile ) {
+        String fileName = outFile.getPath();
+        int index = fileName.lastIndexOf( ".");
+        String result = fileName.substring( 0, index);
+        return result;
+    }
 
     /////////////////////
     // Private method(s)

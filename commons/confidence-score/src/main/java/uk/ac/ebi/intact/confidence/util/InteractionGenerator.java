@@ -18,7 +18,7 @@ import java.util.*;
  * Generates the low confidence set from a given proteom filtering the ones in IntAct.
  * 
  * @author Irina Armean (iarmean@ebi.ac.uk)
- * @version 1.0
+ * @version 1.6.0
  * @since
  * 
  * <pre>
@@ -80,16 +80,19 @@ public class InteractionGenerator {
 			int index1 = random.nextInt(yeastProtList.size());
 			int index2 = random.nextInt(yeastProtList.size());
 
-			// get uniprot ids
-            Identifier uniprotId1 = yeastProtList.get( index1);
-			Identifier uniprotId2 = yeastProtList.get(index2);
+            if (index1 != index2) {
+                // get uniprot ids
+                Identifier uniprotId1 = yeastProtList.get( index1 );
+                Identifier uniprotId2 = yeastProtList.get( index2 );
 
-            BinaryInteraction auxBin = new BinaryInteraction(uniprotId1, uniprotId2, Confidence.UNKNOWN );
-            if (!forbidden.contains(auxBin)) {
-				interactions.add(auxBin);
-				i++;
-			}
-		}
+                BinaryInteraction auxBin = new BinaryInteraction( uniprotId1, uniprotId2, Confidence.UNKNOWN );
+                if ( !forbidden.contains( auxBin ) ) {
+                    auxBin.setConfidence( Confidence.LOW );
+                    interactions.add( auxBin );
+                    i++;
+                }
+            }
+        }
 
 		return interactions;
     }

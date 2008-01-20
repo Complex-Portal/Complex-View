@@ -27,10 +27,8 @@ import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.main.exception.InfoGatheringException;
-import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 import uk.ac.ebi.intact.confidence.model.Identifier;
-import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
-import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReaderImpl;
+import uk.ac.ebi.intact.confidence.model.Report;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
 
 import java.io.File;
@@ -38,16 +36,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ * Retreives the high confidence ans medium confidence set form the DB.
+ * (Step 1)
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        07-Dec-2007
  *        </pre>
@@ -59,16 +56,21 @@ public class InfoGathering {
     public static final Log log = LogFactory.getLog( InfoGathering.class );
     private ExpansionStrategy expansion;
 
-    public InfoGathering( ExpansionStrategy expansion){
-        this.expansion = expansion;
-
+    public InfoGathering (){
+        this( new SpokeExpansion());
     }
 
-   public void retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( File workDir) throws InfoGatheringException, IOException {
+    public InfoGathering( ExpansionStrategy expansion){
+        this.expansion = expansion;
+    }
+
+   public Report retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( File workDir) throws Exception {
        IntactDbRetriever intactdb = new IntactDbRetriever( workDir, expansion);
-       File hcFile = new File(workDir, "hc_set.txt");
-       File mcFile = new File(workDir, "lc_set.txt");
-       intactdb.readConfidences(hcFile, mcFile );
+       File hcFile = new File(workDir, "highconf_set.txt");
+       File mcFile = new File(workDir, "medconf_set.txt");
+       Report report = new Report(hcFile, mcFile);
+       intactdb.readConfidences(report);
+       return report;
    }
     
     /**
@@ -77,58 +79,87 @@ public class InfoGathering {
      * @param fastaFile : for the set of proteins the low confidences will be generated form.
      * @param nr : optional, if n >0 n low confidence interactions will be generated, if n<=0 will generate as many low confidences as high confidences found
      */
-    public File retrieveLowConfidenceSet(File workDir, File fastaFile, int nr){
+    public File retrieveLowConfidenceSet(File workDir, File fastaFile, int nr) throws InfoGatheringException {
           return generateLowconf( workDir, fastaFile, nr);
     }
 
-    public void retrieveLowConfidenceSetAnnotations(File workDir, File lowconfFile){
+      public File retrieveLowConfidenceSet(Report report, File fastaFile, int nr) throws InfoGatheringException {
+          return generateLowconf( report, fastaFile, nr);
+    }
+
+    public void retrieveLowConfidenceSetAnnotations(Report report)throws InfoGatheringException {//File workDir, File lowconfFile) throws InfoGatheringException {
         try {
-            BinaryInteractionSet lowConf = new BinaryInteractionSet( lowconfFile.getPath() );
-            File dirForAttrib = new File( workDir, "DataRetriever" );
-            writeIpGoForLc( lowConf.getAllProtNames(), dirForAttrib );
+            BinaryInteractionSet lowConf = new BinaryInteractionSet( report.getLowconfFile().getPath() );
+//            File dirForAttrib = report.getLowconfFile().getParentFile(); // new File( workDir, "DataRetriever" );
+            writeIpGoForLc( lowConf.getAllProtNames(), report );
         } catch ( IOException e ) {
-            e.printStackTrace();
+            throw new InfoGatheringException( e);
         }
     }
 
-     protected File generateLowconf( File workDir, File inFile, int nr ) {
+
+
+     protected File generateLowconf( File workDir, File inFile, int nr ) throws InfoGatheringException {
         DataMethods dm = new DataMethods();
         if ( !inFile.exists() ) {
             throw new RuntimeException( inFile.getAbsolutePath() );
         }
         Set<String> yeastProteins = dm.readFastaToProts( inFile, null );
         try {
-            BinaryInteractionSet highConfBiSet = new BinaryInteractionSet( workDir.getPath() + "/highconf_all.txt" );
-            BinaryInteractionSet medConfBiSet = new BinaryInteractionSet( workDir.getPath() + "/medconf_all.txt" );
+            BinaryInteractionSet highConfBiSet = new BinaryInteractionSet( workDir.getPath() + "/highconf_set.txt" );
+            BinaryInteractionSet medConfBiSet = new BinaryInteractionSet( workDir.getPath() + "/medconf_set.txt" );
             Collection<ProteinPair> all = highConfBiSet.getSet();
             all.addAll( medConfBiSet.getSet() );
             BinaryInteractionSet forbidden = new BinaryInteractionSet( all );
             BinaryInteractionSet lowConf = dm.generateLowConf( yeastProteins, forbidden, nr );
-            File lcFile = new File( workDir.getPath(), "lowconf_all.txt" );
+            File lcFile = new File( workDir.getPath(), "lowconf_set.txt" );
             dm.export( lowConf, lcFile );
             return lcFile;
         } catch ( IOException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new InfoGatheringException( e);
         }
-         return null;
+    }
+
+     protected File generateLowconf( Report report, File inFile, int nr ) throws InfoGatheringException {
+        DataMethods dm = new DataMethods();
+        if ( !inFile.exists() ) {
+            throw new RuntimeException( inFile.getAbsolutePath() );
+        }
+        Set<String> yeastProteins = dm.readFastaToProts( inFile, null );
+        try {
+            BinaryInteractionSet highConfBiSet = new BinaryInteractionSet(report.getHighconfFile().getPath() );
+            BinaryInteractionSet medConfBiSet = new BinaryInteractionSet( report.getMedconfFile().getPath());
+            Collection<ProteinPair> all = highConfBiSet.getSet();
+            all.addAll( medConfBiSet.getSet() );
+            BinaryInteractionSet forbidden = new BinaryInteractionSet( all );
+            BinaryInteractionSet lowConf = dm.generateLowConf( yeastProteins, forbidden, nr );
+            File lcFile = new File( report.getMedconfFile().getParentFile(), "lowconf_set.txt" );
+            dm.export( lowConf, lcFile );
+            report.setLowconfFile( lcFile );
+            return lcFile;
+        } catch ( IOException e ) {
+            throw new InfoGatheringException( e);
+        }
     }
 
 
-    private void writeIpGoForLc( Set<String> lowConfProt, File dirForAttrib ) {
+    private void writeIpGoForLc( Set<String> lowConfProt, Report report ) throws InfoGatheringException {//File dirForAttrib ) throws InfoGatheringException {
            UniprotDataRetriever uniprot = new UniprotDataRetriever();
            try {
-               writeGo( uniprot, lowConfProt, new FileWriter( new File( dirForAttrib, "lowconf_uniprot_go.txt" ) ) );
-               writeIp( uniprot, lowConfProt, new FileWriter( new File( dirForAttrib, "lowconf_uniprot_ip.txt" ) ) );
-               writeSeq( uniprot, lowConfProt, new FileWriter( new File( dirForAttrib, "lowconf_uniprot_seq.txt" ) ) );
+               report.setLowconfGOFile( new File(report.getLowconfFile().getParentFile(),"lowconf_set_go.txt") );
+               report.setLowconfIpFile( new File(report.getLowconfFile().getParentFile(),"lowconf_set_ip.txt") );
+               report.setLowconfSeqFile( new File(report.getLowconfFile().getParentFile(),"lowconf_set_seq.txt") );
+
+               writeGo( uniprot, lowConfProt, new FileWriter( report.getLowconfGOFile() ));
+               writeIp( uniprot, lowConfProt, new FileWriter( report.getLowconfIpFile() ) );
+               writeSeq( uniprot, lowConfProt, new FileWriter( report.getLowconfSeqFile() ) );
            } catch ( IOException e ) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
+               throw new InfoGatheringException( e);
            }
 
        }
 
-       private void writeIp( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) {
+       private void writeIp( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
            try {
                for ( String ac : lowConfProt ) {
                    Set<Identifier> ips = uniprot.getIps( new UniprotAc( ac ) );
@@ -140,12 +171,11 @@ public class InfoGathering {
                }
                fileWriter.close();
            } catch ( IOException e ) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
+                throw new InfoGatheringException( e);
            }
        }
 
-       private void writeGo( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) {
+       private void writeGo( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
            try {
                for ( String ac : lowConfProt ) {
                    Set<Identifier> gos = uniprot.getGos( new UniprotAc( ac ) );
@@ -158,12 +188,11 @@ public class InfoGathering {
                }
                fileWriter.close();
            } catch ( IOException e ) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
+                throw new InfoGatheringException( e);
            }
        }
 
-       private void writeSeq( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) {
+       private void writeSeq( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
            for ( String ac : lowConfProt ) {
                Sequence seq = uniprot.getSeq( new UniprotAc( ac ) );
                if ( seq != null ) {
@@ -177,20 +206,19 @@ public class InfoGathering {
            try {
                fileWriter.close();
            } catch ( IOException e ) {
-               e.printStackTrace();
+               throw new InfoGatheringException( e);
            }
        }
 
-       private void print( String ac, Sequence seq, Writer fileWriter ) {
+       private void print( String ac, Sequence seq, Writer fileWriter ) throws InfoGatheringException {
            try {
                fileWriter.append( ">" + ac + "|description\n" + seq + "\n" );
            } catch ( IOException e ) {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
+              throw new InfoGatheringException( e);
            }
        }
     
-       public static void main(String[] args) {
+       public static void main(String[] args) throws Exception{
             // 1. InfoGathering
            InfoGathering infoG = new InfoGathering( new SpokeExpansion() );
            File workDir = new File( "E:\\tmp", "ConfMain" );
@@ -198,9 +226,9 @@ public class InfoGathering {
            try {
                infoG.retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( workDir );
            } catch ( InfoGatheringException e ) {
-               e.printStackTrace();
+              throw new InfoGatheringException( e);
            } catch ( IOException e ) {
-               e.printStackTrace();
+               throw new InfoGatheringException( e);
            }
 
 //           BinaryInteractionReader bir = new BinaryInteractionReaderImpl();

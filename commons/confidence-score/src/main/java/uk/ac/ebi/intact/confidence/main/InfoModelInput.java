@@ -16,8 +16,12 @@
 package uk.ac.ebi.intact.confidence.main;
 
 import uk.ac.ebi.intact.confidence.model.*;
+import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
+import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
 
 import java.util.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Combines the procesed information into the appropiate input for the model to be trained.
@@ -26,7 +30,7 @@ import java.util.*;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        10-Dec-2007
  *        </pre>
@@ -56,6 +60,25 @@ public class InfoModelInput {
 //        }
 //    }
 
+
+    public static List<BinaryInteractionAttributes> populateAttributes(List<BinaryInteraction> binaryInteractions, File annotationFile) throws IOException {
+        Map<Identifier, ProteinAnnotation > annoMap = createMap(annotationFile);
+        List<BinaryInteractionAttributes> populated = new ArrayList<BinaryInteractionAttributes>();
+        for ( Iterator<BinaryInteraction> biaIter = binaryInteractions.iterator(); biaIter.hasNext(); )
+        {
+            BinaryInteraction bi =  biaIter.next();
+
+            ProteinAnnotation protA = annoMap.get( bi.getFirstId()  );
+            ProteinAnnotation protB = annoMap.get( bi.getSecondId() );
+
+            BinaryInteractionAttributes bia = new BinaryInteractionAttributes(bi.getFirstId(), bi.getSecondId(), Confidence.UNKNOWN);
+            populateAttributes( bia, protA, protB  );
+
+            populated.add( bia );
+        }
+        return populated;
+    }
+
      /**
      *  Combines the protein annotations an populates the BinaryInteractionAttributes.
      * If other Attributes are present the new ones will be added to them.
@@ -63,7 +86,7 @@ public class InfoModelInput {
      * @param firstProtein
      * @param secondProtein
      */
-    public void populateAttributes( BinaryInteractionAttributes binaryInteractionAttribs, ProteinAnnotation firstProtein, ProteinAnnotation secondProtein){
+    public static void populateAttributes( BinaryInteractionAttributes binaryInteractionAttribs, ProteinAnnotation firstProtein, ProteinAnnotation secondProtein){
         if(binaryInteractionAttribs.getFirstId().equals( firstProtein.getId()) &&  binaryInteractionAttribs.getSecondId().equals( secondProtein.getId())){
             List<Attribute> attribs = combine(firstProtein.getAnnotations(), secondProtein.getAnnotations());
             binaryInteractionAttribs.addAttributes(attribs );
@@ -72,12 +95,15 @@ public class InfoModelInput {
         }
     }
 
-    protected List<Attribute> combine ( Collection<Identifier> idsA, Collection<Identifier> idsB){
+    protected static List<Attribute> combine ( Collection<Identifier> idsA, Collection<Identifier> idsB){
         return combine(new HashSet<Identifier>(idsA), new HashSet<Identifier>(idsB));
     }
 
-    protected List<Attribute> combine( Set<Identifier> idsA, Set<Identifier> idsB ) {
+    protected static List<Attribute> combine( Set<Identifier> idsA, Set<Identifier> idsB ) {
         List<Attribute> attributes = new ArrayList<Attribute>();
+        if (idsA.size() == 0 || idsB.size() == 0){
+            return attributes;
+        }
         for ( Iterator<Identifier> idItA = idsA.iterator(); idItA.hasNext(); ) {
             Identifier idA = idItA.next();
             for ( Iterator<Identifier> idItB = idsB.iterator(); idItB.hasNext(); ) {
@@ -94,13 +120,29 @@ public class InfoModelInput {
         return attributes;
     }
 
-     private Attribute properAttribute( Identifier idA, Identifier idB ) {
+     private static Attribute properAttribute( Identifier idA, Identifier idB ) {
         if ( idA instanceof GoIdentifierImpl && idB instanceof GoIdentifierImpl ) {
             return new IdentifierAttributeImpl<GoIdentifierImpl>( new GoIdentifierImpl(idA.getId()), new GoIdentifierImpl(idB.getId() ) );
         } else if ( idA instanceof InterProIdentifierImpl && idB instanceof InterProIdentifierImpl ) {
             return new IdentifierAttributeImpl<InterProIdentifierImpl>( new InterProIdentifierImpl( idA.getId()), new InterProIdentifierImpl(idB.getId() ) );
+        } else if (idA instanceof UniprotIdentifierImpl && idB instanceof UniprotIdentifierImpl) {
+            return new IdentifierAttributeImpl<UniprotIdentifierImpl>( new UniprotIdentifierImpl( idA.getId()), new UniprotIdentifierImpl( idB.getId()));
         }
         return null;
+    }
+
+    private static Map<Identifier, ProteinAnnotation> createMap( File annotationFile ) throws IOException {
+        ProteinAnnotationReader reader = new ProteinAnnotationReaderImpl();
+        List<ProteinAnnotation> annotations = reader.read( annotationFile);
+        System.out.println(annotations.size());
+
+        Map<Identifier, ProteinAnnotation> mapped = new HashMap<Identifier, ProteinAnnotation>();
+        for (int i =0; i< annotations.size(); i++){
+            ProteinAnnotation pa = annotations.get( i );
+            mapped.put( pa.getId(), pa );
+        }
+
+        return mapped;
     }
    
 }

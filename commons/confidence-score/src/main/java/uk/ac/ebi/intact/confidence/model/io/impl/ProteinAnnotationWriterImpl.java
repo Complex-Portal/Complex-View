@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.model.io;
+package uk.ac.ebi.intact.confidence.model.io.impl;
 
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationWriter;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -23,13 +24,14 @@ import java.io.Writer;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collection;
 
 /**
- * TODO comment that class header
+ * Writer implementation for ProteinAnnotation objects.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        10-Dec-2007
  *        </pre>
@@ -37,9 +39,11 @@ import java.util.List;
 public class ProteinAnnotationWriterImpl implements ProteinAnnotationWriter {
 
     public void append( ProteinAnnotation proteinAnnotation, File outFile ) throws IOException {
-        Writer writer = new FileWriter(outFile,true);
-        writer.append(proteinAnnotation.convertToString() + "\n");
-        writer.close();
+        if (proteinAnnotation != null){
+            Writer writer = new FileWriter(outFile,true);
+            writer.append(proteinAnnotation.convertToString() + "\n");
+            writer.close();
+        }
     }
 
     public void append( List<ProteinAnnotation> proteins, File outFile) throws IOException{
@@ -51,7 +55,7 @@ public class ProteinAnnotationWriterImpl implements ProteinAnnotationWriter {
         writer.close();
     }
 
-    public void write( List<ProteinAnnotation> proteinAnnotations, File inFile ) throws IOException{
+    public void write( Collection<ProteinAnnotation> proteinAnnotations, File inFile ) throws IOException{
         Writer writer = new FileWriter(inFile);
         for ( Iterator<ProteinAnnotation> proteinAnnotationIterator = proteinAnnotations.iterator(); proteinAnnotationIterator.hasNext(); )
         {

@@ -436,7 +436,10 @@ public class DataMethods implements AnnotationConstants {
     }
 
     private void exportGO( ProteinSimplified proteinS, Writer writer ) {
-
+        if (proteinS == null  || proteinS.getUniprotAc() == null){
+            log.info("UniprotAc must not be null!");
+            throw new IllegalArgumentException( "ProteinSimplified must not be null, nor its uniprotAc!");
+        }
         HashSet<String> forbiddenGo = new HashSet<String>( forbiddenGoTerms.length );
         for ( String goTerm : forbiddenGoTerms ) {
             // use static array of forbidden GO terms, recorded in
@@ -469,6 +472,10 @@ public class DataMethods implements AnnotationConstants {
     }
 
     private void exportInterPro( ProteinSimplified proteinS, Writer writer ) {
+        if (proteinS == null || proteinS.getUniprotAc() == null){
+            log.info("UniprotAc is null!");
+            throw new IllegalArgumentException( "ProteinSimplified must not be null, nor its uniprotAc!");
+        }
         Set<Identifier> ips = proteinS.getInterProSet();
         if ( proteinS.getUniprotAc() == null ) {
             log.info( "protein withouth ac!: " + proteinS );
@@ -497,6 +504,9 @@ public class DataMethods implements AnnotationConstants {
     private void exportSeq( ProteinSimplified proteinS, Writer seqWriter ) {
         if ( proteinS == null ) {
             throw new IllegalArgumentException( "ProteinSimplified mus not be null!" );
+        }
+        if(proteinS.getUniprotAc() == null){
+            throw new IllegalArgumentException("UniprotAc must not be null!");
         }
 //        if (proteinS.getSequence() == null){
 //            throw new IllegalArgumentException("ProteinSimplified mus have a sequence! >"+ proteinS.getUniprotAc()+"<");

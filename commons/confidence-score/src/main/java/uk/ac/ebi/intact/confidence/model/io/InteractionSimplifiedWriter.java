@@ -26,16 +26,16 @@ import java.util.Collection;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        13-Dec-2007
  *        </pre>
  */
 public interface InteractionSimplifiedWriter {
 
-    void append ( InteractionSimplified interactionSimplified, File outFile ) throws IOException;
+    void append ( InteractionSimplified interactionSimplified, File outFile ) throws Exception;
 
-    void append ( Collection<InteractionSimplified> interactions, File outFile) throws IOException;
+    void append ( Collection<InteractionSimplified> interactions, File outFile) throws Exception;
 
-    void write ( Collection<InteractionSimplified> interactions, File outFile) throws IOException;
+    void write ( Collection<InteractionSimplified> interactions, File outFile) throws Exception;
 }

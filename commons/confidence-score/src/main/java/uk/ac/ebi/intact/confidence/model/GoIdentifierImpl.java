@@ -18,11 +18,11 @@ package uk.ac.ebi.intact.confidence.model;
 import java.util.regex.Pattern;
 
 /**
- * TODO comment that class header
+ * Gene Ontology identifier.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        30-Nov-2007
  *        </pre>
@@ -45,7 +45,7 @@ public class GoIdentifierImpl implements Identifier {
 	}
 
     public String convertToString() {
-        return identifier;  //To change body of implemented methods use File | Settings | File Templates.
+        return identifier;  
     }
 
 

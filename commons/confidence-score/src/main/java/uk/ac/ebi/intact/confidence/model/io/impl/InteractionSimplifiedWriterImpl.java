@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.model.io;
+package uk.ac.ebi.intact.confidence.model.io.impl;
 
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
-import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.confidence.model.io.InteractionSimplifiedWriter;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -24,57 +24,40 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * Writes an InteractionSimplified as
- * <uniprotAc>;<uniprotAc>
+ * TODO comment that class header
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        13-Dec-2007
  *        </pre>
  */
-public class CompactInteractionSWriterImpl implements InteractionSimplifiedWriter {
-
+public class InteractionSimplifiedWriterImpl implements InteractionSimplifiedWriter {
     public void append( InteractionSimplified interactionSimplified, File outFile ) throws IOException {
-        if (interactionSimplified.getComponents().size() != 2){
-            throw new IllegalArgumentException( "InteractionSimplified must have 2 and only 2 components!");
-        }
-        // writes BinaryInteractions
-        Writer writer = new FileWriter(outFile, true);
-        String binaryIntLine = binaryLine(interactionSimplified);
-        writer.append( binaryIntLine + "\n");
-        writer.close();
+       Writer writer = new FileWriter(outFile, true);
+       writer.append( interactionSimplified.convertToString() + "\n");
+       writer.close();
     }
 
     public void append( Collection<InteractionSimplified> interactions, File outFile ) throws IOException {
         Writer writer = new FileWriter(outFile, true);
         for ( Iterator<InteractionSimplified> iterator = interactions.iterator(); iterator.hasNext(); ) {
             InteractionSimplified interactionSimplified = iterator.next();
-             writer.append( binaryLine(interactionSimplified) +"\n");
+            writer.append(interactionSimplified.convertToString()  + "\n");
         }
         writer.close();
     }
 
     public void write( Collection<InteractionSimplified> interactions, File outFile ) throws IOException {
-        if (outFile.exists()){
-            outFile.delete();
+        Writer writer = new FileWriter(outFile);
+        for ( Iterator<InteractionSimplified> iterator = interactions.iterator(); iterator.hasNext(); ) {
+            InteractionSimplified interactionSimplified = iterator.next();
+            writer.write(interactionSimplified.convertToString()  + "\n");
         }
-        Writer writer= new FileWriter(outFile);
-       for ( Iterator<InteractionSimplified> iterator = interactions.iterator(); iterator.hasNext(); ) {
-           InteractionSimplified interaction = iterator.next();
-           writer.append(binaryLine( interaction) + "\n");
-       }
-    }
-
-      private String binaryLine( InteractionSimplified interactionSimplified ) {
-          Iterator<ProteinSimplified> iter = interactionSimplified.getComponents().iterator();
-          String result = iter.next().getUniprotAc().getAcNr();
-          while ( iter.hasNext() ) {
-              result += ";" + iter.next().getUniprotAc().getAcNr();
-          }
-          return result;
+        writer.close();
     }
 }

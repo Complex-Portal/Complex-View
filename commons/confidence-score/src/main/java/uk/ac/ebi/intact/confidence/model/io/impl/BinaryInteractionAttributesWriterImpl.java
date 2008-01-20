@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.model.io;
+package uk.ac.ebi.intact.confidence.model.io.impl;
 
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesWriter;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -25,48 +26,39 @@ import java.util.List;
 import java.util.Iterator;
 
 /**
- * TODO comment that class header
+ * Writer for binaryInteractionAttributes.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
- *        12-Dec-2007
+ *        10-Dec-2007
  *        </pre>
  */
-public class GisAttributesWriterImpl implements BinaryInteractionAttributesWriter {
+public class BinaryInteractionAttributesWriterImpl implements BinaryInteractionAttributesWriter {
 
     public void append( BinaryInteractionAttributes binaryInteractionAttributes, File outFile ) throws IOException {
         Writer writer = new FileWriter(outFile, true);
-        writer.append( gisLine(binaryInteractionAttributes) + "\n" );
+        writer.append( binaryInteractionAttributes.convertToString() + "\n");
         writer.close();
     }
 
-    public void append(List<BinaryInteractionAttributes> binrayInteractions, File outFile) throws IOException{
+     public void append(List<BinaryInteractionAttributes> binrayInteractions, File outFile) throws IOException{
         Writer writer = new FileWriter(outFile, true);
-        for ( Iterator<BinaryInteractionAttributes> iterator = binrayInteractions.iterator(); iterator.hasNext(); ) {
+         for ( Iterator<BinaryInteractionAttributes> iterator = binrayInteractions.iterator(); iterator.hasNext(); ) {
              BinaryInteractionAttributes binaryInt =  iterator.next();
-             writer.append( gisLine( binaryInt) +"\n");             
+             writer.append( binaryInt.convertToString()  +"\n");
          }
          writer.close();
-    }
+     }
 
     public void write( List<BinaryInteractionAttributes> binaryInteractionsWithAttributes, File outFile ) throws IOException {
-        Writer writer = new FileWriter(outFile);
-        for ( Iterator<BinaryInteractionAttributes> attrIter = binaryInteractionsWithAttributes.iterator(); attrIter.hasNext(); )
+       Writer writer = new FileWriter(outFile);
+        for ( Iterator<BinaryInteractionAttributes> interactionAttributesIterator = binaryInteractionsWithAttributes.iterator(); interactionAttributesIterator.hasNext(); )
         {
-            BinaryInteractionAttributes binAttr = attrIter.next();
-            writer.write( gisLine(binAttr) + "\n");
+            BinaryInteractionAttributes binaryInteractionAttributes = interactionAttributesIterator.next();
+            writer.append( binaryInteractionAttributes.convertToString() + "\n");
         }
         writer.close();
-    }
-
-    private String gisLine(BinaryInteractionAttributes binAttr){
-        String line = binAttr.convertToString();
-        int i = line.indexOf( ",");
-        line = line.substring( i+1);
-        line = line.replace( ",", " ");
-        line += " " + binAttr.getConfidence().toString();
-        return line;
     }
 }

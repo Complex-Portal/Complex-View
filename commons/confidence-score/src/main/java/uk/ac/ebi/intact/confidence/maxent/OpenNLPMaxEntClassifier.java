@@ -16,12 +16,12 @@
 package uk.ac.ebi.intact.confidence.maxent;
 
 import opennlp.maxent.GISModel;
+import opennlp.maxent.DataStream;
 import uk.ac.ebi.intact.confidence.model.Attribute;
+import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +50,11 @@ public class OpenNLPMaxEntClassifier /*extends AbstractMaxEnt*/ {
         model = MaxentUtils.createModel( new FileInputStream( gisInput ) );
     }
 
+    public OpenNLPMaxEntClassifier( ConfidenceSet highconf, ConfidenceSet lowconf) {
+        //OutputStream os = new BufferedOutputStream()
+        //TODO: implement method
+    }
+
     public GISModel getModel() {
         return model;
     }
@@ -64,7 +69,7 @@ public class OpenNLPMaxEntClassifier /*extends AbstractMaxEnt*/ {
         for ( Iterator<Attribute> attrIter = attributes.iterator(); attrIter.hasNext(); ) {
             Attribute attr = attrIter.next();
             if (attr != null){
-                names.add( attr.toString() );
+                names.add( attr.convertToString() );
             }
         }
         return names.toArray( new String[names.size()] );

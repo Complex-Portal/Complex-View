@@ -17,28 +17,43 @@ package uk.ac.ebi.intact.confidence.attribute;
 
 import uk.ac.ebi.intact.confidence.model.GoIdentifierImpl;
 import uk.ac.ebi.intact.confidence.model.Identifier;
+import uk.ac.ebi.intact.confidence.model.Attribute;
+
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Iterator;
 
 /**
- * TODO comment that class header
+ * Filter for the GO terms.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        29-Nov-2007
  *        </pre>
  */
 public class GoFilter implements AnnotationConstants{
 
+    //////////////////
+    // Public Methods.
     public static void filterForbiddenGos( Collection<Identifier> gos ){
         Set<Identifier> forbiddenGos = getForbidden();
         gos.removeAll( forbiddenGos);
     }
 
+    public static void filterAttributesGos(Collection<Attribute> attributes){
+        for ( Iterator<Attribute> iterator = attributes.iterator(); iterator.hasNext(); ) {
+            Attribute attr = iterator.next();
+            attr.getFirstElement();
+            //TODO: finalize this method
+        }
+    }
+
+    ///////////////////
+    // Private Methods.
     private static Set<Identifier> getForbidden() {
         Set<Identifier> gos = new HashSet<Identifier>(forbiddenGoTerms.length);
         for (String goTerm : forbiddenGoTerms){

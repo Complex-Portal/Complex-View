@@ -22,13 +22,14 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
- * TODO comment that class header
+ * Reader strategy for ProteinAnnotation objects.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        07-Dec-2007
  *        </pre>
@@ -42,6 +43,8 @@ public interface ProteinAnnotationReader {
      * @throws IOException
      */
     List<ProteinAnnotation> read ( File inFile ) throws IOException;
+
+    Set<ProteinAnnotation> read2Set (File inFile) throws IOException;
 
     Iterator<ProteinAnnotation> iterate(File inFile) throws FileNotFoundException;
 }

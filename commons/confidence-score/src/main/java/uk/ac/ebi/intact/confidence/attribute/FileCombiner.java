@@ -100,7 +100,7 @@ public class FileCombiner implements AnnotationConstants {
 			// System.out.println(comment);
 		}
           } catch (OutOfMemoryError e) {
-
+            e.printStackTrace(  );
           }
     }
 

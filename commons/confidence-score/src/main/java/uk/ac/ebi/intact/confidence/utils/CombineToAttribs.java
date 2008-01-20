@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * TODO comment that class header
+ * Combines 2 list of annotations to a list of attributes.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        12-Dec-2007
  *        </pre>

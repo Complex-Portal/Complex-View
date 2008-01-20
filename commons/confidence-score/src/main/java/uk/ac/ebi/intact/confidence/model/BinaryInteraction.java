@@ -16,11 +16,11 @@
 package uk.ac.ebi.intact.confidence.model;
 
 /**
- * TODO comment that class header
+ * Class to store a binary interaction.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        11-Dec-2007
  *        </pre>
@@ -31,9 +31,10 @@ public class BinaryInteraction {
 
     private Confidence confidence;
 
-//    public BinaryInteraction(){
-//
-//    }
+    public BinaryInteraction(Identifier firstIdentifier, Identifier secondIdentifier){
+        this(firstIdentifier, secondIdentifier, Confidence.UNKNOWN);
+
+    }
 
     public BinaryInteraction(Identifier firstIdentifier, Identifier secondIdentifier, Confidence confidence){
         if (firstIdentifier instanceof UniprotIdentifierImpl && secondIdentifier instanceof UniprotIdentifierImpl){
@@ -79,13 +80,23 @@ public class BinaryInteraction {
 
         BinaryInteraction that = ( BinaryInteraction ) o;
 
-        if ( firstId != null ? !firstId.equals( that.firstId ) : that.firstId != null ) return false;
-        if ( secondId != null ? !secondId.equals( that.secondId ) : that.secondId != null ) return false;
+        boolean straight = true;
+        if ( firstId != null ? !firstId.equals( that.firstId ) : that.firstId != null ) {
+            straight = false;
+        }
+        if ( secondId != null ? !secondId.equals( that.secondId ) : that.secondId != null ) {
+            straight = false;
+        }
 
-        if ( firstId != null ? !firstId.equals( that.secondId ) : that.firstId != null ) return false;
-        if ( secondId != null ? !secondId.equals( that.firstId ) : that.secondId != null ) return false;
+        boolean reverse = true;
+        if ( firstId != null ? !firstId.equals( that.secondId ) : that.firstId != null ) {
+            reverse = false;
+        }
+        if ( secondId != null ? !secondId.equals( that.firstId ) : that.secondId != null ) {
+            reverse = false;
+        }
 
-        return true;
+        return straight || reverse;
     }
 
     public int hashCode() {

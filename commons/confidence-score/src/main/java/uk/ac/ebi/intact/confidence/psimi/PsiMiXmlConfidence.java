@@ -39,14 +39,13 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * TODO comment that class header
+ * Given the classifier, or the necessary data to train the model, this class assigns confidence values to
+ * protein-protein interactions in a PSI-MI XML file.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
- *        <pre>
- *                             03-Dec-2007
- *                             </pre>
+ * @since 1.6.0
+ *        <pre> 03-Dec-2007 </pre>
  */
 public class PsiMiXmlConfidence {
     /**
@@ -75,18 +74,18 @@ public class PsiMiXmlConfidence {
         this.againstProteins = ParserUtils.parseProteins( new File( hcSetPath ) );
     }
 
-    public void appendConfidence( File inPsiMiXmlFile, File outPsiMiFile, Set<ConfidenceType> type ) {
+    public void appendConfidence( File inPsiMiXmlFile, File outPsiMiFile, Set<ConfidenceType> type ) throws PsiMiException {
         PsimiXmlReader reader = new PsimiXmlReader();
         try {
             EntrySet entry = reader.read( inPsiMiXmlFile );
             saveScores( entry.getEntries(), type );
             writeScores( entry, outPsiMiFile );
         } catch ( IOException e ) {
-            e.printStackTrace();
+            throw new PsiMiException( e);
         } catch ( JAXBException e ) {
-            e.printStackTrace();
+            throw new PsiMiException( e);
         } catch ( ConverterException e ) {
-            e.printStackTrace();
+            throw new PsiMiException( e);
         }
     }
 
@@ -139,17 +138,6 @@ public class PsiMiXmlConfidence {
         return null;
     }
 
-//    protected void saveScores( Collection<BinaryInteraction> psiMiInts, ConfidenceType type ) {
-//        for ( Iterator<BinaryInteraction> iter = psiMiInts.iterator(); iter.hasNext(); ) {
-//            BinaryInteraction interaction = iter.next();
-//            List<Attribute> attribs = getAttributes( interaction, type );
-//            if (log.isInfoEnabled()){
-//                log.info ("interaction: " + interaction.getInteractorA() +";" + interaction.getInteractorB()+" attribs: " + attribs );
-//            }
-//            save( interaction, classifier.evaluate( attribs ) );
-//        }
-//    }
-
     private List<Attribute> getAttributes( ProteinPair prteinPair, Set<ConfidenceType> type ) {
         List<Attribute> attributes = new ArrayList<Attribute>();
         AttributeGetter ag = new AttributeGetterImpl( this.workDir );
@@ -181,7 +169,7 @@ public class PsiMiXmlConfidence {
             u = Unit.class.newInstance();
             Names names = new Names();
             names.setFullName( "interaction confidence score" );
-            names.setShortLabel( "intact conf score" );
+            names.setShortLabel( "intact confidence" );
             u.setNames( names );
         } catch ( InstantiationException e ) {
             e.printStackTrace();

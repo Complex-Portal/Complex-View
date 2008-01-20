@@ -20,7 +20,7 @@ package uk.ac.ebi.intact.confidence.model;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        12-Dec-2007
  *        </pre>

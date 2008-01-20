@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * TODO comment this
+ * General test data.
  * 
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version

@@ -23,7 +23,7 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        30-Nov-2007
  *        </pre>

@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 
 
 /**
@@ -32,7 +33,11 @@ public class WsRetriever implements DataRetrieverStrategy {
         return 0;
     }
 
-	public void retrieveMediumConfidenceSet(Writer osw) {
+    public List<InteractionSimplified> retrieveHighConfidenceSet() throws DataRetrieverException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void retrieveMediumConfidenceSet(Writer osw) {
 		// TODO: implement method
 		
 	}

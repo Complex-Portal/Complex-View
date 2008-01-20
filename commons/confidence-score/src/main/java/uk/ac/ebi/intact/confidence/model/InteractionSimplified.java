@@ -15,7 +15,8 @@ import java.util.Iterator;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version
- * @since <pre>14-Aug-2007</pre>
+ * @since 1.6.0
+ * <pre>14-Aug-2007</pre>
  */
 public class InteractionSimplified {
 

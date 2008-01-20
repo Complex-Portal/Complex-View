@@ -75,7 +75,7 @@ public class AlignmentFileMaker {
 
         if ( workingDirectory == null ) {
             // String workPath =
-            // AlignmentFileMaker.class.getResource("doNotRemoveThis.file").getPath();
+            // AlignmentFileMaker.class.getResource("doNotRemoveThis.file").getPath();  //folder deleted
             // workDir = new File(getTargetDirectory(), "AlignmentFileMaker");
             // workDir.mkdir();
             //    HashMap<String, File> paths = GlobalData.getRightPahts();// GlobalTestData.getInstance().getRightPahts();//getTargetDirectory();

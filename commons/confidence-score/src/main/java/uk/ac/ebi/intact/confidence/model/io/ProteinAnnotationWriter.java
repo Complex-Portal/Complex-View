@@ -19,6 +19,7 @@ import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 
 import java.util.List;
 import java.util.Iterator;
+import java.util.Collection;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,7 +28,7 @@ import java.io.IOException;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        10-Dec-2007
  *        </pre>
@@ -38,5 +39,5 @@ public interface ProteinAnnotationWriter {
 
     void append( List<ProteinAnnotation> proteins, File outFile) throws IOException;
 
-    void write ( List<ProteinAnnotation> proteinAnnotations, File outFile ) throws IOException;
+    void write ( Collection<ProteinAnnotation> proteinAnnotations, File outFile ) throws IOException;
 }
