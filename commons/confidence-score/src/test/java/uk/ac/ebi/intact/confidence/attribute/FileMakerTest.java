@@ -24,11 +24,11 @@ import java.io.File;
 import java.util.Arrays;
 
 /**
- * TODO comment that class header
+ * Test to combine annotatinons to attributes.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        29-Nov-2007
  *        </pre>

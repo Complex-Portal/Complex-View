@@ -16,46 +16,82 @@
 package uk.ac.ebi.intact.confidence.main;
 
 import org.junit.Test;
-import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
-import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
-import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesReaderImpl;
-import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
-import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReaderImpl;
+import org.junit.Ignore;
+import uk.ac.ebi.intact.confidence.model.*;
+import uk.ac.ebi.intact.confidence.model.io.*;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesWriterImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
 
 import java.io.File;
-import java.util.List;
-import java.util.Iterator;
+import java.io.IOException;
+import java.util.*;
 
 /**
- * TODO comment that class header
+ * Test class for Information Modeling class.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        10-Dec-2007
  *        </pre>
  */
 public class InfoModelInputTest {
     @Test
+    @Ignore
     public void testCombine() throws Exception {
 
-//        File annotationFile = new File("");
-//        File binaryInteractionFie = new File("");
-//
-//        ProteinAnnotationReader reader = new ProteinAnnotationReaderImpl();
-//        List<ProteinAnnotation> annotations = reader.read( annotationFile);
-//        List<BinaryInteractionAttributes> binaryInts = new BinaryInteractionAttributesReaderImpl( ).read( binaryInteractionFie);
-//
-//
-//        InfoModelInput infoMI = new InfoModelInput();
-//        for ( Iterator<BinaryInteractionAttributes> binaryInteractionAttributesIterator = binaryInts.iterator(); binaryInteractionAttributesIterator.hasNext(); )
-//        {
-//            BinaryInteractionAttributes binaryInteractionAttributes =  binaryInteractionAttributesIterator.next();
-//
-//        }
-//        infoMI.populateAttributes( );
-        
+        File annotationFile = new File ("/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_seq_anno_filter.txt");
+        //new File("H:\\tmp\\medconf_set_seq_anno_filter.txt");
+        //new File ("/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_ip.txt");
+
+
+        File binaryInteractionFile = new File ("/net/nfs6/vol1/homes/iarmean/tmp/medconf_set.txt");
+                //new File("H:\\tmp\\medconf_set.txt");
+
+
+        Map<Identifier, ProteinAnnotation > annoMap = createMap(annotationFile);
+        System.out.println(annoMap.size());
+
+        BinaryInteractionAttributesWriter biaw = new BinaryInteractionAttributesWriterImpl();
+        File outFile = new File ("/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_seq_anno_filter_attribs.txt"); 
+                //new File ("H:\\tmp\\medconf_set_seq_anno_filter_attribs.txt");
+
+        //new File ("H:\\tmp\\medconf_set_ip_attribs.txt");
+        if (outFile.exists()){
+            outFile.delete();
+        }
+
+        BinaryInteractionReader biar = new BinaryInteractionReaderImpl();
+
+        InfoModelInput infoMI = new InfoModelInput();
+        for ( Iterator<BinaryInteraction> biaIter = biar.iterate( binaryInteractionFile ); biaIter.hasNext(); )
+        {
+            BinaryInteraction bi =  biaIter.next();
+
+            ProteinAnnotation protA = annoMap.get( bi.getFirstId()  );
+            ProteinAnnotation protB = annoMap.get( bi.getSecondId() );
+
+            BinaryInteractionAttributes bia = new BinaryInteractionAttributes(bi.getFirstId(), bi.getSecondId(), Confidence.UNKNOWN);
+            infoMI.populateAttributes( bia, protA, protB  );
+
+            biaw.append( bia, outFile );
+        }
     }
-        
+
+    private Map<Identifier, ProteinAnnotation> createMap( File annotationFile ) throws IOException {
+        ProteinAnnotationReader reader = new ProteinAnnotationReaderImpl();
+        List<ProteinAnnotation> annotations = reader.read( annotationFile);
+        System.out.println(annotations.size());
+
+        Map<Identifier, ProteinAnnotation> mapped = new HashMap<Identifier, ProteinAnnotation>();
+        for (int i =0; i< annotations.size(); i++){
+            ProteinAnnotation pa = annotations.get( i );
+            mapped.put( pa.getId(), pa );
+        }
+
+        return mapped;
+    }
+
 }

@@ -18,17 +18,26 @@ package uk.ac.ebi.intact.confidence.maxent;
 import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.confidence.model.Attribute;
+import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesReader;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesReaderImpl;
 
 import java.io.File;
+import java.io.Writer;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
+
+import opennlp.maxent.GISModel;
 
 /**
- * TODO comment that class header
+ * Test for creating a maximum entropy classifier
+ * using the GISModel 
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        04-Dec-2007
  *        </pre>
@@ -43,5 +52,40 @@ public class OpenNLPMaxEntClassifierTest {
         attribs.add( null);
         classifier.evaluate( attribs);
     }
+
+    @Test
+    @Ignore
+    public void trainModel() throws Exception {
+        String hcSetPath = "H:\\tmp\\highconf_set_seq_anno_filter_attribs.txt";
+        String lcSetPath = "H:\\tmp\\lowconf_set_seq_anno_filter_attribs.txt";
+        File workDir =  new File("H:\\tmp");
+        OpenNLPMaxEntClassifier cl = new OpenNLPMaxEntClassifier( hcSetPath, lcSetPath, workDir);
+        GISModel model = cl.getModel();
+        File outFile = new File("H:\\tmp\\gisModel_seq.txt");
+        MaxentUtils.writeModelToFile( model, outFile );
+    }
+
+    @Test
+   @Ignore
+    public void assignScore() throws Exception {
+        File gisModel = new File("H:\\tmp\\gisModel_seq.txt");
+        OpenNLPMaxEntClassifier cl = new OpenNLPMaxEntClassifier( gisModel);
+        File medconfFile = new File("H:\\tmp\\medconf_set_seq_anno_filter_attribs.txt");
+        BinaryInteractionAttributesReader biar = new BinaryInteractionAttributesReaderImpl();
+        Writer writer = new FileWriter("H:\\tmp\\medconf_set_seq_scores.txt");
+        int nrLine =0;
+        for ( Iterator<BinaryInteractionAttributes> iter = biar.iterate( medconfFile ); iter.hasNext(); ){
+            BinaryInteractionAttributes bia = iter.next();
+            nrLine ++;
+            if (bia == null){
+                System.out.println("line: " + nrLine);
+            }
+            double[]  scores = cl.evaluate( bia.getAttributes() );
+            double score = scores[cl.getIndex( "high" )];
+            writer.append( bia.getFirstId() + ";" + bia.getSecondId() + ":" + score + "\n" );
+        }
+        writer.close();
+    }
+
         
 }

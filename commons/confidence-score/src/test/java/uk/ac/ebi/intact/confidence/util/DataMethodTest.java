@@ -1,9 +1,6 @@
 package uk.ac.ebi.intact.confidence.util;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
@@ -40,7 +37,6 @@ public class DataMethodTest extends IntactBasicTestCase {
     }
 
     @Test
-    //TODO: remove, under unix it did not work :((
     public void testExactRead() {
         List<String> interacts;
         List<String> ACs = Arrays.asList( "EBI-987097", "EBI-446104", "EBI-79835", "EBI-297231", "EBI-1034130" );
@@ -56,6 +52,10 @@ public class DataMethodTest extends IntactBasicTestCase {
     }
 
     @Test
+    @Ignore
+    /*
+     * TODO: it conects to the db, which should be repalced by a mock of intact 
+     */
     public void testRead() {
         List<InteractionSimplified> interactions;
         List<String> ACs = Arrays.asList( "EBI-987097", "EBI-446104", "EBI-79835", "EBI-297231", "EBI-1034130" );
@@ -287,7 +287,6 @@ public class DataMethodTest extends IntactBasicTestCase {
     public void testCheckFormatUniprot() {
         Set<String> uniprotACs = new HashSet( Arrays.asList( "P12345", "PQ1234", "Q123456", "EBI297", "EBI-1034130" ) );
         uniprotACs = d.checkFormat( uniprotACs, false );
-        // TODO: check if the regex is corect for uniprot
         Assert.assertEquals( 1, uniprotACs.size() );
     }
 
@@ -298,7 +297,7 @@ public class DataMethodTest extends IntactBasicTestCase {
         Assert.assertEquals( expected.size(), proteins.size() );
         int i = 0;
         for ( String string : expected ) {
-            Assert.assertTrue( string.equals( ( ( String ) proteins.toArray()[i] ) ) );
+            Assert.assertTrue( string.equals(  proteins.toArray()[i] ) ) ;
             i++;
         }
     }

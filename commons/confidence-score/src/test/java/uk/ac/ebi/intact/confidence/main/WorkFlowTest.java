@@ -21,6 +21,10 @@ import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.model.io.*;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesWriterImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.GisAttributesWriterImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationWriterImpl;
 import uk.ac.ebi.intact.confidence.utils.CombineToAttribs;
 
 import java.io.File;
@@ -33,7 +37,7 @@ import java.util.Set;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        12-Dec-2007
  *        </pre>

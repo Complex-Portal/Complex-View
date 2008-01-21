@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 The European Bioinformatics Institute, and others.
+ * Copyright 2008 The European Bioinformatics Institute, and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence;
+package uk.ac.ebi.intact.confidence.model.parser;
 
-import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.Assert;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 
 /**
- * TODO comment that class header
+ * Test class for BlastInputParserUtils.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
  * @since 1.6.0
  *        <pre>
- *        02-Nov-2007
+ *        14-Jan-2008
  *        </pre>
  */
-@Ignore
-public class ConfidenceModelMainTest {
-    public static void main(String [] args){
-        ConfidenceModelMain  cmm = new ConfidenceModelMain();
-        cmm.main(args); 
+public class BlastInputParserUtilsTest {
+
+    @Test
+    public void parseUniprot() throws Exception {
+        UniprotAc ac = BlastInputParserUtils.parseUniprotInfo( ">P12345|description" );
+        Assert.assertEquals( "P12345", ac.getAcNr() );
     }
 }

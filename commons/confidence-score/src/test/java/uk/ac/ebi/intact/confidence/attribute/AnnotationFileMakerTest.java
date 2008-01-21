@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * TODO comment this ... someday
+ * Test for combining annotation data to attribute data.
  * 
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version
@@ -54,15 +54,12 @@ public class AnnotationFileMakerTest {
 	 * {@link uk.ac.ebi.intact.confidence.attribute.AnnotationFileMaker#writeGoAnnotation(java.lang.String)}.
 	 */
 	@Test
-	public final void testWriteGoAnnotationString() {
+	public final void testWriteGoAnnotationString() throws Exception {
 		// TODO: only for eclipse test
-		try {
-			File outFile = new File ( GlobalTestData.getInstance().getTargetDirectory(), "testAnnotationFileMakerGo.txt");
-			afm.writeGoAnnotation(outFile.getPath());
-            Assert.assertTrue(outFile.exists());
-        } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+        File outFile = new File( GlobalTestData.getInstance().getTargetDirectory(), "testAnnotationFileMakerGo.txt" );
+        afm.writeGoAnnotation( outFile.getPath() );
+        Assert.assertTrue( outFile.exists() );
+
 	}
 }

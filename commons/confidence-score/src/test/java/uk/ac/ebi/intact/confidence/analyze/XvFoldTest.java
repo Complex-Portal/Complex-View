@@ -22,11 +22,11 @@ import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import java.io.File;
 
 /**
- * TODO comment that class header
+ * Test class for creating folds for the cross validation. 
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        13-Nov-2007
  *        </pre>

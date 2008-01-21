@@ -22,9 +22,9 @@ import uk.ac.ebi.intact.confidence.model.GoIdentifierImpl;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
-import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReaderImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationWriterImpl;
 import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationWriter;
-import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationWriterImpl;
 
 import java.io.File;
 import java.util.HashSet;
@@ -33,11 +33,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ *  Test class for GO filter.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        29-Nov-2007
  *        </pre>

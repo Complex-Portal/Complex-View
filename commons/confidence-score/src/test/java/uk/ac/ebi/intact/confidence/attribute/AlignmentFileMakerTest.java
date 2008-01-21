@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment this
+ * Test class for AlignmentFileMaker.
  * 
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version
@@ -95,9 +95,6 @@ public class AlignmentFileMakerTest {
 			assertTrue(outFile.exists());
 		} catch (IOException e) {
 			fail();
-		} catch (BlastServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	

@@ -18,23 +18,19 @@ package uk.ac.ebi.intact.confidence.model.io;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
-import uk.ac.ebi.intact.confidence.maxent.MaxentUtils;
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
 import uk.ac.ebi.intact.confidence.model.Confidence;
+import uk.ac.ebi.intact.confidence.model.io.impl.GisAttributesWriterImpl;
 import uk.ac.ebi.intact.confidence.test.MockFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
-import opennlp.maxent.GISModel;
 
 /**
  * Test-class for GisAttributesWriterImpl.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since 0.1
+ * @since 1.6.0
  *        <pre>
  *        12-Dec-2007
  *        </pre>

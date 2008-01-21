@@ -17,7 +17,7 @@ import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import java.util.*;
 
 /**
- * TODO comment this
+ * Test class for InteractionGenerator.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version

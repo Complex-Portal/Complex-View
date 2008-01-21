@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 The European Bioinformatics Institute, and others.
+ * Copyright 2008 The European Bioinformatics Institute, and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence;
+package uk.ac.ebi.intact.confidence.model;
 
-import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.Assert;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 
 /**
- * TODO comment that class header
+ * Test for UniprotAc identifier.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
  * @since 1.6.0
  *        <pre>
- *        02-Nov-2007
+ *        15-Jan-2008
  *        </pre>
  */
-@Ignore
-public class ConfidenceModelMainTest {
-    public static void main(String [] args){
-        ConfidenceModelMain  cmm = new ConfidenceModelMain();
-        cmm.main(args); 
+public class UniprotIdentifierImplTest {
+
+    @Test
+    public void testAc() throws Exception {
+        UniprotAc ac = new UniprotAc( "A5UNM1");
+        Assert.assertNotNull( ac );
+        Identifier id = new UniprotIdentifierImpl(ac);
+        Assert.assertNotNull (id);
     }
+
 }

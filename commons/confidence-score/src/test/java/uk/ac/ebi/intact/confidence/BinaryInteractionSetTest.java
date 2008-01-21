@@ -19,34 +19,32 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * TODO comment this ... someday
+ * BinaryInteractionSet tests + stats.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version
  * @since <pre>3 Oct 2007</pre>
  */
-@Ignore
+//@Ignore
 public class BinaryInteractionSetTest {
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException{
 		new BinaryInteractionSetTest().Stat();
 //		new BinaryInteractionSetTest().uniqueProts();
 	}
 	
 	@Test
-    public void uniqueProts() {
+    public void uniqueProts() throws IOException{
 		String path = BinaryInteractionSetTest.class.getResource("medconf_test.txt").getPath();
-		BinaryInteractionSet biS;
-		try {
-			biS = new BinaryInteractionSet(path);
+		BinaryInteractionSet biS = new BinaryInteractionSet(path);
 			Set<String> proteinsBiS = biS.getAllProtNames();
 			Set<UniprotAc> prots = new HashSet<UniprotAc>(proteinsBiS.size());
 			for (String ac : proteinsBiS) {
 				prots.add(new UniprotAc(ac));
 			}
 
-            Assert.assertEquals(91, prots.size());
+            Assert.assertEquals(24, prots.size());
 
             File protsFile = new File( GlobalTestData.getInstance().getTargetDirectory(),"proteinsOrderToBlast.txt");
             System.out.println("protsOut: " + protsFile.getPath());
@@ -55,40 +53,36 @@ public class BinaryInteractionSetTest {
 				w.append(uniprotAc +"\n");
 			}
 			w.close();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Test
     @Ignore
-    public void Stat(){
-		String path ="E:\\tmp\\highconf_all.txt";
+    public void Stat() throws IOException{
+		String path ="E:\\iarmean\\backupData\\14.01 - IWEB2\\hc_set.txt";
+                //"E:\\tmp\\highconf_all.txt";
         //"H:\\tmp\\ConfidenceModel\\highconf_all.txt";
         //"E:\\iarmean\\backupData\\05.11\\highconf_all.txt";
                 //"E:\\tmp\\ConfidenceModel\\IntactDbRetriever\\highconf_all.txt";
         //"E:\\iarmean\\backupData\\highconf_all.txt";
 			//"H:\\tmp\\ConfidenceModel\\highconf_all.txt";
         // //"E:\\tmp\\ConfidenceModel\\highconf_all.txt";
-		BinaryInteractionSet biS;
-		try {
-			biS = new BinaryInteractionSet(path);
+		BinaryInteractionSet biS = new BinaryInteractionSet(path);
 			Set<String> prots = biS.getAllProtNames();
 			int nr = biS.getAllProtNames().size();
 			System.out.println("highconf prots : " + nr + " #int: " + biS.size());
 			
-//			path =  "H:\\tmp\\ConfidenceModel\\medconf_all.txt";
-//                    //"E:\\iarmean\\backupData\\05.11\\medconf_all.txt";
-//			BinaryInteractionSet biS2 = new BinaryInteractionSet(path);
-//			prots.addAll(biS2.getAllProtNames());
-//			nr = biS2.getAllProtNames().size();
-//			System.out.println("medconf prots : " + nr + " #int: " + biS2.size());
-//
-			path = "E:\\tmp\\lowconf_all.txt";
-                    //"H:\\tmp\\ConfidenceModel\\lowconf_all.txt";
-                    //"E:\\tmp\\ConfidenceModel\\lowconf_all.txt";
+			path =    "E:\\iarmean\\backupData\\14.01 - IWEB2\\mc_set.txt";
+                    //"H:\\tmp\\ConfidenceModel\\medconf_all.txt";
+                    //"E:\\iarmean\\backupData\\05.11\\medconf_all.txt";
+			BinaryInteractionSet biS2 = new BinaryInteractionSet(path);
+			prots.addAll(biS2.getAllProtNames());
+			nr = biS2.getAllProtNames().size();
+			System.out.println("medconf prots : " + nr + " #int: " + biS2.size());
+
+			path =    "E:\\iarmean\\backupData\\14.01 - IWEB2\\lowconf_set.txt";
+                    //"E:\\tmp\\lowconf_all.txt";
+//                    //"H:\\tmp\\ConfidenceModel\\lowconf_all.txt";
+//                    //"E:\\tmp\\ConfidenceModel\\lowconf_all.txt";
 			BinaryInteractionSet biS3 = new BinaryInteractionSet(path);
 			prots.addAll(biS3.getAllProtNames());
 			nr = biS3.getAllProtNames().size();
@@ -96,21 +90,16 @@ public class BinaryInteractionSetTest {
 			System.out.println("total unique prots: " + prots.size());
 			
 			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 	}
 
     @Test
     @Ignore
-    public void stats(){
+    public void stats() throws IOException{
              String path ="E:\\iarmean\\backupData\\benchmark\\from 15.10\\HC100.txt";
         //"E:\\iarmean\\backupData\\benchmark\\HC100-2310.txt";
 
-		BinaryInteractionSet biS;
-		try {
-			biS = new BinaryInteractionSet(path);
+		BinaryInteractionSet biS = new BinaryInteractionSet(path);
 			Set<String> prots = biS.getAllProtNames();
 			int nr = biS.getAllProtNames().size();
 			System.out.println("HC100 prots : " + nr + " #int: " + biS.size());
@@ -144,12 +133,6 @@ public class BinaryInteractionSetTest {
 			System.out.println("HC25 prots : " + nr + " #int: " + biS5.size());
 
             System.out.println("total unique prots: " + prots.size());
-
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
 	
 }

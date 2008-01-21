@@ -26,11 +26,11 @@ import java.io.File;
 import java.io.FileReader;
 
 /**
- * TODO comment that class header
+ * Test class for Merge.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        14-Nov-2007
  *        </pre>
@@ -63,7 +63,20 @@ public class MergeTest {
         Assert.assertEquals(11, i);
     }
 
-    
+    @Test
+    @Ignore
+    public void merge() throws Exception {
+        String goPath ="/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_go_filter_attribs.txt";
+                //"H:\\tmp\\lowconf_set_go_filter_attribs.txt";
+        String ipPath = "/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_ip_attribs.txt";
+                //"H:\\tmp\\lowconf_set_ip_attribs.txt";
+        String seqPath ="/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_seq_anno_filter_attribs.txt";
+                //"H:\\tmp\\lowconf_set_seq_anno_filter_attribs.txt";
 
+        String[] paths = {seqPath, ipPath, goPath};
+        String outPath = "/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_attributes.txt";
+                //"H:\\tmp\\lowconf_set_attributes.txt";
+        ( new Merge() ).merge( paths, outPath );
 
+    }
 }
