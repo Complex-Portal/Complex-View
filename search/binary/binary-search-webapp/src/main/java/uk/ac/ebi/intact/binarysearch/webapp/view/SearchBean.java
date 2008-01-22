@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.component.html.ext.HtmlDataTable;
+import org.apache.myfaces.trinidad.component.UIXTable;
 import psidev.psi.mi.tab.PsimiTabColumn;
 import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
@@ -15,6 +16,7 @@ import uk.ac.ebi.intact.binarysearch.webapp.view.search.RelatedResults;
 import uk.ac.ebi.intact.search.wsclient.SearchServiceClient;
 
 import javax.faces.component.UIData;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
@@ -49,7 +51,7 @@ public class SearchBean implements Serializable
     private boolean searchDone;
 
     // results
-    private UIData resultsDataTable;
+    private UIComponent resultsDataTable;
     private SearchResultDataModel results;
 
     private String sortColumn;
@@ -60,7 +62,7 @@ public class SearchBean implements Serializable
         int maxResults = Integer.parseInt(facesContext.getExternalContext().getInitParameter(MAX_RESULTS_INIT_PARAM));
         BooleanQuery.setMaxClauseCount(maxResults);
 
-        this.resultsDataTable = (UIData) facesContext.getApplication().createComponent(HtmlDataTable.COMPONENT_TYPE);
+        //this.resultsDataTable = (UIData) facesContext.getApplication().createComponent(HtmlDataTable.COMPONENT_TYPE);
 
         this.advancedSearch = new AdvancedSearch();
 
@@ -93,7 +95,9 @@ public class SearchBean implements Serializable
             //tooManyResults = true;
         }
 
-        resultsDataTable.setFirst(0);
+        if (resultsDataTable instanceof UIXTable) {
+            ((UIXTable)resultsDataTable).setFirst(0);
+        }
 
 
         searchDone = true;
@@ -186,12 +190,12 @@ public class SearchBean implements Serializable
         this.searchDone = searchDone;
     }
 
-    public UIData getResultsDataTable()
+    public UIComponent getResultsDataTable()
     {
         return resultsDataTable;
     }
 
-    public void setResultsDataTable(UIData resultsDataTable)
+    public void setResultsDataTable(UIComponent resultsDataTable)
     {
         this.resultsDataTable = resultsDataTable;
     }

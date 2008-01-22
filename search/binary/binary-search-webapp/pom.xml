@@ -14,7 +14,7 @@
 
     <artifactId>binary-search-webapp</artifactId>
     <packaging>war</packaging>
-    <version>1.6.0-beta-7-SNAPSHOT</version>
+    <version>1.8.0-SNAPSHOT</version>
 
     <name>IntAct Services :: Search :: Binary :: Binary Search Webapp</name>
     <description>Interface for the PSIMITAB search</description>
@@ -66,139 +66,6 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>jsf-1.1</id>
-            <activation>
-                <property>
-                    <name>!jsf</name>
-                </property>
-            </activation>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.myfaces.core</groupId>
-                        <artifactId>myfaces-api</artifactId>
-                        <version>1.1.5</version>
-                        <scope>compile</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.myfaces.core</groupId>
-                        <artifactId>myfaces-impl</artifactId>
-                        <version>1.1.5</version>
-                        <scope>compile</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.myfaces.tomahawk</groupId>
-                        <artifactId>tomahawk</artifactId>
-                        <version>1.1.7-SNAPSHOT</version>
-                        <scope>compile</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.myfaces.tomahawk</groupId>
-                        <artifactId>tomahawk-sandbox</artifactId>
-                        <version>1.1.6</version>
-                        <scope>compile</scope>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>javax.el</groupId>
-                    <artifactId>el-api</artifactId>
-                    <version>1.0</version>
-                    <scope>optional</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.sun.el</groupId>
-                    <artifactId>el-ri</artifactId>
-                    <version>1.0</version>
-                    <scope>optional</scope>
-                </dependency>
-                <!-- server -->
-                <dependency>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                    <version>2.4</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>jsp-api</artifactId>
-                    <version>2.0</version>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>jsf-1.2</id>
-            <activation>
-                <property>
-                    <name>jsf</name>
-                    <value>1.2</value>
-                </property>
-            </activation>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.myfaces.core</groupId>
-                        <artifactId>myfaces-api</artifactId>
-                        <version>1.2.0-SNAPSHOT</version>
-                        <scope>compile</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.myfaces.core</groupId>
-                        <artifactId>myfaces-impl</artifactId>
-                        <version>1.2.0-SNAPSHOT</version>
-                        <scope>compile</scope>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.myfaces.tomahawk</groupId>
-                        <artifactId>tomahawk</artifactId>
-                        <version>1.1.6</version>
-                        <scope>compile</scope>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>commons-el</groupId>
-                                <artifactId>commons-el</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.apache.myfaces.tomahawk</groupId>
-                        <artifactId>tomahawk-sandbox</artifactId>
-                        <version>1.1.6</version>
-                        <scope>provided</scope>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>commons-el</groupId>
-                                <artifactId>commons-el</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-            <dependencies>
-                <!-- server -->
-                <dependency>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                    <version>2.5</version>
-                </dependency>
-                <dependency>
-                    <groupId>javax.servlet.jsp</groupId>
-                    <artifactId>jsp-api</artifactId>
-                    <version>2.1</version>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 
     <!-- Project dependencies -->
     <dependencies>
@@ -211,6 +78,11 @@
             <groupId>uk.ac.ebi.intact.commons</groupId>
             <artifactId>intact-commons</artifactId>
             <version>2.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
+            <artifactId>intact-psimitab</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
            <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
@@ -248,13 +120,14 @@
             </exclusions>
         </dependency>
 
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+            <version>2.5</version>
+        </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring</artifactId>-->
-            <!--<version>2.0.5</version>-->
-        <!--</dependency>-->
-
+        <!-- JSF -->
         <dependency>
             <groupId>com.sun.facelets</groupId>
             <artifactId>jsf-facelets</artifactId>
@@ -264,39 +137,101 @@
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
+            <version>1.2.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-impl</artifactId>
+            <version>1.2.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.myfaces.tomahawk</groupId>
             <artifactId>tomahawk</artifactId>
+            <version>1.1.7-SNAPSHOT</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-el</groupId>
+                    <artifactId>commons-el</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.myfaces.tomahawk</groupId>
             <artifactId>tomahawk-sandbox</artifactId>
+            <version>1.1.7-SNAPSHOT</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-el</groupId>
+                    <artifactId>commons-el</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Apache Trinidad -->
+        <dependency>
+            <groupId>org.apache.myfaces.trinidad</groupId>
+            <artifactId>trinidad-api</artifactId>
+            <version>1.2.6-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>net.java.dev.ajax4jsf</groupId>
-            <artifactId>ajax4jsf</artifactId>
-            <version>1.0.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ajax4jsf</groupId>
-            <artifactId>ajax4jsf-trinidad</artifactId>
-            <version>1.0.4</version>
+            <groupId>org.apache.myfaces.trinidad</groupId>
+            <artifactId>trinidad-impl</artifactId>
+            <version>1.2.6-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>org.apache.myfaces.orchestra</groupId>-->
+            <!--<artifactId>myfaces-orchestra-core15</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>org.apache.myfaces.orchestra</groupId>-->
+            <!--<artifactId>myfaces-orchestra-core</artifactId>-->
+            <!--<version>1.1-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
+        <!-- JSP / Servlets -->
         <dependency>
-            <groupId>opensymphony</groupId>
-            <artifactId>oscache</artifactId>
-            <version>2.3</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!--<dependency>-->
+            <!--<groupId>net.java.dev.ajax4jsf</groupId>-->
+            <!--<artifactId>ajax4jsf</artifactId>-->
+            <!--<version>1.0.6</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.ajax4jsf</groupId>-->
+            <!--<artifactId>ajax4jsf-trinidad</artifactId>-->
+            <!--<version>1.0.4</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>opensymphony</groupId>-->
+            <!--<artifactId>oscache</artifactId>-->
+            <!--<version>2.3</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>

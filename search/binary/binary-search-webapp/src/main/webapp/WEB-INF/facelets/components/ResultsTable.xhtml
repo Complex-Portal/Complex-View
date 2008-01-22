@@ -5,7 +5,8 @@
         xmlns:t="http://myfaces.apache.org/tomahawk"
         xmlns:c="http://java.sun.com/jstl/core"
         xmlns:s="http://myfaces.apache.org/sandbox"
-        xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:trh="http://myfaces.apache.org/trinidad/html"
         xmlns:ebi="http://ebi.ac.uk/faces/components"
         xmlns:sf="http://www.ebi.ac.uk/faces/site"
         xmlns:psimitab="http://www.ebi.ac.uk/psi/mitab"
@@ -13,132 +14,42 @@
 
 
 <!-- table is buffered, so we can put the navigation on top and on bottom -->
-<t:buffer into="#{table}">
-<t:dataTable id="results"
-             renderedIfEmpty="false"
-             binding="#{searchBean.resultsDataTable}"
-             var="binaryInteraction"
-             value="#{value}"
-             rows="#{pageSize == null? 50 : sf:convertToInt(pageSize)}"
-             rowIndexVar="index"
-             styleClass="contenttable"
-             headerClass="contenttable"
-             columnClasses="intact_resultTable"
-             rowClasses="none, alternaterowcolour"
-             rowOnMouseOver="this.className='intact_tableResultsOn'"
-             rowOnMouseOut="#{(index % 2 == 0)? 'this.className=\'none\'' : 'this.className=\'alternaterowcolour\''}"
-             cellspacing="0" cellpadding="3"
-             sortColumn="#{sortColumn}"
-             sortAscending="#{sortAscending}"
-             preserveSort="true">
-<h:column>
-    <h:outputText
-            value="#{index + 1}"/>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="idA_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Accession number molecule A"/>
-        </t:commandSortHeader>
-    </f:facet>
-    <t:dataList var="xref" value="#{binaryInteraction.interactorA.identifiers}" rowCountVar="rowCount"
-                rowIndexVar="rowIndex">
-        <c:set var="xrefUrl1" value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"/>
 
-        <h:outputLink value="#{xrefUrl1}" target="_blank" rendered="#{xrefUrl1 != null}">
-            <h:outputText value="#{xref.identifier}"/>
-        </h:outputLink>
-        <h:outputText value="#{xref.database}:#{xref.identifier}" rendered="#{xrefUrl1 == null}"/>
+<tr:table id="results" value="#{value}" var="binaryInteraction" varStatus="status"
+        binding="#{searchBean.resultsDataTable}"
+        rows="50" rowBandingInterval="1" >
 
-        <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
-    </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="idB_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Accession number molecule B"/>
-        </t:commandSortHeader>
-    </f:facet>
-    <t:dataList var="xref" value="#{binaryInteraction.interactorB.identifiers}" rowCountVar="rowCount"
-                rowIndexVar="rowIndex">
-        <c:set var="xrefUrl2" value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"/>
+    <tr:column>
+        <tr:outputText value="#{status.index + 1}"/>
+    </tr:column>
 
-        <h:outputLink value="#{xrefUrl2}" target="_blank" rendered="#{xrefUrl2 != null}">
-            <h:outputText value="#{xref.identifier}"/>
-        </h:outputLink>
-        <h:outputText value="#{xref.database}:#{xref.identifier}" rendered="#{xrefUrl2 == null}"/>
-
-        <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
-    </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="altidA_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Alternative id molecule A"/>
-        </t:commandSortHeader>
-    </f:facet>
-    <t:dataList var="xref" value="#{binaryInteraction.interactorA.alternativeIdentifiers}" rowCountVar="rowCount"
-                rowIndexVar="rowIndex">
-        <h:outputText value="#{xref.identifier}"/>
-        <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
-    </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="altidB_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Alternative id molecule B"/>
-        </t:commandSortHeader>
-    </f:facet>
-    <t:dataList var="xref" value="#{binaryInteraction.interactorB.alternativeIdentifiers}" rowCountVar="rowCount"
-                rowIndexVar="rowIndex">
-        <h:outputText value="#{xref.identifier}"/>
-        <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
-    </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="aliasA_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Names molecule A"/>
-        </t:commandSortHeader>
-    </f:facet>
+ <tr:column headerText="Accession number molecule A">
+    <bs:xrefDataList value="#{binaryInteraction.interactorA.identifiers}" />
+</tr:column>
+<tr:column headerText="Accession number molecule B">
+    <bs:xrefDataList value="#{binaryInteraction.interactorB.identifiers}" />
+</tr:column>
+<tr:column headerText="Alternative id molecule A">
+    <bs:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" />
+</tr:column>
+<tr:column headerText="Alternative id molecule B">
+    <bs:xrefDataList value="#{binaryInteraction.interactorB.alternativeIdentifiers}" />
+</tr:column>
+<tr:column headerText="Names molecule A">
     <t:dataList var="alias" value="#{binaryInteraction.interactorA.aliases}" rowCountVar="rowCount"
                 rowIndexVar="rowIndex">
         <h:outputText value="#{alias.name}"/>
         <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
     </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="aliasB_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Names molecule B"/>
-        </t:commandSortHeader>
-    </f:facet>
+</tr:column>
+<tr:column headerText="Names molecule B">
     <t:dataList var="alias" value="#{binaryInteraction.interactorB.aliases}" rowCountVar="rowCount"
                 rowIndexVar="rowIndex">
         <h:outputText value="#{alias.name}"/>
         <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
     </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="taxidA_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Species molecule A"/>
-        </t:commandSortHeader>
-    </f:facet>
+</tr:column>
+<tr:column headerText="Species molecule A">
     <t:dataList var="organism" value="#{binaryInteraction.interactorA.organism}">
         <t:dataList var="xref" value="#{organism.identifiers}" rowCountVar="rowCount" rowIndexVar="rowIndex">
             <h:outputLink value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}" target="_blank">
@@ -148,15 +59,8 @@
         </t:dataList>
         <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
     </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="taxidB_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Species molecule B"/>
-        </t:commandSortHeader>
-    </f:facet>
+</tr:column>
+<tr:column headerText="Species molecule B">
     <t:dataList var="organism" value="#{binaryInteraction.interactorB.organism}">
         <t:dataList var="xref" value="#{organism.identifiers}" rowCountVar="rowCount" rowIndexVar="rowIndex">
             <h:outputLink value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}" target="_blank">
@@ -166,135 +70,76 @@
         </t:dataList>
         <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
     </t:dataList>
-</h:column>
+</tr:column>
 
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="pubauth_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="First Author"/>
-        </t:commandSortHeader>
-    </f:facet>
+<tr:column headerText="First Author">
     <t:dataList var="author" value="#{binaryInteraction.authors}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-        <bs:hilightableRowElement text="#{author.name}"
-                                  columnAlias="pubauth" index="#{index}"
-                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
-    </t:dataList>
-
-</h:column>
-
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="pubid_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="PubMed identifier"/>
-        </t:commandSortHeader>
-    </f:facet>
-    <t:dataList var="xref" value="#{binaryInteraction.publications}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-
-         <bs:hilightableRowElement url="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"
-                                  text="#{xref.identifier}"
-                                  columnAlias="pubid" index="#{index}"
-                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
+        <span style="display:block">
+            <nobr>
+                <tr:outputText value="#{author.name}"/>
+            </nobr>
+        </span>
 
     </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="type_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Interaction type"/>
-        </t:commandSortHeader>
-    </f:facet>
-    <t:dataList var="interactionType" value="#{binaryInteraction.interactionTypes}" rowCountVar="rowCount"
-                rowIndexVar="rowIndex">
-        <bs:hilightableRowElement url="#{psimitab:xrefUrl(appConfigBean.linkContext, interactionType)}"
-                                  text="#{interactionType.text}"
-                                  columnAlias="interactionType" index="#{index}"
-                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
-    </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="detmethod_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Interaction detection method"/>
-        </t:commandSortHeader>
-    </f:facet>
-    <t:dataList var="detMethod" value="#{binaryInteraction.detectionMethods}" rowCountVar="rowCount"
-                rowIndexVar="rowIndex">
-        <bs:hilightableRowElement url="#{psimitab:xrefUrl(appConfigBean.linkContext, detMethod)}"
-                                  text="#{detMethod.text}"
-                                  columnAlias="detMethod" index="#{index}"
-                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
 
-    </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="source_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Source database(s)"/>
-        </t:commandSortHeader>
-    </f:facet>
-    <t:dataList var="sourceDb" value="#{binaryInteraction.sourceDatabases}" rowCountVar="rowCount"
-                rowIndexVar="rowIndex">
+</tr:column>
 
-        <bs:hilightableRowElement url="#{psimitab:xrefUrl(appConfigBean.linkContext, sourceDb)}"
-                                  text="#{sourceDb.text}"
-                                  columnAlias="sourceDb" index="#{index}"
-                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
+<tr:column headerText="PubMed identifier">
+    <bs:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Interaction type">
+    <bs:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Interaction detection method">
+   <bs:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Source database(s)">
+   <bs:xrefDataList value="#{binaryInteraction.sourceDatabases}" onlyText="true" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Interaction details">
+    <bs:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Experimental role A">
+    <bs:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Experimental role A">
+    <bs:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Biological role A">
+    <bs:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Biological role A">
+    <bs:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Properties molecule A">
+    <bs:xrefDataList value="#{binaryInteraction.propertiesB}"/>
+</tr:column>
+<tr:column headerText="Properties molecule B">
+    <bs:xrefDataList value="#{binaryInteraction.propertiesB}"/>
+</tr:column>
+<tr:column headerText="Interactor type A">
+    <bs:xrefDataList value="#{binaryInteraction.interactorTypeA}"/>
+</tr:column>
+<tr:column headerText="Interactor type B">
+    <bs:xrefDataList value="#{binaryInteraction.interactorTypeB}"/>
+</tr:column>
+<tr:column headerText="Host organism">
+    <bs:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
+</tr:column>
+<tr:column headerText="Expansion method">
+    <tr:outputText value="#{binaryInteraction.expansionMethod}" />
+</tr:column>
+<tr:column headerText="Dataset">
+    <t:dataList var="dataset" value="#{binaryInteraction.dataset}" >
+                    <span style="display:block">
+                        <nobr>
+                            <tr:outputText value="#{dataset}"/>
+                        </nobr>
+                    </span>
+     </t:dataList>
+</tr:column>
 
-    </t:dataList>
-</h:column>
-<h:column>
-    <f:facet name="header">
-        <t:commandSortHeader columnName="interaction_id_s" immediate="true"
-                             actionListener="#{searchBean.scrollerAction}">
-            <ui:include src="resultstable/results_table_sorticons.xhtml"/>
-            <h:outputText value="Interaction details"/>
-        </t:commandSortHeader>
-    </f:facet>
-    <t:dataList var="xref" value="#{binaryInteraction.interactionAcs}" rowCountVar="rowCount" rowIndexVar="rowIndex">
-        <c:set var="xrefUrl3" value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"/>
+</tr:table>
 
-        <bs:hilightableRowElement url="#{xrefUrl3}"
-                                  text="#{xref.identifier}"
-                                  columnAlias="interaction_ac" index="#{index}"
-                                  rowIndex="#{rowIndex}" rowCount="#{rowCount}" />
-
-        <!--
-        <h:outputText value="  "/>
-        <h:outputLink value="#{psimitab:xrefUrlForDb(appConfigBean.linkContext, 'hierarchView', xref.identifier)}"
-                      target="_blank">
-            <h:outputText value="[Graph]"/>
-        </h:outputLink>
-        -->
-    </t:dataList>
-</h:column>
-
-</t:dataTable>
-</t:buffer>
-
-
-<h:panelGrid columns="1">
-    <h:panelGrid columns="2" columnClasses="intact_left, intact_right" width="100%">
-        <ui:include src="resultstable/search_nav_buttons.xhtml"/>
-        <ui:include src="resultstable/search_nav_summary.xhtml"/>
-    </h:panelGrid>
-
-    <h:outputText value="#{table}" escape="false"/>
-
-    <h:panelGrid columns="2" columnClasses="intact_left, intact_right" width="100%">
-        <ui:include src="resultstable/search_nav_buttons.xhtml"/>
-        <ui:include src="resultstable/search_nav_summary.xhtml"/>
-    </h:panelGrid>
-
-</h:panelGrid>
 
 </ui:composition>

@@ -34,6 +34,8 @@ public class XrefLinkContext implements Serializable {
     }
 
     public String getUrl(String xrefKey) {
+        xrefKey = prepareKey(xrefKey);
+
         String url = xrefUrls.get(xrefKey);
 
         if (url == null) {
@@ -48,7 +50,13 @@ public class XrefLinkContext implements Serializable {
     }
 
     public boolean containsKey(String xrefKey) {
+        xrefKey = prepareKey(xrefKey);
         return xrefUrls.containsKey(xrefKey);
+    }
+
+    private String prepareKey(String xrefKey) {
+        xrefKey = xrefKey.replaceAll(" ", "_");
+        return xrefKey;
     }
 
     //

@@ -10,7 +10,6 @@
       xmlns:tr="http://myfaces.apache.org/trinidad"
       xmlns:c="http://java.sun.com/jstl/core"
       xmlns:s="http://myfaces.apache.org/sandbox"
-      xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
       xmlns:sf="http://www.ebi.ac.uk/faces/site"
       xmlns:ebi="http://ebi.ac.uk/faces/components"
       xmlns:bs="http://intact.ebi.ac.uk/binarysearch">
@@ -20,39 +19,31 @@
 
     Nothing before this is rendered
 
-    <ui:composition template="WEB-INF/facelets/layout/template-ajaxified.xhtml">
+    <ui:composition template="/WEB-INF/facelets/layout/template.xhtml">
 
-        <ui:define name="contents">
+        <ui:define name="content">
 
-        <h:panelGroup id="urgent">
+        <tr:panelGroupLayout id="urgent" partialTriggers="sideSearchBox_searchBox">
              <ebi:panelUrgentNews sourceUrl="#{initParam['uk.ac.ebi.faces.NEWS_URL']}" renderedIfEmpty="false" />
-        </h:panelGroup>
+        </tr:panelGroupLayout>
 
-        <t:dojoInitializer />
+        <!--<t:dojoInitializer />-->
 
-            <h:panelGroup id="stateRegion">
-                <t:saveState value="#{searchBean.query}"/>
-                <t:saveState value="#{searchBean.results}"/>
-                <t:saveState value="#{searchBean.searchDone}"/>
-                <t:saveState value="#{searchBean.advancedSearch}"/>
-                <t:saveState value="#{searchBean.relatedResults}"/>
-            </h:panelGroup>
+            
 
             &nbsp;
 
             <h:panelGroup style="float:left">
-                <a4j:status id="pageStatus" layout="inline">
-                    <f:facet name="start">
-                        <h:panelGroup>
-                            <h:panelGroup>
+                <tr:statusIndicator id="pageStatus">
+                    <f:facet name="busy">
+                            <tr:panelGroupLayout layout="horizontal">
                                 <h:graphicImage value="/images/wait_red_indicator.gif" style="vertical-align:middle"/>
-                            </h:panelGroup>
-                        </h:panelGroup>
+                            </tr:panelGroupLayout>
                     </f:facet>
-                    <f:facet name="stop">
+                    <f:facet name="ready">
                         <h:graphicImage value="/images/status_off.gif" style="vertical-align:middle"/>
                     </f:facet>
-                </a4j:status>
+                </tr:statusIndicator>
             </h:panelGroup>
 
             <!-- rendered only if there is a new query via url (e.g. from an external application) -->
@@ -67,9 +58,9 @@
                 </script>
             </h:panelGroup>
 
-            <h:panelGroup style="#{param.advSearch? 'display:block' : 'display:none'}">
+            <tr:panelGroupLayout id="advancedSearchRegion" partialTriggers="sideSearchBox_searchBox">
 
-                <h:panelGroup id="advancedSearchRegion">
+                <h:panelGroup  rendered="#{param.advSearch}">
 
                 <br/><br/>
 
@@ -77,64 +68,69 @@
 
                 </h:panelGroup>
 
-            </h:panelGroup>
+            </tr:panelGroupLayout>
 
-            <h:panelGroup id="summaryRegion" style="#{searchBean.searchDone? 'display:block' : 'display:none'}">
-                <h:panelGroup id="summaryHeader">
-                    <h2>Results
-                        <ebi:help id="resultsHelp" title="Results Table" onlyIcon="true">
-                            <p>
-                                Shown below are a full list of interactions in which a match to your query was found
-                                anywhere in the entry. In the results table:
+            <tr:panelGroupLayout id="summaryRegion" partialTriggers="sideSearchBox_searchBox" >
+                <h:panelGroup rendered="#{searchBean.searchDone}">
+                    <h:panelGroup id="summaryHeader">
+                        <h2>Results
+                            <ebi:help id="resultsHelp" title="Results Table" onlyIcon="true">
+                                <p>
+                                    Shown below are a full list of interactions in which a match to your query was found
+                                    anywhere in the entry. In the results table:
 
-                                <ul>
-                                    <li>Columns are sortable, by clicking on the column header.</li>
-                                    <li>Cell values are linked by cross-reference to its details in other IntAct
-                                        databases or external sources.
-                                    </li>
-                                </ul>
-                            </p>
-                        </ebi:help>
-                    </h2>
+                                    <ul>
+                                        <li>Columns are sortable, by clicking on the column header.</li>
+                                        <li>Cell values are linked by cross-reference to its details in other IntAct
+                                            databases or external sources.
+                                        </li>
+                                    </ul>
+                                </p>
+                            </ebi:help>
+                        </h2>
 
-                     </h:panelGroup>
+                         </h:panelGroup>
 
-                    <bs:resultsSummary/>
+                        <bs:resultsSummary/>
 
-                    <p style="#{searchBean.results.rowCount > 0? 'display:block' : 'display:none'}">
-                        <strong>Export Options: </strong>
+                        <h:panelGroup rendered="#{searchBean.results.rowCount > 0}">
+                            <strong>Export Options: </strong>
 
-                        <h:outputLink target="_blank" value="#{requestConfigBean.absoluteContextPath}/export.jsp">
-                            <f:param name="q" value="#{searchBean.query}"/>
-                            <f:param name="d" value="#{searchBean.defaultIndex.location}"/>
-                            <f:param name="sort" value="#{searchBean.sortColumn}"/>
-                            <f:param name="asc" value="#{searchBean.sortAscending}"/>
-                            <t:graphicImage url="#{requestConfigBean.absoluteContextPath}/images/mitab.png"
-                                            style="vertical-align:middle"
-                                            border="0"/>
-                        </h:outputLink>
-                        <ebi:help id="mitabHelp" onlyIcon="true" width="800px" height="400px" title="PSI-MITAB25 Format">
-                            <ui:include src="help/mitab.xhtml"/>
-                        </ebi:help>
-                    </p>
+                            <h:outputLink target="_blank" value="#{requestConfigBean.absoluteContextPath}/export.jsp">
+                                <f:param name="q" value="#{searchBean.query}"/>
+                                <f:param name="d" value="#{searchBean.defaultIndex.location}"/>
+                                <f:param name="sort" value="#{searchBean.sortColumn}"/>
+                                <f:param name="asc" value="#{searchBean.sortAscending}"/>
+                                <t:graphicImage url="#{requestConfigBean.absoluteContextPath}/images/mitab.png"
+                                                style="vertical-align:middle"
+                                                border="0"/>
+                            </h:outputLink>
+                            <ebi:help id="mitabHelp" onlyIcon="true" width="800px" height="400px" title="PSI-MITAB25 Format">
+                                <ui:include src="help/mitab.xhtml"/>
+                            </ebi:help>
 
-                <h:panelGroup rendered="#{searchBean.results.rowCount == 0}">
-                    <p>
-                        <strong>No Interactions found matching the query.</strong>
-                    </p>
+                            <tr:separator/>
+
+                        </h:panelGroup>
+
+                    <h:panelGroup rendered="#{searchBean.results.rowCount == 0}">
+                        <p>
+                            <strong>No Interactions found matching the query.</strong>
+                        </p>
+                    </h:panelGroup>
                 </h:panelGroup>
-
-            </h:panelGroup>
+            </tr:panelGroupLayout>
 
             <!--Test List: #{searchBean.testList}-->
-            <h:panelGroup id="resultsRegion" style="#{searchBean.searchDone? 'display:block' : 'display:none'}">
+            <tr:panelGroupLayout id="resultsRegion" partialTriggers="sideSearchBox_searchBox">
+                <h:panelGroup rendered="#{searchBean.searchDone}">
+                    <bs:resultsTable value="#{searchBean.results}"
+                                     pageSize="#{searchBean.pageSize}"
+                                     sortColumn="#{searchBean.sortColumn}"
+                                     sortAscending="#{searchBean.sortAscending}"/>
+                </h:panelGroup>
 
-                <bs:resultsTable value="#{searchBean.results}"
-                                 pageSize="#{searchBean.pageSize}"
-                                 sortColumn="#{searchBean.sortColumn}"
-                                 sortAscending="#{searchBean.sortAscending}"/>
-
-            </h:panelGroup>
+            </tr:panelGroupLayout>
 
         </ui:define>
 

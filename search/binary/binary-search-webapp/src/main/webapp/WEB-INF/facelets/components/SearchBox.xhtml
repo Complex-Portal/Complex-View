@@ -30,7 +30,7 @@
                          value="#{value}"
                          size="#{ebisf:isBrowserExplorer()? '14' : '12'}"
                          forceId="true"
-                         onkeypress="return submitEnter('searchForm:sideSearchBox_searchBox',event)"/>
+                         onkeypress="return submitEnter('sideSearchBox_searchBox',event)"/>
             
             <ebi:help id="searchHelp" onlyIcon="true" title="Search IntAct" width="800px" height="400px">
                 <h:panelGrid columns="1" width="700px">
@@ -39,17 +39,11 @@
             </ebi:help>
 
             <h:panelGrid columns="2">
-                <a4j:commandButton id="#{id}" styleClass="submit_button"
-                                   value="Search"
+                <tr:commandButton id="#{id}" styleClass="submit_button"
+                                   text="Search"
                                    actionListener="#{searchBean.doSearch}"
-                                   ignoreDupResponses="true"
-                                   reRender="urgent,stateRegion,advancedSearchRegion,summaryRegion,relatedResultsPanel,resultsRegion">
-                    <a4j:support event="oncomplete"
-                                 limitToList="true"
-                                 actionListener="#{searchBean.doCalculateRelatedResults}"
-                                 ignoreDupResponses="true"
-                                 reRender="urgent,stateRegion,relatedResultsPanel"/>
-                </a4j:commandButton>
+                                   partialSubmit="true">
+                </tr:commandButton>
 
                 <a href="#" onclick="intact_${id}_clearAndFocusField('searchQuery')">Clear</a>
             </h:panelGrid>

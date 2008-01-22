@@ -8,17 +8,18 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:tr="http://myfaces.apache.org/trinidad"
+      xmlns:trh="http://myfaces.apache.org/trinidad/html"
       xmlns:c="http://java.sun.com/jstl/core"
       xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-      xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
       xmlns:ebi="http://ebi.ac.uk/faces/components">
 <body>
 
 <f:view>
 
-    <ui:composition template="WEB-INF/facelets/layout/template-noform.xhtml">
+    <ui:composition template="/WEB-INF/facelets/layout/template-ebi.xhtml">
 
-        <ui:define name="contents">
+        <ui:define name="content">
 
         <h1>Configuration</h1>
 
@@ -28,8 +29,6 @@
         </p>
 
         <p></p>
-
-        <h:form>
 
             <ebi:panelRound>
                 <h:panelGrid columns="1">
@@ -58,14 +57,14 @@
 
                     <h:outputText value="Provide an indexed Directory with PSIMITAB data:"/>
 
-                    <h:panelGrid columns="3" styleClass="inputform">
+                    <tr:panelGroupLayout layout="vertical">
+                        <tr:panelGroupLayout layout="horizontal" partialTriggers="txtIndexPath">
 
-                        <h:outputLabel value="Index path:" for="txtIndexPath"/>
-                        <h:inputText id="txtIndexPath" value="#{firstTimeBean.index.location}" immediate="true"
-                                     valueChangeListener="#{firstTimeBean.indexLocationChanged}">
-                            <a4j:support limitToList="true" ajaxSingle="true" event="onkeyup" reRender="locationInfo,txtIndexName"/>
-                        </h:inputText>
-                        <h:panelGroup id="locationInfo">
+                        <tr:inputText id="txtIndexPath" label="Index path: " autoSubmit="true"
+                                      value="#{firstTimeBean.index.location}"
+                                      valueChangeListener="#{firstTimeBean.indexLocationChanged}" immediate="true"/>
+
+
                             <h:panelGroup style="color:green" rendered="#{firstTimeBean.indexLocationExists}">
                                 <h:graphicImage url="/images/ok.gif"/>
                                 <h:outputText
@@ -76,16 +75,16 @@
                                 <h:outputText
                                         value="Index not found at this location."/>
                             </h:panelGroup>
-                        </h:panelGroup>
+                        </tr:panelGroupLayout>
 
-                        <h:outputLabel value="Index name:" for="txtIndexName"/>
-                        <h:inputText id="txtIndexName" value="#{firstTimeBean.index.name}" required="true"/>
+                        <tr:inputText id="txtIndexName" label="Index name: "
+                                      value="#{firstTimeBean.index.name}" required="true"/>
                         <t:message for="txtIndexName" replaceIdWithLabel="true" styleClass="intact_error"
                                    showDetail="true" showSummary="false"/>
 
-                    </h:panelGrid>
+                    </tr:panelGroupLayout>
 
-                    <hr style="height:1px; color:gray;"/>
+                    <tr:separator/>
 
                     <h:outputText
                             value="This configuration will be saved in this location: #{appConfigBean.configFileLocation}"/>
@@ -96,8 +95,6 @@
 
 
             </ebi:panelRound>
-
-            </h:form>
 
         </ui:define>
 

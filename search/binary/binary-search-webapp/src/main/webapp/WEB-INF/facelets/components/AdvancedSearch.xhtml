@@ -120,7 +120,7 @@
 
                 <h:outputLabel for="advQueryType" value="Query type"/>
                 <h:selectOneRadio id="advQueryType" value="#{searchBean.advancedSearch.conjunction}" styleClass="default">
-                    <s:convertBoolean/>
+                    <!--<s:convertBoolean/>-->
                     <f:selectItem itemLabel="OR" itemValue="#{false}"/>
                     <f:selectItem itemLabel="AND" itemValue="#{true}"/>
                 </h:selectOneRadio>
@@ -133,11 +133,9 @@
                 <h:outputText value=""/>
 
                 <h:panelGrid columns="2">
-                    <a4j:commandButton id="btnSearch" styleClass="submit_button" value="Search"
-                                       actionListener="#{searchBean.doAdvancedSearch}"
-                                       ignoreDupResponses="true"
-                                       reRender="stateRegion,summaryRegion,relatedResultsPanel,resultsRegion,searchQuery"/>
-                    <a4j:commandLink value="Clear" styleClass="default"
+                    <tr:commandButton id="btnSearch" value="Search"
+                                       actionListener="#{searchBean.doAdvancedSearch}"/>
+                    <tr:commandLink value="Clear" 
                                      actionListener="#{searchBean.doClearAdvancedForm}" reRender="advancedSearchRegion"/>
                 </h:panelGrid>
 

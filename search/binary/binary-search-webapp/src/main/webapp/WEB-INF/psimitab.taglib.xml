@@ -46,5 +46,10 @@
         <function-class>uk.ac.ebi.intact.binarysearch.webapp.util.XrefLinkGenerator</function-class>
         <function-signature>java.lang.String generateUrl(uk.ac.ebi.intact.binarysearch.webapp.application.XrefLinkContext,java.lang.String,java.lang.String)</function-signature>
     </function>
+    <function>
+        <function-name>xrefToString</function-name>
+        <function-class>uk.ac.ebi.intact.binarysearch.webapp.application.XrefLinkContextFactory</function-class>
+        <function-signature>java.lang.String xrefToString(psidev.psi.mi.tab.model.CrossReference,boolean,boolean)</function-signature>
+    </function>
     
 </facelet-taglib>

@@ -21,12 +21,19 @@ import org.apache.lucene.search.Sort;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.Searcher;
 import psidev.psi.mi.search.engine.SearchEngineException;
+import psidev.psi.mi.search.engine.SearchEngine;
+import psidev.psi.mi.search.engine.impl.FastSearchEngine;
 import psidev.psi.mi.tab.PsimiTabColumn;
+import psidev.psi.mi.tab.model.BinaryInteraction;
 
 import javax.faces.model.DataModel;
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
 import java.io.Serializable;
+import java.io.IOException;
+
+import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
+import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
 
 /**
  * TODO comment this!
@@ -75,8 +82,18 @@ public class SearchResultDataModel extends DataModel implements Serializable {
 
         long startTime = System.currentTimeMillis();
 
-        this.result = Searcher.search(searchQuery, indexDirectory, firstResult, maxResults, sort);
+        IntActSearchEngine engine;
+        try
+        {
+            engine = new IntActSearchEngine(indexDirectory);
+        }
+        catch (IOException e)
+        {
+            throw new SearchEngineException(e);
+        }
 
+        this.result = engine.search(searchQuery, firstResult, maxResults, sort);
+  
         elapsedTimeMillis = System.currentTimeMillis() - startTime;
     }
 

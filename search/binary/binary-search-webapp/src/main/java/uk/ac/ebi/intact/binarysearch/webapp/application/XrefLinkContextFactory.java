@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.binarysearch.webapp.application;
 
+import psidev.psi.mi.tab.model.CrossReference;
+
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -52,5 +54,17 @@ public class XrefLinkContextFactory
         }
 
         return linkContext;
+    }
+
+    public static String xrefToString(CrossReference xref, boolean showDb, boolean showText) {
+        StringBuilder sb = new StringBuilder();
+        if (showDb) {
+            sb.append(xref.getDatabase()).append(":");
+        }
+        sb.append(xref.getIdentifier());
+        if (showText && xref.getText() != null) {
+            sb.append("(").append(xref.getText()).append(")");
+        }
+        return sb.toString();
     }
 }

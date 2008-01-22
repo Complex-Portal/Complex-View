@@ -6,6 +6,8 @@ import org.apache.myfaces.custom.tree2.TreeModel;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
+import psidev.psi.mi.tab.model.CrossReference;
+
 /**
  * TODO comment this
  *

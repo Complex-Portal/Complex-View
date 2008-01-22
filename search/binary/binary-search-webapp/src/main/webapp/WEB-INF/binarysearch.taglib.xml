@@ -33,10 +33,15 @@
         <tag-name>termChooser</tag-name>
         <source>facelets/components/TermChooser.xhtml</source>
     </tag>
+    <tag>
+        <tag-name>xrefDataList</tag-name>
+        <source>facelets/components/XrefDataList.xhtml</source>
+    </tag>
 
     <function>
         <function-name>newTree</function-name>
         <function-class>uk.ac.ebi.intact.binarysearch.webapp.util.ComponentUtils</function-class>
         <function-signature>javax.faces.component.UIComponent newTree(org.apache.myfaces.custom.tree2.TreeModel,boolean)</function-signature>
     </function>
+    
 </facelet-taglib>

@@ -77,6 +77,19 @@
         </attribute>
     </tag>
     <tag>
+        <name>xrefDataList</name>
+        <attribute>
+            <name>itemPerLine</name>
+        </attribute>
+        <attribute>
+            <name>onlyText</name>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <required>true</required>
+        </attribute>
+    </tag>
+    <tag>
         <name>searchBox</name>
         <attribute>
             <name>id</name>
