@@ -18,7 +18,9 @@ package uk.ac.ebi.intact.service.graph.binary;
 import edu.uci.ics.jung.graph.decorators.StringLabeller;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.Interactor;
+import psidev.psi.mi.tab.processor.ClusterInteractorPairProcessor;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 import uk.ac.ebi.intact.service.graph.GraphException;
 import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
 
@@ -50,6 +52,10 @@ public class BinaryGraphNetworkBuilder {
                                                  Collection<String> centralProteinAcs) {
 
         BinaryGraphNetwork graphNetwork = new BinaryGraphNetwork();
+
+        ClusterInteractorPairProcessor cluster = new ClusterInteractorPairProcessor();
+        cluster.setColumnHandler( new IntActColumnHandler() );
+        binaryInteractions = cluster.process( binaryInteractions );
 
         for (BinaryInteraction interaction : binaryInteractions) {
             InteractorVertex vertexA = createVertex(interaction.getInteractorA(), graphNetwork);
@@ -84,6 +90,8 @@ public class BinaryGraphNetworkBuilder {
             BinaryInteractionEdge edge = new BinaryInteractionEdge(interaction, vertexA, vertexB);
             graphNetwork.addEdge(edge);
         }
+
+        graphNetwork.setBinaryInteractions( binaryInteractions );
 
          return graphNetwork;
 

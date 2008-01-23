@@ -15,7 +15,11 @@
  */
 package uk.ac.ebi.intact.service.graph.binary.merger;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.tab.processor.ClusterInteractorPairProcessor;
+import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 import uk.ac.ebi.intact.service.graph.Node;
 import uk.ac.ebi.intact.service.graph.binary.BinaryGraphNetwork;
 import uk.ac.ebi.intact.service.graph.binary.BinaryGraphNetworkBuilder;
@@ -24,6 +28,8 @@ import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * TODO comment that class header
@@ -33,11 +39,11 @@ import java.util.Collection;
  */
 public class InteractionBasedMerger implements BinaryGraphNetworkMerger {
 
+    private static final Log logger = LogFactory.getLog( InteractionBasedMerger.class );
+
     private LabelStrategy labelStrategy;
 
-
-    public InteractionBasedMerger (){
-
+    public InteractionBasedMerger() {
     }
 
     public LabelStrategy getLabelStrategy() {
@@ -48,43 +54,48 @@ public class InteractionBasedMerger implements BinaryGraphNetworkMerger {
         this.labelStrategy = labelStrategy;
     }
 
-
     public BinaryGraphNetwork mergeGraphNetworks( BinaryGraphNetwork network1, BinaryGraphNetwork network2 ) {
 
         Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
-        Collection<String> centralAcs = new ArrayList<String>();
-        for ( Object e : network1.getEdges()){
-            BinaryInteraction bi = ((BinaryInteractionEdge) e).getBinaryInteraction();
-            if (bi != null){
-                binaryInteractions.add(bi);
+        Set<String> centralAcs = new HashSet<String>();
+        for ( BinaryInteraction bi : network1.getBinaryInteractions() ) {
+            if ( bi != null && !binaryInteractions.contains( bi ) ) {
+                binaryInteractions.add( bi );
             }
         }
-        if (network1.getCentralNodes() != null) {
-            for ( Node node : network1.getCentralNodes()){
-                centralAcs.add(node.getId());
-            }
-        }
-
-        for ( Object e : network2.getEdges()){
-            BinaryInteraction bi = ((BinaryInteractionEdge) e).getBinaryInteraction();
-            if (bi != null){
-                binaryInteractions.add(bi);
+        if ( network1.getCentralNodes() != null ) {
+            for ( Node node : network1.getCentralNodes() ) {
+                if ( !centralAcs.contains( node.getId() ) ) {
+                    centralAcs.add( node.getId() );
+                }
             }
         }
 
-        if (network2.getCentralNodes() != null) {
-            for ( Node node : network2.getCentralNodes()){
-                centralAcs.add(node.getId());
+        for ( BinaryInteraction bi : network2.getBinaryInteractions() ) {
+            if ( bi != null && !binaryInteractions.contains( bi ) ) {
+                binaryInteractions.add( bi );
             }
         }
 
-        if (!binaryInteractions.isEmpty()){
+        if ( network2.getCentralNodes() != null ) {
+            for ( Node node : network2.getCentralNodes() ) {
+                if ( !centralAcs.contains( node.getId() ) ) {
+                    centralAcs.add( node.getId() );
+                }
+            }
+        }
+
+        if ( !binaryInteractions.isEmpty() ) {
+            ClusterInteractorPairProcessor cluster = new ClusterInteractorPairProcessor();
+            cluster.setColumnHandler( new IntActColumnHandler() );
+            binaryInteractions = cluster.process( binaryInteractions );
+
             BinaryGraphNetworkBuilder builder = new BinaryGraphNetworkBuilder();
-            builder.setLabelStrategy(labelStrategy);
-            if (!centralAcs.isEmpty()) {
-                return builder.createGraphNetwork(binaryInteractions, centralAcs);
+            builder.setLabelStrategy( labelStrategy );
+            if ( !centralAcs.isEmpty() ) {
+                return builder.createGraphNetwork( binaryInteractions, centralAcs );
             } else {
-                return builder.createGraphNetwork( binaryInteractions);
+                return builder.createGraphNetwork( binaryInteractions );
             }
         }
 

@@ -4,10 +4,9 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.impl.UndirectedSparseGraph;
 import uk.ac.ebi.intact.service.graph.GraphNetwork;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
+
+import psidev.psi.mi.tab.model.BinaryInteraction;
 
 /**
  * Represent a GraphNetwork of BinaryInteractions
@@ -20,6 +19,8 @@ public class BinaryGraphNetwork extends UndirectedSparseGraph implements GraphNe
 
     private Map<String, InteractorVertex> vertices;
     private Map<String, BinaryInteractionEdge> edges;
+
+    private Collection<BinaryInteraction> binaryInteractions;
 
     public BinaryGraphNetwork() {
         vertices = new HashMap<String, InteractorVertex>();
@@ -55,7 +56,6 @@ public class BinaryGraphNetwork extends UndirectedSparseGraph implements GraphNe
         }
     }
 
-
     public InteractorVertex findNode(String id) {
         return vertices.get(id);
     }
@@ -68,6 +68,14 @@ public class BinaryGraphNetwork extends UndirectedSparseGraph implements GraphNe
             }
         }
         return centralNodes;
+    }
+
+    public void setBinaryInteractions( Collection<BinaryInteraction> binaryInteractions ) {
+        this.binaryInteractions = binaryInteractions;
+    }
+    
+    public Collection<BinaryInteraction> getBinaryInteractions () {
+        return binaryInteractions;
     }
 
     @Override
