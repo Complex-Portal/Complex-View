@@ -54,9 +54,9 @@
     |    Graph title    |                    |
     |...................|    source list     |
     |                   |                    |
-    |                   |___________________ |
-    |       Graph       |     Highlight      |      (!) each part is a frame
-    |                   |      source        |
+    |                   |                    |
+    |       Graph       |                    |      (!) each part is a frame
+    |                   |                    |
     |                   |                    |
     |                   |                    |
     |                   |                    |
@@ -85,6 +85,7 @@
         <put name="graph" value="/pages/sidebarGraph.jsp"/>
         <put name="click" value="/pages/sidebarClickBehaviour.jsp"/>
         <put name="psi" value="/pages/sidebarPsiDownload.jsp"/>
+        <put name="cytoscape" value="/pages/sidebarCytoscapeExport.jsp"/>
         <put name="mine" value="/pages/sidebarMine.jsp"/>
     </definition>
 
@@ -95,7 +96,7 @@
         <put name="footer" value="/pages/sidebarFooter.jsp"/>
     </definition>
 
-    <!-- ============ Commons to all IntAct pplication ==================== -->
+    <!-- ============ Commons to all IntAct application ==================== -->
 
     <!-- The header layout. -->
     <definition name="intact.header.layout" path="/layouts/hvHeaderLayout.jsp">
@@ -114,6 +115,7 @@
         <put name="header" value="layouts/headerFrame.jsp"/>
         <put name="content" value="pages/blank.jsp"/>
         <put name="sidebar" value="layouts/sidebarFrame.jsp"/>
+        <put name="footer" value="layouts/footerFrame.jsp"/>
     </definition>
 
     <!-- General content for result layout
@@ -146,25 +148,20 @@
     <definition name="highlightTitle" path="../pages/highlightTitle.jsp"/>
 
     <definition name="highlight" path="../pages/highlight.jsp">
-        <put name="selectedIndex" value="0"/>
+        <!--<put name="selectedIndex" value="0"/>-->
         <put name="parameterName" value="selected"/>
-        <putList name="tabList">
+        <putList name="secondRowTabList">
             <item value="GO" link="/pages/goTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-            <item value="Interpro" link="/pages/interproTab.jsp"
-                  classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="Interpro" link="/pages/interproTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
             <item value="Role" link="/pages/roleTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-            <item value="Species" link="/pages/speciesTab.jsp"
-                  classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-            <item value="MoleculeType" link="/pages/typeTab.jsp"
-                  classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-            <item value="Confidence" link="/pages/confidenceTab.jsp"
-                  classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-            <item value="Publication" link="/pages/publicationTab.jsp"
-                  classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="Species" link="/pages/speciesTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>            
+        </putList>
+        <putList name="firstRowTabList">
+            <item value="MoleculeType" link="/pages/typeTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="Confidence" link="/pages/confidenceTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <item value="Publication" link="/pages/publicationTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>            
         </putList>
     </definition>
-
-    <definition name="hierarchView.selectedSource.layout" path="../pages/selectedSource.jsp"/>
 
     <!-- ===== Definition of the forward page to the search application === -->
 

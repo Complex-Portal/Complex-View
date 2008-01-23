@@ -61,8 +61,8 @@ public class HVNetworkBuilder {
 
     static {
         // the default size should be big enough
-        ALL_SOURCES = new ArrayList<String>( 4 );
-        NODE_SOURCES = new ArrayList<String>( 2 );
+        ALL_SOURCES = new ArrayList<String>( 6 );
+        NODE_SOURCES = new ArrayList<String>( 4 );
         EDGE_SOURCES = new ArrayList<String>( 2 );
 
         // the properties which holds the information about the sources to
@@ -156,7 +156,6 @@ public class HVNetworkBuilder {
 
 
     public HVNetworkBuilder( IntactUserI intactUser ) {
-//        user = ( IntactUser ) intactUser;
         dataservice = intactUser.getDataService();
 
         builder = new BinaryGraphNetworkBuilder();
@@ -175,10 +174,7 @@ public class HVNetworkBuilder {
         Collection<BinaryInteraction> bis = dataservice.getBinaryInteractionsByQueryString( queryString );
         Collection<String> centralProteinAcs = dataservice.getCentralProteins();
 
-        Network network = new InteractionNetwork( builder.createGraphNetwork( bis, centralProteinAcs ) );
-        network.setBinaryInteractions( bis );
-
-        return network;
+        return new InteractionNetwork( builder.createGraphNetwork( bis, centralProteinAcs ) );
     }
 
     public Network fusionBinaryGraphNetwork( Network in, String queryString ) throws HierarchViewDataException, NetworkBuildException, MultipleResultException, ProteinNotFoundException {
@@ -196,7 +192,6 @@ public class HVNetworkBuilder {
 
                 BinaryGraphNetwork network2 = builder.createGraphNetwork( bis, centralProteinAcs );
                 Network network = new InteractionNetwork( merger.mergeGraphNetworks( network1, network2 ) );
-                network.setBinaryInteractions( bis );
                 currentQuery = queryString;
 
                 return network;

@@ -8,10 +8,8 @@
 
 
 <%--
-  Created by IntelliJ IDEA.
-  User: nneuhaus
-  Date: 17-Dec-2007
-  Time: 16:53:14
+  @author Nadin Neuhauser (nneuhaus@ebi.ac.uk)
+  @version $Id
 --%>
 
 <table border="0" cellspacing="0" cellpadding="3" width="100%">

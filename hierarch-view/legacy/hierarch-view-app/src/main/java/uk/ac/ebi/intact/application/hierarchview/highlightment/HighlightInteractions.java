@@ -79,7 +79,7 @@ public class HighlightInteractions {
 
         // Rebuild Image data
         //        GraphToSVG svgProducer = new GraphToSVG (in);
-        DrawGraph imageProducer = new DrawGraph( in, applicationPath, user.getMinePath() );
+        DrawGraph imageProducer = new DrawGraph( user, in, applicationPath, user.getMinePath() );
         imageProducer.draw();
         ImageBean ib = imageProducer.getImageBean();
 

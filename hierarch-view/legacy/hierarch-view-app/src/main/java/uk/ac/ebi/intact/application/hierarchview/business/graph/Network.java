@@ -67,8 +67,6 @@ public interface Network {
 
     Map getEdgeHighlightMap();
 
-    void setBinaryInteractions( Collection<BinaryInteraction> binaryInteractions );
-
     Collection<CrossReference> getProperties( Node node );
 
     boolean isNodeHighlightMapEmpty();

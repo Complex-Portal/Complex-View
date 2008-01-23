@@ -165,6 +165,10 @@ public class SpeciesHighlightmentSource extends NodeHighlightmentSource {
             Set<String> keySet = highlightSpeciesMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
+                Set<String> cloneKeySet = new HashSet();
+                cloneKeySet.addAll( keySet );
+                keySet = cloneKeySet;
+
                 for ( String termId : keySet ) {
 
                     String termType = SOURCE_KEY;

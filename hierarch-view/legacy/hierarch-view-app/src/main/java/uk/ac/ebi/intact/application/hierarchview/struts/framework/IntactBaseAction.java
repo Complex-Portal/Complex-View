@@ -284,8 +284,6 @@ public abstract class IntactBaseAction extends Action {
         if ( in == null )
             return;
 
-        // TODO: If depth desacrease we don't have to access IntAct, we have to reduce the current graph.
-
         String dataTlp = in.exportTlp();
 
         try {
@@ -309,7 +307,7 @@ public abstract class IntactBaseAction extends Action {
         Chrono chrono = new Chrono();
         chrono.start();
 
-        DrawGraph te = new DrawGraph( in, applicationPath, user.getMinePath() );
+        DrawGraph te = new DrawGraph( user, in, applicationPath, user.getMinePath() );
         te.draw();
 
         chrono.stop();
@@ -386,13 +384,11 @@ public abstract class IntactBaseAction extends Action {
                             addMessage( "warning.max.interactions.reached", Integer.toString( HVNetworkBuilder.getMaxInteractions() ) );
                         }
 
-                        user.setErrorMessage( "Sorry, but to much Interactions found!" );
+                        user.setErrorMessage( "Sorry, too many interactions were found! Refine your query." );
                         return;
                     }
 
                     // if no network built after processing all sub query,
-                    // display any errors.
-                    // Else any messages.
                     if ( in == null ) {
                         clearMessages(); // display only errors
                     } else {
@@ -455,7 +451,7 @@ public abstract class IntactBaseAction extends Action {
                                 logger.info( "Current Depth: " + in.getCurrentDepth() );
                                 if ( in.getCurrentDepth() > 1 ) {
                                     in = user.popNetwork();
-                                    in = user.popNetwork();
+//                                    in = user.popNetwork();
                                     //in.decreaseDepth();
                                     if ( logger.isDebugEnabled() ) {
                                         logger.debug( "Decrease Network to " + in.getBinaryInteraction().size() + " BinaryInteractions." );
@@ -547,15 +543,14 @@ public abstract class IntactBaseAction extends Action {
      */
     private String formatQueryString( String queryString ) {
         if ( queryString.contains( "," ) ) {
-            StringBuffer newQueryString = new StringBuffer();
+            StringBuffer buffer = new StringBuffer();
             for ( String query : queryString.split( "," ) ) {
-                newQueryString.append( query );
-                newQueryString.append( ", " );
+                buffer.append( query );
+                buffer.append( ", " );
             }
-            queryString = newQueryString.toString();
-
-            return queryString.substring( 0, queryString.length() - 1 );
+            queryString =  buffer.toString().substring( 0, queryString.length() - 1 );
         }
+
         return queryString;
     }
 }

@@ -165,10 +165,13 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
         Map highlightMoleculeTypeMap = ( Map ) network.getNodeHighlightMap().get( SOURCE_KEY );
 
         if ( highlightMoleculeTypeMap != null && !highlightMoleculeTypeMap.isEmpty() ) {
-            Set<String> keySet = highlightMoleculeTypeMap.keySet();
 
+            Set<String> keySet = highlightMoleculeTypeMap.keySet();
             if ( keySet != null && !keySet.isEmpty() ) {
 
+                Set<String> cloneKeySet = new HashSet();
+                cloneKeySet.addAll( keySet );
+                keySet = cloneKeySet;
                 for ( String termInfo : keySet ) {
 
                     String termType = SOURCE_KEY;

@@ -49,17 +49,17 @@
 
     <body>
 
-    <table border="1" cellpadding="2" cellspacing="0" width="100%" height="100%">
+    <table border="1" cellpadding="1" cellspacing="0" width="100%" height="100%">
 
         <tr>
-            <td width="35%" height="10" valign="top">
+            <td height="8" valign="top">
                 <!-- Top Right cell: Display the highligh tool title -->
                 <tiles:insert definition="highlightTitle"/>
             </td>
         </tr>
 
         <tr>
-            <td width="35%" valign="top">
+            <td valign="top">
                 <!-- Bottom Right cell: Display the highligh tool -->
                 <tiles:insert definition="highlight"/>
             </td>

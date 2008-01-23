@@ -107,16 +107,10 @@ public class DisplayInteractionNetworkTag extends TagSupport {
                  * to take advantage of the client side caching.
                  */
                 Network network = user.getInteractionNetwork();
-
-//                List<CriteriaBean> criterias = network.getCriteria();
-//                int max = criterias.size();
-//                StringBuffer sb = new StringBuffer( 256 );
-//                for ( int i = 0; i < max; i++ ) {
-//                    sb.append( ( criterias.get( i ) ).getQuery() ).append( ',' );
-//                }
-//
-//                String queryString = sb.toString();
-                int depth = network.getCurrentDepth();
+                int depth = 0;
+                if (network != null) {
+                    depth = network.getCurrentDepth();
+                }
                 String method = user.getMethodClass();
                 String key = user.getClickedKey();
                 String highlightContext = "";

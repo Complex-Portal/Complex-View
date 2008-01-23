@@ -15,15 +15,19 @@
  */
 package uk.ac.ebi.intact.application.hierarchview.business.data;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.Searcher;
 import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.CrossReference;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
+import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
@@ -31,6 +35,7 @@ import uk.ac.ebi.intact.searchengine.SearchHelper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -38,22 +43,22 @@ import java.util.Collection;
  */
 public class LocalIndexDataSevice implements DataService {
 
+    private static final Log logger = LogFactory.getLog( LocalIndexDataSevice.class );
+
     private SearchResult<?> searchResult;
     private Collection<String> centralProteins;
     private String query;
+    private String localIndexPath;
 
     public LocalIndexDataSevice() {
-        this.centralProteins = new ArrayList<String>();
+        centralProteins = new ArrayList<String>();
+        Properties searchProperties = IntactUserI.SEARCH_PROPERTIES;
+
+        localIndexPath = searchProperties.getProperty( "search.source.local.index.path" );
+        logger.debug("Path to the local index: " + localIndexPath);
     }
 
     public Collection<String> getCentralProteins() {
-        //Set<String> centralProts = new HashSet<String>();
-//        for (BinaryInteraction interaction : searchResult.getInteractions()) {
-//            centralProts.add(interaction.getInteractorA().getIdentifiers().iterator().next().getIdentifier());
-//            centralProts.add(interaction.getInteractorB().getIdentifiers().iterator().next().getIdentifier());
-//        }
-
-        //return centralProts;
 
         if ( query.contains( ", " ) ) {
             for ( String q : query.split( "," ) ) {
@@ -68,10 +73,15 @@ public class LocalIndexDataSevice implements DataService {
 
     public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
         this.query = query;
+        if ( localIndexPath == null ) {
+            throw new HierarchViewDataException( "NO local index path is found. Please specify one in " + StrutsConstants.SEARCH_PROPERTY_FILE );
+        }         
+
         try {
-            IntActSearchEngine searchEngine = new IntActSearchEngine( "/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current" );
-	    //            IntActSearchEngine searchEngine = new IntActSearchEngine( "C:\\Documents and Settings\\nneuhaus\\Desktop\\current" );
+
+            IntActSearchEngine searchEngine = new IntActSearchEngine( localIndexPath );
             this.searchResult = Searcher.search( query, searchEngine );
+            
         } catch ( IOException e ) {
             throw new HierarchViewDataException( "Could not find index-files" );
         }

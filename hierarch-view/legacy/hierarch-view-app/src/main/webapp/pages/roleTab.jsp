@@ -1,12 +1,12 @@
 <%@ page import="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
+
 <%--
-  Created by IntelliJ IDEA.
-  User: nneuhaus
-  Date: 10-Dec-2007
-  Time: 15:37:17
+  @author Nadin Neuhauser (nneuhaus@ebi.ac.uk)
+  @version $Id
 --%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>

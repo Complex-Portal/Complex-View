@@ -39,15 +39,12 @@
 
     <frameset cols="12%,*" border=0>
 
-        <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="sidebar"/>?<%= timestamp %>"
-               name="sidebarFrame">
+        <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="sidebar"/>?<%= timestamp %>" name="sidebarFrame">
 
-        <frameset rows="7%,*, 8%">
-            <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="header"/>?<%= timestamp %>"
-                   name="headerFrame">
-            <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="content"/>?<%= timestamp %>"
-                   name="contentFrame">
-            <frame src="<%=request.getContextPath()%>/layouts/footerFrame.jsp?<%= timestamp %>" name="footerFrame">
+        <frameset rows="6%,*,7%">
+            <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="header"/>?<%= timestamp %>" name="headerFrame">
+            <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="content"/>?<%= timestamp %>" name="contentFrame">
+            <frame src="<%=request.getContextPath()%>/<tiles:getAsString name="footer"/>?<%= timestamp %>" name="footerFrame">
         </frameset>
 
         <noframes>

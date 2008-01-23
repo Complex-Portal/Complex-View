@@ -33,9 +33,7 @@
         // no user in the session, don't display anything
         return;
     }
-%>
 
-<%
     if ( user.InteractionNetworkReadyToBeDisplayed() ) {
         String graph2mif = IntactUserI.GRAPH2MIF_PROPERTIES.getProperty( "graph2mif.url" );
         StringBuffer ac = new StringBuffer( 32 );
@@ -49,11 +47,12 @@
         if ( l == 0 )
             ac.append( user.getQueryString() );
         String url = graph2mif + "?ac=" + ac.toString()
-                     + "&depth=" + user.getInteractionNetwork().getCurrentDepth()
-                     + "&strict=false";
-//        String url10 = url + "&version=1";
+                     + "&depth=1&strict=false";
+
         String url25 = url + "&version=" + HtmlEncoder.encode( "2.5" );
         String mitab = request.getContextPath() + "/MitabExport";
+        
+        user.setExportUrl(url25);        
 %>
 
 <hr>
@@ -68,21 +67,12 @@
         </th>
     </tr>
 
-    <%--    <tr>
-        <td valign="bottom" align="center">
-            <nobr>
-                <img border="0" src="<%= request.getContextPath() %>/images/psi10.png"
-                     alt="PSI-MI 1.0 Download"
-                     onclick="w=window.open('<%= url10 %>', 'graph2mif');w.focus();">
-            </nobr>
-        </td>
-    </tr>--%>
     <tr>
         <td valign="bottom" align="center">
             <nobr>
                 <img border="0" src="<%= request.getContextPath() %>/images/psi25.png"
                      alt="PSI-MI 2.5 Download"
-                     onclick="var w=window.open('<%= url25 %>', 'graph2mif');w.focus();">
+                     onclick="var w=window.open('<%= url25 %>');w.focus();">
             </nobr>
         </td>
 
@@ -92,11 +82,9 @@
             <nobr>
                 <img border="0" src="<%= request.getContextPath() %>/images/mitab.png"
                      alt="PSI-MI TAB Download"
-                     onclick="var w=window.open('<%= mitab %>', 'graph2mif');w.focus();">
+                     onclick="var w=window.open('<%= mitab %>');w.focus();">
             </nobr>
         </td>
-
-    </tr>
 </table>
 
 <%

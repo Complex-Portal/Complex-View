@@ -44,6 +44,13 @@
         </td>
     </tr>
 
+    <%-- Cytoscape section --%>
+    <!--<tr>-->
+        <!--<td>-->
+            <%--<tiles:insert attribute="cytoscape" ignore="true"/>--%>
+        <!--</td>-->
+    <!--</tr>-->
+
     <tr>
         <td>
             <tiles:insert attribute="mine" ignore="true"/>

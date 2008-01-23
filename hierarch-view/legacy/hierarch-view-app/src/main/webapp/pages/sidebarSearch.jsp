@@ -47,9 +47,9 @@
 
 %>
 
+
 <!-- Search section -->
 <html:form action="/search" focus="queryString">
-
     <table>
         <tr>
             <th>
@@ -64,6 +64,11 @@
             <td>
                 <html:text property="queryString" value="<%= queryString %>" size="12"/>
             </td>
+            <!--<td>-->
+                <!--<div align="right">-->
+                    <!--<a href="javascript:intact_sideSearchBox_searchBox_clearAndFocusField('queryString')">Clear</a>-->
+                <!--</div>-->
+            <!--</td>-->
 
         </tr>
 

@@ -14,6 +14,7 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.ClickBehaviourForm;
 import uk.ac.ebi.intact.util.PropertyLoader;
 
 import javax.servlet.http.HttpSessionBindingListener;
+import java.awt.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Properties;
@@ -38,7 +39,8 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
     public static final Properties SEARCH_PROPERTIES = PropertyLoader.load( StrutsConstants.SEARCH_PROPERTY_FILE );
     public static final Properties WEB_SERVICE_PROPERTIES = PropertyLoader.load( StrutsConstants.WEB_SERVICE_PROPERTY_FILE );
     public static final Properties HIGHLIGHTING_PROPERTIES = PropertyLoader.load( StrutsConstants.HIGHLIGHTING_PROPERTY_FILE );
-    public static final Properties GRAPH2MIF_PROPERTIES = PropertyLoader.load( StrutsConstants.GRAPH2MIF_PROPERTY_FILE );
+    public static final Properties GRAPH2MIF_PROPERTIES = PropertyLoader.load( StrutsConstants.GRAPH2MIF_PROPERTY_FILE );    
+
 
 
     public String getQueryString();
@@ -153,6 +155,13 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
      * @return the value associated to the name
      */
     public Object getHighlightOption( String name );
+
+    void setExportUrl( String url25 );
+    public String getExportUrl( );
+
+    void setWindowDimension( int width, int height );
+
+    public Dimension getWindowDimension();
 }
 
 

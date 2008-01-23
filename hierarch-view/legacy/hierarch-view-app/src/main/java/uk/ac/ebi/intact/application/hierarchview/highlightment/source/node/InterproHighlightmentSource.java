@@ -151,10 +151,13 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
 
         Map highlightInterproMap = ( Map ) network.getNodeHighlightMap().get( SOURCE_KEY );
 
-        if ( highlightInterproMap != null && !highlightInterproMap.isEmpty() ) {
+        if ( highlightInterproMap != null && !highlightInterproMap.isEmpty() ) {            
             Set<String> keySet = highlightInterproMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
+                Set<String> cloneKeySet = new HashSet();
+                cloneKeySet.addAll( keySet );
+                keySet = cloneKeySet;
                 for ( String termInfo : keySet ) {
                     String termType = SOURCE_KEY;
                     String termId = termInfo;

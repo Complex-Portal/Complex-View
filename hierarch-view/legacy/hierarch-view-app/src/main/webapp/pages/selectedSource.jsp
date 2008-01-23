@@ -33,7 +33,7 @@
             IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
 
             // Displays Http content if URL updated in the session
-            if ( user.hasSourceUrlToDisplay() ) {
+            if ( user != null && user.hasSourceUrlToDisplay() ) {
         %>
         <script>
             setTimeout("top.contentFrame.selectedSourcetFrame.location = '<%= user.getSourceURL() %>'", 1000);

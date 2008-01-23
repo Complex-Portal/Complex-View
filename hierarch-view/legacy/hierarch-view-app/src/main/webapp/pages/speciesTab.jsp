@@ -1,13 +1,12 @@
 <%@ page import="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
+
 <%--
-  Created by IntelliJ IDEA.
-  User: nneuhaus
-  Date: 11-Jan-2008
-  Time: 11:41:47
-  To change this template use File | Settings | File Templates.
+  @author Nadin Neuhauser (nneuhaus@ebi.ac.uk)
+  @version $Id
 --%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 

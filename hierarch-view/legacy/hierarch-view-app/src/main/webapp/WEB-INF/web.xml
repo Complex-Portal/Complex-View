@@ -90,6 +90,7 @@
         </init-param>
 
         <load-on-startup>1</load-on-startup>
+
     </servlet>
 
     <!-- =================================================================== -->
@@ -106,6 +107,10 @@
         <servlet-class>uk.ac.ebi.intact.application.hierarchview.business.servlet.MitabExport</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>CytoscapeExport</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.application.hierarchview.business.servlet.CytoscapeExport</servlet-class>
+    </servlet>
     <!-- =================================================================== -->
 
     <servlet-mapping>
@@ -116,6 +121,11 @@
     <servlet-mapping>
         <servlet-name>MitabExport</servlet-name>
         <url-pattern>/MitabExport</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CytoscapeExport</servlet-name>
+        <url-pattern>/CytoscapeExport</url-pattern>
     </servlet-mapping>
 
     <!-- =================================================================== -->

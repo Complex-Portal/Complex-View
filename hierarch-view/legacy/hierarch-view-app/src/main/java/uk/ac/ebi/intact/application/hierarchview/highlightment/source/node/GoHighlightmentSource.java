@@ -151,6 +151,11 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
             Set<String> keySet = highlightGOMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
+                // Cloning the current KeySet, because map could mixed up if user is to fast
+                Set<String> cloneKeySet = new HashSet();
+                cloneKeySet.addAll( keySet );
+                keySet = cloneKeySet;
+
                 for ( String termInfo : keySet ) {
 
                     String termType = SOURCE_KEY;

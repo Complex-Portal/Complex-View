@@ -23,7 +23,9 @@ import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.service.graph.Node;
 
 import javax.servlet.http.HttpSessionBindingEvent;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * This class stores information about an Intact Web user session. <br>
@@ -102,6 +104,8 @@ public class IntactUser implements IntactUserI {
     private HVNetworkBuilder networkBuilder;
 
     private Stack<Network> userQueryHistory;
+    private String exportUrl;
+    private Dimension windowDimension = null;
 
     /**
      * Constructs an instance of this class with given mapping file and the name
@@ -133,10 +137,6 @@ public class IntactUser implements IntactUserI {
     public String getApplicationPath() {
         return applicationPath;
     }
-
-//    public int getCurrentDepth() {
-//        return currentDepth;
-//    }
 
     public String getMethodLabel() {
         return methodLabel;
@@ -294,19 +294,6 @@ public class IntactUser implements IntactUserI {
     public void init() {
         this.queryString = null;
 
-//        // read the Graph.properties file
-//        Properties properties = GRAPH_PROPERTIES;
-//
-//        if ( null != properties ) {
-//            String depth = properties.getProperty( "hierarchView.graph.depth.default" );
-//            if ( depth != null ) {
-//                defaultDepth = Integer.parseInt( depth );
-//            } else {
-//                defaultDepth = DEFAULT_DEPTH;
-//            }
-//            currentDepth = defaultDepth;
-//        }
-
         methodLabel = null;
         methodClass = null;
         behaviour = null;
@@ -318,6 +305,7 @@ public class IntactUser implements IntactUserI {
         highlightOptions = new HashMap();
         sourceURL = null;
         logger.info( "User's data set to default" );
+        
         dataservice = DataServiceFactory.buildDataService( SEARCH_PROPERTIES.getProperty( "search.source.name" ) );
         if ( dataservice != null ) {
             networkBuilder = new HVNetworkBuilder( this );
@@ -337,9 +325,21 @@ public class IntactUser implements IntactUserI {
         return highlightOptions.get( name );
     }
 
-//    public void setCurrentDepth( int depth ) {
-//        currentDepth = depth;
-//    }
+    public void setExportUrl( String url25 ) {
+        this.exportUrl = url25;
+    }
+
+    public String getExportUrl() {
+        return exportUrl;
+    }
+
+    public void setWindowDimension( int width, int height ) {
+        windowDimension = new Dimension(width, height);
+    }
+
+    public Dimension getWindowDimension() {
+        return windowDimension;
+    }
 
     public void setErrorMessage( String errorMessage ) {
         this.errorMessage = errorMessage;

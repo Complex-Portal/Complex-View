@@ -26,6 +26,9 @@ public final class InitForm extends IntactBaseForm {
     private String host = null;
     private String protocol = null;
 
+    private int width = 0;
+    private int height = 0;
+
     public String getHost() {
         return host;
     }
@@ -40,6 +43,22 @@ public final class InitForm extends IntactBaseForm {
 
     public void setProtocol( String protocol ) {
         this.protocol = protocol;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth( int width ) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight( int height ) {
+        this.height = height;
     }
 
 }

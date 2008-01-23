@@ -92,7 +92,7 @@ public class InteractionNetwork implements Network {
 
     private static final String SPECIES = SpeciesHighlightmentSource.SOURCE_KEY;
 
-    private static final String BOTH = "both";
+    public static final String BOTH = "both";
 
     /**
      * Describe how the interaction network has been built, from which query
@@ -142,6 +142,8 @@ public class InteractionNetwork implements Network {
         initNodes();
         initEdges();
         setDepthToDefault();
+
+        binaryInteractions = network.getBinaryInteractions();
     }
     /////////////////////////
     // Getters & Setters
@@ -228,10 +230,6 @@ public class InteractionNetwork implements Network {
         return binaryInteractions;
     }
 
-    public void setBinaryInteractions( Collection binaryInteractions ) {
-        this.binaryInteractions = binaryInteractions;
-    }
-
     public List getCriteria() {
         return criteriaList;
     }
@@ -257,7 +255,7 @@ public class InteractionNetwork implements Network {
     }
 
     public ImageDimension getImageDimension() {
-        return this.dimension;
+        return dimension;
     }
 
     public List getCentralNodes() {
@@ -397,7 +395,7 @@ public class InteractionNetwork implements Network {
                 }
                 if ( vertex.isBaitWithExperimental() && vertex.isPreyWithExperimental() ) {
                     String key = "E|" + BOTH;
-                    addToReferenceList( key, factory.build( "MI", BOTH, BOTH ) );
+                    addToReferenceList( key, factory.build( "MI", BOTH, "bait & prey" ) );
                     addToNodeHighlightMap( ROLE, key, node );
                 }
             }
@@ -436,8 +434,13 @@ public class InteractionNetwork implements Network {
             Organism organism = vertex.getOrganism();
             if ( organism != null ) {
                 String key = organism.getTaxid();
-                addToReferenceList( key, organism.getIdentifiers().iterator().next() );
-                addToNodeHighlightMap( SPECIES, key, node );
+                Collection<CrossReference> organsimIDs = organism.getIdentifiers();
+                if ( organsimIDs != null && !organsimIDs.isEmpty() ) {
+                    addToReferenceList( key, organsimIDs.iterator().next() );
+                    addToNodeHighlightMap( SPECIES, key, node );
+                } else {
+                    logger.error( "Could not found organism identifiers for " + organism + " of interactor " + vertex.getId() );
+                }
             }
         }
 
@@ -457,9 +460,20 @@ public class InteractionNetwork implements Network {
                 for ( CrossReference publication : edge.getPublication() ) {
                     String pmid = publication.getIdentifier();
 
-                    if ( authors != null && !authors.isEmpty() && authors.get( i ) != null ) {
-                        authorMap.put( pmid, authors.get( i ) );
-                        i++;
+                    if ( authors != null && !authors.isEmpty() ) {
+                        if ( i < authors.size() ) {
+                            if ( authors.get( i ) != null ) {
+                                authorMap.put( pmid, authors.get( i ) );
+                                i++;
+                            } else {
+                                logger.error( "No Author available for PUBMED " + pmid );
+                            }
+                        } else {
+                            logger.error( "We have " + edge.getPublication().size() + " publications " +
+                                          "which not mapping to " + edge.getAuthors().size() + " authors." +
+                                          "-> Error happens when I want to map " + pmid +
+                                          " for Interaction " + edge.getBinaryInteraction().getInteractionAcs().get(1));
+                        }
                     }
                     addToEdgeHighlightMap( PUBLICATION, pmid, edge );
                 }

@@ -75,7 +75,7 @@ public final class InitAction extends IntactBaseAction {
         }
 
         // No user found, let's create one
-        createIntactUser( session, request );
+        user = createIntactUser( session, request );
 
         if ( !isErrorsEmpty() ) {
             // Report any errors we have discovered back to the original form
@@ -90,6 +90,12 @@ public final class InitAction extends IntactBaseAction {
 
         String protocol = ( ( InitForm ) form ).getProtocol();
         logger.debug( "THE PROTOCOL GIVEN BY JAVASCRIPT: " + protocol );
+
+        int windowWidth = ( ( InitForm ) form ).getWidth();
+        int windowHeight = ( ( InitForm ) form ).getHeight();
+        if (windowWidth > 0  && windowHeight > 0 && user != null){
+            user.setWindowDimension( windowWidth, windowHeight );
+        }
 
         session.setAttribute( StrutsConstants.HOST, host );
         session.setAttribute( StrutsConstants.PROTOCOL, protocol );

@@ -30,7 +30,8 @@
 
         <!-- form container for the hostname management -->
         <form-bean name="initForm"
-                   type="uk.ac.ebi.intact.application.hierarchview.struts.view.InitForm"/>
+                   type="uk.ac.ebi.intact.application.hierarchview.struts.view.InitForm">
+        </form-bean>
 
     </form-beans>
 
@@ -74,29 +75,30 @@
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.SearchAction"
                 name="searchForm"
                 validate="true"
-                scope="request"/>
-        <!--input="hierarchView.error.layout"-->
-        <!--/>-->
+                scope="request">
+        </action>
 
         <!-- Processes the user search for an external application -->
         <action path="/display"
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.DisplayAction"
                 scope="request"
-                input="hierarchView.error.layout"
-                />
+                input="hierarchView.error.layout">
+        </action>
 
         <!-- Processes the highlightment form allowing to change the current behaviour, options
           -->
         <action path="/highlightment"
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.HighlightmentAction"
                 name="highlightmentForm"
-                scope="request"/>
+                scope="request">
+        </action>
 
         <!-- Processes the user's action allowing to select an object in an external application -->
         <action path="/source"
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.SourceAction"
                 scope="request"
-                input="hierarchView.result.layout"/>
+                input="hierarchView.result.layout">
+        </action>
 
         <!-- Processes the setting of the current click behaviour -->
         <action path="/clickBehaviour"
@@ -113,27 +115,21 @@
         <action path="/click"
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.ClickAction"
                 scope="request"
-                input="hierarchView.result.layout"/>
+                input="hierarchView.result.layout">
+        </action>
 
         <!-- Processes the Contraction/Expansion of the interaction network -->
         <action path="/interactionNetwork"
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.InteractionNetworkAction"
                 name="InteractionNetworkForm"
-                scope="request"/>
-
-        <!-- Processes the request to display the content of a highlight source-->
-        <action path="/displaySourceContent"
-                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.DisplaySourceAction"
                 scope="request">
-
-            <forward name="success" path="hierarchView.selectedSource.layout"/>
-
         </action>
 
         <!-- Clears the path highlighting if the application was called by MiNe -->
         <action path="/clearMinePath"
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.ClearMinePathAction"
-                scope="request"/>
+                scope="request">
+        </action>
     </action-mappings>
 
     <!-- ========== Message Resources ================================== -->

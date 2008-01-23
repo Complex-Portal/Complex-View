@@ -34,8 +34,8 @@ import java.util.Properties;
 
 
 /**
- * That class allow to initialize properly in the session the sources to display according to the current central
- * protein.
+ * That class allow to initialize properly in the session the sources to display according
+ * to the proteins.
  *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
@@ -96,28 +96,6 @@ public class DisplaySourceTag extends TagSupport {
 
                 logger.info( "clickedKey=" + clickedKey + " | selectedKeys=" + selectedKeys
                              + " | selectedKeysType=" + selectedKeysType + " | tabType=" + tabType );
-
-//                Collection<String> allSelectedKeys = new ArrayList();
-//
-//                if ( selectedKeys != null && selectedKeysType != null && tabType != null
-//                     && selectedKeysType.toLowerCase().equals( tabType.toLowerCase() ) ) {
-//
-//                    allSelectedKeys.addAll( selectedKeys );
-//                } else {
-//                    user.setSelectedKeys( null );
-//                    user.setClickedKey( "null" );
-//                    user.setSelectedKeyType( "null" );
-//                }
-//
-//                if ( clickedKey != null && tabType != null && selectedKeysType != null
-//                     && selectedKeysType.toLowerCase().equals( tabType.toLowerCase() ) ) {
-//
-//                    allSelectedKeys.add( clickedKey );
-//                } else {
-//                    user.setSelectedKeys( null );
-//                    user.setClickedKey( "null" );
-//                    user.setSelectedKeyType( "null" );
-//                }
 
                 String queryString = user.getQueryString();
                 if ( null != queryString ) {

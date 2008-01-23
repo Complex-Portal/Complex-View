@@ -46,6 +46,14 @@
         </description>
     </tag>
 
+    <tag>
+        <name>displayGraphTitle</name>
+        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.DisplayGraphTitle</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            Displays available source for the selected protein.
+        </description>
+    </tag>
 
     <tag>
         <name>displayHttpContent</name>

@@ -18,6 +18,7 @@ some fixes on source code to allow the XHTML compatibility and improve the displ
 
 <%
     long timestamp = System.currentTimeMillis();
+    
 %>
 
 <html:html>
@@ -31,16 +32,10 @@ some fixes on source code to allow the XHTML compatibility and improve the displ
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/layouts/styles/hv.css"/>
     </head>
 
-    <frameset cols="60%,*" border=0>
+    <frameset cols="68%,*" border=0>
 
         <frame src="<%=request.getContextPath()%>/layouts/graphFrame.jsp?<%= timestamp %>" name="FOO"/>
-
-        <frameset rows="45%,*">
-            <frame src="<%=request.getContextPath()%>/layouts/sourceListFrame.jsp?<%= timestamp %>"
-                   name="sourceListFrame"/>
-            <frame src="<%=request.getContextPath()%>/layouts/selectedSourceFrame.jsp?<%= timestamp %>"
-                   name="selectedSourcetFrame"/>
-        </frameset>
+        <frame src="<%=request.getContextPath()%>/layouts/sourceListFrame.jsp?<%= timestamp %>" name="sourceListFrame"/>
 
         <noframes>
             Your browser doesn't support frames.
@@ -48,7 +43,7 @@ some fixes on source code to allow the XHTML compatibility and improve the displ
 
     </frameset>
 
-    <body bgcolor="#FFFFFF" topmargin="0" leftmargin="0">
+    <body topmargin="0" leftmargin="0">
 
     </body>
 </html:html>

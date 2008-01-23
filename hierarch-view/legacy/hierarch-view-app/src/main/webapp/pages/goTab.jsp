@@ -34,11 +34,9 @@
                     decorator="uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceDecorator">
                 <display:column property="description" title="Description" width="63%" align="left"/>
                 <display:column property="directHighlightUrl" title="Show" width="8%" align="center"/>
-                <display:column property="graph" title="Browse" width="8%" align="center"/>
                 <display:column property="count" title="Count" width="9%" align="center"/>
                 <display:column property="id" title="ID" width="20%" align="left"/>
-                <display:setProperty name="basic.msg.empty_list"
-                                     value="No source available for that interaction network"/>
+                <display:setProperty name="basic.msg.empty_list" value="No source available for that interaction network"/>
             </display:table>
 
         </td>

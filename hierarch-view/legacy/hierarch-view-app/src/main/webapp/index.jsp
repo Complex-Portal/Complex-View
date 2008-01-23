@@ -20,14 +20,35 @@
     </head>
 
     <body bgcolor="white">
-
-    <html:form action="/init">
-        <html:hidden property="host"/>
-        <html:hidden property="protocol"/>
-    </html:form>
+        <html:form action="/init">
+            <html:hidden property="width"/>
+            <html:hidden property="height"/>
+            <html:hidden property="host"/>
+            <html:hidden property="protocol"/>
+        </html:form>
+    </body>
 
     <script language="JavaScript" type="text/javascript">
         <!--
+          
+          var myWidth = 0, myHeight = 0;
+          if( typeof( window.innerWidth ) == 'number' ) {
+            //Non-IE
+            myWidth = window.innerWidth;
+            myHeight = window.innerHeight;
+          } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+            //IE 6+ in 'standards compliant mode'
+            myWidth = document.documentElement.clientWidth;
+            myHeight = document.documentElement.clientHeight;
+          } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+            //IE 4 compatible
+            myWidth = document.body.clientWidth;
+            myHeight = document.body.clientHeight;
+          }
+
+        document.forms[0].width.value = myWidth;
+        document.forms[0].height.value = myHeight;
+
         // gives the current host and protocol from the browser URL.
         document.forms[0].host.value = window.location.host;
         document.forms[0].protocol.value = window.location.protocol;
@@ -38,6 +59,5 @@
     </script>
 
 
-    </body>
 
 </html:html>

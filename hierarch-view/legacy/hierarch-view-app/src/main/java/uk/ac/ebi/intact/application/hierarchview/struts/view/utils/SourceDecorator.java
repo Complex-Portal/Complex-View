@@ -114,8 +114,6 @@ public class SourceDecorator extends TableDecorator {
             final String url = bean.getDirectHighlightUrl();
             return "<a href=\"" + url + "\" target=\"_top\"><img src=\"" + applicationPath +
                    "/images/ok-red.png\" border=\"0\" align=\"middle\" alt=\"(*)\" /></a>";
-//            return "<img src=\"" + applicationPath +
-//                   "/images/ok-red.png\" border=\"0\" align=\"middle\" alt=\"(-)\" />";
         }
     }
 

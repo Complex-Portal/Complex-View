@@ -58,6 +58,7 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
     static final String SOURCE_CLASS;
     private static final String MIRefPath;
 
+
     static {
 
         // get in the Highlightment properties file where is interpro
@@ -173,6 +174,10 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
             Set<String> keySet = highlightRoleMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
+                Set<String> cloneKeySet = new HashSet();
+                cloneKeySet.addAll( keySet );
+                keySet = cloneKeySet;
+                
                 for ( String termId : keySet ) {
                     String termType = SOURCE_KEY;
                     CrossReference xref = network.getCrossReferenceById( termId );

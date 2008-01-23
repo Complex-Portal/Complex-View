@@ -32,7 +32,8 @@ New sources available : "All" and Interpro
 
 <tiles:useAttribute name="parameterName" classname="java.lang.String"/>
 <tiles:useAttribute name="selectedIndex" classname="java.lang.String" id="selectedIndexStr" ignore="true"/>
-<tiles:useAttribute name="tabList" classname="java.util.List"/>
+<tiles:useAttribute name="firstRowTabList" classname="java.util.List"/>
+<tiles:useAttribute name="secondRowTabList" classname="java.util.List"/>
 
 
 <!--Prepare available highlightment source for the selected protein in the session -->
@@ -46,7 +47,7 @@ New sources available : "All" and Interpro
     String notSelectedColor = "#CCCCCC";
 
     int index = 0; // Loop index
-    int selectedIndex = 0;
+    int selectedIndex = 3;
     // Check if selected come from request parameter
     try {
         // Try to retrieve from http parameter, or previous storage
@@ -72,13 +73,29 @@ New sources available : "All" and Interpro
         // do nothing
     }
 
+    List<MenuItem> tabList = new ArrayList<MenuItem>();
+    tabList.addAll( firstRowTabList);
+    tabList.addAll( secondRowTabList );
+
     // Check selectedIndex bounds
     if ( selectedIndex < 0 || selectedIndex >= tabList.size() ) {
         selectedIndex = 0;
     }
+//    System.err.println( "selectedIndex" + selectedIndex + " | firstRow " + firstRowTabList.size() + " | secondRow " + secondRowTabList.size() );
+//    // if one tab of the second row is selected
+//    if (selectedIndex >= secondRowTabList.size() || selectedIndex <= firstRowTabList.size() ){
+//        System.err.println( "Switch first to second and second to first" );
+//        // switch firstRow to secondRow and secondRow to firstRow
+//        List<MenuItem> tempList = new ArrayList<MenuItem>();
+//        tempList = firstRowTabList;
+//        secondRowTabList = firstRowTabList;
+//        firstRowTabList = tempList;
+//    }
+
+
     // Selected body
-    String selectedBody = ( ( MenuItem ) tabList.get( selectedIndex ) ).getLink();
-    String tabType = ( ( MenuItem ) tabList.get( selectedIndex ) ).getValue();
+    String selectedBody = ( tabList.get( selectedIndex ) ).getLink();
+    String tabType = ( tabList.get( selectedIndex ) ).getValue();
 
     // Store selected index for future references
     session.setAttribute( request.getRequestURI() + parameterName, selectedIndex );
@@ -94,7 +111,7 @@ New sources available : "All" and Interpro
         <td>
             <table border="0" cellspacing="0" cellpadding="5">
                 <tr>
-                    <logic:iterate id="tab" name="tabList" type="org.apache.struts.tiles.beans.MenuItem">
+                    <logic:iterate id="tab" name="firstRowTabList" type="org.apache.struts.tiles.beans.MenuItem">
 
                         <%
                             // compute href
@@ -144,7 +161,63 @@ New sources available : "All" and Interpro
                 </tr>
             </table>
         </td>
+    </tr>     
+    <tr>
+        <td>
+            <table border="0" cellspacing="0" cellpadding="5">
+                <tr>
+                    <logic:iterate id="tab" name="secondRowTabList" type="org.apache.struts.tiles.beans.MenuItem">
+
+                        <%
+                            // compute href
+                            String href = request.getRequestURI() + "?" + parameterName + "=" + index;
+                            String target = "sourceListFrame";
+                            String currentTab = tab.getValue();
+
+                            // will generate a different link in the tab to avoid the highlighting
+                            // of a source term not compatible with the selected type tab
+                            if ( selectedSourceType != null
+                                 && !selectedSourceType.equals( "null" )
+                                 && !selectedSourceType.toLowerCase().equals( currentTab.toLowerCase() ) ) {
+                                String applicationPath = user.getApplicationPath();
+                                String randomParam = "&now=" + System.currentTimeMillis();
+                                href = applicationPath + "/source.do?keys=null&clicked=null&type=null&selected=" + index + randomParam;
+                                target = "_top";
+                            }
+
+                            String color = notSelectedColor;
+                            if ( index == selectedIndex ) {
+                                selectedBody = tab.getLink();
+                                color = selectedColor;
+                            } // enf if
+                            index++;
+
+                            // compute count results
+                            List<SourceBean> listSources = ( ArrayList ) session.getAttribute( "sources" );
+
+                            int nbResults = 0;
+                            String tabValue = tab.getValue().toLowerCase();
+                            for ( SourceBean source : listSources ) {
+                                String type = source.getType().toLowerCase();
+
+                                if ( type.equals( tabValue ) ) {
+                                    nbResults++;
+                                }
+                            }
+                        %>
+
+                        <td bgcolor="<%=color%>"><a href="<%=href%>" target="<%=target%>" style="text-decoration:none;">
+                            &nbsp;
+                            <span style="font-size:14px;font-weight:bold;color:#FFFFFF;"><%=tab.getValue()%> (<%=nbResults%>)</span>
+                            &nbsp;
+                        </a></td>
+
+                    </logic:iterate>
+                </tr>
+            </table>
+        </td>
     </tr>
+
 
     <%-- Draw body --%>
     <tr>

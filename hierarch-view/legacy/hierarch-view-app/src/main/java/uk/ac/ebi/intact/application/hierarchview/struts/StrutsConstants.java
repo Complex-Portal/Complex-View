@@ -25,6 +25,10 @@ public final class StrutsConstants {
 
     public static final String GRAPH2MIF_PROPERTY_FILE = "/config/graph2mif.properties";
 
+    // ******************************************************** cytoscape webstart file
+
+    public static final String CYTOSCAPE_WEBSTART_FILE = "/webstart/cy1.jnlp";
+
     // ********************************************************* session keys
 
     public static final String HOST = "intact.hierarchview.host";

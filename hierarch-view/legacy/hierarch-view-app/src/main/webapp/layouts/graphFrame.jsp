@@ -31,25 +31,25 @@ Save current context (before the HTML header)
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/layouts/styles/intact.css"/>
     </head>
 
-    <body bgcolor="#FFFFFF" topmargin="0" leftmargin="0">
+    <body>
 
-    <table border="1" cellpadding="3" cellspacing="0" width="100%" height="100%">
+        <table border="1" cellpadding="3" cellspacing="0" width="100%" height="100%">
 
-        <tr>
-            <td width="60%" valign="top">
-                <!-- Top Left cell: displays the interaction network title -->
-                <tiles:insert definition="hierarchView.graphTitle.layout" ignore="true"/>
-            </td>
-        </tr>
+            <tr>
+                <td width="100%" height="10%" valign="top">
+                    <!-- Top Left cell: displays the interaction network title -->
+                    <tiles:insert definition="hierarchView.graphTitle.layout" ignore="true"/>
+                </td>
+            </tr>
 
-        <tr>
-            <td width="40%" valign="top">
-                <!-- Bottom Left cell: displays the interaction network -->
-                <tiles:insert definition="hierarchView.graph.layout" ignore="true"/>
-            </td>
-        </tr>
+            <tr>
+                <td width="100%" height="90%" valign="top">
+                    <!-- Bottom Left cell: displays the interaction network -->
+                    <tiles:insert definition="hierarchView.graph.layout" ignore="true"/>
+                </td>
+            </tr>
 
-    </table>
+        </table>
 
     </body>
 </html:html>

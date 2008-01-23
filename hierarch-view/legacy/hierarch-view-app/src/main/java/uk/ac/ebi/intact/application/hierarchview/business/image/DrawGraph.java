@@ -8,6 +8,8 @@ package uk.ac.ebi.intact.application.hierarchview.business.image;
 
 // intact
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.EdgeAttributes;
@@ -31,6 +33,7 @@ import java.util.Properties;
 
 public class DrawGraph {
 
+    private static final Log logger = LogFactory.getLog( DrawGraph.class );
 
     /**
      * ******* CONSTANTS ***********
@@ -149,6 +152,7 @@ public class DrawGraph {
 
     // stores the nodes of the path found by MiNe
     private String minePath = null;
+
 
     static {
         Properties properties = IntactUserI.GRAPH_PROPERTIES;
@@ -270,7 +274,7 @@ public class DrawGraph {
     /**
      * Constructor
      */
-    public DrawGraph( Network in, String applicationPath, String minePath ) {
+    public DrawGraph( IntactUserI user, Network in, String applicationPath, String minePath ) {
         graph = in;
         centralNodes = in.getCentralNodes();
         this.minePath = minePath;
@@ -285,8 +289,15 @@ public class DrawGraph {
 
         ImageDimension dimension = in.getImageDimension();
 
+        Dimension windowDimension = user.getWindowDimension();
+        if ( windowDimension != null ) {
+            imageLength = new Double( windowDimension.getWidth()*0.55 ).intValue();
+            imageHeight = new Double( windowDimension.getHeight()*0.72 ).intValue();
+        }
+
         dimensionRateX = dimension.length() / imageLength;
         dimensionRateY = dimension.height() / imageHeight;
+
         imageSizex = imageLength + borderSize * 2;
         imageSizey = imageHeight + borderSize * 2;
     }
@@ -343,8 +354,6 @@ public class DrawGraph {
                 attributes.put( Constants.ATTRIBUTE_LENGTH, length );
                 attributes.put( Constants.ATTRIBUTE_HEIGHT, height );
 
-                // update the image dimension according to the protein label
-                // size
                 dimension.adjustCadre( length * dimensionRateX, height * dimensionRateY, proteinX, proteinY );
             }
         } //  for
