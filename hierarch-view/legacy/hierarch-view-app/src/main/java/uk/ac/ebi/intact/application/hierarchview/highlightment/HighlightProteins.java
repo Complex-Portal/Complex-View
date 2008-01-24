@@ -50,7 +50,7 @@ public class HighlightProteins {
         in.initEdges();
 
         // Search the protein to highlight
-        Collection<Node> proteinsToHighlight = source.proteinToHightlight( session, in );
+        Collection<Node> proteinsToHighlight = source.proteinToHightlight( in );
 
         // Check if the protein selected is in the selected tab
         IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );

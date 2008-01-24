@@ -39,8 +39,7 @@
                 <display:column property="directHighlightUrl" title="Show" width="8%" align="center"/>
                 <display:column property="count" title="Count" width="9%" align="center"/>
                 <display:column property="id" title="ID" width="20%" align="left"/>
-                <display:setProperty name="basic.msg.empty_list"
-                                     value="No source available for that interaction network"/>
+                <display:setProperty name="basic.msg.empty_list" value="No source available for that interaction network"/>
             </display:table>
 
         </td>

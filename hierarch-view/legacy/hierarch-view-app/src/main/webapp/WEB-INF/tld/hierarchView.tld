@@ -28,16 +28,6 @@
 
 
     <tag>
-        <name>displayHighlightOptions</name>
-        <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.DisplayHighlightOptions</tag-class>
-        <body-content>empty</body-content>
-        <description>
-            Include HTML code to Displays current highlight source options.
-        </description>
-    </tag>
-
-
-    <tag>
         <name>displaySource</name>
         <tag-class>uk.ac.ebi.intact.application.hierarchview.struts.taglibs.DisplaySourceTag</tag-class>
         <body-content>empty</body-content>

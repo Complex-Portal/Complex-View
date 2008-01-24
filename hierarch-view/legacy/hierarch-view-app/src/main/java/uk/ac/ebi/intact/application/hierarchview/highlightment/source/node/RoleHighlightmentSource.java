@@ -23,10 +23,8 @@ import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Node;
 
-import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -41,9 +39,6 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
 
     private static final Log logger = LogFactory.getLog( RoleHighlightmentSource.class );
 
-    private static final String ATTRIBUTE_OPTION_CHILDREN = "CHILDREN";
-    private static final String PROMPT_OPTION_CHILDREN = "With children of the selected Role term";
-
     private static final Pattern MI_REF_PATTERN = Pattern.compile( "MI:[0-9]{4}" );
 
     private static final String EXPERMIENTAL_ROLE = "Experimental";
@@ -55,8 +50,16 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
      */
     public static final String SOURCE_KEY;
 
+    /**
+     * The class for this source 'role'
+     */
     static final String SOURCE_CLASS;
+
     private static final String MIRefPath;
+
+    private static HashMap<String, CrossReference> roleRefMap;
+
+    private static Map<String, Set<String>> roleNodeMap;
 
 
     static {
@@ -106,100 +109,76 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
         }
     }
 
-    /**
-     * Return the html code for specific options of the source to integrate int
-     * the highlighting form. if the method return null, the source hasn't
-     * options.
-     *
-     * @return the html code for specific options of the source.
-     */
-    public String getHtmlCodeOption( HttpSession aSession ) {
-        String htmlCode;
-        String userKey = uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY;
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( userKey );
-        String check = ( String ) user.getHighlightOption( ATTRIBUTE_OPTION_CHILDREN );
-
-        if ( check == null ) {
-            check = "";
+    public static void addToSourceMap( String termId, CrossReference termObject ) {
+        if ( roleRefMap == null ) {
+            roleRefMap = new HashMap<String, CrossReference>();
         }
-
-        htmlCode = "<input type=\"checkbox\" name=\""
-                   + ATTRIBUTE_OPTION_CHILDREN + "\" " + check
-                   + " value=\"checked\">" + PROMPT_OPTION_CHILDREN;
-
-        return htmlCode;
+        roleRefMap.put( termId,  termObject );
     }
 
-    /**
-     * Returns a collection of proteins to be highlighted in the graph.
-     *
-     * @param network       the network
-     * @param selectedTerms the selected Terms
-     * @return
-     */
-    public Collection<Node> proteinToHighlightSourceMap( Network network, Collection<String> selectedTerms ) {
-
-        Collection<Node> nodeList = new ArrayList( 20 ); // should be enough for 90% cases
-
-        // retrieve the set of proteins to highlight for the source key (e.g. MoleculeType) and the selected MoleculeType Terms
-        Set<Node> proteinsToHighlight = null;
-        if ( selectedTerms != null ) {
-            for ( String selectedGOTerm : selectedTerms ) {
-                proteinsToHighlight = network.getNodesForHighlight( SOURCE_KEY, selectedGOTerm );
-                // if we found any proteins we add all of them to the collection
-                if ( proteinsToHighlight != null ) {
-                    nodeList.addAll( proteinsToHighlight );
-                }
-            }
+    public static void addToNodeMap( String termId, Node node ) {
+        if ( roleNodeMap == null ) {
+            roleNodeMap = new Hashtable<String, Set<String>>();
         }
 
-        return nodeList;
+        // the nodes realted to the given sourceID are fetched
+        Set<String> sourceNodes = roleNodeMap.get( termId );
+
+        // if no set exists a new one is created and put into the sourceMap
+        if ( sourceNodes == null ) {
+            // a hashset is used to avoid duplicate entries
+            sourceNodes = new HashSet<String>();
+            roleNodeMap.put( termId, sourceNodes );
+        }
+        sourceNodes.add( node.getId() );
     }
 
+    public Map<String, Set<String>> getNodeMap() {
+        return roleNodeMap;
+    }
 
     public List getSourceUrls( Network network,
                                Collection<String> selectedSourceTerms,
                                String applicationPath ) {
 
-        List<SourceBean> urls = new ArrayList();
-
-        // filter to keep only Role terms
-        if ( network.isNodeHighlightMapEmpty() ) {
+        if ( roleNodeMap == null || roleNodeMap.isEmpty() ) {
             network.initHighlightMap();
         }
 
-        Map highlightRoleMap = ( Map ) network.getNodeHighlightMap().get( SOURCE_KEY );
+        List<SourceBean> urls = new ArrayList();
 
-        if ( highlightRoleMap != null && !highlightRoleMap.isEmpty() ) {
-            Set<String> keySet = highlightRoleMap.keySet();
+        if ( roleNodeMap != null && !roleNodeMap.isEmpty() ) {
+            Set<String> keySet = roleNodeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
                 Set<String> cloneKeySet = new HashSet();
                 cloneKeySet.addAll( keySet );
                 keySet = cloneKeySet;
-                
+
                 for ( String termId : keySet ) {
                     String termType = SOURCE_KEY;
-                    CrossReference xref = network.getCrossReferenceById( termId );
                     String termDescription = null;
+
                     if ( termId.startsWith( "E" ) ) {
                         termDescription = EXPERMIENTAL_ROLE + " Role: ";
                     }
                     if ( termId.startsWith( "B" ) ) {
                         termDescription = BIOLOGICAL_ROLE + " Role: ";
                     }
+                    if ( roleRefMap != null ) {
+                        CrossReference xref = roleRefMap.get( termId );
 
-                    if ( xref != null ) {
-
-                        if ( xref.hasText() ) {
+                        if ( xref != null && xref.hasText() ) {
                             if ( termDescription == null ) {
                                 termDescription = xref.getText();
                             } else {
                                 termDescription += xref.getText();
+
                             }
                         }
                     }
-                    int termCount = network.getDatabaseTermCount( termType, termId );
+
+                    int termCount = roleNodeMap.get(termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() )

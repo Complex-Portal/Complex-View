@@ -129,7 +129,6 @@ public final class SearchAction extends IntactBaseAction {
             updateInteractionNetwork( user, action );
             produceImage( user );
 
-
             if ( !isErrorsEmpty() ) {
                 // Report any errors we have discovered during the interaction network producing
                 saveErrors( request );

@@ -57,7 +57,7 @@ public class HighlightInteractions {
         in.initNodes();
 
         // Search the interactions to highlight
-        Collection<Edge> interactionsToHighlight = source.interactionToHightlight( session, in );
+        Collection<Edge> interactionsToHighlight = source.interactionToHightlight( in );
 
         // Check if the interaction selected is in the selected tab
         IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );

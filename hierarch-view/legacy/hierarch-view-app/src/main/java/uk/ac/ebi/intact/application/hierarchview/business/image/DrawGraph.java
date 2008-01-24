@@ -322,7 +322,7 @@ public class DrawGraph {
         // update the image dimension according to the proteins coordinates and
         // their size's label
         for ( Node node : graph.getNodes() ) {
-            NodeAttributes attributes = in.getNodeAttributes( node );
+            NodeAttributes attributes = in.getNodeAttributes( node.getId() );
 
             if ( attributes.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
                 // get the protein label
@@ -418,7 +418,7 @@ public class DrawGraph {
 
         String proteinLabel = node.getLabel();
 
-        NodeAttributes attributes = graph.getNodeAttributes( node );
+        NodeAttributes attributes = graph.getNodeAttributes( node.getId() );
         float proteinLength = ( Float ) attributes.get( Constants.ATTRIBUTE_LENGTH );
         float proteinHeight = ( Float ) attributes.get( Constants.ATTRIBUTE_HEIGHT );
         float proteinX = ( Float ) attributes.get( Constants.ATTRIBUTE_COORDINATE_X );
@@ -481,13 +481,13 @@ public class DrawGraph {
 
         // proteinRight
         proteinR = edge.getNodeA();
-        NodeAttributes attributesA = graph.getNodeAttributes( proteinR );
+        NodeAttributes attributesA = graph.getNodeAttributes( proteinR.getId() );
         proteinRx = ( Float ) attributesA.get( Constants.ATTRIBUTE_COORDINATE_X );
         proteinRy = ( Float ) attributesA.get( Constants.ATTRIBUTE_COORDINATE_Y );
 
         // proteinLeft
         proteinL = edge.getNodeB();
-        NodeAttributes attributesB = graph.getNodeAttributes( proteinL );
+        NodeAttributes attributesB = graph.getNodeAttributes( proteinL.getId() );
         proteinLx = ( Float ) attributesB.get( Constants.ATTRIBUTE_COORDINATE_X );
         proteinLy = ( Float ) attributesB.get( Constants.ATTRIBUTE_COORDINATE_Y );
 
@@ -570,9 +570,9 @@ public class DrawGraph {
         for ( Edge edge : graph.getEdges() ) {
 
             proteinR = edge.getNodeA();
-            NodeAttributes attributesA = graph.getNodeAttributes( proteinR );
+            NodeAttributes attributesA = graph.getNodeAttributes( proteinR.getId() );
             proteinL = edge.getNodeB();
-            NodeAttributes attributesB = graph.getNodeAttributes( proteinL );
+            NodeAttributes attributesB = graph.getNodeAttributes( proteinL.getId() );
 
             // draw edge only if both nodes are visible
             if ( attributesA.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE
@@ -593,7 +593,7 @@ public class DrawGraph {
         // if the current node is a central protein it is not drawn now
         // so that the central proteins are at the top layer of the image
         for ( Node node : graph.getNodes() ) {
-            NodeAttributes attributes = graph.getNodeAttributes( node );
+            NodeAttributes attributes = graph.getNodeAttributes( node.getId() );
             // if the current node is not a central protein
             if ( !centralNodes.contains( node ) ) {
                 // if the current node is visible
@@ -616,7 +616,7 @@ public class DrawGraph {
 
             // to avoid drawing the node : uncomment the following line
             // currentNode.put( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );
-            NodeAttributes attributes = graph.getNodeAttributes( currentNode );
+            NodeAttributes attributes = graph.getNodeAttributes( currentNode.getId() );
             if ( attributes.get( Constants.ATTRIBUTE_VISIBLE ) == Boolean.TRUE ) {
                 drawNode( currentNode, g, boldFontLabel );
             }

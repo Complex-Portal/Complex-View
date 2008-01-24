@@ -25,7 +25,6 @@ import uk.ac.ebi.intact.service.graph.Node;
 import javax.servlet.http.HttpSessionBindingEvent;
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  * This class stores information about an Intact Web user session. <br>
@@ -361,7 +360,7 @@ public class IntactUser implements IntactUserI {
             if ( addFullContext && ( network != null ) ) {
                 StringBuffer buffer = new StringBuffer( 64 );
 
-                List<Node> interactors = network.getNodes();
+                Collection<Node> interactors = network.getNodes();
 
                 for ( Node interactor : interactors ) {
                     String interactorAc = interactor.getId();

@@ -10,7 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.EdgeAttributes;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.NodeAttributes;
 import uk.ac.ebi.intact.application.hierarchview.business.image.Utilities;
 import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.Node;
@@ -62,17 +64,28 @@ public class ColorHighlightmentBehaviour extends HighlightmentBehaviour {
      *
      * @param aObject the object on which we want to apply the behaviour
      */
-    public void applyBehaviour( Object aObject, Network aGraph ) {
-
+    public void applyBehaviour( Object aObject, Network network ) {
+        
         if ( Node.class.isInstance( aObject ) ) {
-            aGraph.getNodeAttributes( ( Node ) aObject ).put( Constants.ATTRIBUTE_COLOR_NODE, COLOR_HIGHLIGHTING );
-            aGraph.getNodeAttributes( ( Node ) aObject ).put( Constants.ATTRIBUTE_COLOR_LABEL, COLOR_HIGHLIGHTING );
-            logger.info( "Protein (" + aObject + ") receives this behaviour : " + Constants.ATTRIBUTE_COLOR_LABEL + "-" + COLOR_HIGHLIGHTING );
+            Node node = (Node) aObject;
+            NodeAttributes attributes = network.getNodeAttributes( node.getId()  );
+            if (attributes != null){
+                attributes.put( Constants.ATTRIBUTE_COLOR_NODE, COLOR_HIGHLIGHTING );
+                attributes.put( Constants.ATTRIBUTE_COLOR_LABEL, COLOR_HIGHLIGHTING );
+                logger.info( "Protein (" + node.getLabel() + ") receives this behaviour : " + Constants.ATTRIBUTE_COLOR_LABEL + "-" + COLOR_HIGHLIGHTING );
+            } else {
+                logger.warn("Could not found NodeAttributes for " + node.getId());
+            }
         }
 
         if ( Edge.class.isInstance( aObject ) ) {
-            aGraph.getEdgeAttributes( ( Edge ) aObject ).put( Constants.ATTRIBUTE_COLOR_EDGE, COLOR_HIGHLIGHTING );
-            logger.info( "Interaction (" + aObject + ") receives this behaviour : " + Constants.ATTRIBUTE_COLOR_EDGE + "-" + COLOR_HIGHLIGHTING );
+            EdgeAttributes attributes = network.getEdgeAttributes( ( Edge ) aObject );
+            if (attributes != null){
+                attributes.put( Constants.ATTRIBUTE_COLOR_EDGE, COLOR_HIGHLIGHTING );
+                logger.info( "Interaction (" + aObject + ") receives this behaviour : " + Constants.ATTRIBUTE_COLOR_EDGE + "-" + COLOR_HIGHLIGHTING );
+            } else {
+                logger.warn("Could not found EdgeAttributes for " + ((Edge)aObject).getId());
+            }
         }
     }
 }

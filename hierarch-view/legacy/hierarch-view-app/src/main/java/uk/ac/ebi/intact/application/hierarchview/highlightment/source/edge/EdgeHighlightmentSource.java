@@ -30,7 +30,6 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.util.SearchReplace;
 
-import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -129,17 +128,7 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
 
     }
 
-    /**
-     * Return the html code for specific options of the source to be integrated
-     * in the highlighting form.
-     * if the method return null, the source hasn't options.
-     *
-     * @param aSession the current session.
-     * @return the html code for specific options of the source.
-     */
-    public String getHtmlCodeOption( HttpSession aSession ){
-        return "a HTML code";    
-    }
+    public abstract Map<String, Set<String>> getEdgeMap();
 
     /**
      * Returns a collection of proteins to be highlighted in the graph.
@@ -147,12 +136,9 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
      * Method is called when the graph was built by the mine database table.
      *
      * @param network       the network
-     * @param selectedTerms the selected Terms
      * @return
      */
-    public abstract Collection<Edge> edgeToHighlightSourceMap( Network network, Collection<String> selectedTerms );
-
-    public Collection<Edge> interactionToHightlight( HttpSession session, Network network ) {
+    public Collection<Edge> interactionToHightlight( Network network ) {
 
         IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
         Collection<String> selectedTerms = user.getSelectedKeys();
@@ -161,11 +147,22 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
             logger.debug( "Get Edges for Source(s): " + selectedTerms );
         }
 
-        if ( network.isEdgeHighlightMapEmpty() ) {
-            network.initHighlightMap();
+        Collection<Edge> edgeList = new ArrayList( 20 ); // should be enough for 90% cases
+
+        // retrieve the set of proteins to highlight for the source key (e.g. GO) and the selected GO Terms
+        Set<Edge> edgesToHighlight = null;
+        if ( selectedTerms != null ) {
+            for ( String selectedTerm : selectedTerms ) {
+                Set<String> edgeIdsToHighlight = getEdgeMap().get( selectedTerm );
+                edgesToHighlight = network.getEdgesByIds( edgeIdsToHighlight );
+                // if we found any proteins we add all of them to the collection
+                if ( edgesToHighlight != null ) {
+                    edgeList.addAll( edgesToHighlight );
+                }
+            }
         }
 
-        return edgeToHighlightSourceMap( network, selectedTerms );
+        return edgeList;
     }
 
     /**
@@ -181,7 +178,6 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
     abstract public List<SourceBean> getSourceUrls( Network network,
                                                     Collection<String> selectedXRefs,
                                                     String applicationPath );
-
 
     /**
      * Parse the set of key generate by the source and give back a collection of keys.
@@ -228,22 +224,6 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
         return directHighlightUrl;
     }
 
-    String getHierarchViewUrl( String randomParam, String applicationPath ) {
-
-        String directHighlightUrl = applicationPath
-                                    + "/source.do?keys=${selected-children}&clicked=${id}&type=${type}"
-                                    + randomParam;
-        String hierarchViewURL = null;
-
-        try {
-            hierarchViewURL = URLEncoder.encode( directHighlightUrl, "UTF-8" );
-        }
-        catch ( UnsupportedEncodingException e ) {
-            logger.error( e );
-        }
-        return hierarchViewURL;
-    }
-
     String getDirectHighlightUrl( String applicationPath, String termId, Collection<String> selectedTermIds, String termType, String randomParam ) {
 
         String directHighlightUrl = applicationPath
@@ -275,5 +255,21 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
             logger.debug( "direct highlight URL (modified): " + directHighlightUrl );
 
         return directHighlightUrl;
+    }
+
+    String getHierarchViewUrl( String randomParam, String applicationPath ) {
+
+        String directHighlightUrl = applicationPath
+                                    + "/source.do?keys=${selected-children}&clicked=${id}&type=${type}"
+                                    + randomParam;
+        String hierarchViewURL = null;
+
+        try {
+            hierarchViewURL = URLEncoder.encode( directHighlightUrl, "UTF-8" );
+        }
+        catch ( UnsupportedEncodingException e ) {
+            logger.error( e );
+        }
+        return hierarchViewURL;
     }
 } // EdgeHighlightmentSource

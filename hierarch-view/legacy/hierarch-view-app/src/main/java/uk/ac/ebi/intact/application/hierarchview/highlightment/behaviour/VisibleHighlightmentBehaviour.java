@@ -13,7 +13,6 @@ import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.Node;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Behaviour allowing to display only highlighted protein and hide all others.
@@ -41,7 +40,7 @@ public class VisibleHighlightmentBehaviour extends HighlightmentBehaviour {
             Class objectClass = objects.iterator().next().getClass();
             if ( objectClass.isAssignableFrom( Node.class ) ) {
                 /* Get the list of proteins in the current Network */
-                List<Node> listAllProteins = aGraph.getNodes();
+                Collection<Node> listAllProteins = aGraph.getNodes();
                 /* Make a clone of the list */
                 Collection newList = listAllProteins;
                 /* Remove all proteins of the collection "proteins" */
@@ -75,7 +74,7 @@ public class VisibleHighlightmentBehaviour extends HighlightmentBehaviour {
     public void applyBehaviour( Object aObject, Network aGraph ) {
 
         if ( Node.class.isInstance( aObject ) ) {
-            aGraph.getNodeAttributes( ( Node ) aObject ).put( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );
+            aGraph.getNodeAttributes( (( Node ) aObject).getId() ).put( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );
         }
         if ( Edge.class.isInstance( aObject ) ) {
             aGraph.getEdgeAttributes( ( Edge ) aObject ).put( Constants.ATTRIBUTE_VISIBLE, Boolean.FALSE );

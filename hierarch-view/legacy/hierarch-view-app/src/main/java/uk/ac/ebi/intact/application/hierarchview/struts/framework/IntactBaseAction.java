@@ -27,6 +27,7 @@ import uk.ac.ebi.intact.util.Chrono;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.rmi.RemoteException;
+import java.util.EmptyStackException;
 
 /**
  * Super class for all hierarchview related action classes.
@@ -297,8 +298,7 @@ public abstract class IntactBaseAction extends Action {
                 }
                 return;
             }
-        }
-        catch ( RemoteException e ) {
+        } catch ( RemoteException e ) {
             addError( "error.webService", e.getMessage() );
             logger.error( e.getMessage(), e );
             return;
@@ -430,7 +430,7 @@ public abstract class IntactBaseAction extends Action {
                         } else {
                             addMessage( "warning.max.interactions.reached", Integer.toString( HVNetworkBuilder.getMaxInteractions() ) );
                         }
-                        user.setErrorMessage( "Sorry, but to much Interactions found!" );
+                        user.setErrorMessage( "Sorry, too many interactions were found! Refine your query." );
                         return; // stop there!
                     }
 
@@ -440,8 +440,8 @@ public abstract class IntactBaseAction extends Action {
                     try {
                         if ( user.getNetworkUpdateOption() == StrutsConstants.EXPAND_NETWORK ) {
                             in = builder.expandBinaryGraphNetwork( in );
-                            in.increaseDepth();
                             user.pushNetwork( in );
+                            in.increaseDepth();
                             if ( logger.isDebugEnabled() ) {
                                 logger.debug( "Expand current Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
                                 logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
@@ -450,9 +450,11 @@ public abstract class IntactBaseAction extends Action {
                             if ( user.getNetworkUpdateOption() == StrutsConstants.CONTRACT_NETWORK ) {
                                 logger.info( "Current Depth: " + in.getCurrentDepth() );
                                 if ( in.getCurrentDepth() > 1 ) {
-                                    in = user.popNetwork();
-//                                    in = user.popNetwork();
-                                    //in.decreaseDepth();
+                                    try {
+                                        in = user.popNetwork();
+                                    } catch ( EmptyStackException e){
+                                        logger.warn("Could not decrease network");
+                                    }
                                     if ( logger.isDebugEnabled() ) {
                                         logger.debug( "Decrease Network to " + in.getBinaryInteraction().size() + " BinaryInteractions." );
                                         logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
@@ -485,7 +487,7 @@ public abstract class IntactBaseAction extends Action {
                         } else {
                             addMessage( "warning.max.interactions.reached", Integer.toString( HVNetworkBuilder.getMaxInteractions() ) );
                         }
-                        user.setErrorMessage( "Sorry, but to much Interactions found!" );
+                        user.setErrorMessage( "Sorry, too many interactions were found! Refine your query." );
                         return;
                     }
 

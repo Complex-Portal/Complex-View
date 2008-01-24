@@ -130,23 +130,12 @@ public class DisplayGraphTitle extends TagSupport {
                 longQuery += "</strong>" ;
 
                 if ( centralNodes.size() > max ) {
-                    shortQuery+= "[ ... ]";
-//                    String cmd = "var  w=window.open('" + user.getApplicationPath() + "/pages/queryWindow.jsp', " +
-//                                                    "'DisplayQuery', " +
-//                                                    "'width=1000,height=200,resizable=yes,scrollbars=yes'); " +
-//                                      "w.focus();";
 
-//                    queryToDisplay.append( "<a href=\"javascript:" );
-//                    queryToDisplay.append( cmd );
-//                    queryToDisplay.append( "\" > [ EXPAND ] </a>" );
-
-//                    String cmd =
-//                            "<form name=\"Test\" action=\"\">" +
-//                                "<input type=\"text\" name=\"Ausgabe\" size=\"30\" readonly=\"readonly\"><br>" +
-//                                "<input type=\"button\" value=\"EXPAND\" onclick=\"this.form.Ausgabe.value = '" + longQuery + "'\">" +
-//                            "</form>";
-//                    System.err.println( "cmd: " + cmd );
-
+                    String cmd = "var  w=window.open('" + user.getApplicationPath() + "/pages/queryWindow.jsp', " +
+                                                    "'DisplayQuery', " +
+                                                    "'width=1000,height=200,resizable=yes,scrollbars=yes'); " +
+                                      "w.focus();";
+                    shortQuery += "<a href=\"javascript:" + cmd + "\" > [ ... ] </a>";
                 }
                 session.setAttribute( "queryToDisplay", shortQuery );
                 session.setAttribute( "additionalQueryToDisplay", longQuery );

@@ -8,10 +8,8 @@ import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Node;
 
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -24,9 +22,6 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
 
     private static final Log logger = LogFactory.getLog( GoHighlightmentSource.class );
 
-    private static final String ATTRIBUTE_OPTION_CHILDREN = "CHILDREN";
-    private static final String PROMPT_OPTION_CHILDREN = "With children of the selected GO term";
-
     /**
      * The key for this source 'go'
      */
@@ -37,8 +32,11 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
      */
     static final String SOURCE_CLASS;
 
-    private static final String path;
+    private static final String goPath;
 
+    private static Map<String, CrossReference> goRefMap;
+
+    private static Map <String, Set<String>> goNodeMap;
 
     static {
 
@@ -63,11 +61,11 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
             throw new IntactException( msg );
         }
 
-        path = props.getProperty( "highlightment.source.node.GO.applicationPath" );
+        goPath = props.getProperty( "highlightment.source.node.GO.applicationPath" );
 
-        if ( null == path ) {
+        if ( null == goPath ) {
             String msg = "Unable to find the interpro hostname. "
-                         + "Check the 'highlightment.source.node.GO.path' property in the '"
+                         + "Check the 'highlightment.source.node.GO.goPath' property in the '"
                          + StrutsConstants.HIGHLIGHTING_PROPERTY_FILE
                          + "' properties file";
             logger.error( msg );
@@ -86,69 +84,46 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
         }
     }
 
-    /**
-     * Return the html code for specific options of the source to integrate int
-     * the highlighting form. if the method return null, the source hasn't
-     * options.
-     *
-     * @return the html code for specific options of the source.
-     */
-    public String getHtmlCodeOption( HttpSession aSession ) {
-        String htmlCode;
-        String userKey = uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY;
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( userKey );
-        String check = ( String ) user.getHighlightOption( ATTRIBUTE_OPTION_CHILDREN );
-
-        if ( check == null ) {
-            check = "";
+    public static void addToSourceMap( String termId, CrossReference termObject ) {
+        if ( goRefMap == null ) {
+            goRefMap = new HashMap<String, CrossReference>();
         }
-
-        htmlCode = "<input type=\"checkbox\" name=\""
-                   + ATTRIBUTE_OPTION_CHILDREN + "\" " + check
-                   + " value=\"checked\">" + PROMPT_OPTION_CHILDREN;
-
-        return htmlCode;
+        goRefMap.put( termId, termObject );
     }
 
-    /**
-     * Returns a collection of proteins to be highlighted in the graph.
-     *
-     * @param network         the network
-     * @param selectedGOTerms the selected GO Terms
-     * @return
-     */
-    public Collection<Node> proteinToHighlightSourceMap( Network network, Collection<String> selectedGOTerms ) {
-
-        Collection<Node> nodeList = new ArrayList( 20 ); // should be enough for 90% cases
-
-        // retrieve the set of proteins to highlight for the source key (e.g. GO) and the selected GO Terms
-        Set<Node> proteinsToHighlight = null;
-        if ( selectedGOTerms != null ) {
-            for ( String selectedGOTerm : selectedGOTerms ) {
-                proteinsToHighlight = network.getNodesForHighlight( SOURCE_KEY, selectedGOTerm );
-                // if we found any proteins we add all of them to the collection
-                if ( proteinsToHighlight != null ) {
-                    nodeList.addAll( proteinsToHighlight );
-                }
-            }
+    public static void addToNodeMap( String termId, Node node ) {
+        if ( goNodeMap == null ) {
+            goNodeMap = new Hashtable();
         }
 
-        return nodeList;
+        // the nodes realted to the given sourceID are fetched
+        Set<String> sourceNodes = goNodeMap.get( termId );
+
+        // if no set exists a new one is created and put into the sourceMap
+        if ( sourceNodes == null ) {
+            // a hashset is used to avoid duplicate entries
+            sourceNodes = new HashSet<String>();
+            goNodeMap.put( termId, sourceNodes );
+        }
+        sourceNodes.add( node.getId() );
+    }
+
+    public Map<String, Set<String>> getNodeMap() {
+        return goNodeMap;
     }
 
     public List<SourceBean> getSourceUrls( Network network,
                                            Collection<String> selectedSourceTerms,
                                            String applicationPath ) {
 
-        List<SourceBean> urls = new ArrayList<SourceBean>();
-
-        if ( network.isNodeHighlightMapEmpty() ) {
+        if ( goNodeMap == null || goNodeMap.isEmpty() ) {
             network.initHighlightMap();
         }
-        Map highlightGOMap = ( Map ) network.getNodeHighlightMap().get( SOURCE_KEY );
 
-        if ( highlightGOMap != null && !highlightGOMap.isEmpty() ) {
-            Set<String> keySet = highlightGOMap.keySet();
+        List<SourceBean> urls = new ArrayList<SourceBean>();
+
+        if ( goNodeMap != null && !goNodeMap.isEmpty() ) {
+            Set<String> keySet = goNodeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
                 // Cloning the current KeySet, because map could mixed up if user is to fast
@@ -159,19 +134,21 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
                 for ( String termInfo : keySet ) {
 
                     String termType = SOURCE_KEY;
-
-                    CrossReference xref = network.getCrossReferenceById( termInfo );
                     String termId = termInfo;
                     String termDescription = null;
-                    if ( xref != null ) {
-                        termId = xref.getIdentifier();
 
-                        if ( xref.hasText() ) {
-                            termDescription = xref.getText();
+                    if ( goRefMap != null ) {
+                        CrossReference xref = goRefMap.get( termInfo );
+                        if ( xref != null ) {
+                            termId = xref.getIdentifier();
+
+                            if ( xref.hasText() ) {
+                                termDescription = xref.getText();
+                            }
                         }
                     }
 
-                    int termCount = network.getDatabaseTermCount( termType, termInfo );
+                    int termCount = goNodeMap.get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() ) {
@@ -188,8 +165,8 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
                     String randomParam = "&now=" + System.currentTimeMillis();
                     String directHighlightUrl = null;
                     String hierarchViewUrl = getHierarchViewUrl( randomParam, applicationPath );
-                    String quickGoUrl = path + "/DisplayGoTerm?id=" + termId + "&format=contentonly";
-                    String quickGoGraphUrl = path + "/DisplayGoTerm?selected="
+                    String quickGoUrl = goPath + "/DisplayGoTerm?id=" + termId + "&format=contentonly";
+                    String quickGoGraphUrl = goPath + "/DisplayGoTerm?selected="
                                              + termId + "&intact=true&format=contentonly&url="
                                              + hierarchViewUrl + "&frame=_top";
 

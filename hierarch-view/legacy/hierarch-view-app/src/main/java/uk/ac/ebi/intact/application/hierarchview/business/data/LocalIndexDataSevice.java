@@ -78,7 +78,6 @@ public class LocalIndexDataSevice implements DataService {
         }         
 
         try {
-
             IntActSearchEngine searchEngine = new IntActSearchEngine( localIndexPath );
             this.searchResult = Searcher.search( query, searchEngine );
             

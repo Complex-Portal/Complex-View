@@ -15,9 +15,7 @@
  */
 package uk.ac.ebi.intact.application.hierarchview.business.graph;
 
-import psidev.psi.mi.tab.model.Author;
 import psidev.psi.mi.tab.model.BinaryInteraction;
-import psidev.psi.mi.tab.model.Confidence;
 import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageDimension;
 import uk.ac.ebi.intact.service.graph.Edge;
@@ -27,7 +25,6 @@ import uk.ac.ebi.intact.service.graph.Node;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -41,21 +38,13 @@ public interface Network {
 
     void increaseDepth();
 
-//    void decreaseDepth();
-
     int getCurrentDepth();
 
     void setDepth( int i );
 
     void setDepthToDefault();
 
-    Author getAuthorByPMID( String pmid );
-
-    CrossReference getCrossReferenceById( String id );
-
-    Confidence getConfidenceByKey( String key );
-
-    NodeAttributes getNodeAttributes( Node node );
+    NodeAttributes getNodeAttributes( String nodeId );
 
     EdgeAttributes getEdgeAttributes( Edge edge );
 
@@ -63,27 +52,11 @@ public interface Network {
 
     GraphNetwork getGraphNetwork();
 
-    Map getNodeHighlightMap();
-
-    Map getEdgeHighlightMap();
-
     Collection<CrossReference> getProperties( Node node );
-
-    boolean isNodeHighlightMapEmpty();
-
-    boolean isEdgeHighlightMapEmpty();
 
     void initHighlightMap();
 
-    int getDatabaseTermCount( String source, String TermId );
-
-    Set<Node> getNodesForHighlight( String source, String sourceID );
-
-    Set<Edge> getEdgesForHighlight( String source, String sourceID );
-
     List<Node> getCentralNodes();
-
-//    List getCriteria();
 
     void initNodes();
 
@@ -99,5 +72,11 @@ public interface Network {
 
     Collection<Edge> getEdges();
 
-    List<Node> getNodes();
+    Collection<Node> getNodes();
+
+    Set<Node> getNodesByIds(Set<String> nodeIds);
+
+    Set<Edge> getEdgesByIds(Set<String> edgeIds);
+
+    void decreaseDepth();
 }

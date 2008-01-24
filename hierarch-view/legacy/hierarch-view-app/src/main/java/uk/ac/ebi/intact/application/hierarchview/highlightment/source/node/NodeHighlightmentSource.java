@@ -114,36 +114,28 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
 
     } // NodeHighlightmentSource
 
-    /**
-     * Return the html code for specific options of the source to be integrated
-     * in the highlighting form.
-     * if the method return null, the source hasn't options.
-     *
-     * @param aSession the current session.
-     * @return the html code for specific options of the source.
-     */
-    abstract public String getHtmlCodeOption( HttpSession aSession );
+//    /**
+//     * Return the html code for specific options of the source to be integrated
+//     * in the highlighting form.
+//     * if the method return null, the source hasn't options.
+//     *
+//     * @param aSession the current session.
+//     * @return the html code for specific options of the source.
+//     */
+//    abstract public String getHtmlCodeOption( HttpSession aSession );
 
-    /**
-     * Returns a collection of proteins to be highlighted in the graph.
-     *
-     * @param network       the network
-     * @param selectedTerms the selected Terms
-     * @return
-     */
-    abstract public Collection<Node> proteinToHighlightSourceMap( Network network, Collection<String> selectedTerms );
+    public abstract Map<String, Set<String>> getNodeMap();
 
     /**
      * Create a set of protein we must highlight in the graph given in
      * parameter. The protein selection is done according to the source keys
-     * stored in the IntactUser. Keys are Role terms, so we select (and highlight)
+     * stored in the IntactUser. Keys are for example GO terms, so we select (and highlight)
      * every protein which awned that Role term.
      *
-     * @param session the session where to find selected keys.
      * @param network the graph we want to highlight
      * @return a collection of node to highlight
      */
-    public Collection<Node> proteinToHightlight( HttpSession session, Network network ) {
+    public Collection<Node> proteinToHightlight( Network network ) {
 
         IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
         Collection<String> selectedTerms = user.getSelectedKeys();
@@ -152,13 +144,22 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
             logger.debug( "Get Nodes for Source(s): " + selectedTerms );
         }
 
-        if ( network.isNodeHighlightMapEmpty() ) {
-            network.initHighlightMap();
+        Collection<Node> nodeList = new ArrayList( 20 ); // should be enough for 90% cases
+
+        // retrieve the set of proteins to highlight for the source key (e.g. GO) and the selected GO Terms
+        Set<Node> proteinsToHighlight = null;
+        if ( selectedTerms != null ) {
+            for ( String selectedGOTerm : selectedTerms ) {
+                Set<String> nodeIdsToHighlight = getNodeMap().get( selectedGOTerm );
+                proteinsToHighlight = network.getNodesByIds( nodeIdsToHighlight );
+                // if we found any proteins we add all of them to the collection
+                if ( proteinsToHighlight != null ) {
+                    nodeList.addAll( proteinsToHighlight );
+                }
+            }
         }
-
-        return proteinToHighlightSourceMap( network, selectedTerms );
+        return nodeList;
     }
-
 
     /**
      * Allows to update the session object with options stored in the request.
@@ -176,7 +177,6 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
             user.addHighlightOption( ATTRIBUTE_OPTION_CHILDREN, result[0] );
     }
 
-
     /**
      * Return a collection of URL corresponding to the selected protein and source
      * eg. produce a list of MoleculeType terms if MoleculeType is the source.<br>
@@ -190,7 +190,6 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
     abstract public List getSourceUrls( Network network,
                                         Collection<String> selectedTerms,
                                         String applicationPath );
-
 
     /**
      * Parse the set of key generate by the source and give back a collection of keys.

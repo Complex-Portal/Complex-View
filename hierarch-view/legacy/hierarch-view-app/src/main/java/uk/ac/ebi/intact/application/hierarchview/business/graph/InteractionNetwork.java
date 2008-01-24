@@ -24,7 +24,6 @@ import uk.ac.ebi.intact.application.hierarchview.business.image.ImageDimension;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.ConfidenceHighlightmentSource;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.PublicationHighlightmentSource;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.*;
-import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.GraphNetwork;
 import uk.ac.ebi.intact.service.graph.Node;
@@ -58,19 +57,17 @@ public class InteractionNetwork implements Network {
      */
     private ImageDimension dimension = null;
 
-    private Collection<? extends Node> centralProteins;
+    private Collection<? extends Node> centralNodes;
 
     private BinaryGraphNetwork network;
 
-    private Map<Node, NodeAttributes> nodeAttributMap;
+    private Map<String, Node> nodeMap;
+
+    private HashMap<String, Edge> edgeMap;
+
+    private Map<String, NodeAttributes> nodeAttributMap;
 
     private Map<Edge, EdgeAttributes> edgeAttributMap;
-
-    private List<Node> nodeList;
-
-    private Map nodeHighlightMap;
-
-    private Map edgeHighlightMap;
 
     private static final int DEFAULT_DEPTH = 1;
 
@@ -78,49 +75,32 @@ public class InteractionNetwork implements Network {
 
     private Collection<BinaryInteraction> binaryInteractions;
 
-    private static final String GO = GoHighlightmentSource.SOURCE_KEY;
+    private static final String GO_KEY = GoHighlightmentSource.SOURCE_KEY;
 
-    private static final String INTERPRO = InterproHighlightmentSource.SOURCE_KEY;
-
-    private static final String ROLE = RoleHighlightmentSource.SOURCE_KEY;
-
-    private static final String CONFIDENCE = ConfidenceHighlightmentSource.SOURCE_KEY;
-
-    private static final String PUBLICATION = PublicationHighlightmentSource.SOURCE_KEY;
-
-    private static final String MOLECULE_TYPE = MoleculeTypeHighlightmentSource.SOURCE_KEY;
-
-    private static final String SPECIES = SpeciesHighlightmentSource.SOURCE_KEY;
+    private static final String INTERPRO_KEY = InterproHighlightmentSource.SOURCE_KEY;
 
     public static final String BOTH = "both";
 
-    /**
-     * Describe how the interaction network has been built, from which query
-     * strings and what is the associated target e.g. the [ShortLabel ABC] and
-     * [Xref DEF] That collection contains String[2] (0:queryString, 1:target)
-     */
-    private List<CriteriaBean> criteriaList;
-    private Map<String, CrossReference> referenceMap;
-    private Map<String, Confidence> confidenceMap;
-    private Map<String, Author> authorMap;
+    public InteractionNetwork( BinaryGraphNetwork network ) {
+        dimension = new ImageDimension();
 
-    public Author getAuthorByPMID( String pmid ) {
-        return authorMap.get( pmid );
+        this.network = network;
+        centralNodes = new ArrayList<Node>( network.getCentralNodes() );
+
+        initNodeAttributeMap();
+        initEdgeAttributeMap();
+
+        initNodes();
+        initEdges();
+
+        initHighlightMap();
+
+        setDepthToDefault();
+
+        binaryInteractions = network.getBinaryInteractions();
     }
 
-    public InteractionNetwork( BinaryGraphNetwork network ) {
-        this.network = network;
-        centralProteins = new ArrayList<Node>();
-
-        nodeAttributMap = new HashMap<Node, NodeAttributes>();
-        for ( Node node : network.getNodes() ) {
-            if ( !nodeAttributMap.containsKey( node ) ) {
-                NodeAttributes attribute = new NodeAttributes( node );
-                nodeAttributMap.put( node, attribute );
-                centralProteins = network.getCentralNodes();
-            }
-        }
-
+    private void initEdgeAttributeMap() {
         edgeAttributMap = new HashMap<Edge, EdgeAttributes>();
         for ( Edge edge : getEdges() ) {
             if ( !edgeAttributMap.containsKey( edge ) ) {
@@ -128,22 +108,16 @@ public class InteractionNetwork implements Network {
                 edgeAttributMap.put( edge, attribute );
             }
         }
+    }
 
-        nodeList = new ArrayList( network.getNodes() );
-
-        dimension = new ImageDimension();
-        criteriaList = new ArrayList();
-
-        // a hashtable is taken to avoid null entries as key or as values
-        // we only need the number of allowed sources - so the map is intialised
-        // with the provided number of sources.
-        nodeHighlightMap = new Hashtable( HVNetworkBuilder.NODE_SOURCES.size() );
-        edgeHighlightMap = new Hashtable( HVNetworkBuilder.EDGE_SOURCES.size() );
-        initNodes();
-        initEdges();
-        setDepthToDefault();
-
-        binaryInteractions = network.getBinaryInteractions();
+    private void initNodeAttributeMap() {
+        nodeAttributMap = new HashMap<String, NodeAttributes>();
+        for ( Node node : network.getNodes() ) {
+            if ( !nodeAttributMap.containsKey( node.getId() ) ) {
+                NodeAttributes attribute = new NodeAttributes( node );
+                nodeAttributMap.put( node.getId(), attribute );
+            }
+        }
     }
     /////////////////////////
     // Getters & Setters
@@ -190,36 +164,12 @@ public class InteractionNetwork implements Network {
         return network;
     }
 
-    /**
-     * Gives the HighlightMap of the Nodes
-     *
-     * @return a not null Map of <SOURCE,<SOURCEID,NODE>>
-     */
-    public Map getNodeHighlightMap() {
-        if ( nodeHighlightMap == null ) {
-            nodeHighlightMap = new Hashtable( HVNetworkBuilder.NODE_SOURCES.size() );
-        }
-        return nodeHighlightMap;
-    }
-
-    /**
-     * Gives the HighlightMap of the Edges
-     *
-     * @return a not null Map of <SOURCE,<SOURCEID,EDGE>>
-     */
-    public Map getEdgeHighlightMap() {
-        if ( edgeHighlightMap == null ) {
-            edgeHighlightMap = new Hashtable( HVNetworkBuilder.EDGE_SOURCES.size() );
-        }
-        return edgeHighlightMap;
-    }
-
     public Collection<CrossReference> getProperties( Node node ) {
         return ( ( InteractorVertex ) node ).getProperties();
     }
 
-    public NodeAttributes getNodeAttributes( Node node ) {
-        return nodeAttributMap.get( node );
+    public NodeAttributes getNodeAttributes( String nodeId ) {
+        return nodeAttributMap.get( nodeId );
     }
 
     public EdgeAttributes getEdgeAttributes( Edge edge ) {
@@ -230,24 +180,30 @@ public class InteractionNetwork implements Network {
         return binaryInteractions;
     }
 
-    public List getCriteria() {
-        return criteriaList;
-    }
-
-    public boolean isNodeHighlightMapEmpty() {
-        return nodeHighlightMap.isEmpty();
-    }
-
-    public boolean isEdgeHighlightMapEmpty() {
-        return edgeHighlightMap.isEmpty();
-    }
-
     public Collection<Edge> getEdges() {
         return network.getEdges();
     }
 
-    public List<Node> getNodes() {
-        return nodeList;
+    public Collection<Node> getNodes() {
+        return new ArrayList<Node>( network.getNodes() );
+    }
+
+    public Set<Node> getNodesByIds( Set<String> nodeIds ) {
+        if (nodeIds == null) return null;
+        Set<Node> nodes = new HashSet<Node>(nodeIds.size());
+        for (String id : nodeIds){
+            nodes.add(nodeMap.get( id ));
+        }
+        return nodes;
+    }
+
+    public Set<Edge> getEdgesByIds( Set<String> edgeIds ) {
+        if (edgeIds == null) return null;
+        Set<Edge> edges = new HashSet<Edge>(edgeIds.size());
+        for (String id : edgeIds){
+            edges.add(edgeMap.get( id ));
+        }
+        return edges;
     }
 
     public int getCurrentDepth() {
@@ -259,104 +215,32 @@ public class InteractionNetwork implements Network {
     }
 
     public List getCentralNodes() {
-        return new ArrayList( centralProteins );
-    }
-
-    public int getDatabaseTermCount( String source, String id ) {
-        int count = 0;
-
-        if ( HVNetworkBuilder.NODE_SOURCES.contains( source ) ) {
-            if ( isNodeHighlightMapEmpty() ) initHighlightMap();
-            count = getNodesForHighlight( source, id ).size();
-        }
-
-        if ( HVNetworkBuilder.EDGE_SOURCES.contains( source ) ) {
-            if ( isEdgeHighlightMapEmpty() ) initHighlightMap();
-            count = getEdgesForHighlight( source, id ).size();
-        }
-
-        return count;
+        return new ArrayList( centralNodes );
     }
 
     public void initNodes() {
+        nodeMap = new HashMap<String, Node>();
         if ( getNodes() != null ) {
             for ( Node node : getNodes() ) {
-                NodeAttributes attributes = getNodeAttributes( node );
+                NodeAttributes attributes = getNodeAttributes( node.getId() );
                 attributes.put( Constants.ATTRIBUTE_COLOR_NODE, NodeAttributes.NODE_COLOR );
                 attributes.put( Constants.ATTRIBUTE_COLOR_LABEL, NodeAttributes.LABEL_COLOR );
                 attributes.put( Constants.ATTRIBUTE_VISIBLE, Boolean.TRUE );
+                nodeMap.put(node.getId(), node);
             }
         }
     }
 
     public void initEdges() {
+        edgeMap = new HashMap<String, Edge>();
         if ( getEdges() != null ) {
             for ( Edge edge : getEdges() ) {
                 EdgeAttributes attributes = getEdgeAttributes( edge );
                 attributes.put( Constants.ATTRIBUTE_COLOR_EDGE, EdgeAttributes.EDGE_COLOR );
                 attributes.put( Constants.ATTRIBUTE_VISIBLE, Boolean.TRUE );
+                edgeMap.put(edge.getId(), edge);
             }
         }
-    }
-
-    /**
-     * Adds a new node to the source map for the given source (e.g. GO) and the
-     * given source id (e.g. GO:001900).
-     * <p/>
-     * If the map already has the source id as key the node is added to the set
-     * of other nodes for this source.
-     * <p/>
-     * Otherwise a new set is created and the node is added to it.
-     *
-     * @param source   the source to highlight (e.g. GO)
-     * @param sourceID the source id (e.g. GO:001900)
-     * @param node     the node which is related to the sourceID
-     */
-
-    void addToNodeHighlightMap( String source, String sourceID, Node node ) {
-        // the map for the given source is fetched
-        Map<String, Set<Node>> sourceMap = ( Map ) nodeHighlightMap.get( source );
-
-        // if no map exists a new one is created and put into the nodeHighlightMap
-        if ( sourceMap == null ) {
-            sourceMap = new Hashtable<String, Set<Node>>();
-            nodeHighlightMap.put( source, sourceMap );
-        }
-
-        // the nodes realted to the given sourceID are fetched
-        Set<Node> sourceNodes = sourceMap.get( sourceID );
-
-        // if no set exists a new one is created and put into the sourceMap
-        if ( sourceNodes == null ) {
-            // a hashset is used to avoid duplicate entries
-            sourceNodes = new HashSet<Node>();
-            sourceMap.put( sourceID, sourceNodes );
-        }
-        sourceNodes.add( node );
-    }
-
-    void addToEdgeHighlightMap( String source, String sourceID, Edge edge ) {
-        // the map for the given source is fetched
-        Map sourceMap = ( Map ) edgeHighlightMap.get( source );
-
-        // if no map exists a new one is created and put into the
-        // nodeHighlightMap
-        if ( sourceMap == null ) {
-            sourceMap = new Hashtable();
-            edgeHighlightMap.put( source, sourceMap );
-        }
-
-        // the nodes realted to the given sourceID are fetched
-        Set sourceEdges = ( Set ) sourceMap.get( sourceID );
-
-        // if no set exists a new one is created and put into the sourceMap
-        if ( sourceEdges == null ) {
-            // a hashset is used to avoid duplicate entries
-            sourceEdges = new HashSet();
-            sourceMap.put( sourceID, sourceEdges );
-        }
-        sourceEdges.add( edge );
-
     }
 
     public void initHighlightMap() {
@@ -367,16 +251,16 @@ public class InteractionNetwork implements Network {
             InteractorVertex vertex = ( InteractorVertex ) node;
             if ( vertex.getProperties() != null && !vertex.getProperties().isEmpty() ) {
                 for ( CrossReference property : vertex.getProperties() ) {
-                    if ( property.getDatabase().equalsIgnoreCase( INTERPRO ) ) {
+                    if ( property.getDatabase().equalsIgnoreCase( INTERPRO_KEY ) ) {
                         String key = property.getIdentifier();
-                        addToReferenceList( key, property );
-                        addToNodeHighlightMap( INTERPRO, key, node );
+                        InterproHighlightmentSource.addToSourceMap( key, property );
+                        InterproHighlightmentSource.addToNodeMap( key, node );
                     }
 
-                    if ( property.getDatabase().equalsIgnoreCase( GO ) ) {
+                    if ( property.getDatabase().equalsIgnoreCase( GO_KEY ) ) {
                         String key = property.getIdentifier();
-                        addToReferenceList( key, property );
-                        addToNodeHighlightMap( GO, key, node );
+                        GoHighlightmentSource.addToSourceMap( key, property );
+                        GoHighlightmentSource.addToNodeMap( key, node );
                     }
                 }
             }
@@ -390,13 +274,13 @@ public class InteractionNetwork implements Network {
                     } else {
                         key += role.getDatabase() + ":" + role.getIdentifier();
                     }
-                    addToReferenceList( key, role );
-                    addToNodeHighlightMap( ROLE, key, node );
+                    RoleHighlightmentSource.addToSourceMap( key, role );
+                    RoleHighlightmentSource.addToNodeMap( key, node );
                 }
                 if ( vertex.isBaitWithExperimental() && vertex.isPreyWithExperimental() ) {
                     String key = "E|" + BOTH;
-                    addToReferenceList( key, factory.build( "MI", BOTH, "bait & prey" ) );
-                    addToNodeHighlightMap( ROLE, key, node );
+                    RoleHighlightmentSource.addToSourceMap( key, factory.build( "MI", BOTH, "bait & prey" ) );
+                    RoleHighlightmentSource.addToNodeMap( key, node );
                 }
             }
 
@@ -409,13 +293,13 @@ public class InteractionNetwork implements Network {
                     } else {
                         key += role.getDatabase() + ":" + role.getIdentifier();
                     }
-                    addToReferenceList( key, role );
-                    addToNodeHighlightMap( ROLE, key, node );
+                    RoleHighlightmentSource.addToSourceMap( key, role );
+                    RoleHighlightmentSource.addToNodeMap( key, node );
                 }
                 if ( vertex.isBaitWithBiological() && vertex.isPreyWithBiological() ) {
                     String key = "B|" + BOTH;
-                    addToReferenceList( key, factory.build( "MI", BOTH, BOTH ) );
-                    addToNodeHighlightMap( ROLE, key, node );
+                    RoleHighlightmentSource.addToSourceMap( key, factory.build( "MI", BOTH, "bait & prey" ) );
+                    RoleHighlightmentSource.addToNodeMap( key, node );
                 }
             }
 
@@ -427,8 +311,8 @@ public class InteractionNetwork implements Network {
                     } else {
                         key = interactorType.getDatabase() + ":" + interactorType.getIdentifier();
                     }
-                    addToReferenceList( key, interactorType );
-                    addToNodeHighlightMap( MOLECULE_TYPE, key, node );
+                    MoleculeTypeHighlightmentSource.addToSourceMap( key, interactorType );
+                    MoleculeTypeHighlightmentSource.addToNodeMap( key, node );
                 }
             }
             Organism organism = vertex.getOrganism();
@@ -436,21 +320,21 @@ public class InteractionNetwork implements Network {
                 String key = organism.getTaxid();
                 Collection<CrossReference> organsimIDs = organism.getIdentifiers();
                 if ( organsimIDs != null && !organsimIDs.isEmpty() ) {
-                    addToReferenceList( key, organsimIDs.iterator().next() );
-                    addToNodeHighlightMap( SPECIES, key, node );
+                    SpeciesHighlightmentSource.addToSourceMap( key, organism );
+                    SpeciesHighlightmentSource.addToNodeMap( key, node );
                 } else {
                     logger.error( "Could not found organism identifiers for " + organism + " of interactor " + vertex.getId() );
                 }
             }
         }
 
-        authorMap = new HashMap<String, Author>();
         for ( Object e : getEdges() ) {
             BinaryInteractionEdge edge = ( BinaryInteractionEdge ) e;
             for ( Confidence confidence : edge.getConfidenceValues() ) {
                 String value = confidence.getValue();
-                addToEdgeHighlightMap( CONFIDENCE, value, edge );
-                addToConfidenceList( value, confidence );
+                ConfidenceHighlightmentSource.addToSourceMap( value, confidence );
+                ConfidenceHighlightmentSource.addToEdgeMap( value, edge );
+//                addToEdgeHighlightMap( CONFIDENCE, value, edge );
             }
 
             List<Author> authors = edge.getAuthors();
@@ -463,7 +347,7 @@ public class InteractionNetwork implements Network {
                     if ( authors != null && !authors.isEmpty() ) {
                         if ( i < authors.size() ) {
                             if ( authors.get( i ) != null ) {
-                                authorMap.put( pmid, authors.get( i ) );
+                                PublicationHighlightmentSource.addToSourceMap( pmid, authors.get( i ) );
                                 i++;
                             } else {
                                 logger.error( "No Author available for PUBMED " + pmid );
@@ -472,97 +356,13 @@ public class InteractionNetwork implements Network {
                             logger.error( "We have " + edge.getPublication().size() + " publications " +
                                           "which not mapping to " + edge.getAuthors().size() + " authors." +
                                           "-> Error happens when I want to map " + pmid +
-                                          " for Interaction " + edge.getBinaryInteraction().getInteractionAcs().get(1));
+                                          " for Interaction " + edge.getBinaryInteraction().getInteractionAcs().get( 1 ) );
                         }
                     }
-                    addToEdgeHighlightMap( PUBLICATION, pmid, edge );
+                    PublicationHighlightmentSource.addToEdgeMap( pmid, edge );
                 }
             }
         }
-    }
-
-    private void addToReferenceList( String key, CrossReference value ) {
-        if ( referenceMap == null ) {
-            referenceMap = new HashMap<String, CrossReference>();
-        }
-        referenceMap.put( key, value );
-    }
-
-    private void addToConfidenceList( String key, Confidence value ) {
-        if ( confidenceMap == null ) {
-            confidenceMap = new HashMap<String, Confidence>();
-        }
-        confidenceMap.put( key, value );
-    }
-
-    public Confidence getConfidenceByKey( String key ) {
-        return confidenceMap.get( key );
-    }
-
-    public CrossReference getCrossReferenceById( String key ) {
-        return referenceMap.get( key );
-    }
-
-
-    /**
-     * Returns all proteins which are related to the given source (e.g. GO) and
-     * the given sourceID (e.g. GO:001900).
-     *
-     * @param source   the source
-     * @param sourceID the sourceID
-     * @return a set of related proteins
-     */
-    public Set getNodesForHighlight( String source, String sourceID ) {
-
-        if ( logger.isInfoEnabled() ) {
-            logger.info( "getNodesForHighlight: source=" + source + " | sourceID=" + sourceID );
-        }
-
-        Map sourceMap = ( Map ) nodeHighlightMap.get( source );
-
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "sourceMap = " + sourceMap );
-        }
-
-        // if no nodes are given for the provided source null is returned
-        if ( sourceMap == null ) {
-            logger.warn( "sourceMap is null !" );
-            return null;
-        }
-
-        return ( Set ) sourceMap.get( sourceID );
-    }
-
-    public Set<Edge> getEdgesForHighlight( String source, String sourceID ) {
-
-        if ( logger.isInfoEnabled() ) {
-            logger.info( "getEdgesForHighlight: source=" + source + " | sourceID=" + sourceID );
-        }
-
-        Map sourceMap = ( Map ) edgeHighlightMap.get( source );
-
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "sourceMap = " + sourceMap );
-        }
-
-        // if no nodes are given for the provided source null is returned
-        if ( sourceMap == null ) {
-            logger.warn( "sourceMap is null !" );
-            return null;
-        }
-
-        return ( Set ) sourceMap.get( sourceID );
-    }
-
-    /**
-     * Add a new criteria to the interaction network <br>
-     *
-     * @param aCriteria the criteria to add if it doesn't exist in the
-     *                  collection already
-     */
-    public void addCriteria( CriteriaBean aCriteria ) {
-        if ( !criteriaList.contains( aCriteria ) )
-            criteriaList.add( aCriteria );
     }
 
     /**
@@ -604,13 +404,13 @@ public class InteractionNetwork implements Network {
 
         // get the list of nodes and the dimension of the image
         ImageDimension dimension = this.getImageDimension();
-        List<Node> proteinList = this.getNodes();
+        Collection<Node> proteinList = this.getNodes();
 
         // declaration of a Javascript Array
         out.append( "var data = new Array(" );
         int i = 0;
         for ( Node node : proteinList ) {
-            NodeAttributes attributes = getNodeAttributes( node );
+            NodeAttributes attributes = getNodeAttributes( node.getId() );
             float proteinX = ( Float ) attributes.get( Constants.ATTRIBUTE_COORDINATE_X );
             float proteinY = ( Float ) attributes.get( Constants.ATTRIBUTE_COORDINATE_Y );
             float proteinLength = ( Float ) attributes.get( Constants.ATTRIBUTE_LENGTH );
@@ -684,10 +484,11 @@ public class InteractionNetwork implements Network {
 
                 // nodes are labelled from 1 to n int the tlp file and from 0 to
                 // n-1 int the collection.
-                protein = nodeList.get( p.getId() - 1 );
+                List<Node> nodes = new ArrayList<Node>( getNodes() );
+                protein = nodes.get( p.getId() - 1 );
 
                 // Store coordinates in the protein
-                NodeAttributes attribute = getNodeAttributes( protein );
+                NodeAttributes attribute = getNodeAttributes( protein.getId() );
                 attribute.put( Constants.ATTRIBUTE_COORDINATE_X, x );
                 attribute.put( Constants.ATTRIBUTE_COORDINATE_Y, y );
             } // for
@@ -698,73 +499,3 @@ public class InteractionNetwork implements Network {
         return null;
     } //importDataToImage
 }
-
-//            if ( vertex.getExperimentalRole() != null && !vertex.getExperimentalRole().isEmpty() ) {
-//                CrossReference bait = null;
-//                CrossReference prey = null;
-//                boolean isBoth = false;
-//
-//                for ( CrossReference xref : vertex.getExperimentalRole() ) {
-//                    String id = xref.getIdentifier();
-//                    if ( id.equals( Constants.PREY_REF ) ) {
-//                        prey = xref;
-//                    }
-//                    if ( id.equals( Constants.BAIT_REF ) ) {
-//                        bait = xref;
-//                    }
-//                    if ( bait != null && prey != null ) {
-//                        isBoth = true;
-//                        break;
-//                    }
-//                }
-//                if ( bait != null ) {
-//                    String key = Constants.EXPERMIENTAL_ROLE + ":" + bait.getDatabase() + ":" + bait.getIdentifier();
-//                    addToReferenceList( key, bait );
-//                    addToNodeHighlightMap( ROLE, key, node );
-//                }
-//                if ( prey != null ) {
-//                    String key = Constants.EXPERMIENTAL_ROLE + ":" + prey.getDatabase() + ":" + prey.getIdentifier();
-//                    addToReferenceList( key, prey );
-//                    addToNodeHighlightMap( ROLE, key, node );
-//                }
-//                if ( isBoth ) {
-//                    String key = Constants.EXPERMIENTAL_ROLE + ":" + Constants.DATABASE + ":" + Constants.BOTH_REF;
-//                    addToReferenceList( key, factory.build( Constants.DATABASE, Constants.BOTH_REF, Constants.BOTH ) );
-//                    addToNodeHighlightMap( ROLE, key, node );
-//                }
-//            }
-//
-//            if ( vertex.getBiologicalRole() != null && !vertex.getBiologicalRole().isEmpty() ) {
-//                CrossReference bait = null;
-//                CrossReference prey = null;
-//                boolean isBoth = false;
-//
-//                for ( CrossReference xref : vertex.getBiologicalRole() ) {
-//                    String id = xref.getIdentifier();
-//                    if ( id.equals( Constants.PREY_REF ) ) {
-//                        prey = xref;
-//                    }
-//                    if ( id.equals( Constants.BAIT_REF ) ) {
-//                        bait = xref;
-//                    }
-//                    if ( bait != null && prey != null ) {
-//                        isBoth = true;
-//                        break;
-//                    }
-//                }
-//                if ( bait != null ) {
-//                    String key = Constants.BIOLOGICAL_ROLE + ":" + bait.getDatabase() + ":" + bait.getIdentifier();
-//                    addToReferenceList( key, bait );
-//                    addToNodeHighlightMap( ROLE, key, node );
-//                }
-//                if ( prey != null ) {
-//                    String key = Constants.BIOLOGICAL_ROLE + ":" + prey.getDatabase() + ":" + prey.getIdentifier();
-//                    addToReferenceList( key, prey );
-//                    addToNodeHighlightMap( ROLE, key, node );
-//                }
-//                if ( isBoth ) {
-//                    String key = Constants.BIOLOGICAL_ROLE + ":" + Constants.DATABASE + ":" + Constants.BOTH_REF;
-//                    addToReferenceList( key, factory.build( Constants.DATABASE, Constants.BOTH_REF, Constants.BOTH ) );
-//                    addToNodeHighlightMap( ROLE, key, node );
-//                }
-//            }

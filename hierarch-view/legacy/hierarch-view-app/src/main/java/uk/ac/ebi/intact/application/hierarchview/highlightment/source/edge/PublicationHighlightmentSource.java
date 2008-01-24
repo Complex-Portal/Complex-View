@@ -44,9 +44,16 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
      */
     public static final String SOURCE_KEY;
 
-    public static final String SOURCE_CLASS;
+    /**
+     * The class for this source 'publication'
+     */    
+    static final String SOURCE_CLASS;
 
     private static final String publicationPath;
+
+    private static Map<String, Author> publicationRefMap;
+
+    private static Map<String, Set<String>> publicationEdgeMap;
 
     static {
         // get in the Highlightment properties file where is interpro
@@ -94,57 +101,62 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
         }
     }
 
-    /**
-     * Returns a collection of proteins to be highlighted in the graph.
-     * <p/>
-     * Method is called when the graph was built by the mine database table.
-     *
-     * @param network       the network
-     * @param selectedTerms the selected Terms
-     * @return
-     */
-    public Collection<Edge> edgeToHighlightSourceMap( Network network, Collection<String> selectedTerms ) {
+    public static void addToSourceMap( String termId, Author termObject ) {
+        if ( publicationRefMap == null ) {
+            publicationRefMap = new HashMap<String, Author>();
+        }
+        publicationRefMap.put( termId, termObject );
+    }
 
-        Collection<Edge> edgeList = new ArrayList( 20 ); // should be enough for 90% cases
-
-        // retrieve the set of proteins to highlight for the source key (e.g. GO) and the selected GO Terms
-        Set<Edge> edgesToHighlight = null;
-        if ( selectedTerms != null ) {
-            for ( String selectedGOTerm : selectedTerms ) {
-                edgesToHighlight = network.getEdgesForHighlight( SOURCE_KEY, selectedGOTerm );
-                // if we found any proteins we add all of them to the collection
-                if ( edgesToHighlight != null ) {
-                    edgeList.addAll( edgesToHighlight );
-                }
-            }
+    public static void addToEdgeMap( String pmid, Edge edge ) {
+        if ( publicationEdgeMap == null ) {
+            publicationEdgeMap = new Hashtable<String, Set<String>>();
         }
 
-        return edgeList;
+        // the nodes realted to the given sourceID are fetched
+        Set<String> sourceEdges = publicationEdgeMap.get( pmid );
+
+        // if no set exists a new one is created and put into the sourceMap
+        if ( sourceEdges == null ) {
+            // a hashset is used to avoid duplicate entries
+            sourceEdges = new HashSet<String>();
+            publicationEdgeMap.put( pmid, sourceEdges );
+        }
+        sourceEdges.add( edge.getId() );
+    }
+
+    public Map<String, Set<String>> getEdgeMap() {
+        return publicationEdgeMap;
     }
 
     public List<SourceBean> getSourceUrls( Network network,
                                            Collection<String> selectedSourceTerms,
                                            String applicationPath ) {
 
+        if ( publicationEdgeMap == null || publicationEdgeMap.isEmpty() ) {
+            network.initHighlightMap();
+        }
+
         List<SourceBean> urls = new ArrayList();
-        Map highlightPublicationMap = ( Map ) network.getEdgeHighlightMap().get( SOURCE_KEY );
 
-        if ( highlightPublicationMap != null && !highlightPublicationMap.isEmpty() ) {
-
-            Set<String> keySet = highlightPublicationMap.keySet();
+        if ( publicationEdgeMap != null && !publicationEdgeMap.isEmpty() ) {
+            Set<String> keySet = publicationEdgeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
 
                 for ( String termId : keySet ) {
 
-                    Author author = network.getAuthorByPMID( termId );
                     String termDescription = null;
-                    if ( author != null ) {
-                        termDescription = author.getName();
-                    }
                     String termType = SOURCE_KEY;
 
-                    int termCount = network.getDatabaseTermCount( termType, termId );
+                    if ( publicationRefMap != null ) {
+                        Author author = publicationRefMap.get( termId );
+                        if ( author != null ) {
+                            termDescription = author.getName();
+                        }
+                    }
+
+                    int termCount = publicationEdgeMap.get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() ) {

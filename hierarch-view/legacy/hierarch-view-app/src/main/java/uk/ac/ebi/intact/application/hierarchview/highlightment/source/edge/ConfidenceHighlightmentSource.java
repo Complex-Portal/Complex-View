@@ -43,7 +43,14 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
      */
     public static final String SOURCE_KEY;
 
+    /**
+     * The class for this source 'confidence'
+     */
     public static final String SOURCE_CLASS;
+
+    private static Map<String, Confidence> confidenceRefMap;
+
+    private static Map<String, Set<String>> confidenceEdgeMap;
 
     static {
         // get in the Highlightment properties file where is interpro
@@ -80,33 +87,32 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
         }
     }
 
-    /**
-     * Returns a collection of proteins to be highlighted in the graph.
-     * <p/>
-     * Method is called when the graph was built by the mine database table.
-     *
-     * @param network       the network
-     * @param selectedTerms the selected Terms
-     * @return
-     */
-    public Collection<Edge> edgeToHighlightSourceMap( Network network, Collection<String> selectedTerms ) {
+    public static void addToSourceMap( String termId, Confidence termObject ) {
+        if ( confidenceRefMap == null ) {
+            confidenceRefMap = new HashMap<String, Confidence>();
+        }
+        confidenceRefMap.put( termId, termObject );
+    }
 
-        Collection<Edge> edgeList = new ArrayList( 20 ); // should be enough for 90% cases
-
-        // retrieve the set of proteins to highlight for the source key (e.g. GO) and the selected GO Terms
-        Set<Edge> edgesToHighlight = null;
-        if ( selectedTerms != null ) {
-
-            for ( String selectedTerm : selectedTerms ) {
-                edgesToHighlight = network.getEdgesForHighlight( SOURCE_KEY, selectedTerm );
-                // if we found any proteins we add all of them to the collection
-                if ( edgesToHighlight != null ) {
-                    edgeList.addAll( edgesToHighlight );
-                }
-            }
+    public static void addToEdgeMap( String value, Edge edge ) {
+        if ( confidenceEdgeMap == null ) {
+            confidenceEdgeMap = new Hashtable<String, Set<String>>();
         }
 
-        return edgeList;
+        // the nodes realted to the given sourceID are fetched
+        Set<String> sourceEdges = confidenceEdgeMap.get( value );
+
+        // if no set exists a new one is created and put into the sourceMap
+        if ( sourceEdges == null ) {
+            // a hashset is used to avoid duplicate entries
+            sourceEdges = new HashSet<String>();
+            confidenceEdgeMap.put( value, sourceEdges );
+        }
+        sourceEdges.add( edge.getId() );
+    }
+
+    public Map<String, Set<String>> getEdgeMap(){
+        return confidenceEdgeMap;
     }
 
     public List<SourceBean> getSourceUrls( Network network,
@@ -114,14 +120,13 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
                                            String applicationPath ) {
 
         List<SourceBean> urls = new ArrayList();
-        if ( network.isEdgeHighlightMapEmpty() ) {
+        if ( confidenceEdgeMap == null || confidenceEdgeMap.isEmpty() ) {
             network.initHighlightMap();
         }
-        Map highlightConfidenceMap = ( Map ) network.getEdgeHighlightMap().get( SOURCE_KEY );
 
-        if ( highlightConfidenceMap != null && !highlightConfidenceMap.isEmpty() ) {
+        if ( confidenceEdgeMap != null && !confidenceEdgeMap.isEmpty() ) {
 
-            Set<String> keySet = highlightConfidenceMap.keySet();
+            Set<String> keySet = confidenceEdgeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
 
@@ -133,26 +138,28 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
 
                 for ( String termInfo : keySet ) {
                     String termType = SOURCE_KEY;
-
-                    Confidence confidence = network.getConfidenceByKey( termInfo );
                     String termDescription = termInfo;
                     String termId = null;
-                    if ( confidence != null && confidence.getValue() != null ) {
-                        double value = Double.valueOf( confidence.getValue() );
-                        termId = "";
-                        for ( double[] range : ranges ) {
-                            if ( value > range[0] && value <= range[1] ) {
-                                termDescription = confidence.getType() + ": " + range[0] + "..." + range[1];
-                                break;
-                            }
-                        }
 
-                        if ( confidence.getType() != null ) {
-                            termId = confidence.getValue();
+                    if ( confidenceRefMap != null ) {
+                        Confidence confidence = confidenceRefMap.get( termInfo );
+                        if ( confidence != null && confidence.getValue() != null ) {
+                            double value = Double.valueOf( confidence.getValue() );
+                            termId = "";
+                            for ( double[] range : ranges ) {
+                                if ( value > range[0] && value <= range[1] ) {
+                                    termDescription = confidence.getType();//+ ": " + range[0] + "..." + range[1];
+                                    break;
+                                }
+                            }
+
+                            if ( confidence.getType() != null ) {
+                                termId = confidence.getValue();
+                            }
                         }
                     }
 
-                    int termCount = network.getDatabaseTermCount( SOURCE_KEY, termInfo );
+                    int termCount = confidenceEdgeMap.get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() ) {

@@ -142,7 +142,6 @@ public class HVNetworkBuilder {
     private final BinaryGraphNetworkBuilder builder;
 
     private final InteractionBasedMerger merger;
-//    private IntactUser user;
 
     public HVNetworkBuilder( DataService dataservice ) {
         this.dataservice = dataservice;
@@ -153,7 +152,6 @@ public class HVNetworkBuilder {
         merger = new InteractionBasedMerger();
         merger.setLabelStrategy( new AliasLabelStrategy() );
     }
-
 
     public HVNetworkBuilder( IntactUserI intactUser ) {
         dataservice = intactUser.getDataService();

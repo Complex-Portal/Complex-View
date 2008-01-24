@@ -51,13 +51,5 @@ public class HVNetworkBuilderTest {
         }
 
         assertEquals( 7, network.getEdges().size() );
-
-        assertEquals( dataservice.getBinaryInteractionsByQueryString( "brca2" ), network.getBinaryInteraction() );
-        assertEquals( 27, network.getProperties( centralNode1 ).size() );
-        assertEquals( 28, network.getProperties( centralNode2 ).size() );
-
-        network.initHighlightMap();
-        assertEquals( 5, network.getNodesForHighlight( "GO", "GO:0005515" ).size() );
-        assertEquals( 2, network.getNodesForHighlight( "Interpro", "IPR015188" ).size() );
     }
 }
