@@ -76,30 +76,60 @@
             <groupId>uk.ac.ebi.intact.service.commons</groupId>
             <artifactId>app-commons</artifactId>
             <version>1.6.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
             <artifactId>search-engine</artifactId>
             <version>1.6.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.bridges.coredep</groupId>
             <artifactId>intact-cdb</artifactId>
-            <version>2.0.1-SNAPSHOT</version>
+            <version>2.0.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.bridges.coredep</groupId>
             <artifactId>intact-go</artifactId>
-            <version>2.0</version>
+            <version>2.0.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.dbupdate</groupId>
             <artifactId>intact-proteins-update</artifactId>
             <version>2.0.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency> 
 
 
