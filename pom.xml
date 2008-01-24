@@ -188,6 +188,12 @@
                 <groupId>uk.ac.ebi.intact.core</groupId>
                 <artifactId>intact-core</artifactId>
                 <version>${core.version}</version>
+                <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.intact.core</groupId>
@@ -205,16 +211,34 @@
                 <groupId>uk.ac.ebi.intact.service.commons</groupId>
                 <artifactId>app-commons</artifactId>
                 <version>${currentVersion}</version>
+                <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
                 <artifactId>search-engine</artifactId>
                 <version>${currentVersion}</version>
+                <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.intact.service.hierarchview</groupId>
                 <artifactId>intact-graph</artifactId>
                 <version>${currentVersion}</version>
+                <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
             </dependency>
 
             <!-- Web development-->
