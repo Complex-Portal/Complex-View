@@ -195,7 +195,7 @@ public class IntactUser implements IntactUserI {
             path = ( Collection ) it.next();
             // the current path is added to the link
             for ( Iterator iter = path.iterator(); iter.hasNext(); ) {
-                link.append( ( ( NodeObject ) iter.next() ).getShortLabel() );
+                link.append( ( ( NodeObject ) iter.next() ).getAcNr() );
                 if ( iter.hasNext() ) {
                     link.append( Constants.COMMA );
                 }
@@ -218,7 +218,7 @@ public class IntactUser implements IntactUserI {
             String sing = singletons.toString();
             sing = sing.substring( 1, sing.length() - 1 );
 
-            link.append( "&singletons=" + sing );
+            link.append( "&singletons=" ).append( sing );
         }
         link.append( "&method=" ).append(
                 HIERARCHVIEW_PROPERTIES.get( "hv.method" ) );
