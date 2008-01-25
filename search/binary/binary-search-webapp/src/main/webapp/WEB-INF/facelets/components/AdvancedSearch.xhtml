@@ -63,7 +63,7 @@
 <h:panelGroup onkeypress="return submitEnter('searchForm:btnSearch',event)">
 
     <h:panelGrid columns="2" styleClass="default">
-        <h:panelGroup>
+        <tr:panelGroupLayout partialTriggers="Clear">
             <h:panelGrid columns="3" styleClass="default">
                 <h:outputLabel for="advIdentifier" value="Identifier: acs, ids, aliases"/>
                 <h:inputText id="advIdentifier" value="#{searchBean.advancedSearch.identifier}"/>
@@ -92,7 +92,7 @@
                 <h:panelGroup>
                     <t:inputText id="intTypeSuggestion" value="#{searchBean.advancedSearch.interactionType}"
                                  forceId="true"/>
-                    <h:panelGroup rendered="#{param.advSearch}">
+                    <h:panelGroup rendered="#{searchBean.advancedMode}">
                     <bs:termChooser forClientId="intTypeSuggestion"
                                     treeModel="#{olsBean.interactionTypeTreeModel}"/>
                     </h:panelGroup>
@@ -107,7 +107,7 @@
                 <h:panelGroup>
                     <t:inputText id="advDetMethod" value="#{searchBean.advancedSearch.detectionMethod}" forceId="true"/>
 
-                    <h:panelGroup rendered="#{param.advSearch}">
+                    <h:panelGroup rendered="#{searchBean.advancedMode}">
                     <bs:termChooser forClientId="advDetMethod"
                                     treeModel="#{olsBean.detectionMethodTreeModel}"/>
                     </h:panelGroup>
@@ -133,15 +133,15 @@
                 <h:outputText value=""/>
 
                 <h:panelGrid columns="2">
-                    <tr:commandButton id="btnSearch" value="Search"
+                    <tr:commandButton id="btnSearch" text="Search"
                                        actionListener="#{searchBean.doAdvancedSearch}"/>
-                    <tr:commandLink value="Clear" 
-                                     actionListener="#{searchBean.doClearAdvancedForm}" reRender="advancedSearchRegion"/>
+                    <tr:commandLink text="Clear"
+                                     actionListener="#{searchBean.doClearAdvancedForm}" partialSubmit="advancedSearchRegion"/>
                 </h:panelGrid>
 
             </h:panelGrid>
 
-        </h:panelGroup>
+        </tr:panelGroupLayout>
         
 
         <h:panelGroup>
