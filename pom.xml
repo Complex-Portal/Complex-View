@@ -25,7 +25,7 @@
 
         <user>${env.USERNAME}</user>
 
-        <core.version>1.8.0</core.version>
+        <core.version>1.8.1-SNAPSHOT</core.version>
     </properties>
 
     <modules>
@@ -188,12 +188,6 @@
                 <groupId>uk.ac.ebi.intact.core</groupId>
                 <artifactId>intact-core</artifactId>
                 <version>${core.version}</version>
-                <exclusions>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-full</artifactId>
-                </exclusion>
-            </exclusions>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.intact.core</groupId>
@@ -211,23 +205,11 @@
                 <groupId>uk.ac.ebi.intact.service.commons</groupId>
                 <artifactId>app-commons</artifactId>
                 <version>${currentVersion}</version>
-                <exclusions>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-full</artifactId>
-                </exclusion>
-            </exclusions>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
                 <artifactId>search-engine</artifactId>
                 <version>${currentVersion}</version>
-                <exclusions>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-full</artifactId>
-                </exclusion>
-            </exclusions>
             </dependency>
             <dependency>
                 <groupId>uk.ac.ebi.intact.service.hierarchview</groupId>
