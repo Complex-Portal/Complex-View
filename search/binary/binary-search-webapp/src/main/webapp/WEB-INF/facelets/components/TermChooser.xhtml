@@ -17,7 +17,7 @@
 
             <h:panelGroup>
                 <!--<t:inputText id="#{id}" value="#{term}" forceId="true"/>-->
-                <h:commandButton value="..." onclick="${id}_term.show()" type="button"/>
+                <tr:commandButton text="..." onclick="${id}_term.show()" partialSubmit="true"/>
 
                 <h:panelGroup style="display:none;">
                     <ebi:modalDialog id="${id}_term" width="350px" height="400px">
