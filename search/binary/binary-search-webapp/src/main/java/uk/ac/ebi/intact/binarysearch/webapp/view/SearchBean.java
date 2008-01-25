@@ -5,8 +5,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.component.html.ext.HtmlDataTable;
 import org.apache.myfaces.trinidad.component.UIXTable;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.viewController.annotations.InitView;
+import org.springframework.stereotype.Controller;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
 import psidev.psi.mi.tab.PsimiTabColumn;
 import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
+import uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.binarysearch.webapp.model.TooManyResults;
@@ -28,6 +34,9 @@ import java.util.Map;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller ("searchBean")
+@Scope("conversation.flash")
+@ViewController(viewIds = "/search.xhtml")
 public class SearchBean implements Serializable
 {
     private static final Log log = LogFactory.getLog(SearchBean.class);
@@ -37,7 +46,10 @@ public class SearchBean implements Serializable
     private static final String MAX_RESULTS_INIT_PARAM = "psidev.MAX_SEARCH_RESULTS";
 
     // injected
-    private SearchConfig config;
+    @Autowired
+    private AppConfigBean appConfigBean;
+
+    @Autowired
     private OlsBean olsBean;
 
     // vars
@@ -62,11 +74,25 @@ public class SearchBean implements Serializable
         int maxResults = Integer.parseInt(facesContext.getExternalContext().getInitParameter(MAX_RESULTS_INIT_PARAM));
         BooleanQuery.setMaxClauseCount(maxResults);
 
-        //this.resultsDataTable = (UIData) facesContext.getApplication().createComponent(HtmlDataTable.COMPONENT_TYPE);
-
         this.advancedSearch = new AdvancedSearch();
 
-        this.advancedMode = facesContext.getExternalContext().getRequestParameterMap().get("advSearch") != null;
+
+    }
+
+    @InitView
+    public void loadFromParams() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        final String advSearchParam = facesContext.getExternalContext().getRequestParameterMap().get("advSearch");
+        final String queryParam = facesContext.getExternalContext().getRequestParameterMap().get("query");
+
+        if (advSearchParam != null) {
+            this.advancedMode = true;
+        }
+
+        if (queryParam != null) {
+            this.query = queryParam;
+            doSearch(null);
+        }
     }
 
     public void doSearch(ActionEvent evt) {
@@ -151,7 +177,7 @@ public class SearchBean implements Serializable
 
     public SearchConfig.Indexes.Index getDefaultIndex() {
 
-        for (SearchConfig.Indexes.Index index : config.getIndexes().getIndex()) {
+        for (SearchConfig.Indexes.Index index : appConfigBean.getConfig().getIndexes().getIndex()) {
             if (index.isDefault()) {
                 return index;
             }
@@ -198,16 +224,6 @@ public class SearchBean implements Serializable
     public void setResultsDataTable(UIComponent resultsDataTable)
     {
         this.resultsDataTable = resultsDataTable;
-    }
-
-    public SearchConfig getConfig()
-    {
-        return config;
-    }
-
-    public void setConfig(SearchConfig config)
-    {
-        this.config = config;
     }
 
     public SearchResultDataModel getResults()
@@ -258,16 +274,6 @@ public class SearchBean implements Serializable
     public void setAdvancedSearch(AdvancedSearch advancedSearch)
     {
         this.advancedSearch = advancedSearch;
-    }
-
-    public OlsBean getOlsBean()
-    {
-        return olsBean;
-    }
-
-    public void setOlsBean(OlsBean olsBean)
-    {
-        this.olsBean = olsBean;
     }
 
     public RelatedResults getRelatedResults()

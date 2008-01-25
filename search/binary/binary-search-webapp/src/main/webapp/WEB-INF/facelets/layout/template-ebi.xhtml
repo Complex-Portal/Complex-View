@@ -1,21 +1,17 @@
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+<?xml version="1.0" encoding="UTF-8"?>
+<tr:document xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:t="http://myfaces.apache.org/tomahawk"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
-                xmlns:ebisf="http://www.ebi.ac.uk/faces/site">
-
-    <tr:document title="IntAct Search">
+                xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
+            title="IntAct Search">
 
          <trh:head>
 
-             <t:dojoInitializer/>
+             <!--<t:dojoInitializer/>-->
 
             <title>IntAct Binary Search</title>
 
@@ -32,7 +28,7 @@
             <link rel="stylesheet" href="http://www.ebi.ac.uk/inc/css/userstyles.css" type="text/css"/>
             <link rel="stylesheet" href="http://www.ebi.ac.uk/inc/css/sidebars.css" type="text/css"/>
 
-             <trh:script source="/inc/js/contents.js" />
+             <trh:script source="http://www.ebi.ac.uk/inc/js/contents.js" />
              <trh:script source="/js/intact.js"/>
 
              <style type="text/css">
@@ -140,6 +136,4 @@
 
     </tr:form>
 
-    </tr:document>
-
-</ui:composition>
+</tr:document>

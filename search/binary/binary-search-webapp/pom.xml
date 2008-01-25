@@ -178,28 +178,34 @@
         <dependency>
             <groupId>org.apache.myfaces.trinidad</groupId>
             <artifactId>trinidad-api</artifactId>
-            <version>1.2.6-SNAPSHOT</version>
+            <version>1.2.5</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.myfaces.trinidad</groupId>
             <artifactId>trinidad-impl</artifactId>
-            <version>1.2.6-SNAPSHOT</version>
+            <version>1.2.5</version>
             <scope>compile</scope>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.orchestra</groupId>-->
-            <!--<artifactId>myfaces-orchestra-core15</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.myfaces.orchestra</groupId>
+            <artifactId>myfaces-orchestra-core15</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.orchestra</groupId>-->
-            <!--<artifactId>myfaces-orchestra-core</artifactId>-->
-            <!--<version>1.1-SNAPSHOT</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.myfaces.orchestra</groupId>
+            <artifactId>myfaces-orchestra-core</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.0.20070429</version>
+        </dependency>
 
         <!-- JSP / Servlets -->
         <dependency>
@@ -214,23 +220,6 @@
             <version>2.1</version>
             <scope>provided</scope>
         </dependency>
-
-
-        <!--<dependency>-->
-            <!--<groupId>net.java.dev.ajax4jsf</groupId>-->
-            <!--<artifactId>ajax4jsf</artifactId>-->
-            <!--<version>1.0.6</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.ajax4jsf</groupId>-->
-            <!--<artifactId>ajax4jsf-trinidad</artifactId>-->
-            <!--<version>1.0.4</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>opensymphony</groupId>-->
-            <!--<artifactId>oscache</artifactId>-->
-            <!--<version>2.3</version>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>com.sun.xml.bind</groupId>

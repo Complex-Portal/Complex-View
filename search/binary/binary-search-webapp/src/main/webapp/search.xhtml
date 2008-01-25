@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -12,26 +9,18 @@
       xmlns:s="http://myfaces.apache.org/sandbox"
       xmlns:sf="http://www.ebi.ac.uk/faces/site"
       xmlns:ebi="http://ebi.ac.uk/faces/components"
-      xmlns:bs="http://intact.ebi.ac.uk/binarysearch">
-<body>
+      xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
 
-<f:view>
-
-    Nothing before this is rendered
-
-    <ui:composition template="/WEB-INF/facelets/layout/template.xhtml">
+       template="/WEB-INF/facelets/layout/template.xhtml">
 
         <ui:define name="content">
 
-        <tr:panelGroupLayout id="urgent" partialTriggers="sideSearchBox_searchBox">
-             <ebi:panelUrgentNews sourceUrl="#{initParam['uk.ac.ebi.faces.NEWS_URL']}" renderedIfEmpty="false" />
-        </tr:panelGroupLayout>
 
         <!--<t:dojoInitializer />-->
 
             
 
-            &nbsp;
+            &#160;
 
             <h:panelGroup style="float:left">
                 <tr:statusIndicator id="pageStatus">
@@ -60,7 +49,7 @@
 
             <tr:panelGroupLayout id="advancedSearchRegion" partialTriggers="sideSearchBox_searchBox">
 
-                <h:panelGroup  rendered="#{param.advSearch}">
+                <h:panelGroup  rendered="#{searchBean.advancedMode}">
 
                 <br/><br/>
 
@@ -134,11 +123,4 @@
 
         </ui:define>
 
-    </ui:composition>
-
-    Nothing after this is rendered
-
-</f:view>
-
-</body>
-</html>
+</ui:composition>

@@ -9,9 +9,7 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-
-    <!--<bean id="searchBean" class="uk.ac.ebi.intact.services.search.controller.SearchController" scope="conversation.flash"/>-->
-    <!--<bean id="interactorBean" class="uk.ac.ebi.intact.services.search.controller.interactor.InteractorController" scope="conversation.flash"/>-->
-
+    <bean id="appConfigBean" class="uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean" lazy-init="true"/>
+    <bean id="olsBean" class="uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean" lazy-init="true" />
 
 </beans>

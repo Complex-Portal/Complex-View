@@ -22,7 +22,7 @@
     <managed-bean>
         <managed-bean-name>appConfigBean</managed-bean-name>
         <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean</managed-bean-class>
-        <managed-bean-scope>application</managed-bean-scope>
+        <managed-bean-scope>none</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>requestConfigBean</managed-bean-name>
@@ -32,7 +32,7 @@
     <managed-bean>
         <managed-bean-name>olsBean</managed-bean-name>
         <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean</managed-bean-class>
-        <managed-bean-scope>application</managed-bean-scope>
+        <managed-bean-scope>none</managed-bean-scope>
     </managed-bean>
      <managed-bean>
         <managed-bean-name>adminBean</managed-bean-name>
@@ -59,15 +59,16 @@
     <managed-bean>
         <managed-bean-name>searchBean</managed-bean-name>
         <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.view.SearchBean</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-        <managed-property>
-            <property-name>config</property-name>
-            <value>#{appConfigBean.config}</value>
-        </managed-property>
-        <managed-property>
-            <property-name>olsBean</property-name>
-            <value>#{olsBean}</value>
-        </managed-property>
+        <!-- Scope managed by spring and configured in the bean -->
+        <managed-bean-scope>none</managed-bean-scope>
+        <!--<managed-property>-->
+            <!--<property-name>config</property-name>-->
+            <!--<value>#{appConfigBean.config}</value>-->
+        <!--</managed-property>-->
+        <!--<managed-property>-->
+            <!--<property-name>olsBean</property-name>-->
+            <!--<value>#{olsBean}</value>-->
+        <!--</managed-property>-->
     </managed-bean>
 
     <navigation-rule>

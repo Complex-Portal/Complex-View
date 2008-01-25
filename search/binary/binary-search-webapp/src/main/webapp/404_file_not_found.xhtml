@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:s="http://myfaces.apache.org/sandbox"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
 
-<f:view>
-
-    <ui:composition template="/WEB-INF/facelets/layout/template-ebi.xhtml">
+                template="/WEB-INF/facelets/layout/template-ebi.xhtml">
 
         <ui:param name="sectionTitle" value="Error"/>
 
         <ui:define name="contents">
-            <h:form>
+
                 <div align="center">
                     <br/>
                     <br/>
@@ -40,21 +40,14 @@
                                     <h:commandLink value="IntAct home page" action="home"/>
                                 </div>
                                 <br/><br/>
-                                Also, if you feel this page should exist, send us an <a
-                                    href="mailto:intact-help@ebi.ac.uk">email</a>.
+                                Also, if you feel this page should exist,<a
+                                    href="http://www.ebi.ac.uk/intact/site/contents/contact.jsf">contact us</a>.
                                 <br/>
                             </td>
                         </tr>
                     </table>
                 </div>
-            </h:form>
+
         </ui:define>
 
-    </ui:composition>
-
-
-</f:view>
-
-</body>
-
-</html>
+</ui:composition>

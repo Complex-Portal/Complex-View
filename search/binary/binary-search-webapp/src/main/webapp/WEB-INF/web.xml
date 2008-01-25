@@ -250,18 +250,7 @@
         <param-value>true</param-value>
     </context-param>
 
-  <!-- Orchestra Filter -->
-  <!--<filter>-->
-    <!--<filter-name>orchestraFilter</filter-name>-->
-    <!--<filter-class>org.apache.myfaces.orchestra.conversation.jsf.filter.OrchestraServletFilter</filter-class>-->
-  <!--</filter>-->
-
-  <!--<filter-mapping>-->
-    <!--<filter-name>orchestraFilter</filter-name>-->
-    <!--<servlet-name>faces</servlet-name>-->
-  <!--</filter-mapping>-->
-
-  <filter>
+    <filter>
     <filter-name>trinidad</filter-name>
     <filter-class>org.apache.myfaces.trinidad.webapp.TrinidadFilter</filter-class>
   </filter>
@@ -269,6 +258,20 @@
   <filter-mapping>
     <filter-name>trinidad</filter-name>
     <servlet-name>faces</servlet-name>
+  </filter-mapping>
+
+    <!-- Orchestra Filter -->
+  <filter>
+    <filter-name>orchestraFilter</filter-name>
+    <filter-class>org.apache.myfaces.orchestra.conversation.jsf.filter.OrchestraServletFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>orchestraFilter</filter-name>
+    <servlet-name>faces</servlet-name>
+      <dispatcher>REQUEST</dispatcher>
+      <dispatcher>FORWARD</dispatcher>
+      <dispatcher>INCLUDE</dispatcher>
   </filter-mapping>
 
     <!-- Extensions Filter -->
@@ -309,6 +312,7 @@
         <url-pattern>/faces/*</url-pattern>
     </filter-mapping>
 
+
     <!-- Search webapp filters -->
     <!-- Security -->
     <filter>
@@ -317,7 +321,7 @@
     </filter>
     <filter-mapping>
         <filter-name>securityFilter</filter-name>
-        <url-pattern>/faces/admin/*</url-pattern>
+        <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
 
     <!-- App startup listener -->
@@ -342,15 +346,17 @@
 
       <!-- Spring Framework 2.0 -->
       <listener>
-        <listener-class>
-          org.springframework.web.context.ContextLoaderListener
-        </listener-class>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
       </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
 
       <!-- Orchestra stuff -->
-      <!--<listener>-->
-          <!--<listener-class>org.apache.myfaces.orchestra.conversation.servlet.ConversationManagerSessionListener</listener-class>-->
-      <!--</listener>-->
+
+      <listener>
+          <listener-class>org.apache.myfaces.orchestra.conversation.servlet.ConversationManagerSessionListener</listener-class>
+      </listener>
 
       <!-- Faces Servlet -->
       <servlet>
@@ -384,10 +390,10 @@
     </session-config>
 
     <!-- Handling of the HTTP error 404 -->
-    <error-page>
-        <error-code>404</error-code>
-        <location>/faces/404_file_not_found.xhtml</location>
-    </error-page>
+    <!--<error-page>-->
+        <!--<error-code>404</error-code>-->
+        <!--<location>/404_file_not_found.xhtml</location>-->
+    <!--</error-page>-->
     <error-page>
         <error-code>500</error-code>
         <location>/500_server_error.html</location>

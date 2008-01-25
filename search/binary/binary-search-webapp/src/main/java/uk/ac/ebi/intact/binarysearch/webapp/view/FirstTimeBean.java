@@ -25,12 +25,20 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.context.annotation.Scope;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.viewController.annotations.InitView;
+
 /**
  * TODO comment this!
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+//@Controller("firstTimeBean")
+//@Scope("request")
+@ViewController(viewIds = "/first_time_config.xhtml")
 public class FirstTimeBean implements Serializable {
 
     private SearchConfig config;
@@ -40,6 +48,11 @@ public class FirstTimeBean implements Serializable {
     private SearchConfig.Indexes.Index index;
 
     private boolean indexLocationExists;
+
+    @InitView
+    public void hey() {
+        System.out.println("HEY!!");
+    }
 
     public FirstTimeBean() {
         FacesContext context = FacesContext.getCurrentInstance();

@@ -17,6 +17,9 @@ package uk.ac.ebi.intact.binarysearch.webapp.application;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.springframework.stereotype.Controller;
+import org.springframework.context.annotation.Scope;
 import uk.ac.ebi.intact.binarysearch.webapp.SearchWebappException;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
@@ -31,6 +34,8 @@ import java.io.Serializable;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller("appConfigBean")
+@Scope("singleton")
 public class AppConfigBean implements Serializable {
 
     private Log log = LogFactory.getLog(AppConfigBean.class);
