@@ -22,11 +22,12 @@
 
             &#160;
 
-            <h:panelGroup style="float:left">
+            <h:panelGroup>
                 <tr:statusIndicator id="pageStatus">
                     <f:facet name="busy">
                             <tr:panelGroupLayout layout="horizontal">
                                 <h:graphicImage value="/images/wait_red_indicator.gif" style="vertical-align:middle"/>
+                                <tr:outputText value="Processing request"/>
                             </tr:panelGroupLayout>
                     </f:facet>
                     <f:facet name="ready">
@@ -59,37 +60,32 @@
 
             </tr:panelGroupLayout>
 
-            <tr:panelGroupLayout id="summaryRegion" partialTriggers="sideSearchBox_searchBox" >
-                <h:panelGroup rendered="#{searchBean.searchDone}">
-                    <h:panelGroup id="summaryHeader">
-                        <h2>Results
-                            <ebi:help id="resultsHelp" title="Results Table" onlyIcon="true">
-                                <p>
-                                    Shown below are a full list of interactions in which a match to your query was found
-                                    anywhere in the entry. In the results table:
+            <tr:panelHeader id="summaryRegion" text="Results"
+                            partialTriggers="sideSearchBox_searchBox" >
+                <tr:panelHeader text="Summary" rendered="#{searchBean.searchDone}">
 
-                                    <ul>
-                                        <li>Columns are sortable, by clicking on the column header.</li>
-                                        <li>Cell values are linked by cross-reference to its details in other IntAct
-                                            databases or external sources.
-                                        </li>
-                                    </ul>
-                                </p>
-                            </ebi:help>
-                        </h2>
+                            <!--<ebi:help id="resultsHelp" title="Results Table" onlyIcon="true">-->
+                                <!--<p>-->
+                                    <!--Shown below are a full list of interactions in which a match to your query was found-->
+                                    <!--anywhere in the entry. In the results table:-->
 
-                         </h:panelGroup>
+                                    <!--<ul>-->
+                                        <!--<li>Columns are sortable, by clicking on the column header.</li>-->
+                                        <!--<li>Cell values are linked by cross-reference to its details in other IntAct-->
+                                            <!--databases or external sources.-->
+                                        <!--</li>-->
+                                    <!--</ul>-->
+                                <!--</p>-->
+                            <!--</ebi:help>-->
+
 
                         <bs:resultsSummary/>
 
                         <h:panelGroup rendered="#{searchBean.results.rowCount > 0}">
                             <strong>Export Options: </strong>
 
-                            <h:outputLink target="_blank" value="#{requestConfigBean.absoluteContextPath}/export.jsp">
-                                <f:param name="q" value="#{searchBean.query}"/>
-                                <f:param name="d" value="#{searchBean.defaultIndex.location}"/>
-                                <f:param name="sort" value="#{searchBean.sortColumn}"/>
-                                <f:param name="asc" value="#{searchBean.sortAscending}"/>
+                            <h:outputLink target="_blank"
+                                          value="#{requestConfigBean.absoluteContextPath}/export?query=#{searchBean.query}&amp;format=mitab&amp;sort=#{searchBean.sortColumn}&amp;asc=#{searchBean.sortAscending}">
                                 <t:graphicImage url="#{requestConfigBean.absoluteContextPath}/images/mitab.png"
                                                 style="vertical-align:middle"
                                                 border="0"/>
@@ -98,28 +94,51 @@
                                 <ui:include src="help/mitab.xhtml"/>
                             </ebi:help>
 
-                            <tr:separator/>
+                    </h:panelGroup>
 
-                        </h:panelGroup>
+                    </tr:panelHeader>
 
                     <h:panelGroup rendered="#{searchBean.results.rowCount == 0}">
                         <p>
                             <strong>No Interactions found matching the query.</strong>
                         </p>
                     </h:panelGroup>
-                </h:panelGroup>
-            </tr:panelGroupLayout>
+
+
 
             <!--Test List: #{searchBean.testList}-->
             <tr:panelGroupLayout id="resultsRegion" partialTriggers="sideSearchBox_searchBox">
-                <h:panelGroup rendered="#{searchBean.searchDone}">
-                    <bs:resultsTable value="#{searchBean.results}"
-                                     pageSize="#{searchBean.pageSize}"
-                                     sortColumn="#{searchBean.sortColumn}"
-                                     sortAscending="#{searchBean.sortAscending}"/>
+                <h:panelGroup rendered="#{searchBean.searchDone and searchBean.results.rowCount > 0}">
+
+                    <tr:panelHeader text="Table of Binary Interactions" size="1">
+
+                        <bs:resultsTable value="#{searchBean.results}"
+                                         pageSize="#{searchBean.pageSize}"
+                                         sortColumn="#{searchBean.sortColumn}"
+                                         sortAscending="#{searchBean.sortAscending}"/>
+
+                    </tr:panelHeader>
+
+                    <tr:panelHeader text="Graphical Representation" size="1">
+
+                        <tr:panelGroupLayout layout="vertical">
+                            <tr:outputText value="This figure a graphical representation of the interactions shown in the above table. Click on the image for more details."/>
+
+                            <br/>
+
+                                <tr:goLink destination="#{initParam['binarysearch.HIERARCH_VIEW_DISPLAY_URL']}query=#{searchBean.query}" targetFrame="_blank">
+                                    <tr:image source="#{initParam['binarysearch.HIERARCH_VIEW_GENERATEIMAGE_URL']}query=#{searchBean.query}&amp;w=600&amp;h=600" />
+                                </tr:goLink>
+
+                        </tr:panelGroupLayout>
+
+                     </tr:panelHeader>
+
                 </h:panelGroup>
 
             </tr:panelGroupLayout>
+
+        </tr:panelHeader>
 
         </ui:define>
 

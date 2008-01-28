@@ -60,6 +60,27 @@
     </context-param>
     <context-param>
         <description>
+            URL to the Hierarch View servlet that generate the images
+        </description>
+        <param-name>binarysearch.HIERARCH_VIEW_DISPLAY_URL</param-name>
+        <param-value>http://www.ebi.ac.uk/intact/hierarchView/display.do?</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            URL to the Hierarch View servlet that generate the images
+        </description>
+        <param-name>binarysearch.HIERARCH_VIEW_GENERATEIMAGE_URL</param-name>
+        <param-value>http://www.ebi.ac.uk/intact/hierarchView/GenerateImage?</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Maximum number of interactions for the image to show
+        </description>
+        <param-name>binarysearch.MAX_INTERACTIONS_FOR_IMAGE</param-name>
+        <param-value>500</param-value>
+    </context-param>
+    <context-param>
+        <description>
             Secret key to decode
         </description>
         <param-name>psidev.SECRET</param-name>
@@ -357,6 +378,17 @@
       <listener>
           <listener-class>org.apache.myfaces.orchestra.conversation.servlet.ConversationManagerSessionListener</listener-class>
       </listener>
+
+    <!-- Binary Search Servlets -->
+      <servlet>
+        <servlet-name>export</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.binarysearch.webapp.servlet.ExportServlet</servlet-class>
+      </servlet>
+
+      <servlet-mapping>
+        <servlet-name>export</servlet-name>
+        <url-pattern>/export</url-pattern>
+      </servlet-mapping>
 
       <!-- Faces Servlet -->
       <servlet>

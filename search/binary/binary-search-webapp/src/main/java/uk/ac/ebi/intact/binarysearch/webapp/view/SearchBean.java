@@ -19,6 +19,7 @@ import uk.ac.ebi.intact.binarysearch.webapp.model.TooManyResults;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.AdvancedSearch;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.QueryHelper;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.RelatedResults;
+import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.search.wsclient.SearchServiceClient;
 
 import javax.faces.component.UIData;
@@ -106,7 +107,7 @@ public class SearchBean implements Serializable
 
         if (log.isDebugEnabled()) log.debug("Searching: " + query);
 
-        String indexDirectory = getDefaultIndex().getLocation();
+        String indexDirectory = WebappUtils.getDefaultIndex(appConfigBean.getConfig()).getLocation();
         try {
             if (sortColumn == null) {
                 sortColumn = PsimiTabColumn.ID_A.getSortableColumnName();
@@ -173,17 +174,6 @@ public class SearchBean implements Serializable
 
     public void forceSimpleMode(ActionEvent evt) {
         advancedMode = false;
-    }
-
-    public SearchConfig.Indexes.Index getDefaultIndex() {
-
-        for (SearchConfig.Indexes.Index index : appConfigBean.getConfig().getIndexes().getIndex()) {
-            if (index.isDefault()) {
-                return index;
-            }
-        }
-
-        return null;
     }
 
     public String getQuery()

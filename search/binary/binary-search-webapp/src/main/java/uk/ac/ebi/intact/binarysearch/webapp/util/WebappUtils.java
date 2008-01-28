@@ -103,6 +103,17 @@ public class WebappUtils {
         }
     }
 
+    public static SearchConfig.Indexes.Index getDefaultIndex(SearchConfig config) {
+
+        for (SearchConfig.Indexes.Index index : config.getIndexes().getIndex()) {
+            if (index.isDefault()) {
+                return index;
+            }
+        }
+
+        return null;
+    }
+
     private static Object readConfigXml(InputStream is) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(SearchConfig.class.getPackage().getName());
         Unmarshaller unmarshaller = jc.createUnmarshaller();

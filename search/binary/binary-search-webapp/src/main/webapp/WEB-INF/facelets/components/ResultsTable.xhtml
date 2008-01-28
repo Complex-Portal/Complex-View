@@ -16,7 +16,7 @@
 <!-- table is buffered, so we can put the navigation on top and on bottom -->
 
 <tr:table id="results" value="#{value}" var="binaryInteraction" varStatus="status"
-        binding="#{searchBean.resultsDataTable}"
+        binding="#{searchBean.resultsDataTable}" emptyText="No interactions found matching the query." 
         rows="50" rowBandingInterval="1" >
 
     <tr:column>
