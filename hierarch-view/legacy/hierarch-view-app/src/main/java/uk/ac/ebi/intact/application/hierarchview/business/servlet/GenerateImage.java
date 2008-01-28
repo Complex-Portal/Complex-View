@@ -57,14 +57,15 @@ public class GenerateImage extends HttpServlet {
             // get the current user session
             HttpSession session = aRequest.getSession( false );
 
+            String query = aRequest.getParameter("query");
+
             ImageBean imageBean;
 
-            if ( session != null ) {
+            if ( query == null ) {
                 IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
                 imageBean = user.getImageBean();
             } else {
                 // search and create image
-                String query = aRequest.getParameter("query");
                 String widthParam = aRequest.getParameter("w");
                 String heightParam = aRequest.getParameter("h");
 
@@ -100,7 +101,7 @@ public class GenerateImage extends HttpServlet {
                 String dataTlp = network.exportTlp();
                 network.importDataToImage(dataTlp);
 
-                DrawGraph imageProducer = new DrawGraph( network, "", "", height, width );
+                DrawGraph imageProducer = new DrawGraph( network, appPath, minePath, height, width );
                 imageProducer.draw();
                 imageBean = imageProducer.getImageBean();
             }
