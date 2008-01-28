@@ -38,6 +38,7 @@ import uk.ac.ebi.intact.searchengine.SearchHelper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
 import uk.ac.ebi.intact.util.Chrono;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,7 +50,7 @@ import java.util.Collection;
  * @version $Id
  * @since 1.6.0-SNAPSHOT
  */
-public class DatabaseService implements DataService {
+public class DatabaseService implements DataService, Serializable {
 
     private static final Log logger = LogFactory.getLog( DatabaseService.class );
 
