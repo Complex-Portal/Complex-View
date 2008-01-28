@@ -21,6 +21,7 @@
 
     <properties>
         <jetty.port>9090</jetty.port>
+        <db.alias>nodb</db.alias>
     </properties>
 
     <dependencies>
