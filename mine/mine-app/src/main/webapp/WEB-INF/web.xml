@@ -44,7 +44,7 @@
     <!-- Filter to open the session at the beginning of the request and close on end -->
     <filter>
         <filter-name>hibernateFilter</filter-name>
-        <filter-class>uk.ac.ebi.intact.webapp.IntactSessionRequestFilter</filter-class>
+        <filter-class>uk.ac.ebi.intact.webapp.JpaIntactSessionRequestFilter</filter-class>
 
         <init-param>
             <param-name>uk.ac.ebi.intact.filter.EXCLUDED_EXTENSIONS</param-name>
