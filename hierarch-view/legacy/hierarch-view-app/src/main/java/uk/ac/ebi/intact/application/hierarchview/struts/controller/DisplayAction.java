@@ -87,7 +87,7 @@ public final class DisplayAction extends IntactBaseAction {
         String AC = request.getParameter( "AC" );
 
         if (AC == null) {
-            request.getParameter("query");
+            AC = request.getParameter("query");
         }
 
         String methodLabel = request.getParameter( "method" );

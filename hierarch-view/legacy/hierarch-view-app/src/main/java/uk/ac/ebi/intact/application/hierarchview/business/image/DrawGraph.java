@@ -120,41 +120,62 @@ public class DrawGraph {
     /**
      *
      */
-    private static int borderSize;
+    private int borderSize;
 
     /**
      * Internal margin of a node
      */
-    private static int internalTopMargin, internalBottomMargin,
+    private int internalTopMargin, internalBottomMargin,
             internalLeftMargin, internalRightMargin;
 
     /**
      * The used font to write the label
      */
-    private static Font fontLabel;
-    private static Font boldFontLabel;
+    private Font fontLabel;
+    private Font boldFontLabel;
 
-    private static Color backgroundColor;
-    private static Color edgeDefaultColor;
-    private static Color edgeHighlightDefaultColor;
-    private static Color borderColor;
-    private static String borderEnable;
+    private Color backgroundColor;
+    private Color edgeDefaultColor;
+    private Color edgeHighlightDefaultColor;
+    private Color borderColor;
+    private String borderEnable;
 
-    private static int imageLength, imageHeight;
+    private int imageLength, imageHeight;
 
-    private static String shapeEnable;
+    private String shapeEnable;
 
-    private static String edgeAntialiased;
-    private static String textAntialiased;
-    private static String nodeAntialiased;
+    private String edgeAntialiased;
+    private String textAntialiased;
+    private String nodeAntialiased;
 
-    private static float edgeThickness;
+    private float edgeThickness;
 
     // stores the nodes of the path found by MiNe
     private String minePath = null;
 
 
-    static {
+    /**
+     * Constructor
+     */
+    public DrawGraph( IntactUserI user, Network in, String applicationPath, String minePath ) {
+        if ( user.getWindowDimension() != null ) {
+            imageLength = new Double( user.getWindowDimension().getWidth()*0.55 ).intValue();
+            imageHeight = new Double( user.getWindowDimension().getHeight()*0.72 ).intValue();
+        }
+
+        initDefaultVars();
+        init(in, applicationPath, minePath, imageHeight, imageLength);
+    }
+
+    /**
+     * Constructor
+     */
+    public DrawGraph( Network in, String applicationPath, String minePath, int imageLength, int imageWidth ) {
+        initDefaultVars();
+        init(in, applicationPath, minePath, imageLength, imageWidth);
+    }
+
+    private void initDefaultVars() {
         Properties properties = IntactUserI.GRAPH_PROPERTIES;
 
         // read the background and border color in the property file
@@ -269,25 +290,6 @@ public class DrawGraph {
         internalBottomMargin = Utilities.parseProperty( internalBottomMarginStr, DEFAULT_INTERNAL_BOTTOM_MARGIN );
         internalLeftMargin = Utilities.parseProperty( internalLeftMarginStr, DEFAULT_INTERNAL_LEFT_MARGIN );
         internalRightMargin = Utilities.parseProperty( internalRightMarginStr, DEFAULT_INTERNAL_RIGHT_MARGIN );
-    }
-
-    /**
-     * Constructor
-     */
-    public DrawGraph( IntactUserI user, Network in, String applicationPath, String minePath ) {
-        if ( user.getWindowDimension() != null ) {
-            imageLength = new Double( user.getWindowDimension().getWidth()*0.55 ).intValue();
-            imageHeight = new Double( user.getWindowDimension().getHeight()*0.72 ).intValue();
-        }
-
-        init(in, applicationPath, minePath, imageHeight, imageLength);
-    }
-
-    /**
-     * Constructor
-     */
-    public DrawGraph( Network in, String applicationPath, String minePath, int imageLength, int imageWidth ) {
-        init(in, applicationPath, minePath, imageLength, imageWidth);
     }
 
     private void init( Network in, String applicationPath, String minePath, int height, int width ) {
