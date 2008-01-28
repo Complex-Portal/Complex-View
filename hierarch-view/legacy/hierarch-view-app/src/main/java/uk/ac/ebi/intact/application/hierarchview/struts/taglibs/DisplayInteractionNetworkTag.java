@@ -16,7 +16,6 @@ import uk.ac.ebi.intact.application.hierarchview.highlightment.HighlightInteract
 import uk.ac.ebi.intact.application.hierarchview.highlightment.HighlightProteins;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.EdgeHighlightmentSource;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.NodeHighlightmentSource;
-import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -53,7 +52,7 @@ public class DisplayInteractionNetworkTag extends TagSupport {
         HttpSession session = pageContext.getSession();
 
         try {
-            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+            IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
             // Retrieve user's data
             if ( user == null ) {
                 logger.error( "User was null, exit the tag." );

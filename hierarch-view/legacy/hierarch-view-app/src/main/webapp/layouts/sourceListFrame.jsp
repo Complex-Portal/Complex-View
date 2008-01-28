@@ -1,6 +1,5 @@
 <%@ page import="uk.ac.ebi.intact.application.hierarchview.business.Constants,
-                 uk.ac.ebi.intact.application.hierarchview.business.IntactUserI,
-                 uk.ac.ebi.intact.context.IntactContext" %>
+                 uk.ac.ebi.intact.application.hierarchview.business.IntactUserI" %>
 <%@ page language="java" %>
 
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
@@ -30,7 +29,7 @@
 
         <%
             // check if the session is still opened
-            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+            IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
 
             boolean checkSession = true;
 

@@ -21,7 +21,6 @@ import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
 import uk.ac.ebi.intact.application.hierarchview.exception.*;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.util.Chrono;
 
 import javax.servlet.http.HttpServletRequest;
@@ -255,8 +254,8 @@ public abstract class IntactBaseAction extends Action {
         try {
             String applicationPath = aRequest.getContextPath();
 
-            user = new IntactUser( applicationPath );
-            IntactContext.getCurrentInstance().getSession().setAttribute( Constants.USER_KEY, user );
+            user = IntactUser.createIntactUser( applicationPath );
+            session.setAttribute( Constants.USER_KEY, user );
         }
         catch ( IntactException ie ) {
             logger.error( "Could not initialize user's settings", ie );

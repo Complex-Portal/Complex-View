@@ -5,9 +5,7 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -45,7 +43,7 @@ public class DisplayHttpContentTag extends TagSupport {
         //HttpSession session = pageContext.getSession();
 
         try {
-            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+            IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance();
             String urlStr = user.getSourceURL();
 
             if ( urlStr == null ) {

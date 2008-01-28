@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.HighlightmentSource;
@@ -26,7 +25,6 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.LabelValueBea
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.OptionGenerator;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.util.SearchReplace;
 
@@ -140,7 +138,7 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
      */
     public Collection<Edge> interactionToHightlight( Network network ) {
 
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+        IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance();
         Collection<String> selectedTerms = user.getSelectedKeys();
 
         if ( logger.isDebugEnabled() ) {

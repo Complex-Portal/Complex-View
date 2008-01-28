@@ -3,7 +3,7 @@
 <%@ page import="uk.ac.ebi.intact.application.hierarchview.business.Constants,
                  uk.ac.ebi.intact.application.hierarchview.business.IntactUserI,
                  uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder" %>
-<%@ page import="uk.ac.ebi.intact.context.IntactContext" %>
+
 
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 
@@ -28,7 +28,7 @@
             /**
              * Retreive user's data from the session
              */
-            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+            IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
             int maxInteractions = HVNetworkBuilder.getMaxInteractions();
             // Displays Http content if URL updated in the session -->
             String searchUrl = user.getSearchUrl();

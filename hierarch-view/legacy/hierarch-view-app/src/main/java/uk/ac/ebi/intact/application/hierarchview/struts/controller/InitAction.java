@@ -10,12 +10,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
-import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.InitForm;
-import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -60,22 +58,16 @@ public final class InitAction extends IntactBaseAction {
         // get a session
         HttpSession session = getNewSession( request );
 
-//        if (!IntactContext.currentInstanceExists()) {
-//            IntactContext.initContext( "intact-core-mem", new WebappSession(session.getServletContext(), session, request) );
-//        }
-
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
-
-        if ( null != user ) {
+        if (IntactUser.currentInstanceExists()) {
             // user already exists
             logger.info( "User already exists ... don't create a new one !" );
             // set user's data field (AC, ...) to default value
-            user.init();
+            IntactUser.getCurrentInstance().init();
             return ( mapping.findForward( "success" ) );
         }
 
         // No user found, let's create one
-        user = createIntactUser( session, request );
+        IntactUser user = createIntactUser( session, request );
 
         if ( !isErrorsEmpty() ) {
             // Report any errors we have discovered back to the original form

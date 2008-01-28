@@ -3,7 +3,7 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source.node;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.HighlightmentSource;
@@ -11,7 +11,6 @@ import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.LabelValueBean;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.OptionGenerator;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Node;
 import uk.ac.ebi.intact.util.SearchReplace;
 
@@ -137,7 +136,7 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
      */
     public Collection<Node> proteinToHightlight( Network network ) {
 
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+        IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance();
         Collection<String> selectedTerms = user.getSelectedKeys();
 
         if ( logger.isDebugEnabled() ) {
@@ -169,8 +168,7 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
      * @param aSession session in which we have to save the parameter.
      */
     public void saveOptions( HttpServletRequest aRequest, HttpSession aSession ) {
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession()
-                .getAttribute( Constants.USER_KEY );
+        IntactUserI user = IntactUser.getCurrentInstance();
         String[] result = aRequest.getParameterValues( ATTRIBUTE_OPTION_CHILDREN );
 
         if ( result != null )

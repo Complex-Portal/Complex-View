@@ -100,7 +100,7 @@ public class DrawGraph {
     /**
      * The centralnodes of the network
      */
-    private final List<Node> centralNodes;
+    private List<Node> centralNodes;
 
     /**
      * Size of the image
@@ -275,6 +275,22 @@ public class DrawGraph {
      * Constructor
      */
     public DrawGraph( IntactUserI user, Network in, String applicationPath, String minePath ) {
+        if ( user.getWindowDimension() != null ) {
+            imageLength = new Double( user.getWindowDimension().getWidth()*0.55 ).intValue();
+            imageHeight = new Double( user.getWindowDimension().getHeight()*0.72 ).intValue();
+        }
+
+        init(in, applicationPath, minePath, imageHeight, imageLength);
+    }
+
+    /**
+     * Constructor
+     */
+    public DrawGraph( Network in, String applicationPath, String minePath, int imageLength, int imageWidth ) {
+        init(in, applicationPath, minePath, imageLength, imageWidth);
+    }
+
+    private void init( Network in, String applicationPath, String minePath, int height, int width ) {
         graph = in;
         centralNodes = in.getCentralNodes();
         this.minePath = minePath;
@@ -289,17 +305,14 @@ public class DrawGraph {
 
         ImageDimension dimension = in.getImageDimension();
 
-        Dimension windowDimension = user.getWindowDimension();
-        if ( windowDimension != null ) {
-            imageLength = new Double( windowDimension.getWidth()*0.55 ).intValue();
-            imageHeight = new Double( windowDimension.getHeight()*0.72 ).intValue();
-        }
+        this.imageHeight = height;
+        this.imageLength = width;
 
-        dimensionRateX = dimension.length() / imageLength;
-        dimensionRateY = dimension.height() / imageHeight;
+        dimensionRateX = dimension.length() / width;
+        dimensionRateY = dimension.height() / height;
 
-        imageSizex = imageLength + borderSize * 2;
-        imageSizey = imageHeight + borderSize * 2;
+        imageSizex = width + borderSize * 2;
+        imageSizey = height + borderSize * 2;
     }
 
     /**

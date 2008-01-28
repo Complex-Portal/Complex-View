@@ -18,7 +18,6 @@ import uk.ac.ebi.intact.application.hierarchview.highlightment.source.node.NodeH
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +58,7 @@ public class DisplaySourceTag extends TagSupport {
         HttpSession session = pageContext.getSession();
 
         try {
-            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+            IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
             if ( user == null ) {
                 logger.error( "No existing session" );
                 return EVAL_PAGE;

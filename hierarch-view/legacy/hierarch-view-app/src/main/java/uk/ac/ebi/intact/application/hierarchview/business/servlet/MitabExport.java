@@ -19,10 +19,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.PsimiTabWriter;
 import psidev.psi.mi.tab.model.BinaryInteraction;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 
@@ -49,7 +48,7 @@ public class MitabExport extends HttpServlet {
 
         response.setContentType( "text/plain" );
 
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+        IntactUserI user = IntactUser.getCurrentInstance();
 
         if ( user != null ) {
             Network network = user.getInteractionNetwork();

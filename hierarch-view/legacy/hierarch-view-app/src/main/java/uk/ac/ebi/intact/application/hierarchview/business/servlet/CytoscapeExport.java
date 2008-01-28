@@ -17,10 +17,9 @@ package uk.ac.ebi.intact.application.hierarchview.business.servlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
+import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
-import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -44,7 +43,7 @@ public class CytoscapeExport extends HttpServlet {
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 
         try {
-            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+            IntactUserI user = IntactUser.getCurrentInstance();
 
             response.setContentType( "application/x-java-jnlp-file" );
 

@@ -12,9 +12,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.data.LocalIndexDataSevice;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
+import uk.ac.ebi.intact.application.hierarchview.business.image.DrawGraph;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
-import uk.ac.ebi.intact.business.IntactTransactionException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.util.Chrono;
 
 import javax.servlet.ServletException;
@@ -51,30 +53,61 @@ public class GenerateImage extends HttpServlet {
             throws ServletException {
         OutputStream outputStream = null;
 
-        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-
         try {
             // get the current user session
             HttpSession session = aRequest.getSession( false );
 
-            if ( session == null ) {
-                logger.error( "No session available, don't displays interaction network" );
-                return;
+            ImageBean imageBean;
+
+            if ( session != null ) {
+                IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
+                imageBean = user.getImageBean();
+            } else {
+                // search and create image
+                String query = aRequest.getParameter("query");
+                String widthParam = aRequest.getParameter("w");
+                String heightParam = aRequest.getParameter("h");
+
+                String appPath = "";
+                String minePath = "";
+
+                int width = 400;
+                int height = 400;
+
+                if (query == null) {
+                    throw new IllegalStateException("Parameter 'query' is needed if the session does not exist (direct call to the servlet)");
+                }
+
+                if (widthParam != null) {
+                    width = Integer.parseInt(widthParam);
+                }
+
+                if (heightParam != null) {
+                    height = Integer.parseInt(heightParam);
+                }
+
+                LocalIndexDataSevice dataService = new LocalIndexDataSevice();
+
+                Network network;
+
+                try {
+                    HVNetworkBuilder builder = new HVNetworkBuilder(dataService);
+                    network = builder.buildBinaryGraphNetwork(query);
+                } catch (Exception e) {
+                   throw new ServletException("Problem creating network using query: "+query, e);
+                }
+
+                String dataTlp = network.exportTlp();
+                network.importDataToImage(dataTlp);
+
+                DrawGraph imageProducer = new DrawGraph( network, "", "", height, width );
+                imageProducer.draw();
+                imageBean = imageProducer.getImageBean();
             }
 
-            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
-
-            if ( user == null ) {
-                aResponse.getOutputStream().print( ERROR_MESSAGE );
-                logger.error( "No user in the session, don't displays interaction network" );
-                return;
-            }
-
-            ImageBean imageBean = user.getImageBean();
 
             if ( null == imageBean ) {
-                logger.error( "ImageBean in the session is null" );
-                return;
+                throw new IllegalStateException( "ImageBean is null" );
             }
 
             BufferedImage image = imageBean.getImageData();
@@ -120,12 +153,6 @@ public class GenerateImage extends HttpServlet {
             } catch ( IOException ioe ) {
                 ioe.printStackTrace();
             }
-        }
-
-        try {
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
-        } catch ( IntactTransactionException e ) {
-            e.printStackTrace();
         }
     } // doGet
 }

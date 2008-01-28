@@ -53,6 +53,8 @@
 
     <!-- Filter to init the IntactContext at the beginning of the request and close the
         transaction at the end -->
+    <!-- Using local index, it makes no sense -->
+<!--
     <filter>
         <filter-name>intactFilter</filter-name>
         <filter-class>uk.ac.ebi.intact.webapp.IntactSessionRequestFilter</filter-class>
@@ -65,7 +67,7 @@
         <filter-name>intactFilter</filter-name>
         <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
-
+-->
     <!-- =================================================================== -->
 
     <!-- Action Servlet Configuration for Struts -->

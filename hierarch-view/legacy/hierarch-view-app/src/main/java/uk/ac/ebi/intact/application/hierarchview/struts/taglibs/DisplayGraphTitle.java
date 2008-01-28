@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Node;
 
 import javax.servlet.http.HttpSession;
@@ -61,7 +60,7 @@ public class DisplayGraphTitle extends TagSupport {
             /**
              * Retreive user's data from the session
              */
-            IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+            IntactUserI user = (IntactUserI) session.getAttribute( Constants.USER_KEY );
             if ( user == null ) {
                 logger.error( "No existing session" );
                 return EVAL_PAGE;

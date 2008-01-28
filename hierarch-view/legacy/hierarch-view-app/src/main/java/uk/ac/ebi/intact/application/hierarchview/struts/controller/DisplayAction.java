@@ -85,6 +85,11 @@ public final class DisplayAction extends IntactBaseAction {
             user = getIntactUser( session );
         }
         String AC = request.getParameter( "AC" );
+
+        if (AC == null) {
+            request.getParameter("query");
+        }
+
         String methodLabel = request.getParameter( "method" );
         String depth = request.getParameter( "depth" );
 

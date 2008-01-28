@@ -2,9 +2,8 @@
                  uk.ac.ebi.intact.application.hierarchview.business.Constants,
                  uk.ac.ebi.intact.application.hierarchview.business.IntactUserI,
                  uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean,
-                 uk.ac.ebi.intact.context.IntactContext,
-                 java.util.ArrayList" %>
-<%@ page import="java.util.List" %>
+                 java.util.ArrayList,
+                 java.util.List" %>
 <%@ page language="java" %>
 
 <!--
@@ -40,7 +39,7 @@ New sources available : "All" and Interpro
 <hierarchView:displaySource/>
 
 <%
-    IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+    IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
 
     String selectedSourceType = user.getSelectedKeyType();
     String selectedColor = "#336666";

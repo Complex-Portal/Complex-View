@@ -5,8 +5,7 @@
 - in the root directory of this distribution.
 -->
 <%@ page import="uk.ac.ebi.intact.application.hierarchview.business.Constants,
-                 uk.ac.ebi.intact.application.hierarchview.business.IntactUserI,
-                 uk.ac.ebi.intact.context.IntactContext" %>
+                 uk.ac.ebi.intact.application.hierarchview.business.IntactUserI" %>
 
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
@@ -23,7 +22,7 @@
     /**
      * Retreive user's data from the session
      */
-    IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+    IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
 
     if ( user == null ) {
         // no user in the session, don't display anything

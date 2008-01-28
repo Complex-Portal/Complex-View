@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +53,7 @@ public class RestoreContextFromCookieTag extends TagSupport {
             return EVAL_PAGE;
         }
 
-        final IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+        final IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
         // no point to restore the environment if the user already exists
         if ( user != null ) {
             logger.info( "The user exists, exit the restore procedure" );

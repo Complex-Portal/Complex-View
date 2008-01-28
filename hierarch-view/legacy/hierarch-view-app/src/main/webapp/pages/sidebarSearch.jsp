@@ -15,8 +15,7 @@
                  uk.ac.ebi.intact.application.hierarchview.business.IntactUserI,
                  uk.ac.ebi.intact.application.hierarchview.struts.view.utils.LabelValueBean,
                  uk.ac.ebi.intact.application.hierarchview.struts.view.utils.OptionGenerator,
-                 uk.ac.ebi.intact.context.IntactContext" %>
-<%@ page import="javax.servlet.jsp.PageContext" %>
+                 javax.servlet.jsp.PageContext" %>
 <%@ page import="java.util.List" %>
 
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
@@ -27,7 +26,7 @@
 
     IntactUserI user = null;
 
-    user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+    user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
 
     /**
      * Retreive user's data from the session

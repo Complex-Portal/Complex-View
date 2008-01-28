@@ -17,14 +17,12 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.DrawGraph;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.behaviour.HighlightmentBehaviour;
 import uk.ac.ebi.intact.application.hierarchview.highlightment.source.edge.EdgeHighlightmentSource;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Edge;
 
 import javax.servlet.http.HttpSession;
@@ -60,7 +58,7 @@ public class HighlightInteractions {
         Collection<Edge> interactionsToHighlight = source.interactionToHightlight( in );
 
         // Check if the interaction selected is in the selected tab
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+        IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance();
 
         // Interaction network's modification
         HighlightmentBehaviour highlightmentBehaviour = HighlightmentBehaviour.getHighlightmentBehaviour( behaviourClass );

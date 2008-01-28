@@ -53,18 +53,12 @@ public class DatabaseService implements DataService {
 
     private static final Log logger = LogFactory.getLog( DatabaseService.class );
 
-    private final IntactUser user;
-
     private final SearchHelperI searchHelper = new SearchHelper();
 
     private Collection<String> centralProteins;
 
-    DatabaseService() {
-        user = IntactUser.getCurrentInstance();
-    }
-
     private DaoFactory getDaoFactory() {
-        return user.getDaoFactory();
+        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
     }
 
     public Collection getSearchCritera() {
@@ -174,12 +168,12 @@ public class DatabaseService implements DataService {
         Collection results;
 
         //first try search string 'as is' - some DBs allow mixed case....
-        results = searchHelper.doLookup( SearchClass.INTERACTOR, queryString, user );
+        results = searchHelper.doLookup( SearchClass.INTERACTOR, queryString, IntactUser.getCurrentInstance());
 
         if ( results.isEmpty() ) {
             //now try all lower case....
             String lowerCaseValue = queryString.toLowerCase();
-            results = searchHelper.doLookup( SearchClass.INTERACTOR, lowerCaseValue, user );
+            results = searchHelper.doLookup( SearchClass.INTERACTOR, lowerCaseValue, IntactUser.getCurrentInstance() );
             if ( results.isEmpty() ) {
                 //finished all current options, and still nothing - return a failure
                 logger.info( "No matches were found for the specified search criteria" );
@@ -208,7 +202,8 @@ public class DatabaseService implements DataService {
     }
 
     public static Collection getColByPropertyName( Class objectType, String searchParam, String searchValue ) {
-        return IntactUser.getCurrentInstance().getDaoFactory().getIntactObjectDao( objectType ).getColByPropertyName( searchParam, searchValue );
+        return IntactContext.getCurrentInstance().getDataContext()
+                .getDaoFactory().getIntactObjectDao( objectType ).getColByPropertyName( searchParam, searchValue );
     }
 
 }

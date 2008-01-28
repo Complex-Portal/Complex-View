@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.service.graph.Node;
 
 import javax.servlet.http.Cookie;
@@ -95,7 +94,7 @@ public class SaveContextInCookieTag extends TagSupport {
         HttpSession session = pageContext.getSession();
         if ( session == null ) return EVAL_PAGE;
 
-        IntactUserI user = ( IntactUserI ) IntactContext.getCurrentInstance().getSession().getAttribute( Constants.USER_KEY );
+        IntactUserI user = (IntactUserI) session.getAttribute(Constants.USER_KEY);
         if ( user == null ) return EVAL_PAGE;
 
         Network network = user.getInteractionNetwork();

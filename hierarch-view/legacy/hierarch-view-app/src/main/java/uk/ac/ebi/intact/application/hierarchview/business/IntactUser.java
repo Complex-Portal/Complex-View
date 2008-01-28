@@ -17,9 +17,7 @@ import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.ClickBehaviourForm;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.IntactObject;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.service.graph.Node;
 
 import javax.servlet.http.HttpSessionBindingEvent;
@@ -106,6 +104,14 @@ public class IntactUser implements IntactUserI {
     private String exportUrl;
     private Dimension windowDimension = null;
 
+    private static ThreadLocal<IntactUser> currentInstance = new ThreadLocal<IntactUser>();
+
+    private IntactUser( String applicationPath ) {
+        init();
+
+        this.applicationPath = applicationPath;
+    }
+
     /**
      * Constructs an instance of this class with given mapping file and the name
      * of the data source class.
@@ -114,11 +120,24 @@ public class IntactUser implements IntactUserI {
      * @throws IntactException thrown for any error in creating lists such as
      *                         topics, database names etc.
      */
-    public IntactUser( String applicationPath ) throws IntactException {
+    public static IntactUser createIntactUser( String applicationPath ) throws IntactException {
 
-        init();
+        IntactUser user = new IntactUser(applicationPath);
 
-        this.applicationPath = applicationPath;
+        currentInstance.set(user);
+
+        return user;
+    }
+
+    public static IntactUser getCurrentInstance() {
+        if (currentInstance.get() == null) {
+            throw new IllegalStateException("No user has been initialized");
+        }
+        return currentInstance.get();
+    }
+
+    public static boolean currentInstanceExists() {
+        return currentInstance.get() != null;
     }
 
     public String getQueryString() {
@@ -411,7 +430,7 @@ public class IntactUser implements IntactUserI {
     }
 
     public String getUserName() {
-        return IntactContext.getCurrentInstance().getUserContext().getUserId();
+        return "default";
     }
 
     public String getDatabaseName() {
@@ -436,15 +455,6 @@ public class IntactUser implements IntactUserI {
      */
     public String getMinePath() {
         return minePath;
-    }
-
-    public DaoFactory getDaoFactory() {
-        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
-    }
-
-    public static IntactUser getCurrentInstance() {
-        String user = uk.ac.ebi.intact.application.hierarchview.business.Constants.USER_KEY;
-        return ( IntactUser ) IntactContext.getCurrentInstance().getSession().getAttribute( user );
     }
 
     public DataService getDataService() {
