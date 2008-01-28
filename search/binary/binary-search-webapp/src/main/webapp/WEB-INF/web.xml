@@ -49,7 +49,7 @@
             Default index location
         </description>
         <param-name>psidev.DEFAULT_INDEX</param-name>
-        <param-value>/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current</param-value>
+        <param-value>f:/temp/psimitab-index</param-value>
     </context-param>
     <context-param>
         <description>
@@ -99,7 +99,7 @@
             to get the children of a detection method or interaction type is not possible. Default: false
         </description>
         <param-name>psidev.DO_NOT_USE_OLS</param-name>
-        <param-value>false</param-value>
+        <param-value>true</param-value>
     </context-param>
 
     <context-param>

@@ -3,31 +3,28 @@ package uk.ac.ebi.intact.binarysearch.webapp.view;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.myfaces.component.html.ext.HtmlDataTable;
-import org.apache.myfaces.trinidad.component.UIXTable;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
-import org.springframework.stereotype.Controller;
-import org.springframework.context.annotation.Scope;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.trinidad.component.UIXTable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import psidev.psi.mi.tab.PsimiTabColumn;
-import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
 import uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean;
+import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.binarysearch.webapp.model.TooManyResults;
+import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.AdvancedSearch;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.QueryHelper;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.RelatedResults;
-import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.search.wsclient.SearchServiceClient;
 
-import javax.faces.component.UIData;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * Main bean, that performs the searches
@@ -174,6 +171,10 @@ public class SearchBean implements Serializable
 
     public void forceSimpleMode(ActionEvent evt) {
         advancedMode = false;
+    }
+
+    public SearchConfig.Indexes.Index getDefaultIndex() {
+        return WebappUtils.getDefaultIndex(appConfigBean.getConfig());
     }
 
     public String getQuery()

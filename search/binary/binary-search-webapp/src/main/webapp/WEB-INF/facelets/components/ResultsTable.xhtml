@@ -99,6 +99,15 @@
 <tr:column headerText="Interaction details">
     <bs:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true"/>
 </tr:column>
+<tr:column headerText="Confidence Value(s)">
+    <t:dataList var="confidence" value="#{binaryInteraction.confidenceValues}" >
+                    <span style="display:block">
+                        <nobr>
+                            <tr:outputText value="#{confidence.type}:#{confidence.value}"/>
+                        </nobr>
+                    </span>
+     </t:dataList>
+</tr:column>
 <tr:column headerText="Experimental role A">
     <bs:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
@@ -118,10 +127,10 @@
     <bs:xrefDataList value="#{binaryInteraction.propertiesB}"/>
 </tr:column>
 <tr:column headerText="Interactor type A">
-    <bs:xrefDataList value="#{binaryInteraction.interactorTypeA}"/>
+    <bs:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
 </tr:column>
 <tr:column headerText="Interactor type B">
-    <bs:xrefDataList value="#{binaryInteraction.interactorTypeB}"/>
+    <bs:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>
 </tr:column>
 <tr:column headerText="Host organism">
     <bs:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
