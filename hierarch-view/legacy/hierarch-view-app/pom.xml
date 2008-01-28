@@ -73,7 +73,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.service.search.binary</groupId>
             <artifactId>wsclient</artifactId>
-            <version>1.6.0-rc1</version>
+            <version>1.6.0-rc2-SNAPSHOT</version>
         </dependency>
 
 
