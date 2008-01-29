@@ -43,6 +43,9 @@ public class GenerateImage extends HttpServlet {
 
     private static final Log logger = LogFactory.getLog( GenerateImage.class );
 
+    private static final int MAX_WIDTH = 1600;
+    private static final int MAX_HEIGHT = 1200;
+
     private final static String ERROR_MESSAGE = "Unable to produce the interaction network, please warn your administrator";
 
     /**
@@ -81,10 +84,12 @@ public class GenerateImage extends HttpServlet {
 
                 if (widthParam != null) {
                     width = Integer.parseInt(widthParam);
+                    width = Math.min(width, MAX_WIDTH);
                 }
 
                 if (heightParam != null) {
                     height = Integer.parseInt(heightParam);
+                    height = Math.min(height, MAX_HEIGHT);
                 }
 
                 LocalIndexDataSevice dataService = new LocalIndexDataSevice();

@@ -79,15 +79,17 @@ public class LocalIndexDataSevice implements DataService {
 
         try {
             IntActSearchEngine searchEngine = new IntActSearchEngine( localIndexPath );
-            this.searchResult = Searcher.search( query, searchEngine );
-            
+            this.searchResult = searchEngine.search( query, 0, HVNetworkBuilder.getMaxInteractions() );
+
+            if ( searchResult.getTotalCount() > HVNetworkBuilder.getMaxInteractions() ) {
+                throw new MultipleResultException( "Query '" + query + "' returns more interactions than the maximum allowed (" + HVNetworkBuilder.getMaxInteractions() + ")." );
+            }
+
         } catch ( IOException e ) {
             throw new HierarchViewDataException( "Could not find index-files" );
         }
 
-        if ( searchResult.getTotalCount() > HVNetworkBuilder.getMaxInteractions() ) {
-            throw new MultipleResultException( "Result of " + query + " get more than " + HVNetworkBuilder.getMaxInteractions() + " interactions." );
-        }
+
 
         return ( Collection<BinaryInteraction> ) searchResult.getInteractions();
     }
