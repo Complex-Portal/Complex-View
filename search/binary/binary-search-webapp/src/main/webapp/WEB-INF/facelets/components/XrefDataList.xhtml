@@ -16,6 +16,7 @@
             <c:set var="xrefUrl" value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"/>
             <c:set var="onlyText" value="#{onlyText == null? false : sf:convertToBoolean(onlyText)}"/>
             <c:set var="itemPerLine" value="#{itemPerLine == null? false : sf:convertToBoolean(itemPerLine)}"/>
+            <c:set var="itemDisabled" value="#{itemPerLine == null? false : sf:convertToBoolean(disableLinks)}"/>
 
             <t:dataList var="xref" value="#{value}" rowCountVar="rowCount"
                         rowIndexVar="rowIndex">
@@ -26,7 +27,7 @@
                     <nobr>
                         <tr:goLink text="#{xrefUrl == null? psimitab:xrefToString(xref, true, false) : text}" shortDesc="#{xref.text}"
                                    targetFrame="_blank"
-                                   destination="#{xrefUrl}" disabled="#{xrefUrl == null}"/>
+                                   destination="#{xrefUrl}" disabled="#{xrefUrl == null or itemDisabled}"/>
                         <h:outputText value=", " rendered="#{rowIndex + 1 lt rowCount}"/>
                     </nobr>
                 </h:panelGroup>
@@ -35,7 +36,8 @@
                     <span style="display:block">
                         <nobr>
                             <tr:goLink text="#{text}" shortDesc="#{xref.text}" targetFrame="_blank"
-                                       destination="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"/>
+                                       destination="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"
+                                       disabled="#{xrefUrl == null or itemDisabled}"/>
                         </nobr>
                     </span>
                 </h:panelGroup>

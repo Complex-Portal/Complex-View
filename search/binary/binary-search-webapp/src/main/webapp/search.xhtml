@@ -13,17 +13,8 @@
 
        template="/WEB-INF/facelets/layout/template.xhtml">
 
-        <ui:define name="content">
-
-
-        <!--<t:dojoInitializer />-->
-
-            
-
-            &#160;
-
-            <h:panelGroup>
-                <tr:statusIndicator id="pageStatus">
+    <ui:define name="breadcrumbs">
+        <tr:statusIndicator id="pageStatus" inlineStyle="float:left;">
                     <f:facet name="busy">
                             <tr:panelGroupLayout layout="horizontal">
                                 <h:graphicImage value="/images/wait_red_indicator.gif" style="vertical-align:middle"/>
@@ -34,7 +25,12 @@
                         <h:graphicImage value="/images/status_off.gif" style="vertical-align:middle"/>
                     </f:facet>
                 </tr:statusIndicator>
-            </h:panelGroup>
+    </ui:define>
+
+        <ui:define name="content">
+
+
+        <!--<t:dojoInitializer />-->
 
             <!-- rendered only if there is a new query via url (e.g. from an external application) -->
             <c:set var="executeQueryOnLoad" value="#{param.query != null and (param.query ne searchBean.query)}"/>
@@ -64,37 +60,22 @@
                             partialTriggers="sideSearchBox_searchBox" >
                 <tr:panelHeader text="Summary" rendered="#{searchBean.searchDone}">
 
-                            <!--<ebi:help id="resultsHelp" title="Results Table" onlyIcon="true">-->
-                                <!--<p>-->
-                                    <!--Shown below are a full list of interactions in which a match to your query was found-->
-                                    <!--anywhere in the entry. In the results table:-->
-
-                                    <!--<ul>-->
-                                        <!--<li>Columns are sortable, by clicking on the column header.</li>-->
-                                        <!--<li>Cell values are linked by cross-reference to its details in other IntAct-->
-                                            <!--databases or external sources.-->
-                                        <!--</li>-->
-                                    <!--</ul>-->
-                                <!--</p>-->
-                            <!--</ebi:help>-->
-
-
                         <bs:resultsSummary/>
 
-                        <h:panelGroup rendered="#{searchBean.results.rowCount > 0}">
-                            <strong>Export Options: </strong>
+                        <!--<h:panelGroup rendered="#{searchBean.results.rowCount > 0}">-->
+                            <!--<strong>Export Options: </strong>-->
 
-                            <h:outputLink target="_blank"
-                                          value="#{requestConfigBean.absoluteContextPath}/export?query=#{searchBean.query}&amp;format=mitab&amp;sort=#{searchBean.sortColumn}&amp;asc=#{searchBean.sortAscending}">
-                                <t:graphicImage url="#{requestConfigBean.absoluteContextPath}/images/mitab.png"
-                                                style="vertical-align:middle"
-                                                border="0"/>
-                            </h:outputLink>
-                            <ebi:help id="mitabHelp" onlyIcon="true" width="800px" height="400px" title="PSI-MITAB25 Format">
-                                <ui:include src="help/mitab.xhtml"/>
-                            </ebi:help>
+                            <!--<h:outputLink target="_blank"-->
+                                          <!--value="#{requestConfigBean.absoluteContextPath}/export?query=#{searchBean.query}&amp;format=mitab&amp;sort=#{searchBean.sortColumn}&amp;asc=#{searchBean.sortAscending}">-->
+                                <!--<t:graphicImage url="#{requestConfigBean.absoluteContextPath}/images/mitab.png"-->
+                                                <!--style="vertical-align:middle"-->
+                                                <!--border="0"/>-->
+                            <!--</h:outputLink>-->
+                            <!--<ebi:help id="mitabHelp" onlyIcon="true" width="800px" height="400px" title="PSI-MITAB25 Format">-->
+                                <!--<ui:include src="help/mitab.xhtml"/>-->
+                            <!--</ebi:help>-->
 
-                    </h:panelGroup>
+                    <!--</h:panelGroup>-->
 
                     </tr:panelHeader>
 
@@ -121,8 +102,8 @@
 
                     <tr:panelHeader text="Graphical Representation" size="1">
 
-                        <tr:panelGroupLayout layout="vertical">
-                            <tr:outputText value="This figure a graphical representation of the interactions shown in the above table. Click on the image for more details."/>
+                        <tr:panelGroupLayout layout="vertical" rendered="#{searchBean.results.rowCount lt 500}">
+                            <tr:outputText value="This figure is a graphical representation of the interactions shown in the above table. Click on the image for more details."/>
 
                             <br/>
 
@@ -130,6 +111,10 @@
                                     <tr:image source="#{initParam['binarysearch.HIERARCH_VIEW_GENERATEIMAGE_URL']}query=#{searchBean.query}&amp;w=600&amp;h=600" />
                                 </tr:goLink>
 
+                        </tr:panelGroupLayout>
+
+                        <tr:panelGroupLayout layout="vertical" rendered="#{searchBean.results.rowCount ge 500}">
+                             <tr:outputText value="The graphical representation cannot be created if more than 500 interactions are to be shown."/>
                         </tr:panelGroupLayout>
 
                      </tr:panelHeader>

@@ -60,6 +60,11 @@ import java.util.ArrayList;
  */
 public class ExportServlet extends HttpServlet {
 
+    public static final String PARAM_SORT = "sort";
+    public static final String PARAM_SORT_ASC = "asc";
+    public static final String PARAM_QUERY = "query";
+    public static final String PARAM_FORMAT = "format";
+
     private String defaultIndex;
 
     @Override
@@ -70,8 +75,8 @@ public class ExportServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String searchQuery = request.getParameter("query");
-        String format = request.getParameter("format");
+        String searchQuery = request.getParameter(PARAM_QUERY);
+        String format = request.getParameter(PARAM_FORMAT);
 
         if (format == null) {
             throw new ServletException("Parameter 'format' is missing in the URL");
@@ -91,8 +96,8 @@ public class ExportServlet extends HttpServlet {
     private void exportToMiTab(String searchQuery, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Writer out = response.getWriter();
 
-        String sortColumn = request.getParameter("sort");
-        String asc = request.getParameter("asc");
+        String sortColumn = request.getParameter(PARAM_SORT);
+        String asc = request.getParameter(PARAM_SORT_ASC);
         String indexDir = defaultIndex;
 
         List interactions;
@@ -130,8 +135,8 @@ public class ExportServlet extends HttpServlet {
     private void exportToMiTabIntact(String searchQuery, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Writer out = response.getWriter();
 
-        String sortColumn = request.getParameter("sort");
-        String asc = request.getParameter("asc");
+        String sortColumn = request.getParameter(PARAM_SORT);
+        String asc = request.getParameter(PARAM_SORT_ASC);
         String indexDir = defaultIndex;
 
         List interactions;

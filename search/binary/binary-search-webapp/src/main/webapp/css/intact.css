@@ -42,6 +42,7 @@ td.intact_table {
 .intact_summaryCol {
     width: 50%;
     vertical-align:top;
+    text-align:left;
 }
 
 .intact_button_disabled {

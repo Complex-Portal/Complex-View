@@ -82,6 +82,9 @@
             <name>itemPerLine</name>
         </attribute>
         <attribute>
+            <name>disableLinks</name>
+        </attribute>
+        <attribute>
             <name>onlyText</name>
         </attribute>
         <attribute>

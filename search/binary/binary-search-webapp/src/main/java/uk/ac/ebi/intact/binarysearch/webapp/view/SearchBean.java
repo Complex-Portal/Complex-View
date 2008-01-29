@@ -6,6 +6,8 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.UIXTable;
+import org.apache.myfaces.trinidad.event.PollEvent;
+import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -19,12 +21,15 @@ import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.AdvancedSearch;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.QueryHelper;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.RelatedResults;
+import uk.ac.ebi.intact.binarysearch.webapp.SearchWebappException;
+import uk.ac.ebi.intact.binarysearch.webapp.servlet.ExportServlet;
 import uk.ac.ebi.intact.search.wsclient.SearchServiceClient;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
+import java.io.IOException;
 
 /**
  * Main bean, that performs the searches
@@ -41,6 +46,7 @@ public class SearchBean implements Serializable
 
     private static final String ADV_SEARCH_PARAM = "advSearch";
     private static final String QUERY_PARAM = "query";
+    private static final String VIEW_PARAM = "view";
     private static final String MAX_RESULTS_INIT_PARAM = "psidev.MAX_SEARCH_RESULTS";
 
     // injected
@@ -54,18 +60,25 @@ public class SearchBean implements Serializable
     private String query;
     private AdvancedSearch advancedSearch;
     private RelatedResults relatedResults;
-    private int pageSize = 50;
+    private int pageSize = 30;
 
     // status flags
     private boolean advancedMode;
     private boolean searchDone;
+    private boolean relatedPollEnabled;
+
+    private boolean showProperties;
+    private boolean expandedView;
 
     // results
-    private UIComponent resultsDataTable;
+    private UIXTable resultsDataTable;
     private SearchResultDataModel results;
 
     private String sortColumn;
     private boolean sortAscending;
+
+    // export
+    private String exportFormat;
 
     public SearchBean() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -80,11 +93,18 @@ public class SearchBean implements Serializable
     @InitView
     public void loadFromParams() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        final String advSearchParam = facesContext.getExternalContext().getRequestParameterMap().get("advSearch");
-        final String queryParam = facesContext.getExternalContext().getRequestParameterMap().get("query");
+        final String advSearchParam = facesContext.getExternalContext().getRequestParameterMap().get(ADV_SEARCH_PARAM);
+        final String queryParam = facesContext.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
+        final String viewParam = facesContext.getExternalContext().getRequestParameterMap().get(VIEW_PARAM);
 
         if (advSearchParam != null) {
             this.advancedMode = true;
+        }
+
+        if (viewParam != null) {
+            if ("exp".equals(viewParam)) {
+                expandedView = true;
+            } 
         }
 
         if (queryParam != null) {
@@ -123,13 +143,18 @@ public class SearchBean implements Serializable
             ((UIXTable)resultsDataTable).setFirst(0);
         }
 
-
+        relatedPollEnabled = true;
         searchDone = true;
     }
 
     public void doAdvancedSearch(ActionEvent evt) {
         advancedMode = true;
         doSearch(evt);
+    }
+
+    public void doCalculateRelatedResults(PollEvent evt) {
+        relatedPollEnabled = false;
+        doCalculateRelatedResults((ActionEvent)null);
     }
 
     public void doCalculateRelatedResults(ActionEvent evt) {
@@ -163,10 +188,34 @@ public class SearchBean implements Serializable
         this.advancedMode = true;
     }
 
-    public void scrollerAction(ActionEvent evt) {
-        doSearch(evt);
+    public String doExport() {
+        // /export?query=#{searchBean.query}&amp;format=mitab&amp;sort=#{searchBean.sortColumn}&amp;asc=#{searchBean.sortAscending}
 
-        searchDone = true;
+        // to go to an external URL, we need to shortcircuit the jsf lifecycle
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        String exportUrl = context.getExternalContext().getRequestContextPath()+"/export?"+
+                           ExportServlet.PARAM_QUERY + "=" + query + "&" +
+                           ExportServlet.PARAM_FORMAT + "=" + exportFormat + "&" +
+                           ExportServlet.PARAM_SORT + "=" + sortColumn + "&" +
+                           ExportServlet.PARAM_SORT_ASC + "=" + sortAscending;
+
+        // short-circuit the cycle to redirect to a external page
+        try {
+            context.responseComplete();
+            context.getExternalContext().redirect(exportUrl);
+        }
+        catch (IOException e) {
+            throw new SearchWebappException(e);
+        }
+
+        return null;
+    }
+
+    public void rangeChanged(RangeChangeEvent evt) {
+        results.setRowIndex(evt.getNewStart());
+        ((UIXTable)resultsDataTable).setFirst(evt.getNewStart());
+        //results.fetchResults(evt.getNewStart(), 30);
     }
 
     public void forceSimpleMode(ActionEvent evt) {
@@ -207,12 +256,12 @@ public class SearchBean implements Serializable
         this.searchDone = searchDone;
     }
 
-    public UIComponent getResultsDataTable()
+    public UIXTable getResultsDataTable()
     {
         return resultsDataTable;
     }
 
-    public void setResultsDataTable(UIComponent resultsDataTable)
+    public void setResultsDataTable(UIXTable resultsDataTable)
     {
         this.resultsDataTable = resultsDataTable;
     }
@@ -275,5 +324,37 @@ public class SearchBean implements Serializable
     public void setRelatedResults(RelatedResults relatedResults)
     {
         this.relatedResults = relatedResults;
+    }
+
+    public boolean isShowProperties() {
+        return showProperties;
+    }
+
+    public void setShowProperties(boolean showProperties) {
+        this.showProperties = showProperties;
+    }
+
+    public boolean isExpandedView() {
+        return expandedView;
+    }
+
+    public void setExpandedView(boolean expandedView) {
+        this.expandedView = expandedView;
+    }
+
+    public String getExportFormat() {
+        return exportFormat;
+    }
+
+    public void setExportFormat(String exportFormat) {
+        this.exportFormat = exportFormat;
+    }
+
+    public boolean isRelatedPollEnabled() {
+        return relatedPollEnabled;
+    }
+
+    public void setRelatedPollEnabled(boolean relatedPollEnabled) {
+        this.relatedPollEnabled = relatedPollEnabled;
     }
 }

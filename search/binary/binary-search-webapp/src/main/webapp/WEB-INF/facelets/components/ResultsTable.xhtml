@@ -13,11 +13,65 @@
         xmlns:bs="http://intact.ebi.ac.uk/binarysearch">
 
 
-<!-- table is buffered, so we can put the navigation on top and on bottom -->
 
-<tr:table id="results" value="#{value}" var="binaryInteraction" varStatus="status"
+<tr:table id="results" value="#{value}" var="binaryInteraction" varStatus="status" summary="Binary Interactions"
         binding="#{searchBean.resultsDataTable}" emptyText="No interactions found matching the query." 
-        rows="50" rowBandingInterval="1" >
+        rows="30" rowBandingInterval="1" partialTriggers=":results:btnToogleProps :results:btnStandardView :results:btnExpandedView :results:selPageRangeChoice">
+
+<f:facet name="actions">
+    <tr:panelHorizontalLayout>
+        <f:facet name="separator">
+            <tr:outputFormatted value="&#160;&#160;|&#160;&#160;"/>
+        </f:facet>
+
+         <tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"
+                                     value="#{searchBean.results}" first="#{searchBean.resultsDataTable.first}"
+                                     rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
+                                    rendered="#{searchBean.results.rowCount gt 30}" partialTriggers="sideSearchBox_searchBox"/>
+
+        <tr:panelHorizontalLayout>
+            <f:facet name="separator">
+                <tr:outputFormatted value="&#160;"/>
+            </f:facet>
+
+                <b>
+                    <tr:outputText value="View: "/>
+                </b>
+
+            <tr:commandLink id="btnStandardView" immediate="true"
+                            text="Standard" disabled="#{!searchBean.expandedView}"
+                            partialSubmit="true" inlineStyle="white-space:nowrap;">
+                <f:setPropertyActionListener value="false"
+                                             target="#{searchBean.expandedView}"/>
+            </tr:commandLink>
+            <tr:commandLink id="btnExpandedView" immediate="true"
+                            text="Expanded" disabled="#{searchBean.expandedView}"
+                            partialSubmit="true" inlineStyle="white-space:nowrap;">
+                <f:setPropertyActionListener value="true"
+                                             target="#{searchBean.expandedView}"/>
+            </tr:commandLink>
+        </tr:panelHorizontalLayout>
+
+        <tr:commandLink id="btnToogleProps" immediate="true" rendered="#{searchBean.expandedView}"
+                        text="#{searchBean.showProperties? 'Hide all properties' : 'Show all properties'}"
+                        partialSubmit="true" inlineStyle="white-space:nowrap;">
+            <f:setPropertyActionListener value="#{searchBean.showProperties? false : true}"
+                                         target="#{searchBean.showProperties}"/>
+        </tr:commandLink>
+
+        <tr:panelGroupLayout layout="horizontal" >
+            <tr:selectOneChoice label="Export to:" unselectedLabel="Select one"
+                    value="#{searchBean.exportFormat}">
+                <tr:selectItem label="MI-TAB" value="mitab"/>
+                <tr:selectItem label="MI-TAB (Expanded)" value="mitab_intact"/>
+                <tr:selectItem label="MI-XML 2.5" value="xml" disabled="#{searchBean.results.rowCount ge 1000}"/>
+            </tr:selectOneChoice>
+            <tr:commandButton text="Export" action="#{searchBean.doExport}"/>
+        </tr:panelGroupLayout>
+
+    </tr:panelHorizontalLayout>
+
+</f:facet>
 
     <tr:column>
         <tr:outputText value="#{status.index + 1}"/>
@@ -30,10 +84,10 @@
     <bs:xrefDataList value="#{binaryInteraction.interactorB.identifiers}" />
 </tr:column>
 <tr:column headerText="Alternative id molecule A">
-    <bs:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" />
+    <bs:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
 </tr:column>
 <tr:column headerText="Alternative id molecule B">
-    <bs:xrefDataList value="#{binaryInteraction.interactorB.alternativeIdentifiers}" />
+    <bs:xrefDataList value="#{binaryInteraction.interactorB.alternativeIdentifiers}" disableLinks="true"/>
 </tr:column>
 <tr:column headerText="Names molecule A">
     <t:dataList var="alias" value="#{binaryInteraction.interactorA.aliases}" rowCountVar="rowCount"
@@ -108,37 +162,48 @@
                     </span>
      </t:dataList>
 </tr:column>
-<tr:column headerText="Experimental role A">
+<tr:column headerText="Experimental role A" rendered="#{searchBean.expandedView}">
     <bs:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="Experimental role A">
+<tr:column headerText="Experimental role A" rendered="#{searchBean.expandedView}">
     <bs:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="Biological role A">
+<tr:column headerText="Biological role A" rendered="#{searchBean.expandedView}">
     <bs:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="Biological role A">
+<tr:column headerText="Biological role A" rendered="#{searchBean.expandedView}">
     <bs:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="Properties molecule A">
-    <bs:xrefDataList value="#{binaryInteraction.propertiesB}"/>
+<tr:column rendered="#{searchBean.expandedView}">
+    <f:facet name="header">
+        <tr:panelGroupLayout layout="vertical">
+             <tr:outputText value="Properties molecule A"/>
+        </tr:panelGroupLayout>
+    </f:facet>
+    <tr:showDetail disclosedText="Hide" undisclosedText="Show"
+                   disclosed="#{searchBean.showProperties}">
+        <bs:xrefDataList value="#{binaryInteraction.propertiesB}"/>
+    </tr:showDetail>
 </tr:column>
-<tr:column headerText="Properties molecule B">
-    <bs:xrefDataList value="#{binaryInteraction.propertiesB}"/>
+<tr:column headerText="Properties molecule B" rendered="#{searchBean.expandedView}">
+    <tr:showDetail disclosedText="Hide" undisclosedText="Show"
+        disclosed="#{searchBean.showProperties}">
+        <bs:xrefDataList value="#{binaryInteraction.propertiesB}"/>
+    </tr:showDetail>
 </tr:column>
-<tr:column headerText="Interactor type A">
+<tr:column headerText="Interactor type A" rendered="#{searchBean.expandedView}">
     <bs:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
 </tr:column>
-<tr:column headerText="Interactor type B">
+<tr:column headerText="Interactor type B" rendered="#{searchBean.expandedView}">
     <bs:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>
 </tr:column>
-<tr:column headerText="Host organism">
+<tr:column headerText="Host organism" rendered="#{searchBean.expandedView}">
     <bs:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="Expansion method">
+<tr:column headerText="Expansion method" rendered="#{searchBean.expandedView}">
     <tr:outputText value="#{binaryInteraction.expansionMethod}" />
 </tr:column>
-<tr:column headerText="Dataset">
+<tr:column headerText="Dataset" rendered="#{searchBean.expandedView}">
     <t:dataList var="dataset" value="#{binaryInteraction.dataset}" >
                     <span style="display:block">
                         <nobr>
