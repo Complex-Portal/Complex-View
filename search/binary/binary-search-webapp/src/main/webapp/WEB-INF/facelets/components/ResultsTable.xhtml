@@ -42,14 +42,14 @@
             <tr:commandLink id="btnStandardView" immediate="true"
                             text="Standard" disabled="#{!searchBean.expandedView}"
                             partialSubmit="true" inlineStyle="white-space:nowrap;">
-                <f:setPropertyActionListener value="false"
+                <f:setPropertyActionListener value="#{false}"
                                              target="#{searchBean.expandedView}"/>
             </tr:commandLink>
             <tr:outputText value="-"/>
-            <tr:commandLink id="btnExpandedView" immediate="true"
+            <tr:commandLink id="btnExpandedView" immediate="#{true}"
                             text="Expanded" disabled="#{searchBean.expandedView}"
                             partialSubmit="true" inlineStyle="white-space:nowrap;">
-                <f:setPropertyActionListener value="true"
+                <f:setPropertyActionListener value="#{true}"
                                              target="#{searchBean.expandedView}"/>
             </tr:commandLink>
         </tr:panelHorizontalLayout>
