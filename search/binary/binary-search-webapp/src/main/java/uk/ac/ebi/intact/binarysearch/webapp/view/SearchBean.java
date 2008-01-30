@@ -12,7 +12,6 @@ import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.tab.PsimiTabColumn;
 import uk.ac.ebi.intact.binarysearch.webapp.SearchWebappException;
 import uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean;
 import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
@@ -77,9 +76,6 @@ public class SearchBean implements Serializable
     // results
     private SearchResultDataModel results;
 
-    private String sortColumn;
-    private boolean sortAscending;
-
     // export
     private String exportFormat;
 
@@ -134,11 +130,8 @@ public class SearchBean implements Serializable
 
         String indexDirectory = WebappUtils.getDefaultIndex(appConfigBean.getConfig()).getLocation();
         try {
-            if (sortColumn == null) {
-                sortColumn = PsimiTabColumn.ID_A.getSortableColumnName();
-            }
 
-            results = new SearchResultDataModel(query, indexDirectory, pageSize, sortColumn, sortAscending);
+            results = new SearchResultDataModel(query, indexDirectory, pageSize);
 
             if (log.isDebugEnabled()) log.debug("\tResults: " + results.getRowCount());
         }
@@ -205,8 +198,8 @@ public class SearchBean implements Serializable
         String exportUrl = context.getExternalContext().getRequestContextPath()+"/export?"+
                            ExportServlet.PARAM_QUERY + "=" + query + "&" +
                            ExportServlet.PARAM_FORMAT + "=" + exportFormat + "&" +
-                           ExportServlet.PARAM_SORT + "=" + sortColumn + "&" +
-                           ExportServlet.PARAM_SORT_ASC + "=" + sortAscending;
+                           ExportServlet.PARAM_SORT + "=" + results.getSortColumn() + "&" +
+                           ExportServlet.PARAM_SORT_ASC + "=" + results.isAscending();
 
         // short-circuit the cycle to redirect to a external page
         try {
@@ -282,26 +275,6 @@ public class SearchBean implements Serializable
     public void setResults(SearchResultDataModel results)
     {
         this.results = results;
-    }
-
-    public String getSortColumn()
-    {
-        return sortColumn;
-    }
-
-    public void setSortColumn(String sortColumn)
-    {
-        this.sortColumn = sortColumn;
-    }
-
-    public boolean isSortAscending()
-    {
-        return sortAscending;
-    }
-
-    public void setSortAscending(boolean sortAscending)
-    {
-        this.sortAscending = sortAscending;
     }
 
     public int getPageSize()

@@ -18,22 +18,20 @@ package uk.ac.ebi.intact.binarysearch.webapp.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.Sort;
+import org.apache.myfaces.trinidad.model.SortCriterion;
+import org.apache.myfaces.trinidad.model.SortableModel;
 import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.search.Searcher;
 import psidev.psi.mi.search.engine.SearchEngineException;
-import psidev.psi.mi.search.engine.SearchEngine;
-import psidev.psi.mi.search.engine.impl.FastSearchEngine;
 import psidev.psi.mi.tab.PsimiTabColumn;
-import psidev.psi.mi.tab.model.BinaryInteraction;
+import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
 
-import javax.faces.model.DataModel;
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
-import java.io.Serializable;
 import java.io.IOException;
-
-import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * TODO comment this!
@@ -41,7 +39,7 @@ import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class SearchResultDataModel extends DataModel implements Serializable {
+public class SearchResultDataModel extends SortableModel implements Serializable {
 
     private static final Log log = LogFactory.getLog(SearchResultDataModel.class);
 
@@ -52,6 +50,7 @@ public class SearchResultDataModel extends DataModel implements Serializable {
 
     private SearchResult result;
     private int rowIndex = -1;
+    private int firstResult = 0;
     private int pageSize;
 
     private String sortColumn = DEFAULT_SORT_COLUMN;
@@ -59,23 +58,27 @@ public class SearchResultDataModel extends DataModel implements Serializable {
 
     private long elapsedTimeMillis = -1;
 
-    public SearchResultDataModel(String searchQuery, String indexDirectory, int pageSize, String sortColumn, boolean ascending) throws TooManyResults {
+    private Map<String,Boolean> columnSorts;
+
+    public SearchResultDataModel(String searchQuery, String indexDirectory, int pageSize) throws TooManyResults {
         this.searchQuery = searchQuery;
         this.indexDirectory = indexDirectory;
         this.pageSize = pageSize;
-        this.sortColumn = sortColumn;
-        this.ascending = ascending;
+
+        columnSorts = new HashMap<String,Boolean>(16);
 
         try {
             setRowIndex(0);
-            fetchResults(rowIndex, pageSize);
+            fetchResults();
         }
         catch (SearchEngineException e) {
             throw new TooManyResults(e);
         }
+
+        setWrappedData(result);
     }
 
-    public void fetchResults(Integer firstResult, Integer maxResults) throws SearchEngineException {
+    public void fetchResults() throws SearchEngineException {
         if (log.isDebugEnabled()) log.debug("Fetching results: "+searchQuery+" - First: "+firstResult+" - Sorting: "+sortColumn+" "+(ascending? "ASC)" : "DESC)"));
 
         Sort sort = new Sort(sortColumn, !ascending);
@@ -92,13 +95,9 @@ public class SearchResultDataModel extends DataModel implements Serializable {
             throw new SearchEngineException(e);
         }
 
-        this.result = engine.search(searchQuery, firstResult, maxResults, sort);
+        this.result = engine.search(searchQuery, firstResult, pageSize, sort);
   
         elapsedTimeMillis = System.currentTimeMillis() - startTime;
-    }
-
-    public boolean indexOutsideCurrentResults() {
-        return rowIndex < result.getFirstResult() || rowIndex >= (result.getFirstResult() + result.getMaxResults());
     }
 
     public int getRowCount() {
@@ -110,8 +109,9 @@ public class SearchResultDataModel extends DataModel implements Serializable {
             return null;
         }
 
-        if (indexOutsideCurrentResults()) {
-            fetchResults(rowIndex, pageSize);
+        if (!isRowWithinResultRange()) {
+            firstResult = getRowIndex();
+            fetchResults();
         }
 
         if (!isRowAvailable()) {
@@ -137,6 +137,10 @@ public class SearchResultDataModel extends DataModel implements Serializable {
         return rowIndex >= 0 && rowIndex < result.getTotalCount();
     }
 
+    protected boolean isRowWithinResultRange() {
+        return (getRowIndex() >= firstResult) && (getRowIndex() < (firstResult+pageSize));
+    }
+
     public void setRowIndex(int rowIndex) {
         if (rowIndex < -1) {
             throw new IllegalArgumentException("illegal rowIndex " + rowIndex);
@@ -153,9 +157,43 @@ public class SearchResultDataModel extends DataModel implements Serializable {
         }
     }
 
-    public void setWrappedData(Object data) {
-        throw new UnsupportedOperationException("setWrappedData");
+    @Override
+    public void setSortCriteria(List<SortCriterion> criteria) {
+        if ((criteria == null) || (criteria.isEmpty())) {
+            this.sortColumn = DEFAULT_SORT_COLUMN;
+            columnSorts.clear();
+        }
+        else {
+            // only use the first criterion
+            SortCriterion criterion = criteria.get(0);
+
+            this.sortColumn = criterion.getProperty();
+
+            if (columnSorts.containsKey(sortColumn)) {
+                this.ascending = !columnSorts.get(sortColumn);
+            } else {
+                this.ascending = criterion.isAscending();
+            }
+            columnSorts.put(sortColumn, ascending);
+
+            if (log.isDebugEnabled())
+                log.debug("\tSorting by '" + criterion.getProperty() + "' " + (criterion.isAscending() ? "ASC" : "DESC"));
+        }
+
+        fetchResults();
     }
+
+    /**
+     * Checks to see if the underlying collection is sortable by the given property.
+     *
+     * @param property The name of the property to sort the underlying collection by.
+     * @return true, if the property implements java.lang.Comparable
+     */
+    @Override
+    public boolean isSortable(String property) {
+        return true;
+    }
+
 
     public SearchResult getResult() {
         return result;

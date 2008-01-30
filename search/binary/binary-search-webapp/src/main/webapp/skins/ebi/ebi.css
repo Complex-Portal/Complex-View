@@ -291,10 +291,6 @@ af|column::sortable-header-text {
     border: 1px solid #ADADAF;
 }
 
-.AFSortableHeaderSortIcon {
-    color: #FFFFFF;
-}
-
 .AFTableCellDataText:alias {
     border: 1px solid #ADADAF;
     font-size: 8pt;
@@ -319,6 +315,13 @@ af|column::cell-text-band a.OraLink {
     font-size: 8pt;
 }
 
+af|column::sort-ascend-icon {
+   content: url(/skins/ebi/images/arrow_up.png);
+}
+
+af|column::sort-descend-icon {
+   content: url(/skins/ebi/images/arrow_down.png);
+}
 
 /** breadcrumbs  **/
 /******************/
