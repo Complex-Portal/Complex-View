@@ -400,6 +400,10 @@
         <servlet-name>faces</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
       </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>faces</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
 
       <!-- resource loader servlet -->
       <servlet>

@@ -6,30 +6,30 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.UIXTable;
+import org.apache.myfaces.trinidad.component.core.data.CoreSelectRangeChoiceBar;
 import org.apache.myfaces.trinidad.event.PollEvent;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.tab.PsimiTabColumn;
+import uk.ac.ebi.intact.binarysearch.webapp.SearchWebappException;
 import uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean;
 import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.binarysearch.webapp.model.TooManyResults;
+import uk.ac.ebi.intact.binarysearch.webapp.servlet.ExportServlet;
 import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.AdvancedSearch;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.QueryHelper;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.RelatedResults;
-import uk.ac.ebi.intact.binarysearch.webapp.SearchWebappException;
-import uk.ac.ebi.intact.binarysearch.webapp.servlet.ExportServlet;
 import uk.ac.ebi.intact.search.wsclient.SearchServiceClient;
 
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import java.io.Serializable;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Main bean, that performs the searches
@@ -70,8 +70,11 @@ public class SearchBean implements Serializable
     private boolean showProperties;
     private boolean expandedView;
 
-    // results
+    // bindings
     private UIXTable resultsDataTable;
+    private CoreSelectRangeChoiceBar rangeChoiceBar;
+
+    // results
     private SearchResultDataModel results;
 
     private String sortColumn;
@@ -115,6 +118,11 @@ public class SearchBean implements Serializable
 
     public void doSearch(ActionEvent evt) {
         relatedResults = null;
+
+        // reset the status of the range choice bar
+        if (rangeChoiceBar != null) {
+            rangeChoiceBar.setFirst(0);
+        }
 
         if (isAdvancedMode()) {
             query = QueryHelper.createQuery(advancedSearch, olsBean.getInteractionTypeTerms(), olsBean.getDetectionMethodTerms());
@@ -356,5 +364,13 @@ public class SearchBean implements Serializable
 
     public void setRelatedPollEnabled(boolean relatedPollEnabled) {
         this.relatedPollEnabled = relatedPollEnabled;
+    }
+
+    public CoreSelectRangeChoiceBar getRangeChoiceBar() {
+        return rangeChoiceBar;
+    }
+
+    public void setRangeChoiceBar(CoreSelectRangeChoiceBar rangeChoiceBar) {
+        this.rangeChoiceBar = rangeChoiceBar;
     }
 }

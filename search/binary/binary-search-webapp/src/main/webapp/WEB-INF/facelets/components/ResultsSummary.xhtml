@@ -16,26 +16,32 @@
             <h:panelGrid columns="2" width="800px"
                          styleClass="intact_table default"
                          columnClasses="intact_summaryCol,intact_summaryCol">
-                <h:panelGroup id="searchSummary">
+                <tr:panelGroupLayout layout="vertical" id="searchSummary">
 
-                    <strong>Query: </strong>
-                    <ebi:outputText id="queryText" value="#{searchBean.query}" maxLength="50"
-                                    expandMessage="(see entire query)" collapseMessage="(collapse)"/>
-                    <br/>
+                    <tr:group>
+                        <strong>Query: </strong>
+                        <ebi:outputText id="queryText" value="#{searchBean.query}" maxLength="50"
+                                        expandMessage="(see entire query)" collapseMessage="(collapse)"/>
+                    </tr:group>
 
-                    <strong>Lucene Query: </strong>
-                    <ebi:outputText id="luceneQueryText" value="#{searchBean.results.result.luceneQuery}" maxLength="50"
-                                    expandMessage="(see entire query)" collapseMessage="(collapse)"/>
-                    <br/>
+                    <tr:group>
+                        <strong>Lucene Query: </strong>
+                        <ebi:outputText id="luceneQueryText" value="#{searchBean.results.result.luceneQuery}" maxLength="50"
+                                        expandMessage="(see entire query)" collapseMessage="(collapse)"/>
+                    </tr:group>
 
-                    <strong>Binary Interactions: </strong>#{searchBean.results.rowCount}<br/>
-                    <strong>Search time: </strong>
+                    <tr:group>
+                        <strong>Binary Interactions: </strong>#{searchBean.results.rowCount}
+                    </tr:group>
 
-                    <h:outputText value="#{searchBean.results.elapsedTimeSecs}">
-                        <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
-                    </h:outputText>
-                    <h:outputText value=" seconds"/>
-                </h:panelGroup>
+                    <tr:group>
+                        <strong>Search time: </strong>
+                        <h:outputText value="#{searchBean.results.elapsedTimeSecs}">
+                            <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+                        </h:outputText>
+                        <h:outputText value=" seconds"/>
+                    </tr:group>
+                </tr:panelGroupLayout>
 
                 <tr:panelGroupLayout id="relatedResultsPanel" partialTriggers="relatedPoll">
                     <tr:outputFormatted value="&#160;" rendered="#{searchBean.relatedResults == null}" />
@@ -43,7 +49,8 @@
                     <tr:poll id="relatedPoll" rendered="#{!searchBean.advancedMode and searchBean.relatedResults == null and searchBean.relatedPollEnabled}" interval="50"
                         pollListener="#{searchBean.doCalculateRelatedResults}"/>
 
-                    <tr:panelBox background="dark" rendered="#{!searchBean.advancedMode and 
+                    <tr:panelBox icon="http://www.ebi.ac.uk/inc/images/info.gif" text=" Additional results" 
+                                 background="light" rendered="#{!searchBean.advancedMode and
                               searchBean.relatedResults != null and
                               (searchBean.relatedResults.numOfExperiments > 0 or searchBean.relatedResults.numOfInteractors > 0)}">
                                 <h:outputText value="This search has identified "/>

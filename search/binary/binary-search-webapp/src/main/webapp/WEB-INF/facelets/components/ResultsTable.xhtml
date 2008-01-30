@@ -21,13 +21,14 @@
 <f:facet name="actions">
     <tr:panelHorizontalLayout>
         <f:facet name="separator">
-            <tr:outputFormatted value="&#160;&#160;|&#160;&#160;"/>
+            <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
         </f:facet>
 
-         <tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"
-                                     value="#{searchBean.results}" first="#{searchBean.resultsDataTable.first}"
-                                     rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
-                                    rendered="#{searchBean.results.rowCount gt 30}" partialTriggers="sideSearchBox_searchBox"/>
+         <tr:selectRangeChoiceBar binding="#{searchBean.rangeChoiceBar}"
+                                  var="range" id="selPageRangeChoice"
+                                  value="#{searchBean.results}"
+                                  rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
+                                  rendered="#{searchBean.results.rowCount gt 30}" />
 
         <tr:panelHorizontalLayout>
             <f:facet name="separator">
@@ -44,6 +45,7 @@
                 <f:setPropertyActionListener value="false"
                                              target="#{searchBean.expandedView}"/>
             </tr:commandLink>
+            <tr:outputText value="-"/>
             <tr:commandLink id="btnExpandedView" immediate="true"
                             text="Expanded" disabled="#{searchBean.expandedView}"
                             partialSubmit="true" inlineStyle="white-space:nowrap;">
@@ -60,7 +62,7 @@
         </tr:commandLink>
 
         <tr:panelGroupLayout layout="horizontal" >
-            <tr:selectOneChoice label="Export to:" unselectedLabel="Select one"
+            <tr:selectOneChoice label="Export to:" unselectedLabel="Select format..."
                     value="#{searchBean.exportFormat}">
                 <tr:selectItem label="MI-TAB" value="mitab"/>
                 <tr:selectItem label="MI-TAB (Expanded)" value="mitab_intact"/>

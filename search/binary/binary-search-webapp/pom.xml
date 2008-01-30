@@ -20,7 +20,7 @@
     <description>Interface for the PSIMITAB search</description>
 
     <properties>
-        <jetty.port>9191</jetty.port>
+        <jetty.port>9090</jetty.port>
         <jetty.context>binary-search</jetty.context>
     </properties>
 
@@ -93,7 +93,7 @@
         <dependency>
             <groupId>uk.ac.ebi.faces</groupId>
             <artifactId>ebifaces-core</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.6</version>
         </dependency>
 
         <dependency>

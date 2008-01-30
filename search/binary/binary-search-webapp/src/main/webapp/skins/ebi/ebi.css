@@ -117,10 +117,10 @@ af|panelBox::light af|panelBox::body,
 af|panelBox::light af|panelBox::content{
     font-size: 8pt;
     position:relative;
+    background: #EDF6F5 url("http://www.ebi.ac.uk/inc/images/head_blue2d.gif") repeat-y scroll right top;
 }
 
 af|panelBox::light af|panelBox::header {
-    background: #EDF6F5 url("http://www.ebi.ac.uk/inc/images/head_blue2d.gif") no-repeat scroll right top;
     border-collapse: collapse;
     border-width: 0px 0px 1px;
     color: #1F1F1F;
@@ -133,11 +133,10 @@ af|panelBox::light af|panelBox::header {
 }
 
 af|panelBox::light af|panelBox::body {
-    border-width: 1px
+    border-width: 1px;
 }
 
 af|panelBox::light af|panelBox::content {
-    background: transparent url("http://www.ebi.ac.uk/inc/images/head_blue3b.gif") no-repeat scroll right top;
     margin: 0px 0px 0px 2px;
     padding: 3px 4px 5px;
     vertical-align: top;
@@ -459,3 +458,15 @@ af|messages::list-single {
 }
 
 
+/** statusIndicator **/
+/*********************/
+
+af|statusIndicator::busy {
+    position: absolute;
+    right: 0px; top: 0px;
+    background-color: red;
+    color: white;
+    margin: 5px; padding: 3px;
+
+    position: fixed;
+}

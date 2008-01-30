@@ -16,42 +16,34 @@
 package uk.ac.ebi.intact.binarysearch.webapp.servlet;
 
 import org.apache.lucene.search.Sort;
-import org.springframework.context.ApplicationContext;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.Searcher;
 import psidev.psi.mi.search.engine.SearchEngineException;
 import psidev.psi.mi.tab.PsimiTabWriter;
-import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
-import psidev.psi.mi.tab.converter.tab2xml.XmlConvertionException;
+import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.xml.PsimiXmlWriter;
 import psidev.psi.mi.xml.converter.ConverterException;
 import psidev.psi.mi.xml.model.EntrySet;
-import psidev.psi.mi.xml.PsimiXmlWriter;
-import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
-import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
-import uk.ac.ebi.intact.binarysearch.webapp.view.SearchBean;
+import uk.ac.ebi.intact.binarysearch.webapp.SearchWebappException;
 import uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.binarysearch.webapp.SearchWebappException;
+import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
+import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
+import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.Writer;
-import java.io.File;
-import java.util.List;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -70,7 +62,10 @@ public class ExportServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        this.defaultIndex = config.getServletContext().getInitParameter(AppConfigBean.DEFAULT_INDEX_LOCATION_INIT_PARAM);
+        String configFile = config.getServletContext().getInitParameter(AppConfigBean.DEFAULT_CONFIG_FILE_INIT_PARAM);
+
+        SearchConfig searchConfig = WebappUtils.readConfiguration(configFile);
+        this.defaultIndex = WebappUtils.getDefaultIndex(searchConfig).getLocation();
     }
 
     @Override

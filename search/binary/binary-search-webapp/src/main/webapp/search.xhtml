@@ -13,25 +13,21 @@
 
        template="/WEB-INF/facelets/layout/template.xhtml">
 
-    <ui:define name="breadcrumbs">
-        <tr:statusIndicator id="pageStatus" inlineStyle="float:left;">
-                    <f:facet name="busy">
-                            <tr:panelGroupLayout layout="horizontal">
-                                <h:graphicImage value="/images/wait_red_indicator.gif" style="vertical-align:middle"/>
-                                <tr:outputText value="Processing request"/>
-                            </tr:panelGroupLayout>
-                    </f:facet>
-                    <f:facet name="ready">
-                        <h:graphicImage value="/images/status_off.gif" style="vertical-align:middle"/>
-                    </f:facet>
-                </tr:statusIndicator>
-    </ui:define>
-
         <ui:define name="content">
 
-
-        <!--<t:dojoInitializer />-->
-
+            <tr:statusIndicator id="status">
+            <f:facet name="busy">
+                <tr:panelGroupLayout layout="horizontal">
+                    <tr:image source="/skins/ebi/images/status_busy_redback.gif" inlineStyle="vertical-align:middle"/>
+                    <tr:outputFormatted value="&#160;" />
+                    <tr:outputText value="Loading..."/>
+                </tr:panelGroupLayout>
+            </f:facet>
+            <!--<f:facet name="ready">-->
+                <!--<h:graphicImage value="/images/status_off.gif" style="vertical-align:middle"/>-->
+            <!--</f:facet>-->
+        </tr:statusIndicator>
+            
             <!-- rendered only if there is a new query via url (e.g. from an external application) -->
             <c:set var="executeQueryOnLoad" value="#{param.query != null and (param.query ne searchBean.query)}"/>
                <h:panelGroup rendered="#{executeQueryOnLoad}">
@@ -44,20 +40,19 @@
                 </script>
             </h:panelGroup>
 
-            <tr:panelGroupLayout id="advancedSearchRegion" partialTriggers="sideSearchBox_searchBox">
+            <tr:panelGroupLayout id="advancedSearchRegion" partialTriggers="sideSearchBox_searchBox btnAdvSearch">
 
-                <h:panelGroup  rendered="#{searchBean.advancedMode}">
 
                 <br/><br/>
 
                 <bs:advancedSearch/>
 
-                </h:panelGroup>
 
             </tr:panelGroupLayout>
 
-            <tr:panelHeader id="summaryRegion" text="Results"
-                            partialTriggers="sideSearchBox_searchBox" >
+            <tr:panelGroupLayout id="summaryRegion" partialTriggers="sideSearchBox_searchBox btnAdvSearch">
+
+            <tr:panelHeader text="Results" rendered="#{searchBean.searchDone}">
                 <tr:panelHeader text="Summary" rendered="#{searchBean.searchDone}">
 
                         <bs:resultsSummary/>
@@ -88,7 +83,7 @@
 
 
             <!--Test List: #{searchBean.testList}-->
-            <tr:panelGroupLayout id="resultsRegion" partialTriggers="sideSearchBox_searchBox">
+            <tr:panelGroupLayout id="resultsRegion">
                 <h:panelGroup rendered="#{searchBean.searchDone and searchBean.results.rowCount > 0}">
 
                     <tr:panelHeader text="Table of Binary Interactions" size="1">
@@ -124,7 +119,7 @@
             </tr:panelGroupLayout>
 
         </tr:panelHeader>
-
+            </tr:panelGroupLayout>
         </ui:define>
 
 </ui:composition>
