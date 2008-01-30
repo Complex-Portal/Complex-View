@@ -66,6 +66,32 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <!-- Use this profile to build the application for servers
+            which do not include JSP 2.1 (e.g. tomcat < 6.0) -->
+            <id>tomcat-5x</id>
+            <activation>
+                <property>
+                    <name>tomcat</name>
+                    <value>5x</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>javax.el</groupId>
+                    <artifactId>el-api</artifactId>
+                    <version>1.0</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.sun.el</groupId>
+                    <artifactId>el-ri</artifactId>
+                    <version>1.0</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <!-- Project dependencies -->
     <dependencies>
