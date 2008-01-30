@@ -140,9 +140,7 @@ public class SearchBean implements Serializable
             //tooManyResults = true;
         }
 
-        if (resultsDataTable instanceof UIXTable) {
-            ((UIXTable)resultsDataTable).setFirst(0);
-        }
+        resultsDataTable.setFirst(0);
 
         relatedPollEnabled = true;
         searchDone = true;
