@@ -238,4 +238,16 @@ public class SearchResultDataModel extends SortableModel implements Serializable
     {
        this.key = key;
     }
+
+    public int getFirstResult() {
+        return firstResult;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public String getIndexDirectory() {
+        return indexDirectory;
+    }
 }

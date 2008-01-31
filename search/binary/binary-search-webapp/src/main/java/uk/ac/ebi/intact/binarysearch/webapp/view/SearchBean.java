@@ -194,7 +194,7 @@ public class SearchBean implements Serializable
         FacesContext context = FacesContext.getCurrentInstance();
 
         String exportUrl = context.getExternalContext().getRequestContextPath()+"/export?"+
-                           ExportServlet.PARAM_QUERY + "=" + query + "&" +
+                           ExportServlet.PARAM_QUERY + "=" + results.getSearchQuery() + "&" +
                            ExportServlet.PARAM_FORMAT + "=" + exportFormat + "&" +
                            ExportServlet.PARAM_SORT + "=" + results.getSortColumn() + "&" +
                            ExportServlet.PARAM_SORT_ASC + "=" + results.isAscending();
