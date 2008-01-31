@@ -236,7 +236,6 @@
             </releases>
         </pluginRepository>
         <pluginRepository>
-            <repository>
             <id>ebi-repo-snapshots</id>
             <name>The EBI internal repository</name>
             <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
