@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.search.ws;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.Ignore;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 
 /**
@@ -27,6 +29,7 @@ import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
  * @version $Id$
  * @since <pre>05-Oct-2006</pre>
  */
+@Ignore
 public class SearchTest extends IntactBasicTestCase
 {
     private Search search;
@@ -36,17 +39,18 @@ public class SearchTest extends IntactBasicTestCase
     }
 
     @Before
-    protected void setUp() throws Exception
+    public void setUp() throws Exception
     {
         search = new Search();
     }
 
     @After
-    protected void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
         search = null;
     }
 
+    @Test
     public void testFindPartnersUsingUniprotIds()
     {
         PartnerResult[] results = search.findPartnersUsingUniprotIds(new String[] {"P29452"});
@@ -55,32 +59,38 @@ public class SearchTest extends IntactBasicTestCase
         Assert.assertEquals(1, results[0].getPartnerUniprotAcs().length);
         Assert.assertEquals("Q56134", results[0].getPartnerUniprotAcs()[0]);
     }
-
+    
+    @Test
     public void testCountExperimentsUsingIntactQuery()
     {
         Assert.assertEquals(2, search.countExperimentsUsingIntactQuery("*"));
     }
 
+    @Test
     public void testCountInteractionsUsingIntactQuery()
     {
         Assert.assertEquals(2, search.countInteractionsUsingIntactQuery("*"));
     }
 
+    @Test
     public void testCountProteinsUsingIntactQuery()
     {
         Assert.assertEquals(2, search.countProteinsUsingIntactQuery("*"));
     }
 
+    @Test
     public void testCountAllBinaryInteractions()
     {
         Assert.assertEquals(2, search.countAllBinaryInteractions());
     }
 
+    @Test
     public void testSearchExperimentsUsingIntactQuery()
     {
         Assert.assertEquals(2, search.searchExperimentsUsingQuery("*", null, null).size());
     }
 
+    @Test
     public void testSearchProteinsUsingIntactQuery()
     {
         for (SimpleResult result : search.searchProteinsUsingQuery("*", null, null))
