@@ -15,6 +15,7 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.Constants;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.ProteinImpl;
+import uk.ac.ebi.intact.model.InteractorImpl;
 import uk.ac.ebi.intact.util.simplegraph.Graph;
 
 import java.util.ArrayList;
@@ -65,12 +66,17 @@ public class GraphFactory {
             for ( Iterator iterator = queries.iterator (); iterator.hasNext (); ) {
                 String query = (String) iterator.next ();
 
-                Interactor interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
-                    .getInteractorDao().getByAc(query);
+                if (query.startsWith(IntactContext.getCurrentInstance().getConfig().getAcPrefix())) {
+                    Interactor interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+                     .getInteractorDao().getByAc(query);
 
-                if (interactor != null) {
-                    interactors.add( interactor );
+                    if (interactor != null) interactors.add(interactor);
+                } else {
+                     Collection<InteractorImpl> results = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+                             .getInteractorDao().getByXrefLike(query);
+                    interactors.addAll(results);
                 }
+
             }
         } catch (IntactException e) {
             logger.error( "Could not search for Interactor AC: " + queryString, e );
