@@ -21,9 +21,11 @@ import psidev.psi.mi.tab.PsimiTabWriter;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
+import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -48,7 +50,7 @@ public class MitabExport extends HttpServlet {
 
         response.setContentType( "text/plain" );
 
-        IntactUserI user = IntactUser.getCurrentInstance();
+        IntactUserI user = (IntactUserI) request.getSession().getAttribute(Constants.USER_KEY);
 
         if ( user != null ) {
             Network network = user.getInteractionNetwork();
@@ -56,9 +58,8 @@ public class MitabExport extends HttpServlet {
                 Collection<BinaryInteraction> interactions = network.getBinaryInteraction();
 
                 PrintWriter out = response.getWriter();
-                PsimiTabWriter writer = new PsimiTabWriter();
-                writer.setBinaryInteractionClass( IntActBinaryInteraction.class );
-                writer.setColumnHandler( new IntActColumnHandler() );
+                PsimiTabWriter writer = new IntactPsimiTabWriter();
+                
                 try {
                     writer.write( interactions, out );
                 } catch ( Exception e ) {

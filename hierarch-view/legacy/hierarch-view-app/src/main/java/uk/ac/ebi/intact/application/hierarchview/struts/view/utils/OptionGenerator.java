@@ -174,6 +174,10 @@ public class OptionGenerator {
             tokenPath = "highlightment.source.edge.token";
         }
 
+        if (sourceListPath == null) {
+            return null;
+        }
+
         // read the Highlighting.proterties file
         Properties properties = IntactUserI.HIGHLIGHTING_PROPERTIES;
 
