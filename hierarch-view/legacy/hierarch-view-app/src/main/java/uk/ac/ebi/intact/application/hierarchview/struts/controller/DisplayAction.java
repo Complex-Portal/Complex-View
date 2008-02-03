@@ -108,6 +108,10 @@ public final class DisplayAction extends IntactBaseAction {
             methodLabel = lvb.getLabel();
             methodClass = lvb.getValue();
         } else {
+            if ("All".equals(methodLabel)) {
+                methodLabel = "GO";
+            }
+
             // get the associated name
             lvb = OptionGenerator.getSource( methodLabel );
             if ( lvb == null ) {
