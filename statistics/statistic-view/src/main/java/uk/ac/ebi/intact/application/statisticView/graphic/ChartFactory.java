@@ -39,7 +39,6 @@ public class ChartFactory {
      *
      * @param dataset a DefaultPieDataset which holds the datavalues for the specific PieChart
      * @param title   a String which represents the title of the specific PieChart
-     *
      * @return a JfreeChart PieChart Diagramm
      */
     public static JFreeChart getPieChart( final DefaultPieDataset dataset, final String title ) {
@@ -61,8 +60,6 @@ public class ChartFactory {
 
         // rotate the plot
         plot.setStartAngle( 180 );
-
-
         plot.setCircular( true );
         plot.setLabelGap( 0.1 );
 
@@ -83,7 +80,6 @@ public class ChartFactory {
      * @param yAxisTitle  a String which represent the y-axis label of the specific BarChart
      * @param rotateLabel a boolean which descripes if the labels should rotate which 3 degree used for long names in
      *                    the Dataset true means rotate the label. false means not to rotate the label
-     *
      * @return a JfreeChart BarChart Diagramm
      */
     public static JFreeChart getBarChart( final DefaultCategoryDataset dataset,
@@ -138,16 +134,21 @@ public class ChartFactory {
         return chart;
     }
 
+    public static JFreeChart getXYChart( final XYDataset dataset, final String title, final String xAxisTitle,
+                                         final String yAxisTitle
+    ) {
+        return getXYChart( dataset, title, xAxisTitle, yAxisTitle, false );
+    }
+
     /**
      * @param dataset    a XYDataset which holds the datavalues for the specific XYChart
      * @param title      a String which represents the title of the specific BarChart
      * @param xAxisTitle a String which represent the x-axis label of the specific XYChart
      * @param yAxisTitle a String which represent the y-axis label of the specific XYChart
-     *
      * @return a JfreeChart XYChart Diagramm
      */
     public static JFreeChart getXYChart( final XYDataset dataset, final String title, final String xAxisTitle,
-                                         final String yAxisTitle
+                                         final String yAxisTitle, boolean includeLegend
     ) {
 
         XYDataset xyDataset = dataset;
@@ -163,19 +164,24 @@ public class ChartFactory {
         renderer.setShapesFilled( true );
 
         final XYPlot plot = new XYPlot( xyDataset, timeAxis, valueAxis, renderer );
-        final JFreeChart xyChart = new JFreeChart( title, JFreeChart.DEFAULT_TITLE_FONT, plot,
-                                                   false );
+        final JFreeChart xyChart = new JFreeChart( title, JFreeChart.DEFAULT_TITLE_FONT, plot, false );
         xyChart.setBackgroundPaint( new Color( 237, 237, 237 ) );
 
-        JFreeChart chart = org.jfree.chart.ChartFactory.createXYLineChart( title, // chart title
-                                                                           xAxisTitle, // domain axis label
-                                                                           yAxisTitle, // range axis label
-                                                                           xyDataset, // data
+        JFreeChart chart = org.jfree.chart.ChartFactory.createXYLineChart( title,                    // chart title
+                                                                           xAxisTitle,               // domain axis label
+                                                                           yAxisTitle,               // range axis label
+                                                                           xyDataset,                // data
                                                                            PlotOrientation.VERTICAL, // orientation
-                                                                           true, // include legend
-                                                                           true, // tooltips
-                                                                           true // no URLs
+                                                                           includeLegend,            // include legend
+                                                                           true,                     // tooltips
+                                                                           true                      // no URLs
         );
-        return xyChart;
+
+
+        ((XYPlot)chart.getPlot()).setRenderer( renderer );
+        ((XYPlot)chart.getPlot()).setDomainAxis( 0, timeAxis );
+//        ((XYPlot)chart.getPlot()).setDomainAxis( 1, valueAxis );
+
+        return chart;
     }
 }

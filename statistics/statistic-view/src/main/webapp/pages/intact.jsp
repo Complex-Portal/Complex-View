@@ -47,7 +47,7 @@
                 <table border="0">
                    <tr>
                       <td>
-                            <a name="<%= IntactStatisticsBean.PROTEINS %>">
+                            <a name="<%= IntactStatisticsBean.PROTEINS %>" />
                             <img src="<%= intactBean.getProteinChartUrl() %>" width=600 height=400 border=0 >
                             <br><br>
                       </td>
@@ -60,7 +60,7 @@
                 <table border="0"e>
                    <tr>
                       <td>
-                          <a name="<%= IntactStatisticsBean.INTERACTIONS %>">
+                          <a name="<%= IntactStatisticsBean.INTERACTIONS %>" />
                           <img src="<%= intactBean.getInteractionChartUrl() %>" width=600 height=400 border=0  >
                           <br><br>
                      </td>
@@ -73,7 +73,7 @@
                 <table border="0">
                    <tr>
                       <td>
-                          <a name="<%= IntactStatisticsBean.BINARY_INTERACTIONS %>">
+                          <a name="<%= IntactStatisticsBean.BINARY_INTERACTIONS %>" />
                           <img src="<%= intactBean.getBinaryChartUrl() %>" width=600 height=400 border=0 >
                           <br><br>
                      </td>
@@ -86,7 +86,7 @@
                 <table border="0">
                    <tr>
                       <td>
-                          <a name="<%= IntactStatisticsBean.EXPERIMENTS %>">
+                          <a name="<%= IntactStatisticsBean.EXPERIMENTS %>" />
                           <img src="<%= intactBean.getExperimentChartUrl() %>" width=600 height=400 border=0>
                           <br><br>
                      </td>
@@ -99,7 +99,7 @@
                 <table border="0">
                    <tr>
                       <td>
-                          <a name="<%= IntactStatisticsBean.CV_TERMS %>">
+                          <a name="<%= IntactStatisticsBean.CV_TERMS %>" />
                           <img src="<%= intactBean.getCvTermChartUrl() %>" width=600 height=400 border=0 >
                           <br><br>
                      </td>
@@ -112,7 +112,7 @@
                 <table border="0">
                    <tr>
                       <td>
-                          <a name="<%= IntactStatisticsBean.INTERACTIONS_PER_BIOSOURCE %>">
+                          <a name="<%= IntactStatisticsBean.INTERACTIONS_PER_BIOSOURCE %>" />
                           <img src="<%=intactBean.getBioSourceChartUrl() %>" width=600 height=400 border=0 >
                           <br>
                           <b>Note</b>: This figure is static. It does not change when you select a specific time period.
@@ -127,7 +127,7 @@
                 <table border="0">
                    <tr>
                       <td>
-                          <a name="<%= IntactStatisticsBean.INTERACTIONS_PER_IDENTIFICATION %>">
+                          <a name="<%= IntactStatisticsBean.INTERACTIONS_PER_IDENTIFICATION %>" />
                           <img src="<%= intactBean.getDetectionChartUrl()  %>" width=600 height=400 border=0 >
                           <br>
                           <b>Note</b>: This figure is static. It does not change when you select a specific time period.

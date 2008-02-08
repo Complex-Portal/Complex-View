@@ -6,8 +6,12 @@ in the root directory of this distribution.
 package uk.ac.ebi.intact.application.statisticView.graphic;
 
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.plot.PiePlot;
-import org.jfree.chart.plot.PieLabelDistributor;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYDataset;
@@ -16,7 +20,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import uk.ac.ebi.intact.application.statisticView.business.model.BioSourceStatistics;
 import uk.ac.ebi.intact.application.statisticView.business.model.IdentificationMethodStatistics;
 import uk.ac.ebi.intact.application.statisticView.business.model.IntactStatistics;
-import uk.ac.ebi.intact.application.statisticView.business.util.Constants;
 import uk.ac.ebi.intact.application.statisticView.business.util.IdentificationComparator;
 import uk.ac.ebi.intact.business.IntactException;
 
@@ -39,7 +42,7 @@ public class ChartBuilder {
     private static final String BIN_INTERACTION_CHART_TITLE = "IntAct binary interactions";
     private static final String INTERACTION_CHART_TITLE = "IntAct interactions";
     private static final String CV_CHART_TITLE = "IntAct controlled vocabulary terms";
-    private static final String EXPERIMENT_CHART_TITLE = "IntAct experiments";
+    private static final String EXPERIMENT_CHART_TITLE = "IntAct experiments and publications";
     private static final String PROTEIN_CHART_TITLE = "IntAct proteins";
     private static final String PER_ORGANISM_CHART_TITLE = "IntAct binary interactions/proteins per organism";
     private static final String EVIDENCE_PER_EXPERIMENT_CHART_TITLE = "IntAct experiment evidence";
@@ -48,10 +51,8 @@ public class ChartBuilder {
      * Creates a time series graph over experiments based on  the given intactstatistic objects.
      *
      * @param someIntactStatistics a collection of IntactStatistics must not be null
-     *
      * @return a JfreeChart Diagramm which represents a TimeSeries Graph over the Increase/Decrease of the  the period
      *         from the InputData
-     *
      * @throws IntactException if someIntactStatistics is null
      */
     public JFreeChart numberOfExperiments( final Collection someIntactStatistics ) throws IntactException {
@@ -59,16 +60,28 @@ public class ChartBuilder {
         if ( someIntactStatistics == null ) {
             throw new IntactException( "DataSource of intact statistics must no be null" );
         }
+
         // create the dataseries
-        final XYSeries aDataSeries = new XYSeries( "" );
+        final XYSeries experimentSeries = new XYSeries( "Experiments" );
         for ( Iterator iterator = someIntactStatistics.iterator(); iterator.hasNext(); ) {
             final IntactStatistics anIntactStatistic = ( IntactStatistics ) iterator.next();
-            aDataSeries.add( anIntactStatistic.getTimestamp().getTime(),
-                             anIntactStatistic.getNumberOfExperiments() );
+            experimentSeries.add( anIntactStatistic.getTimestamp().getTime(),
+                                  anIntactStatistic.getNumberOfExperiments() );
+        }
+
+        final XYSeries publicationSeries = new XYSeries( "Publications" );
+        for ( Iterator iterator = someIntactStatistics.iterator(); iterator.hasNext(); ) {
+            final IntactStatistics anIntactStatistic = ( IntactStatistics ) iterator.next();
+            publicationSeries.add( anIntactStatistic.getTimestamp().getTime(),
+                                   anIntactStatistic.getNumberOfPublications() );
         }
         //  create the chart
-        final XYDataset aXYDataset = new XYSeriesCollection( aDataSeries );
-        final JFreeChart chart = ChartFactory.getXYChart( aXYDataset, EXPERIMENT_CHART_TITLE, "", "" );
+        final XYSeriesCollection allSeries = new XYSeriesCollection();
+        allSeries.addSeries( experimentSeries );
+        allSeries.addSeries( publicationSeries );
+
+        final JFreeChart chart = ChartFactory.getXYChart( allSeries, EXPERIMENT_CHART_TITLE, "", "", true );
+
         chart.setAntiAlias( true );
         return chart;
     }
@@ -77,10 +90,8 @@ public class ChartBuilder {
      * Creates a time series graph over proteins based on  the given intactstatistic objects.
      *
      * @param someIntactStatistics a collection of IntactStatistics must not be null
-     *
      * @return a JfreeChart diagramm which represents a timeseries graph of the increase of proteins over a specific
      *         period
-     *
      * @throws IntactException
      */
     public JFreeChart numberOfProteins( final Collection someIntactStatistics ) throws IntactException {
@@ -106,10 +117,8 @@ public class ChartBuilder {
      * Creates a time series graph over experiments based on  the given intactstatistic objects.
      *
      * @param someIntactStatistics a collection of IntactStatistics must not be null
-     *
      * @return a JfreeChart diagramm which represents a timeseries graph of the increase of interactions over a specific
      *         period
-     *
      * @throws IntactException
      */
     public JFreeChart numberOfInteractions( final Collection someIntactStatistics ) throws IntactException {
@@ -135,10 +144,8 @@ public class ChartBuilder {
      * Creates a time series graph over binary interactions based on the given intactstatistic objects.
      *
      * @param someIntactStatistics a collection of IntactStatistics must not be null
-     *
      * @return a JfreeChart diagramm which represents a timeseries graph of the increase of binary interactions over a
      *         specific period
-     *
      * @throws IntactException
      */
     public JFreeChart numberOfBinaryInteractions( final Collection someIntactStatistics ) throws IntactException {
@@ -165,10 +172,8 @@ public class ChartBuilder {
      * objects.
      *
      * @param someIntactStatistics a collection of IntactStatistics must not be null
-     *
      * @return a JfreeChart diagramm which represents a timeseries graph of the increase of controlled vocabulary terms
      *         over a specific period
-     *
      * @throws IntactException
      */
     public JFreeChart numberOfCvTerms( final Collection someIntactStatistics ) throws IntactException {
@@ -269,10 +274,8 @@ public class ChartBuilder {
      * all others are summed up and shown under a category 'others'.
      *
      * @param someBioSourceStatistics a collection of BioSourceStatistics must not be null
-     *
      * @return a JfreeChart diagram which represents a barchart graph of the binary interactions/proteins of the
      *         different hosts based on the newt taxid
-     *
      * @throws IntactException if someBioSourceStatistics is null
      */
     public JFreeChart binaryInteractionsPerOrganism( final Collection someBioSourceStatistics ) throws IntactException {
@@ -378,10 +381,8 @@ public class ChartBuilder {
      * intactstatistic objects.
      *
      * @param identificationStatistics a collection of IntactStatistics must not be null
-     *
      * @return a JfreeChart diagramm which represents a timeseries graph of the increase of interactions over a specific
      *         period
-     *
      * @throws IntactException
      */
     public JFreeChart identificationMethods( final Collection<IdentificationMethodStatistics> identificationStatistics ) throws IntactException {
@@ -395,7 +396,7 @@ public class ChartBuilder {
 
         // Create the dataset
         for ( IdentificationMethodStatistics method : identificationStatistics ) {
-            dataSet.setValue( method.getDetectionName() + " ("+ method.getNumberInteractions() +")", method.getNumberInteractions() );
+            dataSet.setValue( method.getDetectionName() + " (" + method.getNumberInteractions() + ")", method.getNumberInteractions() );
         }
 
         // Create the chart
@@ -411,10 +412,10 @@ public class ChartBuilder {
         int i = 0;
         final int colorCount = chartColors.size();
         for ( IdentificationMethodStatistics method : identificationStatistics ) {
-            piePlot.setSectionPaint( method.getDetectionName() + " ("+ method.getNumberInteractions() +")",
+            piePlot.setSectionPaint( method.getDetectionName() + " (" + method.getNumberInteractions() + ")",
                                      chartColors.get( i ) );
             i++;
-            if( i == colorCount ) {
+            if ( i == colorCount ) {
                 // enforce rotation of colors
                 i = 0;
             }
@@ -423,7 +424,7 @@ public class ChartBuilder {
         return chart;
     }
 
-    static List<Paint> chartColors = new ArrayList<Paint>( );
+    static List<Paint> chartColors = new ArrayList<Paint>();
 
     static {
         chartColors.add( new Color( 238, 228, 83 ) );  // yellow
@@ -431,7 +432,6 @@ public class ChartBuilder {
         chartColors.add( new Color( 214, 179, 214 ) ); // pink
         chartColors.add( new Color( 238, 143, 126 ) ); // redish
     }
-
 
     /**
      * Creates a time series graph over experiments based on the given intactstatistic objects.

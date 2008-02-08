@@ -32,6 +32,7 @@ public class IntactStatistics extends StatsBase implements Comparable {
     private int complexInteractions;
     private int experimentNumber;
     private int termNumber;
+    private int publicationCount;
 
     public IntactStatistics() {
         super.setTimestamp( new java.sql.Timestamp( System.currentTimeMillis() ) );
@@ -89,6 +90,15 @@ public class IntactStatistics extends StatsBase implements Comparable {
 
     public void setNumberOfCvTerms( int termNumb ) {
         this.termNumber = termNumb;
+    }
+
+    @Column( name = "publication_count" )
+    public int getNumberOfPublications() {
+        return publicationCount;
+    }
+
+    public void setNumberOfPublications( int publicationCount ) {
+        this.publicationCount = publicationCount;
     }
 
     @Override
