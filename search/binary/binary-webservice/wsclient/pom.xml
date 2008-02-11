@@ -18,7 +18,7 @@
     <description>A web service interface to retrieve data from intact</description>
 
     <properties>
-        <ws.version>1.6.0-rc1-SNAPSHOT</ws.version>
+        <ws.version>1.6.0-rc2-SNAPSHOT</ws.version>
 
         <maven.test.failure.ignore>true</maven.test.failure.ignore>
         <jetty.port>24521</jetty.port>
