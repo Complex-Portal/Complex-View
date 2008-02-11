@@ -15,18 +15,20 @@
  */
 package uk.ac.ebi.intact.confidence;
 
-import org.junit.Test;
-import org.junit.Assert;
 import org.junit.Ignore;
+import org.junit.Test;
+import uk.ac.ebi.intact.bridges.blast.model.BlastInput;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
+import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+import uk.ac.ebi.intact.confidence.model.io.BlastInputReader;
+import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
+import uk.ac.ebi.intact.confidence.model.io.impl.BlastInputReaderImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
 
 import java.io.File;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.*;
-
-import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesReader;
-import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesReaderImpl;
-import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Class used only for creating statistics, and not with a test purpose.
@@ -41,7 +43,7 @@ public class StatisticsTest {
     @Test
   @Ignore
     public void scoreDistribution() throws Exception {
-        File medConfFile = new File("H:\\tmp\\medconf_set_scores.txt");
+        File medConfFile = new File("H:\\tmp\\medconf_set_New_scores.txt");
         Statistics.scoreDistribution( medConfFile );
     }
 
@@ -52,5 +54,32 @@ public class StatisticsTest {
         File hcFile = new File("H:\\tmp\\lowconf_set_attributes.txt");
         Statistics.attributesCoverage( hcFile );            
     }
+
+    @Test
+    @Ignore
+    public void missingProts() throws Exception {
+        File annoFile = new File("E:\\lowconf_set_seq_anno.txt");
+        File seqFile = new File("E:\\lowconf_set_seq.txt");
+
+        Set<UniprotAc> acs = new HashSet<UniprotAc>();
+        ProteinAnnotationReader par = new ProteinAnnotationReaderImpl();
+        for ( Iterator<ProteinAnnotation> iterator = par.iterate( annoFile ); iterator.hasNext(); ) {
+            ProteinAnnotation pa =  iterator.next();
+            acs.add( new UniprotAc( pa.getId().getId()));         
+        }
+
+        BlastInputReader blastInputR = new BlastInputReaderImpl();
+        for ( Iterator<BlastInput> iter = blastInputR.iterate( seqFile ); iter.hasNext(); ) {
+            BlastInput bl =  iter.next();
+            if (!acs.contains( bl.getUniprotAc() )){
+                System.out.println(bl.getUniprotAc());
+            }
+        }
+
+
+
+
+    }
+
 
 }

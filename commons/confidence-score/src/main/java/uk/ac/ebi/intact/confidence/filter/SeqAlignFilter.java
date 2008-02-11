@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.attribute;
+package uk.ac.ebi.intact.confidence.filter;
 
-import uk.ac.ebi.intact.confidence.model.Identifier;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
+import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
 
-import java.util.Set;
-import java.util.Iterator;
-import java.util.HashSet;
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -72,7 +71,9 @@ public class SeqAlignFilter {
     }
 
     public static void filterHighConfAlign( Set<Identifier> uniprotIds){
-        uniprotIds.retainAll( highconfProts );
+        if (uniprotIds != null){
+            uniprotIds.retainAll( highconfProts );
+        }
     }
 
     public static void filter(Set<ProteinAnnotation> proteinAnnotations){

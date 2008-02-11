@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 The European Bioinformatics Institute, and others.
+ * Copyright 2008 The European Bioinformatics Institute, and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,28 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.util;
+package uk.ac.ebi.intact.confidence.utils;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.GoIdentifierImpl;
 import uk.ac.ebi.intact.confidence.model.Identifier;
-import uk.ac.ebi.intact.confidence.utils.CombineToAttribs;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ * Test class for combining annotations to attributes.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
- *        <pre>
- *        29-Nov-2007
- *        </pre>
+ * @since 1.6.0
  */
-public class AttributeGetterImplTest {
-    @Test
+public class CombineToAttribsTest {
+     @Test
     public void testCombine() throws Exception {
-        File workDir = GlobalTestData.getInstance().getTargetDirectory();
-        AttributeGetterImpl ag = new AttributeGetterImpl(workDir);
         Set<Identifier> goA = new HashSet<Identifier>(3);
         goA.add( new GoIdentifierImpl("GO:0000001"));
         goA.add( new GoIdentifierImpl("GO:0000002"));
@@ -53,8 +45,6 @@ public class AttributeGetterImplTest {
         goB.add( new GoIdentifierImpl("GO:0000004"));
         goB.add( new GoIdentifierImpl("GO:0000005"));
         List<Attribute> attrs = CombineToAttribs.combine( goA, goB);
-                //ag.combine(goA, goB);
         Assert.assertEquals( 9, attrs.size());
     }
-
 }

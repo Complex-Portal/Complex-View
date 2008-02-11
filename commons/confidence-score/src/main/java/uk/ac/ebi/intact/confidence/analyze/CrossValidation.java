@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.confidence.analyze;
 
+import opennlp.maxent.GISModel;
+import uk.ac.ebi.intact.confidence.maxent.MaxentUtils;
 import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
 
 import java.io.*;
@@ -24,7 +26,7 @@ import java.io.*;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        28-Nov-2007
  *        </pre>
@@ -45,28 +47,38 @@ public class CrossValidation {
 
        // 1. split in positive, negative set in each k files
         foldSets(new File(positiveSetPath), new File(negativeSetPath), k, foldsDir);
-       // 2. create the merged 20% test set, 80% train set
-        // form pozSet0+ pozSet1 = testSet0 and pozSet2...n = trainSet0
+
+        // 2. create the merged 20% test set, 80% train set
+        // form pozSet0 = testSet0 and pozSet1...n = trainSet0
         generateTrainTestSets(k, trainDir);
         // 2.a) generate gis model input file
         generateGisInput(k, trainDir);
+        // 2.b) create gis model
+        trainGisModel(k, trainDir);
        // 3. for each train/test set pair do classification and
         // compute MAE (mean absolute error)
 
     }
 
-     public void foldSets( File hcFile, File lcFile, int foldsNr, File dir ) {
+    private void trainGisModel( int foldsNr, File trainDir ) throws IOException {
+        for (int i =3; i< foldsNr; i++){
+            File file = new File(trainDir,"gisIn" + i + ".txt" );
+            GISModel model = MaxentUtils.createModel( new FileInputStream(file) );
+            File outFile = new File(trainDir, "gisModel" + i +".txt");
+            MaxentUtils.writeModelToFile( model,outFile );
+        }
+    }
+
+    public void foldSets( File hcFile, File lcFile, int foldsNr, File dir ) {
         XvFold.k = foldsNr;
         XvFold.fold( hcFile, lcFile, dir );
     }
 
     public void generateTrainTestSets(int foldsNr, File dir) throws IOException {
-        for ( int i = 0; i < foldsNr -1; i++ ) {
+        for ( int i = 0; i < foldsNr ; i++ ) {
             String type = "highconf";
-            merge( i, dir, type );
             mergeExcept( i, foldsNr, dir, type );
             type = "lowconf";
-            merge( i, dir, type );
             mergeExcept( i, foldsNr, dir, type );
         }
     }
@@ -75,7 +87,7 @@ public class CrossValidation {
         File outFile = new File( outDir, "train_" + type + nr + ".txt" );
         Writer writer = null;
         for ( int i = 0; i < totalNr; i++ ) {
-            if ( !( nr == i || ( nr + 1 ) == i ) ) {
+            if ( !( nr == i) ) {
                 if ( writer == null ) {
                     writer = new FileWriter( outFile );
                 } else {
@@ -133,7 +145,7 @@ public class CrossValidation {
     }
 
      public void generateGisInput(int foldsNr, File outDir) {
-        for ( int i = 0; i < foldsNr - 1; i++ ) {
+        for ( int i = 0; i < foldsNr; i++ ) {
             File hcFile = new File( outDir, "train_highconf" + i + ".txt" );
             File lcFile = new File( outDir, "train_lowconf" + i + ".txt" );
             File outFile = new File( outDir, "gisIn" + i + ".txt" );

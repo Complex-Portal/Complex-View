@@ -17,25 +17,28 @@ package uk.ac.ebi.intact.confidence.intact;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.bridges.blast.BlastConfig;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
+import uk.ac.ebi.intact.confidence.ProteinPair;
+import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
+import uk.ac.ebi.intact.confidence.dataRetriever.IntactAnnotationRetrieverImpl;
+import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
+import uk.ac.ebi.intact.confidence.model.*;
+import uk.ac.ebi.intact.confidence.util.AttributeGetter;
+import uk.ac.ebi.intact.confidence.util.AttributeGetterImpl;
+import uk.ac.ebi.intact.confidence.utils.ParserUtils;
+import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.Confidence;
+import uk.ac.ebi.intact.model.util.CvObjectUtils;
+import uk.ac.ebi.intact.model.util.ProteinUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-
-import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
-import uk.ac.ebi.intact.confidence.utils.ParserUtils;
-import uk.ac.ebi.intact.confidence.utils.InteractionUtils;
-import uk.ac.ebi.intact.confidence.model.*;
-//import uk.ac.ebi.intact.confidence.model.Confidence;
-import uk.ac.ebi.intact.confidence.util.AttributeGetter;
-import uk.ac.ebi.intact.confidence.util.AttributeGetterImpl;
-import uk.ac.ebi.intact.confidence.ProteinPair;
-import uk.ac.ebi.intact.bridges.blast.BlastConfig;
-import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.Confidence;
-import uk.ac.ebi.intact.model.util.ProteinUtils;
-import uk.ac.ebi.intact.model.util.CvObjectUtils;
+import java.text.DecimalFormat;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Writes confidence values to IntAct.
@@ -58,6 +61,9 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
     private OpenNLPMaxEntClassifier classifier;
     private BlastConfig blastConfig;
     private Set<UniprotAc> againstProteins;
+    private DecimalFormat df = new DecimalFormat("0.00");
+
+    private AnnotationRetrieverStrategy annoDb;
 
 
      public IntactConfidenceCalculator( File gisModel, BlastConfig config, Set<UniprotAc> againstProteins, File workDir ) throws IOException {
@@ -71,6 +77,8 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
         this.againstProteins = againstProteins;
         classifier = new OpenNLPMaxEntClassifier( gisModel );
         this.workDir = workDir;
+
+         annoDb = new IntactAnnotationRetrieverImpl();
     }
 
     public IntactConfidenceCalculator( OpenNLPMaxEntClassifier gisModel, BlastConfig config, Set<UniprotAc> againstProteins, File workDir ) throws IOException {
@@ -81,6 +89,8 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
         this.againstProteins = againstProteins;
         classifier = gisModel;
         this.workDir = workDir;
+
+        annoDb = new IntactAnnotationRetrieverImpl();
     }
 
     public IntactConfidenceCalculator( String hcSetPath, String lcSetPath, File workDir, BlastConfig config ) throws IOException {
@@ -88,23 +98,27 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
         this.blastConfig = config;
         this.classifier = new OpenNLPMaxEntClassifier( hcSetPath, lcSetPath, workDir );
         this.againstProteins = fetchAgainstProteins(new File(hcSetPath) );
+
+         annoDb = new IntactAnnotationRetrieverImpl();
     }
 
     public IntactConfidenceCalculator(ConfidenceSet highConfidence, ConfidenceSet lowConfidence) {
         this.workDir = new File(System.getProperty( "java.io.tmpdir" ));
         classifier = new OpenNLPMaxEntClassifier( highConfidence, lowConfidence);
 
+        annoDb = new IntactAnnotationRetrieverImpl();
+
     }
 
     public String confidenceScore( BinaryInteraction interaction){
         List<Attribute> attributes = getAttributes( interaction, ConfidenceType.ALL );
         double [] scores = classifier.evaluate( attributes );
-        return Double.toString( scores[classifier.getIndex( "high" )] );
+        return df.format( scores[classifier.getIndex( "high" )] );
     }   
 
 
     public void calculate(List<InteractionImpl> interactions, OpenNLPMaxEntClassifier model){
-        AttributeGetter aG = new AttributeGetterImpl(workDir);
+        AttributeGetter aG = new AttributeGetterImpl(workDir, annoDb);
         for ( Iterator<InteractionImpl> iter = interactions.iterator(); iter.hasNext(); ) {
             InteractionImpl interaction =  iter.next();
             calculate(interaction, aG, model);
@@ -117,7 +131,7 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
     }
 
     public void calculate( InteractionImpl interaction ) {
-        AttributeGetter aG = new AttributeGetterImpl(workDir);
+        AttributeGetter aG = new AttributeGetterImpl(workDir, annoDb);
         calculate( interaction, aG, this.classifier );
     }
 
@@ -127,12 +141,17 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
     private void calculate( InteractionImpl interaction, AttributeGetter aG, OpenNLPMaxEntClassifier model ) {
         if ( isInteractionEligible( interaction ) ) {
             //InteractionSimplified interactionS = InteractionUtils.saveInteractionInformation(interaction);
+            if (interaction.getConfidences().size() != 0){
+                return;
+            }
             BinaryInteraction bi = convertToBin( interaction );
-            List<Attribute> attribs = aG.fetchAllAttributes( new ProteinPair( bi.getFirstId().getId(), bi.getSecondId().getId() ), againstProteins, blastConfig );
-            double[] scores = model.evaluate( attribs );
-            String value = Double.toString( scores[classifier.getIndex( "high" )] );
-            Confidence conf = new Confidence( interaction.getOwner(), value );
-            interaction.addConfidence( conf );
+            if (bi!= null){
+                List<Attribute> attribs = aG.fetchAllAttributes( new ProteinPair( bi.getFirstId().getId(), bi.getSecondId().getId() ), againstProteins, blastConfig );
+                double[] scores = model.evaluate( attribs );
+                String value = df.format( scores[classifier.getIndex( "high" )] );
+                Confidence conf = new Confidence( interaction.getOwner(), value );
+                interaction.addConfidence( conf );
+            }
         }
     }
 
@@ -173,7 +192,7 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
 
         if (idA != null && idB != null){
             return new BinaryInteraction(idA, idB);
-        } else {
+        } else {         
             return null;
         }
     }
@@ -236,7 +255,7 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
 
     private List<Attribute> getAttributes( BinaryInteraction interaction, ConfidenceType type ) {
         ProteinPair pp = new ProteinPair(interaction.getFirstId().getId(), interaction.getSecondId().getId());
-        AttributeGetter ag = new AttributeGetterImpl( this.workDir );
+        AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb );
         switch ( type ) {
             case GO:
                 return ag.fetchGoAttributes( pp);

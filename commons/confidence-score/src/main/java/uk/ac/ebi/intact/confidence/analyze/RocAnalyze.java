@@ -19,7 +19,7 @@ public class RocAnalyze
 {
     // front-end for the RocAnalyzer class
 
-    static String dir = "/scratch/classify/xvalidate/";
+    static String dir = "/net/nfs6/vol1/homes/iarmean/test/roc/";//"/scratch/classify/xvalidate/";
 
     public static void main(String[] args)
     {
@@ -32,7 +32,7 @@ public class RocAnalyze
 
         double runningtotal = 0.0;
 
-        int points = 20; // number of RoC curve points to calculate
+        int points = 100;//20; // number of RoC curve points to calculate
 
         double[] truePosTotals = new double[points];
         double[] trueNegTotals = new double[points];
@@ -42,7 +42,7 @@ public class RocAnalyze
 
 //            String attribPath = dir + "attribs" + i + ".txt";
 //            String weightPath = dir + "params" + i + ".txt";
-            File gisInput = new File("blabla");  //only so intellij shuts up
+            File gisInput = new File(dir,"gisModel" + i + ".txt");  //only so intellij shuts up
 
             String posTest = dir + "highconf" + i + ".txt";
             String negTest = dir + "lowconf" + i + ".txt";
@@ -50,7 +50,7 @@ public class RocAnalyze
             try
             {
                // RocAnalyzer ra = new RocAnalyzer(attribPath, weightPath, posTest, negTest);
-                 RocAnalyzer ra = new RocAnalyzer(gisInput, posTest, negTest);
+                 RocAnalyzer ra = new RocAnalyzer(gisInput, posTest, negTest, false);
                 ra.printSummary(0.5, true);
 //                double correct = ra.getFractionCorrect();
 //                runningtotal = runningtotal + correct;

@@ -18,7 +18,7 @@ package uk.ac.ebi.intact.confidence.intact;
 import opennlp.maxent.GISModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.confidence.attribute.SeqAlignFilter;
+import uk.ac.ebi.intact.confidence.filter.SeqAlignFilter;
 import uk.ac.ebi.intact.confidence.main.InfoFiltering;
 import uk.ac.ebi.intact.confidence.main.InfoGathering;
 import uk.ac.ebi.intact.confidence.main.InfoModelInput;
@@ -63,6 +63,7 @@ public class TrainModel {
         // put a proper yeast fasta file, or any fasta file containing the proteins for the low confidence generating step
         //TODO: make sure the fasta file is there, if it does not exist the low confidence set will not be created
         File fastaFile = new File( "/net/nfs6/vol1/homes/iarmean/tmp/40.S_cerevisiae.fasta" );
+        File goaFile = new File("/net/nfs7/vol22/sp-pro5/20080201_iarmean/gene_association.goa_uniprot");
 
         /**
          * Files that can be specified, if some data has been preeprocessed.
@@ -107,14 +108,18 @@ public class TrainModel {
         File pgConfigFile = new File(TrainModel.class.getResource("/hibernate.iweb2.cfg.xml").getFile());
         IntactContext.initStandaloneContext(pgConfigFile);
 
-
+//        File hcFile = new File(workDir,"highconf_set.txt");
+//        File mcFile = new File(workDir,"medconf_set.txt");
+//         Report report = new Report(hcFile,mcFile);
+//        report.setHighconfGOFile( new File(workDir, "highconf_set_go.txt") );
+//        report.setLowconfGOFile( new File (workDir, "lowconf_set_go.txt") );
         InfoGathering infoG = new InfoGathering();
         Report report = infoG.retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( workDir );
         long time = ( System.currentTimeMillis() / 1000 );
-//        if ( log.isInfoEnabled() ) {
-//            long total = time - start;
-//            log.info( "Retrieval of high confidence and medium confidence with annotations: " + total );
-//        }
+        if ( log.isInfoEnabled() ) {
+            long total = time - start;
+            log.info( "Retrieval of high confidence and medium confidence with annotations: " + total );
+        }
 
 
         /**
@@ -168,11 +173,13 @@ public class TrainModel {
          *
          */
       //  File goAnnoFile = new File( workDir, "highconf_set_go.txt" );
-        ProteinAnnotationReader bar = new ProteinAnnotationReaderImpl();
-        outFile = new File( workDir, "highconf_set_go_filter.txt" );
-        Set<ProteinAnnotation> pas = bar.read2Set( report.getHighconfGOFile() );
-        InfoFiltering.filterGo( pas );
+        ProteinAnnotationReader par = new ProteinAnnotationReaderImpl();
         ProteinAnnotationWriter paw = new ProteinAnnotationWriterImpl();
+
+        outFile = new File( workDir, "highconf_set_go_filter.txt" );
+        Set<ProteinAnnotation> pas = par.read2Set( report.getHighconfGOFile() );
+        InfoFiltering.filterGO( pas, goaFile );
+
         paw.write( pas, outFile );
         time = ( System.currentTimeMillis() / 1000 );
         if ( log.isInfoEnabled() ) {
@@ -182,8 +189,8 @@ public class TrainModel {
 
 //        goAnnoFile = new File( workDir, "lowconf_set_go.txt" );
         outFile = new File( workDir, "lowconf_set_go_filter.txt" );
-        pas = bar.read2Set( report.getLowconfGOFile());
-        InfoFiltering.filterGo( pas );
+        pas = par.read2Set( report.getLowconfGOFile());
+        InfoFiltering.filterGO( pas, goaFile );
         paw.write( pas, outFile );
         time2 = ( System.currentTimeMillis() / 1000 );
         if ( log.isInfoEnabled() ) {
@@ -191,8 +198,9 @@ public class TrainModel {
             log.info( "Filtering GOs for low confidence set : " + total );
         }
 
+        SeqAlignFilter.setHighConfProteins( report.getHighconfFile() );
         File seqAnnoFile = new File( workDir, "highconf_set_seq_anno.txt" );
-        Set<ProteinAnnotation> proteinAnnotation = bar.read2Set( seqAnnoFile );
+        Set<ProteinAnnotation> proteinAnnotation = par.read2Set( seqAnnoFile );
         SeqAlignFilter.filter( proteinAnnotation );
         outFile = new File( workDir, "highconf_set_seq_anno_filter.txt" );
         paw.write( proteinAnnotation, outFile );
@@ -203,7 +211,7 @@ public class TrainModel {
         }
 
         seqAnnoFile = new File( workDir, "lowconf_set_seq_anno.txt" );
-        proteinAnnotation = bar.read2Set( seqAnnoFile );
+        proteinAnnotation = par.read2Set( seqAnnoFile );
         SeqAlignFilter.filter( proteinAnnotation );
         outFile = new File( workDir, "lowconf_set_seq_anno_filter.txt" );
         paw.write( proteinAnnotation, outFile );

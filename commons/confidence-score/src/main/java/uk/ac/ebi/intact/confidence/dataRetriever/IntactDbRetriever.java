@@ -9,25 +9,23 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.model.*;
-import uk.ac.ebi.intact.confidence.model.io.impl.CompactInteractionSWriterImpl;
 import uk.ac.ebi.intact.confidence.model.io.InteractionSimplifiedWriter;
 import uk.ac.ebi.intact.confidence.model.io.ProteinSimplifiedWriter;
+import uk.ac.ebi.intact.confidence.model.io.impl.CompactInteractionSWriterImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.ProteinSimplifiedWriterImpl;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
+import uk.ac.ebi.intact.confidence.utils.IntactUtils;
 import uk.ac.ebi.intact.config.impl.AbstractHibernateDataConfig;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.persistence.dao.ProteinDao;
@@ -390,6 +388,9 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
      // ///////////////////
     // // Private Methods
     private void cleanIfExists( File hcFile ) {
+         if (hcFile == null){
+             return ;
+         }
         existsDelete(hcFile);
 
         String fileName = fileName( hcFile );
@@ -708,6 +709,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
      */
     private ProteinSimplified saveProteinInformation( Protein protein ) {
         ProteinSimplified proteinS = new ProteinSimplified();
+
         InteractorXref uniprotXref = ProteinUtils.getUniprotXref( protein );
         if ( uniprotXref != null ) {
             try {
@@ -720,35 +722,40 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         } else {
             proteinS.setUniprotAc( null );
         }
-        if ( protein.getSequence() != null ) {
-            proteinS.setSequence( new Sequence( protein.getSequence() ) );
-        } else {
-            if (log.isInfoEnabled()){
-                log.info( "seq was null for: " + protein.getAc() );
-            }
-        }
 
-        CvObjectDao<CvDatabase> cvDatabase = daoFactory.getCvObjectDao( CvDatabase.class );
-        CvDatabase cvGo = cvDatabase.getByPsiMiRef( CvDatabase.GO_MI_REF );
-        if ( cvGo == null ) {
-            throw new NullPointerException( "CvDatabase GO must not be null, check that it exists in the database!" );
-        }
-        Collection<Xref> goRefs = AnnotatedObjectUtils.searchXrefs( protein, cvGo );
-        for ( Xref xref : goRefs ) {
-            GoIdentifierImpl go = new GoIdentifierImpl( xref.getPrimaryId() );
-            proteinS.addGo( go );
-        }
+        proteinS.setSequence( IntactUtils.getSequence( protein ) );        
+        proteinS.setGoSet( IntactUtils.getGOs( daoFactory, protein ));
+        proteinS.setInterProSet( IntactUtils.getIPs( daoFactory, protein ));
 
-        CvDatabase cvIp = cvDatabase.getByPsiMiRef( CvDatabase.INTERPRO_MI_REF );
-        if ( cvIp == null ) {
-            throw new NullPointerException(
-                    "CvDatabase InterPro must not be null, check that the it exists in the database!" );
-        }
-        Collection<Xref> ipRefs = AnnotatedObjectUtils.searchXrefs( protein, cvIp );
-        for ( Xref xref : ipRefs ) {
-            InterProIdentifierImpl ip = new InterProIdentifierImpl( xref.getPrimaryId() );
-            proteinS.addInterProId( ip );
-        }
+//        if ( protein.getSequence() != null ) {
+//            proteinS.setSequence( new Sequence( protein.getSequence() ) );
+//        } else {
+//            if (log.isInfoEnabled()){
+//                log.info( "seq was null for: " + protein.getAc() );
+//            }
+//        }
+//
+//        CvObjectDao<CvDatabase> cvDatabase = daoFactory.getCvObjectDao( CvDatabase.class );
+//        CvDatabase cvGo = cvDatabase.getByPsiMiRef( CvDatabase.GO_MI_REF );
+//        if ( cvGo == null ) {
+//            throw new NullPointerException( "CvDatabase GO must not be null, check that it exists in the database!" );
+//        }
+//        Collection<Xref> goRefs = AnnotatedObjectUtils.searchXrefs( protein, cvGo );
+//        for ( Xref xref : goRefs ) {
+//            GoIdentifierImpl go = new GoIdentifierImpl( xref.getPrimaryId() );
+//            proteinS.addGo( go );
+//        }
+//
+//        CvDatabase cvIp = cvDatabase.getByPsiMiRef( CvDatabase.INTERPRO_MI_REF );
+//        if ( cvIp == null ) {
+//            throw new NullPointerException(
+//                    "CvDatabase InterPro must not be null, check that the it exists in the database!" );
+//        }
+//        Collection<Xref> ipRefs = AnnotatedObjectUtils.searchXrefs( protein, cvIp );
+//        for ( Xref xref : ipRefs ) {
+//            InterProIdentifierImpl ip = new InterProIdentifierImpl( xref.getPrimaryId() );
+//            proteinS.addInterProId( ip );
+//        }
 
         return proteinS;
     }

@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.confidence.util;
 
-import org.junit.Assert;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.BlastService;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
@@ -24,8 +23,8 @@ import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.attribute.AlignmentFileMaker;
-import uk.ac.ebi.intact.confidence.attribute.GoFilter;
-import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
+import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
+import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
@@ -39,7 +38,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ * For a given uniprot protein pair,
+ * gets the annotations, blasts, filters
+ *  and computes the attributes.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
@@ -49,19 +50,24 @@ import java.util.Set;
  *                             </pre>
  */
 public class AttributeGetterImpl implements AttributeGetter {
-    private UniprotDataRetriever uniprotKb;
+    private AnnotationRetrieverStrategy annoDb;
     private File workDir;
 
-    public AttributeGetterImpl( File workDir ) {
+    public AttributeGetterImpl( File workDir, AnnotationRetrieverStrategy annoatationRetriever ) {
         this.workDir = workDir;
-        uniprotKb = new UniprotDataRetriever();
+        annoDb = annoatationRetriever;
     }
 
+    /**
+     *  OBS: it filters only on "protein binding" not on IEA too
+     * @param proteinPair
+     * @return
+     */
     public List<Attribute> fetchGoAttributes( ProteinPair proteinPair ) {
-        Set<Identifier> gosA = uniprotKb.getGos( new UniprotAc( proteinPair.getFirstId() ) );
-        Set<Identifier> gosB = uniprotKb.getGos( new UniprotAc( proteinPair.getSecondId() ) );
-        GoFilter.filterForbiddenGos( gosA );
-        GoFilter.filterForbiddenGos( gosB );
+        Set<Identifier> gosA = annoDb.getGOs( new UniprotAc( proteinPair.getFirstId() ) );
+        Set<Identifier> gosB = annoDb.getGOs( new UniprotAc( proteinPair.getSecondId() ) );
+        GOFilter.getInstance().filterGOTerm( gosA );
+        GOFilter.getInstance().filterGOTerm( gosB );
         List<Attribute> attribs = CombineToAttribs.combine( gosA, gosB);
         //combine( gosA, gosB );
         return attribs;
@@ -95,8 +101,8 @@ public class AttributeGetterImpl implements AttributeGetter {
 //    }
 
     public List<Attribute> fetchIpAttributes( ProteinPair proteinPair ) {
-        Set<Identifier> ipsA = uniprotKb.getIps( new UniprotAc( proteinPair.getFirstId() ) );
-        Set<Identifier> ipsB = uniprotKb.getIps( new UniprotAc( proteinPair.getSecondId() ) );
+        Set<Identifier> ipsA = annoDb.getIps( new UniprotAc( proteinPair.getFirstId() ) );
+        Set<Identifier> ipsB = annoDb.getIps( new UniprotAc( proteinPair.getSecondId() ) );
         List<Attribute> attribs = CombineToAttribs.combine( ipsA, ipsB);
                 //combine( ipsA, ipsB );
         return attribs;
@@ -110,9 +116,14 @@ public class AttributeGetterImpl implements AttributeGetter {
             Set<ProteinSimplified> results = alignmentMaker.blast( prots, againstProt );
             if ( results != null ) {
                 ProteinSimplified[] protsArray = results.toArray( new ProteinSimplified[results.size()] );
-                Assert.assertEquals( 2, protsArray.length);
+
                 Set<Identifier> idsA = new HashSet<Identifier>( ConversionUtils.convert2Id( protsArray[0].getAlignments() ) );
-                Set<Identifier> idsB = new HashSet<Identifier>( ConversionUtils.convert2Id( protsArray[1].getAlignments() ) );
+                Set<Identifier> idsB;
+                if (protsArray.length == 2) {
+                    idsB = new HashSet<Identifier>( ConversionUtils.convert2Id( protsArray[1].getAlignments() ) );
+                } else {
+                    idsB = idsA;
+                }
                 List<Attribute> attribs = CombineToAttribs.combine( idsA, idsB);
                 // combine(idaA, idsB)
                 return attribs;
@@ -127,9 +138,9 @@ public class AttributeGetterImpl implements AttributeGetter {
 
     private Set<ProteinSimplified> fetchSeq( ProteinPair proteinPair ) {
         UniprotAc acA = new UniprotAc( proteinPair.getFirstId() );
-        Sequence seqA = uniprotKb.getSeq( acA );
+        Sequence seqA = annoDb.getSeq( acA );
         UniprotAc acB = new UniprotAc( proteinPair.getSecondId() );
-        Sequence seqB = uniprotKb.getSeq( acB );
+        Sequence seqB = annoDb.getSeq( acB );
         ProteinSimplified protA = new ProteinSimplified( acA, seqA );
         ProteinSimplified protB = new ProteinSimplified( acB, seqB );
         Set<ProteinSimplified> prots = new HashSet<ProteinSimplified>( 2 );

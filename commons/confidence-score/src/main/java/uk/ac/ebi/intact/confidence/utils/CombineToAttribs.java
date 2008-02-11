@@ -17,10 +17,10 @@ package uk.ac.ebi.intact.confidence.utils;
 
 import uk.ac.ebi.intact.confidence.model.*;
 
-import java.util.List;
-import java.util.Set;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Combines 2 list of annotations to a list of attributes.
@@ -36,6 +36,9 @@ public class CombineToAttribs {
 
     public static List<Attribute> combine( Set<Identifier> idsA, Set<Identifier> idsB ) {
         List<Attribute> attributes = new ArrayList<Attribute>();
+        if(idsA == null || idsB == null){
+            return attributes;
+        }
         for ( Iterator<Identifier> idItA = idsA.iterator(); idItA.hasNext(); ) {
             Identifier idA = idItA.next();
             for ( Iterator<Identifier> idItB = idsB.iterator(); idItB.hasNext(); ) {

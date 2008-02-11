@@ -17,6 +17,9 @@ import psidev.psi.mi.xml.converter.ConverterException;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
+import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
+import uk.ac.ebi.intact.confidence.dataRetriever.IntactAnnotationRetrieverImpl;
+import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.ConfidenceType;
@@ -49,7 +52,14 @@ public class PsiMiTabConfidence {
     private BlastConfig blastConfig;
     private Set<UniprotAc> againstProteins;
 
-    public PsiMiTabConfidence( File gisModel, BlastConfig config, Set<UniprotAc> againstProteins, File workDir ) throws IOException {
+    private File goaFilterFile;
+
+    private PsimiTabWriter psimiTabWriter;
+    private AnnotationRetrieverStrategy annoDb;
+
+    ////////////////////
+    // Constructor(s).
+    public PsiMiTabConfidence( File gisModel, BlastConfig config, Set<UniprotAc> againstProteins, File goaFile, File workDir ) throws IOException {
         if ( !( gisModel.exists() && workDir.exists() ) ) {
             throw new NullPointerException( "GisModel File or workDir does not exist!" );
         }
@@ -60,32 +70,37 @@ public class PsiMiTabConfidence {
         this.againstProteins = againstProteins;
         classifier = new OpenNLPMaxEntClassifier( gisModel );
         this.workDir = workDir;
+
+        this.goaFilterFile = goaFile;
+
+        annoDb = new IntactAnnotationRetrieverImpl();
     }
 
-    public PsiMiTabConfidence( String hcSetPath, String lcSetPath, File workDir, BlastConfig config ) throws IOException {
+    public PsiMiTabConfidence( String hcSetPath, String lcSetPath, File goaFile, File workDir, BlastConfig config ) throws IOException {
         this.workDir = workDir;
         this.blastConfig = config;
         this.classifier = new OpenNLPMaxEntClassifier( hcSetPath, lcSetPath, workDir );
         this.againstProteins = fetchAgainstProteins(new File(hcSetPath) );
+
+        this.goaFilterFile =goaFile;
     }
 
-    private Set<UniprotAc> fetchAgainstProteins( File hcSet ) throws IOException {
-        return ParserUtils.parseProteins( hcSet );
-        //TODO: replace the ParserUtils class with one of the model parsers
-//        BinaryInteractionAttributesReader biar = new BinaryInteractionAttributesReaderImpl();
-//        List<BinaryInteractionAttributes> list = biar.read( hcSet);
-
-    }
-
+    //////////////////////
+    // Public Method(s).
     public void appendConfidence( File inPsiMiFile, boolean hasHeaderLine, File outPsiMiFile, Set<ConfidenceType> type ) throws PsiMiException {
         PsimiTabReader reader = new PsimiTabReader( hasHeaderLine );
         reader.setBinaryInteractionClass( IntActBinaryInteraction.class );
         reader.setColumnHandler( new IntActColumnHandler() );
         try {
             Iterator<BinaryInteraction> psiMiIterator = reader.iterate( inPsiMiFile );
-            Collection<BinaryInteraction> interactions = saveScores( psiMiIterator, type );
+            psimiTabWriter = new PsimiTabWriter();
+            psimiTabWriter.setHeaderEnabled( hasHeaderLine );
+            psimiTabWriter.setBinaryInteractionClass( IntActBinaryInteraction.class );
+            psimiTabWriter.setColumnHandler( new IntActColumnHandler() );
+//            Collection<BinaryInteraction> interactions = saveScores( psiMiIterator, type, outPsiMiFile, true );
 
-            writeScores( interactions, hasHeaderLine, outPsiMiFile );
+            saveScores( psiMiIterator, type, outPsiMiFile, true );
+           // writeScores( interactions, hasHeaderLine, outPsiMiFile );
         } catch ( IOException e ) {
             throw new PsiMiException( e);
         } catch ( ConverterException e ) {
@@ -93,8 +108,23 @@ public class PsiMiTabConfidence {
         }
     }
 
-    protected Collection<BinaryInteraction> saveScores( Iterator<BinaryInteraction> psiMiIterator, Set<ConfidenceType> type ) {
-        Collection<BinaryInteraction> interactions = new ArrayList<BinaryInteraction>();
+     public void writeScores( Collection<BinaryInteraction> interactions, boolean hasHeaderLine, File outPsiMiFile ) {
+        PsimiTabWriter writer = new PsimiTabWriter();
+        writer.setHeaderEnabled( hasHeaderLine );
+        writer.setBinaryInteractionClass( IntActBinaryInteraction.class );
+        writer.setColumnHandler( new IntActColumnHandler() );
+        try {
+            writer.write( interactions, outPsiMiFile );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        } catch ( ConverterException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    /////////////////////////
+    // Protected Method(s).
+    protected void saveScores( Iterator<BinaryInteraction> psiMiIterator, Set<ConfidenceType> type, File outFile, boolean firstLine ) throws IOException {      
         while ( psiMiIterator.hasNext() ) {
             BinaryInteraction interaction = psiMiIterator.next();
             if ( interactionValid( interaction ) ) {
@@ -106,20 +136,22 @@ public class PsiMiTabConfidence {
             } else {
                 save( interaction, classifier.evaluate( new ArrayList<Attribute>( 0 ) ) );
             }
-            interactions.add( interaction );
+            psimiTabWriter.writeOrAppend( interaction, outFile, firstLine );
+            if (firstLine) {
+                firstLine = false;
+            }
         }
-        return interactions;
     }
 
-    private boolean interactionValid( BinaryInteraction interaction ) {
-        String[] acs = getUniprotAcs( interaction );
-        return ( acs.length == 2 ? true : false );
-    }
-
-    protected List<Attribute> getAttributes( BinaryInteraction interaction, Set<ConfidenceType> type ) {
+     protected List<Attribute> getAttributes( BinaryInteraction interaction, Set<ConfidenceType> type ) throws IOException {
         List<Attribute> attributes = new ArrayList<Attribute>();
         for ( Iterator<ConfidenceType> confTypeIter = type.iterator(); confTypeIter.hasNext(); ) {
             ConfidenceType confidenceType = confTypeIter.next();
+
+            if (confidenceType.equals( ConfidenceType.GO )){
+                GOFilter.getInstance().initialize( goaFilterFile );
+            }
+
             List<Attribute> attribs = getAttributes( interaction, confidenceType );
             if ( attribs != null ) {
                 attributes.addAll( attribs );
@@ -128,9 +160,24 @@ public class PsiMiTabConfidence {
         return attributes;
     }
 
+    ///////////////////////
+    // Private Method(s).
+    private Set<UniprotAc> fetchAgainstProteins( File hcSet ) throws IOException {
+         return ParserUtils.parseProteins( hcSet );
+         //TODO: replace the ParserUtils class with one of the model parsers
+//        BinaryInteractionAttributesReader biar = new BinaryInteractionAttributesReaderImpl();
+//        List<BinaryInteractionAttributes> list = biar.read( hcSet);
+
+     }
+
+    private boolean interactionValid( BinaryInteraction interaction ) {
+        String[] acs = getUniprotAcs( interaction );
+        return ( acs.length == 2 ? true : false );
+    }
+
     private List<Attribute> getAttributes( BinaryInteraction interaction, ConfidenceType type ) {
         String[] acs = getUniprotAcs( interaction );
-        AttributeGetter ag = new AttributeGetterImpl( this.workDir );
+        AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb );
         switch ( type ) {
             case GO:
                 return ag.fetchGoAttributes( new ProteinPair( acs[0], acs[1] ) );
@@ -178,17 +225,5 @@ public class PsiMiTabConfidence {
     }
 
 
-    public void writeScores( Collection<BinaryInteraction> interactions, boolean hasHeaderLine, File outPsiMiFile ) {
-        PsimiTabWriter writer = new PsimiTabWriter();
-        writer.setHeaderEnabled( hasHeaderLine );
-        writer.setBinaryInteractionClass( IntActBinaryInteraction.class );
-        writer.setColumnHandler( new IntActColumnHandler() );
-        try {
-            writer.write( interactions, outPsiMiFile );
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        } catch ( ConverterException e ) {
-            e.printStackTrace();
-        }
-    }
+
 }

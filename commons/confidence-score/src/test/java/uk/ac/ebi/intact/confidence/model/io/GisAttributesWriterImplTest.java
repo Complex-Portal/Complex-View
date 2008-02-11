@@ -17,11 +17,11 @@ package uk.ac.ebi.intact.confidence.model.io;
 
 import org.junit.Assert;
 import org.junit.Test;
+import uk.ac.ebi.intact.confidence.factory.MockFactory;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
 import uk.ac.ebi.intact.confidence.model.Confidence;
 import uk.ac.ebi.intact.confidence.model.io.impl.GisAttributesWriterImpl;
-import uk.ac.ebi.intact.confidence.test.MockFactory;
 
 import java.io.File;
 

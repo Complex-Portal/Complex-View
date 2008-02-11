@@ -16,27 +16,30 @@
 package uk.ac.ebi.intact.confidence.main;
 
 import uk.ac.ebi.intact.confidence.attribute.BlastFilter;
-import uk.ac.ebi.intact.confidence.attribute.GoFilter;
+import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 
 import java.io.File;
-import java.util.Set;
-import java.util.Iterator;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Filter the Go, InterPro, Blast hits characteristics
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        07-Dec-2007
  *        </pre>
  */
 public class InfoFiltering {
 
+    @Deprecated
     public static void filterGo (Set<ProteinAnnotation> proteinAnnotations){
          for ( Iterator<ProteinAnnotation> iter = proteinAnnotations.iterator(  ); iter.hasNext();){
              ProteinAnnotation pa = iter.next();
@@ -46,8 +49,13 @@ public class InfoFiltering {
          }
     }
 
+    public static void filterGO( Collection<ProteinAnnotation> proteinAnnotations, File goaFile) throws IOException {
+        GOFilter.getInstance().initialize( goaFile );
+        GOFilter.getInstance().filterGO( proteinAnnotations );
+    }
+
     public static void filterGO( Set<Identifier>gos){
-        GoFilter.filterForbiddenGos( gos);
+        GOFilter.filterForbiddenGOs( gos);
     }
 
     public static void filterBlastHits(Set<Identifier> uniprotAcs, File highConf){

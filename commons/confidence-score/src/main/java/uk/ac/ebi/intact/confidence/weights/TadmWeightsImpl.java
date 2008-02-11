@@ -22,11 +22,13 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * TODO comment that class header
+ * Using the TToolkit for Advanced Discriminative Modeling (TADM)
+ * generates the attributes weights,
+ *  necessary  for the MaxEnt model.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *                      22-Nov-2007
  *                      </pre>

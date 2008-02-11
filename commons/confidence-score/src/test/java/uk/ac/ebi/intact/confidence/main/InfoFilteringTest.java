@@ -15,21 +15,20 @@
  */
 package uk.ac.ebi.intact.confidence.main;
 
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
+import uk.ac.ebi.intact.confidence.filter.SeqAlignFilter;
+import uk.ac.ebi.intact.confidence.model.Identifier;
+import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
+import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationWriter;
+import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationWriterImpl;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.HashSet;
-
-import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
-import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
-import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationWriter;
-import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationWriterImpl;
-import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
-import uk.ac.ebi.intact.confidence.model.Identifier;
-import uk.ac.ebi.intact.confidence.attribute.SeqAlignFilter;
 
 /**
  * Test class for Information filtering class.

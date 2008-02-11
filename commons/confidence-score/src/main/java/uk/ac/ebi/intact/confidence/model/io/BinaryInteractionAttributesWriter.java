@@ -16,14 +16,13 @@
 package uk.ac.ebi.intact.confidence.model.io;
 
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
-import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 /**
- * TODO comment that class header
+ * Writer strategy for BinaryInteractionAttributes objects.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$

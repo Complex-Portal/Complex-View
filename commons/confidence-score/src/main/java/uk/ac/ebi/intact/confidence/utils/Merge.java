@@ -30,14 +30,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ * Merging of the different attributes files.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
- *        <pre>
- *                                                                14-Nov-2007
- *                                                                </pre>
+ * @since 1.6.0
+ *        <pre> 14-Nov-2007 </pre>
  */
 public class Merge extends AbstractLucene {
     /**

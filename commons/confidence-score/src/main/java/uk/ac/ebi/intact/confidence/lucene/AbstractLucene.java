@@ -37,10 +37,8 @@ import java.io.IOException;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
- *        <pre>
- *               20-Nov-2007
- *               </pre>
+ * @since 1.6.0
+ *        <pre> 20-Nov-2007 </pre>
  */
 public abstract class AbstractLucene {
     /**

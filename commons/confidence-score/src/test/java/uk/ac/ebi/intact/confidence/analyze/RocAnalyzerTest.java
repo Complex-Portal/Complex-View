@@ -15,8 +15,8 @@
  */
 package uk.ac.ebi.intact.confidence.analyze;
 
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.File;
 
@@ -38,5 +38,29 @@ public class RocAnalyzerTest {
         RocAnalyzer ra = new RocAnalyzer( gisModel, posPath, negPath, false);
         ra.printRocPoints( 30 );
     }
+
+    @Test
+    @Ignore
+    public void analyze() throws Exception {
+        RocAnalyze roc = new RocAnalyze();
+    }
+
+
+    @Test
+    @Ignore
+    public void OneFoldRoc() throws Exception {
+//        File gisModel = new File("E:\\tmp\\xvalid\\folds\\gisModel0.txt");
+//        String posPath ="E:\\tmp\\xvalid\\folds\\highconf0.txt";
+//        String negPath = "E:\\tmp\\xvalid\\folds\\lowconf0.txt";
+        for (int i = 0; i< 10; i++){
+            File gisModel = new File("/net/nfs6/vol1/homes/iarmean/test/roc/gisModel"+i+".txt");
+            String posPath = "/net/nfs6/vol1/homes/iarmean/test/roc/highconf"+i+".txt";
+            String negPath = "/net/nfs6/vol1/homes/iarmean/test/roc/lowconf"+i+".txt";
+
+            RocAnalyzer ra = new RocAnalyzer( gisModel, posPath, negPath, false);
+            ra.printRocPoints( 30 );
+        }
+    }
+
 
 }

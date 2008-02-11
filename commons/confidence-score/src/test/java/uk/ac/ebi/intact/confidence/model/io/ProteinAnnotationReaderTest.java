@@ -16,16 +16,13 @@
 package uk.ac.ebi.intact.confidence.model.io;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.List;
-import java.util.Collection;
-import java.util.Arrays;
-import java.util.Iterator;
-
 import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Test for the Protein annotation file reader
@@ -86,5 +83,36 @@ public class ProteinAnnotationReaderTest {
 
         return Arrays.asList( pa, pa1, pa2, pa3 );
     }
+
+    @Test
+    @Ignore
+    public void diffs() throws Exception {
+        ProteinAnnotationReader par = new ProteinAnnotationReaderImpl();
+        File file1 = new File("H:\\tmp\\lowconf_set_seq_anno2.txt");
+        File file2 = new File("H:\\tmp\\lowconf_set_seq_anno_filter.txt");
+
+        Set<ProteinAnnotation> proteinsNew = par.read2Set( file1 );
+        Set<ProteinAnnotation> proteinsOld = par.read2Set( file2 );
+        Set<Identifier> newIdentifiers = getId(proteinsNew);
+        System.out.println("new : " + proteinsNew.size());
+        System.out.println("old: " + proteinsOld.size()) ;
+        for(Iterator<ProteinAnnotation> iter = proteinsOld.iterator(); iter.hasNext();){
+            ProteinAnnotation pa = iter.next();
+
+            if (!newIdentifiers.contains( pa.getId() )) {
+                 System.out.println( pa.convertToString() );
+            }
+        }
+    }
+
+    private Set<Identifier> getId( Set<ProteinAnnotation> proteinsNew ) {
+        Set<Identifier> ids = new HashSet<Identifier>();
+        for ( Iterator<ProteinAnnotation> iterator = proteinsNew.iterator(); iterator.hasNext(); ) {
+            ProteinAnnotation pa = iterator.next();
+            ids.add( pa.getId() );
+        }
+        return ids;
+    }
+
 
 }

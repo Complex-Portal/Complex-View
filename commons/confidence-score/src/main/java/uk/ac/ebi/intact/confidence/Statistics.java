@@ -16,16 +16,14 @@
 package uk.ac.ebi.intact.confidence;
 
 import org.junit.Assert;
-
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.*;
-
+import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
 import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesReader;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesReaderImpl;
-import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
-import uk.ac.ebi.intact.confidence.model.Attribute;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.*;
 
 /**
  * Class to get different statistics.
@@ -58,6 +56,10 @@ public class Statistics {
             if (max< score){
                 max = score;
             }
+        }
+        for ( Iterator<String> iterator = scores.keySet().iterator(); iterator.hasNext(); ) {
+            String str =  iterator.next();
+            Double score = scores.get( str );
             if (score == 0.5){
                 equal05 ++;
             }

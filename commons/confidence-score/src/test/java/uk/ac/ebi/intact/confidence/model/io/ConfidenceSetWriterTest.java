@@ -15,19 +15,18 @@
  */
 package uk.ac.ebi.intact.confidence.model.io;
 
-import org.junit.Test;
 import org.junit.Assert;
-
-import java.io.File;
-import java.io.BufferedReader;
-import java.util.Iterator;
-
-import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
+import org.junit.Test;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
 import uk.ac.ebi.intact.confidence.model.Confidence;
+import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 import uk.ac.ebi.intact.confidence.model.io.impl.ConfidenceSetModelInputWriterImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.ConfidenceSetReaderImpl;
-import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 
 /**
  * Test class for writing a confidenceSet.
@@ -49,18 +48,18 @@ public class ConfidenceSetWriterTest {
         ConfidenceSet expected = csr.read( bi, Confidence.UNKNOWN );
         File outFile = new File ( GlobalTestData.getTargetDirectory(), "ConfSetWriterTest.txt");
         csw.write(expected, outFile);
-        ConfidenceSet observed = csr.read( outFile, Confidence.UNKNOWN);
 
         //check
-        Assert.assertEquals( expected.getType(), observed.getType() );
-        Assert.assertEquals( expected.getBinaryInteractions().size(), observed.getBinaryInteractions().size() );
-
-        int nr =0;
-        for ( Iterator<BinaryInteractionAttributes> iter = expected.getBinaryInteractions().iterator(); iter.hasNext(); ) {
-            BinaryInteractionAttributes expectedBiar =  iter.next();
-            BinaryInteractionAttributes observedBiar =  observed.getBinaryInteractions().get( nr );
-            Assert.assertEquals( expectedBiar.convertToString(), observedBiar.convertToString() );                        
-       }
+        BufferedReader br = new BufferedReader(new FileReader(outFile));
+        String observed ="";
+        int nr = 0;
+        while ((observed = br.readLine())!= null){
+            BinaryInteractionAttributes expectedBiar = expected.getBinaryInteractions().get( nr );
+            String expectedStr = expectedBiar.convertToModleInputString();
+            Assert.assertEquals( expectedStr, observed );
+            nr++;
+        }
+        br.close();
     }
 
 }

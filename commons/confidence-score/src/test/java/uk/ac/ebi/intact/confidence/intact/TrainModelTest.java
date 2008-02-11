@@ -15,8 +15,8 @@
  */
 package uk.ac.ebi.intact.confidence.intact;
 
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Test class for the whole run.
@@ -28,7 +28,7 @@ import org.junit.Ignore;
 public class TrainModelTest {
 
     @Test
-	    @Ignore
+	 @Ignore
     //TODO: be careful with the ignore sign
 
     public void runTrainModel() throws Exception {

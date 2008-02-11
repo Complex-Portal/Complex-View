@@ -138,7 +138,7 @@ public class AnalyzeMain {
             File posTest = new File( inDir, "testSet_hc.txt" );
             File negTest = new File( inDir, "testSet_lc.txt" );
             try {
-                RocAnalyzer ra = new RocAnalyzer( gisInput, posTest.getPath(), negTest.getPath() );
+                RocAnalyzer ra = new RocAnalyzer( gisInput, posTest.getPath(), negTest.getPath(), true );
                 if ( log.isInfoEnabled() ) {
                     log.info( "Begin of runNr: " + i + "\n" );
                 }

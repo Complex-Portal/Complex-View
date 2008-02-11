@@ -15,13 +15,13 @@
  */
 package uk.ac.ebi.intact.confidence.model.io;
 
-import org.junit.Test;
 import org.junit.Assert;
-import uk.ac.ebi.intact.confidence.test.MockFactory;
+import org.junit.Test;
+import uk.ac.ebi.intact.confidence.factory.MockFactory;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesReaderImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesWriterImpl;
-import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 
 import java.io.File;
 import java.util.List;
@@ -37,6 +37,7 @@ import java.util.List;
  *        </pre>
  */
 public class BinaryInteractionAttributesWriterTest {
+
     @Test
     public void write() throws Exception {
         BinaryInteractionAttributesWriter biaw = new BinaryInteractionAttributesWriterImpl();

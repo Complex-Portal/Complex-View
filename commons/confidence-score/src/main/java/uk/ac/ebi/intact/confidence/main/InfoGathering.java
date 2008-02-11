@@ -21,11 +21,11 @@ import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
-import uk.ac.ebi.intact.confidence.attribute.GoFilter;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
+import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.main.exception.InfoGatheringException;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.Report;
@@ -91,6 +91,17 @@ public class InfoGathering {
         try {
             BinaryInteractionSet lowConf = new BinaryInteractionSet( report.getLowconfFile().getPath() );
 //            File dirForAttrib = report.getLowconfFile().getParentFile(); // new File( workDir, "DataRetriever" );
+            writeIpGoForLc( lowConf.getAllProtNames(), report );
+        } catch ( IOException e ) {
+            throw new InfoGatheringException( e);
+        }
+    }
+
+    public void retrieveLowConfidenceSetAnnotations(File workDir, File lowconfFile) throws InfoGatheringException {
+        try {
+            BinaryInteractionSet lowConf = new BinaryInteractionSet( lowconfFile.getPath());
+            File dirForAttrib = workDir; // new File( workDir, "DataRetriever" );
+            Report report = new Report(new File(workDir, "highconf_set.txt"), new File(workDir, "medconf_set.txt0"));
             writeIpGoForLc( lowConf.getAllProtNames(), report );
         } catch ( IOException e ) {
             throw new InfoGatheringException( e);
@@ -178,8 +189,8 @@ public class InfoGathering {
        private void writeGo( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
            try {
                for ( String ac : lowConfProt ) {
-                   Set<Identifier> gos = uniprot.getGos( new UniprotAc( ac ) );
-                   GoFilter.filterForbiddenGos( gos);
+                   Set<Identifier> gos = uniprot.getGOs( new UniprotAc( ac ) );
+                   GOFilter.filterForbiddenGOs( gos);
                    fileWriter.append( ac + "," );
                    for ( Identifier goId : gos ) {
                        fileWriter.append( goId.getId() + "," );

@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.confidence.model;
 
-import java.util.regex.Pattern;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 
 /**
@@ -32,6 +31,7 @@ public class UniprotIdentifierImpl implements Identifier {
     private UniprotAc uniprotAc;
 
     public UniprotIdentifierImpl(String uniprotId){
+        uniprotId = uniprotId.toUpperCase();
         this.uniprotAc = new UniprotAc( uniprotId);
     }
     public UniprotIdentifierImpl(UniprotAc uniprotAc){

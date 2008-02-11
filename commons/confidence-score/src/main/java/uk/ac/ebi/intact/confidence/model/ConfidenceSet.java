@@ -18,11 +18,13 @@ package uk.ac.ebi.intact.confidence.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * TODO comment that class header
+ * Data model for a Confidence set:
+ * List of binary interactions between uniprot proteins described
+ * by a list of attributes, with a Confidence tag.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$

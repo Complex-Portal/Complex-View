@@ -10,11 +10,11 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.attribute.GoFilter;
 import uk.ac.ebi.intact.confidence.dataRetriever.DataRetrieverException;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
+import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterFastaFile;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
@@ -247,8 +247,8 @@ public class ConfidenceModelImpl {
     private void getGo( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) {
         try {
             for ( String ac : lowConfProt ) {
-                Set<Identifier> gos = uniprot.getGos( new UniprotAc( ac ) );
-                GoFilter.filterForbiddenGos( gos);
+                Set<Identifier> gos = uniprot.getGOs( new UniprotAc( ac ) );
+                GOFilter.filterForbiddenGOs( gos);
                 fileWriter.append( ac + "," );
                 for ( Identifier goId : gos ) {
                     fileWriter.append( goId.getId() + "," );

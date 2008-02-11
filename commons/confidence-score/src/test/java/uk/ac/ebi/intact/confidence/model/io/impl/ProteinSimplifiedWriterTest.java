@@ -15,24 +15,21 @@
  */
 package uk.ac.ebi.intact.confidence.model.io.impl;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+import uk.ac.ebi.intact.confidence.factory.MockFactory;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+import uk.ac.ebi.intact.confidence.model.Identifier;
+import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
+import uk.ac.ebi.intact.confidence.model.io.ProteinSimplifiedWriter;
 
 import java.io.File;
-import java.util.List;
-import java.util.Set;
 import java.util.Collection;
 import java.util.Iterator;
-
-import uk.ac.ebi.intact.confidence.global.GlobalTestData;
-import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
-import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
-import uk.ac.ebi.intact.confidence.model.Identifier;
-import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
-import uk.ac.ebi.intact.confidence.model.io.impl.ProteinSimplifiedWriterImpl;
-import uk.ac.ebi.intact.confidence.model.io.ProteinSimplifiedWriter;
-import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
-import uk.ac.ebi.intact.confidence.test.MockFactory;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Protein Simpld writer test class.

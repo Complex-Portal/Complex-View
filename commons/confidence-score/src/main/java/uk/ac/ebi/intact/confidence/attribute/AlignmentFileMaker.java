@@ -150,40 +150,91 @@ public class AlignmentFileMaker {
             throw new NullPointerException( "Params must not be null!" );
         }
         GlobalData.totalProts = proteins.size();
-        //TODO: make smth smarter than this
+        //TODO: smth when list >20 make smth smarter than this
         int nr = 20;
+        Set<ProteinSimplified> done = new HashSet<ProteinSimplified>(proteins.size());
 
-        if ( proteins.size() < nr ) {
-            Set<ProteinSimplified> doneProteins = new HashSet<ProteinSimplified>();
-            while ( proteins.size() != 0 ) {
-                for ( Iterator<ProteinSimplified> iterator = proteins.iterator(); iterator.hasNext(); ) {
-                    ProteinSimplified prot = iterator.next();
-                    if ( log.isInfoEnabled() ) {
-                        log.info( "fetching " + prot );
-                    }
-                    BlastResult result = blast.fetchAvailableBlast( new UniprotAc( prot.getUniprotAc().getAcNr() ) );
-                    if ( result != null ) {
-                        processsResult( prot, result, againstProteins );
-                        if ( log.isInfoEnabled() ) {
-                            log.info( "processed: " + GlobalData.getCount() + " out of " + GlobalData.totalProts );
-                        }
-                        doneProteins.add( prot);
-                        iterator.remove();
+        String uniprotAc=null;
+        while (proteins.size() != 0){
+            for ( Iterator<ProteinSimplified> iter = proteins.iterator(); iter.hasNext(); ) {
+                ProteinSimplified proteinSimplified = iter.next();
+                if ( log.isDebugEnabled() ) {
+                    log.debug( "fetching " + proteinSimplified );
+                }
+                Sequence seq = proteinSimplified.getSequence();
+                BlastInput blastInput;
+                if (seq == null){
+                    blastInput = new BlastInput(proteinSimplified.getUniprotAc());
+                } else {
+                    blastInput = new BlastInput( proteinSimplified.getUniprotAc(), proteinSimplified.getSequence() );
+                }
+                BlastJobEntity blastJobEntity = blast.submitJob( blastInput );
+                blast.refreshJob( blastJobEntity );
+                if (log.isDebugEnabled()){
+                    log.debug( "jobEntity: " + blastJobEntity );
+                }
+                if ( blastJobEntity.getStatus().equals( BlastJobStatus.DONE )  || blastJobEntity.getStatus().equals( BlastJobStatus.FAILED ) ||
+                        blastJobEntity.getStatus().equals(BlastJobStatus.NOT_FOUND)) {
+                    BlastResult result = blast.fetchAvailableBlast( blastJobEntity );
+                    if ( result == null ) {
+                        throw new BlastServiceException( "JOB " + blastJobEntity + " but BlastResult is null!" );
                     } else {
-                        //TODO: implement a way for the client not to wait
-                        //if (blast.okToSubmit( 1)) {}
-                        BlastInput bi = formatBlastInput( prot );
-                        BlastJobEntity job = blast.submitJob( bi );
-                        if ( log.isInfoEnabled() ) {
-                            log.info( "job submitted: " + job );
+                        processResult( proteinSimplified, result, againstProteins );
+                        done.add( proteinSimplified );
+                        iter.remove();
+                        if (blastJobEntity.getUniprotAc().equalsIgnoreCase( uniprotAc )){
+                            uniprotAc =null;
+                        }
+                    }
+                } else {
+                    if (uniprotAc == null){
+                        uniprotAc = blastJobEntity.getUniprotAc();
+                    } else if (uniprotAc.equalsIgnoreCase( blastJobEntity.getUniprotAc() )){
+                        try {
+                            Thread.sleep( 5000 ); // 5 sec
+                        } catch ( InterruptedException e1 ) {
+                            throw new BlastServiceException( "thread.sleep interrupted", e1 );
                         }
                     }
                 }
+
             }
-           return doneProteins;
         }
-        return null;
+        return done;
+
+
+//        if ( proteins.size() < nr ) {
+//            Set<ProteinSimplified> doneProteins = new HashSet<ProteinSimplified>();
+//            while ( proteins.size() != 0 ) {
+//                for ( Iterator<ProteinSimplified> iterator = proteins.iterator(); iterator.hasNext(); ) {
+//                    ProteinSimplified prot = iterator.next();
+//                    if ( log.isInfoEnabled() ) {
+//                        log.info( "fetching " + prot );
+//                    }
+//                    BlastResult result = blast.fetchAvailableBlast( new UniprotAc( prot.getUniprotAc().getAcNr() ) );
+//                    if ( result != null ) {
+//                        processResult( prot, result, againstProteins );
+//                        if ( log.isInfoEnabled() ) {
+//                            log.info( "processed: " + GlobalData.getCount() + " out of " + GlobalData.totalProts );
+//                        }
+//                        doneProteins.add( prot);
+//                        iterator.remove();
+//                    } else {
+//                        //TODO: implement a way for the client not to wait
+//                        //if (blast.okToSubmit( 1)) {}
+//                        BlastInput bi = formatBlastInput( prot );
+//                        BlastJobEntity job = blast.submitJob( bi );
+//                        if ( log.isInfoEnabled() ) {
+//                            log.info( "job submitted: " + job );
+//                        }
+//                    }
+//                }
+//            }
+//           return doneProteins;
+//        }
+//        return null;
     }
+   
 
     /**
      * @param proteins
@@ -216,7 +267,7 @@ public class AlignmentFileMaker {
                 }
                 BlastResult result = blast.fetchAvailableBlast( new UniprotAc( prot.getUniprotAc().getAcNr() ) );
                 if ( result != null ) {
-                    processsResult( result, againstProt, writer );
+                    processResult( result, againstProt, writer );
                     if ( log.isInfoEnabled() ) {
                         log.info( "processed: " + GlobalData.getCount() + " out of " + GlobalData.totalProts );
                     }
@@ -316,7 +367,7 @@ public class AlignmentFileMaker {
         return protNotIn;
     }
 
-    private void processsResult( ProteinSimplified protein, BlastResult result, Set<UniprotAc> againstProteins ) {
+    private void processResult( ProteinSimplified protein, BlastResult result, Set<UniprotAc> againstProteins ) {
         GlobalData.increment( 1 );
         if ( ( GlobalData.getCount() % 20 ) == 0 ) {
             GlobalData.endTime = System.currentTimeMillis();
@@ -343,7 +394,7 @@ public class AlignmentFileMaker {
         }
     }
 
-    private void processsResult( BlastResult result, Set<UniprotAc> againstProteins, Writer writer ) {
+    private void processResult( BlastResult result, Set<UniprotAc> againstProteins, Writer writer ) {
         GlobalData.increment( 1 );
         if ( ( GlobalData.getCount() % 20 ) == 0 ) {
             GlobalData.endTime = System.currentTimeMillis();

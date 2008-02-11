@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.confidence.maxent;
 
+import opennlp.maxent.GISModel;
 import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.confidence.model.Attribute;
@@ -23,13 +24,11 @@ import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesReader;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesReaderImpl;
 
 import java.io.File;
-import java.io.Writer;
 import java.io.FileWriter;
+import java.io.Writer;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
-
-import opennlp.maxent.GISModel;
+import java.util.List;
 
 /**
  * Test for creating a maximum entropy classifier
@@ -68,11 +67,11 @@ public class OpenNLPMaxEntClassifierTest {
     @Test
    @Ignore
     public void assignScore() throws Exception {
-        File gisModel = new File("H:\\tmp\\gisModel_seq.txt");
+        File gisModel = new File("H:\\tmp\\gisModel.txt");
         OpenNLPMaxEntClassifier cl = new OpenNLPMaxEntClassifier( gisModel);
-        File medconfFile = new File("H:\\tmp\\medconf_set_seq_anno_filter_attribs.txt");
+        File medconfFile = new File("H:\\tmp\\medconf_set_attributes.txt");
         BinaryInteractionAttributesReader biar = new BinaryInteractionAttributesReaderImpl();
-        Writer writer = new FileWriter("H:\\tmp\\medconf_set_seq_scores.txt");
+        Writer writer = new FileWriter("H:\\tmp\\medconf_set_New_scores.txt");
         int nrLine =0;
         for ( Iterator<BinaryInteractionAttributes> iter = biar.iterate( medconfFile ); iter.hasNext(); ){
             BinaryInteractionAttributes bia = iter.next();

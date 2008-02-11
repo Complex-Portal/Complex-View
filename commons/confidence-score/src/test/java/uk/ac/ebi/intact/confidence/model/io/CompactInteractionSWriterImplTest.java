@@ -15,14 +15,14 @@
  */
 package uk.ac.ebi.intact.confidence.model.io;
 
-import org.junit.Test;
 import org.junit.Assert;
-import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+import org.junit.Test;
+import uk.ac.ebi.intact.confidence.factory.MockFactory;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
+import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.CompactInteractionSWriterImpl;
-import uk.ac.ebi.intact.confidence.test.MockFactory;
-import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 
 import java.io.File;
 import java.util.List;

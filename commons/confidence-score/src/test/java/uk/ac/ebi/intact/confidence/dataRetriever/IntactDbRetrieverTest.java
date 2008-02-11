@@ -9,20 +9,24 @@ import org.junit.*;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
-import uk.ac.ebi.intact.confidence.model.*;
+import uk.ac.ebi.intact.confidence.model.IntActIdentifierImpl;
+import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+import uk.ac.ebi.intact.confidence.model.Report;
 import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
 import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
-import uk.ac.ebi.intact.core.unit.mock.MockIntactContext;
-import uk.ac.ebi.intact.core.unit.mock.MockInteractionDao;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
+import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
+import uk.ac.ebi.intact.core.util.SchemaUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -48,6 +52,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	 */
 	@Before
 	public void setUp() throws Exception {
+        SchemaUtils.createSchema();
         //acs = new HashSet<String>( Arrays.asList( "EBI-987097", "EBI-446104", "EBI-79835", "EBI-297231", "EBI-1034130" ) );
         Protein p1 = getMockBuilder().createProtein( "P12345", "prot1" );
         Protein p2 = getMockBuilder().createProtein("P12346", "prot2");

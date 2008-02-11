@@ -15,8 +15,8 @@
  */
 package uk.ac.ebi.intact.confidence.model;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 
 /**
@@ -38,5 +38,15 @@ public class UniprotIdentifierImplTest {
         Identifier id = new UniprotIdentifierImpl(ac);
         Assert.assertNotNull (id);
     }
+
+    @Test
+    public void lowerCase() throws Exception {
+        String ac ="q8imz4";
+        Identifier id = new UniprotIdentifierImpl(ac);
+        Assert.assertNotNull( id );
+        Assert.assertEquals( "Q8IMZ4", id.getId() );
+    }
+
+        
 
 }

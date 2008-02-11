@@ -58,16 +58,20 @@ public class MaxentUtilsTest {
 
         printFile( outputFile );
 
-//        String[] attrib = {"Sunny", "Happy", "Dry"};
-//        double[] eval = model.eval( attrib );
-//        System.out.println( "for 'Sunny Happy Dry' =" + eval[0] );
-//        String[] attribs = new String[0];
-//        eval = model.eval( attribs );
-//        System.out.println( " for '' =" + eval[0] );
-//
-//        attrib = new String[]{"Sunny", "Sunny", "Happy", "Dry"};
-//        eval = model.eval( attrib );
-//        System.out.println( "for 'Sunny Sunny Happy Dry' =" + eval[0] );
+        String[] attrib = {"Sunny", "Happy", "Dry"};
+        double[] eval = model.eval( attrib );
+        System.out.println( "for 'Sunny Happy Dry' =" + eval[0] );
+        String[] attribs = new String[0];
+        eval = model.eval( attribs );
+        System.out.println( " for '' =" + eval[0] );
+
+        attrib = new String[]{"Sunny", "Sunny", "Happy", "Dry"};
+        eval = model.eval( attrib );
+        System.out.println( "for 'Sunny Sunny Happy Dry' =" + eval[0] );
+
+        attrib = new String[]{"Sunny", "Nice", "Happy", "Dry"};
+        eval = model.eval( attrib );
+        System.out.println( "for 'Sunny Nice Happy Dry' =" + eval[0] );
     }
 
     @Test

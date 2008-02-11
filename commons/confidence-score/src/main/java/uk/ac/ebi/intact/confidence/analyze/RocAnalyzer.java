@@ -14,7 +14,8 @@ import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
 import java.io.*;
 
 /**
- * TODO comment that
+ * Computest the Receiver Operating Characteristic curve
+ * (sensitivity vs. (1 - specificity)) at different thresholds.
  *
  * @author Iain Bancarz
  * @version $Id$
@@ -46,7 +47,7 @@ public class RocAnalyzer {
 
 
     /*String attribPath, String weightPath,*/
-    public RocAnalyzer( File gisInput, String posTest, String negTest ) throws IOException {
+    public RocAnalyzer( File gisInput, String posTest, String negTest , boolean input) throws IOException {
 
         // posTest and negTest are paths to positive/negative test sets
         // attributes and weights must be for a classifier trained without postTest and negTest
@@ -56,10 +57,17 @@ public class RocAnalyzer {
         this.negTest = negTest;
 
       //  mec = new MaxEntClassifier( attribPath, weightPath );
-        mec = MaxentUtils.createModel(new FileInputStream(gisInput) );
+        if (input) {
+            mec = MaxentUtils.createModel(new FileInputStream(gisInput) );
+        }   else {
+            mec = MaxentUtils.readModelFromFile( gisInput );
+        }
+
 
 
     }
+
+
 
     public void printSummary(double threshold, boolean equality) throws IOException {
 

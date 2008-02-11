@@ -22,15 +22,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * TODO comment that class header
+ * Writes BinaryInteractionAttributes in the format needed to train the GISModel.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0
  *        <pre>
  *        12-Dec-2007
  *        </pre>

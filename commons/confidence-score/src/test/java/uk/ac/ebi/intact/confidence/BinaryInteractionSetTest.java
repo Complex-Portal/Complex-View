@@ -58,7 +58,7 @@ public class BinaryInteractionSetTest {
 	@Test
     @Ignore
     public void Stat() throws IOException{
-		String path ="E:\\iarmean\\backupData\\14.01 - IWEB2\\hc_set.txt";
+		String path ="E:\\iarmean\\backupData\\20.01 - D003\\highconf_set.txt";
                 //"E:\\tmp\\highconf_all.txt";
         //"H:\\tmp\\ConfidenceModel\\highconf_all.txt";
         //"E:\\iarmean\\backupData\\05.11\\highconf_all.txt";
@@ -71,7 +71,7 @@ public class BinaryInteractionSetTest {
 			int nr = biS.getAllProtNames().size();
 			System.out.println("highconf prots : " + nr + " #int: " + biS.size());
 			
-			path =    "E:\\iarmean\\backupData\\14.01 - IWEB2\\mc_set.txt";
+			path =    "E:\\iarmean\\backupData\\20.01 - D003\\medconf_set.txt";
                     //"H:\\tmp\\ConfidenceModel\\medconf_all.txt";
                     //"E:\\iarmean\\backupData\\05.11\\medconf_all.txt";
 			BinaryInteractionSet biS2 = new BinaryInteractionSet(path);
@@ -79,7 +79,7 @@ public class BinaryInteractionSetTest {
 			nr = biS2.getAllProtNames().size();
 			System.out.println("medconf prots : " + nr + " #int: " + biS2.size());
 
-			path =    "E:\\iarmean\\backupData\\14.01 - IWEB2\\lowconf_set.txt";
+			path =    "E:\\iarmean\\backupData\\20.01 - D003\\lowconf_set.txt";
                     //"E:\\tmp\\lowconf_all.txt";
 //                    //"H:\\tmp\\ConfidenceModel\\lowconf_all.txt";
 //                    //"E:\\tmp\\ConfidenceModel\\lowconf_all.txt";

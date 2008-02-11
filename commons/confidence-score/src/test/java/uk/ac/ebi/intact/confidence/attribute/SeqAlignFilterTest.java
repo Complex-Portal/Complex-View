@@ -15,13 +15,14 @@
  */
 package uk.ac.ebi.intact.confidence.attribute;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+import uk.ac.ebi.intact.confidence.filter.SeqAlignFilter;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.UniprotIdentifierImpl;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Test class for SeqAlign Filter.

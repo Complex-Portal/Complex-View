@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.intact.confidence.model;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.File;
 
 /**
@@ -25,6 +28,10 @@ import java.io.File;
  * @since 1.6.0
  */
 public class Report {
+       /**
+     * Sets up a logger for that class.
+     */
+    public static final Log log = LogFactory.getLog( Report.class );
 
     private File highconfFile;
     private File highconfIpFile;
@@ -43,10 +50,13 @@ public class Report {
 
 
     public Report(File hcFile, File mcFile){
-        if (hcFile.exists()  && mcFile.exists()){
-            highconfFile=hcFile;
-            medconfFile = mcFile;
-        }
+        if (hcFile.exists()  || mcFile.exists()){
+            if (log.isInfoEnabled()){
+               log.info("HighConfidence and MediumConfidence files " + hcFile.getPath() + ", " + mcFile.getPath() + " already exist, they would be overwritten.");
+           }
+        } 
+        highconfFile = hcFile;
+        medconfFile = mcFile;
     }
 
     public File getHighconfFile() {

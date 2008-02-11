@@ -16,11 +16,13 @@
 package uk.ac.ebi.intact.confidence.main;
 
 import org.junit.Test;
-import uk.ac.ebi.intact.confidence.attribute.GoFilter;
 import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
+import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.*;
-import uk.ac.ebi.intact.confidence.model.io.*;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesWriter;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
+import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationWriter;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesWriterImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.GisAttributesWriterImpl;
@@ -69,10 +71,10 @@ public class WorkFlowTest {
         while(birIter.hasNext()){
             BinaryInteraction biInt = birIter.next();
             UniprotDataRetriever udr = new UniprotDataRetriever();
-            Set<Identifier> gosA = udr.getGos( biInt.getFirstId());
-            Set<Identifier> gosB = udr.getGos(biInt.getSecondId());
-            GoFilter.filterForbiddenGos( gosA);
-            GoFilter.filterForbiddenGos( gosB);
+            Set<Identifier> gosA = udr.getGOs( biInt.getFirstId());
+            Set<Identifier> gosB = udr.getGOs(biInt.getSecondId());
+            GOFilter.filterForbiddenGOs( gosA);
+            GOFilter.filterForbiddenGOs( gosB);
             ProteinAnnotation pA = new ProteinAnnotation( biInt.getFirstId(), gosA);
             ProteinAnnotation pB = new ProteinAnnotation( biInt.getSecondId(), gosB);
             //writing the annotation
