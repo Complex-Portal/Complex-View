@@ -148,7 +148,7 @@ public class IntactStatisticsBean {
     public static final String PROTEINS = "Proteins";
     public static final String INTERACTIONS = "Interactions";
     public static final String BINARY_INTERACTIONS = "Binary interactions";
-    public static final String EXPERIMENTS = "Experiments";
+    public static final String EXPERIMENTS = "Experiments and Publications";
     public static final String CV_TERMS = "Terms";
     public static final String INTERACTIONS_PER_BIOSOURCE = "Interactions per organism";
     public static final String INTERACTIONS_PER_IDENTIFICATION = "Interactions per identification method";
@@ -170,7 +170,7 @@ public class IntactStatisticsBean {
 
         result.add( new DisplayStatisticsBean( EXPERIMENTS,
                                                experimentCount + "",
-                                               "Distinct experiments" ) );
+                                               "Distinct experiments and publications" ) );
 
         result.add( new DisplayStatisticsBean( CV_TERMS,
                                                cvTermCount + "",

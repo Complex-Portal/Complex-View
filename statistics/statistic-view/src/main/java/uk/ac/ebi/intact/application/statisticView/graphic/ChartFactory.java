@@ -180,7 +180,6 @@ public class ChartFactory {
 
         ((XYPlot)chart.getPlot()).setRenderer( renderer );
         ((XYPlot)chart.getPlot()).setDomainAxis( 0, timeAxis );
-//        ((XYPlot)chart.getPlot()).setDomainAxis( 1, valueAxis );
 
         return chart;
     }
