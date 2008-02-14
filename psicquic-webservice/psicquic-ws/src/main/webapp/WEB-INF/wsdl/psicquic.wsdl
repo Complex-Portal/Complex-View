@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+             xmlns:psq="http://psi.hupo.org/mi/psicquic"
+
+             targetNamespace="http://psi.hupo.org/mi/psicquic">
+
+    <types>
+
+        <xs:schema elementFormDefault="qualified">
+
+            <xs:import namespace="http://psi.hupo.org/mi/psicquic"
+                        schemaLocation="psicquic.xsd"/>
+
+        </xs:schema>
+
+    </types>
+
+    <!-- MESSAGES -->
+
+    <message name="getByInteractorRequestMessage">
+        <part name="dbRef" element="psq:getByInteractorRequest"/>
+    </message>
+
+    <message name="getByInteractorResponseMessage">
+        <part name="queryResponse" element="psq:queryResponse"/>
+    </message>
+
+    <message name="getByInteractionRequestMessage">
+        <part name="dbRef" element="psq:getByInteractionRequest"/>
+    </message>
+
+    <message name="getByInteractionResponseMessage">
+      <part name="queryResponse" element="psq:queryResponse"/>
+    </message>
+
+    <message name="getByInteractorListRequestMessage">
+        <part name="dbRefList" element="psq:getByInteractorListRequest"/>
+    </message>
+
+    <message name="getByInteractorListResponseMessage">
+      <part name="queryResponse" element="psq:queryResponse"/>
+    </message>
+
+    <message name="getBetweenListRequestMessage">
+      <part name="dbRefList" element="psq:getBetweenListRequest"/>
+
+    </message>
+
+    <message name="getBetweenListResponseMessage">
+      <part name="queryResponse" element="psq:queryResponse"/>
+    </message>
+
+    <message name="getByInteractionListRequestMessage">
+        <part name="dbRefList" element="psq:getByInteractionListRequest"/>
+    </message>
+
+    <message name="getByInteractionListResponseMessage">
+      <part name="queryResponse" element="psq:queryResponse"/>
+    </message>
+
+    <message name="getByQueryRequestMessage">
+        <part name="query" element="psq:getByQueryStringRequest"/>
+    </message>
+
+    <message name="getByQueryResponseMessage">
+      <part name="queryResponse" element="psq:queryResponse"/>
+    </message>
+
+    <message name="getVersionRequestMessage">
+    </message>
+
+    <message name="getVersionResponseMessage">
+        <part name="output" element="psq:getVersionResponse"/>
+    </message>
+
+    <message name="getSupportedDataTypesRequestMessage">
+    </message>
+
+    <message name="getSupportedDataTypesResponseMessage">
+        <part name="output" element="psq:supportedDataTypes" />
+    </message>
+
+    <message name="psicquicServiceException">
+        <part name="fault" element="psq:psicquicFault"/>
+    </message>
+
+    <!-- Port type (operations) -->
+
+    <portType name="psicquicPortType">
+
+        <!-- get interactions by interactor ref -->
+
+        <operation name="getByInteractor" parameterOrder="dbRef">
+
+            <input name="getByInteractorRequestMessage" message="psq:getByInteractorRequestMessage"/>
+            <output name="getByInteractorResponseMessage" message="psq:getByInteractorResponseMessage"/>
+            <fault name="getByInteractorException" message="psq:psicquicServiceException"/>
+        </operation>
+
+        <!-- get interactions by interaction ref -->
+
+        <operation name="getByInteraction" parameterOrder="dbRef">
+            <input name="getByInteractionRequestMessage" message="psq:getByInteractionRequestMessage"/>
+            <output name="getbyInteractionResponseMessage" message="psq:getByInteractionResponseMessage"/>
+
+            <fault name="getByInteractionException" message="psq:psicquicServiceException"/>
+        </operation>
+
+        <!-- get interactions by interactor ref list -->
+
+        <operation name="getByInteractorList" parameterOrder="dbRefList">
+            <input name="getByInteractorListRequestMessage" message="psq:getByInteractorListRequestMessage"/>
+            <output name="getByInteractorListResponseMessage" message="psq:getByInteractorListResponseMessage"/>
+            <fault name="getByInteractorListException" message="psq:psicquicServiceException"/>
+        </operation>
+
+        <!-- get interactions between interactor ref list -->
+
+        <operation name="getBetweenList" parameterOrder="dbRefList">
+            <input name="getBetweenListRequestMessage" message="psq:getBetweenListRequestMessage"/>
+            <output name="getBetweenListResponseMessage" message="psq:getBetweenListResponseMessage"/>
+            <fault name="getBetweenListException" message="psq:psicquicServiceException"/>
+        </operation>
+
+        <!-- get interactions by interaction ref list -->
+
+        <operation name="getByInteractionList" parameterOrder="dbRefList">
+            <input name="getByInteractionListRequestMessage" message="psq:getByInteractionListRequestMessage"/>
+            <output name="getByInteractionListResponseMessage" message="psq:getByInteractionListResponseMessage"/>
+            <fault name="getByInteractionListException" message="psq:psicquicServiceException"/>
+        </operation>
+
+        <!-- get interactions by query sring -->
+
+        <operation name="getByQuery" parameterOrder="query">
+
+            <input name="getByQueryRequestMessage" message="psq:getByQueryRequestMessage"/>
+            <output name="getByQueryResponseMessage" message="psq:getByQueryResponseMessage"/>
+            <fault name="getByQueryException" message="psq:psicquicServiceException"/>
+        </operation>
+
+        <!-- get version -->
+
+        <operation name="getVersion">
+            <input message="psq:getVersionRequestMessage"/>
+            <output name="getVersionResponseMessage" message="psq:getVersionResponseMessage"/>
+            <fault name="getVersionException" message="psq:psicquicServiceException"/>
+        </operation>
+
+        <!-- get supported data types -->
+
+        <operation name="getSupportedDataTypes">
+            <input message="psq:getSupportedDataTypesRequestMessage"/>
+            <output name="getSupportedDataTypesResponseMessage" message="psq:getSupportedDataTypesResponseMessage"/>
+            <fault name="getSupportedDataTypesException" message="psq:psicquicServiceException"/>
+        </operation>
+
+    </portType>
+
+    <!-- BINDING (bind operations) -->
+
+    <binding name="psicquicSoapBinding" type="psq:psicquicPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <operation name="getByInteractor">
+
+            <soap:operation soapAction="getByInteractor"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="getByInteractorException">
+                <soap:fault name="getByInteractorException" use="literal"/>
+
+            </fault>
+        </operation>
+
+        <operation name="getByInteraction">
+            <soap:operation soapAction="getByInteraction"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+
+                <soap:body use="literal"/>
+            </output>
+            <fault name="getByInteractionException">
+                <soap:fault name="getByInteractionException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getByInteractorList">
+            <soap:operation soapAction="getByInteractorList"/>
+
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="getByInteractorListException">
+                <soap:fault name="getByInteractorListException" use="literal"/>
+            </fault>
+
+        </operation>
+
+        <operation name="getBetweenList">
+            <soap:operation soapAction="getBetweenList"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+
+            </output>
+            <fault name="getBetweenListException">
+                <soap:fault name="getBetweenListException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getByInteractionList">
+            <soap:operation soapAction="getByInteractionList"/>
+            <input>
+
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="getByInteractionListException">
+                <soap:fault name="getByInteractionListException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getByQuery">
+            <soap:operation soapAction="getByQuery"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+
+            <fault name="getByQueryException">
+                <soap:fault name="getByQueryException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getVersion">
+            <soap:operation soapAction="getVersion"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+
+        <operation name="getSupportedDataTypes">
+            <soap:operation soapAction="getSupportedDataTypes"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+
+    </binding>
+
+    <!-- SERVICE -->
+    <service name="psicquic">
+        <port name="psicquic" binding="psq:psicquicSoapBinding">
+            <soap:address location="http://psi.hupo.org/mi/services/psicquic"/>
+        </port>
+    </service>
+</definitions>

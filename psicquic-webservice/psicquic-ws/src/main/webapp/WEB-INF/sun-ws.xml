@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoints
+        xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
+        version="2.0">
+    <endpoint
+            name="Search"
+            implementation="uk.ac.ebi.intact.service.psicquic.ws.Search"
+            wsdl="WEB-INF/wsdl/psicquic.wsdl"
+            url-pattern="/search"/>
+</endpoints>
