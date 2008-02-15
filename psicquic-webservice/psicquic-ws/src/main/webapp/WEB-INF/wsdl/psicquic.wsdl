@@ -12,8 +12,10 @@
         <xs:schema elementFormDefault="qualified"
                    targetNamespace="http://psi.hupo.org/mi/psicquic">
 
+            <!--<xs:import namespace="http://psi.hupo.org/mi/mif"-->
+                       <!--schemaLocation="http://psidev.sourceforge.net/mi/rel25/src/MIF254.xsd"/>-->
             <xs:import namespace="http://psi.hupo.org/mi/mif"
-                       schemaLocation="http://psidev.sourceforge.net/mi/rel25/src/MIF254.xsd"/>
+                       schemaLocation="MIF254.xsd"/>
             <xs:import namespace="http://psi.hupo.org/mi/mitab"
                        schemaLocation="http://www.ebi.ac.uk/~intact/mi/psimitab-1.0.xsd"/>
 
