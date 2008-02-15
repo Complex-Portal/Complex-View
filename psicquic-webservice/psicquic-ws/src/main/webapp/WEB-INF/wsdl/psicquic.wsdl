@@ -3,15 +3,122 @@
              xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
              xmlns:xs="http://www.w3.org/2001/XMLSchema"
              xmlns:psq="http://psi.hupo.org/mi/psicquic"
-
+             xmlns:mif="http://psi.hupo.org/mi/mif"
+             xmlns:mitab="http://psi.hupo.org/mi/mitab"
              targetNamespace="http://psi.hupo.org/mi/psicquic">
 
     <types>
 
-        <xs:schema elementFormDefault="qualified">
+        <xs:schema elementFormDefault="qualified"
+                   targetNamespace="http://psi.hupo.org/mi/psicquic">
 
-            <xs:import namespace="http://psi.hupo.org/mi/psicquic"
-                        schemaLocation="psicquic.xsd"/>
+            <xs:import namespace="http://psi.hupo.org/mi/mif"
+                       schemaLocation="http://psidev.sourceforge.net/mi/rel25/src/MIF254.xsd"/>
+            <xs:import namespace="http://psi.hupo.org/mi/mitab"
+                       schemaLocation="http://www.ebi.ac.uk/~intact/mi/psimitab-1.0.xsd"/>
+
+            <!-- types -->
+
+            <xs:complexType name="dbRefType">
+                <xs:sequence>
+                    <xs:element name="db" type="xs:string" default=""/>
+                    <xs:element name="ac" type="xs:string" default=""/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="dbRefListType">
+                <xs:sequence>
+                    <xs:element name="dbRef" type="psq:dbRefType" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="queryType">
+                <xs:sequence>
+                    <xs:element name="queryFormat" type="xs:string"/>
+                    <xs:element name="queryString" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="resultInfoType">
+                <xs:sequence>
+                    <xs:element name="firstResult" type="xs:int"/>
+                    <xs:element name="totalResults" type="xs:int"/>
+                    <xs:element name="blockSize" type="xs:int"/>
+                    <xs:element name="expirationDate" type="xs:dateTime"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="dbRefRequestType">
+                <xs:sequence>
+                    <xs:element name="dbRef" type="psq:dbRefType"/>
+                    <xs:element name="resultType" type="xs:string"/>
+                    <xs:element name="firstResult" type="xs:int" default="0"/>
+                    <xs:element name="blockSize" type="xs:int" default="200"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="dbRefListRequestType">
+                <xs:sequence>
+                    <xs:element name="dbRefList" type="psq:dbRefType"/>
+                    <xs:element name="resultType" type="xs:string"/>
+                    <xs:element name="firstResult" type="xs:int" default="0"/>
+                    <xs:element name="blockSize" type="xs:int" default="200"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="queryRequestType">
+                <xs:sequence>
+                    <xs:element name="query" type="psq:queryType"/>
+                    <xs:element name="resultType" type="xs:string"/>
+                    <xs:element name="firstResult" type="xs:int" default="0"/>
+                    <xs:element name="blockSize" type="xs:int" default="200"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="queryResponseType">
+                <xs:sequence>
+                    <xs:element name="resultSet" type="psq:resultSetType"/>
+                    <xs:element name="resultInfo" type="psq:resultInfoType"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="resultSetType">
+                <xs:sequence>
+                    <xs:element name="entrySet" type="mif:entrySetType" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="mitab" type="mitab:mitabType" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <!-- elements -->
+
+            <xs:element name="getByInteractorRequest" type="psq:dbRefRequestType"/>
+            <xs:element name="getByInteractionRequest" type="psq:dbRefRequestType"/>
+            <xs:element name="getByInteractorListRequest" type="psq:dbRefListRequestType"/>
+            <xs:element name="getByInteractionListRequest" type="psq:dbRefListType"/>
+            <xs:element name="getBetweenListRequest" type="psq:dbRefListRequestType"/>
+            <xs:element name="getByQueryStringRequest" type="psq:queryRequestType"/>
+
+            <xs:element name="getVersionResponse" type="xs:string"/>
+            <xs:element name="supportedDataTypes">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="dataType" type="xs:string" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="queryResponse" type="psq:queryResponseType"/>
+
+            <!-- faults -->
+
+            <xs:element name="psicquicFault">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="code" type="xs:int"/>
+                        <xs:element name="message" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
 
         </xs:schema>
 
@@ -32,7 +139,7 @@
     </message>
 
     <message name="getByInteractionResponseMessage">
-      <part name="queryResponse" element="psq:queryResponse"/>
+        <part name="queryResponse" element="psq:queryResponse"/>
     </message>
 
     <message name="getByInteractorListRequestMessage">
@@ -40,16 +147,16 @@
     </message>
 
     <message name="getByInteractorListResponseMessage">
-      <part name="queryResponse" element="psq:queryResponse"/>
+        <part name="queryResponse" element="psq:queryResponse"/>
     </message>
 
     <message name="getBetweenListRequestMessage">
-      <part name="dbRefList" element="psq:getBetweenListRequest"/>
+        <part name="dbRefList" element="psq:getBetweenListRequest"/>
 
     </message>
 
     <message name="getBetweenListResponseMessage">
-      <part name="queryResponse" element="psq:queryResponse"/>
+        <part name="queryResponse" element="psq:queryResponse"/>
     </message>
 
     <message name="getByInteractionListRequestMessage">
@@ -57,7 +164,7 @@
     </message>
 
     <message name="getByInteractionListResponseMessage">
-      <part name="queryResponse" element="psq:queryResponse"/>
+        <part name="queryResponse" element="psq:queryResponse"/>
     </message>
 
     <message name="getByQueryRequestMessage">
@@ -65,7 +172,7 @@
     </message>
 
     <message name="getByQueryResponseMessage">
-      <part name="queryResponse" element="psq:queryResponse"/>
+        <part name="queryResponse" element="psq:queryResponse"/>
     </message>
 
     <message name="getVersionRequestMessage">
@@ -79,10 +186,18 @@
     </message>
 
     <message name="getSupportedDataTypesResponseMessage">
-        <part name="output" element="psq:supportedDataTypes" />
+        <part name="output" element="psq:supportedDataTypes"/>
     </message>
 
     <message name="psicquicServiceException">
+        <part name="fault" element="psq:psicquicFault"/>
+    </message>
+
+    <message name="notSupportedDataTypeException">
+        <part name="fault" element="psq:psicquicFault"/>
+    </message>
+
+    <message name="notSupportedMethodException">
         <part name="fault" element="psq:psicquicFault"/>
     </message>
 
@@ -96,7 +211,10 @@
 
             <input name="getByInteractorRequestMessage" message="psq:getByInteractorRequestMessage"/>
             <output name="getByInteractorResponseMessage" message="psq:getByInteractorResponseMessage"/>
-            <fault name="getByInteractorException" message="psq:psicquicServiceException"/>
+
+            <fault name="getByInteractorException1" message="psq:psicquicServiceException"/>
+            <fault name="getByInteractorException2" message="psq:notSupportedMethodException"/>
+            <fault name="getByInteractorException3" message="psq:notSupportedDataTypeException"/>
         </operation>
 
         <!-- get interactions by interaction ref -->
@@ -105,7 +223,9 @@
             <input name="getByInteractionRequestMessage" message="psq:getByInteractionRequestMessage"/>
             <output name="getbyInteractionResponseMessage" message="psq:getByInteractionResponseMessage"/>
 
-            <fault name="getByInteractionException" message="psq:psicquicServiceException"/>
+            <fault name="getByInteractionException1" message="psq:psicquicServiceException"/>
+            <fault name="getByInteractionException2" message="psq:notSupportedMethodException"/>
+            <fault name="getByInteractionException3" message="psq:notSupportedDataTypeException"/>
         </operation>
 
         <!-- get interactions by interactor ref list -->
@@ -113,7 +233,10 @@
         <operation name="getByInteractorList" parameterOrder="dbRefList">
             <input name="getByInteractorListRequestMessage" message="psq:getByInteractorListRequestMessage"/>
             <output name="getByInteractorListResponseMessage" message="psq:getByInteractorListResponseMessage"/>
-            <fault name="getByInteractorListException" message="psq:psicquicServiceException"/>
+
+            <fault name="getByInteractorListException1" message="psq:psicquicServiceException"/>
+            <fault name="getByInteractorListException2" message="psq:notSupportedMethodException"/>
+            <fault name="getByInteractorListException3" message="psq:notSupportedDataTypeException"/>
         </operation>
 
         <!-- get interactions between interactor ref list -->
@@ -121,7 +244,10 @@
         <operation name="getBetweenList" parameterOrder="dbRefList">
             <input name="getBetweenListRequestMessage" message="psq:getBetweenListRequestMessage"/>
             <output name="getBetweenListResponseMessage" message="psq:getBetweenListResponseMessage"/>
-            <fault name="getBetweenListException" message="psq:psicquicServiceException"/>
+
+            <fault name="getBetweenListException1" message="psq:psicquicServiceException"/>
+            <fault name="getBetweenListException2" message="psq:notSupportedMethodException"/>
+            <fault name="getBetweenListException3" message="psq:notSupportedDataTypeException"/>
         </operation>
 
         <!-- get interactions by interaction ref list -->
@@ -129,7 +255,10 @@
         <operation name="getByInteractionList" parameterOrder="dbRefList">
             <input name="getByInteractionListRequestMessage" message="psq:getByInteractionListRequestMessage"/>
             <output name="getByInteractionListResponseMessage" message="psq:getByInteractionListResponseMessage"/>
-            <fault name="getByInteractionListException" message="psq:psicquicServiceException"/>
+
+            <fault name="getByInteractionListException1" message="psq:psicquicServiceException"/>
+            <fault name="getByInteractionListException2" message="psq:notSupportedMethodException"/>
+            <fault name="getByInteractionListException3" message="psq:notSupportedDataTypeException"/>
         </operation>
 
         <!-- get interactions by query sring -->
@@ -138,7 +267,10 @@
 
             <input name="getByQueryRequestMessage" message="psq:getByQueryRequestMessage"/>
             <output name="getByQueryResponseMessage" message="psq:getByQueryResponseMessage"/>
-            <fault name="getByQueryException" message="psq:psicquicServiceException"/>
+
+            <fault name="getByQueryException1" message="psq:psicquicServiceException"/>
+            <fault name="getByQueryException2" message="psq:notSupportedMethodException"/>
+            <fault name="getByQueryException3" message="psq:notSupportedDataTypeException"/>
         </operation>
 
         <!-- get version -->
@@ -146,6 +278,7 @@
         <operation name="getVersion">
             <input message="psq:getVersionRequestMessage"/>
             <output name="getVersionResponseMessage" message="psq:getVersionResponseMessage"/>
+
             <fault name="getVersionException" message="psq:psicquicServiceException"/>
         </operation>
 
@@ -173,9 +306,14 @@
             <output>
                 <soap:body use="literal"/>
             </output>
-            <fault name="getByInteractorException">
-                <soap:fault name="getByInteractorException" use="literal"/>
-
+            <fault name="getByInteractorException1">
+                <soap:fault name="getByInteractorException1" use="literal"/>
+            </fault>
+            <fault name="getByInteractorException2">
+                <soap:fault name="getByInteractorException2" use="literal"/>
+            </fault>
+            <fault name="getByInteractorException3">
+                <soap:fault name="getByInteractorException3" use="literal"/>
             </fault>
         </operation>
 
@@ -188,8 +326,14 @@
 
                 <soap:body use="literal"/>
             </output>
-            <fault name="getByInteractionException">
-                <soap:fault name="getByInteractionException" use="literal"/>
+            <fault name="getByInteractionException1">
+                <soap:fault name="getByInteractionException1" use="literal"/>
+            </fault>
+            <fault name="getByInteractionException2">
+                <soap:fault name="getByInteractionException2" use="literal"/>
+            </fault>
+            <fault name="getByInteractionException3">
+                <soap:fault name="getByInteractionException3" use="literal"/>
             </fault>
         </operation>
 
@@ -202,8 +346,14 @@
             <output>
                 <soap:body use="literal"/>
             </output>
-            <fault name="getByInteractorListException">
-                <soap:fault name="getByInteractorListException" use="literal"/>
+            <fault name="getByInteractorListException1">
+                <soap:fault name="getByInteractorListException1" use="literal"/>
+            </fault>
+            <fault name="getByInteractorListException2">
+                <soap:fault name="getByInteractorListException2" use="literal"/>
+            </fault>
+            <fault name="getByInteractorListException3">
+                <soap:fault name="getByInteractorListException3" use="literal"/>
             </fault>
 
         </operation>
@@ -217,22 +367,33 @@
                 <soap:body use="literal"/>
 
             </output>
-            <fault name="getBetweenListException">
-                <soap:fault name="getBetweenListException" use="literal"/>
+            <fault name="getBetweenListException1">
+                <soap:fault name="getBetweenListException1" use="literal"/>
+            </fault>
+            <fault name="getBetweenListException2">
+                <soap:fault name="getBetweenListException2" use="literal"/>
+            </fault>
+            <fault name="getBetweenListException3">
+                <soap:fault name="getBetweenListException3" use="literal"/>
             </fault>
         </operation>
 
         <operation name="getByInteractionList">
             <soap:operation soapAction="getByInteractionList"/>
             <input>
-
                 <soap:body use="literal"/>
             </input>
             <output>
                 <soap:body use="literal"/>
             </output>
-            <fault name="getByInteractionListException">
-                <soap:fault name="getByInteractionListException" use="literal"/>
+            <fault name="getByInteractionListException1">
+                <soap:fault name="getByInteractionListException1" use="literal"/>
+            </fault>
+            <fault name="getByInteractionListException2">
+                <soap:fault name="getByInteractionListException2" use="literal"/>
+            </fault>
+            <fault name="getByInteractionListException3">
+                <soap:fault name="getByInteractionListException3" use="literal"/>
             </fault>
         </operation>
 
@@ -245,8 +406,14 @@
                 <soap:body use="literal"/>
             </output>
 
-            <fault name="getByQueryException">
-                <soap:fault name="getByQueryException" use="literal"/>
+            <fault name="getByQueryException1">
+                <soap:fault name="getByQueryException1" use="literal"/>
+            </fault>
+            <fault name="getByQueryException2">
+                <soap:fault name="getByQueryException2" use="literal"/>
+            </fault>
+            <fault name="getByQueryException3">
+                <soap:fault name="getByQueryException3" use="literal"/>
             </fault>
         </operation>
 
@@ -258,6 +425,10 @@
             <output>
                 <soap:body use="literal"/>
             </output>
+            <fault name="getVersionException">
+                <soap:fault name="getVersionException" use="literal"/>
+            </fault>
+
         </operation>
 
         <operation name="getSupportedDataTypes">
@@ -268,12 +439,15 @@
             <output>
                 <soap:body use="literal"/>
             </output>
+            <fault name="getSupportedDataTypesException">
+                <soap:fault name="getSupportedDataTypesException" use="literal"/>
+            </fault>
         </operation>
 
     </binding>
 
     <!-- SERVICE -->
-    <service name="psicquic">
+    <service name="psicquicService">
         <port name="psicquic" binding="psq:psicquicSoapBinding">
             <soap:address location="http://psi.hupo.org/mi/services/psicquic"/>
         </port>

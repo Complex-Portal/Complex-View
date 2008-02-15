@@ -2,7 +2,7 @@
 <xs:schema xmlns="http://psi.hupo.org/mi/mitab"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://psi.hupo.org/mi/mitab"
-           elementFormDefault="qualified" attributeFormDefault="unqualified">
+           elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
 
     <xs:element name="mitab" type="mitabType"/>
 

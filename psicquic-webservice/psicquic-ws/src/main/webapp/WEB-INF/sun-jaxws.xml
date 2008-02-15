@@ -6,5 +6,7 @@
             name="Search"
             implementation="uk.ac.ebi.intact.service.psicquic.ws.Search"
             wsdl="WEB-INF/wsdl/psicquic.wsdl"
+            service='{http://psi.hupo.org/mi/psicquic}psicquicService'
+            port='{http://psi.hupo.org/mi/psicquic}psicquic'
             url-pattern="/search"/>
 </endpoints>
