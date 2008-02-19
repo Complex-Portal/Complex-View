@@ -44,6 +44,27 @@
         </plugins>
     </build>
 
+    <profiles>
+    <!-- Mac OS X has not a tools.jar! -->
+    <profile>
+      <id>tools.jar</id>
+      <activation>
+        <!-- needs maven 2.0.3 or higher under Mac OS X -->
+        <os><family>!mac</family></os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>sun.jdk</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.5.0</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+
     <dependencies>
         <!-- JAX-WS -->
         <dependency>
@@ -55,13 +76,6 @@
             <groupId>xfire</groupId>
             <artifactId>xfire-jsr181-api</artifactId>
             <version>1.0-M1</version>
-        </dependency>
-        <dependency>
-            <groupId>sun.jdk</groupId>
-            <artifactId>tools</artifactId>
-            <version>1.5.0</version>
-            <scope>system</scope>
-            <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
     </dependencies>
 
