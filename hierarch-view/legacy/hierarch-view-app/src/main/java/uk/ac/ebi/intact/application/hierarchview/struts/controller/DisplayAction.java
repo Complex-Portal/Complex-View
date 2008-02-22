@@ -64,7 +64,11 @@ public final class DisplayAction extends IntactBaseAction {
         clearErrors();
 
         // get the current session
-        HttpSession session = getNewSession( request );
+        if (request.getSession() != null) {
+            request.getSession().invalidate();
+        }
+
+        HttpSession session = request.getSession( true );
         IntactUserI user = null;
 
         if ( !intactUserExists( session ) ) {

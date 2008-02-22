@@ -134,9 +134,8 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
      * @param network the graph we want to highlight
      * @return a collection of node to highlight
      */
-    public Collection<Node> proteinToHightlight( Network network ) {
+    public Collection<Node> proteinToHightlight( IntactUserI user, Network network ) {
 
-        IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance();
         Collection<String> selectedTerms = user.getSelectedKeys();
 
         if ( logger.isDebugEnabled() ) {

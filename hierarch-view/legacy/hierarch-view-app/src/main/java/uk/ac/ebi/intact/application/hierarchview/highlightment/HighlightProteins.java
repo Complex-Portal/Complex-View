@@ -8,6 +8,7 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.DrawGraph;
@@ -47,11 +48,10 @@ public class HighlightProteins {
         in.initNodes();
         in.initEdges();
 
-        // Search the protein to highlight
-        Collection<Node> proteinsToHighlight = source.proteinToHightlight( in );
+        IntactUserI user = (IntactUserI) session.getAttribute(Constants.USER_KEY);
 
-        // Check if the protein selected is in the selected tab
-        IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance();
+        // Search the protein to highlight
+        Collection<Node> proteinsToHighlight = source.proteinToHightlight( user, in );
 
         // Interaction network's modification
         HighlightmentBehaviour highlightmentBehaviour;
