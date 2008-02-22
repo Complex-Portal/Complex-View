@@ -147,7 +147,7 @@ public final class SearchForm extends IntactBaseForm {
         // in the case the network already exists and the user ADD with an
         // EMPTY searchString ... we display a warning MESSAGE instead of ERROR
         if ( ( addSelected() ) && ( null != session ) ) {
-            IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance();
+            IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance(request.getSession());
             if ( user != null ) {
                 if ( null != user.getInteractionNetwork() ) {
                     networkExists = true;

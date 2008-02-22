@@ -167,7 +167,7 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
      * @param aSession session in which we have to save the parameter.
      */
     public void saveOptions( HttpServletRequest aRequest, HttpSession aSession ) {
-        IntactUserI user = IntactUser.getCurrentInstance();
+        IntactUserI user = IntactUser.getCurrentInstance(aSession);
         String[] result = aRequest.getParameterValues( ATTRIBUTE_OPTION_CHILDREN );
 
         if ( result != null )

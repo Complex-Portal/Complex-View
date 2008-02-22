@@ -254,8 +254,8 @@ public abstract class IntactBaseAction extends Action {
         try {
             String applicationPath = aRequest.getContextPath();
 
-            user = IntactUser.createIntactUser( applicationPath );
-            session.setAttribute( Constants.USER_KEY, user );
+            user = new IntactUser( applicationPath );
+            session.setAttribute(Constants.USER_KEY, user);
         }
         catch ( IntactException ie ) {
             logger.error( "Could not initialize user's settings", ie );

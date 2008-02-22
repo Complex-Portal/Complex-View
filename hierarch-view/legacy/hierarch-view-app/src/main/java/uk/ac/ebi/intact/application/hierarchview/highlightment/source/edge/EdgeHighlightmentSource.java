@@ -133,12 +133,11 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
      * <p/>
      * Method is called when the graph was built by the mine database table.
      *
-     * @param network       the network
-     * @return
+     * @param user
+     *@param network       the network @return
      */
-    public Collection<Edge> interactionToHightlight( Network network ) {
+    public Collection<Edge> interactionToHightlight(IntactUserI user, Network network) {
 
-        IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance();
         Collection<String> selectedTerms = user.getSelectedKeys();
 
         if ( logger.isDebugEnabled() ) {

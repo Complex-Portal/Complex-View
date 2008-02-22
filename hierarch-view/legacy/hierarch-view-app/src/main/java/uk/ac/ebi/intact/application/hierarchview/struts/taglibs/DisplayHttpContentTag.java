@@ -7,6 +7,7 @@ package uk.ac.ebi.intact.application.hierarchview.struts.taglibs;
 
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -40,10 +41,10 @@ public class DisplayHttpContentTag extends TagSupport {
      * option list.
      */
     public int doEndTag() throws JspException {
-        //HttpSession session = pageContext.getSession();
+        HttpSession session = pageContext.getSession();
 
         try {
-            IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance();
+            IntactUserI user = uk.ac.ebi.intact.application.hierarchview.business.IntactUser.getCurrentInstance(session);
             String urlStr = user.getSourceURL();
 
             if ( urlStr == null ) {

@@ -43,7 +43,7 @@ public class CytoscapeExport extends HttpServlet {
     public void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 
         try {
-            IntactUserI user = IntactUser.getCurrentInstance();
+            IntactUserI user = IntactUser.getCurrentInstance(request.getSession());
 
             response.setContentType( "application/x-java-jnlp-file" );
 

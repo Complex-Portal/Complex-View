@@ -19,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.processor.ClusterInteractorPairProcessor;
-import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
@@ -169,12 +168,12 @@ public class DatabaseService implements DataService, Serializable {
         Collection results;
 
         //first try search string 'as is' - some DBs allow mixed case....
-        results = searchHelper.doLookup( SearchClass.INTERACTOR, queryString, IntactUser.getCurrentInstance());
+        results = searchHelper.doLookup( SearchClass.INTERACTOR, queryString, null);
 
         if ( results.isEmpty() ) {
             //now try all lower case....
             String lowerCaseValue = queryString.toLowerCase();
-            results = searchHelper.doLookup( SearchClass.INTERACTOR, lowerCaseValue, IntactUser.getCurrentInstance() );
+            results = searchHelper.doLookup( SearchClass.INTERACTOR, lowerCaseValue, null );
             if ( results.isEmpty() ) {
                 //finished all current options, and still nothing - return a failure
                 logger.info( "No matches were found for the specified search criteria" );

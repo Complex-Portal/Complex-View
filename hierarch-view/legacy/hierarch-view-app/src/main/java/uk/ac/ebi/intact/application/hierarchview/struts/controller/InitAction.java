@@ -58,11 +58,11 @@ public final class InitAction extends IntactBaseAction {
         // get a session
         HttpSession session = getNewSession( request );
 
-        if (IntactUser.currentInstanceExists()) {
+        if (IntactUser.currentInstanceExists(session)) {
             // user already exists
             logger.info( "User already exists ... don't create a new one !" );
             // set user's data field (AC, ...) to default value
-            IntactUser.getCurrentInstance().init();
+            IntactUser.getCurrentInstance(session).init();
             return ( mapping.findForward( "success" ) );
         }
 

@@ -20,6 +20,7 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.service.graph.Node;
 
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import java.awt.*;
 import java.util.*;
@@ -104,14 +105,6 @@ public class IntactUser implements IntactUserI {
     private String exportUrl;
     private Dimension windowDimension = null;
 
-    private static ThreadLocal<IntactUser> currentInstance = new ThreadLocal<IntactUser>();
-
-    private IntactUser( String applicationPath ) {
-        init();
-
-        this.applicationPath = applicationPath;
-    }
-
     /**
      * Constructs an instance of this class with given mapping file and the name
      * of the data source class.
@@ -120,24 +113,19 @@ public class IntactUser implements IntactUserI {
      * @throws IntactException thrown for any error in creating lists such as
      *                         topics, database names etc.
      */
-    public static IntactUser createIntactUser( String applicationPath ) throws IntactException {
+    public IntactUser( String applicationPath ) throws IntactException {
 
-        IntactUser user = new IntactUser(applicationPath);
+        init();
 
-        currentInstance.set(user);
-
-        return user;
+        this.applicationPath = applicationPath;
     }
 
-    public static IntactUser getCurrentInstance() {
-        if (currentInstance.get() == null) {
-            throw new IllegalStateException("No user has been initialized");
-        }
-        return currentInstance.get();
+    public static IntactUser getCurrentInstance(HttpSession session) {
+        return (IntactUser) session.getAttribute(Constants.USER_KEY);
     }
 
-    public static boolean currentInstanceExists() {
-        return currentInstance.get() != null;
+    public static boolean currentInstanceExists(HttpSession session) {
+        return (null != session.getAttribute(Constants.USER_KEY));
     }
 
     public String getQueryString() {
