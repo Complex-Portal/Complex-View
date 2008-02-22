@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.application.hierarchview.business.data;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.search.Searcher;
 import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.CrossReference;
@@ -86,7 +85,7 @@ public class LocalIndexDataSevice implements DataService {
             }
 
         } catch ( IOException e ) {
-            throw new HierarchViewDataException( "Could not find index-files" );
+            throw new HierarchViewDataException( "Could not find index-files", e);
         }
 
 

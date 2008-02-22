@@ -24,8 +24,18 @@ package uk.ac.ebi.intact.application.hierarchview.exception;
  */
 public class HierarchViewDataException extends Exception {
 
-    public HierarchViewDataException( String message ) {
-        super( message );
+    public HierarchViewDataException() {
     }
 
+    public HierarchViewDataException(Throwable cause) {
+        super(cause);
+    }
+
+    public HierarchViewDataException(String message) {
+        super(message);
+    }
+
+    public HierarchViewDataException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -56,6 +56,7 @@ public class DisplaySourceTag extends TagSupport {
      */
     public int doEndTag() throws JspException {
         HttpSession session = pageContext.getSession();
+        ServletRequest request = pageContext.getRequest();
 
         try {
             IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
@@ -64,14 +65,13 @@ public class DisplaySourceTag extends TagSupport {
                 return EVAL_PAGE;
             }
 
-            Network in = user.getInteractionNetwork();
-            if ( in == null ) {
+            Network interactionNetwork = user.getInteractionNetwork();
+            if ( interactionNetwork == null ) {
                 logger.error( "No existing interaction network" );
                 return EVAL_PAGE;
             }
 
             try {
-                ServletRequest request = pageContext.getRequest();
                 String host = ( String ) session.getAttribute( StrutsConstants.HOST );
                 String protocol = ( String ) session.getAttribute( StrutsConstants.PROTOCOL );
 
@@ -99,24 +99,24 @@ public class DisplaySourceTag extends TagSupport {
                 String queryString = user.getQueryString();
                 if ( null != queryString ) {
 
-                    session.setAttribute( "sources", new ArrayList<SourceBean>() );
+                    List<SourceBean> sourceUrls = new ArrayList<SourceBean>();
 
                     for ( String method_label : HVNetworkBuilder.ALL_SOURCES ) {
 
                         HighlightmentSource source = getSourceClass( method_label );
 
-                        List<SourceBean> urls = source.getSourceUrls( in, selectedKeys, applicationPath );
+                        List<SourceBean> urls = source.getSourceUrls( interactionNetwork, selectedKeys, applicationPath );
 
                         /**
                          * We store the source collection in the session in order to
                          * display it with a dedicated tag (display:*).
                          */
-                        List<SourceBean> sourceUrls = ( ArrayList ) session.getAttribute( "sources" );
+
                         if ( sourceUrls != null ) {
-                            urls.addAll( sourceUrls );
+                            sourceUrls.addAll( urls );
                         }
-                        session.setAttribute( "sources", urls );
                     }
+                    session.setAttribute( "sources", sourceUrls );
                 }
             }
             catch ( IntactException ie ) {

@@ -34,8 +34,10 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String goPath;
 
+    // TODO WTF???
     private static Map<String, CrossReference> goRefMap;
 
+    // TODO WTF???
     private static Map <String, Set<String>> goNodeMap;
 
     static {
