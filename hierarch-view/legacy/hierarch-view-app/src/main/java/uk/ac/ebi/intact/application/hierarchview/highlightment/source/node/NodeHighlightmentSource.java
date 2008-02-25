@@ -58,7 +58,6 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
         }
 
         String highlightOption = props.getProperty( "highlightment.option" );
-        isCumulative = highlightOption.equals( ATTRIBUTE_OPTION_CUMULATIVE );
 
         if ( null == highlightOption ) {
             String msg = "Unable to find the highlightOption. "
@@ -68,6 +67,8 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
             logger.error( msg );
             throw new IntactException( msg );
         }
+        
+        isCumulative = ATTRIBUTE_OPTION_CUMULATIVE.equals( highlightOption );
     }
 
     public static NodeHighlightmentSource getHighlightmentSourceBySourceKey( String sourceKey ) {

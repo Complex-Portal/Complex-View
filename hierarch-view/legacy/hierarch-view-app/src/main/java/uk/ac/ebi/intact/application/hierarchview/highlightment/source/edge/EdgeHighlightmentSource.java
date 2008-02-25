@@ -45,8 +45,9 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
 
     private static final String KEY_SEPARATOR = ",";
     private static final String ATTRIBUTE_OPTION_CUMULATIVE = "CUMULATIVE";
-    private static final Map<String, String> edgeHighlightmentSources;
     public static final boolean isCumulative;
+
+    private static final Map<String, String> edgeHighlightmentSources;
 
     static {
 

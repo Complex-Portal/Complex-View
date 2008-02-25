@@ -31,5 +31,4 @@ import java.util.List;
 public interface HighlightmentSource {
 
     List<SourceBean> getSourceUrls( Network network, Collection<String> selectedXRefs, String applicationPath );
-
 }

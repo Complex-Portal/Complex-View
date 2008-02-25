@@ -246,6 +246,15 @@ public class InteractionNetwork implements Network {
     public void initHighlightMap() {
         logger.debug( "Init SourceHighlightMap" );
 
+        // clear existing highlights
+        ConfidenceHighlightmentSource.clear();
+        PublicationHighlightmentSource.clear();
+        GoHighlightmentSource.clear();
+        InterproHighlightmentSource.clear();
+        MoleculeTypeHighlightmentSource.clear();
+        RoleHighlightmentSource.clear();
+        SpeciesHighlightmentSource.clear();
+
         CrossReferenceFactory factory = CrossReferenceFactory.getInstance();
         for ( Node node : getNodes() ) {
             InteractorVertex vertex = ( InteractorVertex ) node;

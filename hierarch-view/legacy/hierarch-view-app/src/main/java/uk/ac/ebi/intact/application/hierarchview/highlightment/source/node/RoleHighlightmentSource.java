@@ -57,10 +57,19 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String MIRefPath;
 
-    private static HashMap<String, CrossReference> roleRefMap;
+    private static ThreadLocal<Map<String, CrossReference>> roleRefMap = new ThreadLocal<Map<String, CrossReference>>() {
+        @Override
+        protected Map<String, CrossReference> initialValue() {
+            return new HashMap<String,CrossReference>();
+        }
+    };
 
-    private static Map<String, Set<String>> roleNodeMap;
-
+    private static ThreadLocal<Map<String, Set<String>>> roleNodeMap = new ThreadLocal<Map<String, Set<String>>>(){
+        @Override
+        protected Map<String, Set<String>> initialValue() {
+            return new HashMap<String,Set<String>>();
+        }
+    };
 
     static {
 
@@ -110,48 +119,48 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
     }
 
     public static void addToSourceMap( String termId, CrossReference termObject ) {
-        if ( roleRefMap == null ) {
-            roleRefMap = new HashMap<String, CrossReference>();
+        if ( roleRefMap.get() == null ) {
+            roleRefMap.set(new HashMap<String, CrossReference>());
         }
-        roleRefMap.put( termId,  termObject );
+        roleRefMap.get().put( termId,  termObject );
     }
 
     public static void addToNodeMap( String termId, Node node ) {
-        if ( roleNodeMap == null ) {
-            roleNodeMap = new Hashtable<String, Set<String>>();
+        if ( roleNodeMap.get() == null ) {
+            roleNodeMap.set(new Hashtable<String, Set<String>>());
         }
 
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceNodes = roleNodeMap.get( termId );
+        Set<String> sourceNodes = roleNodeMap.get().get( termId );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceNodes == null ) {
             // a hashset is used to avoid duplicate entries
             sourceNodes = new HashSet<String>();
-            roleNodeMap.put( termId, sourceNodes );
+            roleNodeMap.get().put( termId, sourceNodes );
         }
         sourceNodes.add( node.getId() );
     }
 
     public Map<String, Set<String>> getNodeMap() {
-        return roleNodeMap;
+        return roleNodeMap.get();
     }
 
     public List getSourceUrls( Network network,
                                Collection<String> selectedSourceTerms,
                                String applicationPath ) {
 
-        if ( roleNodeMap == null || roleNodeMap.isEmpty() ) {
+        if ( roleNodeMap.get() == null || roleNodeMap.get().isEmpty() ) {
             network.initHighlightMap();
         }
 
-        List<SourceBean> urls = new ArrayList();
+        List<SourceBean> urls = new ArrayList<SourceBean>();
 
-        if ( roleNodeMap != null && !roleNodeMap.isEmpty() ) {
-            Set<String> keySet = roleNodeMap.keySet();
+        if ( roleNodeMap != null && !roleNodeMap.get().isEmpty() ) {
+            Set<String> keySet = roleNodeMap.get().keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
-                Set<String> cloneKeySet = new HashSet();
+                Set<String> cloneKeySet = new HashSet<String>();
                 cloneKeySet.addAll( keySet );
                 keySet = cloneKeySet;
 
@@ -166,7 +175,7 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
                         termDescription = BIOLOGICAL_ROLE + " Role: ";
                     }
                     if ( roleRefMap != null ) {
-                        CrossReference xref = roleRefMap.get( termId );
+                        CrossReference xref = roleRefMap.get().get( termId );
 
                         if ( xref != null && xref.hasText() ) {
                             if ( termDescription == null ) {
@@ -178,7 +187,7 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
                         }
                     }
 
-                    int termCount = roleNodeMap.get(termId ).size();
+                    int termCount = roleNodeMap.get().get(termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() )
@@ -232,5 +241,10 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
         }
 
         return urls;
+    }
+
+    public static void clear() {
+        roleNodeMap.get().clear();
+        roleRefMap.get().clear();
     }
 }

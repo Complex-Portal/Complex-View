@@ -53,9 +53,19 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String MIRefPath;
 
-    private static HashMap<String, CrossReference> moleculeTypeRefMap;
+    private static ThreadLocal<Map<String, CrossReference>> moleculeTypeRefMap = new ThreadLocal<Map<String, CrossReference>>() {
+        @Override
+        protected Map<String, CrossReference> initialValue() {
+            return new HashMap<String,CrossReference>();
+        }
+    };
 
-    private static Map<String, Set<String>> moleculeTypeNodeMap;
+    private static ThreadLocal<Map<String, Set<String>>> moleculeTypeNodeMap = new ThreadLocal<Map<String, Set<String>>>(){
+        @Override
+        protected Map<String, Set<String>> initialValue() {
+            return new HashMap<String,Set<String>>();
+        }
+    };
 
     static {
 
@@ -105,49 +115,49 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
     }
 
     public static void addToSourceMap( String termId, CrossReference termObject ) {
-        if ( moleculeTypeRefMap == null ) {
-            moleculeTypeRefMap = new HashMap<String, CrossReference>();
+        if ( moleculeTypeRefMap.get() == null ) {
+            moleculeTypeRefMap.set(new HashMap<String, CrossReference>());
         }
-        moleculeTypeRefMap.put( termId, termObject );
+        moleculeTypeRefMap.get().put( termId, termObject );
     }
 
     public static void addToNodeMap( String termId, Node node ) {
-        if ( moleculeTypeNodeMap == null ) {
-            moleculeTypeNodeMap = new Hashtable<String, Set<String>>();
+        if ( moleculeTypeNodeMap.get() == null ) {
+            moleculeTypeNodeMap.set(new Hashtable<String, Set<String>>());
         }
 
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceNodes = moleculeTypeNodeMap.get( termId );
+        Set<String> sourceNodes = moleculeTypeNodeMap.get().get( termId );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceNodes == null ) {
             // a hashset is used to avoid duplicate entries
             sourceNodes = new HashSet<String>();
-            moleculeTypeNodeMap.put( termId, sourceNodes );
+            moleculeTypeNodeMap.get().put( termId, sourceNodes );
         }
         sourceNodes.add( node.getId() );
     }
 
     public Map<String, Set<String>> getNodeMap() {
-        return moleculeTypeNodeMap;
+        return moleculeTypeNodeMap.get();
     }
 
     public List<SourceBean> getSourceUrls( Network network,
                                            Collection<String> selectedSourceTerms,
                                            String applicationPath ) {
 
-        if ( moleculeTypeNodeMap == null || moleculeTypeNodeMap.isEmpty() ) {
+        if ( moleculeTypeNodeMap.get() == null || moleculeTypeNodeMap.get().isEmpty() ) {
             network.initHighlightMap();
         }
 
-        List<SourceBean> urls = new ArrayList();
+        List<SourceBean> urls = new ArrayList<SourceBean>();
 
-        if ( moleculeTypeNodeMap != null && !moleculeTypeNodeMap.isEmpty() ) {
+        if ( moleculeTypeNodeMap.get() != null && !moleculeTypeNodeMap.get().isEmpty() ) {
 
-            Set<String> keySet = moleculeTypeNodeMap.keySet();
+            Set<String> keySet = moleculeTypeNodeMap.get().keySet();
             if ( keySet != null && !keySet.isEmpty() ) {
 
-                Set<String> cloneKeySet = new HashSet();
+                Set<String> cloneKeySet = new HashSet<String>();
                 cloneKeySet.addAll( keySet );
                 keySet = cloneKeySet;
                 for ( String termInfo : keySet ) {
@@ -158,7 +168,7 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
 
 
                     if (moleculeTypeRefMap != null){
-                        CrossReference xref = moleculeTypeRefMap.get( termInfo );
+                        CrossReference xref = moleculeTypeRefMap.get().get( termInfo );
                         if ( xref != null ) {
                             termId = xref.getDatabase() + ":" + xref.getIdentifier();
 
@@ -169,7 +179,7 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
                     }
 
 
-                    int termCount = moleculeTypeNodeMap.get( termId ).size();
+                    int termCount = moleculeTypeNodeMap.get().get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() )
@@ -218,5 +228,10 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
             }
         }
         return urls;
+    }
+
+    public static void clear() {
+        moleculeTypeNodeMap.get().clear();
+        moleculeTypeRefMap.get().clear();
     }
 }

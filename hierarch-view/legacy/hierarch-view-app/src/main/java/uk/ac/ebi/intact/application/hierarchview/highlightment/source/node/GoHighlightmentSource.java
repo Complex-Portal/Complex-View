@@ -34,11 +34,18 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String goPath;
 
-    // TODO WTF???
-    private static Map<String, CrossReference> goRefMap;
-
-    // TODO WTF???
-    private static Map <String, Set<String>> goNodeMap;
+    private static ThreadLocal<Map<String, CrossReference>> goRefMap = new ThreadLocal<Map<String, CrossReference>>() {
+        @Override
+        protected Map<String, CrossReference> initialValue() {
+            return new HashMap<String,CrossReference>();
+        }
+    };
+    private static ThreadLocal<Map <String, Set<String>>> goNodeMap = new ThreadLocal<Map<String, Set<String>>>() {
+        @Override
+        protected Map<String, Set<String>> initialValue() {
+            return new HashMap<String,Set<String>>();
+        }
+    };
 
     static {
 
@@ -87,49 +94,49 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
     }
 
     public static void addToSourceMap( String termId, CrossReference termObject ) {
-        if ( goRefMap == null ) {
-            goRefMap = new HashMap<String, CrossReference>();
+        if ( goRefMap.get() == null ) {
+            goRefMap.set(new HashMap<String, CrossReference>());
         }
-        goRefMap.put( termId, termObject );
+        goRefMap.get().put( termId, termObject );
     }
 
     public static void addToNodeMap( String termId, Node node ) {
-        if ( goNodeMap == null ) {
-            goNodeMap = new Hashtable();
+        if ( goNodeMap.get() == null ) {
+            goNodeMap.set(new HashMap <String, Set<String>>());
         }
 
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceNodes = goNodeMap.get( termId );
+        Set<String> sourceNodes = goNodeMap.get().get( termId );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceNodes == null ) {
             // a hashset is used to avoid duplicate entries
             sourceNodes = new HashSet<String>();
-            goNodeMap.put( termId, sourceNodes );
+            goNodeMap.get().put( termId, sourceNodes );
         }
         sourceNodes.add( node.getId() );
     }
 
     public Map<String, Set<String>> getNodeMap() {
-        return goNodeMap;
+        return goNodeMap.get();
     }
 
     public List<SourceBean> getSourceUrls( Network network,
                                            Collection<String> selectedSourceTerms,
                                            String applicationPath ) {
 
-        if ( goNodeMap == null || goNodeMap.isEmpty() ) {
+        if ( goNodeMap == null || goNodeMap.get().isEmpty() ) {
             network.initHighlightMap();
         }
 
         List<SourceBean> urls = new ArrayList<SourceBean>();
 
-        if ( goNodeMap != null && !goNodeMap.isEmpty() ) {
-            Set<String> keySet = goNodeMap.keySet();
+        if ( goNodeMap != null && !goNodeMap.get().isEmpty() ) {
+            Set<String> keySet = goNodeMap.get().keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
                 // Cloning the current KeySet, because map could mixed up if user is to fast
-                Set<String> cloneKeySet = new HashSet();
+                Set<String> cloneKeySet = new HashSet<String>();
                 cloneKeySet.addAll( keySet );
                 keySet = cloneKeySet;
 
@@ -140,7 +147,7 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
                     String termDescription = null;
 
                     if ( goRefMap != null ) {
-                        CrossReference xref = goRefMap.get( termInfo );
+                        CrossReference xref = goRefMap.get().get( termInfo );
                         if ( xref != null ) {
                             termId = xref.getIdentifier();
 
@@ -150,7 +157,7 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
                         }
                     }
 
-                    int termCount = goNodeMap.get( termId ).size();
+                    int termCount = goNodeMap.get().get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() ) {
@@ -192,6 +199,11 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
             }
         }
         return urls;
+    }
+
+    public static void clear() {
+        goNodeMap.get().clear();
+        goRefMap.get().clear();
     }
 }
 

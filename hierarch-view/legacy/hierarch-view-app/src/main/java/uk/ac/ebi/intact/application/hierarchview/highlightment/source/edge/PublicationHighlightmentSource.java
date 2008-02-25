@@ -51,9 +51,19 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
 
     private static final String publicationPath;
 
-    private static Map<String, Author> publicationRefMap;
+    private static ThreadLocal<Map<String, Author>> publicationRefMap = new ThreadLocal<Map<String, Author>>() {
+        @Override
+        protected Map<String, Author> initialValue() {
+            return new HashMap<String,Author>();
+        }
+    };
 
-    private static Map<String, Set<String>> publicationEdgeMap;
+    private static ThreadLocal<Map<String, Set<String>>> publicationEdgeMap = new ThreadLocal<Map<String, Set<String>>>(){
+        @Override
+        protected Map<String, Set<String>> initialValue() {
+            return new HashMap<String,Set<String>>();
+        }
+    };
 
     static {
         // get in the Highlightment properties file where is interpro
@@ -102,45 +112,45 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
     }
 
     public static void addToSourceMap( String termId, Author termObject ) {
-        if ( publicationRefMap == null ) {
-            publicationRefMap = new HashMap<String, Author>();
+        if ( publicationRefMap.get() == null ) {
+            publicationRefMap.set( new HashMap<String, Author>() );
         }
-        publicationRefMap.put( termId, termObject );
+        publicationRefMap.get().put( termId, termObject );
     }
 
     public static void addToEdgeMap( String pmid, Edge edge ) {
-        if ( publicationEdgeMap == null ) {
-            publicationEdgeMap = new Hashtable<String, Set<String>>();
+        if ( publicationEdgeMap.get() == null ) {
+            publicationEdgeMap.set(new Hashtable<String, Set<String>>());
         }
 
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceEdges = publicationEdgeMap.get( pmid );
+        Set<String> sourceEdges = publicationEdgeMap.get().get( pmid );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceEdges == null ) {
             // a hashset is used to avoid duplicate entries
             sourceEdges = new HashSet<String>();
-            publicationEdgeMap.put( pmid, sourceEdges );
+            publicationEdgeMap.get().put( pmid, sourceEdges );
         }
         sourceEdges.add( edge.getId() );
     }
 
     public Map<String, Set<String>> getEdgeMap() {
-        return publicationEdgeMap;
+        return publicationEdgeMap.get();
     }
 
     public List<SourceBean> getSourceUrls( Network network,
                                            Collection<String> selectedSourceTerms,
                                            String applicationPath ) {
 
-        if ( publicationEdgeMap == null || publicationEdgeMap.isEmpty() ) {
+        if ( publicationEdgeMap == null || publicationEdgeMap.get().isEmpty() ) {
             network.initHighlightMap();
         }
 
         List<SourceBean> urls = new ArrayList();
 
-        if ( publicationEdgeMap != null && !publicationEdgeMap.isEmpty() ) {
-            Set<String> keySet = publicationEdgeMap.keySet();
+        if ( publicationEdgeMap != null && !publicationEdgeMap.get().isEmpty() ) {
+            Set<String> keySet = publicationEdgeMap.get().keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
 
@@ -150,13 +160,13 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
                     String termType = SOURCE_KEY;
 
                     if ( publicationRefMap != null ) {
-                        Author author = publicationRefMap.get( termId );
+                        Author author = publicationRefMap.get().get( termId );
                         if ( author != null ) {
                             termDescription = author.getName();
                         }
                     }
 
-                    int termCount = publicationEdgeMap.get( termId ).size();
+                    int termCount = publicationEdgeMap.get().get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() ) {
@@ -202,5 +212,10 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
         }
 
         return urls;
+    }
+
+    public static void clear() {
+         publicationEdgeMap.get().clear();
+         publicationRefMap.get().clear();
     }
 }

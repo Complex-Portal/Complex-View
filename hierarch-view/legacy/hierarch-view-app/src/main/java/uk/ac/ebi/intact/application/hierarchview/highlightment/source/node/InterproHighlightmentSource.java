@@ -34,9 +34,19 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String interproPath;
 
-    private static HashMap<String, CrossReference> interproRefMap;
+    private static ThreadLocal<Map<String, CrossReference>> interproRefMap = new ThreadLocal<Map<String, CrossReference>>() {
+        @Override
+        protected Map<String, CrossReference> initialValue() {
+            return new HashMap<String,CrossReference>();
+        }
+    };
 
-    private static Map<String, Set<String>> interproNodeMap;
+    private static ThreadLocal<Map<String, Set<String>>> interproNodeMap = new ThreadLocal<Map<String, Set<String>>>(){
+        @Override
+        protected Map<String, Set<String>> initialValue() {
+            return new HashMap<String,Set<String>>();
+        }
+    };
 
     static {
 
@@ -87,48 +97,48 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
     }
 
     public static void addToSourceMap( String termId, CrossReference termObject ) {
-        if ( interproRefMap == null ) {
-            interproRefMap = new HashMap<String, CrossReference>();
+        if ( interproRefMap.get() == null ) {
+            interproRefMap.set(new HashMap<String, CrossReference>());
         }
-        interproRefMap.put( termId, termObject );
+        interproRefMap.get().put( termId, termObject );
     }
 
     public static void addToNodeMap( String termId, Node node ) {
-        if ( interproNodeMap == null ) {
-            interproNodeMap = new Hashtable();
+        if ( interproNodeMap.get() == null ) {
+            interproNodeMap.set(new HashMap<String, Set<String>>());
         }
 
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceNodes = interproNodeMap.get( termId );
+        Set<String> sourceNodes = interproNodeMap.get().get( termId );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceNodes == null ) {
             // a hashset is used to avoid duplicate entries
             sourceNodes = new HashSet<String>();
-            interproNodeMap.put( termId, sourceNodes );
+            interproNodeMap.get().put( termId, sourceNodes );
         }
         sourceNodes.add( node.getId() );
     }
 
     public Map<String, Set<String>> getNodeMap() {
-        return interproNodeMap;
+        return interproNodeMap.get();
     }
 
     public List<SourceBean> getSourceUrls( Network network,
                                            Collection<String> selectedSourceTerms,
                                            String applicationPath ) {
 
-        if ( interproNodeMap == null || interproNodeMap.isEmpty() ) {
+        if ( interproNodeMap == null || interproNodeMap.get().isEmpty() ) {
             network.initHighlightMap();
         }
 
         List<SourceBean> urls = new ArrayList();
 
-        if ( interproNodeMap != null && !interproNodeMap.isEmpty() ) {
-            Set<String> keySet = interproNodeMap.keySet();
+        if ( interproNodeMap != null && !interproNodeMap.get().isEmpty() ) {
+            Set<String> keySet = interproNodeMap.get().keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
-                Set<String> cloneKeySet = new HashSet();
+                Set<String> cloneKeySet = new HashSet<String>();
                 cloneKeySet.addAll( keySet );
                 keySet = cloneKeySet;
                 for ( String termInfo : keySet ) {
@@ -137,7 +147,7 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
                     String termDescription = null;
 
                     if ( interproRefMap != null ) {
-                        CrossReference xref = interproRefMap.get( termInfo );
+                        CrossReference xref = interproRefMap.get().get( termInfo );
                         if ( xref != null ) {
                             termId = xref.getIdentifier();
                             if ( xref.hasText() ) {
@@ -146,7 +156,7 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
                         }
                     }
 
-                    int interproTermCount = interproNodeMap.get( termInfo ).size();
+                    int interproTermCount = interproNodeMap.get().get( termInfo ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() )
@@ -186,4 +196,9 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
 
         return urls;
     } // getSourceUrls
+
+    public static void clear() {
+        interproNodeMap.get().clear();
+        interproRefMap.get().clear();
+    }
 }

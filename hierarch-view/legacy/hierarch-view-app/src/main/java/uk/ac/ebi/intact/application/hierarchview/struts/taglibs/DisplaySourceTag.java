@@ -120,6 +120,7 @@ public class DisplaySourceTag extends TagSupport {
                 }
             }
             catch ( IntactException ie ) {
+                ie.printStackTrace();
                 String msg = "ERROR<br />The hierarchview system is not properly configured. Please warn your administrator.<br />" + ie;
                 pageContext.getOut().write( msg );
                 return EVAL_PAGE;
