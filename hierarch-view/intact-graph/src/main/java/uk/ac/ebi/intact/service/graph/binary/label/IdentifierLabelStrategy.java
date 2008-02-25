@@ -34,7 +34,11 @@ public class IdentifierLabelStrategy implements LabelStrategy {
      * @return a not null String (because Interactor always have one ID)
      */
     public String buildDefaultLabel( Interactor interactor ) {
-        return buildLabel( interactor, "intact" );
+        if (interactor.getIdentifiers().isEmpty()) {
+            throw new IllegalArgumentException("Interactor without identifiers");
+        }
+        final CrossReference crossReference = interactor.getIdentifiers().iterator().next();
+        return crossReference.getDatabase()+":"+crossReference.getIdentifier();
     }
 
     /**
