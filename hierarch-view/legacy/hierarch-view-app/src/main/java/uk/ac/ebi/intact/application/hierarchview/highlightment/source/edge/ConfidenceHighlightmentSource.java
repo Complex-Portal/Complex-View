@@ -25,6 +25,8 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Edge;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletRequest;
 import java.util.*;
 
 /**
@@ -48,18 +50,9 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
      */
     public static final String SOURCE_CLASS;
 
-    private static ThreadLocal<Map<String, Confidence>> confidenceRefMap = new ThreadLocal<Map<String, Confidence>>() {
-        @Override
-        protected Map<String, Confidence> initialValue() {
-            return new HashMap<String,Confidence>();
-        }
-    };
-    private static ThreadLocal<Map<String, Set<String>>> confidenceEdgeMap = new ThreadLocal<Map<String, Set<String>>>(){
-        @Override
-        protected Map<String, Set<String>> initialValue() {
-            return new HashMap<String,Set<String>>();
-        }
-    };
+    private Map<String, Confidence> confidenceRefMap;
+
+    private Map<String, Set<String>> confidenceEdgeMap;
 
     static {
         // get in the Highlightment properties file where is interpro
@@ -96,46 +89,44 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
         }
     }
 
-    public static void addToSourceMap( String termId, Confidence termObject ) {
-        if ( confidenceRefMap.get() == null ) {
-            confidenceRefMap.set(new HashMap<String, Confidence>());
-        }
-        confidenceRefMap.get().put( termId, termObject );
+    public ConfidenceHighlightmentSource() {
+        confidenceRefMap = new HashMap<String, Confidence>();
+        confidenceEdgeMap = new Hashtable<String, Set<String>>();
     }
 
-    public static void addToEdgeMap( String value, Edge edge ) {
-        if ( confidenceEdgeMap.get() == null ) {
-            confidenceEdgeMap.set(new Hashtable<String, Set<String>>());
-        }
+    public void addToSourceMap( String termId, Confidence termObject ) {
+        confidenceRefMap.put( termId, termObject );
+    }
 
+    public void addToEdgeMap( String value, Edge edge ) {
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceEdges = confidenceEdgeMap.get().get( value );
+        Set<String> sourceEdges = confidenceEdgeMap.get( value );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceEdges == null ) {
             // a hashset is used to avoid duplicate entries
             sourceEdges = new HashSet<String>();
-            confidenceEdgeMap.get().put( value, sourceEdges );
+            confidenceEdgeMap.put( value, sourceEdges );
         }
         sourceEdges.add( edge.getId() );
     }
 
     public Map<String, Set<String>> getEdgeMap(){
-        return confidenceEdgeMap.get();
+        return confidenceEdgeMap;
     }
 
-    public List<SourceBean> getSourceUrls( Network network,
-                                           Collection<String> selectedSourceTerms,
-                                           String applicationPath ) {
+    public List<SourceBean> getSourceUrls(Network network,
+                                          Collection<String> selectedSourceTerms,
+                                          HttpServletRequest request, String applicationPath) {
 
         List<SourceBean> urls = new ArrayList();
-        if ( confidenceEdgeMap == null || confidenceEdgeMap.get().isEmpty() ) {
-            network.initHighlightMap();
+        if ( confidenceEdgeMap == null || confidenceEdgeMap.isEmpty() ) {
+            network.initHighlightMap(request);
         }
 
-        if ( confidenceEdgeMap != null && !confidenceEdgeMap.get().isEmpty() ) {
+        if ( confidenceEdgeMap != null && !confidenceEdgeMap.isEmpty() ) {
 
-            Set<String> keySet = confidenceEdgeMap.get().keySet();
+            Set<String> keySet = confidenceEdgeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
 
@@ -151,7 +142,7 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
                     String termId = null;
 
                     if ( confidenceRefMap != null ) {
-                        Confidence confidence = confidenceRefMap.get().get( termInfo );
+                        Confidence confidence = confidenceRefMap.get( termInfo );
                         if ( confidence != null && confidence.getValue() != null ) {
                             double value = Double.valueOf( confidence.getValue() );
                             termId = "";
@@ -168,7 +159,7 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
                         }
                     }
 
-                    int termCount = confidenceEdgeMap.get().get( termId ).size();
+                    int termCount = confidenceEdgeMap.get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() ) {
@@ -209,8 +200,24 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
         return urls;
     }
 
-    public static void clear() {
-         confidenceEdgeMap.get().clear();
-         confidenceRefMap.get().clear();
+    public void prepare() {
+        confidenceEdgeMap.clear();
+        confidenceRefMap.clear();
+    }
+
+    public static ConfidenceHighlightmentSource getInstance(ServletRequest request) {
+        String attName = ConfidenceHighlightmentSource.class.getName();
+
+        final ConfidenceHighlightmentSource source;
+
+        if (request.getAttribute(attName) != null) {
+            source = (ConfidenceHighlightmentSource) request.getAttribute(attName);
+        } else {
+            source = new ConfidenceHighlightmentSource();
+            request.setAttribute(attName, source);
+        }
+
+        return source;
     }
 }
+

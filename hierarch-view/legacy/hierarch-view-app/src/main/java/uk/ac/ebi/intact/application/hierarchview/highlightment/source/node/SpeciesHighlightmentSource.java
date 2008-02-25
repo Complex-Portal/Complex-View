@@ -26,6 +26,7 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Node;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -51,19 +52,9 @@ public class SpeciesHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String speciePath;
 
-    private static ThreadLocal<Map<String, Organism>> specieRefMap = new ThreadLocal<Map<String, Organism>>() {
-        @Override
-        protected Map<String, Organism> initialValue() {
-            return new HashMap<String,Organism>();
-        }
-    };
+    private HashMap<String, Organism> specieRefMap;
 
-    private static ThreadLocal<Map<String, Set<String>>> specieNodeMap = new ThreadLocal<Map<String, Set<String>>>(){
-        @Override
-        protected Map<String, Set<String>> initialValue() {
-            return new HashMap<String,Set<String>>();
-        }
-    };
+    private Map<String, Set<String>> specieNodeMap;
 
     static {
 
@@ -112,50 +103,48 @@ public class SpeciesHighlightmentSource extends NodeHighlightmentSource {
         }
     }
 
-    public static void addToSourceMap( String termId, Organism termObject ) {
-        if ( specieRefMap.get() == null ) {
-            specieRefMap.set(new HashMap<String, Organism>());
-        }
-        specieRefMap.get().put( termId, termObject );
+    public SpeciesHighlightmentSource() {
+        specieRefMap = new HashMap<String, Organism>();
+        specieNodeMap = new Hashtable<String, Set<String>>();
     }
 
-    public static void addToNodeMap( String termId, Node node ) {
-        if ( specieNodeMap.get() == null ) {
-            specieNodeMap.set( new Hashtable<String, Set<String>>());
-        }
+    public void addToSourceMap( String termId, Organism termObject ) {
+        specieRefMap.put( termId, termObject );
+    }
 
+    public void addToNodeMap( String termId, Node node ) {
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceNodes = specieNodeMap.get().get( termId );
+        Set<String> sourceNodes = specieNodeMap.get( termId );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceNodes == null ) {
             // a hashset is used to avoid duplicate entries
             sourceNodes = new HashSet<String>();
-            specieNodeMap.get().put( termId, sourceNodes );
+            specieNodeMap.put( termId, sourceNodes );
         }
         sourceNodes.add( node.getId() );
     }
 
     public Map<String, Set<String>> getNodeMap() {
-        return specieNodeMap.get();
+        return specieNodeMap;
     }
 
-    public List getSourceUrls( Network network,
-                               Collection<String> selectedSourceTerms,
-                               String applicationPath ) {
+    public List getSourceUrls(Network network,
+                              Collection<String> selectedSourceTerms,
+                              HttpServletRequest request, String applicationPath ) {
 
-        List<SourceBean> urls = new ArrayList<SourceBean>();
+        List<SourceBean> urls = new ArrayList();
 
         // filter to keep only Species terms
-        if ( specieNodeMap == null || specieNodeMap.get().isEmpty() ) {
-            network.initHighlightMap();
+        if ( specieNodeMap == null || specieNodeMap.isEmpty() ) {
+            network.initHighlightMap(request);
         }
 
-        if ( specieNodeMap != null && !specieNodeMap.get().isEmpty() ) {
-            Set<String> keySet = specieNodeMap.get().keySet();
+        if ( specieNodeMap != null && !specieNodeMap.isEmpty() ) {
+            Set<String> keySet = specieNodeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
-                Set<String> cloneKeySet = new HashSet<String>();
+                Set<String> cloneKeySet = new HashSet();
                 cloneKeySet.addAll( keySet );
                 keySet = cloneKeySet;
 
@@ -165,7 +154,7 @@ public class SpeciesHighlightmentSource extends NodeHighlightmentSource {
                     String termDescription = null;
 
                     if (specieRefMap != null){
-                        Organism organism = specieRefMap.get().get( termId );
+                        Organism organism = specieRefMap.get( termId );
                         if ( organism != null && organism.getIdentifiers() != null) {
                             Collection<CrossReference> refs = organism.getIdentifiers();
                             if ( !refs.isEmpty() && refs.iterator().next() != null) {
@@ -173,7 +162,7 @@ public class SpeciesHighlightmentSource extends NodeHighlightmentSource {
                             }
                         }
                     }
-                    int termCount = specieNodeMap.get().get( termId ).size();
+                    int termCount = specieNodeMap.get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() )
@@ -226,8 +215,23 @@ public class SpeciesHighlightmentSource extends NodeHighlightmentSource {
         return urls;
     }
 
-    public static void clear() {
-        specieNodeMap.get().clear();
-        specieRefMap.get().clear();
+    public void prepare() {
+        specieNodeMap.clear();
+        specieRefMap.clear();
+    }
+
+    public static SpeciesHighlightmentSource getInstance(HttpServletRequest request) {
+        String attName = SpeciesHighlightmentSource.class.getName();
+
+        final SpeciesHighlightmentSource source;
+
+        if (request.getSession().getAttribute(attName) != null) {
+            source = (SpeciesHighlightmentSource) request.getSession().getAttribute(attName);
+        } else {
+            source = new SpeciesHighlightmentSource();
+            request.getSession().setAttribute(attName, source);
+        }
+
+        return source;
     }
 }

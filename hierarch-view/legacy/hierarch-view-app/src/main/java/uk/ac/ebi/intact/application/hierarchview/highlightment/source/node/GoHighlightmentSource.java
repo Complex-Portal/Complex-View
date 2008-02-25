@@ -10,6 +10,8 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Node;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -34,18 +36,9 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String goPath;
 
-    private static ThreadLocal<Map<String, CrossReference>> goRefMap = new ThreadLocal<Map<String, CrossReference>>() {
-        @Override
-        protected Map<String, CrossReference> initialValue() {
-            return new HashMap<String,CrossReference>();
-        }
-    };
-    private static ThreadLocal<Map <String, Set<String>>> goNodeMap = new ThreadLocal<Map<String, Set<String>>>() {
-        @Override
-        protected Map<String, Set<String>> initialValue() {
-            return new HashMap<String,Set<String>>();
-        }
-    };
+    private Map<String, CrossReference> goRefMap;
+
+    private Map <String, Set<String>> goNodeMap;
 
     static {
 
@@ -93,50 +86,49 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
         }
     }
 
-    public static void addToSourceMap( String termId, CrossReference termObject ) {
-        if ( goRefMap.get() == null ) {
-            goRefMap.set(new HashMap<String, CrossReference>());
-        }
-        goRefMap.get().put( termId, termObject );
+    public GoHighlightmentSource() {
+        goRefMap = new HashMap<String, CrossReference>();
+        goNodeMap = new Hashtable();
     }
 
-    public static void addToNodeMap( String termId, Node node ) {
-        if ( goNodeMap.get() == null ) {
-            goNodeMap.set(new HashMap <String, Set<String>>());
-        }
+    public void addToSourceMap( String termId, CrossReference termObject ) {
+        goRefMap.put( termId, termObject );
+    }
+
+    public void addToNodeMap( String termId, Node node ) {
 
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceNodes = goNodeMap.get().get( termId );
+        Set<String> sourceNodes = goNodeMap.get( termId );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceNodes == null ) {
             // a hashset is used to avoid duplicate entries
             sourceNodes = new HashSet<String>();
-            goNodeMap.get().put( termId, sourceNodes );
+            goNodeMap.put( termId, sourceNodes );
         }
         sourceNodes.add( node.getId() );
     }
 
     public Map<String, Set<String>> getNodeMap() {
-        return goNodeMap.get();
+        return goNodeMap;
     }
 
-    public List<SourceBean> getSourceUrls( Network network,
-                                           Collection<String> selectedSourceTerms,
-                                           String applicationPath ) {
+    public List<SourceBean> getSourceUrls(Network network,
+                                          Collection<String> selectedSourceTerms,
+                                          HttpServletRequest request, String applicationPath) {
 
-        if ( goNodeMap == null || goNodeMap.get().isEmpty() ) {
-            network.initHighlightMap();
+        if ( goNodeMap == null || goNodeMap.isEmpty() ) {
+            network.initHighlightMap(request);
         }
 
         List<SourceBean> urls = new ArrayList<SourceBean>();
 
-        if ( goNodeMap != null && !goNodeMap.get().isEmpty() ) {
-            Set<String> keySet = goNodeMap.get().keySet();
+        if ( goNodeMap != null && !goNodeMap.isEmpty() ) {
+            Set<String> keySet = goNodeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
                 // Cloning the current KeySet, because map could mixed up if user is to fast
-                Set<String> cloneKeySet = new HashSet<String>();
+                Set<String> cloneKeySet = new HashSet();
                 cloneKeySet.addAll( keySet );
                 keySet = cloneKeySet;
 
@@ -147,7 +139,7 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
                     String termDescription = null;
 
                     if ( goRefMap != null ) {
-                        CrossReference xref = goRefMap.get().get( termInfo );
+                        CrossReference xref = goRefMap.get( termInfo );
                         if ( xref != null ) {
                             termId = xref.getIdentifier();
 
@@ -157,7 +149,7 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
                         }
                     }
 
-                    int termCount = goNodeMap.get().get( termId ).size();
+                    int termCount = goNodeMap.get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() ) {
@@ -201,9 +193,24 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
         return urls;
     }
 
-    public static void clear() {
-        goNodeMap.get().clear();
-        goRefMap.get().clear();
+    public void prepare() {
+        goNodeMap.clear();
+        goRefMap.clear();
+    }    
+
+    public static GoHighlightmentSource getInstance(ServletRequest request) {
+        String attName = GoHighlightmentSource.class.getName();
+
+        final GoHighlightmentSource source;
+
+        if (request.getAttribute(attName) != null) {
+            source = (GoHighlightmentSource) request.getAttribute(attName);
+        } else {
+            source = new GoHighlightmentSource();
+            request.setAttribute(attName, source);
+        }
+
+        return source;
     }
 }
 

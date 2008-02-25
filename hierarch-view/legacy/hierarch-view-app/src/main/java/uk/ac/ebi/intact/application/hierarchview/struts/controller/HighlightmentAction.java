@@ -72,7 +72,7 @@ public final class HighlightmentAction extends IntactBaseAction {
             String source = user.getMethodClass();
 
             // save options (given in this request) of the source in the user's session
-            NodeHighlightmentSource nodeHighlightmentSource = NodeHighlightmentSource.getHighlightmentSource( source );
+            NodeHighlightmentSource nodeHighlightmentSource = NodeHighlightmentSource.getHighlightmentSource( request, source );
             if ( null != nodeHighlightmentSource ) {
                 nodeHighlightmentSource.saveOptions( request, session );
             } else {

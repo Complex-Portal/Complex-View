@@ -21,6 +21,7 @@ import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.CrossReference;
+import psidev.psi.mi.tab.converter.txt2tab.MitabLineException;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
@@ -86,6 +87,8 @@ public class LocalIndexDataSevice implements DataService {
 
         } catch ( IOException e ) {
             throw new HierarchViewDataException( "Could not find index-files", e);
+        } catch ( RuntimeException mle ) {
+            logger.warn("Problem parsing a line. "+mle.getMessage());
         }
 
 

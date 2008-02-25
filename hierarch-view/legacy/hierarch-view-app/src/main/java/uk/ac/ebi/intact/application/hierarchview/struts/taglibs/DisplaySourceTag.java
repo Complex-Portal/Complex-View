@@ -105,7 +105,7 @@ public class DisplaySourceTag extends TagSupport {
 
                         HighlightmentSource source = getSourceClass( method_label );
 
-                        List<SourceBean> urls = source.getSourceUrls( interactionNetwork, selectedKeys, applicationPath );
+                        List<SourceBean> urls = source.getSourceUrls( interactionNetwork, selectedKeys, (HttpServletRequest) request, applicationPath );
 
                         /**
                          * We store the source collection in the session in order to
@@ -149,7 +149,7 @@ public class DisplaySourceTag extends TagSupport {
             if ( null != properties ) {
                 method_class = properties.getProperty( "highlightment.source.node." + method_label + ".class" );
             }
-            source = NodeHighlightmentSource.getHighlightmentSource( method_class );
+            source = NodeHighlightmentSource.getHighlightmentSource( (HttpServletRequest) pageContext.getRequest(), method_class );
         }
         if ( HVNetworkBuilder.EDGE_SOURCES.contains( method_label ) ) {
             if ( null != properties ) {

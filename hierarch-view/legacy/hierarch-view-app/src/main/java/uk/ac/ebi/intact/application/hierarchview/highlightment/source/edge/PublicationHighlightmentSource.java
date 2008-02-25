@@ -25,6 +25,8 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Edge;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletRequest;
 import java.util.*;
 
 /**
@@ -51,19 +53,9 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
 
     private static final String publicationPath;
 
-    private static ThreadLocal<Map<String, Author>> publicationRefMap = new ThreadLocal<Map<String, Author>>() {
-        @Override
-        protected Map<String, Author> initialValue() {
-            return new HashMap<String,Author>();
-        }
-    };
+    private Map<String, Author> publicationRefMap;
 
-    private static ThreadLocal<Map<String, Set<String>>> publicationEdgeMap = new ThreadLocal<Map<String, Set<String>>>(){
-        @Override
-        protected Map<String, Set<String>> initialValue() {
-            return new HashMap<String,Set<String>>();
-        }
-    };
+    private Map<String, Set<String>> publicationEdgeMap;
 
     static {
         // get in the Highlightment properties file where is interpro
@@ -111,46 +103,44 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
         }
     }
 
-    public static void addToSourceMap( String termId, Author termObject ) {
-        if ( publicationRefMap.get() == null ) {
-            publicationRefMap.set( new HashMap<String, Author>() );
-        }
-        publicationRefMap.get().put( termId, termObject );
+    public PublicationHighlightmentSource() {
+        publicationRefMap = new HashMap<String, Author>();
+        publicationEdgeMap = new Hashtable<String, Set<String>>();
     }
 
-    public static void addToEdgeMap( String pmid, Edge edge ) {
-        if ( publicationEdgeMap.get() == null ) {
-            publicationEdgeMap.set(new Hashtable<String, Set<String>>());
-        }
+    public void addToSourceMap( String termId, Author termObject ) {
+        publicationRefMap.put( termId, termObject );
+    }
 
+    public void addToEdgeMap( String pmid, Edge edge ) {
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceEdges = publicationEdgeMap.get().get( pmid );
+        Set<String> sourceEdges = publicationEdgeMap.get( pmid );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceEdges == null ) {
             // a hashset is used to avoid duplicate entries
             sourceEdges = new HashSet<String>();
-            publicationEdgeMap.get().put( pmid, sourceEdges );
+            publicationEdgeMap.put( pmid, sourceEdges );
         }
         sourceEdges.add( edge.getId() );
     }
 
     public Map<String, Set<String>> getEdgeMap() {
-        return publicationEdgeMap.get();
+        return publicationEdgeMap;
     }
 
-    public List<SourceBean> getSourceUrls( Network network,
-                                           Collection<String> selectedSourceTerms,
-                                           String applicationPath ) {
+    public List<SourceBean> getSourceUrls(Network network,
+                                          Collection<String> selectedSourceTerms,
+                                          HttpServletRequest request, String applicationPath ) {
 
-        if ( publicationEdgeMap == null || publicationEdgeMap.get().isEmpty() ) {
-            network.initHighlightMap();
+        if ( publicationEdgeMap == null || publicationEdgeMap.isEmpty() ) {
+            network.initHighlightMap(request);
         }
 
         List<SourceBean> urls = new ArrayList();
 
-        if ( publicationEdgeMap != null && !publicationEdgeMap.get().isEmpty() ) {
-            Set<String> keySet = publicationEdgeMap.get().keySet();
+        if ( publicationEdgeMap != null && !publicationEdgeMap.isEmpty() ) {
+            Set<String> keySet = publicationEdgeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
 
@@ -160,13 +150,13 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
                     String termType = SOURCE_KEY;
 
                     if ( publicationRefMap != null ) {
-                        Author author = publicationRefMap.get().get( termId );
+                        Author author = publicationRefMap.get( termId );
                         if ( author != null ) {
                             termDescription = author.getName();
                         }
                     }
 
-                    int termCount = publicationEdgeMap.get().get( termId ).size();
+                    int termCount = publicationEdgeMap.get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() ) {
@@ -214,8 +204,24 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
         return urls;
     }
 
-    public static void clear() {
-         publicationEdgeMap.get().clear();
-         publicationRefMap.get().clear();
+    public void prepare() {
+        publicationEdgeMap.clear();
+        publicationRefMap.clear();
+    }
+
+    public static PublicationHighlightmentSource getInstance(ServletRequest request) {
+        String attName = PublicationHighlightmentSource.class.getName();
+
+        final PublicationHighlightmentSource source;
+
+        if (request.getAttribute(attName) != null) {
+            source = (PublicationHighlightmentSource) request.getAttribute(attName);
+        } else {
+            source = new PublicationHighlightmentSource();
+            request.setAttribute(attName, source);
+        }
+
+        return source;
     }
 }
+

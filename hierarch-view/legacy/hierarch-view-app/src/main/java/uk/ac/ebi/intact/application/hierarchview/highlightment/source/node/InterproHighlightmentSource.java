@@ -10,6 +10,7 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Node;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -34,19 +35,9 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String interproPath;
 
-    private static ThreadLocal<Map<String, CrossReference>> interproRefMap = new ThreadLocal<Map<String, CrossReference>>() {
-        @Override
-        protected Map<String, CrossReference> initialValue() {
-            return new HashMap<String,CrossReference>();
-        }
-    };
+    private HashMap<String, CrossReference> interproRefMap;
 
-    private static ThreadLocal<Map<String, Set<String>>> interproNodeMap = new ThreadLocal<Map<String, Set<String>>>(){
-        @Override
-        protected Map<String, Set<String>> initialValue() {
-            return new HashMap<String,Set<String>>();
-        }
-    };
+    private Map<String, Set<String>> interproNodeMap;
 
     static {
 
@@ -96,49 +87,48 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
         }
     }
 
-    public static void addToSourceMap( String termId, CrossReference termObject ) {
-        if ( interproRefMap.get() == null ) {
-            interproRefMap.set(new HashMap<String, CrossReference>());
-        }
-        interproRefMap.get().put( termId, termObject );
+    public InterproHighlightmentSource() {
+         interproRefMap = new HashMap<String, CrossReference>();
+        interproNodeMap = new Hashtable();
     }
 
-    public static void addToNodeMap( String termId, Node node ) {
-        if ( interproNodeMap.get() == null ) {
-            interproNodeMap.set(new HashMap<String, Set<String>>());
-        }
+    public void addToSourceMap( String termId, CrossReference termObject ) {
+        interproRefMap.put( termId, termObject );
+    }
+
+    public void addToNodeMap( String termId, Node node ) {
 
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceNodes = interproNodeMap.get().get( termId );
+        Set<String> sourceNodes = interproNodeMap.get( termId );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceNodes == null ) {
             // a hashset is used to avoid duplicate entries
             sourceNodes = new HashSet<String>();
-            interproNodeMap.get().put( termId, sourceNodes );
+            interproNodeMap.put( termId, sourceNodes );
         }
         sourceNodes.add( node.getId() );
     }
 
     public Map<String, Set<String>> getNodeMap() {
-        return interproNodeMap.get();
+              return interproNodeMap;
     }
 
-    public List<SourceBean> getSourceUrls( Network network,
-                                           Collection<String> selectedSourceTerms,
-                                           String applicationPath ) {
+    public List<SourceBean> getSourceUrls(Network network,
+                                          Collection<String> selectedSourceTerms,
+                                          HttpServletRequest request, String applicationPath) {
 
-        if ( interproNodeMap == null || interproNodeMap.get().isEmpty() ) {
-            network.initHighlightMap();
+        if ( interproNodeMap == null || interproNodeMap.isEmpty() ) {
+            network.initHighlightMap(request);
         }
 
         List<SourceBean> urls = new ArrayList();
 
-        if ( interproNodeMap != null && !interproNodeMap.get().isEmpty() ) {
-            Set<String> keySet = interproNodeMap.get().keySet();
+        if ( interproNodeMap != null && !interproNodeMap.isEmpty() ) {
+            Set<String> keySet = interproNodeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
-                Set<String> cloneKeySet = new HashSet<String>();
+                Set<String> cloneKeySet = new HashSet();
                 cloneKeySet.addAll( keySet );
                 keySet = cloneKeySet;
                 for ( String termInfo : keySet ) {
@@ -147,7 +137,7 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
                     String termDescription = null;
 
                     if ( interproRefMap != null ) {
-                        CrossReference xref = interproRefMap.get().get( termInfo );
+                        CrossReference xref = interproRefMap.get( termInfo );
                         if ( xref != null ) {
                             termId = xref.getIdentifier();
                             if ( xref.hasText() ) {
@@ -156,7 +146,7 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
                         }
                     }
 
-                    int interproTermCount = interproNodeMap.get().get( termInfo ).size();
+                    int interproTermCount = interproNodeMap.get( termInfo ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() )
@@ -197,8 +187,24 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
         return urls;
     } // getSourceUrls
 
-    public static void clear() {
-        interproNodeMap.get().clear();
-        interproRefMap.get().clear();
+    public void prepare() {
+        interproNodeMap.clear();
+        interproRefMap.clear();
+    }
+
+    public static InterproHighlightmentSource getInstance(HttpServletRequest request) {
+        String attName = InterproHighlightmentSource.class.getName();
+
+        final InterproHighlightmentSource source;
+
+        if (request.getSession().getAttribute(attName) != null) {
+            source = (InterproHighlightmentSource) request.getSession().getAttribute(attName);
+        } else {
+            source = new InterproHighlightmentSource();
+            request.getSession().setAttribute(attName, source);
+        }
+
+        return source;
     }
 }
+

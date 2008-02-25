@@ -69,7 +69,7 @@ public class DisplayInteractionNetworkTag extends TagSupport {
                 String methodLabel = user.getMethodLabel();
 
                 if ( HVNetworkBuilder.NODE_SOURCES.contains( methodLabel ) ) {
-                    NodeHighlightmentSource nodeHighlightmentSource = NodeHighlightmentSource.getHighlightmentSourceBySourceKey( methodLabel );
+                    NodeHighlightmentSource nodeHighlightmentSource = NodeHighlightmentSource.getHighlightmentSourceBySourceKey( (HttpServletRequest) pageContext.getRequest(), methodLabel );
                     HighlightProteins.perform( nodeHighlightmentSource, behaviour, session, in );
                 }
                 if ( HVNetworkBuilder.EDGE_SOURCES.contains( methodLabel ) ) {

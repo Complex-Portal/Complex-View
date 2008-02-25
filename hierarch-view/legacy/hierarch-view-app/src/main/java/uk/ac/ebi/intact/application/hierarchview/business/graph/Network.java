@@ -22,6 +22,8 @@ import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.service.graph.GraphNetwork;
 import uk.ac.ebi.intact.service.graph.Node;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
@@ -54,7 +56,7 @@ public interface Network {
 
     Collection<CrossReference> getProperties( Node node );
 
-    void initHighlightMap();
+    void initHighlightMap(HttpServletRequest request);
 
     List<Node> getCentralNodes();
 

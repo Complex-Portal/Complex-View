@@ -71,8 +71,8 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
         isCumulative = ATTRIBUTE_OPTION_CUMULATIVE.equals( highlightOption );
     }
 
-    public static NodeHighlightmentSource getHighlightmentSourceBySourceKey( String sourceKey ) {
-        return getHighlightmentSource( nodeHighlightmentSources.get( sourceKey ) );
+    public static NodeHighlightmentSource getHighlightmentSourceBySourceKey( HttpServletRequest request, String sourceKey ) {
+        return getHighlightmentSource( request, nodeHighlightmentSources.get( sourceKey ) );
     }
 
     /**
@@ -88,7 +88,11 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
      * @param aClassName the name of the implementation class you want to get
      * @return an NodeHighlightmentSource object, or null if an error occurs.
      */
-    public static NodeHighlightmentSource getHighlightmentSource( String aClassName ) {
+    public static NodeHighlightmentSource getHighlightmentSource( HttpServletRequest request, String aClassName ) {
+
+        if (request.getSession().getAttribute(aClassName) != null) {
+            return (NodeHighlightmentSource) request.getSession().getAttribute(aClassName);
+        }
 
         Object object = null;
 
@@ -182,12 +186,12 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
      *
      * @param network
      * @param selectedTerms   The collection of selected XRef
-     * @param applicationPath our application path
-     * @return a set of URL pointing on the highlightment source.
+     * @param request
+     * @param applicationPath our application path @return a set of URL pointing on the highlightment source.
      */
-    abstract public List getSourceUrls( Network network,
-                                        Collection<String> selectedTerms,
-                                        String applicationPath );
+    abstract public List getSourceUrls(Network network,
+                                       Collection<String> selectedTerms,
+                                       HttpServletRequest request, String applicationPath);
 
     /**
      * Parse the set of key generate by the source and give back a collection of keys.

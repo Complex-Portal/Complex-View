@@ -28,6 +28,7 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.util.SearchReplace;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -170,12 +171,12 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
      *
      * @param network
      * @param selectedXRefs   The collection of selected XRef
-     * @param applicationPath our application path
-     * @return a set of URL pointing on the highlightment source.
+     * @param request
+     * @param applicationPath our application path @return a set of URL pointing on the highlightment source.
      */
-    abstract public List<SourceBean> getSourceUrls( Network network,
-                                                    Collection<String> selectedXRefs,
-                                                    String applicationPath );
+    abstract public List<SourceBean> getSourceUrls(Network network,
+                                                   Collection<String> selectedXRefs,
+                                                   HttpServletRequest request, String applicationPath);
 
     /**
      * Parse the set of key generate by the source and give back a collection of keys.

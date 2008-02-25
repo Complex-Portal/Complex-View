@@ -33,6 +33,7 @@ import uk.ac.ebi.intact.service.graph.binary.InteractorVertex;
 import uk.ac.ebi.intact.tulip.client.TulipClient;
 import uk.ac.ebi.intact.tulip.client.generated.ProteinCoordinate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.rmi.RemoteException;
 import java.util.*;
 
@@ -93,7 +94,7 @@ public class InteractionNetwork implements Network {
         initNodes();
         initEdges();
 
-        initHighlightMap();
+        //initHighlightMap(request);
 
         setDepthToDefault();
 
@@ -243,17 +244,18 @@ public class InteractionNetwork implements Network {
         }
     }
 
-    public void initHighlightMap() {
+    public void initHighlightMap(HttpServletRequest request) {
         logger.debug( "Init SourceHighlightMap" );
 
+
         // clear existing highlights
-        ConfidenceHighlightmentSource.clear();
-        PublicationHighlightmentSource.clear();
-        GoHighlightmentSource.clear();
-        InterproHighlightmentSource.clear();
-        MoleculeTypeHighlightmentSource.clear();
-        RoleHighlightmentSource.clear();
-        SpeciesHighlightmentSource.clear();
+        ConfidenceHighlightmentSource.getInstance(request).prepare();
+        PublicationHighlightmentSource.getInstance(request).prepare();
+        GoHighlightmentSource.getInstance(request).prepare();
+        InterproHighlightmentSource.getInstance(request).prepare();
+        MoleculeTypeHighlightmentSource.getInstance(request).prepare();
+        RoleHighlightmentSource.getInstance(request).prepare();
+        SpeciesHighlightmentSource.getInstance(request).prepare();
 
         CrossReferenceFactory factory = CrossReferenceFactory.getInstance();
         for ( Node node : getNodes() ) {
@@ -262,14 +264,14 @@ public class InteractionNetwork implements Network {
                 for ( CrossReference property : vertex.getProperties() ) {
                     if ( property.getDatabase().equalsIgnoreCase( INTERPRO_KEY ) ) {
                         String key = property.getIdentifier();
-                        InterproHighlightmentSource.addToSourceMap( key, property );
-                        InterproHighlightmentSource.addToNodeMap( key, node );
+                        InterproHighlightmentSource.getInstance(request).addToSourceMap( key, property );
+                        InterproHighlightmentSource.getInstance(request).addToNodeMap( key, node );
                     }
 
                     if ( property.getDatabase().equalsIgnoreCase( GO_KEY ) ) {
                         String key = property.getIdentifier();
-                        GoHighlightmentSource.addToSourceMap( key, property );
-                        GoHighlightmentSource.addToNodeMap( key, node );
+                        GoHighlightmentSource.getInstance(request).addToSourceMap( key, property );
+                        GoHighlightmentSource.getInstance(request).addToNodeMap( key, node );
                     }
                 }
             }
@@ -283,13 +285,13 @@ public class InteractionNetwork implements Network {
                     } else {
                         key += role.getDatabase() + ":" + role.getIdentifier();
                     }
-                    RoleHighlightmentSource.addToSourceMap( key, role );
-                    RoleHighlightmentSource.addToNodeMap( key, node );
+                    RoleHighlightmentSource.getInstance(request).addToSourceMap( key, role );
+                    RoleHighlightmentSource.getInstance(request).addToNodeMap( key, node );
                 }
                 if ( vertex.isBaitWithExperimental() && vertex.isPreyWithExperimental() ) {
                     String key = "E|" + BOTH;
-                    RoleHighlightmentSource.addToSourceMap( key, factory.build( "MI", BOTH, "bait & prey" ) );
-                    RoleHighlightmentSource.addToNodeMap( key, node );
+                    RoleHighlightmentSource.getInstance(request).addToSourceMap( key, factory.build( "MI", BOTH, "bait & prey" ) );
+                    RoleHighlightmentSource.getInstance(request).addToNodeMap( key, node );
                 }
             }
 
@@ -302,13 +304,13 @@ public class InteractionNetwork implements Network {
                     } else {
                         key += role.getDatabase() + ":" + role.getIdentifier();
                     }
-                    RoleHighlightmentSource.addToSourceMap( key, role );
-                    RoleHighlightmentSource.addToNodeMap( key, node );
+                    RoleHighlightmentSource.getInstance(request).addToSourceMap( key, role );
+                    RoleHighlightmentSource.getInstance(request).addToNodeMap( key, node );
                 }
                 if ( vertex.isBaitWithBiological() && vertex.isPreyWithBiological() ) {
                     String key = "B|" + BOTH;
-                    RoleHighlightmentSource.addToSourceMap( key, factory.build( "MI", BOTH, "bait & prey" ) );
-                    RoleHighlightmentSource.addToNodeMap( key, node );
+                    RoleHighlightmentSource.getInstance(request).addToSourceMap( key, factory.build( "MI", BOTH, "bait & prey" ) );
+                    RoleHighlightmentSource.getInstance(request).addToNodeMap( key, node );
                 }
             }
 
@@ -320,8 +322,8 @@ public class InteractionNetwork implements Network {
                     } else {
                         key = interactorType.getDatabase() + ":" + interactorType.getIdentifier();
                     }
-                    MoleculeTypeHighlightmentSource.addToSourceMap( key, interactorType );
-                    MoleculeTypeHighlightmentSource.addToNodeMap( key, node );
+                    MoleculeTypeHighlightmentSource.getInstance(request).addToSourceMap( key, interactorType );
+                    MoleculeTypeHighlightmentSource.getInstance(request).addToNodeMap( key, node );
                 }
             }
             Organism organism = vertex.getOrganism();
@@ -329,8 +331,8 @@ public class InteractionNetwork implements Network {
                 String key = organism.getTaxid();
                 Collection<CrossReference> organsimIDs = organism.getIdentifiers();
                 if ( organsimIDs != null && !organsimIDs.isEmpty() ) {
-                    SpeciesHighlightmentSource.addToSourceMap( key, organism );
-                    SpeciesHighlightmentSource.addToNodeMap( key, node );
+                    SpeciesHighlightmentSource.getInstance(request).addToSourceMap( key, organism );
+                    SpeciesHighlightmentSource.getInstance(request).addToNodeMap( key, node );
                 } else {
                     logger.error( "Could not found organism identifiers for " + organism + " of interactor " + vertex.getId() );
                 }
@@ -341,8 +343,8 @@ public class InteractionNetwork implements Network {
             BinaryInteractionEdge edge = ( BinaryInteractionEdge ) e;
             for ( Confidence confidence : edge.getConfidenceValues() ) {
                 String value = confidence.getValue();
-                ConfidenceHighlightmentSource.addToSourceMap( value, confidence );
-                ConfidenceHighlightmentSource.addToEdgeMap( value, edge );
+                ConfidenceHighlightmentSource.getInstance(request).addToSourceMap( value, confidence );
+                ConfidenceHighlightmentSource.getInstance(request).addToEdgeMap( value, edge );
 //                addToEdgeHighlightMap( CONFIDENCE, value, edge );
             }
 
@@ -356,7 +358,7 @@ public class InteractionNetwork implements Network {
                     if ( authors != null && !authors.isEmpty() ) {
                         if ( i < authors.size() ) {
                             if ( authors.get( i ) != null ) {
-                                PublicationHighlightmentSource.addToSourceMap( pmid, authors.get( i ) );
+                                PublicationHighlightmentSource.getInstance(request).addToSourceMap( pmid, authors.get( i ) );
                                 i++;
                             } else {
                                 logger.error( "No Author available for PUBMED " + pmid );
@@ -368,7 +370,7 @@ public class InteractionNetwork implements Network {
                                           " for Interaction " + edge.getBinaryInteraction().getInteractionAcs().get( 1 ) );
                         }
                     }
-                    PublicationHighlightmentSource.addToEdgeMap( pmid, edge );
+                    PublicationHighlightmentSource.getInstance(request).addToEdgeMap( pmid, edge );
                 }
             }
         }

@@ -25,6 +25,7 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Node;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -57,19 +58,10 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String MIRefPath;
 
-    private static ThreadLocal<Map<String, CrossReference>> roleRefMap = new ThreadLocal<Map<String, CrossReference>>() {
-        @Override
-        protected Map<String, CrossReference> initialValue() {
-            return new HashMap<String,CrossReference>();
-        }
-    };
+    private HashMap<String, CrossReference> roleRefMap;
 
-    private static ThreadLocal<Map<String, Set<String>>> roleNodeMap = new ThreadLocal<Map<String, Set<String>>>(){
-        @Override
-        protected Map<String, Set<String>> initialValue() {
-            return new HashMap<String,Set<String>>();
-        }
-    };
+    private Map<String, Set<String>> roleNodeMap;
+
 
     static {
 
@@ -118,46 +110,44 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
         }
     }
 
-    public static void addToSourceMap( String termId, CrossReference termObject ) {
-        if ( roleRefMap.get() == null ) {
-            roleRefMap.set(new HashMap<String, CrossReference>());
-        }
-        roleRefMap.get().put( termId,  termObject );
+    public RoleHighlightmentSource() {
+         roleRefMap = new HashMap<String, CrossReference>();
+        roleNodeMap = new Hashtable<String, Set<String>>();
     }
 
-    public static void addToNodeMap( String termId, Node node ) {
-        if ( roleNodeMap.get() == null ) {
-            roleNodeMap.set(new Hashtable<String, Set<String>>());
-        }
+    public void addToSourceMap( String termId, CrossReference termObject ) {
+        roleRefMap.put( termId,  termObject );
+    }
 
+    public void addToNodeMap( String termId, Node node ) {
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceNodes = roleNodeMap.get().get( termId );
+        Set<String> sourceNodes = roleNodeMap.get( termId );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceNodes == null ) {
             // a hashset is used to avoid duplicate entries
             sourceNodes = new HashSet<String>();
-            roleNodeMap.get().put( termId, sourceNodes );
+            roleNodeMap.put( termId, sourceNodes );
         }
         sourceNodes.add( node.getId() );
     }
 
     public Map<String, Set<String>> getNodeMap() {
-        return roleNodeMap.get();
+        return roleNodeMap;
     }
 
-    public List getSourceUrls( Network network,
-                               Collection<String> selectedSourceTerms,
-                               String applicationPath ) {
+    public List getSourceUrls(Network network,
+                              Collection<String> selectedSourceTerms,
+                              HttpServletRequest request, String applicationPath) {
 
-        if ( roleNodeMap.get() == null || roleNodeMap.get().isEmpty() ) {
-            network.initHighlightMap();
+        if ( roleNodeMap == null || roleNodeMap.isEmpty() ) {
+            network.initHighlightMap(request);
         }
 
         List<SourceBean> urls = new ArrayList<SourceBean>();
 
-        if ( roleNodeMap != null && !roleNodeMap.get().isEmpty() ) {
-            Set<String> keySet = roleNodeMap.get().keySet();
+        if ( roleNodeMap != null && !roleNodeMap.isEmpty() ) {
+            Set<String> keySet = roleNodeMap.keySet();
 
             if ( keySet != null && !keySet.isEmpty() ) {
                 Set<String> cloneKeySet = new HashSet<String>();
@@ -175,7 +165,7 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
                         termDescription = BIOLOGICAL_ROLE + " Role: ";
                     }
                     if ( roleRefMap != null ) {
-                        CrossReference xref = roleRefMap.get().get( termId );
+                        CrossReference xref = roleRefMap.get( termId );
 
                         if ( xref != null && xref.hasText() ) {
                             if ( termDescription == null ) {
@@ -187,7 +177,7 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
                         }
                     }
 
-                    int termCount = roleNodeMap.get().get(termId ).size();
+                    int termCount = roleNodeMap.get(termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() )
@@ -243,8 +233,23 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
         return urls;
     }
 
-    public static void clear() {
-        roleNodeMap.get().clear();
-        roleRefMap.get().clear();
+    public void prepare() {
+        roleNodeMap.clear();
+        roleRefMap.clear();
+    }
+
+    public static RoleHighlightmentSource getInstance(HttpServletRequest request) {
+        String attName = RoleHighlightmentSource.class.getName();
+
+        final RoleHighlightmentSource source;
+
+        if (request.getSession().getAttribute(attName) != null) {
+            source = (RoleHighlightmentSource) request.getSession().getAttribute(attName);
+        } else {
+            source = new RoleHighlightmentSource();
+            request.getSession().setAttribute(attName, source);
+        }
+
+        return source;
     }
 }

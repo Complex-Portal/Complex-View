@@ -25,6 +25,7 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Node;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -53,19 +54,9 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
 
     private static final String MIRefPath;
 
-    private static ThreadLocal<Map<String, CrossReference>> moleculeTypeRefMap = new ThreadLocal<Map<String, CrossReference>>() {
-        @Override
-        protected Map<String, CrossReference> initialValue() {
-            return new HashMap<String,CrossReference>();
-        }
-    };
+    private HashMap<String, CrossReference> moleculeTypeRefMap;
 
-    private static ThreadLocal<Map<String, Set<String>>> moleculeTypeNodeMap = new ThreadLocal<Map<String, Set<String>>>(){
-        @Override
-        protected Map<String, Set<String>> initialValue() {
-            return new HashMap<String,Set<String>>();
-        }
-    };
+    private Map<String, Set<String>> moleculeTypeNodeMap;
 
     static {
 
@@ -114,47 +105,46 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
         }
     }
 
-    public static void addToSourceMap( String termId, CrossReference termObject ) {
-        if ( moleculeTypeRefMap.get() == null ) {
-            moleculeTypeRefMap.set(new HashMap<String, CrossReference>());
-        }
-        moleculeTypeRefMap.get().put( termId, termObject );
+    public MoleculeTypeHighlightmentSource() {
+        moleculeTypeRefMap = new HashMap<String, CrossReference>();
+        moleculeTypeNodeMap = new Hashtable<String, Set<String>>();
     }
 
-    public static void addToNodeMap( String termId, Node node ) {
-        if ( moleculeTypeNodeMap.get() == null ) {
-            moleculeTypeNodeMap.set(new Hashtable<String, Set<String>>());
-        }
+    public void addToSourceMap( String termId, CrossReference termObject ) {
+        moleculeTypeRefMap.put( termId, termObject );
+    }
+
+    public void addToNodeMap( String termId, Node node ) {
 
         // the nodes realted to the given sourceID are fetched
-        Set<String> sourceNodes = moleculeTypeNodeMap.get().get( termId );
+        Set<String> sourceNodes = moleculeTypeNodeMap.get( termId );
 
         // if no set exists a new one is created and put into the sourceMap
         if ( sourceNodes == null ) {
             // a hashset is used to avoid duplicate entries
             sourceNodes = new HashSet<String>();
-            moleculeTypeNodeMap.get().put( termId, sourceNodes );
+            moleculeTypeNodeMap.put( termId, sourceNodes );
         }
         sourceNodes.add( node.getId() );
     }
 
     public Map<String, Set<String>> getNodeMap() {
-        return moleculeTypeNodeMap.get();
+        return moleculeTypeNodeMap;
     }
 
-    public List<SourceBean> getSourceUrls( Network network,
-                                           Collection<String> selectedSourceTerms,
-                                           String applicationPath ) {
+    public List<SourceBean> getSourceUrls(Network network,
+                                          Collection<String> selectedSourceTerms,
+                                          HttpServletRequest request, String applicationPath) {
 
-        if ( moleculeTypeNodeMap.get() == null || moleculeTypeNodeMap.get().isEmpty() ) {
-            network.initHighlightMap();
+        if ( moleculeTypeNodeMap == null || moleculeTypeNodeMap.isEmpty() ) {
+            network.initHighlightMap(request);
         }
 
         List<SourceBean> urls = new ArrayList<SourceBean>();
 
-        if ( moleculeTypeNodeMap.get() != null && !moleculeTypeNodeMap.get().isEmpty() ) {
+        if ( moleculeTypeNodeMap != null && !moleculeTypeNodeMap.isEmpty() ) {
 
-            Set<String> keySet = moleculeTypeNodeMap.get().keySet();
+            Set<String> keySet = moleculeTypeNodeMap.keySet();
             if ( keySet != null && !keySet.isEmpty() ) {
 
                 Set<String> cloneKeySet = new HashSet<String>();
@@ -168,7 +158,7 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
 
 
                     if (moleculeTypeRefMap != null){
-                        CrossReference xref = moleculeTypeRefMap.get().get( termInfo );
+                        CrossReference xref = moleculeTypeRefMap.get( termInfo );
                         if ( xref != null ) {
                             termId = xref.getDatabase() + ":" + xref.getIdentifier();
 
@@ -179,7 +169,7 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
                     }
 
 
-                    int termCount = moleculeTypeNodeMap.get().get( termId ).size();
+                    int termCount = moleculeTypeNodeMap.get( termId ).size();
 
                     // to summarize
                     if ( logger.isDebugEnabled() )
@@ -230,8 +220,23 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
         return urls;
     }
 
-    public static void clear() {
-        moleculeTypeNodeMap.get().clear();
-        moleculeTypeRefMap.get().clear();
+    public void prepare() {
+        moleculeTypeNodeMap.clear();
+        moleculeTypeRefMap.clear();
+    }
+
+    public static MoleculeTypeHighlightmentSource getInstance(HttpServletRequest request) {
+        String attName = MoleculeTypeHighlightmentSource.class.getName();
+
+        final MoleculeTypeHighlightmentSource source;
+
+        if (request.getSession().getAttribute(attName) != null) {
+            source = (MoleculeTypeHighlightmentSource) request.getSession().getAttribute(attName);
+        } else {
+            source = new MoleculeTypeHighlightmentSource();
+            request.getSession().setAttribute(attName, source);
+        }
+
+        return source;
     }
 }

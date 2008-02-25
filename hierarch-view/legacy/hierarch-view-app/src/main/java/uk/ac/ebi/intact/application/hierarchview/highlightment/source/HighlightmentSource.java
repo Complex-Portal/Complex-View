@@ -18,8 +18,11 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
+import java.io.Serializable;
 
 /**
  * Interface which describes general functionality which used by several classes.
@@ -28,7 +31,7 @@ import java.util.List;
  * @version $Id$
  * @since 1.6.0-Snapshot
  */
-public interface HighlightmentSource {
+public interface HighlightmentSource extends Serializable {
 
-    List<SourceBean> getSourceUrls( Network network, Collection<String> selectedXRefs, String applicationPath );
+    List<SourceBean> getSourceUrls(Network network, Collection<String> selectedXRefs, HttpServletRequest request, String applicationPath);
 }
