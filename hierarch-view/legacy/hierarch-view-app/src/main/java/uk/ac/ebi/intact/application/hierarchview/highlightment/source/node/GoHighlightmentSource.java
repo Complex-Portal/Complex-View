@@ -10,7 +10,6 @@ import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.SourceBean;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Node;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -117,9 +116,9 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
                                           Collection<String> selectedSourceTerms,
                                           HttpServletRequest request, String applicationPath) {
 
-        if ( goNodeMap == null || goNodeMap.isEmpty() ) {
-            network.initHighlightMap(request);
-        }
+//        if ( goNodeMap == null || goNodeMap.isEmpty() ) {
+//            network.initHighlightMap(request);
+//        }
 
         List<SourceBean> urls = new ArrayList<SourceBean>();
 
@@ -198,16 +197,16 @@ public class GoHighlightmentSource extends NodeHighlightmentSource {
         goRefMap.clear();
     }    
 
-    public static GoHighlightmentSource getInstance(ServletRequest request) {
+    public static GoHighlightmentSource getInstance(HttpServletRequest request) {
         String attName = GoHighlightmentSource.class.getName();
 
         final GoHighlightmentSource source;
 
-        if (request.getAttribute(attName) != null) {
-            source = (GoHighlightmentSource) request.getAttribute(attName);
+        if (request.getSession().getAttribute(attName) != null) {
+            source = (GoHighlightmentSource) request.getSession().getAttribute(attName);
         } else {
             source = new GoHighlightmentSource();
-            request.setAttribute(attName, source);
+            request.getSession().setAttribute(attName, source);
         }
 
         return source;

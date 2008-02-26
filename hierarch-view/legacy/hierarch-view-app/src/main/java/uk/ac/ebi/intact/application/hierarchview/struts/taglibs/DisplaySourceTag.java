@@ -98,6 +98,8 @@ public class DisplaySourceTag extends TagSupport {
 
                 String queryString = user.getQueryString();
                 if ( null != queryString ) {
+                    
+                    interactionNetwork.initHighlightMap((HttpServletRequest)request);
 
                     List<SourceBean> sourceUrls = new ArrayList<SourceBean>();
 
@@ -155,7 +157,7 @@ public class DisplaySourceTag extends TagSupport {
             if ( null != properties ) {
                 method_class = properties.getProperty( "highlightment.source.edge." + method_label + ".class" );
             }
-            source = EdgeHighlightmentSource.getHighlightmentSource( method_class );
+            source = EdgeHighlightmentSource.getHighlightmentSource( (HttpServletRequest) pageContext.getRequest(), method_class );
         }
         if ( method_class == null ) {
             logger.error( "Error to get MethodClass " + method_class + " from Properties " + properties );

@@ -84,8 +84,8 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
         }
     }
 
-    public static EdgeHighlightmentSource getHighlightmentSourceBySourceKey( String sourceKey ) {
-        return getHighlightmentSource( edgeHighlightmentSources.get( sourceKey ) );
+    public static EdgeHighlightmentSource getHighlightmentSourceBySourceKey( HttpServletRequest request, String sourceKey ) {
+        return getHighlightmentSource( request, edgeHighlightmentSources.get( sourceKey ) );
     }
 
     /**
@@ -101,7 +101,11 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
      * @param aClassName the name of the implementation class you want to get
      * @return an NodeHighlightmentSource object, or null if an error occurs.
      */
-    public static EdgeHighlightmentSource getHighlightmentSource( String aClassName ) {
+    public static EdgeHighlightmentSource getHighlightmentSource( HttpServletRequest request, String aClassName ) {
+
+        if (request.getSession().getAttribute(aClassName) != null) {
+            return (EdgeHighlightmentSource) request.getSession().getAttribute(aClassName);
+        }
 
         Object object = null;
 
@@ -123,6 +127,8 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
             logger.error( "Unable to instanciate object:" + aClassName );
             // nothing to do, object is already setted to null
         }
+
+        request.getSession().setAttribute(aClassName, object);
 
         return ( EdgeHighlightmentSource ) object;
 

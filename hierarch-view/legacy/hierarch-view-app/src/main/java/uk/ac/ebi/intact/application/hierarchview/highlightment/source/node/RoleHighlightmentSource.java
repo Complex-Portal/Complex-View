@@ -140,9 +140,9 @@ public class RoleHighlightmentSource extends NodeHighlightmentSource {
                               Collection<String> selectedSourceTerms,
                               HttpServletRequest request, String applicationPath) {
 
-        if ( roleNodeMap == null || roleNodeMap.isEmpty() ) {
-            network.initHighlightMap(request);
-        }
+//        if ( roleNodeMap == null || roleNodeMap.isEmpty() ) {
+//            network.initHighlightMap(request);
+//        }
 
         List<SourceBean> urls = new ArrayList<SourceBean>();
 

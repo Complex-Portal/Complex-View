@@ -136,9 +136,9 @@ public class SpeciesHighlightmentSource extends NodeHighlightmentSource {
         List<SourceBean> urls = new ArrayList();
 
         // filter to keep only Species terms
-        if ( specieNodeMap == null || specieNodeMap.isEmpty() ) {
-            network.initHighlightMap(request);
-        }
+//        if ( specieNodeMap == null || specieNodeMap.isEmpty() ) {
+//            network.initHighlightMap(request);
+//        }
 
         if ( specieNodeMap != null && !specieNodeMap.isEmpty() ) {
             Set<String> keySet = specieNodeMap.keySet();

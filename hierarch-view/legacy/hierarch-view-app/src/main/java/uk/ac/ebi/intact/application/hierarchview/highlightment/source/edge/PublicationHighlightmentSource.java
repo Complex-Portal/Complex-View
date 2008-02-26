@@ -26,7 +26,6 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Edge;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletRequest;
 import java.util.*;
 
 /**
@@ -133,9 +132,9 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
                                           Collection<String> selectedSourceTerms,
                                           HttpServletRequest request, String applicationPath ) {
 
-        if ( publicationEdgeMap == null || publicationEdgeMap.isEmpty() ) {
-            network.initHighlightMap(request);
-        }
+//        if ( publicationEdgeMap == null || publicationEdgeMap.isEmpty() ) {
+//            network.initHighlightMap(request);
+//        }
 
         List<SourceBean> urls = new ArrayList();
 
@@ -209,16 +208,16 @@ public class PublicationHighlightmentSource extends EdgeHighlightmentSource {
         publicationRefMap.clear();
     }
 
-    public static PublicationHighlightmentSource getInstance(ServletRequest request) {
+    public static PublicationHighlightmentSource getInstance(HttpServletRequest request) {
         String attName = PublicationHighlightmentSource.class.getName();
 
         final PublicationHighlightmentSource source;
 
-        if (request.getAttribute(attName) != null) {
-            source = (PublicationHighlightmentSource) request.getAttribute(attName);
+        if (request.getSession().getAttribute(attName) != null) {
+            source = (PublicationHighlightmentSource) request.getSession().getAttribute(attName);
         } else {
             source = new PublicationHighlightmentSource();
-            request.setAttribute(attName, source);
+            request.getSession().setAttribute(attName, source);
         }
 
         return source;

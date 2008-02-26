@@ -118,9 +118,9 @@ public class InterproHighlightmentSource extends NodeHighlightmentSource {
                                           Collection<String> selectedSourceTerms,
                                           HttpServletRequest request, String applicationPath) {
 
-        if ( interproNodeMap == null || interproNodeMap.isEmpty() ) {
-            network.initHighlightMap(request);
-        }
+//        if ( interproNodeMap == null || interproNodeMap.isEmpty() ) {
+//            network.initHighlightMap(request);
+//        }
 
         List<SourceBean> urls = new ArrayList();
 

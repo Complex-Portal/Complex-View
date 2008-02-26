@@ -136,9 +136,9 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
                                           Collection<String> selectedSourceTerms,
                                           HttpServletRequest request, String applicationPath) {
 
-        if ( moleculeTypeNodeMap == null || moleculeTypeNodeMap.isEmpty() ) {
-            network.initHighlightMap(request);
-        }
+//        if ( moleculeTypeNodeMap == null || moleculeTypeNodeMap.isEmpty() ) {
+//            network.initHighlightMap(request);
+//        }
 
         List<SourceBean> urls = new ArrayList<SourceBean>();
 

@@ -73,7 +73,7 @@ public class DisplayInteractionNetworkTag extends TagSupport {
                     HighlightProteins.perform( nodeHighlightmentSource, behaviour, session, in );
                 }
                 if ( HVNetworkBuilder.EDGE_SOURCES.contains( methodLabel ) ) {
-                    EdgeHighlightmentSource edgeHighlightmentSource = EdgeHighlightmentSource.getHighlightmentSourceBySourceKey( methodLabel );
+                    EdgeHighlightmentSource edgeHighlightmentSource = EdgeHighlightmentSource.getHighlightmentSourceBySourceKey( (HttpServletRequest) pageContext.getRequest(),methodLabel );
                     HighlightInteractions.perform( edgeHighlightmentSource, behaviour, session, in );
                 }
             }

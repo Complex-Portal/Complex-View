@@ -114,6 +114,8 @@ public abstract class NodeHighlightmentSource implements HighlightmentSource {
             // nothing to do, object is already setted to null
         }
 
+        request.getSession().setAttribute(aClassName, object);
+
         return ( NodeHighlightmentSource ) object;
 
     } // NodeHighlightmentSource

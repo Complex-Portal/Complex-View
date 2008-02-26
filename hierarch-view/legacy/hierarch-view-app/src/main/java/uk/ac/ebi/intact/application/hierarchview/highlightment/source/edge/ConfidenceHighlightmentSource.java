@@ -26,7 +26,6 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.service.graph.Edge;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletRequest;
 import java.util.*;
 
 /**
@@ -120,9 +119,9 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
                                           HttpServletRequest request, String applicationPath) {
 
         List<SourceBean> urls = new ArrayList();
-        if ( confidenceEdgeMap == null || confidenceEdgeMap.isEmpty() ) {
-            network.initHighlightMap(request);
-        }
+//        if ( confidenceEdgeMap == null || confidenceEdgeMap.isEmpty() ) {
+//            network.initHighlightMap(request);
+//        }
 
         if ( confidenceEdgeMap != null && !confidenceEdgeMap.isEmpty() ) {
 
@@ -205,16 +204,16 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
         confidenceRefMap.clear();
     }
 
-    public static ConfidenceHighlightmentSource getInstance(ServletRequest request) {
+    public static ConfidenceHighlightmentSource getInstance(HttpServletRequest request) {
         String attName = ConfidenceHighlightmentSource.class.getName();
 
         final ConfidenceHighlightmentSource source;
 
-        if (request.getAttribute(attName) != null) {
-            source = (ConfidenceHighlightmentSource) request.getAttribute(attName);
+        if (request.getSession().getAttribute(attName) != null) {
+            source = (ConfidenceHighlightmentSource) request.getSession().getAttribute(attName);
         } else {
             source = new ConfidenceHighlightmentSource();
-            request.setAttribute(attName, source);
+            request.getSession().setAttribute(attName, source);
         }
 
         return source;
