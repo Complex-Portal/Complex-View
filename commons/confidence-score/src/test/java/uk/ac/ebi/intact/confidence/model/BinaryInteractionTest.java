@@ -15,8 +15,13 @@
  */
 package uk.ac.ebi.intact.confidence.model;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Test class for BinaryInteraction.
@@ -45,4 +50,23 @@ public class BinaryInteractionTest {
         BinaryInteraction bi4 = new BinaryInteraction(id1, id3, Confidence.UNKNOWN);
         Assert.assertFalse(bi1.equals( bi4 ));
     }
+
+    @Test
+    public void lsitToSet() throws Exception {
+        List<BinaryInteraction> bis = new ArrayList<BinaryInteraction>();
+
+        Identifier id1 = new UniprotIdentifierImpl("P12345");
+        Identifier id2 = new UniprotIdentifierImpl("P12346");
+        BinaryInteraction bi1 = new BinaryInteraction(id1, id2, Confidence.UNKNOWN);
+        BinaryInteraction bi2 = new BinaryInteraction(id2, id1, Confidence.UNKNOWN);
+
+        bis.add( bi1 );
+        bis.add( bi2 );
+        bis.add(bi1);
+        Assert.assertEquals( 3, bis.size() );
+
+        Set<BinaryInteraction> bisSet = new HashSet<BinaryInteraction>(bis);
+        Assert.assertEquals( 1, bisSet.size() );
+
+    }    
 }

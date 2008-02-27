@@ -16,11 +16,13 @@ import uk.ac.ebi.intact.confidence.model.Report;
 import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
 import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
 import uk.ac.ebi.intact.confidence.util.DataMethods;
+import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.core.util.SchemaUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 
 import java.io.*;
 import java.util.HashSet;
@@ -53,7 +55,6 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	@Before
 	public void setUp() throws Exception {
         SchemaUtils.createSchema();
-        //acs = new HashSet<String>( Arrays.asList( "EBI-987097", "EBI-446104", "EBI-79835", "EBI-297231", "EBI-1034130" ) );
         Protein p1 = getMockBuilder().createProtein( "P12345", "prot1" );
         Protein p2 = getMockBuilder().createProtein("P12346", "prot2");
         Protein p3 = getMockBuilder().createProtein( "P12347", "prot3" );
@@ -66,6 +67,9 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
         Interaction interaction3 = getMockBuilder().createInteraction( "interaction3",p3, p4, expr);
         Interaction interaction4 = getMockBuilder().createInteraction( "interaction4",p4, p5, expr);
         Interaction interaction5 = getMockBuilder().createInteraction( "interaction5",p5, p6, expr);
+        CvInteractionType cvInteractionType = getMockBuilder().createCvObject(CvInteractionType.class,
+                CvInteractionType.PHYSICAL_INTERACTION_MI_REF, CvInteractionType.PHYSICAL_INTERACTION );        
+        interaction5.setCvInteractionType( cvInteractionType);
 
         CvDatabase goDb = getMockBuilder().createCvObject( CvDatabase.class, CvDatabase.GO_MI_REF, CvDatabase.GO);
         CvDatabase ipDb = getMockBuilder().createCvObject(CvDatabase.class, CvDatabase.INTERPRO_MI_REF, CvDatabase.INTERPRO);
@@ -104,6 +108,80 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
         Assert.assertEquals(2, intS.getComponents().size());
     }
 
+    @Test
+    @Ignore
+    public void readInVitro() throws Exception {
+        //TODO: make this work without the file  => add the example to mock
+        IntactContext.initStandaloneContext(new File(IntactDbRetrieverTest.class.getResource( "/hibernate.iweb2.cfg.xml" ).getFile()));
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        intactdb = new IntactDbRetriever(testDir, new SpokeExpansion(),daoFactory);
+        InteractionSimplified intS = intactdb.read( new IntActIdentifierImpl("EBI-922074"));//("EBI-928154") );   // in vitro experiment + participants
+        Assert.assertNotNull( intS );
+        Assert.assertEquals(3, intS.getComponents().size());
+    }
+
+    @Test
+    @Ignore
+    public void readDirectInteractionDisulfideInts() throws Exception {
+        //TODO: make this work without the file  => add the example to mock
+        IntactContext.initStandaloneContext(new File(IntactDbRetrieverTest.class.getResource( "/hibernate.iweb2.cfg.xml" ).getFile()));
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        intactdb = new IntactDbRetriever(testDir, new SpokeExpansion(),daoFactory);
+        InteractionSimplified intS = intactdb.read( new IntActIdentifierImpl("EBI-1534596"));//("EBI-862951"));       //disulfide bond
+        //("EBI-1534596"));  // direct interaction
+        Assert.assertNotNull( intS );
+        Assert.assertEquals(2, intS.getComponents().size());
+    }
+
+    @Test
+    @Ignore
+    public void readCrossLinked() throws Exception {
+        //TODO: make this work without the file  => add the example to mock
+        IntactContext.initStandaloneContext(new File(IntactDbRetrieverTest.class.getResource( "/hibernate.iweb2.cfg.xml" ).getFile()));
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        intactdb = new IntactDbRetriever(testDir, new SpokeExpansion(),daoFactory);
+        InteractionSimplified intS = intactdb.read( new IntActIdentifierImpl("EBI-1058299"));       
+        Assert.assertNotNull( intS );
+        Assert.assertEquals(2, intS.getComponents().size());
+    }
+
+
+    @Test
+    @Ignore
+    public void readCase3() throws Exception {
+        //TODO: make this work without the file  => add the example to mock
+        IntactContext.initStandaloneContext(new File(IntactDbRetrieverTest.class.getResource( "/hibernate.iweb2.cfg.xml" ).getFile()));
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        intactdb = new IntactDbRetriever(testDir, new SpokeExpansion(),daoFactory);
+        InteractionSimplified intS = intactdb.read( new IntActIdentifierImpl("EBI-1332797") );    // author conf: 0.77
+        Assert.assertNotNull( intS );
+        Assert.assertEquals(2, intS.getComponents().size());
+    }
+
+    @Test
+    @Ignore
+    public void readCase1() throws Exception {
+        //TODO: make this work without the file  => add the example to mock
+        IntactContext.initStandaloneContext(new File(IntactDbRetrieverTest.class.getResource( "/hibernate.iweb2.cfg.xml" ).getFile()));
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        intactdb = new IntactDbRetriever(testDir, new SpokeExpansion(),daoFactory);
+        InteractionSimplified intS = intactdb.read( new IntActIdentifierImpl("EBI-1203303") ); // author conf: +++, strong signal
+        Assert.assertNotNull( intS );
+        Assert.assertEquals(2, intS.getComponents().size());
+    }
+
+    @Test
+    @Ignore
+    public void readCase2() throws Exception {
+        //TODO: make this work without the file  => add the example to mock
+        IntactContext.initStandaloneContext(new File(IntactDbRetrieverTest.class.getResource( "/hibernate.iweb2.cfg.xml" ).getFile()));
+        DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
+        intactdb = new IntactDbRetriever(testDir, new SpokeExpansion(),daoFactory);
+        InteractionSimplified intS = intactdb.read( new IntActIdentifierImpl("EBI-1105626") );  //author conf A
+        Assert.assertNotNull( intS );
+        Assert.assertEquals(2, intS.getComponents().size());
+    }
+
     /**
 	 * 
 	 */
@@ -118,7 +196,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 
 	@Test
 	public final void testReadConfidenceSets() throws DataRetrieverException {
-        File file = new File(testDir.getPath(), "medconf_test.txt");
+        File file = new File(testDir.getPath(), "medconf_set.txt");
         if (file.exists()){
             file.delete();
         }
@@ -127,17 +205,20 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 			FileWriter fw = new FileWriter(file);
 			long start = System.currentTimeMillis();
 			intactdb.setDbNrForTest(true);
-			intactdb.retrieveMediumConfidenceSet(fw);
+			intactdb.retrieveMediumConfidenceSet(testDir);
 			fw.close();
 			long end = System.currentTimeMillis();
 			long time = end - start;
 			System.out.println("time for intact retrieve in milis: " + time);
 
             int nrLines = checkOutput(file);
-            Assert.assertEquals( acs.size(), nrLines );
+            Assert.assertEquals(1, nrLines );
+
+            nrLines = checkOutput(new File(testDir.getPath(), "highconf_set.txt"));
+            Assert.assertEquals(4, nrLines );
 
             FileWriter fw2 = new FileWriter(new File(testDir.getPath(), "time.txt"));
-			fw2.write("time in milis: " + time);
+			fw2.write("time for " + acs.size() + " interactions in milis: " + time);
 			fw2.close();
 		} catch (FileNotFoundException e1) {
 			throw new DataRetrieverException( e1);
@@ -148,7 +229,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 		DataMethods dm = new DataMethods();
 		List<ProteinPair> interactionsMC = dm.readImportProteinPairs(file);
 		try {
-			dm.export(interactionsMC, new FileWriter(new File(testDir.getPath(), "mc_test.txt")));
+			dm.export(interactionsMC, new FileWriter(new File(testDir.getPath(), "medconf_test.txt")));
 		} catch (IOException e) {
 			throw new DataRetrieverException( e);
 		}
@@ -169,6 +250,9 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
         checkFile(mcFile);
     }
 
+
+    //////////////////////
+    // Private Method(s).
     private void checkFile( File file ) throws Exception{
        int nrLines = checkOutput(file);
         File goFile = new File( intactdb.fileName( file ) + "_go.txt" );

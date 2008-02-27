@@ -78,4 +78,12 @@ public class UniprotIdentifierImpl implements Identifier {
 	public int hashCode() {
 		return this.uniprotAc.hashCode();
 	}
+
+    public int compareTo( Object o ) {
+        if (o instanceof UniprotIdentifierImpl) {
+			UniprotIdentifierImpl ac = (UniprotIdentifierImpl) o;
+            return this.getId().compareTo( ac.getId() );
+		}
+        throw new IllegalArgumentException( "Bouth objects must be an instance of the same class! " + o.getClass() );          
+    }
 }

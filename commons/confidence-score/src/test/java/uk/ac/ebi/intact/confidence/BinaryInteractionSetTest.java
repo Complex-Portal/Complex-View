@@ -10,12 +10,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
+import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
+import uk.ac.ebi.intact.confidence.utils.ParserUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -58,40 +63,33 @@ public class BinaryInteractionSetTest {
 	@Test
     @Ignore
     public void Stat() throws IOException{
-		String path ="E:\\iarmean\\backupData\\20.01 - D003\\highconf_set.txt";
-                //"E:\\tmp\\highconf_all.txt";
-        //"H:\\tmp\\ConfidenceModel\\highconf_all.txt";
-        //"E:\\iarmean\\backupData\\05.11\\highconf_all.txt";
-                //"E:\\tmp\\ConfidenceModel\\IntactDbRetriever\\highconf_all.txt";
-        //"E:\\iarmean\\backupData\\highconf_all.txt";
-			//"H:\\tmp\\ConfidenceModel\\highconf_all.txt";
-        // //"E:\\tmp\\ConfidenceModel\\highconf_all.txt";
-		BinaryInteractionSet biS = new BinaryInteractionSet(path);
-			Set<String> prots = biS.getAllProtNames();
-			int nr = biS.getAllProtNames().size();
-			System.out.println("highconf prots : " + nr + " #int: " + biS.size());
-			
-			path =    "E:\\iarmean\\backupData\\20.01 - D003\\medconf_set.txt";
-                    //"H:\\tmp\\ConfidenceModel\\medconf_all.txt";
-                    //"E:\\iarmean\\backupData\\05.11\\medconf_all.txt";
-			BinaryInteractionSet biS2 = new BinaryInteractionSet(path);
-			prots.addAll(biS2.getAllProtNames());
-			nr = biS2.getAllProtNames().size();
-			System.out.println("medconf prots : " + nr + " #int: " + biS2.size());
+		String path ="E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\highconf_set.txt";
+        BinaryInteractionReader biar = new BinaryInteractionReaderImpl();
+        List<BinaryInteraction> bis = biar.read( new File(path) );
+        Set<BinaryInteraction> bisSet = new HashSet<BinaryInteraction>(bis);
+        Set<UniprotAc> prots = ParserUtils.parseProteins( new File(path) );
 
-			path =    "E:\\iarmean\\backupData\\20.01 - D003\\lowconf_set.txt";
-                    //"E:\\tmp\\lowconf_all.txt";
-//                    //"H:\\tmp\\ConfidenceModel\\lowconf_all.txt";
-//                    //"E:\\tmp\\ConfidenceModel\\lowconf_all.txt";
-			BinaryInteractionSet biS3 = new BinaryInteractionSet(path);
-			prots.addAll(biS3.getAllProtNames());
-			nr = biS3.getAllProtNames().size();
-			System.out.println("lowconf prots : " + nr + " #int: " + biS3.size());
-			System.out.println("total unique prots: " + prots.size());
-			
-			
+        System.out.println( "highconf: lines: "+ bis.size() + " unique: " + bisSet.size() + " prots : " + prots.size() );
 
-	}
+        path = "E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\medconf_set.txt";
+        List<BinaryInteraction> bis2 = biar.read(new File(path));
+        Set<BinaryInteraction> bisSet2 = new HashSet<BinaryInteraction>(bis2);
+        Set<UniprotAc> prots2 = ParserUtils.parseProteins( new File(path) );
+
+        prots.addAll( prots2 );
+        System.out.println( "medconf: lines: "+ bis2.size() + " unique: " + bisSet2.size() + " prots : " + prots2.size()  );
+
+        path = "E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\lowconf_set.txt";
+        List<BinaryInteraction> bis3 = biar.read(new File(path));
+        Set<BinaryInteraction> bisSet3 = new HashSet<BinaryInteraction>(bis3);
+        Set<UniprotAc> prots3 = ParserUtils.parseProteins( new File(path) );
+
+        prots.addAll( prots3 );
+        System.out.println( "lowconf: lines: "+ bis3.size() + " unique: " + bisSet3.size() + " prots : " + prots3.size()  );
+        System.out.println( "total unique prots: " + prots.size() );
+
+
+    }
 
     @Test
     @Ignore

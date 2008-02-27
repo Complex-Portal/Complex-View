@@ -5,14 +5,14 @@
  */
 package uk.ac.ebi.intact.confidence.dataRetriever;
 
-import java.io.Writer;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
-import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+
+import java.io.File;
+import java.util.List;
 
 
 /**
@@ -28,7 +28,7 @@ public class WsRetriever implements DataRetrieverStrategy {
 	 * Sets up a logger for that class.
 	 */
 	public static final Log				log	= LogFactory.getLog(WsRetriever.class);	
-	public int retrieveHighConfidenceSet(Writer w) {
+	public int retrieveHighConfidenceSet(File fodler) {
 		// TODO: implement method
         return 0;
     }
@@ -37,7 +37,7 @@ public class WsRetriever implements DataRetrieverStrategy {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void retrieveMediumConfidenceSet(Writer osw) {
+    public void retrieveMediumConfidenceSet(File folder) {
 		// TODO: implement method
 		
 	}
@@ -46,4 +46,7 @@ public class WsRetriever implements DataRetrieverStrategy {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public void retrieveHighAndMediumConfidenceSet( File folder ) throws DataRetrieverException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

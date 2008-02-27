@@ -19,11 +19,14 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactAnnotationRetrieverImpl;
-import uk.ac.ebi.intact.confidence.filter.GOFilter;
+import uk.ac.ebi.intact.confidence.filter.FilterException;
+import uk.ac.ebi.intact.confidence.filter.GOAFilter;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.ConfidenceType;
 import uk.ac.ebi.intact.confidence.util.AttributeGetter;
+import uk.ac.ebi.intact.confidence.util.AttributeGetterException;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterImpl;
 import uk.ac.ebi.intact.confidence.utils.ParserUtils;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
@@ -31,6 +34,7 @@ import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -38,7 +42,7 @@ import java.util.*;
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @since 1.6.0
- * <pre>28 Aug 2007</pre>
+ *        <pre>28 Aug 2007</pre>
  */
 public class PsiMiTabConfidence {
     /**
@@ -53,7 +57,9 @@ public class PsiMiTabConfidence {
     private Set<UniprotAc> againstProteins;
 
     private File goaFilterFile;
+    private GOAFilter goaFilter;
 
+    private DecimalFormat df = new DecimalFormat("0.00");
     private PsimiTabWriter psimiTabWriter;
     private AnnotationRetrieverStrategy annoDb;
 
@@ -80,14 +86,21 @@ public class PsiMiTabConfidence {
         this.workDir = workDir;
         this.blastConfig = config;
         this.classifier = new OpenNLPMaxEntClassifier( hcSetPath, lcSetPath, workDir );
-        this.againstProteins = fetchAgainstProteins(new File(hcSetPath) );
+        this.againstProteins = fetchAgainstProteins( new File( hcSetPath ) );
 
-        this.goaFilterFile =goaFile;
+        this.goaFilterFile = goaFile;
     }
 
     //////////////////////
     // Public Method(s).
-    public void appendConfidence( File inPsiMiFile, boolean hasHeaderLine, File outPsiMiFile, Set<ConfidenceType> type ) throws PsiMiException {
+    public void appendConfidence( File inPsiMiFile, boolean hasHeaderLine, File outPsiMiFile, Set<ConfidenceType> type, boolean fromStratch) throws PsiMiException {
+
+        if (outPsiMiFile.exists()){
+            if (!fromStratch){
+                
+            }
+        }
+
         PsimiTabReader reader = new PsimiTabReader( hasHeaderLine );
         reader.setBinaryInteractionClass( IntActBinaryInteraction.class );
         reader.setColumnHandler( new IntActColumnHandler() );
@@ -100,15 +113,19 @@ public class PsiMiTabConfidence {
 //            Collection<BinaryInteraction> interactions = saveScores( psiMiIterator, type, outPsiMiFile, true );
 
             saveScores( psiMiIterator, type, outPsiMiFile, true );
-           // writeScores( interactions, hasHeaderLine, outPsiMiFile );
+            // writeScores( interactions, hasHeaderLine, outPsiMiFile );
         } catch ( IOException e ) {
-            throw new PsiMiException( e);
+            throw new PsiMiException( e );
         } catch ( ConverterException e ) {
             throw new PsiMiException( e );
+        } catch ( FilterException e ) {
+            throw new PsiMiException( e);
+        } catch ( AttributeGetterException e ) {
+            throw new PsiMiException( e);
         }
     }
 
-     public void writeScores( Collection<BinaryInteraction> interactions, boolean hasHeaderLine, File outPsiMiFile ) {
+    public void writeScores( Collection<BinaryInteraction> interactions, boolean hasHeaderLine, File outPsiMiFile ) throws PsiMiException {
         PsimiTabWriter writer = new PsimiTabWriter();
         writer.setHeaderEnabled( hasHeaderLine );
         writer.setBinaryInteractionClass( IntActBinaryInteraction.class );
@@ -116,40 +133,45 @@ public class PsiMiTabConfidence {
         try {
             writer.write( interactions, outPsiMiFile );
         } catch ( IOException e ) {
-            e.printStackTrace();
+            throw new PsiMiException( e );
         } catch ( ConverterException e ) {
-            e.printStackTrace();
+            throw new PsiMiException( e );
         }
     }
 
     /////////////////////////
     // Protected Method(s).
-    protected void saveScores( Iterator<BinaryInteraction> psiMiIterator, Set<ConfidenceType> type, File outFile, boolean firstLine ) throws IOException {      
+    protected void saveScores( Iterator<BinaryInteraction> psiMiIterator, Set<ConfidenceType> type, File outFile, boolean firstLine ) throws IOException, FilterException, AttributeGetterException {
         while ( psiMiIterator.hasNext() ) {
             BinaryInteraction interaction = psiMiIterator.next();
-            if ( interactionValid( interaction ) ) {
-                List<Attribute> attribs = getAttributes( interaction, type );
-                if ( log.isInfoEnabled() ) {
-                    log.info( "interaction: " + interaction.getInteractorA() + ";" + interaction.getInteractorB() + " attribs: " + attribs );
+            if ( interaction.getConfidenceValues().size() == 0 ) {
+                if ( interactionValid( interaction ) ) {
+                    List<Attribute> attribs = getAttributes( interaction, type );
+                    if ( log.isDebugEnabled() ) {
+                        log.debug( "interaction: " + interaction.getInteractorA() + ";" + interaction.getInteractorB() + " attribs: " + attribs );
+                    }
+                    save( interaction, classifier.evaluate( attribs ) );
+                } else {
+                    save( interaction, classifier.evaluate( new ArrayList<Attribute>( 0 ) ) );
                 }
-                save( interaction, classifier.evaluate( attribs ) );
-            } else {
-                save( interaction, classifier.evaluate( new ArrayList<Attribute>( 0 ) ) );
             }
             psimiTabWriter.writeOrAppend( interaction, outFile, firstLine );
-            if (firstLine) {
+            if ( firstLine ) {
                 firstLine = false;
             }
         }
     }
 
-     protected List<Attribute> getAttributes( BinaryInteraction interaction, Set<ConfidenceType> type ) throws IOException {
+    protected List<Attribute> getAttributes( BinaryInteraction interaction, Set<ConfidenceType> type ) throws IOException, FilterException, AttributeGetterException {
         List<Attribute> attributes = new ArrayList<Attribute>();
         for ( Iterator<ConfidenceType> confTypeIter = type.iterator(); confTypeIter.hasNext(); ) {
             ConfidenceType confidenceType = confTypeIter.next();
 
-            if (confidenceType.equals( ConfidenceType.GO )){
-                GOFilter.getInstance().initialize( goaFilterFile );
+            if ( confidenceType.equals( ConfidenceType.GO ) ) {
+                if (goaFilter == null){
+                    goaFilter = new GOAFilterMapImpl();
+                    goaFilter.initialize(  goaFilterFile);
+                }
             }
 
             List<Attribute> attribs = getAttributes( interaction, confidenceType );
@@ -163,21 +185,21 @@ public class PsiMiTabConfidence {
     ///////////////////////
     // Private Method(s).
     private Set<UniprotAc> fetchAgainstProteins( File hcSet ) throws IOException {
-         return ParserUtils.parseProteins( hcSet );
-         //TODO: replace the ParserUtils class with one of the model parsers
+        return ParserUtils.parseProteins( hcSet );
+        //TODO: replace the ParserUtils class with one of the model parsers
 //        BinaryInteractionAttributesReader biar = new BinaryInteractionAttributesReaderImpl();
 //        List<BinaryInteractionAttributes> list = biar.read( hcSet);
 
-     }
+    }
 
     private boolean interactionValid( BinaryInteraction interaction ) {
         String[] acs = getUniprotAcs( interaction );
         return ( acs.length == 2 ? true : false );
     }
 
-    private List<Attribute> getAttributes( BinaryInteraction interaction, ConfidenceType type ) {
+    private List<Attribute> getAttributes( BinaryInteraction interaction, ConfidenceType type ) throws AttributeGetterException {
         String[] acs = getUniprotAcs( interaction );
-        AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb );
+        AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb, goaFilter );
         switch ( type ) {
             case GO:
                 return ag.fetchGoAttributes( new ProteinPair( acs[0], acs[1] ) );
@@ -219,11 +241,8 @@ public class PsiMiTabConfidence {
 
     private void save( BinaryInteraction interaction, double[] scores ) {
         List<Confidence> confVals = new ArrayList<Confidence>( 1 );
-        Confidence conf1 = new ConfidenceImpl( "intact confidence", Double.toString( scores[classifier.getIndex( "high" )] ) );
+        Confidence conf1 = new ConfidenceImpl( "intact confidence", df.format( scores[classifier.getIndex( "high" )])  );
         confVals.add( conf1 );
         interaction.setConfidenceValues( confVals );
     }
-
-
-
 }

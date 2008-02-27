@@ -27,11 +27,14 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactAnnotationRetrieverImpl;
-import uk.ac.ebi.intact.confidence.filter.GOFilter;
+import uk.ac.ebi.intact.confidence.filter.FilterException;
+import uk.ac.ebi.intact.confidence.filter.GOAFilter;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.ConfidenceType;
 import uk.ac.ebi.intact.confidence.util.AttributeGetter;
+import uk.ac.ebi.intact.confidence.util.AttributeGetterException;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterImpl;
 import uk.ac.ebi.intact.confidence.utils.ParserUtils;
 
@@ -63,6 +66,7 @@ public class PsiMiXmlConfidence {
     private DecimalFormat df = new DecimalFormat("0.00");
 
     private File goaFilterFile;
+    private static GOAFilter goFilter;
 
     private AnnotationRetrieverStrategy annoDb;
 
@@ -83,6 +87,7 @@ public class PsiMiXmlConfidence {
         this.workDir = workDir;
 
         this.goaFilterFile = goaFile;
+        goFilter = new GOAFilterMapImpl();
 
         annoDb = new IntactAnnotationRetrieverImpl();
     }
@@ -104,11 +109,13 @@ public class PsiMiXmlConfidence {
             saveScores( entry.getEntries(), type );
             writeScores( entry, outPsiMiFile );
         } catch ( PsimiXmlReaderException e ) {
-            e.printStackTrace();
+            throw new PsiMiException( e);
+        } catch ( AttributeGetterException e ) {
+            throw new PsiMiException( e);
         }
     }
 
-    private void saveScores( Collection<Entry> entries, Set<ConfidenceType> type ) throws PsiMiException {
+    private void saveScores( Collection<Entry> entries, Set<ConfidenceType> type ) throws PsiMiException, AttributeGetterException {
         for ( Iterator<Entry> iterator = entries.iterator(); iterator.hasNext(); ) {
             Entry entry = iterator.next();
             Collection<Interaction> interactions = entry.getInteractions();
@@ -157,15 +164,15 @@ public class PsiMiXmlConfidence {
         return null;
     }
 
-    private List<Attribute> getAttributes( ProteinPair prteinPair, Set<ConfidenceType> type ) throws PsiMiException {
+    private List<Attribute> getAttributes( ProteinPair prteinPair, Set<ConfidenceType> type ) throws PsiMiException, AttributeGetterException {
         List<Attribute> attributes = new ArrayList<Attribute>();
-        AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb );
+        AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb, goFilter );
         for ( Iterator<ConfidenceType> confTypeIter = type.iterator(); confTypeIter.hasNext(); ) {
             ConfidenceType confidenceType = confTypeIter.next();
              if (confidenceType.equals( ConfidenceType.GO )){
                  try {
-                     GOFilter.getInstance().initialize( goaFilterFile );
-                 } catch ( IOException e ) {
+                     goFilter.initialize( goaFilterFile );                  
+                 } catch ( FilterException e ) {
                      throw new PsiMiException( e);
                  }
              }
@@ -174,7 +181,7 @@ public class PsiMiXmlConfidence {
         return attributes;
     }
 
-    private List<Attribute> getAttributes( AttributeGetter ag, ProteinPair proteinPair, ConfidenceType type ) {
+    private List<Attribute> getAttributes( AttributeGetter ag, ProteinPair proteinPair, ConfidenceType type ) throws AttributeGetterException {
         switch ( type ) {
             case GO:
                 return ag.fetchGoAttributes( proteinPair );
@@ -219,4 +226,7 @@ public class PsiMiXmlConfidence {
     }
 
 
+    public static void setGoFilter( GOAFilter goFilter ) {
+        PsiMiXmlConfidence.goFilter = goFilter;
+    }
 }

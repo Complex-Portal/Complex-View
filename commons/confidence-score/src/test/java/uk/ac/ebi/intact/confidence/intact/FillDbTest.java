@@ -26,6 +26,7 @@ import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.EbiWsWUBlast;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.business.IntactTransactionException;
+import uk.ac.ebi.intact.confidence.ehcache.GOACacheTest;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.maxent.MaxentUtils;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
@@ -37,6 +38,7 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +54,17 @@ import java.util.Set;
  *               </pre>
  */
 public class FillDbTest extends IntactBasicTestCase {
+
+    private boolean init = false;
+
+    private File workDir;
+    private BlastConfig blastConfig;
+    private File goaFile;
+    private OpenNLPMaxEntClassifier classifier;
+    private Set<UniprotAc> againstProts;
+    private CvConfidenceType cvConfidenceType;
+
+
 
     @Before
     public void setUp() throws Exception {
@@ -75,31 +88,15 @@ public class FillDbTest extends IntactBasicTestCase {
     @Test
     public void test() throws Exception {
         init();
-
-        File dbFolder = new File( GlobalTestData.getTargetDirectory(), "DbFolder" );
-        dbFolder.mkdir();
-        File workDir = GlobalTestData.getTargetDirectory();
-        prepareDB( dbFolder, "myName@yahuo.com", workDir );
-
-        File gisModelFile = new File( FillDbTest.class.getResource( "model.txt" ).getPath() );
-        BlastConfig config = new BlastConfig( "myName@yahuo.com" );
-        // need a blast Archive
-        File archive = new File( FillDbTest.class.getResource( "Q16643.xml" ).getPath() ).getParentFile();
-        config.setBlastArchiveDir( archive );
-        // db dir
-        config.setDatabaseDir( dbFolder );
-        OpenNLPMaxEntClassifier classifier = new OpenNLPMaxEntClassifier( gisModelFile );
-
-        File hcSet = new File( FillDbTest.class.getResource( "highconf_set.txt" ).getPath() );
-        Set<UniprotAc> againstProts = ParserUtils.parseProteins( hcSet );
-
-        IntactConfidenceCalculator ic = new IntactConfidenceCalculator( classifier, config, againstProts, workDir );
+        IntactConfidenceCalculator ic = new IntactConfidenceCalculator( classifier, blastConfig, againstProts,goaFile, workDir );
         List<InteractionImpl> interactions = getDaoFactory().getInteractionDao().getAll();
-        ic.calculate( interactions, classifier );
+        boolean override = false;
+        ic.setConfidenceType( cvConfidenceType );
+        ic.calculate( interactions, classifier,  override );
 
         for ( Iterator<InteractionImpl> iter = interactions.iterator(); iter.hasNext(); ) {
             InteractionImpl interaction = iter.next();
-            Assert.assertEquals( 1, interaction.getConfidences().size() );
+//            Assert.assertEquals( 1, interaction.getConfidences().size() );
             System.out.println( "interaction: " + interaction.toString() );
             String expected = "0.50";
             if ( interaction.getShortLabel().equalsIgnoreCase( "int-high" ) ) {
@@ -107,10 +104,10 @@ public class FillDbTest extends IntactBasicTestCase {
             } else if ( interaction.getShortLabel().equalsIgnoreCase( "int-low" ) ) {
                 expected = "0.20";
             }
-            if ( interaction.getShortLabel().equalsIgnoreCase( "int-unk" ) ) {
+            if ( interaction.getShortLabel().startsWith( "int-unk" ) ) {
                 Assert.assertNotNull( interaction.getConfidences().iterator().next().getValue() );
             } else {
-                Assert.assertEquals( expected, interaction.getConfidences().iterator().next().getValue() );
+                Assert.assertEquals(expected, interaction.getConfidences().iterator().next().getValue() );
             }
         }
 
@@ -133,18 +130,26 @@ public class FillDbTest extends IntactBasicTestCase {
         for ( Iterator<InteractionImpl> iter = getDaoFactory().getInteractionDao().getAll().iterator(); iter.hasNext(); )
         {
             InteractionImpl interaction = iter.next();
-            Assert.assertEquals( 1, interaction.getConfidences().size() );
+//            Assert.assertEquals( 1, interaction.getConfidences().size() );
             String expected = "0.50";
             if ( interaction.getShortLabel().equalsIgnoreCase( "int-high" ) ) {
                 expected = "0.82";
             } else if ( interaction.getShortLabel().equalsIgnoreCase( "int-low" ) ) {
                 expected = "0.20";
             }
-            Assert.assertEquals( expected, interaction.getConfidences().iterator().next().getValue() );
+            if ( interaction.getShortLabel().startsWith( "int-unk" ) ) {
+                Assert.assertNotNull( interaction.getConfidences().iterator().next().getValue() );
+            } else {
+                Assert.assertEquals(expected, interaction.getConfidences().iterator().next().getValue() );
+            }
         }
     }
 
-    private void init() throws IntactTransactionException {
+    private void init() throws IntactTransactionException, IOException, BlastServiceException {
+        if (init){
+            return;
+        }
+
         SchemaUtils.createSchema();
         CvDatabase goDb = getMockBuilder().createCvObject( CvDatabase.class, CvDatabase.GO_MI_REF, CvDatabase.GO );
         CvDatabase ipDb = getMockBuilder().createCvObject( CvDatabase.class, CvDatabase.INTERPRO_MI_REF, CvDatabase.INTERPRO );
@@ -210,12 +215,52 @@ public class FillDbTest extends IntactBasicTestCase {
         Interaction interaction3 = getMockBuilder().createInteraction( "int-unk", prot5, prot6,
                                                                        getMockBuilder().createDeterministicExperiment() );
 
-        CvConfidenceType ctype = CvObjectUtils.createCvObject( getIntactContext().getInstitution(), CvConfidenceType.class, "IA:999", "intact confidence" );
+        CvConfidenceType conftype = CvObjectUtils.createCvObject( getIntactContext().getInstitution(), CvConfidenceType.class, "IA:9974", "intact confidence" );
+        cvConfidenceType = conftype;
+        // interaction with a confidence  "intact confidence" already in
+        Interaction interaction4 = getMockBuilder().createInteraction( "int-unk2", prot1, prot3, getMockBuilder().createDeterministicExperiment() );
+        interaction4.addConfidence( getMockBuilder().createConfidence( conftype, "0.8" ));
 
+        // interaction with a different confidence than the "intact confidence"
+        Interaction interaction5 = getMockBuilder().createInteraction( "int-unk3", prot4, prot5, getMockBuilder().createDeterministicExperiment() );
+        CvConfidenceType blatype = CvObjectUtils.createCvObject( getIntactContext().getInstitution(), CvConfidenceType.class, "IA:9977", "intact blabla" );
+        interaction5.addConfidence( getMockBuilder().createConfidence( blatype, "low" ));
 
-        PersisterHelper.saveOrUpdate( interaction1, interaction2, interaction3, ctype );
+        // interaction with 2 confidence objects "intact confidence"
+        Interaction interaction6 = getMockBuilder().createInteraction( "int-unk2", prot2, prot6, getMockBuilder().createDeterministicExperiment() );
+        interaction6.addConfidence( getMockBuilder().createConfidence( conftype, "0.7" ));
+        interaction6.addConfidence( getMockBuilder().createConfidence( conftype, "0.8" ));
+
+        PersisterHelper.saveOrUpdate( interaction1, interaction2, interaction3, interaction4, interaction5, interaction6, conftype, blatype );
         List<InteractionImpl> interactions = getDaoFactory().getInteractionDao().getAll();
-        Assert.assertEquals( 3, interactions.size() );
+        Assert.assertEquals( 6, interactions.size() );
+
+
+        initFolders();
+
+
+        init= true;
+    }
+
+    private void initFolders() throws BlastServiceException, IOException {
+        File dbFolder = new File( GlobalTestData.getTargetDirectory(), "DbFolder" );
+        dbFolder.mkdir();
+        workDir = GlobalTestData.getTargetDirectory();
+        prepareDB( dbFolder, "myName@yahuo.com", workDir );
+
+        File gisModelFile = new File( FillDbTest.class.getResource( "model.txt" ).getPath() );
+        blastConfig = new BlastConfig( "myName@yahuo.com" );
+        // need a blast Archive
+        File archive = new File( FillDbTest.class.getResource( "Q16643.xml" ).getPath() ).getParentFile();
+        blastConfig.setBlastArchiveDir( archive );
+        // db dir
+        blastConfig.setDatabaseDir( dbFolder );
+        classifier = new OpenNLPMaxEntClassifier( gisModelFile );
+
+        File hcSet = new File( FillDbTest.class.getResource( "highconf_set.txt" ).getPath() );
+        againstProts = ParserUtils.parseProteins( hcSet );
+
+        goaFile = new File( GOACacheTest.class.getResource( "goaTest.txt" ).getPath());
     }
 
     private void prepareDB( File dbFolder, String email, File workDir ) throws BlastServiceException {

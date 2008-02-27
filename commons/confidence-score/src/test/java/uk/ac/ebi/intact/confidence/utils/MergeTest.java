@@ -42,11 +42,11 @@ public class MergeTest {
     public void testMerge() throws Exception {
         System.out.println( "memory: " + ( Runtime.getRuntime().maxMemory() ) / ( 1024 * 1024 ) );
 
-        String goPath = MergeTest.class.getResource( "set_go_attributes.txt").getPath();
+        String goPath = MergeTest.class.getResource( "test_set_go_attributes.txt").getPath();
         //goPath = "H:\\tmp\\ConfidenceModel\\HcAttribs\\set_go_attributes.txt";
-        String ipPath = MergeTest.class.getResource( "set_ip_attributes.txt").getPath();
+        String ipPath = MergeTest.class.getResource( "test_set_ip_attributes.txt").getPath();
         //ipPath = "H:\\tmp\\ConfidenceModel\\HcAttribs\\set_ip_attributes.txt";
-        String seqPath =  MergeTest.class.getResource( "set_align_attributes.txt").getPath();
+        String seqPath =  MergeTest.class.getResource( "test_set_align_attributes.txt").getPath();
         //seqPath = "H:\\tmp\\ConfidenceModel\\HcAttribs\\set_align_attributes.txt";
         
         String[] paths = {seqPath, ipPath, goPath};
@@ -66,15 +66,19 @@ public class MergeTest {
     @Test
     @Ignore
     public void merge() throws Exception {
-        String goPath ="/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_go_filter_attribs.txt";
+        System.out.println( "memory: " + ( Runtime.getRuntime().maxMemory() ) / ( 1024 * 1024 ) );
+        String goPath = "E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\medconf_set_go_filter_attribs.txt";
+                //"/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_go_filter_attribs.txt";
                 //"H:\\tmp\\lowconf_set_go_filter_attribs.txt";
-        String ipPath = "/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_ip_attribs.txt";
+        String ipPath = "E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\medconf_set_ip_attribs.txt";
+                //"/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_ip_attribs.txt";
                 //"H:\\tmp\\lowconf_set_ip_attribs.txt";
-        String seqPath ="/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_seq_anno_filter_attribs.txt";
+//        String seqPath ="/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_seq_anno_filter_attribs.txt";
                 //"H:\\tmp\\lowconf_set_seq_anno_filter_attribs.txt";
 
-        String[] paths = {seqPath, ipPath, goPath};
-        String outPath = "/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_attributes.txt";
+        String[] paths = {ipPath, goPath};
+        String outPath = "E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\medconf_set_go_ip_attribs.txt";
+                //"/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_attributes.txt";
                 //"H:\\tmp\\lowconf_set_attributes.txt";
         ( new Merge() ).merge( paths, outPath );
 

@@ -15,17 +15,22 @@
  */
 package uk.ac.ebi.intact.confidence.main;
 
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import uk.ac.ebi.intact.confidence.model.*;
-import uk.ac.ebi.intact.confidence.model.io.*;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesWriter;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
+import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesWriterImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Test class for Information Modeling class.
@@ -42,20 +47,20 @@ public class InfoModelInputTest {
     @Ignore
     public void testCombine() throws Exception {
 
-        File annotationFile = new File ("/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_seq_anno_filter.txt");
+        File annotationFile = new File ("/net/nfs7/vol22/sp-pro5/20080401_iarmean/InfoGather/lowconf_set_go_filter.txt");
+                //new File ("/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_seq_anno_filter.txt");
         //new File("H:\\tmp\\medconf_set_seq_anno_filter.txt");
-        //new File ("/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_ip.txt");
 
 
-        File binaryInteractionFile = new File ("/net/nfs6/vol1/homes/iarmean/tmp/medconf_set.txt");
+        File binaryInteractionFile = new File ("/net/nfs7/vol22/sp-pro5/20080401_iarmean/InfoGather/lowconf_set.txt");
                 //new File("H:\\tmp\\medconf_set.txt");
 
 
         Map<Identifier, ProteinAnnotation > annoMap = createMap(annotationFile);
-        System.out.println(annoMap.size());
+        System.out.println("Annotations (unique) " + annoMap.size());
 
         BinaryInteractionAttributesWriter biaw = new BinaryInteractionAttributesWriterImpl();
-        File outFile = new File ("/net/nfs6/vol1/homes/iarmean/tmp/medconf_set_seq_anno_filter_attribs.txt"); 
+        File outFile = new File ("/net/nfs7/vol22/sp-pro5/20080401_iarmean/InfoGather/lowconf_set_go_filter_attribs.txt"); 
                 //new File ("H:\\tmp\\medconf_set_seq_anno_filter_attribs.txt");
 
         //new File ("H:\\tmp\\medconf_set_ip_attribs.txt");
@@ -83,7 +88,7 @@ public class InfoModelInputTest {
     private Map<Identifier, ProteinAnnotation> createMap( File annotationFile ) throws IOException {
         ProteinAnnotationReader reader = new ProteinAnnotationReaderImpl();
         List<ProteinAnnotation> annotations = reader.read( annotationFile);
-        System.out.println(annotations.size());
+        System.out.println("Annotations (with duplicates) " + annotations.size());
 
         Map<Identifier, ProteinAnnotation> mapped = new HashMap<Identifier, ProteinAnnotation>();
         for (int i =0; i< annotations.size(); i++){

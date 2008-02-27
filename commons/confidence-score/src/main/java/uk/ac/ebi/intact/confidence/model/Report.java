@@ -52,7 +52,7 @@ public class Report {
     public Report(File hcFile, File mcFile){
         if (hcFile.exists()  || mcFile.exists()){
             if (log.isInfoEnabled()){
-               log.info("HighConfidence and MediumConfidence files " + hcFile.getPath() + ", " + mcFile.getPath() + " already exist, they would be overwritten.");
+               log.warn("HighConfidence and MediumConfidence files " + hcFile.getPath() + ", " + mcFile.getPath() + " already exist!");
            }
         } 
         highconfFile = hcFile;

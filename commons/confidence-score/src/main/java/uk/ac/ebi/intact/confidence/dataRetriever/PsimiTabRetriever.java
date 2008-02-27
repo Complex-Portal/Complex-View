@@ -5,25 +5,17 @@
  */
 package uk.ac.ebi.intact.confidence.dataRetriever;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import psidev.psi.mi.tab.PsimiTabReader;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.xml.converter.ConverterException;
-
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+
+import java.io.*;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * DataRetriever strategy out of a PSI- MI TAB file.
@@ -53,12 +45,12 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
 		}
 	}
 
-	public int retrieveHighConfidenceSet(Writer w) throws DataRetrieverException {
+	public int retrieveHighConfidenceSet(File folder) throws DataRetrieverException {
 		if(highConfidence == null){
 			OutputStream os;
 			try {
 				os = new FileOutputStream("medConf.txt");
-				retrieveMediumConfidenceSet(new OutputStreamWriter(os));
+				retrieveMediumConfidenceSet(folder);
 			} catch (FileNotFoundException e) {
 				throw new DataRetrieverException( e);
 			}
@@ -70,7 +62,7 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void retrieveMediumConfidenceSet(Writer w) {
+    public void retrieveMediumConfidenceSet(File folder) {
 //			for (BinaryInteraction interaction : binaryInts) {
 //				//TODO: ask Sam about the psimi model for the interaction
 //			}
@@ -80,5 +72,7 @@ public class PsimiTabRetriever implements DataRetrieverStrategy {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-
+    public void retrieveHighAndMediumConfidenceSet( File folder ) throws DataRetrieverException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

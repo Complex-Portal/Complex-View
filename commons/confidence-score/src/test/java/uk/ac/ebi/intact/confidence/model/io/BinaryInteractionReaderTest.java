@@ -15,16 +15,15 @@
  */
 package uk.ac.ebi.intact.confidence.model.io;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
+import uk.ac.ebi.intact.confidence.model.Confidence;
+import uk.ac.ebi.intact.confidence.model.UniprotIdentifierImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
 
 import java.io.File;
 import java.util.*;
-
-import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
-import uk.ac.ebi.intact.confidence.model.UniprotIdentifierImpl;
-import uk.ac.ebi.intact.confidence.model.Confidence;
-import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
 
 /**
  * Test class for BinaryInteractionReader.
@@ -78,8 +77,7 @@ public class BinaryInteractionReaderTest {
         File inFile = new File(BinaryInteractionReaderTest.class.getResource( "BinaryInteraction.txt" ).getPath());
         BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
         Set<BinaryInteraction> observed = new HashSet<BinaryInteraction>(bir.read( inFile ));
-        // OBS: only exactly matching interactions are removed
-        Assert.assertEquals( 5, observed.size() );
+        Assert.assertEquals( 4, observed.size() );
     }
         
 
