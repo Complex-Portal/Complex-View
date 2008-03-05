@@ -11,6 +11,7 @@ import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.ClickBehaviourForm;
+import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.ConfidenceFilter;
 import uk.ac.ebi.intact.util.PropertyLoader;
 
 import javax.servlet.http.HttpSessionBindingListener;
@@ -42,6 +43,8 @@ public interface IntactUserI extends Serializable, HttpSessionBindingListener, u
     public static final Properties GRAPH2MIF_PROPERTIES = PropertyLoader.load( StrutsConstants.GRAPH2MIF_PROPERTY_FILE );    
 
 
+   public ConfidenceFilter getConfidenceFilterValues();
+   public void setConfidenceFilterValues(ConfidenceFilter confidenceFilter);
 
     public String getQueryString();
 

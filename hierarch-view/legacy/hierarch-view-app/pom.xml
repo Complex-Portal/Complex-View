@@ -23,7 +23,7 @@
         <jetty.port>9090</jetty.port>
         <db.alias>nodb</db.alias>
     </properties>
-
+      
     <dependencies>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -145,5 +145,6 @@
             </snapshots>
         </repository>
     </repositories>
+
 
 </project>

@@ -33,6 +33,11 @@
                    type="uk.ac.ebi.intact.application.hierarchview.struts.view.InitForm">
         </form-bean>
 
+        <!-- form container fot the confidence value filter -->
+        <form-bean name="confidenceFilterForm"
+                   type="uk.ac.ebi.intact.application.hierarchview.struts.view.ConfidenceFilterForm" >
+        </form-bean>
+
     </form-beans>
 
     <!-- ========== Global Exceptions ======================================= -->
@@ -76,6 +81,16 @@
                 name="searchForm"
                 validate="true"
                 scope="request">
+        </action>
+
+        
+        <!-- Processes the user confidence filter -->
+        <action path="/filter"
+                type="uk.ac.ebi.intact.application.hierarchview.struts.controller.ConfidenceFilterAction"
+                name="confidenceFilterForm"
+                validate="true"
+                scope="request">
+             <!--   forward="/source">-->
         </action>
 
         <!-- Processes the user search for an external application -->

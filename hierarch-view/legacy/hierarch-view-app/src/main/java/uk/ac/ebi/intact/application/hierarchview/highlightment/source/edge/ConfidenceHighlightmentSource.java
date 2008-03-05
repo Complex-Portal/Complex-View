@@ -218,5 +218,26 @@ public class ConfidenceHighlightmentSource extends EdgeHighlightmentSource {
 
         return source;
     }
+
+     public Set<String> getHighlightKeys(String clickedId){
+        String [] aux = clickedId.split( " - " );
+        Double dL = Double.valueOf( aux[0].substring( 1 ));
+        Double dU = Double.valueOf( aux[1] );
+
+        Set<String> keys = new HashSet<String>();
+
+        for ( Iterator<String> iter = confidenceEdgeMap.keySet().iterator(); iter.hasNext(); ) {
+            String key =  iter.next();
+
+        }
+
+        for ( Iterator<String> iter = confidenceRefMap.keySet().iterator(); iter.hasNext(); ) {
+                    String key =  iter.next();
+
+                }
+
+
+        return keys;
+    }
 }
 

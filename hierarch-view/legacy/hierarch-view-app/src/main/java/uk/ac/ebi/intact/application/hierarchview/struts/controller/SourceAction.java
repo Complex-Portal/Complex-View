@@ -84,26 +84,46 @@ public final class SourceAction extends IntactBaseAction {
 
         if ( HVNetworkBuilder.NODE_SOURCES.contains( keyType ) ) {
             selectedKeys = NodeHighlightmentSource.parseKeys( someKeys );
-        }
+        } //TODO: make it an else
         if ( HVNetworkBuilder.EDGE_SOURCES.contains( keyType ) ) {
             selectedKeys = EdgeHighlightmentSource.parseKeys( someKeys );
+            Set<String> aux = EdgeHighlightmentSource.getConfIntervalKeys(someKeys, session);
+            if (aux != null){
+                selectedKeys.addAll(aux  );
+            }
         }
 
         if ( clickedKey != null ) {
             if ( selectedKeys == null ) {
                 selectedKeys = new HashSet<String>();
                 selectedKeys.add( clickedKey );
+                Set<String> aux = EdgeHighlightmentSource.getConfIntervalKeys( clickedKey, session );
+                if (aux != null){
+                    selectedKeys.addAll(aux );
+                }
             } else {
                 if ( selectedKeys.isEmpty() ) {
                     selectedKeys.add( clickedKey );
+                    Set<String> aux = EdgeHighlightmentSource.getConfIntervalKeys( clickedKey, session );
+                    if (aux != null){
+                        selectedKeys.addAll(aux );
+                    }
                 } else {
                     // if sourceId already highlighted
                     if ( selectedKeys.contains( clickedKey ) ) {
                         // deselect sourceId
                         selectedKeys.remove( clickedKey );
+                        Set<String> aux = EdgeHighlightmentSource.getConfIntervalKeys( clickedKey, session );
+                        if (aux != null){
+                            selectedKeys.removeAll( aux );
+                        }
                     } else {
                         // do nothing
                         selectedKeys.add( clickedKey );
+                        Set<String> aux = EdgeHighlightmentSource.getConfIntervalKeys( clickedKey, session );
+                        if (aux != null){
+                            selectedKeys.addAll(aux );
+                        }
                     }
                 }
             }

@@ -11,11 +11,13 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataServiceFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DatabaseService;
+import uk.ac.ebi.intact.application.hierarchview.business.data.DataServiceMock;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.struts.view.ClickBehaviourForm;
+import uk.ac.ebi.intact.application.hierarchview.struts.view.utils.ConfidenceFilter;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.service.graph.Node;
@@ -97,6 +99,8 @@ public class IntactUser implements IntactUserI {
     private String behaviour;
     private String applicationPath;
 
+    // User's form fields for the confidence tab
+    private ConfidenceFilter confidenceFilter;
 
     private DataService dataservice;
     private HVNetworkBuilder networkBuilder;
@@ -126,6 +130,14 @@ public class IntactUser implements IntactUserI {
 
     public static boolean currentInstanceExists(HttpSession session) {
         return (null != session.getAttribute(Constants.USER_KEY));
+    }
+
+    public ConfidenceFilter getConfidenceFilterValues(){
+       return this.confidenceFilter;
+    }
+
+    public void setConfidenceFilterValues(ConfidenceFilter confidenceFilter){
+        this.confidenceFilter = confidenceFilter;
     }
 
     public String getQueryString() {
@@ -313,6 +325,8 @@ public class IntactUser implements IntactUserI {
         logger.info( "User's data set to default" );
         
         dataservice = DataServiceFactory.buildDataService( SEARCH_PROPERTIES.getProperty( "search.source.name" ) );
+        //TODO: remove after finished @Irina
+//        dataservice = new DataServiceMock();
         if ( dataservice != null ) {
             networkBuilder = new HVNetworkBuilder( this );
             userQueryHistory = new Stack<Network>();

@@ -29,6 +29,7 @@ import uk.ac.ebi.intact.service.graph.Edge;
 import uk.ac.ebi.intact.util.SearchReplace;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -204,6 +205,48 @@ public abstract class EdgeHighlightmentSource implements HighlightmentSource {
                 String key = st.nextToken();
                 if ( !"null".equals( key ) ) {
                     keys.add( key );
+                }
+            }
+        }
+        return keys;
+    }
+
+    //TODO: @iry
+    public static Set<String> getConfIntervalsKeys(String intervalKeys, HttpSession session) {
+        if ( ( null == intervalKeys ) || ( intervalKeys.length() < 1 ) || "null".equals( intervalKeys ) ) {
+            return null;
+        }
+
+        Set<String> keys = new HashSet<String>();
+        String [] aux = intervalKeys.split( KEY_SEPARATOR);
+        for ( int i=0; i< aux.length; i++ ) {
+            String str =  aux[i];
+            keys.addAll( getConfIntervalKeys(str, session) );
+        }
+
+        return keys;
+    }
+
+    public static Set<String> getConfIntervalKeys(String intervalKey, HttpSession session){
+        if ( ( null == intervalKey ) || ( intervalKey.length() < 1 ) || "null".equals( intervalKey )  || !intervalKey.startsWith( "[" )) {
+            return null;
+        }
+
+        Set<String> keys = new HashSet<String>();
+        String [] aux = intervalKey.split(KEY_SEPARATOR);
+        for ( String a : aux ){
+            String [] aux1 = a.split( " - " );
+            Double lowerB = Double.valueOf( aux1[0].substring( 1 ));
+            Double upperB = Double.valueOf( aux1[1] );
+
+            List<SourceBean> sourcebeans = ( ArrayList ) session.getAttribute( "sources" );
+            for ( Iterator<SourceBean> iter = sourcebeans.iterator(); iter.hasNext(); ) {
+                SourceBean sourceBean = iter.next();
+                if ( sourceBean.getType().equalsIgnoreCase( "Confidence" ) ) {
+                    Double value = Double.valueOf( sourceBean.getId() );
+                    if ( lowerB <= value && value < upperB ) {
+                        keys.add( sourceBean.getId() );
+                    }
                 }
             }
         }
