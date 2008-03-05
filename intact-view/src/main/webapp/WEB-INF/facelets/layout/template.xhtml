@@ -1,0 +1,67 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
+
+                template="template-ebi.xhtml">
+
+    <ui:define name="sidebar">
+
+        <h:outputLink value="http://www.ebi.ac.uk/intact">
+            <h:graphicImage alt="IntAct Logo" url="/images/logo_intact_small.gif" style="border:0"/>
+        </h:outputLink>
+
+        <trh:script>
+            function intact_clearAndFocusField(id) {
+                var elem = document.getElementById(id);
+                elem.value = '';
+                elem.focus();
+            }
+
+            dojo.addOnLoad(function () {
+                intact_clearAndFocusField('search');
+            });
+
+        </trh:script>
+
+        <ebi:panelBox id="searchbox" title="Search IntAct">
+            <h:inputText id="search"
+                         styleClass="contentsarea"
+                         value="#{binarySearch.searchQuery}"
+                         size="#{ebisf:isBrowserExplorer()? 14 : 12}"
+                         onkeypress="return submitEnter('searchBtn', event)"/>
+
+             <tr:commandLink action="dialog:help_search" partialSubmit="true"
+                             windowWidth="150" windowHeight="150" immediate="true" useWindow="true">
+                      <tr:image source="http://www.ebi.ac.uk/inc/images/icon_help.gif"/>
+             </tr:commandLink>
+
+            <h:panelGrid columns="2">
+                <tr:commandButton id="searchBtn"
+                                 styleClass="submit_button"
+                                 text="Search"
+                                 action="#{binarySearch.doSearch}"/>
+                <a href="#" onclick="intact_clearAndFocusField('search')">Clear</a>
+            </h:panelGrid>
+        </ebi:panelBox>
+
+        <ebi:dynamicMenu id="menu1" sourceUrl="#{initParam['uk.ac.ebi.faces.MENU_URL']}"/>
+
+        <ebi:news id="news1"
+                  sourceUrl="#{initParam['uk.ac.ebi.faces.NEWS_URL']}"
+                  maxShown="#{initParam['uk.ac.ebi.intact.NEWS_SHOWN_NUM']}"
+                  newsFeedUrl="http://www.ebi.ac.uk/intact/site/feed"
+                  archiveUrl="http://www.ebi.ac.uk/intact/site/contents/news_archive.jsf"/>
+
+    </ui:define>
+
+
+</ui:composition>

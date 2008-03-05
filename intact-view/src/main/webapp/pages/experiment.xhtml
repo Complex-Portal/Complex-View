@@ -1,0 +1,29 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:tr="http://myfaces.apache.org/trinidad"
+	template="WEB-INF/facelets/layout/template.xhtml">
+
+<!-- content -->
+  <ui:define name="content">
+
+      <tr:panelBox background="dark">
+          Query: <tr:inputText value="#{search.searchQuery}"/>
+      </tr:panelBox>
+
+      <tr:panelList partialTriggers="searchAgainBtn">
+      <tr:outputText value="Interactions: #{search.resultStats.interactionCount}"/>
+      <tr:outputText value="Proteins: #{search.resultStats.proteinCount}"/>
+      <tr:outputText value="Small Molecules: #{search.resultStats.smallMoleculeCount}"/>
+      <tr:outputText value="Nucleic Acids: #{search.resultStats.nucleicAcidCount}"/>
+      <tr:outputText value="Experiments: #{search.resultStats.experimentCount}"/>
+      <tr:outputText value="BioSources: #{search.resultStats.bioSourceCount}"/>
+      <tr:outputText value="CvObjects: #{search.resultStats.cvObjectCount}"/>
+
+      </tr:panelList>
+
+      <tr:commandButton id="searchAgainBtn" text="Search" actionListener="#{search.doSearch}"/>
+
+  </ui:define>
+  
+</ui:composition>

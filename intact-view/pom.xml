@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>uk.ac.ebi.intact.service</groupId>
+        <artifactId>service-master</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
+    <artifactId>intact-search-webapp</artifactId>
+    <packaging>war</packaging>
+    <version>2.0-SNAPSHOT</version>
+
+    <name>IntAct Services :: Search Webapp (2)</name>
+
+    <scm>
+        <connection>scm:svn:https://brunoaranda.googlecode.com/svn/intact/trunk/intact-search-webapp</connection>
+        <developerConnection>scm:svn:https://brunoaranda.googlecode.com/svn/intact/trunk/intact-search-webapp
+        </developerConnection>
+        <url>http://code.google.com/p/brunoaranda/</url>
+    </scm>
+
+    <properties>
+        <jetty.port>9092</jetty.port>
+
+        <hibernate.driver>${db.driver}</hibernate.driver>
+        <hibernate.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</hibernate.url>
+        <hibernate.user>${db.user}</hibernate.user>
+        <hibernate.password>${db.password}</hibernate.password>
+    </properties>
+
+    <build>
+        <finalName>athena</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>h2</id>
+            <properties>
+                <hibernate.url>jdbc:h2:mem/mydb</hibernate.url>
+                <db.driver>org.h2.Driver</db.driver>
+                <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
+                <db.user>sa</db.user>
+                <db.password></db.password>
+
+                <db.hbm2ddlAuto>create-drop</db.hbm2ddlAuto>
+            </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <version>1.0.20070429</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>intact-pg</id>
+            <properties>
+                <hibernate.url>jdbc:postgresql://localhost:5432/intact-db</hibernate.url>
+                <db.driver>org.postgresql.Driver</db.driver>
+                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+                <db.user>intact</db.user>
+                <db.password>lala</db.password>
+
+                <!--<db.hbm2ddlAuto>create-drop</db.hbm2ddlAuto>-->
+
+            </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>8.2-504.jdbc3</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>apache-maven-snapshots</id>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+        </repository>
+
+        <!-- EBI Repos -->
+        <repository>
+            <id>ebi-repo</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>ebi-repo-snapshots</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <!-- Project dependencies -->
+    <dependencies>
+
+        <!--<dependency>-->
+        <!--<groupId>uk.ac.ebi.intact.core</groupId>-->
+        <!--<artifactId>intact-core</artifactId>-->
+        <!--<version>1.8.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.dataexchange.imex</groupId>
+            <artifactId>intact-imex-import</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>concurrent</groupId>
+            <artifactId>concurrent</artifactId>
+            <version>1.3.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.faces</groupId>
+            <artifactId>ebifaces-core</artifactId>
+            <version>1.2.8</version>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>com.google.code.tomahawk</groupId>-->
+        <!--<artifactId>tomahawk-facelets</artifactId>-->
+        <!--<version>1.1.6.1</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<groupId>uk.ac.ebi.faces.renderkit</groupId>-->
+        <!--<artifactId>ebi-basic</artifactId>-->
+        <!--<version>1.0</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.sun.facelets</groupId>
+            <artifactId>jsf-facelets</artifactId>
+            <version>1.1.14</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+            <version>1.2.3-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-impl</artifactId>
+            <version>1.2.3-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>javax.faces</groupId>-->
+            <!--<artifactId>jsf-api</artifactId>-->
+            <!--<version>1.2_04</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>javax.faces</groupId>-->
+            <!--<artifactId>jsf-impl</artifactId>-->
+            <!--<version>1.2_04</version>-->
+        <!--</dependency>-->
+
+        <!-- Tomahawk -->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.myfaces.tomahawk</groupId>-->
+            <!--<artifactId>tomahawk</artifactId>-->
+            <!--<version>1.1.7-SNAPSHOT</version>-->
+            <!--<scope>compile</scope>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>commons-el</groupId>-->
+                    <!--<artifactId>commons-el</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>org.apache.myfaces.tomahawk</groupId>-->
+            <!--<artifactId>tomahawk-sandbox</artifactId>-->
+            <!--<version>1.1.7-SNAPSHOT</version>-->
+            <!--<scope>provided</scope>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>commons-el</groupId>-->
+                    <!--<artifactId>commons-el</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
+
+
+        <!-- Apache Trinidad -->
+        <dependency>
+            <groupId>org.apache.myfaces.trinidad</groupId>
+            <artifactId>trinidad-api</artifactId>
+            <version>1.2.5</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.trinidad</groupId>
+            <artifactId>trinidad-impl</artifactId>
+            <version>1.2.5</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.orchestra</groupId>
+            <artifactId>myfaces-orchestra-core15</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.myfaces.orchestra</groupId>
+            <artifactId>myfaces-orchestra-core</artifactId>
+            <version>1.1-EBI-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+</project>

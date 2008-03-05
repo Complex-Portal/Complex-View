@@ -1,0 +1,30 @@
+<!-- This file is optional, but helps to autocomplete the custom tags with the IDE -->
+<taglib xmlns="http://java.sun.com/JSP/TagLibraryDescriptor">
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>1.2</jsp-version>
+    <short-name>iav</short-name>
+    <uri>http://intact.ebi.ac.uk/view</uri>
+    <display-name>IntAct view component library</display-name>
+    <description>
+        Library for Intact view components
+    </description>
+
+    <tag>
+        <name>dasty</name>
+        <attribute>
+            <name>timeout</name>
+        </attribute>
+        <attribute>
+            <name>query</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>label</name>
+            <required>true</required>
+        </attribute>
+    </tag>
+    <tag>
+        <name>dastyHeader</name>
+    </tag>
+
+</taglib>

@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="features.xsl"?>
+<!DOCTYPE DASGFF SYSTEM "http://www.biodas.org/dtd/dasgff.dtd">
+<DASGFF>
+  <GFF version="1.01" href="http://128.40.46.20:9000/das/gene3d_family/features">
+    <SEGMENT id="Q8AWF4" version="1.0" start="1" stop="">
+    <FEATURE id="49616.1.1.1.2.1.1.1.1.2.1" label="49616.1.1.1.2.1.1.1.1.2.1">
+      <TYPE id="BS:00333" category="inferred from in-silico analysis (ECO:0000036)" reference="no" subparts="no" superparts="no">family_annotation</TYPE>
+      <START>0</START>
+      <END>0</END>
+      <METHOD id="gene3d_family">gene3d_family</METHOD>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>Gene3D Protein Family Code: To view homologues please visit Gene3D</NOTE>
+      <LINK href="http:/gene3d.biochem.ucl.ac.uk/Gene3D/Results/quick_search?search_term=Q8AWF4">http:/gene3d.biochem.ucl.ac.uk/Gene3D/Results/quick_search?search_term=Q8AWF4</LINK>
+    </FEATURE>
+    </SEGMENT>
+  </GFF>
+</DASGFF>

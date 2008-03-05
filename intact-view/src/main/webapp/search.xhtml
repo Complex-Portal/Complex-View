@@ -1,0 +1,191 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                template="WEB-INF/facelets/layout/template.xhtml">
+
+<!-- content -->
+  <ui:define name="content">
+
+      <tr:panelBox background="dark" inlineStyle="width:400px">
+          <tr:panelGroupLayout layout="horizontal">
+           <tr:inputText label="Query:" value="#{searchBean.searchQuery}"/>
+          <tr:commandButton id="searchAgainBtn" text="Search" actionListener="#{searchBean.doSearchAll}"/>
+          </tr:panelGroupLayout>
+      </tr:panelBox>
+
+      <tr:panelHeader text="Search summary" rendered="#{searchBean.searchClassName == null}">
+
+          <tr:panelList>
+              <tr:commandLink text="Interactions: #{searchBean.resultStats.interactionCount}"
+                      actionListener="#{searchBean.doSearchClass}">
+                  <f:param value="uk.ac.ebi.intact.model.InteractionImpl"/>
+              </tr:commandLink>
+
+              <tr:commandLink text="Interactors: #{searchBean.resultStats.proteinCount + searchBean.resultStats.smallMoleculeCount + searchBean.resultStats.nucleicAcidCount}"
+                      actionListener="#{searchBean.doSearchClass}">
+                  <f:param value="uk.ac.ebi.intact.model.InteractorImpl"/>
+              </tr:commandLink>
+                         
+              <tr:outputText value="Proteins: #{searchBean.resultStats.proteinCount}"/>
+              <tr:outputText value="Small Molecules: #{searchBean.resultStats.smallMoleculeCount}"/>
+              <tr:outputText value="Nucleic Acids: #{searchBean.resultStats.nucleicAcidCount}"/>
+
+              <tr:commandLink text="Experiments: #{searchBean.resultStats.experimentCount}"
+                      actionListener="#{searchBean.doSearchClass}">
+                  <f:param value="uk.ac.ebi.intact.model.Experiment"/>
+              </tr:commandLink>
+
+              <tr:commandLink text="Controlled Vocabularies: #{searchBean.resultStats.cvObjectCount}"
+                      actionListener="#{searchBean.doSearchClass}">
+                  <f:param value="uk.ac.ebi.intact.model.CvObject"/>
+              </tr:commandLink>
+
+          </tr:panelList>
+
+
+      </tr:panelHeader>
+
+      <!-- Interactions -->
+
+      <tr:panelHeader text="Interactions" rendered="#{ searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractionImpl'}">
+          <tr:table binding="#{interactionResultsBean.resultsTable}"
+                    var="ao" value="#{searchBean.searchResults}"
+                    rowBandingInterval="1" rowSelection="multiple" rows="25">
+
+            <f:facet name="footer">
+                <tr:panelGroupLayout layout="vertical">
+                    <h:commandLink value="View selected to HierarchView"
+                                      actionListener="#{interactorResultsBean.exportSelectedToHierarchView}"/>
+                </tr:panelGroupLayout>
+            </f:facet>
+
+              <tr:column headerText="Name" sortable="true" sortProperty="shortLabel">
+                  <tr:outputText value="#{ao.shortLabel}"/>
+              </tr:column>
+              <tr:column headerText="AC" sortable="true" sortProperty="ac">
+                  <tr:outputText value="#{ao.ac}"/>
+              </tr:column>
+              <tr:column headerText="Description" sortable="true" sortProperty="fullName">
+                  <tr:outputText value="#{ao.fullName}"/>
+              </tr:column>
+              <tr:column headerText="Experiment" sortable="true" sortProperty="experiments">
+                  <tr:outputText value="#{ao.experiments[0].shortLabel}"/>
+              </tr:column>
+              <tr:column headerText="Interactors" >
+                  <tr:outputText value="#{ao.interactorCount}"/>
+              </tr:column>
+          </tr:table>
+
+      </tr:panelHeader>
+
+      <!-- Interactors -->
+
+      <tr:panelHeader text="Interactors" rendered="#{ searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractorImpl'}">
+          <tr:table binding="#{interactorResultsBean.resultsTable}"
+                    var="ao" value="#{searchBean.searchResults}"
+                    rowBandingInterval="1" rowSelection="multiple" rows="25">
+
+            <f:facet name="footer">
+                <tr:panelGroupLayout layout="vertical">
+                    <h:commandLink value="View selected to HierarchView"
+                                      actionListener="#{interactorResultsBean.exportSelectedToHierarchView}"/>
+                    <h:commandLink value="View selected in InterPro"
+                                      actionListener="#{interactorResultsBean.exportSelectedToInterPro}"/>
+                </tr:panelGroupLayout>
+            </f:facet>
+
+              <tr:column headerText="Name" sortable="true" sortProperty="shortLabel">
+                  <tr:outputText value="#{ao.shortLabel}"/>
+              </tr:column>
+              <tr:column headerText="AC" sortable="true" sortProperty="ac">
+                  <h:commandLink value="#{ao.ac}" action="interactor" >
+                      <f:param name="ac" value="#{ao.ac}"/>
+                  </h:commandLink>
+              </tr:column>
+              <tr:column headerText="Description" sortable="true" sortProperty="fullName">
+                  <tr:outputText value="#{ao.fullName}"/>
+              </tr:column>
+              <tr:column headerText="Type" sortable="true" sortProperty="cvInteractorType">
+                  <tr:outputText value="#{ao.cvInteractorType.shortLabel} (#{ao.cvInteractorType.miIdentifier})"/>
+              </tr:column>
+              <tr:column headerText="Gene Name" sortable="true" sortProperty="aliases">
+                  <tr:outputText value="#{ao.geneName}"/>
+              </tr:column>
+              <tr:column headerText="Interactions" >
+                  <tr:outputText value="#{ao.interactionsCount}"/>
+              </tr:column>
+              <tr:column headerText="Interactors" >
+                  <tr:outputText value="#{ao.partnersCount}"/>
+              </tr:column>
+
+          </tr:table>
+
+      </tr:panelHeader>
+
+      <!-- Experiments -->
+
+      <tr:panelHeader text="Experiments" rendered="#{ searchBean.searchClassName == 'uk.ac.ebi.intact.model.Experiment'}">
+          <tr:table binding="#{experimentResultsBean.resultsTable}"
+                    var="ao" value="#{searchBean.searchResults}"
+                    rowBandingInterval="1" rows="25">
+
+              <tr:column headerText="Name" sortable="true" sortProperty="shortLabel">
+                  <tr:outputText value="#{ao.shortLabel}"/>
+              </tr:column>
+              <tr:column headerText="AC" sortable="true" sortProperty="ac">
+                  <tr:outputText value="#{ao.ac}"/>
+              </tr:column>
+              <tr:column headerText="Description" sortable="true" sortProperty="fullName">
+                  <tr:outputText value="#{ao.fullName}"/>
+              </tr:column>
+              <tr:column headerText="Detection Method" sortable="true" sortProperty="cvIdentification">
+                  <tr:outputText value="#{ao.cvIdentification.shortLabel} (#{ao.cvIdentification.miIdentifier})"/>
+              </tr:column>
+              <tr:column headerText="Interaction Type" sortable="true" sortProperty="cvInteraction">
+                  <tr:outputText value="#{ao.cvInteraction.shortLabel} (#{ao.cvInteraction.miIdentifier})"/>
+              </tr:column>
+              <tr:column headerText="Organism" sortable="true" sortProperty="bioSource">
+                  <tr:outputText value="#{ao.bioSource.shortLabel} (#{ao.bioSource.taxId})"/>
+              </tr:column>
+              <tr:column headerText="Interactions" sortable="true" sortProperty="interactionsCount">
+                  <tr:outputText value="#{ao.interactionsCount}"/>
+              </tr:column>
+
+          </tr:table>
+
+       </tr:panelHeader>
+
+       <!-- CVObjects -->
+
+      <tr:panelHeader text="Controlled Vocabularies" rendered="#{ searchBean.searchClassName == 'uk.ac.ebi.intact.model.CvObject'}">
+          <tr:table binding="#{cvObjectResultsBean.resultsTable}"
+                    var="ao" value="#{searchBean.searchResults}"
+                    rowBandingInterval="1" rows="25">
+
+              <tr:column headerText="Name" sortable="true" sortProperty="shortLabel">
+                  <tr:outputText value="#{ao.shortLabel}"/>
+              </tr:column>
+              <tr:column headerText="MI Identifier" sortable="true" sortProperty="miIdentifier">
+                  <tr:outputText value="#{ao.miIdentifier}"/>
+              </tr:column>
+              <tr:column headerText="AC" sortable="true" sortProperty="ac">
+                  <tr:outputText value="#{ao.ac}"/>
+              </tr:column>
+              <tr:column headerText="Description" sortable="true" sortProperty="fullName">
+                  <tr:outputText value="#{ao.fullName}"/>
+              </tr:column>
+
+          </tr:table>
+
+      </tr:panelHeader>
+
+  </ui:define>
+  
+</ui:composition>

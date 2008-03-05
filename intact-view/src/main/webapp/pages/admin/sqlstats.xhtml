@@ -1,0 +1,48 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:tr="http://myfaces.apache.org/trinidad"
+	template="/WEB-INF/facelets/layout/template.xhtml">
+
+<!-- content -->
+  <ui:define name="content">
+
+      <tr:panelHeader text="Hibernate Statistics">
+          #{sqlStatistics.statistics}
+      </tr:panelHeader>
+
+      <tr:separator/>
+
+      <tr:panelList>
+          <tr:outputText value="Query execution max time: #{sqlStatistics.statistics.queryExecutionMaxTime}"/>
+          <tr:outputText value="Query execution max time String: #{sqlStatistics.statistics.queryExecutionMaxTimeQueryString}"/>
+      </tr:panelList>
+
+      <tr:separator/>
+
+      <tr:table var="qs" value="#{sqlStatistics.queryStatisticsList}"
+                rowBandingInterval="1" rows="50">
+          <tr:column headerText="Query" sortable="true" sortProperty="query">
+              <tr:outputText value="#{qs.query}"/>
+          </tr:column>
+          <tr:column headerText="Execution Count" sortable="true" sortProperty="executionCount" >
+              <tr:outputText value="#{qs.queryStats.executionCount}"/>
+          </tr:column>
+          <tr:column headerText="Execution Avg Time" sortable="true" sortProperty="executionAvgTime">
+              <tr:outputText value="#{qs.queryStats.executionAvgTime}"/>
+          </tr:column>
+          <tr:column headerText="Execution Min Time" sortable="true" sortProperty="executionMinTime">
+              <tr:outputText value="#{qs.queryStats.executionMinTime}"/>
+          </tr:column>
+          <tr:column headerText="Execution Max Time" sortable="true" sortProperty="executionMaxTime">
+              <tr:outputText value="#{qs.queryStats.executionMaxTime}"/>
+          </tr:column>
+          <tr:column headerText="Execution Row Count" sortable="true" sortProperty="executionRowCount">
+              <tr:outputText value="#{qs.queryStats.executionRowCount}"/>
+          </tr:column>
+
+      </tr:table>
+
+  </ui:define>
+  
+</ui:composition>

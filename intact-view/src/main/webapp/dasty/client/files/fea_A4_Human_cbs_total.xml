@@ -1,0 +1,453 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE DASGFF SYSTEM "http://www.biodas.org/dtd/dasgff.dtd">
+<DASGFF>
+  <GFF version="1.01" href="http://genome:9000/das/cbs_total/features">
+    <SEGMENT id="A4_HUMAN" version="7dd43312cd29a262acdc0517230bc5ca" start="1" stop="">
+    <FEATURE id="NES-SIGNAL:10:10" label="NES-SIGNAL:10:10">
+      <TYPE id="NES-SIGNAL"  reference="no" subparts="no" superparts="no">NES-SIGNAL</TYPE>
+      <METHOD id="NetNES-1.1">NetNES-1.1</METHOD>
+      <START>10</START>
+      <END>10</END>
+      <SCORE>0.603</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>ANN score: 0.830, HMM score: 0.002. The hydrophobic residues NetNES recognises in an attempt to predict leucine-rich export signals can be prevalent in other protein structures, thus giving rise to false predictions.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNES-1.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNES-1.1</LINK>
+    </FEATURE>
+    <FEATURE id="NES-SIGNAL:12:12" label="NES-SIGNAL:12:12">
+      <TYPE id="NES-SIGNAL"  reference="no" subparts="no" superparts="no">NES-SIGNAL</TYPE>
+      <METHOD id="NetNES-1.1">NetNES-1.1</METHOD>
+      <START>12</START>
+      <END>12</END>
+      <SCORE>0.779</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>ANN score: 0.795, HMM score: 0.000. The hydrophobic residues NetNES recognises in an attempt to predict leucine-rich export signals can be prevalent in other protein structures, thus giving rise to false predictions.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNES-1.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNES-1.1</LINK>
+    </FEATURE>
+    <FEATURE id="SIGNAL:1:17" label="SIGNAL:1:17">
+      <TYPE id="SIGNAL"  reference="no" subparts="no" superparts="no">SIGNAL</TYPE>
+      <METHOD id="SignalP-3.0">SignalP-3.0</METHOD>
+      <START>1</START>
+      <END>17</END>
+      <SCORE>0.852</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=SignalP-3.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=SignalP-3.0</LINK>
+    </FEATURE>
+    <FEATURE id="OUTSIDE:1:700" label="OUTSIDE:1:700">
+      <TYPE id="OUTSIDE"  reference="no" subparts="no" superparts="no">OUTSIDE</TYPE>
+      <METHOD id="TMHMM-2.0">TMHMM-2.0</METHOD>
+      <START>1</START>
+      <END>700</END>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=TMHMM-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=TMHMM-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="MEMBRANE:701:723" label="MEMBRANE:701:723">
+      <TYPE id="MEMBRANE"  reference="no" subparts="no" superparts="no">MEMBRANE</TYPE>
+      <METHOD id="TMHMM-2.0">TMHMM-2.0</METHOD>
+      <START>701</START>
+      <END>723</END>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=TMHMM-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=TMHMM-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="INSIDE:724:770" label="INSIDE:724:770">
+      <TYPE id="INSIDE"  reference="no" subparts="no" superparts="no">INSIDE</TYPE>
+      <METHOD id="TMHMM-2.0">TMHMM-2.0</METHOD>
+      <START>724</START>
+      <END>770</END>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=TMHMM-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=TMHMM-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="SECRETORY PATHWAY:0:0" label="SECRETORY PATHWAY:0:0">
+      <TYPE id="SECRETORY PATHWAY"  reference="no" subparts="no" superparts="no">SECRETORY PATHWAY</TYPE>
+      <METHOD id="TargetP-1.01">TargetP-1.01</METHOD>
+      <START>0</START>
+      <END>0</END>
+      <SCORE>0.937</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>Reliability class: 1</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=TargetP-1.01">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=TargetP-1.01</LINK>
+    </FEATURE>
+    <FEATURE id="N-GLYCOSYLATION:542:542" label="N-GLYCOSYLATION:542:542">
+      <TYPE id="N-GLYCOSYLATION"  reference="no" subparts="no" superparts="no">N-GLYCOSYLATION</TYPE>
+      <METHOD id="NetNGlyc-1.0">NetNGlyc-1.0</METHOD>
+      <START>542</START>
+      <END>542</END>
+      <SCORE>0.538</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>Jury: (6/9), result: +</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNGlyc-1.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNGlyc-1.0</LINK>
+    </FEATURE>
+    <FEATURE id="N-GLYCOSYLATION:571:571" label="N-GLYCOSYLATION:571:571">
+      <TYPE id="N-GLYCOSYLATION"  reference="no" subparts="no" superparts="no">N-GLYCOSYLATION</TYPE>
+      <METHOD id="NetNGlyc-1.0">NetNGlyc-1.0</METHOD>
+      <START>571</START>
+      <END>571</END>
+      <SCORE>0.6527</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>Jury: (9/9), result: ++</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNGlyc-1.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNGlyc-1.0</LINK>
+    </FEATURE>
+    <FEATURE id="N-GLYCOSYLATION:759:759" label="N-GLYCOSYLATION:759:759">
+      <TYPE id="N-GLYCOSYLATION"  reference="no" subparts="no" superparts="no">N-GLYCOSYLATION</TYPE>
+      <METHOD id="NetNGlyc-1.0">NetNGlyc-1.0</METHOD>
+      <START>759</START>
+      <END>759</END>
+      <SCORE>0.6894</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>Jury: (9/9), result: ++</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNGlyc-1.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetNGlyc-1.0</LINK>
+    </FEATURE>
+    <FEATURE id="O-GLYCOSYLATION (T):266:266" label="O-GLYCOSYLATION (T):266:266">
+      <TYPE id="O-GLYCOSYLATION (T)"  reference="no" subparts="no" superparts="no">O-GLYCOSYLATION (T)</TYPE>
+      <METHOD id="NetOGlyc-3.1">NetOGlyc-3.1</METHOD>
+      <START>266</START>
+      <END>266</END>
+      <SCORE>0.557</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1</LINK>
+    </FEATURE>
+    <FEATURE id="O-GLYCOSYLATION (T):269:269" label="O-GLYCOSYLATION (T):269:269">
+      <TYPE id="O-GLYCOSYLATION (T)"  reference="no" subparts="no" superparts="no">O-GLYCOSYLATION (T)</TYPE>
+      <METHOD id="NetOGlyc-3.1">NetOGlyc-3.1</METHOD>
+      <START>269</START>
+      <END>269</END>
+      <SCORE>0.598</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1</LINK>
+    </FEATURE>
+    <FEATURE id="O-GLYCOSYLATION (T):270:270" label="O-GLYCOSYLATION (T):270:270">
+      <TYPE id="O-GLYCOSYLATION (T)"  reference="no" subparts="no" superparts="no">O-GLYCOSYLATION (T)</TYPE>
+      <METHOD id="NetOGlyc-3.1">NetOGlyc-3.1</METHOD>
+      <START>270</START>
+      <END>270</END>
+      <SCORE>0.586</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1</LINK>
+    </FEATURE>
+    <FEATURE id="O-GLYCOSYLATION (T):274:274" label="O-GLYCOSYLATION (T):274:274">
+      <TYPE id="O-GLYCOSYLATION (T)"  reference="no" subparts="no" superparts="no">O-GLYCOSYLATION (T)</TYPE>
+      <METHOD id="NetOGlyc-3.1">NetOGlyc-3.1</METHOD>
+      <START>274</START>
+      <END>274</END>
+      <SCORE>0.558</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1</LINK>
+    </FEATURE>
+    <FEATURE id="O-GLYCOSYLATION (T):275:275" label="O-GLYCOSYLATION (T):275:275">
+      <TYPE id="O-GLYCOSYLATION (T)"  reference="no" subparts="no" superparts="no">O-GLYCOSYLATION (T)</TYPE>
+      <METHOD id="NetOGlyc-3.1">NetOGlyc-3.1</METHOD>
+      <START>275</START>
+      <END>275</END>
+      <SCORE>0.556</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1</LINK>
+    </FEATURE>
+    <FEATURE id="O-GLYCOSYLATION (T):276:276" label="O-GLYCOSYLATION (T):276:276">
+      <TYPE id="O-GLYCOSYLATION (T)"  reference="no" subparts="no" superparts="no">O-GLYCOSYLATION (T)</TYPE>
+      <METHOD id="NetOGlyc-3.1">NetOGlyc-3.1</METHOD>
+      <START>276</START>
+      <END>276</END>
+      <SCORE>0.531</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1</LINK>
+    </FEATURE>
+    <FEATURE id="O-GLYCOSYLATION (T):277:277" label="O-GLYCOSYLATION (T):277:277">
+      <TYPE id="O-GLYCOSYLATION (T)"  reference="no" subparts="no" superparts="no">O-GLYCOSYLATION (T)</TYPE>
+      <METHOD id="NetOGlyc-3.1">NetOGlyc-3.1</METHOD>
+      <START>277</START>
+      <END>277</END>
+      <SCORE>0.509</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1</LINK>
+    </FEATURE>
+    <FEATURE id="O-GLYCOSYLATION (T):278:278" label="O-GLYCOSYLATION (T):278:278">
+      <TYPE id="O-GLYCOSYLATION (T)"  reference="no" subparts="no" superparts="no">O-GLYCOSYLATION (T)</TYPE>
+      <METHOD id="NetOGlyc-3.1">NetOGlyc-3.1</METHOD>
+      <START>278</START>
+      <END>278</END>
+      <SCORE>0.524</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetOGlyc-3.1</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):159:159" label="PHOSPHORYLATION (S):159:159">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>159</START>
+      <END>159</END>
+      <SCORE>0.901</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):162:162" label="PHOSPHORYLATION (S):162:162">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>162</START>
+      <END>162</END>
+      <SCORE>0.836</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):271:271" label="PHOSPHORYLATION (S):271:271">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>271</START>
+      <END>271</END>
+      <SCORE>0.973</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):282:282" label="PHOSPHORYLATION (S):282:282">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>282</START>
+      <END>282</END>
+      <SCORE>0.996</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):370:370" label="PHOSPHORYLATION (S):370:370">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>370</START>
+      <END>370</END>
+      <SCORE>0.992</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):407:407" label="PHOSPHORYLATION (S):407:407">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>407</START>
+      <END>407</END>
+      <SCORE>0.948</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):441:441" label="PHOSPHORYLATION (S):441:441">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>441</START>
+      <END>441</END>
+      <SCORE>0.907</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):587:587" label="PHOSPHORYLATION (S):587:587">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>587</START>
+      <END>587</END>
+      <SCORE>0.994</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):596:596" label="PHOSPHORYLATION (S):596:596">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>596</START>
+      <END>596</END>
+      <SCORE>0.959</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):614:614" label="PHOSPHORYLATION (S):614:614">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>614</START>
+      <END>614</END>
+      <SCORE>0.868</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):656:656" label="PHOSPHORYLATION (S):656:656">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>656</START>
+      <END>656</END>
+      <SCORE>0.953</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):679:679" label="PHOSPHORYLATION (S):679:679">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>679</START>
+      <END>679</END>
+      <SCORE>0.963</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (S):730:730" label="PHOSPHORYLATION (S):730:730">
+      <TYPE id="PHOSPHORYLATION (S)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (S)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>730</START>
+      <END>730</END>
+      <SCORE>0.888</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (T):266:266" label="PHOSPHORYLATION (T):266:266">
+      <TYPE id="PHOSPHORYLATION (T)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (T)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>266</START>
+      <END>266</END>
+      <SCORE>0.97</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (T):270:270" label="PHOSPHORYLATION (T):270:270">
+      <TYPE id="PHOSPHORYLATION (T)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (T)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>270</START>
+      <END>270</END>
+      <SCORE>0.884</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (T):371:371" label="PHOSPHORYLATION (T):371:371">
+      <TYPE id="PHOSPHORYLATION (T)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (T)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>371</START>
+      <END>371</END>
+      <SCORE>0.911</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (T):381:381" label="PHOSPHORYLATION (T):381:381">
+      <TYPE id="PHOSPHORYLATION (T)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (T)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>381</START>
+      <END>381</END>
+      <SCORE>0.828</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (T):508:508" label="PHOSPHORYLATION (T):508:508">
+      <TYPE id="PHOSPHORYLATION (T)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (T)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>508</START>
+      <END>508</END>
+      <SCORE>0.953</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (T):633:633" label="PHOSPHORYLATION (T):633:633">
+      <TYPE id="PHOSPHORYLATION (T)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (T)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>633</START>
+      <END>633</END>
+      <SCORE>0.924</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (T):651:651" label="PHOSPHORYLATION (T):651:651">
+      <TYPE id="PHOSPHORYLATION (T)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (T)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>651</START>
+      <END>651</END>
+      <SCORE>0.989</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (T):743:743" label="PHOSPHORYLATION (T):743:743">
+      <TYPE id="PHOSPHORYLATION (T)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (T)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>743</START>
+      <END>743</END>
+      <SCORE>0.978</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (Y):217:217" label="PHOSPHORYLATION (Y):217:217">
+      <TYPE id="PHOSPHORYLATION (Y)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (Y)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>217</START>
+      <END>217</END>
+      <SCORE>0.981</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (Y):262:262" label="PHOSPHORYLATION (Y):262:262">
+      <TYPE id="PHOSPHORYLATION (Y)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (Y)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>262</START>
+      <END>262</END>
+      <SCORE>0.986</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (Y):378:378" label="PHOSPHORYLATION (Y):378:378">
+      <TYPE id="PHOSPHORYLATION (Y)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (Y)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>378</START>
+      <END>378</END>
+      <SCORE>0.913</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (Y):681:681" label="PHOSPHORYLATION (Y):681:681">
+      <TYPE id="PHOSPHORYLATION (Y)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (Y)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>681</START>
+      <END>681</END>
+      <SCORE>0.87</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (Y):728:728" label="PHOSPHORYLATION (Y):728:728">
+      <TYPE id="PHOSPHORYLATION (Y)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (Y)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>728</START>
+      <END>728</END>
+      <SCORE>0.821</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (Y):757:757" label="PHOSPHORYLATION (Y):757:757">
+      <TYPE id="PHOSPHORYLATION (Y)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (Y)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>757</START>
+      <END>757</END>
+      <SCORE>0.94</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    <FEATURE id="PHOSPHORYLATION (Y):762:762" label="PHOSPHORYLATION (Y):762:762">
+      <TYPE id="PHOSPHORYLATION (Y)"  reference="no" subparts="no" superparts="no">PHOSPHORYLATION (Y)</TYPE>
+      <METHOD id="NetPhos-2.0">NetPhos-2.0</METHOD>
+      <START>762</START>
+      <END>762</END>
+      <SCORE>0.946</SCORE>
+      <ORIENTATION>0</ORIENTATION>
+      <NOTE>High confidence server. Only hits with scores over 0.8 are reported.</NOTE>
+      <LINK href="http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0">http://www.cbs.dtu.dk/cgi-bin/proview/webface-link?seqid=A4_HUMAN&amp;amp;service=NetPhos-2.0</LINK>
+    </FEATURE>
+    </SEGMENT>
+  </GFF>
+</DASGFF>

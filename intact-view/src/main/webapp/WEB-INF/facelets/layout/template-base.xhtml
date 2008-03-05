@@ -1,0 +1,92 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components">
+
+    <tr:document title="IntAct View">
+        <tr:form id="intactForm">
+
+            <tr:panelPage>
+
+                <f:facet name="branding">
+                    <tr:panelGroupLayout>
+                        <tr:image source="http://www.ebi.ac.uk/intact/site/images/logo_intact_small.gif"/>
+                    </tr:panelGroupLayout>
+                </f:facet>
+
+                <f:facet name="navigationGlobal">
+                    <tr:navigationPane hint="list" var="menuItem" value="#{navigationModel.model}">
+                        <f:facet name="nodeStamp">
+                            <tr:commandNavigationItem text="#{menuItem.label}"
+                                                      disabled="#{empty menuItem.viewId}"
+                                                      action="#{menuItem.goToView}"/>
+                        </f:facet>
+                    </tr:navigationPane>
+                </f:facet>
+                <!--<f:facet name="navigation1">-->
+                    <!--<tr:navigationPane hint="tabs" var="menuItem" value="#{navigationModel.model}" level="1">-->
+                        <!--<f:facet name="nodeStamp">-->
+                            <!--<tr:commandNavigationItem text="#{menuItem.label}"-->
+                                                      <!--disabled="#{empty menuItem.viewId}"-->
+                                                      <!--action="#{menuItem.goToView}"/>-->
+                        <!--</f:facet>-->
+                    <!--</tr:navigationPane>-->
+                <!--</f:facet>-->
+                <f:facet name="navigation2">
+                    <tr:navigationPane hint="bar" var="menuItem" value="#{navigationModel.model}"  level="1">
+                        <f:facet name="nodeStamp">
+                            <tr:commandNavigationItem text="#{menuItem.label}"
+                                                      disabled="#{empty menuItem.viewId}"
+                                                      action="#{menuItem.goToView}"/>
+                        </f:facet>
+                    </tr:navigationPane>
+                </f:facet>
+
+                <f:facet name="navigation3">
+                    <tr:navigationPane hint="list" var="menuItem" value="#{navigationModel.model}"  level="2">
+                        <f:facet name="nodeStamp">
+                            <tr:commandNavigationItem text="#{menuItem.label}"
+                                                      disabled="#{empty menuItem.viewId}"
+                                                      action="#{menuItem.goToView}"/>
+                        </f:facet>
+                    </tr:navigationPane>
+                </f:facet>
+
+                <f:facet name="location">
+                    <tr:breadCrumbs var="menuItem" value="#{navigationModel.model}">
+                        <f:facet name="nodeStamp">
+                            <tr:commandNavigationItem text="#{menuItem.label}"
+                                                      disabled="#{empty menuItem.viewId}"
+                                                      action="#{menuItem.goToView}"/>
+                        </f:facet>
+                    </tr:breadCrumbs>
+                </f:facet>
+
+                <f:facet name="appCopyright">
+                    <tr:outputText value="European Bioinformatics Institute"/>
+                </f:facet>
+
+                <f:facet name="appAbout">
+                    <tr:outputText value="IntAct Athena v.0.1.alpha"/>
+                </f:facet>
+
+                <div class="pageBody">
+
+                    <ui:insert name="content">
+                        This page has no content. Implement the &lt;ui:define name="content"> section.
+                    </ui:insert>
+
+                </div>
+
+            </tr:panelPage>
+
+        </tr:form>
+    </tr:document>
+
+</ui:composition>

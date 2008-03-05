@@ -1,0 +1,66 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                template="WEB-INF/facelets/layout/template-base.xhtml">
+
+    <ui:define name="content">
+
+        <tr:messages/>
+                <tr:panelHeader text="Test Page">
+                    <tr:panelHeader text="Section 1">
+                        <tr:panelGroupLayout layout="vertical">
+                            <tr:commandLink text="Component Guide" action="guide"/>
+                        </tr:panelGroupLayout>
+                    </tr:panelHeader>
+
+                    <tr:panelHeader text="Section 2">
+                        <tr:panelGroupLayout layout="vertical">
+                            <tr:commandLink text="Feature Demos"
+                                            action="demos"/>
+                        </tr:panelGroupLayout>
+                    </tr:panelHeader>
+
+                    <tr:panelHeader text="Section 3">
+                        <tr:panelGroupLayout layout="vertical">
+                            <tr:panelGroupLayout>
+                                <tr:commandLink text="Email" action="emaildemo"/>
+                                <tr:outputText value=" - Trinidad Email Demo"/>
+                            </tr:panelGroupLayout>
+                            <tr:panelGroupLayout>
+                                <tr:commandLink text="Survey" action="survey"/>
+                                <tr:outputText value=" - simple application"/>
+                            </tr:panelGroupLayout>
+
+                        </tr:panelGroupLayout>
+                    </tr:panelHeader>
+
+                    <tr:panelHeader text="Section 4">
+                        And a panel box here (light):
+
+                        <tr:panelBox text="A panelBox">
+                            Content of the box
+                        </tr:panelBox>
+
+                        And another (dark):
+                        <tr:panelBox background="dark">
+                            Content of the box
+                        </tr:panelBox>
+
+                        And the last one (transparent)
+                        <tr:panelBox background="transparent">
+                            I can contain information too!
+                        </tr:panelBox>
+                    </tr:panelHeader>
+
+                </tr:panelHeader>
+
+
+    </ui:define>
+
+</ui:composition>

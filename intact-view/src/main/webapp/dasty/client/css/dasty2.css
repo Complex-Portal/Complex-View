@@ -1,0 +1,434 @@
+/* --------------------------------------------------------------------------------
+=> DASTY2, RESULT PAGE
+-------------------------------------------------------------------------------- */
+	div#__tooltip__ {z-index:900;}  /* display: none; */
+	/* ---------------------------------------------------------------
+	=> GENERAL PROPERTIES OF THE WEBPAGE
+	--------------------------------------------------------------- */
+	
+		/* -----------------------------------------------------------
+		=> BODY AND LINKS
+		----------------------------------------------------------- */
+		   body {
+				font-family: Verdana, Arial, Helvetica, sans-serif;
+				font-size: 8pt;
+				color: #333333;
+				text-align: justify;
+				border: medium none;
+				margin: 0px;
+			}
+		
+		    a            { color: #000000;	text-decoration: none; font-weight: bold;}
+		    a:link       { color: #000000;}
+		    a:visited    { color: #000000;}
+		    a:active     { color: #000000;}
+		    a:hover      { color: #CC0000;}
+			
+			a:link.gr_text_01       { color: #006666;}
+			a:visited.gr_text_01    { color: #006666;}
+			a:active.gr_text_01     { color: #006666;}
+			a:hover.gr_text_01      { color: #e33e3e;}			
+			
+			table 	{
+			  font-family: Verdana, Arial, Helvetica, sans-serif;
+			  font-size: 8pt;
+			  text-align: justify;
+			}
+	
+		/* -----------------------------------------------------------
+		=> "SHOW/HIDE" HEADER TITLES
+		----------------------------------------------------------- */
+			.maintitle
+			{
+			display:block;
+			padding: 2px;
+			margin-bottom:5px;
+			background:url(../img/fdo_01b.gif);
+			background-repeat:repeat-y;
+			}
+	
+		/* -----------------------------------------------------------
+		=> SPACE BELOW TITLES TO SHOW INFORMATION
+		----------------------------------------------------------- */
+			div.divformat{
+			margin-left:8px;
+			margin-bottom:12px;
+			padding: 0px;
+			background-color: #FFFFFF;
+			/* background-color: #F9F9F9; */
+			/*font-family:"Courier New", Courier, mono
+			font-size: 10pt;
+			28sep06*/
+			}
+		
+		/* -----------------------------------------------------------
+		=> TEXT INSIDE CONTENT THAT WE WANT LESS BRIGHT
+		----------------------------------------------------------- */	
+			span.title{
+			 color: #999999;
+			 /* font-size: 10pt;
+			 28sep06*/
+			 }	
+			 
+		/* -----------------------------------------------------------
+		=> FORMS
+		----------------------------------------------------------- */ 
+			 .textbox
+			   {
+			    font-family: Verdana, Arial, Helvetica, sans-serif;
+				font-size: 8pt;
+				color: #333333;
+				background: #F0F0F0;
+				border: 1px solid #999999;
+				padding:2px;
+			   }
+			   
+			 .label_list
+			   {
+			    font-family: Verdana, Arial, Helvetica, sans-serif;
+				font-size: 8pt;
+				color: #333333;
+				background: #F0F0F0;
+				border: 1px solid #999999;
+				padding:1px;
+			   }
+			
+	/* ---------------------------------------------------------------
+	=> SEQUENCE
+	--------------------------------------------------------------- */		
+			div.sequence_format{
+			font-family:"Courier New", Courier, mono;
+			font-size: 9pt; /*28sep06*/
+			}	
+			
+		/* -----------------------------------------------------------
+		=> HIGHLIGHTED SEQUENCE
+		----------------------------------------------------------- */
+			
+			span.highlightSequence
+			{
+			  font-weight:bold;
+			  /* font-weight:bold;
+			  background-color:#FFF4FF;
+			  border-top: 1px dashed #5B2012;
+			  padding: -1px;
+			  margin: 0px;
+			  text-decoration: none;
+			  margin-bottom: -1px; margin-left:-1px; margin-right: -1px; margin-top:-1px;
+			  border: 1px solid #FF6600; FFFFCC*/
+			}  			
+			
+	/* ---------------------------------------------------------------
+	=> NON POSITIONAL FEATURES
+	--------------------------------------------------------------- */	
+	
+		/* -----------------------------------------------------------
+		=> TABLE
+		----------------------------------------------------------- */			
+			table.feature_table
+			{
+			/* width: 98%; */
+			padding: 0px;
+			margin: 0px;
+			border-spacing: 1px; 
+			background-color: #E9E9E9;
+			}
+			
+		/* -----------------------------------------------------------
+		=> CELLS
+		----------------------------------------------------------- */	
+			table.feature_table td
+			{
+			padding:2px;
+			}
+			
+		/* -----------------------------------------------------------
+		=> TITLE ROW
+		----------------------------------------------------------- */	
+			tr.feature_table_row_title_decor{
+			/* font-weight: bold; */
+			/* font-family: Verdana, Arial, Helvetica, sans-serif; */
+			/* font-size: 9pt; */
+			/* background-color:#F0F0F0; */
+			/* color:#000000; */
+			/* text-align:center; */
+			/* color: #999999; */
+			background:#E4E4E4; font-weight:bold;
+			}
+			
+		/* -----------------------------------------------------------
+		=> COLUMS
+		----------------------------------------------------------- */	
+			td.feature_table_cell_title_decor0{width:120px;}
+			td.feature_table_cell_title_decor1{width:140px;}
+			td.feature_table_cell_title_decor2{}
+			td.feature_table_cell_title_decor3{}
+			td.feature_table_cell_title_decor4{}
+			td.feature_table_cell_title_decor5{}			
+		/* -----------------------------------------------------------
+		=> ALTERNATE ROWS
+		----------------------------------------------------------- */	
+			.feature_table_row_decor0{ background:#FFFFFF; vertical-align:top;}
+			.feature_table_row_decor1{ background:#F8F8F8; vertical-align:top;}
+			
+
+
+
+	/* ---------------------------------------------------------------
+	=> GRAPHIC, POSITIONAL FEATURES
+	------------------------------------------------------------------
+	=> <UL>(panel) // <LI>(lines) // <DIV>(cells) // <A>(features)
+	--------------------------------------------------------------- */
+		
+		/* -----------------------------------------------------------
+		=> PANEL PROPERTIES -> Aplied basically to the list tag: "<UL>"
+		----------------------------------------------------------- */	
+			.gr_list_class {
+			  /* background-color: #ffb; */
+			  margin:0;
+			  margin-top:0px;
+			  padding:0;
+			  list-style-type: none;
+			  /* width:505px; */
+			} 
+			
+			.gr_scalebar {
+			  margin:0;
+			  margin-top:0px;
+			  padding:0;
+			  list-style-type: none;
+			  }
+			  
+			.gr_slidebar {
+			  margin:0;
+			  margin-top:0px;
+			  padding:0;
+			  list-style-type: none;
+			  /* background:#99CC00; */
+			  }
+			
+			#gr_list0 {
+			  position:relative;
+			  /* z-index:1; */
+			}
+			
+			#gr_list_tittle {
+			  position:relative;
+			  z-index:1;
+			}
+			
+			#gr_scalebar_ul {
+			  position:relative;
+			  z-index:2;
+			}
+			
+			#gr_slidebar_ul {
+			  position:relative;
+			  z-index:2;
+			}
+			
+			
+		/* -----------------------------------------------------------
+		=> LINE PROPERTIES -> Aplied to the lines of the list: "<LI>"
+		----------------------------------------------------------- */	
+			.gr_list_class li {
+			  /* margin:0; */
+			  margin-bottom:-1px;
+			  padding:0px;
+			  /* height: 13px; */
+			  border:1px solid #E9E9E9 /* #E9E9E9 */;
+			  cursor:move;
+			  position:relative;
+			  background: #E9E9E9;
+			}
+			.gr_scalebar li {
+			  margin-bottom:-1px;
+			  padding:0px;
+			  border:1px solid #FFFFFF;
+			  cursor:move;
+			  position:relative;
+			  background: #FFFFFF;
+			}
+		/* -----------------------------------------------------------
+		=> GENERAL CELL PROPERTIES -> Aplied to the cells inside the list: "<DIV>"
+		----------------------------------------------------------- */	
+			.gr_div {
+			position:absolute;
+			padding:0px;
+			margin: 0px;
+			vertical-align:middle;
+			text-align:left;	
+			/* background:#FFFF66; */
+			/* height: 13px; */
+			}
+			
+			.gr_scalebar_div
+			{
+			/* z-index:2; */
+			background-color:#333333;
+			filter:alpha(opacity=10);
+			opacity: 0.1;
+			-moz-opacity:0.1;
+			}
+			
+			.gr_scalebar_span {
+			position:absolute;
+			padding:0px;
+			margin: 0px;
+			vertical-align:middle;
+			text-align:left;	
+			/* background:#FFFF66; */
+			/* height: 13px; */
+			}
+			
+			/* -----------------------------------------------------------
+			=> SPECIFIC CELL PROPERTIES BY ROW -> <DIV>"
+			----------------------------------------------------------- */	
+						
+				/* -------------------------------------------------------
+				=> white and grey
+				------------------------------------------------------- */
+				.gr_row_01 { /* background:#FFFFFF; */ background:#FFFFFF; }
+				.gr_row_02 { /* background:#F0F0F0; */ background:#F8F8F8; }
+				/* -------------------------------------------------------
+				=> yellow
+				------------------------------------------------------- */
+				.gr_row_07 { background:#FFFFCC;}
+				.gr_row_08 { background:#FFFF99;}
+				/* -------------------------------------------------------
+				=> pink-purple
+				-------------------------------------------------------
+				.gr_row_05 { background:#FFE0FF;}
+				.gr_row_06 { background:#FFCCFF;}		
+				/* -------------------------------------------------------
+				=> blue
+				-------------------------------------------------------
+				.gr_row_03 { background:#E1E1FF;}
+				.gr_row_04 { background:#CCCCFF;}
+				/* -------------------------------------------------------
+				=> red
+				------------------------------------------------------- */
+				.gr_row_05 { background:#FFE1E1;}
+				.gr_row_06 { background:#FFCCCC;}
+				/* -------------------------------------------------------
+				=> green
+				------------------------------------------------------- */
+				.gr_row_03 { background:#E1FFE1;}
+				.gr_row_04 { background:#CCFFCC;}
+				/* -------------------------------------------------------
+				=> tittle
+				------------------------------------------------------- */
+				.gr_row_tittle { background:#E4E4E4; font-weight:bold;}
+				
+			/* -----------------------------------------------------------
+			=> SPECIFIC CELL PROPERTIES BY COL -> <DIV>"
+			----------------------------------------------------------- */				
+				.gr_cell_01
+				{
+				/* left:1px; */
+				/* top:0px; */
+				/* width:100px; */
+				}
+				
+				.gr_cell_02
+				{
+				/* left:102px; */
+				/* top:0px; */
+				/* width:400px; */
+				}
+			
+		/* -----------------------------------------------------------
+		=> TEXT
+		----------------------------------------------------------- */	
+			.gr_text_01 {
+			font-weight: normal;
+			font-size: 12px;
+			font-family: "Courier New", Courier, mono;
+			margin-left: 2px;
+			}
+		/* -----------------------------------------------------------
+		=> TEXT TITTLE
+		----------------------------------------------------------- */	
+			.gr_text_02 {
+			margin-left: 2px;
+			cursor:pointer;
+			}
+			
+
+			
+		/* -----------------------------------------------------------
+		=> FEATURE
+		----------------------------------------------------------- */	
+			a.feature {
+			position:absolute;
+			padding: 0px;
+			margin:0px;
+			cursor:crosshair;
+			text-decoration: none;
+			/*position:relative;*/
+			z-index:3;
+			/* border: 1px solid #FF6600;*/
+			/* margin-bottom: -1px; margin-left:-1px; margin-right: -1px; margin-top:-1px; */
+			/* top:2px; */
+			/* height:7px; */
+			/* color: #fff;
+			background-color:#FFCC00; */
+			}
+			a.feature:hover
+			{
+			/* background-color:#FF9999;
+			color: #fff; */
+			}
+		
+	
+/* --------------------------------------------------------------------------------
+=> DASTY2, QUERY PAGE
+-------------------------------------------------------------------------------- */
+	
+	/* ---------------------------------------------------------------
+	=> SERVER LIST
+	--------------------------------------------------------------- */	
+	table.table_decor
+		{
+		background-color:#E9E9E9;
+		border-style: hidden;
+		border-spacing: 1px;
+		/*border-color:#E9E9E9;*/
+		
+		}
+	
+		/* -----------------------------------------------------------
+		=> ALTERNATE ROWS
+		----------------------------------------------------------- */			
+			tr.serverlist_table_row_decor0{ background:#FFFFFF;}
+			tr.serverlist_table_row_decor1{ background:#F8F8F8;}
+				
+		/* -----------------------------------------------------------
+		=> ALTERNATE COLS
+		----------------------------------------------------------- */	
+			
+			/*
+			td.serverlist_table_cell_decor0{width: 140px}
+			td.serverlist_table_cell_decor1{width: 140px}
+			*/	
+			
+			td.serverlist_table_cell_decor0{}
+			td.serverlist_table_cell_decor1{}
+			
+			
+
+div.zmenu { visibility:hidden; position:absolute; top: 800px; left: 800px; width: 200px; z-index: 200 }
+div.zmenu { border:1px #cccccc solid;}
+div.zmenu table th { font-size: 0.9em; background-color:#ccc; color:#000; text-align: left; border:1px #cccccc solid; }
+div.zmenu table td { font-size: 0.9em; color:#666; border-top : 1px #cccccc dotted;}
+div.zmenu a { text-decoration:none; }
+.zmenu img {border:none;}
+div#zmenu { font-family:arial,sans-serif,helvetica; font-size:0.9em; border:1px #cccccc solid;}
+div#zmenu th { background-color:#ccc; color:#000; }
+div#zmenu td { color:#555555;}
+div#zmenu a { text-decoration:none; }
+#zmenu img {border:none;}
+		
+	
+	
+.columnStyle {font-family: Verdana, Arial, Helvetica, sans-serif;}	
