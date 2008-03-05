@@ -318,18 +318,6 @@
         </repository>
     </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>java-net</id>
-            <name>java.net repository</name>
-            <url>http://download.java.net/maven/1/</url>
-            <layout>legacy</layout>
-        </pluginRepository>
-    </pluginRepositories>
-
 
     <distributionManagement>
         <site>

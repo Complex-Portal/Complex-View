@@ -41,8 +41,8 @@
             Configuration file
         </description>
         <param-name>psidev.DEFAULT_CONFIG_FILE</param-name>
-        <param-value>/ebi/sp/misc1/vusers/intact/production/webapp-conf/binary-search.cfg.xml</param-value>
-        <!--<param-value>/tmp/binary-search.cfg.xml</param-value>-->
+        <!--<param-value>/ebi/sp/misc1/vusers/intact/production/webapp-conf/binary-search.cfg.xml</param-value>-->
+        <param-value>/homes/baranda/tmp/binary-search.cfg.xml</param-value>
     </context-param>
     <context-param>
         <description>
