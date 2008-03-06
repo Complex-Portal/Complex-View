@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.Globals;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -140,6 +141,6 @@ public class IntactBaseForm extends ActionForm {
      * @param request the request to save errors.
      */
     protected void saveMessages( HttpServletRequest request ) {
-        request.setAttribute( org.apache.struts.action.ActionMessages.GLOBAL_MESSAGE, getMessages() );
+        request.setAttribute( Globals.MESSAGE_KEY, getMessages() );
     }
 }

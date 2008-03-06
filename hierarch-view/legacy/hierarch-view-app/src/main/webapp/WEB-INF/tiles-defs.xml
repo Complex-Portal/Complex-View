@@ -158,7 +158,7 @@
         </putList>
         <putList name="firstRowTabList">
             <item value="MoleculeType" link="/pages/typeTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
-            <item value="Confidence" link="/pages/confidenceTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
+            <!--<item value="Confidence" link="/pages/confidenceTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>-->
             <item value="Confidence" link="/pages/confidenceTab2.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
             <item value="Publication" link="/pages/publicationTab.jsp" classtype="org.apache.struts.tiles.beans.SimpleMenuItem"/>
         </putList>

@@ -17,9 +17,7 @@ package uk.ac.ebi.intact.application.hierarchview.struts.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.*;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
@@ -36,8 +34,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * TODO comment that class header
- * Wrapper form for the filter options in the confidenceTab.jsp
+ * Implementation of the <strong>Action</strong> of the user filtering the interactions
+ * with a specific confidence value for the highlighting.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
@@ -52,8 +50,10 @@ public class ConfidenceFilterAction extends IntactBaseAction {
                                   HttpServletResponse response )
             throws IOException, ServletException, SessionExpiredException {
 
-        // Clear any previous errors.
+        // Clear any previous errors/messages.
+        //TODO: although I never saw the errors or messages in a different state than empty, this method is called in each action
         clearErrors();
+        clearMessages();
 
         // get the current session
         HttpSession session = getSession( request );
@@ -123,7 +123,7 @@ public class ConfidenceFilterAction extends IntactBaseAction {
 
     private Set<String> firstFilteringMethod( List<SourceBean> sources, double score, String relation ) {
         Set<String> selectedKeys = new HashSet<String>();
-        String type = "Confidence";     //TODO: look from where i could get it
+        String type = "Confidence";     //TODO: replace the string with a more appropriate way of getting the type
 
         for ( Iterator<SourceBean> iter = sources.iterator(); iter.hasNext(); ) {
             SourceBean sourceBean = iter.next();

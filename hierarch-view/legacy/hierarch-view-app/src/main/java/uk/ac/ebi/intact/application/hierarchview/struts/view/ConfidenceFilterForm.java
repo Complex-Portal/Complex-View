@@ -163,9 +163,9 @@ public class ConfidenceFilterForm extends IntactBaseForm {
 
         this.method = null;
         this.relation = null;
-        this.confidenceValue = new Double(0.00);
-        this.minConfidenceValue = new Double(0.00);
-        this.maxConfidenceValue = new Double(0.00);
+        this.confidenceValue = 0.00;
+        this.minConfidenceValue = 0.00;
+        this.maxConfidenceValue = 0.00;
         this.clusivity = null;
 
         IntactUserI user = IntactUser.getCurrentInstance( request.getSession() );
@@ -204,15 +204,25 @@ public class ConfidenceFilterForm extends IntactBaseForm {
                                   HttpServletRequest request ) { 
 
         if ( confidenceValue < 0 || confidenceValue > 1){
-            addError("error.filter.score.bounded");
+            setConfidenceValue( 0.0 );
+            setRelation( "<" );
+            addMessage("error.filter.score.bounded");
         }
 
         if (( confidenceValue == 0 && relation.equals(">") ) || ( confidenceValue == 1 && relation.equals("<"))){
+            setConfidenceValue( 0.0 );
+            setRelation( ">=" );
             addMessage("error.filter.score.semantic");
         }
 
-        if (minConfidenceValue != 0 || maxConfidenceValue != 0){
+        if (minConfidenceValue < 0 || maxConfidenceValue >0){
+            setMinConfidenceValue( 0.0 );
+            setMaxConfidenceValue( 0.0 );
+            addMessage("error.filter.score.semantic.between");
+        }else if (minConfidenceValue != 0 || maxConfidenceValue != 0){
             if (minConfidenceValue > maxConfidenceValue){
+                setMinConfidenceValue( 0.0 );
+                setMaxConfidenceValue( 0.0 );
                 addMessage("error.filter.score.semantic.between");
             }
         }
@@ -221,7 +231,7 @@ public class ConfidenceFilterForm extends IntactBaseForm {
             /* save messages in the context, that feature is not included in Struts 1.1
              * currently it's only possible to manage ActionErrors when validating a form.
              */
-            saveMessages( request );
+            saveMessages( request );        
         }
 
         return getErrors();

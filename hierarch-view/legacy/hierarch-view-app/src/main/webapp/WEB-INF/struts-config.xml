@@ -89,8 +89,8 @@
                 type="uk.ac.ebi.intact.application.hierarchview.struts.controller.ConfidenceFilterAction"
                 name="confidenceFilterForm"
                 validate="true"
-                scope="request">
-             <!--   forward="/source">-->
+                scope="request"
+                input="hierarchView.result.layout">
         </action>
 
         <!-- Processes the user search for an external application -->
