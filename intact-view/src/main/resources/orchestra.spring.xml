@@ -53,6 +53,11 @@
           class="org.apache.myfaces.orchestra.conversation.spring.JpaPersistenceContextFactory"
           p:entityManagerFactory-ref="entityManagerFactory" />
 
+    <bean id="managedDataSource" class="org.apache.myfaces.orchestra.connectionManager.ConnectionManagerDataSource">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>
+    
+
 
 
     <!-- Trinidad dialog... -->
