@@ -11,11 +11,11 @@ import java.util.Collection;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class InteractionDecorator extends InteractorDecorator<Interaction>{
+public class InteractionWrapper extends InteractorWrapper<Interaction> {
 
     private int interactorCount;
 
-    public InteractionDecorator(Interaction data) {
+    public InteractionWrapper(Interaction data) {
         super(data);
 
         if (data.getAc() != null) {

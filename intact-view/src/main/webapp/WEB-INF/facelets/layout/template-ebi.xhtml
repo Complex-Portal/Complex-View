@@ -103,6 +103,18 @@
                         </div>
 
                         <!-- start contents here -->
+
+                        <tr:statusIndicator id="status">
+                            <f:facet name="busy">
+                                <tr:panelGroupLayout layout="horizontal">
+                                    <tr:image source="/skins/ebi/images/status_busy_redback.gif"
+                                              inlineStyle="vertical-align:middle"/>
+                                    <tr:outputFormatted value="&#160;"/>
+                                    <tr:outputText value="Loading..."/>
+                                </tr:panelGroupLayout>
+                            </f:facet>
+                        </tr:statusIndicator>
+
                         <table style="width:100%">
                             <tr>
                                 <td>

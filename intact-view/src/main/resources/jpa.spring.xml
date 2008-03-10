@@ -17,11 +17,12 @@
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
-    <!--<tx:annotation-driven/>-->
+    <bean class="uk.ac.ebi.intact.core.spring.URLDecoderResourceLoader" id="intactCoreResourceLoader"/>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
           p:dataSource-ref="dataSource"
           p:persistenceUnitName="intact-core-default">
+        <property name="resourceLoader" ref="intactCoreResourceLoader"/>
         <property name="jpaProperties">
         <props>
             <prop key="hibernate.dialect">${db.dialect}</prop>
@@ -39,7 +40,7 @@
         </property>
 
     </bean>
-
+ 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
           p:driverClassName="${db.driver}"
           p:url="${hibernate.url}"

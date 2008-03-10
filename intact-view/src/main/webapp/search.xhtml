@@ -13,22 +13,27 @@
 <!-- content -->
   <ui:define name="content">
 
+  <tr:panelGroupLayout partialTriggers="searchAgainBtn btnInteractions btnInteractors btnExperiments btnControlledVocab">
+
       <tr:panelBox background="dark" inlineStyle="width:400px">
           <tr:panelGroupLayout layout="horizontal">
            <tr:inputText label="Query:" value="#{searchBean.searchQuery}"/>
-          <tr:commandButton id="searchAgainBtn" text="Search" actionListener="#{searchBean.doSearchAll}"/>
+          <tr:commandButton id="searchAgainBtn" partialSubmit="true"
+                            text="Search" actionListener="#{searchBean.doSearchAll}"/>
           </tr:panelGroupLayout>
       </tr:panelBox>
 
       <tr:panelHeader text="Search summary" rendered="#{searchBean.searchClassName == null}">
 
           <tr:panelList>
-              <tr:commandLink text="Interactions: #{searchBean.resultStats.interactionCount}"
+              <tr:commandLink id="btnInteractions" partialSubmit="true"
+                              text="Interactions: #{searchBean.resultStats.interactionCount}"
                       actionListener="#{searchBean.doSearchClass}">
                   <f:param value="uk.ac.ebi.intact.model.InteractionImpl"/>
               </tr:commandLink>
 
-              <tr:commandLink text="Interactors: #{searchBean.resultStats.proteinCount + searchBean.resultStats.smallMoleculeCount + searchBean.resultStats.nucleicAcidCount}"
+              <tr:commandLink id="btnInteractors" partialSubmit="true"
+                              text="Interactors: #{searchBean.resultStats.proteinCount + searchBean.resultStats.smallMoleculeCount + searchBean.resultStats.nucleicAcidCount}"
                       actionListener="#{searchBean.doSearchClass}">
                   <f:param value="uk.ac.ebi.intact.model.InteractorImpl"/>
               </tr:commandLink>
@@ -37,12 +42,14 @@
               <tr:outputText value="Small Molecules: #{searchBean.resultStats.smallMoleculeCount}"/>
               <tr:outputText value="Nucleic Acids: #{searchBean.resultStats.nucleicAcidCount}"/>
 
-              <tr:commandLink text="Experiments: #{searchBean.resultStats.experimentCount}"
+              <tr:commandLink id="btnExperiments" partialSubmit="true"
+                      text="Experiments: #{searchBean.resultStats.experimentCount}"
                       actionListener="#{searchBean.doSearchClass}">
                   <f:param value="uk.ac.ebi.intact.model.Experiment"/>
               </tr:commandLink>
 
-              <tr:commandLink text="Controlled Vocabularies: #{searchBean.resultStats.cvObjectCount}"
+              <tr:commandLink id="btnControlledVocab" partialSubmit="true"
+                      text="Controlled Vocabularies: #{searchBean.resultStats.cvObjectCount}"
                       actionListener="#{searchBean.doSearchClass}">
                   <f:param value="uk.ac.ebi.intact.model.CvObject"/>
               </tr:commandLink>
@@ -54,35 +61,20 @@
 
       <!-- Interactions -->
 
-      <tr:panelHeader text="Interactions" rendered="#{ searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractionImpl'}">
-          <tr:table binding="#{interactionResultsBean.resultsTable}"
-                    var="ao" value="#{searchBean.searchResults}"
-                    rowBandingInterval="1" rowSelection="multiple" rows="25">
+      <tr:panelHeader text="Interactions" rendered="#{ searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractionImpl'}"
+              partialTriggers="btnInteractions">
 
-            <f:facet name="footer">
-                <tr:panelGroupLayout layout="vertical">
-                    <h:commandLink value="View selected to HierarchView"
-                                      actionListener="#{interactorResultsBean.exportSelectedToHierarchView}"/>
-                </tr:panelGroupLayout>
-            </f:facet>
+          <ui:decorate template="pages/interaction/interaction_table.xhtml">
+              <ui:define name="footer">
+                  <tr:panelGroupLayout layout="vertical">
+                      <h:commandLink value="View selected in HierarchView"
+                                     actionListener="#{interactorResultsBean.exportSelectedToHierarchView}"/>
+                  </tr:panelGroupLayout>
+              </ui:define>
 
-              <tr:column headerText="Name" sortable="true" sortProperty="shortLabel">
-                  <tr:outputText value="#{ao.shortLabel}"/>
-              </tr:column>
-              <tr:column headerText="AC" sortable="true" sortProperty="ac">
-                  <tr:outputText value="#{ao.ac}"/>
-              </tr:column>
-              <tr:column headerText="Description" sortable="true" sortProperty="fullName">
-                  <tr:outputText value="#{ao.fullName}"/>
-              </tr:column>
-              <tr:column headerText="Experiment" sortable="true" sortProperty="experiments">
-                  <tr:outputText value="#{ao.experiments[0].shortLabel}"/>
-              </tr:column>
-              <tr:column headerText="Interactors" >
-                  <tr:outputText value="#{ao.interactorCount}"/>
-              </tr:column>
-          </tr:table>
-
+              <ui:param name="binding" value="#{interactionResultsBean.resultsTable}"/>
+              <ui:param name="values" value="#{searchBean.searchResults}"/>
+          </ui:decorate>
       </tr:panelHeader>
 
       <!-- Interactors -->
@@ -185,6 +177,8 @@
           </tr:table>
 
       </tr:panelHeader>
+
+  </tr:panelGroupLayout>
 
   </ui:define>
   

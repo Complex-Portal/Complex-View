@@ -3,9 +3,10 @@ package uk.ac.ebi.intact.services.search.model;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * TODO comment this
@@ -13,13 +14,14 @@ import java.util.Set;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class InteractorDecorator<T extends Interactor> extends AnnotatedObjectDecorator<T>{
+public class InteractorWrapper<T extends Interactor> extends AnnotatedObjectWrapper<T> {
 
     private String geneName;
     private Set<String> interactionsAcs;
     private Set<String> partnerAcs;
+    private Object interactions;
 
-    public InteractorDecorator(T data) {
+    public InteractorWrapper(T data) {
         super(data);
 
         this.interactionsAcs = new HashSet<String>();
@@ -33,6 +35,26 @@ public class InteractorDecorator<T extends Interactor> extends AnnotatedObjectDe
                 this.partnerAcs.add(component.getInteractorAc());
             } 
         }
+    }
+
+    public Object getInteractions() {
+        if (interactions == null) {
+
+            if (getData().getAc() != null) {
+                interactions = new CriteriaDataModel(DetachedCriteria.forClass(Interaction.class)
+                        .createAlias("components", "comp")
+                        .createAlias("comp.interactor", "interactor")
+                        .add(Restrictions.eq("interactor.ac", getData().getAc())));
+            } else {
+
+                interactions = new ArrayList<Interaction>();
+
+                for (Component c : getData().getActiveInstances()) {
+                    ((List) interactions).add(c.getInteraction());
+                }
+            }
+        }
+        return interactions;
     }
 
     public BioSource getBioSource() {
@@ -70,4 +92,5 @@ public class InteractorDecorator<T extends Interactor> extends AnnotatedObjectDe
     public int getPartnersCount() {
         return partnerAcs.size();
     }
+
 }

@@ -4,12 +4,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.SortCriterion;
 import org.apache.myfaces.trinidad.model.SortableModel;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Order;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.svc.impl.SimpleSearchService;
+import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.services.search.util.Functions;
 
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
-import java.io.Serializable;
+import javax.persistence.Query;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -18,74 +25,56 @@ import java.util.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class SearchResultDataModel extends SortableModel implements Serializable {
+public class CriteriaDataModel extends SortableModel implements Serializable {
 
     private static final Log log = LogFactory.getLog(SearchResultDataModel.class);
 
     private static final int DEFAULT_MAX_RESULTS = 25;
 
-    private Class<? extends Searchable>[] searchableClasses;
-    private String searchQuery;
+    private DetachedCriteria detachedCriteria;
     private List results;
     private int rowIndex = -1;
     private int firstResult = 0;
     private int maxResults = DEFAULT_MAX_RESULTS;
     private int rowCount = 0;
 
-    private SimpleSearchService searchService;
 
-    public SearchResultDataModel(Class<? extends Searchable>[] searchableClasses, String searchQuery) {
-        this.searchableClasses = searchableClasses;
-        this.searchQuery = searchQuery;
-        this.searchService = new SimpleSearchService();
+    public CriteriaDataModel(DetachedCriteria detachedCriteria) {
+        this.detachedCriteria = detachedCriteria;
 
-        Map<Class<? extends Searchable>,Integer> map = searchService.count(searchableClasses, searchQuery);
-
-        for (Integer count : map.values()) {
-            this.rowCount += count;
-        }
+        rowCount = count(detachedCriteria);
 
         fetchResults();
         setWrappedData(results);
     }
 
     protected void fetchResults() {
-        if (log.isDebugEnabled()) log.debug("Fetching results: "+searchQuery+" on "+ Arrays.asList(searchableClasses));
-
+        Criteria criteria = createCriteria(detachedCriteria);
         List<SortCriterion> sortCriteria = super.getSortCriteria();
 
         if (!sortCriteria.isEmpty()) {
             // only use the first criterion
             SortCriterion criterion = sortCriteria.get(0);
 
-            searchService.setSortProperty(criterion.getProperty());
-            searchService.setSortAsc(criterion.isAscending());
+            if (criterion.isAscending()) {
+                criteria.addOrder(Order.asc(criterion.getProperty()));
+            } else {
+                criteria.addOrder(Order.desc(criterion.getProperty()));
+            }
 
             if (log.isDebugEnabled()) log.debug("\tSorting by '"+criterion.getProperty()+"' "+(criterion.isAscending()? "ASC" : "DESC"));
         }
 
-        Collection<?> searchResults = searchService.search(searchableClasses, searchQuery, firstResult, maxResults);
+        Collection<?> searchResults = criteria.list();
         results = new ArrayList(searchResults.size());
 
         // wrap if necessary
-        if (Interaction.class.isAssignableFrom(searchableClasses[0])) {
-            for (Object objInteractor : searchResults) {
-                results.add(new InteractionWrapper((Interaction)objInteractor));
+        for (Object obj : searchResults) {
+            if (obj instanceof AnnotatedObject) {
+                results.add(Functions.wrap((AnnotatedObject)obj)) ;
+            } else {
+                results.add(obj);
             }
-        } else if (Interactor.class.isAssignableFrom(searchableClasses[0])) {
-            for (Object objInteractor : searchResults) {
-                results.add(new InteractorWrapper((Interactor)objInteractor));
-            }
-        } else if (Experiment.class.isAssignableFrom(searchableClasses[0])) {
-            for (Object objInteractor : searchResults) {
-                results.add(new ExperimentWrapper((Experiment)objInteractor));
-            }
-        } else if (CvObject.class.isAssignableFrom(searchableClasses[0])) {
-            for (Object objInteractor : searchResults) {
-                results.add(new CvObjectWrapper((CvObject)objInteractor));
-            }
-        } else {
-            results.addAll(searchResults);
         }
 
         if (log.isDebugEnabled()) log.debug("Results returned: "+results.size()+" - Row index: "+rowIndex+" - Row count: "+rowCount);
@@ -151,6 +140,38 @@ public class SearchResultDataModel extends SortableModel implements Serializable
             for (DataModelListener listener : listeners) {
                 listener.rowSelected(event);
             }
+        }
+    }
+
+    private int count(DetachedCriteria detachedCriteria) {
+        Criteria countCriteria = createCriteria(detachedCriteria);
+        countCriteria.setProjection(Projections.rowCount());
+
+        return (Integer) countCriteria.uniqueResult();
+    }
+
+    private Criteria createCriteria(DetachedCriteria detachedCriteria) {
+        DetachedCriteria criteriaCopy = copy(detachedCriteria);
+        Criteria criteria = criteriaCopy.getExecutableCriteria(IntactContext.getCurrentInstance().getDataContext().getSession());
+        criteria.setFirstResult(firstResult);
+        criteria.setMaxResults(maxResults);
+        return criteria;
+    }
+
+    protected DetachedCriteria copy(DetachedCriteria criteria) {
+        try {
+            ByteArrayOutputStream baostream = new ByteArrayOutputStream();
+            ObjectOutputStream oostream = new ObjectOutputStream(baostream);
+            oostream.writeObject(criteria);
+            oostream.flush();
+            oostream.close();
+            ByteArrayInputStream baistream = new ByteArrayInputStream(baostream.toByteArray());
+            ObjectInputStream oistream = new ObjectInputStream(baistream);
+            DetachedCriteria copy = (DetachedCriteria)oistream.readObject();
+            oistream.close();
+            return copy;
+        } catch(Throwable t) {
+            throw new HibernateException(t);
         }
     }
 

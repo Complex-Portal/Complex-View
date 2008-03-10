@@ -1,4 +1,5 @@
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
@@ -18,39 +19,67 @@
         <iav:dastyHeader/>
     </ui:define>
 
-<!-- content -->
-  <ui:define name="content">
+    <!-- content -->
+    <ui:define name="content">
 
-      <tr:panelHeader text="Interactor: #{interactorBean.currentInteractor.shortLabel}">
-          <tr:panelFormLayout maxColumns="1">
-               <tr:panelLabelAndMessage label="Molecule type:">
-                  <tr:outputText value="#{interactorBean.currentInteractor.cvInteractorType.shortLabel} (#{interactorBean.currentInteractor.cvInteractorType.miIdentifier})"/>
-              </tr:panelLabelAndMessage>
-              <tr:panelLabelAndMessage label="Short name:">
-                  <tr:outputText value="#{interactorBean.currentInteractor.shortLabel}"/>
-              </tr:panelLabelAndMessage>
-              <tr:panelLabelAndMessage label="Description:">
-                  <tr:outputText value="#{interactorBean.currentInteractor.fullName}"/>
-              </tr:panelLabelAndMessage>
-              <tr:panelLabelAndMessage label="Species:">
-                  <tr:outputText value="#{interactorBean.currentInteractor.bioSource.fullName} (#{interactorBean.currentInteractor.bioSource.taxId})"/>
-              </tr:panelLabelAndMessage>
-              <tr:panelLabelAndMessage label="IntAct AC:">
-                  <tr:outputText value="#{interactorBean.currentInteractor.ac}"/>
-              </tr:panelLabelAndMessage>
-              <tr:panelLabelAndMessage label="Primary DB Ref:">
-                  <tr:iterator var="idXref" value="#{iaf:getIdentityXrefs(interactorBean.currentInteractor)}">
-                       <tr:outputText value="#{idXref.primaryId} (#{idXref.cvDatabase.shortLabel})"/>
-                  </tr:iterator>
-              </tr:panelLabelAndMessage>
-          </tr:panelFormLayout>
+        <tr:panelHeader text="Interactor: #{interactorBean.currentInteractor.shortLabel}">
+            <tr:panelFormLayout maxColumns="1">
+                <tr:panelLabelAndMessage label="Molecule type:">
+                    <tr:outputText
+                            value="#{interactorBean.currentInteractor.cvInteractorType.shortLabel} (#{interactorBean.currentInteractor.cvInteractorType.miIdentifier})"/>
+                </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Short name:">
+                    <tr:outputText value="#{interactorBean.currentInteractor.shortLabel}"/>
+                </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Description:">
+                    <tr:outputText value="#{interactorBean.currentInteractor.fullName}"/>
+                </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Species:">
+                    <tr:outputText
+                            value="#{interactorBean.currentInteractor.bioSource.fullName} (#{interactorBean.currentInteractor.bioSource.taxId})"/>
+                </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="IntAct AC:">
+                    <tr:outputText value="#{interactorBean.currentInteractor.ac}"/>
+                </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Primary DB Ref:">
+                    <tr:iterator var="idXref" value="#{iaf:getIdentityXrefs(interactorBean.currentInteractor)}">
+                        <tr:outputText value="#{idXref.primaryId} (#{idXref.cvDatabase.shortLabel})"/>
+                    </tr:iterator>
+                </tr:panelLabelAndMessage>
+            </tr:panelFormLayout>
 
-      <br/>
+            <br/>
 
-      <iav:dasty query="#{iaf:getIdentityXref(interactorBean.currentInteractor, 'MI:0486').primaryId}" label="BioSapiens"/>
+            <tr:panelTabbed position="above">
+                <tr:showDetailItem text="Details">
+                    <br/>
+                    <iav:dasty query="#{iaf:getIdentifierForDasty(interactorBean.currentInteractor)}"
+                               label="BioSapiens"/>
+                </tr:showDetailItem>
 
-      </tr:panelHeader>
+                <tr:showDetailItem text="Interactions">
+                    <tr:panelHeader text="Interactions">
+                        <ui:decorate template="/pages/interaction/interaction_table.xhtml">
+                            <ui:define name="footer">
+                                Nothing
+                            </ui:define>
 
-  </ui:define>
-  
+                            <ui:param name="binding" value="#{interactorBean.interactionsTable}"/>
+                            <ui:param name="values" value="#{interactorBean.currentInteractorWrapped.interactions}"/>
+                        </ui:decorate>
+                    </tr:panelHeader>
+                </tr:showDetailItem>
+
+                <tr:showDetailItem text="Cross References">
+                    <tr:panelHeader text="Cross References">
+                        xref1
+                    </tr:panelHeader>
+                </tr:showDetailItem>
+
+            </tr:panelTabbed>
+
+        </tr:panelHeader>
+
+    </ui:define>
+
 </ui:composition>

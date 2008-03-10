@@ -13,11 +13,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
-    <artifactId>intact-search-webapp</artifactId>
+    <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
     <version>2.0-SNAPSHOT</version>
 
-    <name>IntAct Services :: Search Webapp (2)</name>
+    <name>IntAct Services :: View</name>
 
     <scm>
         <connection>scm:svn:https://brunoaranda.googlecode.com/svn/intact/trunk/intact-search-webapp</connection>
@@ -36,7 +36,7 @@
     </properties>
 
     <build>
-        <finalName>athena</finalName>
+        <finalName>intact-view</finalName>
 
         <resources>
             <resource>

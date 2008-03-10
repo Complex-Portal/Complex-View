@@ -13,11 +13,11 @@ import java.util.Date;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class AnnotatedObjectDecorator<T extends AnnotatedObject> {
+public class AnnotatedObjectWrapper<T extends AnnotatedObject> {
 
     private T data;
 
-    public AnnotatedObjectDecorator(T data) {
+    public AnnotatedObjectWrapper(T data) {
         this.data = data;
     }
 

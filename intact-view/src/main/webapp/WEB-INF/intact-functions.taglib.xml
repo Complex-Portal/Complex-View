@@ -5,6 +5,8 @@
 
 <facelet-taglib>
     <namespace>http://intact.ebi.ac.uk/functions</namespace>
+
+    <!-- Intact core functions -->
     <function>
         <function-name>getIdentityXrefs</function-name>
         <function-class>uk.ac.ebi.intact.model.util.XrefUtils</function-class>
@@ -14,6 +16,19 @@
         <function-name>getIdentityXref</function-name>
         <function-class>uk.ac.ebi.intact.model.util.XrefUtils</function-class>
         <function-signature>uk.ac.ebi.intact.model.Xref getIdentityXref(uk.ac.ebi.intact.model.AnnotatedObject,java.lang.String)</function-signature>
+    </function>
+
+    <!-- Local webapp functions -->
+    <function>
+        <function-name>getIdentifierForDasty</function-name>
+        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-signature>java.lang.String getIdentifierForDasty(uk.ac.ebi.intact.model.Interactor)</function-signature>
+    </function>
+    <function>
+        <function-name>wrap</function-name>
+        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-signature>uk.ac.ebi.intact.services.search.model.AnnotatedObjectWrapper
+            wrap(uk.ac.ebi.intact.model.AnnotatedObject)</function-signature>
     </function>
 
 </facelet-taglib>

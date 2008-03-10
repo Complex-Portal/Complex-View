@@ -8,9 +8,9 @@ import uk.ac.ebi.intact.model.CvObject;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class CvObjectDecorator<T extends CvObject> extends AnnotatedObjectDecorator<T>{
+public class CvObjectWrapper<T extends CvObject> extends AnnotatedObjectWrapper<T> {
 
-    public CvObjectDecorator(T data) {
+    public CvObjectWrapper(T data) {
         super(data);
     }
 

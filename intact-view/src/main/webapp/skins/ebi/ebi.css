@@ -275,6 +275,65 @@ p|OraContentFooterRule {
 }
 
 
+/** panelLabelAndMessage **/
+/**************************/
+
+af|panelLabelAndMessage::label {
+    font-weight:bold;
+    color:#555555;
+}
+
+/** panelTabbed **/
+/*****************/
+
+af|panelTabbed::tab-selected {
+    background:white url(http://www.ebi.ac.uk/inc/images/head_bot_blue3b.gif) no-repeat scroll right top;
+    border-color:#000000 -moz-use-text-color;
+    border-style:solid solid none;
+    border-width:1px 1px 0px;
+    font-size:13px;
+}
+
+af|panelTabbed::tab-selected a span {
+    text-decoration:none;
+}
+
+af|panelTabbed::tab {
+    background:#EDF6F5 url(http://www.ebi.ac.uk/inc/images/head_bot_blue3b.gif) no-repeat scroll right top;
+    border:1px solid #999999;
+    cursor:pointer;
+    font-size:12px;
+    height:30px;
+    text-decoration:none;
+}
+
+af|panelTabbed::cell-end {
+    border-bottom-color:#999999;
+    border-bottom-style:solid;
+    border-bottom-width:1px;
+    border-left-color:-moz-use-text-color;
+    border-left-style:none;
+    border-left-width:0px;
+    border-right-color:-moz-use-text-color;
+    border-right-style:none;
+    border-right-width:0px;
+    border-top-color:-moz-use-text-color;
+    border-top-style:none;
+    border-top-width:0px;
+    height:30px;
+}
+
+af|panelTabbed::separator {
+    border-bottom:1px solid #999999;
+    padding-left:3px;
+}
+
+af|panelTabbed::separator-before-selected,
+af|panelTabbed::separator-after-selected{
+    border-bottom:1px solid #999999;
+    padding-left:3px;
+}
+
 /** table and column  **/
 /************************/
 
@@ -458,4 +517,14 @@ af|messages::list-single {
     font-size: 8pt;
 }
 
+/** statusIndicator **/
+/*********************/
 
+af|statusIndicator::busy {
+    right: 0px; top: 0px;
+    background-color: red;
+    color: white;
+    margin: 5px; padding: 3px;
+
+    position: fixed;
+}

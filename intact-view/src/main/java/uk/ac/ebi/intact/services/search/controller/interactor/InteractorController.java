@@ -6,8 +6,10 @@ import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.services.search.SearchBaseController;
+import uk.ac.ebi.intact.services.search.model.InteractorWrapper;
 
 import javax.faces.context.FacesContext;
+import javax.faces.component.UIComponent;
 
 /**
  * TODO comment this
@@ -21,8 +23,12 @@ public class InteractorController extends SearchBaseController {
     private static final Log log = LogFactory.getLog(InteractorController.class);
 
     private Interactor currentInteractor;
+    private InteractorWrapper currentInteractorWrapped;
+
+    private UIComponent interactionsTable;
 
     public InteractorController() {
+
     }
 
     @InitView
@@ -45,15 +51,22 @@ public class InteractorController extends SearchBaseController {
         this.currentInteractor = currentInteractor;
     }
 
-//    public void loadByAc(ActionEvent evt) {
-//        String ac = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("interactorAc");
-//
-//        if (ac == null) {
-//            return;
-//        }
-//
-//        if (!(currentInteractor != null && ac.equals(currentInteractor.getAc()))) {
-//            currentInteractor = getDaoFactory().getInteractorDao().getByAc(ac);
-//        }
-//    }
+    public UIComponent getInteractionsTable() {
+        return interactionsTable;
+    }
+
+    public void setInteractionsTable(UIComponent interactionsTable) {
+        this.interactionsTable = interactionsTable;
+    }
+
+    public InteractorWrapper getCurrentInteractorWrapped() {
+        if (currentInteractorWrapped == null) {
+            currentInteractorWrapped = new InteractorWrapper(currentInteractor);
+        }
+        return currentInteractorWrapped;
+    }
+
+    public void setCurrentInteractorWrapped(InteractorWrapper currentInteractorWrapped) {
+        this.currentInteractorWrapped = currentInteractorWrapped;
+    }
 }

@@ -11,11 +11,11 @@ import java.util.Collection;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class ExperimentDecorator extends AnnotatedObjectDecorator<Experiment>{
+public class ExperimentWrapper extends AnnotatedObjectWrapper<Experiment> {
 
     private int interactionsCount;
 
-    public ExperimentDecorator(Experiment data) {
+    public ExperimentWrapper(Experiment data) {
         super(data);
 
         if (data.getAc() != null) {
