@@ -242,14 +242,14 @@
         <dependency>
             <groupId>org.apache.myfaces.trinidad</groupId>
             <artifactId>trinidad-api</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.myfaces.trinidad</groupId>
             <artifactId>trinidad-impl</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -262,7 +262,7 @@
         <dependency>
             <groupId>org.apache.myfaces.orchestra</groupId>
             <artifactId>myfaces-orchestra-core</artifactId>
-            <version>1.1-EBI-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
