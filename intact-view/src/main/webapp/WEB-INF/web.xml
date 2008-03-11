@@ -157,6 +157,7 @@
     <param-value>true</param-value>
   </context-param>
 
+    <!-- Spring resources -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>

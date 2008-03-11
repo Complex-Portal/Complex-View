@@ -275,7 +275,7 @@ function configuration()
 		/**
 		* REFERENCE SERVER
 		*/		
-			sequence_url[0] = ['dgi', proxy_url + '?t=' + timeout + '&m=sequence&q=' + query_id + '&s=http://tc-test-1.ebi.ac.uk:8113/das-srv/dgi/das/dgi/']; // UNIPROT REFERENCE SERVER
+			sequence_url[0] = ['dgi', proxy_url + '?t=' + timeout + '&m=sequence&q=' + query_id + '&s=http://tc-test-1.ebi.ac.uk:8124/tc-test/dgi/das-srv/dgi/das/dgi/']; // UNIPROT REFERENCE SERVER
 			//sequence_url[0] = ['uniprot', 'files/seq_A4_Human_uniprot02.xml']; // LOCAL SEQUENCE (just for testing purposes)
 					
 		/**
@@ -306,8 +306,8 @@ function configuration()
 						feature_url_prefix = proxy_url + '?m=features&q=' + query_id + '&t=' + timeout + '&s=';
                     feature_url[0] = {id : 'uniprot', url : feature_url_prefix + 'http://www.ebi.ac.uk/das-srv/uniprot/das/aristotle/'};
                     feature_url[1] = {id : 'interpro', url : feature_url_prefix + 'http://das.ensembl.org/das/interpro/'};
-                    feature_url[2] = {id : 'intact', url : feature_url_prefix + 'http://tc-test-1.ebi.ac.uk:8113/das-srv/dgi/das/intact/'};
-                    feature_url[3] = {id : 'chebi', url : feature_url_prefix + 'http://tc-test-1.ebi.ac.uk:8113/das-srv/dgi/das/chebi/'};
+                    feature_url[2] = {id : 'intact', url : feature_url_prefix + 'http://tc-test-1.ebi.ac.uk:8124/tc-test/dgi/das-srv/dgi/das/intact/'};
+                    feature_url[3] = {id : 'chebi', url : feature_url_prefix + 'http://tc-test-1.ebi.ac.uk:8124/tc-test/dgi/das-srv/dgi/das/chebi/'};
 						//feature_url[1] = {id : 'msdmotif', url : feature_url_prefix + 'http://www.ebi.ac.uk/msd-srv/msdmotif/das/s3dm/'};
 						//feature_url[2] = {id : 'netphos', url : feature_url_prefix + 'http://genome.cbs.dtu.dk:9000/das/netphos/'};
 						//feature_url[3] = {id : 'uniprot2', url : feature_url_prefix + 'http://tc-test-1.ebi.ac.uk:8113/tc-test/proteomics/das-srv/uniprot/das/uniprot/'};

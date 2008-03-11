@@ -17,12 +17,9 @@
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
-    <bean class="uk.ac.ebi.intact.core.spring.URLDecoderResourceLoader" id="intactCoreResourceLoader"/>
-
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
           p:dataSource-ref="managedDataSource"
           p:persistenceUnitName="intact-core-default">
-        <property name="resourceLoader" ref="intactCoreResourceLoader"/>
         <property name="jpaProperties">
         <props>
             <prop key="hibernate.dialect">${db.dialect}</prop>

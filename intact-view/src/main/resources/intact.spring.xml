@@ -13,6 +13,7 @@
             p:entityManagerFactory-ref="entityManagerFactory"/>
 
     <!-- Comment this on production -->
+    <!-- Creates some data if the database is empty -->
     <bean id="dataPopInitBean" class="uk.ac.ebi.intact.services.search.dev.IntactPopulatorBean" depends-on="intactInitBean"/>
 
 </beans>
