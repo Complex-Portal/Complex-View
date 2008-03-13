@@ -46,7 +46,7 @@ public class CombineToAttribs {
                 if ( !idA.equals( idB ) ) {
                     Attribute attr = properAttribute( idA, idB ); //new GoPairAttribute( new GoTermPair( goIdA.getId(), goIdB.getId() ) );
                     // for the reverse part the GoTermPair comes in action, because it sorts the names
-                    if ( !attributes.contains( attr ) ) {
+                    if ( attr !=null && !attributes.contains( attr ) ) {
                         attributes.add( attr );
                     }
                 }
@@ -60,6 +60,8 @@ public class CombineToAttribs {
             return new IdentifierAttributeImpl<GoIdentifierImpl>( new GoIdentifierImpl(idA.getId()), new GoIdentifierImpl(idB.getId() ) );
         } else if ( idA instanceof InterProIdentifierImpl && idB instanceof InterProIdentifierImpl ) {
             return new IdentifierAttributeImpl<InterProIdentifierImpl>( new InterProIdentifierImpl( idA.getId()), new InterProIdentifierImpl(idB.getId() ) );
+        } else if (idA instanceof UniprotIdentifierImpl && idB instanceof UniprotIdentifierImpl){
+            return new IdentifierAttributeImpl<UniprotIdentifierImpl>( new UniprotIdentifierImpl( idA.getId()), new UniprotIdentifierImpl( idB.getId()) );
         }
         return null;
     }

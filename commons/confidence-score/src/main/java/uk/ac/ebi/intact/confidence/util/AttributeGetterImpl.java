@@ -24,10 +24,12 @@ import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.attribute.AlignmentFileMaker;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
-import uk.ac.ebi.intact.confidence.filter.GOFilter;
+import uk.ac.ebi.intact.confidence.filter.FilterException;
+import uk.ac.ebi.intact.confidence.filter.GOAFilter;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
+import uk.ac.ebi.intact.confidence.model.UniprotIdentifierImpl;
 import uk.ac.ebi.intact.confidence.utils.CombineToAttribs;
 import uk.ac.ebi.intact.confidence.utils.ConversionUtils;
 
@@ -52,10 +54,13 @@ import java.util.Set;
 public class AttributeGetterImpl implements AttributeGetter {
     private AnnotationRetrieverStrategy annoDb;
     private File workDir;
+    private GOAFilter goaFilter;
 
-    public AttributeGetterImpl( File workDir, AnnotationRetrieverStrategy annoatationRetriever ) {
+
+    public AttributeGetterImpl( File workDir, AnnotationRetrieverStrategy annoatationRetriever, GOAFilter filter ) {
         this.workDir = workDir;
         annoDb = annoatationRetriever;
+        goaFilter = filter;
     }
 
     /**
@@ -63,14 +68,19 @@ public class AttributeGetterImpl implements AttributeGetter {
      * @param proteinPair
      * @return
      */
-    public List<Attribute> fetchGoAttributes( ProteinPair proteinPair ) {
-        Set<Identifier> gosA = annoDb.getGOs( new UniprotAc( proteinPair.getFirstId() ) );
-        Set<Identifier> gosB = annoDb.getGOs( new UniprotAc( proteinPair.getSecondId() ) );
-        GOFilter.getInstance().filterGOTerm( gosA );
-        GOFilter.getInstance().filterGOTerm( gosB );
-        List<Attribute> attribs = CombineToAttribs.combine( gosA, gosB);
-        //combine( gosA, gosB );
-        return attribs;
+    public List<Attribute> fetchGoAttributes( ProteinPair proteinPair ) throws AttributeGetterException {
+        UniprotAc first = new UniprotAc( proteinPair.getFirstId() );
+        UniprotAc second = new UniprotAc( proteinPair.getSecondId() );
+        Set<Identifier> gosA = annoDb.getGOs( first );
+        Set<Identifier> gosB = annoDb.getGOs( second );
+        try {
+            goaFilter.filterGO( new UniprotIdentifierImpl(first), gosA );
+            goaFilter.filterGO( new UniprotIdentifierImpl(second), gosA );
+            List<Attribute> attribs = CombineToAttribs.combine( gosA, gosB);
+            return attribs;
+        } catch ( FilterException e ) {
+           throw new AttributeGetterException(e);
+        }
     }
 
 //    protected List<Attribute> combine( Set<Identifier> idsA, Set<Identifier> idsB ) {
@@ -108,7 +118,7 @@ public class AttributeGetterImpl implements AttributeGetter {
         return attribs;
     }
 
-    public List<Attribute> fetchAlignAttributes( ProteinPair proteinPair, Set<UniprotAc> againstProt, BlastConfig config ) {
+    public List<Attribute> fetchAlignAttributes( ProteinPair proteinPair, Set<UniprotAc> againstProt, BlastConfig config ) throws BlastServiceException {
         Set<ProteinSimplified> prots = fetchSeq( proteinPair );
         try {
             BlastService bs = new EbiWsWUBlast( config.getDatabaseDir(), config.getTableName(), config.getBlastArchiveDir(), config.getEmail(), config.getNrPerSubmission() );
@@ -131,9 +141,8 @@ public class AttributeGetterImpl implements AttributeGetter {
 
             return new ArrayList<Attribute>(0);
         } catch ( BlastServiceException e ) {
-            e.printStackTrace();
+           throw e;
         }
-        return new ArrayList<Attribute>(0);
     }
 
     private Set<ProteinSimplified> fetchSeq( ProteinPair proteinPair ) {
@@ -149,11 +158,15 @@ public class AttributeGetterImpl implements AttributeGetter {
         return prots;
     }
 
-    public List<Attribute> fetchAllAttributes( ProteinPair proteinPair, Set<UniprotAc> againstProt, BlastConfig config ) {
+    public List<Attribute> fetchAllAttributes( ProteinPair proteinPair, Set<UniprotAc> againstProt, BlastConfig config ) throws AttributeGetterException {
         List<Attribute> all = new ArrayList<Attribute>();
         all.addAll( fetchIpAttributes( proteinPair ) );
         all.addAll( fetchGoAttributes( proteinPair ) );
-        all.addAll( fetchAlignAttributes( proteinPair, againstProt, config ) );
+        try {
+            all.addAll( fetchAlignAttributes( proteinPair, againstProt, config ) );
+        } catch ( BlastServiceException e ) {
+            throw new AttributeGetterException( e);
+        }
         return all;
     }
 }

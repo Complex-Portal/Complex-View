@@ -20,22 +20,27 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
-import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
-import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.main.exception.InfoGatheringException;
+import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.Report;
-import uk.ac.ebi.intact.confidence.util.DataMethods;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionWriter;
+import uk.ac.ebi.intact.confidence.model.io.FastaReader;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionWriterImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.FastaReaderImpl;
+import uk.ac.ebi.intact.confidence.util.InteractionGenerator;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -72,7 +77,7 @@ public class InfoGathering {
        intactdb.readConfidences(report);
        return report;
    }
-    
+
     /**
      *
      * @param workDir : must contain a highconf_set.txt and a medconf_set.txt file
@@ -101,7 +106,7 @@ public class InfoGathering {
         try {
             BinaryInteractionSet lowConf = new BinaryInteractionSet( lowconfFile.getPath());
             File dirForAttrib = workDir; // new File( workDir, "DataRetriever" );
-            Report report = new Report(new File(workDir, "highconf_set.txt"), new File(workDir, "medconf_set.txt0"));
+            Report report = new Report(new File(workDir, "highconf_set.txt"), new File(workDir, "medconf_set.txt"));
             writeIpGoForLc( lowConf.getAllProtNames(), report );
         } catch ( IOException e ) {
             throw new InfoGatheringException( e);
@@ -111,46 +116,49 @@ public class InfoGathering {
 
 
      protected File generateLowconf( File workDir, File inFile, int nr ) throws InfoGatheringException {
-        DataMethods dm = new DataMethods();
-        if ( !inFile.exists() ) {
-            throw new RuntimeException( inFile.getAbsolutePath() );
-        }
-        Set<String> yeastProteins = dm.readFastaToProts( inFile, null );
-        try {
-            BinaryInteractionSet highConfBiSet = new BinaryInteractionSet( workDir.getPath() + "/highconf_set.txt" );
-            BinaryInteractionSet medConfBiSet = new BinaryInteractionSet( workDir.getPath() + "/medconf_set.txt" );
-            Collection<ProteinPair> all = highConfBiSet.getSet();
-            all.addAll( medConfBiSet.getSet() );
-            BinaryInteractionSet forbidden = new BinaryInteractionSet( all );
-            BinaryInteractionSet lowConf = dm.generateLowConf( yeastProteins, forbidden, nr );
-            File lcFile = new File( workDir.getPath(), "lowconf_set.txt" );
-            dm.export( lowConf, lcFile );
-            return lcFile;
-        } catch ( IOException e ) {
-            throw new InfoGatheringException( e);
-        }
+         if ( !inFile.exists() ) {
+             throw new RuntimeException( inFile.getAbsolutePath() );
+         }
+         try {
+             FastaReader fr = new FastaReaderImpl();
+
+             Set<Identifier> yeastProteins = fr.readProteins( inFile );
+             BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
+             Set<BinaryInteraction> forbidden = new HashSet<BinaryInteraction>();
+             forbidden.addAll( bir.read2Set( new File(workDir, "highconf_set.txt")) );
+             forbidden.addAll( bir.read2Set(new File(workDir, "medconf_set.txt")) );
+
+             Set<BinaryInteraction> generated = InteractionGenerator.generate( yeastProteins, forbidden, nr );
+             BinaryInteractionWriter biw = new BinaryInteractionWriterImpl();
+             File outFile = new File (workDir, "lowconf_set.txt");
+             biw.write( generated, outFile );
+             return outFile;
+         } catch ( IOException e ) {
+             throw new InfoGatheringException( e );
+         }
     }
 
      protected File generateLowconf( Report report, File inFile, int nr ) throws InfoGatheringException {
-        DataMethods dm = new DataMethods();
         if ( !inFile.exists() ) {
             throw new RuntimeException( inFile.getAbsolutePath() );
         }
-        Set<String> yeastProteins = dm.readFastaToProts( inFile, null );
-        try {
-            BinaryInteractionSet highConfBiSet = new BinaryInteractionSet(report.getHighconfFile().getPath() );
-            BinaryInteractionSet medConfBiSet = new BinaryInteractionSet( report.getMedconfFile().getPath());
-            Collection<ProteinPair> all = highConfBiSet.getSet();
-            all.addAll( medConfBiSet.getSet() );
-            BinaryInteractionSet forbidden = new BinaryInteractionSet( all );
-            BinaryInteractionSet lowConf = dm.generateLowConf( yeastProteins, forbidden, nr );
-            File lcFile = new File( report.getMedconfFile().getParentFile(), "lowconf_set.txt" );
-            dm.export( lowConf, lcFile );
-            report.setLowconfFile( lcFile );
-            return lcFile;
-        } catch ( IOException e ) {
-            throw new InfoGatheringException( e);
-        }
+         FastaReader fr = new FastaReaderImpl();
+         try {
+             Set<Identifier> yeastProteins = fr.readProteins( inFile );
+             BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
+             Set<BinaryInteraction> forbidden = new HashSet<BinaryInteraction>();
+             forbidden.addAll( bir.read2Set(report.getHighconfFile()) );
+             forbidden.addAll( bir.read2Set(report.getMedconfFile()) );
+             Set<BinaryInteraction> generated = InteractionGenerator.generate( yeastProteins, forbidden, nr );
+             BinaryInteractionWriter biw = new BinaryInteractionWriterImpl();
+             File outFile = new File (report.getMedconfFile().getParentFile(), "lowconf_set.txt");
+             biw.write( generated, outFile );
+             report.setLowconfFile( outFile );
+
+             return outFile;
+         } catch ( IOException e ) {
+             throw new InfoGatheringException( e );
+         }
     }
 
 
@@ -190,7 +198,7 @@ public class InfoGathering {
            try {
                for ( String ac : lowConfProt ) {
                    Set<Identifier> gos = uniprot.getGOs( new UniprotAc( ac ) );
-                   GOFilter.filterForbiddenGOs( gos);
+//                   GOFilter.filterForbiddenGOs( gos);
                    fileWriter.append( ac + "," );
                    for ( Identifier goId : gos ) {
                        fileWriter.append( goId.getId() + "," );
@@ -228,7 +236,7 @@ public class InfoGathering {
               throw new InfoGatheringException( e);
            }
        }
-    
+
        public static void main(String[] args) throws Exception{
             // 1. InfoGathering
            InfoGathering infoG = new InfoGathering( new SpokeExpansion() );

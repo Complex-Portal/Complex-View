@@ -39,19 +39,17 @@ import java.util.Set;
  */
 //@Ignore
 public class StatisticsTest {
-
     @Test
-  @Ignore
+    @Ignore
     public void scoreDistribution() throws Exception {
-        File medConfFile = new File("H:\\tmp\\medconf_set_New_scores.txt");
+        File medConfFile = new File("E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\medconf_set_go_ip_scores.txt");
         Statistics.scoreDistribution( medConfFile );
     }
-
 
     @Test
     @Ignore
     public void attributesCoverage() throws Exception {
-        File hcFile = new File("H:\\tmp\\lowconf_set_attributes.txt");
+        File hcFile = new File("E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\highconf_set_go_filter_attribs.txt");
         Statistics.attributesCoverage( hcFile );            
     }
 

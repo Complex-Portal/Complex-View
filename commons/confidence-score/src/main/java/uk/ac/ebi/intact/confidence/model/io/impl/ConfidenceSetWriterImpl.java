@@ -15,18 +15,21 @@
  */
 package uk.ac.ebi.intact.confidence.model.io.impl;
 
-import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
+import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 import uk.ac.ebi.intact.confidence.model.io.ConfidenceSetWriter;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.io.FileWriter;
 import java.util.Iterator;
 
 /**
- * TODO comment that class header
+ * Implementation for the writer of a confidence set.
+ * For each interaction in the set a line of the format:
+ * <identifier1>;<identifier2>(,<attr11>;<attr12>)*
+ * will be printed to the specified file.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$

@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 The European Bioinformatics Institute, and others.
+ * Copyright 2008 The European Bioinformatics Institute, and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,22 @@
  */
 package uk.ac.ebi.intact.confidence.model.io;
 
-import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
+import uk.ac.ebi.intact.confidence.model.Identifier;
+import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 /**
- * Writer strategy for ProteinAnnotation objects.
+ * Interaface for reading fasta format.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since 1.6.0
- *        <pre>
- *        10-Dec-2007
- *        </pre>
+ * @since 1.6.0-SNAPSHOT
  */
-public interface ProteinAnnotationWriter {
+public interface FastaReader {
 
-    void append (ProteinAnnotation proteinAnnotation, File outFile ) throws IOException;
-
-    void append( List<ProteinAnnotation> proteins, File outFile) throws IOException;
-
-    void write ( Collection<ProteinAnnotation> proteinAnnotations, File outFile ) throws IOException;
+    Set<Identifier> readProteins (File inFile) throws IOException;
+    Set<ProteinSimplified> read2Set( File inFile) throws IOException;
 }

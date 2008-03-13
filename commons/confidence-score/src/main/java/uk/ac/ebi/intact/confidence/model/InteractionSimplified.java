@@ -5,13 +5,12 @@
  */
 package uk.ac.ebi.intact.confidence.model;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * TODO comment this
+ *  InteractionSimplified class represents an IntAct interaction containing only
+ * the interaction ac and the components stored as ProteinSimplified objects.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version

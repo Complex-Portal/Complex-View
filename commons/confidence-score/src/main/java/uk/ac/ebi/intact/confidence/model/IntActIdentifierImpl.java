@@ -54,4 +54,12 @@ public class IntActIdentifierImpl implements Identifier {
     public String convertToString() {
         return identifier;
     }
+
+    public int compareTo( Object o ) {
+        if (o instanceof IntActIdentifierImpl) {
+			IntActIdentifierImpl ac = (IntActIdentifierImpl) o;
+            return this.getId().compareTo( ac.getId() );
+		}
+        throw new IllegalArgumentException( "Bouth objects must be an instance of the same class! " + o.getClass() );          
+    }
 }

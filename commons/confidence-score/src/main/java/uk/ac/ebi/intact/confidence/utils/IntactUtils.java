@@ -80,6 +80,14 @@ public class IntactUtils {
         if (protein == null){
             throw new IllegalArgumentException( "Protein must not be null!");
         }
-        return new Sequence(protein.getSequence());
+
+        if ( protein.getSequence() != null ) {
+            return new Sequence( protein.getSequence() );
+        } else {
+            if (log.isInfoEnabled()){
+                log.info( "seq was null for: " + protein.getAc() );
+            }
+            return null;
+        }
     }
 }

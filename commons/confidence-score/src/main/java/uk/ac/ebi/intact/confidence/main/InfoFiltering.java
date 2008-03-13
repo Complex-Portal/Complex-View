@@ -16,6 +16,9 @@
 package uk.ac.ebi.intact.confidence.main;
 
 import uk.ac.ebi.intact.confidence.attribute.BlastFilter;
+import uk.ac.ebi.intact.confidence.filter.FilterException;
+import uk.ac.ebi.intact.confidence.filter.GOAFilter;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterCacheImpl;
 import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
@@ -34,10 +37,11 @@ import java.util.Set;
  * @version $Id$
  * @since 1.6.0
  *        <pre>
- *        07-Dec-2007
- *        </pre>
+ *               07-Dec-2007
+ *               </pre>
  */
 public class InfoFiltering {
+    private static GOAFilter filter = new GOAFilterCacheImpl();
 
     @Deprecated
     public static void filterGo (Set<ProteinAnnotation> proteinAnnotations){
@@ -49,17 +53,23 @@ public class InfoFiltering {
          }
     }
 
-    public static void filterGO( Collection<ProteinAnnotation> proteinAnnotations, File goaFile) throws IOException {
+    public static void filterGO( Collection<ProteinAnnotation> proteinAnnotations, File goaFile) throws IOException, FilterException {
         GOFilter.getInstance().initialize( goaFile );
         GOFilter.getInstance().filterGO( proteinAnnotations );
     }
 
-    public static void filterGO( Set<Identifier>gos){
-        GOFilter.filterForbiddenGOs( gos);
+    public static void filterGO( ProteinAnnotation proteinAnnotation, File goaFile ) throws IOException, FilterException {
+        filter.initialize( goaFile );
+        filter.filterGO( proteinAnnotation );
     }
 
-    public static void filterBlastHits(Set<Identifier> uniprotAcs, File highConf){
+    @Deprecated
+    public static void filterGO( Set<Identifier> gos ) {
+        GOFilter.filterForbiddenGOs( gos );
+    }
+
+    public static void filterBlastHits( Set<Identifier> uniprotAcs, File highConf ) {
         // finlaize the filter
-        BlastFilter.filterBlastHits( uniprotAcs, highConf);
+        BlastFilter.filterBlastHits( uniprotAcs, highConf );
     }
 }

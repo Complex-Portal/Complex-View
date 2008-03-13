@@ -16,18 +16,21 @@
 package uk.ac.ebi.intact.confidence.model.io.impl;
 
 import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
-import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
 import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionWriter;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.io.FileWriter;
-import java.util.List;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * TODO comment that class header
+ * Implementation of the BinaryInteractionWriter.
+ * Writes the BinaryInteraction in the form of
+ * <identifier1>;<identifier2>
+ * ignoring if there is or not a confidence value stored
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
@@ -52,7 +55,7 @@ public class BinaryInteractionWriterImpl implements BinaryInteractionWriter {
         }
     }
 
-    public void write( List<BinaryInteraction> binaryInteractions, File outFile ) throws IOException {
+    public void write( Collection<BinaryInteraction> binaryInteractions, File outFile ) throws IOException {
          Writer writer = new FileWriter(outFile);
         for ( Iterator<BinaryInteraction> interactionIterator = binaryInteractions.iterator(); interactionIterator.hasNext(); )
         {

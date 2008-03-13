@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.confidence.util;
 
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
+import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.model.Attribute;
@@ -35,10 +36,10 @@ import java.util.Set;
  */
 public interface AttributeGetter {
 
-    public List<Attribute> fetchGoAttributes(ProteinPair proteinPair);
+    public List<Attribute> fetchGoAttributes(ProteinPair proteinPair) throws AttributeGetterException;
     public List<Attribute> fetchIpAttributes(ProteinPair proteinPair);
-    public List<Attribute> fetchAlignAttributes(ProteinPair proteinPair, Set<UniprotAc> againstProteins, BlastConfig blastConfig );
+    public List<Attribute> fetchAlignAttributes(ProteinPair proteinPair, Set<UniprotAc> againstProteins, BlastConfig blastConfig ) throws BlastServiceException;
 
-    public List<Attribute> fetchAllAttributes(ProteinPair proteinPair, Set<UniprotAc> againstProteins, BlastConfig blastConfig );
+    public List<Attribute> fetchAllAttributes(ProteinPair proteinPair, Set<UniprotAc> againstProteins, BlastConfig blastConfig ) throws AttributeGetterException;
 
 }

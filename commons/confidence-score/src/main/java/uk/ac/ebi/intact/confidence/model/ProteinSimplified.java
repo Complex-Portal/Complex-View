@@ -9,17 +9,18 @@ import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
- * TODO comment this
+ * ProteinSimplified class represents a IntAct protein object,
+ * containing only the uniprotAc, the role (for expanding),
+ * the sequence ( for blast), GO and InterPro annotation
+ * and a list of blast hits for generating the attributes.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @since 1.6.0
- * <pre>
- *               14 - Aug - 2007
- *               </pre>
+ * <pre> 14 - Aug - 2007 </pre>
  */
 public class ProteinSimplified {
 

@@ -6,20 +6,16 @@
 package uk.ac.ebi.intact.confidence.dataRetriever;
 
 import org.junit.*;
-import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
-import uk.ac.ebi.intact.confidence.model.IntActIdentifierImpl;
-import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
-import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
-import uk.ac.ebi.intact.confidence.model.Report;
+import uk.ac.ebi.intact.confidence.model.*;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
 import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
-import uk.ac.ebi.intact.confidence.util.DataMethods;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
-import uk.ac.ebi.intact.core.util.SchemaUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
@@ -54,7 +50,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	 */
 	@Before
 	public void setUp() throws Exception {
-        SchemaUtils.createSchema();
+//        SchemaUtils.createSchema();
         Protein p1 = getMockBuilder().createProtein( "P12345", "prot1" );
         Protein p2 = getMockBuilder().createProtein("P12346", "prot2");
         Protein p3 = getMockBuilder().createProtein( "P12347", "prot3" );
@@ -195,7 +191,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	}
 
 	@Test
-	public final void testReadConfidenceSets() throws DataRetrieverException {
+	public final void testReadConfidenceSets() throws DataRetrieverException, IOException {
         File file = new File(testDir.getPath(), "medconf_set.txt");
         if (file.exists()){
             file.delete();
@@ -226,13 +222,11 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 			throw new DataRetrieverException( e);
 		}
 
-		DataMethods dm = new DataMethods();
-		List<ProteinPair> interactionsMC = dm.readImportProteinPairs(file);
-		try {
-			dm.export(interactionsMC, new FileWriter(new File(testDir.getPath(), "medconf_test.txt")));
-		} catch (IOException e) {
-			throw new DataRetrieverException( e);
-		}
+
+        BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
+        List<BinaryInteraction> bis = bir.read( file );
+        Assert.assertNotNull( bis );
+        Assert.assertEquals(1,  bis.size());        
 	}
 
     @Test

@@ -15,16 +15,23 @@ import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
 import uk.ac.ebi.intact.confidence.filter.GOFilter;
+import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 import uk.ac.ebi.intact.confidence.model.Identifier;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionWriter;
+import uk.ac.ebi.intact.confidence.model.io.FastaReader;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionReaderImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionWriterImpl;
+import uk.ac.ebi.intact.confidence.model.io.impl.FastaReaderImpl;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterFastaFile;
-import uk.ac.ebi.intact.confidence.util.DataMethods;
+import uk.ac.ebi.intact.confidence.util.InteractionGenerator;
 import uk.ac.ebi.intact.confidence.weights.ClassifierInputWriter;
 import uk.ac.ebi.intact.confidence.weights.TadmWeightsImpl;
 import uk.ac.ebi.intact.confidence.weights.WeightsStrategy;
 import uk.ac.ebi.intact.confidence.weights.WeightsStrategyException;
 
 import java.io.*;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -151,7 +158,7 @@ public class ConfidenceModelImpl {
                 log.info( "file MC: " + file.getPath() );
             }
             FileWriter fw = new FileWriter( file );
-            intactdb.retrieveMediumConfidenceSet( fw );
+            intactdb.retrieveMediumConfidenceSet( workDir );
             fw.close();
         } catch ( IOException e ) {
             // TODO Auto-generated catch block
@@ -175,23 +182,24 @@ public class ConfidenceModelImpl {
     }
 
     public void generateLowconf( int nr ) {
-        DataMethods dm = new DataMethods();
-        // TODO: make sure the fasta file is in that directory + create uniprot
-        // remote get Proteins ->fasta
-        File inFile = new File( workDir.getPath(), "40.S_cerevisiae.fasta" );
+        File inFile = new File( workDir, "40.S_cerevisiae.fasta" );
         if ( !inFile.exists() ) {
             throw new RuntimeException( inFile.getAbsolutePath() );
         }
-        Set<String> yeastProteins = dm.readFastaToProts( inFile, null );
-        try {
-            BinaryInteractionSet highConfBiSet = new BinaryInteractionSet( workDir.getPath() + "/highconf_all.txt" );
-            BinaryInteractionSet medConfBiSet = new BinaryInteractionSet( workDir.getPath() + "/medconf_all.txt" );
-            Collection<ProteinPair> all = highConfBiSet.getSet();
-            all.addAll( medConfBiSet.getSet() );
-            BinaryInteractionSet forbidden = new BinaryInteractionSet( all );
-            BinaryInteractionSet lowConf = dm.generateLowConf( yeastProteins, forbidden, nr );
 
-            dm.export( lowConf, new File( workDir.getPath(), "lowconf_all.txt" ) );
+         FastaReader fr = new FastaReaderImpl();
+           try {
+             Set<Identifier> yeastProteins = fr.readProteins( inFile );
+             BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
+             Set<BinaryInteraction> forbidden = new HashSet<BinaryInteraction>();
+             forbidden.addAll( bir.read2Set( new File(workDir, "highconf_set.txt")) );
+             forbidden.addAll( bir.read2Set(new File(workDir, "medconf_set.txt")) );
+
+             Set<BinaryInteraction> generated = InteractionGenerator.generate( yeastProteins, forbidden, nr );
+             BinaryInteractionWriter biw = new BinaryInteractionWriterImpl();
+             File outFile = new File (workDir, "lowconf_set.txt");
+             biw.write( generated, outFile );
+
         } catch ( IOException e ) {
             // TODO Auto-generated catch block
             e.printStackTrace();

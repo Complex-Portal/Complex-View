@@ -35,7 +35,8 @@ public class InterProIdentifierImpl implements Identifier {
         if (primaryId == null) {
 			throw new IllegalArgumentException("PrimaryId must not be null! " + primaryId);
 		}
-		if ( Pattern.matches(ipTermExpr, primaryId)) {
+        primaryId = primaryId.trim();
+        if ( Pattern.matches(ipTermExpr, primaryId)) {
 			this.identifier = primaryId;
 		} else {
 			throw new IllegalArgumentException("PrimaryId must be a valid InterPro primaryId! " + primaryId);
@@ -83,5 +84,13 @@ public class InterProIdentifierImpl implements Identifier {
 	public int hashCode() {
 		return this.identifier.hashCode();
 	}
-       
+
+
+    public int compareTo( Object o ) {
+        if (o instanceof InterProIdentifierImpl) {
+			InterProIdentifierImpl ac = (InterProIdentifierImpl) o;
+            return this.getId().compareTo( ac.getId() );
+		}
+        throw new IllegalArgumentException( "Bouth objects must be an instance of the same class! " + o.getClass() );          
+    }
 }

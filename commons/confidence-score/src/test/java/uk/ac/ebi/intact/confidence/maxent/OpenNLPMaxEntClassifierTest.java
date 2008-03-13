@@ -55,23 +55,24 @@ public class OpenNLPMaxEntClassifierTest {
     @Test
     @Ignore
     public void trainModel() throws Exception {
-        String hcSetPath = "H:\\tmp\\highconf_set_seq_anno_filter_attribs.txt";
-        String lcSetPath = "H:\\tmp\\lowconf_set_seq_anno_filter_attribs.txt";
-        File workDir =  new File("H:\\tmp");
+        System.out.println( "memory: " + ( Runtime.getRuntime().maxMemory() ) / ( 1024 * 1024 ) );
+        String hcSetPath = "E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\highconf_set_go_ip_attribs.txt";
+        String lcSetPath = "E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\lowconf_set_go_ip_attribs.txt";
+        File workDir =  new File("E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter");
         OpenNLPMaxEntClassifier cl = new OpenNLPMaxEntClassifier( hcSetPath, lcSetPath, workDir);
         GISModel model = cl.getModel();
-        File outFile = new File("H:\\tmp\\gisModel_seq.txt");
+        File outFile = new File("E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\gisModel_go_ip.txt");
         MaxentUtils.writeModelToFile( model, outFile );
     }
 
     @Test
    @Ignore
     public void assignScore() throws Exception {
-        File gisModel = new File("H:\\tmp\\gisModel.txt");
+        File gisModel = new File("E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\gisModel_go_ip.txt");
         OpenNLPMaxEntClassifier cl = new OpenNLPMaxEntClassifier( gisModel);
-        File medconfFile = new File("H:\\tmp\\medconf_set_attributes.txt");
+        File medconfFile = new File("E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\medconf_set_go_ip_attribs.txt");
         BinaryInteractionAttributesReader biar = new BinaryInteractionAttributesReaderImpl();
-        Writer writer = new FileWriter("H:\\tmp\\medconf_set_New_scores.txt");
+        Writer writer = new FileWriter("E:\\iarmean\\backupData\\15.02 - IWEB2 - full filter\\medconf_set_go_ip_scores.txt");
         int nrLine =0;
         for ( Iterator<BinaryInteractionAttributes> iter = biar.iterate( medconfFile ); iter.hasNext(); ){
             BinaryInteractionAttributes bia = iter.next();

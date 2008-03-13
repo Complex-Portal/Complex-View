@@ -8,6 +8,7 @@ package uk.ac.ebi.intact.confidence.util;
 import uk.ac.ebi.intact.bridges.blast.BlastService;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.EbiWsWUBlast;
+import uk.ac.ebi.intact.bridges.blast.model.BlastInput;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.ProteinPair;
@@ -18,7 +19,6 @@ import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 import uk.ac.ebi.intact.confidence.utils.Merge;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -172,61 +172,63 @@ public class AttributeGetterFastaFile {
 		}
 	}
 
-	public void writeAlignmentAttributes(ProteinPair proteinPair, String outPath, Set<UniprotAc> againstProteins,
-			File seqFile) throws BlastServiceException {
-		Set<UniprotAc> proteins = new HashSet<UniprotAc>();
-		proteins.addAll(Arrays
-				.asList(new UniprotAc(proteinPair.getFirstId()), new UniprotAc(proteinPair.getSecondId())));
-		try {
-			File alignFile = new File(workDir.getPath(), "set_align_pp.txt");
-
-			Set<ProteinSimplified> prots = null;
-			Set<ProteinSimplified> againstProt = getProteinSimplified(againstProteins);
-			if (seqFile != null) {
-				DataMethods d = new DataMethods();
-				prots = d.readExactFasta(seqFile);
-				
-			} else {
-				prots = getProteinSimplified(proteins);
-			}
-
-			alignmentMaker.blast(prots, againstProt, new FileWriter(alignFile));
-			fileMaker.writeAnnotationAttributes(alignFile.getPath(), outPath);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public void writeAlignmentAttributes(ProteinPair proteinPair, String outPath, Set<UniprotAc> againstProteins,
+//			File seqFile) throws BlastServiceException {
+//        //TODO:
+//		Set<UniprotAc> proteins = new HashSet<UniprotAc>();
+//		proteins.addAll(Arrays
+//				.asList(new UniprotAc(proteinPair.getFirstId()), new UniprotAc(proteinPair.getSecondId())));
+//		try {
+//			File alignFile = new File(workDir.getPath(), "set_align_pp.txt");
+//
+//			Set<BlastInput> prots = null;
+//			Set<BlastInput> againstProt = getBlastInput(againstProteins);
+//            FastaReader fr = new FastaReaderImpl();
+//            if (seqFile != null) {
+//				prots = fr.read2Set( seqFile );
+//
+//			} else {
+//				prots = getBlastInput(proteins);
+//			}
+//
+//			alignmentMaker.blast(prots, againstProt, new FileWriter(alignFile));
+//			fileMaker.writeAnnotationAttributes(alignFile.getPath(), outPath);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 	public void writeAlignmentAttributes(BinaryInteractionSet biS, String outPath, Set<String> againstProteins,
 			File seqFile) throws BlastServiceException {
-		Set<UniprotAc> proteins = getUniprotAc(biS.getAllProtNames());
-		Set<UniprotAc> against = getUniprotAc(againstProteins);
-		try {
-			File alignFile = new File(workDir.getPath(), "set_align_biSet.txt");
-
-			Set<ProteinSimplified> prots = null;
-			Set<ProteinSimplified> againstProt = getProteinSimplified(against);
-			if (seqFile != null) {
-				DataMethods d = new DataMethods();
-				prots = d.readExactFasta(seqFile);
-                prots = retainProteins(prots, proteins);
-
-            } else {
-				prots = getProteinSimplified(proteins);
-			}
-			
-			alignmentMaker.blast(prots, againstProt, new FileWriter(alignFile));
-			// TODO: solve once + for all the setting of the biSet for the
-			// filemaker
-			BinaryInteractionSet auxSet = fileMaker.getBiSet();
-			fileMaker.setBiSet(biS);
-			fileMaker.writeAnnotationAttributes(alignFile.getPath(), outPath);
-			fileMaker.setBiSet(auxSet);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        //TODO:
+//		Set<UniprotAc> proteins = getUniprotAc(biS.getAllProtNames());
+//		Set<UniprotAc> against = getUniprotAc(againstProteins);
+//		try {
+//			File alignFile = new File(workDir.getPath(), "set_align_biSet.txt");
+//
+//			Set<ProteinSimplified> prots = null;
+//			Set<ProteinSimplified> againstProt = getProteinSimplified(against);
+//			if (seqFile != null) {
+//				DataMethods d = new DataMethods();
+//				prots = d.readExactFasta(seqFile);
+//                prots = retainProteins(prots, proteins);
+//
+//            } else {
+//				prots = getProteinSimplified(proteins);
+//			}
+//
+//			alignmentMaker.blast(prots, againstProt, new FileWriter(alignFile));
+//			// TODO: solve once + for all the setting of the biSet for the
+//			// filemaker
+//			BinaryInteractionSet auxSet = fileMaker.getBiSet();
+//			fileMaker.setBiSet(biS);
+//			fileMaker.writeAnnotationAttributes(alignFile.getPath(), outPath);
+//			fileMaker.setBiSet(auxSet);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
     private Set<ProteinSimplified> retainProteins(Set<ProteinSimplified> seqProts, Set<UniprotAc> proteins){
@@ -239,10 +241,10 @@ public class AttributeGetterFastaFile {
         return prots;
     }
 
-    private Set<ProteinSimplified> getProteinSimplified(Set<UniprotAc> proteins) {
-		Set<ProteinSimplified> prots = new HashSet<ProteinSimplified>(proteins.size());
+    private Set<BlastInput> getBlastInput(Set<UniprotAc> proteins) {
+		Set<BlastInput> prots = new HashSet<BlastInput>(proteins.size());
 		for (UniprotAc ac : proteins) {
-			prots.add(new ProteinSimplified(ac));
+			prots.add(new BlastInput(ac));
 		}
 		return prots;
 	}

@@ -18,11 +18,10 @@ package uk.ac.ebi.intact.confidence.model.io;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 
 /**
- * TODO comment that class header
+ * Writer strategy for InteractionSimplified objects.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$

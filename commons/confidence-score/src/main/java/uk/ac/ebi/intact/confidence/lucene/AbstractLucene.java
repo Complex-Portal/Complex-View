@@ -107,7 +107,7 @@ public abstract class AbstractLucene {
             for ( String path : paths ) {
                 File inFile = new File( path );
                 String[] aux = path.split( "_" );
-                indexFile( inFile, aux[1] );
+                indexFile( inFile, aux[2] );
             }
             indexWriter.optimize();
             indexWriter.close();

@@ -15,6 +15,7 @@ import psidev.psi.mi.tab.model.ConfidenceImpl;
 import psidev.psi.mi.tab.model.CrossReference;
 import psidev.psi.mi.xml.converter.ConverterException;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
+import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
@@ -206,7 +207,11 @@ public class PsiMiTabConfidence {
             case InterPRO:
                 return ag.fetchIpAttributes( new ProteinPair( acs[0], acs[1] ) );
             case Alignment:
-                return ag.fetchAlignAttributes( new ProteinPair( acs[0], acs[1] ), this.againstProteins, this.blastConfig );
+                try {
+                    return ag.fetchAlignAttributes( new ProteinPair( acs[0], acs[1] ), this.againstProteins, this.blastConfig );
+                } catch ( BlastServiceException e ) {
+                    throw new AttributeGetterException( e);
+                }
             case ALL:
                 return ag.fetchAllAttributes( new ProteinPair( acs[0], acs[1] ), this.againstProteins, this.blastConfig );
             default:

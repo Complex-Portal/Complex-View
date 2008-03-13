@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.confidence.model;
 
+import java.util.Arrays;
+
 /**
  * Class to store a binary interaction.
  *
@@ -25,7 +27,7 @@ package uk.ac.ebi.intact.confidence.model;
  *        11-Dec-2007
  *        </pre>
  */
-public class BinaryInteraction {
+public class BinaryInteraction implements Comparable {
     private Identifier firstId;
     private Identifier secondId;
 
@@ -101,9 +103,29 @@ public class BinaryInteraction {
 
     public int hashCode() {
         int result;
-        result = ( firstId != null ? firstId.hashCode() : 0 );
-        result = 31 * result + ( secondId != null ? secondId.hashCode() : 0 );
+        Identifier [] ids   = {firstId, secondId};
+        Arrays.sort( ids);
+        result = ( ids[0]!= null ? ids[0 ].hashCode() : 0 );
+        result = 31 * result + ( ids[ 1 ]!= null ? ids[1 ].hashCode() : 0 );
         result = 31 * result + ( confidence != null ? confidence.hashCode() : 0 );
+
+//        result = ( firstId != null ? firstId.hashCode() : 0 );
+//        result = 31 * result + ( secondId != null ? secondId.hashCode() : 0 );
+//        result = 31 * result + ( confidence != null ? confidence.hashCode() : 0 );
         return result;
+    }
+
+    public int compareTo( Object o ) {
+        if (o instanceof BinaryInteraction){
+            BinaryInteraction bi = (BinaryInteraction) o;
+            if (this.equals( o )){
+                return 0;
+            } else if (this.getFirstId().equals( bi.getFirstId() )) {
+                return this.getSecondId().getId().compareTo( bi.getSecondId().convertToString() );
+            }  else {
+                return this.getFirstId().getId().compareTo( bi.getFirstId().getId() );
+            }
+        }
+       throw new IllegalArgumentException( "Bouth objects must be an instance of the same class! " + o.getClass() );
     }
 }

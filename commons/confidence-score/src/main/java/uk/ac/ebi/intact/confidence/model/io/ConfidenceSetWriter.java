@@ -15,15 +15,13 @@
  */
 package uk.ac.ebi.intact.confidence.model.io;
 
-import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 /**
- * TODO comment that class header
+ * Writer strategy for a confidence set.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$

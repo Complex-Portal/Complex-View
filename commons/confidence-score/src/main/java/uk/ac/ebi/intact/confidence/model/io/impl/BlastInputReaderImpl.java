@@ -16,18 +16,19 @@
 package uk.ac.ebi.intact.confidence.model.io.impl;
 
 import uk.ac.ebi.intact.bridges.blast.model.BlastInput;
-import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.bridges.blast.model.Sequence;
-import uk.ac.ebi.intact.confidence.model.parser.BlastInputParserUtils;
-import uk.ac.ebi.intact.confidence.model.iterator.BlastInputIterator;
+import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.model.io.BlastInputReader;
+import uk.ac.ebi.intact.confidence.model.iterator.BlastInputIterator;
+import uk.ac.ebi.intact.confidence.model.parser.BlastInputParserUtils;
 
+import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.io.*;
 
 /**
- * TODO comment that class header
+ * Implementation of the reader for BlastInput.
+ * It parses a fasta file reading the information in BlastInput objects.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
@@ -64,7 +65,7 @@ public class BlastInputReaderImpl implements BlastInputReader {
     }
 
     public Set<BlastInput> read2Set (File inFile) throws IOException{
-         Set<BlastInput> bis = new HashSet<BlastInput>();
+        Set<BlastInput> bis = new HashSet<BlastInput>();
         BufferedReader br = new BufferedReader(new FileReader(inFile));
         String line ="";
         String regex = "^>.*";

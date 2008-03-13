@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.intact.confidence.intact;
 
+import uk.ac.ebi.intact.confidence.filter.FilterException;
+import uk.ac.ebi.intact.confidence.util.AttributeGetterException;
+import uk.ac.ebi.intact.model.CvConfidenceType;
 import uk.ac.ebi.intact.model.InteractionImpl;
 
 import java.util.List;
@@ -31,7 +34,9 @@ import java.util.List;
  */
 public interface IntactScoreCalculator {
 
-    void calculate( InteractionImpl interaction );
+    void setConfidenceType( CvConfidenceType cvConfidenceType );
 
-    void calculate ( List<InteractionImpl> interactions);
+    void calculate( InteractionImpl interaction, boolean override ) throws AttributeGetterException, FilterException;
+
+    void calculate ( List<InteractionImpl> interactions, boolean override) throws AttributeGetterException, FilterException;
 }

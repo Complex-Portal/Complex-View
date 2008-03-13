@@ -17,15 +17,22 @@ package uk.ac.ebi.intact.confidence.intact;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
+import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactAnnotationRetrieverImpl;
+import uk.ac.ebi.intact.confidence.filter.FilterException;
+import uk.ac.ebi.intact.confidence.filter.GOAFilter;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
 import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.util.AttributeGetter;
+import uk.ac.ebi.intact.confidence.util.AttributeGetterException;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterImpl;
+import uk.ac.ebi.intact.confidence.util.GlobalData;
 import uk.ac.ebi.intact.confidence.utils.ParserUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.Confidence;
@@ -56,6 +63,9 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
      */
     public static final Log log = LogFactory.getLog( IntactConfidenceCalculator.class );
 
+    //TODO: is there a better way to do this?
+    private CvConfidenceType cvConfidenceType;
+
     private File workDir;
 
     private OpenNLPMaxEntClassifier classifier;
@@ -64,9 +74,16 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
     private DecimalFormat df = new DecimalFormat("0.00");
 
     private AnnotationRetrieverStrategy annoDb;
+    private File goaFile;
+    private GOAFilter goaFilter;
 
 
-     public IntactConfidenceCalculator( File gisModel, BlastConfig config, Set<UniprotAc> againstProteins, File workDir ) throws IOException {
+
+
+
+    //////////////////
+    // Constructor(s).
+     public IntactConfidenceCalculator( File gisModel, BlastConfig config, Set<UniprotAc> againstProteins, File goaUniprotFile, File workDir ) throws IOException {
         if ( !( gisModel.exists() && workDir.exists() ) ) {
             throw new NullPointerException( "GisModel File or workDir does not exist!" );
         }
@@ -78,10 +95,12 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
         classifier = new OpenNLPMaxEntClassifier( gisModel );
         this.workDir = workDir;
 
-         annoDb = new IntactAnnotationRetrieverImpl();
+        annoDb = new IntactAnnotationRetrieverImpl();
+        goaFile = goaUniprotFile;
+        goaFilter = new GOAFilterMapImpl();
     }
 
-    public IntactConfidenceCalculator( OpenNLPMaxEntClassifier gisModel, BlastConfig config, Set<UniprotAc> againstProteins, File workDir ) throws IOException {
+    public IntactConfidenceCalculator( OpenNLPMaxEntClassifier gisModel, BlastConfig config, Set<UniprotAc> againstProteins,File goaUniprotFile, File workDir ) throws IOException {
         if ( config == null || againstProteins == null ) {
             throw new NullPointerException( "BlastConfig or againstProteins-Set is null, please make sure they are not null!" );
         }
@@ -91,15 +110,19 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
         this.workDir = workDir;
 
         annoDb = new IntactAnnotationRetrieverImpl();
+        goaFile = goaUniprotFile;
+        goaFilter = new GOAFilterMapImpl();
     }
 
-    public IntactConfidenceCalculator( String hcSetPath, String lcSetPath, File workDir, BlastConfig config ) throws IOException {
+    public IntactConfidenceCalculator( String hcSetPath, String lcSetPath, File workDir,File goaUniprotFile, BlastConfig config ) throws IOException {
         this.workDir = workDir;
         this.blastConfig = config;
         this.classifier = new OpenNLPMaxEntClassifier( hcSetPath, lcSetPath, workDir );
         this.againstProteins = fetchAgainstProteins(new File(hcSetPath) );
 
-         annoDb = new IntactAnnotationRetrieverImpl();
+        annoDb = new IntactAnnotationRetrieverImpl();
+        goaFile = goaUniprotFile;
+        goaFilter = new GOAFilterMapImpl();
     }
 
     public IntactConfidenceCalculator(ConfidenceSet highConfidence, ConfidenceSet lowConfidence) {
@@ -110,49 +133,130 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
 
     }
 
-    public String confidenceScore( BinaryInteraction interaction){
-        List<Attribute> attributes = getAttributes( interaction, ConfidenceType.ALL );
-        double [] scores = classifier.evaluate( attributes );
-        return df.format( scores[classifier.getIndex( "high" )] );
-    }   
+    ////////////////////
+    // Public Method(s).
+
+    public void setConfidenceType( CvConfidenceType cvConfidenceType ) {
+        this.cvConfidenceType = cvConfidenceType;
+    }
+
+    public void calculate(List<InteractionImpl> interactions, boolean override) throws AttributeGetterException, FilterException {
+        calculate( interactions, this.classifier, override );
+    }
+
+    public void calculate( InteractionImpl interaction, boolean override ) throws AttributeGetterException, FilterException {
+        AttributeGetter aG = new AttributeGetterImpl(workDir, annoDb, goaFilter);
+        try {
+            calculate( interaction, aG, this.classifier, override );
+        } catch ( FilterException e ) {
+            throw e;
+        }
+    }
 
 
-    public void calculate(List<InteractionImpl> interactions, OpenNLPMaxEntClassifier model){
-        AttributeGetter aG = new AttributeGetterImpl(workDir, annoDb);
+    public void calculate(List<InteractionImpl> interactions, OpenNLPMaxEntClassifier model, boolean override) throws AttributeGetterException, FilterException {
+        if(log.isInfoEnabled( )){
+            GlobalData.setCount( GlobalData.getCount() + interactions.size());
+        }
+        AttributeGetter aG = new AttributeGetterImpl(workDir, annoDb, goaFilter);
         for ( Iterator<InteractionImpl> iter = interactions.iterator(); iter.hasNext(); ) {
             InteractionImpl interaction =  iter.next();
-            calculate(interaction, aG, model);
+            try {
+                calculate(interaction, aG, model, override);
+            } catch ( FilterException e ) {
+                throw e;
+            }
 
         }
     }
 
-    public void calculate(List<InteractionImpl> interactions){
-        calculate( interactions, this.classifier );
+     public String confidenceScore( BinaryInteraction interaction) throws AttributeGetterException {
+        List<Attribute> attributes = getAttributes( interaction, ConfidenceType.ALL );
+        double [] scores = classifier.evaluate( attributes );
+        return df.format( scores[classifier.getIndex( "high" )] );
     }
-
-    public void calculate( InteractionImpl interaction ) {
-        AttributeGetter aG = new AttributeGetterImpl(workDir, annoDb);
-        calculate( interaction, aG, this.classifier );
-    }
-
 
     ////////////////////
     // Private Methods.
-    private void calculate( InteractionImpl interaction, AttributeGetter aG, OpenNLPMaxEntClassifier model ) {
+    private void calculate( InteractionImpl interaction, AttributeGetter aG, OpenNLPMaxEntClassifier model, boolean override ) throws AttributeGetterException, FilterException {
         if ( isInteractionEligible( interaction ) ) {
             //InteractionSimplified interactionS = InteractionUtils.saveInteractionInformation(interaction);
-            if (interaction.getConfidences().size() != 0){
+            boolean confidencePresent = confidenceExists(interaction);
+            if (!override && confidencePresent ){
+                if (log.isInfoEnabled()){
+                    log.info ("for interaction(" + interaction.getAc() +") + override(" + override + ") confidencePresent(" + confidencePresent +") => conf calculation skipped" );
+                }
                 return;
             }
             BinaryInteraction bi = convertToBin( interaction );
             if (bi!= null){
+                goaFilter.initialize( goaFile );
                 List<Attribute> attribs = aG.fetchAllAttributes( new ProteinPair( bi.getFirstId().getId(), bi.getSecondId().getId() ), againstProteins, blastConfig );
                 double[] scores = model.evaluate( attribs );
                 String value = df.format( scores[classifier.getIndex( "high" )] );
-                Confidence conf = new Confidence( interaction.getOwner(), value );
-                interaction.addConfidence( conf );
+                if (log.isInfoEnabled()){
+                    log.info("interaction(" + interaction.getAc()+") + attribus(" + printAttribs(attribs) +") => score = " + value );
+                }
+                if (override && confidencePresent){
+                    Confidence conf  = getConfidence(interaction);
+                    Assert.assertNotNull(conf);
+                    conf.setValue( value );
+                    if (log.isInfoEnabled()){
+                        log.info("confidence overriden");
+                    }
+                } else {
+                    Confidence conf = new Confidence( interaction.getOwner(), value );
+                    conf.setCvConfidenceType( cvConfidenceType);
+                    interaction.addConfidence( conf );
+                     if (log.isInfoEnabled()){
+                        log.info("confidence added");
+                    }
+                }
             }
         }
+    }
+
+    private String printAttribs( List<Attribute> attribs ) {
+        if (attribs == null){
+            return "null";
+        }
+        String attribstStr = "";
+        if ( attribs.size() == 0){
+            return attribstStr;
+        }
+        for ( Iterator<Attribute> iter = attribs.iterator(); iter.hasNext(); ) {
+            Attribute attribute =  iter.next();
+            attribstStr +=","  +attribute.convertToString();
+        }
+        return attribstStr.substring( 1 );
+    }
+
+    private Confidence getConfidence( InteractionImpl interaction ) {
+        for ( Iterator<Confidence> iter = interaction.getConfidences().iterator(); iter.hasNext(); ) {
+            Confidence confidence =  iter.next();
+            if (confidence.getCvConfidenceType().getShortLabel().equalsIgnoreCase( cvConfidenceType.getShortLabel() )){
+                return confidence;
+            }
+        }
+        return null;
+    }
+
+    private boolean confidenceExists( InteractionImpl interaction ) {
+        int nr = 0;
+        for ( Iterator<Confidence> iter = interaction.getConfidences().iterator(); iter.hasNext(); ) {
+            Confidence confidence =  iter.next();
+            if (confidence.getCvConfidenceType().getShortLabel().equalsIgnoreCase( cvConfidenceType.getShortLabel() )  ){
+                nr++;
+            }
+        }
+        if (nr == 1) {
+            return true;
+        }
+        if(nr > 1){
+            log.warn( "Found more than only one Confidnece of type: " + cvConfidenceType + " for interaction " + interaction.getShortLabel() );
+            return true;
+        }
+        return false;
     }
 
     private BinaryInteraction convertToBin( Interaction interaction ) {
@@ -253,16 +357,20 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
         return ParserUtils.parseProteins( hcSet );
      }
 
-    private List<Attribute> getAttributes( BinaryInteraction interaction, ConfidenceType type ) {
+    private List<Attribute> getAttributes( BinaryInteraction interaction, ConfidenceType type ) throws AttributeGetterException {
         ProteinPair pp = new ProteinPair(interaction.getFirstId().getId(), interaction.getSecondId().getId());
-        AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb );
+        AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb, goaFilter );
         switch ( type ) {
             case GO:
                 return ag.fetchGoAttributes( pp);
             case InterPRO:
                 return ag.fetchIpAttributes(pp);
             case Alignment:
-                return ag.fetchAlignAttributes( pp , this.againstProteins, this.blastConfig );
+                try {
+                    return ag.fetchAlignAttributes( pp , this.againstProteins, this.blastConfig );
+                } catch ( BlastServiceException e ) {
+                    throw new AttributeGetterException( e);
+                }
             case ALL:
                 return ag.fetchAllAttributes( pp, this.againstProteins, this.blastConfig );
             default:

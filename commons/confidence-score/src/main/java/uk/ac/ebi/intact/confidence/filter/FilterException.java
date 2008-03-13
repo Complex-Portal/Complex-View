@@ -13,24 +13,33 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.model.io;
-
-import uk.ac.ebi.intact.confidence.model.Confidence;
-import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
-
-import java.io.File;
-import java.io.IOException;
+package uk.ac.ebi.intact.confidence.filter;
 
 /**
- * Reader strategy for a confidence set.
+ * Exception wrapper for excetions thrown while filtering.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since 1.6.0
- *        <pre> 18-Jan-2008 </pre>
+ * @since 19.02.2008
  */
-public interface ConfidenceSetReader {
+public class FilterException extends Exception{
+    /**
+	 *
+	 */
+	private static final long	serialVersionUID	= 1L;
 
-    ConfidenceSet read ( File inFile, Confidence confidence) throws IOException;
+	public FilterException() {
+	}
 
+	public FilterException(Throwable cause) {
+		super(cause);
+	}
+
+	public FilterException(String message) {
+		super(message);
+	}
+
+	public FilterException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

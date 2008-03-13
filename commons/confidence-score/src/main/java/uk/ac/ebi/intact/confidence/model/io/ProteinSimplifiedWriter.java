@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * TODO comment that class header
+ * Writer strategy for ProteinSimplified objects.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$

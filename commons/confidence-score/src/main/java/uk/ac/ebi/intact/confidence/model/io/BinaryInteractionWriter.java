@@ -19,21 +19,20 @@ import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 /**
- * TODO comment that class header
+ * Writer strategy for BinaryInteraction objects.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
  * @since 1.6.0
- *        <pre>
- *        11-Dec-2007
- *        </pre>
+ *        <pre> 11-Dec-2007 </pre>
  */
 public interface BinaryInteractionWriter {
     void append ( BinaryInteraction binaryInteraction, File outFile ) throws IOException;
     void append (List<BinaryInteraction> binaryInteractions, File outFile) throws IOException;
-    void write ( List<BinaryInteraction> binaryInteraction, File outFile ) throws IOException;
+    void write ( Collection<BinaryInteraction> binaryInteraction, File outFile ) throws IOException;
 
 }

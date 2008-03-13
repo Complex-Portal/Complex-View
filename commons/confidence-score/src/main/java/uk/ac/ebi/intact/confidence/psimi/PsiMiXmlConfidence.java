@@ -23,6 +23,7 @@ import psidev.psi.mi.xml.PsimiXmlWriter;
 import psidev.psi.mi.xml.PsimiXmlWriterException;
 import psidev.psi.mi.xml.model.*;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
+import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
@@ -188,7 +189,11 @@ public class PsiMiXmlConfidence {
             case InterPRO:
                 return ag.fetchIpAttributes( proteinPair );
             case Alignment:
-                return ag.fetchAlignAttributes( proteinPair, this.againstProteins, this.blastConfig );
+                try {
+                    return ag.fetchAlignAttributes( proteinPair, this.againstProteins, this.blastConfig );
+                } catch ( BlastServiceException e ) {
+                    throw new AttributeGetterException( e);
+                }
             case ALL:
                 return ag.fetchAllAttributes( proteinPair, this.againstProteins, this.blastConfig );
             default:

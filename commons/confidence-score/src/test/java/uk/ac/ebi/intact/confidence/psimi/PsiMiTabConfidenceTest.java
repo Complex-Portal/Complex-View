@@ -31,6 +31,7 @@ import uk.ac.ebi.intact.confidence.ehcache.GOACache;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.ConfidenceType;
 import uk.ac.ebi.intact.confidence.utils.ParserUtils;
+import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 
@@ -51,6 +52,7 @@ import java.util.*;
 public class PsiMiTabConfidenceTest {
 
     @Test
+    @Ignore
     public void testSaveScores() throws Exception {
         String hcSetPath = PsiMiTabConfidenceTest.class.getResource( "hc_attributes.txt").getPath();
         String gisInput = PsiMiTabConfidenceTest.class.getResource( "gisModel.txt").getPath();
@@ -73,7 +75,7 @@ public class PsiMiTabConfidenceTest {
         confTypes.add( ConfidenceType.GO);
         confTypes.add( ConfidenceType.InterPRO);
 
-        psi.appendConfidence( inFile, true, outFile, confTypes);
+        psi.appendConfidence( inFile, true, outFile, confTypes,true);
         checkOutput(inFile,outFile);
     }
 
@@ -111,7 +113,7 @@ public class PsiMiTabConfidenceTest {
                 confTypes.add( ConfidenceType.Alignment);
             }
 
-        psi.appendConfidence( inFile, true, outFile, confTypes);
+        psi.appendConfidence( inFile, true, outFile, confTypes, true);
         checkOutput(inFile,outFile);
     }
 
@@ -171,27 +173,32 @@ public class PsiMiTabConfidenceTest {
 
     @Test
     @Ignore
-    public void xxx() throws Exception {
-       // File gisInput = new File("H:\\test\\PsimiTAB\\gisInput.txt");
+    public void runPsiMiTabAssigner() throws Exception {
+        File inFile = new File("/net/nfs7/vol22/sp-pro5/20080401_iarmean/intact.txt");//"E:\\iarmean\\data\\intact.txt");
+        File outFile = new File("/net/nfs7/vol22/sp-pro5/20080401_iarmean/intact_out.txt");
 
-        File inFile = new File("H:\\test\\PsimiTAB\\brca2.txt");
-        File outFile = new File("H:\\test\\PsimiTAB\\brca2_out.txt");
 
-        String hcSetPath = "H:\\test\\PsimiTAB\\hc_all_attributes.txt";
-        String lcSetPath = "H:\\test\\PsimiTAB\\lc_all_attributes.txt";
-        File workDir =  new File("H:\\test\\PsimiTAB\\");
-        File dbFolder = new File("H:\\tmp\\blastDb");
-        File blastArchiveDir = new File("E:\\20071016_iarmean");
+
+        File gisModel = new File("/net/nfs7/vol22/sp-pro5/20080401_iarmean/TrainModel/gisModel.txt");//"E:\\psimitabAssign\\gisModel.txt");
+        File workDir =  new File("/net/nfs7/vol22/sp-pro5/20080401_iarmean/");
+
+        File dbFolder = new File("/net/nfs7/vol22/sp-pro5/20080401_iarmean/blastDb");//"E:\\iarmean\\backupDb\\play");
+        File blastArchiveDir = new File("/net/nfs7/vol22/sp-pro5/20080401_iarmean/archive");//"E:\\20071016_iarmean");
         BlastConfig config = new BlastConfig("myName@yahuo.com");
         config.setBlastArchiveDir( blastArchiveDir);
         config.setDatabaseDir( dbFolder);
-        File goaFile = new File ("E:\\iarmean\\data\\gene_association.goa_uniprot");
+        File goaFile = new File ("/net/nfs7/vol22/sp-pro5/20080401_iarmean/goaTrimmed.goa_intact");
 
-        PsiMiTabConfidence psimitab = new PsiMiTabConfidence( hcSetPath, lcSetPath, goaFile, workDir, config);
+        File hcSet = new File("/net/nfs7/vol22/sp-pro5/20080401_iarmean/TrainModel/highconf_set.txt");
+        Set<UniprotAc> againstProteins = ParserUtils.parseProteins( hcSet );
+
+        IntactContext.initStandaloneContext( new File( PsiMiTabConfidenceTest.class.getResource( "/hibernate.iweb2.cfg.xml" ).getFile() ) );
+        PsiMiTabConfidence psimitab = new PsiMiTabConfidence( gisModel, config, againstProteins, goaFile, workDir);
         Set<ConfidenceType> confs = new HashSet<ConfidenceType>();
         confs.add( ConfidenceType.GO);
         confs.add ( ConfidenceType.InterPRO);
-        psimitab.appendConfidence(  inFile, true,outFile, confs);
+        confs.add( ConfidenceType.Alignment );
+        psimitab.appendConfidence(  inFile, true,outFile, confs, true);
 
     }
 }

@@ -125,7 +125,7 @@ public class AttributeGetterFastaFileTest {
 		againstProt.add(new UniprotAc("Q6FPM5")); // for P43609
 		againstProt.add(new UniprotAc("P08907")); // for P12345 - rabit :)
 		againstProt.add(new UniprotAc("P00506")); // for P12345
-		aG.writeAlignmentAttributes(pp, outPath, againstProt, null);
+		//aG.writeAlignmentAttributes(pp, outPath, againstProt, null);
         Assert.assertTrue(new File(outPath).exists());
     }
 

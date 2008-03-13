@@ -15,18 +15,19 @@
  */
 package uk.ac.ebi.intact.confidence.model.io.impl;
 
-import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
+import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 import uk.ac.ebi.intact.confidence.model.io.ConfidenceSetWriter;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.io.FileWriter;
 import java.util.Iterator;
 
 /**
- * TODO comment that class header
+ * Implementation of the ConfidenceSetWriter.
+ * Writes a confidence set in the format expected as input for training the model.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$

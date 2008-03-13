@@ -124,4 +124,8 @@ public class IntactAnnotationRetrieverImpl implements AnnotationRetrieverStrateg
             proteinS.setGoSet( ips );
         }
     }
+
+    public List<String> getUniprotProteins(){
+        return proteinDao.getAllUniprotAcs();
+    }
 }

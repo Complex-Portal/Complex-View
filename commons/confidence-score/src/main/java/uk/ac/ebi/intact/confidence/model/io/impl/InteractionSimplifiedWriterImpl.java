@@ -24,17 +24,15 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 /**
- * TODO comment that class header
+ * Implementation of the writer for the InteractionSimplified.
+ *
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
  * @since 1.6.0
- *        <pre>
- *        13-Dec-2007
- *        </pre>
+ *        <pre> 13-Dec-2007 </pre>
  */
 public class InteractionSimplifiedWriterImpl implements InteractionSimplifiedWriter {
     public void append( InteractionSimplified interactionSimplified, File outFile ) throws IOException {

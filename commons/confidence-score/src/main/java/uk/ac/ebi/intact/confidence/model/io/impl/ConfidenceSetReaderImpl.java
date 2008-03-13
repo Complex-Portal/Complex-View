@@ -15,18 +15,20 @@
  */
 package uk.ac.ebi.intact.confidence.model.io.impl;
 
-import uk.ac.ebi.intact.confidence.model.io.ConfidenceSetReader;
-import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesReader;
-import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
 import uk.ac.ebi.intact.confidence.model.Confidence;
-import uk.ac.ebi.intact.confidence.model.parser.BinaryInteractionParserUtils;
+import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
+import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesReader;
+import uk.ac.ebi.intact.confidence.model.io.ConfidenceSetReader;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
- * TODO comment that class header
+ * Implementation of the reader for the confidence set.
+ * The input should be in the format:
+ * <identifier1>;<identifier2>(,<attr11>;<attr12>)*
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$

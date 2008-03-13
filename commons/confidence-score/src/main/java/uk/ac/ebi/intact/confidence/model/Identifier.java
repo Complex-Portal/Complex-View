@@ -25,7 +25,7 @@ package uk.ac.ebi.intact.confidence.model;
  *        30-Nov-2007
  *        </pre>
  */
-public interface Identifier {
+public interface Identifier extends Comparable{
 
     String getId();
 //    String getRegex();
@@ -34,4 +34,6 @@ public interface Identifier {
     boolean equals(Object obj);
     @Override
     int hashCode();
+   
+    int compareTo( Object o );
 }
