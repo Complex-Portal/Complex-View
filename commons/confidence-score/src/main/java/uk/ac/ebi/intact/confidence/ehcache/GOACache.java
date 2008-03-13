@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.confidence.ehcache;
 
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
@@ -55,7 +56,7 @@ public class GOACache {
         return instance;
     }
 
-    public void loadGOA( File goaFile, List<String> uniprotAcs) throws IOException {
+    public void loadGOA( File goaFile, List<String> uniprotAcs) throws IOException, CacheException {
         BufferedReader br = new BufferedReader(new FileReader(goaFile));
         String line ="";
         String uniprot = null;
@@ -87,7 +88,7 @@ public class GOACache {
         getCache().put( new Element(uniprot, gos) );
     }
 
-    public List<GoIdentifierImpl> fetchByUniprotAc(String uniprotAc) {
+    public List<GoIdentifierImpl> fetchByUniprotAc(String uniprotAc) throws CacheException {
          if (getInstance() == null){
              log.info( "Instance not initialized!" );
              return null;
@@ -101,11 +102,11 @@ public class GOACache {
          }         
      }
 
-    public static void put(String uniprotAc, List<GoIdentifierImpl> gos){
+    public static void put(String uniprotAc, List<GoIdentifierImpl> gos) throws CacheException {
         getCache().put( new Element(uniprotAc, gos) );
     }
 
-    public void clean(){
+    public void clean() throws IOException, CacheException {
         getCache().removeAll();
     }
 
@@ -113,7 +114,7 @@ public class GOACache {
     ////////////////////////
     // Private Methods(s).
 
-    private static Cache getCache() {
+    private static Cache getCache() throws CacheException {
         if (cache == null){
             InputStream ehcacheConfig = EhCachePlay.class.getResourceAsStream("/META-INF/ehcache-play.xml");
             CacheManager cacheManager = CacheManager.create(ehcacheConfig);
@@ -122,7 +123,7 @@ public class GOACache {
         return cache;
     }
 
-    public static void printCache() {
+    public static void printCache() throws CacheException {
         List<String>  keys = getCache().getKeys();
         for ( Iterator<String> iter = keys.iterator(); iter.hasNext(); ) {
             String key = iter.next();

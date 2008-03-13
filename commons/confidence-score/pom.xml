@@ -140,11 +140,11 @@
         </dependency>
 
         <!-- for caching the GOA for uniprot (filter IEA) -->
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>1.3.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>net.sf.ehcache</groupId>-->
+            <!--<artifactId>ehcache</artifactId>-->
+            <!--<version>1.4.1</version>-->
+        <!--</dependency>-->
 
         <!-- just for test , remove after-->       
         <!-- IntAct dependencies -->

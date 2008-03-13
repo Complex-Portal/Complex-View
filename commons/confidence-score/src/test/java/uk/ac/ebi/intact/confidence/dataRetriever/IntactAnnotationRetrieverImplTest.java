@@ -26,7 +26,6 @@ import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.InterProIdentifierImpl;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
-import uk.ac.ebi.intact.core.util.SchemaUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
@@ -43,7 +42,6 @@ public class IntactAnnotationRetrieverImplTest extends IntactBasicTestCase {
 
     @Before
     public void init() throws IntactTransactionException {
-        SchemaUtils.createSchema();
         Protein p1 = getMockBuilder().createProtein( "P12345", "prot1" );
         Protein p2 = getMockBuilder().createProtein( "P12346", "prot2" );
 

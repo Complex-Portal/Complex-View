@@ -53,7 +53,7 @@ public class XvFoldTest {
 
     @Test
     public void testFold() throws Exception {
-         File hcFile = new File(XvFoldTest.class.getResource( "highconf_all_attribs.txt").getPath());
+        File hcFile = new File(XvFoldTest.class.getResource( "highconf_all_attribs.txt").getPath());
         File lcFile = new File(XvFoldTest.class.getResource( "lowconf_all_attribs.txt").getPath());
         File workDir = new File( GlobalTestData.getInstance().getTargetDirectory(), "XvFoldTest");
         if (!workDir.isDirectory()) {
