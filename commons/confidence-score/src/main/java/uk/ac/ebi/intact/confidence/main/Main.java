@@ -16,13 +16,12 @@
 package uk.ac.ebi.intact.confidence.main;
 
 import uk.ac.ebi.intact.confidence.expansion.SpokeExpansion;
+import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.main.exception.InfoGatheringException;
 import uk.ac.ebi.intact.confidence.model.Report;
 
 import java.io.File;
-import java.io.IOException;
 
-import junit.framework.Assert;
 
 /**
  * TODO comment that class header
@@ -39,7 +38,7 @@ public class Main {
     public static void main( String[] args ) throws InfoGatheringException, Exception {
         // 1. InfoGathering
         InfoGathering infoG = new InfoGathering( new SpokeExpansion());
-        File workDir =  new File (getTargetDirectory(), "ConfMain");
+        File workDir =  new File ( GlobalTestData.getTargetDirectory(), "ConfMain");
         Report report =infoG.retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( workDir);
 
         File fastaFile = new File("yeast fasta path in here");
@@ -60,18 +59,6 @@ public class Main {
 
         // 5. training model
 
-    }
-
-    public static File getTargetDirectory() {
-		String outputDirPath = Main.class.getResource("/").getFile();
-		Assert.assertNotNull(outputDirPath);
-		File outputDir = new File(outputDirPath);
-		// we are in confidence-score\target\test-classes , move 1 up
-		outputDir = outputDir.getParentFile();
-		Assert.assertNotNull(outputDir);
-		Assert.assertTrue(outputDir.getAbsolutePath(), outputDir.isDirectory());
-		Assert.assertEquals("target", outputDir.getName());
-		return outputDir;
-	}
+    }  
 
 }

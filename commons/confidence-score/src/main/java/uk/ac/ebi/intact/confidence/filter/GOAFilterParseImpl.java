@@ -63,7 +63,9 @@ public class GOAFilterParseImpl implements GOAFilter {
     }
 
     public void clean() {
-        processed.clear();
+        if (processed != null){
+            processed.clear();
+        }
         initialized = true;
     }
 

@@ -28,7 +28,6 @@ import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.EbiWsWUBlast;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.ehcache.GOACacheTest;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.ConfidenceType;
 import uk.ac.ebi.intact.confidence.utils.ParserUtils;
@@ -70,7 +69,7 @@ public class PsiMiXmlConfidenceTest {
         Set<UniprotAc> againstProteins =  ParserUtils.parseProteins( new File(hcSetPath));
 
         File gisModel = new File( PsiMiXmlConfidence.class.getResource("gisModel.txt").getPath());
-        File goaFile = new File ( GOACacheTest.class.getResource( "goaTest.txt" ).getPath());
+        File goaFile = new File ( PsiMiXmlConfidenceTest.class.getResource( "goaTest.txt" ).getPath());
         
         PsiMiXmlConfidence psixml = new PsiMiXmlConfidence( gisModel, config, againstProteins, goaFile, workDir);
 

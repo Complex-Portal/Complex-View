@@ -16,6 +16,7 @@ import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
+import uk.ac.ebi.intact.core.util.SchemaUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
@@ -50,7 +51,7 @@ public class IntactDbRetrieverTest extends IntactBasicTestCase {
 	 */
 	@Before
 	public void setUp() throws Exception {
-//        SchemaUtils.createSchema();
+        SchemaUtils.createSchema();
         Protein p1 = getMockBuilder().createProtein( "P12345", "prot1" );
         Protein p2 = getMockBuilder().createProtein("P12346", "prot2");
         Protein p3 = getMockBuilder().createProtein( "P12347", "prot3" );

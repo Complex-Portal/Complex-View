@@ -22,7 +22,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
-import static org.junit.Assert.assertTrue;
 import uk.ac.ebi.intact.confidence.lucene.AbstractLucene;
 
 import java.io.*;
@@ -176,7 +175,9 @@ public class Merge extends AbstractLucene {
         String[] paths = {seqPath, ipPath, goPath};
         String outPath = "E:\\tmp\\lucene\\outPath.txt";
         ( new Merge() ).merge( paths, outPath );
-        assertTrue( new File( outPath ).exists() );
+        if( new File( outPath ).exists() ){
+            System.out.println("success");
+        }
     }
 
 

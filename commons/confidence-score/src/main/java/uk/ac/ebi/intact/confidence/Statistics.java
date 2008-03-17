@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.confidence;
 
-import org.junit.Assert;
 import uk.ac.ebi.intact.confidence.model.BinaryInteractionAttributes;
 import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesReader;
 import uk.ac.ebi.intact.confidence.model.io.impl.BinaryInteractionAttributesReaderImpl;
@@ -47,7 +46,9 @@ public class Statistics {
         }
         while ((line = br.readLine()) != null){
             String [] aux = line.split( ":" );
-            Assert.assertEquals( 2, aux.length );
+            if (aux.length != 2){
+                System.out.println("Line not proper formated: " + line);
+            }
             Double score = Double.valueOf( aux[1] );
             scores.put( aux[0], score);
             if (min > score){

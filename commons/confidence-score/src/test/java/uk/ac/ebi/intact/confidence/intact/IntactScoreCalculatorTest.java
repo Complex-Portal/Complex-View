@@ -26,7 +26,7 @@ import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.EbiWsWUBlast;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.business.IntactTransactionException;
-import uk.ac.ebi.intact.confidence.ehcache.GOACacheTest;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterTest;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
 import uk.ac.ebi.intact.confidence.utils.ParserUtils;
@@ -222,7 +222,7 @@ public class IntactScoreCalculatorTest extends IntactBasicTestCase {
         File hcSet = new File( FillDbTest.class.getResource( "highconf_set.txt" ).getPath() );
         Set<UniprotAc> againstProts = ParserUtils.parseProteins( hcSet );
 
-        File goaFile = new File( GOACacheTest.class.getResource( "goaTest.txt" ).getPath());
+        File goaFile = new File( GOAFilterTest.class.getResource( "goaTest.txt" ).getPath());
 
         calculator = new IntactConfidenceCalculator( classifier, blastConfig, againstProts,goaFile, workDir );
 

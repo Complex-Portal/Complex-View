@@ -19,9 +19,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import uk.ac.ebi.intact.confidence.ehcache.GOACache;
 import uk.ac.ebi.intact.confidence.filter.GOAFilter;
-import uk.ac.ebi.intact.confidence.filter.GOAFilterCacheImpl;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterTest;
 import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.*;
@@ -114,8 +114,8 @@ public class GOFilterTest {
         pa1.addAnnotation(id1 );
         pas.add( pa1);
 
-        File goaFile = new File( GOACache.class.getResource( "goaTest.txt" ).getPath());
-        GOAFilter goaFilter = new GOAFilterCacheImpl();
+        File goaFile = new File( GOAFilterTest.class.getResource( "goaTest.txt" ).getPath());
+        GOAFilter goaFilter = new GOAFilterMapImpl();
         goaFilter.clean();
         goaFilter.initialize( goaFile );
         goaFilter.filterGO( pas);
@@ -126,7 +126,6 @@ public class GOFilterTest {
             try{
                 Assert.assertEquals(1, observed.getAnnotations().size() );
             } catch(AssertionError e){
-                GOACache.getInstance().printCache(); 
                 System.out.println(observed.convertToString());
             }
             if (observed.getId().equals( pa.getId() )){

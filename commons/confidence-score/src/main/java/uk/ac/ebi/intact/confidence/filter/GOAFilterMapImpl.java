@@ -52,7 +52,9 @@ public class GOAFilterMapImpl implements GOAFilter {
     }
 
     public void clean(){
-        goas.clear();
+        if (goas != null){
+            goas.clear();
+        }
         initialized = false;
     }
 

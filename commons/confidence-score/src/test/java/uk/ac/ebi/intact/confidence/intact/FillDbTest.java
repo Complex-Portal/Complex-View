@@ -26,7 +26,6 @@ import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.EbiWsWUBlast;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.business.IntactTransactionException;
-import uk.ac.ebi.intact.confidence.ehcache.GOACacheTest;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.maxent.MaxentUtils;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
@@ -266,7 +265,7 @@ public class FillDbTest extends IntactBasicTestCase {
         File hcSet = new File( FillDbTest.class.getResource( "highconf_set.txt" ).getPath() );
         againstProts = ParserUtils.parseProteins( hcSet );
 
-        goaFile = new File( GOACacheTest.class.getResource( "goaTest.txt" ).getPath());
+        goaFile = new File( FillDbTest.class.getResource( "goaTest.txt" ).getPath());
     }
 
     private void prepareDB( File dbFolder, String email, File workDir ) throws BlastServiceException {

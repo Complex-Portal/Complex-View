@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.business.IntactTransactionException;
-import uk.ac.ebi.intact.confidence.ehcache.GOACacheTest;
 import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
 import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationWriter;
@@ -42,34 +41,7 @@ public class GOAFilterTest {
    @Before
    public void clearIntactSchema() throws IntactTransactionException {
        SchemaUtils.createSchema();
-   }
-    @Test
-    public void testCache() throws Exception {
-        GOAFilter filter = new GOAFilterCacheImpl();
-        filter.clean();
-        ProteinAnnotation pa = new ProteinAnnotation(new UniprotIdentifierImpl("A0JPZ8"));
-        pa.addAnnotation( new GoIdentifierImpl( "GO:0005515") );
-        Identifier id1 = new GoIdentifierImpl( "GO:0005516");
-        pa.addAnnotation( id1 );
-        pa.addAnnotation( new GoIdentifierImpl( "GO:0006355") );
-        Identifier id2 = new GoIdentifierImpl( "GO:0005518");
-        pa.addAnnotation( id2 );
-        Identifier id3 = new InterProIdentifierImpl("IPR000523 ");
-        pa.addAnnotation( id3 );
-
-        filter.initialize( new File( GOACacheTest.class.getResource( "goaTest.txt" ).getFile()));
-        filter.filterGO( pa );
-
-        Assert.assertNotNull( pa );
-        try{
-            Assert.assertEquals( 3, pa.getAnnotations().size() );
-        } catch (AssertionError e){
-            System.out.println(pa);
-        }
-        Assert.assertTrue(pa.getAnnotations().contains(id1));
-        Assert.assertTrue(pa.getAnnotations().contains(id2));
-        Assert.assertTrue(pa.getAnnotations().contains(id3));
-    }
+   } 
 
     @Test
     public void testMap() throws Exception {
@@ -85,7 +57,7 @@ public class GOAFilterTest {
         Identifier id3 = new InterProIdentifierImpl("IPR000523 ");
         pa.addAnnotation( id3 );
 
-        filter.initialize( new File( GOACacheTest.class.getResource( "goaTest.txt" ).getFile()));
+        filter.initialize( new File( GOAFilterTest.class.getResource( "goaTest.txt" ).getFile()));
         filter.filterGO( pa );
 
         Assert.assertNotNull( pa );

@@ -96,7 +96,8 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.3.1</version>
-            <scope>test</scope>
+            <!--<scope>test</scope>-->
+            <!-- asserts are also used in the main java branch -->
         </dependency>
 
         <dependency>

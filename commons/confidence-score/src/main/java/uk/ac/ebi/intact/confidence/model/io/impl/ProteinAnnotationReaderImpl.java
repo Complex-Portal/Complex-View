@@ -15,7 +15,8 @@
  */
 package uk.ac.ebi.intact.confidence.model.io.impl;
 
-import org.junit.Assert;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
 import uk.ac.ebi.intact.confidence.model.iterator.ProteinAnnotationIterator;
@@ -37,6 +38,10 @@ import java.util.regex.Pattern;
  *        </pre>
  */
 public class ProteinAnnotationReaderImpl implements ProteinAnnotationReader {
+    /**
+     * Sets up a logger for that class.
+     */
+    public static final Log log = LogFactory.getLog( ProteinAnnotationReaderImpl.class );
 
     /**
      * Reads a file of prtoen annotaions.
@@ -49,7 +54,9 @@ public class ProteinAnnotationReaderImpl implements ProteinAnnotationReader {
         String line = "";
         while ( ( line = br.readLine() ) != null ) {
             ProteinAnnotation protAnno = parseProteinAnnotation( line );
-            proteins.add( protAnno );
+            if (protAnno != null){
+                proteins.add( protAnno );
+            }
         }
         br.close();
         return proteins;
@@ -57,7 +64,10 @@ public class ProteinAnnotationReaderImpl implements ProteinAnnotationReader {
 
     private ProteinAnnotation parseProteinAnnotation( String line ) {
         String [] aux = line.split(",");
-        Assert.assertTrue( aux.length > 0);
+        if (aux.length <= 0){
+            log.error( "Line not proper formated : " + line );
+            return null;
+        }
         Identifier id = new UniprotIdentifierImpl(aux[0]);
         List<Identifier> annotations = new ArrayList<Identifier>(aux.length - 1);
         for (int i =1; i< aux.length; i++){
@@ -87,7 +97,9 @@ public class ProteinAnnotationReaderImpl implements ProteinAnnotationReader {
         String line = "";
         while ( ( line = br.readLine() ) != null ) {
             ProteinAnnotation protAnno = parseProteinAnnotation( line );
-            proteins.add( protAnno );
+            if (protAnno != null){
+                proteins.add( protAnno );
+            }
         }
         br.close();
         return proteins;

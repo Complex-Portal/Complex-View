@@ -5,14 +5,12 @@
  */
 package uk.ac.ebi.intact.confidence.attribute;
 
-import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.bridges.blast.BlastService;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.jdbc.BlastJobEntity;
 import uk.ac.ebi.intact.bridges.blast.model.*;
-import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 import uk.ac.ebi.intact.confidence.util.GlobalData;
@@ -475,18 +473,18 @@ public class AlignmentFileMaker {
         }
     }
 
-    private File getTargetDirectory() {
-        String outputDirPath = GlobalTestData.class.getResource( "/" ).getFile();
-        System.out.println( "targetDir: " + outputDirPath );
-        Assert.assertNotNull( outputDirPath );
-        File outputDir = new File( outputDirPath );
-        // we are in confidence-score\target\test-classes , move 1 up
-        outputDir = outputDir.getParentFile();
-        Assert.assertNotNull( outputDir );
-        Assert.assertTrue( outputDir.getAbsolutePath(), outputDir.isDirectory() );
-        Assert.assertEquals( "target", outputDir.getName() );
-        return outputDir;
-    }
+//    private File getTargetDirectory() {
+//        String outputDirPath = GlobalTestData.class.getResource( "/" ).getFile();
+//        System.out.println( "targetDir: " + outputDirPath );
+//        Assert.assertNotNull( outputDirPath );
+//        File outputDir = new File( outputDirPath );
+//        // we are in confidence-score\target\test-classes , move 1 up
+//        outputDir = outputDir.getParentFile();
+//        Assert.assertNotNull( outputDir );
+//        Assert.assertTrue( outputDir.getAbsolutePath(), outputDir.isDirectory() );
+//        Assert.assertEquals( "target", outputDir.getName() );
+//        return outputDir;
+//    }
 
     // /* (non-Javadoc)
     // * @see java.lang.Object#finalize()

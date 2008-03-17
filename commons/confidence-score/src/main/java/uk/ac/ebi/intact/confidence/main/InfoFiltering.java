@@ -18,7 +18,7 @@ package uk.ac.ebi.intact.confidence.main;
 import uk.ac.ebi.intact.confidence.attribute.BlastFilter;
 import uk.ac.ebi.intact.confidence.filter.FilterException;
 import uk.ac.ebi.intact.confidence.filter.GOAFilter;
-import uk.ac.ebi.intact.confidence.filter.GOAFilterCacheImpl;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
 import uk.ac.ebi.intact.confidence.filter.GOFilter;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
@@ -41,7 +41,7 @@ import java.util.Set;
  *               </pre>
  */
 public class InfoFiltering {
-    private static GOAFilter filter = new GOAFilterCacheImpl();
+    private static GOAFilter filter = new GOAFilterMapImpl();
 
     @Deprecated
     public static void filterGo (Set<ProteinAnnotation> proteinAnnotations){

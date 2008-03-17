@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.confidence.intact;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
@@ -199,7 +198,9 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
                 }
                 if (override && confidencePresent){
                     Confidence conf  = getConfidence(interaction);
-                    Assert.assertNotNull(conf);
+                    if (conf == null){
+                        log.info("Not null confidence expected "+ interaction.getShortLabel());
+                    }
                     conf.setValue( value );
                     if (log.isInfoEnabled()){
                         log.info("confidence overriden");
