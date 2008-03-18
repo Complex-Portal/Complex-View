@@ -70,11 +70,51 @@
                     </tr:panelHeader>
                 </tr:showDetailItem>
 
-                <tr:showDetailItem text="Cross References">
-                    <tr:panelHeader text="Cross References">
-                        xref1
-                    </tr:panelHeader>
+                <tr:showDetailItem text="Cross References" disclosed="true">
+                    <br/>
+
+                    <iav:panelCategory id="xrefPanel1" var="xrefs" value="#{iaf:toXrefCategoryModel(interactorBean.currentInteractor.xrefs)}">
+                        <iav:panelCategoryColumn>
+                            <iav:categoryGroup id="protSeqGroup" title="Protein Sequences">
+                                <iav:categoryItem name="PRIDE"
+                                                   description="Proteomics Identification Database"
+                                                   category="pride"
+                                                   url="http://www.ebi.ac.uk/pride">
+
+                                </iav:categoryItem>
+                                <iav:categoryItem name="UniProt Kb"
+                                                   description="UniProt Knowledge Base of protein sequences"
+                                                   category="uniprotkb"
+                                                   url="http://www.uniprot.org/"/>
+                            </iav:categoryGroup>
+                            <iav:categoryGroup id="nucSeqGroup" title="Nucleotide Sequences">
+                                <iav:categoryItem name="ASTD"
+                                                   description="Database of alternative splice events and transcripts of genes from human, mouse and rat"
+                                                   category="uniprotkb"
+                                                   url="http://www.ebi.ac.uk/astd"/>
+                                <iav:categoryItem name="EMBL-Bank"
+                                                   description="Europe's primary nucleotide sequence resource"
+                                                   category="MI:0475"
+                                                   url="http://www.ebi.ac.uk/embl">
+
+                                      <tr:panelList listStyle="list-style-type:decimal" rendered="#{!empty xrefs}">
+                                          <tr:iterator var="xrefItem" value="#{xrefs}">
+                                              <h:outputText value="#{xrefItem.data.primaryId}"/>
+                                          </tr:iterator>
+                                      </tr:panelList>
+
+
+                                    </iav:categoryItem>
+                                <iav:categoryItem name="EMBL-Bank (Coding Sequence)"
+                                                   description="Coding Sequences in EMBL-Bank"
+                                                   category="uniprotkb"
+                                                   url="http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?-page+LibInfo+-id+1g6A71VejsH+-lib+EMBLCDS"/>
+                            </iav:categoryGroup>
+                        </iav:panelCategoryColumn>
+                    </iav:panelCategory>
+                    
                 </tr:showDetailItem>
+                               
 
             </tr:panelTabbed>
 

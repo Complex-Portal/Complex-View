@@ -1,0 +1,53 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions">
+
+    <h:panelGroup>
+
+    <link rel="stylesheet" href="http://www.ebi.ac.uk/chebi/layouts/styles/ebinocle-summary.css" type="text/css"></link>
+    <!--<trh:script source="#{ebisf:absoluteEbiUrl()}/ebisearch/js/jquery-1.0.2.js"/>-->
+
+    <trh:script source="/js/components/CategoryPanel.js" rendered="#{panelId == null}"/>
+
+    <ui:param name="headerId" value="#{id}_headerId" />
+    <ui:param name="contentId" value="#{id}_contentId" />
+    <ui:param name="countId" value="#{id}_countId" />
+
+    <div class="container">
+        <div class="header">
+
+            <div class="headerToggle headerToggleNotRelevant" id="#{headerId}"></div>
+
+            <div class="resultNumber" id="#{countId}">0</div>
+            <strong>#{title}</strong>
+
+        </div>
+        <div class="content" id="#{contentId}">
+
+            <ui:param name="categoryGroupVar" value="#{id}_xrefGroupVar"/>
+
+        <trh:script>
+            var #{categoryGroupVar} = new ebi.intact.CategoryGroupComp(false, '#{headerId}', '#{contentId}', '#{countId}');
+        </trh:script>
+        <trh:script rendered="#{panelId != null}">
+            #{panelVar}.registerXrefGroup(#{categoryGroupVar});
+        </trh:script>
+
+            <ul class="contentWithBorder">
+                <ui:insert/>
+            </ul>
+        </div>
+
+    </div>
+
+    </h:panelGroup>
+
+</ui:composition>

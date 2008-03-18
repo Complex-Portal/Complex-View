@@ -26,5 +26,52 @@
     <tag>
         <name>dastyHeader</name>
     </tag>
+    <tag>
+        <name>categoryGroup</name>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>title</name>
+            <required>true</required>
+        </attribute>
+    </tag>
+    <tag>
+        <name>categoryItem</name>
+        <attribute>
+            <name>category</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>description</name>
+        </attribute>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>size</name>
+        </attribute>
+        <attribute>
+            <name>url</name>
+        </attribute>
+    </tag>
+    <tag>
+        <name>panelCategory</name>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>value</name>
+        </attribute>
+        <attribute>
+            <name>var</name>
+        </attribute>
+    </tag>
+    <tag>
+        <name>panelCategoryColumn</name>
+    </tag>
 
 </taglib>

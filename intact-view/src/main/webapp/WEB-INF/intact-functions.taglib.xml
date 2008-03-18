@@ -20,6 +20,13 @@
 
     <!-- Local webapp functions -->
     <function>
+        <function-name>toXrefCategoryModel</function-name>
+        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-signature>uk.ac.ebi.intact.services.search.component.resultpanel.CategoryModel
+            toXrefCategoryModel(java.util.Collection)</function-signature>
+    </function>
+
+    <function>
         <function-name>getIdentifierForDasty</function-name>
         <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
         <function-signature>java.lang.String getIdentifierForDasty(uk.ac.ebi.intact.model.Interactor)</function-signature>

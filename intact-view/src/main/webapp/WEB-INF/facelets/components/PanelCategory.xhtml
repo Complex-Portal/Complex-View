@@ -1,0 +1,41 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions">
+
+    <trh:script source="/js/components/CategoryPanel.js"/>
+
+    <ui:param name="panelId" value="#{id}_panelId" />
+    <ui:param name="panelVar" value="#{id}_var"/>
+
+    <ui:param name="#{var}" value="roro"/>
+
+    <trh:script>
+        var #{panelVar} = new ebi.intact.CategoryPanelComp();
+    </trh:script>
+
+    <div class="options">
+        <div class="optionBox">
+            <span class="expandCollapseAll" onclick="#{panelVar}.expandAllRelevant()">+</span>
+            Expand relevant
+        </div>
+        <div class="optionBox">
+            <span class="expandCollapseAll" onclick="#{panelVar}.collapseAll()">-</span>
+            Collapse all
+        </div>
+    </div>
+
+    <ui:insert/>
+
+    <trh:script>
+        #{panelVar}.expandAllRelevant();
+    </trh:script>
+
+</ui:composition>

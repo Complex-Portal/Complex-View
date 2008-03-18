@@ -18,6 +18,12 @@ package uk.ac.ebi.intact.services.search.util;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.services.search.model.*;
+import uk.ac.ebi.intact.services.search.component.resultpanel.CategoryItem;
+import uk.ac.ebi.intact.services.search.component.resultpanel.CategoryModel;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Functions to be used in the UI
@@ -57,6 +63,16 @@ public final class Functions {
         }
 
         return aod;
+    }
+
+    public static CategoryModel toXrefCategoryModel(Collection<Xref> xrefs) {
+        List<CategoryItem> items = new ArrayList<CategoryItem>(xrefs.size());
+
+        for (Xref xref : xrefs) {
+            items.add(new CategoryItem(xref.getCvDatabase().getMiIdentifier(), xref));
+        }
+
+        return new CategoryModel(items);
     }
     
 }
