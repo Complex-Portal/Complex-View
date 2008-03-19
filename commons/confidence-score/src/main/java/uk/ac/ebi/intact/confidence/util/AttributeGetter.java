@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ * Strategy for creating the attributes for an interaction represented by a protein pair.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$

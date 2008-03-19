@@ -75,10 +75,6 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
     private File goaFile;
     private GOAFilter goaFilter;
 
-
-
-
-
     //////////////////
     // Constructor(s).
      public IntactConfidenceCalculator( File gisModel, BlastConfig config, Set<UniprotAc> againstProteins, File goaUniprotFile, File workDir ) throws IOException {
@@ -133,7 +129,6 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
 
     ////////////////////
     // Public Method(s).
-
     public void setConfidenceType( CvConfidenceType cvConfidenceType ) {
         this.cvConfidenceType = cvConfidenceType;
     }
@@ -188,8 +183,8 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
             //InteractionSimplified interactionS = InteractionUtils.saveInteractionInformation(interaction);
             boolean confidencePresent = confidenceExists(interaction);
             if (!override && confidencePresent ){
-                if (log.isTraceEnabled()){
-                    log.trace ("for interaction(" + interaction.getAc() +") + override(" + override + ") confidencePresent(" + confidencePresent +") => conf calculation skipped" );
+                if (log.isDebugEnabled()){
+                    log.debug ("for interaction(" + interaction.getAc() +") + override(" + override + ") confidencePresent(" + confidencePresent +") => conf calculation skipped" );
                 }
                 return;
             }

@@ -16,23 +16,24 @@
 package uk.ac.ebi.intact.confidence.maxent;
 
 import opennlp.maxent.GISModel;
-import opennlp.maxent.DataStream;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ * Wrapper for the opennlp.maxent.GISModel
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0-SNAPSHOT
  *        <pre>
  *                      27-Nov-2007
  *                      </pre>

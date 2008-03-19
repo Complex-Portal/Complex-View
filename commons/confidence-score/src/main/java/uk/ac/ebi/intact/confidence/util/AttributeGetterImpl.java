@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.confidence.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.BlastService;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
@@ -52,6 +54,11 @@ import java.util.Set;
  *                             </pre>
  */
 public class AttributeGetterImpl implements AttributeGetter {
+    /**
+     * Sets up a logger for that class.
+     */
+    public static final Log log = LogFactory.getLog( AttributeGetterImpl.class );
+
     private AnnotationRetrieverStrategy annoDb;
     private File workDir;
     private GOAFilter goaFilter;
@@ -64,7 +71,7 @@ public class AttributeGetterImpl implements AttributeGetter {
     }
 
     /**
-     *  OBS: it filters only on "protein binding" not on IEA too
+     *  
      * @param proteinPair
      * @return
      */
@@ -83,38 +90,10 @@ public class AttributeGetterImpl implements AttributeGetter {
         }
     }
 
-//    protected List<Attribute> combine( Set<Identifier> idsA, Set<Identifier> idsB ) {
-//        List<Attribute> attributes = new ArrayList<Attribute>();
-//        for ( Iterator<Identifier> idItA = idsA.iterator(); idItA.hasNext(); ) {
-//            Identifier idA = idItA.next();
-//            for ( Iterator<Identifier> idItB = idsB.iterator(); idItB.hasNext(); ) {
-//                Identifier idB = idItB.next();
-//                if ( !idA.equals( idB ) ) {
-//                    Attribute attr = properAttribute( idA, idB ); //new GoPairAttribute( new GoTermPair( goIdA.getId(), goIdB.getId() ) );
-//                    // for the reverse part the GoTermPair comes in action, because it sorts the names
-//                    if ( !attributes.contains( attr ) ) {
-//                        attributes.add( attr );
-//                    }
-//                }
-//            }
-//        }
-//        return attributes;
-//    }
-//
-//    private Attribute properAttribute( Identifier idA, Identifier idB ) {
-//        if ( idA instanceof GoIdentifierImpl && idB instanceof GoIdentifierImpl ) {
-//            return new IdentifierAttributeImpl<GoIdentifierImpl>( new GoIdentifierImpl(idA.getId()), new GoIdentifierImpl(idB.getId() ) );
-//        } else if ( idA instanceof InterProIdentifierImpl && idB instanceof InterProIdentifierImpl ) {
-//            return new IdentifierAttributeImpl<InterProIdentifierImpl>( new InterProIdentifierImpl( idA.getId()), new InterProIdentifierImpl(idB.getId() ) );
-//        }
-//        return null;
-//    }
-
     public List<Attribute> fetchIpAttributes( ProteinPair proteinPair ) {
         Set<Identifier> ipsA = annoDb.getIps( new UniprotAc( proteinPair.getFirstId() ) );
         Set<Identifier> ipsB = annoDb.getIps( new UniprotAc( proteinPair.getSecondId() ) );
         List<Attribute> attribs = CombineToAttribs.combine( ipsA, ipsB);
-                //combine( ipsA, ipsB );
         return attribs;
     }
 
@@ -123,7 +102,15 @@ public class AttributeGetterImpl implements AttributeGetter {
         try {
             BlastService bs = new EbiWsWUBlast( config.getDatabaseDir(), config.getTableName(), config.getBlastArchiveDir(), config.getEmail(), config.getNrPerSubmission() );
             AlignmentFileMaker alignmentMaker = new AlignmentFileMaker( new Float( 0.001 ), workDir, bs );
+            long start = System.currentTimeMillis();
             Set<ProteinSimplified> results = alignmentMaker.blast( prots, againstProt );
+            if (log.isDebugEnabled()){
+                long time = System.currentTimeMillis() - start;
+                long sec = time /1000;
+                log.debug("blasting 2 prots ("+ proteinPair.getFirstId() + ", " + proteinPair.getSecondId()+") it took: "+ sec + " sec");
+            }
+
+
             if ( results != null ) {
                 ProteinSimplified[] protsArray = results.toArray( new ProteinSimplified[results.size()] );
 
@@ -135,7 +122,6 @@ public class AttributeGetterImpl implements AttributeGetter {
                     idsB = idsA;
                 }
                 List<Attribute> attribs = CombineToAttribs.combine( idsA, idsB);
-                // combine(idaA, idsB)
                 return attribs;
             }
 
