@@ -11,10 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
-import uk.ac.ebi.intact.confidence.util.AttributeGetterFastaFileTest;
+import uk.ac.ebi.intact.confidence.util.InteractionGeneratorTest;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Test for combining annotation data to attribute data.
@@ -38,7 +37,7 @@ public class AnnotationFileMakerTest {
 	public void setUp() throws Exception {
 		BinaryInteractionSet biS = new BinaryInteractionSet(AnnotationFileMakerTest.class.getResource("binaryInt.txt")
 				.getPath());
-		String uniprotPath = AttributeGetterFastaFileTest.class.getResource("uniprot_sprot_small.dat").getPath();
+		String uniprotPath = InteractionGeneratorTest.class.getResource("uniprot_sprot_small.dat").getPath();
 		afm = new AnnotationFileMaker(biS, uniprotPath);
 	}
 

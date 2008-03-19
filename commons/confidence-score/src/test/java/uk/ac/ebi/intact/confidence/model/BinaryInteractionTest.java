@@ -67,6 +67,15 @@ public class BinaryInteractionTest {
 
         Set<BinaryInteraction> bisSet = new HashSet<BinaryInteraction>(bis);
         Assert.assertEquals( 1, bisSet.size() );
+    }
 
-    }    
+    @Test
+    public void testHashCode() throws Exception {
+        Identifier id1 = new UniprotIdentifierImpl("P12345");
+        Identifier id2 = new UniprotIdentifierImpl("P12346");
+        
+        BinaryInteraction bi1 = new BinaryInteraction(id1, id2, Confidence.UNKNOWN);
+        BinaryInteraction bi2 = new BinaryInteraction(id2, id1, Confidence.UNKNOWN);
+        Assert.assertEquals( bi1.hashCode(), bi2.hashCode());
+    }
 }

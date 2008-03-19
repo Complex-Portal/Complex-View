@@ -27,7 +27,6 @@ import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.EbiWsWUBlast;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.filter.GOAFilterTest;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.ConfidenceType;
 import uk.ac.ebi.intact.confidence.utils.ParserUtils;
@@ -52,7 +51,6 @@ import java.util.*;
 public class PsiMiTabConfidenceTest {
 
     @Test
-    @Ignore
     public void testSaveScores() throws Exception {
         String hcSetPath = PsiMiTabConfidenceTest.class.getResource( "hc_attributes.txt").getPath();
         String gisInput = PsiMiTabConfidenceTest.class.getResource( "gisModel.txt").getPath();
@@ -67,7 +65,7 @@ public class PsiMiTabConfidenceTest {
         config.setBlastArchiveDir( blastArchiveDir);
         config.setDatabaseDir( dbFolder);
         Set<UniprotAc> againstProt =  ParserUtils.parseProteins( new File(hcSetPath));
-        File goaFile = new File( GOAFilterTest.class.getResource( "goaTest.txt" ).getPath());
+        File goaFile = new File( PsiMiTabConfidenceTest.class.getResource( "goaTest.txt" ).getPath());
         PsiMiTabConfidence psi = new PsiMiTabConfidence(new File(gisInput), config, againstProt, goaFile,  workDir );
         File inFile = new File( PsiMiTabConfidenceTest.class.getResource( "psimitab.in").getPath());
         File outFile = new File(workDir, "outPSImitab.txt");
@@ -80,7 +78,7 @@ public class PsiMiTabConfidenceTest {
     }
 
     @Test
-    @Ignore
+//    @Ignore
     public void testConstructor() throws Exception {
         String hcSetPath = PsiMiTabConfidenceTest.class.getResource( "hc_attributes.txt").getPath();
         String lcSetPath = PsiMiTabConfidenceTest.class.getResource( "lc_attributes.txt").getPath();
@@ -95,14 +93,14 @@ public class PsiMiTabConfidenceTest {
         BlastConfig config = new BlastConfig(email);
         config.setBlastArchiveDir( blastArchiveDir);
         config.setDatabaseDir( dbFolder);
-        File goaFile = new File(GOAFilterTest.class.getResource("goaTest.txt").getPath());
+        File goaFile = new File(PsiMiTabConfidenceTest.class.getResource("goaTest.txt").getPath());
         PsiMiTabConfidence psi = new PsiMiTabConfidence(hcSetPath, lcSetPath, goaFile, workDir, config);
         File inFile = new File( PsiMiTabConfidenceTest.class.getResource( "psimitab.in").getPath());
         File outFile = new File(workDir, "outPSImitab.txt");
         Set<ConfidenceType> confTypes = new HashSet<ConfidenceType>();
         boolean confidenceGO = true;
         boolean confidenceInterPro = true;
-        boolean confidenceAlign = true;
+        boolean confidenceAlign = false;
             if (confidenceGO){
                 confTypes.add( ConfidenceType.GO);
             }
