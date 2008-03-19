@@ -31,7 +31,6 @@ import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.util.AttributeGetter;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterException;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterImpl;
-import uk.ac.ebi.intact.confidence.util.GlobalData;
 import uk.ac.ebi.intact.confidence.utils.ParserUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.Confidence;
@@ -146,7 +145,13 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
     public void calculate( InteractionImpl interaction, boolean override ) throws AttributeGetterException, FilterException {
         AttributeGetter aG = new AttributeGetterImpl(workDir, annoDb, goaFilter);
         try {
+            long start = System.currentTimeMillis();
             calculate( interaction, aG, this.classifier, override );
+            if (log.isDebugEnabled()){
+                long time= System.currentTimeMillis() - start;
+                double sec = time / 1000;
+                log.debug( "to calculate score for interaction("+interaction.getAc() + ", " + interaction.getShortLabel()+") took: " + sec +" sec");
+            }
         } catch ( FilterException e ) {
             throw e;
         }
@@ -154,16 +159,17 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
 
 
     public void calculate(List<InteractionImpl> interactions, OpenNLPMaxEntClassifier model, boolean override) throws AttributeGetterException, FilterException {
-        if(log.isInfoEnabled( )){
-            GlobalData.setCount( GlobalData.getCount() + interactions.size());
-        }
         AttributeGetter aG = new AttributeGetterImpl(workDir, annoDb, goaFilter);
         for ( Iterator<InteractionImpl> iter = interactions.iterator(); iter.hasNext(); ) {
             InteractionImpl interaction =  iter.next();
-            try {
-                calculate(interaction, aG, model, override);
-            } catch ( FilterException e ) {
-                throw e;
+
+            long start = System.currentTimeMillis();
+            calculate(interaction, aG, model, override);
+
+            if (log.isDebugEnabled()){
+                long time= System.currentTimeMillis() - start;
+                double sec = time / 1000;
+                log.debug( "to calculate score for interaction("+interaction.getAc() + ", " + interaction.getShortLabel()+") took: " + sec +" sec");
             }
 
         }
@@ -182,8 +188,8 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
             //InteractionSimplified interactionS = InteractionUtils.saveInteractionInformation(interaction);
             boolean confidencePresent = confidenceExists(interaction);
             if (!override && confidencePresent ){
-                if (log.isInfoEnabled()){
-                    log.info ("for interaction(" + interaction.getAc() +") + override(" + override + ") confidencePresent(" + confidencePresent +") => conf calculation skipped" );
+                if (log.isTraceEnabled()){
+                    log.trace ("for interaction(" + interaction.getAc() +") + override(" + override + ") confidencePresent(" + confidencePresent +") => conf calculation skipped" );
                 }
                 return;
             }
@@ -193,24 +199,25 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
                 List<Attribute> attribs = aG.fetchAllAttributes( new ProteinPair( bi.getFirstId().getId(), bi.getSecondId().getId() ), againstProteins, blastConfig );
                 double[] scores = model.evaluate( attribs );
                 String value = df.format( scores[classifier.getIndex( "high" )] );
-                if (log.isInfoEnabled()){
-                    log.info("interaction(" + interaction.getAc()+") + attribus(" + printAttribs(attribs) +") => score = " + value );
+                if (log.isTraceEnabled()){
+                    log.trace("interaction(" + interaction.getAc()+") + attribus(" + printAttribs(attribs) +") => score = " + value );
                 }
                 if (override && confidencePresent){
                     Confidence conf  = getConfidence(interaction);
-                    if (conf == null){
-                        log.info("Not null confidence expected "+ interaction.getShortLabel());
-                    }
-                    conf.setValue( value );
-                    if (log.isInfoEnabled()){
-                        log.info("confidence overriden");
+                    if (conf == null  && log.isErrorEnabled()){
+                        log.error("Not null confidence expected "+ interaction.getShortLabel());                        
+                    } else {
+                        conf.setValue( value );
+                        if ( log.isTraceEnabled() ) {
+                            log.trace( "confidence overriden" );
+                        }
                     }
                 } else {
                     Confidence conf = new Confidence( interaction.getOwner(), value );
                     conf.setCvConfidenceType( cvConfidenceType);
                     interaction.addConfidence( conf );
-                     if (log.isInfoEnabled()){
-                        log.info("confidence added");
+                     if (log.isTraceEnabled()){
+                        log.trace("confidence added");
                     }
                 }
             }
@@ -277,16 +284,16 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
                         } else if (idB == null){
                             idB = new UniprotIdentifierImpl( uniprotXref.getPrimaryId());
                         } else {
-                            if (log.isInfoEnabled()){
-                                log.info("Interaction must be binary! " + interaction.getAc());
+                            if (log.isTraceEnabled()){
+                                log.trace("Interaction not binary! " + interaction.getAc());
                             }
                         }
                          if (comp.getStoichiometry() >1 ){
                              if (idB == null){
                                  idB = idA;
                              } else {
-                                 if ( log.isInfoEnabled() ) {
-                                     log.info( "Interaction must be binary and only one stoichiometry>1 ! " + interaction.getAc() );
+                                 if ( log.isTraceEnabled() ) {
+                                     log.trace( "Interaction must be binary and only one stoichiometry>1 ! " + interaction.getAc() );
                                  }
                              }
                          }
@@ -330,8 +337,8 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
         for ( InteractorXref interactorXref : xrefs ) {
             CvDatabase db = interactorXref.getCvDatabase();
             CvObjectXref dbXref = CvObjectUtils.getPsiMiIdentityXref( db );
-            if ( dbXref == null ) {
-                log.info( "dbXref == null, db: " + db + " interactor ac: " + interactor.getAc() );
+            if ( dbXref == null && log.isWarnEnabled()) {
+                log.warn( "dbXref == null, db: " + db + " interactor ac: " + interactor.getAc() );
                 return false;
             }
             if ( CvDatabase.UNIPROT_MI_REF.equals( db.getMiIdentifier() ) ) {

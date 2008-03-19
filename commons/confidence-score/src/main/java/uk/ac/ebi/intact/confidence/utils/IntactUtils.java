@@ -84,8 +84,8 @@ public class IntactUtils {
         if ( protein.getSequence() != null ) {
             return new Sequence( protein.getSequence() );
         } else {
-            if (log.isInfoEnabled()){
-                log.info( "seq was null for: " + protein.getAc() );
+            if (log.isTraceEnabled()){
+                log.trace( "seq was null for: " + protein.getAc() );
             }
             return null;
         }

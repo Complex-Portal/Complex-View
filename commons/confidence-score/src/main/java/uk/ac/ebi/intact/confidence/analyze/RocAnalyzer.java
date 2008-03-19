@@ -81,43 +81,43 @@ public class RocAnalyzer {
         int truePos = truePositives( threshold, equality );
         int falsePos = falsePositives( threshold, equality );
 
-        if ( log.isInfoEnabled() ) {
-            log.info("Total pozitives: " + totalPos());
-            log.info("Total negatives: " + totalNeg());
+        if ( log.isDebugEnabled() ) {
+            log.debug("Total pozitives: " + totalPos());
+            log.debug("Total negatives: " + totalNeg());
             String comment = "True positives = " + truePos;
-            log.info( comment );
+            log.debug( comment );
             comment = "False positives = " + falsePos;
-            log.info( comment );
+            log.debug( comment );
             comment = "Total = " + total;
-            log.info( comment );
+            log.debug( comment );
         }
 
         int trueNeg = totalNeg() - falsePos;
         int correct = truePos + trueNeg;
         double frac = new Double( correct ) / new Double( total );
 
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             String out = "Score threshold >"+ (equality ? "= " : " " )+ threshold;
-            log.info( out );
+            log.debug( out );
             out = correct + " points of " + total + " correctly classified.\n";
-            log.info( out );
+            log.debug( out );
             out = "Fraction correct = " + frac;
-            log.info( out );
+            log.debug( out );
         }
      //   int greater = truePositives( threshold, equality );
     }
 
     public void printRocPoints( int points ) throws IOException {
-        if(log.isInfoEnabled()){
-            log.info("Printing Roc Points: " + points);
+        if(log.isDebugEnabled()){
+            log.debug("Printing Roc Points: " + points);
         }
 
         double[] thresholds = new double[points];
         for ( int i = 0; i < points; i++ ) {
             thresholds[i] = new Double( ( i + 1.0 ) ) * ( 1 / new Double( points ) );
-            if ( log.isInfoEnabled() ) {
+            if ( log.isDebugEnabled() ) {
                 String comment = "threshold = " + thresholds[i];
-                log.info(comment );
+                log.debug(comment );
             }
         }
         double[] truePositives = positives( thresholds, true );
@@ -127,14 +127,18 @@ public class RocAnalyzer {
             trueNegatives[i] = 1.0 - falsePositives[i];
         }
 
-        log.info( "[Fraction of true positives] [Fraction of true negatives]" );
+        if (log.isDebugEnabled()) {
+            log.debug( "[Fraction of true positives] [Fraction of true negatives]" );
+        }
         for ( int i = 0; i < points; i++ ) {
             String out = truePositives[i] + "\t" + trueNegatives[i];
-            log.info( out );
+            if (log.isDebugEnabled()){
+                log.debug( out );
+            }
         }
 
-        if(log.isInfoEnabled()){
-            log.info("Printing Roc Points End.");
+        if(log.isDebugEnabled()){
+            log.debug("Printing Roc Points End.");
         }
     }
 
@@ -143,9 +147,9 @@ public class RocAnalyzer {
         double[] thresholds = new double[points];
         for ( int i = 0; i < points; i++ ) {
             thresholds[i] = new Double( ( i + 1.0 ) ) * ( 1 / new Double( points ) );
-            if ( log.isInfoEnabled() ) {
+            if ( log.isDebugEnabled() ) {
                 String comment = "threshold = " + thresholds[i];
-                log.info( comment );
+                log.debug( comment );
             }
         }
 
@@ -157,9 +161,9 @@ public class RocAnalyzer {
         double[] thresholds = new double[points];
         for ( int i = 0; i < points; i++ ) {
             thresholds[i] = new Double( ( i + 1.0 ) ) * ( 1 / new Double( points ) );
-            if ( log.isInfoEnabled() ) {
+            if ( log.isDebugEnabled() ) {
                 String comment = "threshold = " + thresholds[i];
-                log.info(comment );
+                log.debug(comment );
             }
         }
         double[] falsePositives = positives( thresholds, false );

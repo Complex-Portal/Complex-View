@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.confidence.maxent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.confidence.FileMethods;
 import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.attribute.AnnotationConstants;
 import uk.ac.ebi.intact.confidence.attribute.Attribute;
@@ -134,7 +133,7 @@ public abstract class AbstractMaxEnt {
 
     public double trueScoreFromLine( String line ) {
         //  ProteinPair pair = FileMethods.getProteinPair(line);
-        HashSet<Attribute> attribs = FileMethods.parseAttributeLine( line );
+        HashSet<Attribute> attribs = null;//FileMethods.parseAttributeLine( line );
         Double[] probs = probs( attribs );
         Double tScore = probs[0];
         return tScore;
@@ -149,7 +148,7 @@ public abstract class AbstractMaxEnt {
             FileWriter fw = new FileWriter( outPath );
             PrintWriter pw = new PrintWriter( fw );
 
-            String out = "> " + FileMethods.getDateTime();
+            String out = "> " ;// + FileMethods.getDateTime();
             pw.println( out );
             out = "> True-interaction probabilities: Input " + inPath;
             pw.println( out );
@@ -159,9 +158,9 @@ public abstract class AbstractMaxEnt {
             ProteinPair pair;
             HashSet<Attribute> attribs;
             while ( ( line = br.readLine() ) != null ) {
-                pair = FileMethods.getProteinPair( line );
+                pair = null;//FileMethods.getProteinPair( line );
                 StringBuilder sb = new StringBuilder( pair.toString() );
-                attribs = FileMethods.parseAttributeLine( line );
+                attribs = null;//FileMethods.parseAttributeLine( line );
                 Double[] probs = probs( attribs );
                 Double tScore = probs[0];
                 sb.append( "," );
@@ -229,7 +228,7 @@ public abstract class AbstractMaxEnt {
                 if ( Pattern.matches( AnnotationConstants.commentExpr, line ) ) {
                     continue;
                 }
-                Attribute a = FileMethods.parseAttribute( line );
+                Attribute a = null;//FileMethods.parseAttribute( line );
                 if ( a.getType() == Attribute.NULL_TYPE ) {
                     continue;
                 }

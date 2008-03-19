@@ -88,12 +88,12 @@ public class ConfidenceGISModel implements ConfidenceModel {
      * @param fastaFile
      */
     public void retireveLowConfidenceSet( File fastaFile ) throws IOException {
-        if ( log.isInfoEnabled() ) {
-            log.info( "generating low confidence interactions ..." );
+        if ( log.isTraceEnabled() ) {
+            log.trace( "generating low confidence interactions ..." );
         }
         generateLowconf( fastaFile, highConfNr );
-        if ( log.isInfoEnabled() ) {
-            log.info( "finished generating low confidence interactions." );
+        if ( log.isTraceEnabled() ) {
+            log.trace( "finished generating low confidence interactions." );
         }
     }
 

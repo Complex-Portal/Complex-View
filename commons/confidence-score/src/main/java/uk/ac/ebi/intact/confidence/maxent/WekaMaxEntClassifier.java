@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.confidence.maxent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.confidence.FileMethods;
 import uk.ac.ebi.intact.confidence.attribute.Attribute;
 import uk.ac.ebi.intact.confidence.weights.inputs.model.ArffAttribute;
 import uk.ac.ebi.intact.confidence.weights.inputs.model.ArffAttributeType;
@@ -115,7 +114,7 @@ public class WekaMaxEntClassifier extends AbstractMaxEnt {
 
     protected Attribute getAttribute( ArffAttribute arff ) {
         String attr = arff.getAttribute();
-        return FileMethods.parseAttribute( attr );
+        return null;//FileMethods.parseAttribute( attr );
     }
 
     private List<ArffAttribute> readAttribs( String attribsPath ) throws MaxEntClassifierException {

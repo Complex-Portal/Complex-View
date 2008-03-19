@@ -90,6 +90,7 @@ public class PsiMiTabConfidence {
         this.againstProteins = fetchAgainstProteins( new File( hcSetPath ) );
 
         this.goaFilterFile = goaFile;
+        annoDb = new IntactAnnotationRetrieverImpl();
     }
 
     //////////////////////

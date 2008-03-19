@@ -89,12 +89,12 @@ public class TrainModel {
         String email = "iarmean@ebi.ac.uk";
         
 
-        if(log.isInfoEnabled()){
-            log.info("workDir: "+ workDir.getPath());
-            log.info("yeastFastaFile: "+ fastaFile.getPath());
-            log.info("blastDbFolder: "+ dbFolder.getPath());
-            log.info("blastArchive: " + blastArchiveDir.getPath());
-            log.info("email: "+ email);
+        if(log.isDebugEnabled()){
+            log.debug("workDir: "+ workDir.getPath());
+            log.debug("yeastFastaFile: "+ fastaFile.getPath());
+            log.debug("blastDbFolder: "+ dbFolder.getPath());
+            log.debug("blastArchive: " + blastArchiveDir.getPath());
+            log.debug("email: "+ email);
         }
 
         /**
@@ -116,9 +116,9 @@ public class TrainModel {
         InfoGathering infoG = new InfoGathering();
         Report report = infoG.retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( workDir );
         long time = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time - start;
-            log.info( "Retrieval of high confidence and medium confidence with annotations: " + total );
+            log.debug( "Retrieval of high confidence and medium confidence with annotations: " + total );
         }
 
 
@@ -140,9 +140,9 @@ public class TrainModel {
         //File lowconfFile = new File( workDir, "lowconf_set.txt" );
         infoG.retrieveLowConfidenceSetAnnotations( report );
         long time2 = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time2 - time;
-            log.info( "Generating low confidence set with annotation: " + total );
+            log.debug( "Generating low confidence set with annotation: " + total );
         }
 
         /**
@@ -155,17 +155,17 @@ public class TrainModel {
         File outFile = new File( workDir, "highconf_set_seq_anno.txt" );
         ip.process( report.getHighconfSeqFile(), outFile );
         time = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time - time2;
-            log.info( "Blasting high confidence set : " + total );
+            log.debug( "Blasting high confidence set : " + total );
         }
       //  File inFile = new File( workDir, "lowconf_set_seq.txt" );
         File outFile2 = new File( workDir, "lowconf_set_seq_anno.txt" );
         ip.process( report.getLowconfSeqFile(), outFile2 );
         time2 = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time2 - time;
-            log.info( "Blasting low confidence set : " + total );
+            log.debug( "Blasting low confidence set : " + total );
         }
 
         /**
@@ -182,9 +182,9 @@ public class TrainModel {
 
         paw.write( pas, outFile );
         time = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time - time2;
-            log.info( "Filter GOs for high confidence set : " + total );
+            log.debug( "Filter GOs for high confidence set : " + total );
         }
 
 //        goAnnoFile = new File( workDir, "lowconf_set_go.txt" );
@@ -193,9 +193,9 @@ public class TrainModel {
         InfoFiltering.filterGO( pas, goaFile );
         paw.write( pas, outFile );
         time2 = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time2 - time;
-            log.info( "Filtering GOs for low confidence set : " + total );
+            log.debug( "Filtering GOs for low confidence set : " + total );
         }
 
         SeqAlignFilter.setHighConfProteins( report.getHighconfFile() );
@@ -205,9 +205,9 @@ public class TrainModel {
         outFile = new File( workDir, "highconf_set_seq_anno_filter.txt" );
         paw.write( proteinAnnotation, outFile );
         time = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time - time2;
-            log.info( "Filter Blasts for high confidence set : " + total );
+            log.debug( "Filter Blasts for high confidence set : " + total );
         }
 
         seqAnnoFile = new File( workDir, "lowconf_set_seq_anno.txt" );
@@ -216,9 +216,9 @@ public class TrainModel {
         outFile = new File( workDir, "lowconf_set_seq_anno_filter.txt" );
         paw.write( proteinAnnotation, outFile );
         time2 = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time2 - time;
-            log.info( "Filtering Blasts for low confidence set : " + total );
+            log.debug( "Filtering Blasts for low confidence set : " + total );
         }
 
         /**
@@ -232,27 +232,27 @@ public class TrainModel {
         outFile = new File( workDir, "highconf_set_seq_attribs.txt" );
         biaw.write( attribs, outFile );
         time = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time - time2;
-            log.info( "Creating  blast attributes for high confidence set : " + total );
+            log.debug( "Creating  blast attributes for high confidence set : " + total );
         }
         annoFile = new File( workDir, "highconf_set_go_filter.txt" );
         attribs = InfoModelInput.populateAttributes( binaryInteractions, annoFile );
         outFile = new File( workDir, "highconf_set_go_attribs.txt" );
         biaw.write( attribs, outFile );
         time2 = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time2 - time;
-            log.info( "Creating GO attributes for high confidence set : " + total );
+            log.debug( "Creating GO attributes for high confidence set : " + total );
         }
         annoFile = new File( workDir, "highconf_set_ip.txt" );
         attribs = InfoModelInput.populateAttributes( binaryInteractions, annoFile );
         outFile = new File( workDir, "highconf_set_ip_attribs.txt" );
         biaw.write( attribs, outFile );
         time = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time - time2;
-            log.info( "Creating IP attributes for high confidence set : " + total );
+            log.debug( "Creating IP attributes for high confidence set : " + total );
         }
 
        // biFile = new File( workDir, "lowconf_set.txt" );
@@ -262,27 +262,27 @@ public class TrainModel {
         outFile = new File( workDir, "lowconf_set_seq_attribs.txt" );
         biaw.write( attribs, outFile );
         time2 = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time2 - time;
-            log.info( "Creating blast attributes for low confidence set : " + total );
+            log.debug( "Creating blast attributes for low confidence set : " + total );
         }
         annoFile = new File( workDir, "lowconf_set_go_filter.txt" );
         attribs = InfoModelInput.populateAttributes( binaryInteractions, annoFile );
         outFile = new File( workDir, "lowconf_set_go_attribs.txt" );
         biaw.write( attribs, outFile );
         time = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time - time2;
-            log.info( "Creating GO attributes for low confidence set : " + total );
+            log.debug( "Creating GO attributes for low confidence set : " + total );
         }
         annoFile = new File( workDir, "lowconf_set_ip.txt" );
         attribs = InfoModelInput.populateAttributes( binaryInteractions, annoFile );
         outFile = new File( workDir, "lowconf_set_ip_attribs.txt" );
         biaw.write( attribs, outFile );
         time2 = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time2 - time;
-            log.info( "Creating IP attributes for low confidence set : " + total );
+            log.debug( "Creating IP attributes for low confidence set : " + total );
         }
 
         /**
@@ -297,9 +297,9 @@ public class TrainModel {
         File hcSet = new File( workDir, "highconf_set_attribs.txt" );
         ( new Merge() ).merge( paths, hcSet.getPath() );
         time = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time - time2;
-            log.info( "Merged attributes for high confidence set : " + total );
+            log.debug( "Merged attributes for high confidence set : " + total );
         }
 
         attribsSeq = new File( workDir, "lowconf_set_seq_attribs.txt" );
@@ -309,9 +309,9 @@ public class TrainModel {
         File lcSet = new File( workDir, "lowconf_set_attribs.txt" );
         ( new Merge() ).merge( paths2, lcSet.getPath() );
         time2 = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time2 - time;
-            log.info( "Merged attributes for low confidence set : " + total );
+            log.debug( "Merged attributes for low confidence set : " + total );
         }
 
         /**
@@ -323,9 +323,9 @@ public class TrainModel {
         outFile = new File( workDir, "gisModel.txt" );
         MaxentUtils.writeModelToFile( model, outFile );
         time = ( System.currentTimeMillis() / 1000 );
-        if ( log.isInfoEnabled() ) {
+        if ( log.isDebugEnabled() ) {
             long total = time - time2;
-            log.info( "Model trained and printed out : " + total );
+            log.debug( "Model trained and printed out : " + total );
         }
 
         return null;

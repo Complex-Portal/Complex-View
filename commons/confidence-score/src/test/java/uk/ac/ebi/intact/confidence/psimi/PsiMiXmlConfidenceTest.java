@@ -52,6 +52,7 @@ import java.util.Set;
 public class PsiMiXmlConfidenceTest {
 
     @Test
+//    @Ignore
     public void testAssingScore() throws Exception {
         File workDir =  GlobalTestData.getInstance().getTargetDirectory();
         File dbFolder = new File ( GlobalTestData.getTargetDirectory(),"DbFolder");
@@ -88,23 +89,19 @@ public class PsiMiXmlConfidenceTest {
         wsBlast.importCsv(new File(PsiMiXmlConfidenceTest.class.getResource("initDb.csv").getPath()));
     }
 
-    private void checkOutput( File outFile ) {
+    private void checkOutput( File outFile ) throws PsimiXmlReaderException {
         PsimiXmlReader reader  = new PsimiXmlReader();
-        try {
-            EntrySet entrySet = reader.read( outFile);
-            for ( Iterator<Entry> iterator = entrySet.getEntries().iterator(); iterator.hasNext(); ) {
-                Entry entry =  iterator.next();
-                for ( Iterator<Interaction> iter = entry.getInteractions().iterator(); iter.hasNext(); ) {
-                    Interaction interaction =  iter.next();
-                    Assert.assertEquals( 1,interaction.getConfidences().size());
-                    Confidence confidence = interaction.getConfidences().iterator().next();
-                    Assert.assertNotNull( confidence.getValue() );
-                    Assert.assertEquals( "intact confidence", confidence.getUnit().getNames().getShortLabel() );
-                    Assert.assertEquals( "interaction confidence score", confidence.getUnit().getNames().getFullName() );
-                }
-            }      
-        } catch ( PsimiXmlReaderException e ) {
-            e.printStackTrace();
+        EntrySet entrySet = reader.read( outFile );
+        for ( Iterator<Entry> iterator = entrySet.getEntries().iterator(); iterator.hasNext(); ) {
+            Entry entry = iterator.next();
+            for ( Iterator<Interaction> iter = entry.getInteractions().iterator(); iter.hasNext(); ) {
+                Interaction interaction = iter.next();
+                Assert.assertEquals( 1, interaction.getConfidences().size() );
+                Confidence confidence = interaction.getConfidences().iterator().next();
+                Assert.assertNotNull( confidence.getValue() );
+                Assert.assertEquals( "intact confidence", confidence.getUnit().getNames().getShortLabel() );
+                Assert.assertEquals( "interaction confidence score", confidence.getUnit().getNames().getFullName() );
+            }
         }
     }
 

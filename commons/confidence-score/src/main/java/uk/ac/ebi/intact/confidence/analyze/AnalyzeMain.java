@@ -139,8 +139,8 @@ public class AnalyzeMain {
             File negTest = new File( inDir, "testSet_lc.txt" );
             try {
                 RocAnalyzer ra = new RocAnalyzer( gisInput, posTest.getPath(), negTest.getPath(), true );
-                if ( log.isInfoEnabled() ) {
-                    log.info( "Begin of runNr: " + i + "\n" );
+                if ( log.isTraceEnabled() ) {
+                    log.trace( "Begin of runNr: " + i + "\n" );
                 }
                 ra.printSummary( threshold, equality );    //threshold >= 0.5
                 ra.printRocPoints( points );
@@ -150,13 +150,13 @@ public class AnalyzeMain {
                     truePosTotals[j] = truePosTotals[j] + truePos[j];
                     trueNegTotals[j] = trueNegTotals[j] + trueNeg[j];
                 }
-                if ( log.isInfoEnabled() ) {
-                    log.info( "End of runNr: " + i + "\n" );
+                if ( log.isTraceEnabled() ) {
+                    log.trace( "End of runNr: " + i + "\n" );
                 }
             }
             catch ( IOException e ) {
-                if ( log.isInfoEnabled() ) {
-                    log.info( "rocAnalyze", e );
+                if ( log.isErrorEnabled() ) {
+                    log.error( "rocAnalyze", e );
                 }
             }
         }

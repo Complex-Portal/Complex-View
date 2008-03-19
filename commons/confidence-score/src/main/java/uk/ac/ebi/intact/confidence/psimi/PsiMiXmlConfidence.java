@@ -71,6 +71,10 @@ public class PsiMiXmlConfidence {
 
     private AnnotationRetrieverStrategy annoDb;
 
+    private Xref xref; // TODO: remove after a real db xref for the psidev.psi.mi.xml.model.Unit exists
+
+     ///////////////////////
+    // Constructor(s).
     /**
      * Constructor for the PSI-MI XML plugin to add scores to a PSI-MI XML file.
      *
@@ -81,28 +85,42 @@ public class PsiMiXmlConfidence {
      * @param workDir : working directory for the plugin
      * @throws IOException
      */
-    public PsiMiXmlConfidence( File gisModel, BlastConfig config, Set<UniprotAc> againstProteins,File goaFile, File workDir ) throws IOException {
+    public PsiMiXmlConfidence( File gisModel, BlastConfig config, Set<UniprotAc> againstProteins,File goaFile, File workDir ) throws PsiMiException {
         this.blastConfig = config;
         this.againstProteins = againstProteins;
-        classifier = new OpenNLPMaxEntClassifier( gisModel );
-        this.workDir = workDir;
+         try {
+             classifier = new OpenNLPMaxEntClassifier( gisModel );
+         } catch ( IOException e ) {
+             throw new PsiMiException( e);
+         }
+         this.workDir = workDir;
 
         this.goaFilterFile = goaFile;
         goFilter = new GOAFilterMapImpl();
 
         annoDb = new IntactAnnotationRetrieverImpl();
+
+        initUnitXref();
     }
 
 
-    public PsiMiXmlConfidence( String hcSetPath, String lcSetPath, File goaFile, File workDir, BlastConfig config ) throws IOException {
+    public PsiMiXmlConfidence( String hcSetPath, String lcSetPath, File goaFile, File workDir, BlastConfig config ) throws PsiMiException {
         this.workDir = workDir;
         this.blastConfig = config;
-        this.classifier = new OpenNLPMaxEntClassifier( hcSetPath, lcSetPath, workDir );
+        try {
+            this.classifier = new OpenNLPMaxEntClassifier( hcSetPath, lcSetPath, workDir );
+        } catch ( IOException e ) {
+            throw new PsiMiException( e);
+        }
         this.againstProteins = ParserUtils.parseProteins( new File( hcSetPath ) );
 
         this.goaFilterFile = goaFile;
+
+        initUnitXref();
     }
 
+    ////////////////////
+    // Public Method(s).
     public void appendConfidence( File inPsiMiXmlFile, File outPsiMiFile, Set<ConfidenceType> type ) throws PsiMiException {
         PsimiXmlReader reader = new PsimiXmlReader();
         try {
@@ -116,7 +134,38 @@ public class PsiMiXmlConfidence {
         }
     }
 
+     public void writeScores( EntrySet entry, File outPsiMiFile ) throws PsiMiException {
+        PsimiXmlWriter writer = new PsimiXmlWriter();
+        try {
+            writer.write( entry, outPsiMiFile );
+        } catch ( PsimiXmlWriterException e ) {
+            System.out.println(entry);
+            throw new PsiMiException( e);
+        }
+    }
+
+
+    public static void setGoFilter( GOAFilter goFilter ) {
+        PsiMiXmlConfidence.goFilter = goFilter;
+    }
+
+
+    /////////////////////
+    // Private Method(s).
+    private void initUnitXref() throws PsiMiException {
+        try {
+            xref = Xref.class.newInstance();
+             DbReference dbXref = new DbReference();
+            xref.setPrimaryRef( dbXref );
+        } catch ( InstantiationException e ) {
+            throw new PsiMiException( e);
+        } catch ( IllegalAccessException e ) {
+            throw new PsiMiException( e);
+        }
+    }
+
     private void saveScores( Collection<Entry> entries, Set<ConfidenceType> type ) throws PsiMiException, AttributeGetterException {
+         AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb, goFilter );
         for ( Iterator<Entry> iterator = entries.iterator(); iterator.hasNext(); ) {
             Entry entry = iterator.next();
             Collection<Interaction> interactions = entry.getInteractions();
@@ -129,7 +178,7 @@ public class PsiMiXmlConfidence {
                 } else {
                     ProteinPair pp = retireveProteinPair( participants );
                     if ( pp != null ) {
-                        List<Attribute> attribs = getAttributes( pp, type );
+                        List<Attribute> attribs = getAttributes( ag, pp, type );
                         if ( log.isInfoEnabled() ) {
                             log.info( "interaction: " + pp.toString() + " attribs: " + attribs );
                         }
@@ -165,9 +214,9 @@ public class PsiMiXmlConfidence {
         return null;
     }
 
-    private List<Attribute> getAttributes( ProteinPair prteinPair, Set<ConfidenceType> type ) throws PsiMiException, AttributeGetterException {
+    private List<Attribute> getAttributes( AttributeGetter ag, ProteinPair prteinPair, Set<ConfidenceType> type ) throws PsiMiException, AttributeGetterException {
         List<Attribute> attributes = new ArrayList<Attribute>();
-        AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb, goFilter );
+
         for ( Iterator<ConfidenceType> confTypeIter = type.iterator(); confTypeIter.hasNext(); ) {
             ConfidenceType confidenceType = confTypeIter.next();
              if (confidenceType.equals( ConfidenceType.GO )){
@@ -209,6 +258,7 @@ public class PsiMiXmlConfidence {
             names.setFullName( "interaction confidence score" );
             names.setShortLabel( "intact confidence" );
             u.setNames( names );
+            u.setXref( xref );
         } catch ( InstantiationException e ) {
             throw new PsiMiException( e);
         } catch ( IllegalAccessException e ) {
@@ -221,17 +271,5 @@ public class PsiMiXmlConfidence {
     }
 
 
-    public void writeScores( EntrySet entry, File outPsiMiFile ) throws PsiMiException {
-        PsimiXmlWriter writer = new PsimiXmlWriter();
-        try {
-            writer.write( entry, outPsiMiFile );
-        } catch ( PsimiXmlWriterException e ) {
-            throw new PsiMiException( e);
-        }
-    }
 
-
-    public static void setGoFilter( GOAFilter goFilter ) {
-        PsiMiXmlConfidence.goFilter = goFilter;
-    }
 }

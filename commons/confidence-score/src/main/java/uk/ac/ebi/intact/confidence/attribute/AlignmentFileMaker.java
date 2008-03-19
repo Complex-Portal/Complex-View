@@ -249,8 +249,8 @@ public class AlignmentFileMaker {
         GlobalData.setCount( 0 );
         GlobalData.startTime = -1;
         GlobalData.totalProts = proteins.size();
-        if ( log.isInfoEnabled() ) {
-            log.info( "total nr of proteins : " + GlobalData.totalProts );
+        if ( log.isDebugEnabled() ) {
+            log.debug( "total nr of proteins : " + GlobalData.totalProts );
             count++;
             File f = new File( workDir, "listOfProteins" + count + ".txt" );
             printToFile( proteins, f );
@@ -260,14 +260,14 @@ public class AlignmentFileMaker {
             Set<UniprotAc> againstProt = getUniprotAcs( againstProteins );
             for ( Iterator<ProteinSimplified> iterator = proteins.iterator(); iterator.hasNext(); ) {
                 ProteinSimplified prot = iterator.next();
-                if ( log.isInfoEnabled() ) {
-                    log.info( "fetching " + prot );
+                if ( log.isTraceEnabled() ) {
+                    log.trace( "fetching " + prot );
                 }
                 BlastResult result = blast.fetchAvailableBlast( new UniprotAc( prot.getUniprotAc().getAcNr() ) );
                 if ( result != null ) {
                     processResult( result, againstProt, writer );
-                    if ( log.isInfoEnabled() ) {
-                        log.info( "processed: " + GlobalData.getCount() + " out of " + GlobalData.totalProts );
+                    if ( log.isTraceEnabled() ) {
+                        log.trace( "processed: " + GlobalData.getCount() + " out of " + GlobalData.totalProts );
                     }
                     iterator.remove();
                 } else {
@@ -275,8 +275,8 @@ public class AlignmentFileMaker {
                     //if (blast.okToSubmit( 1)) {}
                     BlastInput bi = formatBlastInput( prot );
                     BlastJobEntity job = blast.submitJob( bi );
-                    if ( log.isInfoEnabled() ) {
-                        log.info( "job submitted: " + job );
+                    if ( log.isTraceEnabled() ) {
+                        log.trace( "job submitted: " + job );
                     }
                 }
             }
@@ -292,9 +292,9 @@ public class AlignmentFileMaker {
 
         GlobalData.endTime = System.currentTimeMillis();
         long time = GlobalData.endTime - GlobalData.startTime;
-        if ( log.isInfoEnabled() ) {
-            log.info( "for " + GlobalData.getCount() + " prots: " + time );
-            log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+        if ( log.isDebugEnabled() ) {
+            log.debug( "for " + GlobalData.getCount() + " prots: " + time );
+            log.debug( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
         }
     }
 
@@ -367,17 +367,17 @@ public class AlignmentFileMaker {
 
     private void processResult( ProteinSimplified protein, BlastResult result, Set<UniprotAc> againstProteins ) {
         GlobalData.increment( 1 );
-        if ( ( GlobalData.getCount() % 20 ) == 0 ) {
+        if ( ( GlobalData.getCount() % 20 ) == 0  && log.isDebugEnabled()) {
             GlobalData.endTime = System.currentTimeMillis();
             long time = GlobalData.endTime - GlobalData.startTime;
-            log.info( "for " + GlobalData.getCount() + " prots: " + ( ( time ) / 60000 ) );
-            log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+            log.debug( "for " + GlobalData.getCount() + " prots: " + ( ( time ) / 60000 ) );
+            log.debug( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
         }
         for ( Hit hit : result.getHits() ) {
             Float evalue = hit.getEValue();
             String ac = hit.getUniprotAc();
-            if ( ac == null ) {
-                log.debug( "Ac is null, in a hit list!" + result.getUniprotAc() + ": " + hit );
+            if ( ac == null && log.isWarnEnabled()) {
+                log.warn( "Ac is null, in a hit list!" + result.getUniprotAc() + ": " + hit );
             }
 
             // TODO: remove try/catch block after test
@@ -387,18 +387,20 @@ public class AlignmentFileMaker {
                     protein.addAlignment( uniprotAc );
                 }
             } catch ( IllegalArgumentException e ) {
-                log.debug( e.toString() + "\n" + " : " + evalue + ": " + ac );
+                if (log.isErrorEnabled()){
+                    log.error( evalue + ": " + ac, e );
+                }
             }
         }
     }
 
     private void processResult( BlastResult result, Set<UniprotAc> againstProteins, Writer writer ) {
         GlobalData.increment( 1 );
-        if ( ( GlobalData.getCount() % 20 ) == 0 ) {
+        if ( ( GlobalData.getCount() % 20 ) == 0 && log.isDebugEnabled()) {
             GlobalData.endTime = System.currentTimeMillis();
             long time = GlobalData.endTime - GlobalData.startTime;
-            log.info( "for " + GlobalData.getCount() + " prots: " + ( ( time ) / 60000 ) );
-            log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+            log.debug( "for " + GlobalData.getCount() + " prots: " + ( ( time ) / 60000 ) );
+            log.debug( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
         }
         String alignmentLine = result.getUniprotAc();
         for ( Hit hit : result.getHits() ) {
@@ -439,11 +441,11 @@ public class AlignmentFileMaker {
         }
         for ( BlastResult result : results ) {
             GlobalData.increment( 1 );
-            if ( ( GlobalData.getCount() % 20 ) == 0 ) {
+            if ( ( GlobalData.getCount() % 20 ) == 0  && log.isDebugEnabled()) {
                 GlobalData.endTime = System.currentTimeMillis();
                 long time = GlobalData.endTime - GlobalData.startTime;
-                log.info( "for " + GlobalData.getCount() + " prots: " + time );
-                log.info( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
+                log.debug( "for " + GlobalData.getCount() + " prots: " + time );
+                log.debug( "ETA: " + GlobalData.eta( GlobalData.getCount(), time, GlobalData.totalProts ) + " (min)" );
             }
             String alignmentLine = result.getUniprotAc();
             for ( Hit hit : result.getHits() ) {

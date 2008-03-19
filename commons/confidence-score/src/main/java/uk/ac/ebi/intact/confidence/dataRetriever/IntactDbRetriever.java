@@ -227,10 +227,14 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             Interaction interaction = interactionDao.getByAc( ac );
             if ( interaction != null ) {
                 InteractionSimplified intS = saveInteractionInformation( interaction );
-                log.info( "read: " + intS.getAc() );
+                if (log.isTraceEnabled()){
+                    log.trace( "read: " + intS.getAc() );
+                }
                 interactions.add( intS );
             } else
-                log.debug( "interaction accession nr not found : " + ac );
+                if (log.isDebugEnabled()){
+                    log.debug( "interaction accession nr not found : " + ac );
+                }
         }
 
         return interactions;
@@ -380,8 +384,8 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
         InteractionDao interactionDao = daoFactory.getInteractionDao();
         totalNr = interactionDao.countAll();
-        if ( log.isInfoEnabled() ) {
-            log.info( "\tGoing to process: " + totalNr );
+        if ( log.isDebugEnabled() ) {
+            log.debug( "\tGoing to process: " + totalNr );
         }
 
         int firstResult = 0;
@@ -402,13 +406,13 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             if ( firstTime ) {
                 firstTime = false;
             }
-            if ( log.isInfoEnabled() ) {
+            if ( log.isTraceEnabled() ) {
                 int processed = firstResult + interactions.size();
 
                 if ( firstResult != processed ) {
-                    log.info( "\t\tProcessed " + ( firstResult + interactions.size() + " out of " + totalNr ) );
+                    log.trace( "\t\tProcessed " + ( firstResult + interactions.size() + " out of " + totalNr ) );
                 }
-                log.info("authorConf(case1, case2, case3): " + nrAuthorConf +"(" + nrAuthorConf1 + ", " + nrAuthorConf2 + ", " + nrAuthorConf3 +")"
+                log.trace("authorConf(case1, case2, case3): " + nrAuthorConf +"(" + nrAuthorConf1 + ", " + nrAuthorConf2 + ", " + nrAuthorConf3 +")"
                 + " complexes: " + nrComplexes + " enzyme: " + nrEnzyme + " flurophore: " + nrFluoresc
                 + " in vitro: " + nrInVitro + " direct interactions: " + nrDirectInts + " disulfid bond: " + nrDisulfideInts
                 + " crosslink: " + nrCrossLink);
@@ -417,8 +421,8 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             firstResult = firstResult + maxResults;
             endTransaction();
         }
-        if ( log.isInfoEnabled() ) {
-            log.info( "Processed " + totalNr + " IntAct interactions." );
+        if ( log.isDebugEnabled() ) {
+            log.debug( "Processed " + totalNr + " IntAct interactions." );
         }
     }
 
@@ -474,11 +478,11 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                     // expand intS
                     Collection<InteractionSimplified> intSsimpl = expansionStrategy.expand( intS );
                     nrHC += intSsimpl.size();
-                    if ( log.isInfoEnabled() ) {
+                    if ( log.isTraceEnabled() ) {
                         if ( highConfOrCompl ) {
-                            log.info( "HighConfOrComplex: " + intS.getAc() + " (authorConf: " + nrAuthorConf + ") (curated complex: " + nrComplexes + ")  total hc ( with dupplicates): " + nrHC );
+                            log.trace( "HighConfOrComplex: " + intS.getAc() + " (authorConf: " + nrAuthorConf + ") (curated complex: " + nrComplexes + ")  total hc ( with dupplicates): " + nrHC );
                         } else if ( enzymeOrFluoresc ) {
-                            log.info( "enzymeOrFluoresc: " + intS.getAc() + " (enzymes: " + nrEnzyme + ") ( flurophore " + nrFluoresc + ") total hc (with dupplicates): " + nrHC );
+                            log.trace( "enzymeOrFluoresc: " + intS.getAc() + " (enzymes: " + nrEnzyme + ") ( flurophore " + nrFluoresc + ") total hc (with dupplicates): " + nrHC );
                         }
                     }
 
@@ -599,7 +603,9 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             CvDatabase db = interactorXref.getCvDatabase();
             CvObjectXref dbXref = CvObjectUtils.getPsiMiIdentityXref( db );
             if ( dbXref == null ) {
-                log.info( "dbXref == null, db: " + db + " interactor ac: " + interactor.getAc() );
+                if (log.isWarnEnabled()){
+                    log.warn( "dbXref == null, db: " + db + " interactor ac: " + interactor.getAc() );
+                }
                 return false;
             }
             if ( CvDatabase.UNIPROT_MI_REF.equals( db.getMiIdentifier() ) ) {
@@ -638,8 +644,8 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         for ( Annotation item : interaction.getAnnotations() ) {
             if ( CvTopic.CURATED_COMPLEX.equals( item.getCvTopic().getShortLabel() ) ) {
                 nrComplexes++;
-                if ( log.isInfoEnabled() ) {
-                    log.info( "Found 'curated-complex': " + interaction.getAc() + "( total curated-complexes: " + nrComplexes + ")"  );
+                if ( log.isTraceEnabled() ) {
+                    log.trace( "Found 'curated-complex': " + interaction.getAc() + "( total curated-complexes: " + nrComplexes + ")"  );
                 }
                 return true;
             }
@@ -650,24 +656,24 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
     private boolean isHighConfidence( InteractionImpl interaction ) {
         if ( isCaseTwo( interaction ) ) {
-            if ( log.isInfoEnabled() ) {
-                log.info( "CASE 2: Found interaction " + interaction.getAc() );
+            if ( log.isTraceEnabled() ) {
+                log.trace( "CASE 2: Found interaction " + interaction.getAc() );
             }
             nrAuthorConf2++;
             return true;
         }
 
         if ( isCaseThree( interaction ) ) {
-            if ( log.isInfoEnabled() ) {
-                log.info( "CASE 3: Found interaction " + interaction.getAc() );
+            if ( log.isTraceEnabled() ) {
+                log.trace( "CASE 3: Found interaction " + interaction.getAc() );
             }
             nrAuthorConf3++;
             return true;
         }
 
         if ( isCaseOne( interaction ) ) {
-            if ( log.isInfoEnabled() ) {
-                log.info( "CASE 1: Found interaction " + interaction.getAc() );
+            if ( log.isTraceEnabled() ) {
+                log.trace( "CASE 1: Found interaction " + interaction.getAc() );
             }
             nrAuthorConf1++;
             return true;
@@ -682,8 +688,8 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             Experiment experiment = iter.next();
             if (FilterConstants.CROSSLINK.equalsIgnoreCase( experiment.getCvInteraction().getShortLabel())){
                 nrCrossLink++;
-                if (log.isInfoEnabled()){
-                    log.info("Found 'crosslink' : " +interaction.getAc() + " nrCrossLink: " + nrCrossLink);
+                if (log.isTraceEnabled()){
+                    log.trace("Found 'crosslink' : " +interaction.getAc() + " nrCrossLink: " + nrCrossLink);
                 }
                 return true;
             }
@@ -758,8 +764,8 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                         if ( FilterConstants.PARTICIPANTS_IN_VITRO.contains( bioS.getShortLabel() ) ) {
                             //TODO: if one of the comps is in the list above its enough for me to take, is this fine ?!
                             nrInVitro++;
-                            if ( log.isInfoEnabled() ) {
-                                log.info( "Found 'in vitro' : " + interaction.getAc() + " type: '" + component.getExpressedIn().getShortLabel() + "' nrInVitro : " + nrInVitro );
+                            if ( log.isTraceEnabled() ) {
+                                log.trace( "Found 'in vitro' : " + interaction.getAc() + " type: '" + component.getExpressedIn().getShortLabel() + "' nrInVitro : " + nrInVitro );
                             }
                             return true;
                         }
@@ -778,15 +784,15 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         CvInteractionType cvInteraction = interaction.getCvInteractionType();
         if (CvInteractionType.DIRECT_INTERACTION_MI_REF.equals( cvInteraction.getMiIdentifier())){
             nrDirectInts++;
-            if (log.isInfoEnabled()){
-                log.info("Found direct interaction : " + interaction.getAc() + " total: " + nrDirectInts);
+            if (log.isTraceEnabled()){
+                log.trace("Found direct interaction : " + interaction.getAc() + " total: " + nrDirectInts);
             }
             return true;
         }
         if (FilterConstants.DISULFIDE_BOND.equalsIgnoreCase( cvInteraction.getShortLabel())){
             nrDisulfideInts++;
-             if (log.isInfoEnabled()){
-                log.info("Found disulfide bond: " + interaction.getAc() + " nrDisulfideInts: " + nrDisulfideInts);
+             if (log.isTraceEnabled()){
+                log.trace("Found disulfide bond: " + interaction.getAc() + " nrDisulfideInts: " + nrDisulfideInts);
             }
             return true;
         }
