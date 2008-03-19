@@ -156,8 +156,8 @@ public class AlignmentFileMaker {
         while (proteins.size() != 0){
             for ( Iterator<ProteinSimplified> iter = proteins.iterator(); iter.hasNext(); ) {
                 ProteinSimplified proteinSimplified = iter.next();
-                if ( log.isDebugEnabled() ) {
-                    log.debug( "fetching " + proteinSimplified );
+                if ( log.isTraceEnabled() ) {
+                    log.trace( "fetching " + proteinSimplified );
                 }
                 Sequence seq = proteinSimplified.getSequence();
                 BlastInput blastInput;
@@ -168,8 +168,8 @@ public class AlignmentFileMaker {
                 }
                 BlastJobEntity blastJobEntity = blast.submitJob( blastInput );
                 blast.refreshJob( blastJobEntity );
-                if (log.isDebugEnabled()){
-                    log.debug( "jobEntity: " + blastJobEntity );
+                if (log.isTraceEnabled()){
+                    log.trace( "jobEntity: " + blastJobEntity );
                 }
                 if ( blastJobEntity.getStatus().equals( BlastJobStatus.DONE )  || blastJobEntity.getStatus().equals( BlastJobStatus.FAILED ) ||
                         blastJobEntity.getStatus().equals(BlastJobStatus.NOT_FOUND)) {

@@ -60,6 +60,8 @@ public class FillDbTest extends IntactBasicTestCase {
     private BlastConfig blastConfig;
     private File goaFile;
     private OpenNLPMaxEntClassifier classifier;
+    private File gisModelFile;
+    private File highconfFile;
     private Set<UniprotAc> againstProts;
     private CvConfidenceType cvConfidenceType;
 
@@ -85,7 +87,7 @@ public class FillDbTest extends IntactBasicTestCase {
     }
 
     @Test
-    public void test() throws Exception {
+    public void fillUsingIntactConfidenceCalculator() throws Exception {
         init();
         IntactConfidenceCalculator ic = new IntactConfidenceCalculator( classifier, blastConfig, againstProts,goaFile, workDir );
         List<InteractionImpl> interactions = getDaoFactory().getInteractionDao().getAll();
@@ -128,27 +130,18 @@ public class FillDbTest extends IntactBasicTestCase {
         }
         getDataContext().commitTransaction();
 
-        //check if it was proper persisted
-        for ( Iterator<InteractionImpl> iter = getDaoFactory().getInteractionDao().getAll().iterator(); iter.hasNext(); )
-        {
-            InteractionImpl interaction = iter.next();
-//            Assert.assertEquals( 1, interaction.getConfidences().size() );
-            String expected = "0.50";
-            if ( interaction.getShortLabel().equalsIgnoreCase( "int-high" ) ) {
-                expected = "0.82";
-            } else if ( interaction.getShortLabel().equalsIgnoreCase( "int-low" ) ) {
-                expected = "0.20";
-            }
-            if ( interaction.getShortLabel().startsWith( "int-unk" ) ) {
-                Assert.assertNotNull( interaction.getConfidences().iterator().next().getValue() );
-            } else if (interaction.getShortLabel().equalsIgnoreCase( "int-high" )){
-                //obs: the score was oscillating between 0.82, 0.83 this is why this special assertion was introduced
-                Assert.assertTrue(interaction.getConfidences().iterator().next().getValue().startsWith( "0.8" ));
-            } else {
-                Assert.assertEquals(expected, interaction.getConfidences().iterator().next().getValue() );
-            }
-        }
+        checkConfidences();
     }
+
+    @Test
+    public void fillUsingFillDb() throws Exception {
+        init();
+        FillDb fill = new FillDb(workDir, blastConfig, highconfFile, gisModelFile, goaFile);
+        fill.fillDb( true );
+
+        checkConfidences();
+    }
+
 
     private void init() throws IntactTransactionException, IOException, BlastServiceException {
         if (init){
@@ -253,7 +246,7 @@ public class FillDbTest extends IntactBasicTestCase {
         workDir = GlobalTestData.getTargetDirectory();
         prepareDB( dbFolder, "myName@yahuo.com", workDir );
 
-        File gisModelFile = new File( FillDbTest.class.getResource( "model.txt" ).getPath() );
+        gisModelFile = new File( FillDbTest.class.getResource( "model.txt" ).getPath() );
         blastConfig = new BlastConfig( "myName@yahuo.com" );
         // need a blast Archive
         File archive = new File( FillDbTest.class.getResource( "Q16643.xml" ).getPath() ).getParentFile();
@@ -262,8 +255,8 @@ public class FillDbTest extends IntactBasicTestCase {
         blastConfig.setDatabaseDir( dbFolder );
         classifier = new OpenNLPMaxEntClassifier( gisModelFile );
 
-        File hcSet = new File( FillDbTest.class.getResource( "highconf_set.txt" ).getPath() );
-        againstProts = ParserUtils.parseProteins( hcSet );
+        highconfFile = new File( FillDbTest.class.getResource( "highconf_set.txt" ).getPath() );
+        againstProts = ParserUtils.parseProteins( highconfFile );
 
         goaFile = new File( FillDbTest.class.getResource( "goaTest.txt" ).getPath());
     }
@@ -274,5 +267,24 @@ public class FillDbTest extends IntactBasicTestCase {
         wsBlast.importCsv( new File( FillDbTest.class.getResource( "initDb.csv" ).getPath() ) );
     }
 
+    private void checkConfidences(){
+        for ( Iterator<InteractionImpl> iter = getDaoFactory().getInteractionDao().getAll().iterator(); iter.hasNext(); ){
+            InteractionImpl interaction = iter.next();
+            String expected = "0.50";
+            if ( interaction.getShortLabel().equalsIgnoreCase( "int-high" ) ) {
+                expected = "0.82";
+            } else if ( interaction.getShortLabel().equalsIgnoreCase( "int-low" ) ) {
+                expected = "0.20";
+            }
+            if ( interaction.getShortLabel().startsWith( "int-unk" ) ) {
+                Assert.assertNotNull( interaction.getConfidences().iterator().next().getValue() );
+            } else if (interaction.getShortLabel().equalsIgnoreCase( "int-high" )){
+                //obs: the score was oscillating between 0.82, 0.83 this is why this special assertion was introduced
+                Assert.assertTrue(interaction.getConfidences().iterator().next().getValue().startsWith( "0.8" ));
+            } else {
+                Assert.assertEquals(expected, interaction.getConfidences().iterator().next().getValue() );
+            }
+        }
+    }
 
 }

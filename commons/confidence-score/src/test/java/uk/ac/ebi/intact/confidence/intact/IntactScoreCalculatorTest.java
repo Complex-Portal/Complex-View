@@ -210,16 +210,16 @@ public class IntactScoreCalculatorTest extends IntactBasicTestCase {
         File workDir = GlobalTestData.getTargetDirectory();
         prepareDB( dbFolder, "myName@yahuo.com", workDir );
 
-        File gisModelFile = new File( FillDbTest.class.getResource( "model.txt" ).getPath() );
+        File gisModelFile = new File( IntactScoreCalculatorTest.class.getResource( "model.txt" ).getPath() );
         BlastConfig blastConfig = new BlastConfig( "myName@yahuo.com" );
         // need a blast Archive
-        File archive = new File( FillDbTest.class.getResource( "Q16643.xml" ).getPath() ).getParentFile();
+        File archive = new File( IntactScoreCalculatorTest.class.getResource( "Q16643.xml" ).getPath() ).getParentFile();
         blastConfig.setBlastArchiveDir( archive );
         // db dir
         blastConfig.setDatabaseDir( dbFolder );
         OpenNLPMaxEntClassifier classifier = new OpenNLPMaxEntClassifier( gisModelFile );
 
-        File hcSet = new File( FillDbTest.class.getResource( "highconf_set.txt" ).getPath() );
+        File hcSet = new File( IntactScoreCalculatorTest.class.getResource( "highconf_set.txt" ).getPath() );
         Set<UniprotAc> againstProts = ParserUtils.parseProteins( hcSet );
 
         File goaFile = new File( GOAFilterTest.class.getResource( "goaTest.txt" ).getPath());
@@ -231,7 +231,7 @@ public class IntactScoreCalculatorTest extends IntactBasicTestCase {
     private void prepareDB( File dbFolder, String email, File workDir ) throws BlastServiceException {
         AbstractBlastService wsBlast = new EbiWsWUBlast( dbFolder, "job", workDir, email, 20 );
         wsBlast.deleteJobsAll();
-        wsBlast.importCsv( new File( FillDbTest.class.getResource( "initDb.csv" ).getPath() ) );
+        wsBlast.importCsv( new File( IntactScoreCalculatorTest.class.getResource( "initDb.csv" ).getPath() ) );
     }
 
     private void initIntactMock() throws IntactTransactionException {
