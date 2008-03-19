@@ -43,7 +43,7 @@ public class InteractionGenerator {
         }
         List<Identifier> yeastProtList = new ArrayList<Identifier>(yeastProts);
         List<BinaryInteraction> forbiddenList = new ArrayList<BinaryInteraction>(forbidden);
-        Set<BinaryInteraction> interactions = new HashSet<BinaryInteraction>(nr);
+        List<BinaryInteraction> interactions = new ArrayList<BinaryInteraction>(nr);
         Random random = new Random();
 
 		int i = 0;
@@ -57,14 +57,17 @@ public class InteractionGenerator {
                 Identifier uniprotId2 = yeastProtList.get( index2 );
 
                 BinaryInteraction auxBin = new BinaryInteraction( uniprotId1, uniprotId2, Confidence.UNKNOWN );
-                if ( !forbiddenList.contains( auxBin ) ) {
+                if ( !forbiddenList.contains( auxBin ) && !interactions.contains( auxBin )) {
                     auxBin.setConfidence( Confidence.LOW );
+                    if (log.isTraceEnabled()){
+                        log.trace("interaction added: " + auxBin.convertToString());
+                    }
                     interactions.add( auxBin );
                     i++;
                 }
             }
         }
 
-		return interactions;
+		return new HashSet<BinaryInteraction>(interactions);
     }
 }
