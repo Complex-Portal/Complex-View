@@ -77,44 +77,187 @@
                         <iav:panelCategoryColumn>
                             <iav:categoryGroup id="protSeqGroup" title="Protein Sequences">
                                 <iav:categoryItem name="PRIDE"
-                                                   description="Proteomics Identification Database"
-                                                   category="pride"
-                                                   url="http://www.ebi.ac.uk/pride">
-
+                                                  description="Proteomics Identification Database"
+                                                  category="MI:0738"
+                                                  url="http://www.ebi.ac.uk/pride">
+                                    <ui:include src="/pages/xref_list.xhtml">
+                                        <ui:param name="externalLink" value="http://mips.gsf.de/genre/proj/yeast/singleGeneReport.html?entry=ID"/>
+                                    </ui:include>
                                 </iav:categoryItem>
                                 <iav:categoryItem name="UniProt Kb"
-                                                   description="UniProt Knowledge Base of protein sequences"
-                                                   category="uniprotkb"
-                                                   url="http://www.uniprot.org/"/>
+                                                  description="UniProt Knowledge Base of protein sequences"
+                                                  category="MI:0486"
+                                                  url="http://www.uniprot.org/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
                             </iav:categoryGroup>
+
+                            <iav:categoryGroup id="smallMolGroup" title="Small Molecules">
+                                <iav:categoryItem name="ChEBI"
+                                                  description="Chemical Entities of Biological Interest"
+                                                  category="MI:0474"
+                                                  url="http://www.ebi.ac.uk/chebi/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="DrugBank"
+                                                  description="A knowledgebase for drugs, drug actions and drug targets"
+                                                  category="drugbank"
+                                                  url="http://www.ebi.ac.uk/chebi/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="PubChem"
+                                                  description="Provides information on the biological activities of small molecules."
+                                                  category="MI:0730"
+                                                  url="http://pubchem.ncbi.nlm.nih.gov/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                 <iav:categoryItem name="RESID"
+                                                  description="Protein residue modifications database"
+                                                  category="MI:0248"
+                                                  url="http://www.ebi.ac.uk/resid/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                            </iav:categoryGroup>
+
                             <iav:categoryGroup id="nucSeqGroup" title="Nucleotide Sequences">
-                                <iav:categoryItem name="ASTD"
-                                                   description="Database of alternative splice events and transcripts of genes from human, mouse and rat"
-                                                   category="uniprotkb"
-                                                   url="http://www.ebi.ac.uk/astd"/>
-                                <iav:categoryItem name="EMBL-Bank"
-                                                   description="Europe's primary nucleotide sequence resource"
-                                                   category="MI:0475"
-                                                   url="http://www.ebi.ac.uk/embl">
-
-                                      <tr:panelList listStyle="list-style-type:decimal" rendered="#{!empty xrefs}">
-                                          <tr:iterator var="xrefItem" value="#{xrefs}">
-                                              <h:outputText value="#{xrefItem.data.primaryId}"/>
-                                          </tr:iterator>
-                                      </tr:panelList>
-
-
-                                    </iav:categoryItem>
-                                <iav:categoryItem name="EMBL-Bank (Coding Sequence)"
-                                                   description="Coding Sequences in EMBL-Bank"
-                                                   category="uniprotkb"
-                                                   url="http://srs.ebi.ac.uk/srsbin/cgi-bin/wgetz?-page+LibInfo+-id+1g6A71VejsH+-lib+EMBLCDS"/>
+                                    <iav:categoryItem name="EMBL-Bank"
+                                                  description="Europe's primary nucleotide sequence resource"
+                                                  category="MI:0475"
+                                                  url="http://www.ebi.ac.uk/embl">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
                             </iav:categoryGroup>
+
+                            <iav:categoryGroup id="genomesGroup" title="Genomes">
+                                <iav:categoryItem name="Ensembl"
+                                                  description="Selected eukaryotic genomes"
+                                                  category="MI:0476"
+                                                  url="http://www.ensembl.org/">
+                                    <ui:include src="/pages/xref_list.xhtml">
+                                        <ui:param name="externalLink" value="http://mips.gsf.de/genre/proj/yeast/singleGeneReport.html?entry=ID"/>
+                                    </ui:include>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="CYGD (MIPS)"
+                                                  description="The MIPS Comprehensive Yeast Genome Database"
+                                                  category="MI:0464"
+                                                  url="http://mips.gsf.de/genre/proj/yeast/">
+                                    <ui:include src="/pages/xref_list.xhtml">
+                                        <ui:param name="externalLink" value="http://mips.gsf.de/genre/proj/yeast/singleGeneReport.html?entry=ID"/>
+                                    </ui:include>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="Integr8"
+                                                  description="Completed genomes and proteomes"
+                                                  category="integr8"
+                                                  url="http://www.ebi.ac.uk/integr8">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="RGD"
+                                                  description="The Rat Genome Database (RGD) curates and integrates rat genetic and genomic data"
+                                                  category="MI:0483"
+                                                  url="http://rgd.mcw.edu/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="SGD"
+                                                  description="SGD is a scientific database of the molecular biology and genetics of the yeast Saccharomyces cerevisiae"
+                                                  category="MI:0484"
+                                                  url="http://www.yeastgenome.org/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                            </iav:categoryGroup>
+
+                            <iav:categoryGroup id="macromolGroup" title="Macromolecular Structures">
+                                <iav:categoryItem name="RCSB PDB"
+                                                  description="Resources for studying the structures of biological macromolecules and their relationships to sequence, function, and disease"
+                                                  category="MI:0460"
+                                                  url="http://www.pdb.org/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="MSD PDB"
+                                                  description="Macromolecular structures database"
+                                                  category="MI:0472"
+                                                  url="http://www.ebi.ac.uk/msd-srv/msdlite/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                            </iav:categoryGroup>
+
                         </iav:panelCategoryColumn>
+                        <iav:panelCategoryColumn>
+
+                            <iav:categoryGroup id="reactAndPathGroup" title="Reactions and Pathways">
+                                <iav:categoryItem name="BioModels"
+                                                  description="Database of Mathematical models of biological interest"
+                                                  category="biomodels"
+                                                  url="http://www.ebi.ac.uk/biomodels/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="Reactome (Complexes)"
+                                                  description="Database of core biochemical pathways and reactions"
+                                                  category="MI:0244"
+                                                  url="http://www.reactome.org/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>      MI:0245
+                                </iav:categoryItem>
+                                <iav:categoryItem name="Reactome (Proteins)"
+                                                  description="Database of core biochemical pathways and reactions"
+                                                  category="MI:0245"
+                                                  url="http://www.reactome.org/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>     
+                                </iav:categoryItem>
+                            </iav:categoryGroup>
+
+                            <iav:categoryGroup id="protFamiliesGroup" title="Protein Families">
+                                <iav:categoryItem name="InterPro"
+                                                  description="Database of protein families, domains and functional sites"
+                                                  category="MI:0449"
+                                                  url="http://www.ebi.ac.uk/interpro/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                            </iav:categoryGroup>
+
+                            <iav:categoryGroup id="enzymesGroup" title="Enzymes">
+                                <iav:categoryItem name="IntEnz"
+                                                  description="Integrated relational Enzyme database"
+                                                  category="pride"
+                                                  url="http://www.ebi.ac.uk/intenz/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                            </iav:categoryGroup>
+
+                            <iav:categoryGroup id="literatureGroup" title="Literature">
+                                <iav:categoryItem name="Digital Object Identifier"
+                                                  description="Identifier of a publication prior it pubmed indexing."
+                                                  category="MI:0574"
+                                                  url="http://dx.doi.org/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="PubMed"
+                                                  description="Digital archive of biomedical and life sciences journal literature"
+                                                  category="MI:0446"
+                                                  url="www.ncbi.nlm.nih.gov/PubMed/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                            </iav:categoryGroup>
+
+                            <iav:categoryGroup id="ontologiesGroup" title="Ontologies">
+                                <iav:categoryItem name="GO"
+                                                  description="Gene Ontology"
+                                                  category="MI:0448"
+                                                  url="http://www.ebi.ac.uk/go">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="NEWT"
+                                                  description="Integrates taxonomy data compiled in the NCBI database and data specific to the UniProt Knowledgebase"
+                                                  category="MI:0247"
+                                                  url="www.ebi.ac.uk/newt/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                           </iav:categoryGroup>
+
+                        </iav:panelCategoryColumn>
+
                     </iav:panelCategory>
-                    
+
                 </tr:showDetailItem>
-                               
+
 
             </tr:panelTabbed>
 

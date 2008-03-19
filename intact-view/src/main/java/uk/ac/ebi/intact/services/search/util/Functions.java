@@ -17,13 +17,16 @@ package uk.ac.ebi.intact.services.search.util;
 
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.services.search.model.*;
 import uk.ac.ebi.intact.services.search.component.resultpanel.CategoryItem;
 import uk.ac.ebi.intact.services.search.component.resultpanel.CategoryModel;
+import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.ArrayList;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
  * Functions to be used in the UI
@@ -32,6 +35,7 @@ import java.util.ArrayList;
  * @version $Id$
  */
 public final class Functions {
+    private static final String MI_TO_XREF_URL_MAP_PARAM = Functions.class+".MI_TO_XREF_URL_MAP";
 
     private Functions() {
     }
@@ -73,6 +77,53 @@ public final class Functions {
         }
 
         return new CategoryModel(items);
+    }
+
+    /**
+     * Calculates the XREFs, associated to an MI and for the AC/query provided
+     * @param facesContext Needed to cache the map of URLs in the session
+     * @param mi Category (MI) to use
+     * @param ac Accession to use in the URL
+     * @return
+     */
+    public static String calculateXrefUrl(FacesContext facesContext, String mi, String ac) {
+        Map<String, String> miToXrefUrl = (Map<String, String>) ((HttpSession) facesContext.getExternalContext().getSession(false))
+                .getAttribute(MI_TO_XREF_URL_MAP_PARAM);
+
+        if (miToXrefUrl == null) {
+            miToXrefUrl = new HashMap<String, String>();
+            ((HttpSession) facesContext.getExternalContext().getSession(false))
+                    .setAttribute(MI_TO_XREF_URL_MAP_PARAM, miToXrefUrl);
+        }
+
+        String xrefUrl = null;
+
+        if (miToXrefUrl.containsKey(mi)) {
+            xrefUrl = miToXrefUrl.get(mi);
+        } else {
+            CvObjectDao<CvObject> cvObjectDao = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao();
+
+            CvObject cvObject = cvObjectDao.getByPsiMiRef(mi);
+
+            if (cvObject != null) {
+                Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(cvObject, CvTopic.SEARCH_URL);
+
+                if (annotation != null) {
+                    xrefUrl = annotation.getAnnotationText();
+                }
+            }
+
+            // even store nulls, so the queries are not performed again
+            miToXrefUrl.put(mi, xrefUrl);
+        }
+
+        String replacedUrl = null;
+
+        if (xrefUrl != null) {
+            replacedUrl = xrefUrl.replaceAll("\\$\\{ac\\}", ac);
+        }
+
+        return replacedUrl;
     }
     
 }

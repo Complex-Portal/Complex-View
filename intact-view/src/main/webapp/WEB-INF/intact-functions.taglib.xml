@@ -38,4 +38,10 @@
             wrap(uk.ac.ebi.intact.model.AnnotatedObject)</function-signature>
     </function>
 
+    <function>
+        <function-name>calculateXrefUrl</function-name>
+        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-signature>java.lang.String calculateXrefUrl(javax.faces.context.FacesContext,java.lang.String,java.lang.String)</function-signature>
+    </function>
+
 </facelet-taglib>
