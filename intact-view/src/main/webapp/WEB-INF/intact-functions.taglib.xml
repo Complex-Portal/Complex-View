@@ -44,4 +44,10 @@
         <function-signature>java.lang.String calculateXrefUrl(javax.faces.context.FacesContext,java.lang.String,java.lang.String)</function-signature>
     </function>
 
+    <function>
+        <function-name>toDateTime</function-name>
+        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-signature>org.joda.time.DateTime toDateTime(java.lang.Long)</function-signature>
+    </function>
+
 </facelet-taglib>

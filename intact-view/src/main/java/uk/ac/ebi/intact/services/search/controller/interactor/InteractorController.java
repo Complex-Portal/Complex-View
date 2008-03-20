@@ -4,12 +4,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.model.Interactor;
-import uk.ac.ebi.intact.services.search.SearchBaseController;
+import uk.ac.ebi.intact.services.search.JpaBaseController;
 import uk.ac.ebi.intact.services.search.model.InteractorWrapper;
 
 import javax.faces.context.FacesContext;
 import javax.faces.component.UIComponent;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * TODO comment this
@@ -18,7 +20,7 @@ import javax.faces.component.UIComponent;
  * @version $Id$
  */
 @ViewController(viewIds = "/pages/interactor/interactor.xhtml")
-public class InteractorController extends SearchBaseController {
+public class InteractorController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(InteractorController.class);
 

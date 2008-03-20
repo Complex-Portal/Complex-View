@@ -7,7 +7,7 @@ import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.svc.SearchService;
 import uk.ac.ebi.intact.persistence.svc.impl.SimpleSearchService;
-import uk.ac.ebi.intact.services.search.SearchBaseController;
+import uk.ac.ebi.intact.services.search.JpaBaseController;
 import uk.ac.ebi.intact.services.search.SearchWebappException;
 import uk.ac.ebi.intact.services.search.model.SearchResultDataModel;
 
@@ -23,7 +23,7 @@ import java.util.Map;
  * @version $Id$
  */
 @ViewController(viewIds = "/search.xhtml")
-public class SearchController extends SearchBaseController {
+public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
 

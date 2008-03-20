@@ -1,0 +1,84 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                template="/WEB-INF/facelets/layout/template.xhtml">
+
+    <!-- content -->
+    <ui:define name="content">
+
+        <tr:panelHeader text="Webapp Status">
+
+            <tr:panelTabbed position="above">
+                <tr:showDetailItem text="JPA Statistics">
+
+                    #{statusBean.statistics}
+
+                    <tr:panelList>
+                        <tr:outputText
+                                value="Query execution max time: #{statusBean.statistics.queryExecutionMaxTime}"/>
+                        <tr:outputText
+                                value="Query execution max time String: #{statusBean.statistics.queryExecutionMaxTimeQueryString}"/>
+                    </tr:panelList>
+
+                    <tr:separator/>
+
+                    <tr:table var="qs" value="#{statusBean.queryStatisticsList}"
+                              rowBandingInterval="1" rows="50">
+                        <tr:column headerText="Query" sortable="true" sortProperty="query">
+                            <tr:outputText value="#{qs.query}"/>
+                        </tr:column>
+                        <tr:column headerText="Execution Count" sortable="true" sortProperty="executionCount">
+                            <tr:outputText value="#{qs.queryStats.executionCount}"/>
+                        </tr:column>
+                        <tr:column headerText="Execution Avg Time" sortable="true" sortProperty="executionAvgTime">
+                            <tr:outputText value="#{qs.queryStats.executionAvgTime}"/>
+                        </tr:column>
+                        <tr:column headerText="Execution Min Time" sortable="true" sortProperty="executionMinTime">
+                            <tr:outputText value="#{qs.queryStats.executionMinTime}"/>
+                        </tr:column>
+                        <tr:column headerText="Execution Max Time" sortable="true" sortProperty="executionMaxTime">
+                            <tr:outputText value="#{qs.queryStats.executionMaxTime}"/>
+                        </tr:column>
+                        <tr:column headerText="Execution Row Count" sortable="true" sortProperty="executionRowCount">
+                            <tr:outputText value="#{qs.queryStats.executionRowCount}"/>
+                        </tr:column>
+
+                    </tr:table>
+
+                </tr:showDetailItem>
+                <tr:showDetailItem text="Conversations">
+                       <tr:table var="conversation" value="#{statusBean.activeConversations}" emptyText="No active conversations">
+                           <tr:column headerText="Name" sortable="true" sortProperty="name">
+                               <tr:outputText value="#{conversation.name}"/>
+                           </tr:column>
+                           <tr:column headerText="Active" sortable="true" sortProperty="active">
+                               <tr:outputText value="#{conversation.active}"/>
+                           </tr:column>
+                           <tr:column headerText="Last Access" sortable="true" sortProperty="lastAccess">
+                               <tr:outputText value="#{iaf:toDateTime(conversation.lastAccess)}"/>
+                           </tr:column>
+                           <tr:column headerText="Bean Name">
+                               <tr:outputText value="#{conversation.conversationInfo.beanName}"/>
+                           </tr:column>
+                       </tr:table>
+
+                </tr:showDetailItem>
+
+            </tr:panelTabbed>
+
+
+        </tr:panelHeader>
+
+    </ui:define>
+
+</ui:composition>

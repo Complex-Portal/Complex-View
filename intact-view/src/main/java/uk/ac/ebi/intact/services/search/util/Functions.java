@@ -28,6 +28,9 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
+import org.springframework.context.ApplicationContext;
+import org.joda.time.DateTime;
+
 /**
  * Functions to be used in the UI
  *
@@ -124,6 +127,10 @@ public final class Functions {
         }
 
         return replacedUrl;
+    }
+
+    public static DateTime toDateTime(Long dateInTimeMillis) {
+        return new DateTime(dateInTimeMillis);
     }
     
 }

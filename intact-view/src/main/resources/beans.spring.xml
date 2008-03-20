@@ -13,5 +13,7 @@
     <bean id="searchBean" class="uk.ac.ebi.intact.services.search.controller.SearchController" scope="conversation.access"/>
     <bean id="interactorBean" class="uk.ac.ebi.intact.services.search.controller.interactor.InteractorController" scope="conversation.access"/>
 
+    <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->
+
 
 </beans>

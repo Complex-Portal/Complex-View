@@ -59,14 +59,46 @@
 
                 <tr:showDetailItem text="Interactions">
                     <tr:panelHeader text="Interactions">
+
+                        <tr:outputDocument
+                                value="The following table shows the list of interactions in which &lt;b>#{interactorBean.currentInteractor.shortLabel}&lt;/b> is involved."/>
+                        <br/>
+
                         <ui:decorate template="/pages/interaction/interaction_table.xhtml">
                             <ui:define name="footer">
-                                Nothing
+
                             </ui:define>
 
                             <ui:param name="binding" value="#{interactorBean.interactionsTable}"/>
                             <ui:param name="values" value="#{interactorBean.currentInteractorWrapped.interactions}"/>
                         </ui:decorate>
+
+                    </tr:panelHeader>
+
+                    <tr:panelHeader text="Graphical Representation" size="1">
+
+                        <tr:panelGroupLayout layout="vertical"
+                                             rendered="#{interactorBean.currentInteractorWrapped.interactions.rowCount lt 500}">
+                            <tr:outputText
+                                    value="This figure is a graphical representation of the interactions shown in the above table. Click on the image for more details."/>
+
+                            <br/>
+
+                            <tr:goLink
+                                    destination="http://www.ebi.ac.uk/intact/hierarchView/GenerateImage?query=#{interactorBean.currentInteractor.ac}"
+                                    targetFrame="_blank">
+                                <tr:image
+                                        source="http://www.ebi.ac.uk/intact/hierarchView/GenerateImage?query=#{interactorBean.currentInteractor.ac}&amp;w=600&amp;h=600"/>
+                            </tr:goLink>
+
+                        </tr:panelGroupLayout>
+
+                        <tr:panelGroupLayout layout="vertical"
+                                             rendered="#{interactorBean.currentInteractorWrapped.interactions.rowCount ge 500}">
+                            <tr:outputText
+                                    value="The graphical representation cannot be created if more than 500 interactions are to be shown."/>
+                        </tr:panelGroupLayout>
+
                     </tr:panelHeader>
                 </tr:showDetailItem>
 
@@ -80,9 +112,7 @@
                                                   description="Proteomics Identification Database"
                                                   category="MI:0738"
                                                   url="http://www.ebi.ac.uk/pride">
-                                    <ui:include src="/pages/xref_list.xhtml">
-                                        <ui:param name="externalLink" value="http://mips.gsf.de/genre/proj/yeast/singleGeneReport.html?entry=ID"/>
-                                    </ui:include>
+                                    <ui:include src="/pages/xref_list.xhtml"/>
                                 </iav:categoryItem>
                                 <iav:categoryItem name="UniProt Kb"
                                                   description="UniProt Knowledge Base of protein sequences"
@@ -200,7 +230,7 @@
                                                   description="Database of core biochemical pathways and reactions"
                                                   category="MI:0245"
                                                   url="http://www.reactome.org/">
-                                    <ui:include src="/pages/xref_list.xhtml"/>     
+                                    <ui:include src="/pages/xref_list.xhtml"/>
                                 </iav:categoryItem>
                             </iav:categoryGroup>
 

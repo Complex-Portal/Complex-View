@@ -1,6 +1,6 @@
 package uk.ac.ebi.intact.services.search.controller;
 
-import uk.ac.ebi.intact.services.search.SearchBaseController;
+import uk.ac.ebi.intact.services.search.JpaBaseController;
 
 import javax.faces.component.UIComponent;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class AnnotatedObjectResultsController extends SearchBaseController {
+public class AnnotatedObjectResultsController extends JpaBaseController {
 
     private UIComponent resultsTable;
 

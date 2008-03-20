@@ -1,13 +1,21 @@
 package uk.ac.ebi.intact.services.search.stats;
 
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.viewController.annotations.InitView;
+import org.apache.myfaces.orchestra.conversation.ConversationManager;
+import org.apache.myfaces.orchestra.conversation.Conversation;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.hibernate.stat.QueryStatistics;
 import org.hibernate.stat.Statistics;
-import uk.ac.ebi.intact.services.search.SearchBaseController;
+import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+import uk.ac.ebi.intact.services.search.JpaBaseController;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * TODO comment this
@@ -15,15 +23,33 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@ViewController(viewIds = "/pages/admin/sqlstats.xhtml")
-public class HibernateStatsController extends SearchBaseController {
+@Component("statusBean")
+@Scope(value = "request")
+@ViewController(viewIds = "/pages/admin/status.xhtml")
+public class StatusController extends JpaBaseController {
 
     private Statistics statistics;
     private List<QueryStatsWrapper> queryStatisticsList;
+    private List<Conversation> activeConversations;
 
-    public HibernateStatsController(){
-        HibernateEntityManagerFactory emf = (HibernateEntityManagerFactory) getIntactContext().getConfig().getDefaultDataConfig().getEntityManagerFactory();
-        this.statistics = emf.getSessionFactory().getStatistics();
+    @Autowired
+    private EntityManagerFactory emf = null;
+
+    public StatusController(){
+        activeConversations = new ArrayList<Conversation>();
+
+        Iterator<Conversation> iterator = ConversationManager.getInstance().iterateConversations();
+
+        while (iterator.hasNext()) {
+            Conversation conversation = iterator.next();
+            activeConversations.add(conversation);
+        }
+    }
+
+    @InitView
+    public void init() {
+        HibernateEntityManagerFactory hemf = (HibernateEntityManagerFactory) emf;
+        this.statistics = hemf.getSessionFactory().getStatistics();
 
         queryStatisticsList = new ArrayList<QueryStatsWrapper>(statistics.getQueries().length);
 
@@ -32,12 +58,18 @@ public class HibernateStatsController extends SearchBaseController {
         }
     }
 
+
+
     public Statistics getStatistics() {
         return statistics;
     }
 
     public List<QueryStatsWrapper> getQueryStatisticsList() {
         return queryStatisticsList;
+    }
+
+    public List<Conversation> getActiveConversations() {
+        return activeConversations;
     }
 
     public class QueryStatsWrapper {
