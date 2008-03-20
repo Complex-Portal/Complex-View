@@ -19,6 +19,7 @@ import uk.ac.ebi.intact.services.search.component.resultpanel.CategoryItem;
 import uk.ac.ebi.intact.services.search.component.resultpanel.CategoryModel;
 
 import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * TODO comment that class header
@@ -31,6 +32,9 @@ public final class ComponentFunctions {
     private ComponentFunctions() {}
 
     public static Collection<CategoryItem> getItemsByCategory(CategoryModel model, String category) {
+        if (model == null) {
+            return new ArrayList<CategoryItem>();
+        }
         return model.getResultItemsByCategory(category);
     }
 }

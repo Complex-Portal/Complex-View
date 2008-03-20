@@ -55,7 +55,7 @@ dojo.declare("ebi.intact.CategoryGroupComp", null, {
     },
 
     updateState: function() {
-        this.headerDiv.innerText = (this.expanded)? '-' : '+';
+        this.headerDiv.innerHTML = (this.expanded)? '-' : '+';
         this.contentDiv.style.display = (this.expanded)? 'block' : 'none';
     },
 
@@ -83,7 +83,7 @@ dojo.declare("ebi.intact.CategoryGroupComp", null, {
 
     addItemCount: function(count) {
         this.itemCount += count;
-        this.countDiv.innerText = String(this.itemCount);
+        this.countDiv.innerHTML = String(this.itemCount);
     }
 });
 

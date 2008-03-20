@@ -20,7 +20,7 @@
     <trh:script>
         var #{panelVar} = new ebi.intact.CategoryPanelComp();
     </trh:script>
-
+    
     <div class="options">
         <div class="optionBox">
             <span class="expandCollapseAll" onclick="#{panelVar}.expandAllRelevant()">+</span>
@@ -35,7 +35,11 @@
     <ui:insert/>
 
     <trh:script>
-        #{panelVar}.expandAllRelevant();
+        dojo.addOnLoad(
+            function(){
+                #{panelVar}.expandAllRelevant();
+            }
+        );
     </trh:script>
 
 </ui:composition>

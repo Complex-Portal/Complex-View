@@ -12,11 +12,11 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view">
 
     <ui:param name="items" value="#{iav:resultItemsByCategory(value, category)}"/>
-    <ui:param name="resultNumber" value="#{fn:length(items)}"/>
+    <ui:param name="resultNumber" value="#{size != null? size : fn:length(items)}"/>
 
     <ui:param name="#{var}" value="#{items}"/>
-
-    <trh:script rendered="#{!empty items}">
+    
+    <trh:script>
         #{categoryGroupVar}.addItemCount(#{resultNumber});
     </trh:script>
 

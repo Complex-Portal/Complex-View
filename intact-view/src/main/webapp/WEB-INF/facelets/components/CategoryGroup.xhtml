@@ -26,7 +26,7 @@
 
             <div class="headerToggle headerToggleNotRelevant" id="#{headerId}"></div>
 
-            <div class="resultNumber" id="#{countId}">0</div>
+            <div class="resultNumber" id="#{countId}">?</div>
             <strong>#{title}</strong>
 
         </div>
@@ -35,7 +35,7 @@
             <ui:param name="categoryGroupVar" value="#{id}_xrefGroupVar"/>
 
         <trh:script>
-            var #{categoryGroupVar} = new ebi.intact.CategoryGroupComp(false, '#{headerId}', '#{contentId}', '#{countId}');
+            var #{categoryGroupVar} = new ebi.intact.CategoryGroupComp(#{initiallyExpanded != null? initiallyExpanded : true}, '#{headerId}', '#{contentId}', '#{countId}');
         </trh:script>
         <trh:script rendered="#{panelId != null}">
             #{panelVar}.registerXrefGroup(#{categoryGroupVar});
@@ -45,6 +45,14 @@
                 <ui:insert/>
             </ul>
         </div>
+
+        <trh:script rendered="#{panelId == null}">
+        dojo.addOnLoad(
+            function(){
+                #{categoryGroupVar}.updateState();
+            }
+        );
+        </trh:script>
 
     </div>
 

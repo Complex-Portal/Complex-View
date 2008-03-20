@@ -33,6 +33,9 @@
             <required>true</required>
         </attribute>
         <attribute>
+            <name>initiallyExpanded</name>
+        </attribute>
+        <attribute>
             <name>title</name>
             <required>true</required>
         </attribute>
@@ -62,6 +65,9 @@
         <attribute>
             <name>id</name>
             <required>true</required>
+        </attribute>
+        <attribute>
+            <name>initiallyExpanded</name>
         </attribute>
         <attribute>
             <name>value</name>
