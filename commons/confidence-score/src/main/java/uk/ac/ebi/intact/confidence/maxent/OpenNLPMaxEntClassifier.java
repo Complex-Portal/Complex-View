@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.confidence.maxent;
 import opennlp.maxent.GISModel;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
-import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
 
 import java.io.File;
 import java.io.FileInputStream;

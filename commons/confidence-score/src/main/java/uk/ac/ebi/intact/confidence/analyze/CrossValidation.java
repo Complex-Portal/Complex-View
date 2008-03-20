@@ -17,7 +17,7 @@ package uk.ac.ebi.intact.confidence.analyze;
 
 import opennlp.maxent.GISModel;
 import uk.ac.ebi.intact.confidence.maxent.MaxentUtils;
-import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
+import uk.ac.ebi.intact.confidence.maxent.OpenNLP;
 
 import java.io.*;
 
@@ -144,7 +144,7 @@ public class CrossValidation {
         }
     }
 
-     public void generateGisInput(int foldsNr, File outDir) {
+     public void generateGisInput(int foldsNr, File outDir) throws IOException {
         for ( int i = 0; i < foldsNr; i++ ) {
             File hcFile = new File( outDir, "train_highconf" + i + ".txt" );
             File lcFile = new File( outDir, "train_lowconf" + i + ".txt" );

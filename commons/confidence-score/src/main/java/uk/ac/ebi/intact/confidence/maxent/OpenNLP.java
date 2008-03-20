@@ -13,36 +13,33 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.weights.inputs;
+package uk.ac.ebi.intact.confidence.maxent;
 
 import uk.ac.ebi.intact.confidence.model.ConfidenceSet;
 
 import java.io.*;
 
 /**
- * TODO comment that class header
+ * Transformes the high confidence , low confidence attribute files into
+ * the input format for the maximum entropy model.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since 1.6.0
+ * @since 1.6.0  - SNAPSHOT
  *        <pre>
  *        26-Nov-2007
  *        </pre>
  */
 public class OpenNLP {
 
-    public static void createInput(String hcAttribsPath, String lcAttribsPath, String outPath){
+    public static void createInput(String hcAttribsPath, String lcAttribsPath, String outPath) throws IOException {
         File outFile = new File(outPath);
-        try {
             Writer writer = new FileWriter(outFile, false);
             createInput(hcAttribsPath, writer, "high");
             writer.close();
             writer =  new FileWriter(outFile, true);
             createInput( lcAttribsPath, writer, "low");
             writer.close();
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        }
     }
 
     public static void createInput( ConfidenceSet highconf, ConfidenceSet lowconf){
@@ -50,8 +47,7 @@ public class OpenNLP {
         //TODO: implement method                
     }
 
-    private static void createInput( String hcAttribsPath, Writer writer , String type) {
-        try {
+    private static void createInput( String hcAttribsPath, Writer writer , String type) throws IOException {
             BufferedReader br = new BufferedReader(new FileReader(hcAttribsPath));
             String line="";
             while ((line = br.readLine()) != null){
@@ -59,11 +55,6 @@ public class OpenNLP {
                 input +=type + "\n";
                 writer.append( input);
             }
-        } catch ( FileNotFoundException e ) {
-            e.printStackTrace();
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        }
     }
 
     public static String getInfo( String line) {
@@ -93,11 +84,8 @@ public class OpenNLP {
      * @param inFilePath : the outputfile of the GISmodel
      * @param outFilePath : (nrAttribs * 2 ) lines , each line has a double
      */
-    public static void parseWeights(String inFilePath, String outFilePath){
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(inFilePath));
-        } catch ( FileNotFoundException e ) {
-            e.printStackTrace();
-        }
+    public static void parseWeights(String inFilePath, String outFilePath) throws IOException {
+        BufferedReader br = new BufferedReader( new FileReader( inFilePath ) );
+        br.close();
     }
 }

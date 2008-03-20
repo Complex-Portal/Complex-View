@@ -142,10 +142,10 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
         try {
             long start = System.currentTimeMillis();
             calculate( interaction, aG, this.classifier, override );
-            if (log.isDebugEnabled()){
+            if (log.isInfoEnabled()){
                 long time= System.currentTimeMillis() - start;
                 double sec = time / 1000;
-                log.debug( "to calculate score for interaction("+interaction.getAc() + ", " + interaction.getShortLabel()+") took: " + sec +" sec");
+                log.info( "to calculate score for interaction("+interaction.getAc() + ", " + interaction.getShortLabel()+") took: " + sec +" sec");
             }
         } catch ( FilterException e ) {
             throw e;
@@ -274,6 +274,7 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
                      Protein prot = (Protein) interactor;
                      InteractorXref uniprotXref = ProteinUtils.getUniprotXref( prot );
                      if (uniprotXref != null){
+                         try {
                         if (idA == null){
                             idA = new UniprotIdentifierImpl(uniprotXref.getPrimaryId());
                         } else if (idB == null){
@@ -283,6 +284,15 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
                                 log.trace("Interaction not binary! " + interaction.getAc());
                             }
                         }
+                         } catch (IllegalArgumentException e ){
+                             String msg = e.getMessage();
+                             if (msg.startsWith( "Ac must be a valid uniprotAc!" )){
+                                 if (log.isWarnEnabled()){
+                                    log.warn(msg);
+                                 }
+                                 return null;
+                             }                                                           
+                         }
                          if (comp.getStoichiometry() >1 ){
                              if (idB == null){
                                  idB = idA;

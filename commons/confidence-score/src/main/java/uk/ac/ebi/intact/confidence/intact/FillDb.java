@@ -76,8 +76,8 @@ public class FillDb {
         Set<String> interactionAcs = retrieveListOfInteractions(override);
 
         int totalNr = interactionAcs.size();
-        if (log.isDebugEnabled()){
-            log.debug(" total Nr of interactions to process: " + totalNr);
+        if (log.isInfoEnabled()){
+            log.info(" total Nr of interactions to process: " + totalNr);
         }
 
         InteractionDao interactionDao = daoFactory.getInteractionDao();
@@ -101,8 +101,8 @@ public class FillDb {
                 IntactContext.getCurrentInstance().getDataContext().beginTransaction();
             }
         }
-        if (log.isTraceEnabled()){
-           log.trace( "saving " + tmpInteractions.size() + " new interactions; total processed: " + i );
+        if (log.isInfoEnabled()){
+           log.info( "saving " + tmpInteractions.size() + " new interactions; total processed: " + i );
         }
         saveInteractionsToDb( tmpInteractions );
         IntactContext.getCurrentInstance().getDataContext().commitTransaction();

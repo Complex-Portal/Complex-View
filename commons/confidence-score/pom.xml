@@ -110,29 +110,8 @@
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-core</artifactId>
             <version>1.8.1-SNAPSHOT</version>          <!--1.7.1 -->
-        </dependency>
-
-        <!-- for xml parser -->
-        <!-- 		<dependency>
-              <groupId>uk.ac.ebi.intact.confidence.blastmapping</groupId>
-              <artifactId>blast-mapping-parser</artifactId>
-              <version>1.0-SNAPSHOT</version>
-              </dependency>
-          -->
-        <!-- for the blast h2 db -->
-        <!-- <dependency>
-              <groupId>com.h2database</groupId>
-              <artifactId>h2</artifactId>
-              <version>1.0.20070617</version>
-              </dependency>
-          -->
-        <!-- for GainRatioEvalutaion of the attributes-->
-        <dependency>
-           <groupId>weka</groupId>
-           <artifactId>weka</artifactId>
-           <version>3.4.11</version>
-       </dependency>
-
+        </dependency>       
+        
         <!-- for merge with lucene-->
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -140,12 +119,6 @@
             <version>2.2.0</version>
         </dependency>
 
-        <!-- for caching the GOA for uniprot (filter IEA) -->
-        <!--<dependency>-->
-            <!--<groupId>net.sf.ehcache</groupId>-->
-            <!--<artifactId>ehcache</artifactId>-->
-            <!--<version>1.4.1</version>-->
-        <!--</dependency>-->
 
         <!-- just for test , remove after-->       
         <!-- IntAct dependencies -->

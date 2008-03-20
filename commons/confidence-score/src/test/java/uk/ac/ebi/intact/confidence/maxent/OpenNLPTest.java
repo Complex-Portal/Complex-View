@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package uk.ac.ebi.intact.confidence.weights;
+package uk.ac.ebi.intact.confidence.maxent;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
 
 import java.io.File;
 
 /**
- * TODO comment that class header
+ * Test class for OpenNLP.
  *
  * @author Irina Armean (iarmean@ebi.ac.uk)
  * @version $Id$
- * @since TODO specify the maven artifact version
+ * @since 1.6.0-SNAPSHOT
  *        <pre>
  *        26-Nov-2007
  *        </pre>

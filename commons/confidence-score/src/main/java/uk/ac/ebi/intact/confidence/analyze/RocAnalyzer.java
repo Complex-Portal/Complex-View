@@ -9,7 +9,7 @@ import opennlp.maxent.GISModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.confidence.maxent.MaxentUtils;
-import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
+import uk.ac.ebi.intact.confidence.maxent.OpenNLP;
 
 import java.io.*;
 

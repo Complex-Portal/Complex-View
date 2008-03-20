@@ -17,7 +17,7 @@ package uk.ac.ebi.intact.confidence.analyze;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.confidence.weights.inputs.OpenNLP;
+import uk.ac.ebi.intact.confidence.maxent.OpenNLP;
 
 import java.io.*;
 
@@ -98,7 +98,7 @@ public class AnalyzeMain {
      * @param ioDir : must contain "trainSet_hc.txt" and "trainSet_lc.txt" Files;
      *              will contain the "gisInput.txt" output file
      */
-    public void generateGisInput( File ioDir ) {
+    public void generateGisInput( File ioDir ) throws IOException {
         File hcFile = new File( ioDir, "trainSet_hc.txt" );
         File lcFile = new File( ioDir, "trainSet_lc.txt" );
         File outFile = new File( ioDir, "gisInput.txt" );
@@ -156,7 +156,7 @@ public class AnalyzeMain {
             }
             catch ( IOException e ) {
                 if ( log.isErrorEnabled() ) {
-                    log.error( "rocAnalyze", e );
+                    log.error( e.toString() + " rocAnalyze");
                 }
             }
         }

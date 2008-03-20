@@ -104,10 +104,10 @@ public class AttributeGetterImpl implements AttributeGetter {
             AlignmentFileMaker alignmentMaker = new AlignmentFileMaker( new Float( 0.001 ), workDir, bs );
             long start = System.currentTimeMillis();
             Set<ProteinSimplified> results = alignmentMaker.blast( prots, againstProt );
-            if (log.isDebugEnabled()){
+            if (log.isInfoEnabled()){
                 long time = System.currentTimeMillis() - start;
                 long sec = time /1000;
-                log.debug("blasting 2 prots ("+ proteinPair.getFirstId() + ", " + proteinPair.getSecondId()+") it took: "+ sec + " sec");
+                log.info("blasting 2 prots ("+ proteinPair.getFirstId() + ", " + proteinPair.getSecondId()+") it took: "+ sec + " sec");
             }
 
 

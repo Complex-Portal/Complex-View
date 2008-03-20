@@ -387,8 +387,8 @@ public class AlignmentFileMaker {
                     protein.addAlignment( uniprotAc );
                 }
             } catch ( IllegalArgumentException e ) {
-                if (log.isErrorEnabled()){
-                    log.error( evalue + ": " + ac, e );
+                if (log.isWarnEnabled()){
+                    log.warn( "error: "+ e.toString()+" " +evalue + ": " + ac);
                 }
             }
         }
@@ -475,26 +475,6 @@ public class AlignmentFileMaker {
         }
     }
 
-//    private File getTargetDirectory() {
-//        String outputDirPath = GlobalTestData.class.getResource( "/" ).getFile();
-//        System.out.println( "targetDir: " + outputDirPath );
-//        Assert.assertNotNull( outputDirPath );
-//        File outputDir = new File( outputDirPath );
-//        // we are in confidence-score\target\test-classes , move 1 up
-//        outputDir = outputDir.getParentFile();
-//        Assert.assertNotNull( outputDir );
-//        Assert.assertTrue( outputDir.getAbsolutePath(), outputDir.isDirectory() );
-//        Assert.assertEquals( "target", outputDir.getName() );
-//        return outputDir;
-//    }
-
-    // /* (non-Javadoc)
-    // * @see java.lang.Object#finalize()
-    // */
-    // @Override
-    // protected void finalize() throws Throwable {
-    // blast.close();
-    // }
     public void close() {
         try {
             blast.close();
