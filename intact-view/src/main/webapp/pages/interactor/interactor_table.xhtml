@@ -1,0 +1,44 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:t="http://myfaces.apache.org/tomahawk"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components">
+
+    <tr:table binding="#{binding}"
+                    var="ao" value="#{values}"
+                    rowBandingInterval="1" rowSelection="multiple" rows="25">
+
+            <f:facet name="footer">
+                <ui:insert name="footer"/>
+            </f:facet>
+
+               <tr:column headerText="Name" sortable="true" sortProperty="shortLabel">
+                  <tr:outputText value="#{ao.shortLabel}"/>
+              </tr:column>
+              <tr:column headerText="AC" sortable="true" sortProperty="ac">
+                  <h:commandLink value="#{ao.ac}" action="interactor" >
+                      <f:param name="ac" value="#{ao.ac}"/>
+                  </h:commandLink>
+              </tr:column>
+              <tr:column headerText="Description" sortable="true" sortProperty="fullName">
+                  <tr:outputText value="#{ao.fullName}"/>
+              </tr:column>
+              <tr:column headerText="Type" sortable="true" sortProperty="cvInteractorType">
+                  <tr:outputText value="#{ao.cvInteractorType.shortLabel} (#{ao.cvInteractorType.miIdentifier})"/>
+              </tr:column>
+              <tr:column headerText="Gene Name" sortable="true" sortProperty="aliases">
+                  <tr:outputText value="#{ao.geneName}"/>
+              </tr:column>
+              <tr:column headerText="Interactions" >
+                  <tr:outputText value="#{ao.interactionsCount}"/>
+              </tr:column>
+              <tr:column headerText="Interactors" >
+                  <tr:outputText value="#{ao.partnersCount}"/>
+              </tr:column>
+          </tr:table>
+
+</ui:composition>

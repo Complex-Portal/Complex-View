@@ -113,7 +113,7 @@
       <tr:panelHeader text="Interactions" rendered="#{ searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractionImpl'}"
               partialTriggers="btnInteractions">
 
-          <ui:decorate template="pages/interaction/interaction_table.xhtml">
+          <ui:composition template="pages/interaction/interaction_table.xhtml">
               <ui:define name="footer">
                   <tr:panelGroupLayout layout="vertical">
                       <h:commandLink value="View selected in HierarchView"
@@ -123,50 +123,25 @@
 
               <ui:param name="binding" value="#{interactionResultsBean.resultsTable}"/>
               <ui:param name="values" value="#{searchBean.searchResults}"/>
-          </ui:decorate>
+          </ui:composition>
       </tr:panelHeader>
 
       <!-- Interactors -->
 
       <tr:panelHeader text="Interactors" rendered="#{searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractorImpl'}">
-          <tr:table binding="#{interactorResultsBean.resultsTable}"
-                    var="ao" value="#{searchBean.searchResults}"
-                    rowBandingInterval="1" rowSelection="multiple" rows="25">
-
-            <f:facet name="footer">
-                <tr:panelGroupLayout layout="vertical">
+          <ui:composition template="/pages/interactor/interactor_table.xhtml">
+              <ui:define name="footer">
+                  <tr:panelGroupLayout layout="vertical">
                     <h:commandLink value="View selected to HierarchView"
                                       actionListener="#{interactorResultsBean.exportSelectedToHierarchView}"/>
                     <h:commandLink value="View selected in InterPro"
                                       actionListener="#{interactorResultsBean.exportSelectedToInterPro}"/>
                 </tr:panelGroupLayout>
-            </f:facet>
+              </ui:define>
 
-              <tr:column headerText="Name" sortable="true" sortProperty="shortLabel">
-                  <tr:outputText value="#{ao.shortLabel}"/>
-              </tr:column>
-              <tr:column headerText="AC" sortable="true" sortProperty="ac">
-                  <h:commandLink value="#{ao.ac}" action="interactor" >
-                      <f:param name="ac" value="#{ao.ac}"/>
-                  </h:commandLink>
-              </tr:column>
-              <tr:column headerText="Description" sortable="true" sortProperty="fullName">
-                  <tr:outputText value="#{ao.fullName}"/>
-              </tr:column>
-              <tr:column headerText="Type" sortable="true" sortProperty="cvInteractorType">
-                  <tr:outputText value="#{ao.cvInteractorType.shortLabel} (#{ao.cvInteractorType.miIdentifier})"/>
-              </tr:column>
-              <tr:column headerText="Gene Name" sortable="true" sortProperty="aliases">
-                  <tr:outputText value="#{ao.geneName}"/>
-              </tr:column>
-              <tr:column headerText="Interactions" >
-                  <tr:outputText value="#{ao.interactionsCount}"/>
-              </tr:column>
-              <tr:column headerText="Interactors" >
-                  <tr:outputText value="#{ao.partnersCount}"/>
-              </tr:column>
-
-          </tr:table>
+              <ui:param name="binding" value="#{interactionResultsBean.resultsTable}"/>
+              <ui:param name="values" value="#{searchBean.searchResults}"/>
+          </ui:composition>
 
       </tr:panelHeader>
 
