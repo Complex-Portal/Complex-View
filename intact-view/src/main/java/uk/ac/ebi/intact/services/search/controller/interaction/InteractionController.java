@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import uk.ac.ebi.intact.model.Interaction;
+import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.services.search.JpaBaseController;
 import uk.ac.ebi.intact.services.search.model.InteractionWrapper;
 
@@ -40,6 +41,9 @@ public class InteractionController extends JpaBaseController {
 
         if (acParam != null) {
             currentInteraction = getDaoFactory().getInteractionDao().getByAc(acParam);
+
+            // preload the annotations
+            System.out.println(currentInteraction.getAnnotations());
         }
     }
 

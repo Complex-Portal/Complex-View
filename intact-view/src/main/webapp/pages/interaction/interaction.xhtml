@@ -85,14 +85,6 @@
                                    <tr:outputText value="#{annot.annotationText}"/>
                                </tr:column>
                            </tr:table>
-                        <tr:table var="annot" value="#{interactionBean.currentInteraction.xrefs}">
-                               <tr:column headerText="Topic">
-                                   <tr:outputText value="#{annot.cvDatabase.shortLabel}"/>
-                               </tr:column>
-                               <tr:column headerText="Text">
-                                   <tr:outputText value="#{annot.primaryId}"/>
-                               </tr:column>
-                           </tr:table>
                     </tr:panelHeader>
 
                 </tr:showDetailItem>
