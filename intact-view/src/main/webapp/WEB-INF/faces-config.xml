@@ -90,6 +90,12 @@
 
     <navigation-rule>
         <navigation-case>
+            <from-outcome>interaction</from-outcome>
+            <to-view-id>/pages/interaction/interaction.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <navigation-case>
             <from-outcome>interactor</from-outcome>
             <to-view-id>/pages/interactor/interactor.xhtml</to-view-id>
         </navigation-case>

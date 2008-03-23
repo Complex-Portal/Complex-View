@@ -10,7 +10,8 @@
 
     <tr:table binding="#{binding}"
                     var="ao" value="#{values}"
-                    rowBandingInterval="1" rowSelection="multiple" rows="25">
+                    rowBandingInterval="1" rowSelection="multiple" rows="25"
+                    emptyText="No interactions shown.">
 
             <f:facet name="footer">
                 <ui:insert name="footer"/>
@@ -20,7 +21,9 @@
                   <tr:outputText value="#{ao.shortLabel}"/>
               </tr:column>
               <tr:column headerText="AC" sortable="true" sortProperty="ac">
-                  <tr:outputText value="#{ao.ac}"/>
+                  <h:commandLink value="#{ao.ac}" action="interaction" >
+                      <f:param name="ac" value="#{ao.ac}"/>
+                  </h:commandLink>
               </tr:column>
               <tr:column headerText="Description" sortable="true" sortProperty="fullName">
                   <tr:outputText value="#{ao.fullName}"/>

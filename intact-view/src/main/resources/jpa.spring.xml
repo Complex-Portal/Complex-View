@@ -10,7 +10,7 @@
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
-          p:entityManagerFactory-ref="entityManagerFactory" p:dataSource-ref="managedDataSource"
+          p:entityManagerFactory-ref="entityManagerFactory" p:dataSource-ref="dataSource"
             />
 
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
@@ -18,7 +18,7 @@
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
-          p:dataSource-ref="managedDataSource"
+          p:dataSource-ref="dataSource"
           p:persistenceUnitName="intact-core-default">
         <property name="jpaProperties">
         <props>
@@ -37,10 +37,6 @@
         </property>
 
     </bean>
-
-    <bean id="managedDataSource" class="org.apache.myfaces.orchestra.connectionManager.ConnectionManagerDataSource">
-         <property name="dataSource" ref="dataSource"/>
-     </bean>
  
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
           p:driverClassName="${db.driver}"

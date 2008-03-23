@@ -22,7 +22,7 @@
     <!-- content -->
     <ui:define name="content">
 
-        <tr:panelHeader text="Interactor: #{interactionBean.currentInteraction.shortLabel}">
+        <tr:panelHeader text="Interaction: #{interactionBean.currentInteraction.shortLabel}">
             <tr:panelFormLayout maxColumns="1">
                 <tr:panelLabelAndMessage label="Interaction type:">
                     <tr:outputText
@@ -33,10 +33,6 @@
                 </tr:panelLabelAndMessage>
                 <tr:panelLabelAndMessage label="Description:">
                     <tr:outputText value="#{interactionBean.currentInteraction.fullName}"/>
-                </tr:panelLabelAndMessage>
-                <tr:panelLabelAndMessage label="Species:">
-                    <tr:outputText
-                            value="#{interactionBean.currentInteraction.bioSource.fullName} (#{interactionBean.currentInteraction.bioSource.taxId})"/>
                 </tr:panelLabelAndMessage>
                 <tr:panelLabelAndMessage label="IntAct AC:">
                     <tr:outputText value="#{interactionBean.currentInteraction.ac}"/>
@@ -79,15 +75,55 @@
 
                 </tr:showDetailItem>
 
-                <tr:showDetailItem text="Details">
+                <tr:showDetailItem text="Annotations">
                     <tr:panelHeader text="Annotations">
-
+                           <tr:table var="annot" value="#{interactionBean.currentInteraction.annotations}">
+                               <tr:column headerText="Topic">
+                                   <tr:outputText value="#{annot.cvTopic.shortLabel}"/>
+                               </tr:column>
+                               <tr:column headerText="Text">
+                                   <tr:outputText value="#{annot.annotationText}"/>
+                               </tr:column>
+                           </tr:table>
+                        <tr:table var="annot" value="#{interactionBean.currentInteraction.xrefs}">
+                               <tr:column headerText="Topic">
+                                   <tr:outputText value="#{annot.cvDatabase.shortLabel}"/>
+                               </tr:column>
+                               <tr:column headerText="Text">
+                                   <tr:outputText value="#{annot.primaryId}"/>
+                               </tr:column>
+                           </tr:table>
                     </tr:panelHeader>
 
                 </tr:showDetailItem>
 
                 <tr:showDetailItem text="Cross References">
+                      <br/>
 
+                    <iav:panelCategory id="xrefPanel1" var="xrefs" value="#{iaf:toXrefCategoryModel(interactionBean.currentInteraction.xrefs)}">
+                        <iav:panelCategoryColumn>
+                            <iav:categoryGroup id="imexGroup" title="IMEx">
+                                <iav:categoryItem name="IMEx"
+                                                  description="IMEx identifier"
+                                                  category="MI:0670">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+
+                                <iav:categoryItem name="DIP"
+                                                  description="The database of interacting protein (DIP) database stores experimentally determined interactions between proteins"
+                                                  category="MI:0465"
+                                                  url="http://dip.doe-mbi.ucla.edu/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                                <iav:categoryItem name="MINT"
+                                                  description="The Moleculer INTeraction database (MINT) is a relational database designed to store interactions between biological molecules"
+                                                  category="MI:0486"
+                                                  url="http://mint.bio.uniroma2.it/mint/">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                            </iav:categoryGroup>
+                        </iav:panelCategoryColumn>
+                    </iav:panelCategory>
                 </tr:showDetailItem>
 
 

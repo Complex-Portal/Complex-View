@@ -15,7 +15,7 @@
 <!-- content -->
   <ui:define name="content">
 
-  <tr:panelGroupLayout partialTriggers="searchAgainBtn btnInteractions btnInteractors btnExperiments btnControlledVocab">
+  <tr:panelGroupLayout partialTriggers="searchAgainBtn btnInteractions btnNucAcids btnProteins btnSmallMol btnExperiments btnCvObjects">
 
       <tr:panelBox background="dark" inlineStyle="width:400px">
           <tr:panelGroupLayout layout="horizontal">
@@ -42,7 +42,7 @@
                       </iav:categoryItem>
                   </iav:categoryGroup>
                   <iav:categoryGroup id="experimentCount" title="Experiments">
-                      <iav:categoryItem name="Interactions"
+                      <iav:categoryItem name="Experiments"
                                         description="Experiments found in the database"
                                         size="#{searchBean.resultStats.experimentCount}"
                                         category="none">
@@ -110,26 +110,28 @@
 
       <!-- Interactions -->
 
-      <tr:panelHeader text="Interactions" rendered="#{ searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractionImpl'}"
-              partialTriggers="btnInteractions">
+      <tr:panelHeader text="Interactions" rendered="#{ searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractionImpl'}">
 
-          <ui:composition template="pages/interaction/interaction_table.xhtml">
+          <ui:decorate template="pages/interaction/interaction_table.xhtml">
               <ui:define name="footer">
                   <tr:panelGroupLayout layout="vertical">
                       <h:commandLink value="View selected in HierarchView"
-                                     actionListener="#{interactorResultsBean.exportSelectedToHierarchView}"/>
+                                     actionListener="#{interactionResultsBean.exportSelectedToHierarchView}"/>
                   </tr:panelGroupLayout>
               </ui:define>
 
               <ui:param name="binding" value="#{interactionResultsBean.resultsTable}"/>
               <ui:param name="values" value="#{searchBean.searchResults}"/>
-          </ui:composition>
+          </ui:decorate>
       </tr:panelHeader>
 
       <!-- Interactors -->
 
-      <tr:panelHeader text="Interactors" rendered="#{searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractorImpl'}">
-          <ui:composition template="/pages/interactor/interactor_table.xhtml">
+      <tr:panelHeader text="Interactors" rendered="#{searchBean.searchClassName == 'uk.ac.ebi.intact.model.InteractorImpl' ||
+                                                     searchBean.searchClassName == 'uk.ac.ebi.intact.model.NucleicAcidImpl' ||
+                                                     searchBean.searchClassName == 'uk.ac.ebi.intact.model.ProteinImpl' ||
+                                                     searchBean.searchClassName == 'uk.ac.ebi.intact.model.SmallMoleculeImpl'}">
+          <ui:decorate template="/pages/interactor/interactor_table.xhtml">
               <ui:define name="footer">
                   <tr:panelGroupLayout layout="vertical">
                     <h:commandLink value="View selected to HierarchView"
@@ -139,9 +141,9 @@
                 </tr:panelGroupLayout>
               </ui:define>
 
-              <ui:param name="binding" value="#{interactionResultsBean.resultsTable}"/>
+              <ui:param name="binding" value="#{interactorResultsBean.resultsTable}"/>
               <ui:param name="values" value="#{searchBean.searchResults}"/>
-          </ui:composition>
+          </ui:decorate>
 
       </tr:panelHeader>
 

@@ -10,7 +10,8 @@
 
     <tr:table binding="#{binding}"
                     var="ao" value="#{values}"
-                    rowBandingInterval="1" rowSelection="multiple" rows="25">
+                    rowBandingInterval="1" rowSelection="multiple" rows="25"
+                    emptyText="No interactors shown.">
 
             <f:facet name="footer">
                 <ui:insert name="footer"/>
