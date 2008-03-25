@@ -15,15 +15,12 @@
  */
 package uk.ac.ebi.intact.confidence.main;
 
-import uk.ac.ebi.intact.confidence.attribute.BlastFilter;
-import uk.ac.ebi.intact.confidence.filter.FilterException;
-import uk.ac.ebi.intact.confidence.filter.GOAFilter;
-import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
-import uk.ac.ebi.intact.confidence.filter.GOFilter;
+import uk.ac.ebi.intact.confidence.filter.*;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -68,8 +65,9 @@ public class InfoFiltering {
         GOFilter.filterForbiddenGOs( gos );
     }
 
-    public static void filterBlastHits( Set<Identifier> uniprotAcs, File highConf ) {
+    public static void filterBlastHits( Set<Identifier> uniprotAcs, File highConf ) throws FileNotFoundException {
         // finlaize the filter
-        BlastFilter.filterBlastHits( uniprotAcs, highConf );
+        SeqAlignFilter.setHighConfProteins( highConf );
+        SeqAlignFilter.filterHighConfAlign( uniprotAcs );
     }
 }

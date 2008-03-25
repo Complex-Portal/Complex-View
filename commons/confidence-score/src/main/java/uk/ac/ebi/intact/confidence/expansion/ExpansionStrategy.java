@@ -5,10 +5,9 @@
  */
 package uk.ac.ebi.intact.confidence.expansion;
 
-import java.util.Collection;
-
-import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
+
+import java.util.Collection;
 
 
 /**
@@ -26,11 +25,5 @@ public interface ExpansionStrategy {
      * @return
      */
     public Collection<InteractionSimplified> expand( InteractionSimplified interaction );
-    
-    /**
-     * Expand a simplified interaction into a binary interaction set
-     * @param interaction
-     * @return
-     */
-    public BinaryInteractionSet expand2(InteractionSimplified interaction);
+        
 }
