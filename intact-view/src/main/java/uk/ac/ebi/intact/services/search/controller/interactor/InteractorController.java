@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.conversation.ConversationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.services.search.JpaBaseController;
@@ -35,8 +36,7 @@ public class InteractorController extends JpaBaseController {
 
     @InitView
     public void loadViewFromParameter() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        String acParam = context.getExternalContext().getRequestParameterMap().get("ac");
+        String acParam = getParameterValue("ac", "interactorAc");
 
         if (log.isDebugEnabled()) log.debug("Loading interactor in view: "+acParam);
 

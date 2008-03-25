@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.conversation.ConversationUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.svc.SearchService;
 import uk.ac.ebi.intact.persistence.svc.impl.SimpleSearchService;
@@ -44,6 +45,7 @@ public class SearchController extends JpaBaseController {
         String searchClassParam = context.getExternalContext().getRequestParameterMap().get("class");
 
         if (queryParam != null) {
+            ConversationUtils.invalidateAndRestartCurrent();
             searchQuery = queryParam;
             searchClassName = searchClassFromParam(searchClassParam);
             doSearch(null);

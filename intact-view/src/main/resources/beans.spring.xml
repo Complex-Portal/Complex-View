@@ -4,15 +4,19 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:orchestra="http://myfaces.apache.org/orchestra"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 
-    <bean id="searchBean" class="uk.ac.ebi.intact.services.search.controller.SearchController" scope="conversation.access"/>
-    <bean id="interactorBean" class="uk.ac.ebi.intact.services.search.controller.interactor.InteractorController" scope="conversation.access"/>
-    <bean id="interactionBean" class="uk.ac.ebi.intact.services.search.controller.interaction.InteractionController" scope="conversation.access"/>
+    <bean id="searchBean" class="uk.ac.ebi.intact.services.search.controller.SearchController"
+          scope="conversation.manual" orchestra:conversationName="general"/>
+    <bean id="interactorBean" class="uk.ac.ebi.intact.services.search.controller.interactor.InteractorController" scope="conversation.manual" 
+          orchestra:conversationName="general"/>
+    <bean id="interactionBean" class="uk.ac.ebi.intact.services.search.controller.interaction.InteractionController" scope="conversation.manual"
+            orchestra:conversationName="general"/>
 
     <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->
 

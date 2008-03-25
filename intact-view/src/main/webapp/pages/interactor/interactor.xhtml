@@ -57,7 +57,7 @@
                                label="BioSapiens"/>
                 </tr:showDetailItem>
 
-                <tr:showDetailItem text="Interactions">
+                <tr:showDetailItem text="Interactions (#{interactorBean.currentInteractorWrapped.interactions.rowCount})">
                     <tr:panelHeader text="Interactions">
 
                         <tr:outputDocument
@@ -84,12 +84,7 @@
 
                             <br/>
 
-                            <tr:goLink
-                                    destination="http://www.ebi.ac.uk/intact/hierarchView/GenerateImage?query=#{interactorBean.currentInteractor.ac}"
-                                    targetFrame="_blank">
-                                <tr:image
-                                        source="http://www.ebi.ac.uk/intact/hierarchView/GenerateImage?query=#{interactorBean.currentInteractor.ac}&amp;w=600&amp;h=600"/>
-                            </tr:goLink>
+                            <iav:imageHierarchView query="#{interactorBean.currentInteractor.ac}"/>
 
                         </tr:panelGroupLayout>
 
@@ -102,7 +97,7 @@
                     </tr:panelHeader>
                 </tr:showDetailItem>
 
-                <tr:showDetailItem text="Cross References">
+                <tr:showDetailItem text="Cross References (#{fn:length(interactorBean.currentInteractor.xrefs)})">
                     <br/>
 
                     <iav:panelCategory id="xrefPanel1" var="xrefs" value="#{iaf:toXrefCategoryModel(interactorBean.currentInteractor.xrefs)}">
@@ -285,6 +280,28 @@
                         </iav:panelCategoryColumn>
 
                     </iav:panelCategory>
+
+                <tr:showDetail disclosed="false" undisclosedText="Show all cross references in a table"
+                                   disclosedText="Hide table">
+                        <tr:panelHeader text="All xrefs">
+                            <tr:table var="xref" value="#{interactorBean.currentInteractor.xrefs}">
+                                <tr:column headerText="Primary Id">
+                                    <tr:outputText value="#{xref.primaryId}"/>
+                                </tr:column>
+                                <tr:column headerText="Secondary Id">
+                                    <tr:outputText value="#{xref.secondaryId}"/>
+                                </tr:column>
+                                <tr:column headerText="Qualifier">
+                                    <tr:outputText
+                                            value="#{xref.cvXrefQualifier.shortLabel} (#{xref.cvXrefQualifier.miIdentifier})"/>
+                                </tr:column>
+                                <tr:column headerText="Database">
+                                    <tr:outputText
+                                            value="#{xref.cvDatabase.shortLabel} (#{xref.cvDatabase.miIdentifier})"/>
+                                </tr:column>
+                            </tr:table>
+                        </tr:panelHeader>
+                    </tr:showDetail>
 
                 </tr:showDetailItem>
 

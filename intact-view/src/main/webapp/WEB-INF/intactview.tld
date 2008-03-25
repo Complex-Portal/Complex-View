@@ -27,6 +27,19 @@
         <name>dastyHeader</name>
     </tag>
     <tag>
+        <name>imageHierarchView</name>
+        <attribute>
+            <name>query</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>height</name>
+        </attribute>
+        <attribute>
+            <name>width</name>
+        </attribute>
+    </tag>
+    <tag>
         <name>categoryGroup</name>
         <attribute>
             <name>id</name>

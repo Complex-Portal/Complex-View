@@ -84,21 +84,5 @@
         <!--configured in beans.spring.xml, declared here only for IDE purposes -->
         <!--<managed-bean-scope>none</managed-bean-scope>-->
     <!--</managed-bean>-->
-
-
-    <!-- The following comes from athena (remove?) -->
-
-    <navigation-rule>
-        <navigation-case>
-            <from-outcome>interaction</from-outcome>
-            <to-view-id>/pages/interaction/interaction.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
-    <navigation-rule>
-        <navigation-case>
-            <from-outcome>interactor</from-outcome>
-            <to-view-id>/pages/interactor/interactor.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
   
 </faces-config>

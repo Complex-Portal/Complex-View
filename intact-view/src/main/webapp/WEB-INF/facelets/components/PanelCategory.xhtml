@@ -20,7 +20,10 @@
     <trh:script>
         var #{panelVar} = new ebi.intact.CategoryPanelComp();
     </trh:script>
-    
+
+    <h:panelGrid width="100%">
+        <h:panelGroup>
+
     <div class="options">
         <div class="optionBox">
             <span class="expandCollapseAll" onclick="#{panelVar}.expandAllRelevant()">+</span>
@@ -41,5 +44,8 @@
             }
         );
     </trh:script>
+
+        </h:panelGroup>
+    </h:panelGrid>
 
 </ui:composition>

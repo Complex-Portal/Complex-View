@@ -10,8 +10,11 @@
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
-    <div class="resultsContainer" style="min-height: 5px">
-        <ui:insert/>
-    </div>
+    <tr:goLink
+            destination="http://www.ebi.ac.uk/intact/hierarchView/display.do?query=#{query}"
+            targetFrame="_blank">
+        <tr:image
+                source="http://www.ebi.ac.uk/intact/hierarchView/GenerateImage?query=#{query}&amp;w=#{width != null? width : 600}&amp;h=#{height != null? height : 600}"/>
+    </tr:goLink>
 
 </ui:composition>

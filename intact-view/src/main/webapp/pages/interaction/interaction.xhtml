@@ -37,45 +37,59 @@
                 <tr:panelLabelAndMessage label="IntAct AC:">
                     <tr:outputText value="#{interactionBean.currentInteraction.ac}"/>
                 </tr:panelLabelAndMessage>
-                <tr:panelLabelAndMessage label="Primary DB Ref:">
-                    <tr:iterator var="idXref" value="#{iaf:getIdentityXrefs(interactionBean.currentInteraction)}">
-                        <tr:outputText value="#{idXref.primaryId} (#{idXref.cvDatabase.shortLabel})"/>
-                    </tr:iterator>
-                </tr:panelLabelAndMessage>
             </tr:panelFormLayout>
 
             <br/>
 
             <tr:panelTabbed position="above">
-                <tr:showDetailItem text="Interacting Molecules">
+                <tr:showDetailItem text="Interacting Molecules (#{fn:length(interactionBean.currentInteraction.components)})">
                     <tr:panelHeader text="Participants">
 
+                        <tr:outputDocument
+                                value="The following table shows the list of participants for the interaction &lt;b>#{interactionBean.currentInteraction.shortLabel}&lt;/b>."/>
+                        <br/>
+
                         <tr:table binding="#{interactionBean.componentsTable}"
-                    var="ao" value="#{interactionBean.currentInteraction.components}"
-                    rowBandingInterval="1" rows="25">
+                                  var="ao" value="#{interactionBean.currentInteraction.components}"
+                                  rowBandingInterval="1" rows="25">
 
-               <tr:column headerText="Name">
-                  <tr:outputText value="#{ao.interactor.shortLabel}"/>
-              </tr:column>
-              <tr:column headerText="AC (Interactor)">
-                  <h:commandLink value="#{ao.interactor.ac}" action="interactor" >
-                      <f:param name="ac" value="#{ao.ac}"/>
-                  </h:commandLink>
-              </tr:column>
-              <tr:column headerText="Description" >
-                  <tr:outputText value="#{ao.interactor.fullName}"/>
-              </tr:column>
-              <tr:column headerText="Type" >
-                  <tr:outputText value="#{ao.interactor.cvInteractorType.shortLabel} (#{ao.interactor.cvInteractorType.miIdentifier})"/>
-              </tr:column>
+                            <tr:column headerText="Name">
+                                <tr:outputText value="#{ao.interactor.shortLabel}"/>
+                            </tr:column>
+                            <tr:column headerText="AC (Interactor)">
+                                <h:commandLink value="#{ao.interactor.ac}" action="interactor">
+                                    <f:param name="interactorAc" value="#{ao.interactor.ac}"/>
+                                </h:commandLink>
+                            </tr:column>
+                            <tr:column headerText="Description">
+                                <tr:outputText value="#{ao.interactor.fullName}"/>
+                            </tr:column>
+                            <tr:column headerText="Type">
+                                <tr:outputText
+                                        value="#{ao.interactor.cvInteractorType.shortLabel} (#{ao.interactor.cvInteractorType.miIdentifier})"/>
+                            </tr:column>
 
-          </tr:table>
+                        </tr:table>
+
+                    </tr:panelHeader>
+
+                    <tr:panelHeader text="Graphical Representation" size="1">
+
+                        <tr:panelGroupLayout layout="vertical">
+                            <tr:outputText
+                                    value="This figure is a graphical shows the interaction represented as a network of binary interactions (spoke expansion). Click on the image for more details."/>
+
+                            <br/>
+
+                            <iav:imageHierarchView query="#{interactionBean.currentInteraction.ac}"/>
+
+                        </tr:panelGroupLayout>
 
                     </tr:panelHeader>
 
                 </tr:showDetailItem>
 
-                <tr:showDetailItem text="Annotations">
+                <tr:showDetailItem text="Annotations (#{fn:length(interactionBean.currentInteraction.annotations)})">
                     <tr:panelHeader text="Annotations">
                            <tr:table var="annot" value="#{interactionBean.currentInteraction.annotations}">
                                <tr:column headerText="Topic">
@@ -89,7 +103,7 @@
 
                 </tr:showDetailItem>
 
-                <tr:showDetailItem text="Cross References">
+                <tr:showDetailItem text="Cross References (#{fn:length(interactionBean.currentInteraction.xrefs)})">
                       <br/>
 
                     <iav:panelCategory id="xrefPanel1" var="xrefs" value="#{iaf:toXrefCategoryModel(interactionBean.currentInteraction.xrefs)}">
@@ -115,7 +129,42 @@
                                 </iav:categoryItem>
                             </iav:categoryGroup>
                         </iav:panelCategoryColumn>
+                        <iav:panelCategoryColumn>
+                            <iav:categoryGroup id="ontologiesGroup" title="Ontologies">
+                                <iav:categoryItem name="GO"
+                                                  description="Gene Ontology"
+                                                  category="MI:0448"
+                                                  url="http://www.ebi.ac.uk/go">
+                                    <ui:include src="/pages/xref_list.xhtml"/>
+                                </iav:categoryItem>
+                            </iav:categoryGroup>
+                        </iav:panelCategoryColumn>
                     </iav:panelCategory>
+
+                    <br/>
+
+                    <tr:showDetail disclosed="false" undisclosedText="Show all cross references in a table"
+                                   disclosedText="Hide table">
+                        <tr:panelHeader text="All xrefs">
+                            <tr:table var="xref" value="#{interactionBean.currentInteraction.xrefs}">
+                                <tr:column headerText="Primary Id">
+                                    <tr:outputText value="#{xref.primaryId}"/>
+                                </tr:column>
+                                <tr:column headerText="Secondary Id">
+                                    <tr:outputText value="#{xref.secondaryId}"/>
+                                </tr:column>
+                                <tr:column headerText="Qualifier">
+                                    <tr:outputText
+                                            value="#{xref.cvXrefQualifier.shortLabel} (#{xref.cvXrefQualifier.miIdentifier})"/>
+                                </tr:column>
+                                <tr:column headerText="Database">
+                                    <tr:outputText
+                                            value="#{xref.cvDatabase.shortLabel} (#{xref.cvDatabase.miIdentifier})"/>
+                                </tr:column>
+                            </tr:table>
+                        </tr:panelHeader>
+                    </tr:showDetail>
+
                 </tr:showDetailItem>
 
 

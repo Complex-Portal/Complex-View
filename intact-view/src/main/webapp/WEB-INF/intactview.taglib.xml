@@ -23,6 +23,10 @@
         <source>facelets/components/DastyHeader.xhtml</source>
     </tag>
     <tag>
+        <tag-name>imageHierarchView</tag-name>
+        <source>facelets/components/ImageHierarchView.xhtml</source>
+    </tag>
+    <tag>
         <tag-name>panelCategory</tag-name>
         <source>facelets/components/PanelCategory.xhtml</source>
     </tag>

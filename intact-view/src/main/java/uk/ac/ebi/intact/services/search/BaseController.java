@@ -66,5 +66,24 @@ public abstract class BaseController implements Serializable {
         table.setRowKey(oldKey);
         return selectedEntries;
     }
+
+    /**
+     * Use this method to get a value using a list of parameter names. The names are iterated in order
+     * and if a value is found, that value is return. This method is useful to create synonym parameters.
+     * @param paramNames The parameter names, which are synonyms
+     * @return The value
+     */
+    protected String getParameterValue(String ... paramNames) {
+        for (String paramName : paramNames) {
+            String value = FacesContext.getCurrentInstance()
+                    .getExternalContext().getRequestParameterMap().get(paramName);
+
+            if (value != null) {
+                return value;
+            }
+        }
+
+        return null;
+    }
 }
 
