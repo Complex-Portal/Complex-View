@@ -158,7 +158,9 @@
                   <tr:outputText value="#{ao.shortLabel}"/>
               </tr:column>
               <tr:column headerText="AC" sortable="true" sortProperty="ac">
-                  <tr:outputText value="#{ao.ac}"/>
+                  <h:commandLink value="#{ao.ac}" action="experiment" >
+                      <f:param name="experimentAc" value="#{ao.ac}"/>
+                  </h:commandLink>
               </tr:column>
               <tr:column headerText="Description" sortable="true" sortProperty="fullName">
                   <tr:outputText value="#{ao.fullName}"/>

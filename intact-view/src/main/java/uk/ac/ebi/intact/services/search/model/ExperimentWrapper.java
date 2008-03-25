@@ -4,6 +4,11 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 
 import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * TODO comment this
@@ -14,6 +19,7 @@ import java.util.Collection;
 public class ExperimentWrapper extends AnnotatedObjectWrapper<Experiment> {
 
     private int interactionsCount;
+    private Object interactions;
 
     public ExperimentWrapper(Experiment data) {
         super(data);
@@ -27,8 +33,18 @@ public class ExperimentWrapper extends AnnotatedObjectWrapper<Experiment> {
         }
     }
 
-    public Collection<Interaction> getInteractions() {
-        return getData().getInteractions();
+    public Object getInteractions() {
+        if (interactions == null) {
+
+            if (getData().getAc() != null) {
+                interactions = new CriteriaDataModel(DetachedCriteria.forClass(Interaction.class)
+                        .createAlias("experiments", "exp")
+                        .add(Restrictions.eq("exp.ac", getData().getAc())));
+            } else {
+                interactions = new ArrayList<Interaction>(getData().getInteractions());
+            }
+        }
+        return interactions;
     }
 
     public CvIdentification getCvIdentification() {

@@ -15,10 +15,6 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
-    <ui:define name="additionalHeader">
-        <iav:dastyHeader/>
-    </ui:define>
-
     <!-- content -->
     <ui:define name="content">
 
@@ -51,7 +47,7 @@
 
                         <tr:table binding="#{interactionBean.componentsTable}"
                                   var="ao" value="#{interactionBean.currentInteraction.components}"
-                                  rowBandingInterval="1" rows="25">
+                                  rowBandingInterval="1" rows="25" >
 
                             <tr:column headerText="Name">
                                 <tr:outputText value="#{ao.interactor.shortLabel}"/>
@@ -68,6 +64,41 @@
                                 <tr:outputText
                                         value="#{ao.interactor.cvInteractorType.shortLabel} (#{ao.interactor.cvInteractorType.miIdentifier})"/>
                             </tr:column>
+                            <tr:column headerText="Features">
+                                <tr:outputText
+                                        value="#{fn:length(ao.bindingDomains)}"/>
+                            </tr:column>
+
+                            <f:facet name="detailStamp">
+                                <tr:table var="feature"
+                                          value="#{ao.bindingDomains}"
+                                          summary="Features" emptyText="No features found for this component.">
+                                    <tr:column>
+                                        <f:facet name="header">
+                                            <tr:outputText value="Feature Label"/>
+                                        </f:facet>
+                                        <tr:outputText value="#{feature.shortLabel}"/>
+                                    </tr:column>
+                                    <tr:column>
+                                        <f:facet name="header">
+                                            <tr:outputText value="Feature Ranges"/>
+                                        </f:facet>
+                                        <tr:outputText value="#{feature.ranges}"/>
+                                    </tr:column>
+                                    <tr:column>
+                                        <f:facet name="header">
+                                            <tr:outputText value="Feature Type"/>
+                                        </f:facet>
+                                        <tr:outputText value="#{feature.cvFeatureType.shortLabel} (#{feature.cvFeatureType.miIdentifier})"/>
+                                    </tr:column>
+                                    <tr:column>
+                                        <f:facet name="header">
+                                            <tr:outputText value="Feature Detection"/>
+                                        </f:facet>
+                                        <tr:outputText value="#{feature.cvFeatureIdentification.shortLabel} (#{feature.cvFeatureIdentification.miIdentifier})"/>
+                                    </tr:column>
+                                </tr:table>
+                            </f:facet>
 
                         </tr:table>
 
