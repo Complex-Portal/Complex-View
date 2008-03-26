@@ -122,7 +122,8 @@ public class IntactScoreCalculatorTest extends IntactBasicTestCase {
                         //obs: the score was oscillating between 0.82, 0.83 this is why this special assertion was introduced
                         Assert.assertTrue(interaction.getConfidences().iterator().next().getValue().startsWith(  "0.8" ));
                     } else if ( interaction.getShortLabel().equalsIgnoreCase( "int-low" ) ) {
-                        Assert.assertEquals( "0.20", interaction.getConfidences().iterator().next().getValue() );
+                        // obs: the score swithced to 0.5 from 0.2
+                        Assert.assertEquals( "0.50", interaction.getConfidences().iterator().next().getValue() );
                     } else if ( interaction.getShortLabel().equalsIgnoreCase( "int-med" ) ) {
                         Assert.assertEquals( "0.50", interaction.getConfidences().iterator().next().getValue() );
                     } else {

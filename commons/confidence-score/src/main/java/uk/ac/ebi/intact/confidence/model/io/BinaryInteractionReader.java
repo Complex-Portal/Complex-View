@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.confidence.model.io;
 
 import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 import uk.ac.ebi.intact.confidence.model.Confidence;
+import uk.ac.ebi.intact.confidence.model.Identifier;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,6 +48,7 @@ public interface BinaryInteractionReader {
     List<BinaryInteraction> read ( File inFile ) throws IOException;
 
     Set<BinaryInteraction> read2Set (File inFile) throws IOException;
+   Set<Identifier> readProteins ( File inFile) throws IOException;
 
     Iterator<BinaryInteraction> iterate(File inFile) throws FileNotFoundException;
 }

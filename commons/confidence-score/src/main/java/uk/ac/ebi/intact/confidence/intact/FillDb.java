@@ -51,7 +51,6 @@ public class FillDb {
 	 * Sets up a logger for that class.
 	 */
 	public static final Log log	= LogFactory.getLog( FillDb.class);
-    private File workDir;
 
     private IntactScoreCalculator scoreCalculator;
     private DaoFactory daoFactory;
@@ -59,7 +58,6 @@ public class FillDb {
     ///////////////////
     // Constructor(s).
     public FillDb( File workDir, BlastConfig config, File highconfFile, File gisModelFile, File goaFile) throws IOException {
-        workDir = workDir;
         if (log.isTraceEnabled()){
             log.trace("goaFile: "+ goaFile.getPath());
         }
@@ -97,7 +95,7 @@ public class FillDb {
                 }
                 saveInteractionsToDb( tmpInteractions );
                 IntactContext.getCurrentInstance().getDataContext().commitTransaction();
-                tmpInteractions.clear(); //= new ArrayList<InteractionImpl>(); // TODO: reinit or empty list
+                tmpInteractions.clear();
                 IntactContext.getCurrentInstance().getDataContext().beginTransaction();
             }
         }
@@ -127,7 +125,6 @@ public class FillDb {
          if (daoFactory == null){
              return null;
          }
-         InteractionDao interactionDao = daoFactory.getInteractionDao();
 
          EntityManager em = daoFactory.getEntityManager();
 

@@ -54,16 +54,21 @@ import java.util.Set;
 public class TrainModel {
     private static final Log log = LogFactory.getLog( TrainModel.class );
 
-    public static IntactConfidenceCalculator generateModel() throws Exception {
+    public static File generateModel() throws Exception {
         /**
-         * File that must be specified: the yeast fasta file.
+         * File that must be specified:
+         * 1.) the yeast fasta File.
          * When creating the low confidence interactions the proteins in the interaction are
-         * choosen out of hte yeast proteins. THIS MUST BE SET.
+         * choosen out of the yeast proteins.
+         * 2.) GOA File:
+         * For filtering the GOA IEA (infered electronic annotation), the file is already trimmed to contain only the IntAct
+         * proteins (use GOAFileTrimmer)
+         * THIS MUST BE SET.
          */
         // put a proper yeast fasta file, or any fasta file containing the proteins for the low confidence generating step
         //TODO: make sure the fasta file is there, if it does not exist the low confidence set will not be created
         File fastaFile = new File( "/net/nfs6/vol1/homes/iarmean/tmp/40.S_cerevisiae.fasta" );
-        File goaFile = new File("/net/nfs7/vol22/sp-pro5/20080201_iarmean/gene_association.goa_uniprot");
+        File goaFile = new File("/net/nfs7/vol22/sp-pro5/20080201_iarmean/gene_association.goa_intact");
 
         /**
          * Files that can be specified, if some data has been preeprocessed.
@@ -73,7 +78,7 @@ public class TrainModel {
         File workDir = new File("/net/nfs7/vol22/sp-pro5/20080201_iarmean/TrainModel");
 
         /**
-         * Information for the blast configuration, if there is prerun blast results available:
+         * Information for the blast configuration, if there are prerun blast results available:
          * - dbFolder: the folder where the h2 db is   : optional
          * - blastArchiveDir: folder containing the blast result xml files (ex for a file : "P12345.xml") : optional
          * - email: the email for the blast service  : compulsory
@@ -98,7 +103,7 @@ public class TrainModel {
         }
 
         /**
-         * Retreive the high confidence data set from IntAct.
+         * 1.) Retreive the high confidence data set from IntAct.
          * In the same time the medium confidence set will be also retrieved.
          * For each confidence set additional 3 files will be created:
          * ex. for high confidence: highconf_set.txt, highconf_set_ip.txt
@@ -123,7 +128,7 @@ public class TrainModel {
 
 
         /**
-         *    Generate the same amount as high confidences low confidence:
+         *  2.)  Generate the same amount as high confidences low confidence:
          * - read the high confidence set
          * - generate low confidence set
          * - get the annotation for the low confidence set
@@ -146,7 +151,7 @@ public class TrainModel {
         }
 
         /**
-         * Generate the blast annotation files (blast results). The blast results are filtered only by a threshold (0.001)
+         * 3) Generate the blast annotation files (blast results). The blast results are filtered only by a threshold (0.001)
          *
          */
 
@@ -169,10 +174,9 @@ public class TrainModel {
         }
 
         /**
-         * Filter the GOs and the blast uniprotAcs according to the high confidence proteins.
+         * 4.) Filter the GOs and the blast uniprotAcs according to the high confidence proteins.
          *
          */
-      //  File goAnnoFile = new File( workDir, "highconf_set_go.txt" );
         ProteinAnnotationReader par = new ProteinAnnotationReaderImpl();
         ProteinAnnotationWriter paw = new ProteinAnnotationWriterImpl();
 
@@ -187,7 +191,6 @@ public class TrainModel {
             log.debug( "Filter GOs for high confidence set : " + total );
         }
 
-//        goAnnoFile = new File( workDir, "lowconf_set_go.txt" );
         outFile = new File( workDir, "lowconf_set_go_filter.txt" );
         pas = par.read2Set( report.getLowconfGOFile());
         InfoFiltering.filterGO( pas, goaFile );
@@ -222,7 +225,7 @@ public class TrainModel {
         }
 
         /**
-         * Combine the annotations to attributes.
+         * 5.) Combine the annotations to attributes.
          */
         //File biFile = new File( workDir, "highconf_set.txt" );
         List<BinaryInteraction> binaryInteractions = bir.read( report.getHighconfFile() );
@@ -286,7 +289,7 @@ public class TrainModel {
         }
 
         /**
-         * Merge the attributes.
+         * 6.) Merge the attributes.
          *
          */
 
@@ -315,7 +318,7 @@ public class TrainModel {
         }
 
         /**
-         *  Generate the model.
+         *  7.) Generate the model.
          */
 
         OpenNLPMaxEntClassifier classifier = new OpenNLPMaxEntClassifier( hcSet.getPath(), lcSet.getPath(), workDir );
@@ -327,8 +330,7 @@ public class TrainModel {
             long total = time - time2;
             log.debug( "Model trained and printed out : " + total );
         }
-
-        return null;
+       return outFile; 
     }
 
 }

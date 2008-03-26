@@ -19,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactDbRetriever;
 import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
 import uk.ac.ebi.intact.confidence.expansion.ExpansionStrategy;
@@ -94,9 +93,10 @@ public class InfoGathering {
 
     public void retrieveLowConfidenceSetAnnotations(Report report)throws InfoGatheringException {//File workDir, File lowconfFile) throws InfoGatheringException {
         try {
-            BinaryInteractionSet lowConf = new BinaryInteractionSet( report.getLowconfFile().getPath() );
+            BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
+            Set<Identifier> prots = bir.readProteins( report.getLowconfFile() );
 //            File dirForAttrib = report.getLowconfFile().getParentFile(); // new File( workDir, "DataRetriever" );
-            writeIpGoForLc( lowConf.getAllProtNames(), report );
+            writeIpGoForLc(prots, report );
         } catch ( IOException e ) {
             throw new InfoGatheringException( e);
         }
@@ -104,10 +104,11 @@ public class InfoGathering {
 
     public void retrieveLowConfidenceSetAnnotations(File workDir, File lowconfFile) throws InfoGatheringException {
         try {
-            BinaryInteractionSet lowConf = new BinaryInteractionSet( lowconfFile.getPath());
+            BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
+            Set<Identifier> lowConf = bir.readProteins( lowconfFile );
             File dirForAttrib = workDir; // new File( workDir, "DataRetriever" );
             Report report = new Report(new File(workDir, "highconf_set.txt"), new File(workDir, "medconf_set.txt"));
-            writeIpGoForLc( lowConf.getAllProtNames(), report );
+            writeIpGoForLc( lowConf, report );
         } catch ( IOException e ) {
             throw new InfoGatheringException( e);
         }
@@ -162,7 +163,7 @@ public class InfoGathering {
     }
 
 
-    private void writeIpGoForLc( Set<String> lowConfProt, Report report ) throws InfoGatheringException {//File dirForAttrib ) throws InfoGatheringException {
+    private void writeIpGoForLc( Set<Identifier> lowConfProt, Report report ) throws InfoGatheringException {//File dirForAttrib ) throws InfoGatheringException {
            UniprotDataRetriever uniprot = new UniprotDataRetriever();
            try {
                report.setLowconfGOFile( new File(report.getLowconfFile().getParentFile(),"lowconf_set_go.txt") );
@@ -178,10 +179,10 @@ public class InfoGathering {
 
        }
 
-       private void writeIp( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
+       private void writeIp( UniprotDataRetriever uniprot, Set<Identifier> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
            try {
-               for ( String ac : lowConfProt ) {
-                   Set<Identifier> ips = uniprot.getIps( new UniprotAc( ac ) );
+               for ( Identifier ac : lowConfProt ) {
+                   Set<Identifier> ips = uniprot.getIps( new UniprotAc( ac.getId() ) );
                    fileWriter.append( ac + "," );
                    for ( Identifier ipId : ips ) {
                        fileWriter.append( ipId.getId() + "," );
@@ -194,10 +195,10 @@ public class InfoGathering {
            }
        }
 
-       private void writeGo( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
+       private void writeGo( UniprotDataRetriever uniprot, Set<Identifier> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
            try {
-               for ( String ac : lowConfProt ) {
-                   Set<Identifier> gos = uniprot.getGOs( new UniprotAc( ac ) );
+               for ( Identifier ac : lowConfProt ) {
+                   Set<Identifier> gos = uniprot.getGOs( new UniprotAc( ac.getId() ) );
 //                   GOFilter.filterForbiddenGOs( gos);
                    fileWriter.append( ac + "," );
                    for ( Identifier goId : gos ) {
@@ -211,11 +212,11 @@ public class InfoGathering {
            }
        }
 
-       private void writeSeq( UniprotDataRetriever uniprot, Set<String> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
-           for ( String ac : lowConfProt ) {
-               Sequence seq = uniprot.getSeq( new UniprotAc( ac ) );
+       private void writeSeq( UniprotDataRetriever uniprot, Set<Identifier> lowConfProt, Writer fileWriter ) throws InfoGatheringException {
+           for ( Identifier ac : lowConfProt ) {
+               Sequence seq = uniprot.getSeq( new UniprotAc( ac.getId() ) );
                if ( seq != null ) {
-                   print( ac, seq, fileWriter );
+                   print( ac.getId(), seq, fileWriter );
                } else {
                    if ( log.isInfoEnabled() ) {
                        log.info( "No Sequence found for ac: " + ac );

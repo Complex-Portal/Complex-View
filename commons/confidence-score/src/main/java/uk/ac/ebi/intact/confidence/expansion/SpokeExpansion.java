@@ -7,16 +7,11 @@ package uk.ac.ebi.intact.confidence.expansion;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
-import uk.ac.ebi.intact.confidence.ProteinPair;
-import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
-
+import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * Process an interaction and expand it using the spoke model.
@@ -130,19 +125,4 @@ public class SpokeExpansion extends BinaryExpansionStrategy {
 
         return null;
     }
-    
-    public BinaryInteractionSet expand2(InteractionSimplified interaction) {
-		Collection<InteractionSimplified> interactions =  expand(interaction);
-		Collection<ProteinPair> proteinPairs = new HashSet<ProteinPair>();
-		for (InteractionSimplified intS : interactions) {
-			if (intS.getInteractors().size() != 2){
-				log.debug("binary interaction expected!!");
-			}
-			ProteinSimplified prot1 = (ProteinSimplified)intS.getInteractors().toArray()[0];
-			ProteinSimplified prot2 = (ProteinSimplified)intS.getInteractors().toArray()[1];
-			ProteinPair pp = new ProteinPair(prot1.getUniprotAc().getAcNr(), prot2.getUniprotAc().getAcNr());
-			proteinPairs.add(pp);
-		}
-		return new BinaryInteractionSet(proteinPairs);
-	}
 }

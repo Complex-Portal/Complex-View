@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.confidence.model.BinaryInteraction;
 import uk.ac.ebi.intact.confidence.model.Confidence;
+import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionReader;
 import uk.ac.ebi.intact.confidence.model.iterator.BinaryInteractionIterator;
 import uk.ac.ebi.intact.confidence.model.parser.BinaryInteractionParserUtils;
@@ -60,6 +61,21 @@ public class BinaryInteractionReaderImpl implements BinaryInteractionReader {
         }
         br.close();
         return interactions;
+    }
+
+    public Set<Identifier> readProteins( File inFile ) throws IOException {
+        Set<Identifier> proteins = new HashSet<Identifier>();
+        BufferedReader br = new BufferedReader(new FileReader(inFile));
+        String line ="";
+        while ((line = br.readLine() ) !=null){
+            BinaryInteraction binaryInteraction = BinaryInteractionParserUtils.parseBinaryInteraction( line, conf);
+            if (binaryInteraction != null){
+                proteins.add( binaryInteraction.getFirstId());
+                proteins.add( binaryInteraction.getSecondId());                                
+            }
+        }
+        br.close();
+        return proteins;
     }
 
     public Set<BinaryInteraction> read2Set (File inFile) throws IOException{

@@ -64,7 +64,7 @@ public class InfoFilteringTest {
              ProteinAnnotation pa = iter.next();
             if (! done.contains( pa.getId() )){
                 Set<Identifier> gos = new HashSet<Identifier>(pa.getAnnotations());
-                InfoFiltering.filterGO(gos);                                     // TODO: filter gos on collection
+              //  InfoFiltering.filterGO(gos);                                     // TODO: filter gos on collection
                 pa.setAnnotations( gos );
                 paw.append( pa, outFile );
                 done.add( pa.getId() );

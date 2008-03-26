@@ -23,15 +23,11 @@ import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.EbiWsWUBlast;
 import uk.ac.ebi.intact.bridges.blast.model.Sequence;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.attribute.AlignmentFileMaker;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
 import uk.ac.ebi.intact.confidence.filter.FilterException;
 import uk.ac.ebi.intact.confidence.filter.GOAFilter;
-import uk.ac.ebi.intact.confidence.model.Attribute;
-import uk.ac.ebi.intact.confidence.model.Identifier;
-import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
-import uk.ac.ebi.intact.confidence.model.UniprotIdentifierImpl;
+import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.utils.CombineToAttribs;
 import uk.ac.ebi.intact.confidence.utils.ConversionUtils;
 
@@ -72,12 +68,12 @@ public class AttributeGetterImpl implements AttributeGetter {
 
     /**
      *  
-     * @param proteinPair
+     * @param binaryInteraction
      * @return
      */
-    public List<Attribute> fetchGoAttributes( ProteinPair proteinPair ) throws AttributeGetterException {
-        UniprotAc first = new UniprotAc( proteinPair.getFirstId() );
-        UniprotAc second = new UniprotAc( proteinPair.getSecondId() );
+    public List<Attribute> fetchGoAttributes( BinaryInteraction binaryInteraction ) throws AttributeGetterException {
+        UniprotAc first = new UniprotAc( binaryInteraction.getFirstId().getId() );
+        UniprotAc second = new UniprotAc( binaryInteraction.getSecondId().getId() );
         Set<Identifier> gosA = annoDb.getGOs( first );
         Set<Identifier> gosB = annoDb.getGOs( second );
         try {
@@ -90,15 +86,15 @@ public class AttributeGetterImpl implements AttributeGetter {
         }
     }
 
-    public List<Attribute> fetchIpAttributes( ProteinPair proteinPair ) {
-        Set<Identifier> ipsA = annoDb.getIps( new UniprotAc( proteinPair.getFirstId() ) );
-        Set<Identifier> ipsB = annoDb.getIps( new UniprotAc( proteinPair.getSecondId() ) );
+    public List<Attribute> fetchIpAttributes( BinaryInteraction binaryInteraction ) {
+        Set<Identifier> ipsA = annoDb.getIps( new UniprotAc( binaryInteraction.getFirstId().getId() ) );
+        Set<Identifier> ipsB = annoDb.getIps( new UniprotAc( binaryInteraction.getSecondId().getId() ) );
         List<Attribute> attribs = CombineToAttribs.combine( ipsA, ipsB);
         return attribs;
     }
 
-    public List<Attribute> fetchAlignAttributes( ProteinPair proteinPair, Set<UniprotAc> againstProt, BlastConfig config ) throws BlastServiceException {
-        Set<ProteinSimplified> prots = fetchSeq( proteinPair );
+    public List<Attribute> fetchAlignAttributes( BinaryInteraction binaryInteraction, Set<UniprotAc> againstProt, BlastConfig config ) throws BlastServiceException {
+        Set<ProteinSimplified> prots = fetchSeq( binaryInteraction );
         try {
             BlastService bs = new EbiWsWUBlast( config.getDatabaseDir(), config.getTableName(), config.getBlastArchiveDir(), config.getEmail(), config.getNrPerSubmission() );
             AlignmentFileMaker alignmentMaker = new AlignmentFileMaker( new Float( 0.001 ), workDir, bs );
@@ -107,7 +103,7 @@ public class AttributeGetterImpl implements AttributeGetter {
             if (log.isInfoEnabled()){
                 long time = System.currentTimeMillis() - start;
                 long sec = time /1000;
-                log.info("blasting 2 prots ("+ proteinPair.getFirstId() + ", " + proteinPair.getSecondId()+") it took: "+ sec + " sec");
+                log.info("blasting 2 prots ("+ binaryInteraction.convertToString()+") it took: "+ sec + " sec");
             }
 
 
@@ -131,10 +127,10 @@ public class AttributeGetterImpl implements AttributeGetter {
         }
     }
 
-    private Set<ProteinSimplified> fetchSeq( ProteinPair proteinPair ) {
-        UniprotAc acA = new UniprotAc( proteinPair.getFirstId() );
+    private Set<ProteinSimplified> fetchSeq( BinaryInteraction binaryInteraction ) {
+        UniprotAc acA = new UniprotAc( binaryInteraction.getFirstId().getId() );
         Sequence seqA = annoDb.getSeq( acA );
-        UniprotAc acB = new UniprotAc( proteinPair.getSecondId() );
+        UniprotAc acB = new UniprotAc( binaryInteraction.getSecondId().getId() );
         Sequence seqB = annoDb.getSeq( acB );
         ProteinSimplified protA = new ProteinSimplified( acA, seqA );
         ProteinSimplified protB = new ProteinSimplified( acB, seqB );
@@ -144,12 +140,12 @@ public class AttributeGetterImpl implements AttributeGetter {
         return prots;
     }
 
-    public List<Attribute> fetchAllAttributes( ProteinPair proteinPair, Set<UniprotAc> againstProt, BlastConfig config ) throws AttributeGetterException {
+    public List<Attribute> fetchAllAttributes( BinaryInteraction binaryInteraction, Set<UniprotAc> againstProt, BlastConfig config ) throws AttributeGetterException {
         List<Attribute> all = new ArrayList<Attribute>();
-        all.addAll( fetchIpAttributes( proteinPair ) );
-        all.addAll( fetchGoAttributes( proteinPair ) );
+        all.addAll( fetchIpAttributes( binaryInteraction ) );
+        all.addAll( fetchGoAttributes( binaryInteraction ) );
         try {
-            all.addAll( fetchAlignAttributes( proteinPair, againstProt, config ) );
+            all.addAll( fetchAlignAttributes( binaryInteraction, againstProt, config ) );
         } catch ( BlastServiceException e ) {
             throw new AttributeGetterException( e);
         }

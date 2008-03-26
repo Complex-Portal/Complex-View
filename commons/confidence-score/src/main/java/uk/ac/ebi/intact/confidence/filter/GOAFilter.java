@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.confidence.filter;
 
-import uk.ac.ebi.intact.confidence.attribute.AnnotationConstants;
 import uk.ac.ebi.intact.confidence.model.GoIdentifierImpl;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
@@ -31,7 +30,7 @@ import java.util.Set;
  * @version $Id$
  * @since 19.02.2008
  */
-public interface GOAFilter extends AnnotationConstants {
+public interface GOAFilter {
     static Identifier forbiddenGO = new GoIdentifierImpl( "GO:0005515");
     static String forbiddenCode = "IEA";
 

@@ -21,11 +21,11 @@ import psidev.psi.mi.xml.PsimiXmlReader;
 import psidev.psi.mi.xml.PsimiXmlReaderException;
 import psidev.psi.mi.xml.PsimiXmlWriter;
 import psidev.psi.mi.xml.PsimiXmlWriterException;
+import psidev.psi.mi.xml.model.Confidence;
 import psidev.psi.mi.xml.model.*;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactAnnotationRetrieverImpl;
 import uk.ac.ebi.intact.confidence.filter.FilterException;
@@ -33,7 +33,7 @@ import uk.ac.ebi.intact.confidence.filter.GOAFilter;
 import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
 import uk.ac.ebi.intact.confidence.model.Attribute;
-import uk.ac.ebi.intact.confidence.model.ConfidenceType;
+import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.util.AttributeGetter;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterException;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterImpl;
@@ -176,11 +176,11 @@ public class PsiMiXmlConfidence {
                 if ( participants.size() != 2 ) {
                     log.warn( "Interaction: " + interaction.getId() + " has more than 2 participants => skipped!" );
                 } else {
-                    ProteinPair pp = retireveProteinPair( participants );
-                    if ( pp != null ) {
-                        List<Attribute> attribs = getAttributes( ag, pp, type );
+                    BinaryInteraction binaryInteraction = retrieveBinaryInteraction(participants);
+                    if ( binaryInteraction != null ) {
+                        List<Attribute> attribs = getAttributes( ag, binaryInteraction, type );
                         if ( log.isInfoEnabled() ) {
-                            log.info( "interaction: " + pp.toString() + " attribs: " + attribs );
+                            log.info( "interaction: " + binaryInteraction.toString() + " attribs: " + attribs );
                         }
                         save( interaction, classifier.evaluate( attribs ) );
                     }
@@ -192,29 +192,29 @@ public class PsiMiXmlConfidence {
         }
     }
 
-    private ProteinPair retireveProteinPair( Collection<Participant> participants ) {
+    private BinaryInteraction retrieveBinaryInteraction( Collection<Participant> participants ) {
         Iterator<Participant> iterPart = participants.iterator();
         Interactor intA = iterPart.next().getInteractor();
         Interactor intB = iterPart.next().getInteractor();
-        String uniprotA = retrieveUniprotId( intA );
-        String uniprotB = retrieveUniprotId( intB );
-        ProteinPair pp = null;
+        Identifier uniprotA = retrieveUniprotId( intA );
+        Identifier uniprotB = retrieveUniprotId( intB );
+        BinaryInteraction bi = null;
         if ( uniprotA != null && uniprotB != null ) {
-            pp = new ProteinPair( uniprotA, uniprotB );
+            bi = new BinaryInteraction( uniprotA, uniprotB );
         }
-        return pp;
+        return bi;
     }
 
-    private String retrieveUniprotId( Interactor interactor ) {
+    private Identifier retrieveUniprotId( Interactor interactor ) {
         Xref xref = interactor.getXref();
         DbReference refA = xref.getPrimaryRef();
         if ( refA.getDb().equalsIgnoreCase( "uniprotkb" ) && refA.getRefType().equalsIgnoreCase( "identity" ) ) {
-            return refA.getId();
+            return new UniprotIdentifierImpl(refA.getId());
         }
         return null;
     }
 
-    private List<Attribute> getAttributes( AttributeGetter ag, ProteinPair prteinPair, Set<ConfidenceType> type ) throws PsiMiException, AttributeGetterException {
+    private List<Attribute> getAttributes( AttributeGetter ag, BinaryInteraction binaryInteraction, Set<ConfidenceType> type ) throws PsiMiException, AttributeGetterException {
         List<Attribute> attributes = new ArrayList<Attribute>();
 
         for ( Iterator<ConfidenceType> confTypeIter = type.iterator(); confTypeIter.hasNext(); ) {
@@ -226,27 +226,27 @@ public class PsiMiXmlConfidence {
                      throw new PsiMiException( e);
                  }
              }
-            attributes.addAll( getAttributes( ag, prteinPair, confidenceType ) );
+            attributes.addAll( getAttributes( ag, binaryInteraction, confidenceType ) );
         }
         return attributes;
     }
 
-    private List<Attribute> getAttributes( AttributeGetter ag, ProteinPair proteinPair, ConfidenceType type ) throws AttributeGetterException {
+    private List<Attribute> getAttributes( AttributeGetter ag, BinaryInteraction binaryInteraction, ConfidenceType type ) throws AttributeGetterException {
         switch ( type ) {
             case GO:
-                return ag.fetchGoAttributes( proteinPair );
+                return ag.fetchGoAttributes( binaryInteraction );
             case InterPRO:
-                return ag.fetchIpAttributes( proteinPair );
+                return ag.fetchIpAttributes( binaryInteraction );
             case Alignment:
                 try {
-                    return ag.fetchAlignAttributes( proteinPair, this.againstProteins, this.blastConfig );
+                    return ag.fetchAlignAttributes( binaryInteraction, this.againstProteins, this.blastConfig );
                 } catch ( BlastServiceException e ) {
                     throw new AttributeGetterException( e);
                 }
             case ALL:
-                return ag.fetchAllAttributes( proteinPair, this.againstProteins, this.blastConfig );
+                return ag.fetchAllAttributes( binaryInteraction, this.againstProteins, this.blastConfig );
             default:
-                return ag.fetchAllAttributes( proteinPair, this.againstProteins, this.blastConfig );
+                return ag.fetchAllAttributes( binaryInteraction, this.againstProteins, this.blastConfig );
         }
     }
 

@@ -17,7 +17,6 @@ import psidev.psi.mi.xml.converter.ConverterException;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactAnnotationRetrieverImpl;
 import uk.ac.ebi.intact.confidence.filter.FilterException;
@@ -26,6 +25,8 @@ import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
 import uk.ac.ebi.intact.confidence.model.Attribute;
 import uk.ac.ebi.intact.confidence.model.ConfidenceType;
+import uk.ac.ebi.intact.confidence.model.Identifier;
+import uk.ac.ebi.intact.confidence.model.UniprotIdentifierImpl;
 import uk.ac.ebi.intact.confidence.util.AttributeGetter;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterException;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterImpl;
@@ -200,24 +201,33 @@ public class PsiMiTabConfidence {
     }
 
     private List<Attribute> getAttributes( BinaryInteraction interaction, ConfidenceType type ) throws AttributeGetterException {
+        uk.ac.ebi.intact.confidence.model.BinaryInteraction binaryInteraction = convertBinary(interaction);
         String[] acs = getUniprotAcs( interaction );
         AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb, goaFilter );
         switch ( type ) {
             case GO:
-                return ag.fetchGoAttributes( new ProteinPair( acs[0], acs[1] ) );
+                return ag.fetchGoAttributes(binaryInteraction );
             case InterPRO:
-                return ag.fetchIpAttributes( new ProteinPair( acs[0], acs[1] ) );
+                return ag.fetchIpAttributes( binaryInteraction );
             case Alignment:
                 try {
-                    return ag.fetchAlignAttributes( new ProteinPair( acs[0], acs[1] ), this.againstProteins, this.blastConfig );
+                    return ag.fetchAlignAttributes( binaryInteraction, this.againstProteins, this.blastConfig );
                 } catch ( BlastServiceException e ) {
                     throw new AttributeGetterException( e);
                 }
             case ALL:
-                return ag.fetchAllAttributes( new ProteinPair( acs[0], acs[1] ), this.againstProteins, this.blastConfig );
+                return ag.fetchAllAttributes( binaryInteraction, this.againstProteins, this.blastConfig );
             default:
-                return ag.fetchAllAttributes( new ProteinPair( acs[0], acs[1] ), this.againstProteins, this.blastConfig );
+                return ag.fetchAllAttributes( binaryInteraction, this.againstProteins, this.blastConfig );
         }
+    }
+
+    private uk.ac.ebi.intact.confidence.model.BinaryInteraction convertBinary( BinaryInteraction interaction ) {
+        String [] acs = getUniprotAcs( interaction );
+        Identifier idA = new UniprotIdentifierImpl(acs[0]);
+        Identifier idB = new UniprotIdentifierImpl(acs[1]);
+
+        return new uk.ac.ebi.intact.confidence.model.BinaryInteraction(idA, idB);
     }
 
     private String[] getUniprotAcs( BinaryInteraction interaction ) {

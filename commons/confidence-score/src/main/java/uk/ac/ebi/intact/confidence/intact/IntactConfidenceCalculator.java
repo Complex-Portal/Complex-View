@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.BlastServiceException;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.dataRetriever.AnnotationRetrieverStrategy;
 import uk.ac.ebi.intact.confidence.dataRetriever.IntactAnnotationRetrieverImpl;
 import uk.ac.ebi.intact.confidence.filter.FilterException;
@@ -191,7 +190,8 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
             BinaryInteraction bi = convertToBin( interaction );
             if (bi!= null){
                 goaFilter.initialize( goaFile );
-                List<Attribute> attribs = aG.fetchAllAttributes( new ProteinPair( bi.getFirstId().getId(), bi.getSecondId().getId() ), againstProteins, blastConfig );
+                List<Attribute> attribs = aG.fetchAllAttributes(bi, againstProteins, blastConfig );
+                System.out.println(printAttribs( attribs )) ; //todo remove after test
                 double[] scores = model.evaluate( attribs );
                 String value = df.format( scores[classifier.getIndex( "high" )] );
                 if (log.isTraceEnabled()){
@@ -371,23 +371,22 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
      }
 
     private List<Attribute> getAttributes( BinaryInteraction interaction, ConfidenceType type ) throws AttributeGetterException {
-        ProteinPair pp = new ProteinPair(interaction.getFirstId().getId(), interaction.getSecondId().getId());
         AttributeGetter ag = new AttributeGetterImpl( this.workDir, annoDb, goaFilter );
         switch ( type ) {
             case GO:
-                return ag.fetchGoAttributes( pp);
+                return ag.fetchGoAttributes( interaction);
             case InterPRO:
-                return ag.fetchIpAttributes(pp);
+                return ag.fetchIpAttributes(interaction);
             case Alignment:
                 try {
-                    return ag.fetchAlignAttributes( pp , this.againstProteins, this.blastConfig );
+                    return ag.fetchAlignAttributes( interaction , this.againstProteins, this.blastConfig );
                 } catch ( BlastServiceException e ) {
                     throw new AttributeGetterException( e);
                 }
             case ALL:
-                return ag.fetchAllAttributes( pp, this.againstProteins, this.blastConfig );
+                return ag.fetchAllAttributes( interaction, this.againstProteins, this.blastConfig );
             default:
-                return ag.fetchAllAttributes( pp, this.againstProteins, this.blastConfig );
+                return ag.fetchAllAttributes( interaction, this.againstProteins, this.blastConfig );
         }
     }
 

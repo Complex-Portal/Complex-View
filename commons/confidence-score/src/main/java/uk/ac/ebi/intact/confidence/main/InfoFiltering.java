@@ -15,7 +15,10 @@
  */
 package uk.ac.ebi.intact.confidence.main;
 
-import uk.ac.ebi.intact.confidence.filter.*;
+import uk.ac.ebi.intact.confidence.filter.FilterException;
+import uk.ac.ebi.intact.confidence.filter.GOAFilter;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
+import uk.ac.ebi.intact.confidence.filter.SeqAlignFilter;
 import uk.ac.ebi.intact.confidence.model.Identifier;
 import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
 
@@ -41,28 +44,23 @@ public class InfoFiltering {
     private static GOAFilter filter = new GOAFilterMapImpl();
 
     @Deprecated
-    public static void filterGo (Set<ProteinAnnotation> proteinAnnotations){
+    public static void filterGo (Set<ProteinAnnotation> proteinAnnotations) throws FilterException {
          for ( Iterator<ProteinAnnotation> iter = proteinAnnotations.iterator(  ); iter.hasNext();){
              ProteinAnnotation pa = iter.next();
              Set<Identifier> gos = new HashSet<Identifier>( pa.getAnnotations() );
-             filterGO( gos );                                     // TODO: filter gos on collection
+             filter.filterGO( proteinAnnotations );                                     // TODO: filter gos on collection
              pa.setAnnotations( gos );
          }
     }
 
     public static void filterGO( Collection<ProteinAnnotation> proteinAnnotations, File goaFile) throws IOException, FilterException {
-        GOFilter.getInstance().initialize( goaFile );
-        GOFilter.getInstance().filterGO( proteinAnnotations );
+        filter.initialize( goaFile );
+        filter.filterGO( proteinAnnotations );
     }
 
     public static void filterGO( ProteinAnnotation proteinAnnotation, File goaFile ) throws IOException, FilterException {
         filter.initialize( goaFile );
         filter.filterGO( proteinAnnotation );
-    }
-
-    @Deprecated
-    public static void filterGO( Set<Identifier> gos ) {
-        GOFilter.filterForbiddenGOs( gos );
     }
 
     public static void filterBlastHits( Set<Identifier> uniprotAcs, File highConf ) throws FileNotFoundException {

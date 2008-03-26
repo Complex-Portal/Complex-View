@@ -15,9 +15,11 @@
  */
 package uk.ac.ebi.intact.confidence.main;
 
+import org.junit.Assert;
 import org.junit.Test;
 import uk.ac.ebi.intact.confidence.dataRetriever.uniprot.UniprotDataRetriever;
-import uk.ac.ebi.intact.confidence.filter.GOFilter;
+import uk.ac.ebi.intact.confidence.filter.GOAFilter;
+import uk.ac.ebi.intact.confidence.filter.GOAFilterMapImpl;
 import uk.ac.ebi.intact.confidence.global.GlobalTestData;
 import uk.ac.ebi.intact.confidence.model.*;
 import uk.ac.ebi.intact.confidence.model.io.BinaryInteractionAttributesWriter;
@@ -50,6 +52,7 @@ public class WorkFlowTest {
     public void testReadBinaryInts_writeAnno() throws Exception {
         BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
         File inFile = new File(WorkFlowTest.class.getResource( "conf_set.txt").getPath());
+         File goaFile = new File( WorkFlowTest.class.getResource( "goaTest.txt" ).getPath());
 
         File goOutFile = new File( GlobalTestData.getTargetDirectory(), "conf_set_go.txt");
         if (goOutFile.exists()){
@@ -62,19 +65,21 @@ public class WorkFlowTest {
             goAttribFile.delete();
         }
 
-        File gisFile = new File(GlobalTestData.getTargetDirectory(), "gis_model_out_txt");
+        File gisFile = new File(GlobalTestData.getTargetDirectory(), "gis_model_out.txt");
          if (gisFile.exists()){
             gisFile.delete();
         }
 
         Iterator<BinaryInteraction> birIter = bir.iterate( inFile);
+        GOAFilter filter = new GOAFilterMapImpl();
+         filter.initialize( goaFile );
         while(birIter.hasNext()){
             BinaryInteraction biInt = birIter.next();
             UniprotDataRetriever udr = new UniprotDataRetriever();
             Set<Identifier> gosA = udr.getGOs( biInt.getFirstId());
             Set<Identifier> gosB = udr.getGOs(biInt.getSecondId());
-            GOFilter.filterForbiddenGOs( gosA);
-            GOFilter.filterForbiddenGOs( gosB);
+            filter.filterGO( biInt.getFirstId(), gosA );
+            filter.filterGO(biInt.getSecondId(), gosB);
             ProteinAnnotation pA = new ProteinAnnotation( biInt.getFirstId(), gosA);
             ProteinAnnotation pB = new ProteinAnnotation( biInt.getSecondId(), gosB);
             //writing the annotation
@@ -90,12 +95,15 @@ public class WorkFlowTest {
             BinaryInteractionAttributesWriter biawGis = new GisAttributesWriterImpl();
             biawGis.append( biAttr, gisFile);
         }
+         Assert.assertTrue( goOutFile.exists() );
+         Assert.assertTrue( goAttribFile.exists() );
+         Assert.assertTrue( gisFile.exists() );
     }
 
-    @Test
-    public void givenLcAndHc_getAttribs() throws Exception {
-        
-    }
+//    @Test
+//    public void givenLcAndHc_getAttribs() throws Exception {
+//
+//    }
 
 
 }

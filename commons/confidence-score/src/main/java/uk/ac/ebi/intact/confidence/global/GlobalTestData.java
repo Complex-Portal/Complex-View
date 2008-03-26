@@ -8,14 +8,11 @@ package uk.ac.ebi.intact.confidence.global;
 import junit.framework.Assert;
 import org.apache.commons.collections.ListUtils;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.confidence.BinaryInteractionSet;
-import uk.ac.ebi.intact.confidence.ProteinPair;
 import uk.ac.ebi.intact.confidence.model.InteractionSimplified;
 import uk.ac.ebi.intact.confidence.model.ProteinSimplified;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,7 +33,6 @@ public class GlobalTestData {
 	private List<InteractionSimplified>	complexInteractions;
 	private List<InteractionSimplified>	compelxWithoutBaitInteractions;
 	private List<String>				binaryProteins;
-	private BinaryInteractionSet		binaryInteractionSet;
 
 	private GlobalTestData() {
 		initBinary();
@@ -117,10 +113,6 @@ public class GlobalTestData {
 		binaryProteins = Arrays.asList(comp1.getUniprotAc().getAcNr(), comp2.getUniprotAc().getAcNr(), comp3.getUniprotAc().getAcNr(), comp4
 				.getUniprotAc().getAcNr());
 		binaryInteractions = Arrays.asList(intS1, intS2);
-		ProteinPair pp1 = new ProteinPair("Q9W486", "P43609");
-		ProteinPair pp2 = new ProteinPair("P43609", "P12345");
-		Collection<ProteinPair> proteins = Arrays.asList(pp1, pp2);
-		binaryInteractionSet = new BinaryInteractionSet(proteins);
 	}
 
 	private void initComplex() {
@@ -169,13 +161,6 @@ public class GlobalTestData {
 
 	public List<String> getBinaryProteins() {
 		return ListUtils.unmodifiableList(binaryProteins);
-	}
-
-	/**
-	 * @return the binaryInteractionSet
-	 */
-	public BinaryInteractionSet getBinaryInteractionSet() {
-		return binaryInteractionSet;
 	}
 
 }

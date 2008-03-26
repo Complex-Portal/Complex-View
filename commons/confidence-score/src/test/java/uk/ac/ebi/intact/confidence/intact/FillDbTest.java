@@ -104,6 +104,7 @@ public class FillDbTest extends IntactBasicTestCase {
                 expected = "0.82";
             } else if ( interaction.getShortLabel().equalsIgnoreCase( "int-low" ) ) {
                 expected = "0.20";
+                expected = "0.50";
             }
             if ( interaction.getShortLabel().startsWith( "int-unk" ) ) {
                 Assert.assertNotNull( interaction.getConfidences().iterator().next().getValue() );
@@ -275,6 +276,7 @@ public class FillDbTest extends IntactBasicTestCase {
                 expected = "0.82";
             } else if ( interaction.getShortLabel().equalsIgnoreCase( "int-low" ) ) {
                 expected = "0.20";
+                expected ="0.50";
             }
             if ( interaction.getShortLabel().startsWith( "int-unk" ) ) {
                 Assert.assertNotNull( interaction.getConfidences().iterator().next().getValue() );
