@@ -174,7 +174,9 @@
   <context-param>
     <param-name>facelets.LIBRARIES</param-name>
     <param-value>/WEB-INF/intactview.taglib.xml;
-                /WEB-INF/intact-functions.taglib.xml</param-value>
+                /WEB-INF/intact-functions.taglib.xml;
+                /WEB-INF/extlinks.taglib.xml
+    </param-value>
   </context-param>
 
 

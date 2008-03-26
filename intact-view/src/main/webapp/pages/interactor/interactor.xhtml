@@ -13,6 +13,7 @@
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
     <ui:define name="additionalHeader">
@@ -22,36 +23,83 @@
     <!-- content -->
     <ui:define name="content">
 
-        <tr:panelHeader text="Interactor: #{interactorBean.currentInteractor.shortLabel}">
-            <tr:panelFormLayout maxColumns="1">
-                <tr:panelLabelAndMessage label="Molecule type:">
-                    <tr:outputText
-                            value="#{interactorBean.currentInteractor.cvInteractorType.shortLabel} (#{interactorBean.currentInteractor.cvInteractorType.miIdentifier})"/>
-                </tr:panelLabelAndMessage>
-                <tr:panelLabelAndMessage label="Short name:">
-                    <tr:outputText value="#{interactorBean.currentInteractor.shortLabel}"/>
-                </tr:panelLabelAndMessage>
-                <tr:panelLabelAndMessage label="Description:">
-                    <tr:outputText value="#{interactorBean.currentInteractor.fullName}"/>
-                </tr:panelLabelAndMessage>
-                <tr:panelLabelAndMessage label="Species:">
-                    <tr:outputText
-                            value="#{interactorBean.currentInteractor.bioSource.fullName} (#{interactorBean.currentInteractor.bioSource.taxId})"/>
-                </tr:panelLabelAndMessage>
-                <tr:panelLabelAndMessage label="IntAct AC:">
-                    <tr:outputText value="#{interactorBean.currentInteractor.ac}"/>
-                </tr:panelLabelAndMessage>
-                <tr:panelLabelAndMessage label="Primary DB Ref:">
-                    <tr:iterator var="idXref" value="#{iaf:getIdentityXrefs(interactorBean.currentInteractor)}">
-                        <tr:outputText value="#{idXref.primaryId} (#{idXref.cvDatabase.shortLabel})"/>
-                    </tr:iterator>
-                </tr:panelLabelAndMessage>
-            </tr:panelFormLayout>
+        <ui:param name="primaryId" value="#{iaf:getIdentityXrefs(interactorBean.currentInteractor)[0].primaryId}"/>
+        <ui:param name="geneName" value="#{iaf:getGeneName(interactorBean.currentInteractor)}"/>
 
-            <br/>
+        <tr:panelHeader text="Interactor: #{interactorBean.currentInteractor.shortLabel}">
+
+             <trh:tableLayout width="100%">
+
+                 <trh:cellFormat halign="left" valign="top" width="50%">
+                     <tr:panelFormLayout maxColumns="1">
+                         <tr:panelLabelAndMessage label="Molecule type:">
+                             <iax:goOls termName="#{interactorBean.currentInteractor.cvInteractorType.shortLabel}"
+                                        query="#{interactorBean.currentInteractor.cvInteractorType.miIdentifier}"/>
+                         </tr:panelLabelAndMessage>
+                         <tr:panelLabelAndMessage label="Short name:">
+                             <tr:outputText value="#{interactorBean.currentInteractor.shortLabel}"/>
+                         </tr:panelLabelAndMessage>
+                         <tr:panelLabelAndMessage label="Description:">
+                             <tr:outputText value="#{interactorBean.currentInteractor.fullName}"/>
+                         </tr:panelLabelAndMessage>
+                         <tr:panelLabelAndMessage label="Gene name:" rendered="#{geneName != null}">
+                             <tr:outputText value="#{geneName}"/>
+                         </tr:panelLabelAndMessage>
+                         <tr:panelLabelAndMessage label="Species:">
+                             <tr:outputText
+                                     value="#{interactorBean.currentInteractor.bioSource.fullName} (#{interactorBean.currentInteractor.bioSource.taxId})"/>
+                         </tr:panelLabelAndMessage>
+                         <tr:panelLabelAndMessage label="IntAct AC:">
+                             <tr:outputText value="#{interactorBean.currentInteractor.ac}"/>
+                         </tr:panelLabelAndMessage>
+                         <tr:panelLabelAndMessage label="Primary DB Ref:">
+                             <tr:iterator var="idXref"
+                                          value="#{iaf:getIdentityXrefs(interactorBean.currentInteractor)}">
+                                 <iax:goUniprot query="#{idXref.primaryId}"
+                                                disabled="#{!iaf:isFromUniprot(interactorBean.currentInteractor)}"
+                                                text="#{idXref.primaryId}"/>
+                                 <tr:outputText value=" (#{idXref.cvDatabase.shortLabel})"/>
+                             </tr:iterator>
+                         </tr:panelLabelAndMessage>
+                     </tr:panelFormLayout>
+
+                 </trh:cellFormat>
+                 <trh:cellFormat halign="right" valign="top">
+
+                     <tr:panelBox background="light" text="  Actions for #{primaryId}"
+                                  inlineStyle="width:90%"
+                                  rendered="#{iaf:isProtein(interactorBean.currentInteractor)}">
+                         <h:panelGrid columns="1">
+                             <iax:goBinarySearch text="Search it in Binary Search"
+                                            query="id:#{primaryId}"/>
+                         </h:panelGrid>
+                     </tr:panelBox>
+
+                 </trh:cellFormat>
+                 <trh:cellFormat halign="right" valign="top" >
+
+                     <tr:panelBox background="light" text="   External Resources"
+                                  icon="/images/external_link.gif" inlineStyle="width:90%"
+                                  rendered="#{iaf:isProtein(interactorBean.currentInteractor)}">
+                         <h:panelGrid columns="1">
+                             <h:outputText value="View in Ligand Plot"/>
+
+                             <iax:goIntepro text="View Domain Structure" 
+                                            query="#{primaryId}"/>
+                             <iax:goReactomeSkyPainter text="View in SkyPainter (Reactome)"
+                                                       query="#{primaryId}"/>
+
+
+                         </h:panelGrid>
+                     </tr:panelBox>
+
+                 </trh:cellFormat>
+             </trh:tableLayout>
+
+             <br/>
 
             <tr:panelTabbed position="above">
-                <tr:showDetailItem text="Details">
+                <tr:showDetailItem text="Features">
                     <br/>
                     <iav:dasty query="#{iaf:getIdentifierForDasty(interactorBean.currentInteractor)}"
                                label="BioSapiens"/>
@@ -80,7 +128,7 @@
                         <tr:panelGroupLayout layout="vertical"
                                              rendered="#{interactorBean.currentInteractorWrapped.interactions.rowCount lt 500}">
                             <tr:outputText
-                                    value="This figure is a graphical representation of the interactions shown in the above table. Click on the image for more details."/>
+                                    value="This figure is a graphical representation of the interactions shown in the above table, after being expanded to binary interactions using the Spoke model. Click on the image for more details."/>
 
                             <br/>
 
@@ -97,8 +145,12 @@
                     </tr:panelHeader>
                 </tr:showDetailItem>
 
-                <tr:showDetailItem text="Cross References (#{fn:length(interactorBean.currentInteractor.xrefs)})">
+                <tr:showDetailItem text="Cross References (#{fn:length(interactorBean.currentInteractor.xrefs)})" disclosed="true">
                     <br/>
+                    <tr:outputText
+                         value="The following section shows the cross reference information stored in our database about #{primaryId}."/>
+
+                     <br/><br/>
 
                     <iav:panelCategory id="xrefPanel1" var="xrefs" value="#{iaf:toXrefCategoryModel(interactorBean.currentInteractor.xrefs)}">
                         <iav:panelCategoryColumn>

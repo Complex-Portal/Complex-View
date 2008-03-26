@@ -50,4 +50,40 @@
         <function-signature>org.joda.time.DateTime toDateTime(java.lang.Long)</function-signature>
     </function>
 
+    <function>
+        <function-name>isProtein</function-name>
+        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-signature>boolean isProtein(uk.ac.ebi.intact.model.Interactor)</function-signature>
+    </function>
+
+    <function>
+        <function-name>isNucleicAcid</function-name>
+        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-signature>boolean isNucleicAcid(uk.ac.ebi.intact.model.Interactor)</function-signature>
+    </function>
+
+    <function>
+        <function-name>isSmallMolecule</function-name>
+        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-signature>boolean isSmallMolecule(uk.ac.ebi.intact.model.Interactor)</function-signature>
+    </function>
+
+    <function>
+        <function-name>getUniprotXref</function-name>
+        <function-class>uk.ac.ebi.intact.model.util.ProteinUtils</function-class>
+        <function-signature>uk.ac.ebi.intact.model.InteractorXref getUniprotXref(uk.ac.ebi.intact.model.Protein)</function-signature>
+    </function>
+
+    <function>
+        <function-name>isFromUniprot</function-name>
+        <function-class>uk.ac.ebi.intact.model.util.ProteinUtils</function-class>
+        <function-signature>boolean isFromUniprot(uk.ac.ebi.intact.model.Protein)</function-signature>
+    </function>
+
+    <function>
+        <function-name>getGeneName</function-name>
+        <function-class>uk.ac.ebi.intact.model.util.ProteinUtils</function-class>
+        <function-signature>java.lang.String getGeneName(uk.ac.ebi.intact.model.Interactor)</function-signature>
+    </function>
+
 </facelet-taglib>

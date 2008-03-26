@@ -132,5 +132,17 @@ public final class Functions {
     public static DateTime toDateTime(Long dateInTimeMillis) {
         return new DateTime(dateInTimeMillis);
     }
+
+    public static boolean isProtein(Interactor interactor) {
+        return (interactor instanceof Protein);
+    }
+
+    public static boolean isSmallMolecule(Interactor interactor) {
+        return (interactor instanceof SmallMolecule);
+    }
+
+    public static boolean isNucleicAcid(Interactor interactor) {
+        return (interactor instanceof NucleicAcid);
+    }
     
 }

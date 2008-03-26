@@ -6,6 +6,7 @@
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:ebi="http://ebi.ac.uk/faces/components">
 
     <tr:table binding="#{binding}"
@@ -29,7 +30,8 @@
                   <tr:outputText value="#{ao.fullName}"/>
               </tr:column>
               <tr:column headerText="Type" sortable="true" sortProperty="cvInteractorType">
-                  <tr:outputText value="#{ao.cvInteractorType.shortLabel} (#{ao.cvInteractorType.miIdentifier})"/>
+                  <iax:goOls termName="#{ao.cvInteractorType.shortLabel}"
+                      query="#{ao.cvInteractorType.miIdentifier}"/>
               </tr:column>
               <tr:column headerText="Gene Name" sortable="true" sortProperty="aliases">
                   <tr:outputText value="#{ao.geneName}"/>

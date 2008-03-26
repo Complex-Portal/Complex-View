@@ -6,11 +6,12 @@
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:ebi="http://ebi.ac.uk/faces/components">
 
     <tr:table binding="#{binding}"
                     var="ao" value="#{values}"
-                    rowBandingInterval="1" rowSelection="multiple" rows="25"
+                    rowBandingInterval="1" rowSelection="#{(rowSelection != null)? rowSelection : 'none'}" rows="25"
                     emptyText="No interactions shown.">
 
             <f:facet name="footer">
@@ -29,7 +30,9 @@
                   <tr:outputText value="#{ao.fullName}"/>
               </tr:column>
               <tr:column headerText="Experiment" sortable="true" sortProperty="experiments">
-                  <tr:outputText value="#{ao.experiments[0].shortLabel}"/>
+                   <h:commandLink value="#{ao.experiments[0].shortLabel}" action="experiment" >
+                      <f:param name="experimentAc" value="#{ao.experiments[0].ac}"/>
+                  </h:commandLink>
               </tr:column>
               <tr:column headerText="Interactors" >
                   <tr:outputText value="#{ao.interactorCount}"/>

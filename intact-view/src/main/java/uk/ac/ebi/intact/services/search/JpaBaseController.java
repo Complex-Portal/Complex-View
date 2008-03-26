@@ -28,15 +28,15 @@ public abstract class JpaBaseController extends BaseController implements Conver
 
     public void valueBound(ConversationBindingEvent event) {
         if (log.isDebugEnabled()) log.debug("Conversation event (value bound): conversation="+event.getConversation().getName()+", name="+event.getName());
-        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+       // IntactContext.getCurrentInstance().getDataContext().beginTransaction();
     }
 
     public void valueUnbound(ConversationBindingEvent event) {
         if (log.isDebugEnabled()) log.debug("Conversation event (value unbound): conversation="+event.getConversation().getName()+", name="+event.getName());
-        try {
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
-        } catch (IntactTransactionException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+//        } catch (IntactTransactionException e) {
+//            e.printStackTrace();
+//        }
     }
 }

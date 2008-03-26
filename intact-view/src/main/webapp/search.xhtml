@@ -10,6 +10,7 @@
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 template="WEB-INF/facelets/layout/template.xhtml">
 
 <!-- content -->
@@ -166,10 +167,12 @@
                   <tr:outputText value="#{ao.fullName}"/>
               </tr:column>
               <tr:column headerText="Detection Method" sortable="true" sortProperty="cvIdentification">
-                  <tr:outputText value="#{ao.cvIdentification.shortLabel} (#{ao.cvIdentification.miIdentifier})"/>
+                  <iax:goOls termName="#{ao.cvIdentification.shortLabel}"
+                              query="#{ao.cvIdentification.miIdentifier}"/>
               </tr:column>
               <tr:column headerText="Interaction Type" sortable="true" sortProperty="cvInteraction">
-                  <tr:outputText value="#{ao.cvInteraction.shortLabel} (#{ao.cvInteraction.miIdentifier})"/>
+                  <iax:goOls termName="#{ao.cvInteraction.shortLabel}"
+                              query="#{ao.cvInteraction.miIdentifier}"/>
               </tr:column>
               <tr:column headerText="Organism" sortable="true" sortProperty="bioSource">
                   <tr:outputText value="#{ao.bioSource.shortLabel} (#{ao.bioSource.taxId})"/>

@@ -13,6 +13,7 @@
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
     <!-- content -->
@@ -21,13 +22,13 @@
         <tr:panelHeader text="Interaction: #{interactionBean.currentInteraction.shortLabel}">
             <tr:panelFormLayout maxColumns="1">
                 <tr:panelLabelAndMessage label="Interaction type:">
-                    <tr:outputText
-                            value="#{interactionBean.currentInteraction.cvInteractionType.shortLabel} (#{interactionBean.currentInteraction.cvInteractionType.miIdentifier})"/>
+                    <iax:goOls termName="#{interactionBean.currentInteraction.cvInteractionType.shortLabel}"
+                               query="#{interactionBean.currentInteraction.cvInteractionType.miIdentifier}"/>
                 </tr:panelLabelAndMessage>
                 <tr:panelLabelAndMessage label="Short name:">
                     <tr:outputText value="#{interactionBean.currentInteraction.shortLabel}"/>
                 </tr:panelLabelAndMessage>
-                <tr:panelLabelAndMessage label="Description:">
+                <tr:panelLabelAndMessage label="Description:" rendered="#{interactionBean.currentInteraction.fullName != null}">
                     <tr:outputText value="#{interactionBean.currentInteraction.fullName}"/>
                 </tr:panelLabelAndMessage>
                 <tr:panelLabelAndMessage label="IntAct AC:">
@@ -58,7 +59,7 @@
                                 </h:commandLink>
                             </tr:column>
                             <tr:column headerText="Description">
-                                <tr:outputText value="#{ao.interactor.fullName}"/>
+                                <tr:outputText value="#{ao.interactor.fullName}."/>
                             </tr:column>
                             <tr:column headerText="Type">
                                 <tr:outputText
@@ -120,7 +121,8 @@
 
                 </tr:showDetailItem>
 
-                <tr:showDetailItem text="Annotations (#{fn:length(interactionBean.currentInteraction.annotations)})">
+                <tr:showDetailItem text="Annotations (#{fn:length(interactionBean.currentInteraction.annotations)})"
+                        disabled="#{fn:length(interactionBean.currentInteraction.annotations) == 0}">
                     <tr:panelHeader text="Annotations">
                            <tr:table var="annot" value="#{interactionBean.currentInteraction.annotations}">
                                <tr:column headerText="Topic">
@@ -134,7 +136,8 @@
 
                 </tr:showDetailItem>
 
-                <tr:showDetailItem text="Cross References (#{fn:length(interactionBean.currentInteraction.xrefs)})">
+                <tr:showDetailItem text="Cross References (#{fn:length(interactionBean.currentInteraction.xrefs)})"
+                        disabled="#{fn:length(interactionBean.currentInteraction.xrefs) == 0}">
                       <br/>
 
                     <iav:panelCategory id="xrefPanel1" var="xrefs" value="#{iaf:toXrefCategoryModel(interactionBean.currentInteraction.xrefs)}">
