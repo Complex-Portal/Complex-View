@@ -18,7 +18,7 @@
     <!-- content -->
     <ui:define name="content">
 
-        <tr:panelHeader text="Interaction: #{experimentBean.currentExperiment.shortLabel}">
+        <tr:panelHeader text="Experiment: #{experimentBean.currentExperiment.shortLabel}">
             <tr:panelFormLayout maxColumns="1">
                 <tr:panelLabelAndMessage label="Short name:">
                     <tr:outputText value="#{experimentBean.currentExperiment.shortLabel}"/>
@@ -61,7 +61,7 @@
 
                             <br/>
 
-                            <iav:imageHierarchView query="#{experimentBean.currentExperiment.shortLabel}"/>
+                            <iav:imageHierarchView query="#{experimentBean.currentExperiment.publication.shortLabel}"/>
 
                         </tr:panelGroupLayout>
 

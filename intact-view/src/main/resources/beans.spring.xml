@@ -12,16 +12,16 @@
 
 
     <bean id="searchBean" class="uk.ac.ebi.intact.services.search.controller.SearchController"
-          scope="conversation.manual"
+          scope="conversation.access"
           orchestra:conversationName="general"/>
     <bean id="interactorBean" class="uk.ac.ebi.intact.services.search.controller.interactor.InteractorController"
-          scope="conversation.manual"
+          scope="conversation.access"
           orchestra:conversationName="general"/>
     <bean id="interactionBean" class="uk.ac.ebi.intact.services.search.controller.interaction.InteractionController"
-          scope="conversation.manual"
+          scope="conversation.access"
           orchestra:conversationName="general"/>
     <bean id="experimentBean" class="uk.ac.ebi.intact.services.search.controller.experiment.ExperimentController"
-          scope="conversation.manual"
+          scope="conversation.access"
           orchestra:conversationName="general"/>
 
     <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->

@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.services.search.JpaBaseController;
@@ -32,7 +33,7 @@ public class ExperimentController extends JpaBaseController {
 
     }
 
-    @InitView
+    @PreRenderView
     public void loadViewFromParameter() {
         String acParam = getParameterValue("ac", "experimentAc");
 

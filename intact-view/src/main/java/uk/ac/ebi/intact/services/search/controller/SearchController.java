@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.conversation.ConversationUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.svc.SearchService;
@@ -38,7 +39,7 @@ public class SearchController extends JpaBaseController {
         this.resultStats = new ResultStats();
     }
 
-    @InitView
+    @PreRenderView
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();
         String queryParam = context.getExternalContext().getRequestParameterMap().get("query");
