@@ -42,10 +42,10 @@
                          <tr:panelLabelAndMessage label="Description:">
                              <tr:outputText value="#{interactorBean.currentInteractor.fullName}"/>
                          </tr:panelLabelAndMessage>
-                         <tr:panelLabelAndMessage label="Gene name:" rendered="#{geneName != null}">
+                         <tr:panelLabelAndMessage label="Gene name:" rendered="#{geneName != null and iaf:isProtein(interactorBean.currentInteractor)}">
                              <tr:outputText value="#{geneName}"/>
                          </tr:panelLabelAndMessage>
-                         <tr:panelLabelAndMessage label="Species:">
+                         <tr:panelLabelAndMessage label="Species:" rendered="#{interactorBean.currentInteractor.bioSource != null}">
                              <tr:outputText
                                      value="#{interactorBean.currentInteractor.bioSource.fullName} (#{interactorBean.currentInteractor.bioSource.taxId})"/>
                          </tr:panelLabelAndMessage>
@@ -56,8 +56,7 @@
                              <tr:iterator var="idXref"
                                           value="#{iaf:getIdentityXrefs(interactorBean.currentInteractor)}">
                                  <iax:goUniprot query="#{idXref.primaryId}"
-                                                disabled="#{!iaf:isFromUniprot(interactorBean.currentInteractor)}"
-                                                text="#{idXref.primaryId}"/>
+                                                disabled="#{iaf:getUniprotXref(interactorBean.currentInteractor) == null}"/>
                                  <tr:outputText value=" (#{idXref.cvDatabase.shortLabel})"/>
                              </tr:iterator>
                          </tr:panelLabelAndMessage>

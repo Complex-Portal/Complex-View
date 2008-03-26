@@ -71,13 +71,7 @@
     <function>
         <function-name>getUniprotXref</function-name>
         <function-class>uk.ac.ebi.intact.model.util.ProteinUtils</function-class>
-        <function-signature>uk.ac.ebi.intact.model.InteractorXref getUniprotXref(uk.ac.ebi.intact.model.Protein)</function-signature>
-    </function>
-
-    <function>
-        <function-name>isFromUniprot</function-name>
-        <function-class>uk.ac.ebi.intact.model.util.ProteinUtils</function-class>
-        <function-signature>boolean isFromUniprot(uk.ac.ebi.intact.model.Protein)</function-signature>
+        <function-signature>uk.ac.ebi.intact.model.InteractorXref getUniprotXref(uk.ac.ebi.intact.model.Interactor)</function-signature>
     </function>
 
     <function>

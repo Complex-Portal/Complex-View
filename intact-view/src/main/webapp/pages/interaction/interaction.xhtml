@@ -34,6 +34,9 @@
                 <tr:panelLabelAndMessage label="IntAct AC:">
                     <tr:outputText value="#{interactionBean.currentInteraction.ac}"/>
                 </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="CRC:">
+                    <tr:outputText value="#{interactionBean.currentInteraction.crc}"/>
+                </tr:panelLabelAndMessage>
             </tr:panelFormLayout>
 
             <br/>
@@ -62,8 +65,16 @@
                                 <tr:outputText value="#{ao.interactor.fullName}."/>
                             </tr:column>
                             <tr:column headerText="Type">
-                                <tr:outputText
-                                        value="#{ao.interactor.cvInteractorType.shortLabel} (#{ao.interactor.cvInteractorType.miIdentifier})"/>
+                                <iax:goOls termName="#{ao.interactor.cvInteractorType.shortLabel}"
+                                            query="#{ao.interactor.cvInteractorType.miIdentifier}"/>
+                            </tr:column>
+                            <tr:column headerText="Biological role">
+                                 <iax:goOls termName="#{ao.cvBiologicalRole.shortLabel}"
+                                            query="#{ao.cvBiologicalRole.miIdentifier}"/>
+                            </tr:column>
+                            <tr:column headerText="Experimental role">
+                                 <iax:goOls termName="#{ao.cvExperimentalRole.shortLabel}"
+                                            query="#{ao.cvExperimentalRole.miIdentifier}"/>
                             </tr:column>
                             <tr:column headerText="Features">
                                 <tr:outputText
@@ -90,13 +101,15 @@
                                         <f:facet name="header">
                                             <tr:outputText value="Feature Type"/>
                                         </f:facet>
-                                        <tr:outputText value="#{feature.cvFeatureType.shortLabel} (#{feature.cvFeatureType.miIdentifier})"/>
+                                        <iax:goOls termName="#{feature.cvFeatureType.shortLabel}"
+                                                   query="#{feature.cvFeatureType.miIdentifier}"/>
                                     </tr:column>
                                     <tr:column>
                                         <f:facet name="header">
                                             <tr:outputText value="Feature Detection"/>
                                         </f:facet>
-                                        <tr:outputText value="#{feature.cvFeatureIdentification.shortLabel} (#{feature.cvFeatureIdentification.miIdentifier})"/>
+                                        <iax:goOls termName="#{feature.cvFeatureIdentification.shortLabel}"
+                                                   query="#{feature.cvFeatureIdentification.miIdentifier}"/>
                                     </tr:column>
                                 </tr:table>
                             </f:facet>

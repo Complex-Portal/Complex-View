@@ -116,7 +116,7 @@
           <ui:decorate template="pages/interaction/interaction_table.xhtml">
               <ui:define name="footer">
                   <tr:panelGroupLayout layout="vertical">
-                      <h:commandLink value="View selected in HierarchView"
+                      <h:commandLink value="View selected in HierarchView" onclick="alert('Not implemented')"
                                      actionListener="#{interactionResultsBean.exportSelectedToHierarchView}"/>
                   </tr:panelGroupLayout>
               </ui:define>
@@ -135,9 +135,9 @@
           <ui:decorate template="/pages/interactor/interactor_table.xhtml">
               <ui:define name="footer">
                   <tr:panelGroupLayout layout="vertical">
-                    <h:commandLink value="View selected to HierarchView"
+                    <h:commandLink value="View selected in HierarchView" onclick="alert('Not implemented')"
                                       actionListener="#{interactorResultsBean.exportSelectedToHierarchView}"/>
-                    <h:commandLink value="View selected in InterPro"
+                    <h:commandLink value="View selected in InterPro" onclick="alert('Not implemented')"
                                       actionListener="#{interactorResultsBean.exportSelectedToInterPro}"/>
                 </tr:panelGroupLayout>
               </ui:define>

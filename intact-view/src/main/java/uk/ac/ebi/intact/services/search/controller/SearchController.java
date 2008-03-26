@@ -71,11 +71,7 @@ public class SearchController extends JpaBaseController {
             }
 
             // if the search class is interactor, search with the interactor subtypes excluding the interaction
-            if (InteractorImpl.class.isAssignableFrom(searchClass) && !Interaction.class.isAssignableFrom(searchClass)) { 
-                this.searchResults = new SearchResultDataModel(new Class[] {ProteinImpl.class, SmallMoleculeImpl.class, NucleicAcidImpl.class}, searchQuery);
-            } else {
-                this.searchResults = new SearchResultDataModel(new Class[] {searchClass}, searchQuery);
-            }
+            this.searchResults = new SearchResultDataModel(new Class[] {searchClass}, searchQuery);
 
         } else { // count
             if (log.isDebugEnabled()) log.debug("Counting results for query: "+searchQuery);

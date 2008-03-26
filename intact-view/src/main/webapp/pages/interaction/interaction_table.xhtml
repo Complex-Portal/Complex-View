@@ -29,6 +29,10 @@
               <tr:column headerText="Description" sortable="true" sortProperty="fullName">
                   <tr:outputText value="#{ao.fullName}"/>
               </tr:column>
+              <tr:column headerText="Interaction Type">
+                  <iax:goOls termName="#{ao.data.cvInteractionType.shortLabel}"
+                               query="#{ao.data.cvInteractionType.miIdentifier}"/>
+              </tr:column>
               <tr:column headerText="Experiment" sortable="true" sortProperty="experiments">
                    <h:commandLink value="#{ao.experiments[0].shortLabel}" action="experiment" >
                       <f:param name="experimentAc" value="#{ao.experiments[0].ac}"/>
