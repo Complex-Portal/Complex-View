@@ -385,10 +385,14 @@ af|column::cell-text-band a.OraLink {
 
 af|breadCrumbs {
     color: #999999;
+    display:inline;
+    margin:0;
+    padding:0 0 0 2px;
 }
 
 af|breadCrumbs::step {
     font-size: 8pt;
+    font-weight:normal;
     color: #999999;
     text-decoration: none;
 }

@@ -13,6 +13,24 @@
 
                 template="template-ebi.xhtml">
 
+    <ui:define name="breadcrumbs">
+        
+        <!--<tr:breadCrumbs >-->
+            <!--<tr:commandNavigationItem text="EBI" destination="http://www.ebi.ac.uk/"/>-->
+            <!--<tr:commandNavigationItem text="Databases" destination="http://www.ebi.ac.uk/Databases"/>-->
+            <!--<tr:commandNavigationItem text="Pathways &amp; Networks" destination="http://www.ebi.ac.uk/Databases/pathways.html"/>-->
+            <!--<tr:commandNavigationItem text="IntAct" destination="http://www.ebi.ac.uk/intact" />-->
+            <!--<tr:commandNavigationItem text="View" destination="/" />-->
+          <!--</tr:breadCrumbs>-->
+        <div class="breadcrumbs">
+            <a class="firstbreadcrumb" href="http://www.ebi.ac.uk/">EBI</a>
+            <a href="http://www.ebi.ac.uk/Databases">Databases</a>
+            <a href="http://www.ebi.ac.uk/Databases/pathways.html">Pathways &amp; Networks</a>
+            <a href="http://www.ebi.ac.uk/intact">IntAct</a>
+            <a href="#{ebisf:absoluteContextPath()}">View</a>
+        </div>
+    </ui:define>
+
     <ui:define name="sidebar">
 
         <h:outputLink value="http://www.ebi.ac.uk/intact">
