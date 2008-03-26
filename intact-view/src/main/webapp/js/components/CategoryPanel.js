@@ -55,7 +55,7 @@ dojo.declare("ebi.intact.CategoryGroupComp", null, {
     },
 
     updateState: function() {
-        this.headerDiv.innerHTML = (this.expanded)? '-' : '+';
+        this.headerDiv.innerHTML = escapeHTML((this.expanded)? '-' : '+');
         this.contentDiv.style.display = (this.expanded)? 'block' : 'none';
     },
 
@@ -83,7 +83,13 @@ dojo.declare("ebi.intact.CategoryGroupComp", null, {
 
     addItemCount: function(count) {
         this.itemCount += count;
-        this.countDiv.innerHTML = String(this.itemCount);
+        this.countDiv.innerHTML = escapeHTML(String(this.itemCount));
     }
 });
 
+function escapeHTML(someText) {
+  var div = document.createElement('div');
+  var text = document.createTextNode(someText);
+  div.appendChild(text);
+  return div.innerHTML;
+}
