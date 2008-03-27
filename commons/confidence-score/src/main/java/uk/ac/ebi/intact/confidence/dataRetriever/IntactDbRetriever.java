@@ -7,8 +7,6 @@ package uk.ac.ebi.intact.confidence.dataRetriever;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.business.IntactTransactionException;
@@ -23,7 +21,6 @@ import uk.ac.ebi.intact.confidence.model.io.ProteinSimplifiedWriter;
 import uk.ac.ebi.intact.confidence.model.io.impl.CompactInteractionSWriterImpl;
 import uk.ac.ebi.intact.confidence.model.io.impl.ProteinSimplifiedWriterImpl;
 import uk.ac.ebi.intact.confidence.utils.IntactUtils;
-import uk.ac.ebi.intact.config.impl.AbstractHibernateDataConfig;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
@@ -157,13 +154,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         } catch ( Exception e ) {
             throw new DataRetrieverException( e);
         }
-
-        //Todo:implement change body of implemented methods use File | Settings | File Templates.
     }
-
-//    public void retrieveHighConfidenceSet( List<BinaryInteraction> binaryInts, List<ProteinAnnotation> annotations ) {
-//        //TODO: implement it
-//    }
 
     // //////////////////
     // // Public method(s).
@@ -239,134 +230,6 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
 
         return interactions;
     }
-
-//    /**
-//     * retrieves the medium confidence set, which is defined by all the
-//     * interactions in IntAct which do not belong to the high confidence set, or
-//     * the low confidence set (sets defined through curators)
-//     *
-//     * @param mcWriter, hcWriter
-//     * @return List {@link InteractionSimplified}
-//     * @throws DataRetrieverException
-//     */
-//    public List<InteractionSimplified> readMediumConfidenceSet( Writer mcWriter, Writer hcWriter )
-//            throws DataRetrieverException {
-//        highConfidenceSet = new ArrayList<InteractionSimplified>();
-//        List<InteractionSimplified> medconf = new ArrayList<InteractionSimplified>();
-//
-//        Set<UniprotAc> medconfProteins = new HashSet<UniprotAc>();
-//        Set<UniprotAc> highconfProteins = new HashSet<UniprotAc>();
-//
-//        // File ipFile = new File(workDir, "medconf_db_ip.txt");
-//        // File goFile = new File(workDir, "medconf_db_go.txt");
-//        // File seqFile = new File(workDir, "medconf_db_seq.txt");
-//        Writer ipMcWriter = null;
-//        Writer goMcWriter = null;
-//        Writer seqMcWriter = null;
-//
-//        Writer ipHcWriter = null;
-//        Writer goHcWriter = null;
-//        Writer seqHcWriter = null;
-//        try {
-//
-//            if ( mcWriter == null ) {
-//                mcWriter = new FileWriter( new File( workDir, "medconf_all.txt" ) );
-//            }
-//
-//            ipMcWriter = new FileWriter( new File( workDir, "medconf_db_ip.txt" ) );
-//            goMcWriter = new FileWriter( new File( workDir, "medconf_db_go.txt" ) );
-//            seqMcWriter = new FileWriter( new File( workDir, "medconf_db_seq.txt" ) );
-//
-//            if ( hcWriter == null ) {
-//                hcWriter = new FileWriter( new File( workDir, "highconf_all.txt" ) );
-//            }
-//            ipHcWriter = new FileWriter( new File( workDir, "highconf_db_ip.txt" ) );
-//            goHcWriter = new FileWriter( new File( workDir, "highconf_db_go.txt" ) );
-//            seqHcWriter = new FileWriter( new File( workDir, "highconf_db_seq.txt" ) );
-//        } catch ( IOException e ) {
-//            throw new DataRetrieverException( e );
-//        }
-//
-//        InteractionDao interactionDao = daoFactory.getInteractionDao();
-//
-//        int totalNr = 0;
-//        // only for test purpose
-//
-//        beginTransaction();
-//        totalNr = interactionDao.countAll();
-//        if ( log.isInfoEnabled() ) {
-//            log.info( "\tGoing to process: " + totalNr );
-//        }
-//        endTransaction();
-//
-//        if ( dbNrForTest ) {
-//            totalNr = 10; // TODO: ask it there is a more elegant way
-//        }
-//
-//        int firstResult = 0;
-//        final int maxResults = 50;
-//
-//        List<InteractionImpl> interactions = null;
-//        for ( int i = 0; i < totalNr; i += 50 ) {
-//            // do {
-//            beginTransaction();
-//            interactionDao = daoFactory.getInteractionDao();
-//            interactions = interactionDao.getAll( firstResult, maxResults );
-//
-//            medconf = checkInteractions( interactions );
-//
-//            if ( log.isInfoEnabled() ) {
-//                log.info( "\t\tProcessed medium confidence " + medconf.size() );
-//            }
-//
-//            // exports medium confidence set
-//            medconf = dataMethods.expand( medconf, expansionStrategy );
-//            dataMethods.export( medconf, mcWriter, true );
-//            Set<ProteinSimplified> newProts = getNewProteinList( medconf, medconfProteins );
-//            dataMethods.exportInterPro( newProts, ipMcWriter );
-//            dataMethods.exportGO( newProts, goMcWriter );
-//            dataMethods.exportSeq( newProts, seqMcWriter );
-//            medconfProteins.addAll( getUniprotAc( newProts ) );
-//
-//            // exports high confidence set
-//            if ( highConfidenceSet.size() != 0 ) {
-//                highConfidenceSet = dataMethods.expand( highConfidenceSet, expansionStrategy );
-//                dataMethods.export( highConfidenceSet, hcWriter, true );
-//                newProts = getNewProteinList( highConfidenceSet, highconfProteins );
-//                dataMethods.exportInterPro( newProts, ipHcWriter );
-//                dataMethods.exportGO( newProts, goHcWriter );
-//                dataMethods.exportSeq( newProts, seqHcWriter );
-//                highconfProteins.addAll( getUniprotAc( newProts ) );
-//                highConfidenceSet.clear();
-//            }
-//
-//            if ( log.isInfoEnabled() ) {
-//                int processed = firstResult + interactions.size();
-//
-//                if ( firstResult != processed ) {
-//                    log.info( "\t\tProcessed " + ( firstResult + interactions.size() ) );
-//                }
-//            }
-//            endTransaction();
-//            firstResult = firstResult + maxResults;
-//
-//        }// while (!interactions.isEmpty());
-//
-//        try {
-//            mcWriter.close();
-//            ipMcWriter.close();
-//            goMcWriter.close();
-//            seqMcWriter.close();
-//
-//            hcWriter.close();
-//            ipHcWriter.close();
-//            goHcWriter.close();
-//            seqHcWriter.close();
-//        } catch ( IOException e ) {
-//            throw new DataRetrieverException( e );
-//        }
-//        return medconf;
-//    }
 
     public void readConfidences( Report report ) { //File hcFile, File mcFile) throws Exception {
         cleanIfExists( report.getHighconfFile() );
@@ -539,29 +402,6 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         fileName = fileName.substring( 0, i );
         return fileName;
     }
-
-
-//    private Set<UniprotAc> getUniprotAc( Set<ProteinSimplified> newProts ) {
-//        Set<UniprotAc> prots = new HashSet<UniprotAc>( newProts.size() );
-//        for ( ProteinSimplified proteinSimplified : newProts ) {
-//            prots.add( proteinSimplified.getUniprotAc() );
-//        }
-//        return prots;
-//    }
-
-//    private Set<ProteinSimplified> getNewProteinList( List<InteractionSimplified> interactions,
-//                                                      Set<UniprotAc> alreadyProcessed ) {
-//        Set<ProteinSimplified> newProteins = new HashSet<ProteinSimplified>();
-//        for ( InteractionSimplified interaction : interactions ) {
-//            List<ProteinSimplified> prots = interaction.getComponents();
-//            for ( ProteinSimplified protein : prots ) {
-//                if ( !alreadyProcessed.contains( protein.getUniprotAc() ) ) {
-//                    newProteins.add( protein );
-//                }
-//            }
-//        }
-//        return newProteins;
-//    }
 
     private void beginTransaction() {
         IntactContext.getCurrentInstance().getDataContext().beginTransaction();
@@ -915,14 +755,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         proteinS.setInterProSet( IntactUtils.getIPs( daoFactory, protein ) );
         
         return proteinS;
-    }
-
-    private static Session getSession() {
-        AbstractHibernateDataConfig abstractHibernateDataConfig = ( AbstractHibernateDataConfig ) IntactContext
-                .getCurrentInstance().getConfig().getDefaultDataConfig();
-        SessionFactory factory = abstractHibernateDataConfig.getSessionFactory();
-        return factory.getCurrentSession();
-    }
+    }  
 
     /**
      * @param dbNrForTest the dbNrForTest to set

@@ -195,7 +195,7 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
                 double[] scores = model.evaluate( attribs );
                 String value = df.format( scores[classifier.getIndex( "high" )] );
                 if (log.isTraceEnabled()){
-                    log.trace("interaction(" + interaction.getAc()+") + attribus(" + printAttribs(attribs) +") => score = " + value );
+                    log.trace("interaction(" + interaction.getAc()+") + attribute(" + printAttribs(attribs) +") => score = " + value );
                 }
                 if (override && confidencePresent){
                     Confidence conf  = getConfidence(interaction);
@@ -235,13 +235,21 @@ public class IntactConfidenceCalculator implements IntactScoreCalculator{
     }
 
     private Confidence getConfidence( InteractionImpl interaction ) {
+        Confidence intactConf = null;
+        int count =0;
         for ( Iterator<Confidence> iter = interaction.getConfidences().iterator(); iter.hasNext(); ) {
             Confidence confidence =  iter.next();
             if (confidence.getCvConfidenceType().getShortLabel().equalsIgnoreCase( cvConfidenceType.getShortLabel() )){
-                return confidence;
+                if (intactConf == null){
+                    intactConf = confidence;
+                }
+                count++;
             }
         }
-        return null;
+        if (count > 1 && log.isWarnEnabled()){
+            log.warn("More than only one confidence (" + cvConfidenceType + ") found for interaction: " + interaction.getAc() +" !");    
+        }
+        return intactConf;
     }
 
     private boolean confidenceExists( InteractionImpl interaction ) {
