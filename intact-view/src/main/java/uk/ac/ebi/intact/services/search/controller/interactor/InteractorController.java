@@ -31,6 +31,9 @@ public class InteractorController extends JpaBaseController {
 
     private UIComponent interactionsTable;
 
+    private int pdbImageSize = 500;
+    private String pdbDisplay = "bio";
+
     public InteractorController() {
 
     }
@@ -71,5 +74,21 @@ public class InteractorController extends JpaBaseController {
 
     public void setCurrentInteractorWrapped(InteractorWrapper currentInteractorWrapped) {
         this.currentInteractorWrapped = currentInteractorWrapped;
+    }
+
+    public int getPdbImageSize() {
+        return pdbImageSize;
+    }
+
+    public void setPdbImageSize(int pdbImageSize) {
+        this.pdbImageSize = pdbImageSize;
+    }
+
+    public String getPdbDisplay() {
+        return pdbDisplay;
+    }
+
+    public void setPdbDisplay(String pdbDisplay) {
+        this.pdbDisplay = pdbDisplay;
     }
 }

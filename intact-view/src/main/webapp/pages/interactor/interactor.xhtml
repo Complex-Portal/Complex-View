@@ -25,6 +25,7 @@
 
         <ui:param name="primaryId" value="#{iaf:getIdentityXrefs(interactorBean.currentInteractor)[0].primaryId}"/>
         <ui:param name="geneName" value="#{iaf:getGeneName(interactorBean.currentInteractor)}"/>
+        <ui:param name="pdbXrefs" value="#{iaf:getXrefsFilteredByDatabase(interactorBean.currentInteractor, 'MI:0460')}"/>
 
         <tr:panelHeader text="Interactor: #{interactorBean.currentInteractor.shortLabel}">
 
@@ -343,12 +344,12 @@
                                     <tr:outputText value="#{xref.secondaryId}"/>
                                 </tr:column>
                                 <tr:column headerText="Qualifier">
-                                    <tr:outputText
-                                            value="#{xref.cvXrefQualifier.shortLabel} (#{xref.cvXrefQualifier.miIdentifier})"/>
+                                    <iax:goOls termName="#{xref.cvXrefQualifier.shortLabel}"
+                                            query="#{xref.cvXrefQualifier.miIdentifier}"/>
                                 </tr:column>
                                 <tr:column headerText="Database">
-                                    <tr:outputText
-                                            value="#{xref.cvDatabase.shortLabel} (#{xref.cvDatabase.miIdentifier})"/>
+                                    <iax:goOls termName="#{xref.cvDatabase.shortLabel}"
+                                            query="#{xref.cvDatabase.miIdentifier}"/>
                                 </tr:column>
                             </tr:table>
                         </tr:panelHeader>
@@ -356,6 +357,39 @@
 
                 </tr:showDetailItem>
 
+            <tr:showDetailItem text="Macromolecular structure" disabled="#{empty pdbXrefs}">
+                  <tr:panelHeader text="Macromolecular structure">
+
+                        <tr:outputDocument
+                                value="Macromolecular structure of this interactor."/>
+                        <br/>
+
+                      <tr:panelHorizontalLayout>
+
+                          <tr:selectOneChoice id="pdbDisplaySelector" autoSubmit="true"
+                                              label="Display"
+                                              value="#{interactorBean.pdbDisplay}">
+                              <tr:selectItem label="Biological" value="bio"/>
+                              <tr:selectItem label="Assymetrical" value="asr"/>
+                          </tr:selectOneChoice>
+
+                          <tr:selectOneChoice id="pdbSizeSelector" autoSubmit="true"
+                                              label="Size"
+                                              value="#{interactorBean.pdbImageSize}">
+                              <tr:convertNumber/>
+                              <tr:selectItem label="250px" value="250"/>
+                              <tr:selectItem label="500px" value="500"/>
+                          </tr:selectOneChoice>
+
+                      </tr:panelHorizontalLayout>
+
+                      <tr:separator/>
+
+                      <tr:image source="http://www.pdb.org/pdb/images/#{pdbXrefs[0].primaryId}_#{interactorBean.pdbDisplay}_r_#{interactorBean.pdbImageSize}.jpg"
+                              partialTriggers="pdbSizeSelector pdbDisplaySelector"/>
+
+                </tr:panelHeader>
+            </tr:showDetailItem>
 
             </tr:panelTabbed>
 

@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.services.search.util;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.model.util.XrefUtils;
 import uk.ac.ebi.intact.services.search.model.*;
 import uk.ac.ebi.intact.services.search.component.resultpanel.CategoryItem;
 import uk.ac.ebi.intact.services.search.component.resultpanel.CategoryModel;

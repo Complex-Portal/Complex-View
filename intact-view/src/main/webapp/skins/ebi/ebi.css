@@ -299,7 +299,7 @@ af|panelTabbed::tab-selected a span {
 }
 
 af|panelTabbed::tab {
-    background:#EDF6F5 url(http://www.ebi.ac.uk/inc/images/head_bot_blue3b.gif) no-repeat scroll right top;
+    background:#EDF6F5 url(http://www.ebi.ac.uk/inc/images/head_bot_blue3b.gif) repeat-x scroll right top;
     border:1px solid #999999;
     cursor:pointer;
     font-size:12px;
@@ -529,6 +529,7 @@ af|statusIndicator::busy {
     background-color: red;
     color: white;
     margin: 5px; padding: 3px;
+    z-index: 50;
 
     position: fixed;
 }

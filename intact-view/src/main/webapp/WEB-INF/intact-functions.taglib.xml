@@ -80,4 +80,10 @@
         <function-signature>java.lang.String getGeneName(uk.ac.ebi.intact.model.Interactor)</function-signature>
     </function>
 
+    <function>
+        <function-name>getXrefsFilteredByDatabase</function-name>
+        <function-class>uk.ac.ebi.intact.model.util.XrefUtils</function-class>
+        <function-signature>java.util.List getXrefsFilteredByDatabase(uk.ac.ebi.intact.model.AnnotatedObject,java.lang.String)</function-signature>
+    </function>
+
 </facelet-taglib>
