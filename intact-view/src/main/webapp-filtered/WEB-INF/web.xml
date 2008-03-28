@@ -25,11 +25,16 @@
 
     <!-- IntAct -->
     <context-param>
+        <param-name>intact.APPLICATION_ROOT</param-name>
+        <param-value>${appRoot}</param-value>
+    </context-param>
+
+    <context-param>
         <description>
             URL to do a search query
         </description>
         <param-name>uk.ac.ebi.intact.SEARCH_QUERY_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/intact/binary-search/faces/search.xhtml?query=</param-value>
+        <param-value>${appRoot}/binary-search/faces/search.xhtml?query=</param-value>
     </context-param>
     
     <context-param>
@@ -37,14 +42,14 @@
             Where to find the Menu XML file
         </description>
         <param-name>uk.ac.ebi.faces.MENU_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/~intact/site/menu/menu-current.xml</param-value>
+        <param-value>http://www.ebi.ac.uk/~intact/site/menu/menu-latest.xml</param-value>
     </context-param>
      <context-param>
         <description>
             Where to find the News XML file
         </description>
         <param-name>uk.ac.ebi.faces.NEWS_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/~intact/site/news/news-1.2.xml</param-value>
+        <param-value>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</param-value>
     </context-param>
     <context-param>
         <description>
@@ -161,7 +166,7 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-      classpath*:*.spring.xml
+        classpath*:*.spring.xml
     </param-value>
   </context-param>
 

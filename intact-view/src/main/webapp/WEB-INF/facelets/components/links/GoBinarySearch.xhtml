@@ -12,6 +12,6 @@
 
     <tr:goLink targetFrame="intact" text="#{(text != null)? text : query}"
                disabled="#{disabled != null? disabled : false}"
-               destination="http://www.ebi.ac.uk/intact/binary-search/faces/search.xhtml?query=#{query}"/>
+               destination="#{initParam['intact.APPLICATION_ROOT']}/binary-search/faces/search.xhtml?query=#{query}"/>
 
 </ui:composition>
