@@ -19,6 +19,8 @@
     <!-- content -->
     <ui:define name="content">
 
+        <ui:param name="pubmedId" value="#{iaf:getPubmedId(experimentBean.currentExperiment)}"/>
+
         <tr:panelHeader text="Experiment: #{experimentBean.currentExperiment.shortLabel}">
             <tr:panelFormLayout maxColumns="1">
                 <tr:panelLabelAndMessage label="Short name:">
@@ -28,7 +30,7 @@
                     <tr:outputText value="#{experimentBean.currentExperiment.fullName}"/>
                 </tr:panelLabelAndMessage>
                 <tr:panelLabelAndMessage label="Publication:">
-                    <iax:goCitexplore query="#{iaf:getPubmedId(experimentBean.currentExperiment)}"/> 
+                    <iax:goCitexplore query="#{pubmedId}"/>
                 </tr:panelLabelAndMessage>
                 <tr:panelLabelAndMessage label="IntAct AC:">
                     <tr:outputText value="#{experimentBean.currentExperiment.ac}"/>
@@ -60,12 +62,12 @@
 
                         <tr:panelGroupLayout layout="vertical"
                                              rendered="#{experimentBean.currentExperimentWrapped.interactions.rowCount lt 500}">
-                            <tr:outputText
-                                    value="This figure is a graphical representation of the interactions shown in the above table. Click on the image for more details."/>
+                            <tr:outputDocument
+                                    value="This figure is a graphical representation of the interactions for the publication &lt;b>#{pubmedId}&lt;/b> (not just for this experiment). Click on the image for more details."/>
 
                             <br/>
 
-                            <iav:imageHierarchView query="pubid:#{iaf:getPubmedId(experimentBean.currentExperiment)}"/>
+                            <iav:imageHierarchView query="pubid:#{pubmedId}"/>
 
                         </tr:panelGroupLayout>
 
