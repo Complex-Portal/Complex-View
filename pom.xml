@@ -24,6 +24,7 @@
         <tempH2>${project.build.directory}/db/intact-${artifactId}-${jetty.port}-h2</tempH2>
 
         <user>${env.USERNAME}</user>
+        <appRoot>/intact</appRoot>
 
         <core.version>1.8.1-SNAPSHOT</core.version>
     </properties>
@@ -50,6 +51,14 @@
     <build>
 
         <finalName>intact-${artifactId}-${db.alias}-${version}-${buildNumber}</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/webapp-filtered</directory>
+                <filtering>true</filtering>
+                <targetPath>../../src/main/webapp</targetPath>
+            </resource>
+        </resources>
 
         <plugins>
             <plugin>
