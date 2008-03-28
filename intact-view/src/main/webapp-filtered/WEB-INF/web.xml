@@ -22,7 +22,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          metadata-complete="false"
          version="2.5">
-
+    
     <!-- IntAct -->
     <context-param>
         <param-name>intact.APPLICATION_ROOT</param-name>
