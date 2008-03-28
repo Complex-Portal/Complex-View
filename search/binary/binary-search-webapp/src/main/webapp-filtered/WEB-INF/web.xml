@@ -29,20 +29,26 @@
 
     <!-- intact specific params -->
     <context-param>
+        <param-name>intact.APPLICATION_ROOT</param-name>
+        <param-value>${appRoot}</param-value>
+    </context-param>
+
+    <context-param>
         <description>
             If standalone, the application won't show some of the layout and interface aspects
-            related to EBI/IntAct
+            related to EBI/IntAct - Deprecated
         </description>
         <param-name>psidev.STANDALONE</param-name>
         <param-value>false</param-value>
     </context-param>
+
     <context-param>
         <description>
             Configuration file
         </description>
         <param-name>psidev.DEFAULT_CONFIG_FILE</param-name>
-        <!--<param-value>/ebi/sp/misc1/vusers/intact/production/webapp-conf/binary-search.cfg.xml</param-value>-->
-        <param-value>/homes/baranda/tmp/binary-search.cfg.xml</param-value>
+        <param-value>/ebi/sp/misc1/vusers/intact/production/webapp-conf/binary-search.cfg.xml</param-value>
+        <!--<param-value>/homes/baranda/tmp/binary-search.cfg.xml</param-value>-->
     </context-param>
     <context-param>
         <description>
@@ -56,21 +62,21 @@
             URL to do a search query
         </description>
         <param-name>psidev.SEARCH_QUERY_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/intact/search/do/search?searchString=</param-value>
+        <param-value>${appRoot}/search/do/search?searchString=</param-value>
     </context-param>
     <context-param>
         <description>
             URL to the Hierarch View servlet that generate the images
         </description>
         <param-name>binarysearch.HIERARCH_VIEW_DISPLAY_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/intact/hierarchView/display.do?</param-value>
+        <param-value>${appRoot}/hierarchView/display.do?</param-value>
     </context-param>
     <context-param>
         <description>
             URL to the Hierarch View servlet that generate the images
         </description>
         <param-name>binarysearch.HIERARCH_VIEW_GENERATEIMAGE_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/intact/hierarchView/GenerateImage?</param-value>
+        <param-value>${appRoot}/hierarchView/GenerateImage?</param-value>
     </context-param>
     <context-param>
         <description>
@@ -107,14 +113,14 @@
             Where to find the Menu XML file
         </description>
         <param-name>uk.ac.ebi.faces.MENU_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/~intact/site/menu/menu-current.xml</param-value>
+        <param-value>http://www.ebi.ac.uk/~intact/site/menu/menu-latest.xml</param-value>
     </context-param>
     <context-param>
         <description>
             Where to find the News XML file
         </description>
         <param-name>uk.ac.ebi.faces.NEWS_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/~intact/site/news/news-1.2.xml</param-value>
+        <param-value>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</param-value>
     </context-param>
     <context-param>
         <description>
@@ -230,7 +236,7 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-      classpath*:*.spring.xml
+        classpath*:/WEB-INF/classes/orchestra.spring.xml
     </param-value>
   </context-param>
 
