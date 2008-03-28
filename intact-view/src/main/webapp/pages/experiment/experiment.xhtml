@@ -13,6 +13,7 @@
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
     <!-- content -->
@@ -25,6 +26,9 @@
                 </tr:panelLabelAndMessage>
                 <tr:panelLabelAndMessage label="Description:">
                     <tr:outputText value="#{experimentBean.currentExperiment.fullName}"/>
+                </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Publication:">
+                    <iax:goCitexplore query="#{iaf:getPubmedId(experimentBean.currentExperiment)}"/> 
                 </tr:panelLabelAndMessage>
                 <tr:panelLabelAndMessage label="IntAct AC:">
                     <tr:outputText value="#{experimentBean.currentExperiment.ac}"/>
@@ -61,7 +65,7 @@
 
                             <br/>
 
-                            <iav:imageHierarchView query="#{experimentBean.currentExperiment.publication.shortLabel}"/>
+                            <iav:imageHierarchView query="pubid:#{iaf:getPubmedId(experimentBean.currentExperiment)}"/>
 
                         </tr:panelGroupLayout>
 

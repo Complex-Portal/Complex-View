@@ -31,10 +31,20 @@
                 <tr:panelLabelAndMessage label="Description:" rendered="#{interactionBean.currentInteraction.fullName != null}">
                     <tr:outputText value="#{interactionBean.currentInteraction.fullName}"/>
                 </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Experiment:">
+                    <tr:iterator var="exp"
+                                 value="#{interactionBean.currentInteraction.experiments}">
+                        <tr:outputText value="#{exp.shortLabel} ("/>
+                        <tr:commandLink text="#{exp.ac}" action="experiment">
+                            <f:param name="experimentAc" value="#{exp.ac}"/>
+                        </tr:commandLink>
+                        <tr:outputText value=")"/>
+                    </tr:iterator>
+                </tr:panelLabelAndMessage>
                 <tr:panelLabelAndMessage label="IntAct AC:">
                     <tr:outputText value="#{interactionBean.currentInteraction.ac}"/>
                 </tr:panelLabelAndMessage>
-                <tr:panelLabelAndMessage label="CRC:">
+                <tr:panelLabelAndMessage label="CRC:" rendered="#{interactionBean.currentInteraction.crc != null}">
                     <tr:outputText value="#{interactionBean.currentInteraction.crc}"/>
                 </tr:panelLabelAndMessage>
             </tr:panelFormLayout>

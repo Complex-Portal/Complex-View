@@ -86,4 +86,10 @@
         <function-signature>java.util.List getXrefsFilteredByDatabase(uk.ac.ebi.intact.model.AnnotatedObject,java.lang.String)</function-signature>
     </function>
 
+    <function>
+        <function-name>getPubmedId</function-name>
+        <function-class>uk.ac.ebi.intact.model.util.ExperimentUtils</function-class>
+        <function-signature>java.lang.String getPubmedId(uk.ac.ebi.intact.model.Experiment)</function-signature>
+    </function>
+
 </facelet-taglib>
