@@ -52,14 +52,6 @@
 
         <finalName>intact-${artifactId}-${db.alias}-${version}-${buildNumber}</finalName>
 
-        <resources>
-            <resource>
-                <directory>src/main/webapp-filtered</directory>
-                <filtering>true</filtering>
-                <targetPath>../../src/main/webapp</targetPath>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
