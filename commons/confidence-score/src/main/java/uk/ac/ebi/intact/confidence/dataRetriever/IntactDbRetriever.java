@@ -526,7 +526,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         Collection<Experiment> experiments = interaction.getExperiments();
         for ( Iterator<Experiment> iter = experiments.iterator(); iter.hasNext(); ) {
             Experiment experiment = iter.next();
-            if (FilterConstants.CROSSLINK.equalsIgnoreCase( experiment.getCvInteraction().getShortLabel())){
+            if (CvInteraction.CROSSLINK.equalsIgnoreCase( experiment.getCvInteraction().getShortLabel())){
                 nrCrossLink++;
                 if (log.isTraceEnabled()){
                     log.trace("Found 'crosslink' : " +interaction.getAc() + " nrCrossLink: " + nrCrossLink);
@@ -629,7 +629,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             }
             return true;
         }
-        if (FilterConstants.DISULFIDE_BOND.equalsIgnoreCase( cvInteraction.getShortLabel())){
+        if (CvInteractionType.DISULFIDE_BOND.equalsIgnoreCase( cvInteraction.getShortLabel())){
             nrDisulfideInts++;
              if (log.isTraceEnabled()){
                 log.trace("Found disulfide bond: " + interaction.getAc() + " nrDisulfideInts: " + nrDisulfideInts);

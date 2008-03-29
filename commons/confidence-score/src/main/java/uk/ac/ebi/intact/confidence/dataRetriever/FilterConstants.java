@@ -52,11 +52,9 @@ public class FilterConstants {
                     "EBI-1256426"});
 
 
-    public static final String IN_VITRO = "in vitro";
+    public static final String IN_VITRO = "in vitro";         //TODO: use taxid (biosorce , field taxid, -1), jira + intact.model
+    //TODO: add check that all the identifiers, the refs i filter on do exist
     public static final List<String> PARTICIPANTS_IN_VITRO = Arrays.asList( new String[]{IN_VITRO, "purified",
                      "chemical synthesis"});
 
-    public static final String DISULFIDE_BOND = "disulfide bond";
-
-    public static final String CROSSLINK = "crosslink";
 }
