@@ -17,6 +17,9 @@ package uk.ac.ebi.intact.confidence.intact;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import uk.ac.ebi.intact.bridges.blast.BlastConfig;
+
+import java.io.File;
 
 /**
  * Test class for the whole run.
@@ -29,10 +32,16 @@ public class TrainModelTest {
 
     @Test
 	 @Ignore
-    //TODO: be careful with the ignore sign
-
     public void runTrainModel() throws Exception {
-        TrainModel.generateModel();
+        File workDir = new File("");
+        File pgConfigFile = new File("");
+        File yeastFasta = new File("");
+        File goaIntact = new File("");
+
+        BlastConfig blastConfig = new BlastConfig("x@ebi.ac.uk");
+
+        TrainModel trainModel = new TrainModel(workDir, pgConfigFile, yeastFasta, goaIntact, blastConfig);
+        trainModel.generateModel();
     }
 
 }

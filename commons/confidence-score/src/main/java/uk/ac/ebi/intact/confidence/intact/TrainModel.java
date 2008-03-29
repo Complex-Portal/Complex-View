@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.confidence.intact;
 import opennlp.maxent.GISModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.confidence.filter.SeqAlignFilter;
 import uk.ac.ebi.intact.confidence.main.InfoFiltering;
 import uk.ac.ebi.intact.confidence.main.InfoGathering;
@@ -53,8 +54,21 @@ import java.util.Set;
  */
 public class TrainModel {
     private static final Log log = LogFactory.getLog( TrainModel.class );
+    private File workDir;
+    private File yeastFastaFile;
+    private File goaIntactFile;
+    private BlastConfig config;
 
-    public static File generateModel() throws Exception {
+    public TrainModel(File workDir, File pgConfigFile, File yeastFasta, File goaIntact, BlastConfig blastConfig) {
+        this.workDir = workDir;
+        this.yeastFastaFile = yeastFasta;
+        this.goaIntactFile = goaIntact;
+        this.config = blastConfig;
+
+        IntactContext.initStandaloneContext(pgConfigFile);
+    }
+
+    public File generateModel() throws Exception {
         /**
          * File that must be specified:
          * 1.) the yeast fasta File.
@@ -67,15 +81,15 @@ public class TrainModel {
          */
         // put a proper yeast fasta file, or any fasta file containing the proteins for the low confidence generating step
         //TODO: make sure the fasta file is there, if it does not exist the low confidence set will not be created
-        File fastaFile = new File( "/net/nfs6/vol1/homes/iarmean/tmp/40.S_cerevisiae.fasta" );
-        File goaFile = new File("/net/nfs7/vol22/sp-pro5/20080201_iarmean/gene_association.goa_intact");
+//        File fastaFile = new File( "/net/nfs6/vol1/homes/iarmean/tmp/40.S_cerevisiae.fasta" );
+//        File goaFile = new File("/net/nfs7/vol22/sp-pro5/20080201_iarmean/gene_association.goa_intact");
 
         /**
          * Files that can be specified, if some data has been preeprocessed.
          */
         //TODO: specifiy the working directory, if not specified than the tmp dir will be choosen
         // File workDir = new File(System.getProperty( "java.io.tmpdir" ), "TrainModel");
-        File workDir = new File("/net/nfs7/vol22/sp-pro5/20080201_iarmean/TrainModel");
+//        File workDir = new File("/net/nfs7/vol22/sp-pro5/20080201_iarmean/TrainModel");
 
         /**
          * Information for the blast configuration, if there are prerun blast results available:
@@ -87,19 +101,19 @@ public class TrainModel {
 //        File dbFolder = new File( "/net/nfs6/vol1/homes/iarmean/tmp\\blastDb" );
 //        File blastArchiveDir =  new File ("/net/nfs7/vol22/sp-pro5/20080216_iarmean");
 //        String email = "myName@yahuo.com";
-        File dbFolder = new File(workDir.getParentFile(), "blastDb");
-        dbFolder.mkdir();
-        File blastArchiveDir = new File(workDir.getParentFile(), "archive");
-        blastArchiveDir.mkdir();
-        String email = "iarmean@ebi.ac.uk";
+//        File dbFolder = new File(workDir.getParentFile(), "blastDb");
+//        dbFolder.mkdir();
+//        File blastArchiveDir = new File(workDir.getParentFile(), "archive");
+//        blastArchiveDir.mkdir();
+//        String email = "iarmean@ebi.ac.uk";
         
 
         if(log.isDebugEnabled()){
             log.debug("workDir: "+ workDir.getPath());
-            log.debug("yeastFastaFile: "+ fastaFile.getPath());
-            log.debug("blastDbFolder: "+ dbFolder.getPath());
-            log.debug("blastArchive: " + blastArchiveDir.getPath());
-            log.debug("email: "+ email);
+            log.debug("yeastFastaFile: "+ yeastFastaFile.getPath());
+            log.debug("blastDbFolder: "+ config.getDatabaseDir().getPath());
+            log.debug("blastArchive: " + config.getBlastArchiveDir().getPath());
+            log.debug("email: "+ config.getEmail());
         }
 
         /**
@@ -110,14 +124,6 @@ public class TrainModel {
          *  highconf_set_go.txt, highconf_set_seq.txt
          */
         long start = ( System.currentTimeMillis() / 1000 );
-        File pgConfigFile = new File(TrainModel.class.getResource("/hibernate.iweb2.cfg.xml").getFile());
-        IntactContext.initStandaloneContext(pgConfigFile);
-
-//        File hcFile = new File(workDir,"highconf_set.txt");
-//        File mcFile = new File(workDir,"medconf_set.txt");
-//         Report report = new Report(hcFile,mcFile);
-//        report.setHighconfGOFile( new File(workDir, "highconf_set_go.txt") );
-//        report.setLowconfGOFile( new File (workDir, "lowconf_set_go.txt") );
         InfoGathering infoG = new InfoGathering();
         Report report = infoG.retrieveHighConfidenceAndMediumConfidenceSetWithAnnotations( workDir );
         long time = ( System.currentTimeMillis() / 1000 );
@@ -136,13 +142,10 @@ public class TrainModel {
 
         BinaryInteractionReader bir = new BinaryInteractionReaderImpl();
         bir.setConfidence( Confidence.HIGH );
-     //   File hcFile = new File( workDir, "highconf_set.txt" );
         Set<BinaryInteraction> birs = bir.read2Set( report.getHighconfFile() );
 
 
-       //infoG.retrieveLowConfidenceSet( workDir, fastaFile, birs.size() );
-       infoG.retrieveLowConfidenceSet( report, fastaFile, birs.size() );
-        //File lowconfFile = new File( workDir, "lowconf_set.txt" );
+       infoG.retrieveLowConfidenceSet( report, yeastFastaFile, birs.size() );
         infoG.retrieveLowConfidenceSetAnnotations( report );
         long time2 = ( System.currentTimeMillis() / 1000 );
         if ( log.isDebugEnabled() ) {
@@ -155,8 +158,7 @@ public class TrainModel {
          *
          */
 
-        InfoProcessing ip = new InfoProcessing( dbFolder, blastArchiveDir, email );
-      //  File seqFile = new File( workDir, "highconf_set_seq.txt" );
+        InfoProcessing ip = new InfoProcessing( config.getDatabaseDir(), config.getBlastArchiveDir(), config.getEmail() );
         File outFile = new File( workDir, "highconf_set_seq_anno.txt" );
         ip.process( report.getHighconfSeqFile(), outFile );
         time = ( System.currentTimeMillis() / 1000 );
@@ -164,7 +166,6 @@ public class TrainModel {
             long total = time - time2;
             log.debug( "Blasting high confidence set : " + total );
         }
-      //  File inFile = new File( workDir, "lowconf_set_seq.txt" );
         File outFile2 = new File( workDir, "lowconf_set_seq_anno.txt" );
         ip.process( report.getLowconfSeqFile(), outFile2 );
         time2 = ( System.currentTimeMillis() / 1000 );
@@ -182,7 +183,7 @@ public class TrainModel {
 
         outFile = new File( workDir, "highconf_set_go_filter.txt" );
         Set<ProteinAnnotation> pas = par.read2Set( report.getHighconfGOFile() );
-        InfoFiltering.filterGO( pas, goaFile );
+        InfoFiltering.filterGO( pas, goaIntactFile );
 
         paw.write( pas, outFile );
         time = ( System.currentTimeMillis() / 1000 );
@@ -193,7 +194,7 @@ public class TrainModel {
 
         outFile = new File( workDir, "lowconf_set_go_filter.txt" );
         pas = par.read2Set( report.getLowconfGOFile());
-        InfoFiltering.filterGO( pas, goaFile );
+        InfoFiltering.filterGO( pas, goaIntactFile );
         paw.write( pas, outFile );
         time2 = ( System.currentTimeMillis() / 1000 );
         if ( log.isDebugEnabled() ) {
@@ -227,7 +228,6 @@ public class TrainModel {
         /**
          * 5.) Combine the annotations to attributes.
          */
-        //File biFile = new File( workDir, "highconf_set.txt" );
         List<BinaryInteraction> binaryInteractions = bir.read( report.getHighconfFile() );
         File annoFile = new File( workDir, "highconf_set_seq_anno_filter.txt" );
         List<BinaryInteractionAttributes> attribs = InfoModelInput.populateAttributes( binaryInteractions, annoFile );
@@ -258,7 +258,6 @@ public class TrainModel {
             log.debug( "Creating IP attributes for high confidence set : " + total );
         }
 
-       // biFile = new File( workDir, "lowconf_set.txt" );
         binaryInteractions = bir.read( report.getLowconfFile() );
         annoFile = new File( workDir, "lowconf_set_seq_anno_filter.txt" );
         attribs = InfoModelInput.populateAttributes( binaryInteractions, annoFile );
