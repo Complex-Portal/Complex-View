@@ -8,6 +8,12 @@
 
     <distributable/>
 
+    <!-- IntAct -->
+    <context-param>
+        <param-name>intact.APPLICATION_ROOT</param-name>
+        <param-value>${appRoot}</param-value>
+    </context-param>
+
     <!-- IntAct Init parameters -->
     <context-param>
         <param-name>uk.ac.ebi.intact.AC_PREFIX</param-name>
@@ -70,7 +76,7 @@
 
     <context-param>
         <param-name>uk.ac.ebi.intact.search.BINARY_SEARCH_LINK</param-name>
-        <param-value>http://www.ebi.ac.uk/intact/binary-search/faces/search.xhtml?query=</param-value>
+        <param-value>#{appRoot}/binary-search/faces/search.xhtml?query=</param-value>
         <description>
             The binary search link (absolute)
         </description>
