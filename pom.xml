@@ -82,7 +82,7 @@
                         </connector>
                     </connectors>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <contextPath>intact/${jetty.context}</contextPath>
+                    <contextPath>${appRoot}/${jetty.context}</contextPath>
                 </configuration>
             </plugin>
         </plugins>
