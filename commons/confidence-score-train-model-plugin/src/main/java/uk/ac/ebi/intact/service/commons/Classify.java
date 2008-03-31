@@ -6,7 +6,6 @@ import org.apache.log4j.*;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.junit.Assert;
 import uk.ac.ebi.intact.confidence.intact.TrainModel;
 import uk.ac.ebi.intact.plugin.IntactAbstractMojo;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
@@ -124,7 +123,8 @@ public class Classify extends IntactAbstractMojo {
                                                blastConfig);
         try {
             File gisModel = trainModel.generateModel();
-            Assert.assertTrue(gisModel.exists()) ;
+
+            assert gisModel.exists();
         } catch ( Exception e ) {
             throw new MojoExecutionException( e.toString());
        }
