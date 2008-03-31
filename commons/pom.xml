@@ -17,9 +17,20 @@
     <name>IntAct Services :: Commons</name>
     <description>Common utilities for the web applications</description>
 
+    app-commons                      confidence-score-fillDb-plugin          confidence-score-trainModel-maven-plugin
+    commons-master.iml               confidence-score-maven-plugin           confidence-score-train-model-plugin
+    confidence-score                 confidence-score-psimitab-maven-plugin  LICENSE
+    confidence-score-analyze-plugin  confidence-score-psimixml-maven-plugin  pom.xml
+
+
     <modules>
         <module>app-commons</module>
         <module>confidence-score</module>
+        <module>confidence-score-analyze-plugin</module>
+        <module>confidence-score-fillDb-plugin</module>
+        <module>confidence-score-psimitab-maven-plugin</module>
+        <module>confidence-score-psimixml-maven-plugin</module>
+        <module>confidence-score-train-model-plugin</module>
     </modules>
 
 </project>
