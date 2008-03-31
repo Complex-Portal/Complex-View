@@ -16,15 +16,9 @@
 package uk.ac.ebi.intact.confidence.attribute;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.ac.ebi.intact.confidence.model.GoIdentifierImpl;
 import uk.ac.ebi.intact.confidence.model.Identifier;
-import uk.ac.ebi.intact.confidence.model.ProteinAnnotation;
-import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationReader;
-import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationReaderImpl;
-import uk.ac.ebi.intact.confidence.model.io.impl.ProteinAnnotationWriterImpl;
-import uk.ac.ebi.intact.confidence.model.io.ProteinAnnotationWriter;
 
 import java.io.File;
 import java.util.HashSet;
@@ -52,22 +46,5 @@ public class GoFilterTest {
         GoFilter.filterForbiddenGos( gos);
         Assert.assertEquals( 1, gos.size());
     }
-
-   @Test
-   @Ignore
-    public void filterFile() throws Exception {
-        File inFile = new File("E:\\iarmean\\ConfidenceScore\\IntactDbRetriever\\medconf_db_go.txt");
-        File outFile = new File("E:\\tmp\\mc_go_filtered.txt");
-        ProteinAnnotationReader reader = new ProteinAnnotationReaderImpl();
-        List<ProteinAnnotation> proteinAnnos = reader.read( inFile);
-        ProteinAnnotationWriter writer = new ProteinAnnotationWriterImpl();
-        for ( Iterator<ProteinAnnotation> proteinAnnotationIterator = proteinAnnos.iterator(); proteinAnnotationIterator.hasNext(); )
-        {
-            ProteinAnnotation proteinAnnotation =  proteinAnnotationIterator.next();
-            GoFilter.filterForbiddenGos( proteinAnnotation.getAnnotations());
-            writer.append( proteinAnnotation, outFile);
-        }
-    }
-
 
 }
