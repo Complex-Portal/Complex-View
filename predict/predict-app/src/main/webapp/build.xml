@@ -295,7 +295,7 @@
         </copy>
 
         <!-- The web.xml file. -->
-        <copy file="WEB-INF/web.xml" todir="${temp.web}/WEB-INF"/>
+        <copy file="webapp-filtered/WEB-INF/web.xml" todir="${temp.web}/WEB-INF"/>
 
         <!-- Set the development mode depending on the dev-mode file -->
         <available file="${basedir}/dev-mode" property="dev.mode"/>
@@ -372,7 +372,7 @@
         <!-- Delete the war file or else it will keep the old one -->
         <delete file="${dist.dir}/${war.file}" quiet="true"/>
 
-        <war destfile="${dist.dir}/${war.file}" webxml="WEB-INF/web.xml">
+        <war destfile="${dist.dir}/${war.file}" webxml="webapp-filtered/WEB-INF/web.xml">
 
             <fileset dir="${temp.web}">
                 <include name="welcome.jsp"/>

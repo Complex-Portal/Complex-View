@@ -14,6 +14,11 @@
 
     <!-- IntAct Init parameters -->
     <context-param>
+        <param-name>intact.APPLICATION_ROOT</param-name>
+        <param-value>${appRoot}</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>uk.ac.ebi.intact.INSTITUTION_LABEL</param-name>
         <param-value>ebi</param-value>
         <description>
