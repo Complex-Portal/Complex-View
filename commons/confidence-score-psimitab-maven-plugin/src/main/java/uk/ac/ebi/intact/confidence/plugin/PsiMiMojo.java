@@ -24,6 +24,7 @@ import org.apache.maven.project.MavenProject;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.confidence.model.ConfidenceType;
 import uk.ac.ebi.intact.confidence.psimi.PsiMiTabConfidence;
+import uk.ac.ebi.intact.confidence.psimi.PsiMiException;
 import uk.ac.ebi.intact.plugin.IntactAbstractMojo;
 
 import java.io.File;
@@ -95,6 +96,13 @@ public class PsiMiMojo extends IntactAbstractMojo {
      */
     private String lcSetPath;
 
+      /**
+     * The path to the low confidence set path for the model
+     *
+     * @parameter expression="${goaFilePath}" default-value="${project.build.outputDirectory/gene_association.goa_intact}"
+     */
+    private String goaFilePath;
+
 
     /**
      * The path to the email for blast service
@@ -156,6 +164,12 @@ public class PsiMiMojo extends IntactAbstractMojo {
      * @parameter expression="${confidenceAlign}" default-value="${true}"
      */
     private boolean confidenceAlign;
+    /**
+     * The switch to determine if scores should be overriden or not.
+     *
+     * @parameter expression="${override}" default-value="${true}"
+     */
+     private boolean override;
 
 
     protected Appender getLogAppender() throws IOException {
@@ -190,6 +204,7 @@ public class PsiMiMojo extends IntactAbstractMojo {
             log.info( "email: " + email );
             log.info( "hcSetPath: " + hcSetPath );
             log.info( "lcSetPath: " + lcSetPath );
+            log.info( "goaFilePaht: " + goaFilePath );
         }
 
         doMojo();
@@ -199,7 +214,7 @@ public class PsiMiMojo extends IntactAbstractMojo {
         }
     }
 
-    private void doMojo() {
+    private void doMojo() throws MojoExecutionException{
         BlastConfig config = new BlastConfig( email );
         if ( blastArchiveDirPath != null ) {
             config.setBlastArchiveDir( new File( blastArchiveDirPath ) );
@@ -219,7 +234,7 @@ public class PsiMiMojo extends IntactAbstractMojo {
         }
 
         try {
-            PsiMiTabConfidence conf = new PsiMiTabConfidence( hcSetPath, lcSetPath, new File( workDir ), config );
+            PsiMiTabConfidence conf = new PsiMiTabConfidence( hcSetPath, lcSetPath, new File(goaFilePath), new File( workDir ), config );
             File inFile = new File( psimitabInputFilePath );
             File outFile = new File( psimitabOutputFilePath );
             Set<ConfidenceType> confs = new HashSet<ConfidenceType>();
@@ -233,12 +248,14 @@ public class PsiMiMojo extends IntactAbstractMojo {
                 confs.add( ConfidenceType.Alignment);
             }
             if (inFile.exists()){
-                conf.appendConfidence( inFile, hasHeaderLine, outFile, confs);
+                conf.appendConfidence( inFile, hasHeaderLine, outFile, confs, override);
             } else {
                 log.warn("input PsimiTab file not found!");
             }
         } catch ( IOException e ) {
-            e.printStackTrace();
+            throw new MojoExecutionException(e.toString());
+        } catch (PsiMiException e){
+            throw new MojoExecutionException(e.toString());
         }
 
     }
