@@ -25,6 +25,7 @@ import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.confidence.model.ConfidenceType;
 import uk.ac.ebi.intact.confidence.psimi.PsiMiTabConfidence;
 import uk.ac.ebi.intact.confidence.psimi.PsiMiXmlConfidence;
+import uk.ac.ebi.intact.confidence.psimi.PsiMiException;
 import uk.ac.ebi.intact.plugin.IntactAbstractMojo;
 
 import java.io.File;
@@ -153,6 +154,14 @@ public class PsimiXmlMojo extends IntactAbstractMojo {
          */
         private boolean confidenceAlign;
 
+    /**
+     * The path to the GOA file.
+     *
+     * @parameter expression="${goaFilePath}" default-value="${project.build.outputDirectory/gene_association.goa_intact}"
+     */
+    private String goaFilePath;
+
+
 
     public MavenProject getProject() {
         return project;
@@ -189,6 +198,7 @@ public class PsimiXmlMojo extends IntactAbstractMojo {
             log.info( "email: " + email );
             log.info( "hcSetPath: " + hcSetPath );
             log.info( "lcSetPath: " + lcSetPath );
+            log.info( "goaFilePath: " + goaFilePath );
         }
 
         doMojo();
@@ -198,7 +208,7 @@ public class PsimiXmlMojo extends IntactAbstractMojo {
         }
     }
 
-    private void doMojo() {
+    private void doMojo() throws MojoExecutionException{
         BlastConfig config = new BlastConfig( email );
         if ( blastArchiveDirPath != null ) {
             config.setBlastArchiveDir( new File( blastArchiveDirPath ) );
@@ -218,7 +228,7 @@ public class PsimiXmlMojo extends IntactAbstractMojo {
         }
 
         try {
-            PsiMiXmlConfidence conf = new PsiMiXmlConfidence( hcSetPath, lcSetPath, new File( workDir ), config );
+            PsiMiXmlConfidence conf = new PsiMiXmlConfidence( hcSetPath, lcSetPath, new File(goaFilePath), new File( workDir ), config );
             File inFile = new File( psimixmlInputFilePath );
             File outFile = new File( psimixmlOutputFilePath );
             Set<ConfidenceType> confs = new HashSet<ConfidenceType>();
@@ -236,8 +246,8 @@ public class PsimiXmlMojo extends IntactAbstractMojo {
             } else {
                 log.warn("input PsimiTab file not found!");
             }
-        } catch ( IOException e ) {
-            e.printStackTrace();
+        } catch (PsiMiException e){
+            throw new MojoExecutionException(e.toString());
         }
 
     }
