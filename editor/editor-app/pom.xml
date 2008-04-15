@@ -121,15 +121,9 @@
         </dependency>
 
         <dependency>
-            <groupId>uk.ac.ebi.intact.bridges.coredep</groupId>
+            <groupId>uk.ac.ebi.intact.bridges</groupId>
             <artifactId>intact-go</artifactId>
-            <version>2.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-full</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.0.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>

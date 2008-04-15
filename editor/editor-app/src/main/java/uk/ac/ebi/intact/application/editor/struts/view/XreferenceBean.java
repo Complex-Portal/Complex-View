@@ -19,6 +19,8 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
+import uk.ac.ebi.intact.util.go.GoTerm;
+import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -298,18 +300,38 @@ public class XreferenceBean extends AbstractEditKeyBean {
      */
     public ActionMessages setFromGoServer(GoServerProxy proxy) {
         // Get the response from the Go server.
-        GoResult result = getGoResponse(proxy);
+        GoResult result = getGoResult(proxy);
 
         if (result.myGoErrors != null) {
             // Found errors; return them.
             return result.myGoErrors;
         }
         // Only set the secondary id and the qualifier if there are no errors.
-        setSecondaryId(result.myGoResponse.getName());
-        setQualifier(result.myGoResponse.getCategory());
+        setSecondaryId(result.getGoTerm().getName());
+
+        // need the string process/component...
+        setQualifier(calculateQualShortLabelFromCategory(result.getGoTerm().getCategory()));
 
         // No errors; all set.
         return null;
+    }
+
+    private String calculateQualShortLabelFromCategory(GoTerm goCategoryTerm) {
+        if (goCategoryTerm == null) {
+            return null;
+        }
+        
+        CvObjectDao cvDao = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+                .getCvObjectDao();
+        if ("GO:0008150".equals(goCategoryTerm.getId())) { // process
+            return cvDao.getByPsiMiRef("MI:0359").getShortLabel();
+        } else if ("GO:0003674".equals(goCategoryTerm.getId())) { // function
+            return cvDao.getByPsiMiRef("MI:0355").getShortLabel();
+        } else if ("GO:0005575".equals(goCategoryTerm.getId())) {  // component
+            return cvDao.getByPsiMiRef("MI:0354").getShortLabel();
+        }
+
+        throw new IllegalStateException("GO Category does not exist: "+goCategoryTerm);
     }
 
     /**
@@ -365,10 +387,11 @@ public class XreferenceBean extends AbstractEditKeyBean {
         setPrimaryIdLink();
     }
 
-    private GoResult getGoResponse(GoServerProxy proxy) {
+    private GoResult getGoResult(GoServerProxy proxy) {
         GoResult result = new GoResult();
         try {
-            result.myGoResponse = proxy.query(getPrimaryId());
+            GoTerm term = proxy.query(getPrimaryId());
+            result.setGoTerm(term);
         }
         catch (GoServerProxy.GoIdNotFoundException ex) {
 
@@ -378,7 +401,7 @@ public class XreferenceBean extends AbstractEditKeyBean {
                     getPrimaryId()));
             return result;
         }
-        catch (IOException ioe) {
+        catch (Exception ioe) {
             LOGGER.info("GO Proxy", ioe);
             // Error in communcating with the server.
             result.addErrors("error.xref.go.connection",new ActionMessage("error.xref.go.connection",
@@ -429,7 +452,15 @@ public class XreferenceBean extends AbstractEditKeyBean {
 
     private static class GoResult {
         private ActionMessages myGoErrors;
-        private GoServerProxy.GoResponse myGoResponse;
+        private GoTerm goTerm;
+
+        public GoTerm getGoTerm() {
+            return goTerm;
+        }
+
+        public void setGoTerm(GoTerm goTerm) {
+            this.goTerm = goTerm;
+        }
 
         private void addErrors(String property, ActionMessage error) {
             if (myGoErrors == null) {
