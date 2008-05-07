@@ -24,7 +24,7 @@
         <module>confidence-score-fillDb-plugin</module>
         <module>confidence-score-psimitab-maven-plugin</module>
         <module>confidence-score-psimixml-maven-plugin</module>
-        <module>confidence-score-trainModel-plugin</module>
+        <module>confidence-score-trainModel-maven-plugin</module>
     </modules>
 
 </project>
