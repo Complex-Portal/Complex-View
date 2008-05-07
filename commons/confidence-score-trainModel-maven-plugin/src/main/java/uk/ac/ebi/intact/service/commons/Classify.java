@@ -15,7 +15,7 @@ import java.io.*;
 /**
  * Mojo confidence score analzer
  *
- * @goal analyze
+ * @goal train
  * @phase install
  */
 public class Classify extends IntactAbstractMojo {
@@ -123,8 +123,9 @@ public class Classify extends IntactAbstractMojo {
                                                blastConfig);
         try {
             File gisModel = trainModel.generateModel();
-
-            assert gisModel.exists();
+            if (!gisModel.exists() && log.isWarnEnabled()){
+                log.warn("No classifier file created!");        
+            }
         } catch ( Exception e ) {
             throw new MojoExecutionException( e.toString());
        }

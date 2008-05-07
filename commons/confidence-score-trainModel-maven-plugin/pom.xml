@@ -8,16 +8,42 @@
         <version>1.6.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>confidence-score-train-model-plugin</artifactId>
+    <artifactId>confidence-score-trainModel-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.6.0-SNAPSHOT</version>
-	<name>IntAct Services :: Commons :: Confidence :: Plugin :: Train Model Maven Plugin</name>
+    <version>1.0-SNAPSHOT</version>
+    <name>confidence-score-trainModel-maven-plugin</name>
+    <url>http://maven.apache.org</url>
+
+    <!--<build>-->
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>maven-buildnumber-plugin</artifactId>-->
+                <!--<version>0.9.4</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>validate</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>create</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<format>{0,date,yyyyMMdd}</format>-->
+                    <!--<items>-->
+                        <!--<item>timestamp</item>-->
+                    <!--</items>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+
+    <!--</build>-->
 
     <dependencies>
         <dependency>
             <groupId>uk.ac.ebi.intact.plugins</groupId>
             <artifactId>intact-plugin</artifactId>
-            <version>2.1-SNAPSHOT</version>
+            <version>1.6.1</version>
         </dependency>
 
         <dependency>
@@ -30,7 +56,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.service.commons</groupId>
             <artifactId>confidence-score</artifactId>
-            <version>${pom.version}</version>
+            <version>1.6.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
