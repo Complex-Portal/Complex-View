@@ -162,7 +162,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         InteractionDao interactionDao = daoFactory.getInteractionDao();
         InteractionImpl interaction = interactionDao.getByAc( intactId.convertToString() );
         if ( isInteractionEligible( interaction ) ) {
-            if ( isHighConfidenceOrComplexes( interaction ) ) {
+            if ( isHighConfidence(interaction) || isCuratedComplex( interaction ) ) {
                 return saveInteractionInformation( interaction );
             }
 
@@ -170,7 +170,11 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                 return saveInteractionInformation( interaction );
             }
 
-            if ( isDirectInteractionOrDisulfideBond( interaction ) ) {
+            CvInteractionType cvInteraction = interaction.getCvInteractionType();
+            if ( isDirectInteraction(cvInteraction)){
+                return saveInteractionInformation( interaction );
+            }
+            if ( isDisulfideBond( cvInteraction ) ) {
                 return saveInteractionInformation( interaction );
             }
 
@@ -178,7 +182,7 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                 return saveInteractionInformation( interaction);
             }
 
-            if ( isEnzymeOrFluorescenceRole( interaction ) ) {
+            if ( isEnzymeRole(interaction) || isFluorescenceRole( interaction ) ) {
                 return saveInteractionInformation( interaction );
             }
         }
@@ -331,21 +335,39 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         for ( Iterator<InteractionImpl> iterator = interactions.iterator(); iterator.hasNext(); ) {
             InteractionImpl interaction = iterator.next();
             if ( isInteractionEligible( interaction ) ) {
-                boolean highConfOrCompl = isHighConfidenceOrComplexes( interaction );
+                boolean highConf = isHighConfidence( interaction );
+                boolean curatedComplex = isCuratedComplex (interaction);
                 boolean inVitro = isInVitro( interaction );
-                boolean directIntDisulfideBond = isDirectInteractionOrDisulfideBond( interaction );
+                CvInteractionType cvInteraction = interaction.getCvInteractionType();
+                boolean directInt = isDirectInteraction( cvInteraction );
+                boolean disulfideBond = isDisulfideBond(cvInteraction);
                 boolean isCrosslink = isCrossLinked( interaction );
-                boolean enzymeOrFluoresc = isEnzymeOrFluorescenceRole( interaction );
-                if ( highConfOrCompl || enzymeOrFluoresc || inVitro || directIntDisulfideBond || isCrosslink ) {
+                boolean enzyme = isEnzymeRole( interaction );
+                boolean  fluorescence = isFluorescenceRole(interaction);
+
+                if (highConf){nrAuthorConf++;}
+                if (curatedComplex){nrComplexes++;}
+                if (inVitro){nrInVitro++;}
+                if (directInt){nrDirectInts++;}
+                if (disulfideBond) {nrDisulfideInts++;}
+                if (isCrosslink) {nrCrossLink++;}
+                if (enzyme) {nrEnzyme++;}
+                if (fluorescence) {nrFluoresc++;}
+
+                if ( highConf || curatedComplex || enzyme || fluorescence || inVitro || directInt || disulfideBond || isCrosslink ) {
                     InteractionSimplified intS = saveInteractionInformation( interaction );
                     // expand intS
                     Collection<InteractionSimplified> intSsimpl = expansionStrategy.expand( intS );
                     nrHC += intSsimpl.size();
                     if ( log.isTraceEnabled() ) {
-                        if ( highConfOrCompl ) {
+                        if ( highConf || curatedComplex) {
                             log.trace( "HighConfOrComplex: " + intS.getAc() + " (authorConf: " + nrAuthorConf + ") (curated complex: " + nrComplexes + ")  total hc ( with dupplicates): " + nrHC );
-                        } else if ( enzymeOrFluoresc ) {
-                            log.trace( "enzymeOrFluoresc: " + intS.getAc() + " (enzymes: " + nrEnzyme + ") ( flurophore " + nrFluoresc + ") total hc (with dupplicates): " + nrHC );
+                        } else if ( enzyme || fluorescence ) {
+                            log.trace( "enzymeOrFluoresc: " + intS.getAc() + " (enzymes: " + nrEnzyme + ") ( flurophore: " + nrFluoresc + ") total hc (with dupplicates): " + nrHC );
+                        } else if ( directInt || disulfideBond ) {
+                            log.trace( "directOrDisulfide: " + intS.getAc() + " (directInt: " + nrDirectInts + ") ( disulfide: " + nrDisulfideInts + ") total hc (with dupplicates): " + nrHC );
+                        } else if ( inVitro || isCrosslink ) {
+                            log.trace( "vitroOrCrosslink: " + intS.getAc() + " (vitro: " + nrInVitro + ") ( crosslink: " + nrCrossLink + ") total hc (with dupplicates): " + nrHC );
                         }
                     }
 
@@ -468,6 +490,25 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
     }
 
     /**
+     * checks if the interaction belongs to a complex curated
+     *
+     * @param interaction
+     * @return true or false
+     */
+    private boolean isCuratedComplex( InteractionImpl interaction ) {
+         for ( Annotation item : interaction.getAnnotations() ) {
+            if ( CvTopic.CURATED_COMPLEX.equals( item.getCvTopic().getShortLabel() ) ) {
+              //  nrComplexes++;
+//                if ( log.isTraceEnabled() ) {
+//                    log.trace( "Found 'curated-complex': " + interaction.getAc() + "( total curated-complexes: " + nrComplexes + ")"  );
+//                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * checks if the interaction belongs to a complex curated or if the author
      * confidence is high
      *
@@ -477,18 +518,8 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
     private boolean isHighConfidenceOrComplexes( InteractionImpl interaction ) {
 
         if ( isHighConfidence( interaction ) ) {
-            nrAuthorConf++;
+            //nrAuthorConf++;
             return true;
-        }
-
-        for ( Annotation item : interaction.getAnnotations() ) {
-            if ( CvTopic.CURATED_COMPLEX.equals( item.getCvTopic().getShortLabel() ) ) {
-                nrComplexes++;
-                if ( log.isTraceEnabled() ) {
-                    log.trace( "Found 'curated-complex': " + interaction.getAc() + "( total curated-complexes: " + nrComplexes + ")"  );
-                }
-                return true;
-            }
         }
 
         return false;
@@ -603,10 +634,10 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
                     if ( bioS != null &&  CvExperimentalRole.PREY_PSI_REF.equalsIgnoreCase( component.getCvBiologicalRole().getMiIdentifier())) {
                         if ( FilterConstants.PARTICIPANTS_IN_VITRO.contains( bioS.getShortLabel() ) ) {
                             //TODO: if one of the comps is in the list above its enough for me to take, is this fine ?!
-                            nrInVitro++;
-                            if ( log.isTraceEnabled() ) {
-                                log.trace( "Found 'in vitro' : " + interaction.getAc() + " type: '" + component.getExpressedIn().getShortLabel() + "' nrInVitro : " + nrInVitro );
-                            }
+//                            nrInVitro++;
+//                            if ( log.isTraceEnabled() ) {
+//                                log.trace( "Found 'in vitro' : " + interaction.getAc() + " type: '" + component.getExpressedIn().getShortLabel() + "' nrInVitro : " + nrInVitro );
+//                            }
                             return true;
                         }
                     } else {
@@ -620,37 +651,44 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
         return false;
     }
 
-    private boolean isDirectInteractionOrDisulfideBond( InteractionImpl interaction ) {
-        CvInteractionType cvInteraction = interaction.getCvInteractionType();
+    private boolean isDisulfideBond( CvInteractionType cvInteraction  ) {
+        if (CvInteractionType.DISULFIDE_BOND.equalsIgnoreCase( cvInteraction.getShortLabel())){
+//            nrDisulfideInts++;
+//             if (log.isTraceEnabled()){
+//                log.trace("Found disulfide bond: " + interaction.getAc() + " nrDisulfideInts: " + nrDisulfideInts);
+//            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isDirectInteraction( CvInteractionType cvInteraction ) {
         if (CvInteractionType.DIRECT_INTERACTION_MI_REF.equals( cvInteraction.getMiIdentifier())){
-            nrDirectInts++;
-            if (log.isTraceEnabled()){
-                log.trace("Found direct interaction : " + interaction.getAc() + " total: " + nrDirectInts);
-            }
+//            nrDirectInts++;
+//            if (log.isTraceEnabled()){
+//                log.trace("Found direct interaction : " + interaction.getAc() + " total: " + nrDirectInts);
+//            }
             return true;
         }
         if (CvInteractionType.DISULFIDE_BOND.equalsIgnoreCase( cvInteraction.getShortLabel())){
-            nrDisulfideInts++;
-             if (log.isTraceEnabled()){
-                log.trace("Found disulfide bond: " + interaction.getAc() + " nrDisulfideInts: " + nrDisulfideInts);
-            }
+//            nrDisulfideInts++;
+//             if (log.isTraceEnabled()){
+//                log.trace("Found disulfide bond: " + interaction.getAc() + " nrDisulfideInts: " + nrDisulfideInts);
+//            }
             return true;
         }
         return false;
     }
 
     /**
-     * checks if the interaction contains enzymes, enzymes targets, fluorescence
-     * acceptors / donors
+     * checks if the interaction contains enzymes, enzymes targets
      *
      * @param interaction
      * @return true or false
      */
-    private boolean isEnzymeOrFluorescenceRole( InteractionImpl interaction ) {
+    private boolean isEnzymeRole( InteractionImpl interaction ) {
         int enzymeNr = 0;
         int enzymeTargetNr = 0;
-        int fluorescenceAcceptorNr = 0;
-        int fluorescenceDonorNr = 0;
 
         for ( Component component : interaction.getComponents() ) {
             if ( CvBiologicalRole.ENZYME_PSI_REF.equals( component.getCvBiologicalRole().getMiIdentifier() ) ) {
@@ -658,12 +696,6 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             } else
             if ( CvBiologicalRole.ENZYME_TARGET_PSI_REF.equals( component.getCvBiologicalRole().getMiIdentifier() ) ) {
                 enzymeTargetNr++;
-            } else
-            if ( CvExperimentalRole.FLUROPHORE_ACCEPTOR_MI_REF.equals( component.getCvExperimentalRole().getMiIdentifier() ) ) {
-                fluorescenceAcceptorNr++;
-            } else
-            if ( CvExperimentalRole.FLUROPHORE_DONOR_MI_REF.equals( component.getCvExperimentalRole().getMiIdentifier() ) ) {
-                fluorescenceDonorNr++;
             }
         }
 
@@ -674,6 +706,29 @@ public class IntactDbRetriever implements DataRetrieverStrategy {
             nrEnzyme++;
             return true;
         }
+        return false;
+    }
+
+    /**
+     * checks if the interaction contains fluorescence
+     * acceptors / donors
+     *
+     * @param interaction
+     * @return true or false
+     */
+    private boolean isFluorescenceRole( InteractionImpl interaction ) {
+        int fluorescenceAcceptorNr = 0;
+        int fluorescenceDonorNr = 0;
+
+        for ( Component component : interaction.getComponents() ) {
+            if ( CvExperimentalRole.FLUROPHORE_ACCEPTOR_MI_REF.equals( component.getCvExperimentalRole().getMiIdentifier() ) ) {
+                fluorescenceAcceptorNr++;
+            } else
+            if ( CvExperimentalRole.FLUROPHORE_DONOR_MI_REF.equals( component.getCvExperimentalRole().getMiIdentifier() ) ) {
+                fluorescenceDonorNr++;
+            }
+        }
+
         if ( fluorescenceAcceptorNr + fluorescenceDonorNr >= 2 ) {
             nrFluoresc++;
             return true;
