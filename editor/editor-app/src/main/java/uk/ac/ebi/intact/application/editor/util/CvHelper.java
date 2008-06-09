@@ -9,8 +9,9 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.persistence.dao.IntactTransaction;
+//import uk.ac.ebi.intact.persistence.dao.IntactTransaction;
 
+import javax.persistence.EntityTransaction;
 import java.util.Collection;
 import java.util.List;
 
@@ -173,7 +174,9 @@ public class CvHelper {
 
     public static void main(String[] args) throws IntactException {
 
-        IntactTransaction tx = DaoProvider.getDaoFactory().beginTransaction();
+        //IntactTransaction tx = DaoProvider.getDaoFactory().beginTransaction();
+        EntityTransaction tx = DaoProvider.getDaoFactory().beginTransaction();
+
 
         CvInteractorType newt = CvHelper.getNucleicAcid();//.getNewt();
                 System.out.println("newt.getShortLabel() = " + newt.getShortLabel());
