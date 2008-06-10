@@ -22,6 +22,9 @@
     <properties>
         <jetty.port>9090</jetty.port>
         <jetty.context>binary-search</jetty.context>
+        
+        <binarysearch.config>/ebi/sp/misc1/vusers/intact/production/webapp-conf/binary-search.cfg.xml</binarysearch.config>
+        <binarysearch.defaultindex>/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current</binarysearch.defaultindex>
     </properties>
 
     <build>
@@ -98,7 +101,7 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab-search</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.0</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.commons</groupId>

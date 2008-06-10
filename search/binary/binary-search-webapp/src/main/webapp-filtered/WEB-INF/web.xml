@@ -47,7 +47,7 @@
             Configuration file
         </description>
         <param-name>psidev.DEFAULT_CONFIG_FILE</param-name>
-        <param-value>/ebi/sp/misc1/vusers/intact/production/webapp-conf/binary-search.cfg.xml</param-value>
+        <param-value>${binarysearch.config}</param-value>
         <!--<param-value>/homes/baranda/tmp/binary-search.cfg.xml</param-value>-->
     </context-param>
     <context-param>
@@ -55,7 +55,7 @@
             Default index location
         </description>
         <param-name>psidev.DEFAULT_INDEX</param-name>
-        <param-value>/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current</param-value>
+        <param-value>${binarysearch.defaultindex}</param-value>
     </context-param>
     <context-param>
         <description>
