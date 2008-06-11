@@ -63,7 +63,7 @@ public class AdminBean implements Serializable {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
-        for (SearchConfig.Users.User user : config.getUsers().getUser()) {
+        for (SearchConfig.Users.User user : config.getUsers().getUsers()) {
             if (user.getName().equals(currentUser.getName())) {
                 if (user.getPassword().equals(WebappUtils.encrypt(facesContext, currentUser.getPassword()))) {
                     if (log.isDebugEnabled()) log.debug("\tLogin successful");
@@ -110,7 +110,7 @@ public class AdminBean implements Serializable {
             e.printStackTrace();
         }
 
-        config.getIndexes().getIndex().add(newIndex);
+        config.getIndexes().getIndices().add(newIndex);
 
         WebappUtils.writeConfiguration(config, new File(configFileLocation));
         deselectIndex(evt);
@@ -124,7 +124,7 @@ public class AdminBean implements Serializable {
 
         if (log.isInfoEnabled()) log.info("Deleting index: " + indexToDelete.getName());
 
-        for (Iterator<SearchConfig.Indexes.Index> iterator = config.getIndexes().getIndex().iterator(); iterator.hasNext();)
+        for (Iterator<SearchConfig.Indexes.Index> iterator = config.getIndexes().getIndices().iterator(); iterator.hasNext();)
         {
             SearchConfig.Indexes.Index index = iterator.next();
 
@@ -147,7 +147,7 @@ public class AdminBean implements Serializable {
 
         if (log.isInfoEnabled()) log.info("New default index: " + defaultIndex.getName());
 
-        for (Iterator<SearchConfig.Indexes.Index> iterator = config.getIndexes().getIndex().iterator(); iterator.hasNext();)
+        for (Iterator<SearchConfig.Indexes.Index> iterator = config.getIndexes().getIndices().iterator(); iterator.hasNext();)
         {
             SearchConfig.Indexes.Index index = iterator.next();
 
@@ -207,7 +207,7 @@ public class AdminBean implements Serializable {
         user.setName("Anonymous");
 
         SearchConfig.Users.User.Roles roles = new SearchConfig.Users.User.Roles();
-        roles.getRole().add("guest");
+        roles.getRoles().add("guest");
 
         user.setRoles(roles);
 
@@ -215,7 +215,7 @@ public class AdminBean implements Serializable {
     }
 
     public boolean isUserAdmin() {
-        return this.currentUser.getRoles().getRole().contains("admin");
+        return this.currentUser.getRoles().getRoles().contains("admin");
     }
 
     public SearchConfig.Indexes.Index getSelectedIndex() {

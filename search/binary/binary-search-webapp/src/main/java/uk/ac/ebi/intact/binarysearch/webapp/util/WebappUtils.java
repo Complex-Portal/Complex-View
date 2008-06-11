@@ -105,7 +105,7 @@ public class WebappUtils {
 
     public static SearchConfig.Indexes.Index getDefaultIndex(SearchConfig config) {
 
-        for (SearchConfig.Indexes.Index index : config.getIndexes().getIndex()) {
+        for (SearchConfig.Indexes.Index index : config.getIndexes().getIndices()) {
             if (index.isDefault()) {
                 return index;
             }

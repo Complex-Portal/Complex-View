@@ -78,18 +78,18 @@ public class FirstTimeBean implements Serializable {
         user.setPassword(WebappUtils.encrypt(facesContext, directPassword));
 
         SearchConfig.Users.User.Roles roles = new SearchConfig.Users.User.Roles();
-        roles.getRole().add("admin");
+        roles.getRoles().add("admin");
 
         user.setRoles(roles);
 
         config = new SearchConfig();
 
         SearchConfig.Users users = new SearchConfig.Users();
-        users.getUser().add(user);
+        users.getUsers().add(user);
         config.setUsers(users);
 
         SearchConfig.Indexes indexes = new SearchConfig.Indexes();
-        indexes.getIndex().add(index);
+        indexes.getIndices().add(index);
 
         try {
             index.setSize(WebappUtils.countItemsInIndex(index.getLocation()));
