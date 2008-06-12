@@ -70,8 +70,11 @@
                                   inlineStyle="width:90%"
                                   rendered="#{iaf:isProtein(interactorBean.currentInteractor)}">
                          <h:panelGrid columns="1">
-                             <iax:goBinarySearch text="Search it in Binary Search"
-                                            query="id:#{primaryId}"/>
+                             <h:commandLink value="Search it in Binary Search"
+                                            actionListener="#{binarySearchBean.doSearch}"
+                                            action="binarysearch">
+                                 <f:setPropertyActionListener value="id:#{primaryId}" target="#{searchBean.searchQuery}"/>
+                             </h:commandLink>
                          </h:panelGrid>
                      </tr:panelBox>
 

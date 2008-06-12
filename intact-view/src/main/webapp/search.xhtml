@@ -18,13 +18,13 @@
 
   <tr:panelGroupLayout partialTriggers="searchAgainBtn btnInteractions btnNucAcids btnProteins btnSmallMol btnExperiments btnCvObjects">
 
-      <tr:panelBox background="dark" inlineStyle="width:400px">
-          <tr:panelGroupLayout layout="horizontal">
-           <tr:inputText label="Query:" value="#{searchBean.searchQuery}"/>
-          <tr:commandButton id="searchAgainBtn" partialSubmit="true"
-                            text="Search" actionListener="#{searchBean.doSearchAll}"/>
-          </tr:panelGroupLayout>
-      </tr:panelBox>
+      <!--<tr:panelBox background="dark" inlineStyle="width:400px">-->
+          <!--<tr:panelGroupLayout layout="horizontal">-->
+           <!--<tr:inputText label="Query:" value="#{searchBean.searchQuery}"/>-->
+          <!--<tr:commandButton id="searchAgainBtn" partialSubmit="true"-->
+                            <!--text="Search" actionListener="#{searchBean.doSearchAll}"/>-->
+          <!--</tr:panelGroupLayout>-->
+      <!--</tr:panelBox>-->
 
       <tr:panelHeader text="Search summary" rendered="#{searchBean.searchClassName == null}">
 

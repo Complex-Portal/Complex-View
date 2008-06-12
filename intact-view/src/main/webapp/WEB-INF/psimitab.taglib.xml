@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE facelet-taglib PUBLIC
+        "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+        "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+
+<facelet-taglib>
+    <namespace>http://www.ebi.ac.uk/psi/mitab</namespace>
+    <function>
+        <function-name>formatAliases</function-name>
+        <function-class>psidev.psi.mi.tab.formatter.TabulatedLineFormatter</function-class>
+        <function-signature>java.lang.String formatAliases(java.util.Collection)</function-signature>
+    </function>
+    <function>
+        <function-name>formatCv</function-name>
+        <function-class>psidev.psi.mi.tab.formatter.TabulatedLineFormatter</function-class>
+        <function-signature>java.lang.String formatCv(java.util.Collection)</function-signature>
+    </function>
+    <function>
+        <function-name>formatIdentifiers</function-name>
+        <function-class>psidev.psi.mi.tab.formatter.TabulatedLineFormatter</function-class>
+        <function-signature>java.lang.String formatIdentifiers(java.util.Collection)</function-signature>
+    </function>
+    <function>
+        <function-name>formatOrganisms</function-name>
+        <function-class>psidev.psi.mi.tab.formatter.TabulatedLineFormatter</function-class>
+        <function-signature>java.lang.String formatOrganisms(psidev.psi.mi.tab.model.Organism)</function-signature>
+    </function>
+    <function>
+        <function-name>formatAuthors</function-name>
+        <function-class>psidev.psi.mi.tab.formatter.TabulatedLineFormatter</function-class>
+        <function-signature>java.lang.String formatAuthors(java.util.Collection)</function-signature>
+    </function>
+    <function>
+        <function-name>formatConfidence</function-name>
+        <function-class>psidev.psi.mi.tab.formatter.TabulatedLineFormatter</function-class>
+        <function-signature>java.lang.String formatConfidences(java.util.Collection)</function-signature>
+    </function>
+    <function>
+        <function-name>xrefUrl</function-name>
+        <function-class>uk.ac.ebi.intact.binarysearch.webapp.util.XrefLinkGenerator</function-class>
+        <function-signature>java.lang.String generateUrl(uk.ac.ebi.intact.binarysearch.webapp.application.XrefLinkContext,psidev.psi.mi.tab.model.CrossReference)</function-signature>
+    </function>
+    <function>
+        <function-name>xrefUrlForDb</function-name>
+        <function-class>uk.ac.ebi.intact.binarysearch.webapp.util.XrefLinkGenerator</function-class>
+        <function-signature>java.lang.String generateUrl(uk.ac.ebi.intact.binarysearch.webapp.application.XrefLinkContext,java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <function-name>xrefToString</function-name>
+        <function-class>uk.ac.ebi.intact.binarysearch.webapp.application.XrefLinkContextFactory</function-class>
+        <function-signature>java.lang.String xrefToString(psidev.psi.mi.tab.model.CrossReference,boolean,boolean)</function-signature>
+    </function>
+    
+</facelet-taglib>

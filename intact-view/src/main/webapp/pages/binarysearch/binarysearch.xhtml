@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:bs="http://intact.ebi.ac.uk/binarysearch" xmlns:iav="http://intact.ebi.ac.uk/view"
+
+                template="/WEB-INF/facelets/layout/template.xhtml">
+
+<ui:define name="content">
+
+<!-- rendered only if there is a new query via url (e.g. from an external application) -->
+<c:set var="executeQueryOnLoad" value="#{param.query != null and (param.query ne binarySearchBean.query)}"/>
+<h:panelGroup rendered="#{executeQueryOnLoad}">
+    <script type="text/javascript">
+        function searchWithQuery() {
+            document.getElementById('searchQuery').value = '#{param.query}';
+            document.getElementById('searchForm:sideSearchBox_searchBox').click();
+        }
+        dojo.addOnLoad(searchWithQuery);
+    </script>
+</h:panelGroup>
+
+<tr:panelGroupLayout id="advancedSearchRegion" partialTriggers="sideSearchBox_searchBox btnAdvSearch">
+
+
+    <br/><br/>
+
+    <bs:advancedSearch/>
+
+
+</tr:panelGroupLayout>
+
+
+<tr:panelGroupLayout id="summaryRegion" partialTriggers="sideSearchBox_searchBox btnAdvSearch">
+
+<tr:panelHeader text="Results" rendered="#{binarySearchBean.searchDone}">
+
+<tr:panelTabbed position="above">
+<tr:showDetailItem text="Binary Interactions (#{binarySearchBean.results.rowCount})"
+                   disclosed="true">
+
+    <tr:panelHeader text="Summary" rendered="#{binarySearchBean.searchDone}">
+
+        <bs:resultsSummary/>
+
+    </tr:panelHeader>
+
+    <h:panelGroup rendered="#{binarySearchBean.results.rowCount == 0}">
+        <p>
+            <strong>No Interactions found matching the query.</strong>
+        </p>
+    </h:panelGroup>
+
+
+    <tr:panelGroupLayout id="resultsRegion">
+        <h:panelGroup rendered="#{binarySearchBean.searchDone and binarySearchBean.results.rowCount > 0}">
+
+            <tr:panelHeader text="Table of Binary Interactions" size="1">
+
+                <bs:resultsTable value="#{binarySearchBean.results}"
+                                 pageSize="#{binarySearchBean.pageSize}"/>
+
+            </tr:panelHeader>
+
+        </h:panelGroup>
+
+    </tr:panelGroupLayout>
+
+
+</tr:showDetailItem>
+
+<tr:showDetailItem text="Graphical Representation" rendered="#{binarySearchBean.results.rowCount lt 500}">
+    <tr:panelGroupLayout layout="vertical">
+        <tr:outputText
+                value="This figure is a graphical representation of the interactions shown in the above table. Click on the image for more details."/>
+
+        <br/>
+
+        <tr:goLink destination="#{initParam['binarysearch.HIERARCH_VIEW_DISPLAY_URL']}query=#{binarySearchBean.query}"
+                   targetFrame="_blank">
+            <tr:image
+                    source="#{initParam['binarysearch.HIERARCH_VIEW_GENERATEIMAGE_URL']}query=#{binarySearchBean.query}&amp;w=600&amp;h=600"/>
+        </tr:goLink>
+
+    </tr:panelGroupLayout>
+</tr:showDetailItem>
+
+<tr:showDetailItem text="Additional Results" disclosureListener="#{binarySearchBean.doDiscoleRelatedResults}">
+
+    <iav:panelCategory id="resultsPanel">
+        <iav:panelCategoryColumn>
+            <iav:categoryGroup id="interactionGroup" title="Interactions">
+                <iav:categoryItem name="Interactions"
+                                  description="Interaction data found in the database"
+                                  size="#{searchBean.resultStats.interactionCount}"
+                                  category="none">
+                    <tr:commandLink id="btnInteractions" partialSubmit="true"
+                                    text="View interactions"
+                                    actionListener="#{searchBean.doSearchClass}"
+                                    action="search">
+                        <f:param value="uk.ac.ebi.intact.model.InteractionImpl"/>
+                    </tr:commandLink>
+                </iav:categoryItem>
+            </iav:categoryGroup>
+            <iav:categoryGroup id="experimentCount" title="Experiments">
+                <iav:categoryItem name="Experiments"
+                                  description="Experiments found in the database"
+                                  size="#{searchBean.resultStats.experimentCount}"
+                                  category="none">
+                    <tr:commandLink id="btnExperiments" partialSubmit="true"
+                                    text="View experiments"
+                                    actionListener="#{searchBean.doSearchClass}"
+                                    action="search">
+                        <f:param value="uk.ac.ebi.intact.model.Experiment"/>
+                    </tr:commandLink>
+                </iav:categoryItem>
+            </iav:categoryGroup>
+            <iav:categoryGroup id="cvObjectCount" title="Controlled Vocabularies"
+                               initiallyExpanded="true">
+                <iav:categoryItem name="Controlled Vocabularies"
+                                  description="CVs found in the database"
+                                  size="#{searchBean.resultStats.cvObjectCount}"
+                                  category="none">
+                    <tr:commandLink id="btnCvObjects" partialSubmit="true"
+                                    text="View controlled vocabularies"
+                                    actionListener="#{searchBean.doSearchClass}"
+                                    action="search">
+                        <f:param value="uk.ac.ebi.intact.model.CvObject"/>
+                    </tr:commandLink>
+                </iav:categoryItem>
+            </iav:categoryGroup>
+
+        </iav:panelCategoryColumn>
+        <iav:panelCategoryColumn>
+            <iav:categoryGroup id="interactorGroup" title="Interactors"
+                               initiallyExpanded="true">
+                <iav:categoryItem name="Nucleic Acids"
+                                  description="Nucleic acids found in the database"
+                                  size="#{searchBean.resultStats.nucleicAcidCount}"
+                                  category="none">
+                    <tr:commandLink id="btnNucAcids" partialSubmit="true"
+                                    text="View nucleic acids"
+                                    actionListener="#{searchBean.doSearchClass}"
+                                    action="search">
+                        <f:param value="uk.ac.ebi.intact.model.NucleicAcidImpl"/>
+                    </tr:commandLink>
+                </iav:categoryItem>
+                <iav:categoryItem name="Proteins"
+                                  description="Proteins found in the database"
+                                  size="#{searchBean.resultStats.proteinCount}"
+                                  category="none">
+                    <tr:commandLink id="btnProteins" partialSubmit="true"
+                                    text="View proteins"
+                                    actionListener="#{searchBean.doSearchClass}"
+                                    action="search">
+                        <f:param value="uk.ac.ebi.intact.model.ProteinImpl"/>
+                    </tr:commandLink>
+                </iav:categoryItem>
+                <iav:categoryItem name="Small Molecules"
+                                  description="Small molecules found in the database"
+                                  size="#{searchBean.resultStats.smallMoleculeCount}"
+                                  category="none">
+                    <tr:commandLink id="btnSmallMol" partialSubmit="true"
+                                    text="View small molecules"
+                                    actionListener="#{searchBean.doSearchClass}"
+                                    action="search">
+                        <f:param value="uk.ac.ebi.intact.model.SmallMoleculeImpl"/>
+                    </tr:commandLink>
+                </iav:categoryItem>
+            </iav:categoryGroup>
+        </iav:panelCategoryColumn>
+    </iav:panelCategory>
+
+
+</tr:showDetailItem>
+
+
+</tr:panelTabbed>
+
+</tr:panelHeader>
+</tr:panelGroupLayout>
+
+</ui:define>
+
+</ui:composition>

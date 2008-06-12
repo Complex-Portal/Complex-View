@@ -7,10 +7,6 @@
     <namespace>http://intact.ebi.ac.uk/extlinks</namespace>
 
     <tag>
-        <tag-name>goBinarySearch</tag-name>
-        <source>facelets/components/links/GoBinarySearch.xhtml</source>
-    </tag>
-    <tag>
         <tag-name>goCitexplore</tag-name>
         <source>facelets/components/links/GoCitexplore.xhtml</source>
     </tag>

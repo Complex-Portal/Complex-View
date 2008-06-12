@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:s="http://myfaces.apache.org/sandbox"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+      xmlns:ebi="http://ebi.ac.uk/faces/components"
+      xmlns:psimitab="http://www.ebi.ac.uk/psi/mitab">
+<body>
+
+<f:view>
+
+    <ui:composition template="../WEB-INF/facelets/layout/template-noform.xhtml">
+
+        <ui:param name="setup" value="#{appConfigBean.config == null}"/>
+
+        <ui:param name="sectionTitle" value="Authentication"/>
+
+        <ui:define name="contents">
+            <h1>Binary Search - Admin Login</h1>
+
+            <h:form id="loginForm">
+
+                <h:panelGrid columns="2">
+                    <h:outputLabel for="txtUsername" value="Username"/>
+                    <h:inputText id="txtUsername" value="#{adminBean.currentUser.name}"/>
+                    <h:outputLabel for="txtPassword" value="Password"/>
+                    <h:inputSecret id="txtPassword" value="#{adminBean.currentUser.password}"/>
+                </h:panelGrid>
+
+                <h:commandButton value="Login" action="#{adminBean.login}"/>
+
+            </h:form>
+        </ui:define>
+
+    </ui:composition>
+
+</f:view>
+
+</body>
+</html>

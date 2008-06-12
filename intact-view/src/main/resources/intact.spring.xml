@@ -8,6 +8,10 @@
 
     <!--<context:annotation-config/>-->
     <context:component-scan base-package="uk.ac.ebi.intact.services"/>
+    <context:component-scan base-package="uk.ac.ebi.intact.binarysearch.webapp"/>
+
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+
 
     <bean id="intactInitBean" class="uk.ac.ebi.intact.webapp.spring.IntactWebInitializingBean"
             p:entityManagerFactory-ref="entityManagerFactory"/>

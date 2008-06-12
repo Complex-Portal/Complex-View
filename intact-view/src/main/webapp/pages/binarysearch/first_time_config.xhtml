@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:t="http://myfaces.apache.org/tomahawk"
+      xmlns:tr="http://myfaces.apache.org/trinidad"
+      xmlns:trh="http://myfaces.apache.org/trinidad/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:ebi="http://ebi.ac.uk/faces/components">
+<body>
+
+<f:view>
+
+    <ui:composition template="/WEB-INF/facelets/layout/template-ebi.xhtml">
+
+        <ui:define name="content">
+
+        <h1>Configuration</h1>
+
+        <p>
+            This application is being loaded for the first time and needs to be properly configured.<br/>
+
+        </p>
+
+        <p></p>
+
+            <ebi:panelRound>
+                <h:panelGrid columns="1">
+                    <h:outputText value="Enter new Administrator user credentials below:"/>
+
+                    <h:panelGrid columns="3" styleClass="inputform">
+                        <h:outputLabel value="User name:" for="txtUser"/>
+                        <h:inputText id="txtUser" value="#{firstTimeBean.user.name}" required="true"/>
+                        <t:message for="txtUser" replaceIdWithLabel="true" styleClass="intact_error" showDetail="true"
+                                   showSummary="false"/>
+
+                        <h:outputLabel value="Password:" for="txtPass1"/>
+                        <h:inputSecret id="txtPass1" value="#{firstTimeBean.directPassword}" required="true"/>
+                        <t:message for="txtPass2" replaceIdWithLabel="true" styleClass="intact_error" showDetail="true"
+                                   showSummary="false"/>
+
+                        <h:outputLabel value="Repeat Password:" for="txtPass2"/>
+                        <h:inputSecret id="txtPass2" value="#{firstTimeBean.directPassword}" required="true">
+                            <t:validateEqual for="txtPass1" detailMessage="Passwords do not match"/>
+                        </h:inputSecret>
+                        <t:message for="txtPass2" replaceIdWithLabel="true" styleClass="intact_error" showDetail="true"
+                                   showSummary="false"/>
+                    </h:panelGrid>
+
+                    <hr style="height:1px; color:gray;"/>
+
+                    <h:outputText value="Provide an indexed Directory with PSIMITAB data:"/>
+
+                    <tr:panelGroupLayout layout="vertical">
+                        <tr:panelGroupLayout layout="horizontal" partialTriggers="txtIndexPath">
+
+                        <tr:inputText id="txtIndexPath" label="Index path: " autoSubmit="true"
+                                      value="#{firstTimeBean.index.location}"
+                                      valueChangeListener="#{firstTimeBean.indexLocationChanged}" immediate="true"/>
+
+
+                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.indexLocationExists}">
+                                <h:graphicImage url="/images/ok.gif"/>
+                                <h:outputText
+                                        value="Index found at this location with #{firstTimeBean.index.size} interactions."/>
+                            </h:panelGroup>
+                            <h:panelGroup style="color:red" rendered="#{!firstTimeBean.indexLocationExists}">
+                                <h:graphicImage url="/images/error.png"/>
+                                <h:outputText
+                                        value="Index not found at this location."/>
+                            </h:panelGroup>
+                        </tr:panelGroupLayout>
+
+                        <tr:inputText id="txtIndexName" label="Index name: "
+                                      value="#{firstTimeBean.index.name}" required="true"/>
+                        <t:message for="txtIndexName" replaceIdWithLabel="true" styleClass="intact_error"
+                                   showDetail="true" showSummary="false"/>
+
+                    </tr:panelGroupLayout>
+
+                    <tr:separator/>
+
+                    <h:outputText
+                            value="This configuration will be saved in this location: #{appConfigBean.configFileLocation}"/>
+
+                    <h:commandButton id="btnSubmit" value="Submit" action="#{firstTimeBean.processConfiguration}"/>
+
+                </h:panelGrid>
+
+
+            </ebi:panelRound>
+
+        </ui:define>
+
+    </ui:composition>
+
+</f:view>
+
+</body>
+</html>

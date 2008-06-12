@@ -10,18 +10,19 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
+                xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
 
                 template="template-ebi.xhtml">
 
     <ui:define name="breadcrumbs">
-        
+
         <!--<tr:breadCrumbs >-->
-            <!--<tr:commandNavigationItem text="EBI" destination="http://www.ebi.ac.uk/"/>-->
-            <!--<tr:commandNavigationItem text="Databases" destination="http://www.ebi.ac.uk/Databases"/>-->
-            <!--<tr:commandNavigationItem text="Pathways &amp; Networks" destination="http://www.ebi.ac.uk/Databases/pathways.html"/>-->
-            <!--<tr:commandNavigationItem text="IntAct" destination="http://www.ebi.ac.uk/intact" />-->
-            <!--<tr:commandNavigationItem text="View" destination="/" />-->
-          <!--</tr:breadCrumbs>-->
+        <!--<tr:commandNavigationItem text="EBI" destination="http://www.ebi.ac.uk/"/>-->
+        <!--<tr:commandNavigationItem text="Databases" destination="http://www.ebi.ac.uk/Databases"/>-->
+        <!--<tr:commandNavigationItem text="Pathways &amp; Networks" destination="http://www.ebi.ac.uk/Databases/pathways.html"/>-->
+        <!--<tr:commandNavigationItem text="IntAct" destination="http://www.ebi.ac.uk/intact" />-->
+        <!--<tr:commandNavigationItem text="View" destination="/" />-->
+        <!--</tr:breadCrumbs>-->
         <div class="breadcrumbs">
             <a class="firstbreadcrumb" href="http://www.ebi.ac.uk/">EBI</a>
             <a href="http://www.ebi.ac.uk/Databases">Databases</a>
@@ -50,26 +51,7 @@
 
         </trh:script>
 
-        <ebi:panelBox id="searchbox" title="Search IntAct">
-            <h:inputText id="search"
-                         styleClass="contentsarea"
-                         value="#{binarySearch.searchQuery}"
-                         size="#{ebisf:isBrowserExplorer()? 14 : 12}"
-                         onkeypress="return submitEnter('searchBtn', event)"/>
-
-             <tr:commandLink action="dialog:help_search" partialSubmit="true"
-                             windowWidth="150" windowHeight="150" immediate="true" useWindow="true">
-                      <tr:image source="http://www.ebi.ac.uk/inc/images/icon_help.gif"/>
-             </tr:commandLink>
-
-            <h:panelGrid columns="2">
-                <tr:commandButton id="searchBtn"
-                                 styleClass="submit_button"
-                                 text="Search"
-                                 action="#{binarySearch.doSearch}"/>
-                <a href="#" onclick="intact_clearAndFocusField('search')">Clear</a>
-            </h:panelGrid>
-        </ebi:panelBox>
+        <bs:searchBox id="sideSearchBox" value="#{searchBean.searchQuery}"/>
 
         <ebi:dynamicMenu id="menu1" sourceUrl="#{initParam['uk.ac.ebi.faces.MENU_URL']}"/>
 

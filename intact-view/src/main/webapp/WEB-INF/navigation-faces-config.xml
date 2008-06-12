@@ -7,6 +7,13 @@
 
     <navigation-rule>
         <navigation-case>
+            <from-outcome>search</from-outcome>
+            <to-view-id>/search.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
             <from-outcome>interaction</from-outcome>
             <to-view-id>/pages/interaction/interaction.xhtml</to-view-id>
         </navigation-case>
@@ -21,6 +28,14 @@
         <navigation-case>
             <from-outcome>experiment</from-outcome>
             <to-view-id>/pages/experiment/experiment.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <!-- binary search -->
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>binarysearch</from-outcome>
+            <to-view-id>/pages/binarysearch/binarysearch.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 

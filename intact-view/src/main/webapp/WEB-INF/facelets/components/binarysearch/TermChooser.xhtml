@@ -1,0 +1,44 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:c="http://java.sun.com/jstl/core"
+        xmlns:sf="http://www.ebi.ac.uk/faces/site"
+        xmlns:ebi="http://ebi.ac.uk/faces/components"
+        xmlns:bs="http://intact.ebi.ac.uk/binarysearch">
+
+    <f:view>
+
+        <ui:component rendered="#{rendered == null? true : sf:convertToBoolean(rendered)}">
+            <c:set var="id" value="#{forClientId}_termChooser"/>
+
+            <h:panelGroup>
+                <!--<t:inputText id="#{id}" value="#{term}" forceId="true"/>-->
+                <tr:commandButton text="..." onclick="${id}_term.show()" partialSubmit="true"/>
+
+                <h:panelGroup style="display:none;">
+                    <ebi:modalDialog id="${id}_term" width="350px" height="400px">
+
+                            <h3>Click on a Term:</h3>
+
+                        <tr:tree var="term" value="#{treeModel}">
+                            <f:facet name="nodeStamp">
+                                <h:panelGroup>
+                                        <ui:param name="termName" value="&quot;#{term.exactSynonim == null? term.description : term.exactSynonim}&quot;"/>
+                                        <h:outputText value="#{term.description}" styleClass="nodeFolder" title="#{termName}"
+                                                      onmouseover="this.style.cursor = 'pointer'"
+                                                      onclick="document.getElementById('${forClientId}').value='${termName}'; ${id}.hide()"/>
+                                    </h:panelGroup>
+                              </f:facet>
+                        </tr:tree>
+
+                    </ebi:modalDialog>
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </ui:component>
+
+    </f:view>
+
+</ui:composition>

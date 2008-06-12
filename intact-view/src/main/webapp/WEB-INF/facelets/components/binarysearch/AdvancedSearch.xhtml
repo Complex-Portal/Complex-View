@@ -1,0 +1,168 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:t="http://myfaces.apache.org/tomahawk"
+        xmlns:c="http://java.sun.com/jstl/core"
+        xmlns:s="http://myfaces.apache.org/sandbox"
+        xmlns:sf="http://www.ebi.ac.uk/faces/site"
+        xmlns:ebi="http://ebi.ac.uk/faces/components"
+        xmlns:bs="http://intact.ebi.ac.uk/binarysearch">
+<f:view>
+
+<ui:component>
+
+<tr:panelGroupLayout id="group" partialTriggers="btnClearAdvSearch btnCloseAdvSearch" inlineStyle="#{style}">
+
+
+<tr:panelBox text="Advanced Search" background="light"
+             rendered="#{binarySearchBean.advancedMode}">
+
+<!--<h3>Advanced Search-->
+<!--<ebi:help id="advHelp" title="Advanced Search" onlyIcon="true">-->
+<!--<div class="default">-->
+            <!--<h:panelGroup>-->
+                <!--<h:outputText value="As with the Simple Search, for any field of the advance search you can use the "/>-->
+
+                <!--<h:outputLink value="http://lucene.apache.org/java/docs/queryparsersyntax.html#Terms" target="_blank">-->
+                    <!--<h:outputText value="Lucene's syntax."/>-->
+                <!--</h:outputLink>-->
+            <!--</h:panelGroup>-->
+
+            <!--<ul>-->
+                <!--<li>Use OR or space ' ' to search for ANY of the terms in a field</li>-->
+                <!--<li>Use AND if you want to search for those interactions where ALL of your terms are found</li>-->
+                <!--<li>Use quotes (") if you look for a specific phrase (group of terms that must be searched together)-->
+                <!--</li>-->
+                <!--<li>Use parenthesis for complex queries (e.g. '(XXX OR YYY) AND ZZZ')</li>-->
+                <!--<li>Wildcards (*,?) can be used between letters in a term or at the end of terms to do fuzzy queries,-->
+                    <!--<br/>but never at the beginning of a term-->
+                <!--</li>-->
+                <!--<li>For a global view of Interaction Types and Detection Methods use the-->
+                    <!--<a href="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI" target="_blank">OLS MI Ontology-->
+                        <!--browser</a></li>-->
+                <!--<li>Tick the <i>Include children</i> boxes if you want to include in your search all the children for-->
+                    <!--<br/>that term in the OLS ontolgy-->
+                <!--</li>-->
+                <!--<li>Combine the different fields with AND or OR, by changing the <i>Query type</i> radio button</li>-->
+            <!--</ul>-->
+            <!--</div>-->
+        <!--</ebi:help>-->
+    <!--</h3>-->
+
+<h:panelGroup onkeypress="return submitEnter('searchForm:btnSearch',event)">
+
+    <h:panelGrid columns="2" styleClass="default">
+        <tr:panelGroupLayout>
+            <h:panelGrid columns="3" styleClass="default">
+                <h:outputLabel for="advIdentifier" value="Identifier: acs, ids, aliases"/>
+                <h:inputText id="advIdentifier" value="#{binarySearchBean.advancedSearch.identifier}"/>
+                <h:outputText value="e.g. 'Q06609'"/>
+
+                <h:outputLabel for="advInteractionId" value="Interaction ID"/>
+                <h:inputText id="advInteractionId" value="#{binarySearchBean.advancedSearch.interactionId}"/>
+                <h:outputText value="e.g. 'EBI-980189'"/>
+
+                <h:outputLabel for="advTaxid" value="Species: taxid or name"/>
+                <h:inputText id="advTaxid" value="#{binarySearchBean.advancedSearch.taxid}"/>
+                <h:outputText value="e.g. 'human'"/>
+
+                <h:outputLabel for="advPubAuthor" value="Publication Author"/>
+                <h:inputText id="advPubAuthor" value="#{binarySearchBean.advancedSearch.pubFirstAuthor}"/>
+                <h:outputText value="e.g. 'Gavin'"/>
+
+                <h:outputLabel for="advPubId" value="Publication ID"/>
+                <h:inputText id="advPubId" value="#{binarySearchBean.advancedSearch.pubId}"/>
+                <h:outputText value="e.g. '14605208'"/>
+
+            </h:panelGrid>
+            <h:panelGrid columns="4" styleClass="default">
+                <h:outputLabel for="intTypeSuggestion" value="Interaction type"/>
+
+                <h:panelGroup>
+                    <t:inputText id="intTypeSuggestion" value="#{binarySearchBean.advancedSearch.interactionType}"
+                                 forceId="true"/>
+                    <h:panelGroup rendered="#{binarySearchBean.advancedMode}">
+                    <bs:termChooser forClientId="intTypeSuggestion"
+                                    treeModel="#{olsBean.interactionTypeTreeModel}"/>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+                <h:outputLabel for="advIncludeTypeChildren" value="Include children"/>
+                <h:selectBooleanCheckbox id="advIncludeTypeChildren"
+                                         value="#{binarySearchBean.advancedSearch.includeInteractionTypeChildren}"/>
+
+                <h:outputLabel for="advDetMethod" value="Detection method"/>
+
+                <h:panelGroup>
+                    <t:inputText id="advDetMethod" value="#{binarySearchBean.advancedSearch.detectionMethod}" forceId="true"/>
+
+                    <h:panelGroup rendered="#{binarySearchBean.advancedMode}">
+                    <bs:termChooser forClientId="advDetMethod"
+                                    treeModel="#{olsBean.detectionMethodTreeModel}"/>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+                <h:outputLabel for="advIncludeDetChildren" value="Include children"/>
+
+                <h:selectBooleanCheckbox id="advIncludeDetChildren"
+                                         value="#{binarySearchBean.advancedSearch.includeDetectionMethodChildren}"/>
+
+                <h:outputLabel for="advQueryType" value="Query type"/>
+                <h:selectOneRadio id="advQueryType" value="#{binarySearchBean.advancedSearch.conjunction}" styleClass="default">
+                    <!--<s:convertBoolean/>-->
+                    <f:selectItem itemLabel="OR" itemValue="#{false}"/>
+                    <f:selectItem itemLabel="AND" itemValue="#{true}"/>
+                </h:selectOneRadio>
+                <h:outputText value=""/>
+                <h:outputText value=""/>
+
+                <h:outputText value=""/>
+                <h:outputText value=""/>
+                <h:outputText value=""/>
+                <h:outputText value=""/>
+
+
+
+             </h:panelGrid>
+
+            <div style="float:right">
+                <tr:commandLink id="btnCloseAdvSearch" text="Close Advanced Search"
+                                immediate="true" partialSubmit="true">
+                    <f:setPropertyActionListener value="#{false}" target="#{binarySearchBean.advancedMode}"/>
+                </tr:commandLink>
+            </div>
+            
+
+                <h:panelGrid columns="2">
+                    <tr:commandButton id="btnAdvSearch" text="Search" styleClass="submit_button"
+                                       actionListener="#{binarySearchBean.doAdvancedSearch}" partialSubmit="true"/>
+                    <tr:commandLink id="btnClearAdvSearch" text="Clear" 
+                                     actionListener="#{binarySearchBean.doClearAdvancedForm}" partialSubmit="true"/>
+                </h:panelGrid>
+
+
+        </tr:panelGroupLayout>
+        
+
+        <h:panelGroup>
+
+            
+
+
+        </h:panelGroup>
+
+    </h:panelGrid>
+
+</h:panelGroup>
+
+</tr:panelBox>
+
+</tr:panelGroupLayout>
+
+</ui:component>
+
+</f:view>
+
+</ui:composition>

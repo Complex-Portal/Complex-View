@@ -59,6 +59,67 @@
         <param-value>2</param-value>
     </context-param>
 
+    <context-param>
+        <description>
+            Configuration file
+        </description>
+        <param-name>psidev.DEFAULT_CONFIG_FILE</param-name>
+        <param-value>${binarysearch.config}</param-value>
+        <!--<param-value>/homes/baranda/tmp/binary-search.cfg.xml</param-value>-->
+    </context-param>
+    <context-param>
+        <description>
+            Default index location
+        </description>
+        <param-name>psidev.DEFAULT_INDEX</param-name>
+        <param-value>${binarysearch.defaultindex}</param-value>
+    </context-param>
+
+    <context-param>
+        <description>
+            URL to the Hierarch View servlet that generate the images
+        </description>
+        <param-name>binarysearch.HIERARCH_VIEW_DISPLAY_URL</param-name>
+        <param-value>${appRoot}/hierarchView/display.do?</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            URL to the Hierarch View servlet that generate the images
+        </description>
+        <param-name>binarysearch.HIERARCH_VIEW_GENERATEIMAGE_URL</param-name>
+        <param-value>${appRoot}/hierarchView/GenerateImage?</param-value>
+    </context-param>
+
+     <context-param>
+        <description>
+            Maximum number of interactions for the image to show
+        </description>
+        <param-name>binarysearch.MAX_INTERACTIONS_FOR_IMAGE</param-name>
+        <param-value>500</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Secret key to decode
+        </description>
+        <param-name>psidev.SECRET</param-name>
+        <param-value>Nzk4NDMyMTW=</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Maximum number of results after executing a search query. Default: 153600 (150*1024)
+        </description>
+        <param-name>psidev.MAX_SEARCH_RESULTS</param-name>
+        <param-value>153600</param-value>
+    </context-param>
+    <context-param>
+        <description>
+            Don't fetch the Controlled vocabularies from OLS. Note that if this is true, the ability
+            to get the children of a detection method or interaction type is not possible. Default: false
+        </description>
+        <param-name>psidev.DO_NOT_USE_OLS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
     <!-- MyFaces -->
 
     <context-param>
@@ -176,11 +237,19 @@
     <param-value>.xhtml</param-value>
   </context-param>
 
+    <!-- Facelets -->
+    <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
   <context-param>
     <param-name>facelets.LIBRARIES</param-name>
     <param-value>/WEB-INF/intactview.taglib.xml;
                 /WEB-INF/intact-functions.taglib.xml;
-                /WEB-INF/extlinks.taglib.xml
+                /WEB-INF/extlinks.taglib.xml;
+                /WEB-INF/binarysearch.taglib.xml;
+                /WEB-INF/psimitab.taglib.xml
     </param-value>
   </context-param>
 
@@ -266,9 +335,15 @@
     <servlet-name>faces</servlet-name>
   </filter-mapping>
 
-    <!-- IntAct Startup-->
+    <!-- IntAct Core Startup-->
     <listener>
         <listener-class>uk.ac.ebi.intact.webapp.BasicStartupIntactListener</listener-class>
+    </listener>
+
+    <!-- App binary search listener -->
+    <listener>
+        <description>Listener to startup the application</description>
+        <listener-class>uk.ac.ebi.intact.binarysearch.webapp.StartupListener</listener-class>
     </listener>
 
     <!-- Listener to force a garbage collection if too many files are open - Only works in UNIX -->
@@ -324,5 +399,16 @@
     <servlet-name>das</servlet-name>
     <url-pattern>*.dasProxy</url-pattern>
   </servlet-mapping>
+
+    <!-- Binary Search Servlets -->
+      <servlet>
+        <servlet-name>export</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.binarysearch.webapp.servlet.ExportServlet</servlet-class>
+      </servlet>
+
+      <servlet-mapping>
+        <servlet-name>export</servlet-name>
+        <url-pattern>/export</url-pattern>
+      </servlet-mapping>
 
 </web-app>
