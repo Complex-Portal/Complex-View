@@ -31,13 +31,4 @@
         </navigation-case>
     </navigation-rule>
 
-    <!-- binary search -->
-    <navigation-rule>
-        <navigation-case>
-            <from-outcome>binarysearch</from-outcome>
-            <to-view-id>/pages/binarysearch/binarysearch.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
-
-
 </faces-config>

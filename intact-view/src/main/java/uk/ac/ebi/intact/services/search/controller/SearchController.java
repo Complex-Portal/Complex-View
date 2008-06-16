@@ -7,7 +7,6 @@ import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.conversation.ConversationUtils;
 import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.myfaces.trinidad.component.core.data.CoreSelectRangeChoiceBar;
-import org.apache.myfaces.trinidad.event.PollEvent;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.lucene.search.BooleanQuery;
@@ -21,7 +20,6 @@ import uk.ac.ebi.intact.services.search.model.SearchResultDataModel;
 import uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean;
 import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.AdvancedSearch;
-import uk.ac.ebi.intact.binarysearch.webapp.view.search.RelatedResults;
 import uk.ac.ebi.intact.binarysearch.webapp.view.search.QueryHelper;
 import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.binarysearch.webapp.model.TooManyResults;
@@ -40,7 +38,7 @@ import java.io.IOException;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@ViewController(viewIds = {"/search.xhtml","/pages/binarysearch/binarysearch.xhtml"})
+@ViewController(viewIds = {"/search.xhtml"})
 public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
@@ -64,7 +62,7 @@ public class SearchController extends JpaBaseController {
 
      // vars
     private AdvancedSearch advancedSearch;
-    private RelatedResults relatedResults;
+
     private int pageSize = 30;
 
     // status flags
@@ -201,8 +199,6 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doBinarySearch(ActionEvent evt) {
-        relatedResults = null;
-
         // reset the status of the range choice bar
         if (rangeChoiceBar != null) {
             rangeChoiceBar.setFirst(0);
@@ -237,31 +233,6 @@ public class SearchController extends JpaBaseController {
     public void doAdvancedSearch(ActionEvent evt) {
         advancedMode = true;
         doSearch(evt);
-    }
-
-    public void doCalculateRelatedResults(ActionEvent evt) {
-        if (QueryHelper.isLuceneQuery(searchQuery)) {
-            if (log.isDebugEnabled()) log.debug("Related results not calculated, cause it is a complex/lucene query");
-
-            relatedResults = null;
-            return;
-        }
-        try {
-            if (log.isDebugEnabled()) log.debug("Calculating related results...");
-
-            SimpleSearchService searchService = new SimpleSearchService();
-            int numExperiments = searchService.count(Experiment.class, searchQuery);
-            int numProteins = searchService.count(ProteinImpl.class, searchQuery);
-
-            this.relatedResults = new RelatedResults();
-            relatedResults.setNumOfExperiments(numExperiments);
-            relatedResults.setNumOfInteractors(numProteins);
-
-            if (log.isDebugEnabled()) log.debug("\tReturned "+numExperiments+" experiments and "+numProteins+" proteins");
-
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
     }
 
     public void doClearAdvancedForm(ActionEvent evt) {
@@ -370,16 +341,6 @@ public class SearchController extends JpaBaseController {
     public void setAdvancedSearch(AdvancedSearch advancedSearch)
     {
         this.advancedSearch = advancedSearch;
-    }
-
-    public RelatedResults getRelatedResults()
-    {
-        return relatedResults;
-    }
-
-    public void setRelatedResults(RelatedResults relatedResults)
-    {
-        this.relatedResults = relatedResults;
     }
 
     public boolean isShowProperties() {
