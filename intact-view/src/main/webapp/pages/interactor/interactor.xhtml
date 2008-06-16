@@ -71,7 +71,7 @@
                                   rendered="#{iaf:isProtein(interactorBean.currentInteractor)}">
                          <h:panelGrid columns="1">
                              <h:commandLink value="Search it in Binary Search"
-                                            actionListener="#{binarySearchBean.doSearch}"
+                                            actionListener="#{searchBean.doBinarySearch}"
                                             action="binarysearch">
                                  <f:setPropertyActionListener value="id:#{primaryId}" target="#{searchBean.searchQuery}"/>
                              </h:commandLink>

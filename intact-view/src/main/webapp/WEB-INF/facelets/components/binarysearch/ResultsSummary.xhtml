@@ -3,9 +3,7 @@
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:tr="http://myfaces.apache.org/trinidad"
         xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:t="http://myfaces.apache.org/tomahawk"
         xmlns:c="http://java.sun.com/jstl/core"
-        xmlns:s="http://myfaces.apache.org/sandbox"
         xmlns:sf="http://www.ebi.ac.uk/faces/site"
         xmlns:ebi="http://ebi.ac.uk/faces/components">
 
@@ -25,60 +23,24 @@
 
                     <tr:group>
                         <strong>Lucene Query: </strong>
-                        <ebi:outputText id="luceneQueryText" value="#{binarySearchBean.results.result.luceneQuery}" maxLength="50"
+                        <ebi:outputText id="luceneQueryText" value="#{searchBean.results.result.luceneQuery}" maxLength="50"
                                         expandMessage="(see entire query)" collapseMessage="(collapse)"/>
                     </tr:group>
 
                     <tr:group>
-                        <strong>Binary Interactions: </strong>#{binarySearchBean.results.rowCount}
+                        <strong>Binary Interactions: </strong>#{searchBean.results.rowCount}
                     </tr:group>
 
                     <tr:group>
                         <strong>Search time: </strong>
-                        <h:outputText value="#{binarySearchBean.results.elapsedTimeSecs}">
+                        <h:outputText value="#{searchBean.results.elapsedTimeSecs}">
                             <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
                         </h:outputText>
                         <h:outputText value=" seconds"/>
                     </tr:group>
                 </tr:panelGroupLayout>
 
-                <tr:panelGroupLayout id="relatedResultsPanel" partialTriggers="relatedPoll">
-
-                    <!--<tr:poll id="relatedPoll"-->
-                        <!--rendered="#{!binarySearchBean.advancedMode and binarySearchBean.relatedResults == null and binarySearchBean.relatedPollEnabled}"-->
-                        <!--pollListener="#{binarySearchBean.doCalculateRelatedResults}"/>-->
-
-                    <tr:outputFormatted value="&#160;" rendered="#{binarySearchBean.relatedResults == null}" />
-
-                    <tr:panelBox icon="http://www.ebi.ac.uk/inc/images/info.gif" text=" Additional results" 
-                                 background="light" rendered="#{!binarySearchBean.advancedMode and
-                              binarySearchBean.relatedResults != null and
-                              (binarySearchBean.relatedResults.numOfExperiments > 0 or binarySearchBean.relatedResults.numOfInteractors > 0)}">
-                                <h:outputText value="This search has identified "/>
-
-                                <h:commandLink rendered="#{binarySearchBean.relatedResults.numOfExperiments > 0}"
-                                              action="search">
-                                    <f:param name="query" value="#{binarySearchBean.query}"/>
-                                    <f:param name="class" value="uk.ac.ebi.intact.model.Experiment"/>
-                                    <h:outputText value="#{binarySearchBean.relatedResults.numOfExperiments} experiments"/>
-                                </h:commandLink>
-                                <h:outputText value="0 experiments"
-                                              rendered="#{binarySearchBean.relatedResults.numOfExperiments == 0}"/>
-
-                                <h:outputText
-                                        value=", which contain a match to your query in the title or description, and "/>
-                                <h:outputLink rendered="#{binarySearchBean.relatedResults.numOfInteractors > 0}"
-                                              value="#{initParam['psidev.SEARCH_QUERY_URL']}#{binarySearchBean.query}&amp;searchClass=Protein&amp;page=1"
-                                              target="oldsearch">
-                                    <h:outputText value="#{binarySearchBean.relatedResults.numOfInteractors} proteins"/>
-                                </h:outputLink>
-                                <h:outputText value="0 proteins"
-                                              rendered="#{binarySearchBean.relatedResults.numOfInteractors == 0}"/>
-
-                                <h:outputText value=" containing a match in their name or description. "/>
-                    </tr:panelBox>
-                </tr:panelGroupLayout>
-            </h:panelGrid>
+         </h:panelGrid>
 
         </ui:component>
 

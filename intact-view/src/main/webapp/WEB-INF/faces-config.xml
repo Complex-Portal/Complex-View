@@ -120,12 +120,6 @@
             <value>#{appConfigBean.config}</value>
         </managed-property>
     </managed-bean>
-    <managed-bean>
-        <managed-bean-name>binarySearchBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.view.BinarySearchController</managed-bean-class>
-        <!-- Scope managed by spring and configured in the bean -->
-        <managed-bean-scope>none</managed-bean-scope>
-    </managed-bean>
 
     <!--<managed-bean>-->
         <!--<managed-bean-name>sqlStatistics</managed-bean-name>-->

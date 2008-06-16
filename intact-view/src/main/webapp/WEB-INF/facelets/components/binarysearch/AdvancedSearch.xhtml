@@ -17,7 +17,7 @@
 
 
 <tr:panelBox text="Advanced Search" background="light"
-             rendered="#{binarySearchBean.advancedMode}">
+             rendered="#{searchBean.advancedMode}">
 
 <!--<h3>Advanced Search-->
 <!--<ebi:help id="advHelp" title="Advanced Search" onlyIcon="true">-->
@@ -57,23 +57,23 @@
         <tr:panelGroupLayout>
             <h:panelGrid columns="3" styleClass="default">
                 <h:outputLabel for="advIdentifier" value="Identifier: acs, ids, aliases"/>
-                <h:inputText id="advIdentifier" value="#{binarySearchBean.advancedSearch.identifier}"/>
+                <h:inputText id="advIdentifier" value="#{searchBean.advancedSearch.identifier}"/>
                 <h:outputText value="e.g. 'Q06609'"/>
 
                 <h:outputLabel for="advInteractionId" value="Interaction ID"/>
-                <h:inputText id="advInteractionId" value="#{binarySearchBean.advancedSearch.interactionId}"/>
+                <h:inputText id="advInteractionId" value="#{searchBean.advancedSearch.interactionId}"/>
                 <h:outputText value="e.g. 'EBI-980189'"/>
 
                 <h:outputLabel for="advTaxid" value="Species: taxid or name"/>
-                <h:inputText id="advTaxid" value="#{binarySearchBean.advancedSearch.taxid}"/>
+                <h:inputText id="advTaxid" value="#{searchBean.advancedSearch.taxid}"/>
                 <h:outputText value="e.g. 'human'"/>
 
                 <h:outputLabel for="advPubAuthor" value="Publication Author"/>
-                <h:inputText id="advPubAuthor" value="#{binarySearchBean.advancedSearch.pubFirstAuthor}"/>
+                <h:inputText id="advPubAuthor" value="#{searchBean.advancedSearch.pubFirstAuthor}"/>
                 <h:outputText value="e.g. 'Gavin'"/>
 
                 <h:outputLabel for="advPubId" value="Publication ID"/>
-                <h:inputText id="advPubId" value="#{binarySearchBean.advancedSearch.pubId}"/>
+                <h:inputText id="advPubId" value="#{searchBean.advancedSearch.pubId}"/>
                 <h:outputText value="e.g. '14605208'"/>
 
             </h:panelGrid>
@@ -81,9 +81,9 @@
                 <h:outputLabel for="intTypeSuggestion" value="Interaction type"/>
 
                 <h:panelGroup>
-                    <t:inputText id="intTypeSuggestion" value="#{binarySearchBean.advancedSearch.interactionType}"
+                    <t:inputText id="intTypeSuggestion" value="#{searchBean.advancedSearch.interactionType}"
                                  forceId="true"/>
-                    <h:panelGroup rendered="#{binarySearchBean.advancedMode}">
+                    <h:panelGroup rendered="#{searchBean.advancedMode}">
                     <bs:termChooser forClientId="intTypeSuggestion"
                                     treeModel="#{olsBean.interactionTypeTreeModel}"/>
                     </h:panelGroup>
@@ -91,14 +91,14 @@
 
                 <h:outputLabel for="advIncludeTypeChildren" value="Include children"/>
                 <h:selectBooleanCheckbox id="advIncludeTypeChildren"
-                                         value="#{binarySearchBean.advancedSearch.includeInteractionTypeChildren}"/>
+                                         value="#{searchBean.advancedSearch.includeInteractionTypeChildren}"/>
 
                 <h:outputLabel for="advDetMethod" value="Detection method"/>
 
                 <h:panelGroup>
-                    <t:inputText id="advDetMethod" value="#{binarySearchBean.advancedSearch.detectionMethod}" forceId="true"/>
+                    <t:inputText id="advDetMethod" value="#{searchBean.advancedSearch.detectionMethod}" forceId="true"/>
 
-                    <h:panelGroup rendered="#{binarySearchBean.advancedMode}">
+                    <h:panelGroup rendered="#{searchBean.advancedMode}">
                     <bs:termChooser forClientId="advDetMethod"
                                     treeModel="#{olsBean.detectionMethodTreeModel}"/>
                     </h:panelGroup>
@@ -107,10 +107,10 @@
                 <h:outputLabel for="advIncludeDetChildren" value="Include children"/>
 
                 <h:selectBooleanCheckbox id="advIncludeDetChildren"
-                                         value="#{binarySearchBean.advancedSearch.includeDetectionMethodChildren}"/>
+                                         value="#{searchBean.advancedSearch.includeDetectionMethodChildren}"/>
 
                 <h:outputLabel for="advQueryType" value="Query type"/>
-                <h:selectOneRadio id="advQueryType" value="#{binarySearchBean.advancedSearch.conjunction}" styleClass="default">
+                <h:selectOneRadio id="advQueryType" value="#{searchBean.advancedSearch.conjunction}" styleClass="default">
                     <!--<s:convertBoolean/>-->
                     <f:selectItem itemLabel="OR" itemValue="#{false}"/>
                     <f:selectItem itemLabel="AND" itemValue="#{true}"/>
@@ -130,16 +130,16 @@
             <div style="float:right">
                 <tr:commandLink id="btnCloseAdvSearch" text="Close Advanced Search"
                                 immediate="true" partialSubmit="true">
-                    <f:setPropertyActionListener value="#{false}" target="#{binarySearchBean.advancedMode}"/>
+                    <f:setPropertyActionListener value="#{false}" target="#{searchBean.advancedMode}"/>
                 </tr:commandLink>
             </div>
             
 
                 <h:panelGrid columns="2">
                     <tr:commandButton id="btnAdvSearch" text="Search" styleClass="submit_button"
-                                       actionListener="#{binarySearchBean.doAdvancedSearch}" partialSubmit="true"/>
+                                       actionListener="#{searchBean.doAdvancedSearch}" partialSubmit="true"/>
                     <tr:commandLink id="btnClearAdvSearch" text="Clear" 
-                                     actionListener="#{binarySearchBean.doClearAdvancedForm}" partialSubmit="true"/>
+                                     actionListener="#{searchBean.doClearAdvancedForm}" partialSubmit="true"/>
                 </h:panelGrid>
 
 
