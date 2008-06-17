@@ -3,7 +3,6 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:t="http://myfaces.apache.org/tomahawk"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html"
@@ -16,27 +15,23 @@
 
     <ui:define name="breadcrumbs">
 
-        <!--<tr:breadCrumbs >-->
-        <!--<tr:commandNavigationItem text="EBI" destination="http://www.ebi.ac.uk/"/>-->
-        <!--<tr:commandNavigationItem text="Databases" destination="http://www.ebi.ac.uk/Databases"/>-->
-        <!--<tr:commandNavigationItem text="Pathways &amp; Networks" destination="http://www.ebi.ac.uk/Databases/pathways.html"/>-->
-        <!--<tr:commandNavigationItem text="IntAct" destination="http://www.ebi.ac.uk/intact" />-->
-        <!--<tr:commandNavigationItem text="View" destination="/" />-->
-        <!--</tr:breadCrumbs>-->
-        <div class="breadcrumbs">
-            <a class="firstbreadcrumb" href="http://www.ebi.ac.uk/">EBI</a>
-            <a href="http://www.ebi.ac.uk/Databases">Databases</a>
-            <a href="http://www.ebi.ac.uk/Databases/pathways.html">Pathways &amp; Networks</a>
-            <a href="http://www.ebi.ac.uk/intact">IntAct</a>
-            <a href="#{ebisf:absoluteContextPath()}">View</a>
-        </div>
+        <tr:group rendered="#{config['webapp.name'] == 'IntAct'}">
+            <div class="breadcrumbs">
+                <a class="firstbreadcrumb" href="http://www.ebi.ac.uk/">EBI</a>
+                <a href="http://www.ebi.ac.uk/Databases">Databases</a>
+                <a href="http://www.ebi.ac.uk/Databases/pathways.html">Pathways &amp; Networks</a>
+                <a href="http://www.ebi.ac.uk/intact">IntAct</a>
+                <a href="#{ebisf:absoluteContextPath()}">View</a>
+            </div>
+        </tr:group>
     </ui:define>
 
     <ui:define name="sidebar">
 
-        <h:outputLink value="http://www.ebi.ac.uk/intact">
-            <h:graphicImage alt="IntAct Logo" url="/images/logo_intact_small.gif" style="border:0"/>
-        </h:outputLink>
+        <h:graphicImage alt="#{config['webapp.name']} Logo"
+                        url="#{config['webapp.logo.url']}"
+                        rendered="#{config['webapp.logo.url'] != ''}"
+                        style="border:0"/>
 
         <trh:script>
             function intact_clearAndFocusField(id) {

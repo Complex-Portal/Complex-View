@@ -12,7 +12,7 @@
           org.springframework.web.jsf.el.SpringBeanFacesELResolver
       </el-resolver>
       <resource-bundle>
-          <base-name>uk.ac.ebi.intact.Athena</base-name>
+          <base-name>uk.ac.ebi.intact.IntactView</base-name>
           <var>config</var>
       </resource-bundle>
   </application>

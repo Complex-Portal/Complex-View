@@ -15,7 +15,7 @@
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
     <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
-    <version>2.0-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
 
     <name>IntAct Services :: View</name>
 
@@ -33,6 +33,15 @@
         <hibernate.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</hibernate.url>
         <hibernate.user>${db.user}</hibernate.user>
         <hibernate.password>${db.password}</hibernate.password>
+
+        <!-- Webapp default config -->
+        <intact.menu.url>http://www.ebi.ac.uk/~intact/site/menu/menu-latest.xml</intact.menu.url>
+        <intact.news.url>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</intact.news.url>
+        <binarysearch.defaultindex>/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current</binarysearch.defaultindex>
+
+        <intact.webapp.name>IntAct</intact.webapp.name>
+        <intact.webapp.logo.url>http://www.ebi.ac.uk/intact/site/images/logo_intact_small.gif</intact.webapp.logo.url>
+
     </properties>
 
     <build>

@@ -42,14 +42,14 @@
             Where to find the Menu XML file
         </description>
         <param-name>uk.ac.ebi.faces.MENU_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/~intact/site/menu/menu-latest.xml</param-value>
+        <param-value>${intact.menu.url}</param-value>
     </context-param>
      <context-param>
         <description>
             Where to find the News XML file
         </description>
         <param-name>uk.ac.ebi.faces.NEWS_URL</param-name>
-        <param-value>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</param-value>
+        <param-value>${intact.news.url}</param-value>
     </context-param>
     <context-param>
         <description>
@@ -65,7 +65,6 @@
         </description>
         <param-name>psidev.DEFAULT_CONFIG_FILE</param-name>
         <param-value>${binarysearch.config}</param-value>
-        <!--<param-value>/homes/baranda/tmp/binary-search.cfg.xml</param-value>-->
     </context-param>
     <context-param>
         <description>
