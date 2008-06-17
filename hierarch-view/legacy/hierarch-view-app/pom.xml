@@ -23,8 +23,6 @@
         <jetty.port>9090</jetty.port>
         <db.alias>nodb</db.alias>
 
-        <intact.menu.url>http://www.ebi.ac.uk/~intact/site/menu/menu-latest.xml</intact.menu.url>
-        <intact.news.url>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</intact.news.url>
         <binarysearch.defaultindex>/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current</binarysearch.defaultindex>
     </properties>
 
