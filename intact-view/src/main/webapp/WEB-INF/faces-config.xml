@@ -13,7 +13,7 @@
       </el-resolver>
       <resource-bundle>
           <base-name>uk.ac.ebi.intact.IntactView</base-name>
-          <var>config</var>
+          <var>intactView</var>
       </resource-bundle>
   </application>
 

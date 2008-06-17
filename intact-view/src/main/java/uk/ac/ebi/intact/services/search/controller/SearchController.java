@@ -106,12 +106,12 @@ public class SearchController extends JpaBaseController {
             ConversationUtils.invalidateAndRestartCurrent();
             searchQuery = queryParam;
             searchClassName = searchClassFromParam(searchClassParam);
-            doSearch(null);
+            doBinarySearch(null);
         }
 
         if (searchQuery == null) {
             searchQuery = "*";
-            doSearch(null);
+            doBinarySearch(null);
         }
 
         String advSearchParam = context.getExternalContext().getRequestParameterMap().get(ADV_SEARCH_PARAM);
@@ -224,7 +224,9 @@ public class SearchController extends JpaBaseController {
             //tooManyResults = true;
         }
 
-        resultsDataTable.setFirst(0);
+        if (resultsDataTable != null) {
+            resultsDataTable.setFirst(0);
+        }
 
         relatedPollEnabled = true;
         searchDone = true;
@@ -266,7 +268,7 @@ public class SearchController extends JpaBaseController {
 
     public void rangeChanged(RangeChangeEvent evt) {
         results.setRowIndex(evt.getNewStart());
-        ((UIXTable)resultsDataTable).setFirst(evt.getNewStart());
+        resultsDataTable.setFirst(evt.getNewStart());
         //results.fetchResults(evt.getNewStart(), 30);
     }
 

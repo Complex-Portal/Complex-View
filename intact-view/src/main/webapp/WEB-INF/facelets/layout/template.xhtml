@@ -15,7 +15,7 @@
 
     <ui:define name="breadcrumbs">
 
-        <tr:group rendered="#{config['webapp.name'] == 'IntAct'}">
+        <tr:group rendered="#{intactView['webapp.name'] == 'IntAct'}">
             <div class="breadcrumbs">
                 <a class="firstbreadcrumb" href="http://www.ebi.ac.uk/">EBI</a>
                 <a href="http://www.ebi.ac.uk/Databases">Databases</a>
@@ -28,9 +28,9 @@
 
     <ui:define name="sidebar">
 
-        <h:graphicImage alt="#{config['webapp.name']} Logo"
-                        url="#{config['webapp.logo.url']}"
-                        rendered="#{config['webapp.logo.url'] != ''}"
+        <h:graphicImage alt="#{intactView['webapp.name']} Logo"
+                        url="#{intactView['webapp.logo.url']}"
+                        rendered="#{intactView['webapp.logo.url'] != ''}"
                         style="border:0"/>
 
         <trh:script>

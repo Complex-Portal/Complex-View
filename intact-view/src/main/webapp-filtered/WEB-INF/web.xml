@@ -402,4 +402,26 @@
         <url-pattern>/export</url-pattern>
       </servlet-mapping>
 
+   <!-- Welcome files -->
+    <welcome-file-list>
+        <welcome-file>/index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+    <!-- Handling of the HTTP error 404 -->
+    <!--<error-page>-->
+        <!--<error-code>404</error-code>-->
+        <!--<location>/404_file_not_found.xhtml</location>-->
+    <!--</error-page>-->
+<!--
+    <error-page>
+        <error-code>500</error-code>
+        <location>/500_server_error.html</location>
+    </error-page>
+-->
+
+
 </web-app>

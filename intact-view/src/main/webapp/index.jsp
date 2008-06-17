@@ -6,7 +6,7 @@
     if (configFile != null && new File(configFile).exists()) {
         response.sendRedirect("search.xhtml");
     } else {
-        response.sendRedirect("pages/binarysearch/first_time_config.xhtml");
+        response.sendRedirect("first_time_config.xhtml");
     }
 
 %>

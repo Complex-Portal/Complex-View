@@ -11,7 +11,7 @@
 
         <c:set var="id" value="#{id}"/>
 
-        <ebi:panelBox id="#{id}_searchBox" title="Search #{config['webapp.name']}">
+        <ebi:panelBox id="#{id}_searchBox" title="Search #{intactView['webapp.name']}">
 
             <script type="text/javascript">
                 function intact_${id}_clearAndFocusField(id)
@@ -37,7 +37,7 @@
                 <tr:commandButton id="#{id}" styleClass="submit_button"
                                    text="Search it"
                                    actionListener="#{searchBean.doBinarySearch}"
-                                   action="binarysearch">
+                                   action="search">
                 </tr:commandButton>
 
                 <a href="#" onclick="intact_${id}_clearAndFocusField('searchQuery')">Clear</a>

@@ -24,10 +24,9 @@
 
 </tr:panelGroupLayout>
 
-
 <tr:panelGroupLayout id="summaryRegion" partialTriggers="sideSearchBox_searchBox btnAdvSearch">
 
-<tr:panelHeader text="Search Results" rendered="#{searchBean.searchDone}">
+<tr:panelHeader text="Search Results">
 
 <tr:panelTabbed position="above">
 <tr:showDetailItem text="Binary Interactions (#{searchBean.results.rowCount})"
@@ -70,10 +69,10 @@
 
         <br/>
 
-        <tr:goLink destination="#{initParam['binarysearch.HIERARCH_VIEW_DISPLAY_URL']}query=#{searchBean.query}"
+        <tr:goLink destination="#{initParam['binarysearch.HIERARCH_VIEW_DISPLAY_URL']}query=#{searchBean.searchQuery}"
                    targetFrame="_blank">
             <tr:image
-                    source="#{initParam['binarysearch.HIERARCH_VIEW_GENERATEIMAGE_URL']}query=#{searchBean.query}&amp;w=600&amp;h=600"/>
+                    source="#{initParam['binarysearch.HIERARCH_VIEW_GENERATEIMAGE_URL']}query=#{searchBean.searchQuery}&amp;w=600&amp;h=600"/>
         </tr:goLink>
 
     </tr:panelGroupLayout>
