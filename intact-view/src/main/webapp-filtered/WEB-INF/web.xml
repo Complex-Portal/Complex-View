@@ -28,14 +28,6 @@
         <param-name>intact.APPLICATION_ROOT</param-name>
         <param-value>${appRoot}</param-value>
     </context-param>
-
-    <context-param>
-        <description>
-            URL to do a search query
-        </description>
-        <param-name>uk.ac.ebi.intact.SEARCH_QUERY_URL</param-name>
-        <param-value>${appRoot}/binary-search/faces/search.xhtml?query=</param-value>
-    </context-param>
     
     <context-param>
         <description>
@@ -79,14 +71,14 @@
             URL to the Hierarch View servlet that generate the images
         </description>
         <param-name>binarysearch.HIERARCH_VIEW_DISPLAY_URL</param-name>
-        <param-value>${appRoot}/hierarchView/display.do?</param-value>
+        <param-value>${intact.hierarchview.url}/display.do?</param-value>
     </context-param>
     <context-param>
         <description>
             URL to the Hierarch View servlet that generate the images
         </description>
         <param-name>binarysearch.HIERARCH_VIEW_GENERATEIMAGE_URL</param-name>
-        <param-value>${appRoot}/hierarchView/GenerateImage?</param-value>
+        <param-value>${intact.hierarchview.url}/GenerateImage?</param-value>
     </context-param>
 
      <context-param>
