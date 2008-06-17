@@ -43,7 +43,13 @@
         <intact.webapp.name>IntAct</intact.webapp.name>
         <intact.webapp.logo.url>http://www.ebi.ac.uk/intact/site/images/logo_intact_small.gif</intact.webapp.logo.url>
 
+        <!-- Other intact apps -->
         <intact.hierarchview.url>${appRoot}/hierarchView</intact.hierarchview.url>
+
+        <!-- Das -->
+        <das.referenceserver.url>${appRoot}/das-srv/dgi/das/dgi/</das.referenceserver.url>
+        <das.annotationserver.intact.url>${appRoot}/das-srv/dgi/das/intact/</das.annotationserver.intact.url>
+        <das.annotationserver.chebi.url>${appRoot}/das-srv/dgi/das/chebi/</das.annotationserver.chebi.url>
 
     </properties>
 
