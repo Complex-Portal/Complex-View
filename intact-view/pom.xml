@@ -54,7 +54,7 @@
     </properties>
 
     <build>
-        <finalName>intact-view</finalName>
+        <!--<finalName>intact-view</finalName>-->
 
         <resources>
             <resource>
