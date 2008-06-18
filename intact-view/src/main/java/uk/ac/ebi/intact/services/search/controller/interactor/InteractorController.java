@@ -2,18 +2,16 @@ package uk.ac.ebi.intact.services.search.controller.interactor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.viewController.annotations.InitView;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
-import org.apache.myfaces.orchestra.conversation.ConversationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.services.search.JpaBaseController;
 import uk.ac.ebi.intact.services.search.model.InteractorWrapper;
 
-import javax.faces.context.FacesContext;
 import javax.faces.component.UIComponent;
-import javax.persistence.EntityManagerFactory;
 
 /**
  * TODO comment this
@@ -21,6 +19,9 @@ import javax.persistence.EntityManagerFactory;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller("interactorBean")
+@Scope("conversation.access")
+@ConversationName("general")
 @ViewController(viewIds = "/pages/interactor/interactor.xhtml")
 public class InteractorController extends JpaBaseController {
 

@@ -2,35 +2,35 @@ package uk.ac.ebi.intact.services.search.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
-import org.apache.myfaces.orchestra.conversation.ConversationUtils;
-import org.apache.myfaces.trinidad.component.UIXTable;
-import org.apache.myfaces.trinidad.component.core.data.CoreSelectRangeChoiceBar;
-import org.apache.myfaces.trinidad.event.RangeChangeEvent;
-import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.trinidad.event.DisclosureEvent;
+import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean;
+import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import uk.ac.ebi.intact.binarysearch.webapp.model.TooManyResults;
+import uk.ac.ebi.intact.binarysearch.webapp.servlet.ExportServlet;
+import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
+import uk.ac.ebi.intact.binarysearch.webapp.view.search.AdvancedSearch;
+import uk.ac.ebi.intact.binarysearch.webapp.view.search.QueryHelper;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.svc.SearchService;
 import uk.ac.ebi.intact.persistence.svc.impl.SimpleSearchService;
 import uk.ac.ebi.intact.services.search.JpaBaseController;
 import uk.ac.ebi.intact.services.search.SearchWebappException;
 import uk.ac.ebi.intact.services.search.model.SearchResultDataModel;
-import uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean;
-import uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean;
-import uk.ac.ebi.intact.binarysearch.webapp.view.search.AdvancedSearch;
-import uk.ac.ebi.intact.binarysearch.webapp.view.search.QueryHelper;
-import uk.ac.ebi.intact.binarysearch.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.binarysearch.webapp.model.TooManyResults;
-import uk.ac.ebi.intact.binarysearch.webapp.servlet.ExportServlet;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 
 import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import java.util.Map;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * TODO comment this
@@ -38,6 +38,9 @@ import java.io.IOException;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller("searchBean")
+@Scope("conversation.access")
+@ConversationName("general")
 @ViewController(viewIds = {"/search.xhtml"})
 public class SearchController extends JpaBaseController {
 
@@ -56,6 +59,9 @@ public class SearchController extends JpaBaseController {
     @Autowired
     private OlsBean olsBean;
 
+    @Autowired
+    private SearchControllerBindings bindings;
+
     private String searchQuery;
     private String searchClassName;
     private SearchResultDataModel searchResults;
@@ -68,14 +74,9 @@ public class SearchController extends JpaBaseController {
     // status flags
     private boolean advancedMode;
     private boolean searchDone;
-    private boolean relatedPollEnabled;
 
     private boolean showProperties;
     private boolean expandedView;
-
-    // bindings
-    private UIXTable resultsDataTable;
-    private CoreSelectRangeChoiceBar rangeChoiceBar;
 
     // results
     private uk.ac.ebi.intact.binarysearch.webapp.model.SearchResultDataModel results;
@@ -103,7 +104,6 @@ public class SearchController extends JpaBaseController {
         String searchClassParam = context.getExternalContext().getRequestParameterMap().get(CLASS_PARAM);
 
         if (queryParam != null) {
-            ConversationUtils.invalidateAndRestartCurrent();
             searchQuery = queryParam;
             searchClassName = searchClassFromParam(searchClassParam);
             doBinarySearch(null);
@@ -200,8 +200,8 @@ public class SearchController extends JpaBaseController {
 
     public void doBinarySearch(ActionEvent evt) {
         // reset the status of the range choice bar
-        if (rangeChoiceBar != null) {
-            rangeChoiceBar.setFirst(0);
+        if (bindings.getRangeChoiceBar() != null) {
+            bindings.getRangeChoiceBar().setFirst(0);
         }
 
         if (isAdvancedMode()) {
@@ -210,7 +210,7 @@ public class SearchController extends JpaBaseController {
             searchQuery = QueryHelper.prepareQuery(searchQuery);
         }
 
-        if (log.isDebugEnabled()) log.debug("Searching: " + searchQuery);
+        if (log.isDebugEnabled()) log.debug("Searching (binary): " + searchQuery);
 
         String indexDirectory = WebappUtils.getDefaultIndex(appConfigBean.getConfig()).getLocation();
         try {
@@ -224,11 +224,10 @@ public class SearchController extends JpaBaseController {
             //tooManyResults = true;
         }
 
-        if (resultsDataTable != null) {
-            resultsDataTable.setFirst(0);
+        if (bindings.getResultsDataTable() != null) {
+            bindings.getResultsDataTable().setFirst(0);
         }
 
-        relatedPollEnabled = true;
         searchDone = true;
     }
 
@@ -268,7 +267,7 @@ public class SearchController extends JpaBaseController {
 
     public void rangeChanged(RangeChangeEvent evt) {
         results.setRowIndex(evt.getNewStart());
-        resultsDataTable.setFirst(evt.getNewStart());
+        bindings.getResultsDataTable().setFirst(evt.getNewStart());
         //results.fetchResults(evt.getNewStart(), 30);
     }
 
@@ -303,16 +302,6 @@ public class SearchController extends JpaBaseController {
     public void setSearchDone(boolean searchDone)
     {
         this.searchDone = searchDone;
-    }
-
-    public UIXTable getResultsDataTable()
-    {
-        return resultsDataTable;
-    }
-
-    public void setResultsDataTable(UIXTable resultsDataTable)
-    {
-        this.resultsDataTable = resultsDataTable;
     }
 
     public uk.ac.ebi.intact.binarysearch.webapp.model.SearchResultDataModel getResults()
@@ -369,22 +358,6 @@ public class SearchController extends JpaBaseController {
         this.exportFormat = exportFormat;
     }
 
-    public boolean isRelatedPollEnabled() {
-        return relatedPollEnabled;
-    }
-
-    public void setRelatedPollEnabled(boolean relatedPollEnabled) {
-        this.relatedPollEnabled = relatedPollEnabled;
-    }
-
-    public CoreSelectRangeChoiceBar getRangeChoiceBar() {
-        return rangeChoiceBar;
-    }
-
-    public void setRangeChoiceBar(CoreSelectRangeChoiceBar rangeChoiceBar) {
-        this.rangeChoiceBar = rangeChoiceBar;
-    }
-
     public String getSearchQuery() {
         return searchQuery;
     }
@@ -411,5 +384,9 @@ public class SearchController extends JpaBaseController {
 
     public void setSearchResults(SearchResultDataModel searchResults) {
         this.searchResults = searchResults;
+    }
+
+    public SearchControllerBindings getBindings() {
+        return bindings;
     }
 }

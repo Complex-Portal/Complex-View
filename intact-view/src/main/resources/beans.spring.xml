@@ -11,18 +11,18 @@
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 
-    <bean id="searchBean" class="uk.ac.ebi.intact.services.search.controller.SearchController"
-          scope="conversation.access"
-          orchestra:conversationName="general"/>
-    <bean id="interactorBean" class="uk.ac.ebi.intact.services.search.controller.interactor.InteractorController"
-          scope="conversation.access"
-          orchestra:conversationName="general"/>
-    <bean id="interactionBean" class="uk.ac.ebi.intact.services.search.controller.interaction.InteractionController"
-          scope="conversation.access"
-          orchestra:conversationName="general"/>
-    <bean id="experimentBean" class="uk.ac.ebi.intact.services.search.controller.experiment.ExperimentController"
-          scope="conversation.access"
-          orchestra:conversationName="general"/>
+    <!--<bean id="searchBean" class="uk.ac.ebi.intact.services.search.controller.SearchController"-->
+          <!--scope="conversation.access"-->
+          <!--orchestra:conversationName="general"/>-->
+    <!--<bean id="interactorBean" class="uk.ac.ebi.intact.services.search.controller.interactor.InteractorController"-->
+          <!--scope="conversation.access"-->
+          <!--orchestra:conversationName="general"/>-->
+    <!--<bean id="interactionBean" class="uk.ac.ebi.intact.services.search.controller.interaction.InteractionController"-->
+          <!--scope="conversation.access"-->
+          <!--orchestra:conversationName="general"/>-->
+    <!--<bean id="experimentBean" class="uk.ac.ebi.intact.services.search.controller.experiment.ExperimentController"-->
+          <!--scope="conversation.access"-->
+          <!--orchestra:conversationName="general"/>-->
 
     <!-- Binary search -->
     <bean id="appConfigBean" class="uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean" lazy-init="true"/>

@@ -2,13 +2,13 @@ package uk.ac.ebi.intact.services.search.controller.experiment;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.viewController.annotations.InitView;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
-import uk.ac.ebi.intact.model.Interaction;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.services.search.JpaBaseController;
-import uk.ac.ebi.intact.services.search.model.InteractionWrapper;
 import uk.ac.ebi.intact.services.search.model.ExperimentWrapper;
 
 import javax.faces.component.UIComponent;
@@ -19,6 +19,9 @@ import javax.faces.component.UIComponent;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller("experimentBean")
+@Scope("conversation.access")
+@ConversationName("general")
 @ViewController(viewIds = "/pages/experiment/experiment.xhtml")
 public class ExperimentController extends JpaBaseController {
 

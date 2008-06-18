@@ -59,7 +59,7 @@
      <managed-bean>
         <managed-bean-name>interactorBean</managed-bean-name>
         <managed-bean-class>uk.ac.ebi.intact.services.search.controller.interactor.InteractorController</managed-bean-class>
-        <!-- configured in beans.spring.xml, declared here only for IDE purposes -->
+         <!--configured in beans.spring.xml, declared here only for IDE purposes -->
         <managed-bean-scope>none</managed-bean-scope>
     </managed-bean>
 

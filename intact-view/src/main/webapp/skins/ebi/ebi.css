@@ -287,7 +287,7 @@ af|panelLabelAndMessage::label {
 /*****************/
 
 af|panelTabbed::tab-selected {
-    background:white url(http://www.ebi.ac.uk/inc/images/head_bot_blue3b.gif) no-repeat scroll right top;
+    background:white url(http://www.ebi.ac.uk/inc/images/head_bot_blue3b.gif) repeat-x scroll right top;
     border-color:#000000 -moz-use-text-color;
     border-style:solid solid none;
     border-width:1px 1px 0px;

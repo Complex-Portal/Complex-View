@@ -13,7 +13,7 @@
 
 
 <tr:table id="results" value="#{value}" var="binaryInteraction" varStatus="status" summary="Binary Interactions"
-          binding="#{searchBean.resultsDataTable}" emptyText="No interactions found matching the query."
+          binding="#{searchBean.bindings.resultsDataTable}" emptyText="No interactions found matching the query."
           rows="30" rowBandingInterval="1"
           partialTriggers=":results:btnToogleProps :results:btnStandardView :results:btnExpandedView :results:selPageRangeChoice">
 
@@ -23,7 +23,7 @@
             <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
         </f:facet>
 
-        <tr:selectRangeChoiceBar binding="#{searchBean.rangeChoiceBar}"
+        <tr:selectRangeChoiceBar binding="#{searchBean.bindings.rangeChoiceBar}"
                                  var="range" id="selPageRangeChoice"
                                  value="#{searchBean.results}"
                                  rows="30" rangeChangeListener="#{searchBean.rangeChanged}"

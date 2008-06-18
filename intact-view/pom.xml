@@ -319,7 +319,7 @@
         <dependency>
             <groupId>org.apache.myfaces.orchestra</groupId>
             <artifactId>myfaces-orchestra-core15</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
 
         <dependency>

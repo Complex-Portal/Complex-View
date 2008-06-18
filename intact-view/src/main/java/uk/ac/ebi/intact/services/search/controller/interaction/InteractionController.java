@@ -2,16 +2,15 @@ package uk.ac.ebi.intact.services.search.controller.interaction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.viewController.annotations.InitView;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
-import org.apache.myfaces.orchestra.conversation.ConversationUtils;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.services.search.JpaBaseController;
 import uk.ac.ebi.intact.services.search.model.InteractionWrapper;
 
-import javax.faces.context.FacesContext;
 import javax.faces.component.UIComponent;
 
 /**
@@ -20,6 +19,9 @@ import javax.faces.component.UIComponent;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller("interactionBean")
+@Scope("conversation.access")
+@ConversationName("general")
 @ViewController(viewIds = "/pages/interaction/interaction.xhtml")
 public class InteractionController extends JpaBaseController {
 
@@ -72,3 +74,4 @@ public class InteractionController extends JpaBaseController {
         this.currentInteractionWrapped = currentInteractionWrapped;
     }
 }
+
