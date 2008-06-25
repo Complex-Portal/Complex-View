@@ -19,9 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import psidev.psi.mi.search.SearchResult;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-
-import java.util.List;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 
 /**
  * TODO comment this
@@ -49,9 +47,9 @@ public class BinarySearchServiceClientTest {
     public void testPort() throws Exception {
 
 
-        SearchResult<IntActBinaryInteraction> sr = client.findBinaryInteractions("brca2");
+        SearchResult<IntactBinaryInteraction> sr = client.findBinaryInteractions("brca2");
 
-        for (IntActBinaryInteraction ibi : sr.getInteractions()) {
+        for (IntactBinaryInteraction ibi : sr.getInteractions()) {
             System.out.println(ibi.getInteractorA().getIdentifiers()+" - "+ibi.getInteractorB().getIdentifiers());
         }
 

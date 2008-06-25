@@ -17,13 +17,13 @@ package uk.ac.ebi.intact.binarysearch.wsclient;
 
 
 import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.tab.converter.txt2tab.MitabLineParser;
 import psidev.psi.mi.tab.converter.txt2tab.MitabLineException;
+import psidev.psi.mi.tab.converter.txt2tab.MitabLineParser;
 import uk.ac.ebi.intact.binarysearch.wsclient.generated.BinarySearch;
 import uk.ac.ebi.intact.binarysearch.wsclient.generated.BinarySearchService;
 import uk.ac.ebi.intact.binarysearch.wsclient.generated.SimplifiedSearchResult;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.IntactColumnHandler;
 
 import javax.xml.namespace.QName;
 import java.net.URL;
@@ -75,38 +75,38 @@ public class BinarySearchServiceClient {
         return binarySearch;
     }
 
-    public SearchResult<IntActBinaryInteraction> findBinaryInteractions(String query) {
+    public SearchResult<IntactBinaryInteraction> findBinaryInteractions(String query) {
         return toSearchResult(binarySearch.findBinaryInteractions(query));
     }
 
-    public SearchResult<IntActBinaryInteraction> findBinaryInteractionsLimited(String query, Integer firstResult, Integer maxResults) {
+    public SearchResult<IntactBinaryInteraction> findBinaryInteractionsLimited(String query, Integer firstResult, Integer maxResults) {
         return toSearchResult(binarySearch.findBinaryInteractionsLimited(query, firstResult, maxResults));
     }
 
-    public SearchResult<IntActBinaryInteraction> findBinaryInteractionsByIdentifiers(String... identifiers) {
+    public SearchResult<IntactBinaryInteraction> findBinaryInteractionsByIdentifiers(String... identifiers) {
         String query = "identifiers:" + arrayElementsToOR(identifiers);
         return toSearchResult(binarySearch.findBinaryInteractions(query));
     }
 
-    private static SearchResult<IntActBinaryInteraction> toSearchResult(SimplifiedSearchResult ssr) {
-        List<IntActBinaryInteraction> interactions = new ArrayList<IntActBinaryInteraction>(ssr.getInteractionLines().size());
+    private static SearchResult<IntactBinaryInteraction> toSearchResult(SimplifiedSearchResult ssr) {
+        List<IntactBinaryInteraction> interactions = new ArrayList<IntactBinaryInteraction>(ssr.getInteractionLines().size());
 
         MitabLineParser parser = new MitabLineParser();
 
-        parser.setBinaryInteractionClass(IntActBinaryInteraction.class);
-        parser.setColumnHandler(new IntActColumnHandler());
+        parser.setBinaryInteractionClass(IntactBinaryInteraction.class);
+        parser.setColumnHandler(new IntactColumnHandler());
 
         for (String line : ssr.getInteractionLines()) {
-            IntActBinaryInteraction interaction = null;
+            IntactBinaryInteraction interaction = null;
             try {
-                interaction = (IntActBinaryInteraction) parser.parse(line);
+                interaction = (IntactBinaryInteraction) parser.parse(line);
             } catch (MitabLineException e) {
                 throw new RuntimeException("Wrong line returned by the server: "+line);
             }
             interactions.add(interaction);
         }
 
-        return new SearchResult<IntActBinaryInteraction>(interactions, ssr.getTotalResults(), ssr.getFirstResult(), ssr.getMaxResults(), ssr.getLuceneQuery());
+        return new SearchResult<IntactBinaryInteraction>(interactions, ssr.getTotalResults(), ssr.getFirstResult(), ssr.getMaxResults(), ssr.getLuceneQuery());
     }
 
 
