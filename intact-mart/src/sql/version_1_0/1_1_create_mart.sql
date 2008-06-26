@@ -79,15 +79,15 @@ CREATE TABLE intact__interaction__main (
   interaction_count INTEGER NULL,
   interaction_type_mi VARCHAR2(30) NULL,
   interaction_type_short VARCHAR2(30) NULL,
-  interaction_type_full VARCHAR2(1000) NULL,
+  interaction_type_full VARCHAR2(400) NULL,
   interaction_detectmethod_mi VARCHAR2(30) NULL,
   interaction_detectmethod_short VARCHAR2(30) NULL,
-  interaction_detectmethod_full VARCHAR2(1000) NULL,
-  interactor_count INTEGER NULL,
+  interaction_detectmethod_full VARCHAR2(400) NULL,
+  interactor_count INTEGER NULL
 );
 
 CREATE TABLE intact__interaction_alias__dm (
-  interaction_key VARCHAR2(30) NOT NULL,
+  interaction_key VARCHAR2(30) NULL,
   name VARCHAR2(30) NULL,
   alias_type_mi VARCHAR2(30) NULL,
   alias_type_short VARCHAR2(30) NULL,
@@ -245,7 +245,7 @@ CREATE TABLE intact__feature__main (
   feature_type_full VARCHAR2(30) NULL,
   feature_identmethod_mi VARCHAR2(30) NULL,
   feature_identmethod_short VARCHAR2(30) NULL,
-  feature_identmethod_full VARCHAR2(30) NULL,
+  feature_identmethod_full VARCHAR2(30) NULL
 );
 
 CREATE TABLE intact__feature_alias__dm (
