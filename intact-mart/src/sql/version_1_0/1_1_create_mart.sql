@@ -2,7 +2,6 @@
 -- #           1. main and deminsion tables for experiment
 -- #############################################################################
 
-
 CREATE TABLE intact__experiment__main (
   experiment_key VARCHAR2(30) NOT NULL, 
   experiment_short VARCHAR2(50) NULL, 
