@@ -42,3 +42,26 @@ FROM ia_component com LEFT OUTER JOIN v_cv_mi cv1
                       LEFT OUTER JOIN ia_biosource expres_bio
                                    ON ( com.expressedin_ac = expres_bio.ac);
 
+
+
+-- #############################################################################
+-- #                  intact__interactor_xref__dm
+-- #             useable for interaction and interactor, 
+-- #            because both are stored in ia_interactor
+-- #############################################################################
+
+
+CREATE MATERIALIZED VIEW v_component_xref AS
+SELECT xref.parent_ac    AS xref_ac,
+       xref.primaryid    AS primary_id,
+       xref.secondaryid  AS secondary_id,
+       cv1.mi            AS database_mi,
+       cv1.shortlabel    AS database_short,
+       cv1.fullname      AS database_full,
+       cv2.mi            AS qualifier_mi,
+       cv2.shortlabel    AS qualifier_short,
+       cv2.fullname      AS qualifier_full
+FROM ia_component_xref xref LEFT OUTER JOIN v_cv_mi cv1
+                                         ON (cv1.ac = xref.database_ac)
+                            LEFT OUTER JOIN v_cv_mi cv2
+                                         ON (cv2.ac = xref.qualifier_ac);

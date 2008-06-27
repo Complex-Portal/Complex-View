@@ -50,7 +50,9 @@ FROM ia_interactor_alias ali LEFT OUTER JOIN v_cv_mi cv
 
 
 -- #############################################################################
--- #                  intact__interaction_xref__dm                             
+-- #                  intact__interactor_xref__dm
+-- #             useable for interaction and interactor, 
+-- #            because both are stored in ia_interactor
 -- #############################################################################
 
 CREATE MATERIALIZED VIEW v_interactor_xref AS
@@ -68,32 +70,33 @@ FROM ia_interactor_xref xref LEFT OUTER JOIN v_cv_mi cv1
                              LEFT OUTER JOIN v_cv_mi cv2
                                           ON (cv2.ac = xref.qualifier_ac);
 
-CREATE MATERIALIZED VIEW v_component_xref AS
-SELECT xref.parent_ac    AS xref_ac,
-       xref.primaryid    AS primary_id,
-       xref.secondaryid  AS secondary_id,
-       cv1.mi            AS database_mi,
-       cv1.shortlabel    AS database_short,
-       cv1.fullname      AS database_full,
-       cv2.mi            AS qualifier_mi,
-       cv2.shortlabel    AS qualifier_short,
-       cv2.fullname      AS qualifier_full
-FROM ia_component_xref xref LEFT OUTER JOIN v_cv_mi cv1
-                                         ON (cv1.ac = xref.database_ac)
-                            LEFT OUTER JOIN v_cv_mi cv2
-                                         ON (cv2.ac = xref.qualifier_ac);
+
 
 -- #############################################################################
--- #                  intact__interaction_owner__dm                            
+-- #                  intact__interactor_owner__dm     
+-- #             useable for interaction and interactor, 
+-- #            because both are stored in ia_interactor
 -- #############################################################################
 
-CREATE MATERIALIZED VIEW v_interactor_owner AS
+-- get all interaction owner of database psi
+CREATE MATERIALIZED VIEW v_interaction_owner_xref AS
+SELECT xref.parent_ac  AS parent_ac, 
+       xref.primaryid  AS mi
+FROM ia_institution_xref xref,
+     v_cv_mi cv
+WHERE     xref.database_ac = cv.ac
+      and cv.mi = 'MI:0488';        -- 'psi-mi'
+      
+
+CREATE MATERIALIZED VIEW v_interaction_owner AS
 SELECT inter.ac        AS ac,
-       xref.primaryid  AS primaryid,
+       xref.mi         AS mi,
        inst.shortlabel AS shortlabel,
        inst.fullname   AS fullname
-FROM ia_institution inst LEFT OUTER JOIN ia_institution_xref xref
+FROM ia_institution inst LEFT OUTER JOIN v_interaction_owner_xref xref
                                       ON ( inst.ac = xref.parent_ac)
                         RIGHT OUTER JOIN ia_interactor inter
                                       ON ( inter.owner_ac = inst.ac);
+                                      
+
 

@@ -1,4 +1,3 @@
-
 -- #############################################################################
 -- #                      intact__experiment__main                            
 -- #############################################################################
@@ -75,6 +74,8 @@ FROM ia_publication_xref xref LEFT OUTER JOIN v_cv_mi cv
 WHERE cv.mi <> 'MI:0574'
 -- 'MI:0446' is equals pubmed
      and cv.mi <> 'MI:0446';
+
+
 
 
 
