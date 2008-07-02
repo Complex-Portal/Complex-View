@@ -24,6 +24,7 @@
         <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view
         </developerConnection>
         <url>https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view/</url>
+
     </scm>
 
     <properties>
@@ -42,6 +43,8 @@
 
         <intact.webapp.name>IntAct</intact.webapp.name>
         <intact.webapp.logo.url>http://www.ebi.ac.uk/intact/site/images/logo_intact_small.gif</intact.webapp.logo.url>
+
+        <google.analytics.tracker></google.analytics.tracker>
 
         <!-- Other intact apps -->
         <intact.hierarchview.url>${appRoot}/hierarchView</intact.hierarchview.url>
@@ -90,6 +93,24 @@
     </build>
 
     <profiles>
+        <!-- The following profile is needed to deploy in tomcat 5.x
+             Contains the EL api and tomcat's implementation -->
+        <profile>
+            <id>tomcat-5x</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>el-api</artifactId>
+                    <version>6.0.16</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>jasper-el</artifactId>
+                    <version>6.0.16</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
         <profile>
             <id>h2</id>
             <properties>
@@ -98,7 +119,6 @@
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <db.user>sa</db.user>
                 <db.password></db.password>
-
                 <db.hbm2ddlAuto>create-drop</db.hbm2ddlAuto>
             </properties>
 
@@ -107,27 +127,6 @@
                     <groupId>com.h2database</groupId>
                     <artifactId>h2</artifactId>
                     <version>1.0.20070429</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>intact-pg</id>
-            <properties>
-                <hibernate.url>jdbc:postgresql://localhost:5432/intact-db</hibernate.url>
-                <db.driver>org.postgresql.Driver</db.driver>
-                <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
-                <db.user>intact</db.user>
-                <db.password>lala</db.password>
-
-                <!--<db.hbm2ddlAuto>create-drop</db.hbm2ddlAuto>-->
-
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
-                    <version>8.2-504.jdbc3</version>
                 </dependency>
             </dependencies>
         </profile>

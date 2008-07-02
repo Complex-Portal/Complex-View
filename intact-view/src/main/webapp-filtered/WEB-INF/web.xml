@@ -110,6 +110,13 @@
         <param-name>psidev.DO_NOT_USE_OLS</param-name>
         <param-value>true</param-value>
     </context-param>
+    <context-param>
+        <description>
+            Google Analytics account
+        </description>
+        <param-name>uk.ac.ebi.intact.GOOGLE_ANALYTICS_TRACKER</param-name>
+        <param-value>${google.analytics.tracker}</param-value>
+    </context-param>
 
     <!-- MyFaces -->
 
