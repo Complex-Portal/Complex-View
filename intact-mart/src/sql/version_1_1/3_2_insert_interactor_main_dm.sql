@@ -144,3 +144,5 @@ FROM ia_component2annot com_anno LEFT OUTER JOIN v_annotation anno
                                               ON (anno.annotation_ac = com_anno.annotation_ac)
                                             JOIN ia_component com
                                               ON ( com.ac = com_anno.component_ac);
+
+COMMIT;

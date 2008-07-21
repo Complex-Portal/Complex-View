@@ -2,12 +2,11 @@
 -- #                      intact__feature__main                            
 -- #############################################################################
 
-
-
-INSERT INTO intact__interactor__main
+INSERT INTO intact__feature__main
 SELECT int_main.experiment_key,                 -- experiment_key
        int_main.interaction_key,                -- interaction_key
-       com_roles.interactor_key,                -- interactor_key
+       int_main.interactor_key,                 -- interactor_key
+       f.ac,                                    -- feature_key
        int_main.experiment_short,               -- experiment_short
        int_main.experiment_full,                -- experiment_full
        int_main.host_organism_taxid,            -- host_organism_taxid
@@ -24,46 +23,42 @@ SELECT int_main.experiment_key,                 -- experiment_key
        int_main.interaction_type_short,         -- interaction_type_short
        int_main.interaction_type_full,          -- interaction_type_full
        int_main.interactor_count,               -- interactor_count
-       int_type.interactor_shortlabel,          -- interactor_shortlabel
-       int_type.interactor_fullname,            -- interactor_fullname
-       int_type.interactor_type_mi,             -- interactor_type_mi
-       int_type.interactor_type_short,          -- interactor_type_short
-       int_type.interactor_type_full,           -- interactor_type_full
-       com_roles.experimental_role_mi,          -- experimental_role_mi
-       com_roles.experimental_role_short,       -- experimental_role_short
-       com_roles.experimental_role_full,        -- experimental_role_full
-       com_roles.biological_role_mi,            -- biological_role_mi
-       com_roles.biological_role_short,         -- biological_role_short
-       com_roles.biological_role_full,          -- biological_role_full
-       int_type.interactor_biosource_taxid,     -- interactor_biosource_taxid
-       int_type.interactor_biosource_short,     -- interactor_biosource_short
-       int_type.interactor_biosource_full,      -- interactor_biosource_full
-       com_roles.component_expressed_in_taxid,  -- component_expressed_in_taxid
-       com_roles.component_expressed_in_short,  -- component_expressed_in_short
-       com_roles.component_expressed_in_full,   -- component_expressed_in_full
-       com_roles.stoichiometry,                 -- stoichiometry
-       null AS molecule_count,                  -- molecule_count
-       null AS interactor_sequence,             -- interactor_sequence
-       null AS interactor_sequence_length,      -- interactor_sequence_length
-       int_type.crc64                           -- crc64
-FROM intact__interactor__main;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+       int_main.interactor_short,               -- interactor_shortlabel
+       int_main.interactor_full,                -- interactor_fullname
+       int_main.interactor_type_mi,             -- interactor_type_mi
+       int_main.interactor_type_short,          -- interactor_type_short
+       int_main.interactor_type_full,           -- interactor_type_full
+       int_main.experimental_role_mi,           -- experimental_role_mi
+       int_main.experimental_role_short,        -- experimental_role_short
+       int_main.experimental_role_full,         -- experimental_role_full
+       int_main.biological_role_mi,             -- biological_role_mi
+       int_main.biological_role_short,          -- biological_role_short
+       int_main.biological_role_full,           -- biological_role_full
+       int_main.interactor_biosource_taxid,     -- interactor_biosource_taxid
+       int_main.interactor_biosource_short,     -- interactor_biosource_short
+       int_main.interactor_biosource_full,      -- interactor_biosource_full
+       int_main.component_expressed_in_taxid,   -- component_expressed_in_taxid
+       int_main.component_expressed_in_short,   -- component_expressed_in_short
+       int_main.component_expressed_in_full,    -- component_expressed_in_full
+       int_main.stoichiometry,                  -- stoichiometry
+       int_main.molecule_count,                 -- molecule_count
+       int_main.interactor_sequence,            -- interactor_sequence
+       int_main.interactor_sequence_length,     -- interactor_sequence_length
+       int_main.crc64,                          -- crc64
+       f.shortlabel,                            -- feature_short
+       f.fullname,                              -- feature_full
+       cv1.mi,                                  -- feature_type_mi
+       cv1.shortlabel,                          -- feature_type_short
+       cv1.fullname,                            -- feature_type_full
+       cv2.mi,                                  -- feature_identmethod_mi
+       cv2.shortlabel,                          -- feature_identmethod_short
+       cv2.fullname                             -- feature_identmethod_full
+FROM ia_feature f LEFT OUTER JOIN v_cv_mi cv1
+                               ON ( f.featuretype_ac = cv1.ac )
+                  LEFT OUTER JOIN v_cv_mi cv2
+                               ON ( f.identification_ac = cv2.ac)
+                 RIGHT OUTER JOIN intact__interactor__main int_main
+                               ON ( f.component_ac = int_main.interactor_key);
 
 
 
@@ -123,4 +118,30 @@ FROM ia_feature2annot f_anno LEFT OUTER JOIN v_annotation anno
                                           ON (anno.annotation_ac = f_anno.annotation_ac)
                             RIGHT OUTER JOIN ia_feature f
                                           ON (f.ac = f_anno.feature_ac);
- 
+
+
+
+-- #############################################################################
+-- #                      intact__range__dm                           
+-- #############################################################################
+
+INSERT INTO intact__range__dm
+SELECT r.feature_ac,
+       r.undetermined,
+       r.link,
+       r.fromintervalstart,
+       r.fromintervalend,
+       cv1.mi,
+       cv1.shortlabel,
+       cv1.fullname,
+       r.tointervalstart,
+       r.tointervalstart,
+       cv2.mi,
+       cv2.shortlabel,
+       cv2.fullname
+FROM ia_range r LEFT OUTER JOIN v_cv_mi cv1
+                             ON ( r.fromfuzzytype_ac = cv1.ac)
+                LEFT OUTER JOIN v_cv_mi cv2
+                             ON ( r.tofuzzytype_ac = cv2.ac);
+
+COMMIT;

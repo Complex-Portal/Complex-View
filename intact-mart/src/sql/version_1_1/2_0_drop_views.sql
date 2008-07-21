@@ -43,6 +43,8 @@ BEGIN
    drop_m_view_if_exist('v_interactor_type');
    drop_m_view_if_exist('v_interactor_alias_type');
    drop_m_view_if_exist('v_interactor_xref');
+   drop_m_view_if_exist('v_com_roles');
+   drop_m_view_if_exist('v_get_interactor_key');
 END;
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

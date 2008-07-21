@@ -51,7 +51,7 @@ CREATE TABLE intact__experiment_alias__dm (
 
 CREATE TABLE intact__experiment_anno__dm (
   experiment_key VARCHAR2(30) NOT NULL,
-  description LONG NULL,
+  description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
   topic_short VARCHAR2(30) NULL,
   topic_full VARCHAR2(400) NULL
@@ -104,7 +104,7 @@ CREATE TABLE intact__interaction_alias__dm (
 
 CREATE TABLE intact__interaction_anno__dm (
   interaction_key VARCHAR2(30) NOT NULL,
-  description LONG NULL,
+  description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
   topic_short VARCHAR2(30) NULL,
   topic_full VARCHAR2(400) NULL
@@ -160,7 +160,7 @@ CREATE TABLE intact__interactor__main (
   interactor_type_full VARCHAR2(400) NULL,
   experimental_role_mi VARCHAR2(30) NULL,
   experimental_role_short VARCHAR2(30) NULL,
-  experimental_role_full VARCHAR2(30) NULL,
+  experimental_role_full VARCHAR2(400) NULL,
   biological_role_mi VARCHAR2(30) NULL,
   biological_role_short VARCHAR2(30) NULL,
   biological_role_full VARCHAR2(400) NULL,
@@ -172,7 +172,7 @@ CREATE TABLE intact__interactor__main (
   component_expressed_in_full VARCHAR2(400) NULL,
   stoichiometry INTEGER NULL,
   molecule_count INTEGER NULL,
-  interactor_sequence LONG NULL,
+  interactor_sequence VARCHAR2(4000) NULL,
   interactor_sequence_length INTEGER NULL,
   crc64 VARCHAR2(30) NULL
 );
@@ -187,7 +187,7 @@ CREATE TABLE intact__interactor_alias__dm (
 
 CREATE TABLE intact__interactor_anno__dm (
   interactor_key VARCHAR2(30) NOT NULL,
-  description LONG NULL,
+  description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
   topic_short VARCHAR2(30) NULL,
   topic_full VARCHAR2(400) NULL
@@ -228,38 +228,38 @@ CREATE TABLE intact__feature__main (
   interaction_count INTEGER NULL,
   interaction_type_mi VARCHAR2(30) NULL,
   interaction_type_short VARCHAR2(30) NULL,
-  interaction_type_full VARCHAR2(30) NULL,
+  interaction_type_full VARCHAR2(400) NULL,
   interactor_count INTEGER NULL,
   interactor_short VARCHAR2(30) NULL,
-  interactor_full VARCHAR2(30) NULL,
+  interactor_full VARCHAR2(400) NULL,
   interactor_type_mi VARCHAR2(30) NULL,
   interactor_type_short VARCHAR2(30) NULL,
-  interactor_type_full VARCHAR2(30) NULL,
+  interactor_type_full VARCHAR2(400) NULL,
   experimental_role_mi VARCHAR2(30) NULL,
   experimental_role_short VARCHAR2(30) NULL,
-  experimental_role_full VARCHAR2(30) NULL,
+  experimental_role_full VARCHAR2(400) NULL,
   biological_role_mi VARCHAR2(30) NULL,
   biological_role_short VARCHAR2(30) NULL,
-  biological_role_full VARCHAR2(30) NULL,
+  biological_role_full VARCHAR2(400) NULL,
   interactor_biosource_taxid VARCHAR2(30) NULL,
   interactor_biosource_short VARCHAR2(30) NULL,
-  interactor_biosource_full VARCHAR2(30) NULL,
+  interactor_biosource_full VARCHAR2(400) NULL,
   component_expressed_in_taxid VARCHAR2(30) NULL,
   component_expressed_in_short VARCHAR2(30) NULL,
-  component_expressed_in_full VARCHAR2(30) NULL,
+  component_expressed_in_full VARCHAR2(400) NULL,
   stoichiometry INTEGER NULL,
   molecule_count INTEGER NULL,
-  interactor_sequence LONG NULL,
+  interactor_sequence VARCHAR2(4000) NULL, 
   interactor_sequence_length INTEGER NULL,
   crc64 VARCHAR2(30) NULL,
   feature_shortlabel VARCHAR2(30) NULL,
-  feature_fullname VARCHAR2(30) NULL,
+  feature_fullname VARCHAR2(400) NULL,
   feature_type_mi VARCHAR2(30) NULL,
   feature_type_short VARCHAR2(30) NULL,
-  feature_type_full VARCHAR2(30) NULL,
+  feature_type_full VARCHAR2(400) NULL,
   feature_identmethod_mi VARCHAR2(30) NULL,
   feature_identmethod_short VARCHAR2(30) NULL,
-  feature_identmethod_full VARCHAR2(30) NULL
+  feature_identmethod_full VARCHAR2(400) NULL
 );
 
 CREATE TABLE intact__feature_alias__dm (
@@ -272,7 +272,7 @@ CREATE TABLE intact__feature_alias__dm (
 
 CREATE TABLE intact__feature_anno__dm (
   feature_key VARCHAR2(30) NOT NULL,
-  description LONG NULL,
+  description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
   topic_short VARCHAR2(30) NULL,
   topic_full VARCHAR2(400) NULL
@@ -298,10 +298,10 @@ CREATE TABLE intact__range__dm (
   from_interval_end INTEGER NULL,
   from_fuzzytype_mi VARCHAR2(30) NULL,
   from_fuzzytype_short VARCHAR2(30) NULL,
-  from_fuzzytype_full VARCHAR2(30) NULL,
+  from_fuzzytype_full VARCHAR2(400) NULL,
   to_interval_start INTEGER NULL,
   to_interval_end INTEGER NULL,
   to_fuzzytype_mi VARCHAR2(30) NULL,
   to_fuzzytype_short VARCHAR2(30) NULL,
-  to_fuzzytype_full VARCHAR2(30) NULL
+  to_fuzzytype_full VARCHAR2(400) NULL
 );

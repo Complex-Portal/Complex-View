@@ -166,3 +166,5 @@ FROM ia_experiment exp JOIN v_publication_mi pub
             LEFT OUTER JOIN v_publication_counts pub_counts
                          ON ( pub_counts.pub_ac = exp.publication_ac );
 
+
+COMMIT;
