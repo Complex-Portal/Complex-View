@@ -172,7 +172,7 @@ CREATE TABLE intact__interactor__main (
   component_expressed_in_full VARCHAR2(400) NULL,
   stoichiometry INTEGER NULL,
   molecule_count INTEGER NULL,
-  interactor_sequence VARCHAR2(4000) NULL,
+  interactor_sequence CLOB NULL,
   interactor_sequence_length INTEGER NULL,
   crc64 VARCHAR2(30) NULL
 );
@@ -203,6 +203,14 @@ CREATE TABLE intact__interactor_xref__dm (
   qualifier_mi VARCHAR2(30) NULL,
   qualifier_short VARCHAR2(30) NULL,
   qualifier_full VARCHAR2(400) NULL
+);
+
+-- stores temoprary the interactor_sequence
+CREATE TABLE tbl_sequence_tmp (
+  intactor_key varchar2(30),
+  interactor_sequence CLOB NULL,
+  interactor_sequence_length INTEGER NULL,
+  PRIMARY KEY (intactor_key)
 );
 
 -- #############################################################################
@@ -249,7 +257,7 @@ CREATE TABLE intact__feature__main (
   component_expressed_in_full VARCHAR2(400) NULL,
   stoichiometry INTEGER NULL,
   molecule_count INTEGER NULL,
-  interactor_sequence VARCHAR2(4000) NULL, 
+  interactor_sequence CLOB NULL, 
   interactor_sequence_length INTEGER NULL,
   crc64 VARCHAR2(30) NULL,
   feature_shortlabel VARCHAR2(30) NULL,

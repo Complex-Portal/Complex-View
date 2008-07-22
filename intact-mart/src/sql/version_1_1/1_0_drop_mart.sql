@@ -36,6 +36,7 @@ BEGIN
    drop_table_if_exist ('intact__interactor_xref__dm');
    drop_table_if_exist ('intact__interactor_anno__dm');
    drop_table_if_exist ('intact__interactor_alias__dm');
+   drop_table_if_exist ('tbl_sequence_tmp');
    -- fourth main and dimension tables
    drop_table_if_exist ('intact__feature__main');
    drop_table_if_exist ('intact__feature_xref__dm');

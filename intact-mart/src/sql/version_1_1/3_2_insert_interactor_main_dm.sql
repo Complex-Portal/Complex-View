@@ -41,14 +41,15 @@ SELECT int_main.experiment_key,                 -- experiment_key
        com_roles.component_expressed_in_full,   -- component_expressed_in_full
        com_roles.stoichiometry,                 -- stoichiometry
        null AS molecule_count,                  -- molecule_count
-       null AS interactor_sequence,             -- interactor_sequence
-       null AS interactor_sequence_length,      -- interactor_sequence_length
+       tmp.interactor_sequence,                 -- interactor_sequence
+       tmp.interactor_sequence_length,          -- interactor_sequence_length
        int_type.crc64                           -- crc64
 FROM v_com_roles com_roles RIGHT OUTER JOIN intact__interaction__main int_main
                                          ON ( int_main.interaction_key = com_roles.interaction_ac) 
                             LEFT OUTER JOIN v_interactor_type int_type
-                                         ON ( int_type.interactor_ac = com_roles.interactor_ac);
-
+                                         ON ( int_type.interactor_ac = com_roles.interactor_ac)
+                            LEFT OUTER JOIN tbl_sequence_tmp tmp
+                                         ON ( tmp.intactor_key = com_roles.interactor_ac);
 
 
 -- #############################################################################
