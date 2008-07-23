@@ -182,7 +182,8 @@ CREATE TABLE intact__interactor__main (
   stoichiometry INTEGER NULL,
   interactor_sequence CLOB NULL,
   interactor_sequence_length INTEGER NULL,
-  crc64 VARCHAR2(30) NULL
+  crc64 VARCHAR2(30) NULL,
+  involved_interaction_count INTEGER NULL
 );
 
 CREATE TABLE intact__interactor_alias__dm (
@@ -268,6 +269,7 @@ CREATE TABLE intact__feature__main (
   interactor_sequence CLOB NULL, 
   interactor_sequence_length INTEGER NULL,
   crc64 VARCHAR2(30) NULL,
+  involved_interaction_count INTEGER NULL,
   feature_shortlabel VARCHAR2(30) NULL,
   feature_fullname VARCHAR2(400) NULL,
   feature_type_mi VARCHAR2(30) NULL,

@@ -44,6 +44,17 @@ FROM ia_component com LEFT OUTER JOIN v_cv_mi cv1
                                    ON ( com.expressedin_ac = expres_bio.ac);
 
 
+-- counts in how many interaction on interactor is involved
+CREATE MATERIALIZED VIEW v_involved_interaction_count AS 
+SELECT interactor.interactor_ac,       -- interactor_key
+       COUNT(*) AS interaction_count   -- interaction_count
+FROM v_interaction_type interaction,
+     ia_component com,
+     v_interactor_type interactor
+WHERE     interaction.ac = com.interaction_ac
+      and com.interactor_ac = interactor.interactor_ac
+GROUP BY interactor.interactor_ac;
+
 
 -- #############################################################################
 -- #                  intact__interactor_xref__dm

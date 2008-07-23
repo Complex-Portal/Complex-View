@@ -45,6 +45,7 @@ BEGIN
    drop_m_view_if_exist('v_interactor_xref');
    drop_m_view_if_exist('v_com_roles');
    drop_m_view_if_exist('v_get_interactor_key');
+   drop_m_view_if_exist('v_involved_interaction_count');
    -- view for the fourth main table
    drop_m_view_if_exist('v_feature');
 END;
