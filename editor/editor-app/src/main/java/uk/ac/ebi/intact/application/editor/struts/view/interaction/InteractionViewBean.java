@@ -882,19 +882,17 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         CvObjectDao<CvObject> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvObject.class);
         CvInteractionType type =(CvInteractionType) cvObjectDao.getByShortLabel(myInteractionType);
 
-        // Have we set the annotated object for the view?
-        //if (intact == null) {
+            // Have we set the annotated object for the view?
             // Collect experiments from beans.
             List<Experiment> exps = new ArrayList<Experiment>();
 
             for (ExperimentRowData row : getExperiments())
             {
                 Experiment exp = row.getExperiment();
-                if (exp == null)
-                {
-                    ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
-                    exp = experimentDao.getByAc(row.getAc());
-                }
+                if(row.getAc()!=null){
+                ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
+                exp = experimentDao.getByAc(row.getAc());
+                }   
                 exps.add(exp);
             }
             // The interactor type.
@@ -904,11 +902,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             intact = new InteractionImpl(exps, new ArrayList(),
                     type, intType, getShortLabel(), IntactContext.getCurrentInstance().getConfig().getInstitution());
 
-        //}
-        //else {
-            // Update the existing interaction.
-        //    intact.setCvInteractionType(type);
-        //}
+
         // Get the objects using their short label.
         if (myOrganism != null) {
             BioSourceDao bioSourceDao = DaoProvider.getDaoFactory().getBioSourceDao();
@@ -932,10 +926,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             intact.removeExperiment(exp);
         }
 
-
-
          // Add experiments here. Make sure this is done after persisting the
-        // Interaction first. - IMPORTANT. don't change the order.
+         // Interaction first. - IMPORTANT. don't change the order.
         for (Iterator iter = getExperimentsToAdd().iterator(); iter.hasNext();) {
             ExperimentRowData row = (ExperimentRowData) iter.next();
             Experiment exp = null;

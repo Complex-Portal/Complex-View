@@ -116,6 +116,10 @@ public abstract class AbstractSubmitAction extends AbstractEditorAction {
                 forward = mapping.findForward(path);
             }
         }
+        if ( LOGGER.isDebugEnabled() ) {
+            LOGGER.debug( "forwading to ... " + forward.getPath());
+        }
+
         return forward;
     }
 }

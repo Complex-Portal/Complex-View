@@ -59,6 +59,11 @@ public class DeleteFormAction extends AbstractEditorAction {
                 // Back to the search page.
                 return mapping.findForward(SEARCH);
             }
+
+            //removing it from cache before deleting
+            if ( view.getAnnotatedObject() != null ) {
+              user.updateSearchCache( view.getAnnotatedObject() );
+            }
             // Delete the object we are editing at the moment.
             user.delete();
         }

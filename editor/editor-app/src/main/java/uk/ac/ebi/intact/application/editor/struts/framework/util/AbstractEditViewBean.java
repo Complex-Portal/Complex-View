@@ -278,11 +278,11 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
      */
     public void reset(T annobj) {
         if (log.isDebugEnabled()) log.debug("Resetting view, with object: "+annobj.getShortLabel()+" ("+annobj.getAc()+")");
-        /*
+
         if (annobj.getAc() != null) {
             annobj = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
                     .getAnnotatedObjectDao((Class<T>)annobj.getClass()).getByAc(annobj.getAc());
-        }  */
+        }  
         setAc(annobj.getAc());
 
         // no need to call it from here.
@@ -856,6 +856,12 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
         myAnnotObject = createAnnotatedObjectFromView();
         populateAnnotatedObjectFromView();
+
+        Institution institution = IntactContext.getCurrentInstance().getInstitution();
+        institution.setAnnotations( institution.getAnnotations() );
+        institution.setAliases( institution.getAliases() );
+        institution.setXrefs( institution.getXrefs() );
+        myAnnotObject.setOwner( institution );
 
         try {
             PersisterHelper.saveOrUpdate(myAnnotObject);

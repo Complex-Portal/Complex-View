@@ -10,8 +10,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
+import uk.ac.ebi.intact.application.editor.business.EditorService;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorAction;
 import uk.ac.ebi.intact.application.editor.struts.view.feature.FeatureViewBean;
+import uk.ac.ebi.intact.application.editor.struts.view.interaction.InteractionViewBean;
+import uk.ac.ebi.intact.model.Interaction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,6 +77,8 @@ public class CancelFeatureAction extends AbstractEditorAction {
         if (view.isNewFeature() && view.getAnnotatedObject() != null) {
             return mapping.findForward("delete");
         }
+
+        user.setSelectedTopic( EditorService.getTopic( Interaction.class ));
         // Restore the previous view (interaction view).
         user.restorePreviousView();
 
