@@ -22,7 +22,7 @@ BEGIN
    drop_m_view_if_exist('v_cv_primaryid');
    drop_m_view_if_exist('v_cv_mi');
    drop_m_view_if_exist('v_annotation');
-   -- views for first main and dimension tables
+   -- views for the first main and dimension tables
    drop_m_view_if_exist('v_experiment');
    drop_m_view_if_exist('v_interaction_count');
    drop_m_view_if_exist('v_experiment_xref');
@@ -31,20 +31,22 @@ BEGIN
    drop_m_view_if_exist('v_publication_pmid');
    drop_m_view_if_exist('v_publication_doi');
    drop_m_view_if_exist('v_publication_mi');
-   -- views for second main and dimension tables
+   -- views for the second main and dimension tables
    drop_m_view_if_exist('v_interaction');
    drop_m_view_if_exist('v_interaction_type');
-   drop_m_view_if_exist('v_interactor_count');
    drop_m_view_if_exist('v_interaction_owner_xref');
    drop_m_view_if_exist('v_interaction_owner');
    drop_m_view_if_exist('v_component_xref');
    drop_m_view_if_exist('v_component_roles');
-   -- views for third main and dimension tables
+   drop_m_view_if_exist('v_component_count');
+   -- views for the third main and dimension tables
    drop_m_view_if_exist('v_interactor_type');
    drop_m_view_if_exist('v_interactor_alias_type');
    drop_m_view_if_exist('v_interactor_xref');
    drop_m_view_if_exist('v_com_roles');
    drop_m_view_if_exist('v_get_interactor_key');
+   -- view for the fourth main table
+   drop_m_view_if_exist('v_feature');
 END;
 
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

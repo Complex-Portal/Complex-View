@@ -21,7 +21,8 @@ SELECT int_main.experiment_key,                 -- experiment_key
        int_main.interaction_type_mi,            -- interaction_type_mi
        int_main.interaction_type_short,         -- interaction_type_short
        int_main.interaction_type_full,          -- interaction_type_full
-       int_main.interactor_count,               -- interactor_count
+       int_main.component_count,                -- component_count
+       int_main.molecule_count,                 -- molecule_count
        int_type.interactor_shortlabel,          -- interactor_shortlabel
        int_type.interactor_fullname,            -- interactor_fullname
        int_type.interactor_type_mi,             -- interactor_type_mi
@@ -40,7 +41,6 @@ SELECT int_main.experiment_key,                 -- experiment_key
        com_roles.component_expressed_in_short,  -- component_expressed_in_short
        com_roles.component_expressed_in_full,   -- component_expressed_in_full
        com_roles.stoichiometry,                 -- stoichiometry
-       null AS molecule_count,                  -- molecule_count
        tmp.interactor_sequence,                 -- interactor_sequence
        tmp.interactor_sequence_length,          -- interactor_sequence_length
        int_type.crc64                           -- crc64

@@ -91,7 +91,8 @@ CREATE TABLE intact__interaction__main (
   interaction_type_mi VARCHAR2(30) NULL,
   interaction_type_short VARCHAR2(30) NULL,
   interaction_type_full VARCHAR2(400) NULL,
-  interactor_count INTEGER NULL
+  component_count INTEGER NULL,
+  molecule_count INTEGER NULL
 );
 
 CREATE TABLE intact__interaction_alias__dm (
@@ -129,6 +130,13 @@ CREATE TABLE intact__interaction_owner__dm (
   interaction_owner_full VARCHAR2(100) NULL
 );
 
+-- involved molecule count per interaction
+CREATE TABLE tbl_molecule_count_tmp (
+  interaction_key VARCHAR2(30) NULL,
+  molecule_count INTEGER NULL,
+  PRIMARY KEY (interaction_key)
+);
+
 -- #############################################################################
 -- #           3. main and deminsion tables for interactor
 -- #############################################################################
@@ -152,7 +160,8 @@ CREATE TABLE intact__interactor__main (
   interaction_type_mi VARCHAR2(30) NULL,
   interaction_type_short VARCHAR2(30) NULL,
   interaction_type_full VARCHAR2(400) NULL,
-  interactor_count INTEGER NULL,
+  component_count INTEGER NULL,
+  molecule_count INTEGER NULL,
   interactor_short VARCHAR2(30) NULL,
   interactor_full VARCHAR2(400) NULL,
   interactor_type_mi VARCHAR2(30) NULL,
@@ -171,7 +180,6 @@ CREATE TABLE intact__interactor__main (
   component_expressed_in_short VARCHAR2(30) NULL,
   component_expressed_in_full VARCHAR2(400) NULL,
   stoichiometry INTEGER NULL,
-  molecule_count INTEGER NULL,
   interactor_sequence CLOB NULL,
   interactor_sequence_length INTEGER NULL,
   crc64 VARCHAR2(30) NULL
@@ -237,7 +245,8 @@ CREATE TABLE intact__feature__main (
   interaction_type_mi VARCHAR2(30) NULL,
   interaction_type_short VARCHAR2(30) NULL,
   interaction_type_full VARCHAR2(400) NULL,
-  interactor_count INTEGER NULL,
+  component_count INTEGER NULL,
+  molecule_count INTEGER NULL,
   interactor_short VARCHAR2(30) NULL,
   interactor_full VARCHAR2(400) NULL,
   interactor_type_mi VARCHAR2(30) NULL,
@@ -256,7 +265,6 @@ CREATE TABLE intact__feature__main (
   component_expressed_in_short VARCHAR2(30) NULL,
   component_expressed_in_full VARCHAR2(400) NULL,
   stoichiometry INTEGER NULL,
-  molecule_count INTEGER NULL,
   interactor_sequence CLOB NULL, 
   interactor_sequence_length INTEGER NULL,
   crc64 VARCHAR2(30) NULL,

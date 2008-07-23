@@ -20,11 +20,14 @@ SELECT exp.experiment_key,                 -- experiment_key
        inter.mi,                           -- interaction_type_mi
        inter.shortlabel,                   -- interaction_type_short
        inter.fullname,                     -- interaction_type_full
-       inter.interactor_count              -- interactor_count
+       inter.component_count,              -- component_count
+       tmp.molecule_count                  -- molecule_count
 FROM ia_int2exp int_exp RIGHT OUTER JOIN v_interaction inter
                                       ON (int_exp.interaction_ac = inter.ac)             
                          LEFT OUTER JOIN intact__experiment__main exp
-                                      ON (int_exp.experiment_ac = exp.experiment_key);
+                                      ON (int_exp.experiment_ac = exp.experiment_key)
+                         LEFT OUTER JOIN tbl_molecule_count_tmp tmp
+                                      ON (int_exp.interaction_ac = tmp.interaction_key);
 
 
 

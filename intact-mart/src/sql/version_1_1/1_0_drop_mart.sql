@@ -31,6 +31,7 @@ BEGIN
    drop_table_if_exist ('intact__interaction_anno__dm');
    drop_table_if_exist ('intact__interaction_alias__dm');
    drop_table_if_exist ('intact__interaction_owner__dm');
+   drop_table_if_exist ('tbl_molecule_count_tmp');
    -- third main and dimension tables
    drop_table_if_exist ('intact__interactor__main');
    drop_table_if_exist ('intact__interactor_xref__dm');

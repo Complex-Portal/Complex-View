@@ -6,7 +6,7 @@ INSERT INTO intact__feature__main
 SELECT int_main.experiment_key,                 -- experiment_key
        int_main.interaction_key,                -- interaction_key
        int_main.interactor_key,                 -- interactor_key
-       f.ac,                                    -- feature_key
+       f.feature_key,                           -- feature_key
        int_main.experiment_short,               -- experiment_short
        int_main.experiment_full,                -- experiment_full
        int_main.host_organism_taxid,            -- host_organism_taxid
@@ -22,7 +22,8 @@ SELECT int_main.experiment_key,                 -- experiment_key
        int_main.interaction_type_mi,            -- interaction_type_mi
        int_main.interaction_type_short,         -- interaction_type_short
        int_main.interaction_type_full,          -- interaction_type_full
-       int_main.interactor_count,               -- interactor_count
+       int_main.component_count,                -- component_count
+       int_main.molecule_count,                 -- molecule_count
        int_main.interactor_short,               -- interactor_shortlabel
        int_main.interactor_full,                -- interactor_fullname
        int_main.interactor_type_mi,             -- interactor_type_mi
@@ -41,23 +42,18 @@ SELECT int_main.experiment_key,                 -- experiment_key
        int_main.component_expressed_in_short,   -- component_expressed_in_short
        int_main.component_expressed_in_full,    -- component_expressed_in_full
        int_main.stoichiometry,                  -- stoichiometry
-       int_main.molecule_count,                 -- molecule_count
        int_main.interactor_sequence,            -- interactor_sequence
        int_main.interactor_sequence_length,     -- interactor_sequence_length
        int_main.crc64,                          -- crc64
-       f.shortlabel,                            -- feature_short
-       f.fullname,                              -- feature_full
-       cv1.mi,                                  -- feature_type_mi
-       cv1.shortlabel,                          -- feature_type_short
-       cv1.fullname,                            -- feature_type_full
-       cv2.mi,                                  -- feature_identmethod_mi
-       cv2.shortlabel,                          -- feature_identmethod_short
-       cv2.fullname                             -- feature_identmethod_full
-FROM ia_feature f LEFT OUTER JOIN v_cv_mi cv1
-                               ON ( f.featuretype_ac = cv1.ac )
-                  LEFT OUTER JOIN v_cv_mi cv2
-                               ON ( f.identification_ac = cv2.ac)
-                 RIGHT OUTER JOIN intact__interactor__main int_main
+       f.feature_short,                         -- feature_short
+       f.feature_full,                          -- feature_full
+       f.feature_type_mi,                       -- feature_type_mi
+       f.feature_type_short,                    -- feature_type_short
+       f.feature_type_full,                     -- feature_type_full
+       f.feature_identmethod_mi,                -- feature_identmethod_mi
+       f.feature_identmethod_short,             -- feature_identmethod_short
+       f.feature_identmethod_full               -- feature_identmethod_full
+FROM v_feature f RIGHT OUTER JOIN intact__interactor__main int_main
                                ON ( f.component_ac = int_main.interactor_key);
 
 

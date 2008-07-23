@@ -13,14 +13,17 @@ FROM ia_interactor inter LEFT OUTER JOIN v_cv_mi cv
 WHERE cv.mi = 'MI:0317';  -- 'interaction'
 
 
--- the number of interactor which are involved in a spezific interaction
-CREATE MATERIALIZED VIEW v_interactor_count AS
+
+-- the number of component which are involved in a spezific interaction
+CREATE MATERIALIZED VIEW v_component_count AS
 SELECT interaction.ac AS ac,
-       COUNT(*)       AS interactor_count
+       COUNT(*)       AS component_count
 FROM ia_interactor interaction,
      ia_component com
 WHERE interaction.ac = com.interaction_ac
 GROUP BY interaction.ac;
+
+
 
 -- for speed up use only the interaction from interactor
 CREATE MATERIALIZED VIEW v_interaction AS
@@ -28,9 +31,9 @@ SELECT int_type.ac,              -- interaction_key
        int_type.mi,              -- interaction_type_mi
        int_type.shortlabel,      -- interaction_type_short
        int_type.fullname,        -- interaction_type_full
-       i_count.interactor_count  -- interactor_count
-FROM v_interaction_type int_type LEFT OUTER JOIN v_interactor_count i_count
-                                              ON ( int_type.ac  = i_count.ac );
+       com_count.component_count   -- component_count
+FROM v_interaction_type int_type LEFT OUTER JOIN v_component_count com_count
+                                              ON ( int_type.ac  = com_count.ac );
 
 
 
