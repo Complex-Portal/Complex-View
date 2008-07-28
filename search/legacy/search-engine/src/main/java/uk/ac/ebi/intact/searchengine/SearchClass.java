@@ -45,7 +45,9 @@ public enum SearchClass {
     CV_TISSUE( "CvTissue", CvTissue.class ),
     CV_TOPIC( "CvTopic", CvTopic.class ),
     CV_XREF_QUALIFIER( "CvXrefQualifier", CvXrefQualifier.class ),
-
+    CV_CONFIDENCE_TYPE("CvConfidenceType", CvConfidenceType.class),
+    CV_PARAMETER_TYPE("CvParameterType",CvParameterType.class),
+    CV_PARAMETER_UNIT("CvParameterUnit", CvParameterUnit.class),
     NOSPECIFIED( "No specified", AnnotatedObject.class );
 
     private Class<? extends AnnotatedObject> mappedClass;
