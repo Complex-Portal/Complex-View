@@ -52,7 +52,7 @@ FROM v_com_roles com_roles RIGHT OUTER JOIN intact__interaction__main int_main
                             LEFT OUTER JOIN tbl_sequence_tmp tmp
                                          ON ( tmp.intactor_key = com_roles.interactor_ac)
                             LEFT OUTER JOIN v_involved_interaction_count int_count
-                                         ON ( int_count.interactor_ac = com_roles.interaction_ac);
+                                         ON ( int_count.interactor_ac = com_roles.interactor_ac);
 
 
 -- #############################################################################
