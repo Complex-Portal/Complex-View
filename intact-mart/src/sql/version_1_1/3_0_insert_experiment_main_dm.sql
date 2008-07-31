@@ -123,7 +123,7 @@ WHERE bio.celltype_ac IS NOT NULL;
 
 -- insert all pubmed 
 INSERT INTO intact__publication__dm 
-SELECT int_exp.interaction_ac AS experiment_key,
+SELECT int_exp.experiment_ac  AS experiment_key,
        pub.pmid               AS pmid,         
        exp.fullname           AS title,
        null                   AS doi,
@@ -138,7 +138,7 @@ FROM ia_experiment exp JOIN v_publication_pmid pub
 
 -- there are at the moment no doi ids for a publication available
 INSERT INTO intact__publication__dm 
-SELECT int_exp.interaction_ac AS experiment_key,
+SELECT int_exp.experiment_ac  AS experiment_key,
        null                   AS pmid,         
        exp.fullname           AS title,
        pub.doi                AS doi,
@@ -153,7 +153,7 @@ FROM ia_experiment exp JOIN v_publication_doi pub
 
 -- all other possible mi identifier
 INSERT INTO intact__publication__dm 
-SELECT int_exp.interaction_ac AS experiment_key,
+SELECT int_exp.experiment_ac  AS experiment_key,
        null                   AS pmid,         
        exp.fullname           AS title,
        null                   AS doi,
