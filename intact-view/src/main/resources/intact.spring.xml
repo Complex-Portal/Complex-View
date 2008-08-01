@@ -6,9 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <!--<context:annotation-config/>-->
-    <context:component-scan base-package="uk.ac.ebi.intact.services"/>
-    <context:component-scan base-package="uk.ac.ebi.intact.binarysearch.webapp"/>
+    <context:component-scan base-package="uk.ac.ebi.intact.view.webapp"/>
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
@@ -18,6 +16,6 @@
 
     <!-- Comment this on production -->
     <!-- Creates some data if the database is empty -->
-    <bean id="dataPopInitBean" class="uk.ac.ebi.intact.services.search.dev.IntactPopulatorBean" depends-on="intactInitBean"/>
+    <!--<bean id="dataPopInitBean" class="uk.ac.ebi.intact.services.search.dev.IntactPopulatorBean" depends-on="intactInitBean"/>-->
 
 </beans>

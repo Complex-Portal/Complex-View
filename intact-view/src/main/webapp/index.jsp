@@ -4,7 +4,7 @@
     String configFile = request.getSession().getServletContext().getInitParameter("psidev.DEFAULT_CONFIG_FILE");
 
     if (configFile != null && new File(configFile).exists()) {
-        response.sendRedirect("search.xhtml");
+        response.sendRedirect("main.xhtml");
     } else {
         response.sendRedirect("first_time_config.xhtml");
     }

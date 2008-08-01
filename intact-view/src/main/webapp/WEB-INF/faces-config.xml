@@ -17,86 +17,26 @@
       </resource-bundle>
   </application>
 
-
-
-
-    <!-- Search and results -->
+    <!-- Search -->
 
     <managed-bean>
         <managed-bean-name>searchBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.services.search.controller.SearchController</managed-bean-class>
+        <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.search.SearchController</managed-bean-class>
          <!--configured in beans.spring.xml, declared here only for IDE purposes -->
         <managed-bean-scope>none</managed-bean-scope>
     </managed-bean>
 
 
-    <managed-bean>
-        <managed-bean-name>interactionResultsBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.services.search.controller.InteractionResultsController</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
-
-    <managed-bean>
-        <managed-bean-name>interactorResultsBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.services.search.controller.InteractorResultsController</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
-
-    <managed-bean>
-        <managed-bean-name>experimentResultsBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.services.search.controller.ExperimentResultsController</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
-
-    <managed-bean>
-        <managed-bean-name>cvObjectResultsBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.services.search.controller.CvObjectResultsController</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
-
-    <!-- Interactor views/controllers -->
-
-     <managed-bean>
-        <managed-bean-name>interactorBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.services.search.controller.interactor.InteractorController</managed-bean-class>
-         <!--configured in beans.spring.xml, declared here only for IDE purposes -->
-        <managed-bean-scope>none</managed-bean-scope>
-    </managed-bean>
-
-    <!-- Interaction views/controllers -->
-
-    <managed-bean>
-        <managed-bean-name>interactionBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.services.search.controller.interaction.InteractionController</managed-bean-class>
-        <!-- configured in beans.spring.xml, declared here only for IDE purposes -->
-        <managed-bean-scope>none</managed-bean-scope>
-    </managed-bean>
-
-    <!-- Experiment views/controllers -->
-
-    <managed-bean>
-        <managed-bean-name>experimentBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.services.search.controller.experiment.ExperimentController</managed-bean-class>
-        <!-- configured in beans.spring.xml, declared here only for IDE purposes -->
-        <managed-bean-scope>none</managed-bean-scope>
-    </managed-bean>
-
-    <!-- Binary search -->
-     <!-- view controllers / backing beans -->
+     <!-- admin and helpers-->
     <managed-bean>
         <managed-bean-name>appConfigBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean</managed-bean-class>
+        <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean</managed-bean-class>
         <managed-bean-scope>none</managed-bean-scope>
     </managed-bean>
     <managed-bean>
         <managed-bean-name>requestConfigBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.application.RequestConfigBean</managed-bean-class>
+        <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.application.RequestConfigBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
-    <managed-bean>
-        <managed-bean-name>olsBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean</managed-bean-class>
-        <managed-bean-scope>none</managed-bean-scope>
     </managed-bean>
      <managed-bean>
         <managed-bean-name>adminBean</managed-bean-name>
@@ -113,7 +53,7 @@
     </managed-bean>
     <managed-bean>
         <managed-bean-name>firstTimeBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.view.FirstTimeBean</managed-bean-class>
+        <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.admin.FirstTimeBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
         <managed-property>
             <property-name>config</property-name>
@@ -121,11 +61,5 @@
         </managed-property>
     </managed-bean>
 
-    <!--<managed-bean>-->
-        <!--<managed-bean-name>sqlStatistics</managed-bean-name>-->
-        <!--<managed-bean-class>uk.ac.ebi.intact.services.search.stats.StatusControllerd-bean-class>-->
-        <!--configured in beans.spring.xml, declared here only for IDE purposes -->
-        <!--<managed-bean-scope>none</managed-bean-scope>-->
-    <!--</managed-bean>-->
   
 </faces-config>

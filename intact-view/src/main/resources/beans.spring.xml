@@ -25,8 +25,8 @@
           <!--orchestra:conversationName="general"/>-->
 
     <!-- Binary search -->
-    <bean id="appConfigBean" class="uk.ac.ebi.intact.binarysearch.webapp.application.AppConfigBean" lazy-init="true"/>
-    <bean id="olsBean" class="uk.ac.ebi.intact.binarysearch.webapp.application.OlsBean" lazy-init="true" />
+    <bean id="appConfigBean" class="uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean" lazy-init="true"/>
+    <bean id="olsBean" class="uk.ac.ebi.intact.view.webapp.controller.application.OlsBean" lazy-init="true" />
 
     <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->
 

@@ -7,14 +7,6 @@
     <namespace>http://intact.ebi.ac.uk/view</namespace>
 
     <tag>
-        <tag-name>categoryItem</tag-name>
-        <source>facelets/components/CategoryItem.xhtml</source>
-    </tag>
-    <tag>
-        <tag-name>categoryGroup</tag-name>
-        <source>facelets/components/CategoryGroup.xhtml</source>
-    </tag>
-    <tag>
         <tag-name>dasty</tag-name>
         <source>facelets/components/Dasty.xhtml</source>
     </tag>
@@ -26,21 +18,5 @@
         <tag-name>imageHierarchView</tag-name>
         <source>facelets/components/ImageHierarchView.xhtml</source>
     </tag>
-    <tag>
-        <tag-name>panelCategory</tag-name>
-        <source>facelets/components/PanelCategory.xhtml</source>
-    </tag>
-    <tag>
-        <tag-name>panelCategoryColumn</tag-name>
-        <source>facelets/components/PanelCategoryColumn.xhtml</source>
-    </tag>
-
-    <function>
-        <function-name>resultItemsByCategory</function-name>
-        <function-class>uk.ac.ebi.intact.services.search.component.ComponentFunctions</function-class>
-        <function-signature>java.util.Collection
-            getItemsByCategory(uk.ac.ebi.intact.services.search.component.resultpanel.CategoryModel,java.lang.String)
-        </function-signature>
-    </function>
 
 </facelet-taglib>

@@ -38,17 +38,17 @@
     </function>
     <function>
         <function-name>xrefUrl</function-name>
-        <function-class>uk.ac.ebi.intact.binarysearch.webapp.util.XrefLinkGenerator</function-class>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.XrefLinkGenerator</function-class>
         <function-signature>java.lang.String generateUrl(uk.ac.ebi.intact.binarysearch.webapp.application.XrefLinkContext,psidev.psi.mi.tab.model.CrossReference)</function-signature>
     </function>
     <function>
         <function-name>xrefUrlForDb</function-name>
-        <function-class>uk.ac.ebi.intact.binarysearch.webapp.util.XrefLinkGenerator</function-class>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.XrefLinkGenerator</function-class>
         <function-signature>java.lang.String generateUrl(uk.ac.ebi.intact.binarysearch.webapp.application.XrefLinkContext,java.lang.String,java.lang.String)</function-signature>
     </function>
     <function>
         <function-name>xrefToString</function-name>
-        <function-class>uk.ac.ebi.intact.binarysearch.webapp.application.XrefLinkContextFactory</function-class>
+        <function-class>uk.ac.ebi.intact.view.webapp.controller.application.XrefLinkContextFactory</function-class>
         <function-signature>java.lang.String xrefToString(psidev.psi.mi.tab.model.CrossReference,boolean,boolean)</function-signature>
     </function>
     

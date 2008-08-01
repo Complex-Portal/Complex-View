@@ -5,10 +5,7 @@
 
 <facelet-taglib>
     <namespace>http://intact.ebi.ac.uk/binarysearch</namespace>
-    <tag>
-        <tag-name>advancedSearch</tag-name>
-        <source>facelets/components/binarysearch/AdvancedSearch.xhtml</source>
-    </tag>
+
     <tag>
         <tag-name>hilightableRowElement</tag-name>
         <source>facelets/components/binarysearch/HilightableRowElement.xhtml</source>
@@ -28,10 +25,6 @@
     <tag>
         <tag-name>searchBox</tag-name>
         <source>facelets/components/binarysearch/SearchBox.xhtml</source>
-    </tag>
-    <tag>
-        <tag-name>termChooser</tag-name>
-        <source>facelets/components/binarysearch/TermChooser.xhtml</source>
     </tag>
     <tag>
         <tag-name>xrefDataList</tag-name>

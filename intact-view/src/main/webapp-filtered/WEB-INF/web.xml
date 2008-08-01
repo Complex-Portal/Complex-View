@@ -338,13 +338,16 @@
         <listener-class>uk.ac.ebi.intact.webapp.BasicStartupIntactListener</listener-class>
     </listener>
 
-    <!-- App binary search listener -->
+    <!-- Intact view listener -->
     <listener>
         <description>Listener to startup the application</description>
-        <listener-class>uk.ac.ebi.intact.binarysearch.webapp.StartupListener</listener-class>
+        <listener-class>uk.ac.ebi.intact.view.webapp.StartupListener</listener-class>
     </listener>
 
-    <!-- Listener to force a garbage collection if too many files are open - Only works in UNIX -->
+    <!--
+    Listener to force a garbage collection if too many files are open - Only works in UNIX
+    This can be removed if using Facelets >= 1.15
+    -->
     <listener>
         <listener-class>uk.ac.ebi.faces.webapp.EvilOpenFilesListener</listener-class>
     </listener>
@@ -401,7 +404,7 @@
     <!-- Binary Search Servlets -->
       <servlet>
         <servlet-name>export</servlet-name>
-        <servlet-class>uk.ac.ebi.intact.binarysearch.webapp.servlet.ExportServlet</servlet-class>
+        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.ExportServlet</servlet-class>
       </servlet>
 
       <servlet-mapping>
