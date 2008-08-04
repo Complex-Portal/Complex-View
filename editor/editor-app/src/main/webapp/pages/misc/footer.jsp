@@ -19,14 +19,13 @@
 <table width="100%">
 <tr>
     <td>
-        Please send any questions or suggestions to
-            <a href="mailto:intact-help@ebi.ac.uk">intact-help@ebi.ac.uk</a>
+        Tip of the day: if a bug happens, please copy the whole stack trace from the error to the developers, when possible.
         <br/>
         <%-- commented during the reorg to maven
         Last modified: <i><%@ include file="../last-modified.txt" %></i>
         <br/>
         --%>
-         Version: <i><bean:message bundle="buildInfo" key="build.version"/></i> (Core: <i><bean:message bundle="buildInfo" key="core.version"/></i>) -&nbsp;
+         Version: <i><bean:message bundle="buildInfo" key="build.version"/></i> (Core: <i><bean:message bundle="buildInfo" key="core.version"/></i>, Bridges: <i><bean:message bundle="buildInfo" key="bridges.version"/></i>) -&nbsp;
         Build: <bean:message bundle="buildInfo" key="buildNumber"/> (<bean:message bundle="buildInfo" key="builtBy"/>)
     </td>
     <td class="tableCell">
