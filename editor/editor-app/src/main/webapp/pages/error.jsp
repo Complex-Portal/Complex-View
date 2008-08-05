@@ -1,6 +1,10 @@
 <%@ page import="org.apache.commons.lang.exception.ExceptionUtils" %>
 <%@ page import="org.joda.time.DateTime" %>
 <%@ page import="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler" %>
+<%@ page import="uk.ac.ebi.intact.context.IntactContext" %>
+<%@ page import="java.util.Properties" %>
+<%@ page import="uk.ac.ebi.intact.application.editor.business.EditorService" %>
+<%@ page import="java.util.Date" %>
 <!--
 - Author: Sugath Mudali (smudali@ebi.ac.uk)
 - Version: $Id: error.jsp,v 1.5 2003/03/27 17:34:08 skerrien Exp $
@@ -50,15 +54,47 @@ You must correct the following error(s) before proceeding:
         Throwable t = (Throwable) request.getAttribute(EditorExceptionHandler.EXCEPTION_PARAM);
 
         if (t != null) {
+            final String fullStackTrace = ExceptionUtils.getFullStackTrace(t);
 
     %>
 
-    <a id="displayMore" href="#" onclick="toggle('exception')">Display more information</a>
-    <a id="hide" href="#" onclick="toggle('exception')" style="display:none;">Hide information</a>
+    <!--<p>If you want to report this bug to the developers, display the information below and send the whole stack trace to them.<p/>-->
+    <%--<a id="displayMore" href="#" onclick="toggle('exception')" style="display:none;">Display more information</a>--%>
+    <%--<a id="hide" href="#" onclick="toggle('exception')" >Hide information</a>--%>
 
-    <div id="exception" style="color:gray; display:none;">
+    <%
+        String jira = "http://www.ebi.ac.uk/interpro/internal-tools/jira-intact";
+        int pid = 10181;
+        int priority = 3;
+        String summary = "Editor Exception: "+fullStackTrace.split("\n")[0];
+        String reporter = IntactContext.getCurrentInstance().getUserContext().getUserId().toLowerCase();
+        int component = 10437;
+
+        Properties props = new Properties();
+        props.load(EditorService.class.getResourceAsStream("/uk/ac/ebi/intact/application/editor/BuildInfo.properties"));
+
+        String version = props.getProperty("build.version");
+        String build = props.getProperty("buildNumber");
+
+        String description = "<Please, explain what you were doing here>%0D%0D---- Stack Trace ---%0D%0D"+
+                             new Date()+"%0DEditor Version: "+version+
+                             "%0DCore Version: "+props.getProperty("core.version")+
+                             "%0DBridges Version: "+props.getProperty("bridges.version")+
+                             "%0DBuild: "+props.getProperty("buildNumber")+
+                             "%0D%0D"+fullStackTrace;
+
+
+        String url = jira+"/secure/CreateIssueDetails!init.jspa?pid="+pid+"&issuetype=1&priority="+priority+"&summary="+summary+"&reporter="+reporter+"&components="+component+"&description="+description+"&customfield_10010="+build;
+    %>
+
+    <p>
+    <a href="<%=url%>">Report to JIRA</a> (use version: <b><%=version%></b> in the <i>Affects version/s</i> field when reporting)
+    </p>
+
+    <div id="exception" style="padding: 10px; color:black; border: thin solid gray; font-family: 'Courier New', Courier, Sans-serif; background-color: #DEDEDE">
         <%
-                out.println("["+new DateTime()+"] "+ExceptionUtils.getFullStackTrace(t));
+
+                out.println("["+new DateTime()+"] "+ fullStackTrace);
             }
         %>
 
