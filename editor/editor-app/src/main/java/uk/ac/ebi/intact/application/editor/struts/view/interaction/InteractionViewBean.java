@@ -1297,28 +1297,12 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                     }
                 }
 
-                // refresh interactor in component
-                if (comp.getInteractor().getAc() != null) {
-                    Interactor interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
-                            .getInteractorDao().getByAc(comp.getInteractor().getAc());
-                    comp.setInteractor(interactor);
-                }
-
                 intact.addComponent(comp);
             } else {
                 throw new IllegalStateException("Component was null, whereas "+myComponentsToUpdate.size()+" components " +
                                                 "have been introduced by the user.");
             }
 
-            //componentDao.saveOrUpdate(comp);
-            /*
-            try {
-                PersisterHelper.saveOrUpdate(comp);
-            } catch (PersisterException e) {
-                throw new IntactException("Problem updating component: "+comp.getAc(), e);
-            } */
-
-//            iterator.remove();
         }
     }
 

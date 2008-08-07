@@ -28,6 +28,9 @@ import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.transaction.Transaction;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -161,14 +164,7 @@ public class ProteinSearchAction extends AbstractEditorAction {
         if (param.equals("spAc")) {
             try{
                 log.debug("ProteinSearchAction.execute 2");
-                IntactContext.getCurrentInstance().getDataContext().beginTransaction();
                 uniprotServiceResult = proteinService.retrieve(value);
-
-                log.debug("uniprotServiceResult.getProteins().size()" + uniprotServiceResult.getProteins().size());
-                for(Protein protein : uniprotServiceResult.getProteins()){
-                    log.debug("uniprotServiceResult protein.getShortLabel() = " + protein.getShortLabel());
-                    log.debug("uniprotServiceResult protein.getAc() = " + protein.getAc());
-                }
             }catch(Exception e){
                 log.error(e.getMessage(), e);
                 // This error is already logged from the User class.
@@ -176,9 +172,7 @@ public class ProteinSearchAction extends AbstractEditorAction {
                 errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.intact"));
                 saveErrors(request, errors);
                 return mapping.findForward(FAILURE);
-            } finally {
-                IntactContext.getCurrentInstance().getDataContext().commitTransaction();
-            }
+            } 
         }
         else {
             log.debug("ProteinSearchAction.execute 3");
