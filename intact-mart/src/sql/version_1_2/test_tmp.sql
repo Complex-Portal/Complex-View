@@ -224,4 +224,64 @@ SELECT inter.ac,          -- interaction_key
 FROM ia_interactor inter LEFT OUTER JOIN v_cv_mi cv
                                       ON ( inter.interactortype_ac = cv.ac )
 WHERE cv.mi = 'MI:0317';  -- 'interaction'
+DROP  TABLE intact__interactor__main
 
+
+SELECT 'DROP TABLE ' || table_name || ';'
+FROM user_tables 
+WHERE table_name LIKE 'META_%'
+
+DROP TABLE META_CONF__DATASET__MAIN;
+DROP TABLE META_CONF__INTERFACE__DM;
+DROP TABLE META_CONF__USER__DM;
+DROP TABLE META_CONF__XML__DM;
+DROP TABLE META_TEMPLATE__TEMPLATE__MAIN;
+DROP TABLE META_TEMPLATE__XML__DM;
+DROP TABLE META_VERSION__VERSION__MAIN;
+
+SELECT * FROM intact__experiment_alias__dm 
+
+
+-- -----------------------------------------------------------------------------
+-- dummy inserts
+INSERT INTO intact__publication_alias__dm 
+VALUES ('test','test','test','test','test' );
+
+INSERT INTO intact__experiment_alias__dm 
+VALUES ('test','test','test','test','test' );
+
+INSERT INTO intact__interaction_alias__dm 
+VALUES ('test','test','test','test','test' );
+
+INSERT INTO intact__component_alias__dm 
+VALUES ('test','test','test','test','test' );
+
+INSERT INTO intact__feature_alias__dm 
+VALUES ('test','test','test','test','test' );
+
+-- ------------
+INSERT INTO intact__publication_anno__dm 
+VALUES ('test','test','test','test','test' );
+
+INSERT INTO intact__component_anno__dm 
+VALUES ('test','test','test','test','test' );
+
+INSERT INTO intact__feature_anno__dm 
+VALUES ('test','test','test','test','test' );
+-- ------------
+INSERT INTO intact__publication_xref__dm 
+VALUES ('test','test','test','test','test','test','test','test','test' );
+
+INSERT INTO intact__component_xref__dm 
+VALUES ('test','test','test','test','test','test','test','test','test' );
+
+commit;
+
+
+
+
+
+
+
+
+-- -----------------------------------------------------------------------------

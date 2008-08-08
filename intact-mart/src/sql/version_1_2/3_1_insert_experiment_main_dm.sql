@@ -39,7 +39,7 @@ FROM ia_experiment exp LEFT OUTER JOIN  ia_biosource bio
 
 -- no experiments have an alias...
 -- all values at the moment null...
-INSERT INTO intact__interaction_alias__dm                                 
+INSERT INTO intact__experiment_alias__dm                                 
 SELECT exp.ac,           -- experiment_key
        ali.name,         -- name
        cv.mi,            -- alias_type_mi

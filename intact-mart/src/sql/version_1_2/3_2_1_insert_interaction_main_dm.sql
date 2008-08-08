@@ -100,12 +100,12 @@ FROM ia_int2annot int_anno LEFT OUTER JOIN v_annotation anno
 -- #############################################################################
 
 INSERT INTO intact__interaction_owner__dm
-SELECT int_type.ac,              -- interaction_key
+SELECT interaction.ac,           -- interaction_key
        int_owner.mi,             -- interaction_owner_mi
        int_owner.shortlabel,     -- interaction_owner_short
        int_owner.fullname        -- interaction_owner_full
-FROM v_interaction_type int_type LEFT OUTER JOIN v_interaction_owner int_owner
-                                              ON ( int_type.ac = int_owner.ac);
+FROM v_interaction interaction LEFT OUTER JOIN v_interaction_owner int_owner
+                                            ON ( interaction.ac = int_owner.ac);
 
 
 COMMIT;
