@@ -7,7 +7,8 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
-                xmlns:bs="http://intact.ebi.ac.uk/binarysearch" xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
 
                 template="/WEB-INF/facelets/layout/template.xhtml">
@@ -16,8 +17,41 @@
 
     <tr:messages/>
 
+    <tr:panelTabbed position="above">
 
-APPLICATION CONTENT - TABS GO HERE
+        <tr:showDetailItem text="Search">
+            Search boxes
+        </tr:showDetailItem>
+
+        <tr:showDetailItem text="Interactions #{intactView['webapp.name']}" disclosed="true">
+
+            <tr:panelHeader text="Interaction results">
+            <tr:panelBox text="LAlaBox" background="dark">
+                <h:outputText value="Hear!"/>
+            </tr:panelBox>
+
+                <tr:panelHeader text="Subresults" rendered="#{intactView['webapp.name'] eq 'DGI Test'}">
+
+                    Subresults here
+
+                    <tr:panelHeader text="Subresults details 1"/>
+                    <tr:panelHeader text="Subresults details 2"/>
+
+
+                    </tr:panelHeader>
+
+            </tr:panelHeader>
+
+        </tr:showDetailItem>
+
+        <tr:showDetailItem text="List" disabled="true">
+            List of proteins
+        </tr:showDetailItem>
+
+
+    </tr:panelTabbed>
+
+
 
 </ui:define>
 

@@ -4,6 +4,7 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import org.apache.myfaces.orchestra.conversation.ConversationBindingListener;
 import org.apache.myfaces.orchestra.conversation.ConversationBindingEvent;
+import org.apache.myfaces.orchestra.conversation.ConversationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
