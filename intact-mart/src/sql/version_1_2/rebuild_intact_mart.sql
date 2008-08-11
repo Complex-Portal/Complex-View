@@ -19,5 +19,5 @@
 @ intact-mart/src/sql/version_1_2/3_4_1_insert_interactor_main_dm.sql
 @ intact-mart/src/sql/version_1_2/3_5_insert_feature_main_dm.sql
 --------------------------------------------------------------------------------
-@ intact-mart/src/sql/version_1_2/1_2_grand_synonym_mart.sql
+@ intact-mart/src/sql/version_1_2/4_0_grand_synonym_mart.sql
 
