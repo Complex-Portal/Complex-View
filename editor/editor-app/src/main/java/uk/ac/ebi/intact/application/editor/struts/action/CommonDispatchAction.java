@@ -558,7 +558,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
         EditUserI user = getIntactUser(request);
         EditorFormI editorForm = (EditorFormI)form;
         ExperimentActionForm expForm=(ExperimentActionForm)form;
-        String userName = user.getUserName();
+        final String userName = user.getUserName();
 
         // Search for the userstamp corresponding to the experiment (name of the curator who has
         // curated the experiment)
@@ -577,7 +577,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
 
         // If the user who is trying to Accept or Review the experiment is the user who has curated the experiment
         // display the error : "You can not Accept or Review your own curated experiment"d
-        if(userName.toUpperCase().trim().equals(creator.toUpperCase())){
+        if ( userName.equalsIgnoreCase( creator ) ) {
             ActionMessages errors = new ActionMessages();
             errors.add("new.annotation", new ActionMessage("error.curator.accepter"));
             saveErrors(request, errors);
@@ -585,14 +585,14 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             setAnchor(request, editorForm);
             // Display the error in the edit page.
             return mapping.getInputForward();
-        }else{
+        } else {
             Calendar cal = new GregorianCalendar();
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH)+1;
             int day = cal.get(Calendar.DAY_OF_MONTH);
 
             CvTopic cvTopic;
-            String description = new String();
+            String description = "";
             String date = year + "-" + DateToolbox.getMonth(month) + "-" + day;
             CvObjectDao<CvTopic> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvTopic.class);
 
@@ -621,6 +621,4 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
 
         return mapping.getInputForward();
     }
-
-
 }
