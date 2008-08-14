@@ -38,19 +38,19 @@
         <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.application.RequestConfigBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
-     <managed-bean>
-        <managed-bean-name>adminBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.view.AdminBean</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-        <managed-property>
-            <property-name>config</property-name>
-            <value>#{appConfigBean.config}</value>
-        </managed-property>
-        <managed-property>
-            <property-name>configFileLocation</property-name>
-            <value>#{appConfigBean.configFileLocation}</value>
-        </managed-property>
-    </managed-bean>
+     <!--<managed-bean>-->
+        <!--<managed-bean-name>adminBean</managed-bean-name>-->
+        <!--<managed-bean-class>uk.ac.ebi.intact.binarysearch.webapp.view.AdminBean</managed-bean-class>-->
+        <!--<managed-bean-scope>session</managed-bean-scope>-->
+        <!--<managed-property>-->
+            <!--<property-name>config</property-name>-->
+            <!--<value>#{appConfigBean.config}</value>-->
+        <!--</managed-property>-->
+        <!--<managed-property>-->
+            <!--<property-name>configFileLocation</property-name>-->
+            <!--<value>#{appConfigBean.configFileLocation}</value>-->
+        <!--</managed-property>-->
+    <!--</managed-bean>-->
     <managed-bean>
         <managed-bean-name>firstTimeBean</managed-bean-name>
         <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.admin.FirstTimeBean</managed-bean-class>
@@ -60,6 +60,11 @@
             <value>#{appConfigBean.config}</value>
         </managed-property>
     </managed-bean>
-
   
+    <managed-bean>
+        <managed-bean-name>newsBean</managed-bean-name>
+        <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.news.NewsBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
 </faces-config>

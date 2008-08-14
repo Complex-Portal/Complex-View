@@ -397,6 +397,17 @@ to use the fullqualified class name. -->
         <url-pattern>/adf/*</url-pattern>
     </servlet-mapping>
 
+    <!-- News feed -->
+    <servlet>
+        <servlet-name>feed</servlet-name>
+        <servlet-class>uk.ac.ebi.faces.webapp.NewsFeedServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>feed</servlet-name>
+        <url-pattern>/feed</url-pattern>
+    </servlet-mapping>
+
     <!-- DAS Proxy Servlet -->
     <servlet>
         <servlet-name>das</servlet-name>
