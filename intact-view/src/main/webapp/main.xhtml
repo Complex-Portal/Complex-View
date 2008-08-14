@@ -13,112 +13,26 @@
 
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
-<ui:define name="content">
+    <ui:define name="content">
 
-    <tr:messages/>
+        <tr:messages/>
 
-    <tr:panelTabbed position="above">
+        <tr:panelTabbed position="above">
 
-        <!-- TODO How to enforce that panelHeader have a specific style? I tried styleClass="level-one" without success :( -->
+            <tr:showDetailItem text="Search" disclosed="true">
+                <ui:include src="pages/search/search_tab.xhtml"/>
+            </tr:showDetailItem>
 
-        <tr:showDetailItem text="Search" disclosed="true">
+            <tr:showDetailItem text="Interactions">
+                <ui:include src="pages/interactions/intactions_tab.xhtml"/>
+            </tr:showDetailItem>
 
-            <tr:panelHeader text="Quick Search" styleClass="level-one"/>
+            <tr:showDetailItem text="List" disabled="true">
+                <ui:include src="pages/list/list_tab.xhtml"/>
+            </tr:showDetailItem>
 
-            <h:panelGrid id="grid" columns="2">
+        </tr:panelTabbed>
 
-                <!-- TODO how to align this cell to the top ? -->
-                <!-- TODO How to do cell span ? I suppose creating dummy components should not be the answer ... -->
-                <h:panelGrid id="grid" columns="1" width="350">
-                    <tr:outputText value="Type any search term" />
-                    <h:panelGroup>
-                        <!-- TODO Why is this rendered on 2 lines while when using <tr:inputText> it was done on a single line ? -->
-                        <tr:inputText id="searchBox" columns="20" />
-                        <tr:commandButton id="searchBoxSubmit" text="Search" />
-                    </h:panelGroup>
-                </h:panelGrid>
-
-                <tr:panelBox id="searchExampleBox" text="Examples">
-                    <tr:panelList>
-                        <tr:outputText value="Protein accession number (P12345)"/>
-                        <tr:outputText value="Gene name (BRCA1)"/>
-                        <tr:outputText value="Author name (Doodle)"/>
-                    </tr:panelList>
-                </tr:panelBox>
-
-            </h:panelGrid>
-
-
-            <tr:spacer id="x" height="50" />
-
-
-            <tr:panelHeader text="Ontology Search" styleClass="level-one"/>
-            <h:panelGrid id="grid" columns="1" width="350">
-                <tr:outputText value="Start typing an ontology term, possible completions of the term will be shown:" />
-                <h:panelGroup>
-                    <tr:inputText id="ontologySearch" columns="20" disabled="true"/>
-                    <h:commandButton id="ontologySearchSubmit" value="Search"/>
-                </h:panelGroup>
-            </h:panelGrid>
-
-
-            <tr:spacer id="x" height="50" />
-
-
-            <tr:panelHeader text="Protein Sequence Search"/>
-            <h:panelGrid id="grid" columns="2">
-                <tr:outputText value="Paste in an amino acid sequence in Fasta format." />
-                <tr:spacer />
-                <tr:inputText id="ontologySearch" readOnly="true" rows="5" disabled="true"/>
-                <tr:panelBox id="searchExampleBox" text="Examples">
-                    <!-- TODO how to display this a <pre> block -->
-                    <!-- TODO how to align this cell to the top ? -->
-                    <tr:outputText
-                            value="&lt;pre&gt;&gt;GI1234&lt;br&gt;ATYEEEJK&lt;/pre&gt;" escape="false" />
-                </tr:panelBox>
-
-            </h:panelGrid>
-
-
-            <tr:spacer id="x" height="50" />
-
-
-            <tr:panelHeader text="Chemical Search"/>
-            <tr:outputText value="Coming soon ..." />
-
-
-            <tr:spacer id="x" height="100" />
-
-        </tr:showDetailItem>
-
-        <tr:showDetailItem text="Interactions">
-
-            <tr:panelHeader text="Interaction results">
-            <tr:panelBox text="LAlaBox" background="dark">
-                <h:outputText value="Hear!"/>
-            </tr:panelBox>
-
-                <tr:panelHeader text="Subresults" rendered="#{intactView['webapp.name'] eq 'DGI Test'}">
-
-                    Subresults here
-
-                    <tr:panelHeader text="Subresults details 1"/>
-                    <tr:panelHeader text="Subresults details 2"/>
-
-
-                    </tr:panelHeader>
-
-            </tr:panelHeader>
-
-        </tr:showDetailItem>
-
-        <tr:showDetailItem text="List" disabled="true">
-            List of proteins
-        </tr:showDetailItem>
-
-
-    </tr:panelTabbed>
-
-</ui:define>
+    </ui:define>
 
 </ui:composition>
