@@ -12,6 +12,7 @@
         <function-class>uk.ac.ebi.intact.model.util.XrefUtils</function-class>
         <function-signature>java.util.Collection&lt;uk.ac.ebi.intact.model.Xref> getIdentityXrefs(uk.ac.ebi.intact.model.AnnotatedObject)</function-signature>
     </function>
+
     <function>
         <function-name>getIdentityXref</function-name>
         <function-class>uk.ac.ebi.intact.model.util.XrefUtils</function-class>
@@ -19,52 +20,53 @@
     </function>
 
     <!-- Local webapp functions -->
-    <function>
-        <function-name>toXrefCategoryModel</function-name>
-        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
-        <function-signature>uk.ac.ebi.intact.services.search.component.resultpanel.CategoryModel
-            toXrefCategoryModel(java.util.Collection)</function-signature>
-    </function>
+    <!--<function>-->
+        <!--<function-name>toXrefCategoryModel</function-name>-->
+        <!--<function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>-->
+        <!--<function-signature>uk.ac.ebi.intact.services.search.component.resultpanel.CategoryModel-->
+            <!--toXrefCategoryModel(java.util.Collection)</function-signature>-->
+    <!--</function>-->
 
     <function>
         <function-name>getIdentifierForDasty</function-name>
-        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
         <function-signature>java.lang.String getIdentifierForDasty(uk.ac.ebi.intact.model.Interactor)</function-signature>
     </function>
-    <function>
-        <function-name>wrap</function-name>
-        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
-        <function-signature>uk.ac.ebi.intact.services.search.model.AnnotatedObjectWrapper
-            wrap(uk.ac.ebi.intact.model.AnnotatedObject)</function-signature>
-    </function>
+
+    <!--<function>-->
+        <!--<function-name>wrap</function-name>-->
+        <!--<function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>-->
+        <!--<function-signature>uk.ac.ebi.intact.services.search.model.AnnotatedObjectWrapper-->
+            <!--wrap(uk.ac.ebi.intact.model.AnnotatedObject)</function-signature>-->
+    <!--</function>-->
 
     <function>
         <function-name>calculateXrefUrl</function-name>
-        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
         <function-signature>java.lang.String calculateXrefUrl(javax.faces.context.FacesContext,java.lang.String,java.lang.String)</function-signature>
     </function>
 
     <function>
         <function-name>toDateTime</function-name>
-        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
         <function-signature>org.joda.time.DateTime toDateTime(java.lang.Long)</function-signature>
     </function>
 
     <function>
         <function-name>isProtein</function-name>
-        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
         <function-signature>boolean isProtein(uk.ac.ebi.intact.model.Interactor)</function-signature>
     </function>
 
     <function>
         <function-name>isNucleicAcid</function-name>
-        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
         <function-signature>boolean isNucleicAcid(uk.ac.ebi.intact.model.Interactor)</function-signature>
     </function>
 
     <function>
         <function-name>isSmallMolecule</function-name>
-        <function-class>uk.ac.ebi.intact.services.search.util.Functions</function-class>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
         <function-signature>boolean isSmallMolecule(uk.ac.ebi.intact.model.Interactor)</function-signature>
     </function>
 
