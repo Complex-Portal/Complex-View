@@ -24,12 +24,13 @@
         <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view
         </developerConnection>
         <url>https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view/</url>
-
     </scm>
 
     <properties>
         <jetty.port>9092</jetty.port>
 
+        <appRoot>${appRoot}</appRoot>
+        
         <hibernate.driver>${db.driver}</hibernate.driver>
         <hibernate.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</hibernate.url>
         <hibernate.user>${db.user}</hibernate.user>
