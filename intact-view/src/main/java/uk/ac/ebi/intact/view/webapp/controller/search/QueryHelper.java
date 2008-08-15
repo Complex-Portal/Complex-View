@@ -17,9 +17,10 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import psidev.psi.mi.tab.PsimiTabColumn;
-import uk.ac.ebi.intact.view.webapp.controller.application.OlsBean;
+import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
+
 import uk.ac.ebi.intact.util.ols.Term;
+import uk.ac.ebi.intact.view.webapp.controller.application.OlsBean;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -81,6 +82,8 @@ public class QueryHelper {
             throw new NullPointerException("detectionMethodTerms");
         }
 
+        MitabDocumentDefinition docDef = new MitabDocumentDefinition();
+
         QueryStringBufferDecorator sb = new QueryStringBufferDecorator(new StringBuffer());
         if (isValidValue(search.getIdentifier())) {
             sb.append(concatFieldAndValue("identifiers", search.getIdentifier()));
@@ -88,20 +91,24 @@ public class QueryHelper {
 
         if (isValidValue(search.getPubId())) {
             sb.appendOperand(search);
-            sb.append(concatFieldAndValue(PsimiTabColumn.PUB_ID.getShortName(), search.getPubId()));
+            sb.append(concatFieldAndValue(docDef.getColumnDefinition(MitabDocumentDefinition.PUB_ID).getShortName(),
+                                          search.getPubId()));
         }
         if (isValidValue(search.getPubFirstAuthor())) {
             sb.appendOperand(search);
-            sb.append(concatFieldAndValue(PsimiTabColumn.PUB_1ST_AUTHORS.getShortName(), search.getPubFirstAuthor()));
+            sb.append(concatFieldAndValue(docDef.getColumnDefinition(MitabDocumentDefinition.PUB_AUTH).getShortName(),
+                                          search.getPubFirstAuthor()));
         }
         if (isValidValue(search.getInteractionId())) {
             sb.appendOperand(search);
-            sb.append(concatFieldAndValue(PsimiTabColumn.INTERACTION_ID.getShortName(), search.getInteractionId()));
+            sb.append(concatFieldAndValue(docDef.getColumnDefinition(MitabDocumentDefinition.INTERACTION_ID).getShortName(),
+                                          search.getInteractionId()));
         }
         if (isValidValue(search.getTaxid())) {
             sb.appendOperand(search);
             sb.append(concatFieldAndValue("species", search.getTaxid()));
         }
+
 
         // interaction types
         if (isValidValue(search.getInteractionType())) {
@@ -109,10 +116,14 @@ public class QueryHelper {
 
             Term interactionTypeTerm = termForValue(search.getInteractionType(), interactionTypeTerms);
 
+
+
             if (interactionTypeTerm != null) {
-                sb.append(concatFieldAndTerm(PsimiTabColumn.INTERACTION_TYPES.getShortName(), interactionTypeTerm, search.isIncludeInteractionTypeChildren()));
+                sb.append(concatFieldAndTerm(docDef.getColumnDefinition(MitabDocumentDefinition.INT_TYPE).getShortName(),
+                                             interactionTypeTerm, search.isIncludeInteractionTypeChildren()));
             } else {
-                sb.append(concatFieldAndValue(PsimiTabColumn.INTERACTION_TYPES.getShortName(), search.getInteractionType()));
+                sb.append(concatFieldAndValue(docDef.getColumnDefinition(MitabDocumentDefinition.INT_TYPE).getShortName(),
+                                              search.getInteractionType()));
 
             }
         }
@@ -124,9 +135,11 @@ public class QueryHelper {
             Term detectionMethodTerm = termForValue(search.getDetectionMethod(), detectionMethodTerms);
 
             if (detectionMethodTerm != null) {
-                sb.append(concatFieldAndTerm(PsimiTabColumn.INTER_DETECTION_METHODS.getShortName(), detectionMethodTerm, search.isIncludeDetectionMethodChildren()));
+                sb.append(concatFieldAndTerm(docDef.getColumnDefinition(MitabDocumentDefinition.INT_DET_METHOD).getShortName(),
+                                             detectionMethodTerm, search.isIncludeDetectionMethodChildren()));
             } else {
-                sb.append(concatFieldAndValue(PsimiTabColumn.INTER_DETECTION_METHODS.getShortName(), search.getDetectionMethod()));
+                sb.append(concatFieldAndValue(docDef.getColumnDefinition(MitabDocumentDefinition.INT_DET_METHOD).getShortName(),
+                                              search.getDetectionMethod()));
             }
         }
 

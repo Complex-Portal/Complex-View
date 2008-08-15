@@ -25,14 +25,14 @@ import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.xml.PsimiXmlWriter;
 import psidev.psi.mi.xml.converter.ConverterException;
 import psidev.psi.mi.xml.model.EntrySet;
-import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
-import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
-import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
+import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
+import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
+import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
+import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -148,15 +148,15 @@ public class ExportServlet extends HttpServlet {
                 sort = new Sort(sortColumn, !Boolean.parseBoolean(asc));
             }
 
-            IntActSearchEngine engine;
+            IntactSearchEngine engine;
             try {
-                engine = new IntActSearchEngine(indexDir);
+                engine = new IntactSearchEngine(indexDir);
             }
             catch (IOException e) {
                 throw new SearchEngineException(e);
             }
 
-            SearchResult<IntActBinaryInteraction> result = engine.search(searchQuery, firstResult, maxResults, sort);
+            SearchResult<IntactBinaryInteraction> result = engine.search(searchQuery, firstResult, maxResults, sort);
             interactions = result.getInteractions();
 
             PsimiTabWriter writer = new IntactPsimiTabWriter();
@@ -177,26 +177,24 @@ public class ExportServlet extends HttpServlet {
     private void exportToMiXml(String searchQuery, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Writer out = response.getWriter();
 
-        IntActSearchEngine engine;
+        IntactSearchEngine engine;
             try {
-                engine = new IntActSearchEngine(defaultIndex);
+                engine = new IntactSearchEngine(defaultIndex);
             }
             catch (IOException e) {
                 throw new SearchEngineException(e);
             }
 
         // count first as a security measure
-        SearchResult<IntActBinaryInteraction> result1 = engine.search(searchQuery, 0, 1);
+        SearchResult<IntactBinaryInteraction> result1 = engine.search(searchQuery, 0, 1);
         if (result1.getTotalCount() > 1000) {
             throw new IntactViewException("Too many interactions to export to XML. Maximum is 1000");
         }
 
-        SearchResult<IntActBinaryInteraction> result = engine.search(searchQuery, null, null);
-        Collection<IntActBinaryInteraction> interactions = result.getInteractions();
+        SearchResult<IntactBinaryInteraction> result = engine.search(searchQuery, null, null);
+        Collection<IntactBinaryInteraction> interactions = result.getInteractions();
 
-        Tab2Xml tab2Xml = new Tab2Xml();
-        tab2Xml.setColumnHandler(new IntActColumnHandler());
-        tab2Xml.setBinaryInteractionClass(IntActBinaryInteraction.class);
+        Tab2Xml tab2Xml = new IntactTab2Xml();
 
         final EntrySet entrySet;
         try {

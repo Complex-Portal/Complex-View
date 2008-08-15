@@ -354,9 +354,9 @@ to use the fullqualified class name. -->
     Listener to force a garbage collection if too many files are open - Only works in UNIX
     This can be removed if using Facelets >= 1.15
     -->
-    <listener>
-        <listener-class>uk.ac.ebi.faces.webapp.EvilOpenFilesListener</listener-class>
-    </listener>
+    <!--<listener>-->
+        <!--<listener-class>uk.ac.ebi.faces.webapp.EvilOpenFilesListener</listener-class>-->
+    <!--</listener>-->
 
     <!-- Spring Framework 2.0 -->
     <listener>
@@ -411,7 +411,7 @@ to use the fullqualified class name. -->
     <!-- DAS Proxy Servlet -->
     <servlet>
         <servlet-name>das</servlet-name>
-        <servlet-class>uk.ac.ebi.intact.services.search.das.DasProxyServlet</servlet-class>
+        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.das.DasProxyServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

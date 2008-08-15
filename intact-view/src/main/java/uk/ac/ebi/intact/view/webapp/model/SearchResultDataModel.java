@@ -22,8 +22,7 @@ import org.apache.myfaces.trinidad.model.SortCriterion;
 import org.apache.myfaces.trinidad.model.SortableModel;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.engine.SearchEngineException;
-import psidev.psi.mi.tab.PsimiTabColumn;
-import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
+import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
 
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
@@ -32,6 +31,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 
 /**
  * TODO comment this!
@@ -43,7 +44,11 @@ public class SearchResultDataModel extends SortableModel implements Serializable
 
     private static final Log log = LogFactory.getLog(SearchResultDataModel.class);
 
-    private static final String DEFAULT_SORT_COLUMN = PsimiTabColumn.ID_A.getSortableColumnName();
+    private static final String DEFAULT_SORT_COLUMN;
+
+    static {
+        DEFAULT_SORT_COLUMN = new MitabDocumentDefinition().getColumnDefinition(MitabDocumentDefinition.ID_INTERACTOR_A).getSortableColumnName();
+    }
 
     private String searchQuery;
     private String indexDirectory;
@@ -85,10 +90,10 @@ public class SearchResultDataModel extends SortableModel implements Serializable
 
         long startTime = System.currentTimeMillis();
 
-        IntActSearchEngine engine;
+        IntactSearchEngine engine;
         try
         {
-            engine = new IntActSearchEngine(indexDirectory);
+            engine = new IntactSearchEngine(indexDirectory);
         }
         catch (IOException e)
         {
@@ -96,7 +101,7 @@ public class SearchResultDataModel extends SortableModel implements Serializable
         }
 
         this.result = engine.search(searchQuery, firstResult, pageSize, sort);
-  
+
         elapsedTimeMillis = System.currentTimeMillis() - startTime;
     }
 
