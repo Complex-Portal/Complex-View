@@ -15,19 +15,22 @@
 
     <ui:define name="content">
 
-        <tr:messages/>
+        <ui:debug/>
 
         <tr:panelTabbed position="above">
 
-            <tr:showDetailItem text="Search" disclosed="true">
+            <tr:showDetailItem text="Search"
+                               disclosed="#{searchBean.disclosedTabName == 'search'}">
                 <ui:include src="pages/search/search_tab.xhtml"/>
             </tr:showDetailItem>
 
-            <tr:showDetailItem text="Interactions">
+            <tr:showDetailItem text="Interactions (#{searchBean.totalResults})"
+                               disclosed="#{searchBean.disclosedTabName == 'interactions'}">
                 <ui:include src="pages/interactions/intactions_tab.xhtml"/>
             </tr:showDetailItem>
 
-            <tr:showDetailItem text="List" disabled="true">
+            <tr:showDetailItem text="List" disabled="true" 
+                               disclosed="#{searchBean.disclosedTabName == 'list'}">
                 <ui:include src="pages/list/list_tab.xhtml"/>
             </tr:showDetailItem>
 

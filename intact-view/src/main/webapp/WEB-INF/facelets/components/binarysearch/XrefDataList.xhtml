@@ -21,6 +21,8 @@
 
             <c:set var="text" value="#{onlyText? xref.text : xref.identifier}"/>
 
+            <ui:param name="itemDisabled" value="#{itemDisabled? itemDisabled : fn:startsWith(xref.identifier, '-')}"/>
+
             <h:panelGroup rendered="#{!itemPerLine}">
                 <nobr>
                     <tr:goLink text="#{xrefUrl == null? psimitab:xrefToString(xref, true, false) : text}"

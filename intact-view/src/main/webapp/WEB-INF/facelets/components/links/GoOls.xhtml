@@ -13,6 +13,8 @@
     <h:panelGroup style="white-space:nowrap;">
         <h:outputText value="#{termName} (" rendered="#{termName != null}"/>
 
+        <ui:param name="disabled" value="#{disabled? disabled : fn:startsWith(query, '-')}"/>
+
         <tr:goLink targetFrame="uniprot" text="#{(text != null)? text : query}" disabled="#{disabled != null? disabled : false}"
                 destination="http://www.ebi.ac.uk/ontology-lookup/?termId=#{query}"/>
 

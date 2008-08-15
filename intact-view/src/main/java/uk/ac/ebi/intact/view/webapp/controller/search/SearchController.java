@@ -57,9 +57,10 @@ public class SearchController extends JpaBaseController {
      // vars
     private int pageSize = 30;
 
+    private int totalResults;
+
     // status flags
-    private boolean advancedMode;
-    private boolean searchDone;
+    private String disclosedTabName;
 
     private boolean showProperties;
     private boolean expandedView;
@@ -90,7 +91,13 @@ public class SearchController extends JpaBaseController {
         if (searchQuery == null) {
             searchQuery = "*";
             doBinarySearch(null);
+            disclosedTabName = "search";
         }
+    }
+
+    public String doBinarySearchAction() {
+        doBinarySearch(null);
+        return "main";
     }
 
     public void doBinarySearch(ActionEvent evt) {
@@ -99,26 +106,29 @@ public class SearchController extends JpaBaseController {
             bindings.getRangeChoiceBar().setFirst(0);
         }
 
+        if (log.isDebugEnabled()) log.debug("Searching (raw): " + searchQuery);
+
         searchQuery = QueryHelper.prepareQuery(searchQuery);
 
-        if (log.isDebugEnabled()) log.debug("Searching (binary): " + searchQuery);
+        if (log.isDebugEnabled()) log.debug("Searching (prepared query): " + searchQuery);
 
         String indexDirectory = WebappUtils.getDefaultIndex(appConfigBean.getConfig()).getLocation();
 
         try {
             results = new SearchResultDataModel(searchQuery, indexDirectory, pageSize);
 
+            totalResults = results.getRowCount();
             if (log.isDebugEnabled()) log.debug("\tResults: " + results.getRowCount());
+
+            disclosedTabName = "interactions";
+
         } catch (TooManyResultsException e) {
-            // TODO define behaviour?
-            e.printStackTrace();
+            addErrorMessage("Too many results found", "Please, refine your query");
         }
 
         if (bindings.getResultsDataTable() != null) {
             bindings.getResultsDataTable().setFirst(0);
         }
-
-        searchDone = true;
     }
 
     /**
@@ -222,5 +232,21 @@ public class SearchController extends JpaBaseController {
 
     public SearchControllerBindings getBindings() {
         return bindings;
+    }
+
+    public String getDisclosedTabName() {
+        return disclosedTabName;
+    }
+
+    public void setDisclosedTabName(String disclosedTabName) {
+        this.disclosedTabName = disclosedTabName;
+    }
+
+    public int getTotalResults() {
+        return totalResults;
+    }
+
+    public void setTotalResults(int totalResults) {
+        this.totalResults = totalResults;
     }
 }

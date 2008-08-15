@@ -9,12 +9,13 @@
         xmlns:sf="http://www.ebi.ac.uk/faces/site"
         xmlns:psimitab="http://www.ebi.ac.uk/psi/mitab"
         xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
+        xmlns:ext="http://intact.ebi.ac.uk/extlinks"
         xsi:schemaLocation="http://www.ebi.ac.uk/psi/mitab /WEB-INF/psimitab.taglib.xml">
 
 
 <tr:table id="results" value="#{value}" var="binaryInteraction" varStatus="status" summary="Binary Interactions"
           binding="#{searchBean.bindings.resultsDataTable}" emptyText="No interactions found matching the query."
-          rows="30" rowBandingInterval="1"
+          rows="#{searchBean.pageSize}" rowBandingInterval="1"
           partialTriggers=":results:btnToogleProps :results:btnStandardView :results:btnExpandedView :results:selPageRangeChoice">
 
 <f:facet name="actions">
@@ -27,7 +28,7 @@
                                  var="range" id="selPageRangeChoice"
                                  value="#{searchBean.results}"
                                  rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
-                                 rendered="#{searchBean.results.rowCount gt 30}"/>
+                                 rendered="#{searchBean.results.rowCount gt searchBean.pageSize}"/>
 
         <tr:panelHorizontalLayout>
             <f:facet name="separator">
@@ -106,10 +107,7 @@
 <tr:column headerText="Species molecule A" sortable="true" sortProperty="taxidA_s">
     <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
         <tr:iterator var="xref" value="#{organism.identifiers}" varStatus="rowStatus">
-            <h:outputLink value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}" target="_blank">
-                <h:outputText value="#{xref.identifier}"/>
-            </h:outputLink>
-            <h:outputText value="(#{xref.text})" rendered="#{xref.text != null}"/>
+            <ext:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
         </tr:iterator>
         <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
     </tr:iterator>
@@ -117,10 +115,7 @@
 <tr:column headerText="Species molecule B" sortable="true" sortProperty="taxidB_s">
     <tr:iterator var="organism" value="#{binaryInteraction.interactorB.organism}" varStatus="rowStatus">
         <tr:iterator var="xref" value="#{organism.identifiers}">
-            <h:outputLink value="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}" target="_blank">
-                <h:outputText value="#{xref.identifier}"/>
-            </h:outputLink>
-            <h:outputText value="(#{xref.text})" rendered="#{xref.text != null}"/>
+            <ext:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
         </tr:iterator>
         <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
     </tr:iterator>
@@ -148,7 +143,7 @@
     <bs:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Source database(s)" sortable="true" sortProperty="source_s">
-    <bs:xrefDataList value="#{binaryInteraction.sourceDatabases}" onlyText="true" itemPerLine="true"/>
+    <bs:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Interaction details" sortable="true" sortProperty="interaction_id_s">
     <bs:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true"/>

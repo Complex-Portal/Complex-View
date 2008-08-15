@@ -13,22 +13,24 @@
 
     <tr:messages/>
 
-    <!-- TODO How to enforce that panelHeader have a specific style? I tried styleClass="level-one" without success :( -->
     <tr:panelHeader text="Quick Search" styleClass="level-one"/>
 
     <tr:panelLabelAndMessage label="Search query:">
-        <tr:inputText columns="30"/>
+        <tr:inputText columns="30" value="#{searchBean.searchQuery}" />
         <f:facet name="help">
             <tr:group>
                 <tr:panelList>
                     <tr:outputText value="Protein accession number: e.g. 'P12345'"/>
+                    <tr:outputText value="Drug name: e.g. 'imatinib'"/>
                     <tr:outputText value="Gene name: e.g. 'BRCA1'"/>
                     <tr:outputText value="Author name: e.g. 'Doodle'"/>
                 </tr:panelList>
             </tr:group>
         </f:facet>
         <f:facet name="end">
-            <tr:commandButton text="Search" styleClass="submit_button"/>
+            <tr:commandButton text="Search"
+                              action="#{searchBean.doBinarySearchAction}"
+                              styleClass="submit_button"/>
         </f:facet>
     </tr:panelLabelAndMessage>
 
