@@ -67,4 +67,10 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 
+    <managed-bean>
+        <managed-bean-name>contactBean</managed-bean-name>
+        <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.admin.ContactController</managed-bean-class>
+        <managed-bean-scope>none</managed-bean-scope>
+    </managed-bean>
+
 </faces-config>

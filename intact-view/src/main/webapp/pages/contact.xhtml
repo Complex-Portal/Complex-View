@@ -1,5 +1,3 @@
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
@@ -11,36 +9,45 @@
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
 
-               template="/WEB-INF/facelets/layout/template.xhtml">
+                template="/WEB-INF/facelets/layout/template.xhtml">
 
- 
-        <!-- Mandatorty params -->
-        <ui:param name="sectionTitle" value="Contact"/>
+    <ui:define name="content">
 
-        <ui:define name="content">
+        <tr:messages/>
 
-            <h1>Contact Us</h1>
+        <tr:panelHeader text="Contact Us">
+            Should you require help on any matter related to IntAct, please submit your question to our <a
+                href="http://www.ebi.ac.uk/support/index.php?query=intact"
+                target="_blank">helpdesk</a>--To be created<br/>
 
-            Should you require help on any matter related to IntAct, please submit your question to our <a href="http://www.ebi.ac.uk/support/index.php?query=intact" target="_blank">helpdesk</a>--To be created<br/>
+            <tr:panelBox background="light">
+                <tr:panelFormLayout>
+                    <tr:inputText label="Email address:" value="#{contactBean.userEmail}" columns="20"/>
+                    <tr:inputText label="Message" value="#{contactBean.mailContent}" rows="5" columns="20"/>
+                    <tr:commandButton text="Send" actionListener="#{contactBean.sendEmail}" />
+                </tr:panelFormLayout>
+            </tr:panelBox> 
 
-            <h1>Mailing lists, bug reports:</h1>
+            <tr:panelHeader text="Mailing lists, bug reports:">
+                The following mailing lists have been set up:
+                <ul>
+                    <li>xxx-announce@lists.sourceforge.net -- To be created <br/>
+                        General DGI announcements. Low traffic.
+                        <a href="http://lists.sourceforge.net/lists/listinfo/xxx-announce"
+                           target="_blank">Subscribe/unsubscribe</a>
+                        here. -- To be created<br/>
+                    </li>
+                    <li>
+                        You might also want to submit a <a href="http://sourceforge.net/tracker/?group_id=xxx"
+                                                           target="_blank">feature
+                        request or bug report</a>. -- To be created<br/>
+                    </li>
+                </ul>
+            </tr:panelHeader>
 
-            The following mailing lists have been set up:
-            <ul>
-                <li>xxx-announce@lists.sourceforge.net -- To be created <br/>
-                    General DGI announcements. Low traffic.
-                    <a href="http://lists.sourceforge.net/lists/listinfo/xxx-announce"
-                       target="_blank">Subscribe/unsubscribe</a>
-                    here. -- To be created<br/>
-                </li>
-                <li>
-                    You might also want to submit a <a href="http://sourceforge.net/tracker/?group_id=xxx"
-                                                       target="_blank">feature
-                    request or bug report</a>.    -- To be created<br/>
-                </li>
-            </ul>
+        </tr:panelHeader>
 
 
-        </ui:define>
+    </ui:define>
 
-    </ui:composition>
+</ui:composition>

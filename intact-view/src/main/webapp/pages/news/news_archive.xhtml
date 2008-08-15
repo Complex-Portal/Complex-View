@@ -1,65 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:sf="http://www.ebi.ac.uk/faces/site"
-      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-      xmlns:ebi="http://ebi.ac.uk/faces/components"
-      xmlns:tr="http://myfaces.apache.org/trinidad">
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsp="http://java.sun.com/JSP/Page"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
 
-<f:view>
+                template="/WEB-INF/facelets/layout/template.xhtml">
 
-    <ui:composition template="/WEB-INF/facelets/layout/template.xhtml">
 
-        <!-- Mandatorty params -->
-        <ui:param name="sectionTitle" value="News - Archive"/>
+    <!-- Mandatorty params -->
+    <ui:param name="sectionTitle" value="News - Archive"/>
 
-        <ui:define name="content">
+    <ui:define name="content">
 
-            <tr:panelHeader text="News - Archive" />
+        <tr:panelHeader text="News - Archive"/>
 
-            <ul>
-                <c:forEach var="pieceOfNews" items="#{newsBean.news}">
-                    <li>
-                        <p>
-                            <strong>#{pieceOfNews.title}</strong>
+        <ul>
+            <c:forEach var="pieceOfNews" items="#{newsBean.news}">
+                <li>
+                    <p>
+                        <strong>#{pieceOfNews.title}</strong>
+                        &#160;&#160;[
+                        <h:outputText value="#{sf:convertToDate(pieceOfNews.date,'yyyyMMdd')}">
+                            <f:convertDateTime/>
+                        </h:outputText>
+                        ]
+                    </p>
 
-                            &nbsp;[&nbsp;
+                    <p>
+                        <h:outputText value="#{pieceOfNews.description.value}"
+                                      escape="#{pieceOfNews.description.escape}"/>
+                        &#160;
+                        <c:if test="#{pieceOfNews.moreLink != null}">
+                            <h:outputLink value="#{pieceOfNews.moreLink}" target="_blank">
+                                <h:outputText value="[more]"/>
+                            </h:outputLink>
+                        </c:if>
+                    </p>
+                </li>
+            </c:forEach>
+        </ul>
 
-                            <h:outputText value="#{sf:convertToDate(pieceOfNews.date,'yyyyMMdd')}">
-                                <f:convertDateTime/>
-                            </h:outputText>
-                            ]
-                        </p>
+    </ui:define>
 
-                        <p>
-                            <h:outputText value="#{pieceOfNews.description.value}"
-                                          escape="#{pieceOfNews.description.escape}"/>
-
-                            <c:if test="#{pieceOfNews.moreLink != null}">
-                                &nbsp;
-                                <h:outputLink value="#{pieceOfNews.moreLink}" target="_blank">
-                                    <h:outputText value="[more]"/>
-                                </h:outputLink>
-                            </c:if>
-                        </p>
-                    </li>
-                </c:forEach>
-            </ul>
-
-        </ui:define>
-
-    </ui:composition>
-
-</f:view>
-
-</body>
-
-</html>
+</ui:composition>
