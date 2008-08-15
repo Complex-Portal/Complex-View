@@ -90,7 +90,8 @@ af|panelHeader::level-one
     font-weight: bold;
 }
 
-af|panelHeader::level-two
+af|panelHeader::level-two,
+af|panelTabbed::body af|panelHeader::level-one
 {
     background:#FFFFFF none repeat scroll 0%;
     border-color:-moz-use-text-color -moz-use-text-color #D9DADC;
@@ -334,6 +335,16 @@ af|panelTabbed::separator-after-selected{
     padding-left:3px;
 }
 
+
+/* panelLabelAndMessage */
+/************************/
+
+af|panelLabelAndMessage::help-facet {
+    color: #96c688;
+    background-color:red;
+    font-size: 6pt;
+}
+
 /** table and column  **/
 /************************/
 
@@ -533,3 +544,15 @@ af|statusIndicator::busy {
 
     position: fixed;
 }
+
+/* inputText */
+/*************/
+
+af|inputText:disabled::content {
+    background-color:#dedede;
+}
+
+af|inputText:disabled::label {
+    color:#dedede;
+}
+

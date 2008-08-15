@@ -16,51 +16,44 @@
     <!-- TODO How to enforce that panelHeader have a specific style? I tried styleClass="level-one" without success :( -->
     <tr:panelHeader text="Quick Search" styleClass="level-one"/>
 
-    <h:panelGrid id="grid" columns="2">
-
-        <!-- TODO how to align this cell to the top ? -->
-        <!-- TODO How to do cell span ? I suppose creating dummy components should not be the answer ... -->
-        <h:panelGrid id="grid" columns="1" width="350">
-            <tr:outputText value="Type any search term"/>
-            <h:panelGroup>
-                <!-- TODO Why is this rendered on 2 lines while when using <tr:inputText> it was done on a single line ? -->
-                <tr:inputText id="searchBox" columns="20"/>
-                <tr:commandButton id="searchBoxSubmit" text="Search"/>
-            </h:panelGroup>
-        </h:panelGrid>
-
-        <tr:panelBox id="searchExampleBox" text="Examples">
-            <tr:panelList>
-                <tr:outputText value="Protein accession number (P12345)"/>
-                <tr:outputText value="Gene name (BRCA1)"/>
-                <tr:outputText value="Author name (Doodle)"/>
-            </tr:panelList>
-        </tr:panelBox>
-
-    </h:panelGrid>
+    <tr:panelLabelAndMessage label="Search query:">
+        <tr:inputText columns="30"/>
+        <f:facet name="help">
+            <tr:group>
+                <tr:panelList>
+                    <tr:outputText value="Protein accession number: e.g. 'P12345'"/>
+                    <tr:outputText value="Gene name: e.g. 'BRCA1'"/>
+                    <tr:outputText value="Author name: e.g. 'Doodle'"/>
+                </tr:panelList>
+            </tr:group>
+        </f:facet>
+        <f:facet name="end">
+            <tr:commandButton text="Search" styleClass="submit_button"/>
+        </f:facet>
+    </tr:panelLabelAndMessage>
 
 
-    <tr:spacer id="x" height="50"/>
+    <tr:panelHeader text="Ontology Search"/>
 
+    <tr:outputText value="Start typing an ontology term, possible completions of the term will be shown:"/>
+    <br/><br/>
 
-    <tr:panelHeader text="Ontology Search" styleClass="level-one"/>
-    <h:panelGrid id="grid" columns="1" width="350">
-        <tr:outputText value="Start typing an ontology term, possible completions of the term will be shown:"/>
-        <h:panelGroup>
-            <tr:inputText id="ontologySearch" columns="20" disabled="true"/>
-            <h:commandButton id="ontologySearchSubmit" value="Search"/>
-        </h:panelGroup>
-    </h:panelGrid>
-
-
-    <tr:spacer id="x" height="50"/>
+    <tr:panelLabelAndMessage label="Ontology query:">
+        <tr:inputText columns="30" disabled="true"/>
+        <f:facet name="help">
+            e.g. 'yeast two hybrid'
+        </f:facet>
+        <f:facet name="end">
+            <tr:commandButton text="Search" styleClass="submit_button"/>
+        </f:facet>
+    </tr:panelLabelAndMessage>
 
 
     <tr:panelHeader text="Protein Sequence Search"/>
-    <h:panelGrid id="grid" columns="2">
+    <h:panelGrid columns="2">
         <tr:outputText value="Paste in an amino acid sequence in Fasta format."/>
         <tr:spacer/>
-        <tr:inputText id="ontologySearch" readOnly="true" rows="5" disabled="true"/>
+        <tr:inputText rows="5" disabled="true"/>
         <tr:panelBox id="searchExampleBox" text="Examples">
             <!-- TODO how to display this a <pre> block -->
             <!-- TODO how to align this cell to the top ? -->
@@ -71,13 +64,7 @@
     </h:panelGrid>
 
 
-    <tr:spacer id="x" height="50"/>
-
-
     <tr:panelHeader text="Chemical Search"/>
     <tr:outputText value="Coming soon ..."/>
-
-
-    <tr:spacer id="x" height="100"/>
 
 </ui:composition>
