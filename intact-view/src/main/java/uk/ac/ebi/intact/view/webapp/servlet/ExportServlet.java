@@ -31,6 +31,7 @@ import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 
@@ -72,142 +73,12 @@ public class ExportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String searchQuery = request.getParameter(PARAM_QUERY);
         String format = request.getParameter(PARAM_FORMAT);
-
-        if (format == null) {
-            throw new ServletException("Parameter 'format' is missing in the URL");
-        }
-
-        if ("mitab".equals(format)) {
-            exportToMiTab(searchQuery, request, response);
-        } else if ("mitab_intact".equals(format)) {
-            exportToMiTabIntact(searchQuery, request, response);
-        } else if ("xml".equals(format)) {
-            exportToMiXml(searchQuery, request, response);
-        } else {
-            throw new ServletException("Format is not correct: " + format + ". Possible values: mitab, mitab_intact.");
-        }
-    }
-
-    private void exportToMiTab(String searchQuery, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Writer out = response.getWriter();
-
         String sortColumn = request.getParameter(PARAM_SORT);
-        String asc = request.getParameter(PARAM_SORT_ASC);
-        String indexDir = defaultIndex;
+        String sortAsc = request.getParameter(PARAM_SORT_ASC);
 
-        List interactions;
-        Integer firstResult = 0;
-        Integer maxResults = 50;
-
-        boolean headerEnabled = true;
-
-        do {
-
-            Sort sort = null;
-
-            if (sortColumn != null && sortColumn.length() > 0) {
-                sort = new Sort(sortColumn, !Boolean.parseBoolean(asc));
-            }
-
-            SearchResult result = Searcher.search(searchQuery, indexDir, firstResult, maxResults, sort);
-            interactions = result.getInteractions();
-
-            PsimiTabWriter writer = new PsimiTabWriter();
-            writer.setHeaderEnabled(headerEnabled);
-            try {
-                writer.write(interactions, out);
-            } catch (ConverterException e) {
-                throw new ServletException("Problem exporting interactions", e);
-            }
-
-            headerEnabled = false;
-
-            firstResult = firstResult + maxResults;
-
-        } while (!interactions.isEmpty());
+        BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(defaultIndex, sortColumn, Boolean.parseBoolean(sortAsc));
+        exporter.searchAndExport(response.getOutputStream(), searchQuery, format);
     }
 
-    private void exportToMiTabIntact(String searchQuery, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Writer out = response.getWriter();
 
-        String sortColumn = request.getParameter(PARAM_SORT);
-        String asc = request.getParameter(PARAM_SORT_ASC);
-        String indexDir = defaultIndex;
-
-        List interactions;
-        Integer firstResult = 0;
-        Integer maxResults = 50;
-
-        boolean headerEnabled = true;
-
-        do {
-
-            Sort sort = null;
-
-            if (sortColumn != null && sortColumn.length() > 0) {
-                sort = new Sort(sortColumn, !Boolean.parseBoolean(asc));
-            }
-
-            IntactSearchEngine engine;
-            try {
-                engine = new IntactSearchEngine(indexDir);
-            }
-            catch (IOException e) {
-                throw new SearchEngineException(e);
-            }
-
-            SearchResult<IntactBinaryInteraction> result = engine.search(searchQuery, firstResult, maxResults, sort);
-            interactions = result.getInteractions();
-
-            PsimiTabWriter writer = new IntactPsimiTabWriter();
-            writer.setHeaderEnabled(headerEnabled);
-            try {
-                writer.write(interactions, out);
-            } catch (ConverterException e) {
-                throw new ServletException("Problem exporting interactions", e);
-            }
-
-            headerEnabled = false;
-
-            firstResult = firstResult + maxResults;
-
-        } while (!interactions.isEmpty());
-    }
-
-    private void exportToMiXml(String searchQuery, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Writer out = response.getWriter();
-
-        IntactSearchEngine engine;
-            try {
-                engine = new IntactSearchEngine(defaultIndex);
-            }
-            catch (IOException e) {
-                throw new SearchEngineException(e);
-            }
-
-        // count first as a security measure
-        SearchResult<IntactBinaryInteraction> result1 = engine.search(searchQuery, 0, 1);
-        if (result1.getTotalCount() > 1000) {
-            throw new IntactViewException("Too many interactions to export to XML. Maximum is 1000");
-        }
-
-        SearchResult<IntactBinaryInteraction> result = engine.search(searchQuery, null, null);
-        Collection<IntactBinaryInteraction> interactions = result.getInteractions();
-
-        Tab2Xml tab2Xml = new IntactTab2Xml();
-
-        final EntrySet entrySet;
-        try {
-            entrySet = tab2Xml.convert(new ArrayList<BinaryInteraction>(interactions));
-        } catch (Exception e) {
-            throw new IntactViewException("Problem converting interactions from MITAB to XML", e);
-        }
-
-        PsimiXmlWriter writer = new PsimiXmlWriter();
-        try {
-            writer.write(entrySet, out);
-        } catch (Exception e) {
-            throw new IntactViewException("Problem writing XML", e);
-        }
-    }
 }

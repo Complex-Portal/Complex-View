@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.application.OlsBean;
@@ -23,6 +24,8 @@ import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.OutputStream;
 
 /**
  * Main search controller
@@ -46,9 +49,6 @@ public class SearchController extends JpaBaseController {
     private AppConfigBean appConfigBean;
 
     @Autowired
-    private OlsBean olsBean;
-
-    @Autowired
     private SearchControllerBindings bindings;
 
     private String searchQuery;
@@ -68,7 +68,7 @@ public class SearchController extends JpaBaseController {
     // results
     private SearchResultDataModel results;
 
-    // export
+    // io
     private String exportFormat;
 
 
@@ -141,7 +141,7 @@ public class SearchController extends JpaBaseController {
      * @return null, the lifecycle is shortcircuited
      */
     public String doExport() {
-        // /export?query=#{searchBean.query}&amp;format=mitab&amp;sort=#{searchBean.sortColumn}&amp;asc=#{searchBean.sortAscending}
+        // /io?query=#{searchBean.query}&amp;format=mitab&amp;sort=#{searchBean.sortColumn}&amp;asc=#{searchBean.sortAscending}
 
         // to go to an external URL, we need to shortcircuit the jsf lifecycle
         FacesContext context = FacesContext.getCurrentInstance();
@@ -162,6 +162,13 @@ public class SearchController extends JpaBaseController {
         }
 
         return null;
+    }
+
+    public void doExport2(FacesContext context, OutputStream out) throws IOException
+    {
+        BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(getDefaultIndex().getLocation(),
+                                                                            results.getSortColumn(), results.isAscending());
+        exporter.searchAndExport(out, results.getSearchQuery(), exportFormat);
     }
 
     public void rangeChanged(RangeChangeEvent evt) {
