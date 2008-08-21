@@ -66,7 +66,7 @@ public class SearchController extends JpaBaseController {
     private boolean expandedView;
 
     // results
-    private uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel results;
+    private SearchResultDataModel results;
 
     // export
     private String exportFormat;
@@ -120,7 +120,12 @@ public class SearchController extends JpaBaseController {
             totalResults = results.getRowCount();
             if (log.isDebugEnabled()) log.debug("\tResults: " + results.getRowCount());
 
-            disclosedTabName = "interactions";
+            if (totalResults == 0) {
+               addErrorMessage("Your query didn't return any results", "Use a different query");
+                disclosedTabName = "search";
+            } else {
+               disclosedTabName = "interactions";
+            }
 
         } catch (TooManyResultsException e) {
             addErrorMessage("Too many results found", "Please, refine your query");

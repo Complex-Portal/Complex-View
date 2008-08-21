@@ -15,14 +15,6 @@
         <source>facelets/components/binarysearch/QueryLink.xhtml</source>
     </tag>
     <tag>
-        <tag-name>resultsSummary</tag-name>
-        <source>facelets/components/binarysearch/ResultsSummary.xhtml</source>
-    </tag>
-    <tag>
-        <tag-name>resultsTable</tag-name>
-        <source>facelets/components/binarysearch/ResultsTable.xhtml</source>
-    </tag>
-    <tag>
         <tag-name>searchBox</tag-name>
         <source>facelets/components/binarysearch/SearchBox.xhtml</source>
     </tag>

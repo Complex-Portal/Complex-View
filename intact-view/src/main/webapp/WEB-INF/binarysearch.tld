@@ -58,25 +58,6 @@
         </attribute>
     </tag>
     <tag>
-        <name>resultsSummary</name>
-    </tag>
-    <tag>
-        <name>resultsTable</name>
-        <attribute>
-            <name>pageSize</name>
-        </attribute>
-        <attribute>
-            <name>sortAscending</name>
-        </attribute>
-        <attribute>
-            <name>sortColumn</name>
-        </attribute>
-        <attribute>
-            <name>value</name>
-            <required>true</required>
-        </attribute>
-    </tag>
-    <tag>
         <name>xrefDataList</name>
         <attribute>
             <name>itemPerLine</name>

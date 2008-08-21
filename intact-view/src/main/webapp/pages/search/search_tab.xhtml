@@ -16,19 +16,21 @@
     <tr:panelHeader text="Quick Search" styleClass="level-one"/>
 
     <tr:panelLabelAndMessage label="Search query:">
-        <tr:inputText columns="30" value="#{searchBean.searchQuery}" />
+        <tr:inputText columns="30" value="#{searchBean.searchQuery}"
+                      onkeypress="return submitEnter('searchBtn',event)"/>
         <f:facet name="help">
             <tr:group>
                 <tr:panelList>
-                    <tr:outputText value="Protein accession number: e.g. 'P12345'"/>
+                    <tr:outputText value="Protein accession number: e.g. 'Q08345'"/>
                     <tr:outputText value="Drug name: e.g. 'imatinib'"/>
-                    <tr:outputText value="Gene name: e.g. 'BRCA1'"/>
-                    <tr:outputText value="Author name: e.g. 'Doodle'"/>
+                    <tr:outputText value="Gene name: e.g. 'DDR1'"/>
+                    <!--<tr:outputText value="Author name: e.g. 'Doodle'"/>-->
                 </tr:panelList>
             </tr:group>
         </f:facet>
         <f:facet name="end">
-            <tr:commandButton text="Search"
+            <tr:commandButton id="searchBtn"
+                              text="Search"
                               action="#{searchBean.doBinarySearchAction}"
                               styleClass="submit_button"/>
         </f:facet>
@@ -46,7 +48,7 @@
             e.g. 'yeast two hybrid'
         </f:facet>
         <f:facet name="end">
-            <tr:commandButton text="Search" styleClass="submit_button"/>
+            <tr:commandButton text="Search" styleClass="submit_button" disabled="true"/>
         </f:facet>
     </tr:panelLabelAndMessage>
 
