@@ -10,12 +10,24 @@
     </description>
 
     <tag>
-        <name>advancedSearch</name>
+        <name>customShowDetail</name>
         <attribute>
-            <name>rendered</name>
+            <name>id</name>
+            <required>true</required>
         </attribute>
         <attribute>
-            <name>style</name>
+            <name>disclosedText</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>undisclosedText</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>disclosed</name>
+        </attribute>
+        <attribute>
+            <name>rendered</name>
         </attribute>
     </tag>
     <tag>

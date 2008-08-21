@@ -7,6 +7,10 @@
     <namespace>http://intact.ebi.ac.uk/binarysearch</namespace>
 
     <tag>
+        <tag-name>customShowDetail</tag-name>
+        <source>facelets/components/binarysearch/CustomShowDetail.xhtml</source>
+    </tag>
+    <tag>
         <tag-name>hilightableRowElement</tag-name>
         <source>facelets/components/binarysearch/HilightableRowElement.xhtml</source>
     </tag>

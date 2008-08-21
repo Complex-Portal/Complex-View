@@ -436,7 +436,7 @@ to use the fullqualified class name. -->
     </welcome-file-list>
 
     <session-config>
-        <session-timeout>30</session-timeout>
+        <session-timeout>20</session-timeout>
     </session-config>
 
     <!-- Handling of the HTTP error 404 -->

@@ -64,6 +64,9 @@
 
          <tr:form id="intactForm">
 
+              <!-- To avoid expired sessions, poll every 25 mins -->
+        <tr:poll interval="#{15*60*1000}"/>
+
             <!-- EBI header -->
             <div class="headerdiv" id="headerdiv"
                  style="position:absolute; z-index: 1;">
