@@ -73,8 +73,12 @@ public class ExportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String searchQuery = request.getParameter(PARAM_QUERY);
         String format = request.getParameter(PARAM_FORMAT);
-        String sortColumn = request.getParameter(PARAM_SORT);
-        String sortAsc = request.getParameter(PARAM_SORT_ASC);
+
+        String sortColumn = null;
+        String sortAsc = null;
+
+        //String sortColumn = request.getParameter(PARAM_SORT);
+        //String sortAsc = request.getParameter(PARAM_SORT_ASC);
 
         BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(defaultIndex, sortColumn, Boolean.parseBoolean(sortAsc));
         exporter.searchAndExport(response.getOutputStream(), searchQuery, format);
