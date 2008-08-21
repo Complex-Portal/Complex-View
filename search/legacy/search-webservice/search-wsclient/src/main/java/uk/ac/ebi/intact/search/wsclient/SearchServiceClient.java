@@ -149,6 +149,10 @@ public class SearchServiceClient
             return null;
         }
 
+        if (results.isEmpty()) {
+            return null;
+        }
+
         SimpleResult result = results.iterator().next();
 
         InteractionInfo interInfo = new InteractionInfo();
