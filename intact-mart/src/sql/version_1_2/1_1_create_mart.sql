@@ -10,8 +10,10 @@ CREATE TABLE intact__publication__main (
 );
 
 CREATE INDEX tbl_publication_index
-ON intact__publication__main ( publication_key, publication_title,
-  interactions_count, experiment_count);
+ON intact__publication__main ( publication_key);
+
+CREATE BITMAP INDEX tbl_publication_bitmap
+ON intact__publication__main ( publication_title, interactions_count, experiment_count);
 
 CREATE TABLE intact__publication_alias__dm (
   publication_key VARCHAR2(30) NOT NULL,
@@ -22,8 +24,10 @@ CREATE TABLE intact__publication_alias__dm (
 );
 
 CREATE INDEX tbl_publication_alias_index
-ON intact__publication_alias__dm (publication_key,
-  name, alias_type_mi,alias_type_short, alias_type_full);
+ON intact__publication_alias__dm (publication_key);
+
+CREATE BITMAP INDEX tbl_publication_alias_bitmap
+ON intact__publication_alias__dm ( name, alias_type_mi,alias_type_short, alias_type_full);
 
 CREATE TABLE intact__publication_anno__dm (
   publication_key VARCHAR2(30) NOT NULL,
@@ -34,8 +38,10 @@ CREATE TABLE intact__publication_anno__dm (
 );
 
 CREATE INDEX tbl_publication_anno_index
-ON intact__publication_anno__dm (publication_key,
-  description, topic_mi, topic_short, topic_full);
+ON intact__publication_anno__dm (publication_key);
+
+CREATE BITMAP INDEX tbl_publication_anno_bitmap
+ON intact__publication_anno__dm ( description, topic_mi, topic_short, topic_full);
 
 CREATE TABLE intact__publication_xref__dm (
   publication_key VARCHAR2(30) NOT NULL,
@@ -50,8 +56,11 @@ CREATE TABLE intact__publication_xref__dm (
 );
 
 CREATE INDEX tbl_publication_xref_index
-ON intact__publication_xref__dm (publication_key, primary_id, secondary_id,
-  database_mi, database_short, database_full,qualifier_mi, qualifier_short, qualifier_full);
+ON intact__publication_xref__dm (publication_key);
+
+CREATE BITMAP INDEX tbl_publication_xref_bitmap
+ON intact__publication_xref__dm ( primary_id, secondary_id, database_mi, database_short, 
+  database_full,qualifier_mi, qualifier_short, qualifier_full);
 
 
 -- #############################################################################
@@ -79,7 +88,10 @@ CREATE TABLE intact__experiment__main (
 );
 
 CREATE INDEX tbl_experiment_index
-ON intact__experiment__main (publication_key, experiment_key, interactions_count,
+ON intact__experiment__main (publication_key, experiment_key);
+
+CREATE BITMAP INDEX tbl_experiment_bitmap
+ON intact__experiment__main ( interactions_count,
   experiment_count, experiment_short, host_organism_taxid, host_organism_short, 
   participant_identmethod_short, interaction_detectmethod_short, interaction_count);
 
@@ -91,8 +103,10 @@ CREATE TABLE intact__hostOrg_celltype__dm (
 );
 
 CREATE INDEX tbl_hostOrg_celltype_index
-ON intact__hostOrg_celltype__dm ( experiment_key, cabri_id,
-  celltype_short, celltype_full);
+ON intact__hostOrg_celltype__dm ( experiment_key);
+
+CREATE BITMAP INDEX tbl_hostOrg_celltype_bitmap
+ON intact__hostOrg_celltype__dm ( cabri_id, celltype_short, celltype_full);
 
 CREATE TABLE intact__hostOrg_tissue__dm (
   experiment_key VARCHAR2(30) NOT NULL,
@@ -102,8 +116,10 @@ CREATE TABLE intact__hostOrg_tissue__dm (
 );
 
 CREATE INDEX tbl_hostOrg_tissue_index
-ON intact__hostOrg_tissue__dm (experiment_key,
-  brenda_id, tissue_short, tissue_full);
+ON intact__hostOrg_tissue__dm (experiment_key);
+
+CREATE BITMAP INDEX tbl_hostOrg_tissue_bitmap
+ON intact__hostOrg_tissue__dm ( brenda_id, tissue_short, tissue_full);
 
 CREATE TABLE intact__experiment_alias__dm (
   experiment_key VARCHAR2(30) NOT NULL,
@@ -114,8 +130,10 @@ CREATE TABLE intact__experiment_alias__dm (
 );
 
 CREATE INDEX tbl_experiment_alias_index
-ON intact__experiment_alias__dm (experiment_key,
-  name, alias_type_mi,alias_type_short, alias_type_full);
+ON intact__experiment_alias__dm (experiment_key);
+
+CREATE BITMAP INDEX tbl_experiment_alias_bitmap
+ON intact__experiment_alias__dm ( name, alias_type_mi,alias_type_short, alias_type_full);
 
 CREATE TABLE intact__experiment_anno__dm (
   experiment_key VARCHAR2(30) NOT NULL,
@@ -126,8 +144,10 @@ CREATE TABLE intact__experiment_anno__dm (
 );
 
 CREATE INDEX tbl_experiment_anno_index
-ON intact__experiment_anno__dm (experiment_key,
-  description, topic_mi, topic_short, topic_full);
+ON intact__experiment_anno__dm (experiment_key);
+
+CREATE BITMAP INDEX tbl_experiment_anno_bitmap
+ON intact__experiment_anno__dm ( description, topic_mi, topic_short, topic_full);
 
 CREATE TABLE intact__experiment_xref__dm (
   experiment_key VARCHAR2(30) NOT NULL,
@@ -142,7 +162,10 @@ CREATE TABLE intact__experiment_xref__dm (
 );
 
 CREATE INDEX tbl_experiment_xref_index
-ON intact__experiment_xref__dm (experiment_key, primary_id, secondary_id,
+ON intact__experiment_xref__dm (experiment_key);
+
+CREATE BITMAP INDEX tbl_experiment_xref_bitmap
+ON intact__experiment_xref__dm ( primary_id, secondary_id,
   database_mi,database_short, database_full,qualifier_mi, qualifier_short, qualifier_full);
 
 -- #############################################################################
@@ -177,10 +200,13 @@ CREATE TABLE intact__interaction__main (
 );
 
 CREATE INDEX tbl_interaction_index
-ON intact__interaction__main (publication_key, experiment_key, interaction_key, 
-  interactions_count,  experiment_count, experiment_short, host_organism_taxid, host_organism_short, 
-  participant_identmethod_short, interaction_detectmethod_short, interaction_count,
-  interaction_type_short, interactor_count, component_count, molecule_count);
+ON intact__interaction__main (publication_key, experiment_key, interaction_key);
+
+CREATE BITMAP INDEX tbl_interaction_bitmap
+ON intact__interaction__main ( interactions_count,  experiment_count, experiment_short, 
+  host_organism_taxid, host_organism_short, participant_identmethod_short, 
+  interaction_detectmethod_short, interaction_count, interaction_type_short, 
+  interactor_count, component_count, molecule_count);
 
 CREATE TABLE intact__interaction_alias__dm (
   interaction_key VARCHAR2(30) NULL,
@@ -191,8 +217,10 @@ CREATE TABLE intact__interaction_alias__dm (
 );
 
 CREATE INDEX tbl_interaction_alias_index
-ON intact__interaction_alias__dm (interaction_key,
-  name, alias_type_mi, alias_type_short, alias_type_full);
+ON intact__interaction_alias__dm (interaction_key);
+
+CREATE BITMAP INDEX tbl_interaction_alias_bitmap
+ON intact__interaction_alias__dm ( name, alias_type_mi, alias_type_short, alias_type_full);
 
 CREATE TABLE intact__interaction_anno__dm (
   interaction_key VARCHAR2(30) NOT NULL,
@@ -203,8 +231,10 @@ CREATE TABLE intact__interaction_anno__dm (
 );
 
 CREATE INDEX tbl_interaction_anno_index
-ON intact__interaction_anno__dm (interaction_key,
-  description, topic_mi, topic_short, topic_full);
+ON intact__interaction_anno__dm (interaction_key);
+
+CREATE BITMAP INDEX tbl_interaction_anno_bitmap
+ON intact__interaction_anno__dm ( description, topic_mi, topic_short, topic_full);
   
 CREATE TABLE intact__interaction_xref__dm (
   interaction_key VARCHAR2(30) NOT NULL,
@@ -219,8 +249,10 @@ CREATE TABLE intact__interaction_xref__dm (
 );
 
 CREATE INDEX tbl_interaction_xref_index
-ON intact__interaction_xref__dm (interaction_key,
-  primary_id, secondary_id, database_mi, database_short,
+ON intact__interaction_xref__dm (interaction_key);
+
+CREATE BITMAP INDEX tbl_interaction_xref_bitmap
+ON intact__interaction_xref__dm ( primary_id, secondary_id, database_mi, database_short,
   database_full, qualifier_mi, qualifier_short, qualifier_full);
 
 CREATE TABLE intact__interaction_owner__dm (
@@ -231,8 +263,10 @@ CREATE TABLE intact__interaction_owner__dm (
 );
 
 CREATE INDEX tbl_interaction_owner_index
-ON intact__interaction_owner__dm (interaction_key,
-  interaction_owner_mi, interaction_owner_short, interaction_owner_full);
+ON intact__interaction_owner__dm (interaction_key);
+
+CREATE BITMAP INDEX tbl_interaction_owner_bitmap
+ON intact__interaction_owner__dm ( interaction_owner_mi, interaction_owner_short, interaction_owner_full);
 
 -- involved molecule count per interaction
 CREATE TABLE tbl_molecule_count_tmp (
@@ -286,9 +320,11 @@ CREATE TABLE intact__component__main (
 );
 
 CREATE INDEX tbl_component_index
-ON intact__component__main ( publication_key, experiment_key, interaction_key, component_key,
-  interactions_count,  experiment_count, experiment_short, host_organism_taxid, host_organism_short, 
-  participant_identmethod_short, interaction_detectmethod_short, interaction_count,
+ON intact__component__main ( publication_key, experiment_key, interaction_key, component_key);
+
+CREATE BITMAP INDEX tbl_component_bitmap
+ON intact__component__main ( interactions_count,  experiment_count, experiment_short, host_organism_taxid, 
+  host_organism_short, participant_identmethod_short, interaction_detectmethod_short, interaction_count,
   interaction_type_short, interactor_count, component_count, molecule_count, experimental_role_short,
   biological_role_short, component_expressed_in_taxid, component_expressed_in_short
 );
@@ -302,8 +338,10 @@ CREATE TABLE intact__component_alias__dm (
 );
 
 CREATE INDEX tbl_component_alias_index
-ON intact__component_alias__dm (component_key,
-  name, alias_type_mi, alias_type_short, alias_type_full);
+ON intact__component_alias__dm (component_key);
+
+CREATE BITMAP INDEX tbl_component_alias_bitmap
+ON intact__component_alias__dm ( name, alias_type_mi, alias_type_short, alias_type_full);
 
 CREATE TABLE intact__component_anno__dm (
   component_key VARCHAR2(30) NOT NULL,
@@ -314,8 +352,10 @@ CREATE TABLE intact__component_anno__dm (
 );
 
 CREATE INDEX tbl_component_anno_index
-ON intact__component_anno__dm (component_key,
-  description, topic_mi, topic_short, topic_full);
+ON intact__component_anno__dm (component_key);
+
+CREATE BITMAP INDEX tbl_component_anno_bitmap
+ON intact__component_anno__dm ( description, topic_mi, topic_short, topic_full);
 
 CREATE TABLE intact__component_xref__dm (
   component_key VARCHAR2(30) NOT NULL,
@@ -330,8 +370,10 @@ CREATE TABLE intact__component_xref__dm (
 );
 
 CREATE INDEX tbl_component_xref_index
-ON intact__component_xref__dm (component_key,
-  primary_id, secondary_id, database_mi, database_short, database_full,
+ON intact__component_xref__dm (component_key);
+
+CREATE BITMAP INDEX tbl_component_xref_bitmap
+ON intact__component_xref__dm ( primary_id, secondary_id, database_mi, database_short, database_full,
   qualifier_mi, qualifier_short, qualifier_full);
 
 
@@ -387,12 +429,15 @@ CREATE TABLE intact__interactor__main (
   interactor_sequence CLOB NULL,
   interactor_sequence_length INTEGER NULL,
   crc64 VARCHAR2(30) NULL,
-  involved_interaction_count INTEGER NULL
+  involved_interaction_count INTEGER NULL,
+  uniprotkb VARCHAR2(30) NULL
 );
 
 CREATE INDEX tbl_interactor_index
-ON intact__interactor__main (publication_key, experiment_key, interaction_key, component_key, interactor_key,
-  interactions_count,  experiment_count, experiment_short, host_organism_taxid, host_organism_short, 
+ON intact__interactor__main (publication_key, experiment_key, interaction_key, component_key, interactor_key, uniprotkb);
+
+CREATE BITMAP INDEX tbl_interactor_bitmap
+ON intact__interactor__main ( interactions_count,  experiment_count, experiment_short, host_organism_taxid, host_organism_short, 
   participant_identmethod_short, interaction_detectmethod_short, interaction_count,
   interaction_type_short, interactor_count, component_count, molecule_count, experimental_role_short,
   biological_role_short, component_expressed_in_taxid, component_expressed_in_short, 
@@ -407,8 +452,10 @@ CREATE TABLE intact__interactor_alias__dm (
 );
 
 CREATE INDEX tbl_interactor_alias_index
-ON intact__interactor_alias__dm (interactor_key,
-  name, alias_type_mi, alias_type_short, alias_type_full);
+ON intact__interactor_alias__dm (interactor_key);
+
+CREATE BITMAP INDEX tbl_interactor_alias_bitmap
+ON intact__interactor_alias__dm ( name, alias_type_mi, alias_type_short, alias_type_full);
 
 CREATE TABLE intact__interactor_anno__dm (
   interactor_key VARCHAR2(30) NOT NULL,
@@ -419,8 +466,10 @@ CREATE TABLE intact__interactor_anno__dm (
 );
 
 CREATE INDEX tbl_interactor_anno_index
-ON intact__interactor_anno__dm (interactor_key,
-  description, topic_mi, topic_short, topic_full);
+ON intact__interactor_anno__dm (interactor_key);
+
+CREATE BITMAP INDEX tbl_interactor_anno_bitmap
+ON intact__interactor_anno__dm ( description, topic_mi, topic_short, topic_full);
 
 CREATE TABLE intact__interactor_xref__dm (
   interactor_key VARCHAR2(30) NOT NULL,
@@ -435,8 +484,10 @@ CREATE TABLE intact__interactor_xref__dm (
 );
 
 CREATE INDEX tbl_interactor_xref_index
-ON intact__interactor_xref__dm (interactor_key,
-  primary_id, secondary_id, database_mi, database_short, database_full,
+ON intact__interactor_xref__dm (interactor_key);
+
+CREATE BITMAP INDEX tbl_interactor_xref_bitmap
+ON intact__interactor_xref__dm ( primary_id, secondary_id, database_mi, database_short, database_full,
   qualifier_mi, qualifier_short, qualifier_full);
 
 -- stores temoprary the interactor_sequence
@@ -501,6 +552,7 @@ CREATE TABLE intact__feature__main (
   interactor_sequence_length INTEGER NULL,
   crc64 VARCHAR2(30) NULL,
   involved_interaction_count INTEGER NULL,
+  uniprotkb VARCHAR2(30) NULL,
   feature_shortlabel VARCHAR2(30) NULL,
   feature_fullname VARCHAR2(400) NULL,
   feature_type_mi VARCHAR2(30) NULL,
@@ -512,9 +564,11 @@ CREATE TABLE intact__feature__main (
 );
 
 CREATE INDEX tbl_feature_index
-ON intact__feature__main (publication_key, experiment_key, interaction_key, component_key, interactor_key, feature_key,
-  interactions_count,  experiment_count, experiment_short, host_organism_taxid, host_organism_short, 
-  participant_identmethod_short, interaction_detectmethod_short, interaction_count,
+ON intact__feature__main (publication_key, experiment_key, interaction_key, component_key, interactor_key, feature_key, uniprotkb);
+
+CREATE BITMAP INDEX tbl_feature_bitmap
+ON intact__feature__main ( interactions_count,  experiment_count, experiment_short, host_organism_taxid, 
+  host_organism_short, participant_identmethod_short, interaction_detectmethod_short, interaction_count,
   interaction_type_short, interactor_count, component_count, molecule_count, experimental_role_short,
   biological_role_short, component_expressed_in_taxid, component_expressed_in_short, 
   stoichiometry, interactor_sequence_length, involved_interaction_count,
@@ -529,8 +583,10 @@ CREATE TABLE intact__feature_alias__dm (
 );
 
 CREATE INDEX tbl_feature_alias_index
-ON intact__feature_alias__dm (feature_key,
-  name, alias_type_mi, alias_type_short, alias_type_full);
+ON intact__feature_alias__dm (feature_key);
+
+CREATE BITMAP INDEX tbl_feature_alias_bitmat
+ON intact__feature_alias__dm ( name, alias_type_mi, alias_type_short, alias_type_full);
 
 CREATE TABLE intact__feature_anno__dm (
   feature_key VARCHAR2(30) NOT NULL,
@@ -541,8 +597,10 @@ CREATE TABLE intact__feature_anno__dm (
 );
 
 CREATE INDEX tbl_feature_anno_index
-ON intact__feature_anno__dm (feature_key,
-  description, topic_mi, topic_short, topic_full);
+ON intact__feature_anno__dm (feature_key);
+
+CREATE BITMAP INDEX tbl_feature_anno_bitmap
+ON intact__feature_anno__dm ( description, topic_mi, topic_short, topic_full);
 
 CREATE TABLE intact__feature_xref__dm (
   feature_key VARCHAR2(30) NOT NULL,
@@ -557,7 +615,10 @@ CREATE TABLE intact__feature_xref__dm (
 );
 
 CREATE INDEX tbl_feature_xref_index
-ON intact__feature_xref__dm (feature_key, primary_id, secondary_id, database_mi, 
+ON intact__feature_xref__dm (feature_key);
+
+CREATE BITMAP INDEX tbl_feature_xref_bitmap
+ON intact__feature_xref__dm ( primary_id, secondary_id, database_mi, 
   database_short, database_full, qualifier_mi, qualifier_short, qualifier_full);
 
 CREATE TABLE intact__range__dm (
@@ -577,7 +638,10 @@ CREATE TABLE intact__range__dm (
 );
 
 CREATE INDEX tbl_range_index
-ON intact__range__dm (feature_key, undetermined, link, from_interval_start,
+ON intact__range__dm (feature_key);
+
+CREATE BITMAP INDEX tbl_range_bitmap
+ON intact__range__dm ( undetermined, link, from_interval_start,
   from_interval_end, from_fuzzytype_mi, from_fuzzytype_short, from_fuzzytype_full,
   to_interval_start, to_interval_end, to_fuzzytype_mi, to_fuzzytype_short,
   to_fuzzytype_full);

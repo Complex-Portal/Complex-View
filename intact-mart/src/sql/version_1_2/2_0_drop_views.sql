@@ -36,6 +36,7 @@ BEGIN
    -- views for the fifth main and dimension tables
    drop_m_view_if_exist('v_involved_interaction_count');
    drop_m_view_if_exist('v_interactor');
+   drop_m_view_if_exist('v_uniprotkb');
    -- view for the sixth main table
    drop_m_view_if_exist('v_feature');
 END;

@@ -52,6 +52,7 @@ SELECT int_main.publication_key,                -- publication_key
        int_main.interactor_sequence_length,     -- interactor_sequence_length
        int_main.crc64,                          -- crc64
        int_main.involved_interaction_count,     -- involved_interaction_count
+       int_main.uniprotkb,                      -- uniprotkb
        f.feature_short,                         -- feature_short
        f.feature_full,                          -- feature_full
        f.feature_type_mi,                       -- feature_type_mi

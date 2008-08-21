@@ -50,7 +50,8 @@ SELECT com_main.publication_key,                -- publication_key
        tmp.interactor_sequence,                 -- interactor_sequence
        tmp.interactor_sequence_length,          -- interactor_sequence_length
        inter.crc64,                             -- crc64
-       inter.interaction_count                  -- involved_interaction_count
+       inter.interaction_count,                 -- involved_interaction_count
+       inter.uniprotkb
 FROM ia_component com RIGHT OUTER JOIN  v_interactor inter 
                                     ON ( inter.ac = com.interactor_ac )
                        LEFT OUTER JOIN intact__component__main com_main
