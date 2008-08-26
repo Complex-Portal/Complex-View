@@ -4,7 +4,7 @@
 
 CREATE TABLE intact__publication__main (
   publication_key VARCHAR2(30) NOT NULL, 
-  publication_title VARCHAR2(400) NULL,
+  publication_title VARCHAR2(1000) NULL,
   interactions_count INTEGER NULL,
   experiment_count INTEGER NULL
 );
@@ -17,10 +17,10 @@ ON intact__publication__main ( publication_title, interactions_count, experiment
 
 CREATE TABLE intact__publication_alias__dm (
   publication_key VARCHAR2(30) NOT NULL,
-  name VARCHAR2(30) NULL,
+  name VARCHAR2(256) NULL,
   alias_type_mi VARCHAR2(30) NULL,
-  alias_type_short VARCHAR2(30) NULL,
-  alias_type_full VARCHAR2(30) NULL
+  alias_type_short VARCHAR2(256) NULL,
+  alias_type_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_publication_alias_index
@@ -33,8 +33,8 @@ CREATE TABLE intact__publication_anno__dm (
   publication_key VARCHAR2(30) NOT NULL,
   description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
-  topic_short VARCHAR2(30) NULL,
-  topic_full VARCHAR2(400) NULL
+  topic_short VARCHAR2(256) NULL,
+  topic_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_publication_anno_index
@@ -48,11 +48,11 @@ CREATE TABLE intact__publication_xref__dm (
   primary_id VARCHAR2(30) NULL,
   secondary_id VARCHAR2(30) NULL,
   database_mi VARCHAR2(30) NULL,
-  database_short VARCHAR2(30) NULL,
-  database_full VARCHAR2(400) NULL,
+  database_short VARCHAR2(256) NULL,
+  database_full VARCHAR2(1000) NULL,
   qualifier_mi VARCHAR2(30) NULL,
-  qualifier_short VARCHAR2(30) NULL,
-  qualifier_full VARCHAR2(400) NULL
+  qualifier_short VARCHAR2(256) NULL,
+  qualifier_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_publication_xref_index
@@ -70,20 +70,20 @@ ON intact__publication_xref__dm ( primary_id, secondary_id, database_mi, databas
 CREATE TABLE intact__experiment__main (
   publication_key VARCHAR2(30) NULL, 
   experiment_key VARCHAR2(30) NOT NULL,
-  publication_title VARCHAR2(400) NULL,
+  publication_title VARCHAR2(1000) NULL,
   interactions_count INTEGER NULL,
   experiment_count INTEGER NULL,
-  experiment_short VARCHAR2(50) NULL, 
-  experiment_full VARCHAR2(400) NULL, 
+  experiment_short VARCHAR2(256) NULL, 
+  experiment_full VARCHAR2(1000) NULL, 
   host_organism_taxid INTEGER NULL,
-  host_organism_short VARCHAR2(50) NULL,
-  host_organism_full VARCHAR2(200) NULL,
+  host_organism_short VARCHAR2(256) NULL,
+  host_organism_full VARCHAR2(1000) NULL,
   participant_identmethod_mi VARCHAR2(30) NULL,
-  participant_identmethod_short VARCHAR2(30) NULL,
-  participant_identmethod_full VARCHAR2(400) NULL,
+  participant_identmethod_short VARCHAR2(256) NULL,
+  participant_identmethod_full VARCHAR2(1000) NULL,
   interaction_detectmethod_mi VARCHAR2(30) NULL,
-  interaction_detectmethod_short VARCHAR2(30) NULL,
-  interaction_detectmethod_full VARCHAR2(400) NULL,
+  interaction_detectmethod_short VARCHAR2(256) NULL,
+  interaction_detectmethod_full VARCHAR2(1000) NULL,
   interaction_count INTEGER NULL
 );
 
@@ -98,8 +98,8 @@ ON intact__experiment__main ( interactions_count,
 CREATE TABLE intact__hostOrg_celltype__dm (
   experiment_key VARCHAR2(30) NOT NULL,
   cabri_id VARCHAR2(30) NULL,
-  celltype_short VARCHAR2(100) NULL,
-  celltype_full VARCHAR2(400) NULL
+  celltype_short VARCHAR2(265) NULL,
+  celltype_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_hostOrg_celltype_index
@@ -111,8 +111,8 @@ ON intact__hostOrg_celltype__dm ( cabri_id, celltype_short, celltype_full);
 CREATE TABLE intact__hostOrg_tissue__dm (
   experiment_key VARCHAR2(30) NOT NULL,
   brenda_id VARCHAR2(30) NULL,
-  tissue_short VARCHAR2(100) NULL,
-  tissue_full VARCHAR2(100) NULL
+  tissue_short VARCHAR2(256) NULL,
+  tissue_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_hostOrg_tissue_index
@@ -123,10 +123,10 @@ ON intact__hostOrg_tissue__dm ( brenda_id, tissue_short, tissue_full);
 
 CREATE TABLE intact__experiment_alias__dm (
   experiment_key VARCHAR2(30) NOT NULL,
-  name VARCHAR2(30) NULL,
+  name VARCHAR2(256) NULL,
   alias_type_mi VARCHAR2(30) NULL,
-  alias_type_short VARCHAR2(30) NULL,
-  alias_type_full VARCHAR2(30) NULL
+  alias_type_short VARCHAR2(265) NULL,
+  alias_type_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_experiment_alias_index
@@ -139,8 +139,8 @@ CREATE TABLE intact__experiment_anno__dm (
   experiment_key VARCHAR2(30) NOT NULL,
   description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
-  topic_short VARCHAR2(30) NULL,
-  topic_full VARCHAR2(400) NULL
+  topic_short VARCHAR2(256) NULL,
+  topic_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_experiment_anno_index
@@ -154,11 +154,11 @@ CREATE TABLE intact__experiment_xref__dm (
   primary_id VARCHAR2(30) NULL,
   secondary_id VARCHAR2(30) NULL,
   database_mi VARCHAR2(30) NULL,
-  database_short VARCHAR2(30) NULL,
-  database_full VARCHAR2(400) NULL,
+  database_short VARCHAR2(256) NULL,
+  database_full VARCHAR2(1000) NULL,
   qualifier_mi VARCHAR2(30) NULL,
-  qualifier_short VARCHAR2(30) NULL,
-  qualifier_full VARCHAR2(400) NULL
+  qualifier_short VARCHAR2(265) NULL,
+  qualifier_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_experiment_xref_index
@@ -176,24 +176,24 @@ CREATE TABLE intact__interaction__main (
   publication_key VARCHAR2(30) NULL, 
   experiment_key VARCHAR2(30) NULL,
   interaction_key VARCHAR2(30) NOT NULL,
-  publication_title VARCHAR2(400) NULL,
+  publication_title VARCHAR2(1000) NULL,
   interactions_count INTEGER NULL,
   experiment_count INTEGER NULL,
-  experiment_short VARCHAR2(50) NULL,
-  experiment_full VARCHAR2(400) NULL,
+  experiment_short VARCHAR2(265) NULL,
+  experiment_full VARCHAR2(1000) NULL,
   host_organism_taxid INTEGER NULL,
-  host_organism_short VARCHAR2(30) NULL,
-  host_organism_full VARCHAR2(200) NULL,
+  host_organism_short VARCHAR2(256) NULL,
+  host_organism_full VARCHAR2(1000) NULL,
   participant_identmethod_mi VARCHAR2(30) NULL,
-  participant_identmethod_short VARCHAR2(30) NULL,
-  participant_identmethod_full VARCHAR2(400) NULL,
+  participant_identmethod_short VARCHAR2(256) NULL,
+  participant_identmethod_full VARCHAR2(1000) NULL,
   interaction_detectmethod_mi VARCHAR2(30) NULL,
-  interaction_detectmethod_short VARCHAR2(30) NULL,
-  interaction_detectmethod_full VARCHAR2(400) NULL,
+  interaction_detectmethod_short VARCHAR2(256) NULL,
+  interaction_detectmethod_full VARCHAR2(1000) NULL,
   interaction_count INTEGER NULL,
   interaction_type_mi VARCHAR2(30) NULL,
-  interaction_type_short VARCHAR2(30) NULL,
-  interaction_type_full VARCHAR2(400) NULL,
+  interaction_type_short VARCHAR2(256) NULL,
+  interaction_type_full VARCHAR2(1000) NULL,
   interactor_count INTEGER NULL,
   component_count INTEGER NULL,
   molecule_count INTEGER NULL
@@ -210,10 +210,10 @@ ON intact__interaction__main ( interactions_count,  experiment_count, experiment
 
 CREATE TABLE intact__interaction_alias__dm (
   interaction_key VARCHAR2(30) NULL,
-  name VARCHAR2(30) NULL,
+  name VARCHAR2(256) NULL,
   alias_type_mi VARCHAR2(30) NULL,
-  alias_type_short VARCHAR2(30) NULL,
-  alias_type_full VARCHAR2(30) NULL
+  alias_type_short VARCHAR2(256) NULL,
+  alias_type_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_interaction_alias_index
@@ -226,8 +226,8 @@ CREATE TABLE intact__interaction_anno__dm (
   interaction_key VARCHAR2(30) NOT NULL,
   description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
-  topic_short VARCHAR2(30) NULL,
-  topic_full VARCHAR2(400) NULL
+  topic_short VARCHAR2(256) NULL,
+  topic_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_interaction_anno_index
@@ -241,11 +241,11 @@ CREATE TABLE intact__interaction_xref__dm (
   primary_id VARCHAR2(30) NULL,
   secondary_id VARCHAR2(30) NULL,
   database_mi VARCHAR2(30) NULL,
-  database_short VARCHAR2(30) NULL,
-  database_full VARCHAR2(400) NULL,
+  database_short VARCHAR2(256) NULL,
+  database_full VARCHAR2(1000) NULL,
   qualifier_mi VARCHAR2(30) NULL,
-  qualifier_short VARCHAR2(30) NULL,
-  qualifier_full VARCHAR2(400) NULL
+  qualifier_short VARCHAR2(256) NULL,
+  qualifier_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_interaction_xref_index
@@ -258,8 +258,8 @@ ON intact__interaction_xref__dm ( primary_id, secondary_id, database_mi, databas
 CREATE TABLE intact__interaction_owner__dm (
   interaction_key VARCHAR2(30) NOT NULL,
   interaction_owner_mi VARCHAR2(30) NULL,
-  interaction_owner_short VARCHAR2(30) NULL,
-  interaction_owner_full VARCHAR2(100) NULL
+  interaction_owner_short VARCHAR2(256) NULL,
+  interaction_owner_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_interaction_owner_index
@@ -286,36 +286,36 @@ CREATE TABLE intact__component__main (
   experiment_key VARCHAR2(30) NULL,
   interaction_key VARCHAR2(30) NULL,
   component_key VARCHAR2(30) NULL,
-  publication_title VARCHAR2(400) NULL,
+  publication_title VARCHAR2(1000) NULL,
   interactions_count INTEGER NULL,
   experiment_count INTEGER NULL,
-  experiment_short VARCHAR2(50) NULL,
-  experiment_full VARCHAR2(400) NULL,
+  experiment_short VARCHAR2(256) NULL,
+  experiment_full VARCHAR2(1000) NULL,
   host_organism_taxid INTEGER NULL,
-  host_organism_short VARCHAR2(30) NULL,
-  host_organism_full VARCHAR2(200) NULL,
+  host_organism_short VARCHAR2(256) NULL,
+  host_organism_full VARCHAR2(1000) NULL,
   participant_identmethod_mi VARCHAR2(30) NULL,
-  participant_identmethod_short VARCHAR2(30) NULL,
-  participant_identmethod_full VARCHAR2(400) NULL,
+  participant_identmethod_short VARCHAR2(256) NULL,
+  participant_identmethod_full VARCHAR2(1000) NULL,
   interaction_detectmethod_mi VARCHAR2(30) NULL,
-  interaction_detectmethod_short VARCHAR2(30) NULL,
-  interaction_detectmethod_full VARCHAR2(400) NULL,
+  interaction_detectmethod_short VARCHAR2(256) NULL,
+  interaction_detectmethod_full VARCHAR2(1000) NULL,
   interaction_count INTEGER NULL,
   interaction_type_mi VARCHAR2(30) NULL,
-  interaction_type_short VARCHAR2(30) NULL,
-  interaction_type_full VARCHAR2(400) NULL,
+  interaction_type_short VARCHAR2(256) NULL,
+  interaction_type_full VARCHAR2(1000) NULL,
   interactor_count INTEGER NULL,
   component_count INTEGER NULL,
   molecule_count INTEGER NULL,
   experimental_role_mi VARCHAR2(30) NULL,
-  experimental_role_short VARCHAR2(30) NULL,
-  experimental_role_full VARCHAR2(400) NULL,
+  experimental_role_short VARCHAR2(256) NULL,
+  experimental_role_full VARCHAR2(1000) NULL,
   biological_role_mi VARCHAR2(30) NULL,
-  biological_role_short VARCHAR2(30) NULL,
-  biological_role_full VARCHAR2(400) NULL,
+  biological_role_short VARCHAR2(256) NULL,
+  biological_role_full VARCHAR2(1000) NULL,
   component_expressed_in_taxid VARCHAR2(30) NULL,
-  component_expressed_in_short VARCHAR2(30) NULL,
-  component_expressed_in_full VARCHAR2(400) NULL,
+  component_expressed_in_short VARCHAR2(256) NULL,
+  component_expressed_in_full VARCHAR2(1000) NULL,
   stoichiometry INTEGER NULL
 );
 
@@ -331,10 +331,10 @@ ON intact__component__main ( interactions_count,  experiment_count, experiment_s
 
 CREATE TABLE intact__component_alias__dm (
   component_key VARCHAR2(30) NOT NULL,
-  name VARCHAR2(30) NULL,
+  name VARCHAR2(256) NULL,
   alias_type_mi VARCHAR2(30) NULL,
-  alias_type_short VARCHAR2(30) NULL,
-  alias_type_full VARCHAR2(400) NULL
+  alias_type_short VARCHAR2(256) NULL,
+  alias_type_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_component_alias_index
@@ -347,8 +347,8 @@ CREATE TABLE intact__component_anno__dm (
   component_key VARCHAR2(30) NOT NULL,
   description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
-  topic_short VARCHAR2(30) NULL,
-  topic_full VARCHAR2(400) NULL
+  topic_short VARCHAR2(256) NULL,
+  topic_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_component_anno_index
@@ -362,11 +362,11 @@ CREATE TABLE intact__component_xref__dm (
   primary_id VARCHAR2(30) NULL,
   secondary_id VARCHAR2(30) NULL,
   database_mi VARCHAR2(30) NULL,
-  database_short VARCHAR2(30) NULL,
-  database_full VARCHAR2(400) NULL,
+  database_short VARCHAR2(256) NULL,
+  database_full VARCHAR2(1000) NULL,
   qualifier_mi VARCHAR2(30) NULL,
-  qualifier_short VARCHAR2(30) NULL,
-  qualifier_full VARCHAR2(400) NULL
+  qualifier_short VARCHAR2(256) NULL,
+  qualifier_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_component_xref_index
@@ -387,48 +387,48 @@ CREATE TABLE intact__interactor__main (
   interaction_key VARCHAR2(30) NULL,
   component_key VARCHAR2(30) NULL,
   interactor_key VARCHAR2(30) NULL,
-  publication_title VARCHAR2(400) NULL,
+  publication_title VARCHAR2(1000) NULL,
   interactions_count INTEGER NULL,
   experiment_count INTEGER NULL,
-  experiment_short VARCHAR2(50) NULL,
-  experiment_full VARCHAR2(400) NULL,
+  experiment_short VARCHAR2(256) NULL,
+  experiment_full VARCHAR2(1000) NULL,
   host_organism_taxid INTEGER NULL,
-  host_organism_short VARCHAR2(30) NULL,
-  host_organism_full VARCHAR2(200) NULL,
+  host_organism_short VARCHAR2(256) NULL,
+  host_organism_full VARCHAR2(1000) NULL,
   participant_identmethod_mi VARCHAR2(30) NULL,
-  participant_identmethod_short VARCHAR2(30) NULL,
-  participant_identmethod_full VARCHAR2(400) NULL,
+  participant_identmethod_short VARCHAR2(256) NULL,
+  participant_identmethod_full VARCHAR2(1000) NULL,
   interaction_detectmethod_mi VARCHAR2(30) NULL,
-  interaction_detectmethod_short VARCHAR2(30) NULL,
-  interaction_detectmethod_full VARCHAR2(400) NULL,
+  interaction_detectmethod_short VARCHAR2(256) NULL,
+  interaction_detectmethod_full VARCHAR2(1000) NULL,
   interaction_count INTEGER NULL, 
   interaction_type_mi VARCHAR2(30) NULL,
-  interaction_type_short VARCHAR2(30) NULL,
-  interaction_type_full VARCHAR2(400) NULL,
+  interaction_type_short VARCHAR2(256) NULL,
+  interaction_type_full VARCHAR2(1000) NULL,
   interactor_count INTEGER NULL,
   component_count INTEGER NULL,
   molecule_count INTEGER NULL,
   experimental_role_mi VARCHAR2(30) NULL,
-  experimental_role_short VARCHAR2(30) NULL,
-  experimental_role_full VARCHAR2(400) NULL,
+  experimental_role_short VARCHAR2(256) NULL,
+  experimental_role_full VARCHAR2(1000) NULL,
   biological_role_mi VARCHAR2(30) NULL,
-  biological_role_short VARCHAR2(30) NULL,
-  biological_role_full VARCHAR2(400) NULL,
-  component_expressed_in_taxid VARCHAR2(500) NULL,
-  component_expressed_in_short VARCHAR2(500) NULL,
+  biological_role_short VARCHAR2(256) NULL,
+  biological_role_full VARCHAR2(1000) NULL,
+  component_expressed_in_taxid VARCHAR2(30) NULL,
+  component_expressed_in_short VARCHAR2(256) NULL,
   component_expressed_in_full VARCHAR2(1000) NULL,
   stoichiometry INTEGER NULL,
-  interactor_short VARCHAR2(30) NULL,
+  interactor_short VARCHAR2(256) NULL,
   interactor_full VARCHAR2(1000) NULL,
   interactor_type_mi VARCHAR2(30) NULL,
-  interactor_type_short VARCHAR2(30) NULL,
+  interactor_type_short VARCHAR2(256) NULL,
   interactor_type_full VARCHAR2(1000) NULL,
-  interactor_biosource_taxid VARCHAR2(500) NULL,
-  interactor_biosource_short VARCHAR2(500) NULL,
+  interactor_biosource_taxid VARCHAR2(30) NULL,
+  interactor_biosource_short VARCHAR2(256) NULL,
   interactor_biosource_full VARCHAR2(1000) NULL,
   interactor_sequence CLOB NULL,
   interactor_sequence_length INTEGER NULL,
-  crc64 VARCHAR2(30) NULL,
+  crc64 VARCHAR2(16) NULL,
   involved_interaction_count INTEGER NULL,
   uniprotkb VARCHAR2(30) NULL
 );
@@ -445,10 +445,10 @@ ON intact__interactor__main ( interactions_count,  experiment_count, experiment_
 
 CREATE TABLE intact__interactor_alias__dm (
   interactor_key VARCHAR2(30) NOT NULL,
-  name VARCHAR2(30) NULL,
+  name VARCHAR2(256) NULL,
   alias_type_mi VARCHAR2(30) NULL,
-  alias_type_short VARCHAR2(30) NULL,
-  alias_type_full VARCHAR2(400) NULL
+  alias_type_short VARCHAR2(256) NULL,
+  alias_type_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_interactor_alias_index
@@ -461,8 +461,8 @@ CREATE TABLE intact__interactor_anno__dm (
   interactor_key VARCHAR2(30) NOT NULL,
   description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
-  topic_short VARCHAR2(30) NULL,
-  topic_full VARCHAR2(400) NULL
+  topic_short VARCHAR2(256) NULL,
+  topic_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_interactor_anno_index
@@ -476,11 +476,11 @@ CREATE TABLE intact__interactor_xref__dm (
   primary_id VARCHAR2(30) NULL,
   secondary_id VARCHAR2(30) NULL,
   database_mi VARCHAR2(30) NULL,
-  database_short VARCHAR2(30) NULL,
-  database_full VARCHAR2(400) NULL,
+  database_short VARCHAR2(256) NULL,
+  database_full VARCHAR2(1000) NULL,
   qualifier_mi VARCHAR2(30) NULL,
-  qualifier_short VARCHAR2(30) NULL,
-  qualifier_full VARCHAR2(400) NULL
+  qualifier_short VARCHAR2(256) NULL,
+  qualifier_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_interactor_xref_index
@@ -509,58 +509,58 @@ CREATE TABLE intact__feature__main (
   component_key VARCHAR2(30) NULL,
   interactor_key VARCHAR2(30) NULL,
   feature_key VARCHAR2(30) NULL,
-  publication_title VARCHAR2(400) NULL,
+  publication_title VARCHAR2(1000) NULL,
   interactions_count INTEGER NULL,
   experiment_count INTEGER NULL,
-  experiment_short VARCHAR2(50) NULL,
-  experiment_full VARCHAR2(400) NULL,
+  experiment_short VARCHAR2(256) NULL,
+  experiment_full VARCHAR2(1000) NULL,
   host_organism_taxid INTEGER NULL,
-  host_organism_short VARCHAR2(30) NULL,
-  host_organism_full VARCHAR2(200) NULL,
+  host_organism_short VARCHAR2(256) NULL,
+  host_organism_full VARCHAR2(1000) NULL,
   participant_identmethod_mi VARCHAR2(30) NULL,
-  participant_identmethod_short VARCHAR2(30) NULL,
-  participant_identmethod_full VARCHAR2(400) NULL,
+  participant_identmethod_short VARCHAR2(256) NULL,
+  participant_identmethod_full VARCHAR2(1000) NULL,
   interaction_detectmethod_mi VARCHAR2(30) NULL,
-  interaction_detectmethod_short VARCHAR2(30) NULL,
-  interaction_detectmethod_full VARCHAR2(400) NULL,
+  interaction_detectmethod_short VARCHAR2(256) NULL,
+  interaction_detectmethod_full VARCHAR2(1000) NULL,
   interaction_count INTEGER NULL,
   interaction_type_mi VARCHAR2(30) NULL,
-  interaction_type_short VARCHAR2(30) NULL,
-  interaction_type_full VARCHAR2(400) NULL,
+  interaction_type_short VARCHAR2(256) NULL,
+  interaction_type_full VARCHAR2(1000) NULL,
   interactor_count INTEGER NULL,
   component_count INTEGER NULL,
   molecule_count INTEGER NULL,
   experimental_role_mi VARCHAR2(30) NULL,
-  experimental_role_short VARCHAR2(30) NULL,
-  experimental_role_full VARCHAR2(400) NULL,
+  experimental_role_short VARCHAR2(256) NULL,
+  experimental_role_full VARCHAR2(1000) NULL,
   biological_role_mi VARCHAR2(30) NULL,
-  biological_role_short VARCHAR2(30) NULL,
-  biological_role_full VARCHAR2(400) NULL,
+  biological_role_short VARCHAR2(256) NULL,
+  biological_role_full VARCHAR2(1000) NULL,
   component_expressed_in_taxid VARCHAR2(30) NULL,
-  component_expressed_in_short VARCHAR2(30) NULL,
-  component_expressed_in_full VARCHAR2(400) NULL,
+  component_expressed_in_short VARCHAR2(256) NULL,
+  component_expressed_in_full VARCHAR2(1000) NULL,
   stoichiometry INTEGER NULL,
-  interactor_short VARCHAR2(30) NULL,
-  interactor_full VARCHAR2(400) NULL,
+  interactor_short VARCHAR2(256) NULL,
+  interactor_full VARCHAR2(1000) NULL,
   interactor_type_mi VARCHAR2(30) NULL,
-  interactor_type_short VARCHAR2(30) NULL,
-  interactor_type_full VARCHAR2(400) NULL,
+  interactor_type_short VARCHAR2(256) NULL,
+  interactor_type_full VARCHAR2(1000) NULL,
   interactor_biosource_taxid VARCHAR2(30) NULL,
-  interactor_biosource_short VARCHAR2(30) NULL,
-  interactor_biosource_full VARCHAR2(400) NULL,
+  interactor_biosource_short VARCHAR2(256) NULL,
+  interactor_biosource_full VARCHAR2(1000) NULL,
   interactor_sequence CLOB NULL, 
   interactor_sequence_length INTEGER NULL,
-  crc64 VARCHAR2(30) NULL,
+  crc64 VARCHAR2(16) NULL,
   involved_interaction_count INTEGER NULL,
   uniprotkb VARCHAR2(30) NULL,
-  feature_shortlabel VARCHAR2(30) NULL,
-  feature_fullname VARCHAR2(400) NULL,
+  feature_shortlabel VARCHAR2(256) NULL,
+  feature_fullname VARCHAR2(1000) NULL,
   feature_type_mi VARCHAR2(30) NULL,
-  feature_type_short VARCHAR2(30) NULL,
-  feature_type_full VARCHAR2(400) NULL,
+  feature_type_short VARCHAR2(256) NULL,
+  feature_type_full VARCHAR2(1000) NULL,
   feature_identmethod_mi VARCHAR2(30) NULL,
-  feature_identmethod_short VARCHAR2(30) NULL,
-  feature_identmethod_full VARCHAR2(400) NULL
+  feature_identmethod_short VARCHAR2(256) NULL,
+  feature_identmethod_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_feature_index
@@ -576,10 +576,10 @@ ON intact__feature__main ( interactions_count,  experiment_count, experiment_sho
 
 CREATE TABLE intact__feature_alias__dm (
   feature_key VARCHAR2(30) NOT NULL,
-  name VARCHAR2(30) NULL,
+  name VARCHAR2(256) NULL,
   alias_type_mi VARCHAR2(30) NULL,
-  alias_type_short VARCHAR2(30) NULL,
-  alias_type_full VARCHAR2(400) NULL
+  alias_type_short VARCHAR2(256) NULL,
+  alias_type_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_feature_alias_index
@@ -592,8 +592,8 @@ CREATE TABLE intact__feature_anno__dm (
   feature_key VARCHAR2(30) NOT NULL,
   description VARCHAR2(4000) NULL,
   topic_mi VARCHAR2(30) NULL,
-  topic_short VARCHAR2(30) NULL,
-  topic_full VARCHAR2(400) NULL
+  topic_short VARCHAR2(256) NULL,
+  topic_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_feature_anno_index
@@ -607,11 +607,11 @@ CREATE TABLE intact__feature_xref__dm (
   primary_id VARCHAR2(30) NULL,
   secondary_id VARCHAR2(30) NULL,
   database_mi VARCHAR2(30) NULL,
-  database_short VARCHAR2(30) NULL,
-  database_full VARCHAR2(400) NULL,
+  database_short VARCHAR2(256) NULL,
+  database_full VARCHAR2(1000) NULL,
   qualifier_mi VARCHAR2(30) NULL,
-  qualifier_short VARCHAR2(30) NULL,
-  qualifier_full VARCHAR2(400) NULL
+  qualifier_short VARCHAR2(256) NULL,
+  qualifier_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_feature_xref_index
@@ -628,13 +628,13 @@ CREATE TABLE intact__range__dm (
   from_interval_start INTEGER NULL,
   from_interval_end INTEGER NULL,
   from_fuzzytype_mi VARCHAR2(30) NULL,
-  from_fuzzytype_short VARCHAR2(30) NULL,
-  from_fuzzytype_full VARCHAR2(400) NULL,
+  from_fuzzytype_short VARCHAR2(256) NULL,
+  from_fuzzytype_full VARCHAR2(1000) NULL,
   to_interval_start INTEGER NULL,
   to_interval_end INTEGER NULL,
   to_fuzzytype_mi VARCHAR2(30) NULL,
-  to_fuzzytype_short VARCHAR2(30) NULL,
-  to_fuzzytype_full VARCHAR2(400) NULL
+  to_fuzzytype_short VARCHAR2(256) NULL,
+  to_fuzzytype_full VARCHAR2(1000) NULL
 );
 
 CREATE INDEX tbl_range_index
