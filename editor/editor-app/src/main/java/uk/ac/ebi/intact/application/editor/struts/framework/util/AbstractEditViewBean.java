@@ -1396,6 +1396,24 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
         AnnotationDao annotationDao = DaoProvider.getDaoFactory().getAnnotationDao();
 
+       //set here the original Annotations and Xrefs from database
+      /*  final List<CommentBean> commentBeanList = this.getAnnotations();
+
+        final Collection<Annotation> annotations_ = new ArrayList<Annotation>();
+        for ( CommentBean commentBean : commentBeanList ) {
+            Annotation annot = commentBean.getAnnotation();
+            annotations_.add( annot );
+        }
+        myAnnotObject.setAnnotations( annotations_ );
+
+        final List<XreferenceBean> xreferenceBeanList = this.getXrefs();
+        final Collection<Xref> xrefs_ = new ArrayList<Xref>();
+        for ( XreferenceBean xreferenceBean : xreferenceBeanList ) {
+            Xref xref = xreferenceBean.getXref( myAnnotObject );
+            xrefs_.add( xref );
+        }
+        myAnnotObject.setXrefs( xrefs_ );*/
+
         //persistAnnotatedObject();
 
         //log.debug("As I have persisted myAnnotObject ac is " + myAnnotObject.getAc());
@@ -1446,6 +1464,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         }
 
         // Create annotations and add them to CV object.
+        final Collection<Annotation> annotations = new ArrayList<Annotation>(myAnnotObject.getAnnotations());
         for (CommentBean commentBean : getAnnotationsToAdd())
         {
             Annotation annot = commentBean.getAnnotation();
@@ -1455,11 +1474,13 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
                 log.error("Add annot " +  annot.getAnnotationText());
                 // Need this to generate the PK for the indirection table.
                 //annotationDao.persist(annot);
-                final Collection<Annotation> annotations = new ArrayList<Annotation>(myAnnotObject.getAnnotations());
                 annotations.add(annot);
-                myAnnotObject.setAnnotations(annotations);
-            }
-        }
+            }//end if
+        }//end for
+        myAnnotObject.setAnnotations(annotations);
+
+
+
         // Xref has a parent_ac column which is not a foreign key. So, the parent needs
         // to be persistent before we can create the Xrefs.
         //persistAnnotatedObject();
@@ -1467,6 +1488,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         // Create xrefs and add them to CV object.
         XrefDao xrefDao = DaoProvider.getDaoFactory().getXrefDao();
 
+        Collection<Xref> xrefs = new ArrayList<Xref>(myAnnotObject.getXrefs());
         for (XreferenceBean xreferenceBean : getXrefsToAdd())
         {
             Xref xref = xreferenceBean.getXref(myAnnotObject);
@@ -1475,10 +1497,12 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
                 if(xref == null){
                     log.debug ( "xref is null");
                 }
-                //xrefDao.saveOrUpdate(xref);
-                myAnnotObject.addXref(xref);
+            xrefs.add( xref );
+            //xrefDao.saveOrUpdate(xref);
             }
         }
+        myAnnotObject.setXrefs( xrefs);
+
         // Delete xrefs and remove them from CV object.
         for (XreferenceBean xreferenceBean : getXrefsToDel())
         {
@@ -1490,18 +1514,28 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
                 correspondingXref.setParent(null);
                 myAnnotObject.removeXref(correspondingXref);
                 xrefDao.delete(correspondingXref);
+            }else{
+               if(xref!=null && xref.getAc()!=null){
+               Xref xrefToDel =  (Xref)xrefDao.getByAc( xref.getAc());
+               xrefDao.delete(xrefToDel);
+               }
             }
         }
         // Update xrefs; see the comments for annotation update above.
-        /*
-        for (XreferenceBean xreferenceBean : getXrefsToUpdate()) {
-            Xref xref = xreferenceBean.getXref(annotatedObject);
-            Xref correspondingXref = getCorrespondingXref(annotatedObject,xref);
-            //if(correspondingXref == null){
-            //    xrefDao.saveOrUpdate(xref);
-            //}
+
+     for (XreferenceBean xreferenceBean : getXrefsToUpdate()) {
+            Xref xref = xreferenceBean.getXref(myAnnotObject);
+            Xref correspondingXref = getCorrespondingXref(myAnnotObject,xref);
+            if(correspondingXref == null){
+               myAnnotObject.addXref(  xref); 
+            }else{
+               xrefDao.update( correspondingXref );
+            }
+
+
+
         }
-         */
+
 //        try {
 //            PersisterHelper.saveOrUpdate(annotatedObject);
 //        } catch (Exception e) {

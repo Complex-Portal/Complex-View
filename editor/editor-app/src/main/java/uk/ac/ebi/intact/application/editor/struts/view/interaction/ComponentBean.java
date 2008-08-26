@@ -21,6 +21,7 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
+import uk.ac.ebi.intact.model.util.CvObjectUtils;
 import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
 import uk.ac.ebi.intact.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;

@@ -522,7 +522,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
      * post: return->forall(obj : Object | obj.oclIsTypeOf(ComponentBean))
      * </pre>
      */
-    public List getComponents() {
+    public List<ComponentBean> getComponents() {
         return myComponents;
     }
 
@@ -876,6 +876,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
     // Implements abstract methods
     @Override
     protected Interaction createAnnotatedObjectFromView() throws IntactException {
+        IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig().setAutoFlush( false );
+
         Interaction intact = null;
 
         // The cv interaction type for the interaction.
@@ -886,11 +888,11 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             // Collect experiments from beans.
             List<Experiment> exps = new ArrayList<Experiment>();
 
-            for (ExperimentRowData row : getExperiments())
+        ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
+        for (ExperimentRowData row : getExperiments())
             {
                 Experiment exp = row.getExperiment();
                 if(row.getAc()!=null){
-                ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
                 exp = experimentDao.getByAc(row.getAc());
                 }   
                 exps.add(exp);
@@ -917,7 +919,6 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             Experiment exp = row.getExperiment();
             if (exp == null)
             {
-                ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
                 exp = experimentDao.getByAc(row.getAc());
             }
             if(exp.getAc() != null){
@@ -931,12 +932,22 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         for (Iterator iter = getExperimentsToAdd().iterator(); iter.hasNext();) {
             ExperimentRowData row = (ExperimentRowData) iter.next();
             Experiment exp = null;
-            ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
+
             if (row.getAc() != null){
                 log.debug("row ac is " + row.getAc());
                 exp = experimentDao.getByAc(row.getAc());
             }
             intact.addExperiment(exp);
+        }
+
+        
+        ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
+            //Collect components from beans
+        for(ComponentBean cb: getComponents()){
+            if(cb.getComponent()!=null && cb.getComponent().getAc()!=null){
+            Component component = componentDao.getByAc( cb.getComponent().getAc());
+            intact.addComponent( component);
+            }
         }
 
         // Delete components and remove it from the interaction.
@@ -948,6 +959,16 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         // Features
         updateFeatures();
 
+        //
+         Interaction interactionFromDb = syncAnnotatedObject();
+         if(interactionFromDb!=null){
+             intact.setXrefs( interactionFromDb.getXrefs() );
+             intact.setAnnotations( interactionFromDb.getAnnotations() );
+             intact.setAliases( interactionFromDb.getAliases() );
+         }
+
+
+        IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig().setAutoFlush( true );
 
         return intact;
     }
@@ -1218,8 +1239,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             comp.setInteraction(null);
             componentDao.delete(comp);
 
-            InteractionDao intDao = DaoProvider.getDaoFactory().getInteractionDao();
-            intDao.saveOrUpdate((InteractionImpl) intact);
+            //InteractionDao intDao = DaoProvider.getDaoFactory().getInteractionDao();
+            //intDao.saveOrUpdate((InteractionImpl) intact);
         }
     }
 
