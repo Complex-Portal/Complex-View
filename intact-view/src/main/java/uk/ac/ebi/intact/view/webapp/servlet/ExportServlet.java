@@ -77,8 +77,8 @@ public class ExportServlet extends HttpServlet {
         String sortColumn = null;
         String sortAsc = null;
 
-        //String sortColumn = request.getParameter(PARAM_SORT);
-        //String sortAsc = request.getParameter(PARAM_SORT_ASC);
+        String sortColumn = request.getParameter(PARAM_SORT);
+        String sortAsc = request.getParameter(PARAM_SORT_ASC);
 
         BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(defaultIndex, sortColumn, Boolean.parseBoolean(sortAsc));
         exporter.searchAndExport(response.getOutputStream(), searchQuery, format);
