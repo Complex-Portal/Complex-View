@@ -12,6 +12,8 @@ import psidev.psi.mi.search.Searcher;
 import psidev.psi.mi.tab.converter.txt2tab.MitabLineException;
 import psidev.psi.mi.xml.converter.ConverterException;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.User;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 
 import javax.faces.component.UIParameter;
@@ -22,6 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Session scope backing bean for secure admin area
@@ -38,19 +42,19 @@ public class AdminBean implements Serializable {
 
     public static final String USER_AUTHENTICATED_TOKEN = AdminBean.class + ".USER_AUTHENTICATED";
 
-    private SearchConfig.Users.User currentUser;
+    private User currentUser;
     private SearchConfig config;
     private String configFileLocation;
 
-    private SearchConfig.Indexes.Index selectedIndex;
-    private SearchConfig.Indexes.Index newIndex;
+    private Index selectedIndex;
+    private Index newIndex;
 
     private UploadedFile uploadedPsimitabFile;
 
     public AdminBean() {
         currentUser = anonymousUser();
-        selectedIndex = new SearchConfig.Indexes.Index();
-        newIndex = new SearchConfig.Indexes.Index();
+        selectedIndex = new Index();
+        newIndex = new Index();
     }
 
     /**
@@ -63,7 +67,7 @@ public class AdminBean implements Serializable {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
 
-        for (SearchConfig.Users.User user : config.getUsers().getUsers()) {
+        for (User user : config.getUsers()) {
             if (user.getName().equals(currentUser.getName())) {
                 if (user.getPassword().equals(WebappUtils.encrypt(facesContext, currentUser.getPassword()))) {
                     if (log.isDebugEnabled()) log.debug("\tLogin successful");
@@ -88,7 +92,7 @@ public class AdminBean implements Serializable {
 
     public void selectIndex(ActionEvent evt) {
         UIParameter param = (UIParameter) evt.getComponent().getChildren().get(0);
-        this.selectedIndex = (SearchConfig.Indexes.Index) param.getValue();
+        this.selectedIndex = (Index) param.getValue();
 
         if (log.isDebugEnabled()) log.debug("Selected index: " + selectedIndex.getName());
     }
@@ -110,23 +114,23 @@ public class AdminBean implements Serializable {
             e.printStackTrace();
         }
 
-        config.getIndexes().getIndices().add(newIndex);
+        config.getIndices().add(newIndex);
 
         WebappUtils.writeConfiguration(config, new File(configFileLocation));
         deselectIndex(evt);
 
-        newIndex = new SearchConfig.Indexes.Index();
+        newIndex = new Index();
     }
 
     public void deleteIndex(ActionEvent evt) {
         UIParameter param = (UIParameter) evt.getComponent().getChildren().get(0);
-        SearchConfig.Indexes.Index indexToDelete = (SearchConfig.Indexes.Index) param.getValue();
+        Index indexToDelete = (Index) param.getValue();
 
         if (log.isInfoEnabled()) log.info("Deleting index: " + indexToDelete.getName());
 
-        for (Iterator<SearchConfig.Indexes.Index> iterator = config.getIndexes().getIndices().iterator(); iterator.hasNext();)
+        for (Iterator<Index> iterator = config.getIndices().iterator(); iterator.hasNext();)
         {
-            SearchConfig.Indexes.Index index = iterator.next();
+            Index index = iterator.next();
 
             if (index.equals(indexToDelete)) {
                 iterator.remove();
@@ -138,18 +142,18 @@ public class AdminBean implements Serializable {
     }
 
     public void deselectIndex(ActionEvent evt) {
-        this.selectedIndex = new SearchConfig.Indexes.Index();
+        this.selectedIndex = new Index();
     }
 
     public void defaultIndex(ActionEvent evt) {
         UIParameter param = (UIParameter) evt.getComponent().getChildren().get(0);
-        SearchConfig.Indexes.Index defaultIndex = (SearchConfig.Indexes.Index) param.getValue();
+        Index defaultIndex = (Index) param.getValue();
 
         if (log.isInfoEnabled()) log.info("New default index: " + defaultIndex.getName());
 
-        for (Iterator<SearchConfig.Indexes.Index> iterator = config.getIndexes().getIndices().iterator(); iterator.hasNext();)
+        for (Iterator<Index> iterator = config.getIndices().iterator(); iterator.hasNext();)
         {
-            SearchConfig.Indexes.Index index = iterator.next();
+            Index index = iterator.next();
 
             index.setDefault(false);
 
@@ -193,35 +197,32 @@ public class AdminBean implements Serializable {
      *
      * @return an anoymous user, used as the default user
      */
-    private static SearchConfig.Users.User anonymousUser() {
-        SearchConfig.Users.User user = new SearchConfig.Users.User();
+    private static User anonymousUser() {
+        User user = new User();
         user.setName("Anonymous");
 
-        SearchConfig.Users.User.Roles roles = new SearchConfig.Users.User.Roles();
-        roles.getRoles().add("guest");
-
-        user.setRoles(roles);
+        user.getRoles().add("guest");
 
         return user;
     }
 
     public boolean isUserAdmin() {
-        return this.currentUser.getRoles().getRoles().contains("admin");
+        return this.currentUser.getRoles().contains("admin");
     }
 
-    public SearchConfig.Indexes.Index getSelectedIndex() {
+    public Index getSelectedIndex() {
         return selectedIndex;
     }
 
-    public void setSelectedIndex(SearchConfig.Indexes.Index selectedIndex) {
+    public void setSelectedIndex(Index selectedIndex) {
         this.selectedIndex = selectedIndex;
     }
 
-    public SearchConfig.Users.User getCurrentUser() {
+    public User getCurrentUser() {
         return currentUser;
     }
 
-    public void setCurrentUser(SearchConfig.Users.User currentUser) {
+    public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
     }
 
@@ -237,11 +238,11 @@ public class AdminBean implements Serializable {
         this.configFileLocation = configFileLocation;
     }
 
-    public SearchConfig.Indexes.Index getNewIndex() {
+    public Index getNewIndex() {
         return newIndex;
     }
 
-    public void setNewIndex(SearchConfig.Indexes.Index newIndex) {
+    public void setNewIndex(Index newIndex) {
         this.newIndex = newIndex;
     }
 

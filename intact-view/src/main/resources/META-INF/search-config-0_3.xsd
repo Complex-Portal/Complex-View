@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://uk.ac.ebi.intact/binarysearch/config"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://uk.ac.ebi.intact/binarysearch/config"
+           elementFormDefault="qualified" version="1.0">
+
+    <xs:element name="search-config">
+        <xs:complexType>
+            <xs:sequence maxOccurs="1">
+                <xs:element ref="user" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element name="index" type="index" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element name="interactorIndex" type="index" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="user">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string" minOccurs="1"/>
+                <xs:element name="password" type="xs:string" minOccurs="1"/>
+                <xs:element ref="role" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="index">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" minOccurs="1"/>
+            <xs:element name="location" type="xs:string" minOccurs="1"/>
+            <xs:element name="size" type="xs:int" minOccurs="1"/>
+            <xs:element name="default" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="interactorIndex">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string" minOccurs="1"/>
+                <xs:element name="location" type="xs:string" minOccurs="1"/>
+                <xs:element name="size" type="xs:int" minOccurs="1"/>
+                <xs:element name="default" type="xs:boolean"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="role">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="admin"/>
+                <xs:enumeration value="guest"/>
+                <xs:enumeration value="indexer"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+
+</xs:schema>

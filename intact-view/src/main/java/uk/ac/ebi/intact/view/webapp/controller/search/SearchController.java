@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
@@ -177,7 +178,7 @@ public class SearchController extends JpaBaseController {
         //results.fetchResults(evt.getNewStart(), 30);
     }
 
-    public SearchConfig.Indexes.Index getDefaultIndex() {
+    public Index getDefaultIndex() {
         return WebappUtils.getDefaultIndex(appConfigBean.getConfig());
     }
 

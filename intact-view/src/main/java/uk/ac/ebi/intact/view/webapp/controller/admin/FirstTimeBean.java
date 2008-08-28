@@ -16,6 +16,8 @@
 package uk.ac.ebi.intact.view.webapp.controller.admin;
 
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.User;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 
@@ -40,10 +42,10 @@ import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 public class FirstTimeBean implements Serializable {
 
     private SearchConfig config;
-    private SearchConfig.Users.User user;
+    private User user;
     private String directPassword;
 
-    private SearchConfig.Indexes.Index index;
+    private Index index;
 
     private boolean indexLocationExists;
 
@@ -55,8 +57,8 @@ public class FirstTimeBean implements Serializable {
     public FirstTimeBean() {
         FacesContext context = FacesContext.getCurrentInstance();
 
-        this.user = new SearchConfig.Users.User();
-        this.index = new SearchConfig.Indexes.Index();
+        this.user = new User();
+        this.index = new Index();
 
         String indexLocation = context.getExternalContext().getInitParameter(AppConfigBean.DEFAULT_INDEX_LOCATION_INIT_PARAM);
 
@@ -75,19 +77,10 @@ public class FirstTimeBean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         user.setPassword(WebappUtils.encrypt(facesContext, directPassword));
 
-        SearchConfig.Users.User.Roles roles = new SearchConfig.Users.User.Roles();
-        roles.getRoles().add("admin");
-
-        user.setRoles(roles);
+        user.getRoles().add("admin");
 
         config = new SearchConfig();
-
-        SearchConfig.Users users = new SearchConfig.Users();
-        users.getUsers().add(user);
-        config.setUsers(users);
-
-        SearchConfig.Indexes indexes = new SearchConfig.Indexes();
-        indexes.getIndices().add(index);
+        config.getUsers().add(user);
 
         try {
             index.setSize(WebappUtils.countItemsInIndex(index.getLocation()));
@@ -95,7 +88,7 @@ public class FirstTimeBean implements Serializable {
             e.printStackTrace();
         }
 
-        config.setIndexes(indexes);
+        config.getIndices().add(index);
 
         AppConfigBean configBean = (AppConfigBean) BeanHelper.getManagedBean(facesContext, "appConfigBean");
 
@@ -136,11 +129,11 @@ public class FirstTimeBean implements Serializable {
         return true;
     }
 
-    public SearchConfig.Users.User getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(SearchConfig.Users.User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -152,11 +145,11 @@ public class FirstTimeBean implements Serializable {
         this.directPassword = directPassword;
     }
 
-    public SearchConfig.Indexes.Index getIndex() {
+    public Index getIndex() {
         return index;
     }
 
-    public void setIndex(SearchConfig.Indexes.Index index) {
+    public void setIndex(Index index) {
         this.index = index;
     }
 

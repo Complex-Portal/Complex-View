@@ -25,6 +25,7 @@ import org.apache.lucene.store.FSDirectory;
 import uk.ac.ebi.intact.view.webapp.controller.application.OlsBean;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.util.DesEncrypter;
 import uk.ac.ebi.intact.util.ols.Term;
 
@@ -103,9 +104,9 @@ public class WebappUtils {
         }
     }
 
-    public static SearchConfig.Indexes.Index getDefaultIndex(SearchConfig config) {
+    public static Index getDefaultIndex(SearchConfig config) {
 
-        for (SearchConfig.Indexes.Index index : config.getIndexes().getIndices()) {
+        for (Index index : config.getIndices()) {
             if (index.isDefault()) {
                 return index;
             }
