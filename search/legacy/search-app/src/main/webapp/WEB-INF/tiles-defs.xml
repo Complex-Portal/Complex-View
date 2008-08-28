@@ -24,8 +24,8 @@ Version: $Id$
     <definition name="search.menu.links" path="/layouts/menu.jsp">
         <put name="title" value="Links"/>
         <putList name="items">
-            <item value="New Search" link="/search/do/welcome"/>
-            <item value="Advanced Search" link="/search/do/initAdvSearch"/>
+            <item value="New Search" link="http://www.ebi.ac.uk/intact"/>
+            <item value="Advanced Search" link="http://www.ebi.ac.uk/intact/binary-search/faces/search.xhtml?advSearch=true"/>
             <item value="IntAct Home" link="http://www.ebi.ac.uk/intact"/>
         </putList>
     </definition>
