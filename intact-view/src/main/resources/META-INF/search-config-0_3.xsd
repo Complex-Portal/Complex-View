@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://uk.ac.ebi.intact/binarysearch/config"
+<xs:schema xmlns="http://uk.ac.ebi.intact/view/config"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://uk.ac.ebi.intact/binarysearch/config"
+           targetNamespace="http://uk.ac.ebi.intact/view/config"
            elementFormDefault="qualified" version="1.0">
 
     <xs:element name="search-config">
