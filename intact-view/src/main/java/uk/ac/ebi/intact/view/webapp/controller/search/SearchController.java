@@ -227,6 +227,8 @@ public class SearchController extends JpaBaseController {
         searchQuery = sb.toString();
         
         doBinarySearch(evt);
+
+        interactorBindings.getResultsDataTable().setSelectedRowKeys(null);
     }
 
     public Index getDefaultInteractorIndex() {
