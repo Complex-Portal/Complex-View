@@ -63,22 +63,17 @@
             <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
         </f:facet>
 
-        <!--<tr:panelHorizontalLayout>-->
-             <!--<f:facet name="separator">-->
-                <!--<tr:outputFormatted value="&#160;"/>-->
-            <!--</f:facet>-->
-            <!---->
-            <!--<strong>-->
-                 <!--<tr:outputText value="Selection actions: "/>-->
-            <!--</strong>-->
-            <!--<tr:commandLink text="Search interactions"/>-->
-        <!--</tr:panelHorizontalLayout>-->
-
-        <tr:panelButtonBar >
+        <tr:panelHorizontalLayout>
+             <f:facet name="separator">
+                <tr:outputFormatted value="&#160;"/>
+            </f:facet>
+            <strong>
+                 <tr:outputText value="Selection actions: "/>
+            </strong>
             <tr:commandLink text="Search interactions"
                             actionListener="#{searchBean.doSearchInteractionsFromListSelection}"
                             action="main"/>
-        </tr:panelButtonBar>
+        </tr:panelHorizontalLayout>
 
     </tr:panelHorizontalLayout>
 </f:facet>
