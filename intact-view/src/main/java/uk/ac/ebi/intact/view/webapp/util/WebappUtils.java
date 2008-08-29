@@ -26,8 +26,8 @@ import uk.ac.ebi.intact.view.webapp.controller.application.OlsBean;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
-import uk.ac.ebi.intact.util.DesEncrypter;
 import uk.ac.ebi.intact.util.ols.Term;
+import uk.ac.ebi.intact.commons.util.DesEncrypter;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -105,8 +105,17 @@ public class WebappUtils {
     }
 
     public static Index getDefaultIndex(SearchConfig config) {
-
         for (Index index : config.getIndices()) {
+            if (index.isDefault()) {
+                return index;
+            }
+        }
+
+        return null;
+    }
+
+    public static Index getDefaultInteractorIndex(SearchConfig config) {
+        for (Index index : config.getInteractorIndices()) {
             if (index.isDefault()) {
                 return index;
             }
@@ -130,7 +139,7 @@ public class WebappUtils {
     }
 
     public static int countItemsInIndex(String directory) throws IOException {
-        Directory indexDir = FSDirectory.getDirectory(directory, false);
+        Directory indexDir = FSDirectory.getDirectory(directory);
 
         IndexReader reader = new IndexSearcher(indexDir).getIndexReader();
         int items = reader.maxDoc();

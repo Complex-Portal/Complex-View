@@ -3,11 +3,15 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.MultiPhraseQuery;
+import org.apache.lucene.index.Term;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
@@ -21,12 +25,17 @@ import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 import uk.ac.ebi.intact.view.webapp.servlet.ExportServlet;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.OutputStream;
+import java.util.List;
+import java.util.Iterator;
+
+import psidev.psi.mi.tab.model.CrossReference;
 
 /**
  * Main search controller
@@ -43,22 +52,29 @@ public class SearchController extends JpaBaseController {
     private static final Log log = LogFactory.getLog(SearchController.class);
 
     private static final String QUERY_PARAM = "query";
-    private static final String MAX_RESULTS_INIT_PARAM = "psidev.MAX_SEARCH_RESULTS";
+    private static final String TAB_PARAM = "tab";
+
+    private static final String MAX_RESULTS_INIT_PARAM = "intact.MAX_SEARCH_RESULTS";
 
     // injected
     @Autowired
     private AppConfigBean appConfigBean;
 
     @Autowired
+    @Qualifier("searchBindings")  
     private SearchControllerBindings bindings;
 
+    @Autowired
+    @Qualifier("interactorSearchBindings")
+    private InteractorSearchControllerBindings interactorBindings;
+
     private String searchQuery;
-    private SearchResultDataModel searchResults;
 
      // vars
     private int pageSize = 30;
 
     private int totalResults;
+    private int interactorTotalResults;
 
     // status flags
     private String disclosedTabName;
@@ -68,6 +84,7 @@ public class SearchController extends JpaBaseController {
 
     // results
     private SearchResultDataModel results;
+    private SearchResultDataModel interactorResults;
 
     // io
     private String exportFormat;
@@ -83,6 +100,7 @@ public class SearchController extends JpaBaseController {
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();
         String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
+        String tabParam = context.getExternalContext().getRequestParameterMap().get(TAB_PARAM);
 
         if (queryParam != null) {
             searchQuery = queryParam;
@@ -93,6 +111,10 @@ public class SearchController extends JpaBaseController {
             searchQuery = "*";
             doBinarySearch(null);
             disclosedTabName = "search";
+        }
+
+        if (tabParam != null) {
+            disclosedTabName = tabParam;
         }
     }
 
@@ -119,6 +141,7 @@ public class SearchController extends JpaBaseController {
             results = new SearchResultDataModel(searchQuery, indexDirectory, pageSize);
 
             totalResults = results.getRowCount();
+
             if (log.isDebugEnabled()) log.debug("\tResults: " + results.getRowCount());
 
             if (totalResults == 0) {
@@ -135,53 +158,83 @@ public class SearchController extends JpaBaseController {
         if (bindings.getResultsDataTable() != null) {
             bindings.getResultsDataTable().setFirst(0);
         }
+
+        doInteractorSearch(evt);
     }
 
-    /**
-     * Action that redirects to the export servlet
-     * @return null, the lifecycle is shortcircuited
-     */
-    public String doExport() {
-        // /io?query=#{searchBean.query}&amp;format=mitab&amp;sort=#{searchBean.sortColumn}&amp;asc=#{searchBean.sortAscending}
+    public void doInteractorSearch(ActionEvent evt) {
+        // reset the status of the range choice bar
+        if (interactorBindings.getRangeChoiceBar() != null) {
+            interactorBindings.getRangeChoiceBar().setFirst(0);
+        }
 
-        // to go to an external URL, we need to shortcircuit the jsf lifecycle
-        FacesContext context = FacesContext.getCurrentInstance();
+        if (log.isDebugEnabled()) log.debug("Searching interactors for: " + searchQuery);
 
-        String exportUrl = context.getExternalContext().getRequestContextPath()+"/export?"+
-                           ExportServlet.PARAM_QUERY + "=" + results.getSearchQuery() + "&" +
-                           ExportServlet.PARAM_FORMAT + "=" + exportFormat + "&" +
-                           ExportServlet.PARAM_SORT + "=" + results.getSortColumn() + "&" +
-                           ExportServlet.PARAM_SORT_ASC + "=" + results.isAscending();
+        String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
 
-        // short-circuit the cycle to redirect to a external page
         try {
-            context.responseComplete();
-            context.getExternalContext().redirect(exportUrl);
-        }
-        catch (IOException e) {
-            throw new IntactViewException(e);
+            interactorResults = new SearchResultDataModel(searchQuery, indexDirectory, pageSize);
+        } catch (TooManyResultsException e) {
+            addErrorMessage("Too many interactors found", "Please, refine your query");
         }
 
-        return null;
-    }
+        interactorTotalResults = interactorResults.getRowCount();
 
-    public void doExport2(FacesContext context, OutputStream out) throws IOException
-    {
-        BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(getDefaultIndex().getLocation(),
-                                                                            results.getSortColumn(), results.isAscending());
-        exporter.searchAndExport(out, results.getSearchQuery(), exportFormat);
+        if (interactorBindings.getResultsDataTable() != null) {
+            interactorBindings.getResultsDataTable().setFirst(0);
+        }
     }
 
     public void rangeChanged(RangeChangeEvent evt) {
         results.setRowIndex(evt.getNewStart());
         bindings.getResultsDataTable().setFirst(evt.getNewStart());
-        //results.fetchResults(evt.getNewStart(), 30);
     }
 
     public Index getDefaultIndex() {
         return WebappUtils.getDefaultIndex(appConfigBean.getConfig());
     }
 
+    public void doSearchInteractionsFromListSelection(ActionEvent evt) {
+        final List<IntactBinaryInteraction> selected = getSelected(interactorBindings.getResultsDataTable());
+
+        if (selected.size() == 0) {
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder(selected.size()*10);
+        sb.append("id:(");
+
+        for (Iterator<IntactBinaryInteraction> iterator = selected.iterator(); iterator.hasNext();) {
+            IntactBinaryInteraction intactBinaryInteraction = iterator.next();
+
+            String identifier = null;
+
+            for (CrossReference xref : intactBinaryInteraction.getInteractorA().getIdentifiers()) {
+                if ("intact".equals(xref.getDatabase())) {
+                    identifier = xref.getIdentifier();
+                }
+            }
+
+            sb.append(identifier);
+
+            if (iterator.hasNext()) {
+                sb.append(" ");
+            }
+        }
+
+        sb.append(")");
+
+        searchQuery = sb.toString();
+        
+        doBinarySearch(evt);
+    }
+
+    public Index getDefaultInteractorIndex() {
+        return WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig());
+    }
+
+    // Getters & Setters
+    /////////////////////
 
     public SearchResultDataModel getResults()
     {
@@ -235,14 +288,6 @@ public class SearchController extends JpaBaseController {
         this.searchQuery = searchQuery;
     }
 
-    public SearchResultDataModel getSearchResults() {
-        return searchResults;
-    }
-
-    public void setSearchResults(SearchResultDataModel searchResults) {
-        this.searchResults = searchResults;
-    }
-
     public SearchControllerBindings getBindings() {
         return bindings;
     }
@@ -261,5 +306,29 @@ public class SearchController extends JpaBaseController {
 
     public void setTotalResults(int totalResults) {
         this.totalResults = totalResults;
+    }
+
+    public InteractorSearchControllerBindings getInteractorBindings() {
+        return interactorBindings;
+    }
+
+    public void setInteractorBindings(InteractorSearchControllerBindings interactorBindings) {
+        this.interactorBindings = interactorBindings;
+    }
+
+    public int getInteractorTotalResults() {
+        return interactorTotalResults;
+    }
+
+    public void setInteractorTotalResults(int interactorTotalResults) {
+        this.interactorTotalResults = interactorTotalResults;
+    }
+
+    public SearchResultDataModel getInteractorResults() {
+        return interactorResults;
+    }
+
+    public void setInteractorResults(SearchResultDataModel interactorResults) {
+        this.interactorResults = interactorResults;
     }
 }

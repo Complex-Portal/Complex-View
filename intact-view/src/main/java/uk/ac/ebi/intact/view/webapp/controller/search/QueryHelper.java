@@ -34,10 +34,7 @@ import java.util.List;
  */
 public class QueryHelper {
 
-    private static Log log = LogFactory.getLog(QueryHelper.class);
     private static final String WILDCARD = "*";
-    private static final String AND = "AND";
-    private static final String OR = "OR";
 
     public static String prepareQuery(String query) {
         if (query == null) {
@@ -48,15 +45,7 @@ public class QueryHelper {
             return WILDCARD;
         }
 
-        if (isLuceneQuery(query)) {
-            return query;
-        }
-
         return query;
-    }
-
-    public static boolean isLuceneQuery(String query) {
-        return query.contains(":");
     }
 
     /**

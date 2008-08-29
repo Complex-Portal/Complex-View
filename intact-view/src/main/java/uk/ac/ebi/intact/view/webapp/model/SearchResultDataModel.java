@@ -199,6 +199,22 @@ public class SearchResultDataModel extends SortableModel implements Serializable
         return true;
     }
 
+    @Override
+    public Object getRowKey() {
+        return isRowAvailable()
+               ? getRowIndex()
+               : null;
+    }
+
+    @Override
+    public void setRowKey(Object key) {
+        if (key == null) {
+            setRowIndex(-1);
+        } else {
+            setRowIndex((Integer) key);
+        }
+    }
+
 
     public SearchResult getResult() {
         return result;
@@ -232,17 +248,6 @@ public class SearchResultDataModel extends SortableModel implements Serializable
         return (double)elapsedTimeMillis/1000;
     }
 
-    private Object key;
-
-    public Object getRowKey()
-    {
-        return key;
-    }
-
-    public void setRowKey(Object key)
-    {
-       this.key = key;
-    }
 
     public int getFirstResult() {
         return firstResult;

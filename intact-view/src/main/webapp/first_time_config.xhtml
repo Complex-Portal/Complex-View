@@ -7,7 +7,6 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:t="http://myfaces.apache.org/tomahawk"
       xmlns:tr="http://myfaces.apache.org/trinidad"
       xmlns:trh="http://myfaces.apache.org/trinidad/html"
       xmlns:c="http://java.sun.com/jstl/core"
@@ -15,13 +14,11 @@
       xmlns:ebi="http://ebi.ac.uk/faces/components">
 <body>
 
-<f:view>
-
     <ui:composition template="/WEB-INF/facelets/layout/template-ebi.xhtml">
 
         <ui:define name="content">
 
-        <h1>Configuration</h1>
+        <tr:panelHeader text="Configuration">
 
         <p>
             This application is being loaded for the first time and needs to be properly configured.<br/>
@@ -30,77 +27,107 @@
 
         <p></p>
 
-            <ebi:panelRound>
+            <tr:panelBox background="dark">
                 <h:panelGrid columns="1">
                     <h:outputText value="Enter new Administrator user credentials below:"/>
 
                     <h:panelGrid columns="3" styleClass="inputform">
                         <h:outputLabel value="User name:" for="txtUser"/>
-                        <h:inputText id="txtUser" value="#{firstTimeBean.user.name}" required="true"/>
-                        <t:message for="txtUser" replaceIdWithLabel="true" styleClass="intact_error" showDetail="true"
-                                   showSummary="false"/>
+                        <tr:inputText id="txtUser" value="#{firstTimeBean.user.name}" required="true"/>
+                        <tr:message for="txtUser"/>
 
                         <h:outputLabel value="Password:" for="txtPass1"/>
-                        <h:inputSecret id="txtPass1" value="#{firstTimeBean.directPassword}" required="true"/>
-                        <t:message for="txtPass2" replaceIdWithLabel="true" styleClass="intact_error" showDetail="true"
-                                   showSummary="false"/>
+                        <tr:inputText id="txtPass1" secret="true"
+                                      value="#{firstTimeBean.directPassword}"
+                                      required="true"/>
+                        <tr:message for="txtPass2"/>
 
                         <h:outputLabel value="Repeat Password:" for="txtPass2"/>
-                        <h:inputSecret id="txtPass2" value="#{firstTimeBean.directPassword}" required="true">
-                            <t:validateEqual for="txtPass1" detailMessage="Passwords do not match"/>
-                        </h:inputSecret>
-                        <t:message for="txtPass2" replaceIdWithLabel="true" styleClass="intact_error" showDetail="true"
-                                   showSummary="false"/>
+                        <tr:inputText id="txtPass2" secret="true"
+                                      value="#{firstTimeBean.directPassword}"
+                                      required="true"/>
+                        <tr:message for="txtPass2" />
                     </h:panelGrid>
 
-                    <hr style="height:1px; color:gray;"/>
+                    <tr:separator/>
 
                     <h:outputText value="Provide an indexed Directory with PSIMITAB data:"/>
 
                     <tr:panelGroupLayout layout="vertical">
                         <tr:panelGroupLayout layout="horizontal" partialTriggers="txtIndexPath">
 
-                        <tr:inputText id="txtIndexPath" label="Index path: " autoSubmit="true"
-                                      value="#{firstTimeBean.index.location}"
-                                      valueChangeListener="#{firstTimeBean.indexLocationChanged}" immediate="true"/>
-
+                            <tr:inputText id="txtIndexPath" label="Index path: " autoSubmit="true"
+                                          value="#{firstTimeBean.index.location}"
+                                          valueChangeListener="#{firstTimeBean.indexLocationChanged}" immediate="true"/>
 
                             <h:panelGroup style="color:green" rendered="#{firstTimeBean.indexLocationExists}">
                                 <h:graphicImage url="/images/ok.gif"/>
                                 <h:outputText
-                                        value="Index found at this location with #{firstTimeBean.index.size} interactions."/>
+                                        value="Index found with #{firstTimeBean.index.size} interactions."/>
                             </h:panelGroup>
                             <h:panelGroup style="color:red" rendered="#{!firstTimeBean.indexLocationExists}">
                                 <h:graphicImage url="/images/error.png"/>
                                 <h:outputText
-                                        value="Index not found at this location."/>
+                                        value="Index not found."/>
                             </h:panelGroup>
                         </tr:panelGroupLayout>
 
                         <tr:inputText id="txtIndexName" label="Index name: "
                                       value="#{firstTimeBean.index.name}" required="true"/>
-                        <t:message for="txtIndexName" replaceIdWithLabel="true" styleClass="intact_error"
-                                   showDetail="true" showSummary="false"/>
+                        <tr:message for="txtIndexName"/>
 
                     </tr:panelGroupLayout>
 
                     <tr:separator/>
 
-                    <h:outputText
-                            value="This configuration will be saved in this location: #{appConfigBean.configFileLocation}"/>
+                    <h:outputText value="Provide an indexed Directory with interactor-oriented PSIMITAB data:"/>
+
+                    <tr:panelGroupLayout layout="vertical">
+                        <tr:panelGroupLayout layout="horizontal" partialTriggers="txtInteractorIndexPath">
+
+                            <tr:inputText id="txtInteractorIndexPath" label="Index path: " autoSubmit="true"
+                                          value="#{firstTimeBean.interactorIndex.location}"
+                                          valueChangeListener="#{firstTimeBean.interactorIndexLocationChanged}" immediate="true"/>
+
+                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.indexLocationExists}">
+                                <h:graphicImage url="/images/ok.gif"/>
+                                <h:outputText
+                                        value="Index found with #{firstTimeBean.interactorIndex.size} interactions."/>
+                            </h:panelGroup>
+                            <h:panelGroup style="color:red" rendered="#{!firstTimeBean.interactorIndexLocationExists}">
+                                <h:graphicImage url="/images/error.png"/>
+                                <h:outputText
+                                        value="Index not found."/>
+                            </h:panelGroup>
+                        </tr:panelGroupLayout>
+
+                        <tr:inputText id="txtInteractorIndexName" label="Index name: "
+                                      value="#{firstTimeBean.interactorIndex.name}" required="true"/>
+                        <tr:message for="txtInteractorIndexName"/>
+
+                    </tr:panelGroupLayout>
+
+                    <tr:separator/>
+
+                    <tr:panelLabelAndMessage label="Configuration saved at:">
+                        <tr:inputText columns="30" value="#{appConfigBean.configFileLocation}" readOnly="#{appConfigBean.configFileExists}"/>
+                        <f:facet name="help">
+                            Location where the configuration will be saved.
+                        </f:facet>
+                    </tr:panelLabelAndMessage>
 
                     <h:commandButton id="btnSubmit" value="Submit" action="#{firstTimeBean.processConfiguration}"/>
 
                 </h:panelGrid>
 
 
-            </ebi:panelRound>
+            </tr:panelBox>
+
+            </tr:panelHeader>
 
         </ui:define>
 
     </ui:composition>
-
-</f:view>
 
 </body>
 </html>

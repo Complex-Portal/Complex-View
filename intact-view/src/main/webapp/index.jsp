@@ -1,7 +1,7 @@
 <%@ page import="java.io.File" %>
 <%@ page session="false"%>
 <%
-    String configFile = request.getSession().getServletContext().getInitParameter("psidev.DEFAULT_CONFIG_FILE");
+    String configFile = request.getSession().getServletContext().getInitParameter("intact.DEFAULT_CONFIG_FILE");
 
     if (configFile != null && new File(configFile).exists()) {
         response.sendRedirect("main.xhtml");

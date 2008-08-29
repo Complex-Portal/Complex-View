@@ -32,7 +32,7 @@ public class RequestConfigBean implements Serializable {
 
     private Log log = LogFactory.getLog(RequestConfigBean.class);
 
-    public static final String DEFAULT_INDEX_LOCATION_INIT_PARAM = "psidev.DEFAULT_INDEX";
+    public static final String DEFAULT_INDEX_LOCATION_INIT_PARAM = "intact.DEFAULT_INDEX";
 
     private String absoluteContextPath;
     private HttpServletRequest request;

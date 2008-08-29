@@ -25,6 +25,7 @@ import uk.ac.ebi.intact.view.webapp.IntactViewException;
 
 import javax.faces.context.FacesContext;
 import java.io.Serializable;
+import java.io.File;
 
 /**
  * Application scope bean, with configuration stuff
@@ -38,8 +39,9 @@ public class AppConfigBean implements Serializable {
 
     private Log log = LogFactory.getLog(AppConfigBean.class);
 
-    public static final String DEFAULT_CONFIG_FILE_INIT_PARAM = "psidev.DEFAULT_CONFIG_FILE";
-    public static final String DEFAULT_INDEX_LOCATION_INIT_PARAM = "psidev.DEFAULT_INDEX";
+    public static final String DEFAULT_CONFIG_FILE_INIT_PARAM = "intact.DEFAULT_CONFIG_FILE";
+    public static final String DEFAULT_INDEX_LOCATION_INIT_PARAM = "intact.DEFAULT_INDEX";
+    public static final String DEFAULT_INTERACTOR_INDEX_LOCATION_INIT_PARAM = "intact.DEFAULT_INTERACTOR_INDEX";
 
     private SearchConfig config;
     private String configFileLocation;
@@ -89,5 +91,9 @@ public class AppConfigBean implements Serializable {
 
     public void setConfigFileLocation(String configFileLocation) {
         this.configFileLocation = configFileLocation;
+    }
+
+    public boolean isConfigFileExists() {
+        return new File(configFileLocation).exists();
     }
 }

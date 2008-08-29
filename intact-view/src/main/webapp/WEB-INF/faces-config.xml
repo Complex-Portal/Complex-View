@@ -54,11 +54,7 @@
     <managed-bean>
         <managed-bean-name>firstTimeBean</managed-bean-name>
         <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.admin.FirstTimeBean</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-        <managed-property>
-            <property-name>config</property-name>
-            <value>#{appConfigBean.config}</value>
-        </managed-property>
+        <managed-bean-scope>none</managed-bean-scope>
     </managed-bean>
   
     <managed-bean>

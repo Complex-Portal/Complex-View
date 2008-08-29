@@ -55,15 +55,23 @@
         <description>
             Configuration file
         </description>
-        <param-name>psidev.DEFAULT_CONFIG_FILE</param-name>
+        <param-name>intact.DEFAULT_CONFIG_FILE</param-name>
         <param-value>${binarysearch.config}</param-value>
     </context-param>
     <context-param>
         <description>
             Default index location
         </description>
-        <param-name>psidev.DEFAULT_INDEX</param-name>
+        <param-name>intact.DEFAULT_INDEX</param-name>
         <param-value>${binarysearch.defaultindex}</param-value>
+    </context-param>
+
+    <context-param>
+        <description>
+            Default interactor index location
+        </description>
+        <param-name>intact.DEFAULT_INTERACTOR_INDEX</param-name>
+        <param-value>${binarysearch.interactor.defaultindex}</param-value>
     </context-param>
 
     <context-param>
@@ -99,7 +107,7 @@
         <description>
             Maximum number of results after executing a search query. Default: 153600 (150*1024)
         </description>
-        <param-name>psidev.MAX_SEARCH_RESULTS</param-name>
+        <param-name>intact.MAX_SEARCH_RESULTS</param-name>
         <param-value>153600</param-value>
     </context-param>
     <context-param>

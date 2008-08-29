@@ -29,6 +29,9 @@ import java.io.Serializable;
 
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.context.annotation.Scope;
 
 /**
  * TODO comment this!
@@ -36,41 +39,51 @@ import org.apache.myfaces.orchestra.viewController.annotations.InitView;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-//@Controller("firstTimeBean")
-//@Scope("request")
+@Controller("firstTimeBean")
+@Scope("request")
 @ViewController(viewIds = "/first_time_config.xhtml")
 public class FirstTimeBean implements Serializable {
 
-    private SearchConfig config;
     private User user;
     private String directPassword;
 
     private Index index;
+    private Index interactorIndex;
 
     private boolean indexLocationExists;
+    private boolean interactorIndexLocationExists;
 
-    @InitView
-    public void hey() {
-        System.out.println("HEY!!");
-    }
+    @Autowired
+    private AppConfigBean configBean;
 
     public FirstTimeBean() {
         FacesContext context = FacesContext.getCurrentInstance();
 
         this.user = new User();
         this.index = new Index();
+        this.interactorIndex = new Index();
 
         String indexLocation = context.getExternalContext().getInitParameter(AppConfigBean.DEFAULT_INDEX_LOCATION_INIT_PARAM);
+        String interactorIndexLocation = context.getExternalContext().getInitParameter(AppConfigBean.DEFAULT_INTERACTOR_INDEX_LOCATION_INIT_PARAM);
 
         index.setLocation(indexLocation);
         index.setDefault(true);
 
-        checkLocation(indexLocation);
+        interactorIndex.setLocation(interactorIndexLocation);
+        interactorIndex.setDefault(true);
+
+        indexLocationExists = checkLocation(index);
+        interactorIndexLocationExists = checkLocation(interactorIndex);
     }
 
     public void indexLocationChanged(ValueChangeEvent vce) {
         index.setLocation((String) vce.getNewValue());
-        checkLocation(index.getLocation());
+        indexLocationExists = checkLocation(index);
+    }
+
+    public void interactorIndexLocationChanged(ValueChangeEvent vce) {
+        interactorIndex.setLocation((String) vce.getNewValue());
+        interactorIndexLocationExists = checkLocation(interactorIndex);
     }
 
     public String processConfiguration() {
@@ -79,18 +92,18 @@ public class FirstTimeBean implements Serializable {
 
         user.getRoles().add("admin");
 
-        config = new SearchConfig();
+        SearchConfig config = new SearchConfig();
         config.getUsers().add(user);
 
         try {
             index.setSize(WebappUtils.countItemsInIndex(index.getLocation()));
+            interactorIndex.setSize(WebappUtils.countItemsInIndex(interactorIndex.getLocation()));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         config.getIndices().add(index);
-
-        AppConfigBean configBean = (AppConfigBean) BeanHelper.getManagedBean(facesContext, "appConfigBean");
+        config.getInteractorIndices().add(interactorIndex);
 
         WebappUtils.writeConfiguration(config, new File(configBean.getConfigFileLocation()));
         configBean.setConfig(config);
@@ -98,29 +111,28 @@ public class FirstTimeBean implements Serializable {
         return "main";
     }
 
-    private void checkLocation(String strLocation) {
-        if (strLocation == null) {
-            indexLocationExists = false;
-            index.setSize(0);
-            return;
-        }
-        if (strLocation.trim().length() == 0) {
-            indexLocationExists = false;
-            index.setSize(0);
-            return;
+    private boolean checkLocation(Index indexToCheck) {
+        boolean indexLocationExists = false;
+
+        final String strLocation = indexToCheck.getLocation();
+        if (strLocation == null || strLocation.trim().length() == 0) {
+            indexToCheck.setSize(0);
+            return indexLocationExists;
         }
 
-        File location = new File(strLocation);
-        indexLocationExists = location.exists() && location.isDirectory() && isLuceneDirectory(location);
+        File location = new File(indexToCheck.getLocation());
+        indexLocationExists = location.exists() && location.isDirectory() && isLuceneDirectory(indexToCheck);
 
         if (indexLocationExists) {
-            index.setName(location.getName());
+            indexToCheck.setName(location.getName());
         }
+
+        return indexLocationExists;
     }
 
-    private boolean isLuceneDirectory(File directory) {
+    private boolean isLuceneDirectory(Index indexToCheck) {
         try {
-            index.setSize(WebappUtils.countItemsInIndex(directory.toString()));
+            indexToCheck.setSize(WebappUtils.countItemsInIndex(indexToCheck.getLocation()));
         }
         catch (IOException e) {
             return false;
@@ -157,11 +169,19 @@ public class FirstTimeBean implements Serializable {
         return indexLocationExists;
     }
 
-    public SearchConfig getConfig() {
-        return config;
+    public Index getInteractorIndex() {
+        return interactorIndex;
     }
 
-    public void setConfig(SearchConfig config) {
-        this.config = config;
+    public void setInteractorIndex(Index interactorIndex) {
+        this.interactorIndex = interactorIndex;
+    }
+
+    public boolean isInteractorIndexLocationExists() {
+        return interactorIndexLocationExists;
+    }
+
+    public void setInteractorIndexLocationExists(boolean interactorIndexLocationExists) {
+        this.interactorIndexLocationExists = interactorIndexLocationExists;
     }
 }

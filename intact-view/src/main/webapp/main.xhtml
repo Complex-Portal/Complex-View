@@ -25,13 +25,20 @@
             </tr:showDetailItem>
 
             <tr:showDetailItem text="Interactions (#{searchBean.totalResults})"
+                               disabled="#{searchBean.totalResults == 0}"
                                disclosed="#{searchBean.disclosedTabName == 'interactions'}">
                 <ui:include src="pages/interactions/interactions_tab.xhtml"/>
             </tr:showDetailItem>
 
-            <tr:showDetailItem text="List" disabled="true" 
+            <tr:showDetailItem text="List (#{searchBean.interactorTotalResults})"
+                               disabled="#{searchBean.interactorTotalResults == 0}"
                                disclosed="#{searchBean.disclosedTabName == 'list'}">
                 <ui:include src="pages/list/list_tab.xhtml"/>
+            </tr:showDetailItem>
+
+            <tr:showDetailItem text="Molecule View" disabled="true"
+                               disclosed="#{searchBean.disclosedTabName == 'molecule'}">
+                <ui:include src="pages/molecule/molecule_tab.xhtml"/>
             </tr:showDetailItem>
 
         </tr:panelTabbed>
