@@ -36,7 +36,7 @@
                 <ui:include src="pages/list/list_tab.xhtml"/>
             </tr:showDetailItem>
 
-            <tr:showDetailItem text="Molecule View" disabled="true"
+            <tr:showDetailItem text="Molecule View" disabled="#{moleculeViewBean.interactor == null}"
                                disclosed="#{searchBean.disclosedTabName == 'molecule'}">
                 <ui:include src="pages/molecule/molecule_tab.xhtml"/>
             </tr:showDetailItem>

@@ -94,4 +94,10 @@
         <function-signature>java.lang.String getPubmedId(uk.ac.ebi.intact.model.Experiment)</function-signature>
     </function>
 
+    <function>
+        <function-name>getIntactIdentifierFromCrossReferences</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String getIntactIdentifierFromCrossReferences(java.util.Collection)</function-signature>
+    </function>
+
 </facelet-taglib>

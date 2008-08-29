@@ -235,6 +235,11 @@ public class SearchController extends JpaBaseController {
         return WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig());
     }
 
+    public String doDiscloseMoleculeViewTab() {
+        disclosedTabName = "molecule";
+        return "main";
+    }
+
     // Getters & Setters
     /////////////////////
 

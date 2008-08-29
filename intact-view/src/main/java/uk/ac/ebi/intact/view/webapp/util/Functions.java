@@ -26,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 
 import org.joda.time.DateTime;
+import psidev.psi.mi.tab.model.CrossReference;
 
 /**
  * Functions to be used in the UI
@@ -96,6 +97,15 @@ public final class Functions {
         }
 
         return replacedUrl;
+    }
+
+    public static String getIntactIdentifierFromCrossReferences(Collection xrefs) {
+        for (CrossReference xref : (Collection<CrossReference>) xrefs) {
+            if ("intact".equals(xref.getDatabase())) {
+                return xref.getIdentifier();
+            }
+        }
+        return null;
     }
 
     public static DateTime toDateTime(Long dateInTimeMillis) {

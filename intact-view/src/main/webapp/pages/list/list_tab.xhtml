@@ -10,6 +10,7 @@
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
 <tr:messages/>
@@ -84,6 +85,12 @@
 
 <tr:column headerText="Accession number/s" sortable="true" sortProperty="idA_s">
     <bs:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
+</tr:column>
+<tr:column headerText="Links">
+    <tr:commandLink text="Molecule view"
+                    action="#{searchBean.doDiscloseMoleculeViewTab}">
+        <f:setPropertyActionListener value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}" target="#{moleculeViewBean.interactorAc}"/>
+    </tr:commandLink>
 </tr:column>
 <tr:column headerText="Interactor Type" sortable="true"
            sortProperty="typeA_s">
