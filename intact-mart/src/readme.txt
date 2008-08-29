@@ -99,6 +99,15 @@ To get a drop down menu for Canned Queries you have to replace:
 with the edited file:
 	intact-mart/src/canned-queries-demo/default/header.tt
 
+Please also create in:
+	biomart-perl/htdocs
+the folder:
+	pics
+and copy than in:
+	biomart-perl/htdocs/pics
+the file:
+	intact-mart/src/canned-queries-demo/htdocs/pics/beta_stamp.jpg
+
 The demo files are written just in HTML an cotain some small Java Scripts.
 
 To integrate Prototype create a folder called "js" in:
