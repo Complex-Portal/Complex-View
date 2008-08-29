@@ -6,13 +6,14 @@
 		if (document.getElementById('CANNED_QUERY_SELECTER').value == 'smallMolecules') {
 			window.open(smallMolecules, target='_self');
 		} else {
-			window.open('http://evo-test.ebi.ac.uk:5543/' + document.getElementById('CANNED_QUERY_SELECTER').value + '.html', target='_self');
+			window.open('../../' + document.getElementById('CANNED_QUERY_SELECTER').value + '.html', target='_self');
 		}
 	}
 </script>
 
-
+<img src="../../pics/beta_stamp.jpg" style="position:absolute; top:0px; left:0px;">
 <div STYLE="text-align:center;font-weight:bold;font-size:200%;line-height:1.75;">IntAct BioMart preview</div>
+
 
 
 <table align="center" cellpadding="5" cellspacing="0" border="0">
