@@ -28,18 +28,22 @@ GROUP BY interaction.ac;
 -- use only the interaction from the table interactor
 CREATE MATERIALIZED VIEW v_interaction AS
 SELECT inter.ac,                   -- interaction_key
-       cv.mi,                      -- interaction_type_mi
-       cv.shortlabel,              -- interaction_type_short
-       cv.fullname,                -- interaction_type_full
+       inter.shortlabel            AS interaction_short,
+       inter.fullname              AS interaction_full,
+       cv2.mi                      AS interaction_type_mi,
+       cv2.shortlabel              AS interaction_type_short,
+       cv2.fullname                AS interaction_type_full,
        int_count.interactor_count, -- interactor_count
        com_count.component_count   -- component_count
-FROM ia_interactor inter LEFT OUTER JOIN v_cv_mi cv
-                                      ON ( inter.interactortype_ac = cv.ac )
+FROM ia_interactor inter LEFT OUTER JOIN v_cv_mi cv1
+                                      ON ( inter.interactortype_ac = cv1.ac )
+                         LEFT OUTER JOIN v_cv_mi cv2
+                                      ON ( inter.interactiontype_ac = cv2.ac )
                          LEFT OUTER JOIN v_component_count com_count
                                       ON ( inter.ac  = com_count.ac )
                          LEFT OUTER JOIN v_interactor_count int_count
                                       ON ( inter.ac  = int_count.ac )
-WHERE cv.mi = 'MI:0317';  -- 'interaction'
+WHERE cv1.mi = 'MI:0317';  -- 'interaction'
 
 
 

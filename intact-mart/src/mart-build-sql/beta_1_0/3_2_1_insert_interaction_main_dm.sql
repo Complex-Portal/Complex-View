@@ -21,9 +21,11 @@ SELECT exp.publication_key,                -- publication_key
        exp.interaction_detectMethod_short, -- interaction_detectMethod_short
        exp.interaction_detectMethod_full,  -- interaction_detectMethod_full
        exp.interaction_count,              -- interaction_count
-       inter.mi,                           -- interaction_type_mi
-       inter.shortlabel,                   -- interaction_type_short
-       inter.fullname,                     -- interaction_type_full
+       inter.interaction_short,            -- interaction_short
+       inter.interaction_full,             -- interaction_full
+       inter.interaction_type_mi,          -- interaction_type_mi
+       inter.interaction_type_short,       -- interaction_type_short
+       inter.interaction_type_full,        -- interaction_type_full
        inter.interactor_count,             -- interactor_count
        inter.component_count,              -- component_count
        tmp.molecule_count                  -- molecule_count

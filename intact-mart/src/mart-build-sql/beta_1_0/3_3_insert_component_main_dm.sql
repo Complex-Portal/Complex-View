@@ -22,6 +22,8 @@ SELECT int_main.publication_key,                -- publication_key
        int_main.interaction_detectMethod_short, -- interaction_detectMethod_short
        int_main.interaction_detectMethod_full,  -- interaction_detectMethod_full
        int_main.interaction_count,              -- interaction_count
+       int_main.interaction_short,              -- interaction_short
+       int_main.interaction_full,               -- interaction_full
        int_main.interaction_type_mi,            -- interaction_type_mi
        int_main.interaction_type_short,         -- interaction_type_short
        int_main.interaction_type_full,          -- interaction_type_full

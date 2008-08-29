@@ -23,6 +23,8 @@ SELECT com_main.publication_key,                -- publication_key
        com_main.interaction_detectMethod_short, -- interaction_detectMethod_short
        com_main.interaction_detectMethod_full,  -- interaction_detectMethod_full
        com_main.interaction_count,              -- interaction_count
+       com_main.interaction_short,              -- interaction_short
+       com_main.interaction_full,               -- interaction_full
        com_main.interaction_type_mi,            -- interaction_type_mi
        com_main.interaction_type_short,         -- interaction_type_short
        com_main.interaction_type_full,          -- interaction_type_full
