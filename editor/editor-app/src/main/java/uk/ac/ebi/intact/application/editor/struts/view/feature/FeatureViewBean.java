@@ -589,7 +589,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
         }
         Range correspondingRange = null;
         for(Range range : feature.getRanges()){
-            if(range.getAc().equals(searchedRange.getAc())){
+            if(range.getAc()!=null && range.getAc().equals(searchedRange.getAc())){
                 range.setFromCvFuzzyType(searchedRange.getFromCvFuzzyType());
                 range.setToCvFuzzyType(searchedRange.getToCvFuzzyType());
 

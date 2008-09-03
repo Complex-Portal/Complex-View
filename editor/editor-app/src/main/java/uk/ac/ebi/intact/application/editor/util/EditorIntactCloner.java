@@ -46,6 +46,10 @@ public class EditorIntactCloner extends IntactCloner {
     @Override
     protected AnnotatedObject cloneAnnotatedObjectCommon(AnnotatedObject<?, ?> ao, AnnotatedObject clone) throws IntactClonerException {
 
+        if(clone==null){
+            return null;
+        }
+
         if (clone instanceof Interaction) {
             Interaction interaction = (Interaction)clone;
             interaction.getExperiments().clear();

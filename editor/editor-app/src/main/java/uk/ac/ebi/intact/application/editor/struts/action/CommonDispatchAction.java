@@ -30,6 +30,7 @@ import uk.ac.ebi.intact.application.editor.struts.view.sequence.SequenceViewBean
 import uk.ac.ebi.intact.application.editor.struts.view.sm.SmallMoleculeViewBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.application.editor.util.EditorIntactCloner;
+import uk.ac.ebi.intact.application.editor.util.InteractionIntactCloner;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
@@ -198,10 +199,13 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
 
         // The current view.
         AbstractEditViewBean view = user.getView();
+        IntactCloner cloner;
 
-        // Clone
-        IntactCloner cloner = new EditorIntactCloner();
-
+        if(view instanceof InteractionViewBean){
+         cloner = new InteractionIntactCloner();
+         } else{
+         cloner = new EditorIntactCloner();
+        }
         // Get the original object for clone.
         final AnnotatedObject orig = view.syncAnnotatedObject();
 
@@ -299,11 +303,13 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             // Set anchor if necessary.
             setAnchor(request, editorForm);
 
+            editorForm.clearNewBeans();
             return mapping.getInputForward();
         }
         //Annotation BUG
         //editorForm.resetDispatch();
 
+         editorForm.clearNewBeans();
         setAnchor(request, editorForm);
         return mapping.getInputForward();
     }
@@ -398,6 +404,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
         // Set anchor if necessary.
         setAnchor(request, editorForm);
 
+        editorForm.clearNewBeans();
         return mapping.getInputForward();
     }
 
