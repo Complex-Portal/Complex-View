@@ -55,6 +55,11 @@ Notes:
            select="'http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;&amp;dopt=Citation&amp;list_uids='"/>
 <xsl:param name="newtUrl"
            select="'http://www.ebi.ac.uk/newt/display?search='"/>
+<xsl:param name="drugbankUrl"
+           select="'http://www.drugbank.ca/drugs/'"/>
+<xsl:param name="pubchemUrl"
+           select="'http://www.ncbi.nlm.nih.gov/sites/entrez?db=pccompound&amp;term='"/>
+
 
 <xsl:template match="psi:entrySet">
     <html>
@@ -122,8 +127,8 @@ Notes:
 
 <!-- TODO: find out why matching elements with no name (text nodes?) -->
 <xsl:template match="node()" mode="title">
-    <xsl:comment><xsl:value-of select="name(.)"/></xsl:comment>
     <xsl:if test="string-length(name(.)) > 0">
+        <xsl:comment><xsl:value-of select="name(.)"/></xsl:comment>
         <div id="{name(.)}">
             <table style="border-bottom: 1px solid #fff" cellspacing="1">
                 <tr>
@@ -226,20 +231,26 @@ Notes:
         <xsl:when test="@db = 'Swiss-Prot'">
             <xsl:value-of select="concat($swissProtUrl, @id)"/>
         </xsl:when>
-        <xsl:when test="@dbAc = 'MI:0446'">
+        <xsl:when test="@db = 'pubmed' or @dbAc = 'MI:0446'">
             <xsl:value-of select="concat($pubmedUrl, @id)"/>
         </xsl:when>
-        <xsl:when test="@dbAc = 'MI:0448'">
+        <xsl:when test="@db = 'go' or @dbAc = 'MI:0448'">
             <xsl:value-of select="concat($goUrl, @id)"/>
         </xsl:when>
-        <xsl:when test="@dbAc = 'MI:0449'">
+        <xsl:when test="@db = 'interpro' or @dbAc = 'MI:0449'">
             <xsl:value-of select="concat($interProUrl, @id)"/>
         </xsl:when>
-        <xsl:when test="@dbAc = 'MI:0469'">
+        <xsl:when test="@db = 'intact' or @dbAc = 'MI:0469'">
             <xsl:value-of select="concat($intactUrl, @id)"/>
         </xsl:when>
-        <xsl:when test="@dbAc = 'MI:0486'">
+        <xsl:when test="@db = 'uniprotkb' or @dbAc = 'MI:0486'">
             <xsl:value-of select="concat($uniProtUrl, @id)"/>
+        </xsl:when>
+        <xsl:when test="@db = 'pubchem' or @dbAc = 'MI:0730'">
+            <xsl:value-of select="concat($pubchemUrl, @id)"/>
+        </xsl:when>
+        <xsl:when test="@db = 'drugbank' or @dbAc = 'MI:2002'">
+            <xsl:value-of select="concat($drugbankUrl, @id)"/>
         </xsl:when>
     </xsl:choose>
 </xsl:template>
@@ -313,10 +324,25 @@ Notes:
     <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="psi:modelled | psi:intraMolecular | psi:negative">
+    <tr>
+        <td class="table-title">
+            <xsl:if test="local-name() = 'modelled'">Modelled</xsl:if>
+            <xsl:if test="local-name() = 'intraMolecular'">Intra molecular</xsl:if>
+            <xsl:if test="local-name() = 'negative'">Negative</xsl:if>
+        </td>
+        <td class="normal-cell">
+            <xsl:apply-templates select="text()"/>
+        </td>
+    </tr>
+</xsl:template>
+
 <xsl:template match="psi:experimentList">
     <tr>
         <td class="table-title">Experiments:</td>
-        <xsl:apply-templates/>
+        <td class="table-subtitle">
+            <xsl:apply-templates/>
+        </td>
     </tr>
 </xsl:template>
 
@@ -422,7 +448,8 @@ Notes:
 </xsl:template>
 
 <xsl:template match="psi:interactor" mode="participant">
-    <xsl:apply-templates select="@id"/>
+    Interactor #<xsl:apply-templates select="@id"/>
+    <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="node()" mode="cellrow">
@@ -464,15 +491,24 @@ Notes:
 </xsl:template>
 
 <xsl:template match="psi:organism | psi:hostOrganism">
+    <xsl:param name="taxid" select="@ncbiTaxId"/>
     <tr>
         <td class="table-title">
             <xsl:if test="local-name() = 'hostOrganism'">Host</xsl:if>
             Organism:
         </td>
         <td class="normal-cell">
-            <a href="{$newtUrl}{@ncbiTaxId}" title="Tax ID: {@ncbiTaxId}">
-                <xsl:apply-templates select="psi:names" mode="no-title"/>
-            </a>
+            <xsl:choose>
+                <xsl:when test="$taxid > 0">
+                    <a href="{$newtUrl}{@ncbiTaxId}" title="Tax ID: {@ncbiTaxId}">
+                        <xsl:apply-templates select="psi:names" mode="no-title"/>
+                    </a>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="psi:names" mode="no-title"/>
+                    (taxid: <xsl:apply-templates select="@ncbiTaxId" mode="no-title"/>)
+                </xsl:otherwise>
+            </xsl:choose>
         </td>
     </tr>
 </xsl:template>
