@@ -43,12 +43,16 @@
     <br/><br/>
 
     <tr:panelLabelAndMessage label="Ontology query:">
-        <tr:inputText columns="30" disabled="true"/>
+        <tr:inputText columns="30" value="#{searchBean.ontologySearchQuery}"
+                      onkeypress="return submitEnter('ontologySearchBtn',event)"/>
         <f:facet name="help">
             e.g. 'yeast two hybrid'
         </f:facet>
         <f:facet name="end">
-            <tr:commandButton text="Search" styleClass="submit_button" disabled="true"/>
+            <tr:commandButton id="ontologySearchBtn"
+                              text="Search"
+                              action="#{searchBean.doOntologySearchAction}"
+                              styleClass="submit_button"/>
         </f:facet>
     </tr:panelLabelAndMessage>
 

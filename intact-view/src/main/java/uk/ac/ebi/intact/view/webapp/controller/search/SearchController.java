@@ -69,6 +69,7 @@ public class SearchController extends JpaBaseController {
     private InteractorSearchControllerBindings interactorBindings;
 
     private String searchQuery;
+    private String ontologySearchQuery;
 
      // vars
     private int pageSize = 30;
@@ -120,6 +121,13 @@ public class SearchController extends JpaBaseController {
 
     public String doBinarySearchAction() {
         doBinarySearch(null);
+        return "main";
+    }
+
+    public String doOntologySearchAction() {
+        searchQuery = ontologySearchQuery;
+        doBinarySearch(null);
+        searchQuery="*";
         return "main";
     }
 
@@ -337,5 +345,13 @@ public class SearchController extends JpaBaseController {
 
     public void setInteractorResults(SearchResultDataModel interactorResults) {
         this.interactorResults = interactorResults;
+    }
+
+    public String getOntologySearchQuery() {
+        return ontologySearchQuery;
+    }
+
+    public void setOntologySearchQuery( String ontologySearchQuery ) {
+        this.ontologySearchQuery = ontologySearchQuery;
     }
 }
