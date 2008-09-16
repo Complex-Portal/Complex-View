@@ -37,7 +37,9 @@ public class ConnectionSessionListener implements HttpSessionListener {
 
     public void sessionDestroyed(HttpSessionEvent se) {
         UserContext userContext = (UserContext) se.getSession().getAttribute(UserContext.class.getName());
+        if(userContext!=null){
         String user = userContext.getUserId();
         ConnectionManager.getInstance(se.getSession().getServletContext()).evictConnectionForUser(user);
+        }    
     }
 }

@@ -211,6 +211,12 @@ public class ComponentBean extends AbstractEditKeyBean {
         }
         // Component is null if this bean constructed from a Protein.
         if (myComponent == null) {
+
+            if ( myInteractor.getAc() != null ) {
+                InteractorDao interactorDao = ( InteractorDao ) DaoProvider.getDaoFactory( myInteractor.getClass() );
+                myInteractor = ( Interactor ) interactorDao.getByAc( myInteractor.getAc() );
+
+            }
             myComponent = new Component(IntactContext.getCurrentInstance().getConfig().getInstitution(), myInteraction,
                     myInteractor, newExpRole, newBioRole);
         }else if (myComponent.getAc() != null){

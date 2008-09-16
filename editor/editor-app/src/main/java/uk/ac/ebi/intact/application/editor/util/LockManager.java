@@ -135,9 +135,9 @@ public class LockManager {
     public boolean hasLock(String ac) {
         try {
             myRWLock.readLock().acquire();
-            for (Iterator iter = myLocks.iterator(); iter.hasNext();) {
-                LockObject lo = (LockObject) iter.next();
-                if (lo.getId().equals(ac)) {
+            for ( Object myLock : myLocks ) {
+                LockObject lo = ( LockObject ) myLock;
+                if ( lo.getId().equals( ac ) ) {
                     return true;
                 }
             }
@@ -206,14 +206,7 @@ public class LockManager {
 
         // Have we already got the lock?
         if (lo != null) {
-            if (lo.getOwner().equals(owner)) {
-                // The same user is trying the same lock; allow it.
-                return true;
-            }
-            else {
-                // Different user; don't allow it.
-                return false;
-            }
+            return lo.getOwner().equals( owner );
         }
         try {
             // Need to lock with the write lock as we are changing locks collection.
@@ -246,9 +239,9 @@ public class LockManager {
         LockObject lock = null;
         try {
             myRWLock.readLock().acquire();
-            for (Iterator iter = myLocks.iterator(); iter.hasNext();) {
-                LockObject lo = (LockObject) iter.next();
-                if (lo.getId().equals(id)) {
+            for ( Object myLock : myLocks ) {
+                LockObject lo = ( LockObject ) myLock;
+                if ( lo != null && id.equals( lo.getId() ) ) {
                     lock = lo;
                     break;
                 }
@@ -287,8 +280,8 @@ public class LockManager {
             // Need to get the write lock to remove.
             myRWLock.writeLock().acquire();
             // Iterate through the temp locks and remove one by one from the cache.
-            for (Iterator iter = locks.iterator(); iter.hasNext();) {
-                myLocks.remove(iter.next());
+            for ( Object lock : locks ) {
+                myLocks.remove( lock );
             }
         }
         catch (InterruptedException ie) {
@@ -313,10 +306,10 @@ public class LockManager {
 
         try {
             myRWLock.readLock().acquire();
-            for (Iterator iter = myLocks.iterator(); iter.hasNext();) {
-                LockObject lock = (LockObject) iter.next();
-                if (lock.getOwner().equals(owner)) {
-                    locks.add(lock);
+            for ( Object myLock : myLocks ) {
+                LockObject lock = ( LockObject ) myLock;
+                if ( lock.getOwner().equals( owner ) ) {
+                    locks.add( lock );
                 }
             }
         }
