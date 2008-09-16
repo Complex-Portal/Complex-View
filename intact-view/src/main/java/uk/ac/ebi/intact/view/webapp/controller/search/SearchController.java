@@ -143,7 +143,14 @@ public class SearchController extends JpaBaseController {
 
         if (log.isDebugEnabled()) log.debug("Searching (prepared query): " + searchQuery);
 
-        String indexDirectory = WebappUtils.getDefaultIndex(appConfigBean.getConfig()).getLocation();
+        final SearchConfig config = appConfigBean.getConfig();
+
+        if (config == null) {
+            addErrorMessage("Configuration file was not found", "Run the first time setup or check the application configuration");
+            return;
+        }
+
+        String indexDirectory = WebappUtils.getDefaultIndex(config).getLocation();
 
         try {
             results = new SearchResultDataModel(searchQuery, indexDirectory, pageSize);

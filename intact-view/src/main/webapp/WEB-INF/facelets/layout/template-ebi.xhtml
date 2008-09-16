@@ -32,7 +32,9 @@
 
             <trh:script source="#{ebisf:absoluteEbiUrl()}/inc/js/contents.js" type="text/javascript"/>
 
-             <trh:script source="/js/dojo-1.0.2/dojo/dojo.js"/>
+             <script type="text/javascript"
+                djConfig="isDebug: true"
+                src="http://o.aolcdn.com/dojo/1.0.0/dojo/dojo.xd.js"></script>
 
              <trh:script source="/js/intact.js"/>
 
@@ -49,14 +51,6 @@
                      progid:DXImageTransform.Microsoft.dropShadow(Color=AAAAAA,offX=8,offY=8,positive= true);
                  }
              </style>
-
-
-                 <trh:script rendered="#{ebisf:isBrowserExplorer()}" >
-                     dojo.addOnLoad( function() {
-                         if(navigator.userAgent.indexOf('MSIE') != -1) {document.getElementById('head').allowTransparency = true;
-                         }
-                     });
-                 </trh:script>
 
              <ui:insert name="additionalHeader"/>
 

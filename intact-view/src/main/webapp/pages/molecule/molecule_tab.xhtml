@@ -9,11 +9,17 @@
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
         <tr:messages/>
 
         Interactor AC: #{moleculeViewBean.interactor.ac}<br/>
         Interactor Short Label: #{moleculeViewBean.interactor.shortLabel}
+
+    <br/>
+
+    <iav:dasty query="#{iaf:getIdentityXref(moleculeViewBean.interactor, 'MI:0486').primaryId}"
+               label="BioSapiens"/>
 
 </ui:composition>
