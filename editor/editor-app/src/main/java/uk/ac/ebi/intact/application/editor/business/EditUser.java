@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.editor.event.EventListener;
 import uk.ac.ebi.intact.application.editor.event.LogoutEvent;
+import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditViewBeanFactory;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
@@ -18,13 +19,15 @@ import uk.ac.ebi.intact.application.editor.struts.view.interaction.ExperimentRow
 import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.application.editor.util.LockManager;
-import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.business.IntactTransactionException;
-import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.context.DataContext;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.*;
+import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.IntactObject;
+import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
+import uk.ac.ebi.intact.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.persistence.util.CgLibUtil;
 import uk.ac.ebi.intact.searchengine.ResultWrapper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
@@ -388,9 +391,17 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
         }
         // Start editing the object.
         startEditing();
+
         // The new view based on the class type.
-        myEditView = EditViewBeanFactory.getInstance().borrowObject(clazz);
-        myEditView.reset(clazz);
+        //myEditView = EditViewBeanFactory.getInstance().borrowObject(clazz);
+        //myEditView.reset(clazz);
+        try {
+            myEditView = (AbstractEditViewBean) EditViewBeanFactory.getInstance().makeObject(clazz);
+            myEditView.loadMenus();
+            myEditView.reset(clazz);
+        } catch (Throwable e) {
+            throw new IntactException("Problem creating new instance of view: "+clazz.getSimpleName(), e);
+        } 
     }
 
     public void setView(AnnotatedObject annobj) throws IntactException {
