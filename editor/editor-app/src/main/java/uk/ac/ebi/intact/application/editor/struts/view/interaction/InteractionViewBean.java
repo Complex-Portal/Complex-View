@@ -1001,7 +1001,10 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         // The interactiontype menu.
         name = EditorMenuFactory.INTERACTION_TYPE;
         int mode = (myInteractionType == null) ? 1 : 0;
-        myMenus.put(name, menuFactory.getMenu(name, mode));
+        List<String> intTypeMenu = menuFactory.getMenu(name, mode);
+        intTypeMenu.add( "physical interaction");
+        myMenus.put( name,intTypeMenu);
+        //myMenus.put(name, menuFactory.getMenu(name, mode));
 
         // Protein role edit menu
         name = EditorMenuFactory.EXPROLE;
