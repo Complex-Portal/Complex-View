@@ -160,7 +160,7 @@ public class SearchController extends JpaBaseController {
             if (log.isDebugEnabled()) log.debug("\tResults: " + results.getRowCount());
 
             if (totalResults == 0) {
-               addErrorMessage("Your query didn't return any results", "Use a different query");
+                addErrorMessage("Your query didn't return any results", "Use a different query");
                 disclosedTabName = "search";
             } else {
                disclosedTabName = "interactions";
@@ -168,6 +168,7 @@ public class SearchController extends JpaBaseController {
 
         } catch (TooManyResultsException e) {
             addErrorMessage("Too many results found", "Please, refine your query");
+            e.printStackTrace();
         }
 
         if (bindings.getResultsDataTable() != null) {
@@ -189,11 +190,11 @@ public class SearchController extends JpaBaseController {
 
         try {
             interactorResults = new SearchResultDataModel(searchQuery, indexDirectory, pageSize);
+            interactorTotalResults = interactorResults.getRowCount();
         } catch (TooManyResultsException e) {
             addErrorMessage("Too many interactors found", "Please, refine your query");
+            interactorTotalResults = 0;
         }
-
-        interactorTotalResults = interactorResults.getRowCount();
 
         if (interactorBindings.getResultsDataTable() != null) {
             interactorBindings.getResultsDataTable().setFirst(0);

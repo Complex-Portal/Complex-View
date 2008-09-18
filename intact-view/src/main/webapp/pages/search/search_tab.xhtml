@@ -4,6 +4,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
@@ -73,6 +74,8 @@
 
 
     <tr:panelHeader text="Chemical Search"/>
-    <tr:outputText value="Coming soon ..."/>
+
+    <iframe frameborder="0" width="900" height="1100"
+            src="#{initParam['intact.CHEBI_URL']}/advancedSearchForward.do?printerFriendlyView=true"></iframe>
 
 </ui:composition>

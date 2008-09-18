@@ -49,6 +49,9 @@
         <!-- Other intact apps -->
         <intact.hierarchview.url>${appRoot}/hierarchView</intact.hierarchview.url>
 
+        <!-- ChEBI -->
+        <chebi.url>http://www.ebi.ac.uk/chebi</chebi.url>
+
         <!-- Das -->
         <das.referenceserver.url>${appRoot}/das-srv/dgi/das/dgi/</das.referenceserver.url>
         <das.annotationserver.intact.url>${appRoot}/das-srv/dgi/das/intact/</das.annotationserver.intact.url>

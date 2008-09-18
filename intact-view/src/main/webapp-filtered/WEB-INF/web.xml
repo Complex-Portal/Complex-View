@@ -91,6 +91,14 @@
 
     <context-param>
         <description>
+            ChEBI URL for small molecules
+        </description>
+        <param-name>intact.CHEBI_URL</param-name>
+        <param-value>${chebi.url}</param-value>
+    </context-param>
+
+    <context-param>
+        <description>
             Maximum number of interactions for the image to show
         </description>
         <param-name>binarysearch.MAX_INTERACTIONS_FOR_IMAGE</param-name>
@@ -110,6 +118,7 @@
         <param-name>intact.MAX_SEARCH_RESULTS</param-name>
         <param-value>153600</param-value>
     </context-param>
+
     <context-param>
         <description>
             Don't fetch the Controlled vocabularies from OLS. Note that if this is true, the ability
@@ -118,6 +127,7 @@
         <param-name>psidev.DO_NOT_USE_OLS</param-name>
         <param-value>true</param-value>
     </context-param>
+
     <context-param>
         <description>
             Google Analytics account
