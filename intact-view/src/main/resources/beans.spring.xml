@@ -27,6 +27,7 @@
     <!-- Binary search -->
     <bean id="appConfigBean" class="uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean" lazy-init="true"/>
     <bean id="olsBean" class="uk.ac.ebi.intact.view.webapp.controller.application.OlsBean" lazy-init="true" />
+    <bean id="ontologyBean" class="uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean" lazy-init="true" />
 
     <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->
 

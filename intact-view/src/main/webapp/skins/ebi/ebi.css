@@ -556,3 +556,28 @@ af|inputText:disabled::label {
     color:#dedede;
 }
 
+/*for autocomplete */
+.autocomplete-line {
+    background-color: #eef5f5;
+    cursor:pointer;
+}
+
+.autocomplete-selected-line{
+    background-color: #bdd7d7;
+    cursor:pointer;
+}
+
+.autocomplete-button, .autocomplete-button-action{
+    border:0px;
+    width:22px;
+    height:17px;
+    background-color: transparent;
+    background-image:url(/images/autocomplete-button.gif);
+    background-position:top center;
+    background-repeat: no-repeat;
+    cursor:pointer;
+}
+
+.autocomplete-button-action{
+    background-image:url(/images/autocomplete-button-action.gif);
+}

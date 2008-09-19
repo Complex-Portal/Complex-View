@@ -271,7 +271,8 @@
             /WEB-INF/intact-functions.taglib.xml;
             /WEB-INF/extlinks.taglib.xml;
             /WEB-INF/binarysearch.taglib.xml;
-            /WEB-INF/psimitab.taglib.xml
+            /WEB-INF/psimitab.taglib.xml;
+            /WEB-INF/autocomplete.taglib.xml
         </param-value>
     </context-param>
 

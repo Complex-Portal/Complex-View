@@ -3,9 +3,6 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.MultiPhraseQuery;
-import org.apache.lucene.index.Term;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
@@ -14,28 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
-import uk.ac.ebi.intact.view.webapp.IntactViewException;
-import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
-import uk.ac.ebi.intact.view.webapp.controller.application.OlsBean;
+import uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean;
 import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
-import uk.ac.ebi.intact.view.webapp.servlet.ExportServlet;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Iterator;
+import javax.faces.el.ValueBinding;
+import java.util.*;
 
-import psidev.psi.mi.tab.model.CrossReference;
+import psidev.psi.mi.tab.model.*;
 
 /**
  * Main search controller
@@ -59,6 +50,9 @@ public class SearchController extends JpaBaseController {
     // injected
     @Autowired
     private AppConfigBean appConfigBean;
+
+    @Autowired
+    private OntologyBean ontologyBean;
 
     @Autowired
     @Qualifier("searchBindings")  
@@ -125,9 +119,16 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doOntologySearchAction() {
-        searchQuery = ontologySearchQuery;
-        doBinarySearch(null);
-        searchQuery="*";
+        if ( ontologySearchQuery != null ) {
+            if ( ontologySearchQuery.startsWith( "\"" ) ) {
+                searchQuery = ontologySearchQuery;
+            } else {
+                searchQuery = "\"" + ontologySearchQuery + "\"";
+            }
+        }
+        doBinarySearch( null );
+        searchQuery = "*";
+        ontologySearchQuery = null;
         return "main";
     }
 

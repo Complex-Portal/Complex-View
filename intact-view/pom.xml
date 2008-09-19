@@ -242,6 +242,12 @@
             <version>1.3.1</version>
         </dependency>
 
+        <!--ols added for ontology search implementation-->
+        <dependency>
+            <groupId>uk.ac.ebi.intact.util</groupId>
+            <artifactId>intact-ols</artifactId>
+            <version>2.0-beta-10-SNAPSHOT</version>
+        </dependency>
         <!--<dependency>-->
         <!--<groupId>com.google.code.tomahawk</groupId>-->
         <!--<artifactId>tomahawk-facelets</artifactId>-->

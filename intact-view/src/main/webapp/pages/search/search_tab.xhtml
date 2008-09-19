@@ -10,7 +10,9 @@
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:test="http://waltermourao.com.br/jsf">
+   
 
     <tr:messages/>
 
@@ -42,23 +44,35 @@
 
     <tr:outputText value="Start typing an ontology term, possible completions of the term will be shown:"/>
     <br/><br/>
+    
 
-    <tr:panelLabelAndMessage label="Ontology query:">
-        <tr:inputText columns="30" value="#{searchBean.ontologySearchQuery}"
-                      onkeypress="return submitEnter('ontologySearchBtn',event)"/>
-        <f:facet name="help">
-            e.g. 'yeast two hybrid'
-        </f:facet>
-        <f:facet name="end">
-            <tr:commandButton id="ontologySearchBtn"
-                              text="Search"
-                              action="#{searchBean.doOntologySearchAction}"
-                              styleClass="submit_button"/>
-        </f:facet>
-    </tr:panelLabelAndMessage>
+          <tr:panelLabelAndMessage label="Ontology query:">
+               <!--tr:inputText columns="30" value="#{searchBean.ontologySearchQuery}"
+              onkeypress="return submitEnter('ontologySearchBtn',event)"/-->
+
+               <test:autocomplete id="ontologySearchQuery" parentId=""
+                                   value="#{searchBean.ontologySearchQuery}"
+                                   readOnly="false"
+                                   locateBackingBean="#{ontologyBean}"
+                                   locateActionListenerName="fillAutocomplete"
+                                   locateValueFieldName="identifier"
+                                   locateVisibleFieldName="name"
+                                   />
+                <f:facet name="help">
+                    e.g. "association","direct interaction"
+                </f:facet>
+                <f:facet name="end">
+                    <tr:commandButton id="ontologySearchBtn"
+                                      text="Search"
+                                      action="#{searchBean.doOntologySearchAction}"
+                                      styleClass="submit_button"/>
+                </f:facet>
+            </tr:panelLabelAndMessage>
 
 
-    <tr:panelHeader text="Protein Sequence Search"/>
+
+
+<tr:panelHeader text="Protein Sequence Search"/>
     <h:panelGrid columns="2">
         <tr:outputText value="Paste in an amino acid sequence in Fasta format."/>
         <tr:spacer/>
