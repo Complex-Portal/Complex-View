@@ -1002,7 +1002,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         name = EditorMenuFactory.INTERACTION_TYPE;
         int mode = (myInteractionType == null) ? 1 : 0;
         List<String> intTypeMenu = menuFactory.getMenu(name, mode);
-        intTypeMenu.add( "physical interaction");
+        //intTypeMenu.add( "physical interaction"); obsoloete term replaced with association & physical association
         myMenus.put( name,intTypeMenu);
         //myMenus.put(name, menuFactory.getMenu(name, mode));
 
