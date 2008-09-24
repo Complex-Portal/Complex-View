@@ -16,6 +16,8 @@
 package uk.ac.ebi.intact.view.webapp.servlet;
 
 import org.apache.lucene.search.Sort;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.context.WebApplicationContext;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.Searcher;
 import psidev.psi.mi.search.engine.SearchEngineException;
@@ -35,9 +37,11 @@ import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.application.UserSessionConfig;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,16 +63,21 @@ public class ExportServlet extends HttpServlet {
     public static final String PARAM_QUERY = "query";
     public static final String PARAM_FORMAT = "format";
 
+    private WebApplicationContext applicationContext;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+
+        ServletContext context = getServletContext();
+        applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
+
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        UserSessionConfig userSessionConfig = (UserSessionConfig) request.getSession().getAttribute("userSessionConfig");
-
-        SearchConfig searchConfig = WebappUtils.readConfiguration(userSessionConfig.getIntactViewConfiguration().getConfigFile());
+        IntactViewConfiguration intactViewConfiguration = (IntactViewConfiguration) applicationContext.getBean("intactViewConfiguration");
+        SearchConfig searchConfig = WebappUtils.readConfiguration(intactViewConfiguration.getConfigFile());
         String defaultIndex = WebappUtils.getDefaultIndex(searchConfig).getLocation();
 
         String searchQuery = request.getParameter(PARAM_QUERY);

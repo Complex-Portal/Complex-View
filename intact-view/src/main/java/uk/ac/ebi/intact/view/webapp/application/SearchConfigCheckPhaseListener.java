@@ -15,23 +15,18 @@
  */
 package uk.ac.ebi.intact.view.webapp.application;
 
-import uk.ac.ebi.intact.view.webapp.controller.application.UserSessionConfig;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 
-import javax.faces.event.PhaseListener;
+import javax.faces.context.ExternalContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
-import javax.faces.context.ExternalContext;
+import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-
-import org.apache.myfaces.config.RuntimeConfig;
-import org.apache.myfaces.config.element.NavigationRule;
 
 /**
  * TODO comment that class header
@@ -39,12 +34,12 @@ import org.apache.myfaces.config.element.NavigationRule;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class SearchConfigCheckPhaseListener implements PhaseListener{
+public class SearchConfigCheckPhaseListener implements PhaseListener {
 
     private static final String FIRST_TIME_CONFIG_XHTML = "first_time_config.xhtml";
 
     public void afterPhase(PhaseEvent event) {
-
+        // nothing
     }
 
     public void beforePhase(PhaseEvent event) {
@@ -63,12 +58,12 @@ public class SearchConfigCheckPhaseListener implements PhaseListener{
             HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
 
             String absoluteContextPath = request.getScheme() + "://" +
-               request.getServerName() + ":" +
-               request.getServerPort() +
-               request.getContextPath();
+                                         request.getServerName() + ":" +
+                                         request.getServerPort() +
+                                         request.getContextPath();
 
             try {
-                response.sendRedirect(absoluteContextPath+"/"+FIRST_TIME_CONFIG_XHTML);
+                response.sendRedirect(absoluteContextPath + "/" + FIRST_TIME_CONFIG_XHTML);
             } catch (IOException e) {
                 throw new SearchWebappException("Cannot redirect to fist time config", e);
             }
