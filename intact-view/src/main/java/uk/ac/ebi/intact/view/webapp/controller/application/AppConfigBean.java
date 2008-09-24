@@ -19,13 +19,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.business.IntactException;
 
 import javax.faces.context.FacesContext;
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Application scope bean, with configuration stuff
@@ -33,8 +38,6 @@ import java.io.File;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller("appConfigBean")
-@Scope("singleton")
 public class AppConfigBean implements Serializable {
 
     private Log log = LogFactory.getLog(AppConfigBean.class);
@@ -43,15 +46,23 @@ public class AppConfigBean implements Serializable {
     public static final String DEFAULT_INDEX_LOCATION_INIT_PARAM = "intact.DEFAULT_INDEX";
     public static final String DEFAULT_INTERACTOR_INDEX_LOCATION_INIT_PARAM = "intact.DEFAULT_INTERACTOR_INDEX";
 
+    @Autowired
+    private IntactViewConfiguration intactViewConfiguration;
+
+    @Autowired
+    private OntologyBean ontologyBean;
+
     private SearchConfig config;
     private String configFileLocation;
 
     private XrefLinkContext linkContext;
 
     public AppConfigBean() {
-        FacesContext context = FacesContext.getCurrentInstance();
+    }
 
-        configFileLocation = context.getExternalContext().getInitParameter(DEFAULT_CONFIG_FILE_INIT_PARAM);
+    @PostConstruct
+    public void setup() {
+        configFileLocation = intactViewConfiguration.getConfigFile();
 
         try {
             if (log.isInfoEnabled()) log.info("Trying to read configuration from: " + configFileLocation);
@@ -63,6 +74,12 @@ public class AppConfigBean implements Serializable {
 
         if (config == null) {
             if (log.isInfoEnabled()) log.info("No configuration File found. First time setup");
+        } else {
+            try {
+                ontologyBean.loadOntologies(config);
+            } catch (Exception e) {
+                throw new IntactException("Problem loading ontologies", e);
+            }
         }
 
         if (log.isInfoEnabled()) log.info("Initializing xref link context...");

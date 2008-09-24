@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
 
 import uk.ac.ebi.intact.util.ols.Term;
-import uk.ac.ebi.intact.view.webapp.controller.application.OlsBean;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -151,7 +150,7 @@ public class QueryHelper {
         terms.add(term);
 
         if (includeChildren) {
-            terms.addAll(OlsBean.childrenFor(term, new ArrayList<Term>()));
+            //terms.addAll(OlsBean.childrenFor(term, new ArrayList<Term>()));
         }
 
         return fieldName + ":(" + termsToValue(terms) + ")";

@@ -12,4 +12,11 @@
         </navigation-case>
     </navigation-rule>
 
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>firstTime</from-outcome>
+            <to-view-id>/first_time_config.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>

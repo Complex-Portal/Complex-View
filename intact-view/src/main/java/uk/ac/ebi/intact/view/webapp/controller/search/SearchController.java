@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean;
 import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
@@ -24,6 +25,7 @@ import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.el.ValueBinding;
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 import psidev.psi.mi.tab.model.*;
@@ -53,6 +55,9 @@ public class SearchController extends JpaBaseController {
 
     @Autowired
     private OntologyBean ontologyBean;
+
+    @Autowired
+    private IntactViewConfiguration intactViewConfiguration;
 
     @Autowired
     @Qualifier("searchBindings")  
@@ -86,9 +91,11 @@ public class SearchController extends JpaBaseController {
 
 
     public SearchController() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        int maxResults = Integer.parseInt(facesContext.getExternalContext().getInitParameter(MAX_RESULTS_INIT_PARAM));
-        BooleanQuery.setMaxClauseCount(maxResults);
+    }
+
+    @PostConstruct
+    public void lala() {
+        BooleanQuery.setMaxClauseCount(intactViewConfiguration.getLuceneMaxCombinations());
     }
 
     @PreRenderView
@@ -104,7 +111,7 @@ public class SearchController extends JpaBaseController {
 
         if (searchQuery == null) {
             searchQuery = "*";
-            doBinarySearch(null);
+            doBinarySearch(searchQuery);
             disclosedTabName = "search";
         }
 
@@ -114,35 +121,26 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doBinarySearchAction() {
-        doBinarySearch(null);
+        doBinarySearch(searchQuery);
         return "main";
     }
 
     public String doOntologySearchAction() {
-        if ( ontologySearchQuery != null ) {
-            if ( ontologySearchQuery.startsWith( "\"" ) ) {
-                searchQuery = ontologySearchQuery;
-            } else {
-                searchQuery = "\"" + ontologySearchQuery + "\"";
-            }
-        }
-        doBinarySearch( null );
-        searchQuery = "*";
-        ontologySearchQuery = null;
+        doBinarySearch( ontologySearchQuery );
         return "main";
     }
 
-    public void doBinarySearch(ActionEvent evt) {
+    private void doBinarySearch(String query) {
         // reset the status of the range choice bar
         if (bindings.getRangeChoiceBar() != null) {
             bindings.getRangeChoiceBar().setFirst(0);
         }
 
-        if (log.isDebugEnabled()) log.debug("Searching (raw): " + searchQuery);
+        if (log.isDebugEnabled()) log.debug("Searching (raw): " + query);
 
-        searchQuery = QueryHelper.prepareQuery(searchQuery);
+        query = QueryHelper.prepareQuery(query);
 
-        if (log.isDebugEnabled()) log.debug("Searching (prepared query): " + searchQuery);
+        if (log.isDebugEnabled()) log.debug("Searching (prepared query): " + query);
 
         final SearchConfig config = appConfigBean.getConfig();
 
@@ -154,7 +152,7 @@ public class SearchController extends JpaBaseController {
         String indexDirectory = WebappUtils.getDefaultIndex(config).getLocation();
 
         try {
-            results = new SearchResultDataModel(searchQuery, indexDirectory, pageSize);
+            results = new SearchResultDataModel(query, indexDirectory, pageSize);
 
             totalResults = results.getRowCount();
 
@@ -176,7 +174,7 @@ public class SearchController extends JpaBaseController {
             bindings.getResultsDataTable().setFirst(0);
         }
 
-        doInteractorSearch(evt);
+        doInteractorSearch(null);
     }
 
     public void doInteractorSearch(ActionEvent evt) {
@@ -243,7 +241,7 @@ public class SearchController extends JpaBaseController {
 
         searchQuery = sb.toString();
         
-        doBinarySearch(evt);
+        doBinarySearch(searchQuery);
 
         interactorBindings.getResultsDataTable().setSelectedRowKeys(null);
     }

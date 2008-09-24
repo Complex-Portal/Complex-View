@@ -19,10 +19,15 @@ import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.User;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
+import uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
+import uk.ac.ebi.intact.business.IntactException;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -42,7 +47,7 @@ import org.springframework.context.annotation.Scope;
 @Controller("firstTimeBean")
 @Scope("request")
 @ViewController(viewIds = "/first_time_config.xhtml")
-public class FirstTimeBean implements Serializable {
+public class FirstTimeBean extends BaseController {
 
     private User user;
     private String directPassword;
@@ -56,15 +61,22 @@ public class FirstTimeBean implements Serializable {
     @Autowired
     private AppConfigBean configBean;
 
-    public FirstTimeBean() {
-        FacesContext context = FacesContext.getCurrentInstance();
+    @Autowired
+    private IntactViewConfiguration intactViewConfiguration;
 
+    @Autowired
+    private OntologyBean ontologyBean;
+
+    public FirstTimeBean() {
         this.user = new User();
         this.index = new Index();
         this.interactorIndex = new Index();
+    }
 
-        String indexLocation = context.getExternalContext().getInitParameter(AppConfigBean.DEFAULT_INDEX_LOCATION_INIT_PARAM);
-        String interactorIndexLocation = context.getExternalContext().getInitParameter(AppConfigBean.DEFAULT_INTERACTOR_INDEX_LOCATION_INIT_PARAM);
+    @PostConstruct
+    public void setup() {
+        String indexLocation = intactViewConfiguration.getDefaultIndexLocation();
+        String interactorIndexLocation = intactViewConfiguration.getDefaultInteractorIndexLocation();
 
         index.setLocation(indexLocation);
         index.setDefault(true);
@@ -107,6 +119,13 @@ public class FirstTimeBean implements Serializable {
 
         WebappUtils.writeConfiguration(config, new File(configBean.getConfigFileLocation()));
         configBean.setConfig(config);
+
+        try {
+            ontologyBean.loadOntologies(config);
+        } catch (IOException e) {
+            addErrorMessage("Problem loading ontologies", e.getMessage());
+            e.printStackTrace();
+        }
 
         return "main";
     }

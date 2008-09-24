@@ -48,13 +48,13 @@
 
         <bs:searchBox id="sideSearchBox" value="#{searchBean.searchQuery}" title="#{intactView['webapp.name']}"/>
 
-        <ebi:dynamicMenu id="menu1" sourceUrl="#{initParam['uk.ac.ebi.faces.MENU_URL']}"/>
+        <ebi:dynamicMenu id="menu1" sourceUrl="#{intactViewConfiguration.menuUrl}"/>
 
         <ebi:news id="news1"
-                  sourceUrl="#{initParam['uk.ac.ebi.faces.NEWS_URL']}"
-                  maxShown="#{initParam['uk.ac.ebi.intact.NEWS_SHOWN_NUM']}"
-                  newsFeedUrl="#{initParam['intact.APPLICATION_ROOT']}/intact-view/feed"
-                  archiveUrl="#{initParam['intact.APPLICATION_ROOT']}/intact-view/pages/news/news_archive.xhtml"/>
+                  sourceUrl="#{intactViewConfiguration.newsUrl}"
+                  maxShown="#{intactViewConfiguration.maxNewsInBox}"
+                  newsFeedUrl="#{intactViewConfiguration.appRoot}/intact-view/feed"
+                  archiveUrl="#{intactViewConfiguration.appRoot}/intact-view/pages/news/news_archive.xhtml"/>
 
     </ui:define>
 

@@ -22,7 +22,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import uk.ac.ebi.intact.view.webapp.controller.application.OlsBean;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
@@ -57,8 +57,6 @@ public class WebappUtils {
     public static final String DETECTION_METHOD_TERM = WebappUtils.class + ".DETECTION_METHOD_TERM";
     public static final String DETECTION_METHODS = WebappUtils.class + ".DETECTION_METHODS";
 
-
-    private static final String SECRET_INIT_PARAM_NAME = "psidev.SECRET";
 
     private WebappUtils() {
     }
@@ -150,7 +148,9 @@ public class WebappUtils {
 
     private static SecretKey secretKey(FacesContext facesContext) {
         try {
-            String secret = facesContext.getExternalContext().getInitParameter(SECRET_INIT_PARAM_NAME);
+            IntactViewConfiguration intactViewConfiguration = getIntactViewConfiguration(facesContext);
+
+            String secret = intactViewConfiguration.getIntactSecret();
             byte[] bytes = new Base64().decode(secret.getBytes());
 
             return new SecretKeySpec(bytes, "DES");
@@ -160,21 +160,10 @@ public class WebappUtils {
         }
     }
 
-    public static void loadOlsTerms(ServletContext ctx) throws RemoteException {
-        if (log.isInfoEnabled()) log.info("Loading OLS terms using the Web Service");
-
-        if (log.isDebugEnabled()) log.debug("\tLoading Interaction Types...");
-        Term interactionTypeTerm = uk.ac.ebi.intact.util.ols.OlsUtils.getMiTerm("MI:0190");
-
-        if (log.isDebugEnabled()) log.debug("\tLoading Interaction Detection Methods...");
-        Term detectionMethodTerm = uk.ac.ebi.intact.util.ols.OlsUtils.getMiTerm("MI:0001");
-
-        List<Term> interactionTypeTerms = OlsBean.childrenFor(interactionTypeTerm, new ArrayList<Term>());
-        List<Term> detectionMethodTerms = OlsBean.childrenFor(detectionMethodTerm, new ArrayList<Term>());
-
-        ctx.setAttribute(INTERACTION_TYPE_TERM, interactionTypeTerm);
-        ctx.setAttribute(INTERACTION_TYPES, interactionTypeTerms);
-        ctx.setAttribute(DETECTION_METHOD_TERM, detectionMethodTerm);
-        ctx.setAttribute(DETECTION_METHODS, detectionMethodTerms);
+    public static IntactViewConfiguration getIntactViewConfiguration(FacesContext facesContext) {
+        IntactViewConfiguration intactViewConfiguration = (IntactViewConfiguration)
+                facesContext.getApplication().getELResolver()
+                .getValue(facesContext.getELContext(), null, "intactViewConfiguration");
+        return intactViewConfiguration;
     }
 }

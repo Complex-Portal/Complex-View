@@ -90,6 +90,6 @@
     <tr:panelHeader text="Chemical Search"/>
 
     <iframe frameborder="0" width="900" height="1100"
-            src="#{initParam['intact.CHEBI_URL']}/advancedSearchForward.do?printerFriendlyView=true"></iframe>
+            src="#{intactViewConfiguration.chebiUrl}#{intactViewConfiguration.chebiChemicalSearchPath}&amp;callbackUrl=#{requestConfigBean.absoluteContextPath}/"></iframe>
 
 </ui:composition>

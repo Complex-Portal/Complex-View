@@ -34,6 +34,7 @@ import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
+import uk.ac.ebi.intact.view.webapp.controller.application.UserSessionConfig;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -58,19 +59,18 @@ public class ExportServlet extends HttpServlet {
     public static final String PARAM_QUERY = "query";
     public static final String PARAM_FORMAT = "format";
 
-    private String defaultIndex;
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        String configFile = config.getServletContext().getInitParameter(AppConfigBean.DEFAULT_CONFIG_FILE_INIT_PARAM);
-
-        SearchConfig searchConfig = WebappUtils.readConfiguration(configFile);
-        this.defaultIndex = WebappUtils.getDefaultIndex(searchConfig).getLocation();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        UserSessionConfig userSessionConfig = (UserSessionConfig) request.getSession().getAttribute("userSessionConfig");
+
+        SearchConfig searchConfig = WebappUtils.readConfiguration(userSessionConfig.getIntactViewConfiguration().getConfigFile());
+        String defaultIndex = WebappUtils.getDefaultIndex(searchConfig).getLocation();
+
         String searchQuery = request.getParameter(PARAM_QUERY);
         String format = request.getParameter(PARAM_FORMAT);
 

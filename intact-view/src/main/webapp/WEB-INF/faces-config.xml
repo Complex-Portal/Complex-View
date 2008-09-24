@@ -17,6 +17,10 @@
       </resource-bundle>
   </application>
 
+    <lifecycle>
+        <phase-listener>uk.ac.ebi.intact.view.webapp.application.SearchConfigCheckPhaseListener</phase-listener>
+    </lifecycle>
+
     <!-- Search -->
 
     <managed-bean>
@@ -62,12 +66,6 @@
         <managed-bean-name>firstTimeBean</managed-bean-name>
         <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.admin.FirstTimeBean</managed-bean-class>
         <managed-bean-scope>none</managed-bean-scope>
-    </managed-bean>
-  
-    <managed-bean>
-        <managed-bean-name>newsBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.intact.view.webapp.controller.news.NewsBean</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 
     <managed-bean>

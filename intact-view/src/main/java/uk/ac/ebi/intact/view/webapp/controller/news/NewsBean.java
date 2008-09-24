@@ -21,13 +21,19 @@ import uk.ac.ebi.faces.component.news.FeedType;
 import uk.ac.ebi.faces.component.news.NewsUtil;
 import uk.ac.ebi.faces.model.news.News;
 import uk.ac.ebi.faces.model.news.NewsItem;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 /**
  * News backing bean.
@@ -35,17 +41,23 @@ import java.util.List;
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
  */
+@Controller
+@Scope("request")
 public class NewsBean implements Serializable {
-
-    public static final String NEWS_URL = "uk.ac.ebi.faces.NEWS_URL";
 
     private News newsObject;
     private List<NewsItem> news;
     private List<NewsItem> urgentNews;
 
-    public NewsBean() {
+    @Autowired
+    private IntactViewConfiguration intactViewConfiguration;
 
-        String newsXml = FacesContext.getCurrentInstance().getExternalContext().getInitParameter( NEWS_URL );
+    public NewsBean() {
+    }
+
+    @PostConstruct
+    public void setup() {
+        String newsXml = intactViewConfiguration.getNewsUrl();
 
         newsObject = NewsUtil.readNews( newsXml );
         news = newsObject.getNewsItem();
