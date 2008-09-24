@@ -106,7 +106,7 @@ public class SearchController extends JpaBaseController {
 
         if (queryParam != null) {
             searchQuery = queryParam;
-            doBinarySearch(null);
+            doBinarySearch(searchQuery);
         }
 
         if (searchQuery == null) {
