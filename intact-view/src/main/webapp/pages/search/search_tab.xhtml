@@ -69,27 +69,30 @@
                 </f:facet>
             </tr:panelLabelAndMessage>
 
+    <tr:panelHeader text="Other Searches">
 
+    <tr:panelAccordion discloseNone="true">
+        <tr:showDetailItem text="Protein Sequence Search (Not implemented)">
+            <h:panelGrid columns="2">
+                <tr:outputText value="Paste in an amino acid sequence in Fasta format."/>
+                <tr:spacer/>
+                <tr:inputText rows="5" disabled="true"/>
+                <tr:panelBox id="searchExampleBox" text="Examples">
+                    <!-- TODO how to display this a <pre> block -->
+                    <!-- TODO how to align this cell to the top ? -->
+                    <tr:outputText
+                            value="&lt;pre&gt;&gt;GI1234&lt;br&gt;ATYEEEJK&lt;/pre&gt;" escape="false"/>
+                </tr:panelBox>
 
+            </h:panelGrid>
+        </tr:showDetailItem>
+        <tr:showDetailItem text="Chemical Search">
+            <iframe frameborder="0" width="900" height="1100"
+                    src="#{intactViewConfiguration.chebiUrl}#{intactViewConfiguration.chebiChemicalSearchPath}&amp;callbackUrl=#{requestConfigBean.absoluteContextPath}/main.xhtml?query=id:*"></iframe>
 
-<tr:panelHeader text="Protein Sequence Search"/>
-    <h:panelGrid columns="2">
-        <tr:outputText value="Paste in an amino acid sequence in Fasta format."/>
-        <tr:spacer/>
-        <tr:inputText rows="5" disabled="true"/>
-        <tr:panelBox id="searchExampleBox" text="Examples">
-            <!-- TODO how to display this a <pre> block -->
-            <!-- TODO how to align this cell to the top ? -->
-            <tr:outputText
-                    value="&lt;pre&gt;&gt;GI1234&lt;br&gt;ATYEEEJK&lt;/pre&gt;" escape="false"/>
-        </tr:panelBox>
+        </tr:showDetailItem>
+</tr:panelAccordion>
 
-    </h:panelGrid>
-
-
-    <tr:panelHeader text="Chemical Search"/>
-
-    <iframe frameborder="0" width="900" height="1100"
-            src="#{intactViewConfiguration.chebiUrl}#{intactViewConfiguration.chebiChemicalSearchPath}&amp;callbackUrl=#{requestConfigBean.absoluteContextPath}/main.xhtml?query=*"></iframe>
+</tr:panelHeader>
 
 </ui:composition>

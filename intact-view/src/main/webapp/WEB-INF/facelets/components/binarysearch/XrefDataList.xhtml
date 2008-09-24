@@ -25,10 +25,11 @@
 
             <h:panelGroup rendered="#{!itemPerLine}">
                 <nobr>
-                    <tr:goLink text="#{xrefUrl == null? psimitab:xrefToString(xref, true, false) : text}"
+                    <tr:goLink text="#{xrefUrl == null? psimitab:xrefToString(xref, !onlyText, true) : text}"
                                shortDesc="#{xref.text}"
                                targetFrame="_blank"
-                               destination="#{xrefUrl}" disabled="#{xrefUrl == null or itemDisabled}"/>
+                               destination="#{xrefUrl}"
+                               disabled="#{xrefUrl == null or itemDisabled}"/>
                     <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
                 </nobr>
             </h:panelGroup>
@@ -36,7 +37,9 @@
             <h:panelGroup rendered="#{itemPerLine}">
                     <span style="display:block">
                         <nobr>
-                            <tr:goLink text="#{text}" shortDesc="#{xref.text}" targetFrame="_blank"
+                            <tr:goLink text="#{xrefUrl == null? psimitab:xrefToString(xref, !onlyText, true) : itemPerLine}" 
+                                       shortDesc="#{xref.text}"
+                                       targetFrame="_blank"
                                        destination="#{psimitab:xrefUrl(appConfigBean.linkContext, xref)}"
                                        disabled="#{xrefUrl == null or itemDisabled}"/>
                         </nobr>

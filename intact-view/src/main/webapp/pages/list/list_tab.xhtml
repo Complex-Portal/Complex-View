@@ -87,7 +87,7 @@
     <bs:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
 </tr:column>
 <tr:column headerText="Links">
-    <tr:commandLink text="Molecule view"
+    <tr:commandLink text="Molecule view" 
                     action="#{searchBean.doDiscloseMoleculeViewTab}">
         <f:setPropertyActionListener value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}" target="#{moleculeViewBean.interactorAc}"/>
     </tr:commandLink>
@@ -130,7 +130,7 @@
 
 <tr:column headerText="Interactor type" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="typeA_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
+    <bs:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true" />
 </tr:column>
 
 

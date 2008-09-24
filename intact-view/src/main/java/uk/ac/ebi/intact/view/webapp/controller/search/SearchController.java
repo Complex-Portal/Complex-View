@@ -47,8 +47,6 @@ public class SearchController extends JpaBaseController {
     private static final String QUERY_PARAM = "query";
     private static final String TAB_PARAM = "tab";
 
-    private static final String MAX_RESULTS_INIT_PARAM = "intact.MAX_SEARCH_RESULTS";
-
     // injected
     @Autowired
     private AppConfigBean appConfigBean;
@@ -174,21 +172,21 @@ public class SearchController extends JpaBaseController {
             bindings.getResultsDataTable().setFirst(0);
         }
 
-        doInteractorSearch(null);
+        doInteractorSearch(query);
     }
 
-    public void doInteractorSearch(ActionEvent evt) {
+    public void doInteractorSearch(String query) {
         // reset the status of the range choice bar
         if (interactorBindings.getRangeChoiceBar() != null) {
             interactorBindings.getRangeChoiceBar().setFirst(0);
         }
 
-        if (log.isDebugEnabled()) log.debug("Searching interactors for: " + searchQuery);
+        if (log.isDebugEnabled()) log.debug("Searching interactors for: " + query);
 
         String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
 
         try {
-            interactorResults = new SearchResultDataModel(searchQuery, indexDirectory, pageSize);
+            interactorResults = new SearchResultDataModel(query, indexDirectory, pageSize);
             interactorTotalResults = interactorResults.getRowCount();
         } catch (TooManyResultsException e) {
             addErrorMessage("Too many interactors found", "Please, refine your query");

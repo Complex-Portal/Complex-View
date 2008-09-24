@@ -14,12 +14,22 @@
 
         <tr:messages/>
 
-        Interactor AC: #{moleculeViewBean.interactor.ac}<br/>
-        Interactor Short Label: #{moleculeViewBean.interactor.shortLabel}
+    <tr:panelHeader text="Molecule info">
 
-    <br/>
+        <tr:panelFormLayout>
+            <tr:inputText label="#{intactView['webapp.name']} AC: " value="#{moleculeViewBean.interactor.ac}"
+                          readOnly="true" />
+            <tr:inputText label="Short label: " value="#{moleculeViewBean.interactor.shortLabel}"
+                          readOnly="true" />
+        </tr:panelFormLayout>
 
-    <iav:dasty query="#{iaf:getIdentityXref(moleculeViewBean.interactor, 'MI:0486').primaryId}"
-               label="BioSapiens"/>
+    </tr:panelHeader>
+
+    <tr:panelHeader text="Dasty2 visualization">
+
+        <iav:dasty query="#{iaf:getIdentityXref(moleculeViewBean.interactor, 'MI:0486').primaryId}"
+                   label="BioSapiens"/>
+
+    </tr:panelHeader>
 
 </ui:composition>
