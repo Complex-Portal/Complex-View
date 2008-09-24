@@ -99,9 +99,11 @@ private static final Log log = LogFactory.getLog( OntologiesIndexWriter.class );
 
         if (term.getLabel() != null) {
     	    document.add(new Field("label", term.getLabel(), Store.YES, Index.TOKENIZED));
+    	    document.add(new Field("label_sorted", term.getLabel(), Store.NO, Index.UN_TOKENIZED));
         }
         
     	document.add(new Field("databaseLabel", term.getDatabaseLabel(), Store.YES, Index.TOKENIZED));
+    	document.add(new Field("databaseLabel_sorted", term.getDatabaseLabel(), Store.NO, Index.UN_TOKENIZED));
 
         return document;
     }

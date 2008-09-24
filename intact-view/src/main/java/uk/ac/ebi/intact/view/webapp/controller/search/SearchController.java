@@ -124,7 +124,13 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doOntologySearchAction() {
-        doBinarySearch( ontologySearchQuery );
+
+        String formattedQuery = OntologyBean.prepareOntologyQueryForLucene( ontologySearchQuery );
+        if ( log.isDebugEnabled() ) {
+            log.debug( " ontologySearchQuery " +ontologySearchQuery);
+            log.debug( " formattedQuery " +formattedQuery);
+        }
+        doBinarySearch( formattedQuery );
         return "main";
     }
 

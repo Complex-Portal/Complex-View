@@ -46,7 +46,7 @@ public class OntologiesIndexSearcher {
 
     public Collection<OntologyTerm> search(String strQuery) throws IOException, ParseException {
         QueryParser queryParser = new QueryParser("identifier", new StandardAnalyzer());
-        return search(queryParser.parse(strQuery), new Sort("identifier"));
+        return search(queryParser.parse(strQuery), new Sort("label_sorted"));
     }
 
     public Collection<OntologyTerm> search(Query query, Sort sort) throws IOException {

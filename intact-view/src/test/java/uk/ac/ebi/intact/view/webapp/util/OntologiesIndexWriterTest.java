@@ -27,6 +27,7 @@ import uk.ac.ebi.intact.dataexchange.cvutils.model.CvObjectOntologyBuilder;
 import uk.ac.ebi.intact.dataexchange.cvutils.OboUtils;
 import uk.ac.ebi.intact.dataexchange.cvutils.CvUpdater;
 import uk.ac.ebi.intact.psimitab.search.IntactPsimiTabIndexWriter;
+import uk.ac.ebi.intact.context.IntactContext;
 
 import java.io.InputStream;
 
@@ -46,6 +47,8 @@ public class OntologiesIndexWriterTest {
 
         IntactPsimiTabIndexWriter indexWriter = new IntactPsimiTabIndexWriter(true);
         indexWriter.index(binaryInteractionIndex, file, true, true);
+
+        IntactContext.initStandaloneContextInMemory();
 
         OBOSession oboSession = OboUtils.createOBOSessionFromLatestMi();
 

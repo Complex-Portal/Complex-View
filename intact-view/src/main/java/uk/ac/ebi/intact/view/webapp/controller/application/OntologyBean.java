@@ -35,6 +35,8 @@ import uk.ac.ebi.intact.view.webapp.util.OntologiesIndexSearcher;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 
+import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
@@ -95,4 +97,67 @@ public class OntologyBean implements Serializable {
     public Collection<OntologyTerm> search(Query query, Sort sort) throws IOException {
         return ontologiesIndexSearcher.search(query, sort);
     }
+
+//for Autocomplete box 
+
+
+    @SuppressWarnings( "unchecked" )
+    public void fillAutocomplete( javax.faces.event.ActionEvent event ) throws IOException, ParseException {
+
+        final FacesContext facesContext = javax.faces.context.FacesContext.getCurrentInstance();
+
+        final java.util.Map parameters = facesContext.getExternalContext().getRequestParameterMap();
+        final Object fieldValue = parameters.get( this.getParameterValue( "searchFieldRequestParamName", event ) );
+        String strFieldValue = fieldValue == null || fieldValue.toString().trim().length() == 0 ? "" : fieldValue.toString().trim().toLowerCase();
+
+        String formattedQuery = prepareOntologyQueryForLucene( strFieldValue );
+
+        if ( log.isDebugEnabled() ) {
+            log.debug( "Original Query  " + strFieldValue );
+            log.debug( "Query formatted for Lucene  " + formattedQuery );
+        }
+
+        final Collection<OntologyTerm> result = search( formattedQuery );
+        final ValueBinding vb = facesContext.getApplication().createValueBinding( "#{autocompleteResult}" );
+        vb.setValue( facesContext, result );
+    }
+
+    public static String prepareOntologyQueryForLucene( String strFieldValue ) {
+
+        if ( strFieldValue == null ) {
+            return "*";
+        }
+
+        if ( !strFieldValue.endsWith( "*" ) ) {
+            strFieldValue = strFieldValue + "*";
+        }
+
+        if ( strFieldValue.contains( ":" ) ) {
+            if ( !strFieldValue.startsWith( "\"" ) && !strFieldValue.endsWith( "\"" ) ) {
+                strFieldValue = "\"" + strFieldValue + "\"";
+            }
+        }
+
+        strFieldValue = "identifier:" + strFieldValue + " label:" + strFieldValue;
+
+        return strFieldValue;
+    }
+
+    /**
+     * Returns an javax.faces.event.ActionEvent parameter value, from its name
+     */
+    protected Object getParameterValue( String parameterName, javax.faces.event.ActionEvent event ) {
+
+        for ( Object uiObject : event.getComponent().getChildren() ) {
+            if ( uiObject instanceof javax.faces.component.UIParameter ) {
+                final javax.faces.component.UIParameter param = ( javax.faces.component.UIParameter ) uiObject;
+                if ( param.getName().equals( parameterName ) ) {
+                    return param.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+
 }
