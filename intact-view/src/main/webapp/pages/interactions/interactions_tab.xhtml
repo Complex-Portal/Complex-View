@@ -8,8 +8,8 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
-                xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
 <tr:messages/>
@@ -129,16 +129,16 @@
 </tr:column>
 
 <tr:column headerText="Accession number molecule A" sortable="true" sortProperty="idA_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
 </tr:column>
 <tr:column headerText="Accession number molecule B" sortable="true" sortProperty="idB_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorB.identifiers}"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactorB.identifiers}"/>
 </tr:column>
 <tr:column headerText="Alternative id molecule A" sortable="true" sortProperty="altidA_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
 </tr:column>
 <tr:column headerText="Alternative id molecule B" sortable="true" sortProperty="altidB_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorB.alternativeIdentifiers}" disableLinks="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactorB.alternativeIdentifiers}" disableLinks="true"/>
 </tr:column>
 <tr:column headerText="Names molecule A" sortable="true" sortProperty="aliasA_s">
     <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">
@@ -183,19 +183,19 @@
 </tr:column>
 
 <tr:column headerText="PubMed identifier" sortable="true" sortProperty="pubid_s">
-    <bs:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Interaction type" sortable="true" sortProperty="type_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Interaction detection method" sortable="true" sortProperty="detmethod_s">
-    <bs:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Source database(s)" sortable="true" sortProperty="source_s">
-    <bs:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Interaction AC" sortable="true" sortProperty="interaction_id_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>
 </tr:column>
 <tr:column headerText="Confidence Value(s)" sortable="true" sortProperty="confidence_s">
     <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}">
@@ -208,19 +208,19 @@
 </tr:column>
 <tr:column headerText="Experimental role A" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="experimentalRoleA_s">
-    <bs:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Experimental role A" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="experimentalRoleB_s">
-    <bs:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Biological role A" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="biologicalRoleA_s">
-    <bs:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Biological role A" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="biologicalRoleB_s">
-    <bs:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column rendered="#{searchBean.expandedView}" sortable="true" sortProperty="propertiesA_s">
     <f:facet name="header">
@@ -231,14 +231,14 @@
     <!--<tr:showDetail disclosedText="Hide" undisclosedText="Show (#{fn:length(binaryInteraction.propertiesA)})"-->
                    <!--disclosed="#{searchBean.showProperties}"-->
                    <!--rendered="#{not empty binaryInteraction.propertiesA}">-->
-        <!--<bs:xrefDataList value="#{binaryInteraction.propertiesA}"/>-->
+        <!--<iav:xrefDataList value="#{binaryInteraction.propertiesA}"/>-->
     <!--</tr:showDetail>-->
-    <bs:customShowDetail id="csd_propsB_#{status.index}" disclosedText="Hide"
+    <iam:customShowDetail id="csd_propsB_#{status.index}" disclosedText="Hide"
                          undisclosedText="Show (#{fn:length(binaryInteraction.propertiesA)})"
                         disclosed="#{searchBean.showProperties}"
                         rendered="#{not empty binaryInteraction.propertiesA}">
-        <bs:xrefDataList value="#{binaryInteraction.propertiesA}"/>
-    </bs:customShowDetail>
+        <iav:xrefDataList value="#{binaryInteraction.propertiesA}"/>
+    </iam:customShowDetail>
 
 </tr:column>
 <tr:column headerText="Properties molecule B" rendered="#{searchBean.expandedView}" sortable="true"
@@ -246,26 +246,26 @@
     <!--<tr:showDetail disclosedText="Hide" undisclosedText="Show (#{fn:length(binaryInteraction.propertiesB)})"-->
     <!--disclosed="#{searchBean.showProperties}"-->
     <!--rendered="#{not empty binaryInteraction.propertiesB}">-->
-    <!--<bs:xrefDataList value="#{binaryInteraction.propertiesB}"/>-->
+    <!--<iav:xrefDataList value="#{binaryInteraction.propertiesB}"/>-->
     <!--</tr:showDetail>-->
-    <bs:customShowDetail id="csd_propsB_#{status.index}" disclosedText="Hide"
+    <iam:customShowDetail id="csd_propsB_#{status.index}" disclosedText="Hide"
                          undisclosedText="Show (#{fn:length(binaryInteraction.propertiesB)})"
                         disclosed="#{searchBean.showProperties}"
                         rendered="#{not empty binaryInteraction.propertiesB}">
-        <bs:xrefDataList value="#{binaryInteraction.propertiesB}"/>
-    </bs:customShowDetail>
+        <iav:xrefDataList value="#{binaryInteraction.propertiesB}"/>
+    </iam:customShowDetail>
 </tr:column>
 <tr:column headerText="Interactor type A" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="typeA_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
 </tr:column>
 <tr:column headerText="Interactor type B" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="typeB_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>
 </tr:column>
 <tr:column headerText="Host organism" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="hostOrganism_s">
-    <bs:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Expansion method" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="expansion_s">

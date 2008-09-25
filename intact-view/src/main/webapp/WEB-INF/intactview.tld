@@ -39,58 +39,22 @@
             <name>width</name>
         </attribute>
     </tag>
+
     <tag>
-        <name>categoryGroup</name>
+        <name>xrefDataList</name>
         <attribute>
-            <name>id</name>
-            <required>true</required>
+            <name>itemPerLine</name>
         </attribute>
         <attribute>
-            <name>initiallyExpanded</name>
+            <name>disableLinks</name>
         </attribute>
         <attribute>
-            <name>title</name>
-            <required>true</required>
-        </attribute>
-    </tag>
-    <tag>
-        <name>categoryItem</name>
-        <attribute>
-            <name>category</name>
-            <required>true</required>
-        </attribute>
-        <attribute>
-            <name>description</name>
-        </attribute>
-        <attribute>
-            <name>name</name>
-            <required>true</required>
-        </attribute>
-        <attribute>
-            <name>size</name>
-        </attribute>
-        <attribute>
-            <name>url</name>
-        </attribute>
-    </tag>
-    <tag>
-        <name>panelCategory</name>
-        <attribute>
-            <name>id</name>
-            <required>true</required>
-        </attribute>
-        <attribute>
-            <name>initiallyExpanded</name>
+            <name>onlyText</name>
         </attribute>
         <attribute>
             <name>value</name>
+            <required>true</required>
         </attribute>
-        <attribute>
-            <name>var</name>
-        </attribute>
-    </tag>
-    <tag>
-        <name>panelCategoryColumn</name>
     </tag>
 
 </taglib>

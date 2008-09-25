@@ -15,20 +15,20 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Hits;
-import org.apache.lucene.document.Document;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 import org.apache.lucene.store.Directory;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ArrayList;
-import java.io.IOException;
 
 /**
  * TODO comment that class header
@@ -42,6 +42,24 @@ public class OntologiesIndexSearcher {
 
     public OntologiesIndexSearcher(Directory indexDirectory) {
         this.indexDirectory = indexDirectory;
+    }
+
+    public OntologyTerm findById(String value) throws IOException, ParseException {
+        if (value == null || value.trim().length() == 0) return null;
+
+        if (!value.startsWith("\"")) {
+            value = "\"" + value + "\"";
+        }
+
+        OntologyTerm term = null;
+
+        Collection<OntologyTerm> terms = search(value);
+
+        if (!terms.isEmpty()) {
+            term = terms.iterator().next();
+        }
+
+        return term;
     }
 
     public Collection<OntologyTerm> search(String strQuery) throws IOException, ParseException {

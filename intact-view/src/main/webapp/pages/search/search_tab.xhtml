@@ -8,10 +8,9 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
-                xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                xmlns:test="http://waltermourao.com.br/jsf">
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
    
 
     <tr:messages/>
@@ -42,23 +41,33 @@
 
     <tr:panelHeader text="Ontology Search"/>
 
+    <tr:subform id="ontologySubForm">
+
     <tr:outputText value="Start typing an ontology term, possible completions of the term will be shown:"/>
     <br/><br/>
     
 
           <tr:panelLabelAndMessage label="Ontology query:">
-               <!--tr:inputText columns="30" value="#{searchBean.ontologySearchQuery}"
-              onkeypress="return submitEnter('ontologySearchBtn',event)"/-->
+               <!--<tr:inputText columns="30" value="#{searchBean.ontologySearchQuery}"-->
+              <!--onkeypress="return submitEnter('ontologySearchBtn',event)"/>-->
 
-               <test:autocomplete id="ontologySearchQuery" parentId=""
+               <iam:inputAutocomplete id="ontologySearchQuery" parentId="ontologySubForm"
+                                   required="true"
                                    value="#{searchBean.ontologySearchQuery}"
+                                   columns="30"
                                    readOnly="false"
                                    locateBackingBean="#{ontologyBean}"
                                    locateActionListenerName="fillAutocomplete"
                                    locateValueFieldName="identifier"
-                                   locateVisibleFieldName="label"
-                                   />
-                <f:facet name="help">
+                                   locateVisibleFieldName="identifier"
+                                   var="ontologyTerm">
+                   <tr:group>
+                       <tr:outputText value="#{ontologyTerm.identifier}" inlineStyle="font-weight:bold; color: #e65555"/>
+                       <tr:outputText value=" #{ontologyTerm.label}"/>
+                   </tr:group>
+               </iam:inputAutocomplete>
+
+              <f:facet name="help">
                     e.g. "association","direct interaction"
                 </f:facet>
                 <f:facet name="end">
@@ -68,6 +77,8 @@
                                       styleClass="submit_button"/>
                 </f:facet>
             </tr:panelLabelAndMessage>
+
+    </tr:subform>
 
     <tr:panelHeader text="Other Searches">
 

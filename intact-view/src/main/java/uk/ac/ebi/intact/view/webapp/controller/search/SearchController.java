@@ -11,24 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.el.ValueBinding;
-import javax.annotation.PostConstruct;
-import java.util.*;
-
-import psidev.psi.mi.tab.model.*;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Main search controller
@@ -92,7 +91,7 @@ public class SearchController extends JpaBaseController {
     }
 
     @PostConstruct
-    public void lala() {
+    public void postInstantiation() {
         BooleanQuery.setMaxClauseCount(intactViewConfiguration.getLuceneMaxCombinations());
     }
 
@@ -124,14 +123,19 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doOntologySearchAction() {
-
-        String formattedQuery = OntologyBean.prepareOntologyQueryForLucene( ontologySearchQuery );
-        if ( log.isDebugEnabled() ) {
-            log.debug( " ontologySearchQuery " +ontologySearchQuery);
-            log.debug( " formattedQuery " +formattedQuery);
+        if (ontologySearchQuery == null) {
+            addErrorMessage("The ontology query box was empty", "No search was submitted");
+            return "main";
         }
+
+        String formattedQuery = prepareOntologyQuery(ontologySearchQuery);
         doBinarySearch( formattedQuery );
         return "main";
+    }
+
+    private String prepareOntologyQuery(String ontologySearchQuery) {
+        String identifier = (ontologySearchQuery.startsWith("\""))? ontologySearchQuery : "\""+ontologySearchQuery+"\"";
+        return "detmethod:"+identifier+" type:"+identifier+" properties:"+identifier;
     }
 
     private void doBinarySearch(String query) {

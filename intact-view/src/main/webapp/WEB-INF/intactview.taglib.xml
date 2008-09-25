@@ -8,15 +8,35 @@
 
     <tag>
         <tag-name>dasty</tag-name>
-        <source>facelets/components/Dasty.xhtml</source>
+        <source>facelets/components/view/Dasty.xhtml</source>
     </tag>
     <tag>
         <tag-name>dastyHeader</tag-name>
-        <source>facelets/components/DastyHeader.xhtml</source>
+        <source>facelets/components/view/DastyHeader.xhtml</source>
     </tag>
     <tag>
         <tag-name>imageHierarchView</tag-name>
-        <source>facelets/components/ImageHierarchView.xhtml</source>
+        <source>facelets/components/view/ImageHierarchView.xhtml</source>
     </tag>
+    <tag>
+        <tag-name>xrefDataList</tag-name>
+        <source>facelets/components/view/XrefDataList.xhtml</source>
+    </tag>
+
+    <function>
+        <function-name>xrefUrl</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.XrefLinkGenerator</function-class>
+        <function-signature>java.lang.String generateUrl(uk.ac.ebi.intact.view.webapp.controller.application.XrefLinkContext,psidev.psi.mi.tab.model.CrossReference)</function-signature>
+    </function>
+    <function>
+        <function-name>xrefUrlForDb</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.XrefLinkGenerator</function-class>
+        <function-signature>java.lang.String generateUrl(uk.ac.ebi.intact.view.webapp.controller.application.XrefLinkContext,java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <function-name>xrefToString</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.controller.application.XrefLinkContextFactory</function-class>
+        <function-signature>java.lang.String xrefToString(psidev.psi.mi.tab.model.CrossReference,boolean,boolean)</function-signature>
+    </function>
 
 </facelet-taglib>

@@ -15,31 +15,26 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.application;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.view.webapp.util.OntologiesIndexWriter;
-import uk.ac.ebi.intact.view.webapp.util.OntologyTerm;
-import uk.ac.ebi.intact.view.webapp.util.OntologiesIndexSearcher;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import uk.ac.ebi.intact.view.webapp.util.*;
 
+import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
+import javax.faces.event.ActionEvent;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Backing bean for Ontology Search and Autocomplete feature
@@ -102,15 +97,16 @@ public class OntologyBean implements Serializable {
 
 
     @SuppressWarnings( "unchecked" )
-    public void fillAutocomplete( javax.faces.event.ActionEvent event ) throws IOException, ParseException {
+    public void fillAutocomplete( ActionEvent event ) throws IOException, ParseException {
 
-        final FacesContext facesContext = javax.faces.context.FacesContext.getCurrentInstance();
+        final FacesContext facesContext = FacesContext.getCurrentInstance();
 
-        final java.util.Map parameters = facesContext.getExternalContext().getRequestParameterMap();
-        final Object fieldValue = parameters.get( this.getParameterValue( "searchFieldRequestParamName", event ) );
+        final Map parameters = facesContext.getExternalContext().getRequestParameterMap();
+        final Object fieldValue = parameters.get(JsfUtils.getParameterValue( "searchFieldRequestParamName", event ) );
+
         String strFieldValue = fieldValue == null || fieldValue.toString().trim().length() == 0 ? "" : fieldValue.toString().trim().toLowerCase();
 
-        String formattedQuery = prepareOntologyQueryForLucene( strFieldValue );
+        String formattedQuery = prepareOntologyQueryForLucene( strFieldValue, true );
 
         if ( log.isDebugEnabled() ) {
             log.debug( "Original Query  " + strFieldValue );
@@ -118,18 +114,20 @@ public class OntologyBean implements Serializable {
         }
 
         final Collection<OntologyTerm> result = search( formattedQuery );
-        final ValueBinding vb = facesContext.getApplication().createValueBinding( "#{autocompleteResult}" );
-        vb.setValue( facesContext, result );
+        final ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{autocompleteResult}", Collection.class);
+        ve.setValue(facesContext.getELContext(), result);
     }
 
-    public static String prepareOntologyQueryForLucene( String strFieldValue ) {
+    public static String prepareOntologyQueryForLucene( String strFieldValue, boolean addWildcard ) {
 
         if ( strFieldValue == null ) {
             return "*";
         }
 
-        if ( !strFieldValue.endsWith( "*" ) ) {
-            strFieldValue = strFieldValue + "*";
+        if (addWildcard) {
+            if ( !strFieldValue.endsWith( "*" ) ) {
+                strFieldValue = strFieldValue + "*";
+            }
         }
 
         if ( strFieldValue.contains( ":" ) ) {
@@ -143,21 +141,8 @@ public class OntologyBean implements Serializable {
         return strFieldValue;
     }
 
-    /**
-     * Returns an javax.faces.event.ActionEvent parameter value, from its name
-     */
-    protected Object getParameterValue( String parameterName, javax.faces.event.ActionEvent event ) {
-
-        for ( Object uiObject : event.getComponent().getChildren() ) {
-            if ( uiObject instanceof javax.faces.component.UIParameter ) {
-                final javax.faces.component.UIParameter param = ( javax.faces.component.UIParameter ) uiObject;
-                if ( param.getName().equals( parameterName ) ) {
-                    return param.getValue();
-                }
-            }
-        }
-        return null;
+    public OntologiesIndexSearcher getOntologiesIndexSearcher() {
+        return ontologiesIndexSearcher;
     }
-
 
 }

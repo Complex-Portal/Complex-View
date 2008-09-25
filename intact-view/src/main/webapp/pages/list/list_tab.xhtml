@@ -8,7 +8,6 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
-                xmlns:bs="http://intact.ebi.ac.uk/binarysearch"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
@@ -84,7 +83,7 @@
 </tr:column>
 
 <tr:column headerText="Accession number/s" sortable="true" sortProperty="idA_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
 </tr:column>
 <tr:column headerText="Links">
     <tr:commandLink text="Molecule view" 
@@ -94,10 +93,10 @@
 </tr:column>
 <tr:column headerText="Interactor Type" sortable="true"
            sortProperty="typeA_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
 </tr:column>
 <tr:column headerText="Alternative id/s" sortable="true" sortProperty="altidA_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
 </tr:column>
 <tr:column headerText="Names" sortable="true" sortProperty="aliasA_s">
     <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">
@@ -124,13 +123,13 @@
             <tr:outputText value="Properties molecule A"/>
         </tr:panelGroupLayout>
     </f:facet>
-    <bs:xrefDataList value="#{binaryInteraction.propertiesA}"/>
+    <iav:xrefDataList value="#{binaryInteraction.propertiesA}"/>
 
 </tr:column>
 
 <tr:column headerText="Interactor type" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="typeA_s">
-    <bs:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true" />
+    <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true" />
 </tr:column>
 
 
