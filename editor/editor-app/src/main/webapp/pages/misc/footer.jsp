@@ -26,7 +26,7 @@
         <br/>
         --%>
          Version: <i><bean:message bundle="buildInfo" key="build.version"/></i> (Core: <i><bean:message bundle="buildInfo" key="core.version"/></i>, Bridges: <i><bean:message bundle="buildInfo" key="bridges.version"/></i>) -&nbsp;
-        Build: <bean:message bundle="buildInfo" key="buildNumber"/> (<bean:message bundle="buildInfo" key="builtBy"/>)
+        Build: <bean:message bundle="buildInfo" key="buildNumber"/> (<bean:message bundle="buildInfo" key="builtBy"/>)  <%=request.getSession().getId()%>
     </td>
     <td class="tableCell">
         <img border="0" align="right" src="<%=request.getContextPath()%>/images/struts-power.gif">

@@ -19,11 +19,13 @@ import uk.ac.ebi.intact.application.editor.struts.view.CommentBean;
 import uk.ac.ebi.intact.application.editor.struts.view.XreferenceBean;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.ComponentBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
+import uk.ac.ebi.intact.application.editor.util.EditorFinder;
 import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.business.IntactTransactionException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.PersisterException;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
+import uk.ac.ebi.intact.core.persister.CorePersister;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 import uk.ac.ebi.intact.model.util.InteractionUtils;
@@ -864,7 +866,9 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         myAnnotObject.setOwner( institution );
 
         try {
-            PersisterHelper.saveOrUpdate(myAnnotObject);
+            CorePersister corePersister = new CorePersister();
+            corePersister.setFinder( new EditorFinder() );
+            PersisterHelper.saveOrUpdate(corePersister,myAnnotObject);
         } catch (Exception e) {
             throw new IntactException("Exception saving object: " + myAnnotObject.getShortLabel(), e);
         }
