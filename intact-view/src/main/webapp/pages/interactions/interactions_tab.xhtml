@@ -22,7 +22,7 @@
 
     <tr:group>
         <strong>Query: </strong>
-        <ebi:outputText id="queryText" value="#{searchBean.searchQuery}" maxLength="50"
+        <ebi:outputText id="queryText" value="#{searchBean.results.searchQuery}" maxLength="50"
                         expandMessage="(see entire query)" collapseMessage="(collapse)"/>
     </tr:group>
 
@@ -135,10 +135,20 @@
     <iav:xrefDataList value="#{binaryInteraction.interactorB.identifiers}"/>
 </tr:column>
 <tr:column headerText="Alternative id molecule A" sortable="true" sortProperty="altidA_s">
-    <iav:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
+    <iam:customShowDetail id="csd_altIdA_#{status.index}" disclosedText="Hide"
+                         undisclosedText="Show (#{fn:length(binaryInteraction.interactorA.alternativeIdentifiers)})"
+                        disclosed="#{searchBean.showAlternativeIds}"
+                        rendered="#{not empty binaryInteraction.interactorA.alternativeIdentifiers}">
+        <iav:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
+    </iam:customShowDetail>
 </tr:column>
 <tr:column headerText="Alternative id molecule B" sortable="true" sortProperty="altidB_s">
-    <iav:xrefDataList value="#{binaryInteraction.interactorB.alternativeIdentifiers}" disableLinks="true"/>
+    <iam:customShowDetail id="csd_altIdB_#{status.index}" disclosedText="Hide"
+                         undisclosedText="Show (#{fn:length(binaryInteraction.interactorB.alternativeIdentifiers)})"
+                        disclosed="#{searchBean.showAlternativeIds}"
+                        rendered="#{not empty binaryInteraction.interactorB.alternativeIdentifiers}">
+        <iav:xrefDataList value="#{binaryInteraction.interactorB.alternativeIdentifiers}" disableLinks="true"/>
+    </iam:customShowDetail>
 </tr:column>
 <tr:column headerText="Names molecule A" sortable="true" sortProperty="aliasA_s">
     <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">

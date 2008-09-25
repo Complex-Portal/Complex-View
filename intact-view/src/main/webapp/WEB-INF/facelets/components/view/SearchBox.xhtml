@@ -1,0 +1,57 @@
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:c="http://java.sun.com/jstl/core"
+        xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
+        xmlns:ebi="http://ebi.ac.uk/faces/components">
+
+    <ui:component>
+
+        <c:set var="id" value="#{id}"/>
+
+        <ebi:panelBox id="#{id}_searchBox" title="Search #{title}">
+
+            <script type="text/javascript">
+                function intact_${id}_clearAndFocusField(id)
+                {
+                    var elem = document.getElementById(id);
+                    elem.value = '';
+                    elem.focus();
+                }
+            </script>
+
+            <tr:subform id="searchSubForm">
+
+                <tr:panelHorizontalLayout>
+                    <tr:inputText id="searchQuery"
+                                 styleClass="contentsarea"
+                                 onfocus="this.select()"
+                                 value="#{value}"
+                                 columns="14"
+                                 onkeypress="return submitEnter('sideSearchBox_searchBox',event)"/>
+
+                    <tr:commandLink action="dialog:help.miql" partialSubmit="true"
+                                     windowWidth="600" windowHeight="600" immediate="true" useWindow="true">
+                              <tr:image source="http://www.ebi.ac.uk/inc/images/icon_help.gif"/>
+                     </tr:commandLink>
+                </tr:panelHorizontalLayout>
+
+            <h:panelGrid columns="2">
+                <tr:commandButton id="#{id}" styleClass="submit_button"
+                                   text="Search it"
+                                   actionListener="#{searchBean.doBinarySearch}"
+                                   action="search">
+                </tr:commandButton>
+
+                <a href="#" onclick="intact_${id}_clearAndFocusField('searchSubForm:searchQuery')">Clear</a>
+            </h:panelGrid>
+
+            </tr:subform>
+
+        </ebi:panelBox>
+
+    </ui:component>
+
+</ui:composition>

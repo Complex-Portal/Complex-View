@@ -77,6 +77,8 @@ public class SearchController extends JpaBaseController {
     private String disclosedTabName;
 
     private boolean showProperties;
+    private boolean showAlternativeIds;
+
     private boolean expandedView;
 
     // results
@@ -292,6 +294,14 @@ public class SearchController extends JpaBaseController {
 
     public void setShowProperties(boolean showProperties) {
         this.showProperties = showProperties;
+    }
+
+    public boolean isShowAlternativeIds() {
+        return showAlternativeIds;
+    }
+
+    public void setShowAlternativeIds(boolean showAlternativeIds) {
+        this.showAlternativeIds = showAlternativeIds;
     }
 
     public boolean isExpandedView() {

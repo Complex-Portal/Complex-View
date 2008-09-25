@@ -157,7 +157,9 @@
 
         </trh:script>
 
-        <tr:inputText id="#{editId}" autoComplete="off" required="#{required}" inlineStyle="#{contentStyle}"
+        <tr:inputText id="#{editId}" autoComplete="off"
+                      required="#{required}" showRequired="false"
+                      inlineStyle="#{contentStyle}"
                      columns="#{columns}"
                     readOnly="#{readOnly}"
                     onkeydown="return #{editKeydownFunc}(event);"

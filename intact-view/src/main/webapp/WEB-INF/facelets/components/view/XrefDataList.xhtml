@@ -36,7 +36,7 @@
             <h:panelGroup rendered="#{itemPerLine}">
                     <span style="display:block">
                         <nobr>
-                            <tr:goLink text="#{xrefUrl == null? iav:xrefToString(xref, !onlyText, true) : itemPerLine}"
+                            <tr:goLink text="#{xrefUrl == null? iav:xrefToString(xref, !onlyText, true) : text}"
                                        shortDesc="#{xref.text}"
                                        targetFrame="_blank"
                                        destination="#{iav:xrefUrl(appConfigBean.linkContext, xref)}"

@@ -19,6 +19,14 @@
         <source>facelets/components/view/ImageHierarchView.xhtml</source>
     </tag>
     <tag>
+        <tag-name>queryLink</tag-name>
+        <source>facelets/components/view/QueryLink.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>searchBox</tag-name>
+        <source>facelets/components/view/SearchBox.xhtml</source>
+    </tag>
+    <tag>
         <tag-name>xrefDataList</tag-name>
         <source>facelets/components/view/XrefDataList.xhtml</source>
     </tag>

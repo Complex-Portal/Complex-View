@@ -15,14 +15,6 @@
         <tag-name>inputAutocomplete</tag-name>
         <source>facelets/components/miscel/InputAutocomplete.xhtml</source>
     </tag>
-    <tag>
-        <tag-name>queryLink</tag-name>
-        <source>facelets/components/miscel/QueryLink.xhtml</source>
-    </tag>
-    <tag>
-        <tag-name>searchBox</tag-name>
-        <source>facelets/components/miscel/SearchBox.xhtml</source>
-    </tag>
 
     <function>
         <function-name>valueFromConverter</function-name>

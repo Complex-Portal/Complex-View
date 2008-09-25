@@ -9,7 +9,7 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
-                xmlns:bs="intact-miscel.tld"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
 
                 template="template-ebi.xhtml">
 
@@ -46,7 +46,7 @@
 
         </trh:script>
 
-        <bs:searchBox id="sideSearchBox" value="#{searchBean.searchQuery}" title="#{intactView['webapp.name']}"/>
+        <iav:searchBox id="sideSearchBox" value="#{searchBean.searchQuery}" title="#{intactView['webapp.name']}"/>
 
         <ebi:dynamicMenu id="menu1" sourceUrl="#{intactViewConfiguration.menuUrl}"/>
 

@@ -19,4 +19,13 @@
             <to-view-id>/first_time_config.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+
+    <!-- help dialogs -->
+    <navigation-rule>
+        <navigation-case>
+          <from-outcome>dialog:help.miql</from-outcome>
+          <to-view-id>/pages/search/help_miql.xhtml</to-view-id>
+        </navigation-case>
+      </navigation-rule>
+
 </faces-config>

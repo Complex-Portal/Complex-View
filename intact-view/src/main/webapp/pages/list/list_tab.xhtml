@@ -22,7 +22,7 @@
 
     <tr:group>
         <strong>Query: </strong>
-        <ebi:outputText id="queryText" value="#{searchBean.searchQuery}" maxLength="50"
+        <ebi:outputText id="queryText" value="#{searchBean.interactorResults.searchQuery}" maxLength="50"
                         expandMessage="(see entire query)" collapseMessage="(collapse)"/>
     </tr:group>
 
@@ -86,7 +86,8 @@
     <iav:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
 </tr:column>
 <tr:column headerText="Links">
-    <tr:commandLink text="Molecule view" 
+    <tr:commandLink text="Molecule view"
+                    rendered="#{binaryInteraction.interactorTypeA[0].identifier == 'MI:0326'}"
                     action="#{searchBean.doDiscloseMoleculeViewTab}">
         <f:setPropertyActionListener value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}" target="#{moleculeViewBean.interactorAc}"/>
     </tr:commandLink>
