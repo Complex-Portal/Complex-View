@@ -4,22 +4,23 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                xmlns:iaf="http://intact.ebi.ac.uk/functions">
+                xmlns:iaf="http://intact.ebi.ac.uk/functions" >
 
-        <tr:messages/>
+    <tr:messages/>
 
     <tr:panelHeader text="Molecule info">
 
         <tr:panelFormLayout>
             <tr:inputText label="#{intactView['webapp.name']} AC: " value="#{moleculeViewBean.interactor.ac}"
-                          readOnly="true" />
+                          readOnly="true"/>
             <tr:inputText label="Short label: " value="#{moleculeViewBean.interactor.shortLabel}"
-                          readOnly="true" />
+                          readOnly="true"/>
         </tr:panelFormLayout>
 
     </tr:panelHeader>

@@ -68,6 +68,9 @@
             <name>value</name>
             <required>true</required>
         </attribute>
+        <attribute>
+            <name>maxShownItems</name>
+        </attribute>
     </tag>
 
     <tag>

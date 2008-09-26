@@ -17,13 +17,12 @@
 
     <tr:panelHeader text="Quick Search" styleClass="level-one"/>
 
-    <tr:subform>
+    <tr:subform id="mainSearchSubform">
 
         <tr:panelLabelAndMessage label="Search query:">
             <tr:inputText columns="30" value="#{searchBean.searchQuery}"
-                          required="true" showRequired="false"
                           onfocus="this.select()"
-                          onkeypress="return submitEnter('searchBtn',event)"/>
+                          onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
             <f:facet name="help">
                 <tr:group>
                     <tr:panelList>
@@ -57,7 +56,6 @@
               <!--onkeypress="return submitEnter('ontologySearchBtn',event)"/>-->
 
                <iam:inputAutocomplete id="ontologySearchQuery" parentId="ontologySubForm"
-                                   required="true"
                                    value="#{searchBean.ontologySearchQuery}"
                                    columns="30"
                                    readOnly="false"
