@@ -63,6 +63,7 @@
                                    locateActionListenerName="fillAutocomplete"
                                    locateValueFieldName="identifier"
                                    locateVisibleFieldName="identifier"
+                                   maxSuggestions="#{intactViewConfiguration.maxOntologySuggestions}"
                                    var="ontologyTerm">
                    <tr:group>
                        <tr:outputText value="#{ontologyTerm.identifier}" inlineStyle="font-weight:bold; color: #e65555"/>

@@ -27,6 +27,8 @@
     </scm>
 
     <properties>
+        <!--<intact.debug>true</intact.debug>-->
+
         <jetty.port>9092</jetty.port>
         <jetty.context>view</jetty.context>
 

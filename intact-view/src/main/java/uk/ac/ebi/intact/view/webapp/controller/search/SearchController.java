@@ -100,6 +100,7 @@ public class SearchController extends JpaBaseController {
     @PreRenderView
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();
+
         String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
         String tabParam = context.getExternalContext().getRequestParameterMap().get(TAB_PARAM);
 

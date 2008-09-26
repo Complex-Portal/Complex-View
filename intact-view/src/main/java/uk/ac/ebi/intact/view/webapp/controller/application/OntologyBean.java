@@ -17,6 +17,8 @@ package uk.ac.ebi.intact.view.webapp.controller.application;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -24,17 +26,20 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
+import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.view.webapp.util.*;
+import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 
 /**
  * Backing bean for Ontology Search and Autocomplete feature
@@ -50,8 +55,19 @@ public class OntologyBean implements Serializable {
     private Directory ontologyIndexDirectory;
     private OntologiesIndexSearcher ontologiesIndexSearcher;
 
+    @Autowired
+    private IntactViewConfiguration intactViewConfiguration;
+
     public OntologyBean() {
-        this.ontologyIndexDirectory = new RAMDirectory();
+        String tempDir = System.getProperty("java.io.tmpdir");
+        File dir = new File(tempDir, "intact-view-"+System.currentTimeMillis());
+
+        try {
+            FileUtils.forceDeleteOnExit(dir);
+            this.ontologyIndexDirectory = FSDirectory.getDirectory(dir);
+        } catch (IOException e) {
+            throw new SearchWebappException("Problem creating ontology lucene directory", e);
+        }
         this.ontologiesIndexSearcher = new OntologiesIndexSearcher(ontologyIndexDirectory);
     }
 
@@ -85,11 +101,11 @@ public class OntologyBean implements Serializable {
         return count;
     }
 
-    public Collection<OntologyTerm> search(String strQuery) throws IOException, ParseException {
+    public List<OntologyTerm> search(String strQuery) throws IOException, ParseException {
         return ontologiesIndexSearcher.search(strQuery);
     }
 
-    public Collection<OntologyTerm> search(Query query, Sort sort) throws IOException {
+    public List<OntologyTerm> search(Query query, Sort sort) throws IOException {
         return ontologiesIndexSearcher.search(query, sort);
     }
 
@@ -113,7 +129,13 @@ public class OntologyBean implements Serializable {
             log.debug( "Query formatted for Lucene  " + formattedQuery );
         }
 
-        final Collection<OntologyTerm> result = search( formattedQuery );
+        List<OntologyTerm> result = search( formattedQuery );
+
+        if (result.size() > intactViewConfiguration.getMaxOntologySuggestions()) {
+            result = result.subList(0, intactViewConfiguration.getMaxOntologySuggestions()-1);
+            result.add(new OntologyTerm("*", "There are more terms...", "na"));
+        }
+
         final ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{autocompleteResult}", Collection.class);
         ve.setValue(facesContext.getELContext(), result);
     }

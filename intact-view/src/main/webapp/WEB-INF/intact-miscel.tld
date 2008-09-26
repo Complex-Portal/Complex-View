@@ -44,6 +44,9 @@
             <name>columns</name>
         </attribute>
         <attribute>
+            <name>maxSuggestions</name>
+        </attribute>
+        <attribute>
             <name>readOnly</name>
         </attribute>
         <attribute>

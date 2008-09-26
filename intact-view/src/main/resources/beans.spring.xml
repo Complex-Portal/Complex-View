@@ -13,8 +13,8 @@
     <context:property-placeholder location="classpath:/META-INF/intactview.properties"/>
 
     <!-- Binary search -->
-    <bean id="appConfigBean" class="uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean" lazy-init="true"/>
-    <bean id="ontologyBean" class="uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean" lazy-init="true" />
+    <bean id="appConfigBean" class="uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean" />
+    <bean id="ontologyBean" class="uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean" depends-on="intactInitBean" />
 
     <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->
 
@@ -33,6 +33,7 @@
         <property name="chebiChemicalSearchPath" value="${intact.chebi.search.path}"/>
         <property name="intactSecret" value="${intact.secret}"/>
         <property name="luceneMaxCombinations" value="${intact.search.lucene.maxcombinations}"/>
+        <property name="maxOntologySuggestions" value="${intact.search.ontologies.maxsuggestions}"/> 
         <property name="googleAnalyticsTracker" value="${intact.google.analytics.tracker}"/>
     </bean>
 

@@ -47,6 +47,7 @@ public class IntactViewConfiguration {
     private int luceneMaxCombinations;
     private boolean doNotUseOls;
     private String googleAnalyticsTracker;
+    private int maxOntologySuggestions;
 
     public IntactViewConfiguration() {
     }
@@ -174,5 +175,13 @@ public class IntactViewConfiguration {
 
     public void setGoogleAnalyticsTracker(String googleAnalyticsTracker) {
         this.googleAnalyticsTracker = googleAnalyticsTracker;
+    }
+
+    public int getMaxOntologySuggestions() {
+        return maxOntologySuggestions;
+    }
+
+    public void setMaxOntologySuggestions(int maxOntologySuggestions) {
+        this.maxOntologySuggestions = maxOntologySuggestions;
     }
 }

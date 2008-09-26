@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
+import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
