@@ -174,7 +174,7 @@
             documentation for more information)
         </description>
         <param-name>org.apache.myfaces.trinidad.USE_APPLICATION_VIEW_CACHE</param-name>
-        <param-value>${intact.debug}</param-value>
+        <param-value>${debug}</param-value>
     </context-param>
 
     <context-param>
@@ -186,7 +186,7 @@
             is deployed
         </description>
         <param-name>org.apache.myfaces.trinidad.CHECK_FILE_MODIFICATION</param-name>
-        <param-value>${intact.debug}</param-value>
+        <param-value>${debug}</param-value>
     </context-param>
 
     <context-param>

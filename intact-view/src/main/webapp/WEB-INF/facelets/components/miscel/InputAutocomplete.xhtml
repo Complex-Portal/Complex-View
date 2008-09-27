@@ -165,7 +165,7 @@
                     onkeydown="return #{editKeydownFunc}(event);"
                     onfocus="this.select();"
                     onblur="window.clearTimeout(#{timeoutVar}); #{checkEmptyEditFunc}(); #{timeoutVar}=window.setTimeout('#{hideResultTableFunc}();',100);"
-                    value="#{(empty itemConverterId) ? value : (empty value) ? '' : iam:valueFromConverter(value,itemConverterId)}"/>
+                    value="#{value}"/>
 
         <tr:commandButton id="action" inlineStyle="display: none;"
                                  actionListener="#{locateBackingBean[locateActionListenerName]}"
