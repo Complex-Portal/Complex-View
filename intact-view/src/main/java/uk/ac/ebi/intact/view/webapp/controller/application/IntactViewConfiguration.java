@@ -48,6 +48,11 @@ public class IntactViewConfiguration {
     private boolean doNotUseOls;
     private String googleAnalyticsTracker;
     private int maxOntologySuggestions;
+    private String mailRecipients;
+    private String webappName;
+    private String webappLogoUrl;
+    private String webappVersion;
+    private String webappBuildNumber;
 
     public IntactViewConfiguration() {
     }
@@ -184,4 +189,24 @@ public class IntactViewConfiguration {
     public void setMaxOntologySuggestions(int maxOntologySuggestions) {
         this.maxOntologySuggestions = maxOntologySuggestions;
     }
+
+    public void setMailRecipients(String mailRecipients) {this.mailRecipients = mailRecipients;}
+
+    public String getMailRecipients() { return mailRecipients; }
+
+    public void setWebappName(String webappName) {this.webappName = webappName;}
+
+    public String getWebappName() { return webappName; }
+
+    public void setWebappLogoUrl(String webappLogoUrl) {this.webappLogoUrl = webappLogoUrl;}
+
+    public String getWebappLogoUrl() { return webappLogoUrl; }
+
+    public void setWebappVersion(String webappVersion) {this.webappVersion = webappVersion;}
+
+    public String getWebappVersion() { return webappVersion; }
+
+    public void setWebappBuildNumber(String webappBuildNumber) {this.webappBuildNumber = webappBuildNumber;}
+
+    public String getWebappBuildNumber() { return webappBuildNumber; }
 }

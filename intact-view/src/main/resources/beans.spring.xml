@@ -11,6 +11,7 @@
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <context:property-placeholder location="classpath:/META-INF/intactview.properties"/>
+    <context:property-placeholder location="classpath:/uk/ac/ebi/intact/binarysearch/BuildInfo.properties"/>
 
     <!-- Binary search -->
     <bean id="appConfigBean" class="uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean" />
@@ -19,6 +20,8 @@
     <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->
 
     <bean id="intactViewConfiguration" class="uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration">
+        <property name="webappName" value="${webapp.name}"/>
+        <property name="webappLogoUrl" value="${webapp.logo.url}"/>
         <property name="appRoot" value="${intact.view.approot}"/>
         <property name="menuUrl" value="${intact.menu.url}"/>
         <property name="newsUrl" value="${intact.news.url}"/>
@@ -35,6 +38,9 @@
         <property name="luceneMaxCombinations" value="${intact.search.lucene.maxcombinations}"/>
         <property name="maxOntologySuggestions" value="${intact.search.ontologies.maxsuggestions}"/> 
         <property name="googleAnalyticsTracker" value="${intact.google.analytics.tracker}"/>
+        <property name="mailRecipients" value="${intact.mail.recipients}"/>
+        <property name="webappVersion" value="${version}"/>
+        <property name="webappBuildNumber" value="${buildNumber}"/>
     </bean>
 
     <!-- this bean must not be lazily initialized if the exporting is to happen -->

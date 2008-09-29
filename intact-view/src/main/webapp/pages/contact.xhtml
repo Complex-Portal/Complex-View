@@ -15,34 +15,46 @@
         <tr:messages/>
 
         <tr:panelHeader text="Contact Us">
-            Should you require help on any matter related to IntAct, please submit your question to our <a
-                href="http://www.ebi.ac.uk/support/index.php?query=intact"
-                target="_blank">helpdesk</a>--To be created<br/>
+
+            <tr:panelGroupLayout layout="vertical">
+                <f:facet name="separator">
+                    <tr:spacer height="10px" width="1px"/>
+                </f:facet>
+                Use the following form to contact us, as for information, provide feedback or report bugs:
 
             <tr:panelBox background="light">
-                <tr:panelFormLayout>
-                    <tr:inputText label="Email address:" value="#{contactBean.userEmail}" columns="20"/>
-                    <tr:inputText label="Message" value="#{contactBean.mailContent}" rows="5" columns="20"/>
-                    <tr:commandButton text="Send" actionListener="#{contactBean.sendEmail}" />
-                </tr:panelFormLayout>
-            </tr:panelBox> 
+                
+                <tr:panelFormLayout partialTriggers="typeList">
+                    <tr:selectOneChoice id="typeList" value="#{contactBean.type}" label="Type"
+                                        autoSubmit="true">
+                        <f:selectItem itemValue="info" itemLabel="Information request"/>
+                        <f:selectItem itemValue="bug" itemLabel="Report a bug"/>
+                    </tr:selectOneChoice>
 
-            <tr:panelHeader text="Mailing lists, bug reports:">
-                The following mailing lists have been set up:
-                <ul>
-                    <li>xxx-announce@lists.sourceforge.net -- To be created <br/>
-                        General DGI announcements. Low traffic.
-                        <a href="http://lists.sourceforge.net/lists/listinfo/xxx-announce"
-                           target="_blank">Subscribe/unsubscribe</a>
-                        here. -- To be created<br/>
-                    </li>
-                    <li>
-                        You might also want to submit a <a href="http://sourceforge.net/tracker/?group_id=xxx"
-                                                           target="_blank">feature
-                        request or bug report</a>. -- To be created<br/>
-                    </li>
-                </ul>
-            </tr:panelHeader>
+                    <tr:inputText label="Email address"
+                                  value="#{contactBean.userEmail}" columns="20"
+                                  required="true">
+                        <tr:validateRegExp pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*\.(\w{2,3})$"
+                                           messageDetailNoMatch="The user email format is not valid"/>
+                     </tr:inputText>
+
+                    <tr:inputText label="What were you doing?"
+                                  required="true"
+                                  rendered="#{contactBean.type eq 'bug'}"
+                                  value="#{contactBean.contextualMessage}" rows="5" columns="60"/>
+
+                    <tr:inputText label="#{contactBean.type eq 'info'? 'Message' : 'Bug description'}"
+                                  required="true"
+                                  value="#{contactBean.mainMessage}" rows="5" columns="60"/>
+
+                    <tr:panelButtonBar>
+                        <tr:commandButton text="Send" actionListener="#{contactBean.sendEmail}" />
+                        <tr:resetButton text="Reset" />
+                    </tr:panelButtonBar>
+
+                </tr:panelFormLayout>
+            </tr:panelBox>
+            </tr:panelGroupLayout>
 
         </tr:panelHeader>
 

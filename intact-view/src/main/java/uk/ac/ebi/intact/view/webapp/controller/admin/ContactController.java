@@ -17,12 +17,15 @@ package uk.ac.ebi.intact.view.webapp.controller.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang.StringUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.mail.MessagingException;
 
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.util.MailSender;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.commons.util.MailSender;
 
 /**
  * TODO comment that class header
@@ -32,13 +35,54 @@ import uk.ac.ebi.intact.util.MailSender;
  * @since TODO specify the maven artifact version
  */
 @Controller("contactBean")
-@Scope("request")
+@Scope("conversation.access")
 public class ContactController extends BaseController {
 
+    @Autowired
+    private IntactViewConfiguration intactViewConfiguration;
+
+    private String type;
     private String userEmail;
-    private String mailContent;
+    private String mainMessage;
+    private String contextualMessage;
 
     public ContactController() {
+        type = "bug";
+    }
+
+    public void sendEmail( ActionEvent event ) {
+        String mailContent = prepareMessage();
+
+        MailSender mailSender = new MailSender( MailSender.EBI_SETTINGS );
+        try {
+            mailSender.postMail( intactViewConfiguration.getMailRecipients().split(","),
+                                 "["+intactViewConfiguration.getWebappName()+"] "+ StringUtils.capitalize(type), mailContent, userEmail );
+            addInfoMessage( "Your email has been sent.", "Our support team is going to answer as soon as possible." );
+        } catch ( MessagingException e ) {
+            e.printStackTrace();
+            addErrorMessage( "Your email hasn't been sent.", e.getMessage() );
+        }
+    }
+
+    private String prepareMessage() {
+        StringBuilder sb = new StringBuilder(2048);
+
+        sb.append("<b>Webapp</b>: "+intactViewConfiguration.getWebappName()+"<br/>");
+        sb.append("<b>Version</b>: "+intactViewConfiguration.getWebappVersion()+"<br/>");
+        sb.append("<b>Build number</b>: "+intactViewConfiguration.getWebappBuildNumber()+"<br/>");
+        sb.append("<b>Reporter</b>: "+userEmail+"<br/>");
+
+        if (contextualMessage != null) {
+            sb.append("<br/>");
+            sb.append("<b>What was the user doing?</b><br/>");
+            sb.append("<pre>"+contextualMessage+"</pre><br/>");
+        }
+
+        sb.append("<br/>");
+        sb.append("<b>Description</b><br/>");
+        sb.append("<pre>"+mainMessage+"</pre><br/>");
+
+        return sb.toString();
     }
 
     public String getUserEmail() {
@@ -49,21 +93,27 @@ public class ContactController extends BaseController {
         this.userEmail = userEmail;
     }
 
-    public String getMailContent() {
-        return mailContent;
+    public String getMainMessage() {
+        return mainMessage;
     }
 
-    public void setMailContent( String mailContent ) {
-        this.mailContent = mailContent;
+    public void setMainMessage( String mainMessage) {
+        this.mainMessage = mainMessage;
     }
 
-    public void sendEmail( ActionEvent event ) {
-        MailSender mailSender = new MailSender( );
-        try {
-            mailSender.postMail( new String[]{ "skerrien@ebi.ac.uk" }, "web site email", mailContent, userEmail );
-            addInfoMessage( "Your email has been sent.", "Our support team is going to answer as soon as possible." );
-        } catch ( MessagingException e ) {
-            addErrorMessage( "Your email hasn't been sent.", e.getMessage() );
-        }
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getContextualMessage() {
+        return contextualMessage;
+    }
+
+    public void setContextualMessage(String contextualMessage) {
+        this.contextualMessage = contextualMessage;
     }
 }
