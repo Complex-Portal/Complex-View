@@ -41,8 +41,7 @@
             <h:panelGrid columns="2">
                 <tr:commandButton id="#{id}" styleClass="submit_button"
                                    text="Search it"
-                                   actionListener="#{searchBean.doBinarySearch}"
-                                   action="search">
+                                   action="#{searchBean.doBinarySearchAction}">
                 </tr:commandButton>
 
                 <a href="#" onclick="intact_${id}_clearAndFocusField('searchSubForm:searchQuery')">Clear</a>
