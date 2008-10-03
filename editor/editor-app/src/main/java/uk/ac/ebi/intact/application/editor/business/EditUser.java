@@ -393,15 +393,9 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
         startEditing();
 
         // The new view based on the class type.
-        //myEditView = EditViewBeanFactory.getInstance().borrowObject(clazz);
-        //myEditView.reset(clazz);
-        try {
-            myEditView = (AbstractEditViewBean) EditViewBeanFactory.getInstance().makeObject(clazz);
-            myEditView.loadMenus();
-            myEditView.reset(clazz);
-        } catch (Throwable e) {
-            throw new IntactException("Problem creating new instance of view: "+clazz.getSimpleName(), e);
-        } 
+        myEditView = EditViewBeanFactory.getInstance().borrowObject(clazz);
+        myEditView.reset(clazz);
+     
     }
 
     public void setView(AnnotatedObject annobj) throws IntactException {
