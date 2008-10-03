@@ -372,17 +372,21 @@
         <session-timeout>20</session-timeout>
     </session-config>
 
-    <!-- Handling of the HTTP error 404 -->
-    <!--<error-page>-->
-    <!--<error-code>404</error-code>-->
-    <!--<location>/404_file_not_found.xhtml</location>-->
-    <!--</error-page>-->
-    <!--
-        <error-page>
-            <error-code>500</error-code>
-            <location>/500_server_error.html</location>
-        </error-page>
-    -->
+    <!-- Handling of the HTTP error 404(Not found) and 500(internal server error)-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/main.xhtml</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/main.xhtml</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>uk.ac.ebi.intact.view.webapp.IntactViewException</exception-type>
+        <location>/main.xhtml</location>
+    </error-page>
 
 
 </web-app>

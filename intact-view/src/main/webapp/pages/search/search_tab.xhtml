@@ -26,10 +26,15 @@
             <f:facet name="help">
                 <tr:group>
                     <tr:panelList>
-                        <tr:outputText value="Protein accession number: e.g. 'Q08345'"/>
-                        <tr:outputText value="Drug name: e.g. 'imatinib'"/>
-                        <tr:outputText value="Gene name: e.g. 'DDR1'"/>
-                        <!--<tr:outputText value="Author name: e.g. 'Doodle'"/>-->
+                        <tr:commandLink text="Q08345" action="#{searchBean.doBinarySearchAction}">
+                            <f:setPropertyActionListener value="Q08345" target="#{searchBean.searchQuery}"/>
+                        </tr:commandLink>
+                        <tr:commandLink text="imatinib" action="#{searchBean.doBinarySearchAction}">
+                            <f:setPropertyActionListener value="imatinib" target="#{searchBean.searchQuery}"/>
+                        </tr:commandLink>
+                        <tr:commandLink text="DDR1" action="#{searchBean.doBinarySearchAction}">
+                            <f:setPropertyActionListener value="DDR1" target="#{searchBean.searchQuery}"/>
+                        </tr:commandLink>
                     </tr:panelList>
                 </tr:group>
             </f:facet>
@@ -52,9 +57,6 @@
     
 
           <tr:panelLabelAndMessage label="Ontology query:">
-               <!--<tr:inputText columns="30" value="#{searchBean.ontologySearchQuery}"-->
-              <!--onkeypress="return submitEnter('ontologySearchBtn',event)"/>-->
-
                <iam:inputAutocomplete id="ontologySearchQuery" parentId="ontologySubForm"
                                    value="#{searchBean.ontologySearchQuery}"
                                    columns="30"
@@ -72,8 +74,18 @@
                </iam:inputAutocomplete>
 
               <f:facet name="help">
-                    e.g. "association","direct interaction"
-                </f:facet>
+                  <tr:group>
+                      <tr:panelList>
+                          <tr:commandLink text="association" action="#{searchBean.doOntologySearchAction}">
+                              <f:setPropertyActionListener value="association"
+                                                           target="#{searchBean.ontologySearchQuery}"/>
+                          </tr:commandLink>
+                          <tr:commandLink text="MI:0914" action="#{searchBean.doOntologySearchAction}">
+                              <f:setPropertyActionListener value="MI:0914" target="#{searchBean.ontologySearchQuery}"/>
+                          </tr:commandLink>
+                      </tr:panelList>
+                  </tr:group>
+              </f:facet>
                 <f:facet name="end">
                     <tr:commandButton id="ontologySearchBtn"
                                       text="Search"

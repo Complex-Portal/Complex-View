@@ -22,6 +22,7 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
+import uk.ac.ebi.intact.view.webapp.IntactViewException;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -45,6 +46,7 @@ public class SearchController extends JpaBaseController {
 
     private static final String QUERY_PARAM = "query";
     private static final String TAB_PARAM = "tab";
+    private static final String ONTOLOGY_QUERY_PARAM = "ontologyQuery";
 
     // injected
     @Autowired
@@ -66,6 +68,7 @@ public class SearchController extends JpaBaseController {
 
     private String searchQuery;
     private String ontologySearchQuery;
+    private String displayQuery;
 
      // vars
     private int pageSize = 30;
@@ -102,12 +105,19 @@ public class SearchController extends JpaBaseController {
         FacesContext context = FacesContext.getCurrentInstance();
 
         String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
+        String ontologyQueryParam = context.getExternalContext().getRequestParameterMap().get(ONTOLOGY_QUERY_PARAM);
         String tabParam = context.getExternalContext().getRequestParameterMap().get(TAB_PARAM);
 
         if (queryParam != null) {
+            displayQuery = queryParam;
             searchQuery = queryParam;
             doBinarySearch(searchQuery);
         }
+
+        if ( ontologyQueryParam != null ) {
+            doOntologySearch( ontologyQueryParam );
+        }
+
 
         if (searchQuery == null) {
             searchQuery = "*";
@@ -121,6 +131,7 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doBinarySearchAction() {
+        displayQuery = searchQuery;
         doBinarySearch(searchQuery);
         return "main";
     }
@@ -130,10 +141,15 @@ public class SearchController extends JpaBaseController {
             addErrorMessage("The ontology query box was empty", "No search was submitted");
             return "main";
         }
-
-        String formattedQuery = prepareOntologyQuery(ontologySearchQuery);
-        doBinarySearch( formattedQuery );
+        doOntologySearch( ontologySearchQuery );
         return "main";
+    }
+
+    public void doOntologySearch(String ontologySearch) {
+        displayQuery = ontologySearch;
+
+        String formattedQuery = prepareOntologyQuery(ontologySearch);
+        doBinarySearch( formattedQuery );
     }
 
     private String prepareOntologyQuery(String ontologySearchQuery) {
@@ -379,5 +395,13 @@ public class SearchController extends JpaBaseController {
 
     public void setOntologySearchQuery( String ontologySearchQuery ) {
         this.ontologySearchQuery = ontologySearchQuery;
+    }
+
+    public String getDisplayQuery() {
+        return displayQuery;
+    }
+
+    public void setDisplayQuery( String displayQuery ) {
+        this.displayQuery = displayQuery;
     }
 }
