@@ -10,7 +10,9 @@
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions">
 
 <tr:messages/>
 
@@ -125,11 +127,92 @@
 </tr:column>
 
 <tr:column headerText="Accession number molecule A" sortable="true" sortProperty="idA_s">
-    <iav:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
+
+    <tr:switcher facetName="#{iamf:isProtein(binaryInteraction.interactorA)}">
+        <f:facet name="true">
+            <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">
+                <tr:goLink targetFrame="_blank"
+                           destination="http://www.uniprot.org/uniprot/#{iaf:getUniprotIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}">
+                    <h:outputText value="#{alias.name}"/>
+                </tr:goLink>
+                <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+            </tr:iterator>
+        </f:facet>
+        <f:facet name="false">
+            <iav:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
+        </f:facet>
+    </tr:switcher>
 </tr:column>
+
+<tr:column headerText="Compound Links" sortable="false">
+    <!--add compound links -->
+    <tr:iterator var="xrefs" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus">
+          <tr:switcher facetName="#{xrefs.database}" defaultFacet="default">
+              <f:facet name="uniprotkb">
+                <tr:outputText value="uniprotkb"/>
+            </f:facet>
+              <f:facet name="chebi">
+                 <tr:goLink targetFrame="_blank"
+                           destination="http://www.ebi.ac.uk/chebi/searchId.do?chebiId=#{iaf:getChebiIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}">
+                     <tr:image source="/images/chebi_small.png" shortDesc="ChEBI" />
+                </tr:goLink>
+            </f:facet>
+            <f:facet name="drugbank">
+                <tr:outputText value="drugbank"/>
+            </f:facet>
+            <f:facet name="intact">
+                <tr:outputText value="intact"/>
+            </f:facet>
+             <f:facet name="default">
+                <tr:outputText value="#{xrefs.database}"/>
+            </f:facet>
+        </tr:switcher><br/>
+    </tr:iterator>
+</tr:column>
+
 <tr:column headerText="Accession number molecule B" sortable="true" sortProperty="idB_s">
-    <iav:xrefDataList value="#{binaryInteraction.interactorB.identifiers}"/>
+    <tr:switcher facetName="#{iamf:isProtein(binaryInteraction.interactorB)}">
+        <f:facet name="true">
+            <tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}" varStatus="rowStatus">
+                <tr:goLink targetFrame="_blank"
+                           destination="http://www.uniprot.org/uniprot/#{iaf:getUniprotIdentifierFromCrossReferences(binaryInteraction.interactorB.identifiers)}">
+                    <h:outputText value="#{alias.name}"/>
+                </tr:goLink>
+                <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+            </tr:iterator>
+        </f:facet>
+        <f:facet name="false">
+            <iav:xrefDataList value="#{binaryInteraction.interactorB.identifiers}"/>
+        </f:facet>
+    </tr:switcher>
 </tr:column>
+
+<tr:column headerText="Target Links" sortable="false">
+<!--add target links -->
+    <tr:iterator var="xrefs" value="#{binaryInteraction.interactorB.identifiers}" varStatus="rowStatus">
+        <tr:switcher facetName="#{xrefs.database}" defaultFacet="default">
+             <f:facet name="uniprotkb">
+                 <tr:goLink targetFrame="_blank"
+                           destination="http://www.uniprot.org/uniprot/#{iaf:getUniprotIdentifierFromCrossReferences(binaryInteraction.interactorB.identifiers)}">
+                     <tr:image source="/images/uniprotkb_small.png" shortDesc="UniprotKB" />
+                </tr:goLink>
+            </f:facet>
+            <f:facet name="chebi">
+                <tr:outputText value="chebi"/>
+            </f:facet>
+            <f:facet name="drugbank">
+                <tr:outputText value="drugbank"/>
+            </f:facet>
+            <f:facet name="intact">
+                <tr:outputText value="intact"/>
+            </f:facet>
+            <f:facet name="default">
+                <tr:outputText value="#{xrefs.database}"/>
+            </f:facet>
+        </tr:switcher><br/>
+    </tr:iterator>
+</tr:column>
+
 <tr:column headerText="Alternative id molecule A" sortable="true" sortProperty="altidA_s">
     <iam:customShowDetail id="csd_altIdA_#{status.index}" disclosedText="Hide"
                          undisclosedText="Show (#{fn:length(binaryInteraction.interactorA.alternativeIdentifiers)})"
@@ -159,24 +242,41 @@
         <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
     </tr:iterator>
 </tr:column>
+
 <tr:column headerText="Species molecule A" sortable="true" sortProperty="taxidA_s">
-    <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
-        <tr:iterator var="xref" value="#{organism.identifiers}" varStatus="rowStatus">
-            <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
-        </tr:iterator>
-        <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
-    </tr:iterator>
-</tr:column>
-<tr:column headerText="Species molecule B" sortable="true" sortProperty="taxidB_s">
-    <tr:iterator var="organism" value="#{binaryInteraction.interactorB.organism}" varStatus="rowStatus">
-        <tr:iterator var="xref" value="#{organism.identifiers}">
-            <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
-        </tr:iterator>
-        <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
-    </tr:iterator>
+    <tr:switcher facetName="#{iamf:isSmallMolecule(binaryInteraction.interactorA)}">
+        <f:facet name="true">
+            <tr:outputText value="  "/>
+        </f:facet>
+        <f:facet name="false">
+            <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
+                <tr:iterator var="xref" value="#{organism.identifiers}" varStatus="rowStatus">
+                    <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
+                </tr:iterator>
+                <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+            </tr:iterator>
+        </f:facet>
+    </tr:switcher>
 </tr:column>
 
-<tr:column headerText="First Author" sortable="true" sortProperty="pubauth_s">
+<tr:column headerText="Species molecule B" sortable="true" sortProperty="taxidB_s">
+    <tr:switcher facetName="#{iamf:isSmallMolecule(binaryInteraction.interactorB)}">
+        <f:facet name="true">
+            <tr:outputText value="  "/>
+        </f:facet>
+        <f:facet name="false">
+            <tr:iterator var="organism" value="#{binaryInteraction.interactorB.organism}"
+                                            varStatus="rowStatus">
+            <tr:iterator var="xref" value="#{organism.identifiers}">
+                <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
+            </tr:iterator>
+            <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+        </tr:iterator>
+        </f:facet>
+    </tr:switcher>
+</tr:column>
+
+<tr:column headerText="First Author" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="pubauth_s">
     <tr:iterator var="author" value="#{binaryInteraction.authors}">
             <span style="display:block">
                 <nobr>
@@ -185,25 +285,27 @@
             </span>
 
     </tr:iterator>
-
 </tr:column>
 
 <tr:column headerText="PubMed identifier" sortable="true" sortProperty="pubid_s">
     <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="Interaction type" sortable="true" sortProperty="type_s">
+
+<tr:column headerText="Interaction type" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="type_s">
     <iav:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="Interaction detection method" sortable="true" sortProperty="detmethod_s">
+
+<tr:column headerText="Interaction detection method" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="detmethod_s">
     <iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
 </tr:column>
+
 <tr:column headerText="Source database(s)" sortable="true" sortProperty="source_s">
-    <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true"/>
+    <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
 </tr:column>
 <tr:column headerText="Interaction AC" sortable="true" sortProperty="interaction_id_s">
     <iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>
 </tr:column>
-<tr:column headerText="Confidence Value(s)" sortable="true" sortProperty="confidence_s">
+<tr:column headerText="Confidence Value(s)" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="confidence_s">
     <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}">
                         <span style="display:block">
                             <nobr>
@@ -216,7 +318,7 @@
            sortProperty="experimentalRoleA_s">
     <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="Experimental role A" rendered="#{searchBean.expandedView}" sortable="true"
+<tr:column headerText="Experimental role B" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="experimentalRoleB_s">
     <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
@@ -224,7 +326,7 @@
            sortProperty="biologicalRoleA_s">
     <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="Biological role A" rendered="#{searchBean.expandedView}" sortable="true"
+<tr:column headerText="Biological role B" rendered="#{searchBean.expandedView}" sortable="true"
            sortProperty="biologicalRoleB_s">
     <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>

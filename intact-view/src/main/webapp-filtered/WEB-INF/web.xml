@@ -156,6 +156,7 @@
         <param-name>facelets.LIBRARIES</param-name>
         <param-value>/WEB-INF/intactview.taglib.xml;
             /WEB-INF/intact-functions.taglib.xml;
+            /WEB-INF/mitab-functions.taglib.xml;
             /WEB-INF/extlinks.taglib.xml;
             /WEB-INF/intact-miscel.taglib.xml;
         </param-value>

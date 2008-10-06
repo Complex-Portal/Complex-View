@@ -108,6 +108,24 @@ public final class Functions {
         return null;
     }
 
+     public static String getUniprotIdentifierFromCrossReferences(Collection xrefs) {
+        for (CrossReference xref : (Collection<CrossReference>) xrefs) {
+            if ("uniprotkb".equals(xref.getDatabase())) {
+                return xref.getIdentifier();
+            }
+        }
+        return null;
+    }
+
+    public static String getChebiIdentifierFromCrossReferences(Collection xrefs) {
+        for (CrossReference xref : (Collection<CrossReference>) xrefs) {
+            if ("chebi".equals(xref.getDatabase())) {
+                return xref.getIdentifier();
+            }
+        }
+        return null;
+    }
+
     public static DateTime toDateTime(Long dateInTimeMillis) {
         return new DateTime(dateInTimeMillis);
     }

@@ -100,4 +100,17 @@
         <function-signature>java.lang.String getIntactIdentifierFromCrossReferences(java.util.Collection)</function-signature>
     </function>
 
+     <function>
+        <function-name>getUniprotIdentifierFromCrossReferences</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String getUniprotIdentifierFromCrossReferences(java.util.Collection)</function-signature>
+    </function>
+
+     <function>
+        <function-name>getChebiIdentifierFromCrossReferences</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String getChebiIdentifierFromCrossReferences(java.util.Collection)</function-signature>
+    </function>
+
+
 </facelet-taglib>
