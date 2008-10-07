@@ -14,9 +14,8 @@ import uk.ac.ebi.intact.application.mine.business.graph.model.EdgeObject;
 import uk.ac.ebi.intact.application.mine.business.graph.model.GraphData;
 import uk.ac.ebi.intact.application.mine.business.graph.model.NodeObject;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.IntactTransaction;
 import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.business.IntactTransactionException;
+import uk.ac.ebi.intact.business.IntactException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -85,7 +84,7 @@ public class GraphBuildThread extends Thread {
 		logger.info("build graph for " + graphid);
 
         DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
-        IntactTransaction tx = daoFactory.beginTransaction();
+        daoFactory.beginTransaction();
 
         Statement stm = daoFactory.connection().createStatement();
 		ResultSet set = null;
@@ -147,9 +146,9 @@ public class GraphBuildThread extends Thread {
 
         // commit the transaction
         try {
-            tx.commit();
-        } catch (IntactTransactionException e) {
-            e.printStackTrace();
+            daoFactory.commitTransaction();
+        } catch (Exception e) {
+            throw new IntactException("Exception thrown from buildGraph for "+graphid,e);
         }
 
         return new GraphData(graph, nodeLabelMap);
