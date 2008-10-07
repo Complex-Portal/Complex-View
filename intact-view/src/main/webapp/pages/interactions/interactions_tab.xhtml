@@ -46,7 +46,7 @@
         <!--<strong>Direct hyperlink: </strong>-->
         <!--<tr:outputText value="#{requestConfigBean.absoluteContextPath}/main.xhtml?query=#{searchBean.searchQuery}"/>-->
     <!--</tr:group>-->
-    
+
 </tr:panelGroupLayout>
 
 <br/>
@@ -126,10 +126,9 @@
     <tr:outputText value="#{status.index + 1}"/>
 </tr:column>
 
-<tr:column headerText="Accession number molecule A" sortable="true" sortProperty="idA_s">
-
-    <tr:switcher facetName="#{iamf:isProtein(binaryInteraction.interactorA)}">
-        <f:facet name="true">
+<tr:column headerText="Compound Name" sortable="true" sortProperty="idA_s">
+    <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="defaultType">
+        <f:facet name="MI:0326"><!-- Protein MI identifier-->
             <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">
                 <tr:goLink targetFrame="_blank"
                            destination="http://www.uniprot.org/uniprot/#{iaf:getUniprotIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}">
@@ -138,7 +137,10 @@
                 <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
             </tr:iterator>
         </f:facet>
-        <f:facet name="false">
+        <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
+            <iav:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
+        </f:facet>
+        <f:facet name="defaultType">
             <iav:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
         </f:facet>
     </tr:switcher>
@@ -147,14 +149,14 @@
 <tr:column headerText="Compound Links" sortable="false">
     <!--add compound links -->
     <tr:iterator var="xrefs" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus">
-          <tr:switcher facetName="#{xrefs.database}" defaultFacet="default">
-              <f:facet name="uniprotkb">
+        <tr:switcher facetName="#{xrefs.database}" defaultFacet="defaultCompoundDatabase">
+            <f:facet name="uniprotkb">
                 <tr:outputText value="uniprotkb"/>
             </f:facet>
-              <f:facet name="chebi">
-                 <tr:goLink targetFrame="_blank"
+            <f:facet name="chebi">
+                <tr:goLink targetFrame="_blank"
                            destination="http://www.ebi.ac.uk/chebi/searchId.do?chebiId=#{iaf:getChebiIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}">
-                     <tr:image source="/images/chebi_small.png" shortDesc="ChEBI" />
+                    <tr:image source="/images/chebi_small.png" shortDesc="ChEBI"/>
                 </tr:goLink>
             </f:facet>
             <f:facet name="drugbank">
@@ -163,16 +165,16 @@
             <f:facet name="intact">
                 <tr:outputText value="intact"/>
             </f:facet>
-             <f:facet name="default">
+            <f:facet name="defaultCompoundDatabase">
                 <tr:outputText value="#{xrefs.database}"/>
             </f:facet>
         </tr:switcher><br/>
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="Accession number molecule B" sortable="true" sortProperty="idB_s">
-    <tr:switcher facetName="#{iamf:isProtein(binaryInteraction.interactorB)}">
-        <f:facet name="true">
+<tr:column headerText="Target Name" sortable="true" sortProperty="idB_s">
+    <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="defaultType">
+        <f:facet name="MI:0326"><!-- Protein MI identifier-->
             <tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}" varStatus="rowStatus">
                 <tr:goLink targetFrame="_blank"
                            destination="http://www.uniprot.org/uniprot/#{iaf:getUniprotIdentifierFromCrossReferences(binaryInteraction.interactorB.identifiers)}">
@@ -181,7 +183,10 @@
                 <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
             </tr:iterator>
         </f:facet>
-        <f:facet name="false">
+        <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
+            <iav:xrefDataList value="#{binaryInteraction.interactorB.identifiers}"/>
+        </f:facet>
+        <f:facet name="defaultType">
             <iav:xrefDataList value="#{binaryInteraction.interactorB.identifiers}"/>
         </f:facet>
     </tr:switcher>
@@ -190,7 +195,7 @@
 <tr:column headerText="Target Links" sortable="false">
 <!--add target links -->
     <tr:iterator var="xrefs" value="#{binaryInteraction.interactorB.identifiers}" varStatus="rowStatus">
-        <tr:switcher facetName="#{xrefs.database}" defaultFacet="default">
+        <tr:switcher facetName="#{xrefs.database}" defaultFacet="defaultTargetDatabase">
              <f:facet name="uniprotkb">
                  <tr:goLink targetFrame="_blank"
                            destination="http://www.uniprot.org/uniprot/#{iaf:getUniprotIdentifierFromCrossReferences(binaryInteraction.interactorB.identifiers)}">
@@ -206,14 +211,14 @@
             <f:facet name="intact">
                 <tr:outputText value="intact"/>
             </f:facet>
-            <f:facet name="default">
+            <f:facet name="defaultTargetDatabase">
                 <tr:outputText value="#{xrefs.database}"/>
             </f:facet>
         </tr:switcher><br/>
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="Alternative id molecule A" sortable="true" sortProperty="altidA_s">
+<tr:column headerText="Compound Aliases" sortable="true" sortProperty="altidA_s">
     <iam:customShowDetail id="csd_altIdA_#{status.index}" disclosedText="Hide"
                          undisclosedText="Show (#{fn:length(binaryInteraction.interactorA.alternativeIdentifiers)})"
                         disclosed="#{searchBean.showAlternativeIds}"
@@ -221,7 +226,8 @@
         <iav:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
     </iam:customShowDetail>
 </tr:column>
-<tr:column headerText="Alternative id molecule B" sortable="true" sortProperty="altidB_s">
+
+<tr:column headerText="Target Aliases" sortable="true" sortProperty="altidB_s">
     <iam:customShowDetail id="csd_altIdB_#{status.index}" disclosedText="Hide"
                          undisclosedText="Show (#{fn:length(binaryInteraction.interactorB.alternativeIdentifiers)})"
                         disclosed="#{searchBean.showAlternativeIds}"
@@ -243,12 +249,12 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="Species molecule A" sortable="true" sortProperty="taxidA_s">
-    <tr:switcher facetName="#{iamf:isSmallMolecule(binaryInteraction.interactorA)}">
-        <f:facet name="true">
+<tr:column headerText="Compound species" sortable="true" sortProperty="taxidA_s">
+     <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="OtherType">
+         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:outputText value="  "/>
         </f:facet>
-        <f:facet name="false">
+        <f:facet name="OtherType">
             <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
                 <tr:iterator var="xref" value="#{organism.identifiers}" varStatus="rowStatus">
                     <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
@@ -259,12 +265,12 @@
     </tr:switcher>
 </tr:column>
 
-<tr:column headerText="Species molecule B" sortable="true" sortProperty="taxidB_s">
-    <tr:switcher facetName="#{iamf:isSmallMolecule(binaryInteraction.interactorB)}">
-        <f:facet name="true">
+<tr:column headerText="Target species" sortable="true" sortProperty="taxidB_s">
+     <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="OtherType">
+       <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:outputText value="  "/>
         </f:facet>
-        <f:facet name="false">
+        <f:facet name="OtherType">
             <tr:iterator var="organism" value="#{binaryInteraction.interactorB.organism}"
                                             varStatus="rowStatus">
             <tr:iterator var="xref" value="#{organism.identifiers}">
