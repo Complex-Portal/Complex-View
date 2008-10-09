@@ -119,6 +119,25 @@
         <param-value>true</param-value>
     </context-param>
 
+  <context-param>
+      <description>
+          Whether to enable custom error handling or not
+      </description>
+      <param-name>org.apache.myfaces.ERROR_HANDLING</param-name>
+      <param-value>true</param-value>
+  </context-param>
+
+    <context-param>
+        <description>
+            If you want to use a different resource template file than
+            "META-INF/rsc/myfaces-dev-error.xml" this param let you configure
+            it. (since 1.2.4-SNAPSHOT and 1.1.6-SNAPSHOT)
+        </description>
+        <param-name>org.apache.myfaces.ERROR_TEMPLATE_RESOURCE</param-name>
+        <param-value>/error/ebi-dev-error.xml</param-value>
+    </context-param>
+
+
 
     <!-- Facelets -->
 
@@ -129,7 +148,7 @@
 
     <context-param>
         <param-name>facelets.DEVELOPMENT</param-name>
-        <param-value>true</param-value>
+        <param-value>false</param-value>
     </context-param>
 
     <!-- Spring resources -->
@@ -376,18 +395,18 @@
     <!-- Handling of the HTTP error 404(Not found) and 500(internal server error)-->
     <error-page>
         <error-code>404</error-code>
-        <location>/main.xhtml</location>
+        <location>/error/404.xhtml</location>
     </error-page>
 
     <error-page>
         <error-code>500</error-code>
-        <location>/main.xhtml</location>
+        <location>/error/500.xhtml</location>
     </error-page>
 
-    <error-page>
-        <exception-type>uk.ac.ebi.intact.view.webapp.IntactViewException</exception-type>
-        <location>/main.xhtml</location>
-    </error-page>
+    <!--<error-page>-->
+        <!--<exception-type>uk.ac.ebi.intact.view.webapp.IntactViewException</exception-type>-->
+        <!--<location>/main.xhtml</location>-->
+    <!--</error-page>-->
 
 
 </web-app>

@@ -194,11 +194,11 @@
 
 <tr:column headerText="Target Links" sortable="false">
 <!--add target links -->
-    <tr:iterator var="xrefs" value="#{binaryInteraction.interactorB.identifiers}" varStatus="rowStatus">
-        <tr:switcher facetName="#{xrefs.database}" defaultFacet="defaultTargetDatabase">
+    <tr:iterator var="xref" value="#{binaryInteraction.interactorB.identifiers}" varStatus="rowStatus">
+        <tr:switcher facetName="#{xref.database}" defaultFacet="defaultTargetDatabase">
              <f:facet name="uniprotkb">
                  <tr:goLink targetFrame="_blank"
-                           destination="http://www.uniprot.org/uniprot/#{iaf:getUniprotIdentifierFromCrossReferences(binaryInteraction.interactorB.identifiers)}">
+                           destination="http://www.uniprot.org/uniprot/#{xref.identifier}">
                      <tr:image source="/images/uniprotkb_small.png" shortDesc="UniprotKB" />
                 </tr:goLink>
             </f:facet>
