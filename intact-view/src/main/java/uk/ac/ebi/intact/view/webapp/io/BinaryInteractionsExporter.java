@@ -103,7 +103,7 @@ public class BinaryInteractionsExporter {
             }
 
             SearchResult result = Searcher.search(searchQuery, indexDir, firstResult, maxResults, sort);
-            interactions = result.getInteractions();
+            interactions = result.getData();
 
             PsimiTabWriter writer = new PsimiTabWriter();
             writer.setHeaderEnabled(headerEnabled);
@@ -150,7 +150,7 @@ public class BinaryInteractionsExporter {
             }
 
             SearchResult<IntactBinaryInteraction> result = engine.search(searchQuery, firstResult, maxResults, sort);
-            interactions = result.getInteractions();
+            interactions = result.getData();
 
             PsimiTabWriter writer = new IntactPsimiTabWriter();
             writer.setHeaderEnabled(headerEnabled);
@@ -187,7 +187,7 @@ public class BinaryInteractionsExporter {
         }
 
         SearchResult<IntactBinaryInteraction> result = engine.search(searchQuery, null, null);
-        Collection<IntactBinaryInteraction> interactions = result.getInteractions();
+        Collection<IntactBinaryInteraction> interactions = result.getData();
 
         Tab2Xml tab2Xml = new IntactTab2Xml();
 

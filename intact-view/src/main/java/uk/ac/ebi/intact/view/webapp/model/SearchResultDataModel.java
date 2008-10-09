@@ -123,7 +123,7 @@ public class SearchResultDataModel extends SortableModel implements Serializable
             throw new IllegalArgumentException("row is unavailable");
         }
 
-        return result.getInteractions().get(rowIndex - result.getFirstResult());
+        return result.getData().get(rowIndex - result.getFirstResult());
     }
 
     public int getRowIndex() {
