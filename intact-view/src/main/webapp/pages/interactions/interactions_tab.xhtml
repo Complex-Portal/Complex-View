@@ -148,27 +148,24 @@
 
 <tr:column headerText="Compound Links" sortable="false">
     <!--add compound links -->
-    <tr:iterator var="xrefs" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus">
-        <tr:switcher facetName="#{xrefs.database}" defaultFacet="defaultCompoundDatabase">
-            <f:facet name="uniprotkb">
-                <tr:outputText value="uniprotkb"/>
+    <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus">
+        <tr:switcher facetName="#{xref.database}" defaultFacet="defaultTargetDatabase">
+             <f:facet name="uniprotkb">
+                 <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
             </f:facet>
             <f:facet name="chebi">
-                <tr:goLink targetFrame="_blank"
-                           destination="http://www.ebi.ac.uk/chebi/searchId.do?chebiId=#{iaf:getChebiIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}">
-                    <tr:image source="/images/chebi_small.png" shortDesc="ChEBI"/>
-                </tr:goLink>
+                <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
             </f:facet>
             <f:facet name="drugbank">
-                <tr:outputText value="drugbank"/>
+                <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
             </f:facet>
             <f:facet name="intact">
-                <tr:outputText value="intact"/>
+                <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>
             </f:facet>
-            <f:facet name="defaultCompoundDatabase">
-                <tr:outputText value="#{xrefs.database}"/>
-            </f:facet>
-        </tr:switcher><br/>
+            <!--<f:facet name="defaultTargetDatabase">-->
+                <!--<tr:outputText value="#{xrefs.database}"/>-->
+            <!--</f:facet>-->
+        </tr:switcher>
     </tr:iterator>
 </tr:column>
 
@@ -197,24 +194,21 @@
     <tr:iterator var="xref" value="#{binaryInteraction.interactorB.identifiers}" varStatus="rowStatus">
         <tr:switcher facetName="#{xref.database}" defaultFacet="defaultTargetDatabase">
              <f:facet name="uniprotkb">
-                 <tr:goLink targetFrame="_blank"
-                           destination="http://www.uniprot.org/uniprot/#{xref.identifier}">
-                     <tr:image source="/images/uniprotkb_small.png" shortDesc="UniprotKB" />
-                </tr:goLink>
+                 <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
             </f:facet>
             <f:facet name="chebi">
-                <tr:outputText value="chebi"/>
+                <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
             </f:facet>
             <f:facet name="drugbank">
-                <tr:outputText value="drugbank"/>
+                <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
             </f:facet>
             <f:facet name="intact">
-                <tr:outputText value="intact"/>
+                <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>
             </f:facet>
-            <f:facet name="defaultTargetDatabase">
-                <tr:outputText value="#{xrefs.database}"/>
-            </f:facet>
-        </tr:switcher><br/>
+            <!--<f:facet name="defaultTargetDatabase">-->
+                <!--<tr:outputText value="#{xrefs.database}"/>-->
+            <!--</f:facet>-->
+        </tr:switcher>
     </tr:iterator>
 </tr:column>
 
@@ -268,7 +262,7 @@
 <tr:column headerText="Target species" sortable="true" sortProperty="taxidB_s">
      <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="OtherType">
        <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
-            <tr:outputText value="  "/>
+            <tr:outputText value="&#160;"/>
         </f:facet>
         <f:facet name="OtherType">
             <tr:iterator var="organism" value="#{binaryInteraction.interactorB.organism}"

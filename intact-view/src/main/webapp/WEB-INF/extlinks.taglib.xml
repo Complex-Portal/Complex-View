@@ -11,12 +11,24 @@
         <source>facelets/components/links/GoCitexplore.xhtml</source>
     </tag>
     <tag>
+        <tag-name>goChebi</tag-name>
+        <source>facelets/components/links/GoChebi.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>goDrugbank</tag-name>
+        <source>facelets/components/links/GoDrugbank.xhtml</source>
+    </tag>
+    <tag>
         <tag-name>goIntepro</tag-name>
         <source>facelets/components/links/GoInterpro.xhtml</source>
     </tag>
     <tag>
         <tag-name>goLigandPlot</tag-name>
         <source>facelets/components/links/GoLigandPlot.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>goMoleculeView</tag-name>
+        <source>facelets/components/links/GoMoleculeView.xhtml</source>
     </tag>
     <tag>
         <tag-name>goReactomeSkyPainter</tag-name>
