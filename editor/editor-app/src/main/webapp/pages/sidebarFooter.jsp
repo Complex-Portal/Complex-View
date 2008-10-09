@@ -35,7 +35,7 @@
 
     <i><bean:message bundle="buildInfo" key="build.version"/></i>
     <br/>
-    
+
     <%=Thread.currentThread().getName()%>
     <br/>
 
