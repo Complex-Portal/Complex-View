@@ -1,3 +1,4 @@
+<%@ page import="com.sun.jmx.snmp.ThreadContext" %>
 <%@ page language="java"%>
 
 <!--
@@ -33,6 +34,9 @@
     </c:if>
 
     <i><bean:message bundle="buildInfo" key="build.version"/></i>
+    <br/>
+    
+    <%=Thread.currentThread().getName()%>
     <br/>
 
 
