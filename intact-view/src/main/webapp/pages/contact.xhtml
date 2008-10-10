@@ -38,14 +38,38 @@
                                            messageDetailNoMatch="The user email format is not valid"/>
                      </tr:inputText>
 
-                    <tr:inputText label="What were you doing?"
+                    <tr:inputText label="URL"
                                   required="true"
                                   rendered="#{contactBean.type eq 'bug'}"
-                                  value="#{contactBean.contextualMessage}" rows="5" columns="60"/>
+                                  value="#{contactBean.url}" columns="60"
+                                  shortDesc="Cut &amp; paste from browser URL line"/>
 
                     <tr:inputText label="#{contactBean.type eq 'info'? 'Message' : 'Bug description'}"
                                   required="true"
-                                  value="#{contactBean.mainMessage}" rows="5" columns="60"/>
+                                  value="#{contactBean.mainMessage}" rows="5" columns="60"
+                                  shortDesc="Details of the problem encountered or specific feedback on an aspect of the portal "/>
+
+                    <tr:inputText label="Steps to reproduce"
+                                  required="true"
+                                  rendered="#{contactBean.type eq 'bug'}"
+                                  value="#{contactBean.contextualMessage}" rows="5" columns="60"
+                                  shortDesc="Please describe the steps leading up to the error; including details of the search you were running"/>
+
+                    <tr:selectOneChoice label="Severity"
+                                        required="true"
+                                        rendered="#{contactBean.type eq 'bug'}"
+                                        value="#{contactBean.severity}"
+                                        shortDesc="Critical  – if this is not fixed, it will not be possible to use the system
+                                                   Important – if this is not fixed, it will be possible to use the system but will cause substantial inconvenience.
+                                                   Minor     – if this is not fixed, it will still be possible to use the system and will result in little or no inconvenience.
+                                                   Comment   - suggested improvement, things you liked. etc." >
+
+                        <tr:selectItem label="Critical"  value="Critical"/>
+                        <tr:selectItem label="Important" value="Important"/>
+                        <tr:selectItem label="Minor"     value="Minor"/>
+                        <tr:selectItem label="Comment"   value="Comment"/>
+
+                    </tr:selectOneChoice>
 
                     <tr:panelButtonBar>
                         <tr:commandButton text="Send" actionListener="#{contactBean.sendEmail}" />

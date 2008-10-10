@@ -38,6 +38,9 @@ import uk.ac.ebi.intact.commons.util.MailSender;
 @Scope("conversation.access")
 public class ContactController extends BaseController {
 
+    public static final String BUG = "bug";
+    public static final String INFO = "info";
+
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
@@ -45,6 +48,8 @@ public class ContactController extends BaseController {
     private String userEmail;
     private String mainMessage;
     private String contextualMessage;
+    private String url;
+    private String severity;
 
     public ContactController() {
         type = "bug";
@@ -72,9 +77,21 @@ public class ContactController extends BaseController {
         sb.append("<b>Build number</b>: "+intactViewConfiguration.getWebappBuildNumber()+"<br/>");
         sb.append("<b>Reporter</b>: "+userEmail+"<br/>");
 
-        if (contextualMessage != null) {
+        if( BUG.equals( type ) && url != null ) {
             sb.append("<br/>");
-            sb.append("<b>What was the user doing?</b><br/>");
+            sb.append("<b>URL</b><br/>");
+            sb.append("<pre>"+url+"</pre><br/>");
+        }
+
+        if( BUG.equals( type ) && severity != null ) {
+            sb.append("<br/>");
+            sb.append("<b>Severity</b><br/>");
+            sb.append("<pre>"+severity+"</pre><br/>");
+        }
+
+        if ( BUG.equals( type ) &&  contextualMessage != null) {
+            sb.append("<br/>");
+            sb.append("<b>Steps leading to this bug</b><br/>");
             sb.append("<pre>"+contextualMessage+"</pre><br/>");
         }
 
@@ -106,6 +123,9 @@ public class ContactController extends BaseController {
     }
 
     public void setType(String type) {
+        if( !BUG.equals(type ) && !INFO.equals(type ) ) {
+            throw new IllegalArgumentException( "Mail type can only be in ["+BUG + ", " + INFO+"]: " + type);
+        }
         this.type = type;
     }
 
@@ -115,5 +135,21 @@ public class ContactController extends BaseController {
 
     public void setContextualMessage(String contextualMessage) {
         this.contextualMessage = contextualMessage;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl( String url ) {
+        this.url = url;
+    }
+
+    public String getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity( String severity ) {
+        this.severity = severity;
     }
 }
