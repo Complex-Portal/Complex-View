@@ -280,8 +280,7 @@ p|OraContentFooterRule {
 /**************************/
 
 af|panelLabelAndMessage::label {
-    font-weight:bold;
-    color:#555555;
+    vertical-align:top;
 }
 
 /** panelTabbed **/
@@ -554,6 +553,11 @@ af|inputText:disabled::content {
 
 af|inputText:disabled::label {
     color:#dedede;
+}
+
+af|inputText::label,
+af|inputText:disabled::label{
+    vertical-align: top;
 }
 
 /*for autocomplete */
