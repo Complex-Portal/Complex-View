@@ -27,11 +27,10 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.converters.Intact2Tab;
-import uk.ac.ebi.intact.psimitab.converters.Intact2TabException;
-import uk.ac.ebi.intact.psimitab.converters.IntactBinaryInteractionHandler;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.processor.IntactClusterInteractorPairProcessor;
 import uk.ac.ebi.intact.psimitab.converters.expansion.SpokeWithoutBaitExpansion;
+import uk.ac.ebi.intact.psimitab.converters.Intact2BinaryInteractionConverter;
 import uk.ac.ebi.intact.searchengine.SearchClass;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
@@ -69,40 +68,30 @@ public class DatabaseService implements DataService, Serializable {
         return centralProteins;
     }
 
-    private Collection<BinaryInteraction> getBinaryInteractions( String ac ) throws HierarchViewDataException {
-        Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
+    private Collection<IntactBinaryInteraction> getBinaryInteractions( String ac ) throws HierarchViewDataException {
+        Collection<IntactBinaryInteraction> binaryInteractions = new ArrayList<IntactBinaryInteraction>();
         if ( ac != null ) {
             Collection<Interaction> interactions = getDaoFactory().getInteractionDao().getInteractionsByInteractorAc( ac );
 
-            try {
-                if ( interactions != null && !interactions.isEmpty() ) {
+            if ( interactions != null && !interactions.isEmpty() ) {
 
-                    Chrono chrono = new Chrono();
-                    chrono.start();
+                Chrono chrono = new Chrono();
+                chrono.start();
 
-                    Intact2Tab i2t = new Intact2Tab();
-                    i2t.setBinaryInteractionClass( IntActBinaryInteraction.class );
-                    i2t.setBinaryInteractionHandler( new IntactBinaryInteractionHandler() );
-                    i2t.setExpansionStrategy( new SpokeWithoutBaitExpansion() );
-                    i2t.setPostProssesorStrategy( new ClusterInteractorPairProcessor() );
+                Intact2BinaryInteractionConverter i2t = new Intact2BinaryInteractionConverter(new SpokeWithoutBaitExpansion(), new IntactClusterInteractorPairProcessor());
+                binaryInteractions = i2t.convert( interactions );
 
-                    binaryInteractions = i2t.convert( interactions );
+                chrono.stop();
 
-                    chrono.stop();
+                String msg = new StringBuffer( 128 ).append( "Time for converting data (" )
+                        .append( interactions.size() ).append( " Interaction(s) to " )
+                        .append( binaryInteractions.size() ).append( " BinaryInteraction(s)):" )
+                        .append( chrono ).toString();
 
-                    String msg = new StringBuffer( 128 ).append( "Time for converting data (" )
-                            .append( interactions.size() ).append( " Interaction(s) to " )
-                            .append( binaryInteractions.size() ).append( " BinaryInteraction(s)):" )
-                            .append( chrono ).toString();
+                logger.info( msg );
 
-                    logger.info( msg );
-
-                } else {
-                    logger.warn( "No result by database query for " + ac );
-                }
-
-            } catch ( Intact2TabException e ) {
-                throw new HierarchViewDataException( "Can not convert uk.ac.ebi.intact.model.Interaction to BinaryInteraction." );
+            } else {
+                logger.warn( "No result by database query for " + ac );
             }
         }
         return binaryInteractions;
@@ -123,7 +112,7 @@ public class DatabaseService implements DataService, Serializable {
 
                 if ( interactor.getAc() != null ) {
 
-                    Collection<BinaryInteraction> bis = getBinaryInteractions( interactor.getAc() );
+                    Collection<IntactBinaryInteraction> bis = getBinaryInteractions( interactor.getAc() );
                     if ( bis != null && !bis.isEmpty() ) {
                         binaryInteractions.addAll( bis );
                         centralProteins.add( interactor.getAc() );

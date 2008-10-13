@@ -26,7 +26,6 @@ import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataExcep
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
 import uk.ac.ebi.intact.binarysearch.wsclient.BinarySearchServiceClient;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
@@ -61,12 +60,12 @@ public class BinaryWebService implements DataService {
         chrono.start();
         centralProteins = new ArrayList<String>();
         Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
-        SearchResult<IntActBinaryInteraction> result = client.findBinaryInteractions( query );
+        SearchResult result = client.findBinaryInteractions( query );
         if ( result.getTotalCount() > HVNetworkBuilder.getMaxInteractions() ) {
             throw new MultipleResultException( "Result of " + query + " get more than " + HVNetworkBuilder.getMaxInteractions() + " interactions" );
         }
 
-        binaryInteractions.addAll( result.getInteractions() );
+        binaryInteractions.addAll( result.getData() );
         if ( query.contains( ", " ) ) {
             for ( String q : query.split( "," ) ) {
                 findCentralProteins( binaryInteractions, q.trim() );

@@ -21,8 +21,7 @@ import psidev.psi.mi.xml.converter.ConverterException;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
+import uk.ac.ebi.intact.psimitab.IntactPsimiTabReader;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
@@ -83,9 +82,7 @@ public class DataServiceMock implements DataService {
             if ( query.equals( "EBI-359343, EBI-297202, EBI-79792, EBI-539895, EBI-297202" ) ) {
                 file = getFileByResources( "/test-files/brca2_expanded.txt", DataServiceMock.class );
             }
-            PsimiTabReader reader = new PsimiTabReader( true );
-            reader.setBinaryInteractionClass( IntActBinaryInteraction.class );
-            reader.setColumnHandler( new IntActColumnHandler() );
+            PsimiTabReader reader = new IntactPsimiTabReader( true );
 
             return reader.read( file );
 

@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.application.hierarchview.highlightment.source.node;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.CrossReference;
+import psidev.psi.mi.tab.model.builder.FieldBuilder;
+import psidev.psi.mi.tab.model.builder.CrossReferenceFieldBuilder;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
@@ -160,7 +162,7 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
                     if (moleculeTypeRefMap != null){
                         CrossReference xref = moleculeTypeRefMap.get( termInfo );
                         if ( xref != null ) {
-                            termId = xref.getDatabase() + ":" + xref.getIdentifier();
+                            termId = xref.getIdentifier();
 
                             if ( xref.hasText() ) {
                                 termDescription = xref.getText();
@@ -168,6 +170,9 @@ public class MoleculeTypeHighlightmentSource extends NodeHighlightmentSource {
                         }
                     }
 
+                    if (!moleculeTypeNodeMap.containsKey(termId)) {
+                        throw new IllegalStateException("The type node map should contain this term id: "+termId+". Map contains: "+moleculeTypeNodeMap);
+                    }
 
                     int termCount = moleculeTypeNodeMap.get( termId ).size();
 

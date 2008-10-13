@@ -28,7 +28,7 @@ import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataExcep
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
-import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
+import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
 
@@ -78,7 +78,7 @@ public class LocalIndexDataSevice implements DataService {
         }         
 
         try {
-            IntActSearchEngine searchEngine = new IntActSearchEngine( localIndexPath );
+            IntactSearchEngine searchEngine = new IntactSearchEngine( localIndexPath );
             this.searchResult = searchEngine.search( query, 0, HVNetworkBuilder.getMaxInteractions() );
 
             if ( searchResult.getTotalCount() > HVNetworkBuilder.getMaxInteractions() ) {
