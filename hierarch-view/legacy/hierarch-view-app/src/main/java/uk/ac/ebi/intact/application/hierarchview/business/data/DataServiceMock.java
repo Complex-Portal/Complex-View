@@ -82,7 +82,7 @@ public class DataServiceMock implements DataService {
             if ( query.equals( "EBI-359343, EBI-297202, EBI-79792, EBI-539895, EBI-297202" ) ) {
                 file = getFileByResources( "/test-files/brca2_expanded.txt", DataServiceMock.class );
             }
-            PsimiTabReader reader = new IntactPsimiTabReader( true );
+            PsimiTabReader reader = new PsimiTabReader( true );
 
             return reader.read( file );
 
