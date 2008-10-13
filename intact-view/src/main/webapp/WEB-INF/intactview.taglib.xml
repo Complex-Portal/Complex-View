@@ -44,7 +44,7 @@
     <function>
         <function-name>xrefToString</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.controller.application.XrefLinkContextFactory</function-class>
-        <function-signature>java.lang.String xrefToString(psidev.psi.mi.tab.model.CrossReference,boolean,boolean)</function-signature>
+        <function-signature>java.lang.String xrefToString(psidev.psi.mi.tab.model.CrossReference,boolean,boolean,boolean)</function-signature>
     </function>
 
 </facelet-taglib>

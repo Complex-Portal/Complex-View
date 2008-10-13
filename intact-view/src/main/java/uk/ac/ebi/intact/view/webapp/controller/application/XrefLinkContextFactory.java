@@ -56,16 +56,25 @@ public class XrefLinkContextFactory
         return linkContext;
     }
 
-    public static String xrefToString(CrossReference xref, boolean showDb, boolean showText) {
+    public static String xrefToString(CrossReference xref, boolean showDb, boolean showId, boolean showText) {
         if (xref == null) return "";
-        
+
         StringBuilder sb = new StringBuilder();
         if (showDb) {
             sb.append(xref.getDatabase()).append(":");
         }
-        sb.append(xref.getIdentifier());
+        if (showId) {
+            sb.append(xref.getIdentifier());
+        }
         if (showText && xref.getText() != null) {
-            sb.append("(").append(xref.getText()).append(")");
+            if (showDb || showId) {
+              sb.append("(");
+            }
+            sb.append(xref.getText());
+
+            if (showDb || showId) {
+              sb.append(")");
+            }
         }
         return sb.toString();
     }
