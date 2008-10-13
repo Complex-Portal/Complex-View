@@ -19,8 +19,8 @@ import edu.uci.ics.jung.graph.decorators.StringLabeller;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.Interactor;
 import psidev.psi.mi.tab.processor.ClusterInteractorPairProcessor;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.processor.IntactClusterInteractorPairProcessor;
 import uk.ac.ebi.intact.service.graph.GraphException;
 import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
 
@@ -51,10 +51,21 @@ public class BinaryGraphNetworkBuilder {
     public BinaryGraphNetwork createGraphNetwork(Collection<BinaryInteraction> binaryInteractions,
                                                  Collection<String> centralProteinAcs) {
 
+        if (binaryInteractions.isEmpty()) {
+            throw new IllegalArgumentException("Cannot create network without binary interactions");
+        }
+
         BinaryGraphNetwork graphNetwork = new BinaryGraphNetwork();
 
-        ClusterInteractorPairProcessor cluster = new ClusterInteractorPairProcessor();
-        cluster.setColumnHandler( new IntActColumnHandler() );
+
+        ClusterInteractorPairProcessor cluster = null;
+
+        if (binaryInteractions.iterator().next() instanceof IntactBinaryInteraction) {
+            cluster = new IntactClusterInteractorPairProcessor();
+        } else {
+            cluster = new ClusterInteractorPairProcessor();
+        }
+
         binaryInteractions = cluster.process( binaryInteractions );
 
         for (BinaryInteraction interaction : binaryInteractions) {
@@ -63,29 +74,31 @@ public class BinaryGraphNetworkBuilder {
             vertexA.setOrganism( interaction.getInteractorA().getOrganism() );
             vertexB.setOrganism( interaction.getInteractorB().getOrganism() );
 
-            try {
-                IntActBinaryInteraction bi = (IntActBinaryInteraction) interaction;
+            BinaryInteraction bi = interaction;
 
-                vertexA.setProperties(bi.getPropertiesA());                
-                vertexA.setExperimentalRoles(bi.getExperimentalRolesInteractorA());
-                vertexA.setBiologicalRoles( bi.getBiologicalRolesInteractorA() );
-                vertexA.setInteractorType(bi.getInteractorTypeA());
+            if (bi instanceof IntactBinaryInteraction) {
+                IntactBinaryInteraction ibi = (IntactBinaryInteraction) bi;
+                vertexA.setProperties(ibi.getPropertiesA());
+                vertexA.setExperimentalRoles(ibi.getExperimentalRolesInteractorA());
+                vertexA.setBiologicalRoles( ibi.getBiologicalRolesInteractorA() );
+                vertexA.setInteractorType(ibi.getInteractorTypeA());
 
-                if (centralProteinAcs != null && centralProteinAcs.contains(vertexA.getId())){
-                    vertexA.setCentral(true);
-                }
 
-                vertexB.setProperties(bi.getPropertiesB());
-                vertexB.setExperimentalRoles(bi.getExperimentalRolesInteractorB());
-                vertexB.setBiologicalRoles( bi.getBiologicalRolesInteractorB());
-                vertexB.setInteractorType(bi.getInteractorTypeB());
-                if (centralProteinAcs != null &&  centralProteinAcs.contains(vertexB.getId())){
-                    vertexB.setCentral(true);
-                }
-
-            } catch (ClassCastException e){
+                vertexB.setProperties(ibi.getPropertiesB());
+                vertexB.setExperimentalRoles(ibi.getExperimentalRolesInteractorB());
+                vertexB.setBiologicalRoles( ibi.getBiologicalRolesInteractorB());
+                vertexB.setInteractorType(ibi.getInteractorTypeB());
 
             }
+
+            if (centralProteinAcs != null && centralProteinAcs.contains(vertexA.getId())) {
+                vertexA.setCentral(true);
+            }
+
+            if (centralProteinAcs != null && centralProteinAcs.contains(vertexB.getId())) {
+                vertexB.setCentral(true);
+            }
+
 
             BinaryInteractionEdge edge = new BinaryInteractionEdge(interaction, vertexA, vertexB);
             graphNetwork.addEdge(edge);

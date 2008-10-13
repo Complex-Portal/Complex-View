@@ -19,17 +19,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.processor.ClusterInteractorPairProcessor;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
 import uk.ac.ebi.intact.service.graph.Node;
 import uk.ac.ebi.intact.service.graph.binary.BinaryGraphNetwork;
 import uk.ac.ebi.intact.service.graph.binary.BinaryGraphNetworkBuilder;
-import uk.ac.ebi.intact.service.graph.binary.BinaryInteractionEdge;
 import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * TODO comment that class header
@@ -85,10 +83,9 @@ public class InteractionBasedMerger implements BinaryGraphNetworkMerger {
             }
         }
 
-        if ( !binaryInteractions.isEmpty() ) {
+        if ( !binaryInteractions.isEmpty()) {
             ClusterInteractorPairProcessor cluster = new ClusterInteractorPairProcessor();
-            cluster.setColumnHandler( new IntActColumnHandler() );
-            binaryInteractions = cluster.process( binaryInteractions );
+            binaryInteractions = cluster.process(binaryInteractions);
 
             BinaryGraphNetworkBuilder builder = new BinaryGraphNetworkBuilder();
             builder.setLabelStrategy( labelStrategy );

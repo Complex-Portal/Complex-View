@@ -7,15 +7,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import psidev.psi.mi.tab.PsimiTabReader;
 import psidev.psi.mi.tab.model.BinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
+import uk.ac.ebi.intact.psimitab.IntactPsimiTabReader;
 import uk.ac.ebi.intact.service.graph.binary.merger.BinaryGraphNetworkMerger;
 import uk.ac.ebi.intact.service.graph.binary.merger.InteractionBasedMerger;
-import uk.ac.ebi.intact.service.graph.io.GraphIOUtils;
 
 import java.io.File;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -37,12 +33,9 @@ public class BinaryGraphNetworkFactoryTest {
 
     @Test
     public void createTest_2() throws Exception {
-        File file = TestHelper.getFileByResources( "/test-files/brca2_IntActBinaryInteraction.txt", BinaryGraphNetworkFactoryTest.class);
+        File file = TestHelper.getFileByResources( "/test-files/brca2_IntactBinaryInteraction.txt", BinaryGraphNetworkFactoryTest.class);
         //File file = new File(BinaryGraphNetworkFactoryTest.class.getResource("/test-files/brca2-simple.txt").getFile());
-        PsimiTabReader reader = new PsimiTabReader(true);
-        reader.setBinaryInteractionClass( IntActBinaryInteraction.class );
-        reader.setColumnHandler( new IntActColumnHandler() );
-
+        PsimiTabReader reader = new IntactPsimiTabReader(true);
         Collection<BinaryInteraction> binaryInteractions = reader.read(file);
         BinaryGraphNetwork graphNetwork = new BinaryGraphNetworkBuilder().createGraphNetwork(binaryInteractions);
         System.out.println( graphNetwork.toString());
@@ -67,13 +60,11 @@ public class BinaryGraphNetworkFactoryTest {
 
     @Test
     public void fusionTest() throws Exception{
-        PsimiTabReader reader = new PsimiTabReader(true);
-        reader.setBinaryInteractionClass( IntActBinaryInteraction.class );
-        reader.setColumnHandler( new IntActColumnHandler() );
+        PsimiTabReader reader = new IntactPsimiTabReader(true);
 
         BinaryGraphNetworkBuilder builder = new BinaryGraphNetworkBuilder();
 
-        File brca2 = TestHelper.getFileByResources( "/test-files/brca2_IntActBinaryInteraction.txt", BinaryGraphNetworkFactoryTest.class);
+        File brca2 = TestHelper.getFileByResources( "/test-files/brca2_IntactBinaryInteraction.txt", BinaryGraphNetworkFactoryTest.class);
         Collection<BinaryInteraction> binaryInteractions = reader.read(brca2);
         Collection<String> centralAcs = new ArrayList();
         centralAcs.add("EBI-79792");
@@ -83,7 +74,10 @@ public class BinaryGraphNetworkFactoryTest {
         assertEquals( 7, graphNetwork1.getNodes().size());
 
         File fancd2 = TestHelper.getFileByResources( "/test-files/fancd2.txt", BinaryGraphNetworkFactoryTest.class);
-        binaryInteractions = reader.read(fancd2);
+
+        PsimiTabReader reader2 = new PsimiTabReader(true);
+
+        binaryInteractions = reader2.read(fancd2);
         centralAcs = new ArrayList();
         centralAcs.add("EBI-359343");
         BinaryGraphNetwork graphNetwork2 = builder.createGraphNetwork(binaryInteractions, centralAcs);

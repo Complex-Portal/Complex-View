@@ -15,12 +15,11 @@
  */
 package uk.ac.ebi.intact.service.graph.binary;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLDecoder;
 
 /**
@@ -47,7 +46,11 @@ public abstract class TestHelper {
     }
 
     public static File getFileByResources(String fileName, Class clazz) throws UnsupportedEncodingException {
-        String strFile = clazz.getResource( fileName ).getFile();
+        final URL resource = clazz.getResource(fileName);
+
+        if (resource == null) throw new IllegalArgumentException("Resource not found: "+fileName);
+
+        String strFile = resource.getFile();
         return new File( URLDecoder.decode( strFile, "utf-8" ));
     }
 }
