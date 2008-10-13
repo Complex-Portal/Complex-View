@@ -23,6 +23,8 @@ import org.apache.myfaces.trinidad.model.SortableModel;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.engine.SearchEngineException;
 import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
@@ -31,8 +33,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 
 /**
  * TODO comment this!
@@ -123,7 +123,9 @@ public class SearchResultDataModel extends SortableModel implements Serializable
             throw new IllegalArgumentException("row is unavailable");
         }
 
-        return result.getData().get(rowIndex - result.getFirstResult());
+        final IntactBinaryInteraction binaryInteraction = (IntactBinaryInteraction) result.getData().get(rowIndex - result.getFirstResult());
+
+        return binaryInteraction;
     }
 
     public int getRowIndex() {
