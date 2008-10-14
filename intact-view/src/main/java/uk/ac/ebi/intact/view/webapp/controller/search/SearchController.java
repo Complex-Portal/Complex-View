@@ -39,7 +39,7 @@ import java.util.*;
 @Controller("searchBean")
 @Scope("conversation.access")
 @ConversationName("general")
-@ViewController(viewIds = {"/main.xhtml"})
+@ViewController(viewIds = {"/main.xhtml", "/", "/index.jsp"})
 public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
@@ -95,8 +95,6 @@ public class SearchController extends JpaBaseController {
     private String interproURL;
     private String chromosomalLocationURL;
     private String mRNAExpressionURL;
-
-
 
 
     public SearchController() {
