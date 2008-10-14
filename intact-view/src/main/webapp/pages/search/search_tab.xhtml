@@ -80,13 +80,23 @@
               <f:facet name="help">
                   <tr:group>
                       <tr:panelList>
-                          <tr:commandLink text="association" action="#{searchBean.doOntologySearchAction}">
-                              <f:setPropertyActionListener value="association"
-                                                           target="#{searchBean.ontologySearchQuery}"/>
-                          </tr:commandLink>
-                          <tr:commandLink text="MI:0914" action="#{searchBean.doOntologySearchAction}">
-                              <f:setPropertyActionListener value="MI:0914" target="#{searchBean.ontologySearchQuery}"/>
-                          </tr:commandLink>
+                          <tr:panelHorizontalLayout>
+                              <tr:outputText value="Term name:"/>
+                              <tr:spacer width="5"/>
+                              <tr:commandLink text="association" action="#{searchBean.doOntologySearchAction}">
+                                  <f:setPropertyActionListener value="association"
+                                                               target="#{searchBean.ontologySearchQuery}"/>
+                              </tr:commandLink>
+                          </tr:panelHorizontalLayout>
+
+                          <tr:panelHorizontalLayout>
+                              <tr:outputText value="Term identifier:"/>
+                              <tr:spacer width="5"/>
+                              <tr:commandLink text="MI:0914" action="#{searchBean.doOntologySearchAction}">
+                                  <f:setPropertyActionListener value="MI:0914"
+                                                               target="#{searchBean.ontologySearchQuery}"/>
+                              </tr:commandLink>
+                          </tr:panelHorizontalLayout>
                       </tr:panelList>
                   </tr:group>
               </f:facet>
