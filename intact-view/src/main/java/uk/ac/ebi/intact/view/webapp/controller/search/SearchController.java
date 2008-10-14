@@ -7,11 +7,13 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
+import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.tab.model.CrossReference;
+import psidev.psi.mi.tab.model.Alias;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
@@ -26,8 +28,7 @@ import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Main search controller
@@ -89,6 +90,13 @@ public class SearchController extends JpaBaseController {
 
     // io
     private String exportFormat;
+
+    //browsing
+    private String interproURL;
+    private String chromosomalLocationURL;
+    private String mRNAExpressionURL;
+
+
 
 
     public SearchController() {
@@ -235,6 +243,119 @@ public class SearchController extends JpaBaseController {
         return WebappUtils.getDefaultIndex(appConfigBean.getConfig());
     }
 
+    private Set<String> prepareUniqueListofIdentifiers() {
+
+        Set<String> uniqueIdentifiers = new HashSet<String>();
+        List<IntactBinaryInteraction> results;
+
+        if ( getInteractorResults() != null ) {
+            results = getInteractorResults().getResult().getData();
+
+
+            for ( IntactBinaryInteraction result : results ) {
+                final Collection<CrossReference> crossReferences = result.getInteractorB().getIdentifiers();
+
+                for ( CrossReference xRef : crossReferences ) {
+
+                    if ( "uniprotkb".equals( xRef.getDatabase() ) ) {
+                        uniqueIdentifiers.add( xRef.getIdentifier() );
+                    }
+                }
+            }
+        }
+        return uniqueIdentifiers;
+    }
+
+
+    private Set<String> prepareUniqueListOfGeneNames() {
+
+        Set<String> uniqueGeneNames = new HashSet<String>();
+        List<IntactBinaryInteraction> results;
+        
+        if ( getInteractorResults() != null ) {
+            results = getInteractorResults().getResult().getData();
+
+            for ( IntactBinaryInteraction result : results ) {
+                final Collection<Alias> aliases = result.getInteractorB().getAliases();
+
+                for ( Alias alias : aliases ) {
+                    uniqueGeneNames.add( alias.getName() );
+                }
+            }
+        }
+        return uniqueGeneNames;
+    }
+
+    /**
+     * A DiscloserListener that generates the urls for all the links in the browse page
+     * @param evt    DisclosureEvent
+     */
+    public void generateURLsForBrowse( DisclosureEvent evt ) {
+
+     this.interproURL = generateURLsForGivenFormat(prepareUniqueListofIdentifiers(),"ac=",false,",");
+     this.chromosomalLocationURL = generateURLsForGivenFormat(prepareUniqueListofIdentifiers(),"id=",true,";");
+     this.mRNAExpressionURL =   generateURLFormRNAExpression(prepareUniqueListOfGeneNames(),"+",",");
+    }
+
+    /**
+     * Generates urls for a given database using the formatting criterias
+     * @param prefix     the prefix eg:ac=, id=
+     * @param repeatPrefix   whether prefix is repeated or not
+     * @param seperator      eg: , or ;
+     * @return  the url
+     */
+    private String generateURLsForGivenFormat( Set<String> uniqueIdentifiers, String prefix, boolean repeatPrefix, String seperator ) {
+
+        StringBuilder sb = new StringBuilder( 2000 );
+
+        for ( String identifier : uniqueIdentifiers ) {
+            if ( repeatPrefix ) {
+                sb.append( prefix ).append( identifier ).append( seperator );
+            } else {
+                sb.append( identifier ).append( seperator );
+
+            }
+        }
+
+        if ( !repeatPrefix ) {
+            sb.insert( 0, prefix );
+        }
+
+        if ( sb.toString().endsWith( seperator ) ) {
+            sb.deleteCharAt( sb.length() - 1 );
+        }
+
+        String url = sb.toString();
+        if ( log.isDebugEnabled() ) {
+            log.debug( ( "  url " + url + "  length " + url.length() ) );
+        }
+        return url;
+
+    }
+
+    public String generateURLFormRNAExpression( Set<String> uniqueGeneNames, String prefix, String seperator ) {
+
+        StringBuilder sb = new StringBuilder( 2000 );
+
+        for ( String geneName : uniqueGeneNames ) {
+            sb.append( prefix ).append( geneName ).append( seperator );
+        }
+
+        if ( sb.toString().startsWith( prefix ) ) {
+            sb.deleteCharAt( 0 );
+        }
+
+        if ( sb.toString().endsWith( seperator ) ) {
+            sb.deleteCharAt( sb.length() - 1 );
+        }
+
+        String url = sb.toString();
+        if ( log.isDebugEnabled() ) {
+            log.debug( ( "  url " + url + "  length " + url.length() ) );
+        }
+        return url;
+    }
+
     public void doSearchInteractionsFromListSelection(ActionEvent evt) {
         final List<IntactBinaryInteraction> selected = getSelected(interactorBindings.getResultsDataTable());
 
@@ -266,6 +387,7 @@ public class SearchController extends JpaBaseController {
         sb.append(")");
 
         searchQuery = sb.toString();
+        displayQuery = searchQuery;
         
         doBinarySearch(searchQuery);
 
@@ -402,5 +524,29 @@ public class SearchController extends JpaBaseController {
 
     public void setDisplayQuery( String displayQuery ) {
         this.displayQuery = displayQuery;
+    }
+
+    public String getInterproURL() {
+        return interproURL;
+    }
+
+    public void setInterproURL( String interproURL ) {
+        this.interproURL = interproURL;
+    }
+
+    public String getChromosomalLocationURL() {
+        return chromosomalLocationURL;
+    }
+
+    public void setChromosomalLocationURL( String chromosomalLocationURL ) {
+        this.chromosomalLocationURL = chromosomalLocationURL;
+    }
+
+    public String getMRNAExpressionURL() {
+        return mRNAExpressionURL;
+    }
+
+    public void setMRNAExpressionURL( String mRNAExpressionURL ) {
+        this.mRNAExpressionURL = mRNAExpressionURL;
     }
 }

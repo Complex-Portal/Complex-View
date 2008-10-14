@@ -22,7 +22,7 @@
 
     <tr:group>
         <strong>Query: </strong>
-        <ebi:outputText id="queryText" value="#{searchBean.interactorResults.searchQuery}" maxLength="50"
+        <ebi:outputText id="queryText" value="#{searchBean.displayQuery}" maxLength="50"
                         expandMessage="(see entire query)" collapseMessage="(collapse)"/>
     </tr:group>
 
@@ -30,10 +30,6 @@
         <strong>Lucene Query: </strong>
         <ebi:outputText id="luceneQueryText" value="#{searchBean.interactorResults.result.luceneQuery}" maxLength="50"
                         expandMessage="(see entire query)" collapseMessage="(collapse)"/>
-    </tr:group>
-
-    <tr:group>
-        <strong>Interactors: </strong>#{searchBean.interactorResults.rowCount}
     </tr:group>
 
     <tr:group>

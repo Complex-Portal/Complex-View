@@ -29,7 +29,9 @@
                                targetFrame="_blank"
                                destination="#{xrefUrl}"
                                disabled="#{xrefUrl == null or xrefUrl == '#' or itemDisabled}"/>
-                    <tr:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+                    <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(value)}"/>
+
+
                 </nobr>
             </h:panelGroup>
 

@@ -35,6 +35,13 @@
                 <ui:include src="pages/interactions/interactions_tab.xhtml"/>
             </tr:showDetailItem>
 
+           <!-- <tr:showDetailItem text="Browse"
+                               disabled="#{searchBean.interactorTotalResults == 0}"
+                               disclosed="#{searchBean.disclosedTabName == 'Browse'}"
+                               disclosureListener="#{searchBean.generateURLsForBrowse}" >
+                <ui:include src="pages/browse/browse_tab.xhtml"/>
+            </tr:showDetailItem>-->
+
             <tr:showDetailItem text="List (#{searchBean.interactorTotalResults})"
                                disabled="#{searchBean.interactorTotalResults == 0}"
                                disclosed="#{searchBean.disclosedTabName == 'list'}">

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+
+    <tr:messages/>
+
+    <tr:panelHeader text="Proteins">
+        <tr:panelGroupLayout layout="vertical">
+            <f:facet name="separator">
+                <tr:spacer height="5"/>
+            </f:facet>
+
+            <tr:goLink text="All" targetFrame="_blank" destination=" "/>
+            <tr:goLink text="By GeneOntology" targetFrame="_blank" destination=" "/>
+            <tr:goLink text="By Interpro Domain" targetFrame="_blank"
+                       destination="http://www.ebi.ac.uk/interpro/ISpy?#{searchBean.interproURL}&amp;mode=protein&amp;sort=ac"/>
+            <tr:goLink text="By Reactome Pathway" targetFrame="_blank" destination=" "/>
+            <tr:goLink text="By Chromosomal Location" targetFrame="_blank"
+                       destination="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;#{searchBean.chromosomalLocationURL}"/>
+            <tr:goLink text="By mRNA expression" targetFrame="_blank"
+                       destination="http://www.ebi.ac.uk/microarray-as/atlas/qr?q_gene=#{searchBean.MRNAExpressionURL}&amp;q_updn=updn&amp;q_expt=%28all+conditions%29&amp;q_orgn=HOMO+SAPIENS&amp;view=heatmap&amp;expand_efo=on&amp;view="/>
+        </tr:panelGroupLayout>
+    </tr:panelHeader>
+
+
+    <tr:panelHeader text="Chemicals">
+        <tr:panelGroupLayout layout="vertical">
+            <f:facet name="separator">
+                <tr:spacer height="5"/>
+            </f:facet>
+
+            <tr:goLink text="All" targetFrame="_blank" destination=" "/>
+            <tr:goLink text="By ChEBI Ontology" targetFrame="_blank" destination=" "/>
+        </tr:panelGroupLayout>
+
+    </tr:panelHeader>
+
+
+</ui:composition>
