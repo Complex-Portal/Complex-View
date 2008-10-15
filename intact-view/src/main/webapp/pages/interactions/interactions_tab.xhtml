@@ -129,19 +129,21 @@
 <tr:column headerText="Compound Name" sortable="true" sortProperty="idA_s">
     <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="defaultType">
         <f:facet name="MI:0326"><!-- Protein MI identifier-->
-            <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}"
-                         varStatus="rowStatus" rows="0">
-                <tr:outputText value="#{alias.name}"/>
-                <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorA.aliases)}"/>
-            </tr:iterator>
+            <h:panelGroup>
+                <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}"
+                             varStatus="rowStatus" rows="0">
+                    <tr:outputText value="#{alias.name}"/>
+                    <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorA.aliases)}"/>
+                </tr:iterator>
 
-            <!-- HACK: Aparently we can find at this moment proteins with commercial/drug band names, that come from Drugbank -->
-            <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
-                         rows="0" rendered="#{empty binaryInteraction.interactorA.aliases}">
-                <h:panelGroup rendered="#{altid.text == 'commercial name'}">
-                    <tr:outputText value="#{altid.identifier}"/>
-                </h:panelGroup>
-            </tr:iterator>
+                <!-- HACK: Aparently we can find at this moment proteins with commercial/drug band names, that come from Drugbank -->
+                <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
+                             rows="0" rendered="#{empty binaryInteraction.interactorA.aliases}">
+                    <h:panelGroup rendered="#{altid.text == 'commercial name'}">
+                        <tr:outputText value="#{altid.identifier}"/>
+                    </h:panelGroup>
+                </tr:iterator>
+            </h:panelGroup>
         </f:facet>
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
@@ -196,19 +198,21 @@
 <tr:column headerText="Target Name" sortable="true" sortProperty="idB_s">
     <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="defaultType">
         <f:facet name="MI:0326"><!-- Protein MI identifier-->
-            <tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}"
-                         varStatus="rowStatus" rows="0">
-                <tr:outputText value="#{alias.name}"/>
-                <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorB.aliases)}"/>
-            </tr:iterator>
-            
-            <!-- HACK: Aparently we can find at this moment proteins with commercial/drug band names, that come from Drugbank -->
-            <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
-                         rows="0" rendered="#{empty binaryInteraction.interactorA.aliases}">
-                <h:panelGroup rendered="#{altid.text == 'commercial name'}">
-                    <tr:outputText value="#{altid.identifier}"/>
-                </h:panelGroup>
-            </tr:iterator>
+            <h:panelGroup>
+                <tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}"
+                             varStatus="rowStatus" rows="0">
+                    <tr:outputText value="#{alias.name}"/>
+                    <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorB.aliases)}"/>
+                </tr:iterator>
+
+                <!-- HACK: Aparently we can find at this moment proteins with commercial/drug band names, that come from Drugbank -->
+                <tr:iterator var="altid" value="#{binaryInteraction.interactorB.alternativeIdentifiers}"
+                             rows="0" rendered="#{empty binaryInteraction.interactorB.aliases}">
+                    <h:panelGroup rendered="#{altid.text == 'commercial name'}">
+                        <tr:outputText value="#{altid.identifier}"/>
+                    </h:panelGroup>
+                </tr:iterator>
+            </h:panelGroup>
         </f:facet>
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
