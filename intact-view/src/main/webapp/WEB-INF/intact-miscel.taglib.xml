@@ -8,6 +8,10 @@
 
 
     <tag>
+        <tag-name>collapsibleIterator</tag-name>
+        <source>facelets/components/miscel/CollapsibleIterator.xhtml</source>
+    </tag>
+    <tag>
         <tag-name>customShowDetail</tag-name>
         <source>facelets/components/miscel/CustomShowDetail.xhtml</source>
     </tag>
