@@ -8,8 +8,9 @@
         <xs:complexType>
             <xs:sequence maxOccurs="1">
                 <xs:element ref="user" minOccurs="1" maxOccurs="unbounded"/>
-                <xs:element name="index" type="index" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element name="interactionIndex" type="index" minOccurs="1" maxOccurs="unbounded"/>
                 <xs:element name="interactorIndex" type="index" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element name="ontologiesIndex" type="index" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -32,17 +33,6 @@
             <xs:element name="default" type="xs:boolean"/>
         </xs:sequence>
     </xs:complexType>
-
-    <xs:element name="interactorIndex">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="name" type="xs:string" minOccurs="1"/>
-                <xs:element name="location" type="xs:string" minOccurs="1"/>
-                <xs:element name="size" type="xs:int" minOccurs="1"/>
-                <xs:element name="default" type="xs:boolean"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
 
     <xs:element name="role">
         <xs:simpleType>

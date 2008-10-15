@@ -22,25 +22,20 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
-import uk.ac.ebi.intact.view.webapp.IntactViewException;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
-import uk.ac.ebi.intact.util.ols.Term;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.commons.util.DesEncrypter;
+import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * TODO comment this!
@@ -102,8 +97,8 @@ public class WebappUtils {
         }
     }
 
-    public static Index getDefaultIndex(SearchConfig config) {
-        for (Index index : config.getIndices()) {
+    public static Index getDefaultInteractionIndex(SearchConfig config) {
+        for (Index index : config.getInteractionIndices()) {
             if (index.isDefault()) {
                 return index;
             }
@@ -114,6 +109,16 @@ public class WebappUtils {
 
     public static Index getDefaultInteractorIndex(SearchConfig config) {
         for (Index index : config.getInteractorIndices()) {
+            if (index.isDefault()) {
+                return index;
+            }
+        }
+
+        return null;
+    }
+
+    public static Index getDefaultOntologiesIndex(SearchConfig config) {
+        for (Index index : config.getOntologiesIndices()) {
             if (index.isDefault()) {
                 return index;
             }

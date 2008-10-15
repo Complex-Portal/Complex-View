@@ -17,6 +17,8 @@ package uk.ac.ebi.intact.view.webapp.controller.application;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,8 @@ import java.net.URLEncoder;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller
+@Scope("request")
 public class RequestConfigBean implements Serializable {
 
     private Log log = LogFactory.getLog(RequestConfigBean.class);

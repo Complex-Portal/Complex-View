@@ -15,31 +15,31 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.application;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.RAMDirectory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
-import uk.ac.ebi.intact.view.webapp.util.*;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.view.webapp.util.*;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Backing bean for Ontology Search and Autocomplete feature
@@ -74,7 +74,7 @@ public class OntologyBean implements Serializable {
     public void loadOntologies(SearchConfig config) throws IOException {
         if (log.isInfoEnabled()) log.info("Loading and indexing ontologies");
 
-        final Index defaultIndex = WebappUtils.getDefaultIndex(config);
+        final Index defaultIndex = WebappUtils.getDefaultInteractionIndex(config);
         final Directory defaultIndexDirectory = FSDirectory.getDirectory(defaultIndex.getLocation());
 
         OntologiesIndexWriter ontologiesIndexWriter = new OntologiesIndexWriter();

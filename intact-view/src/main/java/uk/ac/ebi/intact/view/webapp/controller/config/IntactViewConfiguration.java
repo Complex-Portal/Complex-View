@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.config;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManagerFactory;
@@ -38,6 +37,7 @@ public class IntactViewConfiguration {
     private String configFile;
     private String defaultIndexLocation;
     private String defaultInteractorIndexLocation;
+    private String defaultOntologiesIndexLocation;
     private String hierarchViewUrl;
     private String hierarchViewImageUrl;
     private String hierarchViewMaxInteractions;
@@ -116,6 +116,14 @@ public class IntactViewConfiguration {
 
     public void setDefaultInteractorIndexLocation(String defaultInteractorIndexLocation) {
         this.defaultInteractorIndexLocation = defaultInteractorIndexLocation;
+    }
+
+    public String getDefaultOntologiesIndexLocation() {
+        return defaultOntologiesIndexLocation;
+    }
+
+    public void setDefaultOntologiesIndexLocation(String defaultOntologiesIndexLocation) {
+        this.defaultOntologiesIndexLocation = defaultOntologiesIndexLocation;
     }
 
     public String getHierarchViewUrl() {

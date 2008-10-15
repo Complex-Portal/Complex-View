@@ -29,6 +29,7 @@
         <property name="configFile" value="${intact.configfile}"/>
         <property name="defaultIndexLocation" value="${intact.index.interaction.default}"/>
         <property name="defaultInteractorIndexLocation" value="${intact.index.interactor.default}"/>
+        <property name="defaultOntologiesIndexLocation" value="${intact.index.ontologies.default}"/>
         <property name="hierarchViewUrl" value="${intact.hierarchview.url}"/>
         <property name="hierarchViewImageUrl" value="${intact.hierarchview.imageurl}"/>
         <property name="hierarchViewMaxInteractions" value="${intact.hierarchview.maxinteractions}"/>

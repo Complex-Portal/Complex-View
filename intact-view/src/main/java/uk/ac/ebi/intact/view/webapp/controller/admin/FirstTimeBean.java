@@ -15,28 +15,24 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.admin;
 
-import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.User;
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
-import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.business.IntactException;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
-
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.orchestra.viewController.annotations.InitView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.context.annotation.Scope;
 
 /**
  * TODO comment this!
@@ -52,11 +48,13 @@ public class FirstTimeBean extends BaseController {
     private User user;
     private String directPassword;
 
-    private Index index;
+    private Index interactionIndex;
     private Index interactorIndex;
+    private Index ontologiesIndex;
 
-    private boolean indexLocationExists;
+    private boolean interactionIndexLocationExists;
     private boolean interactorIndexLocationExists;
+    private boolean ontologiesIndexLocationExists;
 
     @Autowired
     private AppConfigBean configBean;
@@ -69,33 +67,44 @@ public class FirstTimeBean extends BaseController {
 
     public FirstTimeBean() {
         this.user = new User();
-        this.index = new Index();
+        this.interactionIndex = new Index();
         this.interactorIndex = new Index();
+        this.ontologiesIndex = new Index();
     }
 
     @PostConstruct
     public void setup() {
-        String indexLocation = intactViewConfiguration.getDefaultIndexLocation();
+        String interactionIndexLocation = intactViewConfiguration.getDefaultIndexLocation();
         String interactorIndexLocation = intactViewConfiguration.getDefaultInteractorIndexLocation();
+        String ontologiesIndexLocation = intactViewConfiguration.getDefaultOntologiesIndexLocation();
 
-        index.setLocation(indexLocation);
-        index.setDefault(true);
+        interactionIndex.setLocation(interactionIndexLocation);
+        interactionIndex.setDefault(true);
 
         interactorIndex.setLocation(interactorIndexLocation);
         interactorIndex.setDefault(true);
 
-        indexLocationExists = checkLocation(index);
+        ontologiesIndex.setLocation(ontologiesIndexLocation);
+        ontologiesIndex.setDefault(true);
+
+        interactionIndexLocationExists = checkLocation(interactionIndex);
         interactorIndexLocationExists = checkLocation(interactorIndex);
+        ontologiesIndexLocationExists = checkLocation(ontologiesIndex);
     }
 
-    public void indexLocationChanged(ValueChangeEvent vce) {
-        index.setLocation((String) vce.getNewValue());
-        indexLocationExists = checkLocation(index);
+    public void interactionIndexLocationChanged(ValueChangeEvent vce) {
+        interactionIndex.setLocation((String) vce.getNewValue());
+        interactionIndexLocationExists = checkLocation(interactionIndex);
     }
 
     public void interactorIndexLocationChanged(ValueChangeEvent vce) {
         interactorIndex.setLocation((String) vce.getNewValue());
         interactorIndexLocationExists = checkLocation(interactorIndex);
+    }
+
+    public void ontologiesIndexLocationChanged(ValueChangeEvent vce) {
+        ontologiesIndex.setLocation((String) vce.getNewValue());
+        ontologiesIndexLocationExists = checkLocation(interactorIndex);
     }
 
     public String processConfiguration() {
@@ -108,14 +117,16 @@ public class FirstTimeBean extends BaseController {
         config.getUsers().add(user);
 
         try {
-            index.setSize(WebappUtils.countItemsInIndex(index.getLocation()));
+            interactionIndex.setSize(WebappUtils.countItemsInIndex(interactionIndex.getLocation()));
             interactorIndex.setSize(WebappUtils.countItemsInIndex(interactorIndex.getLocation()));
+            ontologiesIndex.setSize(WebappUtils.countItemsInIndex(ontologiesIndex.getLocation()));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        config.getIndices().add(index);
+        config.getInteractionIndices().add(interactionIndex);
         config.getInteractorIndices().add(interactorIndex);
+        config.getOntologiesIndices().add(ontologiesIndex);
 
         WebappUtils.writeConfiguration(config, new File(configBean.getConfigFileLocation()));
         configBean.setConfig(config);
@@ -176,16 +187,16 @@ public class FirstTimeBean extends BaseController {
         this.directPassword = directPassword;
     }
 
-    public Index getIndex() {
-        return index;
+    public Index getInteractionIndex() {
+        return interactionIndex;
     }
 
-    public void setIndex(Index index) {
-        this.index = index;
+    public void setInteractionIndex(Index interactionIndex) {
+        this.interactionIndex = interactionIndex;
     }
 
-    public boolean isIndexLocationExists() {
-        return indexLocationExists;
+    public boolean isInteractionIndexLocationExists() {
+        return interactionIndexLocationExists;
     }
 
     public Index getInteractorIndex() {
@@ -202,5 +213,21 @@ public class FirstTimeBean extends BaseController {
 
     public void setInteractorIndexLocationExists(boolean interactorIndexLocationExists) {
         this.interactorIndexLocationExists = interactorIndexLocationExists;
+    }
+
+    public Index getOntologiesIndex() {
+        return ontologiesIndex;
+    }
+
+    public void setOntologiesIndex(Index ontologiesIndex) {
+        this.ontologiesIndex = ontologiesIndex;
+    }
+
+    public boolean isOntologiesIndexLocationExists() {
+        return ontologiesIndexLocationExists;
+    }
+
+    public void setOntologiesIndexLocationExists(boolean ontologiesIndexLocationExists) {
+        this.ontologiesIndexLocationExists = ontologiesIndexLocationExists;
     }
 }

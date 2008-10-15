@@ -29,7 +29,7 @@
 
             <tr:panelBox background="dark">
                 <h:panelGrid columns="1">
-                    <h:outputText value="Enter new Administrator user credentials below:"/>
+                    <tr:outputText value="Enter new Administrator user credentials below:"/>
 
                     <h:panelGrid columns="3" styleClass="inputform">
                         <h:outputLabel value="User name:" for="txtUser"/>
@@ -51,36 +51,36 @@
 
                     <tr:separator/>
 
-                    <h:outputText value="Provide an indexed Directory with PSIMITAB data:"/>
+                    <tr:outputText value="Provide an indexed Directory with PSIMITAB data:"/>
 
                     <tr:panelGroupLayout layout="vertical">
                         <tr:panelGroupLayout layout="horizontal" partialTriggers="txtIndexPath">
 
                             <tr:inputText id="txtIndexPath" label="Index path: " autoSubmit="true"
-                                          value="#{firstTimeBean.index.location}"
-                                          valueChangeListener="#{firstTimeBean.indexLocationChanged}" immediate="true"/>
+                                          value="#{firstTimeBean.interactionIndex.location}"
+                                          valueChangeListener="#{firstTimeBean.interactionIndexLocationChanged}" immediate="true"/>
 
-                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.indexLocationExists}">
+                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.interactionIndexLocationExists}">
                                 <h:graphicImage url="/images/ok.gif"/>
-                                <h:outputText
-                                        value="Index found with #{firstTimeBean.index.size} interactions."/>
+                                <tr:outputText
+                                        value="Index found with #{firstTimeBean.interactionIndex.size} interactions."/>
                             </h:panelGroup>
-                            <h:panelGroup style="color:red" rendered="#{!firstTimeBean.indexLocationExists}">
+                            <h:panelGroup style="color:red" rendered="#{!firstTimeBean.interactionIndexLocationExists}">
                                 <h:graphicImage url="/images/error.png"/>
-                                <h:outputText
+                                <tr:outputText
                                         value="Index not found."/>
                             </h:panelGroup>
                         </tr:panelGroupLayout>
 
                         <tr:inputText id="txtIndexName" label="Index name: "
-                                      value="#{firstTimeBean.index.name}" required="true"/>
+                                      value="#{firstTimeBean.interactionIndex.name}" required="true"/>
                         <tr:message for="txtIndexName"/>
 
                     </tr:panelGroupLayout>
 
                     <tr:separator/>
 
-                    <h:outputText value="Provide an indexed Directory with interactor-oriented PSIMITAB data:"/>
+                    <tr:outputText value="Provide an indexed Directory with interactor-oriented PSIMITAB data:"/>
 
                     <tr:panelGroupLayout layout="vertical">
                         <tr:panelGroupLayout layout="horizontal" partialTriggers="txtInteractorIndexPath">
@@ -89,14 +89,14 @@
                                           value="#{firstTimeBean.interactorIndex.location}"
                                           valueChangeListener="#{firstTimeBean.interactorIndexLocationChanged}" immediate="true"/>
 
-                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.indexLocationExists}">
+                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.interactionIndexLocationExists}">
                                 <h:graphicImage url="/images/ok.gif"/>
-                                <h:outputText
+                                <tr:outputText
                                         value="Index found with #{firstTimeBean.interactorIndex.size} interactions."/>
                             </h:panelGroup>
                             <h:panelGroup style="color:red" rendered="#{!firstTimeBean.interactorIndexLocationExists}">
                                 <h:graphicImage url="/images/error.png"/>
-                                <h:outputText
+                                <tr:outputText
                                         value="Index not found."/>
                             </h:panelGroup>
                         </tr:panelGroupLayout>
@@ -104,6 +104,35 @@
                         <tr:inputText id="txtInteractorIndexName" label="Index name: "
                                       value="#{firstTimeBean.interactorIndex.name}" required="true"/>
                         <tr:message for="txtInteractorIndexName"/>
+
+                    </tr:panelGroupLayout>
+
+                    <tr:separator/>
+
+                    <tr:outputText value="Provide an index with Ontology data:"/>
+
+                    <tr:panelGroupLayout layout="vertical">
+                        <tr:panelGroupLayout layout="horizontal" partialTriggers="txtOntologiesIndexPath">
+
+                            <tr:inputText id="txtOntologiesIndexPath" label="Index path: " autoSubmit="true"
+                                          value="#{firstTimeBean.ontologiesIndex.location}"
+                                          valueChangeListener="#{firstTimeBean.ontologiesIndexLocationChanged}" immediate="true"/>
+
+                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.interactionIndexLocationExists}">
+                                <h:graphicImage url="/images/ok.gif"/>
+                                <tr:outputText
+                                        value="Index found with #{firstTimeBean.ontologiesIndex.size} ontology terms."/>
+                            </h:panelGroup>
+                            <h:panelGroup style="color:red" rendered="#{!firstTimeBean.ontologiesIndexLocationExists}">
+                                <h:graphicImage url="/images/error.png"/>
+                                <tr:outputText
+                                        value="Index not found."/>
+                            </h:panelGroup>
+                        </tr:panelGroupLayout>
+
+                        <tr:inputText id="txtOntologiesIndexName" label="Index name: "
+                                      value="#{firstTimeBean.interactorIndex.name}" required="true"/>
+                        <tr:message for="txtOntologiesIndexName"/>
 
                     </tr:panelGroupLayout>
 

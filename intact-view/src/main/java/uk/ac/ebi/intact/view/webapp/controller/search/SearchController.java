@@ -6,14 +6,14 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
+import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.tab.model.CrossReference;
 import psidev.psi.mi.tab.model.Alias;
+import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
@@ -39,7 +39,7 @@ import java.util.*;
 @Controller("searchBean")
 @Scope("conversation.access")
 @ConversationName("general")
-@ViewController(viewIds = {"/main.xhtml", "/", "/index.jsp"})
+@ViewController(viewIds = {"/main.xhtml"})
 public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
@@ -181,7 +181,7 @@ public class SearchController extends JpaBaseController {
             return;
         }
 
-        String indexDirectory = WebappUtils.getDefaultIndex(config).getLocation();
+        String indexDirectory = WebappUtils.getDefaultInteractionIndex(config).getLocation();
 
         try {
             results = new SearchResultDataModel(query, indexDirectory, pageSize);
@@ -238,7 +238,7 @@ public class SearchController extends JpaBaseController {
     }
 
     public Index getDefaultIndex() {
-        return WebappUtils.getDefaultIndex(appConfigBean.getConfig());
+        return WebappUtils.getDefaultInteractionIndex(appConfigBean.getConfig());
     }
 
     private Set<String> prepareUniqueListofIdentifiers() {

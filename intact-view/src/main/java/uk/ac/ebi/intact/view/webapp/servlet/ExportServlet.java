@@ -15,41 +15,20 @@
  */
 package uk.ac.ebi.intact.view.webapp.servlet;
 
-import org.apache.lucene.search.Sort;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.WebApplicationContext;
-import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.search.Searcher;
-import psidev.psi.mi.search.engine.SearchEngineException;
-import psidev.psi.mi.tab.PsimiTabWriter;
-import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
-import psidev.psi.mi.tab.model.BinaryInteraction;
-import psidev.psi.mi.xml.PsimiXmlWriter;
-import psidev.psi.mi.xml.converter.ConverterException;
-import psidev.psi.mi.xml.model.EntrySet;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
-import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
-import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
-import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
-import uk.ac.ebi.intact.view.webapp.controller.application.UserSessionConfig;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 
 /**
@@ -78,7 +57,7 @@ public class ExportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         IntactViewConfiguration intactViewConfiguration = (IntactViewConfiguration) applicationContext.getBean("intactViewConfiguration");
         SearchConfig searchConfig = WebappUtils.readConfiguration(intactViewConfiguration.getConfigFile());
-        String defaultIndex = WebappUtils.getDefaultIndex(searchConfig).getLocation();
+        String defaultIndex = WebappUtils.getDefaultInteractionIndex(searchConfig).getLocation();
 
         String searchQuery = request.getParameter(PARAM_QUERY);
         String format = request.getParameter(PARAM_FORMAT);
