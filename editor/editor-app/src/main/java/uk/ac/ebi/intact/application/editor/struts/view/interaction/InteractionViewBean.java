@@ -25,6 +25,7 @@ import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.*;
+import uk.ac.ebi.intact.core.persister.PersisterHelper;
 
 import java.util.*;
 
@@ -942,11 +943,13 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
         
         ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
+
             //Collect components from beans
-        for(ComponentBean cb: getComponents()){
-            if(cb.getComponent()!=null && cb.getComponent().getAc()!=null){
-            Component component = componentDao.getByAc( cb.getComponent().getAc());
-            intact.addComponent( component);
+        for ( ComponentBean cb : getComponents() ) {
+            log.debug( "component expRole " + cb.getExpRole() );
+
+            if ( cb.getComponent() != null ) {
+                intact.addComponent( cb.getComponent() );
             }
         }
 
@@ -1256,7 +1259,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
     private void updateComponents(Interaction intact) throws IntactException {
 
         FeatureDao featureDao = DaoProvider.getDaoFactory().getFeatureDao();
-
+        ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
         // Update components.
         for(ComponentBean cb : myComponentsToUpdate){
             cb.setInteraction(intact);
@@ -1265,7 +1268,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             disconnectLinkedFeatures(cb);
 
             Component comp = cb.getComponent(true);
-            //componentDao.saveOrUpdate(comp);
+            componentDao.saveOrUpdate(comp);
+            
 
             // Add features
             for (FeatureBean featureBean : cb.getFeaturesToAdd())

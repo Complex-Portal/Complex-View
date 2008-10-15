@@ -1400,28 +1400,6 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
         AnnotationDao annotationDao = DaoProvider.getDaoFactory().getAnnotationDao();
 
-       //set here the original Annotations and Xrefs from database
-      /*  final List<CommentBean> commentBeanList = this.getAnnotations();
-
-        final Collection<Annotation> annotations_ = new ArrayList<Annotation>();
-        for ( CommentBean commentBean : commentBeanList ) {
-            Annotation annot = commentBean.getAnnotation();
-            annotations_.add( annot );
-        }
-        myAnnotObject.setAnnotations( annotations_ );
-
-        final List<XreferenceBean> xreferenceBeanList = this.getXrefs();
-        final Collection<Xref> xrefs_ = new ArrayList<Xref>();
-        for ( XreferenceBean xreferenceBean : xreferenceBeanList ) {
-            Xref xref = xreferenceBean.getXref( myAnnotObject );
-            xrefs_.add( xref );
-        }
-        myAnnotObject.setXrefs( xrefs_ );*/
-
-        //persistAnnotatedObject();
-
-        //log.debug("As I have persisted myAnnotObject ac is " + myAnnotObject.getAc());
-
         // Don't care whether annotated object exists or not because we don't
         // need an AC in the annotation table.
 
