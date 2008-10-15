@@ -129,16 +129,25 @@
 <tr:column headerText="Compound Name" sortable="true" sortProperty="idA_s">
     <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="defaultType">
         <f:facet name="MI:0326"><!-- Protein MI identifier-->
-            <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">
+            <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}"
+                         varStatus="rowStatus" rows="0">
                 <tr:outputText value="#{alias.name}"/>
-                <tr:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+                <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorA.aliases)}"/>
+            </tr:iterator>
+
+            <!-- HACK: Aparently we can find at this moment proteins with commercial/drug band names, that come from Drugbank -->
+            <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
+                         rows="0" rendered="#{empty binaryInteraction.interactorA.aliases}">
+                <h:panelGroup rendered="#{altid.text == 'commercial name'}">
+                    <tr:outputText value="#{altid.identifier}"/>
+                </h:panelGroup>
             </tr:iterator>
         </f:facet>
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
-            <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}" varStatus="rowStatus">
+            <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
+                         rows="0">
                 <h:panelGroup rendered="#{altid.text == 'commercial name'}">
                     <tr:outputText value="#{altid.identifier}"/>
-                    <tr:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
                 </h:panelGroup>
             </tr:iterator>
         </f:facet>
@@ -150,7 +159,8 @@
 
 <tr:column headerText="Compound Links" sortable="false">
     <!--add compound links -->
-    <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus">
+    <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus"
+                 rows="0">
         <tr:switcher facetName="#{xref.database}" defaultFacet="defaultTargetDatabase">
             <f:facet name="uniprotkb">
                  <h:panelGroup>
@@ -186,16 +196,26 @@
 <tr:column headerText="Target Name" sortable="true" sortProperty="idB_s">
     <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="defaultType">
         <f:facet name="MI:0326"><!-- Protein MI identifier-->
-            <tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}" varStatus="rowStatus">
+            <tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}"
+                         varStatus="rowStatus" rows="0">
                 <tr:outputText value="#{alias.name}"/>
-                <tr:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+                <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorB.aliases)}"/>
+            </tr:iterator>
+            
+            <!-- HACK: Aparently we can find at this moment proteins with commercial/drug band names, that come from Drugbank -->
+            <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
+                         rows="0" rendered="#{empty binaryInteraction.interactorA.aliases}">
+                <h:panelGroup rendered="#{altid.text == 'commercial name'}">
+                    <tr:outputText value="#{altid.identifier}"/>
+                </h:panelGroup>
             </tr:iterator>
         </f:facet>
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
-            <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}" varStatus="rowStatus">
+            <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
+                         varStatus="rowStatus" rows="0">
                 <h:panelGroup rendered="#{altid.text == 'commercial name'}">
                     <tr:outputText value="#{altid.identifier}"/>
-                    <tr:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+                    <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorA.alternativeIdentifiers)}"/>
                 </h:panelGroup>
             </tr:iterator>
         </f:facet>
@@ -207,7 +227,8 @@
 
 <tr:column headerText="Target Links" sortable="false">
 <!--add target links -->
-    <tr:iterator var="xref" value="#{binaryInteraction.interactorB.identifiers}" varStatus="rowStatus">
+    <tr:iterator var="xref" value="#{binaryInteraction.interactorB.identifiers}"
+                 varStatus="rowStatus" rows="0">
         <tr:switcher facetName="#{xref.database}" defaultFacet="defaultTargetDatabase">
              <f:facet name="uniprotkb">
                  <h:panelGroup>
@@ -258,16 +279,17 @@
     </iam:customShowDetail>
 </tr:column>
 <tr:column headerText="Names molecule A" sortable="true" sortProperty="aliasA_s" rendered="#{searchBean.expandedView}">
-    <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">
+    <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}"
+                 varStatus="rowStatus" rows="0">
         <h:outputText value="#{alias.name}"/>
-        <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+        <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorA.aliases)}"/>
     </tr:iterator>
 </tr:column>
 <tr:column headerText="Names molecule B" sortable="true" sortProperty="aliasB_s" rendered="#{searchBean.expandedView}">
     <tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}"
-                 varStatus="rowStatus">
+                 varStatus="rowStatus" rows="0">
         <h:outputText value="#{alias.name}"/>
-        <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+        <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorB.aliases)}"/>
     </tr:iterator>
 </tr:column>
 
@@ -278,10 +300,11 @@
         </f:facet>
         <f:facet name="OtherType">
             <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
-                <tr:iterator var="xref" value="#{organism.identifiers}" varStatus="rowStatus">
+                <tr:iterator var="xref" value="#{organism.identifiers}"
+                             varStatus="rowStatus" rows="0">
                     <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
                 </tr:iterator>
-                <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+                <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>
             </tr:iterator>
         </f:facet>
     </tr:switcher>
@@ -294,18 +317,18 @@
         </f:facet>
         <f:facet name="OtherType">
             <tr:iterator var="organism" value="#{binaryInteraction.interactorB.organism}"
-                                            varStatus="rowStatus">
+                                            varStatus="rowStatus" rows="0">
             <tr:iterator var="xref" value="#{organism.identifiers}">
                 <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
             </tr:iterator>
-            <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+            <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>
         </tr:iterator>
         </f:facet>
     </tr:switcher>
 </tr:column>
 
 <tr:column headerText="First Author" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="pubauth_s">
-    <tr:iterator var="author" value="#{binaryInteraction.authors}">
+    <tr:iterator var="author" value="#{binaryInteraction.authors}" rows="0">
             <span style="display:block">
                 <nobr>
                     <tr:outputText value="#{author.name}"/>
@@ -334,7 +357,7 @@
     <iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>
 </tr:column>
 <tr:column headerText="Confidence Value(s)" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="confidence_s">
-    <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}">
+    <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
                         <span style="display:block">
                             <nobr>
                                 <tr:outputText value="#{confidence.type}:#{confidence.value}"/>
@@ -408,7 +431,7 @@
     <tr:outputText value="#{binaryInteraction.expansionMethod}"/>
 </tr:column>
 <tr:column headerText="Dataset" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="dataset_s">
-    <tr:iterator var="dataset" value="#{binaryInteraction.dataset}">
+    <tr:iterator var="dataset" value="#{binaryInteraction.dataset}" rows="0">
                         <span style="display:block">
                             <nobr>
                                 <tr:outputText value="#{dataset}"/>

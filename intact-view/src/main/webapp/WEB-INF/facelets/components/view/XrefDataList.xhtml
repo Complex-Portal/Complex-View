@@ -16,7 +16,7 @@
         <c:set var="itemPerLine" value="#{itemPerLine == null? false : sf:convertToBoolean(itemPerLine)}"/>
         <c:set var="itemDisabled" value="#{itemPerLine == null? false : sf:convertToBoolean(disableLinks)}"/>
 
-        <tr:iterator var="xref" value="#{value}" varStatus="rowStatus">
+        <tr:iterator var="xref" value="#{value}" varStatus="rowStatus" rows="0">
 
             <c:set var="text" value="#{onlyText? xref.text : xref.identifier}"/>
 
