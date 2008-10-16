@@ -38,7 +38,7 @@
             <tr:showDetailItem text="Browse"
                                disabled="#{searchBean.interactorTotalResults == 0}"
                                disclosed="#{searchBean.disclosedTabName == 'Browse'}"
-                               disclosureListener="#{searchBean.generateURLsForBrowse}" >
+                               disclosureListener="#{browseBean.createListofIdentifiers}" >
                 <ui:include src="pages/browse/browse_tab.xhtml"/>
             </tr:showDetailItem>
 
