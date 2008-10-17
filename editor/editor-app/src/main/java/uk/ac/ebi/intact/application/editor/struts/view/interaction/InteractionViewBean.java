@@ -941,9 +941,6 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             intact.addExperiment(exp);
         }
 
-        
-        ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
-
             //Collect components from beans
         for ( ComponentBean cb : getComponents() ) {
             log.debug( "component expRole " + cb.getExpRole() );
@@ -1268,7 +1265,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             disconnectLinkedFeatures(cb);
 
             Component comp = cb.getComponent(true);
-            componentDao.saveOrUpdate(comp);
+            //componentDao.saveOrUpdate(comp);
             
 
             // Add features

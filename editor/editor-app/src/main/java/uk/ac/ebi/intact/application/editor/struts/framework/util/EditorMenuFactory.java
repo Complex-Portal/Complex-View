@@ -454,6 +454,9 @@ public class EditorMenuFactory {
         for(CvInteractorType cvInteractorType : cvInteractorTypes){
             menu.add(cvInteractorType.getShortLabel());
         }
+
+        //adding peptide
+            menu.add( "peptide" );
         if (menu.isEmpty()) {
             // Special list when we don't have any menu items.
             menu.add(SELECT_LIST_ITEM);
