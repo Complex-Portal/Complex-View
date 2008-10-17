@@ -12,7 +12,7 @@
 
     <c:set var="showLogoOnly" value="#{onlyLogo != null? ebisf:convertToBoolean(onlyLogo) : false}"/>
 
-        <tr:commandLink action="#{searchBean.doDiscloseMoleculeViewTab}"
+        <tr:commandLink action="molecule"
                  disabled="#{disabled != null? ebisf:convertToBoolean(disabled) : false}">
             <f:setPropertyActionListener value="#{query}" target="#{moleculeViewBean.interactorAc}"/>
 

@@ -28,18 +28,60 @@
         </navigation-case>
     </navigation-rule>
 
-
     <navigation-rule>
         <navigation-case>
-            <from-outcome>firstTime</from-outcome>
-            <to-view-id>/first_time_config.xhtml</to-view-id>
+            <from-outcome>search</from-outcome>
+            <to-view-id>/pages/search/search.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
-            <from-outcome>gobrowser</from-outcome>
+            <from-outcome>interactions</from-outcome>
+            <to-view-id>/pages/interactions/interactions.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>browse</from-outcome>
+            <to-view-id>/pages/browse/browse.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>browse.gobrowser</from-outcome>
             <to-view-id>/pages/browse/gobrowser.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>list</from-outcome>
+            <to-view-id>/pages/list/list.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>molecule</from-outcome>
+            <to-view-id>/pages/molecule/molecule.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>graph</from-outcome>
+            <to-view-id>/pages/graph/graph.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>firstTime</from-outcome>
+            <to-view-id>/first_time_config.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 

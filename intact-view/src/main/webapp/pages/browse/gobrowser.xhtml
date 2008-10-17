@@ -13,11 +13,11 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
 
-                template="/WEB-INF/facelets/layout/template.xhtml">
+                template="/main.xhtml">
+    
+    <ui:param name="disclosedTabName" value="browse"/>
 
-    <ui:define name="content">
-
-        <tr:messages/>
+    <ui:define name="browseTabContent">
 
         <tr:panelHeader text="Gene Ontology Browser">
 

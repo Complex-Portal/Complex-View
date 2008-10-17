@@ -38,7 +38,14 @@ import java.util.List;
 @Controller("searchBean")
 @Scope("conversation.access")
 @ConversationName("general")
-@ViewController(viewIds = {"/main.xhtml", "/pages/browse/gobrowser.xhtml"})
+@ViewController(viewIds = {"/main.xhtml",
+                           "/pages/search/search.xhtml",
+                           "/pages/interactions/interactions.xhtml",
+                           "/pages/list/list.xhtml",
+                           "/pages/molecule/molecule.xhtml",
+                           "/pages/graph/graph.xhtml",
+                           "/pages/browse/browse.xhtml",
+                           "/pages/browse/gobrowser.xhtml"})
 public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
@@ -276,11 +283,6 @@ public class SearchController extends JpaBaseController {
 
     public Index getDefaultInteractorIndex() {
         return WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig());
-    }
-
-    public String doDiscloseMoleculeViewTab() {
-        disclosedTabName = "molecule";
-        return "main";
     }
 
     // Getters & Setters

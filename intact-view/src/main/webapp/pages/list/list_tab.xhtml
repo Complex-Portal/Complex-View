@@ -12,8 +12,6 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
-<tr:messages/>
-
 <tr:spacer height="10"/>
 <tr:panelGroupLayout layout="horizontal" id="externalLinks">
     <f:facet name="separator">
@@ -157,39 +155,6 @@
 <tr:column headerText="Description" sortable="true" sortProperty="idA_s">
     <h:outputText value="yet to fix"/>
 </tr:column>
-
-<!--
-<tr:column headerText="Interactor Type" sortable="true"
-           sortProperty="typeA_s">
-    <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
-</tr:column>
-<tr:column headerText="Alternative id/s" sortable="true" sortProperty="altidA_s">
-    <iav:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
-</tr:column>
--->
-
-
-<!--<tr:column headerText="Interaction AC" sortable="true" sortProperty="interaction_id_s">-->
-    <!--<bs:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>-->
-<!--</tr:column>-->
-
-<!--
-<tr:column sortable="true" sortProperty="propertiesA_s">
-    <f:facet name="header">
-        <tr:panelGroupLayout layout="vertical">
-            <tr:outputText value="Properties molecule A"/>
-        </tr:panelGroupLayout>
-    </f:facet>
-    <iav:xrefDataList value="#{binaryInteraction.propertiesA}"/>
-
-</tr:column>
-
-<tr:column headerText="Interactor type" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="typeA_s">
-    <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true" />
-</tr:column>
--->
-
 
 </tr:table>
 

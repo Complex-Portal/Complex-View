@@ -17,8 +17,6 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://intact.ebi.ac.uk/miscel /WEB-INF/intact-miscel.tld">
 
-<tr:messages/>
-
 <tr:panelHeader text="Interaction results">
 
 <!-- RESULT SUMMARY -->
@@ -174,7 +172,7 @@
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
                 </h:panelGroup>
-             </f:facet>
+            </f:facet>
             <f:facet name="chebi">
                 <h:panelGroup>
                     <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
@@ -184,7 +182,6 @@
             <f:facet name="drugbank">
                 <h:panelGroup>
                     <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
                     <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
                 </h:panelGroup>
@@ -243,7 +240,6 @@
             <f:facet name="uniprotkb">
                 <h:panelGroup>
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
                     <iax:goDrugPortProteinView query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
                 </h:panelGroup>
@@ -288,20 +284,20 @@
     </iam:collapsibleIterator>
 </tr:column>
 <!--<tr:column headerText="Names molecule A" sortable="true" sortProperty="aliasA_s" rendered="#{searchBean.expandedView}">-->
-    <!--<tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}"-->
-                 <!--varStatus="rowStatus" rows="0">-->
-        <!--<h:outputText value="#{alias.name}"/>-->
-        <!--<tr:outputText value="; "-->
-                       <!--rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorA.aliases)}"/>-->
-    <!--</tr:iterator>-->
+<!--<tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}"-->
+<!--varStatus="rowStatus" rows="0">-->
+<!--<h:outputText value="#{alias.name}"/>-->
+<!--<tr:outputText value="; "-->
+<!--rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorA.aliases)}"/>-->
+<!--</tr:iterator>-->
 <!--</tr:column>-->
 <!--<tr:column headerText="Names molecule B" sortable="true" sortProperty="aliasB_s" rendered="#{searchBean.expandedView}">-->
-    <!--<tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}"-->
-                 <!--varStatus="rowStatus" rows="0">-->
-        <!--<h:outputText value="#{alias.name}"/>-->
-        <!--<tr:outputText value="; "-->
-                       <!--rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorB.aliases)}"/>-->
-    <!--</tr:iterator>-->
+<!--<tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}"-->
+<!--varStatus="rowStatus" rows="0">-->
+<!--<h:outputText value="#{alias.name}"/>-->
+<!--<tr:outputText value="; "-->
+<!--rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorB.aliases)}"/>-->
+<!--</tr:iterator>-->
 <!--</tr:column>-->
 
 <tr:column headerText="Compound species" sortable="true" sortProperty="taxidA_s">
@@ -406,10 +402,10 @@
                              maxShown="5">
         <c:set var="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
         <tr:goLink text="#{item.identifier}"
-                               shortDesc="#{item.text}"
-                               targetFrame="_blank"
-                               destination="#{xrefUrl}"
-                               disabled="#{xrefUrl == null or xrefUrl == '#'}"/>
+                   shortDesc="#{item.text}"
+                   targetFrame="_blank"
+                   destination="#{xrefUrl}"
+                   disabled="#{xrefUrl == null or xrefUrl == '#'}"/>
     </iam:collapsibleIterator>
 
 </tr:column>
@@ -421,10 +417,10 @@
                              maxShown="5">
         <c:set var="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
         <tr:goLink text="#{item.identifier}"
-                               shortDesc="#{item.text}"
-                               targetFrame="_blank"
-                               destination="#{xrefUrl}"
-                               disabled="#{xrefUrl == null or xrefUrl == '#'}"/>
+                   shortDesc="#{item.text}"
+                   targetFrame="_blank"
+                   destination="#{xrefUrl}"
+                   disabled="#{xrefUrl == null or xrefUrl == '#'}"/>
     </iam:collapsibleIterator>
 </tr:column>
 <tr:column headerText="Compound Interactor type" rendered="#{searchBean.expandedView}" sortable="true"

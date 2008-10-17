@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+
+                template="/WEB-INF/facelets/layout/template.xhtml">
+
+    <ui:define name="additionalHeader">
+        <h:panelGroup rendered="#{searchBean.disclosedTabName == 'molecule'}">
+            <iav:dastyHeader/>
+        </h:panelGroup>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <ui:debug/>
+
+        <tr:panelTabbed position="above">
+
+            <tr:showDetailItem text="Search" 
+                               disclosed="#{disclosedTabName == 'search'}">
+                <tr:messages/>
+                <ui:insert name="searchTabContent"/>
+            </tr:showDetailItem>
+
+            <tr:showDetailItem text="Interactions (#{searchBean.totalResults})"
+                               disabled="#{searchBean.totalResults == 0}"
+                               disclosed="#{disclosedTabName == 'interactions'}">
+                <tr:messages/>
+                <ui:insert name="interactionsTabContent"/>
+            </tr:showDetailItem>
+
+            <tr:showDetailItem text="Browse"
+                               disabled="#{searchBean.interactorTotalResults == 0}"
+                               disclosed="#{disclosedTabName == 'browse'}"
+                               disclosureListener="#{browseBean.createListofIdentifiers}" >
+                 <tr:messages/>
+                <ui:insert name="browseTabContent"/>
+            </tr:showDetailItem>
+
+            <tr:showDetailItem text="List (#{searchBean.interactorTotalResults})"
+                               disabled="#{searchBean.interactorTotalResults == 0}"
+                               disclosed="#{disclosedTabName == 'list'}">
+                <tr:messages/>
+                <ui:insert name="listTabContent"/>
+            </tr:showDetailItem>
+
+            <tr:showDetailItem text="Molecule View" disabled="#{moleculeViewBean.interactor == null}"
+                               disclosed="#{disclosedTabName == 'molecule'}">
+                <tr:messages/>
+                <ui:insert name="moleculeTabContent"/>
+            </tr:showDetailItem>
+
+            <tr:showDetailItem text="Graph" disabled="true" shortDesc="Not implemented"
+                               disclosed="#{disclosedTabName == 'graph'}">
+                <tr:messages/>
+                <ui:insert name="graphContent"/>
+            </tr:showDetailItem>
+
+        </tr:panelTabbed>
+
+    </ui:define>
+
+</ui:composition>

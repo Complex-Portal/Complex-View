@@ -12,8 +12,6 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
-    <tr:messages/>
-
     <tr:panelHeader text="Proteins">
         <tr:panelGroupLayout layout="vertical">
             <f:facet name="separator">
@@ -21,7 +19,7 @@
             </f:facet>
 
             <tr:goLink text="All" targetFrame="_blank" destination=" "/>
-            <tr:commandLink text="By Gene Ontology (GO)" action="gobrowser"/>
+            <tr:commandLink text="By Gene Ontology (GO)" action="browse.gobrowser"/>
             <tr:goLink text="By Interpro Domain" targetFrame="_blank"
                        destination="http://www.ebi.ac.uk/interpro/ISpy?ac=#{browseBean.interproIdentifierList}&amp;mode=protein&amp;sort=ac"/>
             <f:subview id="rectomeView">
@@ -53,6 +51,5 @@
         </tr:panelGroupLayout>
 
     </tr:panelHeader>
-
-
+    
 </ui:composition>

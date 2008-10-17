@@ -4,63 +4,39 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
 
-                template="/WEB-INF/facelets/layout/template.xhtml">
+        template="/main_template.xhtml">
 
-    <ui:define name="additionalHeader">
-        <h:panelGroup rendered="#{searchBean.disclosedTabName == 'molecule'}">
-            <iav:dastyHeader/>
-        </h:panelGroup>
+    <ui:define name="searchTabContent">
+        <ui:include src="/pages/search/search_tab.xhtml"/>
     </ui:define>
 
-    <ui:define name="content">
+    <ui:define name="interactionsTabContent">
+        <ui:include src="/pages/interactions/interactions_tab.xhtml"/>
+    </ui:define>
 
-        <ui:debug/>
+    <ui:define name="browseTabContent">
+        <ui:include src="/pages/browse/browse_tab.xhtml"/>
+    </ui:define>
 
-        <tr:panelTabbed position="above">
+    <ui:define name="listTabContent">
+        <ui:include src="/pages/list/list_tab.xhtml"/>
+    </ui:define>
 
-            <tr:showDetailItem text="Search"
-                               disclosed="#{searchBean.disclosedTabName == 'search'}">
-                <ui:include src="pages/search/search_tab.xhtml"/>
-            </tr:showDetailItem>
+    <ui:define name="moleculeTabContent">
+        <ui:include src="/pages/molecule/molecule_tab.xhtml"/>
+    </ui:define>
 
-            <tr:showDetailItem text="Interactions (#{searchBean.totalResults})"
-                               disabled="#{searchBean.totalResults == 0}"
-                               disclosed="#{searchBean.disclosedTabName == 'interactions'}">
-                <ui:include src="pages/interactions/interactions_tab.xhtml"/>
-            </tr:showDetailItem>
-
-            <tr:showDetailItem text="Browse"
-                               disabled="#{searchBean.interactorTotalResults == 0}"
-                               disclosed="#{searchBean.disclosedTabName == 'Browse'}"
-                               disclosureListener="#{browseBean.createListofIdentifiers}" >
-                <ui:insert name="browseContent">
-                    <ui:include src="pages/browse/browse_tab.xhtml"/>
-                </ui:insert>
-            </tr:showDetailItem>
-
-            <tr:showDetailItem text="List (#{searchBean.interactorTotalResults})"
-                               disabled="#{searchBean.interactorTotalResults == 0}"
-                               disclosed="#{searchBean.disclosedTabName == 'list'}">
-                <ui:include src="pages/list/list_tab.xhtml"/>
-            </tr:showDetailItem>
-
-            <tr:showDetailItem text="Molecule View" disabled="#{moleculeViewBean.interactor == null}"
-                               disclosed="#{searchBean.disclosedTabName == 'molecule'}">
-                <ui:include src="pages/molecule/molecule_tab.xhtml"/>
-            </tr:showDetailItem>
-
-            <tr:showDetailItem text="Graph" disabled="true" shortDesc="Not implemented">
-                <ui:include src="pages/graph/graph_tab.xhtml"/>
-            </tr:showDetailItem>
-
-        </tr:panelTabbed>
-
+    <ui:define name="graphTabContent">
+        <ui:include src="/pages/graph/graph_tab.xhtml"/>
     </ui:define>
 
 </ui:composition>
