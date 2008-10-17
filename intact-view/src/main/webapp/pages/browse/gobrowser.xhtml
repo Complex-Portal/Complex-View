@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+
+                template="/WEB-INF/facelets/layout/template.xhtml">
+
+    <ui:define name="content">
+
+        <tr:messages/>
+
+        <tr:panelHeader text="Gene Ontology Browser">
+
+            Current search: #{searchBean.searchQuery}
+
+            <tr:panelHorizontalLayout partialTriggers="browseBtn">
+                <f:facet name="separator">
+                    <tr:spacer width="50px"/>
+                </f:facet>
+
+                <tr:treeTable var="otw" value="#{goBrowser.goOntologyTreeModel}"
+                        rootNodeRendered="false" rowSelection="multiple">
+                    <f:facet name="nodeStamp">
+                        <tr:column>
+                            <f:facet name="header">
+                                <tr:outputText value="GO Name"/>
+                            </f:facet>
+                            <tr:outputText value="#{otw.term.name}"/>
+                        </tr:column>
+                    </f:facet>
+                    <tr:column>
+                        <f:facet name="header">
+                            <tr:outputText value="GO ID"/>
+                        </f:facet>
+                        <tr:outputText value="#{otw.term.id}"/>
+                    </tr:column>
+                    <tr:column>
+                        <f:facet name="header">
+                            <tr:outputText value="# Interactors"/>
+                        </f:facet>
+                        <tr:outputText value="#{otw.interactorCount}"/>
+                    </tr:column>
+                    <tr:column>
+                        <div style="background-color: #{otw.interactorColour}; height:8px; width:#{(otw.interactorCount * 200) / otw.parent.childrenInteractorTotalCount}px">
+
+                        </div>
+                    </tr:column>
+                </tr:treeTable>
+
+                
+
+            </tr:panelHorizontalLayout>
+
+        </tr:panelHeader>
+
+    </ui:define>
+
+
+</ui:composition>

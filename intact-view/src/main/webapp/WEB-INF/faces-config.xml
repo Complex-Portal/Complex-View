@@ -21,4 +21,34 @@
         <phase-listener>uk.ac.ebi.intact.view.webapp.application.SearchConfigCheckPhaseListener</phase-listener>
     </lifecycle>
 
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>main</from-outcome>
+            <to-view-id>/main.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>firstTime</from-outcome>
+            <to-view-id>/first_time_config.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>gobrowser</from-outcome>
+            <to-view-id>/pages/browse/gobrowser.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <!-- help dialogs -->
+    <navigation-rule>
+        <navigation-case>
+          <from-outcome>dialog:help.miql</from-outcome>
+          <to-view-id>/pages/search/help_miql.xhtml</to-view-id>
+        </navigation-case>
+      </navigation-rule>
+
 </faces-config>

@@ -6,13 +6,11 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
@@ -28,7 +26,8 @@ import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Main search controller
@@ -39,7 +38,7 @@ import java.util.*;
 @Controller("searchBean")
 @Scope("conversation.access")
 @ConversationName("general")
-@ViewController(viewIds = {"/main.xhtml"})
+@ViewController(viewIds = {"/main.xhtml", "/pages/browse/gobrowser.xhtml"})
 public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);

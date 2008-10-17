@@ -16,7 +16,6 @@
     <!-- Binary search -->
     <bean id="appConfigBean" class="uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean" />
     <bean id="ontologyBean" class="uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean" depends-on="intactInitBean" />
-    <bean id="browseBean" class="uk.ac.ebi.intact.view.webapp.controller.browse.BrowseController" depends-on="searchBean" />
 
     <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->
 

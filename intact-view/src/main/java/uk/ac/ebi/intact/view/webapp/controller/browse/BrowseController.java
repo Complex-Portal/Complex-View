@@ -15,25 +15,24 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.trinidad.event.DisclosureEvent;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
-import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.apache.myfaces.trinidad.event.DisclosureEvent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import psidev.psi.mi.tab.model.Alias;
+import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.model.CvDatabase;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Collection;
-
-import psidev.psi.mi.tab.model.CrossReference;
-import psidev.psi.mi.tab.model.Alias;
+import java.util.Set;
 
 /**
  * Controller for the browse tab
@@ -42,7 +41,7 @@ import psidev.psi.mi.tab.model.Alias;
  * @version $Id$
  * @since 2.0.1-SNAPSHOT
  */
-@Controller
+@Controller( "browseBean" )
 @Scope( "conversation.access" )
 @ConversationName( "general" )
 public class BrowseController {

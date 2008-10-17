@@ -39,7 +39,9 @@
                                disabled="#{searchBean.interactorTotalResults == 0}"
                                disclosed="#{searchBean.disclosedTabName == 'Browse'}"
                                disclosureListener="#{browseBean.createListofIdentifiers}" >
-                <ui:include src="pages/browse/browse_tab.xhtml"/>
+                <ui:insert name="browseContent">
+                    <ui:include src="pages/browse/browse_tab.xhtml"/>
+                </ui:insert>
             </tr:showDetailItem>
 
             <tr:showDetailItem text="List (#{searchBean.interactorTotalResults})"

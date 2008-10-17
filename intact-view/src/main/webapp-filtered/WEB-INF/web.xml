@@ -25,15 +25,15 @@
 
     <!-- MyFaces -->
 
-    <context-param>
-        <description>Comma separated list of URIs of (additional) faces config files.
-            (e.g. /WEB-INF/my-config.xml)
-            See JSF 1.0 PRD2, 10.3.2
-            Attention: You do not need to put /WEB-INF/faces-config.xml in here.
-        </description>
-        <param-name>javax.faces.CONFIG_FILES</param-name>
-        <param-value>/WEB-INF/navigation-faces-config.xml</param-value>
-    </context-param>
+    <!--<context-param>-->
+        <!--<description>Comma separated list of URIs of (additional) faces config files.-->
+            <!--(e.g. /WEB-INF/my-config.xml)-->
+            <!--See JSF 1.0 PRD2, 10.3.2-->
+            <!--Attention: You do not need to put /WEB-INF/faces-config.xml in here.-->
+        <!--</description>-->
+        <!--<param-name>javax.faces.CONFIG_FILES</param-name>-->
+        <!--<param-value>/WEB-INF/navigation-faces-config.xml</param-value>-->
+    <!--</context-param>-->
     <context-param>
         <description>State saving method: "client" or "server" (= default)
             See JSF Specification 2.5.3
