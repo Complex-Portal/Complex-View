@@ -168,7 +168,7 @@
     <!--add compound links -->
     <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus"
                  rows="0">
-        <tr:switcher facetName="#{xref.database}" defaultFacet="defaultTargetDatabase">
+        <tr:switcher facetName="#{xref.database}">
             <f:facet name="uniprotkb">
                 <h:panelGroup>
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
@@ -194,9 +194,6 @@
                     <br/>
                 </h:panelGroup>
             </f:facet>
-            <!--<f:facet name="defaultTargetDatabase">-->
-            <!--<tr:outputText value="#{xrefs.database}"/>-->
-            <!--</f:facet>-->
         </tr:switcher>
     </tr:iterator>
 </tr:column>
@@ -241,7 +238,7 @@
     <!--add target links -->
     <tr:iterator var="xref" value="#{binaryInteraction.interactorB.identifiers}"
                  varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.database}" defaultFacet="defaultTargetDatabase">
+        <tr:switcher facetName="#{xref.database}">
             <f:facet name="uniprotkb">
                 <h:panelGroup>
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
@@ -267,9 +264,6 @@
                     <br/>
                 </h:panelGroup>
             </f:facet>
-            <!--<f:facet name="defaultTargetDatabase">-->
-            <!--<tr:outputText value="#{xrefs.database}"/>-->
-            <!--</f:facet>-->
         </tr:switcher>
     </tr:iterator>
 </tr:column>
