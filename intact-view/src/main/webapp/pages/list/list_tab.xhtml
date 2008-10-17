@@ -14,6 +14,20 @@
 
 <tr:messages/>
 
+<tr:spacer height="10"/>
+<tr:panelGroupLayout layout="horizontal" id="externalLinks">
+    <f:facet name="separator">
+        <tr:spacer width="10" height="1"/>
+    </f:facet>
+    <tr:goButton text="Pathways" destination=""/>
+    <tr:goButton text="Domains" destination=""/>
+    <tr:goButton text="mRNA Expression" destination=""/>
+    <tr:goButton text="Chromosome Location" destination=""/>
+
+
+</tr:panelGroupLayout>
+
+
 <tr:panelHeader text="Interactors">
 
 <!-- RESULT SUMMARY -->
@@ -78,16 +92,73 @@
     <tr:outputText value="#{status.index + 1}"/>
 </tr:column>
 
-<tr:column headerText="Accession number/s" sortable="true" sortProperty="idA_s">
-    <iav:xrefDataList value="#{binaryInteraction.interactorA.identifiers}"/>
+<tr:column headerText="Names" sortable="true" sortProperty="aliasA_s">
+    <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">
+        <h:outputText value="#{alias.name}"/>
+        <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+    </tr:iterator>
 </tr:column>
+
+
 <tr:column headerText="Links">
-    <tr:commandLink text="Molecule view"
+
+     <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}"
+                 varStatus="rowStatus" rows="0">
+        <tr:switcher facetName="#{xref.database}">
+            <f:facet name="uniprotkb">
+                <h:panelGroup>
+                    <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                    <iax:goDrugPortProteinView query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="chebi">
+                <h:panelGroup>
+                    <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="drugbank">
+                <h:panelGroup>
+                    <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="intact">
+                <h:panelGroup rendered="#{binaryInteraction.interactorA.interactorType.identifier == 'MI:0326'}">
+                    <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
+            </f:facet>
+        </tr:switcher>
+    </tr:iterator>
+
+   <!-- <tr:commandLink text="Molecule view"
                     rendered="#{binaryInteraction.interactorTypeA[0].identifier == 'MI:0326'}"
                     action="#{searchBean.doDiscloseMoleculeViewTab}">
         <f:setPropertyActionListener value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}" target="#{moleculeViewBean.interactorAc}"/>
-    </tr:commandLink>
+    </tr:commandLink>-->
 </tr:column>
+
+<tr:column headerText="Species" sortable="true" sortProperty="taxidA_s">
+     <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
+            <tr:iterator var="xref" value="#{organism.identifiers}" varStatus="rowStatus">
+                <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
+            </tr:iterator>
+            <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
+        </tr:iterator>
+</tr:column>
+
+<tr:column headerText="DGI Accession number" sortable="true" sortProperty="idA_s">
+   <h:outputText value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
+</tr:column>
+
+<tr:column headerText="Description" sortable="true" sortProperty="idA_s">
+    <h:outputText value="yet to fix"/>
+</tr:column>
+
+<!--
 <tr:column headerText="Interactor Type" sortable="true"
            sortProperty="typeA_s">
     <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
@@ -95,25 +166,14 @@
 <tr:column headerText="Alternative id/s" sortable="true" sortProperty="altidA_s">
     <iav:xrefDataList value="#{binaryInteraction.interactorA.alternativeIdentifiers}" disableLinks="true"/>
 </tr:column>
-<tr:column headerText="Names" sortable="true" sortProperty="aliasA_s">
-    <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">
-        <h:outputText value="#{alias.name}"/>
-        <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
-    </tr:iterator>
-</tr:column>
-<tr:column headerText="Species" sortable="true" sortProperty="taxidA_s">
-    <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
-        <tr:iterator var="xref" value="#{organism.identifiers}" varStatus="rowStatus">
-            <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
-        </tr:iterator>
-        <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
-    </tr:iterator>
-</tr:column>
+-->
+
 
 <!--<tr:column headerText="Interaction AC" sortable="true" sortProperty="interaction_id_s">-->
     <!--<bs:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>-->
 <!--</tr:column>-->
 
+<!--
 <tr:column sortable="true" sortProperty="propertiesA_s">
     <f:facet name="header">
         <tr:panelGroupLayout layout="vertical">
@@ -128,6 +188,7 @@
            sortProperty="typeA_s">
     <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true" />
 </tr:column>
+-->
 
 
 </tr:table>
