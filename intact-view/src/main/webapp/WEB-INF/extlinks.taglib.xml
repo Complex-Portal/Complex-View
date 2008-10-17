@@ -19,6 +19,14 @@
         <source>facelets/components/links/GoDrugbank.xhtml</source>
     </tag>
     <tag>
+        <tag-name>goDrugPortProteinView</tag-name>
+        <source>facelets/components/links/GoDrugPortProteinView.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>goDrugPortChemicalView</tag-name>
+        <source>facelets/components/links/GoDrugPortChemicalView.xhtml</source>
+    </tag>
+    <tag>
         <tag-name>goIntepro</tag-name>
         <source>facelets/components/links/GoInterpro.xhtml</source>
     </tag>
