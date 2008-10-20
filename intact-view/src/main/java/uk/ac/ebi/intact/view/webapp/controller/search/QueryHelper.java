@@ -24,27 +24,89 @@ import uk.ac.ebi.intact.util.ols.Term;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
- * TODO comment this!
+ * Query utilities.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
 public class QueryHelper {
 
+    public static final Pattern CHEBI_PATTERN = Pattern.compile( "CHEBI:\\d+" );
+    public static final Pattern GO_PATTERN = Pattern.compile( "GO:\\d+" );
+
+    private static final Log log = LogFactory.getLog( QueryHelper.class );
+
     private static final String WILDCARD = "*";
 
     public static String prepareQuery(String query) {
         if (query == null) {
-            throw new NullPointerException("query");
+            throw new NullPointerException("You must give a non null query");
         }
 
         if (query.length() == 0) {
             return WILDCARD;
         }
 
+        if( queryNeedsEscaping( query ) ) {
+            query = "\""+ query +"\"";
+            if ( log.isDebugEnabled() ) {
+                log.debug( "This looks like a GO or CHEBI identifier, we are escaping to: " + query );
+            }
+        }
+        
         return query;
+    }
+
+    private static boolean queryNeedsEscaping( String query ) {
+        query = query.toUpperCase().trim();
+        return isGoIdentifier( query ) || isChebiIdentifier( query );
+    }
+
+    private static boolean isGoIdentifier(String s) {
+        return GO_PATTERN.matcher( s ).matches();
+    }
+
+    private static boolean isChebiIdentifier(String s) {
+        return CHEBI_PATTERN.matcher( s ).matches();
+    }
+
+    private static String escapeQueryIfNecessary( String query ) {
+
+        String processedQuery = query;
+
+        final String[] subQueries = query.split( " " );
+        switch( subQueries.length ) {
+
+            case 0:
+                // query seems empty, do nothing
+                break;
+            case 1:
+                // single parameter, proceed...
+                String subQuery = subQueries[0];
+
+                boolean negative = false;
+                if( subQuery.startsWith( "-" )) {
+                    negative = true;
+                    // remove leading '-'
+                    subQuery = subQuery.substring( 1 );
+                }
+
+                if( subQuery.toLowerCase(  ).startsWith( "go:" )
+                    || subQuery.toLowerCase(  ).startsWith( "chebi:" ) ) {
+                    processedQuery = (negative ? "-" : "") + "\""+ subQuery +"\"";
+                }
+
+                if (log.isDebugEnabled()) log.debug("The query "+ query +" was escaped: " + processedQuery );
+
+                break;
+            default:
+                // more than 1, currently ignore
+        }
+
+        return processedQuery;
     }
 
     /**

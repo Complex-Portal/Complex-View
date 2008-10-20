@@ -169,11 +169,11 @@ public class SearchController extends JpaBaseController {
             bindings.getRangeChoiceBar().setFirst(0);
         }
 
-        if (log.isDebugEnabled()) log.debug("Searching (raw): " + query);
+        if (log.isDebugEnabled()) log.debug("Searching interactions (raw): " + query);
 
         query = QueryHelper.prepareQuery(query);
 
-        if (log.isDebugEnabled()) log.debug("Searching (prepared query): " + query);
+        if (log.isDebugEnabled()) log.debug("Searching interactions (prepared query): " + query);
 
         final SearchConfig config = appConfigBean.getConfig();
 
@@ -216,7 +216,11 @@ public class SearchController extends JpaBaseController {
             interactorBindings.getRangeChoiceBar().setFirst(0);
         }
 
-        if (log.isDebugEnabled()) log.debug("Searching interactors for: " + query);
+        if (log.isDebugEnabled()) log.debug("Searching interactors (raw): " + query);
+
+        query = QueryHelper.prepareQuery(query);
+
+        if (log.isDebugEnabled()) log.debug("Searching interactors (prepared query): " + query);
 
         String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
 
