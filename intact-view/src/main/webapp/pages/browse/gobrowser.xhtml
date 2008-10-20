@@ -41,7 +41,7 @@
                 </f:facet>
 
                 <tr:treeTable var="otw" value="#{goBrowser.goOntologyTreeModel}"
-                        rootNodeRendered="false" rowSelection="multiple">
+                        rootNodeRendered="false" rowDisclosureListener="#{goBrowser.processFocus}" rowSelection="multiple">
                     <f:facet name="nodeStamp">
                         <tr:column>
                             <f:facet name="header">

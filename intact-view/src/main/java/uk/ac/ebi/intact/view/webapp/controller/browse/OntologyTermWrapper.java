@@ -171,6 +171,10 @@ public class OntologyTermWrapper {
         return childrenInteractionTotalCount;
     }
 
+    public void setChildrenInteractionTotalCount(int childrenInteractionTotalCount) {
+        this.childrenInteractionTotalCount = childrenInteractionTotalCount;
+    }
+
     private class OntologyTermWrapperComparator implements Comparator<OntologyTermWrapper> {
 
         public int compare(OntologyTermWrapper o1, OntologyTermWrapper o2) {

@@ -17,6 +17,9 @@ package uk.ac.ebi.intact.view.webapp.controller.browse;
 
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.myfaces.trinidad.model.ChildPropertyTreeModel;
+import org.apache.myfaces.trinidad.event.DisclosureEvent;
+import org.apache.myfaces.trinidad.event.RowDisclosureEvent;
+import org.apache.myfaces.trinidad.event.FocusEvent;
 import uk.ac.ebi.intact.bridges.ontologies.OntologyIndexSearcher;
 import uk.ac.ebi.intact.bridges.ontologies.term.LazyLoadedOntologyTerm;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
@@ -31,18 +34,22 @@ import java.util.*;
  */
 public class GoOntologyTreeModel extends ChildPropertyTreeModel {
 
-    private String[] interactorColours = new String[] {"#73b360", "#84bc73", "#96c688", "#a7cf9b","#cae2c3", "#dcecd7"};
-    private String[] interactionColours = new String[] {"#006666", "#1f7979", "#408c8c", "#5e9e9e","#a1c7c7", "#bdd7d7"};
+    private String[] INTERACTOR_COLOURS = new String[] {"#73b360", "#84bc73", "#96c688", "#a7cf9b","#cae2c3", "#dcecd7"};
+    private String[] INTERACTION_COLOURS = new String[] {"#006666", "#1f7979", "#408c8c", "#5e9e9e","#a1c7c7", "#bdd7d7"};
 
-    public GoOntologyTreeModel(OntologyTermWrapper instance) {
-        super(instance, "children");
-    }
+    private IndexSearcher interactionIndexSearcher;
+    private IndexSearcher interactorIndexSearcher;
+    private String baseQuery;
 
     public GoOntologyTreeModel(final OntologyIndexSearcher ontologyIndexSearcher,
                                final IndexSearcher interactionIndexSearcher,
                                final IndexSearcher interactorIndexSearcher,
                                final String baseQuery) {
         setChildProperty("children");
+
+        this.interactionIndexSearcher = interactionIndexSearcher;
+        this.interactorIndexSearcher = interactorIndexSearcher;
+        this.baseQuery = baseQuery;
 
         OntologyTerm root = new OntologyTerm() {
             public String getId() {
@@ -91,27 +98,46 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
 
     @Override
     protected Object getChildData(Object parentData) {
-        List<OntologyTermWrapper> children = (List<OntologyTermWrapper>) super.getChildData(parentData);
+        //List<OntologyTermWrapper> children = (List<OntologyTermWrapper>) super.getChildData(parentData);
+        List<OntologyTermWrapper> children = new ArrayList<OntologyTermWrapper>();
 
         OntologyTermWrapper parent = (OntologyTermWrapper) parentData;
 
-        String childrenInteractionColour;
-        String childrenInteractorColour;
+        String childrenInteractorColour = calculateNextColour(parent);
 
-        if (parent.getInteractorColour() == null) {
-            childrenInteractionColour = interactionColours[0];
-            childrenInteractorColour = interactorColours[0];
-        } else {
-            childrenInteractionColour = nextColour(interactionColours, parent.getInteractionColour());
-            childrenInteractorColour = nextColour(interactorColours, parent.getInteractorColour());
+        int childrenInteractorTotalCount = 0;
+        int childrenInteractionTotalCount = 0;
+
+        for (OntologyTerm child : parent.getTerm().getChildren()) {
+            OntologyTermWrapper otwChild = new OntologyTermWrapper(child, interactionIndexSearcher, interactorIndexSearcher, baseQuery, false);
+
+            //if (otwChild.getInteractorCount() > 0) {
+                otwChild.setInteractorColour(childrenInteractorColour);
+
+                children.add(otwChild);
+                otwChild.setParent(parent);
+                childrenInteractionTotalCount = childrenInteractorTotalCount + otwChild.getInteractorCount();
+                childrenInteractionTotalCount = childrenInteractionTotalCount + otwChild.getInteractionCount();
+            //}
+
+            parent.setChildrenInteractorTotalCount(childrenInteractorTotalCount);
+            parent.setChildrenInteractionTotalCount(childrenInteractionTotalCount);
         }
 
-        for (OntologyTermWrapper child : children) {
-           child.setInteractionColour(childrenInteractionColour);
-           child.setInteractorColour(childrenInteractorColour); 
-        }
+        Collections.sort(children, new OntologyTermWrapperComparator());
 
         return children;
+    }
+
+    private String calculateNextColour(OntologyTermWrapper parent) {
+        String childrenInteractorColour = null;
+
+        if (parent.getInteractorColour() == null) {
+            childrenInteractorColour = INTERACTOR_COLOURS[0];
+        } else {
+            childrenInteractorColour = nextColour(INTERACTOR_COLOURS, parent.getInteractorColour());
+        }
+        return childrenInteractorColour;
     }
 
     private String nextColour(String[] colourArray, String interactorColour) {
@@ -125,5 +151,16 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
             }
         }
         return colourArray[0];
+    }
+
+    private class OntologyTermWrapperComparator implements Comparator<OntologyTermWrapper> {
+
+        public int compare(OntologyTermWrapper o1, OntologyTermWrapper o2) {
+            if (o1.getInteractorCount() > o2.getInteractorCount()) {
+                return -1;
+            } else {
+                return +1;
+            }
+        }
     }
 }
