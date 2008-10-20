@@ -139,16 +139,16 @@ public class SearchController extends JpaBaseController {
     public String doBinarySearchAction() {
         displayQuery = searchQuery;
         doBinarySearch(searchQuery);
-        return "main";
+        return "interactions";
     }
 
     public String doOntologySearchAction() {
         if (ontologySearchQuery == null) {
             addErrorMessage("The ontology query box was empty", "No search was submitted");
-            return "main";
+            return "interactions";
         }
         doOntologySearch( ontologySearchQuery );
-        return "main";
+        return "interactions";
     }
 
     public void doOntologySearch(String ontologySearch) {

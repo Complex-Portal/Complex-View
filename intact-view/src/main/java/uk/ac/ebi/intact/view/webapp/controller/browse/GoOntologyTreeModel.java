@@ -32,12 +32,14 @@ import java.util.*;
 public class GoOntologyTreeModel extends ChildPropertyTreeModel {
 
     private String[] interactorColours = new String[] {"#73b360", "#84bc73", "#96c688", "#a7cf9b","#cae2c3", "#dcecd7"};
+    private String[] interactionColours = new String[] {"#006666", "#1f7979", "#408c8c", "#5e9e9e","#a1c7c7", "#bdd7d7"};
 
     public GoOntologyTreeModel(OntologyTermWrapper instance) {
         super(instance, "children");
     }
 
     public GoOntologyTreeModel(final OntologyIndexSearcher ontologyIndexSearcher,
+                               final IndexSearcher interactionIndexSearcher,
                                final IndexSearcher interactorIndexSearcher,
                                final String baseQuery) {
         setChildProperty("children");
@@ -82,7 +84,7 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
             }
         };
 
-        OntologyTermWrapper otwRoot = new OntologyTermWrapper(root, interactorIndexSearcher, baseQuery);
+        OntologyTermWrapper otwRoot = new OntologyTermWrapper(root, interactionIndexSearcher, interactorIndexSearcher, baseQuery);
 
         setWrappedData(otwRoot);
     }
@@ -93,15 +95,19 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
 
         OntologyTermWrapper parent = (OntologyTermWrapper) parentData;
 
-        String childrenInteractorColour = null;
+        String childrenInteractionColour;
+        String childrenInteractorColour;
 
         if (parent.getInteractorColour() == null) {
+            childrenInteractionColour = interactionColours[0];
             childrenInteractorColour = interactorColours[0];
         } else {
+            childrenInteractionColour = nextColour(interactionColours, parent.getInteractionColour());
             childrenInteractorColour = nextColour(interactorColours, parent.getInteractorColour());
         }
 
         for (OntologyTermWrapper child : children) {
+           child.setInteractionColour(childrenInteractionColour);
            child.setInteractorColour(childrenInteractorColour); 
         }
 

@@ -37,27 +37,39 @@ import java.util.List;
 public class OntologyTermWrapper {
 
     private OntologyTerm term;
+    private int interactionCount;
     private int interactorCount;
+    private IndexSearcher interactionIndexSearcher;
     private IndexSearcher interactorIndexSearcher;
     private String baseQuery;
 
+    private int childrenInteractionTotalCount;
     private int childrenInteractorTotalCount;
 
     private OntologyTermWrapper parent;
 
     private List<OntologyTermWrapper> children;
 
+    private String interactionColour;
     private String interactorColour;
 
-    public OntologyTermWrapper(OntologyTerm term, IndexSearcher interactorIndexSearcher, String baseQuery) {
+    protected OntologyTermWrapper(OntologyTerm term, IndexSearcher interactionIndexSearcher, IndexSearcher interactorIndexSearcher, String baseQuery) {
+        this(term, interactionIndexSearcher, interactorIndexSearcher, baseQuery, true);
+    }
+
+    protected OntologyTermWrapper(OntologyTerm term, IndexSearcher interactionIndexSearcher, IndexSearcher interactorIndexSearcher, String baseQuery, boolean countInteractors) {
         this.term = term;
+        this.interactionIndexSearcher = interactionIndexSearcher;
         this.interactorIndexSearcher = interactorIndexSearcher;
         this.baseQuery = baseQuery;
 
         if (term == null) throw new NullPointerException("Term is necessary");
         if (interactorIndexSearcher == null) throw new NullPointerException("interactorIndexSearcher is necessary");
-        
-        this.interactorCount = countInteractors(term.getId(), interactorIndexSearcher, baseQuery);
+
+        if (countInteractors) {
+            this.interactionCount = count(term.getId(), interactionIndexSearcher, baseQuery);
+            this.interactorCount = count(term.getId(), interactorIndexSearcher, baseQuery);
+        }
     }
 
     public OntologyTerm getTerm() {
@@ -86,11 +98,12 @@ public class OntologyTermWrapper {
         children = new ArrayList<OntologyTermWrapper>();
 
         for (OntologyTerm child : term.getChildren()) {
-            OntologyTermWrapper otwChild = new OntologyTermWrapper(child, interactorIndexSearcher, baseQuery);
+            OntologyTermWrapper otwChild = new OntologyTermWrapper(child, interactionIndexSearcher, interactorIndexSearcher, baseQuery);
 
             if (otwChild.getInteractorCount() > 0) {
                 children.add(otwChild);
                 otwChild.setParent(this);
+                childrenInteractionTotalCount = childrenInteractionTotalCount + otwChild.getInteractionCount();
                 childrenInteractorTotalCount = childrenInteractorTotalCount + otwChild.getInteractorCount();
             }
         }
@@ -100,7 +113,7 @@ public class OntologyTermWrapper {
         return children;
     }
 
-    private int countInteractors(String id, IndexSearcher indexSearcher, String baseQuery)  {
+    private int count(String id, IndexSearcher indexSearcher, String baseQuery)  {
         String searchQuery = baseQuery + " properties:\"" + id + "\"";
 
         try {
@@ -130,12 +143,32 @@ public class OntologyTermWrapper {
         return childrenInteractorTotalCount;
     }
 
+    public void setChildrenInteractorTotalCount(int childrenInteractorTotalCount) {
+        this.childrenInteractorTotalCount = childrenInteractorTotalCount;
+    }
+
     public String getInteractorColour() {
         return interactorColour;
     }
 
     public void setInteractorColour(String interactorColour) {
         this.interactorColour = interactorColour;
+    }
+
+    public String getInteractionColour() {
+        return interactionColour;
+    }
+
+    public void setInteractionColour(String interactionColour) {
+        this.interactionColour = interactionColour;
+    }
+
+    public int getInteractionCount() {
+        return interactionCount;
+    }
+
+    public int getChildrenInteractionTotalCount() {
+        return childrenInteractionTotalCount;
     }
 
     private class OntologyTermWrapperComparator implements Comparator<OntologyTermWrapper> {

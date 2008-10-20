@@ -45,6 +45,7 @@ public class GoBrowserController extends BaseController{
     private SearchController searchController;
 
     private OntologyIndexSearcher ontologyIndexSearcher;
+    private IndexSearcher interactionIndexSearcher;
     private IndexSearcher interactorIndexSearcher;
 
     private GoOntologyTreeModel goOntologyTreeModel;
@@ -57,6 +58,7 @@ public class GoBrowserController extends BaseController{
     public void init() {
         try {
             ontologyIndexSearcher = new OntologyIndexSearcher(configuration.getDefaultOntologiesIndexLocation());
+            interactionIndexSearcher = new IndexSearcher(configuration.getDefaultIndexLocation());
             interactorIndexSearcher = new IndexSearcher(configuration.getDefaultInteractorIndexLocation());
         } catch (Exception e) {
             addErrorMessage("Problem creating ontology index searcher", e.getMessage());
@@ -68,7 +70,7 @@ public class GoBrowserController extends BaseController{
             searchQuery = "";
         }
 
-        goOntologyTreeModel = new GoOntologyTreeModel(ontologyIndexSearcher, interactorIndexSearcher, searchQuery);
+        goOntologyTreeModel = new GoOntologyTreeModel(ontologyIndexSearcher, interactionIndexSearcher, interactorIndexSearcher, searchQuery);
 
     }
 
@@ -76,6 +78,7 @@ public class GoBrowserController extends BaseController{
     @PreDestroy
     public void destroy() {
         try {
+            interactionIndexSearcher.close();
             interactorIndexSearcher.close();
             ontologyIndexSearcher.close();
         } catch (IOException e) {

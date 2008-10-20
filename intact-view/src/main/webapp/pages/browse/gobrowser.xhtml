@@ -19,9 +19,21 @@
 
     <ui:define name="browseTabContent">
 
+        <tr:commandLink text="&lt; Back to Browse options" action="browse"/>
+
         <tr:panelHeader text="Gene Ontology Browser">
 
-            Current search: #{searchBean.searchQuery}
+            <tr:panelGroupLayout>
+                <f:facet name="separator">
+                    <tr:spacer height="5"/>
+                </f:facet>
+
+
+            <tr:group>
+                <strong>Query: </strong>
+                <ebi:outputText id="queryText" value="#{searchBean.displayQuery}" maxLength="50"
+                                expandMessage="(see entire query)" collapseMessage="(collapse)"/>
+            </tr:group>
 
             <tr:panelHorizontalLayout partialTriggers="browseBtn">
                 <f:facet name="separator">
@@ -51,15 +63,29 @@
                         <tr:outputText value="#{otw.interactorCount}"/>
                     </tr:column>
                     <tr:column>
-                        <div style="background-color: #{otw.interactorColour}; height:8px; width:#{(otw.interactorCount * 200) / otw.parent.childrenInteractorTotalCount}px">
+                        <f:facet name="header">
+                            <tr:outputText value="# Interactions"/>
+                        </f:facet>
+                        <tr:outputText value="#{otw.interactionCount}"/>
+                    </tr:column>
+                    <tr:column>
+                        <trh:tableLayout>
+                            <trh:rowLayout><trh:cellFormat>
+                                <div style="background-color: #{otw.interactorColour}; height:8px; width:#{(otw.interactorCount * 300) / otw.parent.childrenInteractorTotalCount}px">
+                                </div>
+                            </trh:cellFormat></trh:rowLayout>
+                            <trh:rowLayout><trh:cellFormat>
+                                <div style="background-color: #{otw.interactionColour}; height:8px; width:#{(otw.interactionCount * 300) / otw.parent.childrenInteractionTotalCount}px">
+                                </div>
+                            </trh:cellFormat></trh:rowLayout>
+                        </trh:tableLayout>
 
-                        </div>
                     </tr:column>
                 </tr:treeTable>
 
-                
-
             </tr:panelHorizontalLayout>
+
+            </tr:panelGroupLayout>
 
         </tr:panelHeader>
 
