@@ -140,12 +140,20 @@
 </tr:column>
 
 <tr:column headerText="Species" sortable="true" sortProperty="taxidA_s">
-     <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
-            <tr:iterator var="xref" value="#{organism.identifiers}" varStatus="rowStatus">
-                <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
+    <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="OtherType">
+        <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
+            <tr:outputText value="  "/>
+        </f:facet>
+        <f:facet name="OtherType">
+            <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
+                <tr:iterator var="xref" value="#{organism.identifiers}"
+                             varStatus="rowStatus" rows="0">
+                    <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
+                </tr:iterator>
+                <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>
             </tr:iterator>
-            <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
-        </tr:iterator>
+        </f:facet>
+    </tr:switcher>
 </tr:column>
 
 <tr:column headerText="DGI Accession number" sortable="true" sortProperty="idA_s">
