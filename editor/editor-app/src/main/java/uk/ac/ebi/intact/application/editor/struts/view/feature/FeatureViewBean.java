@@ -407,6 +407,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
     protected Feature createAnnotatedObjectFromView() throws IntactException {
         Feature feature = syncAnnotatedObject();
 
+        RangeDao rangeDao = DaoProvider.getDaoFactory().getRangeDao();
         // The feature type for the current feature.
         CvObjectDao<CvFeatureType> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvFeatureType.class);
         CvFeatureType featureType = cvObjectDao.getByShortLabel(getCvFeatureType());
@@ -461,6 +462,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
             if(correspondingRange != null){
                feature.removeRange(correspondingRange);
                range.setFeature(null);
+               rangeDao.delete( correspondingRange );
             }
         }
 
@@ -479,7 +481,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
         // know it has been already persisted by persist() call.
         // Looks like we can do without this method call.
 //        user.update(feature);
-
+//        DaoProvider.getDaoFactory().getFeatureDao().saveOrUpdate( feature );
 
         return feature;
     }
