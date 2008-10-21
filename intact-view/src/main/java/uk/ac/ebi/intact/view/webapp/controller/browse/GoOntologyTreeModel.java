@@ -15,18 +15,18 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.myfaces.trinidad.model.ChildPropertyTreeModel;
-import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.event.RowDisclosureEvent;
-import org.apache.myfaces.trinidad.event.FocusEvent;
+import org.apache.myfaces.trinidad.model.ChildPropertyTreeModel;
 import uk.ac.ebi.intact.bridges.ontologies.OntologyIndexSearcher;
 import uk.ac.ebi.intact.bridges.ontologies.term.LazyLoadedOntologyTerm;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
+import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 
 import java.util.*;
@@ -193,10 +193,14 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
         try {
             long startTime = System.currentTimeMillis();
 
-            Query query = new QueryParser("identifier", new StandardAnalyzer()).parse(searchQuery);
+            String[] defaultFields = new IntactSearchEngine("").getSearchFields();
+
+            QueryParser parser = new MultiFieldQueryParser(defaultFields, new StandardAnalyzer());
+
+            Query query = parser.parse(searchQuery);
             Hits hits = indexSearcher.search(query);
 
-            System.out.println("Counted: "+searchQuery+" - "+hits.length()+" / Elapsed time: "+(System.currentTimeMillis()-startTime)+" ms");
+            System.out.println("Counted: "+query.toString()+" - "+hits.length()+" / Elapsed time: "+(System.currentTimeMillis()-startTime)+" ms ");
 
             int count = hits.length();
 
@@ -208,7 +212,15 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
     }
 
     private String prepareQuery(String id, String baseQuery) {
-        return "(" + baseQuery + ") AND properties:\"" + id + "\"";
+        StringBuilder query = new StringBuilder();
+
+        if (baseQuery != null && !baseQuery.isEmpty()) {
+            query.append("(").append(baseQuery).append(") AND ");
+        }
+
+        query.append("properties:\"").append(id).append("\"");
+
+        return query.toString();
     }
 
     private OntologyTermWrapper getSelectedData(Integer[] indexes) {
@@ -219,7 +231,6 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
         OntologyTermWrapper parent = null;
 
         for (int i=1; i<indexes.length; i++) {
-            System.out.println("\tGetting "+indexes[i]+" from "+listChildren);
             parent = listChildren.get(indexes[i]);
             listChildren = (List<OntologyTermWrapper>) getChildData(parent);
         }
