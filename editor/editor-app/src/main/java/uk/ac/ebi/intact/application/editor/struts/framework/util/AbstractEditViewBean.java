@@ -469,20 +469,27 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     public Collection<Component> getCorrespondingComponent(Interaction interaction, ComponentBean cb){
 
         Collection<Component> potentialComps = new ArrayList<Component>();
-        for(Component component : interaction.getComponents()){
-            if(!component.getInteractor().getAc().equals(cb.getInteractorAc())){
+        for ( Component component : interaction.getComponents() ) {
+
+            String interactorAc = component.getInteractor().getAc();
+            if ( interactorAc == null || !interactorAc.equals( cb.getInteractorAc() ) ) {
                 continue;
             }
-            if(!component.getCvExperimentalRole().getShortLabel().equals(cb.getExpRole())){
+
+            /*if(!component.getInteractor().getAc().equals(cb.getInteractorAc())){
+                continue;
+            }*/
+
+            if ( !component.getCvExperimentalRole().getShortLabel().equals( cb.getExpRole() ) ) {
                 continue;
             }
-            if(!component.getCvBiologicalRole().getShortLabel().equals(cb.getBioRole())){
+            if ( !component.getCvBiologicalRole().getShortLabel().equals( cb.getBioRole() ) ) {
                 continue;
             }
-            if(component.getBindingDomains().size() != cb.getFeatures().size()){
+            if ( component.getBindingDomains() == null || component.getBindingDomains().size() != cb.getFeatures().size() ) {
                 continue;
             }
-            potentialComps.add(component);
+            potentialComps.add( component );
         }
 
         return potentialComps;
