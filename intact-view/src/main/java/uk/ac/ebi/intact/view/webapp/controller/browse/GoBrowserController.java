@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.store.Directory;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.event.FocusEvent;
 import org.apache.myfaces.trinidad.event.RowDisclosureEvent;
@@ -25,8 +26,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.bridges.ontologies.OntologyIndexSearcher;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
+import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
+import uk.ac.ebi.intact.view.webapp.controller.application.IndexRequestController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
+import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -44,14 +49,10 @@ import java.util.List;
 public class GoBrowserController extends BaseController{
 
     @Autowired
-    private IntactViewConfiguration configuration;
+    private IndexRequestController indexRequestController;
 
     @Autowired
     private SearchController searchController;
-
-    private OntologyIndexSearcher ontologyIndexSearcher;
-    private IndexSearcher interactionIndexSearcher;
-    private IndexSearcher interactorIndexSearcher;
 
     private GoOntologyTreeModel goOntologyTreeModel;
 
@@ -61,34 +62,17 @@ public class GoBrowserController extends BaseController{
 
     @PostConstruct
     public void init() {
-        try {
-            ontologyIndexSearcher = new OntologyIndexSearcher(configuration.getDefaultOntologiesIndexLocation());
-            interactionIndexSearcher = new IndexSearcher(configuration.getDefaultIndexLocation());
-            interactorIndexSearcher = new IndexSearcher(configuration.getDefaultInteractorIndexLocation());
-        } catch (Exception e) {
-            addErrorMessage("Problem creating ontology index searcher", e.getMessage());
-        }
-
         String searchQuery = searchController.getSearchQuery();
 
         if ("*".equals(searchQuery) || "?".equals(searchQuery)) {
             searchQuery = "";
         }
 
-        goOntologyTreeModel = new GoOntologyTreeModel(ontologyIndexSearcher, interactionIndexSearcher, interactorIndexSearcher, searchQuery);
+        goOntologyTreeModel = new GoOntologyTreeModel(indexRequestController.getOntologyIndexSearcher(),
+                                                      null,
+                                                      null,
+                                                      searchQuery);
 
-    }
-
-
-    @PreDestroy
-    public void destroy() {
-        try {
-            interactionIndexSearcher.close();
-            interactorIndexSearcher.close();
-            ontologyIndexSearcher.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public GoOntologyTreeModel getGoOntologyTreeModel() {

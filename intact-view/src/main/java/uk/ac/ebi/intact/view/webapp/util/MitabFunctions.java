@@ -16,7 +16,24 @@
 package uk.ac.ebi.intact.view.webapp.util;
 
 import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
+import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.CvInteractorType;
+import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
+import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.commons.collections.map.LRUMap;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Functions to be used in the UI to control the display in interactions_tab
@@ -29,6 +46,9 @@ public final class MitabFunctions {
 
     private static final String PROTEIN_MI_REF = "MI:0326";
     private static final String SMALLMOLECULE_MI_REF = "MI:0328";
+
+    private static Map interactorCountCache = new LRUMap(2500);
+    private static Map interactionCountCache = new LRUMap(2500);
 
     private MitabFunctions() {
     }
@@ -51,6 +71,66 @@ public final class MitabFunctions {
         return false;
     }
 
+    public static int countHits(String searchQuery, String directory) {
+
+        try {
+            IndexSearcher searcher = new IndexSearcher(directory);
+
+            String[] defaultFields = new IntactSearchEngine("").getSearchFields();
+
+            //long startTime = System.currentTimeMillis();
+
+            QueryParser parser = new MultiFieldQueryParser(defaultFields, new StandardAnalyzer());
+
+            Query query = parser.parse(searchQuery);
+            Hits hits = searcher.search(query);
+
+            //System.out.println("Counted: "+query.toString()+" - "+hits.length()+" / Elapsed time: "+(System.currentTimeMillis()-startTime)+" ms - Directory: "+directory);
+
+            int count = hits.length();
+
+            searcher.close();
+
+            return count;
+
+        } catch (Exception e) {
+            throw new SearchWebappException("Cannot count hits using query: "+searchQuery+" / in index: "+directory, e);
+        }
+    }
+
+    public static OntologyTermWrapper populateCounts(OntologyTermWrapper otw, String interactorDirectory, String interactionDirectory) {
+        int interactorCount;
+        int interactionCount = 0;
+
+        if (otw.getInteractorCount() > 0) {
+            return otw;
+        }
+
+        String proteinSearchQuery = otw.getSearchQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
+
+        if (interactorCountCache.containsKey(proteinSearchQuery)) {
+            interactorCount = (Integer) interactorCountCache.get(proteinSearchQuery);
+        } else {
+            interactorCount = countHits(proteinSearchQuery, interactorDirectory);
+
+            interactorCountCache.put(proteinSearchQuery, interactorCount);
+        }
+
+        if (interactorCount > 0) {
+            if (interactionCountCache.containsKey(otw.getSearchQuery())) {
+                interactionCount = (Integer) interactionCountCache.get(otw.getSearchQuery());
+            } else {
+                interactionCount = countHits(otw.getSearchQuery(), interactionDirectory);
+
+                interactionCountCache.put(otw.getSearchQuery(), interactorCount);
+            }
+        }
+
+        otw.setInteractorCount(interactorCount);
+        otw.setInteractionCount(interactionCount);
+
+        return otw;
+    }
 
 
 

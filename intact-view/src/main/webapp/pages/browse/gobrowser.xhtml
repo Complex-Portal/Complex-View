@@ -12,6 +12,7 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iam="http://intact.ebi.ac.uk/mitabfunctions"
 
                 template="/main.xhtml">
     
@@ -41,9 +42,8 @@
                 </f:facet>
 
                 <tr:treeTable var="otw" value="#{goBrowser.goOntologyTreeModel}"
-                              rowDisclosureListener="#{goBrowser.goOntologyTreeModel.processDisclosure}"
-                              immediate="true"
-                        rootNodeRendered="false" rowSelection="multiple">
+                        rootNodeRendered="false" >
+
                     <f:facet name="nodeStamp">
                         <tr:column>
                             <f:facet name="header">
@@ -51,6 +51,10 @@
                             </f:facet>
                             <tr:outputText value="#{otw.term.name}"/>
                         </tr:column>
+
+                        <!--<ui:param name="countedOtw" value="#{iam:populateCounts(otw, indexRequestController.defaultInteractorIndex, indexRequestController.defaultInteractionIndex)}"/>-->
+                        <c:set var="countedOtw" value="${iam:populateCounts(otw, indexRequestController.defaultInteractorIndex, indexRequestController.defaultInteractionIndex)}"/>
+
                     </f:facet>
                     <tr:column>
                         <f:facet name="header">
@@ -60,18 +64,18 @@
                     </tr:column>
                     <tr:column>
                         <f:facet name="header">
-                            <tr:outputText value="# Interactors"/>
+                            <tr:outputText value="# Proteins"/>
                         </f:facet>
                         <tr:group>
-                           <tr:outputText value="#{otw.interactorCount}"/>
+                           <tr:outputText value="#{countedOtw.interactorCount}"/>
                             &#160;
-                             <tr:commandLink text="View" actionListener="#{searchBean.doBinarySearch}" action="list">
+                            <tr:commandLink text="View" actionListener="#{searchBean.doBinarySearch}" action="list">
                                 <f:setPropertyActionListener value="#{otw.searchQuery}" target="#{searchBean.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
 
-                        <div style="background-color: #{otw.interactorColour}; height:8px; width:#{(otw.interactorCount * 200) / otw.parent.childrenInteractorTotalCount}px">
-                                </div>
+                        <!--<div style="background-color: #{otw.interactorColour}; height:8px; width:#{(otw.interactorCount * 200) / otw.parent.childrenInteractorTotalCount}px">-->
+                                <!--</div>-->
                     </tr:column>
                     <tr:column>
                         <f:facet name="header">
@@ -84,8 +88,8 @@
                                 <f:setPropertyActionListener value="#{otw.searchQuery}" target="#{searchBean.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
-                        <div style="background-color: #{otw.interactionColour}; height:8px; width:#{(otw.interactionCount * 200) / otw.parent.childrenInteractionTotalCount}px">
-                                </div>
+                        <!--<div style="background-color: #{otw.interactionColour}; height:8px; width:#{(otw.interactionCount * 200) / otw.parent.childrenInteractionTotalCount}px">-->
+                                <!--</div>-->
                     </tr:column>
       
                 </tr:treeTable>

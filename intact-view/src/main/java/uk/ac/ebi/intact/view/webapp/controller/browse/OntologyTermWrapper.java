@@ -44,9 +44,6 @@ public class OntologyTermWrapper {
     private String baseQuery;
     private String searchQuery;
 
-    private int childrenInteractionTotalCount;
-    private int childrenInteractorTotalCount;
-
     private OntologyTermWrapper parent;
 
     private List<OntologyTermWrapper> children;
@@ -64,13 +61,10 @@ public class OntologyTermWrapper {
         this.interactorIndexSearcher = interactorIndexSearcher;
         this.baseQuery = baseQuery;
 
-        if (term == null) throw new NullPointerException("Term is necessary");
-        if (interactorIndexSearcher == null) throw new NullPointerException("interactorIndexSearcher is necessary");
+        this.searchQuery = prepareQuery(term.getId(), baseQuery);
 
-//        if (countInteractors) {
-//            this.interactionCount = count(term.getId(), interactionIndexSearcher, baseQuery);
-//            this.interactorCount = count(term.getId(), interactorIndexSearcher, baseQuery);
-//        }
+        if (term == null) throw new NullPointerException("Term is necessary");
+
     }
 
     public OntologyTerm getTerm() {
@@ -99,17 +93,25 @@ public class OntologyTermWrapper {
         for (OntologyTerm child : term.getChildren()) {
             OntologyTermWrapper otwChild = new OntologyTermWrapper(child, interactionIndexSearcher, interactorIndexSearcher, baseQuery);
 
-            //if (otwChild.getInteractorCount() > 0) {
-                children.add(otwChild);
-                otwChild.setParent(this);
-                childrenInteractionTotalCount = childrenInteractionTotalCount + otwChild.getInteractionCount();
-                childrenInteractorTotalCount = childrenInteractorTotalCount + otwChild.getInteractorCount();
-            //}
+            children.add(otwChild);
+            otwChild.setParent(this);
         }
 
         Collections.sort(children, new OntologyTermWrapperComparator());
 
         return children;
+    }
+
+    private String prepareQuery(String id, String baseQuery) {
+        StringBuilder query = new StringBuilder();
+
+        if (baseQuery != null && !baseQuery.isEmpty()) {
+            query.append("(").append(baseQuery).append(") AND ");
+        }
+
+        query.append("properties:\"").append(id).append("\"");
+
+        return query.toString();
     }
 
     public OntologyTermWrapper getParent() {
@@ -120,12 +122,24 @@ public class OntologyTermWrapper {
         this.parent = parent;
     }
 
-    public int getChildrenInteractorTotalCount() {
-        return childrenInteractorTotalCount;
+    public Integer getChildrenInteractorTotalCount() {
+        int totalCount = 0;
+
+        for (OntologyTermWrapper child : getChildren()) {
+            totalCount = totalCount + child.getInteractorCount();
+        }
+
+        return totalCount;
     }
 
-    public void setChildrenInteractorTotalCount(int childrenInteractorTotalCount) {
-        this.childrenInteractorTotalCount = childrenInteractorTotalCount;
+    public int getChildrenInteractionTotalCount() {
+        int totalCount = 0;
+
+        for (OntologyTermWrapper child : getChildren()) {
+            totalCount = totalCount + child.getInteractionCount();
+        }
+
+        return totalCount;
     }
 
     public String getInteractorColour() {
@@ -150,14 +164,6 @@ public class OntologyTermWrapper {
 
     public void setInteractionCount(int interactionCount) {
         this.interactionCount = interactionCount;
-    }
-
-    public int getChildrenInteractionTotalCount() {
-        return childrenInteractionTotalCount;
-    }
-
-    public void setChildrenInteractionTotalCount(int childrenInteractionTotalCount) {
-        this.childrenInteractionTotalCount = childrenInteractionTotalCount;
     }
 
     public String getSearchQuery() {

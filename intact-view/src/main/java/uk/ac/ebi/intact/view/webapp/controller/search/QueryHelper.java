@@ -60,6 +60,18 @@ public class QueryHelper {
         return query;
     }
 
+    public static String prepareInteractorQuery(String query, String interactorTypeMi) {
+        query = prepareQuery(query);
+
+        StringBuilder sb = new StringBuilder();
+        if (query != null && !query.equals(WILDCARD)) {
+            sb.append("+(").append(query).append(") +");
+        }
+        sb.append("typeA:").append("\"").append(interactorTypeMi).append("\"");
+
+        return sb.toString();
+    }
+
     private static boolean queryNeedsEscaping( String query ) {
         query = query.toUpperCase().trim();
         return isGoIdentifier( query ) || isChebiIdentifier( query );

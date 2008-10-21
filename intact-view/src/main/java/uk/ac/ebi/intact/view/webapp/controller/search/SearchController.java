@@ -22,6 +22,7 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
+import uk.ac.ebi.intact.model.CvInteractorType;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -69,6 +70,10 @@ public class SearchController extends JpaBaseController {
     @Qualifier("interactorSearchBindings")
     private InteractorSearchControllerBindings interactorBindings;
 
+    @Autowired
+    @Qualifier("smallMoleculeSearchBindings")
+    private SmallMoleculeSearchControllerBindings smallMoleculeBindings;
+
     private String searchQuery;
     private String ontologySearchQuery;
     private String displayQuery;
@@ -78,6 +83,7 @@ public class SearchController extends JpaBaseController {
 
     private int totalResults;
     private int interactorTotalResults;
+    private int smallMoleculeTotalResults;
 
     // status flags
     private String disclosedTabName;
@@ -90,6 +96,7 @@ public class SearchController extends JpaBaseController {
     // results
     private SearchResultDataModel results;
     private SearchResultDataModel interactorResults;
+    private SearchResultDataModel smallMoleculeResults;
 
     // io
     private String exportFormat;
@@ -212,6 +219,11 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doInteractorSearch(String query) {
+        doProteinsSearch(query);
+        doSmallMoleculeSearch(query);
+    }
+
+    public void doProteinsSearch(String query) {
         // reset the status of the range choice bar
         if (interactorBindings.getRangeChoiceBar() != null) {
             interactorBindings.getRangeChoiceBar().setFirst(0);
@@ -219,7 +231,7 @@ public class SearchController extends JpaBaseController {
 
         if (log.isDebugEnabled()) log.debug("Searching interactors (raw): " + query);
 
-        query = QueryHelper.prepareQuery(query);
+        query = QueryHelper.prepareInteractorQuery(query, CvInteractorType.PROTEIN_MI_REF);
 
         if (log.isDebugEnabled()) log.debug("Searching interactors (prepared query): " + query);
 
@@ -235,6 +247,33 @@ public class SearchController extends JpaBaseController {
 
         if (interactorBindings.getResultsDataTable() != null) {
             interactorBindings.getResultsDataTable().setFirst(0);
+        }
+    }
+
+    public void doSmallMoleculeSearch(String query) {
+        // reset the status of the range choice bar
+        if (smallMoleculeBindings.getRangeChoiceBar() != null) {
+            smallMoleculeBindings.getRangeChoiceBar().setFirst(0);
+        }
+
+        if (log.isDebugEnabled()) log.debug("Searching small molecules (raw): " + query);
+
+        query = QueryHelper.prepareInteractorQuery(query, CvInteractorType.SMALL_MOLECULE_MI_REF);
+
+        if (log.isDebugEnabled()) log.debug("Searching small molecules (prepared query): " + query);
+
+        String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
+
+        try {
+            smallMoleculeResults = new SearchResultDataModel(query, indexDirectory, pageSize);
+            smallMoleculeTotalResults = smallMoleculeResults.getRowCount();
+        } catch (TooManyResultsException e) {
+            addErrorMessage("Too many small molecules found", "Please, refine your query");
+            interactorTotalResults = 0;
+        }
+
+        if (smallMoleculeBindings.getResultsDataTable() != null) {
+            smallMoleculeBindings.getResultsDataTable().setFirst(0);
         }
     }
 
@@ -395,6 +434,22 @@ public class SearchController extends JpaBaseController {
 
     public void setInteractorResults(SearchResultDataModel interactorResults) {
         this.interactorResults = interactorResults;
+    }
+
+    public SmallMoleculeSearchControllerBindings getSmallMoleculeBindings() {
+        return smallMoleculeBindings;
+    }
+
+    public void setSmallMoleculeBindings(SmallMoleculeSearchControllerBindings smallMoleculeBindings) {
+        this.smallMoleculeBindings = smallMoleculeBindings;
+    }
+
+    public int getSmallMoleculeTotalResults() {
+        return smallMoleculeTotalResults;
+    }
+
+    public SearchResultDataModel getSmallMoleculeResults() {
+        return smallMoleculeResults;
     }
 
     public String getOntologySearchQuery() {

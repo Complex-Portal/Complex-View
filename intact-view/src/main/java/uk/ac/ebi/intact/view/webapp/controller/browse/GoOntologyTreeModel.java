@@ -104,7 +104,7 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
 
         OntologyTermWrapper otwRoot = new OntologyTermWrapper(root, interactionIndexSearcher, interactorIndexSearcher, baseQuery);
 
-        updateChildrenCounts(otwRoot);
+        //updateChildrenCounts(otwRoot);
 
         setWrappedData(otwRoot);
     }
@@ -126,101 +126,14 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
             childrenInteractionColour = nextColour(INTERACTION_COLOURS, parent.getInteractionColour());
         }
 
-        if (disclosed != null && disclosed.getTerm().getId().equals(parent.getTerm().getId())) {
-            updateChildrenCounts(parent);
-        } 
-
         for (OntologyTermWrapper child : parent.getChildren()) {
-            //if (child.getInteractionCount() > 0) {
                 child.setInteractorColour(childrenInteractorColour);
                 child.setInteractionColour(childrenInteractionColour);
 
                 children.add(child);
-            //}
         }
-
-        Collections.sort(children, new OntologyTermWrapperComparator());
 
         return children;
-    }
-
-    public void processDisclosure(RowDisclosureEvent evt) {
-        if (!evt.getAddedSet().isEmpty()) {
-            List<Integer> indexes = (List) evt.getAddedSet().iterator().next();
-
-            Integer[] selected = indexes.toArray(new Integer[indexes.size()]);
-
-            disclosed = getSelectedData(selected);
-
-            //updateChildrenCounts(otw);
-        } else {
-            disclosed = null;
-        }
-
-        processedTermCounts.clear();
-    }
-
-    private void updateChildrenCounts(OntologyTermWrapper otw) {
-        if (processedTermCounts.contains(otw.getTerm().getId())) {
-            return;
-        }
-
-        int totalInteractionCount = 0;
-        int totalInteractorCount = 0;
-
-        for (OntologyTermWrapper child : otw.getChildren()) {
-            String searchQuery = prepareQuery(child.getTerm().getId(), baseQuery);
-            child.setSearchQuery(searchQuery);
-
-            int interactionCount = count(searchQuery, interactionIndexSearcher);
-            int interactorCount = count(searchQuery, interactorIndexSearcher);
-
-            child.setInteractionCount(interactionCount);
-            child.setInteractorCount(interactorCount);
-
-            totalInteractionCount = totalInteractionCount + interactionCount;
-            totalInteractorCount = totalInteractorCount + interactorCount;
-        }
-
-        otw.setChildrenInteractionTotalCount(totalInteractionCount);
-        otw.setChildrenInteractorTotalCount(totalInteractorCount);
-
-        processedTermCounts.add(otw.getTerm().getId());
-    }
-
-    private int count(String searchQuery, IndexSearcher indexSearcher)  {
-
-        try {
-            long startTime = System.currentTimeMillis();
-
-            String[] defaultFields = new IntactSearchEngine("").getSearchFields();
-
-            QueryParser parser = new MultiFieldQueryParser(defaultFields, new StandardAnalyzer());
-
-            Query query = parser.parse(searchQuery);
-            Hits hits = indexSearcher.search(query);
-
-            System.out.println("Counted: "+query.toString()+" - "+hits.length()+" / Elapsed time: "+(System.currentTimeMillis()-startTime)+" ms ");
-
-            int count = hits.length();
-
-            return count;
-
-        } catch (Exception e) {
-            throw new SearchWebappException("Problem counting term using query: "+searchQuery, e);
-        }
-    }
-
-    private String prepareQuery(String id, String baseQuery) {
-        StringBuilder query = new StringBuilder();
-
-        if (baseQuery != null && !baseQuery.isEmpty()) {
-            query.append("(").append(baseQuery).append(") AND ");
-        }
-
-        query.append("properties:\"").append(id).append("\"");
-
-        return query.toString();
     }
 
     private OntologyTermWrapper getSelectedData(Integer[] indexes) {
@@ -249,16 +162,5 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
             }
         }
         return colourArray[0];
-    }
-
-    private class OntologyTermWrapperComparator implements Comparator<OntologyTermWrapper> {
-
-        public int compare(OntologyTermWrapper o1, OntologyTermWrapper o2) {
-            if (o1.getInteractorCount() > o2.getInteractorCount()) {
-                return -1;
-            } else {
-                return +1;
-            }
-        }
     }
 }
