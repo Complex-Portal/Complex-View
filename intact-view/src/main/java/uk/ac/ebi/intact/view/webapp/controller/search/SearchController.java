@@ -59,9 +59,6 @@ public class SearchController extends JpaBaseController {
     private AppConfigBean appConfigBean;
 
     @Autowired
-    private OntologyBean ontologyBean;
-
-    @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
     @Autowired
@@ -161,6 +158,10 @@ public class SearchController extends JpaBaseController {
     private String prepareOntologyQuery(String ontologySearchQuery) {
         String identifier = (ontologySearchQuery.startsWith("\""))? ontologySearchQuery : "\""+ontologySearchQuery+"\"";
         return "detmethod:"+identifier+" type:"+identifier+" properties:"+identifier;
+    }
+
+    public void doBinarySearch(ActionEvent evt) {
+        doBinarySearch(searchQuery);
     }
 
     private void doBinarySearch(String query) {

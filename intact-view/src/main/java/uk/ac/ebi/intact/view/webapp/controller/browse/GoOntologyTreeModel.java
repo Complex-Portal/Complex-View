@@ -16,6 +16,10 @@
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.myfaces.trinidad.model.ChildPropertyTreeModel;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.event.RowDisclosureEvent;
@@ -23,6 +27,7 @@ import org.apache.myfaces.trinidad.event.FocusEvent;
 import uk.ac.ebi.intact.bridges.ontologies.OntologyIndexSearcher;
 import uk.ac.ebi.intact.bridges.ontologies.term.LazyLoadedOntologyTerm;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
+import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 
 import java.util.*;
 
@@ -37,9 +42,13 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
     private String[] INTERACTOR_COLOURS = new String[] {"#73b360", "#84bc73", "#96c688", "#a7cf9b","#cae2c3", "#dcecd7"};
     private String[] INTERACTION_COLOURS = new String[] {"#006666", "#1f7979", "#408c8c", "#5e9e9e","#a1c7c7", "#bdd7d7"};
 
+    private Set<String> processedTermCounts;
+
     private IndexSearcher interactionIndexSearcher;
     private IndexSearcher interactorIndexSearcher;
     private String baseQuery;
+
+    private OntologyTermWrapper disclosed;
 
     public GoOntologyTreeModel(final OntologyIndexSearcher ontologyIndexSearcher,
                                final IndexSearcher interactionIndexSearcher,
@@ -50,6 +59,8 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
         this.interactionIndexSearcher = interactionIndexSearcher;
         this.interactorIndexSearcher = interactorIndexSearcher;
         this.baseQuery = baseQuery;
+
+        processedTermCounts = new HashSet<String>();
 
         OntologyTerm root = new OntologyTerm() {
             public String getId() {
@@ -93,35 +104,39 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
 
         OntologyTermWrapper otwRoot = new OntologyTermWrapper(root, interactionIndexSearcher, interactorIndexSearcher, baseQuery);
 
+        updateChildrenCounts(otwRoot);
+
         setWrappedData(otwRoot);
     }
 
     @Override
     protected Object getChildData(Object parentData) {
-        //List<OntologyTermWrapper> children = (List<OntologyTermWrapper>) super.getChildData(parentData);
-        List<OntologyTermWrapper> children = new ArrayList<OntologyTermWrapper>();
-
         OntologyTermWrapper parent = (OntologyTermWrapper) parentData;
 
-        String childrenInteractorColour = calculateNextColour(parent);
+        List<OntologyTermWrapper> children = new ArrayList<OntologyTermWrapper>();
 
-        int childrenInteractorTotalCount = 0;
-        int childrenInteractionTotalCount = 0;
+        String childrenInteractorColour;
+        String childrenInteractionColour;
 
-        for (OntologyTerm child : parent.getTerm().getChildren()) {
-            OntologyTermWrapper otwChild = new OntologyTermWrapper(child, interactionIndexSearcher, interactorIndexSearcher, baseQuery, false);
+        if (parent.getInteractorColour() == null) {
+            childrenInteractorColour = INTERACTOR_COLOURS[0];
+            childrenInteractionColour = INTERACTION_COLOURS[0];
+        } else {
+            childrenInteractorColour = nextColour(INTERACTOR_COLOURS, parent.getInteractorColour());
+            childrenInteractionColour = nextColour(INTERACTION_COLOURS, parent.getInteractionColour());
+        }
 
-            //if (otwChild.getInteractorCount() > 0) {
-                otwChild.setInteractorColour(childrenInteractorColour);
+        if (disclosed != null && disclosed.getTerm().getId().equals(parent.getTerm().getId())) {
+            updateChildrenCounts(parent);
+        } 
 
-                children.add(otwChild);
-                otwChild.setParent(parent);
-                childrenInteractionTotalCount = childrenInteractorTotalCount + otwChild.getInteractorCount();
-                childrenInteractionTotalCount = childrenInteractionTotalCount + otwChild.getInteractionCount();
+        for (OntologyTermWrapper child : parent.getChildren()) {
+            //if (child.getInteractionCount() > 0) {
+                child.setInteractorColour(childrenInteractorColour);
+                child.setInteractionColour(childrenInteractionColour);
+
+                children.add(child);
             //}
-
-            parent.setChildrenInteractorTotalCount(childrenInteractorTotalCount);
-            parent.setChildrenInteractionTotalCount(childrenInteractionTotalCount);
         }
 
         Collections.sort(children, new OntologyTermWrapperComparator());
@@ -129,15 +144,87 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
         return children;
     }
 
-    private String calculateNextColour(OntologyTermWrapper parent) {
-        String childrenInteractorColour = null;
+    public void processDisclosure(RowDisclosureEvent evt) {
+        if (!evt.getAddedSet().isEmpty()) {
+            List<Integer> indexes = (List) evt.getAddedSet().iterator().next();
 
-        if (parent.getInteractorColour() == null) {
-            childrenInteractorColour = INTERACTOR_COLOURS[0];
+            Integer[] selected = indexes.toArray(new Integer[indexes.size()]);
+
+            disclosed = getSelectedData(selected);
+
+            //updateChildrenCounts(otw);
         } else {
-            childrenInteractorColour = nextColour(INTERACTOR_COLOURS, parent.getInteractorColour());
+            disclosed = null;
         }
-        return childrenInteractorColour;
+
+        processedTermCounts.clear();
+    }
+
+    private void updateChildrenCounts(OntologyTermWrapper otw) {
+        if (processedTermCounts.contains(otw.getTerm().getId())) {
+            return;
+        }
+
+        int totalInteractionCount = 0;
+        int totalInteractorCount = 0;
+
+        for (OntologyTermWrapper child : otw.getChildren()) {
+            String searchQuery = prepareQuery(child.getTerm().getId(), baseQuery);
+            child.setSearchQuery(searchQuery);
+
+            int interactionCount = count(searchQuery, interactionIndexSearcher);
+            int interactorCount = count(searchQuery, interactorIndexSearcher);
+
+            child.setInteractionCount(interactionCount);
+            child.setInteractorCount(interactorCount);
+
+            totalInteractionCount = totalInteractionCount + interactionCount;
+            totalInteractorCount = totalInteractorCount + interactorCount;
+        }
+
+        otw.setChildrenInteractionTotalCount(totalInteractionCount);
+        otw.setChildrenInteractorTotalCount(totalInteractorCount);
+
+        processedTermCounts.add(otw.getTerm().getId());
+    }
+
+    private int count(String searchQuery, IndexSearcher indexSearcher)  {
+
+        try {
+            long startTime = System.currentTimeMillis();
+
+            Query query = new QueryParser("identifier", new StandardAnalyzer()).parse(searchQuery);
+            Hits hits = indexSearcher.search(query);
+
+            System.out.println("Counted: "+searchQuery+" - "+hits.length()+" / Elapsed time: "+(System.currentTimeMillis()-startTime)+" ms");
+
+            int count = hits.length();
+
+            return count;
+
+        } catch (Exception e) {
+            throw new SearchWebappException("Problem counting term using query: "+searchQuery, e);
+        }
+    }
+
+    private String prepareQuery(String id, String baseQuery) {
+        return "(" + baseQuery + ") AND properties:\"" + id + "\"";
+    }
+
+    private OntologyTermWrapper getSelectedData(Integer[] indexes) {
+        OntologyTermWrapper root = (OntologyTermWrapper) getWrappedData();
+
+        List<OntologyTermWrapper> listChildren = (List<OntologyTermWrapper>) getChildData(root);
+
+        OntologyTermWrapper parent = null;
+
+        for (int i=1; i<indexes.length; i++) {
+            System.out.println("\tGetting "+indexes[i]+" from "+listChildren);
+            parent = listChildren.get(indexes[i]);
+            listChildren = (List<OntologyTermWrapper>) getChildData(parent);
+        }
+
+        return parent;
     }
 
     private String nextColour(String[] colourArray, String interactorColour) {

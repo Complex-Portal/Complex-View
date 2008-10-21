@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.view.webapp.controller.browse;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.event.FocusEvent;
+import org.apache.myfaces.trinidad.event.RowDisclosureEvent;
+import org.apache.myfaces.trinidad.event.AttributeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,7 @@ import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * TODO comment that class header
@@ -86,11 +89,6 @@ public class GoBrowserController extends BaseController{
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void processFocus(FocusEvent evt) {
-        System.out.println("FOCUSING: "+evt.getSource());
-        System.out.println("\tevt: "+evt);
     }
 
     public GoOntologyTreeModel getGoOntologyTreeModel() {

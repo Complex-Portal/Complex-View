@@ -42,6 +42,7 @@ public class OntologyTermWrapper {
     private IndexSearcher interactionIndexSearcher;
     private IndexSearcher interactorIndexSearcher;
     private String baseQuery;
+    private String searchQuery;
 
     private int childrenInteractionTotalCount;
     private int childrenInteractorTotalCount;
@@ -66,10 +67,10 @@ public class OntologyTermWrapper {
         if (term == null) throw new NullPointerException("Term is necessary");
         if (interactorIndexSearcher == null) throw new NullPointerException("interactorIndexSearcher is necessary");
 
-        if (countInteractors) {
-            this.interactionCount = count(term.getId(), interactionIndexSearcher, baseQuery);
-            this.interactorCount = count(term.getId(), interactorIndexSearcher, baseQuery);
-        }
+//        if (countInteractors) {
+//            this.interactionCount = count(term.getId(), interactionIndexSearcher, baseQuery);
+//            this.interactorCount = count(term.getId(), interactorIndexSearcher, baseQuery);
+//        }
     }
 
     public OntologyTerm getTerm() {
@@ -93,42 +94,22 @@ public class OntologyTermWrapper {
             return children;
         }
 
-        System.out.println("GETTING CHILDREN FOR: "+term.getId());
-
         children = new ArrayList<OntologyTermWrapper>();
 
         for (OntologyTerm child : term.getChildren()) {
             OntologyTermWrapper otwChild = new OntologyTermWrapper(child, interactionIndexSearcher, interactorIndexSearcher, baseQuery);
 
-            if (otwChild.getInteractorCount() > 0) {
+            //if (otwChild.getInteractorCount() > 0) {
                 children.add(otwChild);
                 otwChild.setParent(this);
                 childrenInteractionTotalCount = childrenInteractionTotalCount + otwChild.getInteractionCount();
                 childrenInteractorTotalCount = childrenInteractorTotalCount + otwChild.getInteractorCount();
-            }
+            //}
         }
 
         Collections.sort(children, new OntologyTermWrapperComparator());
 
         return children;
-    }
-
-    private int count(String id, IndexSearcher indexSearcher, String baseQuery)  {
-        String searchQuery = baseQuery + " properties:\"" + id + "\"";
-
-        try {
-            long startTime = System.currentTimeMillis();
-
-            Query query = new QueryParser("identifier", new StandardAnalyzer()).parse(searchQuery);
-            Hits hits = indexSearcher.search(query);
-            
-            System.out.println("Counted: "+id+" - "+hits.length()+" / Elapsed time: "+(System.currentTimeMillis()-startTime)+" ms");
-
-            return hits.length();
-
-        } catch (Exception e) {
-            throw new SearchWebappException("Problem counting term: "+id, e);
-        }
     }
 
     public OntologyTermWrapper getParent() {
@@ -167,12 +148,24 @@ public class OntologyTermWrapper {
         return interactionCount;
     }
 
+    public void setInteractionCount(int interactionCount) {
+        this.interactionCount = interactionCount;
+    }
+
     public int getChildrenInteractionTotalCount() {
         return childrenInteractionTotalCount;
     }
 
     public void setChildrenInteractionTotalCount(int childrenInteractionTotalCount) {
         this.childrenInteractionTotalCount = childrenInteractionTotalCount;
+    }
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
     }
 
     private class OntologyTermWrapperComparator implements Comparator<OntologyTermWrapper> {
@@ -184,5 +177,10 @@ public class OntologyTermWrapper {
                 return +1;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "OntologyTermWrapper{"+term.getId()+"}";
     }
 }

@@ -24,18 +24,24 @@
             <f:facet name="help">
                 <tr:group>
                     <tr:panelList>
-                        <tr:group>Protein accession number: e.g.<tr:spacer width="5"/><tr:commandLink text="Q08345"
-                                                                                                         action="#{searchBean.doBinarySearchAction}">
-                            <f:setPropertyActionListener value="Q08345" target="#{searchBean.searchQuery}"/>
-                        </tr:commandLink></tr:group>
-                        <tr:group>Drug name: e.g.<tr:spacer width="5"/><tr:commandLink text="imatinib"
-                                                                      action="#{searchBean.doBinarySearchAction}">
-                            <f:setPropertyActionListener value="imatinib" target="#{searchBean.searchQuery}"/>
-                        </tr:commandLink></tr:group>
-                        <tr:group>Gene name: e.g.<tr:spacer width="5"/><tr:commandLink text="DDR1"
-                                                                      action="#{searchBean.doBinarySearchAction}">
-                            <f:setPropertyActionListener value="DDR1" target="#{searchBean.searchQuery}"/>
-                        </tr:commandLink></tr:group>
+                        <tr:group>
+                            Protein accession number: e.g.&#160;
+                            <tr:commandLink text="Q08345" action="#{searchBean.doBinarySearchAction}">
+                                <f:setPropertyActionListener value="Q08345" target="#{searchBean.searchQuery}"/>
+                            </tr:commandLink>
+                        </tr:group>
+                        <tr:group>
+                            Drug name: e.g.&#160;
+                            <tr:commandLink text="imatinib" action="#{searchBean.doBinarySearchAction}">
+                                <f:setPropertyActionListener value="imatinib" target="#{searchBean.searchQuery}"/>
+                            </tr:commandLink>
+                        </tr:group>
+                        <tr:group>
+                            Gene name: e.g.&#160;
+                            <tr:commandLink text="DDR1" action="#{searchBean.doBinarySearchAction}">
+                                <f:setPropertyActionListener value="DDR1" target="#{searchBean.searchQuery}"/>
+                            </tr:commandLink>
+                        </tr:group>
                     </tr:panelList>
                 </tr:group>
             </f:facet>
