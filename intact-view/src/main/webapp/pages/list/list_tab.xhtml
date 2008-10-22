@@ -12,21 +12,8 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
-<tr:spacer height="10"/>
-<tr:panelGroupLayout layout="horizontal" id="externalLinks">
-    <f:facet name="separator">
-        <tr:spacer width="10" height="1"/>
-    </f:facet>
-    <tr:commandButton text="Pathways" actionListener="#{browseBean.linkToPathwayFromListSelection}" />
-    <tr:commandButton text="Domains" actionListener="#{browseBean.linkToInterproFromListSelection}" />
-    <tr:commandButton text="mRNA Expression" actionListener="#{browseBean.linkToExpressionFromListSelection}" />
-    <tr:commandButton text="Chromosome Location" actionListener="#{browseBean.linkToChromosomeFromListSelection}"  />
 
-
-</tr:panelGroupLayout>
-
-
-<tr:panelHeader text="Interactors">
+<tr:panelHeader text="Proteins">
 
 <!-- RESULT SUMMARY -->
 
@@ -62,7 +49,7 @@
 <tr:table id="proteinListResults" value="#{searchBean.interactorResults}" var="binaryInteraction" varStatus="status"
           summary="Binary Interactions" emptyText="No interactions found matching the query."
           rows="#{searchBean.pageSize}" rowBandingInterval="1"
-          rowSelection="multiple" >
+          rowSelection="multiple" autoSubmit="true">
 
 <f:facet name="actions">
     <tr:panelHorizontalLayout inlineStyle="width:100%">
@@ -70,17 +57,25 @@
             <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
         </f:facet>
 
-        <tr:panelHorizontalLayout>
-             <f:facet name="separator">
-                <tr:outputFormatted value="&#160;"/>
-            </f:facet>
+        <tr:panelButtonBar partialTriggers=":proteinListResults">
             <strong>
-                 <tr:outputText value="Selection actions: "/>
+                 <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
             </strong>
-            <tr:commandLink text="Search interactions"
+            <tr:commandButton text="Search Interactions"
                             actionListener="#{searchBean.doSearchInteractionsFromListSelection}"
                             action="main"/>
-        </tr:panelHorizontalLayout>
+
+            <tr:commandButton text="Pathways"
+                              actionListener="#{browseBean.linkToPathwayFromListSelection}" />
+            <tr:commandButton text="Domains"
+                              actionListener="#{browseBean.linkToInterproFromListSelection}" />
+            <tr:commandButton text="mRNA Expression"
+                              actionListener="#{browseBean.linkToExpressionFromListSelection}" />
+            <tr:commandButton text="Chromosome Location"
+                              actionListener="#{browseBean.linkToChromosomeFromListSelection}"  />
+
+
+        </tr:panelButtonBar>
 
     </tr:panelHorizontalLayout>
 </f:facet>

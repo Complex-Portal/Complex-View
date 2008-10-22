@@ -560,6 +560,16 @@ af|inputText:disabled::label{
     vertical-align: top;
 }
 
+/* commandButton */
+/*****************/
+af|commandButton {
+    white-space: nowrap;
+}
+
+
+/* other */
+/*********/
+
 /*for autocomplete */
 .autocomplete-line {
     background-color: #eef5f5;
