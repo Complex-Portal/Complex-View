@@ -20,7 +20,7 @@
     <description>Hierarch View Application</description>
 
     <properties>
-        <jetty.port>9090</jetty.port>
+        <jetty.port>9095</jetty.port>
         <db.alias>nodb</db.alias>
 
         <binarysearch.defaultindex>/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current</binarysearch.defaultindex>
@@ -41,6 +41,11 @@
     </build>
       
     <dependencies>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>2.3.0</version>
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
