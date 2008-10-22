@@ -357,9 +357,9 @@
         <listener-class>uk.ac.ebi.intact.binarysearch.webapp.StartupListener</listener-class>
     </listener>
 
-    <!--<listener>-->
-        <!--<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>-->
-    <!--</listener>-->
+    <listener>
+        <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+    </listener>
 
     <!-- IntAct Startup-->
         <!--<listener>-->
