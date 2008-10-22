@@ -39,7 +39,7 @@ import java.io.Serializable;
 @Controller ("searchBean")
 @Scope("conversation.flash")
 @ViewController(viewIds = "/search.xhtml")
-public class SearchBean implements Serializable
+public class SearchBean extends BaseController
 {
     private static final Log log = LogFactory.getLog(SearchBean.class);
 
@@ -69,15 +69,12 @@ public class SearchBean implements Serializable
     private boolean showProperties;
     private boolean expandedView;
 
-    // bindings
-    private UIXTable resultsDataTable;
-    private CoreSelectRangeChoiceBar rangeChoiceBar;
-
     // results
     private SearchResultDataModel results;
 
     // export
     private String exportFormat;
+    private static final String INTERACTIONS_TABLE_ID = "results";
 
     public SearchBean() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -116,9 +113,6 @@ public class SearchBean implements Serializable
         relatedResults = null;
 
         // reset the status of the range choice bar
-        if (rangeChoiceBar != null) {
-            rangeChoiceBar.setFirst(0);
-        }
 
         if (isAdvancedMode()) {
             query = QueryHelper.createQuery(advancedSearch, olsBean.getInteractionTypeTerms(), olsBean.getDetectionMethodTerms());
@@ -139,8 +133,6 @@ public class SearchBean implements Serializable
             e.printStackTrace();
             //tooManyResults = true;
         }
-
-        resultsDataTable.setFirst(0);
 
         relatedPollEnabled = true;
         searchDone = true;
@@ -213,8 +205,11 @@ public class SearchBean implements Serializable
 
     public void rangeChanged(RangeChangeEvent evt) {
         results.setRowIndex(evt.getNewStart());
-        ((UIXTable)resultsDataTable).setFirst(evt.getNewStart());
-        //results.fetchResults(evt.getNewStart(), 30);
+
+        UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(INTERACTIONS_TABLE_ID);
+        table.setFirst(evt.getNewStart());
+
+        refreshTable(INTERACTIONS_TABLE_ID, results);
     }
 
     public void forceSimpleMode(ActionEvent evt) {
@@ -253,16 +248,6 @@ public class SearchBean implements Serializable
     public void setSearchDone(boolean searchDone)
     {
         this.searchDone = searchDone;
-    }
-
-    public UIXTable getResultsDataTable()
-    {
-        return resultsDataTable;
-    }
-
-    public void setResultsDataTable(UIXTable resultsDataTable)
-    {
-        this.resultsDataTable = resultsDataTable;
     }
 
     public SearchResultDataModel getResults()
@@ -335,13 +320,5 @@ public class SearchBean implements Serializable
 
     public void setRelatedPollEnabled(boolean relatedPollEnabled) {
         this.relatedPollEnabled = relatedPollEnabled;
-    }
-
-    public CoreSelectRangeChoiceBar getRangeChoiceBar() {
-        return rangeChoiceBar;
-    }
-
-    public void setRangeChoiceBar(CoreSelectRangeChoiceBar rangeChoiceBar) {
-        this.rangeChoiceBar = rangeChoiceBar;
     }
 }

@@ -15,7 +15,7 @@
 
 
 <tr:table id="results" value="#{value}" var="binaryInteraction" varStatus="status" summary="Binary Interactions"
-        binding="#{searchBean.resultsDataTable}" emptyText="No interactions found matching the query." 
+        emptyText="No interactions found matching the query." 
         rows="30" rowBandingInterval="1" partialTriggers=":results:btnToogleProps :results:btnStandardView :results:btnExpandedView :results:selPageRangeChoice">
 
 <f:facet name="actions">
@@ -24,8 +24,7 @@
             <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
         </f:facet>
 
-         <tr:selectRangeChoiceBar binding="#{searchBean.rangeChoiceBar}"
-                                  var="range" id="selPageRangeChoice"
+         <tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"
                                   value="#{searchBean.results}"
                                   rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
                                   rendered="#{searchBean.results.rowCount gt 30}" />
