@@ -3,8 +3,8 @@ package uk.ac.ebi.intact.view.webapp.controller;
 import org.apache.myfaces.trinidad.component.UIXCollection;
 import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.myfaces.trinidad.component.UIXTree;
-import org.apache.myfaces.trinidad.model.RowKeySet;
 import org.apache.myfaces.trinidad.context.RequestContext;
+import org.apache.myfaces.trinidad.model.RowKeySet;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -83,6 +83,10 @@ public abstract class BaseController implements Serializable {
         table.setValue(value);
         RequestContext afContext = RequestContext.getCurrentInstance();
         afContext.addPartialTarget(table);
+    }
+
+    protected UIComponent getComponentFromView(String componentId) {
+        return FacesContext.getCurrentInstance().getViewRoot().findComponent(componentId);
     }
 
     /**

@@ -10,7 +10,8 @@
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
 
 <tr:panelHeader text="Proteins">
@@ -44,12 +45,14 @@
 
 <br/>
 
+
 <!-- RESULTS TABLE -->
+
 
 <tr:table id="proteinListResults" value="#{searchBean.interactorResults}" var="binaryInteraction" varStatus="status"
           summary="Binary Interactions" emptyText="No interactions found matching the query."
           rows="#{searchBean.pageSize}" rowBandingInterval="1"
-          rowSelection="multiple" autoSubmit="true">
+          rowSelection="multiple">
 
 <f:facet name="actions">
     <tr:panelHorizontalLayout inlineStyle="width:100%">
@@ -57,22 +60,24 @@
             <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
         </f:facet>
 
-        <tr:panelButtonBar partialTriggers=":proteinListResults">
+        <tr:panelButtonBar id="buttonBar">
             <strong>
-                 <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
+                <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
             </strong>
             <tr:commandButton text="Search Interactions"
-                            actionListener="#{searchBean.doSearchInteractionsFromListSelection}"
-                            action="main"/>
+                              actionListener="#{searchBean.doSearchInteractionsFromListSelection}"
+                              action="main"/>
 
             <tr:commandButton text="Pathways"
-                              actionListener="#{browseBean.linkToPathwayFromListSelection}" />
-            <tr:commandButton text="Domains"
-                              actionListener="#{browseBean.linkToInterproFromListSelection}" />
+                              actionListener="#{browseBean.linkToPathwayFromListSelection}"/>
+            <tr:commandButton text="Domains" partialSubmit="true"
+                              actionListener="#{proteinListController.goDomains}"/>
             <tr:commandButton text="mRNA Expression"
                               actionListener="#{browseBean.linkToExpressionFromListSelection}" />
             <tr:commandButton text="Chromosome Location"
+                              icon="/images/logos/ensembl_12.png"
                               actionListener="#{browseBean.linkToChromosomeFromListSelection}"  />
+
 
 
         </tr:panelButtonBar>
@@ -94,7 +99,7 @@
 
 <tr:column headerText="Links">
 
-     <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}"
+    <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}"
                  varStatus="rowStatus" rows="0">
         <tr:switcher facetName="#{xref.database}">
             <f:facet name="uniprotkb">
@@ -126,7 +131,7 @@
         </tr:switcher>
     </tr:iterator>
 
-   <!-- <tr:commandLink text="Molecule view"
+    <!-- <tr:commandLink text="Molecule view"
                     rendered="#{binaryInteraction.interactorTypeA[0].identifier == 'MI:0326'}"
                     action="#{searchBean.doDiscloseMoleculeViewTab}">
         <f:setPropertyActionListener value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}" target="#{moleculeViewBean.interactorAc}"/>
@@ -151,14 +156,15 @@
 </tr:column>
 
 <tr:column headerText="DGI Accession number" sortable="true" sortProperty="idA_s">
-   <h:outputText value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
+    <h:outputText value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
 </tr:column>
 
-    <tr:column headerText="Description">
-        <ui:param name="intactIdentifier" value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
-        <ui:param name="interactor" value="#{iaf:getByAc(intactIdentifier)}"/>
-        <tr:outputText value="#{interactor.fullName}" />
-    </tr:column>
+<tr:column headerText="Description">
+    <ui:param name="intactIdentifier"
+              value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
+    <ui:param name="interactor" value="#{iaf:getByAc(intactIdentifier)}"/>
+    <tr:outputText value="#{interactor.fullName}"/>
+</tr:column>
 
 </tr:table>
 
