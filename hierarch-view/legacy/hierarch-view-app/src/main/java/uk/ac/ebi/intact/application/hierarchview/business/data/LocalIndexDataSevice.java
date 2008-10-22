@@ -87,13 +87,14 @@ public class LocalIndexDataSevice implements DataService {
 
         } catch ( IOException e ) {
             throw new HierarchViewDataException( "Could not find index-files", e);
-        } catch ( RuntimeException mle ) {
-            logger.warn("Problem parsing a line. "+mle.getMessage());
+        } catch ( RuntimeException e ) {
+            final String msg = "An error occured while searching for '" + query +
+                               "' on the local index (" + localIndexPath + ")";
+            logger.error( msg, e );
+            throw new HierarchViewDataException( msg, e);
         }
 
-
-
-        return ( Collection<BinaryInteraction> ) searchResult.getInteractions();
+        return ( Collection<BinaryInteraction> ) searchResult.getData();
     }
 
     public Collection<CriteriaBean> getSearchCritera() {
