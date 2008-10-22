@@ -58,10 +58,10 @@
                 <ui:insert name="moleculeTabContent"/>
             </tr:showDetailItem>
 
-            <tr:showDetailItem text="Graph" disabled="true" shortDesc="Not implemented"
-                               disclosed="#{disclosedTabName == 'graph'}">
+            <tr:showDetailItem text="Graph"
+                               disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > 200 }">
                 <tr:messages/>
-                <ui:insert name="graphContent"/>
+                <ui:insert name="graphTabContent"/>
             </tr:showDetailItem>
 
         </tr:panelTabbed>

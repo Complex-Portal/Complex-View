@@ -13,8 +13,14 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
 
-        <tr:panelHeader text="Graph representation">
+        <tr:panelHeader text="Network visualisation">
 
         </tr:panelHeader>
+
+        <!--<tr:image source="http://localhost:9095/dgi/hierarch-view-app/GenerateImage?query=#{searchBean.displayQuery}&amp;h=200&amp;w=200"-->
+                  <!--inlineStyle="border-width:0" />-->
+
+        <tr:image source="#{intactViewConfiguration.hierarchViewUrl}/GenerateImage?query=#{searchBean.displayQuery}&amp;h=700&amp;w=700"
+                  inlineStyle="border-width:0" />
 
 </ui:composition>
