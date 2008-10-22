@@ -1223,7 +1223,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
     private void deleteComponents(Interaction intact) throws IntactException {
         for (ComponentBean cb : myComponentsToDel)
         {
-            Component comp = cb.getComponent(true);
+            Component comp = cb.getComponent(this);
             // No need to delete from persistent storage if the link to this
             // Protein is not persisted.
             if ((comp == null) || (comp.getAc() == null)) {
@@ -1264,9 +1264,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             // Disconnect any links between features in the component which are
             disconnectLinkedFeatures(cb);
 
-            Component comp = cb.getComponent(true);
-            //componentDao.saveOrUpdate(comp);
-            
+            Component comp = cb.getComponent(this);
 
             // Add features
             for (FeatureBean featureBean : cb.getFeaturesToAdd())
@@ -1288,8 +1286,12 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                     range.setFeature(feature);
                 }
                 comp.addBindingDomain(feature);
-                comp.setInteraction(intact);
+                //comp.setInteraction(intact);
             }
+
+            //Persist the component 
+            componentDao.saveOrUpdate(comp);
+
 
             Iterator<FeatureBean> fbIterator = cb.getFeaturesToDelete().iterator();
             while(fbIterator.hasNext()){

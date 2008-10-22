@@ -22,10 +22,7 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
-import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
-import uk.ac.ebi.intact.persistence.dao.ComponentDao;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.persistence.dao.InteractorDao;
+import uk.ac.ebi.intact.persistence.dao.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -201,7 +198,7 @@ public class ComponentBean extends AbstractEditKeyBean {
     }
 
     // TODO: boolean create is never used????
-    public Component getComponent(boolean create) throws IntactException {
+    public Component getComponent(InteractionViewBean interactionViewBean ) throws IntactException {
         CvExperimentalRole newExpRole = getCvExpRole();
         CvBiologicalRole newBioRole = getCvBioRole();
         // Must have a non null role and interaction for a valid component
@@ -217,8 +214,18 @@ public class ComponentBean extends AbstractEditKeyBean {
                 myInteractor = ( Interactor ) interactorDao.getByAc( myInteractor.getAc() );
 
             }
-            myComponent = new Component(IntactContext.getCurrentInstance().getConfig().getInstitution(), myInteraction,
-                    myInteractor, newExpRole, newBioRole);
+             //load interaction from database
+            if ( interactionViewBean != null && interactionViewBean.getAc() != null ) {
+                InteractionDao interactionDao = DaoProvider.getDaoFactory().getInteractionDao();
+                final Interaction originalInteraction = interactionDao.getByAc( interactionViewBean.getAc() );
+                myComponent = new Component( IntactContext.getCurrentInstance().getConfig().getInstitution(), originalInteraction,
+                                             myInteractor, newExpRole, newBioRole );
+            } else {
+                myComponent = new Component( IntactContext.getCurrentInstance().getConfig().getInstitution(), myInteraction,
+                                             myInteractor, newExpRole, newBioRole );
+            }
+
+
         }else if (myComponent.getAc() != null){
             ComponentDao componentDao = DaoProvider.getDaoFactory().getComponentDao();
             myComponent = componentDao.getByAc(myComponent.getAc());
