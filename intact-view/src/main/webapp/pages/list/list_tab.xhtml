@@ -17,10 +17,10 @@
     <f:facet name="separator">
         <tr:spacer width="10" height="1"/>
     </f:facet>
-    <tr:goButton text="Pathways" destination=""/>
-    <tr:goButton text="Domains" destination=""/>
-    <tr:goButton text="mRNA Expression" destination=""/>
-    <tr:goButton text="Chromosome Location" destination=""/>
+    <tr:commandButton text="Pathways" actionListener="#{browseBean.linkToPathwayFromListSelection}" />
+    <tr:commandButton text="Domains" actionListener="#{browseBean.linkToInterproFromListSelection}" />
+    <tr:commandButton text="mRNA Expression" actionListener="#{browseBean.linkToExpressionFromListSelection}" />
+    <tr:commandButton text="Chromosome Location" actionListener="#{browseBean.linkToChromosomeFromListSelection}"  />
 
 
 </tr:panelGroupLayout>
@@ -159,9 +159,11 @@
    <h:outputText value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
 </tr:column>
 
-<tr:column headerText="Description" sortable="true" sortProperty="idA_s">
-    <h:outputText value="yet to fix"/>
-</tr:column>
+    <tr:column headerText="Description">
+        <ui:param name="intactIdentifier" value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
+        <ui:param name="interactor" value="#{iaf:getByAc(intactIdentifier)}"/>
+        <tr:outputText value="#{interactor.fullName}" />
+    </tr:column>
 
 </tr:table>
 

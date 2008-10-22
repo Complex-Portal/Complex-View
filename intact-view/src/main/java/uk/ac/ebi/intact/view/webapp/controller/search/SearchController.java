@@ -57,8 +57,8 @@ public class SearchController extends JpaBaseController {
     private static final String ONTOLOGY_QUERY_PARAM = "ontologyQuery";
 
     // table IDs
-    private static final String INTERACTIONS_TABLE_ID = "interactionResults";
-    private static final String PROTEINS_TABLE_ID = "proteinListResults";
+    public static final String INTERACTIONS_TABLE_ID = "interactionResults";
+    public static final String PROTEINS_TABLE_ID = "proteinListResults";
 
     // injected
     @Autowired

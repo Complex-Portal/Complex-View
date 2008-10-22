@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
+import org.apache.myfaces.trinidad.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -28,11 +29,16 @@ import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.model.CvDatabase;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
+import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
+import uk.ac.ebi.intact.view.webapp.IntactViewException;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.faces.event.ActionEvent;
+import javax.faces.context.FacesContext;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.io.IOException;
 
 /**
  * Controller for the browse tab
@@ -44,7 +50,7 @@ import java.util.Set;
 @Controller( "browseBean" )
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class BrowseController {
+public class BrowseController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog( BrowseController.class );
 
@@ -56,6 +62,14 @@ public class BrowseController {
     private String chromosomalLocationIdentifierList;
     private String mRNAExpressionIdentifierList;
     private String reactomeIdentifierList;
+
+    //URL Links
+    public static final String INTERPROURL = "http://www.ebi.ac.uk/interpro/ISpy?ac=";
+    public static final String CHROMOSOMEURL = "http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=";
+    public static final String EXPRESSIONURL = "http://www.ebi.ac.uk/microarray-as/atlas/qr?q_gene=";
+    //public static final String REACTOMEURL = "";
+
+
 
 
     public BrowseController() {
@@ -105,7 +119,7 @@ public class BrowseController {
             results = searchController.getInteractorResults().getResult().getData();
 
             for ( IntactBinaryInteraction result : results ) {
-                final Collection<Alias> aliases = result.getInteractorB().getAliases();
+                final Collection<Alias> aliases = result.getInteractorA().getAliases();
 
                 for ( Alias alias : aliases ) {
                     uniqueGeneNames.add( alias.getName() );
@@ -142,6 +156,92 @@ public class BrowseController {
         }
 
         return "";
+    }
+
+    private Set<String> getSelectedListOfUniqueGeneNames() {
+        final List<IntactBinaryInteraction> selected = getSelected( searchController.PROTEINS_TABLE_ID );
+
+        Set<String> uniqueGeneNames = new HashSet<String>();
+
+        for ( IntactBinaryInteraction result : selected ) {
+            final Collection<Alias> aliases = result.getInteractorA().getAliases();
+
+            for ( Alias alias : aliases ) {
+                uniqueGeneNames.add( alias.getName() );
+            }
+        }
+        return uniqueGeneNames;
+    }
+
+
+    private Set<String> getSelectedListOfUniqueUniprotIdentifiers() {
+        final List<IntactBinaryInteraction> selected = getSelected( searchController.PROTEINS_TABLE_ID );
+
+        Set<String> uniqueIdentifiers = new HashSet<String>();
+
+        for ( IntactBinaryInteraction intactBinaryInteraction : selected ) {
+            for ( CrossReference xref : intactBinaryInteraction.getInteractorA().getIdentifiers() ) {
+                if ( CvDatabase.UNIPROT.equals( xref.getDatabase() ) ) {
+                    uniqueIdentifiers.add( xref.getIdentifier() );
+                }
+            }
+        }
+        return uniqueIdentifiers;
+    }
+
+    public void linkToInterproFromListSelection( ActionEvent evt ) {
+
+        this.interproIdentifierList = appendIdentifiers( getSelectedListOfUniqueUniprotIdentifiers(), "," );
+        String redirectURL = INTERPROURL + interproIdentifierList;
+        try {
+            redirectTo( redirectURL );
+        } catch ( Exception e ) {
+            throw new IntactViewException( "Exception in redirecting to " + redirectURL );
+        }
+
+    }
+
+    public void linkToExpressionFromListSelection( ActionEvent evt ) {
+
+        this.mRNAExpressionIdentifierList = appendIdentifiers( getSelectedListOfUniqueGeneNames(), ",+" );
+        String redirectURL = EXPRESSIONURL + mRNAExpressionIdentifierList;
+        try {
+            redirectTo( redirectURL );
+        } catch ( Exception e ) {
+            throw new IntactViewException( "Exception in redirecting to " + redirectURL );
+        }
+
+    }
+
+    public void linkToChromosomeFromListSelection( ActionEvent evt ) {
+
+        this.chromosomalLocationIdentifierList = appendIdentifiers( getSelectedListOfUniqueUniprotIdentifiers(), ";id=" );
+        String redirectURL = CHROMOSOMEURL + chromosomalLocationIdentifierList;
+        try {
+            redirectTo( redirectURL );
+        } catch ( Exception e ) {
+            throw new IntactViewException( "Exception in redirecting to " + redirectURL );
+        }
+
+    }
+
+    public void linkToPathwayFromListSelection( ActionEvent evt ) {
+
+        this.reactomeIdentifierList = appendIdentifiers( getSelectedListOfUniqueUniprotIdentifiers(), "\n" );
+        //todo
+    }
+
+
+    private void redirectTo( String redirectURL ) throws IOException {
+        if ( log.isDebugEnabled() ) {
+            log.debug( "Redirecting to " + redirectURL );
+        }
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpServletResponse response =
+                ( HttpServletResponse ) facesContext.getExternalContext().getResponse();
+        response.sendRedirect( redirectURL );
+        facesContext.responseComplete();
     }
 
 

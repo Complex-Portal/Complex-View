@@ -126,6 +126,10 @@ public final class Functions {
         return null;
     }
 
+    public static Interactor getByAc( String intactAc ) {
+        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getInteractorDao().getByAc( intactAc );
+    }
+
     public static DateTime toDateTime(Long dateInTimeMillis) {
         return new DateTime(dateInTimeMillis);
     }
