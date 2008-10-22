@@ -4,6 +4,7 @@ import org.apache.myfaces.trinidad.component.UIXCollection;
 import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.myfaces.trinidad.component.UIXTree;
 import org.apache.myfaces.trinidad.model.RowKeySet;
+import org.apache.myfaces.trinidad.context.RequestContext;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -45,26 +46,43 @@ public abstract class BaseController implements Serializable {
         context.addMessage(null, facesMessage);
     }
 
-    protected List getSelected(UIComponent component) {
-        UIXCollection table = (UIXCollection) component;
+    protected List getSelected(String tableOrTreeId) {
+        UIXCollection uixCollection = (UIXCollection) FacesContext.getCurrentInstance().getViewRoot().findComponent(tableOrTreeId);
 
         final RowKeySet state;
-        if (table instanceof UIXTable) {
-            state = ((UIXTable) table).getSelectedRowKeys();
+        if (uixCollection instanceof UIXTable) {
+            state = ((UIXTable) uixCollection).getSelectedRowKeys();
         } else {
-            state = ((UIXTree) table).getSelectedRowKeys();
+            state = ((UIXTree) uixCollection).getSelectedRowKeys();
         }
 
         Iterator<Object> selection = state.iterator();
-        Object oldKey = table.getRowKey();
+        Object oldKey = uixCollection.getRowKey();
 
         List selectedEntries = new ArrayList();
         while (selection.hasNext()) {
-            table.setRowKey(selection.next());
-            selectedEntries.add(table.getRowData());
+            uixCollection.setRowKey(selection.next());
+            selectedEntries.add(uixCollection.getRowData());
         }
-        table.setRowKey(oldKey);
+        uixCollection.setRowKey(oldKey);
         return selectedEntries;
+    }
+
+    protected void resetSelection(String tableOrTreeId) {
+        UIXCollection uixCollection = (UIXCollection) FacesContext.getCurrentInstance().getViewRoot().findComponent(tableOrTreeId);
+
+        if (uixCollection instanceof UIXTable) {
+            ((UIXTable) uixCollection).setSelectedRowKeys(null);
+        } else {
+            ((UIXTree) uixCollection).setSelectedRowKeys(null);
+        }
+    }
+
+    protected void refreshTable(String tableId, Object value) {
+    	UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(tableId);
+        table.setValue(value);
+        RequestContext afContext = RequestContext.getCurrentInstance();
+        afContext.addPartialTarget(table);
     }
 
     /**

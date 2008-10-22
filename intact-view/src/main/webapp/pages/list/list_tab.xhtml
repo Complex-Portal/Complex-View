@@ -59,9 +59,8 @@
 
 <!-- RESULTS TABLE -->
 
-<tr:table id="listResults" value="#{searchBean.interactorResults}" var="binaryInteraction" varStatus="status"
-          summary="Binary Interactions"
-          binding="#{searchBean.interactorBindings.resultsDataTable}" emptyText="No interactions found matching the query."
+<tr:table id="proteinListResults" value="#{searchBean.interactorResults}" var="binaryInteraction" varStatus="status"
+          summary="Binary Interactions" emptyText="No interactions found matching the query."
           rows="#{searchBean.pageSize}" rowBandingInterval="1"
           rowSelection="multiple" >
 

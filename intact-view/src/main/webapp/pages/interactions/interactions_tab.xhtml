@@ -54,9 +54,9 @@
 
 <!-- RESULTS TABLE -->
 
-<tr:table id="results" value="#{searchBean.results}" var="binaryInteraction" varStatus="status"
+<tr:table id="interactionResults" value="#{searchBean.results}" var="binaryInteraction" varStatus="status"
           summary="Binary Interactions"
-          binding="#{searchBean.bindings.resultsDataTable}" emptyText="No interactions found matching the query."
+          emptyText="No interactions found matching the query."
           rows="#{searchBean.pageSize}" rowBandingInterval="1"
           partialTriggers=":results:btnToogleProps :results:btnStandardView :results:btnExpandedView :results:selPageRangeChoice">
 
@@ -66,8 +66,7 @@
             <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
         </f:facet>
 
-        <tr:selectRangeChoiceBar binding="#{searchBean.bindings.rangeChoiceBar}"
-                                 var="range" id="selPageRangeChoice"
+        <tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"
                                  value="#{searchBean.results}"
                                  rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
                                  rendered="#{searchBean.results.rowCount gt searchBean.pageSize}"/>

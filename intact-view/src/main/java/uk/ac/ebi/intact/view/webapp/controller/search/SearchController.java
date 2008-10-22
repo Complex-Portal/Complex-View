@@ -7,6 +7,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
+import org.apache.myfaces.trinidad.component.UIXTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -55,24 +56,16 @@ public class SearchController extends JpaBaseController {
     private static final String TAB_PARAM = "tab";
     private static final String ONTOLOGY_QUERY_PARAM = "ontologyQuery";
 
+    // table IDs
+    private static final String INTERACTIONS_TABLE_ID = "interactionResults";
+    private static final String PROTEINS_TABLE_ID = "proteinListResults";
+
     // injected
     @Autowired
     private AppConfigBean appConfigBean;
 
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
-
-    @Autowired
-    @Qualifier("searchBindings")
-    private SearchControllerBindings bindings;
-
-    @Autowired
-    @Qualifier("interactorSearchBindings")
-    private InteractorSearchControllerBindings interactorBindings;
-
-    @Autowired
-    @Qualifier("smallMoleculeSearchBindings")
-    private SmallMoleculeSearchControllerBindings smallMoleculeBindings;
 
     private String searchQuery;
     private String ontologySearchQuery;
@@ -173,9 +166,9 @@ public class SearchController extends JpaBaseController {
 
     private void doBinarySearch(String query) {
         // reset the status of the range choice bar
-        if (bindings.getRangeChoiceBar() != null) {
-            bindings.getRangeChoiceBar().setFirst(0);
-        }
+        //if (bindings.getRangeChoiceBar() != null) {
+        //    bindings.getRangeChoiceBar().setFirst(0);
+        //}
 
         if (log.isDebugEnabled()) log.debug("Searching interactions (raw): " + query);
 
@@ -211,9 +204,9 @@ public class SearchController extends JpaBaseController {
             e.printStackTrace();
         }
 
-        if (bindings.getResultsDataTable() != null) {
-            bindings.getResultsDataTable().setFirst(0);
-        }
+        //if (bindings.getResultsDataTable() != null) {
+        //    bindings.getResultsDataTable().setFirst(0);
+        //}
 
         doInteractorSearch(query);
     }
@@ -225,10 +218,6 @@ public class SearchController extends JpaBaseController {
 
     public void doProteinsSearch(String query) {
         // reset the status of the range choice bar
-        if (interactorBindings.getRangeChoiceBar() != null) {
-            interactorBindings.getRangeChoiceBar().setFirst(0);
-        }
-
         if (log.isDebugEnabled()) log.debug("Searching interactors (raw): " + query);
 
         query = QueryHelper.prepareInteractorQuery(query, CvInteractorType.PROTEIN_MI_REF);
@@ -244,18 +233,10 @@ public class SearchController extends JpaBaseController {
             addErrorMessage("Too many interactors found", "Please, refine your query");
             interactorTotalResults = 0;
         }
-
-        if (interactorBindings.getResultsDataTable() != null) {
-            interactorBindings.getResultsDataTable().setFirst(0);
-        }
     }
 
     public void doSmallMoleculeSearch(String query) {
         // reset the status of the range choice bar
-        if (smallMoleculeBindings.getRangeChoiceBar() != null) {
-            smallMoleculeBindings.getRangeChoiceBar().setFirst(0);
-        }
-
         if (log.isDebugEnabled()) log.debug("Searching small molecules (raw): " + query);
 
         query = QueryHelper.prepareInteractorQuery(query, CvInteractorType.SMALL_MOLECULE_MI_REF);
@@ -271,15 +252,15 @@ public class SearchController extends JpaBaseController {
             addErrorMessage("Too many small molecules found", "Please, refine your query");
             interactorTotalResults = 0;
         }
-
-        if (smallMoleculeBindings.getResultsDataTable() != null) {
-            smallMoleculeBindings.getResultsDataTable().setFirst(0);
-        }
     }
 
     public void rangeChanged(RangeChangeEvent evt) {
         results.setRowIndex(evt.getNewStart());
-        bindings.getResultsDataTable().setFirst(evt.getNewStart());
+
+        UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(INTERACTIONS_TABLE_ID);
+        table.setFirst(evt.getNewStart());
+
+        refreshTable(INTERACTIONS_TABLE_ID, results);
     }
 
     public Index getDefaultIndex() {
@@ -288,7 +269,7 @@ public class SearchController extends JpaBaseController {
 
 
     public void doSearchInteractionsFromListSelection(ActionEvent evt) {
-        final List<IntactBinaryInteraction> selected = getSelected(interactorBindings.getResultsDataTable());
+        final List<IntactBinaryInteraction> selected = getSelected(PROTEINS_TABLE_ID);
 
         if (selected.size() == 0) {
             return;
@@ -322,7 +303,7 @@ public class SearchController extends JpaBaseController {
 
         doBinarySearch(searchQuery);
 
-        interactorBindings.getResultsDataTable().setSelectedRowKeys(null);
+        resetSelection(PROTEINS_TABLE_ID);
     }
 
     public Index getDefaultInteractorIndex() {
@@ -392,10 +373,6 @@ public class SearchController extends JpaBaseController {
         this.searchQuery = searchQuery;
     }
 
-    public SearchControllerBindings getBindings() {
-        return bindings;
-    }
-
     public String getDisclosedTabName() {
         return disclosedTabName;
     }
@@ -412,14 +389,6 @@ public class SearchController extends JpaBaseController {
         this.totalResults = totalResults;
     }
 
-    public InteractorSearchControllerBindings getInteractorBindings() {
-        return interactorBindings;
-    }
-
-    public void setInteractorBindings(InteractorSearchControllerBindings interactorBindings) {
-        this.interactorBindings = interactorBindings;
-    }
-
     public int getInteractorTotalResults() {
         return interactorTotalResults;
     }
@@ -434,14 +403,6 @@ public class SearchController extends JpaBaseController {
 
     public void setInteractorResults(SearchResultDataModel interactorResults) {
         this.interactorResults = interactorResults;
-    }
-
-    public SmallMoleculeSearchControllerBindings getSmallMoleculeBindings() {
-        return smallMoleculeBindings;
-    }
-
-    public void setSmallMoleculeBindings(SmallMoleculeSearchControllerBindings smallMoleculeBindings) {
-        this.smallMoleculeBindings = smallMoleculeBindings;
     }
 
     public int getSmallMoleculeTotalResults() {

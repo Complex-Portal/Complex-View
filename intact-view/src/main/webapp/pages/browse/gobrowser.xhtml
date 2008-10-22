@@ -32,7 +32,7 @@
 
             <tr:group>
                 <strong>Query: </strong>
-                <ebi:outputText id="queryText" value="#{searchBean.displayQuery}" maxLength="50"
+                <ebi:outputText id="queryText" value="#{searchBean.searchQuery}" maxLength="50"
                                 expandMessage="(see entire query)" collapseMessage="(collapse)"/>
             </tr:group>
 
@@ -52,7 +52,6 @@
                             <tr:outputText value="#{otw.term.name}"/>
                         </tr:column>
 
-                        <!--<ui:param name="countedOtw" value="#{iam:populateCounts(otw, indexRequestController.defaultInteractorIndex, indexRequestController.defaultInteractionIndex)}"/>-->
                         <c:set var="countedOtw" value="${iam:populateCounts(otw, indexRequestController.defaultInteractorIndex, indexRequestController.defaultInteractionIndex)}"/>
 
                     </f:facet>
@@ -69,7 +68,9 @@
                         <tr:group>
                            <tr:outputText value="#{countedOtw.interactorCount}"/>
                             &#160;
-                            <tr:commandLink text="View" actionListener="#{searchBean.doBinarySearch}" action="list">
+                            <tr:commandLink text="View" rendered="#{countedOtw.interactorCount > 0}"
+                                            actionListener="#{searchBean.doBinarySearch}"
+                                            action="list">
                                 <f:setPropertyActionListener value="#{otw.searchQuery}" target="#{searchBean.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
@@ -84,7 +85,9 @@
                         <tr:group>
                            <tr:outputText value="#{otw.interactionCount}"/>
                             &#160;
-                             <tr:commandLink text="View" actionListener="#{searchBean.doBinarySearch}" action="interactions">
+                             <tr:commandLink text="View" rendered="#{countedOtw.interactorCount > 0}" 
+                                             actionListener="#{searchBean.doBinarySearch}"
+                                             action="interactions">
                                 <f:setPropertyActionListener value="#{otw.searchQuery}" target="#{searchBean.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
