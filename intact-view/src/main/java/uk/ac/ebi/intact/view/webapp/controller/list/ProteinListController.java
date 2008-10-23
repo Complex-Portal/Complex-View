@@ -15,32 +15,31 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.list;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.myfaces.trinidad.context.RequestContext;
-import org.apache.myfaces.trinidad.render.ExtendedRenderKitService;
-import org.apache.myfaces.trinidad.util.Service;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.apache.myfaces.trinidad.render.ExtendedRenderKitService;
+import org.apache.myfaces.trinidad.util.Service;
+import org.apache.myfaces.trinidad.context.RequestContext;
+import org.apache.commons.lang.StringUtils;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.view.webapp.controller.browse.BrowseController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
-import uk.ac.ebi.intact.view.webapp.util.MitabFunctions;
+import uk.ac.ebi.intact.view.webapp.util.ExternalDbLinker;
 
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import java.util.HashSet;
+import javax.faces.context.FacesContext;
 import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment that class header
+ * Controller for ProteinList View
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
 @Controller
-@Scope("conversation.access")
+@Scope( "conversation.access" )
 public class ProteinListController extends BaseController {
 
     public ProteinListController() {
@@ -48,44 +47,45 @@ public class ProteinListController extends BaseController {
 
     private String[] getSelectedUniprotIds() {
 
-        final List<IntactBinaryInteraction> interactions = getSelected(SearchController.PROTEINS_TABLE_ID);
-
-        Set<String> uniprotIds = new HashSet<String>();
-
-        for (IntactBinaryInteraction interaction : interactions) {
-            String uniprotId = MitabFunctions.getUniprotIdentifierFromCrossReferences(interaction.getInteractorA().getIdentifiers());
-
-            if (uniprotId != null) {
-                uniprotIds.add(uniprotId);
-            }
-        }
-
-        return uniprotIds.toArray(new String[uniprotIds.size()]);
+        final List<IntactBinaryInteraction> interactions = getSelected( SearchController.PROTEINS_TABLE_ID );
+        Set<String> uniprotIds = ExternalDbLinker.getUniqueUniprotIds( interactions );
+        return uniprotIds.toArray( new String[uniprotIds.size()] );
     }
 
-    public void goDomains(ActionEvent evt) {
+
+    private String[] getSelectedGeneNames() {
+
+        final List<IntactBinaryInteraction> interactions = getSelected( SearchController.PROTEINS_TABLE_ID );
+        Set<String> geneNames = ExternalDbLinker.getUniqueGeneNames( interactions );
+        return geneNames.toArray( new String[geneNames.size()] );
+    }
+
+
+    public void goDomains( ActionEvent evt ) {
         String[] selectedUniprotIds = getSelectedUniprotIds();
-
-        // externalLinker.goExternalLink(selectedUniprotIds);
-        
-        goExternalLink(BrowseController.INTERPROURL, selectedUniprotIds);
+        ExternalDbLinker.goExternalLink( ExternalDbLinker.INTERPROURL, ExternalDbLinker.INTERPRO_SEPERATOR, selectedUniprotIds );
     }
 
-    public void goExternalLink(String baseUrl, String[] selected) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExtendedRenderKitService service = Service.getRenderKitService(facesContext, ExtendedRenderKitService.class);
+    public void goExpression( ActionEvent evt ) {
+        String[] selectedGeneNames = getSelectedGeneNames();
+        ExternalDbLinker.goExternalLink( ExternalDbLinker.EXPRESSIONURL_PREFIX, ExternalDbLinker.EXPRESSIONURL_SUFFIX, ExternalDbLinker.EXPRESSION_SEPERATOR, selectedGeneNames );
+    }
 
-        if (selected.length > 0) {
-            String url = baseUrl + StringUtils.join(selected, ',');
-            service.addScript(facesContext, "window.open('"+url+"');");
-        } else {
-            service.addScript(facesContext, "alert('Selection is empty');");
-        }
+    public void goChromosomalLocation( ActionEvent evt ) {
+        String[] selectedUniprotIds = getSelectedUniprotIds();
+        ExternalDbLinker.goExternalLink( ExternalDbLinker.CHROMOSOMEURL, ExternalDbLinker.CHROMOSOME_SEPERATOR, selectedUniprotIds );
+    }
+
+
+    public void goReactome( ActionEvent evt ) {
+        String[] selected = getSelectedUniprotIds();
+        //the carriage return has to be escaped as it is used in the JavaScript
+        ExternalDbLinker.reactomeLinker( ExternalDbLinker.REACTOMEURL, "\\r", selected );
+
     }
 
     public void rerender(ActionEvent evt) {
         RequestContext requestContext = RequestContext.getCurrentInstance();
-        requestContext.addPartialTarget(getComponentFromView("lalal"));
         requestContext.addPartialTarget(getComponentFromView("buttonBar"));
     }
-}                             
+}

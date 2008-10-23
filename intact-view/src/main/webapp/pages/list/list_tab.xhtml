@@ -68,16 +68,20 @@
             <tr:commandButton text="Search Interactions"
                               actionListener="#{searchBean.doSearchInteractionsFromListSelection}"
                               action="main"/>
-
-            <tr:commandButton text="Pathways"
-                              actionListener="#{browseBean.linkToPathwayFromListSelection}"/>
+             <f:subview id="rectomeView">
+                    <input type="hidden" name="QUERY" value=""/>
+                    <input type="hidden" name="DB" value="gk_current"/>
+                    <input type="hidden" name="SUBMIT" value="0"/>
+                    <tr:commandButton text="Pathways" partialSubmit="true"
+                                      actionListener="#{proteinListController.goReactome}"/>
+             </f:subview>
             <tr:commandButton text="Domains" partialSubmit="true"
                               actionListener="#{proteinListController.goDomains}"/>
-            <tr:commandButton text="mRNA Expression"
-                              actionListener="#{browseBean.linkToExpressionFromListSelection}" />
-            <tr:commandButton text="Chromosome Location"
+            <tr:commandButton text="mRNA Expression"  partialSubmit="true"
+                              actionListener="#{proteinListController.goExpression}" />
+            <tr:commandButton text="Chromosome Location" partialSubmit="true"
                               icon="/images/logos/ensembl_12.png"
-                              actionListener="#{browseBean.linkToChromosomeFromListSelection}"  />
+                              actionListener="#{proteinListController.goChromosomalLocation}"  />
 
 
 
