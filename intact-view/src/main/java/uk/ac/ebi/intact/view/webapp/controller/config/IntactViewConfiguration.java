@@ -35,7 +35,7 @@ public class IntactViewConfiguration {
     private String newsUrl;
     private int maxNewsInBox;
     private String configFile;
-    private int graphMaxIntectionCount;
+    private int graphMaxInteractionCount;
     private String defaultIndexLocation;
     private String defaultInteractorIndexLocation;
     private String defaultOntologiesIndexLocation;
@@ -103,12 +103,12 @@ public class IntactViewConfiguration {
         this.configFile = configFile;
     }
 
-    public int getGraphMaxIntectionCount() {
-        return graphMaxIntectionCount;
+    public int getGraphMaxInteractionCount() {
+        return graphMaxInteractionCount;
     }
 
-    public void setGraphMaxIntectionCount( int graphMaxIntectionCount ) {
-        this.graphMaxIntectionCount = graphMaxIntectionCount;
+    public void setGraphMaxInteractionCount( int graphMaxInteractionCount ) {
+        this.graphMaxInteractionCount = graphMaxInteractionCount;
     }
 
     public String getDefaultIndexLocation() {

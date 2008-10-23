@@ -26,7 +26,7 @@
         <property name="newsUrl" value="${intact.news.url}"/>
         <property name="maxNewsInBox" value="${intact.news.maxinbox}"/>
         <property name="configFile" value="${intact.configfile}"/>
-        <property name="graphMaxIntectionCount" value="${intact.graph.maxInteractionCount}"/>
+        <property name="graphMaxInteractionCount" value="${intact.graph.maxInteractionCount}"/>
         <property name="defaultIndexLocation" value="${intact.index.interaction.default}"/>
         <property name="defaultInteractorIndexLocation" value="${intact.index.interactor.default}"/>
         <property name="defaultOntologiesIndexLocation" value="${intact.index.ontologies.default}"/>
