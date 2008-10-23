@@ -59,7 +59,7 @@
             </tr:showDetailItem>
 
             <tr:showDetailItem text="Graph"
-                               disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > 200 }">
+                               disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxIntectionCount }">
                 <tr:messages/>
                 <ui:insert name="graphTabContent"/>
             </tr:showDetailItem>
