@@ -50,6 +50,7 @@
 
         <!-- Other intact apps -->
         <intact.hierarchview.url>${appRoot}/hierarchView</intact.hierarchview.url>
+        <intactview.graph.maxInteractionCount>500</intactview.graph.maxInteractionCount>
 
         <!-- ChEBI -->
         <chebi.url>http://www.ebi.ac.uk/chebi</chebi.url>

@@ -11,6 +11,7 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
 
@@ -90,10 +91,7 @@
 </tr:column>
 
 <tr:column headerText="Names" sortable="true" sortProperty="aliasA_s">
-    <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}" varStatus="rowStatus">
-        <h:outputText value="#{alias.name}"/>
-        <h:outputText value=", " rendered="#{rowStatus.index + 1 lt rowStatus.count}"/>
-    </tr:iterator>
+   <h:outputText value="#{iamf:getProteinDisplayName(binaryInteraction.interactorA)}"/>
 </tr:column>
 
 
@@ -156,13 +154,13 @@
 </tr:column>
 
 <tr:column headerText="DGI Accession number" sortable="true" sortProperty="idA_s">
-    <h:outputText value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
+    <h:outputText value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
 </tr:column>
 
 <tr:column headerText="Description">
     <ui:param name="intactIdentifier"
-              value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
-    <ui:param name="interactor" value="#{iaf:getByAc(intactIdentifier)}"/>
+              value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
+    <ui:param name="interactor" value="#{iaf:getInteractorByAc(intactIdentifier)}"/>
     <tr:outputText value="#{interactor.fullName}"/>
 </tr:column>
 

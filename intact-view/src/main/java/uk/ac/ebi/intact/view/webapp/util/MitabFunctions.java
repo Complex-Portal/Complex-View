@@ -15,24 +15,24 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
-import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
-import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
-import uk.ac.ebi.intact.model.Interactor;
-import uk.ac.ebi.intact.model.CvInteractorType;
-import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
-import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.search.Query;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.lucene.search.Query;
+import psidev.psi.mi.tab.model.CrossReference;
+import uk.ac.ebi.intact.model.CvAliasType;
+import uk.ac.ebi.intact.model.CvInteractorType;
+import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.InteractorAlias;
+import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
+import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
+import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
+import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper;
 
-import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -132,6 +132,79 @@ public final class MitabFunctions {
         return otw;
     }
 
+    public static String getIntactIdentifierFromCrossReferences(Collection xrefs) {
+        return getIdentifierFromCrossReferences(xrefs, "intact");
+    }
+
+     public static String getUniprotIdentifierFromCrossReferences(Collection xrefs) {
+        return getIdentifierFromCrossReferences(xrefs, "uniprotkb");
+    }
+
+    public static String getChebiIdentifierFromCrossReferences(Collection xrefs) {
+        return getIdentifierFromCrossReferences(xrefs, "chebi");
+    }
+
+    public static String getIdentifierFromCrossReferences(Collection xrefs, String databaseLabel) {
+        for (CrossReference xref : (Collection<CrossReference>) xrefs) {
+            if (databaseLabel.equals(xref.getDatabase())) {
+                return xref.getIdentifier();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the name for a protein, getting the first available after evaluating in this order:
+     * gene name > commercial name > synonim > locus > orf > AC.
+     * @param interactor
+     * @return
+     */
+    public static String getProteinDisplayName(ExtendedInteractor interactor) {
+       String name = null;
+
+        if (!interactor.getAliases().isEmpty()) {
+            name = interactor.getAliases().iterator().next().getName();
+        } else {
+            for (CrossReference xref : interactor.getAlternativeIdentifiers()) {
+                
+                if ("commercial name".equals(xref.getText())) {
+                    name = xref.getIdentifier();
+                }
+            }
+
+            if (name == null) {
+                String intactAc = getIntactIdentifierFromCrossReferences(interactor.getIdentifiers());
+
+                if (intactAc != null) {
+                    Interactor intactInteractor = Functions.getInteractorByAc(intactAc);
+                    InteractorAlias alias = getAliasByPriority(intactInteractor, CvAliasType.GENE_NAME_MI_REF,
+                                                                        "MI:2003", // commercial name
+                                                                        CvAliasType.GO_SYNONYM_MI_REF,
+                                                                        CvAliasType.LOCUS_NAME_MI_REF,
+                                                                        CvAliasType.ORF_NAME_MI_REF);
+                    if (alias != null) {
+                        name = alias.getName();
+                    } else {
+                        name = intactInteractor.getAc();
+                    }
+                }
+            }
+        }
+
+        return name;
+    }
+
+    private static InteractorAlias getAliasByPriority(Interactor intactInteractor, String ... aliasTypes) {
+        for (String aliasType : aliasTypes) {
+            for (InteractorAlias alias : intactInteractor.getAliases()) {
+                if (alias.getCvAliasType() != null && aliasType.equals(alias.getCvAliasType().getIdentifier())) {
+                    return alias;
+                }
+            }
+        }
+
+        return null;
+    }
 
 
 }

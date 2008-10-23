@@ -25,7 +25,7 @@ import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.browse.BrowseController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
-import uk.ac.ebi.intact.view.webapp.util.Functions;
+import uk.ac.ebi.intact.view.webapp.util.MitabFunctions;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -53,7 +53,7 @@ public class ProteinListController extends BaseController {
         Set<String> uniprotIds = new HashSet<String>();
 
         for (IntactBinaryInteraction interaction : interactions) {
-            String uniprotId = Functions.getUniprotIdentifierFromCrossReferences(interaction.getInteractorA().getIdentifiers());
+            String uniprotId = MitabFunctions.getUniprotIdentifierFromCrossReferences(interaction.getInteractorA().getIdentifiers());
 
             if (uniprotId != null) {
                 uniprotIds.add(uniprotId);
@@ -88,4 +88,4 @@ public class ProteinListController extends BaseController {
         requestContext.addPartialTarget(getComponentFromView("lalal"));
         requestContext.addPartialTarget(getComponentFromView("buttonBar"));
     }
-}
+}                             

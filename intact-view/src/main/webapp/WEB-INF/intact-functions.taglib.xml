@@ -94,28 +94,10 @@
         <function-signature>java.lang.String getPubmedId(uk.ac.ebi.intact.model.Experiment)</function-signature>
     </function>
 
-    <function>
-        <function-name>getIntactIdentifierFromCrossReferences</function-name>
-        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
-        <function-signature>java.lang.String getIntactIdentifierFromCrossReferences(java.util.Collection)</function-signature>
-    </function>
-
      <function>
-        <function-name>getUniprotIdentifierFromCrossReferences</function-name>
+        <function-name>getInteractorByAc</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
-        <function-signature>java.lang.String getUniprotIdentifierFromCrossReferences(java.util.Collection)</function-signature>
-    </function>
-
-     <function>
-        <function-name>getChebiIdentifierFromCrossReferences</function-name>
-        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
-        <function-signature>java.lang.String getChebiIdentifierFromCrossReferences(java.util.Collection)</function-signature>
-    </function>
-
-     <function>
-        <function-name>getByAc</function-name>
-        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
-        <function-signature>uk.ac.ebi.intact.model.Interactor getByAc(java.lang.String)</function-signature>
+        <function-signature>uk.ac.ebi.intact.model.Interactor getInteractorByAc(java.lang.String)</function-signature>
     </function>
 
 

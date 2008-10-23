@@ -15,18 +15,17 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.ProteinUtils;
-import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import org.joda.time.DateTime;
 import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
-import java.util.*;
-
-import org.joda.time.DateTime;
-import psidev.psi.mi.tab.model.CrossReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Functions to be used in the UI
@@ -99,34 +98,7 @@ public final class Functions {
         return replacedUrl;
     }
 
-    public static String getIntactIdentifierFromCrossReferences(Collection xrefs) {
-        for (CrossReference xref : (Collection<CrossReference>) xrefs) {
-            if ("intact".equals(xref.getDatabase())) {
-                return xref.getIdentifier();
-            }
-        }
-        return null;
-    }
-
-     public static String getUniprotIdentifierFromCrossReferences(Collection xrefs) {
-        for (CrossReference xref : (Collection<CrossReference>) xrefs) {
-            if ("uniprotkb".equals(xref.getDatabase())) {
-                return xref.getIdentifier();
-            }
-        }
-        return null;
-    }
-
-    public static String getChebiIdentifierFromCrossReferences(Collection xrefs) {
-        for (CrossReference xref : (Collection<CrossReference>) xrefs) {
-            if ("chebi".equals(xref.getDatabase())) {
-                return xref.getIdentifier();
-            }
-        }
-        return null;
-    }
-
-    public static Interactor getByAc( String intactAc ) {
+    public static Interactor getInteractorByAc( String intactAc ) {
         return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getInteractorDao().getByAc( intactAc );
     }
 
