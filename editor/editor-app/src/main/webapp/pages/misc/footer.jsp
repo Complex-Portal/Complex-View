@@ -19,7 +19,7 @@
 <table width="100%">
 <tr>
     <td>
-        Tip of the day: if a bug happens, please copy the whole stack trace from the error to the developers, when possible.
+        Tip of the day: While curating please use the 'Save & Continue' button frequently.
         <br/>
         <%-- commented during the reorg to maven
         Last modified: <i><%@ include file="../last-modified.txt" %></i>

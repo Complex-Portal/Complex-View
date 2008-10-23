@@ -1265,6 +1265,8 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             disconnectLinkedFeatures(cb);
 
             Component comp = cb.getComponent(this);
+             //Persist the component
+            //componentDao.saveOrUpdate(comp);
 
             // Add features
             for (FeatureBean featureBean : cb.getFeaturesToAdd())
@@ -1286,11 +1288,10 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                     range.setFeature(feature);
                 }
                 comp.addBindingDomain(feature);
-                //comp.setInteraction(intact);
+                comp.setInteraction(intact);
             }
 
-            //Persist the component 
-            componentDao.saveOrUpdate(comp);
+
 
 
             Iterator<FeatureBean> fbIterator = cb.getFeaturesToDelete().iterator();
