@@ -305,7 +305,7 @@
             <tr:outputText value="  "/>
         </f:facet>
         <f:facet name="OtherType">
-            <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
+            <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}" rows="0">
                 <tr:iterator var="xref" value="#{organism.identifiers}"
                              varStatus="rowStatus" rows="0">
                     <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
@@ -324,7 +324,7 @@
         <f:facet name="OtherType">
             <tr:iterator var="organism" value="#{binaryInteraction.interactorB.organism}"
                          varStatus="rowStatus" rows="0">
-                <tr:iterator var="xref" value="#{organism.identifiers}">
+                <tr:iterator var="xref" value="#{organism.identifiers}" rows="0">
                     <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
                 </tr:iterator>
                 <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>

@@ -9,7 +9,6 @@ import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.myfaces.trinidad.component.UIXTable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.tab.model.CrossReference;
@@ -18,7 +17,6 @@ import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
-import uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
@@ -43,7 +41,8 @@ import java.util.List;
 @ViewController(viewIds = {"/main.xhtml",
                            "/pages/search/search.xhtml",
                            "/pages/interactions/interactions.xhtml",
-                           "/pages/list/list.xhtml",
+                           "/pages/list/protein_list.xhtml",
+                           "/pages/list/compound_list.xhtml",
                            "/pages/molecule/molecule.xhtml",
                            "/pages/graph/graph.xhtml",
                            "/pages/browse/browse.xhtml",
@@ -59,6 +58,8 @@ public class SearchController extends JpaBaseController {
     // table IDs
     public static final String INTERACTIONS_TABLE_ID = "interactionResults";
     public static final String PROTEINS_TABLE_ID = "proteinListResults";
+    public static final String COMPOUNDS_TABLE_ID = "compoundListResults";
+
 
     // injected
     @Autowired
@@ -267,9 +268,16 @@ public class SearchController extends JpaBaseController {
         return WebappUtils.getDefaultInteractionIndex(appConfigBean.getConfig());
     }
 
+    public void doSearchInteractionsFromCompoundListSelection(ActionEvent evt) {
+        doSearchInteractionsFromListSelection( COMPOUNDS_TABLE_ID, "intact" );
+    }
 
-    public void doSearchInteractionsFromListSelection(ActionEvent evt) {
-        final List<IntactBinaryInteraction> selected = getSelected(PROTEINS_TABLE_ID);
+    public void doSearchInteractionsFromProteinListSelection(ActionEvent evt) {
+        doSearchInteractionsFromListSelection( PROTEINS_TABLE_ID, "intact" );
+    }
+
+    private void doSearchInteractionsFromListSelection(String tableName, String database ) {
+        final List<IntactBinaryInteraction> selected = getSelected(tableName);
 
         if (selected.size() == 0) {
             return;
@@ -284,7 +292,7 @@ public class SearchController extends JpaBaseController {
             String identifier = null;
 
             for (CrossReference xref : intactBinaryInteraction.getInteractorA().getIdentifiers()) {
-                if ("intact".equals(xref.getDatabase())) {
+                if (database.equals(xref.getDatabase())) {
                     identifier = xref.getIdentifier();
                 }
             }
@@ -303,7 +311,7 @@ public class SearchController extends JpaBaseController {
 
         doBinarySearch(searchQuery);
 
-        resetSelection(PROTEINS_TABLE_ID);
+        resetSelection(tableName);
     }
 
     public Index getDefaultInteractorIndex() {
@@ -428,5 +436,4 @@ public class SearchController extends JpaBaseController {
     public void setDisplayQuery( String displayQuery ) {
         this.displayQuery = displayQuery;
     }
-
 }

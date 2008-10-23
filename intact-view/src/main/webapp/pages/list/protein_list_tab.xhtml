@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+<tr:panelHeader text="Proteins">
+
+<!-- RESULT SUMMARY -->
+
+<tr:panelGroupLayout layout="vertical" id="searchSummary">
+
+    <tr:group>
+        <strong>Query: </strong>
+        <ebi:outputText id="queryText" value="#{searchBean.displayQuery}" maxLength="50"
+                        expandMessage="(see entire query)" collapseMessage="(collapse)"/>
+    </tr:group>
+
+    <tr:group>
+        <strong>Lucene Query: </strong>
+        <ebi:outputText id="luceneQueryText" value="#{searchBean.interactorResults.result.luceneQuery}" maxLength="50"
+                        expandMessage="(see entire query)" collapseMessage="(collapse)"/>
+    </tr:group>
+
+    <tr:group>
+        <strong>Search time: </strong>
+        <h:outputText value="#{searchBean.interactorResults.elapsedTimeSecs}">
+            <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
+        </h:outputText>
+        <h:outputText value=" seconds"/>
+    </tr:group>
+
+</tr:panelGroupLayout>
+
+
+<br/>
+
+
+<!-- RESULTS TABLE -->
+
+
+<tr:table id="proteinListResults" value="#{searchBean.interactorResults}" var="binaryInteraction" varStatus="status"
+          summary="Binary Interactions" emptyText="No interactions found matching the query."
+          rows="#{searchBean.pageSize}" rowBandingInterval="1"
+          rowSelection="multiple">
+
+<f:facet name="actions">
+    <tr:panelHorizontalLayout inlineStyle="width:100%">
+        <f:facet name="separator">
+            <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
+        </f:facet>
+
+        <tr:panelButtonBar id="buttonBar">
+            <strong>
+                <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
+            </strong>
+            <tr:commandButton text="Search Interactions"
+                              actionListener="#{searchBean.doSearchInteractionsFromListSelection}"
+                              action="main"/>
+             <f:subview id="rectomeView">
+                    <input type="hidden" name="QUERY" value=""/>
+                    <input type="hidden" name="DB" value="gk_current"/>
+                    <input type="hidden" name="SUBMIT" value="0"/>
+                    <tr:commandButton text="Pathways" partialSubmit="true"
+                                      actionListener="#{proteinListController.goReactome}"/>
+             </f:subview>
+            <tr:commandButton text="Domains" partialSubmit="true"
+                              actionListener="#{proteinListController.goDomains}"/>
+            <tr:commandButton text="mRNA Expression"  partialSubmit="true"
+                              actionListener="#{proteinListController.goExpression}" />
+            <tr:commandButton text="Chromosome Location" partialSubmit="true"
+                              icon="/images/logos/ensembl_12.png"
+                              actionListener="#{proteinListController.goChromosomalLocation}"  />
+
+
+
+        </tr:panelButtonBar>
+
+    </tr:panelHorizontalLayout>
+</f:facet>
+
+<tr:column>
+    <tr:outputText value="#{status.index + 1}"/>
+</tr:column>
+
+<tr:column headerText="Names" sortable="true" sortProperty="aliasA_s">
+   <h:outputText value="#{iamf:getProteinDisplayName(binaryInteraction.interactorA)}"/>
+</tr:column>
+
+
+<tr:column headerText="Links">
+
+    <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}"
+                 varStatus="rowStatus" rows="0">
+        <tr:switcher facetName="#{xref.database}">
+            <f:facet name="uniprotkb">
+                <h:panelGroup>
+                    <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                    <iax:goDrugPortProteinView query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="chebi">
+                <h:panelGroup>
+                    <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="drugbank">
+                <h:panelGroup>
+                    <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
+            </f:facet>
+            <f:facet name="intact">
+                <h:panelGroup rendered="#{binaryInteraction.interactorA.interactorType.identifier == 'MI:0326'}">
+                    <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
+            </f:facet>
+        </tr:switcher>
+    </tr:iterator>
+
+    <!-- <tr:commandLink text="Molecule view"
+                    rendered="#{binaryInteraction.interactorTypeA[0].identifier == 'MI:0326'}"
+                    action="#{searchBean.doDiscloseMoleculeViewTab}">
+        <f:setPropertyActionListener value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}" target="#{moleculeViewBean.interactorAc}"/>
+    </tr:commandLink>-->
+</tr:column>
+
+<tr:column headerText="Species" sortable="true" sortProperty="taxidA_s">
+    <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="OtherType">
+        <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
+            <tr:outputText value="  "/>
+        </f:facet>
+        <f:facet name="OtherType">
+            <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">
+                <tr:iterator var="xref" value="#{organism.identifiers}"
+                             varStatus="rowStatus" rows="0">
+                    <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
+                </tr:iterator>
+                <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>
+            </tr:iterator>
+        </f:facet>
+    </tr:switcher>
+</tr:column>
+
+<tr:column headerText="DGI Accession number" sortable="true" sortProperty="idA_s">
+    <h:outputText value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
+</tr:column>
+
+<tr:column headerText="Description">
+    <ui:param name="intactIdentifier"
+              value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>
+    <ui:param name="interactor" value="#{iaf:getInteractorByAc(intactIdentifier)}"/>
+    <tr:outputText value="#{interactor.fullName}"/>
+</tr:column>
+
+</tr:table>
+
+
+</tr:panelHeader>
+
+</ui:composition>

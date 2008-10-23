@@ -385,6 +385,11 @@ af|column::cell-text-band {
     background-color: #FFFFFF;
 }
 
+af|column::cell-text,
+af|column::cell-text-band {
+    vertical-align:baseline;
+}
+
 af|column::cell-text-band a.OraLink {
     font-size: 8pt;
 }

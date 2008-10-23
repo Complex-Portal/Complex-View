@@ -27,6 +27,13 @@
         <name>dastyHeader</name>
     </tag>
     <tag>
+        <name>imageCompoundStructure</name>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+        </attribute>
+    </tag>
+    <tag>
         <name>imageHierarchView</name>
         <attribute>
             <name>query</name>

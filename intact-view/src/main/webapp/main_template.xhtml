@@ -45,7 +45,7 @@
                 <ui:insert name="browseTabContent"/>
             </tr:showDetailItem>
 
-            <tr:showDetailItem text="List (P:#{searchBean.interactorTotalResults} SM:#{searchBean.smallMoleculeTotalResults})"
+            <tr:showDetailItem text="Lists"
                                disabled="#{searchBean.interactorTotalResults == 0 and searchBean.smallMoleculeTotalResults == 0}"
                                disclosed="#{disclosedTabName == 'list'}">
                 <tr:messages/>
