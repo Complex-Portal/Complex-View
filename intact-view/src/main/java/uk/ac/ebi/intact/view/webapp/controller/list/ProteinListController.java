@@ -18,17 +18,14 @@ package uk.ac.ebi.intact.view.webapp.controller.list;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.apache.myfaces.trinidad.render.ExtendedRenderKitService;
-import org.apache.myfaces.trinidad.util.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.myfaces.trinidad.context.RequestContext;
-import org.apache.commons.lang.StringUtils;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.util.ExternalDbLinker;
 
 import javax.faces.event.ActionEvent;
-import javax.faces.context.FacesContext;
 import java.util.List;
 import java.util.Set;
 
@@ -42,13 +39,16 @@ import java.util.Set;
 @Scope( "conversation.access" )
 public class ProteinListController extends BaseController {
 
+    @Autowired
+    private ExternalDbLinker dbLinker;
+
     public ProteinListController() {
     }
 
     private String[] getSelectedUniprotIds() {
 
         final List<IntactBinaryInteraction> interactions = getSelected( SearchController.PROTEINS_TABLE_ID );
-        Set<String> uniprotIds = ExternalDbLinker.getUniqueUniprotIds( interactions );
+        Set<String> uniprotIds = dbLinker.getUniqueUniprotIds( interactions );
         return uniprotIds.toArray( new String[uniprotIds.size()] );
     }
 
@@ -56,31 +56,31 @@ public class ProteinListController extends BaseController {
     private String[] getSelectedGeneNames() {
 
         final List<IntactBinaryInteraction> interactions = getSelected( SearchController.PROTEINS_TABLE_ID );
-        Set<String> geneNames = ExternalDbLinker.getUniqueGeneNames( interactions );
+        Set<String> geneNames = dbLinker.getUniqueGeneNames( interactions );
         return geneNames.toArray( new String[geneNames.size()] );
     }
 
 
     public void goDomains( ActionEvent evt ) {
         String[] selectedUniprotIds = getSelectedUniprotIds();
-        ExternalDbLinker.goExternalLink( ExternalDbLinker.INTERPROURL, ExternalDbLinker.INTERPRO_SEPERATOR, selectedUniprotIds );
+        dbLinker.goExternalLink( dbLinker.INTERPROURL, dbLinker.INTERPRO_SEPERATOR, selectedUniprotIds );
     }
 
     public void goExpression( ActionEvent evt ) {
         String[] selectedGeneNames = getSelectedGeneNames();
-        ExternalDbLinker.goExternalLink( ExternalDbLinker.EXPRESSIONURL_PREFIX, ExternalDbLinker.EXPRESSIONURL_SUFFIX, ExternalDbLinker.EXPRESSION_SEPERATOR, selectedGeneNames );
+        dbLinker.goExternalLink( dbLinker.EXPRESSIONURL_PREFIX, dbLinker.EXPRESSIONURL_SUFFIX, dbLinker.EXPRESSION_SEPERATOR, selectedGeneNames );
     }
 
     public void goChromosomalLocation( ActionEvent evt ) {
         String[] selectedUniprotIds = getSelectedUniprotIds();
-        ExternalDbLinker.goExternalLink( ExternalDbLinker.CHROMOSOMEURL, ExternalDbLinker.CHROMOSOME_SEPERATOR, selectedUniprotIds );
+        dbLinker.goExternalLink( dbLinker.CHROMOSOMEURL, dbLinker.CHROMOSOME_SEPERATOR, selectedUniprotIds );
     }
 
 
     public void goReactome( ActionEvent evt ) {
         String[] selected = getSelectedUniprotIds();
         //the carriage return has to be escaped as it is used in the JavaScript
-        ExternalDbLinker.reactomeLinker( ExternalDbLinker.REACTOMEURL, "\\r", selected );
+        dbLinker.reactomeLinker( dbLinker.REACTOMEURL, "\\r", selected );
 
     }
 

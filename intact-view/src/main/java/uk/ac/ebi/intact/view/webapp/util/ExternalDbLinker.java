@@ -20,6 +20,9 @@ import org.apache.myfaces.trinidad.util.Service;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.context.annotation.Scope;
 
 import javax.faces.context.FacesContext;
 import java.util.Set;
@@ -28,6 +31,7 @@ import java.util.HashSet;
 import java.util.Collection;
 
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import psidev.psi.mi.tab.model.Alias;
 
 /**
@@ -37,7 +41,16 @@ import psidev.psi.mi.tab.model.Alias;
  * @version $Id$
  * @since 2.0.1-SNAPSHOT
  */
+@Controller
+@Scope( "conversation.access" )
 public class ExternalDbLinker {
+
+    @Autowired
+    private IntactViewConfiguration intactViewConfiguration;
+
+    public ExternalDbLinker(){
+
+    }
 
     private static final Log log = LogFactory.getLog( ExternalDbLinker.class );
 
@@ -56,12 +69,12 @@ public class ExternalDbLinker {
     public static final String REACTOME_SEPERATOR = "\n";
 
 
-    public static void goExternalLink( String baseUrl, String seperator, String[] selected ) {
+    public void goExternalLink( String baseUrl, String seperator, String[] selected ) {
         goExternalLink( baseUrl, "", seperator, selected );
     }
 
 
-    public static void goExternalLink( String baseUrl, String urlSuffix, String seperator, String[] selected ) {
+    public void goExternalLink( String baseUrl, String urlSuffix, String seperator, String[] selected ) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExtendedRenderKitService service = Service.getRenderKitService( facesContext, ExtendedRenderKitService.class );
 
@@ -74,7 +87,7 @@ public class ExternalDbLinker {
     }
 
     //linking to reactome needs a form submit
-    public static void reactomeLinker( String baseUrl, String seperator, String[] selected ) {
+    public void reactomeLinker( String baseUrl, String seperator, String[] selected ) {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExtendedRenderKitService service = Service.getRenderKitService( facesContext, ExtendedRenderKitService.class );
@@ -86,7 +99,7 @@ public class ExternalDbLinker {
         }
     }
 
-    private static String getReactomeForm( String baseUrl, String selectedIds ) {
+    private String getReactomeForm( String baseUrl, String selectedIds ) {
 
         StringBuilder sb = new StringBuilder();
         sb.append( "document.forms['intactForm'].method='post';\n" );
@@ -98,6 +111,8 @@ public class ExternalDbLinker {
         sb.append( "document.forms['intactForm'].target='_blank';" );
         sb.append( "document.forms['intactForm'].SUBMIT.value='1';\n" );
         sb.append( "document.forms['intactForm'].submit();\n" );
+        sb.append( "var url = 'http://'+document.location.hostname+':'+document.location.port+'" ).append( intactViewConfiguration.getAppRoot() ).append( "/view/pages/list/list_tab.xhtml';" );
+        sb.append( "window.location.href=url;" );
 
         if ( log.isDebugEnabled() ) {
             log.debug("JavaScript to link to  Reactome: \n" +sb.toString() );

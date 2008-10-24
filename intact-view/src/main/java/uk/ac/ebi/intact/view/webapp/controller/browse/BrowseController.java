@@ -58,6 +58,9 @@ public class BrowseController extends JpaBaseController {
     @Autowired
     private SearchController searchController;
 
+    @Autowired
+    private ExternalDbLinker dbLinker;
+
     //browsing
     private String interproIdentifierList;
     private String chromosomalLocationIdentifierList;
@@ -80,10 +83,10 @@ public class BrowseController extends JpaBaseController {
         if ( searchController.getInteractorResults() != null ) {
             interactions = searchController.getInteractorResults().getResult().getData();
 
-            this.interproIdentifierList = appendIdentifiers( ExternalDbLinker.getUniqueUniprotIds( interactions ), ExternalDbLinker.INTERPRO_SEPERATOR );
-            this.chromosomalLocationIdentifierList = appendIdentifiers( ExternalDbLinker.getUniqueUniprotIds( interactions ), ExternalDbLinker.CHROMOSOME_SEPERATOR );
-            this.mRNAExpressionIdentifierList = appendIdentifiers( ExternalDbLinker.getUniqueGeneNames( interactions ), ExternalDbLinker.EXPRESSION_SEPERATOR );
-            this.reactomeIdentifierList = appendIdentifiers( ExternalDbLinker.getUniqueUniprotIds( interactions ), ExternalDbLinker.REACTOME_SEPERATOR );
+            this.interproIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.INTERPRO_SEPERATOR );
+            this.chromosomalLocationIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.CHROMOSOME_SEPERATOR );
+            this.mRNAExpressionIdentifierList = appendIdentifiers( dbLinker.getUniqueGeneNames( interactions ), dbLinker.EXPRESSION_SEPERATOR );
+            this.reactomeIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.REACTOME_SEPERATOR );
         }
 
         if ( log.isTraceEnabled() ) {

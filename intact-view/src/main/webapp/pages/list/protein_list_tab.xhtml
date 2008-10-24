@@ -65,21 +65,19 @@
             <tr:commandButton text="Search Interactions"
                               actionListener="#{searchBean.doSearchInteractionsFromListSelection}"
                               action="main"/>
-             <f:subview id="rectomeView">
-                    <input type="hidden" name="QUERY" value=""/>
-                    <input type="hidden" name="DB" value="gk_current"/>
-                    <input type="hidden" name="SUBMIT" value="0"/>
-                    <tr:commandButton text="Pathways" partialSubmit="true"
-                                      actionListener="#{proteinListController.goReactome}"/>
-             </f:subview>
+            <input type="hidden" name="QUERY" value=""/>
+            <input type="hidden" name="DB" value="gk_current"/>
+            <input type="hidden" name="SUBMIT" value="0"/>
+            <tr:commandButton text="Pathways" partialSubmit="true"
+                              actionListener="#{proteinListController.goReactome}"/>
+
             <tr:commandButton text="Domains" partialSubmit="true"
                               actionListener="#{proteinListController.goDomains}"/>
-            <tr:commandButton text="mRNA Expression"  partialSubmit="true"
-                              actionListener="#{proteinListController.goExpression}" />
+            <tr:commandButton text="mRNA Expression" partialSubmit="true"
+                              actionListener="#{proteinListController.goExpression}"/>
             <tr:commandButton text="Chromosome Location" partialSubmit="true"
                               icon="/images/logos/ensembl_12.png"
-                              actionListener="#{proteinListController.goChromosomalLocation}"  />
-
+                              actionListener="#{proteinListController.goChromosomalLocation}"/>
 
 
         </tr:panelButtonBar>
@@ -92,7 +90,7 @@
 </tr:column>
 
 <tr:column headerText="Names" sortable="true" sortProperty="aliasA_s">
-   <h:outputText value="#{iamf:getProteinDisplayName(binaryInteraction.interactorA)}"/>
+    <h:outputText value="#{iamf:getProteinDisplayName(binaryInteraction.interactorA)}"/>
 </tr:column>
 
 
@@ -166,8 +164,5 @@
 </tr:column>
 
 </tr:table>
-
-
-</tr:panelHeader>
 
 </ui:composition>
