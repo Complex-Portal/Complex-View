@@ -111,7 +111,7 @@ public class ExternalDbLinker {
         sb.append( "document.forms['intactForm'].target='_blank';" );
         sb.append( "document.forms['intactForm'].SUBMIT.value='1';\n" );
         sb.append( "document.forms['intactForm'].submit();\n" );
-        sb.append( "var url = 'http://'+document.location.hostname+':'+document.location.port+'" ).append( intactViewConfiguration.getAppRoot() ).append( "/view/pages/list/list_tab.xhtml';" );
+        sb.append( "var url = 'http://'+document.location.hostname+':'+document.location.port+'" ).append( intactViewConfiguration.getAppRoot() ).append( "/view/pages/list/protein_list.xhtml';" );
         sb.append( "window.location.href=url;" );
 
         if ( log.isDebugEnabled() ) {
