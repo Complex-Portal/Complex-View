@@ -70,7 +70,7 @@
                             &#160;
                             <tr:commandLink text="View" rendered="#{countedOtw.interactorCount > 0}"
                                             actionListener="#{searchBean.doBinarySearch}"
-                                            action="list">
+                                            action="list.proteins">
                                 <f:setPropertyActionListener value="#{otw.searchQuery}" target="#{searchBean.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
