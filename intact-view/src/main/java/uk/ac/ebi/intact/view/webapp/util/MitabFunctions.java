@@ -40,7 +40,7 @@ import java.util.Map;
  *
  * @author Prem Anand (prem@ebi.ac.uk)
  * @version $Id$
- * @since 2.0.1-SNAPSHOT
+ * @since 2.0.1
  */
 public final class MitabFunctions {
 
@@ -102,7 +102,7 @@ public final class MitabFunctions {
         int interactorCount;
         int interactionCount = 0;
 
-        if (otw.getInteractorCount() > 0) {
+        if (otw.getInteractorCount() == 0) {
             return otw;
         }
 
@@ -122,7 +122,7 @@ public final class MitabFunctions {
             } else {
                 interactionCount = countHits(otw.getSearchQuery(), interactionDirectory);
 
-                interactionCountCache.put(otw.getSearchQuery(), interactorCount);
+                interactionCountCache.put(otw.getSearchQuery(), interactionCount);
             }
         }
 
