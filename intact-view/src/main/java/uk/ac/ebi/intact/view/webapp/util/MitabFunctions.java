@@ -102,7 +102,8 @@ public final class MitabFunctions {
         int interactorCount;
         int interactionCount = 0;
 
-        if (otw.getInteractorCount() == 0) {
+        if (otw.getInteractorCount() > 0) {
+            // counts have been calculated already, stop here.
             return otw;
         }
 
