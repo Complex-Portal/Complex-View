@@ -13,7 +13,7 @@
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
     <ui:define name="additionalHeader">
-        <h:panelGroup rendered="#{searchBean.disclosedTabName == 'molecule'}">
+        <h:panelGroup rendered="#{disclosedTabName == 'molecule'}">
             <iav:dastyHeader/>
         </h:panelGroup>
     </ui:define>
