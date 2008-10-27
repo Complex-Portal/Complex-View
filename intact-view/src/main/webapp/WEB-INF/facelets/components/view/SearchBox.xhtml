@@ -29,7 +29,7 @@
                                  styleClass="contentsarea"
                                  onfocus="this.select()"
                                  value="#{value}"
-                                 columns="14"
+                                 columns="#{(ebisf:isBrowserExplorer())? 14 : 12}"
                                  onkeypress="return submitEnter('searchSubForm:sideSearchBox_searchBox',event)"/>
 
                     <tr:commandLink action="dialog:help.miql" partialSubmit="true"
