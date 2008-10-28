@@ -51,7 +51,7 @@
 
                     <tr:separator/>
 
-                    <tr:outputText value="Provide an indexed Directory with PSIMITAB data:"/>
+                    <tr:outputText value="Provide an indexed Directory with interaction-oriented PSIMITAB data:"/>
 
                     <tr:panelGroupLayout layout="vertical">
                         <tr:panelGroupLayout layout="horizontal" partialTriggers="txtIndexPath">
@@ -92,7 +92,7 @@
                             <h:panelGroup style="color:green" rendered="#{firstTimeBean.interactionIndexLocationExists}">
                                 <h:graphicImage url="/images/ok.gif"/>
                                 <tr:outputText
-                                        value="Index found with #{firstTimeBean.interactorIndex.size} interactions."/>
+                                        value="Index found with #{firstTimeBean.interactorIndex.size} interactors."/>
                             </h:panelGroup>
                             <h:panelGroup style="color:red" rendered="#{!firstTimeBean.interactorIndexLocationExists}">
                                 <h:graphicImage url="/images/error.png"/>
