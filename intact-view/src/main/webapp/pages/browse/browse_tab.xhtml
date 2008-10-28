@@ -4,6 +4,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
@@ -12,48 +13,130 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
+    <c:set var="displayWarning" value="#{searchBean.results.pageSize lt searchBean.interactorTotalResults}" />
+
     <tr:panelHeader text="Proteins">
-        <tr:panelGroupLayout layout="vertical">
-            <f:facet name="separator">
-                <tr:spacer height="5"/>
-            </f:facet>
 
-            <tr:commandLink text="All" action="list.proteins"/>
+        <tr:panelHorizontalLayout halign="left" valign="top">
 
-            <tr:commandLink text="By Gene Ontology (GO)" action="browse.gobrowser"/>
+            <trh:tableLayout borderWidth="0"
+                             cellSpacing="5"
+                             cellPadding="0"
+                             halign="left"
+                             width="300">
 
-            <tr:goLink text="By Interpro Domain" targetFrame="_blank"
-                       destination="http://www.ebi.ac.uk/interpro/ISpy?ac=#{browseBean.interproIdentifierList}&amp;mode=protein&amp;sort=ac"/>
+                <trh:rowLayout>
+                    <trh:cellFormat halign="center" width="15">
+                        <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat>
+                        <tr:commandLink text="All" action="list.proteins"/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
 
-            <f:subview id="rectomeView">
-                <form id="reactomeForm" method="post" action="http://www.reactome.org/cgi-bin/skypainter2"
-                      enctype="multipart/form-data" name="skypainter" target="_blank">
-                    <input type="hidden" name="QUERY" value="#{browseBean.reactomeIdentifierList}"/>
-                    <input type="hidden" name="DB" value="gk_current"/>
-                    <input type="hidden" name="SUBMIT" value="1"/>
-                    <a href="#"
-                       onclick="document.getElementById('reactomeForm').submit();">By Reactome Pathway</a>
-                </form>
-            </f:subview>
+                <trh:rowLayout>
+                    <trh:cellFormat halign="center" width="15">
 
-            <tr:goLink text="By Chromosomal Location" targetFrame="_blank"
-                       destination="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{browseBean.chromosomalLocationIdentifierList}"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat>
+                        <tr:commandLink text="By Gene Ontology (GO)" action="browse.gobrowser"/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
 
-            <tr:goLink text="By mRNA expression" targetFrame="_blank"
-                       destination="http://www.ebi.ac.uk/microarray-as/atlas/qr?q_gene=#{browseBean.MRNAExpressionIdentifierList}&amp;q_updn=updn&amp;q_expt=%28all+conditions%29&amp;q_orgn=HOMO+SAPIENS&amp;view=heatmap&amp;expand_efo=on&amp;view="/>
-        </tr:panelGroupLayout>
+                <trh:rowLayout>
+                    <trh:cellFormat halign="center" width="15">
+                        <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat>
+                        <tr:goLink text="By Interpro Domain" targetFrame="_blank"
+                                   destination="http://www.ebi.ac.uk/interpro/ISpy?ac=#{browseBean.interproIdentifierList}&amp;mode=protein&amp;sort=ac"/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+
+                <trh:rowLayout>
+                    <trh:cellFormat halign="center" width="15">
+                        <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat>
+                        <f:subview id="rectomeView">
+                            <form id="reactomeForm" method="post" action="http://www.reactome.org/cgi-bin/skypainter2"
+                                  enctype="multipart/form-data" name="skypainter" target="_blank">
+                                <input type="hidden" name="QUERY" value="#{browseBean.reactomeIdentifierList}"/>
+                                <input type="hidden" name="DB" value="gk_current"/>
+                                <input type="hidden" name="SUBMIT" value="1"/>
+                                <a href="#"
+                                   onclick="document.getElementById('reactomeForm').submit();">By Reactome Pathway</a>
+                            </form>
+                        </f:subview>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+
+                <trh:rowLayout>
+                    <trh:cellFormat halign="center" width="15">
+                        <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat>
+                        <tr:goLink text="By Chromosomal Location" targetFrame="_blank"
+                                   destination="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{browseBean.chromosomalLocationIdentifierList}"/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+
+                <trh:rowLayout>
+                    <trh:cellFormat halign="center" width="15">
+                        <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat>
+                        <tr:goLink text="By mRNA expression" targetFrame="_blank"
+                                   destination="http://www.ebi.ac.uk/microarray-as/atlas/qr?q_gene=#{browseBean.MRNAExpressionIdentifierList}&amp;q_updn=updn&amp;q_expt=%28all+conditions%29&amp;q_orgn=HOMO+SAPIENS&amp;view=heatmap&amp;expand_efo=on&amp;view="/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+
+            </trh:tableLayout>
+
+            <tr:panelBox text="Numerous interactors available" background="dark"
+                         icon="/images/warning.gif"
+                         rendered="#{displayWarning}">
+                <tr:outputText value="Please be aware that due to the number of interaction currently available in
+                                      your dataset, only the first XXX interactor identifier will be passed on to
+                                      third party resources. In order to make this clear, we will display the icon"/>
+                <tr:spacer width="3" />
+                <tr:image source="/images/warning.gif"/>
+                <tr:spacer width="3" />
+                <tr:outputText value="whenever this restriction applies."/>
+            </tr:panelBox>
+
+        </tr:panelHorizontalLayout>
+
     </tr:panelHeader>
 
     <tr:panelHeader text="Chemicals">
-        <tr:panelGroupLayout layout="vertical">
-            <f:facet name="separator">
-                <tr:spacer height="5"/>
-            </f:facet>
 
-            <tr:commandLink text="All" action="list.compounds"/>
+        <trh:tableLayout borderWidth="0"
+                         cellSpacing="5"
+                         cellPadding="0"
+                         halign="left"
+                         width="300">
 
-            <tr:goLink text="By ChEBI Ontology" targetFrame="_blank" destination=" "/>
-        </tr:panelGroupLayout>
+            <trh:rowLayout>
+                <trh:cellFormat halign="center" width="15" >
+
+                </trh:cellFormat>
+                <trh:cellFormat>
+                    <tr:commandLink text="All" action="list.compounds"/>
+                </trh:cellFormat>
+            </trh:rowLayout>
+
+            <trh:rowLayout>
+                <trh:cellFormat halign="center" width="15">
+
+                </trh:cellFormat>
+                <trh:cellFormat>
+                    <tr:goLink text="By ChEBI Ontology" targetFrame="_blank" destination=" "
+                               disabled="true" shortDesc="Not implemented yet..."/>
+                </trh:cellFormat>
+            </trh:rowLayout>
+
+        </trh:tableLayout>
 
     </tr:panelHeader>
 
