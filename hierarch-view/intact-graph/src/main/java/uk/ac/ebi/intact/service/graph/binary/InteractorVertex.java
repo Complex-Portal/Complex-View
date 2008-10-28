@@ -23,6 +23,7 @@ import psidev.psi.mi.tab.model.Organism;
 import uk.ac.ebi.intact.service.graph.Node;
 import uk.ac.ebi.intact.service.graph.binary.label.IdentifierLabelStrategy;
 import uk.ac.ebi.intact.service.graph.binary.label.LabelStrategy;
+import uk.ac.ebi.intact.service.graph.binary.label.AliasLabelStrategy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +46,7 @@ public class InteractorVertex extends SimpleSparseVertex implements Node<BinaryI
     private Collection<CrossReference> biologicalRoles;
     private Collection<CrossReference> properties;
     private List<CrossReference> interactorType;
-    private LabelStrategy labelStrategy = new IdentifierLabelStrategy();
+    private LabelStrategy labelStrategy = new AliasLabelStrategy();
 
     private String nodeID;
 

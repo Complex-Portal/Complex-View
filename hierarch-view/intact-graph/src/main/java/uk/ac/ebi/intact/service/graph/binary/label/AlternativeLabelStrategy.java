@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.service.graph.binary.label;
 
 import psidev.psi.mi.tab.model.CrossReference;
 import psidev.psi.mi.tab.model.Interactor;
+import psidev.psi.mi.tab.model.Organism;
 
 /**
  * Uses the alternativeIdentifiers of Interactor to create Label for the Node.
@@ -37,7 +38,7 @@ public class AlternativeLabelStrategy implements LabelStrategy {
             String id = null;
             for (CrossReference xref : interactor.getAlternativeIdentifiers()){
                 if (id == null){
-                    id =xref.getIdentifier().toLowerCase( );
+                    id = xref.getIdentifier().toLowerCase( );
                 }
                 if (xref.getDatabase().equals( database )){
                     id = xref.getIdentifier().toLowerCase();
@@ -45,10 +46,11 @@ public class AlternativeLabelStrategy implements LabelStrategy {
                 }
             }
 
-            if (interactor.getOrganism() != null &&  !interactor.getOrganism().getIdentifiers().isEmpty() ) {
-                String organism = interactor.getOrganism().getIdentifiers().iterator().next().getText();
-                if (organism != null){
-                    return id.concat( "_".concat(organism));
+            final Organism organism = interactor.getOrganism();
+            if ( organism != null &&  !organism.getIdentifiers().isEmpty() ) {
+                String organismName = organism.getIdentifiers().iterator().next().getText();
+                if (organismName != null && !"-3".equals( organism.getTaxid() ) ){
+                    return id + "_" + organismName;
                 }
             }
             return id;

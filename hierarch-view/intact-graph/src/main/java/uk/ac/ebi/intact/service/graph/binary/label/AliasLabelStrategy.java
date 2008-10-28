@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.service.graph.binary.label;
 
 import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.Interactor;
+import psidev.psi.mi.tab.model.Organism;
 
 /**
  * Uses the aliases of Interactor to create Label for the Node.
@@ -39,16 +40,17 @@ public class AliasLabelStrategy implements LabelStrategy {
                 }
             }
 
-            if (interactor.getOrganism() != null &&  !interactor.getOrganism().getIdentifiers().isEmpty() ) {
-                String organism = interactor.getOrganism().getIdentifiers().iterator().next().getText();
-                if (organism != null){
-                    return id.concat( "_".concat(organism));
+            final Organism organism = interactor.getOrganism();
+            if ( organism != null &&  !organism.getIdentifiers().isEmpty() ) {
+                String organismName = organism.getIdentifiers().iterator().next().getText();
+                if (organismName != null && !"-3".equals( organism.getTaxid() ) ){
+                    return id + "_" + organismName;
                 }
             }
             return id;
 
         } else {
-            LabelStrategy strategy = new IdentifierLabelStrategy();
+            LabelStrategy strategy = new AlternativeLabelStrategy();
             return strategy.buildDefaultLabel( interactor );
         }
     }
