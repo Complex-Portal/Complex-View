@@ -84,7 +84,7 @@ public class ImageDimension implements Serializable {
      * @param x      the X coordinate
      * @param y      the Y coordinate
      */
-    public void adjustCadre( float width, float height, float x, float y ) {
+    public void adjustFrame( float width, float height, float x, float y ) {
         float tmp = 0;
         if ( ( tmp = x - width / 2 ) < xmin )
             xmin = tmp;

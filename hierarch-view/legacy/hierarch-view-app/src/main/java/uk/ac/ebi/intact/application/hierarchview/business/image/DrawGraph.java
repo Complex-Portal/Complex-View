@@ -353,8 +353,6 @@ public class DrawGraph {
                     g.setFont( fontLabel );
                 }
 
-                //fontMetrics = g.getFontMetrics();
-
                 // calculate height and width
                 float height = fontMetrics.getHeight() + internalTopMargin + internalBottomMargin;
                 float length = fontMetrics.stringWidth( node.getId() ) + internalLeftMargin + internalRightMargin;
@@ -369,13 +367,13 @@ public class DrawGraph {
                 attributes.put( Constants.ATTRIBUTE_LENGTH, length );
                 attributes.put( Constants.ATTRIBUTE_HEIGHT, height );
 
-                dimension.adjustCadre( length * dimensionRateX, height * dimensionRateY, proteinX, proteinY );
+                dimension.adjustFrame( length * dimensionRateX, height * dimensionRateY, proteinX, proteinY );
             }
-        } //  for
+        }
 
         g.dispose();
         bufferedImage = null;
-    } // updateProteinData
+    }
 
     /**
      * Return the element "dimensionRate"
