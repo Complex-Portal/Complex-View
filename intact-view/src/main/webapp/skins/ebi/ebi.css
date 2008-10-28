@@ -387,7 +387,7 @@ af|column::cell-text-band {
 
 af|column::cell-text,
 af|column::cell-text-band {
-    vertical-align:baseline;
+    vertical-align:top;
 }
 
 af|column::cell-text-band a.OraLink {
