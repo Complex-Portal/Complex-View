@@ -58,7 +58,7 @@
                 <ui:insert name="moleculeTabContent"/>
             </tr:showDetailItem>
 
-            <tr:showDetailItem text="Graph"
+            <tr:showDetailItem text="Graph" shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
                                disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount }">
                 <tr:messages/>
                 <ui:insert name="graphTabContent"/>
