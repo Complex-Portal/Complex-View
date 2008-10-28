@@ -97,7 +97,7 @@
                          icon="/images/warning.gif"
                          rendered="#{displayWarning}">
                 <tr:outputText value="Please be aware that due to the number of interaction currently available in
-                                      your dataset, only the first XXX interactor identifier will be passed on to
+                                      your dataset, only the first #{searchBean.results.pageSize} interactor identifier will be passed on to
                                       third party resources. In order to make this clear, we will display the icon"/>
                 <tr:spacer width="3" />
                 <tr:image source="/images/warning.gif"/>
