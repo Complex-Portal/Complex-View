@@ -46,19 +46,18 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
 
     private IndexSearcher interactionIndexSearcher;
     private IndexSearcher interactorIndexSearcher;
-    private String baseQuery;
 
     private OntologyTermWrapper disclosed;
 
     public GoOntologyTreeModel(final OntologyIndexSearcher ontologyIndexSearcher,
                                final IndexSearcher interactionIndexSearcher,
                                final IndexSearcher interactorIndexSearcher,
-                               final String baseQuery) {
+                               final String baseQuery,
+                               final String luceneQuery) {
         setChildProperty("children");
 
         this.interactionIndexSearcher = interactionIndexSearcher;
         this.interactorIndexSearcher = interactorIndexSearcher;
-        this.baseQuery = baseQuery;
 
         processedTermCounts = new HashSet<String>();
 
@@ -102,7 +101,7 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
             }
         };
 
-        OntologyTermWrapper otwRoot = new OntologyTermWrapper(root, interactionIndexSearcher, interactorIndexSearcher, baseQuery);
+        OntologyTermWrapper otwRoot = new OntologyTermWrapper(root, interactionIndexSearcher, interactorIndexSearcher, baseQuery,luceneQuery);
 
         //updateChildrenCounts(otwRoot);
 

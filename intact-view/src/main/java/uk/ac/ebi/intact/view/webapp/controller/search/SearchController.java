@@ -71,6 +71,7 @@ public class SearchController extends JpaBaseController {
     private String searchQuery;
     private String ontologySearchQuery;
     private String displayQuery;
+    private boolean currentOntologyQuery;
 
      // vars
     private int pageSize = 30;
@@ -136,6 +137,7 @@ public class SearchController extends JpaBaseController {
 
     public String doBinarySearchAction() {
         displayQuery = searchQuery;
+        setCurrentOntologyQuery( false );
         doBinarySearch(searchQuery);
         return "interactions";
     }
@@ -145,6 +147,7 @@ public class SearchController extends JpaBaseController {
             addErrorMessage("The ontology query box was empty", "No search was submitted");
             return "interactions";
         }
+        setCurrentOntologyQuery( true );
         doOntologySearch( ontologySearchQuery );
         return "interactions";
     }
@@ -435,5 +438,13 @@ public class SearchController extends JpaBaseController {
 
     public void setDisplayQuery( String displayQuery ) {
         this.displayQuery = displayQuery;
+    }
+
+    public boolean isCurrentOntologyQuery() {
+        return currentOntologyQuery;
+    }
+
+    public void setCurrentOntologyQuery( boolean currentOntologyQuery ) {
+        this.currentOntologyQuery = currentOntologyQuery;
     }
 }

@@ -43,6 +43,7 @@ public class OntologyTermWrapper {
     private IndexSearcher interactorIndexSearcher;
     private String baseQuery;
     private String searchQuery;
+    private String luceneQuery;
 
     private OntologyTermWrapper parent;
 
@@ -51,17 +52,18 @@ public class OntologyTermWrapper {
     private String interactionColour;
     private String interactorColour;
 
-    protected OntologyTermWrapper(OntologyTerm term, IndexSearcher interactionIndexSearcher, IndexSearcher interactorIndexSearcher, String baseQuery) {
-        this(term, interactionIndexSearcher, interactorIndexSearcher, baseQuery, true);
+    protected OntologyTermWrapper(OntologyTerm term, IndexSearcher interactionIndexSearcher, IndexSearcher interactorIndexSearcher, String baseQuery,String luceneQuery) {
+        this(term, interactionIndexSearcher, interactorIndexSearcher, baseQuery,luceneQuery, true);
     }
 
-    protected OntologyTermWrapper(OntologyTerm term, IndexSearcher interactionIndexSearcher, IndexSearcher interactorIndexSearcher, String baseQuery, boolean countInteractors) {
+    protected OntologyTermWrapper(OntologyTerm term, IndexSearcher interactionIndexSearcher, IndexSearcher interactorIndexSearcher, String baseQuery, String luceneQuery, boolean countInteractors) {
         this.term = term;
         this.interactionIndexSearcher = interactionIndexSearcher;
         this.interactorIndexSearcher = interactorIndexSearcher;
         this.baseQuery = baseQuery;
+        this.luceneQuery = luceneQuery;
 
-        this.searchQuery = prepareQuery(term.getId(), baseQuery);
+        this.searchQuery = prepareQuery(term.getId(), luceneQuery);
 
         if (term == null) throw new NullPointerException("Term is necessary");
 
@@ -91,7 +93,7 @@ public class OntologyTermWrapper {
         children = new ArrayList<OntologyTermWrapper>();
 
         for (OntologyTerm child : term.getChildren()) {
-            OntologyTermWrapper otwChild = new OntologyTermWrapper(child, interactionIndexSearcher, interactorIndexSearcher, baseQuery);
+            OntologyTermWrapper otwChild = new OntologyTermWrapper(child, interactionIndexSearcher, interactorIndexSearcher, baseQuery, luceneQuery);
 
             children.add(otwChild);
             otwChild.setParent(this);
@@ -172,6 +174,14 @@ public class OntologyTermWrapper {
 
     public void setSearchQuery(String searchQuery) {
         this.searchQuery = searchQuery;
+    }
+
+    public String getLuceneQuery() {
+        return luceneQuery;
+    }
+
+    public void setLuceneQuery( String luceneQuery ) {
+        this.luceneQuery = luceneQuery;
     }
 
     private class OntologyTermWrapperComparator implements Comparator<OntologyTermWrapper> {

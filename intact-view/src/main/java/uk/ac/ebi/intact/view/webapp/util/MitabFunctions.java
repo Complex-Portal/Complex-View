@@ -16,6 +16,8 @@
 package uk.ac.ebi.intact.view.webapp.util;
 
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.QueryParser;
@@ -43,6 +45,9 @@ import java.util.Map;
  * @since 2.0.1
  */
 public final class MitabFunctions {
+
+    private static final Log log = LogFactory.getLog( MitabFunctions.class );
+
 
     private static final String PROTEIN_MI_REF = "MI:0326";
     private static final String SMALLMOLECULE_MI_REF = "MI:0328";
@@ -78,14 +83,16 @@ public final class MitabFunctions {
 
             String[] defaultFields = new IntactSearchEngine("").getSearchFields();
 
-            //long startTime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
 
             QueryParser parser = new MultiFieldQueryParser(defaultFields, new StandardAnalyzer());
 
             Query query = parser.parse(searchQuery);
             Hits hits = searcher.search(query);
 
-            //System.out.println("Counted: "+query.toString()+" - "+hits.length()+" / Elapsed time: "+(System.currentTimeMillis()-startTime)+" ms - Directory: "+directory);
+            if ( log.isTraceEnabled() ) {
+                log.trace("Counted: "+query.toString()+" - "+hits.length()+" / Elapsed time: "+(System.currentTimeMillis()-startTime)+" ms - Directory: "+directory  );
+            }
 
             int count = hits.length();
 
@@ -107,7 +114,12 @@ public final class MitabFunctions {
             return otw;
         }
 
-        String proteinSearchQuery = otw.getSearchQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
+        String proteinSearchQuery = otw.getSearchQuery()+" AND (typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\" OR typeB:\""+ CvInteractorType.PROTEIN_MI_REF+"\")";
+        //String proteinSearchQuery = otw.getLuceneQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
+
+        if ( log.isTraceEnabled() ) {
+            log.trace( "ProteinSearchQuery-> " +proteinSearchQuery );
+        }
 
         if (interactorCountCache.containsKey(proteinSearchQuery)) {
             interactorCount = (Integer) interactorCountCache.get(proteinSearchQuery);
@@ -118,6 +130,10 @@ public final class MitabFunctions {
         }
 
         if (interactorCount > 0) {
+            if ( log.isTraceEnabled() ) {
+                log.trace(" InteractionSearchQuery-> " + otw.getSearchQuery()  );
+            }
+
             if (interactionCountCache.containsKey(otw.getSearchQuery())) {
                 interactionCount = (Integer) interactionCountCache.get(otw.getSearchQuery());
             } else {

@@ -62,16 +62,26 @@ public class GoBrowserController extends BaseController{
 
     @PostConstruct
     public void init() {
-        String searchQuery = searchController.getSearchQuery();
+        String searchQuery;
+
+        if ( searchController.isCurrentOntologyQuery() ) {
+            searchQuery = searchController.getOntologySearchQuery();
+        } else {
+            searchQuery = searchController.getSearchQuery();
+        }
 
         if ("*".equals(searchQuery) || "?".equals(searchQuery)) {
             searchQuery = "";
         }
+        String displayQuery = searchController.getDisplayQuery();
+
+        String luceneQuery = searchController.getResults().getResult().getLuceneQuery().toString();
 
         goOntologyTreeModel = new GoOntologyTreeModel(indexRequestController.getOntologyIndexSearcher(),
                                                       null,
                                                       null,
-                                                      searchQuery);
+                                                      searchQuery,
+                                                      luceneQuery);
 
     }
 
