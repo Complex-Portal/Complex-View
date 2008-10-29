@@ -64,6 +64,13 @@
                 <ui:insert name="graphTabContent"/>
             </tr:showDetailItem>
 
+
+            <tr:showDetailItem text="About DGI"
+                               disclosed="#{disclosedTabName == 'about'}">
+                <tr:messages/>
+                <ui:insert name="aboutTabContent"/>
+            </tr:showDetailItem>
+
         </tr:panelTabbed>
 
     </ui:define>
