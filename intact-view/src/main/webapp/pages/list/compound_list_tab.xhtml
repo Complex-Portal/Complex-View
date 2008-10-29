@@ -19,12 +19,12 @@
 <tr:panelGroupLayout layout="vertical" id="searchSummary">
 
     <tr:group>
-        <strong>Query: </strong>
+        <strong>Displaying results for query: </strong>
         <ebi:outputText id="queryText" value="#{searchBean.displayQuery}" maxLength="50"
                         expandMessage="(see entire query)" collapseMessage="(collapse)"/>
     </tr:group>
 
-    <tr:group>
+   <!-- <tr:group>
         <strong>Lucene Query: </strong>
         <ebi:outputText id="luceneQueryText" value="#{searchBean.interactorResults.result.luceneQuery}"
                         maxLength="50"
@@ -37,7 +37,7 @@
             <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
         </h:outputText>
         <h:outputText value=" seconds"/>
-    </tr:group>
+    </tr:group>-->
 
 </tr:panelGroupLayout>
 
