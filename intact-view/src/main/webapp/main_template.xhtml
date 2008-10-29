@@ -20,11 +20,26 @@
 
     <ui:define name="content">
 
-        <ui:debug/>
+        <tr:panelGroupLayout>
+            <ui:debug/>
+
+            <tr:poll id="warningPoll" interval="120000"/>
+
+            <tr:panelGroupLayout partialTriggers="::warningPoll">
+                <tr:panelBox text="Important notice" background="transparent"
+                             icon="/images/warning.gif"
+                             rendered="#{not empty intactViewConfiguration.warningMessage}">
+                    <tr:outputText value="#{intactViewConfiguration.warningMessage}"/>
+                </tr:panelBox>
+                <tr:spacer height="10"/>
+            </tr:panelGroupLayout>
+
+        </tr:panelGroupLayout>
+
 
         <tr:panelTabbed position="above">
 
-            <tr:showDetailItem text="Search" 
+            <tr:showDetailItem text="Search"
                                disclosed="#{disclosedTabName == 'search'}">
                 <tr:messages/>
                 <ui:insert name="searchTabContent"/>
@@ -40,8 +55,8 @@
             <tr:showDetailItem text="Browse"
                                disabled="#{searchBean.interactorTotalResults == 0}"
                                disclosed="#{disclosedTabName == 'browse'}"
-                               disclosureListener="#{browseBean.createListofIdentifiers}" >
-                 <tr:messages/>
+                               disclosureListener="#{browseBean.createListofIdentifiers}">
+                <tr:messages/>
                 <ui:insert name="browseTabContent"/>
             </tr:showDetailItem>
 
@@ -58,7 +73,8 @@
                 <ui:insert name="moleculeTabContent"/>
             </tr:showDetailItem>
 
-            <tr:showDetailItem text="Graph" shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
+            <tr:showDetailItem text="Graph"
+                               shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
                                disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount }">
                 <tr:messages/>
                 <ui:insert name="graphTabContent"/>

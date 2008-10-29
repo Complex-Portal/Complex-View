@@ -19,13 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManagerFactory;
 
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
+
 /**
- * TODO comment that class header
+ * IntactView configuration bean.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class IntactViewConfiguration {
+public class IntactViewConfiguration extends BaseController {
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -34,6 +36,7 @@ public class IntactViewConfiguration {
     private String menuUrl;
     private String newsUrl;
     private int maxNewsInBox;
+    private String warningMessage;
     private String configFile;
     private int graphMaxInteractionCount;
     private String defaultIndexLocation;
@@ -93,6 +96,14 @@ public class IntactViewConfiguration {
 
     public void setMaxNewsInBox(int maxNewsInBox) {
         this.maxNewsInBox = maxNewsInBox;
+    }
+
+    public String getWarningMessage() {
+        return warningMessage;
+    }
+
+    public void setWarningMessage( String warningMessage ) {
+        this.warningMessage = warningMessage;
     }
 
     public String getConfigFile() {
