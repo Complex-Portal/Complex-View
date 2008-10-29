@@ -15,13 +15,8 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
-import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,7 +102,8 @@ public class OntologyTermWrapper {
     private String prepareQuery(String id, String baseQuery) {
         StringBuilder query = new StringBuilder();
 
-        if (baseQuery != null && !baseQuery.isEmpty()) {
+        if (baseQuery != null && !baseQuery.isEmpty() &&
+            !baseQuery.equals("*") && !baseQuery.equals("?")) {
             query.append("(").append(baseQuery).append(") AND ");
         }
 
