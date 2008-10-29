@@ -35,7 +35,7 @@
                         <tr:panelFormLayout>
 
                             <tr:inputText label="Email address"
-                                          value="#{contactBean.userEmail}" columns="20"
+                                          value="#{contactBean.userEmail}" columns="20" partialTriggers="resetbtn"
                                           required="true">
                                 <tr:validateRegExp pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*\.(\w{2,3})$"
                                                    messageDetailNoMatch="The user email format is not valid"/>
@@ -44,7 +44,7 @@
                             <tr:inputText label="URL"
                                           required="true"
                                           rendered="#{contactBean.type eq 'bug'}"
-                                          value="#{contactBean.url}" columns="60"
+                                          value="#{contactBean.url}" columns="60"  partialTriggers="resetbtn"
                                           shortDesc="Cut &amp; paste from browser URL line">
                                 <tr:validateRegExp pattern="(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&amp;%@!\-\/]))?"
                                                    messageDetailNoMatch="The format of the URL is not correct"/>
@@ -52,13 +52,13 @@
 
                             <tr:inputText label="#{contactBean.type eq 'info'? 'Message' : 'Bug description'}"
                                           required="true"
-                                          value="#{contactBean.mainMessage}" rows="5" columns="60"
+                                          value="#{contactBean.mainMessage}" rows="5" columns="60" partialTriggers="resetbtn"
                                           shortDesc="Details of the problem encountered or specific feedback on an aspect of the portal "/>
 
                             <tr:inputText label="Steps to reproduce"
                                           required="true"
                                           rendered="#{contactBean.type eq 'bug'}"
-                                          value="#{contactBean.contextualMessage}" rows="5" columns="60"
+                                          value="#{contactBean.contextualMessage}" rows="5" columns="60" partialTriggers="resetbtn"
                                           shortDesc="Please describe the steps leading up to the error; including details of the search you were running"/>
 
                             <tr:panelLabelAndMessage label="Severity" showRequired="true" >
@@ -89,7 +89,9 @@
 
                             <tr:panelButtonBar>
                                 <tr:commandButton text="Send" actionListener="#{contactBean.sendEmail}"/>
-                                <tr:resetButton text="Reset"/>
+                                <tr:commandButton id="resetbtn" text="Reset" partialSubmit="true" 
+                                                  action="#{contactBean.resetForm}"/>
+                                <!--<tr:resetButton text="Reset"/>-->
                             </tr:panelButtonBar>
 
                         </tr:panelFormLayout>

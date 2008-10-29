@@ -26,6 +26,7 @@ import javax.mail.MessagingException;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.commons.util.MailSender;
+import com.sun.facelets.tag.jsf.core.ViewHandler;
 
 /**
  * TODO comment that class header
@@ -69,6 +70,17 @@ public class ContactController extends BaseController {
         }
     }
 
+    public String resetForm() {
+        type = BUG;
+        userEmail = null;
+        mainMessage = null;
+        contextualMessage = null;
+        url = null;
+        severity = null;
+
+        return null;
+    }
+    
     private String prepareMessage() {
         StringBuilder sb = new StringBuilder(2048);
 
