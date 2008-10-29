@@ -321,6 +321,13 @@ public class SearchController extends JpaBaseController {
         return WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig());
     }
 
+    public String resetSearch() {
+        searchQuery = "*";
+        displayQuery = searchQuery;
+        setCurrentOntologyQuery( false );
+        doBinarySearch( searchQuery );
+        return "browse";
+    }
     // Getters & Setters
     /////////////////////
 
