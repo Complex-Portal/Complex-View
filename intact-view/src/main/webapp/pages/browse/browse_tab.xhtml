@@ -16,7 +16,7 @@
     <c:set var="displayWarning" value="#{searchBean.results.pageSize lt searchBean.interactorTotalResults}" />
     <c:set var="displayWarningForGO" value="#{searchBean.searchQuery eq '*' or searchBean.searchQuery eq ''}" />
 
-    <tr:panelHeader text="Proteins">
+    <tr:panelHeader text="Proteins (#{searchBean.proteinTotalResults})">
 
         <tr:panelHorizontalLayout halign="left" valign="top">
 
@@ -120,7 +120,7 @@
 
     </tr:panelHeader>
 
-    <tr:panelHeader text="Chemicals">
+    <tr:panelHeader text="Chemicals (#{searchBean.smallMoleculeTotalResults})">
 
         <trh:tableLayout borderWidth="0"
                          cellSpacing="5"

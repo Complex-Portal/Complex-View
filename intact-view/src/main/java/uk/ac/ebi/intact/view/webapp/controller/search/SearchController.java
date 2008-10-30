@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Main search controller
+ * Search controller.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -78,6 +78,7 @@ public class SearchController extends JpaBaseController {
 
     private int totalResults;
     private int interactorTotalResults;
+    private int proteinTotalResults;
     private int smallMoleculeTotalResults;
 
     // status flags
@@ -169,10 +170,6 @@ public class SearchController extends JpaBaseController {
     }
 
     private void doBinarySearch(String query) {
-        // reset the status of the range choice bar
-        //if (bindings.getRangeChoiceBar() != null) {
-        //    bindings.getRangeChoiceBar().setFirst(0);
-        //}
 
         if (log.isDebugEnabled()) log.debug("Searching interactions (raw): " + query);
 
@@ -208,38 +205,36 @@ public class SearchController extends JpaBaseController {
             e.printStackTrace();
         }
 
-        //if (bindings.getResultsDataTable() != null) {
-        //    bindings.getResultsDataTable().setFirst(0);
-        //}
-
         doInteractorSearch(query);
     }
 
     public void doInteractorSearch(String query) {
         doProteinsSearch(query);
         doSmallMoleculeSearch(query);
+        interactorTotalResults = smallMoleculeTotalResults + proteinTotalResults;
     }
 
-    public void doProteinsSearch(String query) {
+    private void doProteinsSearch(String query) {
         // reset the status of the range choice bar
-        if (log.isDebugEnabled()) log.debug("Searching interactors (raw): " + query);
+        if (log.isDebugEnabled()) log.debug("Searching proteins (raw): " + query);
 
         query = QueryHelper.prepareInteractorQuery(query, CvInteractorType.PROTEIN_MI_REF);
 
-        if (log.isDebugEnabled()) log.debug("Searching interactors (prepared query): " + query);
+        if (log.isDebugEnabled()) log.debug("Searching proteins (prepared query): " + query);
 
         String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
 
         try {
             interactorResults = new SearchResultDataModel(query, indexDirectory, pageSize);
-            interactorTotalResults = interactorResults.getRowCount();
+            proteinTotalResults = interactorResults.getRowCount();
         } catch (TooManyResultsException e) {
-            addErrorMessage("Too many interactors found", "Please, refine your query");
+            addErrorMessage("Too many proteins found", "Please, refine your query");
+            proteinTotalResults = 0;
             interactorTotalResults = 0;
         }
     }
 
-    public void doSmallMoleculeSearch(String query) {
+    private void doSmallMoleculeSearch(String query) {
         // reset the status of the range choice bar
         if (log.isDebugEnabled()) log.debug("Searching small molecules (raw): " + query);
 
@@ -254,6 +249,7 @@ public class SearchController extends JpaBaseController {
             smallMoleculeTotalResults = smallMoleculeResults.getRowCount();
         } catch (TooManyResultsException e) {
             addErrorMessage("Too many small molecules found", "Please, refine your query");
+            smallMoleculeTotalResults = 0;
             interactorTotalResults = 0;
         }
     }
@@ -322,12 +318,16 @@ public class SearchController extends JpaBaseController {
     }
 
     public String resetSearch() {
+
+        // TODO maybe this should be moved into the BrowseController ??
+
         searchQuery = "*";
         displayQuery = searchQuery;
         setCurrentOntologyQuery( false );
         doBinarySearch( searchQuery );
         return "browse";
     }
+
     // Getters & Setters
     /////////////////////
 
@@ -425,6 +425,10 @@ public class SearchController extends JpaBaseController {
 
     public int getSmallMoleculeTotalResults() {
         return smallMoleculeTotalResults;
+    }
+
+    public int getProteinTotalResults() {
+        return proteinTotalResults;
     }
 
     public SearchResultDataModel getSmallMoleculeResults() {
