@@ -83,6 +83,8 @@ public class SearchController extends JpaBaseController {
 
     // status flags
     private String disclosedTabName;
+    //for clear
+    private boolean fromClearBtn;
 
     private boolean showProperties;
     private boolean showAlternativeIds;
@@ -140,7 +142,12 @@ public class SearchController extends JpaBaseController {
         displayQuery = searchQuery;
         setCurrentOntologyQuery( false );
         doBinarySearch(searchQuery);
-        return "interactions";
+
+        if ( isFromClearBtn() ) {
+            return disclosedTabName;
+        } else {
+            return "interactions";
+        }
     }
 
     public String doOntologySearchAction() {
@@ -150,7 +157,13 @@ public class SearchController extends JpaBaseController {
         }
         setCurrentOntologyQuery( true );
         doOntologySearch( ontologySearchQuery );
-        return "interactions";
+
+        if (  isFromClearBtn() ) {
+            return disclosedTabName;
+        } else {
+            return "interactions";
+        }
+
     }
 
     public void doOntologySearch(String ontologySearch) {
@@ -197,7 +210,9 @@ public class SearchController extends JpaBaseController {
                 addErrorMessage("Your query didn't return any results", "Use a different query");
                 disclosedTabName = "search";
             } else {
-               disclosedTabName = "interactions";
+               if(!isFromClearBtn()){
+                 disclosedTabName = "interactions";
+               }
             }
 
         } catch (TooManyResultsException e) {
@@ -317,15 +332,13 @@ public class SearchController extends JpaBaseController {
         return WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig());
     }
 
-    public String resetSearch() {
-
-        // TODO maybe this should be moved into the BrowseController ??
-
+    public void resetSearch(ActionEvent event) {
         searchQuery = "*";
         displayQuery = searchQuery;
+        setFromClearBtn( true );
         setCurrentOntologyQuery( false );
         doBinarySearch( searchQuery );
-        return "browse";
+
     }
 
     // Getters & Setters
@@ -457,5 +470,13 @@ public class SearchController extends JpaBaseController {
 
     public void setCurrentOntologyQuery( boolean currentOntologyQuery ) {
         this.currentOntologyQuery = currentOntologyQuery;
+    }
+
+    public boolean isFromClearBtn() {
+        return fromClearBtn;
+    }
+
+    public void setFromClearBtn( boolean fromClearBtn ) {
+        this.fromClearBtn = fromClearBtn;
     }
 }

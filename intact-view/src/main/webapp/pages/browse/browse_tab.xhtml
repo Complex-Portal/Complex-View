@@ -14,8 +14,15 @@
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
     <c:set var="displayWarning" value="#{searchBean.results.pageSize lt searchBean.interactorTotalResults}" />
-    <c:set var="displayWarningForGO" value="#{searchBean.searchQuery eq '*' or searchBean.searchQuery eq ''}" />
+    <!--<c:set var="displayWarningForGO" value="#{searchBean.searchQuery eq '*' or searchBean.searchQuery eq ''}" />-->
 
+     <tr:group>
+        Displaying results for query:
+        <strong><ebi:outputText id="queryText" value="#{searchBean.displayQuery}" maxLength="50"
+                        expandMessage="(see entire query)" collapseMessage="(collapse)"/></strong>
+         <em> (Note: To 'Browse All' click the 'Clear' button on the left menu) </em>
+    </tr:group>
+    
     <tr:panelHeader text="Proteins (#{searchBean.proteinTotalResults})">
 
         <tr:panelHorizontalLayout halign="left" valign="top">
@@ -107,14 +114,14 @@
             </tr:panelBox>
 
 
-            <tr:panelBox text="Browsing on subset only" background="dark"
+           <!-- <tr:panelBox text="Browsing on subset only" background="dark"
                          icon="/images/warning.gif"
                          rendered="#{!displayWarningForGO}">
                 <tr:outputText value="Please be aware that you will be browsing the GeneOntology and other database resources limiting to your search query only.
                                       To browse all click here..."/>
                 <tr:commandLink text="Reset Search" action="#{searchBean.resetSearch}"/>
             </tr:panelBox>
-
+-->
 
         </tr:panelHorizontalLayout>
 

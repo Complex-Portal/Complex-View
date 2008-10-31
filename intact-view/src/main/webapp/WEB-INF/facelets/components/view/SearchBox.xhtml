@@ -38,14 +38,19 @@
                      </tr:commandLink>
                 </tr:panelHorizontalLayout>
 
-            <h:panelGrid columns="2">
+            <tr:panelGroupLayout layout="vertical">
                 <tr:commandButton id="#{id}" styleClass="submit_button"
                                    text="Search"
                                    action="#{searchBean.doBinarySearchAction}">
                 </tr:commandButton>
 
-                <a href="#" onclick="intact_${id}_clearAndFocusField('searchSubForm:searchQuery')">Clear</a>
-            </h:panelGrid>
+                <!--<a href="#" onclick="intact_${id}_clearAndFocusField('searchSubForm:searchQuery')">Clear</a>-->
+                <tr:commandButton id="clearbtn" styleClass="submit_button"
+                                  text="Clear"
+                                  actionListener="#{searchBean.resetSearch}">
+                </tr:commandButton>
+
+            </tr:panelGroupLayout>
 
             </tr:subform>
 
