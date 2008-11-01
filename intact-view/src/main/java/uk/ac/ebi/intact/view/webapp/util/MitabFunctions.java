@@ -114,11 +114,12 @@ public final class MitabFunctions {
             return otw;
         }
 
-        String proteinSearchQuery = otw.getSearchQuery()+" AND (typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\" OR typeB:\""+ CvInteractorType.PROTEIN_MI_REF+"\")";
-        //String proteinSearchQuery = otw.getLuceneQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
+        // (?) do we have a field that contains the expanded version of properties of A, if not, we need an extra column that contains this expansion for the protein query.
+
+        String proteinSearchQuery = otw.getSearchQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
 
         if ( log.isTraceEnabled() ) {
-            log.trace( "ProteinSearchQuery-> " +proteinSearchQuery );
+            log.trace( "ProteinSearchQuery: " +proteinSearchQuery );
         }
 
         if (interactorCountCache.containsKey(proteinSearchQuery)) {
@@ -131,7 +132,7 @@ public final class MitabFunctions {
 
         if (interactorCount > 0) {
             if ( log.isTraceEnabled() ) {
-                log.trace(" InteractionSearchQuery-> " + otw.getSearchQuery()  );
+                log.trace(" InteractionSearchQuery: " + otw.getSearchQuery()  );
             }
 
             if (interactionCountCache.containsKey(otw.getSearchQuery())) {

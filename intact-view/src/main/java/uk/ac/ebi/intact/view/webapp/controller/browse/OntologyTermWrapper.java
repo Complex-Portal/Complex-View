@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * TODO comment that class header
+ * Ontology term wrapper.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -100,14 +100,14 @@ public class OntologyTermWrapper {
     }
 
     private String prepareQuery(String id, String baseQuery) {
-        StringBuilder query = new StringBuilder();
+        StringBuilder query = new StringBuilder( (baseQuery == null ? 0 : baseQuery.length()) + 32);
 
         if (baseQuery != null && !baseQuery.isEmpty() &&
             !baseQuery.equals("*") && !baseQuery.equals("?")) {
             query.append("(").append(baseQuery).append(") AND ");
         }
 
-        query.append("properties:\"").append(id).append("\"");
+        query.append("propertiesA:\"").append(id).append("\"");
 
         return query.toString();
     }
