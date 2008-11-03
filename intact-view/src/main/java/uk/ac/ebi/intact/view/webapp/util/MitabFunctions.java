@@ -30,6 +30,7 @@ import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.InteractorAlias;
 import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
+import uk.ac.ebi.intact.psimitab.model.Annotation;
 import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper;
@@ -184,7 +185,7 @@ public final class MitabFunctions {
             name = interactor.getAliases().iterator().next().getName();
         } else {
             for (CrossReference xref : interactor.getAlternativeIdentifiers()) {
-                
+
                 if ("commercial name".equals(xref.getText())) {
                     name = xref.getIdentifier();
                 }
@@ -210,6 +211,28 @@ public final class MitabFunctions {
         }
 
         return name;
+    }
+
+
+    public static boolean isApprovedDrug( String drugType ) {
+        if ( drugType != null ) {
+            if ( drugType.toLowerCase().contains( "approved".toLowerCase() ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static String getDrugStatus( ExtendedInteractor interactor ) {
+        if ( interactor.getAnnotations() != null ) {
+            for ( Annotation annotation : interactor.getAnnotations() ) {
+                if ("drug type".equals(annotation.getType()) && annotation.getText() != null) {
+                    return annotation.getText();
+                }
+            }
+        }
+        return "-";
     }
 
     private static InteractorAlias getAliasByPriority(Interactor intactInteractor, String ... aliasTypes) {

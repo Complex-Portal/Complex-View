@@ -55,6 +55,9 @@
         <attribute>
             <name>onlyLogo</name>
         </attribute>
+        <attribute>
+            <name>renderDrugPort</name>
+        </attribute>
     </tag>
     <tag>
         <name>goIntepro</name>

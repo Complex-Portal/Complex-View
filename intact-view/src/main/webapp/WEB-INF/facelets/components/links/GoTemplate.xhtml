@@ -11,9 +11,10 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
     <c:set var="showLogoOnly" value="#{onlyLogo != null? ebisf:convertToBoolean(onlyLogo) : false}"/>
+    <c:set var="showDrugPort" value="#{renderDrugPort != null? ebisf:convertToBoolean(renderDrugPort) : true}"/>
 
         <h:outputLink value="#{queryUrl}" target="_blank"
-                 disabled="#{disabled != null? ebisf:convertToBoolean(disabled) : false}">
+                 disabled="#{disabled != null? ebisf:convertToBoolean(disabled) : false}" rendered="#{showDrugPort}">
                 <tr:image source="#{imageSource}" inlineStyle="border-width:0"
                           rendered="#{showLogoOnly}"/>
             <tr:outputText value="#{(text != null)? text : query}" rendered="#{!showLogoOnly}"/>

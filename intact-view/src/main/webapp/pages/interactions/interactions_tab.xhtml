@@ -181,7 +181,7 @@
             <f:facet name="drugbank">
                 <h:panelGroup>
                     <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
-                    <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true"/>
+                    <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(binaryInteraction.interactorA))}"/>
                     <br/>
                 </h:panelGroup>
             </f:facet>

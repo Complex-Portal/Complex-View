@@ -51,27 +51,27 @@
     <tr:outputText value="id"/>
     <tr:outputText value="Identifiers (A or B)"/>
     <tr:outputText value="No"/>
-    <iav:queryLink value="id:P123*"/>
+    <iav:queryLink value="id:DB0061*"/>
 
     <tr:outputText value="alias"/>
     <tr:outputText value="Aliases (A or B)"/>
     <tr:outputText value="No"/>
-    <iav:queryLink value="alias:(SAM68 OR DNM)"/>
+    <iav:queryLink value="alias:(imatinib OR ABCB1)"/>
 
     <tr:outputText value="identifiers"/>
     <tr:outputText value="Identifiers and Aliases indisctinctively"/>
     <tr:outputText value="Yes"/>
-    <iav:queryLink value="identifiers:Q06609"/>
+    <iav:queryLink value="identifiers:DB00619"/>
 
     <tr:outputText value="pubauth"/>
     <tr:outputText value="Publication 1st author(s)"/>
     <tr:outputText value="Yes"/>
-    <iav:queryLink value="pubauth:bantscheff"/>
+    <iav:queryLink value="pubauth:wishart"/>
 
     <tr:outputText value="pubid"/>
     <tr:outputText value="Publication Identifier(s)"/>
     <tr:outputText value="Yes"/>
-    <iav:queryLink value="pubid:(14605208 OR 17353931)"/>
+    <iav:queryLink value="pubid:(18048412 OR 17353931)"/>
 
     <tr:outputText value="taxidA"/>
     <tr:outputText value="Tax ID interactor A:  be it the tax ID or the species name"/>
@@ -108,14 +108,75 @@
     <tr:outputText value="interaction_id"/>
     <tr:outputText value="Interaction identifier(s)"/>
     <tr:outputText value="Yes"/>
-    <iav:queryLink value="interaction_id:EBI-396959"/>
+    <iav:queryLink value="interaction_id:DGI-337971"/>
 
     <!--
     <tr:outputText value="confidence"/>
     <tr:outputText value="Confidence score (not available yet)"/>
     <tr:outputText value="No"/>
     <tr:outputText value="confidence:"/>
-    -->
+     -->
+    <tr:outputText value="annotationA"/>
+    <tr:outputText value="Annotations Interactor A"/>
+    <tr:outputText value="No"/>
+    <iav:queryLink value="annotationA:approved"/>
+
+    <tr:outputText value="annotationB"/>
+    <tr:outputText value="Annotations Interactor B"/>
+    <tr:outputText value="No"/>
+    <iav:queryLink value="annotationB:experimental"/>
+
+    <tr:outputText value="properties"/>
+    <tr:outputText value="Properties (A or B)"/>
+    <tr:outputText value="Yes"/>
+    <iav:queryLink value="properties:&quot;GO:0005794&quot;"/>
+
+    <tr:outputText value="expansion"/>
+    <tr:outputText value="Expansion method(s)"/>
+    <tr:outputText value="Yes"/>
+    <iav:queryLink value="expansion:spoke"/>
+
+
+    <tr:outputText value="dataset"/>
+    <tr:outputText value="Dataset name(s)"/>
+    <tr:outputText value="Yes"/>
+    <iav:queryLink value="dataset:drugbank"/>
+
+    <tr:outputText value="experimentalRoleA"/>
+    <tr:outputText value="Experimental role(s) interactor A"/>
+    <tr:outputText value="No"/>
+    <iav:queryLink value="experimentalRoleA:drug"/>
+
+    <tr:outputText value="experimentalRoleB"/>
+    <tr:outputText value="Experimental role(s) interactor B"/>
+    <tr:outputText value="No"/>
+    <iav:queryLink value="experimentalRoleB:&quot;drug target&quot;"/>
+
+    <tr:outputText value="biologicalRoleA"/>
+    <tr:outputText value="Biological role(s) interactor A"/>
+    <tr:outputText value="No"/>
+    <iav:queryLink value="biologicalRoleA:&quot;enzyme target&quot;"/>
+
+    <tr:outputText value="biologicalRoleB"/>
+    <tr:outputText value="Biological role(s) interactor B"/>
+    <tr:outputText value="No"/>
+    <iav:queryLink value="biologicalRoleB:enzyme"/>
+
+    <tr:outputText value="parameterA"/>
+    <tr:outputText value="Parameter(s) interactor A"/>
+    <tr:outputText value="No"/>
+    <iav:queryLink value="parameterA:xxxxx"/>
+
+    <tr:outputText value="parameterB"/>
+    <tr:outputText value="Parameter(s) interactor B"/>
+    <tr:outputText value="No"/>
+    <iav:queryLink value="parameterB:xxxxx"/>
+
+    <tr:outputText value="parameterInteraction"/>
+    <tr:outputText value="Parameter(s) interaction"/>
+    <tr:outputText value="No"/>
+    <iav:queryLink value="parameterInteraction:xxxxx"/>
+
 
 </h:panelGrid>
 

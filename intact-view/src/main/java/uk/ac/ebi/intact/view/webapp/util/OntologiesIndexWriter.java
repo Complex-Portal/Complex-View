@@ -112,6 +112,7 @@ private static final Log log = LogFactory.getLog( OntologiesIndexWriter.class );
 
         private static final String GO_DATABASE_TYPE = "go";
         private static final String CHEBI_DATABASE_TYPE = "chebi";
+        private static final String INTERPRO_DATABASE_TYPE = "interpro";
 
 
         public OntologyTermBuilder() {
@@ -135,12 +136,14 @@ private static final Log log = LogFactory.getLog( OntologiesIndexWriter.class );
             Collection<OntologyTerm> intTypeTerms = createOntologyTerms(interactionTypeField, null);
             Collection<OntologyTerm> goTerms = createOntologyTerms(propertiesField, GO_DATABASE_TYPE);
             Collection<OntologyTerm> chebiTerms = createOntologyTerms(propertiesField, CHEBI_DATABASE_TYPE);
+            Collection<OntologyTerm> interproTerms = createOntologyTerms(propertiesField, INTERPRO_DATABASE_TYPE);
 
             terms.addAll(detMethodTerms);
             terms.addAll(intTypeTerms);
             terms.addAll(goTerms);
             terms.addAll( chebiTerms );
-            
+            terms.addAll( interproTerms );
+
             return terms;
         }
 

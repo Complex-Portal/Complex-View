@@ -113,7 +113,7 @@
                 <h:panelGroup>
                     <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
-                    <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true"/>
+                    <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(compound))}"/>
                     <br/>
                 </h:panelGroup>
             </f:facet>
@@ -135,6 +135,10 @@
 
 <tr:column headerText="DGI Accession number" sortable="true" sortProperty="idA_s">
     <h:outputText value="#{iamf:getIntactIdentifierFromCrossReferences(compound.identifiers)}"/>
+</tr:column>
+
+<tr:column headerText="Drug Type" sortable="true" sortProperty="idA_s">
+    <h:outputText value="#{iamf:getDrugStatus(compound)}"/>
 </tr:column>
 
 <tr:column headerText="Brand Name">
