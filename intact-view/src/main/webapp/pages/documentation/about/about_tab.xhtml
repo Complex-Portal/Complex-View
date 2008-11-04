@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <title></title>
-  </head>
-  <body>
-   About Us
-  </body>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+
+    <tr:panelHeader text="Welcome to DrugPort" styleClass="level-one"/>
+    DrugProt brings a genomic perspective to the molecular targets of known small molecule drugs and biopharmaceutical agents. DrugPort combines detailed drug (i.e. chemical, pharmacological, and pharmaceutical) data with molecular target (i.e. sequence, structure, and pathway) information. Version 0.9 of the database is structured around the known druggable genome, an expanding list of ~4000 known and predicted drug targets.
+
+    <tr:panelHeader text="Project aims" styleClass="level-one"/>
+    The stated aim of DrugPort is to give the entire drug-discovery community access to all publicly available chemistry space and molecular targetspace. Using this information, researchers will be able to use computational methods to select the most efficient small molecule libraries and targets to support high throughput screening, cross screening and structure activity relationship (SAR) analysis, to support drug discovery, safety and efficacy studies, respectively.
+
+    <tr:panelHeader text="Acknowledgements" styleClass="level-one"/>
+    DrugPort has been created as a result of a public-private partnership between EBI and the<tr:outputText
+        value=" "/><tr:goLink text="EBI Industry Partners" targetFrame="_blank"
+                              destination="http://www.ebi.ac.uk/industry/ind-prog-index.html"/>. The current version of DrugPort is populated with curated, publicly available data imported from<tr:outputText
+        value=" "/><tr:goLink text="DrugBank." targetFrame="_blank" destination="http://www.drugbank.ca/"/>
+
+</ui:composition>
