@@ -24,21 +24,6 @@
                         expandMessage="(see entire query)" collapseMessage="(collapse)"/> </strong>
     </tr:group>
 
-   <!-- <tr:group>
-        <strong>Lucene Query: </strong>
-        <ebi:outputText id="luceneQueryText" value="#{searchBean.interactorResults.result.luceneQuery}"
-                        maxLength="50"
-                        expandMessage="(see entire query)" collapseMessage="(collapse)"/>
-    </tr:group>
-
-    <tr:group>
-        <strong>Search time: </strong>
-        <h:outputText value="#{searchBean.interactorResults.elapsedTimeSecs}">
-            <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
-        </h:outputText>
-        <h:outputText value=" seconds"/>
-    </tr:group>-->
-
 </tr:panelGroupLayout>
 
 
@@ -92,7 +77,7 @@
 </tr:column>
 
 <!---->
-<tr:column headerText="Structure" inlineStyle="background-color:white; text-align: center;">
+<tr:column headerText="Structure" inlineStyle="background-color:white; vertical-align:middle; text-align: center;">
     <tr:iterator var="xref" value="#{compound.identifiers}" varStatus="rowStatus" rows="0">
         <tr:switcher facetName="#{xref.database}">
             <f:facet name="drugbank">
