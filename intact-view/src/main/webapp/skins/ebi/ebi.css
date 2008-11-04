@@ -108,7 +108,8 @@ af|panelTabbed::body af|panelHeader::level-one
 /** ----------- **/
 
 /** light (box with header - news style) **/
-af|panelBox::light af|panelBox::header, af|panelBox::light af|panelBox::body {
+af|panelBox::light af|panelBox::header,
+af|panelBox::light af|panelBox::body {
     border-color: #BFBFBF;
     border-style: solid;
 }
@@ -213,6 +214,10 @@ af|panelBox::dark af|panelBox::header {
     margin-left: 0px;
     padding: 0;
     text-align: left;
+}
+
+af|panelBox::header img{
+    vertical-align:baseline;
 }
 
 af|panelBox::dark af|panelBox::body {
