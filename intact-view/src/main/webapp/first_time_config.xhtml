@@ -89,7 +89,7 @@
                                           value="#{firstTimeBean.interactorIndex.location}"
                                           valueChangeListener="#{firstTimeBean.interactorIndexLocationChanged}" immediate="true"/>
 
-                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.interactionIndexLocationExists}">
+                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.interactorIndexLocationExists}">
                                 <h:graphicImage url="/images/ok.gif"/>
                                 <tr:outputText
                                         value="Index found with #{firstTimeBean.interactorIndex.size} interactors."/>

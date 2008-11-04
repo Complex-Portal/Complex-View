@@ -104,7 +104,7 @@ public class FirstTimeBean extends BaseController {
 
     public void ontologiesIndexLocationChanged(ValueChangeEvent vce) {
         ontologiesIndex.setLocation((String) vce.getNewValue());
-        ontologiesIndexLocationExists = checkLocation(interactorIndex);
+        ontologiesIndexLocationExists = checkLocation(ontologiesIndex);
     }
 
     public String processConfiguration() {
