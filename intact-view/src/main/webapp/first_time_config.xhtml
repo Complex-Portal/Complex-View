@@ -118,7 +118,7 @@
                                           value="#{firstTimeBean.ontologiesIndex.location}"
                                           valueChangeListener="#{firstTimeBean.ontologiesIndexLocationChanged}" immediate="true"/>
 
-                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.interactionIndexLocationExists}">
+                            <h:panelGroup style="color:green" rendered="#{firstTimeBean.ontologiesIndexLocationExists}">
                                 <h:graphicImage url="/images/ok.gif"/>
                                 <tr:outputText
                                         value="Index found with #{firstTimeBean.ontologiesIndex.size} ontology terms."/>
