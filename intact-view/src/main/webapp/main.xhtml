@@ -15,6 +15,10 @@
 
         template="/main_template.xhtml">
 
+    <ui:define name="aboutTabContent">
+        <ui:include src="/pages/documentation/about/about_tab.xhtml"/>
+    </ui:define>
+
     <ui:define name="searchTabContent">
         <ui:include src="/pages/search/search_tab.xhtml"/>
     </ui:define>
@@ -39,8 +43,5 @@
         <ui:include src="/pages/graph/graph_tab.xhtml"/>
     </ui:define>
 
-     <ui:define name="aboutTabContent">
-        <ui:include src="/pages/documentation/about/about_tab.xhtml"/>
-    </ui:define>
 
 </ui:composition>

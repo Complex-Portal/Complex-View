@@ -130,7 +130,8 @@ public class SearchController extends JpaBaseController {
         if (searchQuery == null) {
             searchQuery = "*";
             doBinarySearch(searchQuery);
-            disclosedTabName = "search";
+            //disclosedTabName = "search";
+            disclosedTabName = "about";
         }
 
         if (tabParam != null) {

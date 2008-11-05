@@ -39,6 +39,12 @@
 
         <tr:panelTabbed position="above">
 
+            <tr:showDetailItem text="About"
+                               disclosed="#{disclosedTabName == 'about'}">
+                <tr:messages/>
+                <ui:insert name="aboutTabContent"/>
+            </tr:showDetailItem>
+
             <tr:showDetailItem text="Search"
                                disclosed="#{disclosedTabName == 'search'}">
                 <tr:messages/>
@@ -81,11 +87,7 @@
             </tr:showDetailItem>
 
 
-            <tr:showDetailItem text="About"
-                               disclosed="#{disclosedTabName == 'about'}">
-                <tr:messages/>
-                <ui:insert name="aboutTabContent"/>
-            </tr:showDetailItem>
+
 
         </tr:panelTabbed>
 
