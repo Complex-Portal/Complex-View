@@ -15,12 +15,13 @@
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
     <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
 
     <name>IntAct Services :: View</name>
 
     <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view</connection>
+        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view
+        </connection>
         <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view
         </developerConnection>
         <url>https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view/</url>
@@ -33,7 +34,7 @@
         <jetty.context>view</jetty.context>
 
         <appRoot>/intact</appRoot>
-        
+
         <hibernate.driver>${db.driver}</hibernate.driver>
         <hibernate.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</hibernate.url>
         <hibernate.user>${db.user}</hibernate.user>
@@ -79,17 +80,17 @@
 
         <plugins>
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <configuration>
-                  <source>1.6</source>
-                  <target>1.6</target>
-              </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
-                    <artifactId>maven-jaxb2-plugin</artifactId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
                 <configuration>
                     <schemaDirectory>${project.basedir}/src/main/resources/META-INF</schemaDirectory>
                     <bindingDirectory>${project.basedir}/src/main/resources/META-INF</bindingDirectory>
@@ -200,7 +201,7 @@
             <version>2.0.6-SNAPSHOT</version>
         </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>uk.ac.ebi.intact.commons</groupId>
             <artifactId>intact-commons</artifactId>
             <version>2.1.5-SNAPSHOT</version>
@@ -299,42 +300,42 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>javax.faces</groupId>-->
-            <!--<artifactId>jsf-api</artifactId>-->
-            <!--<version>1.2_04</version>-->
+        <!--<groupId>javax.faces</groupId>-->
+        <!--<artifactId>jsf-api</artifactId>-->
+        <!--<version>1.2_04</version>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>javax.faces</groupId>-->
-            <!--<artifactId>jsf-impl</artifactId>-->
-            <!--<version>1.2_04</version>-->
+        <!--<groupId>javax.faces</groupId>-->
+        <!--<artifactId>jsf-impl</artifactId>-->
+        <!--<version>1.2_04</version>-->
         <!--</dependency>-->
 
         <!-- Tomahawk -->
         <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.tomahawk</groupId>-->
-            <!--<artifactId>tomahawk</artifactId>-->
-            <!--<version>1.1.7-SNAPSHOT</version>-->
-            <!--<scope>compile</scope>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>commons-el</groupId>-->
-                    <!--<artifactId>commons-el</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
+        <!--<groupId>org.apache.myfaces.tomahawk</groupId>-->
+        <!--<artifactId>tomahawk</artifactId>-->
+        <!--<version>1.1.7-SNAPSHOT</version>-->
+        <!--<scope>compile</scope>-->
+        <!--<exclusions>-->
+        <!--<exclusion>-->
+        <!--<groupId>commons-el</groupId>-->
+        <!--<artifactId>commons-el</artifactId>-->
+        <!--</exclusion>-->
+        <!--</exclusions>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.tomahawk</groupId>-->
-            <!--<artifactId>tomahawk-sandbox</artifactId>-->
-            <!--<version>1.1.7-SNAPSHOT</version>-->
-            <!--<scope>provided</scope>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>commons-el</groupId>-->
-                    <!--<artifactId>commons-el</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
+        <!--<groupId>org.apache.myfaces.tomahawk</groupId>-->
+        <!--<artifactId>tomahawk-sandbox</artifactId>-->
+        <!--<version>1.1.7-SNAPSHOT</version>-->
+        <!--<scope>provided</scope>-->
+        <!--<exclusions>-->
+        <!--<exclusion>-->
+        <!--<groupId>commons-el</groupId>-->
+        <!--<artifactId>commons-el</artifactId>-->
+        <!--</exclusion>-->
+        <!--</exclusions>-->
         <!--</dependency>-->
 
 
