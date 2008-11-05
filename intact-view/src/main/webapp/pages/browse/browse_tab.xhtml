@@ -14,7 +14,6 @@
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
     <c:set var="displayWarning" value="#{searchBean.results.pageSize lt searchBean.interactorTotalResults}" />
-    <!--<c:set var="displayWarningForGO" value="#{searchBean.searchQuery eq '*' or searchBean.searchQuery eq ''}" />-->
 
      <tr:group>
         Displaying results for query:
@@ -66,16 +65,18 @@
                         <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
                     </trh:cellFormat>
                     <trh:cellFormat>
-                        <f:subview id="rectomeView">
-                            <form id="reactomeForm" method="post" action="http://www.reactome.org/cgi-bin/skypainter2"
-                                  enctype="multipart/form-data" name="skypainter" target="_blank">
-                                <input type="hidden" name="QUERY" value="#{browseBean.reactomeIdentifierList}"/>
-                                <input type="hidden" name="DB" value="gk_current"/>
-                                <input type="hidden" name="SUBMIT" value="1"/>
-                                <a href="#"
-                                   onclick="document.getElementById('reactomeForm').submit();">By Reactome Pathway</a>
-                            </form>
-                        </f:subview>
+
+                        <!-- This is necessary for the sky painter link to work -->
+                        <!-- TODO generate these fields in ExternalDbLinker.getReactomeForm -->
+                        <!--      example: http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=20&t=003927 -->
+                        <input type="hidden" name="QUERY" value=""/>
+                        <input type="hidden" name="DB" value="gk_current"/>
+                        <input type="hidden" name="SUBMIT" value="0"/>
+
+                        <tr:commandLink actionListener="#{browseBean.goReactome}" partialSubmit="true">
+                            <tr:outputText value="By Reactome Pathway"/>
+                        </tr:commandLink>
+
                     </trh:cellFormat>
                 </trh:rowLayout>
 
@@ -112,16 +113,6 @@
                 <tr:spacer width="3" />
                 <tr:outputText value="whenever this restriction applies."/>
             </tr:panelBox>
-
-
-           <!-- <tr:panelBox text="Browsing on subset only" background="dark"
-                         icon="/images/warning.gif"
-                         rendered="#{!displayWarningForGO}">
-                <tr:outputText value="Please be aware that you will be browsing the GeneOntology and other database resources limiting to your search query only.
-                                      To browse all click here..."/>
-                <tr:commandLink text="Reset Search" action="#{searchBean.resetSearch}"/>
-            </tr:panelBox>
--->
 
         </tr:panelHorizontalLayout>
 

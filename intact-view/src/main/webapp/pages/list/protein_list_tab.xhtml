@@ -24,20 +24,6 @@
                         expandMessage="(see entire query)" collapseMessage="(collapse)"/></strong>
     </tr:group>
 
-  <!--  <tr:group>
-        <strong>Lucene Query: </strong>
-        <ebi:outputText id="luceneQueryText" value="#{searchBean.interactorResults.result.luceneQuery}" maxLength="50"
-                        expandMessage="(see entire query)" collapseMessage="(collapse)"/>
-    </tr:group>
-
-    <tr:group>
-        <strong>Search time: </strong>
-        <h:outputText value="#{searchBean.interactorResults.elapsedTimeSecs}">
-            <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
-        </h:outputText>
-        <h:outputText value=" seconds"/>
-    </tr:group>-->
-
 </tr:panelGroupLayout>
 
 
@@ -65,6 +51,10 @@
             <tr:commandButton text="Search Interactions"
                               actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
                               action="main"/>
+
+            <!-- This is necessary for the sky painter link to work -->
+            <!-- TODO generate these fields in ExternalDbLinker.getReactomeForm -->
+            <!--      example: http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=20&t=003927 -->
             <input type="hidden" name="QUERY" value=""/>
             <input type="hidden" name="DB" value="gk_current"/>
             <input type="hidden" name="SUBMIT" value="0"/>

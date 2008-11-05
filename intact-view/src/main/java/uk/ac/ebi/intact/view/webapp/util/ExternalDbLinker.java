@@ -25,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.context.annotation.Scope;
 
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 import java.util.List;
 import java.util.HashSet;
@@ -61,7 +62,6 @@ public class ExternalDbLinker {
     public static final String EXPRESSIONURL_SUFFIX = "&q_updn=updn&q_expt=%28all+conditions%29&q_orgn=HOMO+SAPIENS&view=heatmap&expand_efo=on&view=";
     public static final String REACTOMEURL = "http://www.reactome.org/cgi-bin/skypainter2";
 
-
     //identifier seperators
     public static final String INTERPRO_SEPERATOR = ",";
     public static final String CHROMOSOME_SEPERATOR = ";id=";
@@ -72,7 +72,6 @@ public class ExternalDbLinker {
     public void goExternalLink( String baseUrl, String seperator, String[] selected ) {
         goExternalLink( baseUrl, "", seperator, selected );
     }
-
 
     public void goExternalLink( String baseUrl, String urlSuffix, String seperator, String[] selected ) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -87,31 +86,38 @@ public class ExternalDbLinker {
     }
 
     //linking to reactome needs a form submit
-    public void reactomeLinker( String baseUrl, String seperator, String[] selected ) {
-
+    public void reactomeLinker( String baseUrl, String separator, String[] selected, String forwardPage ) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExtendedRenderKitService service = Service.getRenderKitService( facesContext, ExtendedRenderKitService.class );
 
         if ( selected.length > 0 ) {
-            service.addScript( facesContext, getReactomeForm( baseUrl, StringUtils.join( selected, seperator ) ) );
+            service.addScript( facesContext, getReactomeForm( baseUrl,
+                                                              StringUtils.join( selected, separator ),
+                                                              forwardPage ) );
         } else {
             service.addScript( facesContext, "alert('Selection is empty');" );
         }
     }
 
-    private String getReactomeForm( String baseUrl, String selectedIds ) {
+    private String getReactomeForm( String baseUrl, String selectedIds, String forwardPage ) {
 
-        StringBuilder sb = new StringBuilder();
-        sb.append( "document.forms['intactForm'].method='post';\n" );
-        sb.append( "document.forms['intactForm'].action='" ).append( baseUrl ).append( "';\n" );
-        sb.append( "document.forms['intactForm'].enctype='multipart/form-data';\n" );
-        sb.append( "document.forms['intactForm'].name='skypainter';\n" );
-        sb.append( "document.forms['intactForm'].QUERY.value='" ).append( selectedIds ).append( "';" );
-        sb.append( "document.forms['intactForm'].DB.value='gk_current';\n" );
-        sb.append( "document.forms['intactForm'].target='_blank';" );
-        sb.append( "document.forms['intactForm'].SUBMIT.value='1';\n" );
-        sb.append( "document.forms['intactForm'].submit();\n" );
-        sb.append( "var url = 'http://'+document.location.hostname+':'+document.location.port+'" ).append( intactViewConfiguration.getAppRoot() ).append( "/view/pages/list/protein_list.xhtml';" );
+        final HttpServletRequest request = ( HttpServletRequest ) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        final String contextPath = request.getContextPath();
+        System.out.println( "contextPath = " + contextPath );
+
+        StringBuilder sb = new StringBuilder( 1024 );
+        sb.append( "document.forms[0].method='post';\n" );
+        sb.append( "document.forms[0].action='" ).append( baseUrl ).append( "';\n" );
+        sb.append( "document.forms[0].enctype='multipart/form-data';\n" );
+        sb.append( "document.forms[0].name='skypainter';\n" );
+        sb.append( "document.forms[0].QUERY.value='" ).append( selectedIds ).append( "';" );
+        sb.append( "document.forms[0].DB.value='gk_current';\n" );
+        sb.append( "document.forms[0].target='_blank';" );
+        sb.append( "document.forms[0].SUBMIT.value='1';\n" );
+        sb.append( "document.forms[0].submit();\n" );
+        sb.append( "var url = 'http://'+document.location.hostname+':'+document.location.port+'" )
+                .append( intactViewConfiguration.getAppRoot() )
+                .append( forwardPage ).append("';" );
         sb.append( "window.location.href=url;" );
 
         if ( log.isDebugEnabled() ) {
@@ -147,5 +153,4 @@ public class ExternalDbLinker {
         }
         return uniprotIds;
     }
-
 }

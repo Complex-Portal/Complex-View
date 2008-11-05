@@ -65,7 +65,7 @@ public class BrowseController extends JpaBaseController {
     private String interproIdentifierList;
     private String chromosomalLocationIdentifierList;
     private String mRNAExpressionIdentifierList;
-    private String reactomeIdentifierList;
+    private String[] reactomeIdentifierList;
 
    
     public BrowseController() {
@@ -86,7 +86,7 @@ public class BrowseController extends JpaBaseController {
             this.interproIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.INTERPRO_SEPERATOR );
             this.chromosomalLocationIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.CHROMOSOME_SEPERATOR );
             this.mRNAExpressionIdentifierList = appendIdentifiers( dbLinker.getUniqueGeneNames( interactions ), dbLinker.EXPRESSION_SEPERATOR );
-            this.reactomeIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.REACTOME_SEPERATOR );
+            this.reactomeIdentifierList =  dbLinker.getUniqueUniprotIds( interactions ).toArray( new String[]{} );
         }
 
         if ( log.isTraceEnabled() ) {
@@ -98,9 +98,9 @@ public class BrowseController extends JpaBaseController {
     }
 
 
-    private String appendIdentifiers( Set<String> uniqueIdentifiers, String seperator ) {
-        if ( uniqueIdentifiers != null && seperator != null ) {
-            return StringUtils.join( uniqueIdentifiers, seperator );
+    private String appendIdentifiers( Set<String> uniqueIdentifiers, String separator ) {
+        if ( uniqueIdentifiers != null && separator != null ) {
+            return StringUtils.join( uniqueIdentifiers, separator );
         }
 
         return "";
@@ -130,11 +130,18 @@ public class BrowseController extends JpaBaseController {
         this.mRNAExpressionIdentifierList = mRNAExpressionIdentifierList;
     }
 
-    public String getReactomeIdentifierList() {
+    public String[] getReactomeIdentifierList() {
         return reactomeIdentifierList;
     }
 
-    public void setReactomeIdentifierList( String reactomeIdentifierList ) {
+    public void setReactomeIdentifierList( String[] reactomeIdentifierList ) {
         this.reactomeIdentifierList = reactomeIdentifierList;
     }
+
+    public void goReactome( ActionEvent evt ) {
+        String[] selected = reactomeIdentifierList;
+        //the carriage return has to be escaped as it is used in the JavaScript
+        dbLinker.reactomeLinker( dbLinker.REACTOMEURL, "\\r", selected, "/view/pages/browse/browse.xhtml" );
+
+    }    
 }

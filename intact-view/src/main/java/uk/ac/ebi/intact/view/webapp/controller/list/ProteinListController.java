@@ -34,6 +34,7 @@ import java.util.Set;
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
+ * @since 0.9
  */
 @Controller
 @Scope( "conversation.access" )
@@ -52,14 +53,12 @@ public class ProteinListController extends BaseController {
         return uniprotIds.toArray( new String[uniprotIds.size()] );
     }
 
-
     private String[] getSelectedGeneNames() {
 
         final List<IntactBinaryInteraction> interactions = getSelected( SearchController.PROTEINS_TABLE_ID );
         Set<String> geneNames = dbLinker.getUniqueGeneNames( interactions );
         return geneNames.toArray( new String[geneNames.size()] );
     }
-
 
     public void goDomains( ActionEvent evt ) {
         String[] selectedUniprotIds = getSelectedUniprotIds();
@@ -76,12 +75,10 @@ public class ProteinListController extends BaseController {
         dbLinker.goExternalLink( dbLinker.CHROMOSOMEURL, dbLinker.CHROMOSOME_SEPERATOR, selectedUniprotIds );
     }
 
-
     public void goReactome( ActionEvent evt ) {
         String[] selected = getSelectedUniprotIds();
         //the carriage return has to be escaped as it is used in the JavaScript
-        dbLinker.reactomeLinker( dbLinker.REACTOMEURL, "\\r", selected );
-
+        dbLinker.reactomeLinker( dbLinker.REACTOMEURL, "\\r", selected, "/view/pages/list/protein_list.xhtml" );
     }
 
     public void rerender(ActionEvent evt) {
