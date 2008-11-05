@@ -175,7 +175,11 @@ public class DasProxyServlet extends HttpServlet {
 
             urlConnection.connect();
 
-            resp.setContentType("text/xml");
+            if ("pdb".equals(method)) {
+                resp.setContentType("text/plain");
+            } else {
+               resp.setContentType("text/xml");
+            }
 
             // check the das status code
             String codeValue = urlConnection.getHeaderField("X-Das-Status");
@@ -186,9 +190,9 @@ public class DasProxyServlet extends HttpServlet {
             }
 
             inputStreamToReturn = urlConnection.getInputStream();
+
             cacheWriter = new CacheWriter(cachedFile);
         }
-
 
         // return the response if the code is 200, otherwise return an exception snippet
         if (dasCode == 200) {
@@ -294,7 +298,8 @@ public class DasProxyServlet extends HttpServlet {
         }
 
         public File getFile() {
-            return new File(cacheDir, method + "/" + query);
+            String queryPart = (query != null)? "/"+query : "";
+            return new File(cacheDir, method + queryPart);
         }
     }
 
@@ -341,7 +346,8 @@ public class DasProxyServlet extends HttpServlet {
         }
 
         private boolean canFileBeCached(CacheFile cacheFile) {
-            return ("ontology".equals(cacheFile.getMethod()));
+            return ("ontology".equals(cacheFile.getMethod()) ||
+                    "stylesheet".equals(cacheFile.getMethod()));
         }
     }
 }
