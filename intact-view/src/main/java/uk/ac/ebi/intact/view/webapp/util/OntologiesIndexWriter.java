@@ -15,23 +15,25 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.document.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.document.FieldSelector;
+import org.apache.lucene.document.MapFieldSelector;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.store.Directory;
+import psidev.psi.mi.tab.model.builder.CrossReferenceFieldBuilder;
+import psidev.psi.mi.tab.model.builder.FieldBuilder;
+import psidev.psi.mi.tab.model.builder.ParseUtils;
 
 import java.io.IOException;
 import java.util.*;
-
-import uk.ac.ebi.intact.model.CvObject;
-import psidev.psi.mi.tab.model.builder.*;
 
 /**
  * TODO comment that class header
@@ -55,7 +57,7 @@ private static final Log log = LogFactory.getLog( OntologiesIndexWriter.class );
         final IndexWriter termIndexWriter = new IndexWriter(newDirectory, new StandardAnalyzer(), true);
 
         // create a field selector just to get the fields we need
-        FieldSelector fieldSelector = new MapFieldSelector(new String[] {"detmethod", "type", "properties"});
+        FieldSelector fieldSelector = new MapFieldSelector(new String[] {"detmethod", "type", "propertiesA", "propertiesB"});
 
         OntologyTermBuilder termBuilder = new OntologyTermBuilder();
 
@@ -123,20 +125,31 @@ private static final Log log = LogFactory.getLog( OntologiesIndexWriter.class );
 
             final String detMethodFieldName = "detmethod";
             final String interactionTypeFieldName = "type";
-            final String propertiesFieldName = "properties";
+            final String propertiesAFieldName = "propertiesA";
+            final String propertiesBFieldName = "propertiesB";
 
             // this field contains the parents too
             Field detMethodField = luceneDocument.getField(detMethodFieldName);
             // this field contains the parents too
             Field interactionTypeField = luceneDocument.getField(interactionTypeFieldName);
             // we will just use GO terms from the properties
-            Field propertiesField = luceneDocument.getField(propertiesFieldName);
+            Field propertiesAField = luceneDocument.getField(propertiesAFieldName);
+            Field propertiesBField = luceneDocument.getField(propertiesBFieldName);
 
             Collection<OntologyTerm> detMethodTerms = createOntologyTerms(detMethodField, null);
             Collection<OntologyTerm> intTypeTerms = createOntologyTerms(interactionTypeField, null);
-            Collection<OntologyTerm> goTerms = createOntologyTerms(propertiesField, GO_DATABASE_TYPE);
-            Collection<OntologyTerm> chebiTerms = createOntologyTerms(propertiesField, CHEBI_DATABASE_TYPE);
-            Collection<OntologyTerm> interproTerms = createOntologyTerms(propertiesField, INTERPRO_DATABASE_TYPE);
+
+            Collection<OntologyTerm> goTerms = new HashSet<OntologyTerm>();
+            goTerms.addAll(createOntologyTerms(propertiesAField, GO_DATABASE_TYPE));
+            goTerms.addAll(createOntologyTerms(propertiesBField, GO_DATABASE_TYPE));
+
+            Collection<OntologyTerm> chebiTerms = new HashSet<OntologyTerm>();
+            chebiTerms.addAll(createOntologyTerms(propertiesAField, CHEBI_DATABASE_TYPE));
+            chebiTerms.addAll(createOntologyTerms(propertiesBField, CHEBI_DATABASE_TYPE));
+
+            Collection<OntologyTerm> interproTerms = new HashSet<OntologyTerm>();
+            interproTerms.addAll(createOntologyTerms(propertiesAField, INTERPRO_DATABASE_TYPE));
+            interproTerms.addAll(createOntologyTerms(propertiesBField, INTERPRO_DATABASE_TYPE));
 
             terms.addAll(detMethodTerms);
             terms.addAll(intTypeTerms);
