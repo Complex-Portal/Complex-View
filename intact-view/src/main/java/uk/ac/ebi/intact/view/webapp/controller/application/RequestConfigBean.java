@@ -62,7 +62,7 @@ public class RequestConfigBean implements Serializable {
     }
 
     public String getEncodedCallBackUrl(){
-        String callback = getAbsoluteContextPath() + "/main.xhtml?query=id:*";
+        String callback = getAbsoluteContextPath() + "/pages/interactions/interactions.xhtml?query=id:*";
         try {
             return URLEncoder.encode( callback, "UTF-8" );
         } catch ( UnsupportedEncodingException e ) {
