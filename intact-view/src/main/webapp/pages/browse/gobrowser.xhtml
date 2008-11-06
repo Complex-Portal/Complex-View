@@ -62,34 +62,36 @@
                         </f:facet>
                         <tr:outputText value="#{otw.term.id}"/>
                     </tr:column>
-                    <tr:column>
+                    <tr:column inlineStyle="text-align:center;">
                         <f:facet name="header">
                             <tr:outputText value="# Proteins"/>
                         </f:facet>
+
                         <tr:group>
-                           <tr:outputText value="#{countedOtw.interactorCount}"/>
-                            &#160;
-                            <tr:commandLink text="View" rendered="#{countedOtw.interactorCount > 0}"
+                            <tr:commandLink text="#{countedOtw.interactorCount}" rendered="#{countedOtw.interactorCount > 0}"
                                             actionListener="#{searchBean.doFilteredBinarySearch}"
                                             action="list.proteins">
                                 <f:param name="query" value="#{searchBean.userQuery.searchQuery}" />
                                 <f:param name="termId" value="#{otw.term.id}" />
                             </tr:commandLink>
+
+                            <tr:outputText value="0" rendered="#{countedOtw.interactorCount == 0}" />
                         </tr:group>
+
                     </tr:column>
-                    <tr:column>
+                    <tr:column inlineStyle="text-align:center;">
                         <f:facet name="header">
                             <tr:outputText value="# Interactions"/>
                         </f:facet>
                         <tr:group>
-                           <tr:outputText value="#{otw.interactionCount}"/>
-                            &#160;
-                             <tr:commandLink text="View" rendered="#{countedOtw.interactorCount > 0}"
+                             <tr:commandLink text="#{countedOtw.interactionCount}" rendered="#{countedOtw.interactionCount > 0}"
                                              actionListener="#{searchBean.doFilteredBinarySearch}"
                                              action="interactions">
                                  <f:param name="query" value="#{searchBean.userQuery.searchQuery}" />
                                  <f:param name="termId" value="#{otw.term.id}" />
                             </tr:commandLink>
+
+                            <tr:outputText value="0" rendered="#{countedOtw.interactionCount == 0}"/>
                         </tr:group>
                     </tr:column>
       
