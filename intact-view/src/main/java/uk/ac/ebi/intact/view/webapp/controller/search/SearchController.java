@@ -81,9 +81,6 @@ public class SearchController extends JpaBaseController {
     private int proteinTotalResults;
     private int smallMoleculeTotalResults;
 
-    //for clear
-    private boolean fromClearBtn;
-
     private boolean showProperties;
     private boolean showAlternativeIds;
 
