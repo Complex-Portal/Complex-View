@@ -15,25 +15,23 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
-import org.apache.myfaces.trinidad.render.ExtendedRenderKitService;
-import org.apache.myfaces.trinidad.util.Service;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.trinidad.render.ExtendedRenderKitService;
+import org.apache.myfaces.trinidad.util.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.context.annotation.Scope;
-
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Collection;
-
+import org.springframework.stereotype.Controller;
+import psidev.psi.mi.tab.model.Alias;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
-import psidev.psi.mi.tab.model.Alias;
+
+import javax.faces.context.FacesContext;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Utility class for linking to external database resources
@@ -101,31 +99,36 @@ public class ExternalDbLinker {
 
     private String getReactomeForm( String baseUrl, String selectedIds, String forwardPage ) {
 
-        final HttpServletRequest request = ( HttpServletRequest ) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        final String contextPath = request.getContextPath();
-        System.out.println( "contextPath = " + contextPath );
-
         StringBuilder sb = new StringBuilder( 1024 );
-        sb.append( "document.forms[0].method='post';\n" );
-        sb.append( "document.forms[0].action='" ).append( baseUrl ).append( "';\n" );
-        sb.append( "document.forms[0].enctype='multipart/form-data';\n" );
-        sb.append( "document.forms[0].name='skypainter';\n" );
-        sb.append( "document.forms[0].QUERY.value='" ).append( selectedIds ).append( "';" );
-        sb.append( "document.forms[0].DB.value='gk_current';\n" );
-        sb.append( "document.forms[0].target='_blank';" );
-        sb.append( "document.forms[0].SUBMIT.value='1';\n" );
-        sb.append( "document.forms[0].submit();\n" );
-        sb.append( "var url = 'http://'+document.location.hostname+':'+document.location.port+'" )
-                .append( intactViewConfiguration.getAppRoot() )
-                .append( forwardPage ).append("';" );
-        sb.append( "window.location.href=url;" );
+        sb.append( "reactomeform = document.createElement('form');" );
+        sb.append( "reactomeform.method='post';\n" );
+        sb.append( "reactomeform.action='" ).append( baseUrl ).append( "';\n" );
+        sb.append( "reactomeform.enctype='multipart/form-data';\n" );
+        sb.append( "reactomeform.name='skypainter';\n" );
+        sb.append( "reactomeform.target='_blank';" );
+
+        createInputHidden(sb, "reactomeform", "QUERY", selectedIds);
+        createInputHidden(sb, "reactomeform", "DB", "gk_current");
+        createInputHidden(sb, "reactomeform", "SUBMIT", "1");
+
+        sb.append("document.forms[0].parentNode.appendChild(reactomeform);");
+        sb.append( "reactomeform.submit();\n" );
 
         if ( log.isDebugEnabled() ) {
             log.debug("JavaScript to link to  Reactome: \n" +sb.toString() );
         }
 
-
         return sb.toString();
+    }
+
+    private void createInputHidden( StringBuilder sb, String formName, String name, String value ) {
+        sb.append(name).append("Input = document.createElement('input');");
+        sb.append(name).append("Input.type = 'hidden';");
+        sb.append(name).append("Input.name = '").append(name).append("';");
+        sb.append(name).append("Input.value = '").append(value).append("';");
+        sb.append(formName).append(".appendChild(");
+        sb.append(name).append("Input");
+        sb.append(");\n");
     }
 
     public static Set<String> getUniqueGeneNames( List<IntactBinaryInteraction> interactions ) {

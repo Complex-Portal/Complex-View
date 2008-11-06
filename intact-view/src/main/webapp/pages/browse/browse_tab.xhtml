@@ -61,13 +61,6 @@
                     </trh:cellFormat>
                     <trh:cellFormat>
 
-                        <!-- This is necessary for the sky painter link to work -->
-                        <!-- TODO generate these fields in ExternalDbLinker.getReactomeForm -->
-                        <!--      example: http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=20&t=003927 -->
-                        <input type="hidden" name="QUERY" value=""/>
-                        <input type="hidden" name="DB" value="gk_current"/>
-                        <input type="hidden" name="SUBMIT" value="0"/>
-
                         <tr:commandLink actionListener="#{browseBean.goReactome}" partialSubmit="true">
                             <tr:outputText value="By Reactome Pathway"/>
                         </tr:commandLink>

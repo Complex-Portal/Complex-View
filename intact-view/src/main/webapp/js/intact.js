@@ -13,4 +13,5 @@ function submitEnter(commandId, e)
         return false;
     } else
         return true;
+
 }

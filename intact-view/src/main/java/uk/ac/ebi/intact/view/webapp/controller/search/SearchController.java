@@ -26,7 +26,6 @@ import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.component.UIComponent;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -140,8 +139,10 @@ public class SearchController extends JpaBaseController {
 
         if ( query == null) {
             addErrorMessage("The ontology query box was empty", "No search was submitted");
-            return "interactions";
+            return "search";
         }
+
+        doOntologySearch(query);
 
         return "interactions";
     }
@@ -331,6 +332,7 @@ public class SearchController extends JpaBaseController {
         userQuery.setSearchQuery( query );
         userQuery.setDisplayQuery( query );
         userQuery.setCurrentOntologyQuery( false );
+        userQuery.setOntologySearchQuery(null);
         doBinarySearch( userQuery );
     }
 

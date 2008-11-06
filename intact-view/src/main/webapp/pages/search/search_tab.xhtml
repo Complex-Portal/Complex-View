@@ -51,14 +51,12 @@
             </f:facet>
         </tr:panelLabelAndMessage>
 
-    <tr:panelHeader text="Ontology Search"/>
-
     <tr:outputText value="Start typing an ontology term, possible completions of the term will be shown:"/>
     <br/><br/>
 
 
           <tr:panelLabelAndMessage label="Ontology query:">
-               <iam:inputAutocomplete id="ontologySearchQuery" 
+               <iam:inputAutocomplete id="ontologySearchQuery"
                                    value="#{searchBean.userQuery.ontologySearchQuery}"
                                    columns="30"
                                    readOnly="false"
