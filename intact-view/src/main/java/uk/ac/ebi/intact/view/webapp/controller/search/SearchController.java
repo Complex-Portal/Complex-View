@@ -152,8 +152,9 @@ public class SearchController extends JpaBaseController {
         userQuery.setDisplayQuery( ontologySearch );
 
         final String formattedQuery = prepareOntologyQuery(ontologySearch);
-        userQuery.setSearchQuery( formattedQuery );
+        userQuery.setOntologySearchQuery( formattedQuery );
         doBinarySearch( userQuery );
+        userQuery.setOntologySearchQuery( ontologySearch );
     }
 
     private String prepareOntologyQuery(String ontologySearchQuery) {
@@ -333,6 +334,7 @@ public class SearchController extends JpaBaseController {
         userQuery.setDisplayQuery( query );
         userQuery.setCurrentOntologyQuery( false );
         userQuery.setOntologySearchQuery(null);
+        userQuery.getFilters().clear();
         doBinarySearch( userQuery );
     }
 

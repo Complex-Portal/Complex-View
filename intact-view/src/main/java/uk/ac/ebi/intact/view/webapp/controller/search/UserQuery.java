@@ -71,12 +71,20 @@ public class UserQuery {
         }
     }
 
+    private String getCurrentQuery() {
+        if( currentOntologyQuery ) {
+            return ontologySearchQuery;
+        } else {
+            return searchQuery;
+        }
+    }
+
     public String getInteractionSearchQuery() {
         final String query;
         if ( filters.isEmpty() ) {
-            query = searchQuery;
+            query = getCurrentQuery();
         } else {
-            query = "+(" + searchQuery + ") " + formatFilter( "properties" );
+            query = "+(" + getCurrentQuery() + ") " + formatFilter( "properties" );
         }
         log.debug( "getInteractorSearchQuery(): " + query );
         return query;
@@ -85,9 +93,9 @@ public class UserQuery {
     public String getInteractorSearchQuery() {
         final String query;
         if ( filters.isEmpty() ) {
-            query = searchQuery;
+            query = getCurrentQuery();
         } else {
-            query = "+(" + searchQuery + ") " + formatFilter( "propertiesA" );
+            query = "+(" + getCurrentQuery() + ") " + formatFilter( "propertiesA" );
         }
         log.debug( "getInteractorSearchQuery(): " + query );
         return query;
