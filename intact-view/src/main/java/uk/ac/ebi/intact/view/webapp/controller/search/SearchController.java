@@ -52,7 +52,6 @@ public class SearchController extends JpaBaseController {
     private static final Log log = LogFactory.getLog(SearchController.class);
 
     private static final String QUERY_PARAM = "query";
-    private static final String TAB_PARAM = "tab";
     private static final String ONTOLOGY_QUERY_PARAM = "ontologyQuery";
 
     // table IDs
