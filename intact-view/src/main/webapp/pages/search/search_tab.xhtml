@@ -15,10 +15,10 @@
 
     <tr:panelHeader text="Quick Search" styleClass="level-one"/>
 
-    <!--<tr:subform id="mainSearchSubform">-->
+    <tr:subform id="mainSearchSubform">
 
         <tr:panelLabelAndMessage label="Search query:">
-            <tr:inputText id="searchField" columns="30" value="#{searchBean.searchQuery}" autoComplete="false"
+            <tr:inputText columns="30" value="#{searchBean.userQuery.searchQuery}"
                           onfocus="this.select()"
                           onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
             <f:facet name="help">
@@ -27,19 +27,19 @@
                         <tr:group>
                             Protein accession number: e.g.&#160;
                             <tr:commandLink text="Q08345" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="Q08345" target="#{searchBean.searchQuery}"/>
+                                <f:setPropertyActionListener value="Q08345" target="#{searchBean.userQuery.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
                         <tr:group>
                             Drug name: e.g.&#160;
                             <tr:commandLink text="imatinib" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="imatinib" target="#{searchBean.searchQuery}"/>
+                                <f:setPropertyActionListener value="imatinib" target="#{searchBean.userQuery.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
                         <tr:group>
                             Gene name: e.g.&#160;
                             <tr:commandLink text="DDR1" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="DDR1" target="#{searchBean.searchQuery}"/>
+                                <f:setPropertyActionListener value="DDR1" target="#{searchBean.userQuery.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
                     </tr:panelList>
@@ -53,17 +53,19 @@
             </f:facet>
         </tr:panelLabelAndMessage>
 
-    <!--</tr:subform>-->
+    </tr:subform>
 
     <tr:panelHeader text="Ontology Search"/>
+
+    <tr:subform id="ontologySubForm">
 
     <tr:outputText value="Start typing an ontology term, possible completions of the term will be shown:"/>
     <br/><br/>
 
 
           <tr:panelLabelAndMessage label="Ontology query:">
-               <iam:inputAutocomplete id="ontologySearchQuery"
-                                   value="#{searchBean.ontologySearchQuery}"
+               <iam:inputAutocomplete id="ontologySearchQuery" parentId="ontologySubForm"
+                                   value="#{searchBean.userQuery.ontologySearchQuery}"
                                    columns="30"
                                    readOnly="false"
                                    locateBackingBean="#{ontologyBean}"
@@ -86,7 +88,7 @@
                               <tr:spacer width="5"/>
                               <tr:commandLink text="association" action="#{searchBean.doOntologySearchAction}">
                                   <f:setPropertyActionListener value="association"
-                                                               target="#{searchBean.ontologySearchQuery}"/>
+                                                               target="#{searchBean.userQuery.ontologySearchQuery}"/>
                               </tr:commandLink>
                           </tr:group>
 
@@ -95,7 +97,7 @@
                               <tr:spacer width="5"/>
                               <tr:commandLink text="MI:0914" action="#{searchBean.doOntologySearchAction}">
                                   <f:setPropertyActionListener value="MI:0914"
-                                                               target="#{searchBean.ontologySearchQuery}"/>
+                                                               target="#{searchBean.userQuery.ontologySearchQuery}"/>
                               </tr:commandLink>
                           </tr:group>
                       </tr:panelList>
@@ -120,6 +122,8 @@
             <tr:goLink text="InterPro" destination="http://www.ebi.ac.uk/interpro/" targetFrame="_blank"/>
 
         </tr:panelLabelAndMessage>
+
+    </tr:subform>
 
     <tr:panelHeader text="Other Searches">
 

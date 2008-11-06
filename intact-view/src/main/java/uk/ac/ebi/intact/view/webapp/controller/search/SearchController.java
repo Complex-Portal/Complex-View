@@ -26,8 +26,10 @@ import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.component.UIComponent;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Search controller.
@@ -59,7 +61,6 @@ public class SearchController extends JpaBaseController {
     public static final String PROTEINS_TABLE_ID = "proteinListResults";
     public static final String COMPOUNDS_TABLE_ID = "compoundListResults";
 
-
     // injected
     @Autowired
     private AppConfigBean appConfigBean;
@@ -67,10 +68,8 @@ public class SearchController extends JpaBaseController {
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
-    private String searchQuery;
-    private String ontologySearchQuery;
-    private String displayQuery;
-    private boolean currentOntologyQuery;
+
+    private UserQuery userQuery;
 
      // vars
     private int pageSize = 30;
@@ -95,6 +94,7 @@ public class SearchController extends JpaBaseController {
 
 
     public SearchController() {
+        userQuery = new UserQuery();
     }
 
     @PostConstruct
@@ -110,46 +110,49 @@ public class SearchController extends JpaBaseController {
         String ontologyQueryParam = context.getExternalContext().getRequestParameterMap().get(ONTOLOGY_QUERY_PARAM);
 
         if (queryParam != null) {
-            displayQuery = queryParam;
-            searchQuery = queryParam;
-            doBinarySearch(searchQuery);
+            userQuery.setDisplayQuery( queryParam );
+            userQuery.setSearchQuery( queryParam );
+            doBinarySearch( userQuery );
         }
 
         if ( ontologyQueryParam != null ) {
             doOntologySearch( ontologyQueryParam );
         }
 
-        if (searchQuery == null) {
-            searchQuery = "*";
-            doBinarySearch(searchQuery);
+        if (userQuery.getSearchQuery() == null) {
+            userQuery.setSearchQuery( "*" );
+            userQuery.setDisplayQuery( "*" );
+            doBinarySearch(userQuery);
         }
-
     }
 
     public String doBinarySearchAction() {
-        displayQuery = searchQuery;
-        setCurrentOntologyQuery( false );
-        doBinarySearch(searchQuery);
+        userQuery.getFilters().clear();
+        userQuery.setDisplayQuery( userQuery.getSearchQuery() );
+        userQuery.setCurrentOntologyQuery( false );
+        doBinarySearch( userQuery );
 
         return "interactions";
     }
 
     public String doOntologySearchAction() {
-        if (ontologySearchQuery == null) {
+        final String query = userQuery.getOntologySearchQuery();
+
+        if ( query == null) {
             addErrorMessage("The ontology query box was empty", "No search was submitted");
             return "interactions";
         }
-        setCurrentOntologyQuery( true );
-        doOntologySearch( ontologySearchQuery );
 
         return "interactions";
     }
 
     public void doOntologySearch(String ontologySearch) {
-        displayQuery = ontologySearch;
+        userQuery.setCurrentOntologyQuery( true );
+        userQuery.setDisplayQuery( ontologySearch );
 
-        String formattedQuery = prepareOntologyQuery(ontologySearch);
-        doBinarySearch( formattedQuery );
+        final String formattedQuery = prepareOntologyQuery(ontologySearch);
+        userQuery.setSearchQuery( formattedQuery );
+        doBinarySearch( userQuery );
     }
 
     private String prepareOntologyQuery(String ontologySearchQuery) {
@@ -158,10 +161,26 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doBinarySearch(ActionEvent evt) {
-        doBinarySearch(searchQuery);
+        userQuery.getFilters().clear();
+        doBinarySearch( userQuery );
     }
 
-    private void doBinarySearch(String query) {
+    public void doFilteredBinarySearch(ActionEvent evt) {
+        final Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String query = params.get("query");
+        String termId = params.get("termId");
+        if( query == null || termId == null ) {
+            throw new IllegalStateException( "Query or TermId was null. termId:"+termId+" query:"+query );
+        }
+        userQuery.setSearchQuery( query );
+        userQuery.processIncomingFilter( termId );
+
+        doBinarySearch( userQuery );
+    }
+
+    private void doBinarySearch(UserQuery userQuery) {
+
+        String query = userQuery.getInteractionSearchQuery();
 
         if (log.isDebugEnabled()) log.debug("Searching interactions (raw): " + query);
 
@@ -194,7 +213,7 @@ public class SearchController extends JpaBaseController {
             e.printStackTrace();
         }
 
-        doInteractorSearch(query);
+        doInteractorSearch(userQuery.getInteractorSearchQuery());
     }
 
     public void doInteractorSearch(String query) {
@@ -271,7 +290,7 @@ public class SearchController extends JpaBaseController {
             return;
         }
 
-        StringBuilder sb = new StringBuilder(selected.size()*10);
+        StringBuilder sb = new StringBuilder( selected.size() * 10 );
         sb.append("id:(");
 
         for (Iterator<IntactBinaryInteraction> iterator = selected.iterator(); iterator.hasNext();) {
@@ -294,10 +313,11 @@ public class SearchController extends JpaBaseController {
 
         sb.append(")");
 
-        searchQuery = sb.toString();
-        displayQuery = searchQuery;
+        final String query = sb.toString();
+        userQuery.setSearchQuery( query );
+        userQuery.setDisplayQuery( query );
 
-        doBinarySearch(searchQuery);
+        doBinarySearch(userQuery);
 
         resetSelection(tableName);
     }
@@ -306,37 +326,30 @@ public class SearchController extends JpaBaseController {
         return WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig());
     }
 
-    public void resetSearch(ActionEvent evt) {
-            searchQuery = "*";
-            ontologySearchQuery=null;
-            displayQuery = searchQuery;
-
-            setCurrentOntologyQuery( false );
-
-            doBinarySearch( searchQuery );
+    public void resetSearch(ActionEvent event) {
+        final String query = "*";
+        userQuery.setSearchQuery( query );
+        userQuery.setDisplayQuery( query );
+        userQuery.setCurrentOntologyQuery( false );
+        doBinarySearch( userQuery );
     }
-
 
     // Getters & Setters
     /////////////////////
 
-    public SearchResultDataModel getResults()
-    {
+    public SearchResultDataModel getResults() {
         return results;
     }
 
-    public void setResults(SearchResultDataModel results)
-    {
+    public void setResults( SearchResultDataModel results ) {
         this.results = results;
     }
 
-    public int getPageSize()
-    {
+    public int getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize)
-    {
+    public void setPageSize( int pageSize ) {
         this.pageSize = pageSize;
     }
 
@@ -344,7 +357,7 @@ public class SearchController extends JpaBaseController {
         return showProperties;
     }
 
-    public void setShowProperties(boolean showProperties) {
+    public void setShowProperties( boolean showProperties ) {
         this.showProperties = showProperties;
     }
 
@@ -352,7 +365,7 @@ public class SearchController extends JpaBaseController {
         return showAlternativeIds;
     }
 
-    public void setShowAlternativeIds(boolean showAlternativeIds) {
+    public void setShowAlternativeIds( boolean showAlternativeIds ) {
         this.showAlternativeIds = showAlternativeIds;
     }
 
@@ -360,7 +373,7 @@ public class SearchController extends JpaBaseController {
         return expandedView;
     }
 
-    public void setExpandedView(boolean expandedView) {
+    public void setExpandedView( boolean expandedView ) {
         this.expandedView = expandedView;
     }
 
@@ -368,23 +381,19 @@ public class SearchController extends JpaBaseController {
         return exportFormat;
     }
 
-    public void setExportFormat(String exportFormat) {
+    public void setExportFormat( String exportFormat ) {
         this.exportFormat = exportFormat;
     }
 
-    public String getSearchQuery() {
-        return searchQuery;
-    }
-
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
+    public UserQuery getUserQuery() {
+        return userQuery;
     }
 
     public int getTotalResults() {
         return totalResults;
     }
 
-    public void setTotalResults(int totalResults) {
+    public void setTotalResults( int totalResults ) {
         this.totalResults = totalResults;
     }
 
@@ -392,7 +401,7 @@ public class SearchController extends JpaBaseController {
         return interactorTotalResults;
     }
 
-    public void setInteractorTotalResults(int interactorTotalResults) {
+    public void setInteractorTotalResults( int interactorTotalResults ) {
         this.interactorTotalResults = interactorTotalResults;
     }
 
@@ -400,7 +409,7 @@ public class SearchController extends JpaBaseController {
         return interactorResults;
     }
 
-    public void setInteractorResults(SearchResultDataModel interactorResults) {
+    public void setInteractorResults( SearchResultDataModel interactorResults ) {
         this.interactorResults = interactorResults;
     }
 
@@ -414,29 +423,5 @@ public class SearchController extends JpaBaseController {
 
     public SearchResultDataModel getSmallMoleculeResults() {
         return smallMoleculeResults;
-    }
-
-    public String getOntologySearchQuery() {
-        return ontologySearchQuery;
-    }
-
-    public void setOntologySearchQuery( String ontologySearchQuery ) {
-        this.ontologySearchQuery = ontologySearchQuery;
-    }
-
-    public String getDisplayQuery() {
-        return displayQuery;
-    }
-
-    public void setDisplayQuery( String displayQuery ) {
-        this.displayQuery = displayQuery;
-    }
-
-    public boolean isCurrentOntologyQuery() {
-        return currentOntologyQuery;
-    }
-
-    public void setCurrentOntologyQuery( boolean currentOntologyQuery ) {
-        this.currentOntologyQuery = currentOntologyQuery;
     }
 }

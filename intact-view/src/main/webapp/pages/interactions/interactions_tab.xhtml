@@ -17,36 +17,15 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://intact.ebi.ac.uk/miscel /WEB-INF/intact-miscel.tld">
 
-<!--<tr:panelHeader text="Interaction results">-->
-
 <!-- RESULT SUMMARY -->
 
 <tr:panelGroupLayout layout="vertical" id="searchSummary">
 
     <tr:group>
         Displaying results for query:
-        <strong><ebi:outputText id="queryText" value="#{searchBean.displayQuery}" maxLength="50"
+        <strong><ebi:outputText id="queryText" value="#{searchBean.userQuery.displayQuery}" maxLength="50"
                         expandMessage="(see entire query)" collapseMessage="(collapse)"/></strong>
     </tr:group>
-
-    <!--<tr:group>
-        <strong>Lucene Query: </strong>
-        <ebi:outputText id="luceneQueryText" value="#{searchBean.results.result.luceneQuery}" maxLength="50"
-                        expandMessage="(see entire query)" collapseMessage="(collapse)"/>
-    </tr:group>
-
-    <tr:group>
-        <strong>Search time: </strong>
-        <h:outputText value="#{searchBean.results.elapsedTimeSecs}">
-            <f:convertNumber maxFractionDigits="2" minFractionDigits="2"/>
-        </h:outputText>
-        <h:outputText value=" seconds"/>
-    </tr:group>-->
-
-    <!--<tr:group>-->
-    <!--<strong>Direct hyperlink: </strong>-->
-    <!--<tr:outputText value="#{requestConfigBean.absoluteContextPath}/main.xhtml?query=#{searchBean.searchQuery}"/>-->
-    <!--</tr:group>-->
 
 </tr:panelGroupLayout>
 
@@ -284,22 +263,6 @@
         <tr:outputText value="#{item.identifier}"/>
     </iam:collapsibleIterator>
 </tr:column>
-<!--<tr:column headerText="Names molecule A" sortable="true" sortProperty="aliasA_s" rendered="#{searchBean.expandedView}">-->
-<!--<tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}"-->
-<!--varStatus="rowStatus" rows="0">-->
-<!--<h:outputText value="#{alias.name}"/>-->
-<!--<tr:outputText value="; "-->
-<!--rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorA.aliases)}"/>-->
-<!--</tr:iterator>-->
-<!--</tr:column>-->
-<!--<tr:column headerText="Names molecule B" sortable="true" sortProperty="aliasB_s" rendered="#{searchBean.expandedView}">-->
-<!--<tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}"-->
-<!--varStatus="rowStatus" rows="0">-->
-<!--<h:outputText value="#{alias.name}"/>-->
-<!--<tr:outputText value="; "-->
-<!--rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorB.aliases)}"/>-->
-<!--</tr:iterator>-->
-<!--</tr:column>-->
 
 <tr:column headerText="Compound species" sortable="true" sortProperty="taxidA_s">
     <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="OtherType">
@@ -451,8 +414,5 @@
 </tr:column>
 
 </tr:table>
-
-
-<!--</tr:panelHeader>-->
 
 </ui:composition>

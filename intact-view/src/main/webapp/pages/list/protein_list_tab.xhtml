@@ -20,7 +20,7 @@
 
     <tr:group>
         Displaying results for query:
-        <strong><ebi:outputText id="queryText" value="#{searchBean.displayQuery}" maxLength="50"
+        <strong><ebi:outputText id="queryText" value="#{searchBean.userQuery.displayQuery}" maxLength="50"
                         expandMessage="(see entire query)" collapseMessage="(collapse)"/></strong>
     </tr:group>
 
@@ -119,12 +119,6 @@
             </f:facet>
         </tr:switcher>
     </tr:iterator>
-
-    <!-- <tr:commandLink text="Molecule view"
-                    rendered="#{binaryInteraction.interactorTypeA[0].identifier == 'MI:0326'}"
-                    action="#{searchBean.doDiscloseMoleculeViewTab}">
-        <f:setPropertyActionListener value="#{iaf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}" target="#{moleculeViewBean.interactorAc}"/>
-    </tr:commandLink>-->
 </tr:column>
 
 <tr:column headerText="Species" sortable="true" sortProperty="taxidA_s">

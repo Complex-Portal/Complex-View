@@ -37,7 +37,8 @@ public class OntologyTermWrapper {
     private IndexSearcher interactionIndexSearcher;
     private IndexSearcher interactorIndexSearcher;
     private String baseQuery;
-    private String searchQuery;
+    private String interactorSearchQuery;
+    private String interactionSearchQuery;
     private String luceneQuery;
 
     private OntologyTermWrapper parent;
@@ -58,7 +59,8 @@ public class OntologyTermWrapper {
         this.baseQuery = baseQuery;
         this.luceneQuery = luceneQuery;
 
-        this.searchQuery = prepareQuery(term.getId(), luceneQuery);
+        this.interactorSearchQuery = prepareProteinQuery(term.getId(), luceneQuery);
+        this.interactionSearchQuery = prepareInteractionQuery(term.getId(), luceneQuery);
 
         if (term == null) throw new NullPointerException("Term is necessary");
 
@@ -99,7 +101,15 @@ public class OntologyTermWrapper {
         return children;
     }
 
-    private String prepareQuery(String id, String baseQuery) {
+    private String prepareInteractionQuery( String id, String luceneQuery ) {
+        return prepareQuery( "properties", id, luceneQuery );
+    }
+
+    private String prepareProteinQuery( String id, String luceneQuery ) {
+        return prepareQuery( "propertiesA", id, luceneQuery );
+    }
+
+    private String prepareQuery(String field, String id, String baseQuery) {
         StringBuilder query = new StringBuilder( (baseQuery == null ? 0 : baseQuery.length()) + 32);
 
         if (baseQuery != null && !baseQuery.isEmpty() &&
@@ -107,7 +117,7 @@ public class OntologyTermWrapper {
             query.append("(").append(baseQuery).append(") AND ");
         }
 
-        query.append("propertiesA:\"").append(id).append("\"");
+        query.append(field + ":\"").append(id).append("\"");
 
         return query.toString();
     }
@@ -164,12 +174,28 @@ public class OntologyTermWrapper {
         this.interactionCount = interactionCount;
     }
 
-    public String getSearchQuery() {
-        return searchQuery;
+    public String getInteractorSearchQuery() {
+        return interactorSearchQuery;
     }
 
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
+    public void setInteractorSearchQuery(String searchQuery) {
+        this.interactorSearchQuery = searchQuery;
+    }
+
+    public String getInteractionSearchQuery() {
+        return interactionSearchQuery;
+    }
+
+    public void setInteractionSearchQuery(String searchQuery) {
+        this.interactionSearchQuery = searchQuery;
+    }
+
+    public String getBaseQuery() {
+        return baseQuery;
+    }
+
+    public void setBaseQuery( String baseQuery ) {
+        this.baseQuery = baseQuery;
     }
 
     public String getLuceneQuery() {

@@ -12,15 +12,23 @@
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
+    <!-- RESULT SUMMARY -->
 
-        <tr:panelHeader text="Network visualisation">
+    <tr:panelGroupLayout layout="vertical" id="searchSummary">
 
-        </tr:panelHeader>
+        <tr:group>
+            Displaying results for query:
+            <strong><ebi:outputText id="queryText" value="#{searchBean.userQuery.displayQuery}" maxLength="50"
+                                    expandMessage="(see entire query)" collapseMessage="(collapse)"/></strong>
+        </tr:group>
 
-        <!--<tr:image source="http://localhost:9095/dgi/hierarch-view-app/GenerateImage?query=#{searchBean.displayQuery}&amp;h=200&amp;w=200"-->
-                  <!--inlineStyle="border-width:0" />-->
+    </tr:panelGroupLayout>
 
-        <tr:image source="#{intactViewConfiguration.hierarchViewUrl}/GenerateImage?query=#{searchBean.displayQuery}&amp;h=700&amp;w=700"
-                  inlineStyle="border-width:0" />
+    <br/>
+
+    <tr:panelHeader text="Network visualisation" />
+
+    <tr:image source="#{intactViewConfiguration.hierarchViewUrl}/GenerateImage?query=#{searchBean.userQuery.displayQuery}&amp;h=700&amp;w=700"
+              inlineStyle="border-width:0" />
 
 </ui:composition>

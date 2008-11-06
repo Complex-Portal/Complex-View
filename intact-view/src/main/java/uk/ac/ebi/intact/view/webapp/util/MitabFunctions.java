@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Functions to be used in the UI to control the display in interactions_tab
+ * Functions to be used in the UI to control the display.
  *
  * @author Prem Anand (prem@ebi.ac.uk)
  * @version $Id$
@@ -53,6 +53,7 @@ public final class MitabFunctions {
     private static final String PROTEIN_MI_REF = "MI:0326";
     private static final String SMALLMOLECULE_MI_REF = "MI:0328";
 
+    // TODO replace this by EHCache
     private static Map interactorCountCache = new LRUMap(2500);
     private static Map interactionCountCache = new LRUMap(2500);
 
@@ -115,9 +116,7 @@ public final class MitabFunctions {
             return otw;
         }
 
-        // (?) do we have a field that contains the expanded version of properties of A, if not, we need an extra column that contains this expansion for the protein query.
-
-        String proteinSearchQuery = otw.getSearchQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
+        final String proteinSearchQuery = otw.getInteractorSearchQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
 
         if ( log.isTraceEnabled() ) {
             log.trace( "ProteinSearchQuery: " +proteinSearchQuery );
@@ -132,16 +131,19 @@ public final class MitabFunctions {
         }
 
         if (interactorCount > 0) {
+
+            final String interactionSearchQuery = otw.getInteractionSearchQuery();
+
             if ( log.isTraceEnabled() ) {
-                log.trace(" InteractionSearchQuery: " + otw.getSearchQuery()  );
+                log.trace(" InteractionSearchQuery: " + interactionSearchQuery  );
             }
 
-            if (interactionCountCache.containsKey(otw.getSearchQuery())) {
-                interactionCount = (Integer) interactionCountCache.get(otw.getSearchQuery());
+            if (interactionCountCache.containsKey(interactionSearchQuery)) {
+                interactionCount = (Integer) interactionCountCache.get(interactionSearchQuery);
             } else {
-                interactionCount = countHits(otw.getSearchQuery(), interactionDirectory);
+                interactionCount = countHits(interactionSearchQuery, interactionDirectory);
 
-                interactionCountCache.put(otw.getSearchQuery(), interactionCount);
+                interactionCountCache.put(interactionSearchQuery, interactionCount);
             }
         }
 

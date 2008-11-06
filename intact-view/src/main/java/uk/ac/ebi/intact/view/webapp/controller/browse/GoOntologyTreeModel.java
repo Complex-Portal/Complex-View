@@ -32,7 +32,7 @@ import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import java.util.*;
 
 /**
- * TODO comment that class header
+ * Data model for the GO browser.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -75,11 +75,11 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
             }
 
             public List<OntologyTerm> getChildren() {
-                List<OntologyTerm> children = new ArrayList<OntologyTerm>();
+                List<OntologyTerm> children = new ArrayList<OntologyTerm>( 3 );
 
-                children.add(new LazyLoadedOntologyTerm(ontologyIndexSearcher, "GO:0008150", "biological_process"));
-                children.add(new LazyLoadedOntologyTerm(ontologyIndexSearcher, "GO:0003674", "molecular_function"));
-                children.add(new LazyLoadedOntologyTerm(ontologyIndexSearcher, "GO:0005575", "cellular_component"));
+                children.add(new LazyLoadedOntologyTerm(ontologyIndexSearcher, "GO:0008150", "Biological process"));
+                children.add(new LazyLoadedOntologyTerm(ontologyIndexSearcher, "GO:0003674", "Molecular function"));
+                children.add(new LazyLoadedOntologyTerm(ontologyIndexSearcher, "GO:0005575", "Cellular component"));
 
                 return children;
             }
@@ -102,8 +102,6 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
         };
 
         OntologyTermWrapper otwRoot = new OntologyTermWrapper(root, interactionIndexSearcher, interactorIndexSearcher, baseQuery,luceneQuery);
-
-        //updateChildrenCounts(otwRoot);
 
         setWrappedData(otwRoot);
     }
@@ -163,3 +161,4 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
         return colourArray[0];
     }
 }
+

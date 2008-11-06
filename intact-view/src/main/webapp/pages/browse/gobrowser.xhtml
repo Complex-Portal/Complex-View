@@ -29,20 +29,26 @@
                     <tr:spacer height="5"/>
                 </f:facet>
 
+            <!-- RESULT SUMMARY -->
 
-            <tr:group>
-                <strong>Query: </strong>
-                <ebi:outputText id="queryText" value="#{searchBean.displayQuery}" maxLength="50"
-                                expandMessage="(see entire query)" collapseMessage="(collapse)"/>
-            </tr:group>
+            <tr:panelGroupLayout layout="vertical" id="searchSummary">
+
+                <tr:group>
+                    Displaying results for query:
+                    <strong><ebi:outputText id="queryText" value="#{searchBean.userQuery.displayQuery}" maxLength="50"
+                                    expandMessage="(see entire query)" collapseMessage="(collapse)"/></strong>
+                </tr:group>
+
+            </tr:panelGroupLayout>
+
+            <!-- GO Browser -->
 
             <tr:panelHorizontalLayout>
                 <f:facet name="separator">
                     <tr:spacer width="50px"/>
                 </f:facet>
 
-                <tr:treeTable var="otw" value="#{goBrowser.goOntologyTreeModel}"
-                        rootNodeRendered="false" >
+                <tr:treeTable var="otw" value="#{goBrowser.goOntologyTreeModel}" rootNodeRendered="false" >
 
                     <f:facet name="nodeStamp">
                         <tr:column>
@@ -69,14 +75,14 @@
                            <tr:outputText value="#{countedOtw.interactorCount}"/>
                             &#160;
                             <tr:commandLink text="View" rendered="#{countedOtw.interactorCount > 0}"
-                                            actionListener="#{searchBean.doBinarySearch}"
+                                            actionListener="#{searchBean.doFilteredBinarySearch}"
                                             action="list.proteins">
-                                <f:setPropertyActionListener value="#{otw.searchQuery}" target="#{searchBean.searchQuery}"/>
+                                <f:param name="query" value="#{searchBean.userQuery.searchQuery}" />
+                                <f:param name="termId" value="#{otw.term.id}" />
+                                <!--<f:setPropertyActionListener value="#{otw.term.id}" target="#{searchBean.filter}"/>-->
+                                <!--<f:setPropertyActionListener value="#{otw.baseQuery}" target="#{searchBean.userQuery.searchQuery}"/>-->
                             </tr:commandLink>
                         </tr:group>
-
-                        <!--<div style="background-color: #{otw.interactorColour}; height:8px; width:#{(otw.interactorCount * 200) / otw.parent.childrenInteractorTotalCount}px">-->
-                                <!--</div>-->
                     </tr:column>
                     <tr:column>
                         <f:facet name="header">
@@ -85,14 +91,15 @@
                         <tr:group>
                            <tr:outputText value="#{otw.interactionCount}"/>
                             &#160;
-                             <tr:commandLink text="View" rendered="#{countedOtw.interactorCount > 0}" 
-                                             actionListener="#{searchBean.doBinarySearch}"
+                             <tr:commandLink text="View" rendered="#{countedOtw.interactorCount > 0}"
+                                             actionListener="#{searchBean.doFilteredBinarySearch}"
                                              action="interactions">
-                                <f:setPropertyActionListener value="#{otw.searchQuery}" target="#{searchBean.searchQuery}"/>
+                                 <f:param name="query" value="#{searchBean.userQuery.searchQuery}" />
+                                 <f:param name="termId" value="#{otw.term.id}" />
+                                 <!--<f:setPropertyActionListener value="#{otw.term.id}" target="#{searchBean.filter}"/>-->
+                                 <!--<f:setPropertyActionListener value="#{otw.baseQuery}" target="#{searchBean.userQuery.searchQuery}"/>-->
                             </tr:commandLink>
                         </tr:group>
-                        <!--<div style="background-color: #{otw.interactionColour}; height:8px; width:#{(otw.interactionCount * 200) / otw.parent.childrenInteractionTotalCount}px">-->
-                                <!--</div>-->
                     </tr:column>
       
                 </tr:treeTable>
@@ -104,6 +111,5 @@
         </tr:panelHeader>
 
     </ui:define>
-
 
 </ui:composition>

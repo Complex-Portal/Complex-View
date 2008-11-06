@@ -30,6 +30,7 @@ import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.application.IndexRequestController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
+import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 
@@ -62,19 +63,18 @@ public class GoBrowserController extends BaseController{
 
     @PostConstruct
     public void init() {
-        String searchQuery;
+        final UserQuery userQuery = searchController.getUserQuery();
 
-        if ( searchController.isCurrentOntologyQuery() ) {
-            searchQuery = searchController.getOntologySearchQuery();
+        String searchQuery;
+        if ( userQuery.isCurrentOntologyQuery() ) {
+            searchQuery = userQuery.getOntologySearchQuery();
         } else {
-            searchQuery = searchController.getSearchQuery();
+            searchQuery = userQuery.getSearchQuery();
         }
 
         if ("*".equals(searchQuery) || "?".equals(searchQuery)) {
             searchQuery = "";
         }
-        String displayQuery = searchController.getDisplayQuery();
-
         String luceneQuery = searchController.getResults().getResult().getLuceneQuery().toString();
 
         goOntologyTreeModel = new GoOntologyTreeModel(indexRequestController.getOntologyIndexSearcher(),
@@ -82,7 +82,6 @@ public class GoBrowserController extends BaseController{
                                                       null,
                                                       searchQuery,
                                                       luceneQuery);
-
     }
 
     public GoOntologyTreeModel getGoOntologyTreeModel() {
