@@ -23,9 +23,9 @@
         <tr:panelGroupLayout>
             <ui:debug/>
 
-            <tr:poll id="warningPoll" interval="120000"/>
+            <!--<tr:poll id="warningPoll" interval="120000"/>-->
 
-            <tr:panelGroupLayout partialTriggers="::warningPoll">
+            <tr:panelGroupLayout>
                 <tr:panelBox text="Important notice" background="transparent"
                              icon="/images/warning.gif"
                              rendered="#{not empty intactViewConfiguration.warningMessage}">
