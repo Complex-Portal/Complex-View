@@ -20,7 +20,16 @@
 
     <ui:define name="browseTabContent">
 
-        <tr:commandLink text="&lt; Back to Browse options" action="browse"/>
+        <tr:spacer height="5"/>
+
+        <tr:panelHorizontalLayout valign="middle">
+            <tr:image source="/images/back_arrow.gif" />
+            <tr:commandLink text="Back to Browse options" action="browse"/>
+        </tr:panelHorizontalLayout>
+
+        <tr:spacer height="5"/>
+
+        <ui:include src="/pages/inc/queryDisplay.xhtml" />        
 
         <tr:panelHeader text="Gene Ontology Browser">
 
@@ -28,12 +37,6 @@
                 <f:facet name="separator">
                     <tr:spacer height="5"/>
                 </f:facet>
-
-                <!-- RESULT SUMMARY -->
-
-                <ui:include src="/pages/inc/queryDisplay.xhtml" />
-
-                <!-- GO Browser -->
 
             <tr:panelHorizontalLayout>
                 <f:facet name="separator">
@@ -71,8 +74,6 @@
                                             action="list.proteins">
                                 <f:param name="query" value="#{searchBean.userQuery.searchQuery}" />
                                 <f:param name="termId" value="#{otw.term.id}" />
-                                <!--<f:setPropertyActionListener value="#{otw.term.id}" target="#{searchBean.filter}"/>-->
-                                <!--<f:setPropertyActionListener value="#{otw.baseQuery}" target="#{searchBean.userQuery.searchQuery}"/>-->
                             </tr:commandLink>
                         </tr:group>
                     </tr:column>
@@ -88,8 +89,6 @@
                                              action="interactions">
                                  <f:param name="query" value="#{searchBean.userQuery.searchQuery}" />
                                  <f:param name="termId" value="#{otw.term.id}" />
-                                 <!--<f:setPropertyActionListener value="#{otw.term.id}" target="#{searchBean.filter}"/>-->
-                                 <!--<f:setPropertyActionListener value="#{otw.baseQuery}" target="#{searchBean.userQuery.searchQuery}"/>-->
                             </tr:commandLink>
                         </tr:group>
                     </tr:column>
