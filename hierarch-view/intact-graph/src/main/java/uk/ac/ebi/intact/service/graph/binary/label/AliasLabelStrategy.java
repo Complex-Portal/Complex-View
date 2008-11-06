@@ -100,67 +100,28 @@ public class AliasLabelStrategy implements LabelStrategy {
 
 
     //buildLabel modified for dgi
-       public static String getProteinDisplayName(Interactor interactor) {
-          String name = null;
+    public static String getProteinDisplayName( Interactor interactor ) {
+        String name = null;
 
-           if (!interactor.getAliases().isEmpty()) {
-               name = interactor.getAliases().iterator().next().getName();
-           } else {
-               for ( CrossReference xref : interactor.getAlternativeIdentifiers()) {
+        if ( !interactor.getAliases().isEmpty() ) {
+            name = interactor.getAliases().iterator().next().getName();
+        } else {
+            for ( CrossReference xref : interactor.getAlternativeIdentifiers() ) {
 
-                   if ("commercial name".equals(xref.getText())) {
-                       name = xref.getIdentifier();
-                   }
-               }
+                if ( "commercial name".equals( xref.getText() ) ) {
+                    name = xref.getIdentifier();
+                }
+            }
 
-               if (name == null) {
-                   String intactAc = getIntactIdentifierFromCrossReferences(interactor.getIdentifiers());
+            if ( name == null ) {
+                if ( interactor.getIdentifiers() != null ) {
+                    name = interactor.getIdentifiers().iterator().next().getIdentifier();
+                }
+            }
+        }
 
-                   if (intactAc != null) {
-                       uk.ac.ebi.intact.model.Interactor intactInteractor = getInteractorByAc(intactAc);
-                       InteractorAlias alias = getAliasByPriority(intactInteractor, CvAliasType.GENE_NAME_MI_REF,
-                                                                           CvAliasType.ORF_NAME_MI_REF);
-                       if (alias != null) {
-                           name = alias.getName();
-                       } else {
-                           name = intactInteractor.getAc();
-                       }
-                   }
-               }
-           }
+        return name;
+    }
 
-           return name;
-       }
-
-
-       private static String getIntactIdentifierFromCrossReferences( Collection xrefs) {
-           return getIdentifierFromCrossReferences(xrefs, "intact");
-       }
-
-        private static String getIdentifierFromCrossReferences(Collection xrefs, String databaseLabel) {
-           for (CrossReference xref : (Collection<CrossReference>) xrefs) {
-               if (databaseLabel.equals(xref.getDatabase())) {
-                   return xref.getIdentifier();
-               }
-           }
-           return null;
-       }
-
-
-        private static InteractorAlias getAliasByPriority( uk.ac.ebi.intact.model.Interactor intactInteractor, String ... aliasTypes) {
-           for (String aliasType : aliasTypes) {
-               for (InteractorAlias alias : intactInteractor.getAliases()) {
-                   if (alias.getCvAliasType() != null && aliasType.equals(alias.getCvAliasType().getIdentifier())) {
-                       return alias;
-                   }
-               }
-           }
-
-           return null;
-       }
-
-        private static uk.ac.ebi.intact.model.Interactor getInteractorByAc( String intactAc ) {
-           return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getInteractorDao().getByAc( intactAc );
-       }
 
 }
