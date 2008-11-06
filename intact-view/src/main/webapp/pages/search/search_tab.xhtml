@@ -18,7 +18,7 @@
     <tr:subform id="mainSearchSubform">
 
         <tr:panelLabelAndMessage label="Search query:">
-            <tr:inputText columns="30" value="#{searchBean.searchQuery}"
+            <tr:inputText id="searchField" columns="30" value="#{searchBean.searchQuery}"
                           onfocus="this.select()"
                           onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
             <f:facet name="help">
