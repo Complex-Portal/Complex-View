@@ -15,10 +15,10 @@
 
     <tr:panelHeader text="Quick Search" styleClass="level-one"/>
 
-    <tr:subform id="mainSearchSubform">
+    <!--<tr:subform id="mainSearchSubform">-->
 
         <tr:panelLabelAndMessage label="Search query:">
-            <tr:inputText id="searchField" columns="30" value="#{searchBean.searchQuery}"
+            <tr:inputText id="searchField" columns="30" value="#{searchBean.searchQuery}" autoComplete="false"
                           onfocus="this.select()"
                           onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
             <f:facet name="help">
@@ -53,18 +53,16 @@
             </f:facet>
         </tr:panelLabelAndMessage>
 
-    </tr:subform>
+    <!--</tr:subform>-->
 
     <tr:panelHeader text="Ontology Search"/>
-
-    <tr:subform id="ontologySubForm">
 
     <tr:outputText value="Start typing an ontology term, possible completions of the term will be shown:"/>
     <br/><br/>
 
 
           <tr:panelLabelAndMessage label="Ontology query:">
-               <iam:inputAutocomplete id="ontologySearchQuery" parentId="ontologySubForm"
+               <iam:inputAutocomplete id="ontologySearchQuery"
                                    value="#{searchBean.ontologySearchQuery}"
                                    columns="30"
                                    readOnly="false"
@@ -122,8 +120,6 @@
             <tr:goLink text="InterPro" destination="http://www.ebi.ac.uk/interpro/" targetFrame="_blank"/>
 
         </tr:panelLabelAndMessage>
-
-    </tr:subform>
 
     <tr:panelHeader text="Other Searches">
 

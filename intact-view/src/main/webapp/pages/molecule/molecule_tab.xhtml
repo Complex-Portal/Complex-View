@@ -15,9 +15,13 @@
     <tr:panelHeader text="Molecule info">
 
         <tr:panelFormLayout>
+            <ui:param name="uniprotAc" value="#{iaf:getIdentityXref(moleculeViewBean.interactor, 'MI:0486').primaryId}"/>
+
             <tr:inputText label="#{intactView['webapp.name']} AC: " value="#{moleculeViewBean.interactor.ac}"
                           readOnly="true"/>
             <tr:inputText label="Short label: " value="#{moleculeViewBean.interactor.shortLabel}"
+                          readOnly="true"/>
+            <tr:inputText label="Uniprot AC: " value="#{uniprotAc}"
                           readOnly="true"/>
         </tr:panelFormLayout>
 
@@ -25,8 +29,12 @@
 
     <tr:panelHeader text="Dasty2 visualization">
 
-        <iav:dasty query="#{iaf:getIdentityXref(moleculeViewBean.interactor, 'MI:0486').primaryId}"
-                   label="BioSapiens"/>
+
+
+        <iframe frameborder="0" width="900" height="1100"
+            src="http://wwwdev.ebi.ac.uk/dasty/client/interactor.php?q=#{uniprotAc}&amp;label=any&amp;t=3">
+            Loading Dasty visualization...
+        </iframe>
 
     </tr:panelHeader>
 

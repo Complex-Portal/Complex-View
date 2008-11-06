@@ -32,8 +32,8 @@
     <c:set var="addPPRListenerFunc" value="_#{parentId}_#{id}_addPPRListenerFunc"/>
     <c:set var="checkEmptyEditFunc" value="_#{parentId}_#{id}_checkEmptyEditFunc"/>
 
-    <tr:inputHidden id="#{id}" value="#{value}" required="#{required}" />
-    <tr:subform id="#{autocompleteSubformId}">
+    <tr:inputHidden id="#{id}" value="#{value}" />
+    <f:subview id="#{autocompleteSubformId}">
         <trh:script type="text/javascript">
 
             var #{timeoutVar}=null;
@@ -158,7 +158,6 @@
         </trh:script>
 
         <tr:inputText id="#{editId}" autoComplete="off"
-                      required="#{required}" showRequired="false"
                       inlineStyle="#{contentStyle}"
                      columns="#{columns}"
                     readOnly="#{readOnly}"
@@ -190,6 +189,6 @@
                 </div>
             </tr:column>
         </tr:table>
-    </tr:subform>
+    </f:subview>
 
 </ui:component>

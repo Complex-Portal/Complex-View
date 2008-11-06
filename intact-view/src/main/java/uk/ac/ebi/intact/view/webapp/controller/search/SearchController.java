@@ -2,23 +2,19 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.orchestra.conversation.ConversationManager;
-import org.apache.myfaces.orchestra.conversation.Conversation;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.myfaces.trinidad.component.UIXTable;
-import org.apache.myfaces.trinidad.render.ExtendedRenderKitService;
-import org.apache.myfaces.trinidad.util.Service;
+import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
 import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
@@ -26,7 +22,6 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.model.CvInteractorType;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -86,8 +81,6 @@ public class SearchController extends JpaBaseController {
     private int proteinTotalResults;
     private int smallMoleculeTotalResults;
 
-    // status flags
-    private String disclosedTabName;
     //for clear
     private boolean fromClearBtn;
 
@@ -119,7 +112,6 @@ public class SearchController extends JpaBaseController {
 
         String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
         String ontologyQueryParam = context.getExternalContext().getRequestParameterMap().get(ONTOLOGY_QUERY_PARAM);
-        String tabParam = context.getExternalContext().getRequestParameterMap().get(TAB_PARAM);
 
         if (queryParam != null) {
             displayQuery = queryParam;
@@ -131,17 +123,11 @@ public class SearchController extends JpaBaseController {
             doOntologySearch( ontologyQueryParam );
         }
 
-
         if (searchQuery == null) {
             searchQuery = "*";
             doBinarySearch(searchQuery);
-            //disclosedTabName = "search";
-            disclosedTabName = "about";
         }
 
-        if (tabParam != null) {
-            disclosedTabName = tabParam;
-        }
     }
 
     public String doBinarySearchAction() {
@@ -149,11 +135,7 @@ public class SearchController extends JpaBaseController {
         setCurrentOntologyQuery( false );
         doBinarySearch(searchQuery);
 
-        if ( isFromClearBtn() ) {
-            return disclosedTabName;
-        } else {
-            return "interactions";
-        }
+        return "interactions";
     }
 
     public String doOntologySearchAction() {
@@ -164,12 +146,7 @@ public class SearchController extends JpaBaseController {
         setCurrentOntologyQuery( true );
         doOntologySearch( ontologySearchQuery );
 
-        if (  isFromClearBtn() ) {
-            return disclosedTabName;
-        } else {
-            return "interactions";
-        }
-
+        return "interactions";
     }
 
     public void doOntologySearch(String ontologySearch) {
@@ -214,11 +191,6 @@ public class SearchController extends JpaBaseController {
 
             if (totalResults == 0) {
                 addErrorMessage("Your query didn't return any results", "Use a different query");
-                disclosedTabName = "search";
-            } else {
-               if(!isFromClearBtn()){
-                 disclosedTabName = "interactions";
-               }
             }
 
         } catch (TooManyResultsException e) {
@@ -338,30 +310,16 @@ public class SearchController extends JpaBaseController {
         return WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig());
     }
 
-    public void resetSearch(ActionEvent event) {
-        searchQuery = "*";
-        ontologySearchQuery=null;
-        displayQuery = searchQuery;
-        setFromClearBtn( true );
-        setCurrentOntologyQuery( false );
-        invalidateConversationAndReset();
-        doBinarySearch( searchQuery );
+    public void resetSearch(ActionEvent evt) {
+            searchQuery = "*";
+            ontologySearchQuery=null;
+            displayQuery = searchQuery;
 
+            setCurrentOntologyQuery( false );
+
+            doBinarySearch( searchQuery );
     }
 
-    //probably a hack to reset the searchfield to '*'--recheck
-    //setting ontologySearchQuery in a similar manner doesn't work-so commented
-    private void invalidateConversationAndReset(  ) {
-
-        final Conversation conversation = ConversationManager.getInstance().getConversation( "general" );
-        conversation.invalidate();
-
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExtendedRenderKitService service = Service.getRenderKitService( facesContext, ExtendedRenderKitService.class );
-        //service.addScript( facesContext, "document.getElementById('ontologySubForm:ontologySearchQuery').value='';" );
-        service.addScript( facesContext, "document.getElementById('mainSearchSubform:searchField').value='*';" );
-
-    }
 
     // Getters & Setters
     /////////////////////
@@ -426,14 +384,6 @@ public class SearchController extends JpaBaseController {
         this.searchQuery = searchQuery;
     }
 
-    public String getDisclosedTabName() {
-        return disclosedTabName;
-    }
-
-    public void setDisclosedTabName(String disclosedTabName) {
-        this.disclosedTabName = disclosedTabName;
-    }
-
     public int getTotalResults() {
         return totalResults;
     }
@@ -492,13 +442,5 @@ public class SearchController extends JpaBaseController {
 
     public void setCurrentOntologyQuery( boolean currentOntologyQuery ) {
         this.currentOntologyQuery = currentOntologyQuery;
-    }
-
-    public boolean isFromClearBtn() {
-        return fromClearBtn;
-    }
-
-    public void setFromClearBtn( boolean fromClearBtn ) {
-        this.fromClearBtn = fromClearBtn;
     }
 }

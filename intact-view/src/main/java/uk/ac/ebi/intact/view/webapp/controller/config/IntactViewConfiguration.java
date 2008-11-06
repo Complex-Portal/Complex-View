@@ -16,10 +16,9 @@
 package uk.ac.ebi.intact.view.webapp.controller.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 
 import javax.persistence.EntityManagerFactory;
-
-import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 
 /**
  * IntactView configuration bean.
@@ -57,6 +56,7 @@ public class IntactViewConfiguration extends BaseController {
     private String webappLogoUrl;
     private String webappVersion;
     private String webappBuildNumber;
+    private String dastyUrl;
 
     public IntactViewConfiguration() {
     }
@@ -237,4 +237,9 @@ public class IntactViewConfiguration extends BaseController {
     public void setWebappBuildNumber(String webappBuildNumber) {this.webappBuildNumber = webappBuildNumber;}
 
     public String getWebappBuildNumber() { return webappBuildNumber; }
+
+
+    public void setDastyUrl(String dastyUrl) {this.dastyUrl = dastyUrl;}
+
+    public String getDastyUrl() { return dastyUrl; }
 }

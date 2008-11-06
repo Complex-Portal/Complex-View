@@ -170,6 +170,9 @@
                 <h:panelGroup>
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
+                    <iax:goMoleculeView baseUrl="#{intactViewConfiguration.dastyUrl}"
+                            query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
                 </h:panelGroup>
             </f:facet>
             <f:facet name="chebi">
@@ -181,15 +184,13 @@
             <f:facet name="drugbank">
                 <h:panelGroup>
                     <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
                     <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(binaryInteraction.interactorA))}"/>
                     <br/>
                 </h:panelGroup>
             </f:facet>
             <f:facet name="intact">
-                <h:panelGroup rendered="#{binaryInteraction.interactorA.interactorType.identifier == 'MI:0326'}">
-                    <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                </h:panelGroup>
+                <!-- nothing -->
             </f:facet>
         </tr:switcher>
     </tr:iterator>
@@ -239,6 +240,10 @@
             <f:facet name="uniprotkb">
                 <h:panelGroup>
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                    <iax:goMoleculeView baseUrl="#{intactViewConfiguration.dastyUrl}"
+                            query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
                     <iax:goDrugPortProteinView query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
                 </h:panelGroup>
@@ -256,10 +261,7 @@
                 </h:panelGroup>
             </f:facet>
             <f:facet name="intact">
-                <h:panelGroup rendered="#{binaryInteraction.interactorB.interactorType.identifier == 'MI:0326'}">
-                    <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                </h:panelGroup>
+                <!-- nothing -->
             </f:facet>
         </tr:switcher>
     </tr:iterator>
