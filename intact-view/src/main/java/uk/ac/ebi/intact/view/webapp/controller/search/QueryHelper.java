@@ -34,8 +34,7 @@ import java.util.regex.Pattern;
  */
 public class QueryHelper {
 
-    public static final Pattern CHEBI_PATTERN = Pattern.compile( "CHEBI:\\d+" );
-    public static final Pattern GO_PATTERN = Pattern.compile( "GO:\\d+" );
+
 
     private static final Log log = LogFactory.getLog( QueryHelper.class );
 
@@ -50,12 +49,12 @@ public class QueryHelper {
             return WILDCARD;
         }
 
-        if( queryNeedsEscaping( query ) ) {
-            query = "\""+ query +"\"";
-            if ( log.isDebugEnabled() ) {
-                log.debug( "This looks like a GO or CHEBI identifier, we are escaping to: " + query );
-            }
-        }
+//        if( queryNeedsEscaping( query ) ) {
+//            query = "\""+ query +"\"";
+//            if ( log.isDebugEnabled() ) {
+//                log.debug( "This looks like a GO or CHEBI identifier, we are escaping to: " + query );
+//            }
+//        }
         
         return query;
     }
@@ -72,18 +71,9 @@ public class QueryHelper {
         return sb.toString();
     }
 
-    private static boolean queryNeedsEscaping( String query ) {
-        query = query.toUpperCase().trim();
-        return isGoIdentifier( query ) || isChebiIdentifier( query );
-    }
 
-    private static boolean isGoIdentifier(String s) {
-        return GO_PATTERN.matcher( s ).matches();
-    }
 
-    private static boolean isChebiIdentifier(String s) {
-        return CHEBI_PATTERN.matcher( s ).matches();
-    }
+
 
     private static String escapeQueryIfNecessary( String query ) {
 

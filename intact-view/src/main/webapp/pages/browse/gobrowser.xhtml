@@ -71,7 +71,7 @@
                             <tr:commandLink text="#{countedOtw.interactorCount}" rendered="#{countedOtw.interactorCount > 0}"
                                             actionListener="#{searchBean.doFilteredBinarySearch}"
                                             action="list.proteins">
-                                <f:param name="query" value="#{searchBean.userQuery.searchQuery}" />
+                                <f:param name="query" value="#{searchBean.userQuery.currentQuery}" />
                                 <f:param name="termId" value="#{otw.term.id}" />
                             </tr:commandLink>
 
@@ -87,7 +87,7 @@
                              <tr:commandLink text="#{countedOtw.interactionCount}" rendered="#{countedOtw.interactionCount > 0}"
                                              actionListener="#{searchBean.doFilteredBinarySearch}"
                                              action="interactions">
-                                 <f:param name="query" value="#{searchBean.userQuery.searchQuery}" />
+                                 <f:param name="query" value="#{searchBean.userQuery.currentQuery}" />
                                  <f:param name="termId" value="#{otw.term.id}" />
                             </tr:commandLink>
 

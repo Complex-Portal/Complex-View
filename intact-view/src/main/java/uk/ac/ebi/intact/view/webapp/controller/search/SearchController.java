@@ -174,7 +174,6 @@ public class SearchController extends JpaBaseController {
         if( query == null || termId == null ) {
             throw new IllegalStateException( "Query or TermId was null. termId:"+termId+" query:"+query );
         }
-        userQuery.setSearchQuery( query );
         userQuery.processIncomingFilter( termId );
 
         doBinarySearch( userQuery );
