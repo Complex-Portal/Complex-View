@@ -16,22 +16,11 @@
 
 <!-- RESULT SUMMARY -->
 
-<tr:panelGroupLayout layout="vertical" id="searchSummary">
-
-    <tr:group>
-        Displaying results for query:
-        <strong><ebi:outputText id="queryText" value="#{searchBean.userQuery.displayQuery}" maxLength="50"
-                        expandMessage="(see entire query)" collapseMessage="(collapse)"/> </strong>
-    </tr:group>
-
-</tr:panelGroupLayout>
-
+<ui:include src="/pages/inc/queryDisplay.xhtml" />
 
 <br/>
 
-
 <!-- RESULTS TABLE -->
-
 
 <tr:table id="compoundListResults" value="#{searchBean.smallMoleculeResults}" var="binaryInteraction"
           varStatus="status"

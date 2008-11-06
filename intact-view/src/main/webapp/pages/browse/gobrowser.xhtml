@@ -29,19 +29,11 @@
                     <tr:spacer height="5"/>
                 </f:facet>
 
-            <!-- RESULT SUMMARY -->
+                <!-- RESULT SUMMARY -->
 
-            <tr:panelGroupLayout layout="vertical" id="searchSummary">
+                <ui:include src="/pages/inc/queryDisplay.xhtml" />
 
-                <tr:group>
-                    Displaying results for query:
-                    <strong><ebi:outputText id="queryText" value="#{searchBean.userQuery.displayQuery}" maxLength="50"
-                                    expandMessage="(see entire query)" collapseMessage="(collapse)"/></strong>
-                </tr:group>
-
-            </tr:panelGroupLayout>
-
-            <!-- GO Browser -->
+                <!-- GO Browser -->
 
             <tr:panelHorizontalLayout>
                 <f:facet name="separator">

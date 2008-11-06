@@ -15,12 +15,7 @@
 
     <c:set var="displayWarning" value="#{searchBean.results.pageSize lt searchBean.interactorTotalResults}" />
 
-     <tr:group>
-        Displaying results for query:
-        <strong><ebi:outputText id="queryText" value="#{searchBean.userQuery.displayQuery}" maxLength="50"
-                        expandMessage="(see entire query)" collapseMessage="(collapse)"/></strong>
-         <em> (Note: To 'Browse All' click the 'Clear' button on the left menu) </em>
-    </tr:group>
+    <ui:include src="/pages/inc/queryDisplay.xhtml" />
     
     <tr:panelHeader text="Proteins (#{searchBean.proteinTotalResults})">
 

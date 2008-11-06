@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+    <tr:panelGroupLayout layout="vertical" id="searchSummary">
+        <tr:group>
+            Displaying results for query:
+            <strong><ebi:outputText id="queryText" value="#{searchBean.userQuery.displayQuery}" maxLength="50"
+                                    expandMessage="[+]" collapseMessage="[-]"/></strong>
+            <em> (Note: To 'Browse All' click the 'Clear' button on the left menu) </em>
+        </tr:group>
+    </tr:panelGroupLayout>
+
+</ui:composition>

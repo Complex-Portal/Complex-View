@@ -61,7 +61,7 @@ public class UserQuery {
         }
 
         if ( filter != null ) {
-            if( !filters.contains(filter) ) {
+            if ( !filters.contains( filter ) ) {
                 filters.add( filter );
             }
         }
@@ -76,7 +76,7 @@ public class UserQuery {
         if ( filters.isEmpty() ) {
             query = searchQuery;
         } else {
-            query = "+("+searchQuery + ") " + formatFilter( "properties" );
+            query = "+(" + searchQuery + ") " + formatFilter( "properties" );
         }
         log.debug( "getInteractorSearchQuery(): " + query );
         return query;
@@ -87,7 +87,7 @@ public class UserQuery {
         if ( filters.isEmpty() ) {
             query = searchQuery;
         } else {
-            query = "+("+searchQuery + ") " + formatFilter( "propertiesA" );
+            query = "+(" + searchQuery + ") " + formatFilter( "propertiesA" );
         }
         log.debug( "getInteractorSearchQuery(): " + query );
         return query;
@@ -125,7 +125,15 @@ public class UserQuery {
     }
 
     public String getDisplayQuery() {
-        return displayQuery + " " + formatFilter( null );
+        return displayQuery + buildDisplayFilter();
+    }
+
+    private String buildDisplayFilter() {
+        StringBuilder sb = new StringBuilder( filters.size() * 10 );
+        for ( String filter : filters ) {
+            sb.append( " and " ).append( filter );
+        }
+        return sb.toString();
     }
 
     public void setDisplayQuery( String displayQuery ) {
