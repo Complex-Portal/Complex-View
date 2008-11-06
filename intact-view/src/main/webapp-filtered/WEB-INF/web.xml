@@ -23,6 +23,13 @@
          metadata-complete="false"
          version="2.5">
 
+    <!-- DGI -->
+    <context-param>
+        <description>URL to the news, needed by the feed servlet</description>
+        <param-name>uk.ac.ebi.faces.NEWS_URL</param-name>
+        <param-value>${intact.news.url}</param-value>
+    </context-param>
+
     <!-- MyFaces -->
 
     <!--<context-param>-->
