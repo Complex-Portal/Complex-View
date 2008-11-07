@@ -150,6 +150,7 @@ public class SearchController extends JpaBaseController {
     public void doOntologySearch(String ontologySearch) {
         userQuery.setCurrentOntologyQuery( true );
         userQuery.setDisplayQuery( ontologySearch );
+        userQuery.getFilters().clear();
 
         final String formattedQuery = prepareOntologyQuery(ontologySearch);
         userQuery.setOntologySearchQuery( formattedQuery );
