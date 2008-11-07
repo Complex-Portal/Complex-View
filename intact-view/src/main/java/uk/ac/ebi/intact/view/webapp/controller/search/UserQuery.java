@@ -125,9 +125,9 @@ public class UserQuery {
         } else {
             String cq = getCurrentQuery();
             if( cq.length() == 0 ) {
-                query = formatFilter( "propertiesA" );
+                query = formatFilter( luceneFilterField );
             } else {
-                query = "+(" + cq + ") " + formatFilter( "propertiesA" );
+                query = "+(" + cq + ") " + formatFilter( luceneFilterField );
             }
         }
         return query;
