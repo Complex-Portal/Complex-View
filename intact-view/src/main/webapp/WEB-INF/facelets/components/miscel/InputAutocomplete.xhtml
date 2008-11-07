@@ -92,7 +92,7 @@
                 requestQueue.addStateChangeListener(#{pprMonitorFunc});
             }
             function #{setValuesFromTableFunc}(hiddenValue, editValue){
-                document.getElementById('#{jsEditId}').value=editValue;             //the order matters
+                document.getElementById('#{jsEditId}').value=hiddenValue;             //the order matters
                 document.getElementById('#{jsHiddenId}').value=hiddenValue;
                 #{hideResultTableFunc}();
             }
