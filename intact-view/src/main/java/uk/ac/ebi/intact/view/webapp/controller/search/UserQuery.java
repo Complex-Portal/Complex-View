@@ -60,7 +60,7 @@ public class UserQuery {
         }
 
         if ( filter != null ) {
-            if ( !filters.contains( filter ) ) {
+            if ( !filters.contains( filter ) && filter != null && filter.trim().length() > 0) {
                 filters.add( filter );
             }
         }
