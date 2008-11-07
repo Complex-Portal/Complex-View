@@ -47,11 +47,6 @@ public class UserQuery {
      */
     private List<String> filters;
 
-//    /**
-//     * Incoming filter that should be processed in order to be added into the filter collection.
-//     */
-//    private String filter;
-
     //////////////////
     // Constructors
 
@@ -112,24 +107,29 @@ public class UserQuery {
     }
 
     public String getInteractionSearchQuery() {
-        final String query;
-        if ( filters.isEmpty() ) {
-            query = getCurrentQuery();
-        } else {
-            query = "+(" + getCurrentQuery() + ") " + formatFilter( "properties" );
-        }
-        log.debug( "getInteractorSearchQuery(): " + query );
+        String query = buildFilteredLuceneQuery( "properties" );
+        log.debug( "getInteractionSearchQuery(): " + query );
         return query;
     }
 
     public String getInteractorSearchQuery() {
+        String query = buildFilteredLuceneQuery( "propertiesA" );
+        log.debug( "getInteractorSearchQuery(): " + query );
+        return query;
+    }
+
+    private String buildFilteredLuceneQuery( String luceneFilterField ) {
         final String query;
         if ( filters.isEmpty() ) {
             query = getCurrentQuery();
         } else {
-            query = "+(" + getCurrentQuery() + ") " + formatFilter( "propertiesA" );
+            String cq = getCurrentQuery();
+            if( cq.length() > 0 ) {
+                query = formatFilter( "propertiesA" );
+            } else {
+                query = "+(" + cq + ") " + formatFilter( "propertiesA" );
+            }
         }
-        log.debug( "getInteractorSearchQuery(): " + query );
         return query;
     }
 
@@ -170,8 +170,15 @@ public class UserQuery {
 
     private String buildDisplayFilter() {
         StringBuilder sb = new StringBuilder( filters.size() * 10 );
-        for ( String filter : filters ) {
-            sb.append( " and " ).append( filter );
+        if( getCurrentQuery().length() > 0 ) {
+            sb.append( " and " );
+        }
+        for ( Iterator<String> iterator = filters.iterator(); iterator.hasNext(); ) {
+            String filter = iterator.next();
+            sb.append( filter );
+            if(iterator.hasNext()) {
+                sb.append( " and " );
+            }
         }
         return sb.toString();
     }
