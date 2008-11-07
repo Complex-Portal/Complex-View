@@ -124,7 +124,7 @@ public class UserQuery {
             query = getCurrentQuery();
         } else {
             String cq = getCurrentQuery();
-            if( cq.length() > 0 ) {
+            if( cq.length() == 0 ) {
                 query = formatFilter( "propertiesA" );
             } else {
                 query = "+(" + cq + ") " + formatFilter( "propertiesA" );
