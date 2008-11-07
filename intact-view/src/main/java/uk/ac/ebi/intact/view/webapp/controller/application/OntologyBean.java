@@ -134,7 +134,7 @@ public class OntologyBean implements Serializable {
         if (result.size() > intactViewConfiguration.getMaxOntologySuggestions()) {
             final int furtherTermCount = result.size() - intactViewConfiguration.getMaxOntologySuggestions();
             result = result.subList(0, intactViewConfiguration.getMaxOntologySuggestions()-1);
-            result.add(new OntologyTerm("*", "There are "+ furtherTermCount +"more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na"));
+            result.add(new OntologyTerm("*", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na"));
         }
 
         final ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{autocompleteResult}", Collection.class);
