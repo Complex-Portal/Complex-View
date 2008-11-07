@@ -135,8 +135,8 @@ public class UserQuery {
 
     private String formatFilter( String luceneField ) {
         StringBuilder sb = new StringBuilder( filters.size() * 10 );
-        for ( Iterator<String> stringIterator = filters.iterator(); stringIterator.hasNext(); ) {
-            String filter = stringIterator.next();
+        for ( Iterator<String> iterator = filters.iterator(); iterator.hasNext(); ) {
+            String filter = iterator.next();
             if ( luceneField != null ) {
                 sb.append( "+" ).append( luceneField ).append( ":" );
             }
@@ -170,7 +170,7 @@ public class UserQuery {
 
     private String buildDisplayFilter() {
         StringBuilder sb = new StringBuilder( filters.size() * 10 );
-        if( getCurrentQuery().length() > 0 ) {
+        if( getCurrentQuery().length() > 0 && !filters.isEmpty()) {
             sb.append( " and " );
         }
         for ( Iterator<String> iterator = filters.iterator(); iterator.hasNext(); ) {
