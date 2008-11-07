@@ -119,6 +119,8 @@ public class SearchController extends JpaBaseController {
         }
 
         if (userQuery.getSearchQuery() == null) {
+            if (log.isDebugEnabled()) log.debug("User search query is null. Searching all.");
+
             userQuery.setSearchQuery( "*" );
             userQuery.setDisplayQuery( "*" );
             doBinarySearch(userQuery);
