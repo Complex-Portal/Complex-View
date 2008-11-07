@@ -82,7 +82,13 @@ public class UserQuery {
         } else {
             query = searchQuery;
         }
-        if ( queryNeedsEscaping( query ) ) {
+
+        if ("*".equals(query) || "?".equals(query)) {
+
+            query = "";
+
+        } else if ( queryNeedsEscaping( query ) ) {
+
             query = "\"" + query + "\"";
             if ( log.isDebugEnabled() ) {
                 log.debug( "This looks like a GO or CHEBI identifier, we are escaping to: " + query );

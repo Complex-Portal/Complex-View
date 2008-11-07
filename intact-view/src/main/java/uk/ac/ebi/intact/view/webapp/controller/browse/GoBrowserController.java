@@ -57,7 +57,6 @@ public class GoBrowserController extends BaseController{
 
     private GoOntologyTreeModel goOntologyTreeModel;
 
-
     public GoBrowserController() {
     }
 
@@ -66,10 +65,6 @@ public class GoBrowserController extends BaseController{
         final UserQuery userQuery = searchController.getUserQuery();
 
         String searchQuery = userQuery.getCurrentQuery();
-
-        if ("*".equals(searchQuery) || "?".equals(searchQuery)) {
-            searchQuery = "";
-        }
         String luceneQuery = searchController.getResults().getResult().getLuceneQuery().toString();
         goOntologyTreeModel = new GoOntologyTreeModel(indexRequestController.getOntologyIndexSearcher(),
                                                       null,
