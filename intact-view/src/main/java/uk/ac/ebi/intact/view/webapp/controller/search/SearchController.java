@@ -52,8 +52,9 @@ public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
 
-    private static final String QUERY_PARAM = "query";
-    private static final String ONTOLOGY_QUERY_PARAM = "ontologyQuery";
+    public static final String QUERY_PARAM = "query";
+    public static final String ONTOLOGY_QUERY_PARAM = "ontologyQuery";
+    public static final String TERMID_QUERY_PARAM = "termId";
 
     // table IDs
     public static final String INTERACTIONS_TABLE_ID = "interactionResults";
@@ -108,13 +109,13 @@ public class SearchController extends JpaBaseController {
         String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
         String ontologyQueryParam = context.getExternalContext().getRequestParameterMap().get(ONTOLOGY_QUERY_PARAM);
 
-        if (queryParam != null) {
+        if (queryParam != null && queryParam.length()>0) {
             userQuery.setDisplayQuery( queryParam );
             userQuery.setSearchQuery( queryParam );
             doBinarySearch( userQuery );
         }
 
-        if ( ontologyQueryParam != null ) {
+        if ( ontologyQueryParam != null && ontologyQueryParam.length()>0) {
             doOntologySearch( ontologyQueryParam );
         }
 
@@ -172,8 +173,17 @@ public class SearchController extends JpaBaseController {
 
     public void doFilteredBinarySearch(ActionEvent evt) {
         final Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String query = params.get("query");
-        String termId = params.get("termId");
+
+        String queryParam = UserQueryUtils.getCurrentQueryParam( userQuery );
+        String termParam = UserQueryUtils.getCurrentQueryTermParam( userQuery );
+
+        String query = params.get(queryParam);
+        String termId = params.get(termParam);
+
+        if ( log.isDebugEnabled() ) {
+            log.debug( "Query or TermId was null. termId:"+termId+" query:"+query  );
+        }
+
         if( query == null || termId == null ) {
             throw new IllegalStateException( "Query or TermId was null. termId:"+termId+" query:"+query );
         }
