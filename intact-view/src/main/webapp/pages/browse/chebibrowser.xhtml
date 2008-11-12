@@ -15,7 +15,7 @@
                 xmlns:iam="http://intact.ebi.ac.uk/mitabfunctions"
 
                 template="/main.xhtml">
-    
+
     <ui:param name="disclosedTabName" value="browse"/>
 
     <ui:define name="browseTabContent">
@@ -29,9 +29,9 @@
 
         <tr:spacer height="5"/>
 
-        <ui:include src="/pages/inc/queryDisplay.xhtml" />        
+        <ui:include src="/pages/inc/queryDisplay.xhtml" />
 
-        <tr:panelHeader text="Gene Ontology Browser">
+        <tr:panelHeader text="ChEBI Ontology Browser">
 
             <tr:panelGroupLayout>
                 <f:facet name="separator">
@@ -43,34 +43,35 @@
                     <tr:spacer width="50px"/>
                 </f:facet>
 
-                <tr:treeTable var="otw" value="#{goBrowser.ontologyTreeModel}" rootNodeRendered="false" >
+                 <tr:treeTable var="otw" value="#{chebiBrowser.ontologyTreeModel}" rootNodeRendered="false" >
+
 
                     <f:facet name="nodeStamp">
                         <tr:column>
                             <f:facet name="header">
-                                <tr:outputText value="GO Name"/>
+                                <tr:outputText value="CHEBI Name"/>
                             </f:facet>
                             <tr:outputText value="#{otw.term.name}"/>
                         </tr:column>
 
-                        <c:set var="countedOtw" value="${iam:populateCounts(otw, indexRequestController.defaultInteractorIndex, indexRequestController.defaultInteractionIndex, 'MI:0326')}"/>
+                        <c:set var="countedOtw" value="${iam:populateCounts(otw, indexRequestController.defaultInteractorIndex, indexRequestController.defaultInteractionIndex,'MI:0328')}"/>
 
                     </f:facet>
                     <tr:column>
                         <f:facet name="header">
-                            <tr:outputText value="GO ID"/>
+                            <tr:outputText value="CHEBI ID"/>
                         </f:facet>
                         <tr:outputText value="#{otw.term.id}"/>
                     </tr:column>
                     <tr:column inlineStyle="text-align:center;">
                         <f:facet name="header">
-                            <tr:outputText value="# Proteins"/>
+                            <tr:outputText value="# Small Molecules"/>
                         </f:facet>
 
                         <tr:group>
                             <tr:commandLink text="#{countedOtw.interactorCount}" rendered="#{countedOtw.interactorCount > 0}"
                                             actionListener="#{searchBean.doFilteredBinarySearch}"
-                                            action="list.proteins">
+                                            action="list.compounds">
                                 <f:param name="#{(searchBean.userQuery.currentOntologyQuery == true ? 'ontologyQuery' : 'query')}"
                                          value="#{searchBean.userQuery.currentQuery}" />
                                 <f:param name="termId" value="#{otw.term.id}" />
@@ -96,7 +97,7 @@
                             <tr:outputText value="0" rendered="#{countedOtw.interactionCount == 0}"/>
                         </tr:group>
                     </tr:column>
-      
+
                 </tr:treeTable>
 
             </tr:panelHorizontalLayout>

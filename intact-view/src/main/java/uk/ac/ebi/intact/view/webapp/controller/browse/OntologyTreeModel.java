@@ -37,19 +37,17 @@ import java.util.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class GoOntologyTreeModel extends ChildPropertyTreeModel {
-
-    private String[] INTERACTOR_COLOURS = new String[] {"#73b360", "#84bc73", "#96c688", "#a7cf9b","#cae2c3", "#dcecd7"};
-    private String[] INTERACTION_COLOURS = new String[] {"#006666", "#1f7979", "#408c8c", "#5e9e9e","#a1c7c7", "#bdd7d7"};
+public class OntologyTreeModel extends ChildPropertyTreeModel {
 
     private Set<String> processedTermCounts;
 
     private IndexSearcher interactionIndexSearcher;
     private IndexSearcher interactorIndexSearcher;
+    private OntologyTerm root;
 
     private OntologyTermWrapper disclosed;
 
-    public GoOntologyTreeModel(final OntologyIndexSearcher ontologyIndexSearcher,
+    public OntologyTreeModel(final OntologyTerm root,
                                final IndexSearcher interactionIndexSearcher,
                                final IndexSearcher interactorIndexSearcher,
                                final String baseQuery,
@@ -58,55 +56,17 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
 
         this.interactionIndexSearcher = interactionIndexSearcher;
         this.interactorIndexSearcher = interactorIndexSearcher;
-
+        this.root = root;
         processedTermCounts = new HashSet<String>();
-
-        OntologyTerm root = new OntologyTerm() {
-            public String getId() {
-                return "";
-            }
-
-            public String getName() {
-                return "GO Ontology";
-            }
-
-            public List<OntologyTerm> getParents() {
-                return Collections.EMPTY_LIST;
-            }
-
-            public List<OntologyTerm> getChildren() {
-                List<OntologyTerm> children = new ArrayList<OntologyTerm>( 3 );
-
-                children.add(new LazyLoadedOntologyTerm(ontologyIndexSearcher, "GO:0008150", "Biological process"));
-                children.add(new LazyLoadedOntologyTerm(ontologyIndexSearcher, "GO:0003674", "Molecular function"));
-                children.add(new LazyLoadedOntologyTerm(ontologyIndexSearcher, "GO:0005575", "Cellular component"));
-
-                return children;
-            }
-
-            public List<OntologyTerm> getParents(boolean includeCyclic) {
-                return getParents();
-            }
-
-            public List<OntologyTerm> getChildren(boolean includeCyclic) {
-                return getChildren();
-            }
-
-            public Set<OntologyTerm> getAllParentsToRoot() {
-                return Collections.EMPTY_SET;
-            }
-
-            public Collection<OntologyTerm> getChildrenAtDepth(int depth) {
-                throw new UnsupportedOperationException("Root does not support this operation");
-            }
-        };
 
         OntologyTermWrapper otwRoot = new OntologyTermWrapper(root, interactionIndexSearcher, interactorIndexSearcher, baseQuery,luceneQuery);
 
         setWrappedData(otwRoot);
     }
 
-    @Override
+    
+
+    /* @Override
     protected Object getChildData(Object parentData) {
         OntologyTermWrapper parent = (OntologyTermWrapper) parentData;
 
@@ -159,6 +119,6 @@ public class GoOntologyTreeModel extends ChildPropertyTreeModel {
             }
         }
         return colourArray[0];
-    }
+    }*/
 }
 

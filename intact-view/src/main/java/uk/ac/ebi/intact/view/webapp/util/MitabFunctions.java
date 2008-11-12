@@ -37,6 +37,8 @@ import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Functions to be used in the UI to control the display.
@@ -107,7 +109,7 @@ public final class MitabFunctions {
         }
     }
 
-    public static OntologyTermWrapper populateCounts(OntologyTermWrapper otw, String interactorDirectory, String interactionDirectory) {
+    public static OntologyTermWrapper populateCounts(OntologyTermWrapper otw, String interactorDirectory, String interactionDirectory, String interactorType) {
         int interactorCount;
         int interactionCount = 0;
 
@@ -116,18 +118,24 @@ public final class MitabFunctions {
             return otw;
         }
 
-        final String proteinSearchQuery = otw.getInteractorSearchQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
+        String interactorSearchQuery=null;
 
-        if ( log.isTraceEnabled() ) {
-            log.trace( "ProteinSearchQuery: " +proteinSearchQuery );
+        if( CvInteractorType.PROTEIN_MI_REF.equals( interactorType )){
+          interactorSearchQuery = otw.getInteractorSearchQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
+        }else if(CvInteractorType.SMALL_MOLECULE_MI_REF.equals( interactorType )){
+          interactorSearchQuery = otw.getInteractorSearchQuery()+" AND typeA:\""+ CvInteractorType.SMALL_MOLECULE_MI_REF+"\"";
         }
 
-        if (interactorCountCache.containsKey(proteinSearchQuery)) {
-            interactorCount = (Integer) interactorCountCache.get(proteinSearchQuery);
-        } else {
-            interactorCount = countHits(proteinSearchQuery, interactorDirectory);
+        if ( log.isTraceEnabled() ) {
+            log.trace( "InteractorSearchQuery: " +interactorSearchQuery );
+        }
 
-            interactorCountCache.put(proteinSearchQuery, interactorCount);
+        if (interactorCountCache.containsKey(interactorSearchQuery)) {
+            interactorCount = (Integer) interactorCountCache.get(interactorSearchQuery);
+        } else {
+            interactorCount = countHits(interactorSearchQuery, interactorDirectory);
+
+            interactorCountCache.put(interactorSearchQuery, interactorCount);
         }
 
         if (interactorCount > 0) {
@@ -249,5 +257,20 @@ public final class MitabFunctions {
         return null;
     }
 
+
+    public static Collection getFilteredCrossReferences( Collection xrefs, String filter ) {
+        if ( filter == null ) {
+            throw new NullPointerException( "You must give a non null filter" );
+        }
+
+        List<CrossReference> filteredList = new ArrayList<CrossReference>();
+
+        for ( CrossReference xref : ( Collection<CrossReference> ) xrefs ) {
+            if ( filter.equals( xref.getText() ) ) {
+                filteredList.add( xref );
+            }
+        }
+        return filteredList;
+    }
 
 }

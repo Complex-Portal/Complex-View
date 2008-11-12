@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.view.webapp.controller.browse.GoOntologyTreeModel;
+import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTreeModel;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.bridges.ontologies.OntologyIndexSearcher;
 

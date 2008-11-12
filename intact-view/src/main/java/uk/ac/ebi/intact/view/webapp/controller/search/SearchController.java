@@ -81,6 +81,7 @@ public class SearchController extends JpaBaseController {
 
     private boolean showProperties;
     private boolean showAlternativeIds;
+    private boolean showBrandNames;
 
     private boolean expandedView;
 
@@ -383,6 +384,14 @@ public class SearchController extends JpaBaseController {
 
     public void setShowAlternativeIds( boolean showAlternativeIds ) {
         this.showAlternativeIds = showAlternativeIds;
+    }
+
+    public boolean isShowBrandNames() {
+        return showBrandNames;
+    }
+
+    public void setShowBrandNames( boolean showBrandNames ) {
+        this.showBrandNames = showBrandNames;
     }
 
     public boolean isExpandedView() {

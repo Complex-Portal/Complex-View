@@ -56,6 +56,13 @@
         </navigation-case>
     </navigation-rule>
 
+     <navigation-rule>
+        <navigation-case>
+            <from-outcome>browse.chebibrowser</from-outcome>
+            <to-view-id>/pages/browse/chebibrowser.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
     <navigation-rule>
         <navigation-case>
             <from-outcome>list</from-outcome>

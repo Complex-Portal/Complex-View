@@ -9,6 +9,7 @@
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
@@ -116,16 +117,19 @@
 </tr:column>
 
 <tr:column headerText="Brand Name">
-    <tr:iterator var="xref" value="#{compound.alternativeIdentifiers}" varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.text}">
+   
+     <iam:collapsibleIterator id="csd_altIdA_#{status.index}"
+                             disclosed="#{searchBean.showBrandNames}"
+                             value="#{iamf:getFilteredCrossReferences(compound.alternativeIdentifiers,'drug brand name')}"
+                             maxShown="5">
+         <tr:switcher facetName="#{item.text}">
             <f:facet name="drug brand name">
                 <h:panelGroup>
-                    <h:outputText value="#{xref.identifier}"/>
-                    <br/>
+                    <h:outputText value="#{item.identifier}"/>
                 </h:panelGroup>
             </f:facet>
         </tr:switcher>
-    </tr:iterator>
+    </iam:collapsibleIterator>
 </tr:column>
 
 <tr:column headerText="Description">

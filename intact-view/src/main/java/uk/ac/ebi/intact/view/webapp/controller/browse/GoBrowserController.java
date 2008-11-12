@@ -15,32 +15,20 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.store.Directory;
-import org.apache.myfaces.trinidad.event.DisclosureEvent;
-import org.apache.myfaces.trinidad.event.FocusEvent;
-import org.apache.myfaces.trinidad.event.RowDisclosureEvent;
-import org.apache.myfaces.trinidad.event.AttributeChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.bridges.ontologies.OntologyIndexSearcher;
+import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.application.IndexRequestController;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
-import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
+import uk.ac.ebi.intact.view.webapp.util.GoOntologyTerm;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.io.IOException;
-import java.util.List;
 
 /**
- * TODO comment that class header
+ * Controller for GoBrowsing
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -55,7 +43,7 @@ public class GoBrowserController extends BaseController{
     @Autowired
     private SearchController searchController;
 
-    private GoOntologyTreeModel goOntologyTreeModel;
+    private OntologyTreeModel goOntologyTreeModel;
 
     public GoBrowserController() {
     }
@@ -66,14 +54,16 @@ public class GoBrowserController extends BaseController{
 
         String searchQuery = userQuery.getCurrentQuery();
         String luceneQuery = searchController.getResults().getResult().getLuceneQuery().toString();
-        goOntologyTreeModel = new GoOntologyTreeModel(indexRequestController.getOntologyIndexSearcher(),
+
+        final OntologyTerm goOntologyRoot = new GoOntologyTerm( indexRequestController.getOntologyIndexSearcher());
+        goOntologyTreeModel = new OntologyTreeModel(goOntologyRoot,
                                                       null,
                                                       null,
                                                       searchQuery,
                                                       luceneQuery);
     }
 
-    public GoOntologyTreeModel getGoOntologyTreeModel() {
+    public OntologyTreeModel getOntologyTreeModel() {
         return goOntologyTreeModel;
     }
 }
