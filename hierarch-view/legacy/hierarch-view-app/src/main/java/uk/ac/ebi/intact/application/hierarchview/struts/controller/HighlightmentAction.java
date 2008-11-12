@@ -76,7 +76,7 @@ public final class HighlightmentAction extends IntactBaseAction {
             if ( null != nodeHighlightmentSource ) {
                 nodeHighlightmentSource.saveOptions( request, session );
             } else {
-                addError( "error.NodeHighlightmentSource.unknown", source );
+                addError( "error.HighlightmentSource.unknown", source );
             }
         }
 
