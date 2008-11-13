@@ -172,6 +172,10 @@ public class HVNetworkBuilder {
         Collection<BinaryInteraction> bis = dataservice.getBinaryInteractionsByQueryString( queryString );
         Collection<String> centralProteinAcs = dataservice.getCentralProteins();
 
+        if (bis.isEmpty()) {
+            return new InteractionNetwork(new BinaryGraphNetwork());
+        }
+
         return new InteractionNetwork( builder.createGraphNetwork( bis, centralProteinAcs ) );
     }
 
