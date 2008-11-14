@@ -9,7 +9,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>psicquic-ws</artifactId>
+    <artifactId>psicquic-ws-legacy</artifactId>
     <version>1.6.0-SMAPSHOT</version>
 
     <name>IntAct Services :: PSICQUIC :: WS</name>
