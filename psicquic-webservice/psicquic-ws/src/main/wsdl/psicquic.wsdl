@@ -86,7 +86,7 @@
 
             <xs:complexType name="resultSetType">
                 <xs:sequence>
-                    <xs:element name="entrySet" type="mif:entrySetType" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="entrySet" type="mif:entrySet" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="mitab" type="mitab:mitabType" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
             </xs:complexType>
