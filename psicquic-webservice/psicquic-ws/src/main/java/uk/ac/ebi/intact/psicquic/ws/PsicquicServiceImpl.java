@@ -16,7 +16,10 @@
 package uk.ac.ebi.intact.psicquic.ws;
 
 import org.springframework.stereotype.Controller;
+import org.hupo.psi.mi.psicquic.*;
 import uk.ac.ebi.intact.context.IntactContext;
+
+import javax.jws.WebParam;
 
 /**
  * TODO comment that class header
@@ -25,9 +28,37 @@ import uk.ac.ebi.intact.context.IntactContext;
  * @version $Id$
  */
 @Controller
-public class PsicquicServiceImpl implements PsicquicService {
+public class PsicquicServiceImpl implements PsicquicPortType {
 
-    public int countInteractions() {
-        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getInteractionDao().countAll();
+    public QueryResponse getByInteractor(DbRefRequestType dbRef) throws NotSupportedDataTypeException, NotSupportedMethodException, PsicquicServiceException {
+        return null;
+    }
+
+    public QueryResponse getByInteraction(DbRefRequestType dbRef) throws NotSupportedDataTypeException, NotSupportedMethodException, PsicquicServiceException {
+        return null;
+    }
+
+    public QueryResponse getByInteractorList(DbRefListRequestType dbRefList) throws NotSupportedDataTypeException, NotSupportedMethodException, PsicquicServiceException {
+        return null;
+    }
+
+    public QueryResponse getBetweenList(DbRefListRequestType dbRefList) throws NotSupportedDataTypeException, NotSupportedMethodException, PsicquicServiceException {
+        return null;
+    }
+
+    public QueryResponse getByInteractionList(GetByInteractionListRequest dbRefList) throws NotSupportedDataTypeException, NotSupportedMethodException, PsicquicServiceException {
+        return null;
+    }
+
+    public QueryResponse getByQuery(GetByQueryStringRequest query) throws NotSupportedDataTypeException, NotSupportedMethodException, PsicquicServiceException {
+        return null;
+    }
+
+    public String getVersion() throws PsicquicServiceException {
+        return "NO VERSION!";
+    }
+
+    public SupportedDataTypes getSupportedDataTypes() throws PsicquicServiceException {
+        return null;
     }
 }

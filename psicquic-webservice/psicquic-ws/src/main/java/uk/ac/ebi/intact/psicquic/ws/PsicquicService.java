@@ -17,6 +17,8 @@ package uk.ac.ebi.intact.psicquic.ws;
 
 import javax.jws.WebService;
 import javax.jws.WebMethod;
+import javax.jws.WebResult;
+import javax.jws.WebParam;
 
 /**
  * TODO comment that class header

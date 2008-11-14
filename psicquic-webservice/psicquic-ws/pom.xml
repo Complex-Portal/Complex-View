@@ -28,9 +28,31 @@
 
     </properties>
 
-    	<build>
-		<plugins>
-			<plugin>
+    <build>
+        <finalName>${artifactId}-${version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>1.9</version>
+                <executions>
+                    <execution>
+                        <id>wsimport</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <extension>true</extension>
+                    <wsdlDirectory>${project.basedir}/src/main/wsdl/</wsdlDirectory>
+                    <bindingDirectory>${project.basedir}/src/main/wsdl/</bindingDirectory>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
+
+            <plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
 				<version>6.1.8</version>

@@ -54,14 +54,6 @@
 
 	<!-- Service endpoint -->
 	<!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
-	<jaxws:endpoint id="contactUsService"
-		implementorClass="contactus.ContactUsServiceImpl"
-		implementor="#contactUsServiceImpl" address="/contactus">
-		<jaxws:serviceFactory>
-			<ref bean="jaxws-and-aegis-service-factory" />
-		</jaxws:serviceFactory>
-	</jaxws:endpoint>
-
     <jaxws:endpoint id="psicquicService"
 		implementorClass="uk.ac.ebi.intact.psicquic.ws.PsicquicServiceImpl"
 		implementor="#psicquicServiceImpl" address="/psicquic">
