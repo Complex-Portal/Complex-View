@@ -6,16 +6,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <context:component-scan base-package="uk.ac.ebi.intact.psicquic.ws"/>
+    
 
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
-
-
+    <!--
     <bean id="intactInitBean" class="uk.ac.ebi.intact.webapp.spring.IntactWebInitializingBean"
             p:entityManagerFactory-ref="entityManagerFactory"/>
-
-    <!-- Comment this on production -->
-    <!-- Creates some data if the database is empty -->
-    <!--<bean id="dataPopInitBean" class="uk.ac.ebi.intact.services.search.dev.IntactPopulatorBean" depends-on="intactInitBean"/>-->
+            -->
 
 </beans>

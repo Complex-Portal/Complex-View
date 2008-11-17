@@ -91,25 +91,35 @@
                 </xs:sequence>
             </xs:complexType>
 
+            <xs:complexType name="supportedTypesType">
+                <xs:sequence>
+                    <xs:element name="supportedType" type="xs:string" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="emptyType"/>
+
             <!-- elements -->
 
             <xs:element name="getByInteractorRequest" type="psq:dbRefRequestType"/>
             <xs:element name="getByInteractionRequest" type="psq:dbRefRequestType"/>
             <xs:element name="getByInteractorListRequest" type="psq:dbRefListRequestType"/>
-            <xs:element name="getByInteractionListRequest" type="psq:dbRefListType"/>
+            <xs:element name="getByInteractionListRequest" type="psq:dbRefListRequestType"/>
             <xs:element name="getBetweenListRequest" type="psq:dbRefListRequestType"/>
             <xs:element name="getByQueryStringRequest" type="psq:queryRequestType"/>
 
+            <xs:element name="getVersionRequest" type="psq:emptyType"/>
+            <xs:element name="getSupportedReturnTypesRequest" type="psq:emptyType"/>
+            <xs:element name="getSupportedDbRefTypesRequest" type="psq:emptyType"/>
+            <xs:element name="getSupportedQueryTypesRequest" type="psq:emptyType"/>
+
             <xs:element name="getVersionResponse" type="xs:string"/>
-            <xs:element name="supportedDataTypes">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="dataType" type="xs:string" maxOccurs="unbounded"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+
+            <xs:element name="supportedTypes" type="psq:supportedTypesType"/>
 
             <xs:element name="queryResponse" type="psq:queryResponseType"/>
+
+
 
             <!-- faults -->
 
@@ -178,17 +188,35 @@
     </message>
 
     <message name="getVersionRequestMessage">
+        <part name="getVersionRequest" element="psq:getVersionRequest"/>
     </message>
 
     <message name="getVersionResponseMessage">
         <part name="output" element="psq:getVersionResponse"/>
     </message>
 
-    <message name="getSupportedDataTypesRequestMessage">
+    <message name="getSupportedReturnTypesRequestMessage">
+        <part name="supportedReturnTypes" element="psq:getSupportedReturnTypesRequest"/>
     </message>
 
-    <message name="getSupportedDataTypesResponseMessage">
-        <part name="output" element="psq:supportedDataTypes"/>
+    <message name="getSupportedReturnTypesResponseMessage">
+        <part name="output" element="psq:supportedTypes"/>
+    </message>
+
+    <message name="getSupportedDbRefTypesRequestMessage">
+        <part name="supportedDbRefTypes" element="psq:getSupportedDbRefTypesRequest"/>
+    </message>
+
+    <message name="getSupportedDbRefTypesResponseMessage">
+        <part name="output" element="psq:supportedTypes"/>
+    </message>
+
+    <message name="getSupportedQueryTypesRequestMessage">
+        <part name="supportedQueryTypes" element="psq:getSupportedQueryTypesRequest"/>
+    </message>
+
+    <message name="getSupportedQueryTypesResponseMessage">
+        <part name="output" element="psq:supportedTypes"/>
     </message>
 
     <message name="psicquicServiceException">
@@ -205,7 +233,7 @@
 
     <!-- Port type (operations) -->
 
-    <portType name="psicquicPortType">
+    <portType name="psicquicService">
 
         <!-- get interactions by interactor ref -->
 
@@ -286,17 +314,32 @@
 
         <!-- get supported data types -->
 
-        <operation name="getSupportedDataTypes">
-            <input message="psq:getSupportedDataTypesRequestMessage"/>
-            <output name="getSupportedDataTypesResponseMessage" message="psq:getSupportedDataTypesResponseMessage"/>
-            <fault name="getSupportedDataTypesException" message="psq:psicquicServiceException"/>
+        <operation name="getSupportedReturnTypes">
+            <input message="psq:getSupportedReturnTypesRequestMessage"/>
+            <output name="getSupportedReturnTypesResponseMessage" message="psq:getSupportedReturnTypesResponseMessage"/>
+            <fault name="getSupportedReturnTypesException" message="psq:psicquicServiceException"/>
+        </operation>
+
+        <!-- get supported db ref types -->
+
+        <operation name="getSupportedDbRefTypes">
+            <input message="psq:getSupportedDbRefTypesRequestMessage"/>
+            <output name="getSupportedDbRefTypesResponseMessage" message="psq:getSupportedDbRefTypesResponseMessage"/>
+            <fault name="getSupportedDbRefTypesException" message="psq:psicquicServiceException"/>
+        </operation>
+
+        <!-- get supported query types -->
+
+        <operation name="getSupportedQueryTypes">
+            <input message="psq:getSupportedQueryTypesRequestMessage"/>
+            <output name="getSupportedQueryTypesResponseMessage" message="psq:getSupportedQueryTypesResponseMessage"/>
+            <fault name="getSupportedQueryTypesException" message="psq:psicquicServiceException"/>
         </operation>
 
     </portType>
 
     <!-- BINDING (bind operations) -->
-
-    <binding name="psicquicSoapBinding" type="psq:psicquicPortType">
+    <binding name="psicquicSoapBinding" type="psq:psicquicService">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
         <operation name="getByInteractor">
@@ -433,16 +476,42 @@
 
         </operation>
 
-        <operation name="getSupportedDataTypes">
-            <soap:operation soapAction="getSupportedDataTypes"/>
+        <operation name="getSupportedReturnTypes">
+            <soap:operation soapAction="getSupportedReturnTypes"/>
             <input>
                 <soap:body use="literal"/>
             </input>
             <output>
                 <soap:body use="literal"/>
             </output>
-            <fault name="getSupportedDataTypesException">
-                <soap:fault name="getSupportedDataTypesException" use="literal"/>
+            <fault name="getSupportedReturnTypesException">
+                <soap:fault name="getSupportedReturnTypesException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getSupportedDbRefTypes">
+            <soap:operation soapAction="getSupportedDbRefTypes"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="getSupportedDbRefTypesException">
+                <soap:fault name="getSupportedDbRefTypesException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getSupportedQueryTypes">
+            <soap:operation soapAction="getSupportedQueryTypes"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="getSupportedQueryTypesException">
+                <soap:fault name="getSupportedQueryTypesException" use="literal"/>
             </fault>
         </operation>
 

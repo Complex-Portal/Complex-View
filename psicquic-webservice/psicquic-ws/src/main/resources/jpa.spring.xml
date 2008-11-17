@@ -8,7 +8,7 @@
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-
+    <!--
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
           p:entityManagerFactory-ref="entityManagerFactory" p:dataSource-ref="dataSource"
             />
@@ -43,5 +43,6 @@
           p:url="${hibernate.url}"
           p:username="${db.user}"
           p:password="${db.password}"/>
+          -->
 
 </beans>
