@@ -16,11 +16,11 @@
         </schemaBindings>
     </bindings>
 
-    <bindings schemaLocation="psicquic.xsd" node="/xs:schema">
-        <schemaBindings>
-            <package name="org.hupo.psi.mi.psicquic"/>
-        </schemaBindings>
-    </bindings>
+    <!--<bindings schemaLocation="psicquic.xsd" node="/xs:schema">-->
+        <!--<schemaBindings>-->
+            <!--<package name="org.hupo.psi.mi.psicquic"/>-->
+        <!--</schemaBindings>-->
+    <!--</bindings>-->
 
     <bindings schemaLocation="http://www.ebi.ac.uk/~intact/mi/psimitab-1.0.xsd" node="/xs:schema">
         <schemaBindings>

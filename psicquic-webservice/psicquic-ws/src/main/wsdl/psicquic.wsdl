@@ -13,7 +13,7 @@
                    targetNamespace="http://psi.hupo.org/mi/psicquic">
 
             <!--<xs:import namespace="http://psi.hupo.org/mi/mif"-->
-                       <!--schemaLocation="http://psidev.sourceforge.net/mi/rel25/src/MIF253.xsd"/>-->
+            <!--schemaLocation="http://psidev.sourceforge.net/mi/rel25/src/MIF253.xsd"/>-->
             <xs:import namespace="http://psi.hupo.org/mi/mif"
                        schemaLocation="MIF254.xsd"/>
             <xs:import namespace="http://psi.hupo.org/mi/mitab"
@@ -21,27 +21,46 @@
 
             <!-- types -->
 
-            <xs:complexType name="dbRefType">
+            <xs:element name="dbRefListRequest" type="psq:dbRefListRequest"/>
+            <xs:element name="getByInteractionRequest" nillable="true" type="psq:dbRefRequest"/>
+            <xs:element name="getByInteractorRequest" nillable="true" type="psq:dbRefRequest"/>
+            <xs:element name="getVersionResponse" nillable="true" type="xs:string"/>
+            <xs:element name="queryRequest" type="psq:queryRequest"/>
+
+            <xs:element name="queryResponse" type="psq:queryResponse"/>
+            <xs:element name="supportedTypes" type="psq:supportedTypes"/>
+
+            <xs:complexType name="dbRefRequest">
                 <xs:sequence>
-                    <xs:element name="dbAc" type="xs:string" default=""/>
-                    <xs:element name="id" type="xs:string" minOccurs="1"/>
+                    <xs:element name="dbRef" type="psq:dbRef"/>
+                    <xs:element name="resultType" type="xs:string"/>
+                    <xs:element default="0" name="firstResult" type="xs:int"/>
+                    <xs:element default="50" name="blockSize" type="xs:int"/>
                 </xs:sequence>
             </xs:complexType>
 
-            <xs:complexType name="dbRefListType">
+            <xs:complexType name="dbRef">
                 <xs:sequence>
-                    <xs:element name="dbRef" type="psq:dbRefType" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element default="" name="dbAc" type="xs:string"/>
+                    <xs:element name="id" type="xs:string"/>
                 </xs:sequence>
             </xs:complexType>
 
-            <xs:complexType name="queryType">
+            <xs:complexType name="queryResponse">
                 <xs:sequence>
-                    <xs:element name="queryFormat" type="xs:string"/>
-                    <xs:element name="queryString" type="xs:string"/>
+                    <xs:element name="resultSet" type="psq:resultSet"/>
+                    <xs:element name="resultInfo" type="psq:resultInfo"/>
                 </xs:sequence>
             </xs:complexType>
 
-            <xs:complexType name="resultInfoType">
+            <xs:complexType name="resultSet">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="entrySet" type="mif:entrySet"/>
+                    <xs:element minOccurs="0" name="mitab" type="mitab:mitabType"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="resultInfo">
                 <xs:sequence>
                     <xs:element name="firstResult" type="xs:int"/>
                     <xs:element name="totalResults" type="xs:int"/>
@@ -49,88 +68,44 @@
                     <xs:element name="blockSize" type="xs:int"/>
                     <xs:element name="expirationDate" type="xs:dateTime"/>
                 </xs:sequence>
-            </xs:complexType>
 
-            <xs:complexType name="dbRefRequestType">
-                <xs:sequence>
-                    <xs:element name="dbRef" type="psq:dbRefType"/>
-                    <xs:element name="resultType" type="xs:string" minOccurs="1"/>
-                    <xs:element name="firstResult" type="xs:int" default="0"/>
-                    <xs:element name="blockSize" type="xs:int" default="50"/>
-                </xs:sequence>
             </xs:complexType>
-
-            <xs:complexType name="dbRefListRequestType">
+            <xs:complexType name="queryRequest">
                 <xs:sequence>
-                    <xs:element name="dbRefList" type="psq:dbRefType"/>
+                    <xs:element name="query" type="psq:query"/>
                     <xs:element name="resultType" type="xs:string"/>
-                    <xs:element name="firstResult" type="xs:int" default="0"/>
-                    <xs:element name="blockSize" type="xs:int" default="50"/>
+                    <xs:element default="0" name="firstResult" type="xs:int"/>
+                    <xs:element default="50" name="blockSize" type="xs:int"/>
                 </xs:sequence>
             </xs:complexType>
 
-            <xs:complexType name="queryRequestType">
+            <xs:complexType name="query">
                 <xs:sequence>
-                    <xs:element name="query" type="psq:queryType"/>
+                    <xs:element name="queryFormat" type="xs:string"/>
+                    <xs:element name="queryString" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="supportedTypes">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="supportedType" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="dbRefListRequest">
+                <xs:sequence>
+                    <xs:element name="dbRefList" type="psq:dbRef"/>
                     <xs:element name="resultType" type="xs:string"/>
-                    <xs:element name="firstResult" type="xs:int" default="0"/>
-                    <xs:element name="blockSize" type="xs:int" default="50"/>
+                    <xs:element default="0" name="firstResult" type="xs:int"/>
+                    <xs:element default="50" name="blockSize" type="xs:int"/>
                 </xs:sequence>
             </xs:complexType>
 
-            <xs:complexType name="queryResponseType">
+            <xs:complexType name="dbRefList">
                 <xs:sequence>
-                    <xs:element name="resultSet" type="psq:resultSetType"/>
-                    <xs:element name="resultInfo" type="psq:resultInfoType"/>
+                    <xs:element maxOccurs="unbounded" name="dbRef" type="psq:dbRef"/>
                 </xs:sequence>
             </xs:complexType>
-
-            <xs:complexType name="resultSetType">
-                <xs:sequence>
-                    <xs:element name="entrySet" type="mif:entrySet" minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="mitab" type="mitab:mitabType" minOccurs="0" maxOccurs="1"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="supportedTypesType">
-                <xs:sequence>
-                    <xs:element name="supportedType" type="xs:string" maxOccurs="unbounded"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="emptyType"/>
-
-            <xs:complexType name="interactorListRequest">
-                    <xs:sequence>
-                        <xs:element minOccurs="1" name="dbRefListRequest" type="psq:dbRefListRequestType"/>
-                        <xs:element minOccurs="1" name="operand" type="xs:string"/>
-                    </xs:sequence>
-                </xs:complexType>
-
-            <!-- elements -->
-
-            <xs:element name="getByInteractorRequest" type="psq:dbRefRequestType"/>
-            <xs:element name="getByInteractionRequest" type="psq:dbRefRequestType"/>
-
-            <xs:element name="getByInteractorListRequest" type="psq:interactorListRequest"/>
-
-            <xs:element name="getByInteractionListRequest" type="psq:dbRefListRequestType"/>
-            <xs:element name="getByQueryStringRequest" type="psq:queryRequestType"/>
-
-            <xs:element name="getVersionRequest" type="psq:emptyType"/>
-            <xs:element name="getSupportedReturnTypesRequest" type="psq:emptyType"/>
-            <xs:element name="getSupportedDbAcsRequest" type="psq:emptyType"/>
-            <xs:element name="getSupportedQueryTypesRequest" type="psq:emptyType"/>
-
-            <xs:element name="getVersionResponse" type="xs:string"/>
-
-            <xs:element name="supportedTypes" type="psq:supportedTypesType"/>
-
-            <xs:element name="queryResponse" type="psq:queryResponseType"/>
-
-
-
-            <!-- faults -->
 
             <xs:element name="psicquicFault">
                 <xs:complexType>
@@ -141,349 +116,317 @@
                 </xs:complexType>
             </xs:element>
 
+            <xs:element name="getByQueryStringRequest" nillable="true" type="psq:queryRequest"/>
+            <xs:element name="operand" nillable="true" type="xs:string"/>
+            <xs:element name="getByInteractionListRequest" nillable="true" type="psq:dbRefListRequest"/>
+
         </xs:schema>
 
     </types>
 
     <!-- MESSAGES -->
 
-    <message name="getByInteractorRequestMessage">
-        <part name="dbRef" element="psq:getByInteractorRequest"/>
+    <message name="getSupportedReturnTypes">
     </message>
 
-    <message name="getByInteractorResponseMessage">
-        <part name="queryResponse" element="psq:queryResponse"/>
-    </message>
-
-    <message name="getByInteractionRequestMessage">
-        <part name="dbRef" element="psq:getByInteractionRequest"/>
-    </message>
-
-    <message name="getByInteractionResponseMessage">
-        <part name="queryResponse" element="psq:queryResponse"/>
-    </message>
-
-    <message name="getByInteractorListRequestMessage">
-        <part name="parameters" element="psq:getByInteractorListRequest"/>
-    </message>
-
-    <message name="getByInteractorListResponseMessage">
-        <part name="queryResponse" element="psq:queryResponse"/>
-    </message>
-
-    <message name="getByInteractionListRequestMessage">
-        <part name="dbRefList" element="psq:getByInteractionListRequest"/>
-    </message>
-
-    <message name="getByInteractionListResponseMessage">
-        <part name="queryResponse" element="psq:queryResponse"/>
-    </message>
-
-    <message name="getByQueryRequestMessage">
-        <part name="query" element="psq:getByQueryStringRequest"/>
-    </message>
-
-    <message name="getByQueryResponseMessage">
-        <part name="queryResponse" element="psq:queryResponse"/>
-    </message>
-
-    <message name="getVersionRequestMessage">
-        <part name="getVersionRequest" element="psq:getVersionRequest"/>
-    </message>
-
-    <message name="getVersionResponseMessage">
-        <part name="output" element="psq:getVersionResponse"/>
-    </message>
-
-    <message name="getSupportedReturnTypesRequestMessage">
-        <part name="supportedReturnTypes" element="psq:getSupportedReturnTypesRequest"/>
-    </message>
-
-    <message name="getSupportedReturnTypesResponseMessage">
-        <part name="output" element="psq:supportedTypes"/>
-    </message>
-
-    <message name="getSupportedDbAcsRequestMessage">
-        <part name="supportedDbAcs" element="psq:getSupportedDbAcsRequest"/>
-    </message>
-
-    <message name="getSupportedDbAcsResponseMessage">
-        <part name="output" element="psq:supportedTypes"/>
-    </message>
-
-    <message name="getSupportedQueryTypesRequestMessage">
-        <part name="supportedQueryTypes" element="psq:getSupportedQueryTypesRequest"/>
-    </message>
-
-    <message name="getSupportedQueryTypesResponseMessage">
-        <part name="output" element="psq:supportedTypes"/>
-    </message>
-
-    <message name="psicquicServiceException">
-        <part name="fault" element="psq:psicquicFault"/>
-    </message>
-
-    <message name="notSupportedTypeException">
-        <part name="fault" element="psq:psicquicFault"/>
+    <message name="getVersion">
     </message>
 
     <message name="notSupportedMethodException">
-        <part name="fault" element="psq:psicquicFault"/>
+        <part element="psq:psicquicFault" name="notSupportedMethodException"/>
     </message>
 
-    <!-- Port type (operations) -->
+    <message name="getByInteractorListResponse">
+        <part element="psq:queryResponse" name="QueryResponse"/>
+    </message>
+
+    <message name="getByInteractorResponse">
+        <part element="psq:queryResponse" name="QueryResponse"/>
+    </message>
+
+    <message name="getByInteractor">
+        <part element="psq:getByInteractorRequest" name="dbRef"/>
+    </message>
+
+    <message name="getByInteractionListResponse">
+        <part element="psq:queryResponse" name="QueryResponse"/>
+    </message>
+
+    <message name="getByInteractorList">
+        <part element="psq:dbRefListRequest" name="dbRefListRequest"/>
+        <part element="psq:operand" name="operand"/>
+    </message>
+
+    <message name="getByInteractionResponse">
+        <part element="psq:queryResponse" name="QueryResponse"/>
+    </message>
+
+    <message name="getSupportedDbAcsResponse">
+        <part element="psq:supportedTypes" name="output"/>
+    </message>
+
+    <message name="PsicquicServiceException">
+        <part element="psq:psicquicFault" name="PsicquicServiceException"/>
+    </message>
+
+    <message name="getVersionResponse">
+        <part element="psq:getVersionResponse" name="output"/>
+    </message>
+
+    <message name="getSupportedReturnTypesResponse">
+        <part element="psq:supportedTypes" name="output"/>
+    </message>
+
+    <message name="getByQuery">
+        <part element="psq:getByQueryStringRequest" name="query"/>
+    </message>
+
+    <message name="getByInteraction">
+        <part element="psq:getByInteractionRequest" name="dbRef"/>
+    </message>
+
+    <message name="notSupportedTypeException">
+        <part element="psq:psicquicFault" name="notSupportedTypeException"/>
+    </message>
+
+    <message name="getSupportedQueryTypes">
+    </message>
+
+    <message name="getSupportedDbAcs">
+    </message>
+
+    <message name="getSupportedQueryTypesResponse">
+        <part element="psq:supportedTypes" name="output"/>
+    </message>
+
+    <message name="getByQueryResponse">
+        <part element="psq:queryResponse" name="QueryResponse"/>
+    </message>
+
+    <message name="getByInteractionList">
+        <part element="psq:getByInteractionListRequest" name="dbRefList"/>
+    </message>
+
+    <!-- PORT TYPE -->
 
     <portType name="psicquicService">
 
-        <!-- get interactions by interactor ref -->
-
-        <operation name="getByInteractor" parameterOrder="dbRef">
-
-            <input name="getByInteractorRequestMessage" message="psq:getByInteractorRequestMessage"/>
-            <output name="getByInteractorResponseMessage" message="psq:getByInteractorResponseMessage"/>
-
-            <fault name="getByInteractorException1" message="psq:psicquicServiceException"/>
-            <fault name="getByInteractorException2" message="psq:notSupportedMethodException"/>
-            <fault name="getByInteractorException3" message="psq:notSupportedTypeException"/>
+        <operation name="getByInteractor">
+            <input message="psq:getByInteractor" name="getByInteractor"/>
+            <output message="psq:getByInteractorResponse" name="getByInteractorResponse"/>
+            <fault message="psq:notSupportedMethodException" name="notSupportedMethodException"/>
+            <fault message="psq:notSupportedTypeException" name="notSupportedTypeException"/>
+            <fault message="psq:PsicquicServiceException" name="PsicquicServiceException"/>
         </operation>
-
-        <!-- get interactions by interaction ref -->
-
-        <operation name="getByInteraction" parameterOrder="dbRef">
-            <input name="getByInteractionRequestMessage" message="psq:getByInteractionRequestMessage"/>
-            <output name="getbyInteractionResponseMessage" message="psq:getByInteractionResponseMessage"/>
-
-            <fault name="getByInteractionException1" message="psq:psicquicServiceException"/>
-            <fault name="getByInteractionException2" message="psq:notSupportedMethodException"/>
-            <fault name="getByInteractionException3" message="psq:notSupportedTypeException"/>
-        </operation>
-
-        <!-- get interactions by interactor ref list -->
-
-        <operation name="getByInteractorList">
-            <input name="getByInteractorListRequestMessage" message="psq:getByInteractorListRequestMessage"/>
-            <output name="getByInteractorListResponseMessage" message="psq:getByInteractorListResponseMessage"/>
-
-            <fault name="getByInteractorListException1" message="psq:psicquicServiceException"/>
-            <fault name="getByInteractorListException2" message="psq:notSupportedMethodException"/>
-            <fault name="getByInteractorListException3" message="psq:notSupportedTypeException"/>
-        </operation>
-
-        <!-- get interactions by interaction ref list -->
-
-        <operation name="getByInteractionList" parameterOrder="dbRefList">
-            <input name="getByInteractionListRequestMessage" message="psq:getByInteractionListRequestMessage"/>
-            <output name="getByInteractionListResponseMessage" message="psq:getByInteractionListResponseMessage"/>
-
-            <fault name="getByInteractionListException1" message="psq:psicquicServiceException"/>
-            <fault name="getByInteractionListException2" message="psq:notSupportedMethodException"/>
-            <fault name="getByInteractionListException3" message="psq:notSupportedTypeException"/>
-        </operation>
-
-        <!-- get interactions by query sring -->
-
-        <operation name="getByQuery" parameterOrder="query">
-
-            <input name="getByQueryRequestMessage" message="psq:getByQueryRequestMessage"/>
-            <output name="getByQueryResponseMessage" message="psq:getByQueryResponseMessage"/>
-
-            <fault name="getByQueryException1" message="psq:psicquicServiceException"/>
-            <fault name="getByQueryException2" message="psq:notSupportedMethodException"/>
-            <fault name="getByQueryException3" message="psq:notSupportedTypeException"/>
-        </operation>
-
-        <!-- get version -->
 
         <operation name="getVersion">
-            <input message="psq:getVersionRequestMessage"/>
-            <output name="getVersionResponseMessage" message="psq:getVersionResponseMessage"/>
-
-            <fault name="getVersionException" message="psq:psicquicServiceException"/>
+            <input message="psq:getVersion" name="getVersion"/>
+            <output message="psq:getVersionResponse" name="getVersionResponse"/>
+            <fault message="psq:PsicquicServiceException" name="PsicquicServiceException"/>
         </operation>
 
-        <!-- get supported data types -->
-
-        <operation name="getSupportedReturnTypes">
-            <input message="psq:getSupportedReturnTypesRequestMessage"/>
-            <output name="getSupportedReturnTypesResponseMessage" message="psq:getSupportedReturnTypesResponseMessage"/>
-            <fault name="getSupportedReturnTypesException" message="psq:psicquicServiceException"/>
+        <operation name="getByQuery">
+            <input message="psq:getByQuery" name="getByQuery"/>
+            <output message="psq:getByQueryResponse" name="getByQueryResponse"/>
+            <fault message="psq:notSupportedMethodException" name="notSupportedMethodException"/>
+            <fault message="psq:notSupportedTypeException" name="notSupportedTypeException"/>
+            <fault message="psq:PsicquicServiceException" name="PsicquicServiceException"/>
         </operation>
-
-        <!-- get supported db ref types -->
-
-        <operation name="getSupportedDbAcs">
-            <input message="psq:getSupportedDbAcsRequestMessage"/>
-            <output name="getSupportedDbAcsResponseMessage" message="psq:getSupportedDbAcsResponseMessage"/>
-            <fault name="getSupportedDbAcsException" message="psq:psicquicServiceException"/>
-        </operation>
-
-        <!-- get supported query types -->
 
         <operation name="getSupportedQueryTypes">
-            <input message="psq:getSupportedQueryTypesRequestMessage"/>
-            <output name="getSupportedQueryTypesResponseMessage" message="psq:getSupportedQueryTypesResponseMessage"/>
-            <fault name="getSupportedQueryTypesException" message="psq:psicquicServiceException"/>
+            <input message="psq:getSupportedQueryTypes" name="getSupportedQueryTypes"/>
+            <output message="psq:getSupportedQueryTypesResponse" name="getSupportedQueryTypesResponse"/>
+            <fault message="psq:PsicquicServiceException" name="PsicquicServiceException"/>
         </operation>
 
+        <operation name="getSupportedReturnTypes">
+            <input message="psq:getSupportedReturnTypes" name="getSupportedReturnTypes"/>
+            <output message="psq:getSupportedReturnTypesResponse" name="getSupportedReturnTypesResponse"/>
+            <fault message="psq:PsicquicServiceException" name="PsicquicServiceException"/>
+        </operation>
+        <operation name="getByInteraction">
+            <input message="psq:getByInteraction" name="getByInteraction"/>
+            <output message="psq:getByInteractionResponse" name="getByInteractionResponse"/>
+            <fault message="psq:notSupportedMethodException" name="notSupportedMethodException"/>
+            <fault message="psq:notSupportedTypeException" name="notSupportedTypeException"/>
+            <fault message="psq:PsicquicServiceException" name="PsicquicServiceException"/>
+        </operation>
+
+        <operation name="getByInteractorList">
+            <input message="psq:getByInteractorList" name="getByInteractorList"/>
+            <output message="psq:getByInteractorListResponse" name="getByInteractorListResponse"/>
+            <fault message="psq:notSupportedMethodException" name="notSupportedMethodException"/>
+            <fault message="psq:notSupportedTypeException" name="notSupportedTypeException"/>
+            <fault message="psq:PsicquicServiceException" name="PsicquicServiceException"/>
+        </operation>
+
+        <operation name="getSupportedDbAcs">
+            <input message="psq:getSupportedDbAcs" name="getSupportedDbAcs"/>
+            <output message="psq:getSupportedDbAcsResponse" name="getSupportedDbAcsResponse"/>
+            <fault message="psq:PsicquicServiceException" name="PsicquicServiceException"/>
+        </operation>
+
+        <operation name="getByInteractionList">
+            <input message="psq:getByInteractionList" name="getByInteractionList"/>
+            <output message="psq:getByInteractionListResponse" name="getByInteractionListResponse"/>
+            <fault message="psq:notSupportedMethodException" name="notSupportedMethodException"/>
+            <fault message="psq:notSupportedTypeException" name="notSupportedTypeException"/>
+            <fault message="psq:PsicquicServiceException" name="PsicquicServiceException"/>
+        </operation>
     </portType>
 
-    <!-- BINDING (bind operations) -->
+
+    <!-- BINDING -->
+
     <binding name="psicquicSoapBinding" type="psq:psicquicService">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
         <operation name="getByInteractor">
-
-            <soap:operation soapAction="getByInteractor"/>
-            <input>
+            <soap:operation soapAction="getByInteractor" style="document"/>
+            <input name="getByInteractor">
                 <soap:body use="literal"/>
             </input>
-            <output>
+            <output name="getByInteractorResponse">
                 <soap:body use="literal"/>
             </output>
-            <fault name="getByInteractorException1">
-                <soap:fault name="getByInteractorException1" use="literal"/>
+            <fault name="notSupportedMethodException">
+                <soap:fault name="notSupportedMethodException" use="literal"/>
             </fault>
-            <fault name="getByInteractorException2">
-                <soap:fault name="getByInteractorException2" use="literal"/>
+            <fault name="notSupportedTypeException">
+                <soap:fault name="notSupportedTypeException" use="literal"/>
             </fault>
-            <fault name="getByInteractorException3">
-                <soap:fault name="getByInteractorException3" use="literal"/>
-            </fault>
-        </operation>
-
-        <operation name="getByInteraction">
-            <soap:operation soapAction="getByInteraction"/>
-            <input>
-                <soap:body use="literal"/>
-            </input>
-            <output>
-
-                <soap:body use="literal"/>
-            </output>
-            <fault name="getByInteractionException1">
-                <soap:fault name="getByInteractionException1" use="literal"/>
-            </fault>
-            <fault name="getByInteractionException2">
-                <soap:fault name="getByInteractionException2" use="literal"/>
-            </fault>
-            <fault name="getByInteractionException3">
-                <soap:fault name="getByInteractionException3" use="literal"/>
-            </fault>
-        </operation>
-
-        <operation name="getByInteractorList">
-            <soap:operation soapAction="getByInteractorList"/>
-
-            <input>
-                <soap:body use="literal"/>
-            </input>
-            <output>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="getByInteractorListException1">
-                <soap:fault name="getByInteractorListException1" use="literal"/>
-            </fault>
-            <fault name="getByInteractorListException2">
-                <soap:fault name="getByInteractorListException2" use="literal"/>
-            </fault>
-            <fault name="getByInteractorListException3">
-                <soap:fault name="getByInteractorListException3" use="literal"/>
-            </fault>
-
-        </operation>
-
-        <operation name="getByInteractionList">
-            <soap:operation soapAction="getByInteractionList"/>
-            <input>
-                <soap:body use="literal"/>
-            </input>
-            <output>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="getByInteractionListException1">
-                <soap:fault name="getByInteractionListException1" use="literal"/>
-            </fault>
-            <fault name="getByInteractionListException2">
-                <soap:fault name="getByInteractionListException2" use="literal"/>
-            </fault>
-            <fault name="getByInteractionListException3">
-                <soap:fault name="getByInteractionListException3" use="literal"/>
+            <fault name="PsicquicServiceException">
+                <soap:fault name="PsicquicServiceException" use="literal"/>
             </fault>
         </operation>
 
         <operation name="getByQuery">
-            <soap:operation soapAction="getByQuery"/>
-            <input>
+            <soap:operation soapAction="getByQuery" style="document"/>
+            <input name="getByQuery">
                 <soap:body use="literal"/>
             </input>
-            <output>
+            <output name="getByQueryResponse">
                 <soap:body use="literal"/>
             </output>
-
-            <fault name="getByQueryException1">
-                <soap:fault name="getByQueryException1" use="literal"/>
+            <fault name="notSupportedMethodException">
+                <soap:fault name="notSupportedMethodException" use="literal"/>
             </fault>
-            <fault name="getByQueryException2">
-                <soap:fault name="getByQueryException2" use="literal"/>
+            <fault name="notSupportedTypeException">
+                <soap:fault name="notSupportedTypeException" use="literal"/>
             </fault>
-            <fault name="getByQueryException3">
-                <soap:fault name="getByQueryException3" use="literal"/>
+            <fault name="PsicquicServiceException">
+                <soap:fault name="PsicquicServiceException" use="literal"/>
             </fault>
         </operation>
 
         <operation name="getVersion">
-            <soap:operation soapAction="getVersion"/>
-            <input>
+            <soap:operation soapAction="getVersion" style="document"/>
+            <input name="getVersion">
                 <soap:body use="literal"/>
             </input>
-            <output>
+            <output name="getVersionResponse">
                 <soap:body use="literal"/>
             </output>
-            <fault name="getVersionException">
-                <soap:fault name="getVersionException" use="literal"/>
-            </fault>
-
-        </operation>
-
-        <operation name="getSupportedReturnTypes">
-            <soap:operation soapAction="getSupportedReturnTypes"/>
-            <input>
-                <soap:body use="literal"/>
-            </input>
-            <output>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="getSupportedReturnTypesException">
-                <soap:fault name="getSupportedReturnTypesException" use="literal"/>
-            </fault>
-        </operation>
-
-        <operation name="getSupportedDbAcs">
-            <soap:operation soapAction="getSupportedDbAcs"/>
-            <input>
-                <soap:body use="literal"/>
-            </input>
-            <output>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="getSupportedDbAcsException">
-                <soap:fault name="getSupportedDbAcsException" use="literal"/>
+            <fault name="PsicquicServiceException">
+                <soap:fault name="PsicquicServiceException" use="literal"/>
             </fault>
         </operation>
 
         <operation name="getSupportedQueryTypes">
-            <soap:operation soapAction="getSupportedQueryTypes"/>
-            <input>
+            <soap:operation soapAction="getSupportedQueryTypes" style="document"/>
+            <input name="getSupportedQueryTypes">
                 <soap:body use="literal"/>
             </input>
-            <output>
+            <output name="getSupportedQueryTypesResponse">
                 <soap:body use="literal"/>
             </output>
-            <fault name="getSupportedQueryTypesException">
-                <soap:fault name="getSupportedQueryTypesException" use="literal"/>
+            <fault name="PsicquicServiceException">
+                <soap:fault name="PsicquicServiceException" use="literal"/>
             </fault>
         </operation>
 
+        <operation name="getSupportedReturnTypes">
+            <soap:operation soapAction="getSupportedReturnTypes" style="document"/>
+            <input name="getSupportedReturnTypes">
+                <soap:body use="literal"/>
+            </input>
+            <output name="getSupportedReturnTypesResponse">
+                <soap:body use="literal"/>
+            </output>
+            <fault name="PsicquicServiceException">
+                <soap:fault name="PsicquicServiceException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getByInteraction">
+            <soap:operation soapAction="getByInteraction" style="document"/>
+            <input name="getByInteraction">
+                <soap:body use="literal"/>
+            </input>
+            <output name="getByInteractionResponse">
+                <soap:body use="literal"/>
+            </output>
+            <fault name="notSupportedMethodException">
+                <soap:fault name="notSupportedMethodException" use="literal"/>
+            </fault>
+            <fault name="notSupportedTypeException">
+                <soap:fault name="notSupportedTypeException" use="literal"/>
+            </fault>
+            <fault name="PsicquicServiceException">
+                <soap:fault name="PsicquicServiceException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getByInteractorList">
+            <soap:operation soapAction="getByInteractorList" style="document"/>
+            <input name="getByInteractorList">
+                <soap:body use="literal"/>
+            </input>
+            <output name="getByInteractorListResponse">
+                <soap:body use="literal"/>
+            </output>
+            <fault name="notSupportedMethodException">
+                <soap:fault name="notSupportedMethodException" use="literal"/>
+            </fault>
+            <fault name="notSupportedTypeException">
+                <soap:fault name="notSupportedTypeException" use="literal"/>
+            </fault>
+            <fault name="PsicquicServiceException">
+                <soap:fault name="PsicquicServiceException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getSupportedDbAcs">
+            <soap:operation soapAction="getSupportedDbAcs" style="document"/>
+            <input name="getSupportedDbAcs">
+                <soap:body use="literal"/>
+            </input>
+            <output name="getSupportedDbAcsResponse">
+                <soap:body use="literal"/>
+            </output>
+            <fault name="PsicquicServiceException">
+                <soap:fault name="PsicquicServiceException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="getByInteractionList">
+            <soap:operation soapAction="getByInteractionList" style="document"/>
+            <input name="getByInteractionList">
+                <soap:body use="literal"/>
+            </input>
+            <output name="getByInteractionListResponse">
+                <soap:body use="literal"/>
+            </output>
+            <fault name="notSupportedMethodException">
+                <soap:fault name="notSupportedMethodException" use="literal"/>
+            </fault>
+            <fault name="notSupportedTypeException">
+                <soap:fault name="notSupportedTypeException" use="literal"/>
+            </fault>
+            <fault name="PsicquicServiceException">
+                <soap:fault name="PsicquicServiceException" use="literal"/>
+            </fault>
+        </operation>
     </binding>
 
     <!-- SERVICE -->

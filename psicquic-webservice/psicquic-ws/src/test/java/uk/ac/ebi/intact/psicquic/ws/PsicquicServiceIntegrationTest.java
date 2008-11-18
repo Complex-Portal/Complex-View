@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.Ignore;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.hupo.psi.mi.psicquic.DbRefRequest;
-import org.apache.cxf.frontend.ClientProxyFactoryBean;
+import org.hupo.psi.mi.psicquic.PsicquicService;
 import psidev.psi.mi.xml.jaxb.EntrySet;
 
 
