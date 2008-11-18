@@ -5,36 +5,13 @@
        xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<!-- Aegis data binding -->
-	<bean id="aegisBean"
-		class="org.apache.cxf.aegis.databinding.AegisDatabinding"
-		scope="prototype" />
-
-
-    <bean id="jaxwsAndAegisServiceFactory"
-          class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean"
-          scope="prototype"> 
-        <property name="dataBinding" ref="aegisBean"/>
-        <property name="serviceConfigurations">
-          <list>
-            <bean class="org.apache.cxf.jaxws.support.JaxWsServiceConfiguration"/>
-            <!--<bean class="org.apache.cxf.aegis.databinding.AegisServiceConfiguration"/>-->
-            <bean class="org.apache.cxf.service.factory.DefaultServiceConfiguration"/> 
-          </list>
-        </property>
-    </bean>
-
-	<!-- Client code for unit test (or for injecting in webapp as done in the article) -->
-	
 	<!-- Factory to create the dynamic proxy for client -->
 	<bean id="psicquicFactory"
 		class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
 		<property name="serviceClass"
-			value="org.hupo.psi.mi.psicquic.PsicquicService" />
+			value="uk.ac.ebi.intact.psicquic.ws.PsicquicService" />
 		<property name="address"
 			value="http://localhost:8080/psicquic-ws/webservices/psicquic" />
-		<!--<property name="serviceFactory"-->
-			<!--ref="jaxwsAndAegisServiceFactory" />-->
 	</bean>
 
 	<!--  Web service dynamic proxy -->

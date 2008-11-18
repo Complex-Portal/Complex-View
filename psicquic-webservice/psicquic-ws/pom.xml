@@ -33,25 +33,42 @@
     <build>
         <finalName>${artifactId}-${version}</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxws-maven-plugin</artifactId>
-                <version>1.9</version>
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>jaxws-maven-plugin</artifactId>-->
+                <!--<version>1.9</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>wsimport</id>-->
+                        <!--<phase>generate-sources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>wsimport</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<extension>true</extension>-->
+                    <!--<wsdlDirectory>${project.basedir}/src/main/wsdl/</wsdlDirectory>-->
+                    <!--<bindingDirectory>${project.basedir}/src/main/wsdl/</bindingDirectory>-->
+                    <!--<verbose>true</verbose>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+
+             <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+	            <artifactId>maven-jaxb2-plugin</artifactId>
+                <configuration>
+                    <schemaDirectory>${project.basedir}/src/main/wsdl</schemaDirectory>
+                    <bindingDirectory>${project.basedir}/src/main/wsdl</bindingDirectory>
+                    <extension>true</extension>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>wsimport</id>
-                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>wsimport</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <extension>true</extension>
-                    <wsdlDirectory>${project.basedir}/src/main/wsdl/</wsdlDirectory>
-                    <bindingDirectory>${project.basedir}/src/main/wsdl/</bindingDirectory>
-                    <verbose>true</verbose>
-                </configuration>
             </plugin>
 
             <plugin>
@@ -224,5 +241,13 @@
             <layout>legacy</layout>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+   	        <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Repository for Maven</name>
+	        <url>http://download.java.net/maven/2/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>

@@ -10,10 +10,15 @@
         <!--</schemaBindings>-->
     <!--</bindings>-->
 
-    <!-- delete this one -->
     <bindings schemaLocation="MIF254.xsd" node="/xs:schema">
         <schemaBindings>
             <package name="psidev.psi.mi.xml.jaxb"/>
+        </schemaBindings>
+    </bindings>
+
+    <bindings schemaLocation="psicquic.xsd" node="/xs:schema">
+        <schemaBindings>
+            <package name="org.hupo.psi.mi.psicquic"/>
         </schemaBindings>
     </bindings>
 

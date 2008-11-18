@@ -27,32 +27,11 @@
 		</cxf:features>
 	</cxf:bus>
 
-	<!-- Aegis data binding -->
-	<!--<bean id="aegisBean"-->
-		<!--class="org.apache.cxf.aegis.databinding.AegisDatabinding"-->
-		<!--scope="prototype" />-->
-
-	<!--<bean id="jaxws-and-aegis-service-factory"-->
-		<!--class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean"-->
-		<!--scope="prototype">-->
-		<!--<property name="dataBinding" ref="aegisBean" />-->
-		<!--<property name="serviceConfigurations">-->
-			<!--<list>-->
-				<!--<bean class="org.apache.cxf.jaxws.support.JaxWsServiceConfiguration" />-->
-				<!--<bean class="org.apache.cxf.aegis.databinding.AegisServiceConfiguration" />-->
-				<!--<bean class="org.apache.cxf.service.factory.DefaultServiceConfiguration" />-->
-			<!--</list>-->
-		<!--</property>-->
-	<!--</bean>-->
-
 	<!-- Service endpoint -->
 	<!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
     <jaxws:endpoint id="psicquicService"
-		implementorClass="uk.ac.ebi.intact.psicquic.ws.PsicquicServiceImpl"
-		implementor="#psicquicServiceImpl" address="/psicquic">
-		<!--<jaxws:serviceFactory>-->
-			<!--<ref bean="jaxws-and-aegis-service-factory" />-->
-		<!--</jaxws:serviceFactory>-->
+		implementorClass="uk.ac.ebi.intact.psicquic.ws.PsicquicServiceImpl2"
+		implementor="#psicquicServiceImpl2" address="/psicquic">
 	</jaxws:endpoint>
 
 </beans>
