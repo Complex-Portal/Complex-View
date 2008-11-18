@@ -892,7 +892,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="infeddedInteractionList">
+    <xs:complexType name="inferredInteractionList">
         <xs:annotation>
             <xs:documentation>Describes inferred interactions, usually combining data from more than one experiment.
                 Examples: 1: Show the topology of binary interactions within a complex. 2: Interaction inferred from
