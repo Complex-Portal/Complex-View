@@ -10,34 +10,9 @@
 
     <artifactId>confidence-score-trainModel-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>confidence-score-trainModel-maven-plugin</name>
-    <url>http://maven.apache.org</url>
+    <version>1.6.0-SNAPSHOT</version>
 
-    <!--<build>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>maven-buildnumber-plugin</artifactId>-->
-                <!--<version>0.9.4</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>validate</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>create</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<format>{0,date,yyyyMMdd}</format>-->
-                    <!--<items>-->
-                        <!--<item>timestamp</item>-->
-                    <!--</items>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
-
-    <!--</build>-->
+    <name>IntAct Services :: Commons :: Confidence Score :: Plugin :: Train Model</name>
 
     <dependencies>
         <dependency>
