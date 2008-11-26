@@ -35,7 +35,7 @@ import java.util.Arrays;
  */
 public class IndexBasedPsicquicServiceTest {
 
-    private static IndexBasedPsicquicService service;
+    private static IntactPsicquicService service;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -48,7 +48,7 @@ public class IndexBasedPsicquicServiceTest {
         PsicquicConfig config = (PsicquicConfig)context.getBean("psicquicConfig");
         config.setIndexDirectory(indexDir.toString());
 
-	    service = (IndexBasedPsicquicService)context.getBean("indexBasedPsicquicService");
+	    service = (IntactPsicquicService)context.getBean("indexBasedPsicquicService");
     }
 
     @AfterClass

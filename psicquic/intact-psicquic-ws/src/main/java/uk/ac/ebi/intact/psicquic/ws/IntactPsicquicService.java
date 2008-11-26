@@ -29,6 +29,13 @@ import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
 import psidev.psi.mi.xml.converter.impl254.EntrySetConverter;
 import psidev.psi.mi.xml.dao.inMemory.InMemoryDAOFactory;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
+import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.model.CvXrefQualifier;
+import uk.ac.ebi.intact.model.InstitutionXref;
+import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.IntactEntry;
+import uk.ac.ebi.intact.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.persistence.dao.entry.IntactEntryFactory;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 
 import java.io.IOException;
@@ -41,9 +48,9 @@ import java.util.*;
  * @version $Id$
  */
 @Controller
-public class IndexBasedPsicquicService implements PsicquicService {
+public class IntactPsicquicService implements PsicquicService {
 
-    private final Logger logger = LoggerFactory.getLogger(IndexBasedPsicquicService.class);
+    private final Logger logger = LoggerFactory.getLogger(IntactPsicquicService.class);
 
     private static final String RETURN_TYPE_XML25 = "psi-mi/xml25";
     private static final String RETURN_TYPE_MITAB25 = "psi-mi/tab25";
@@ -59,22 +66,72 @@ public class IndexBasedPsicquicService implements PsicquicService {
     @Autowired
     private PsicquicConfig config;
 
-    public IndexBasedPsicquicService() {
+    private String institutionMi;
 
+    public IntactPsicquicService() {
+        for (InstitutionXref xref : IntactContext.getCurrentInstance().getInstitution().getXrefs()) {
+            if (xref.getCvXrefQualifier() != null && CvXrefQualifier.IDENTITY_MI_REF.equals(xref.getCvXrefQualifier().getIdentifier())) {
+                institutionMi = xref.getPrimaryId();
+                break;
+            }
+        }
     }
 
     public QueryResponse getByInteractor(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
-        String query = createQuery("identifiers", dbRef);
+        String id = dbRef.getId();
+        String dbAc = dbRef.getDbAc();
 
-        return getByQuery(query, requestInfo);
+        if (id != null) {
+            throw new PsicquicServiceException("To execute a query the DbRef.id must not be null");
+        }
+
+        IntactEntry entry = null;
+
+        if (dbAc != null && dbAc.equals(institutionMi)) {
+//            entry = IntactEntryFactory.createIntactEntry(IntactContext.getCurrentInstance())
+//                    .addInteractorWithAc(id);
+        } else {
+
+        }
+
+
+        return null;
     }
 
 
 
     public QueryResponse getByInteraction(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
-        String query = createQuery("interaction_id", dbRef);
+        String id = dbRef.getId();
 
-        return getByQuery(query, requestInfo);
+        if (id != null) {
+            throw new PsicquicServiceException("To execute a query the DbRef.id must not be null");
+        }
+
+        checkResultType(requestInfo);
+
+        IntactEntry intactEntry = null;
+
+        if (RETURN_TYPE_COUNT.equals(requestInfo.getResultType())) {
+            intactEntry = new IntactEntry();
+            intactEntry.setInstitution(IntactContext.getCurrentInstance().getInstitution());
+
+            requestInfo.setBlockSize(0);
+        } else {
+           intactEntry = IntactEntryFactory.createIntactEntry(IntactContext.getCurrentInstance())
+                    .addInteractionWithAc(id);
+        }
+
+        return createResponse(intactEntry, requestInfo);
+    }
+
+    private QueryResponse createResponse(IntactEntry intactEntry, RequestInfo requestInfo) {
+        QueryResponse response = new QueryResponse();
+        response.
+
+        if (RETURN_TYPE_XML25.equals(requestInfo.getResultType())) {
+
+        }
+        return null;
     }
 
     public QueryResponse getByInteractorList(List<DbRef> dbRefs, RequestInfo requestInfo, String operand) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
@@ -225,6 +282,36 @@ public class IndexBasedPsicquicService implements PsicquicService {
         } catch (Exception e) {
             throw new PsicquicServiceException("Problem converting results to PSI-MI XML", e);
         }
+    }
+
+    private QueryResponse createEmptyResponse(RequestInfo requestInfo) {
+        int blockSize = Math.min(requestInfo.getBlockSize(), BLOCKSIZE_MAX);
+
+        QueryResponse queryResponse = new QueryResponse();
+        ResultInfo resultInfo = new ResultInfo();
+        resultInfo.setBlockSize(blockSize);
+        resultInfo.setFirstResult(requestInfo.getFirstResult());
+
+        queryResponse.setResultInfo(resultInfo);
+
+        ResultSet resultSet = new ResultSet();
+        queryResponse.setResultSet(resultSet);
+    }
+
+    private void checkResultType(RequestInfo requestInfo) throws NotSupportedTypeException {
+        String resultType = requestInfo.getResultType();
+
+        if (resultType == null) {
+            requestInfo.setResultType(RETURN_TYPE_DEFAULT);
+        } else {
+            if (!getSupportedReturnTypes().contains(resultType)) {
+                throw new NotSupportedTypeException("Return type is not supported: "+resultType);
+            }
+        }
+    }
+
+    private DaoFactory getDaoFactory() {
+        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
     }
 }
 
