@@ -66,6 +66,10 @@ public abstract class SequenceViewBean extends AbstractEditViewBean<Polymer> {
     // Override the super method to set the tax id.
     @Override
     public void reset(Polymer polymer) {
+        if(polymer!=null && polymer.getAc()!=null){
+        polymer = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getPolymerDao().getByAc(polymer.getAc());
+        }
+
         super.reset(polymer);
 
         // Set the bean data
