@@ -24,7 +24,7 @@
 
     <context-param>
         <param-name>uk.ac.ebi.intact.INSTITUTION_LABEL</param-name>
-        <param-value>ebi</param-value>
+        <param-value>intact</param-value>
         <description>
             The label of the institution, used to retrieve the Institution object
             if it already exists, or to create a new institution
