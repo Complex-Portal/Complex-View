@@ -53,7 +53,7 @@ public class EditorConnectionProvider implements ConnectionProvider
                 }
                 catch (ClassNotFoundException e)
                 {
-                    e.printStackTrace();
+                    throw new IllegalStateException("Could not load JDBC driver: " + driverClass, e);
                 }
                 driverLoaded = true;
             }

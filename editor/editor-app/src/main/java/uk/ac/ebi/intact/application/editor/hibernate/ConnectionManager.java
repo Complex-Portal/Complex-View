@@ -43,6 +43,11 @@ public class ConnectionManager implements Serializable {
 
     private static final String CONNECTION_MANAGER_PARAM = "editor.CONNECTION_MANAGER";
 
+    /**
+     * Count of seconds to wait when checking if a JDBC connection is valid.
+     */
+    private static final int JDBC_CHECK_TIMEOUT = 10;
+
 
     public static ConnectionManager getInstance() {
         ConnectionManager cm = null;
@@ -102,7 +107,20 @@ public class ConnectionManager implements Serializable {
         Connection userConnection = connectionMap.get(user);
 
         try {
-            if (userConnection != null && !userConnection.isClosed()) {
+            boolean connectionValid = userConnection.isValid(JDBC_CHECK_TIMEOUT);
+            boolean connectionClosed = userConnection.isClosed();
+
+            if( !connectionValid ) {
+                log.error( user + "'s JDBC connection doesn't seem valid, we will recreate a new one." );
+                if( !connectionClosed ) {
+                    log.error( "Closing "+user + "'s invalid JDBC connection." );
+                    userConnection.close();
+                }
+            } else if (connectionClosed ) {
+                log.error( user + "'s JDBC connection was closed, we will recreate a new one." );
+            }
+
+            if (userConnection != null && !connectionClosed && connectionValid) {
                 return userConnection;
             }
 
@@ -150,7 +168,4 @@ public class ConnectionManager implements Serializable {
     protected String getCurrentPassword() {
         return  IntactContext.getCurrentInstance().getUserContext().getUserPassword();
     }
-
-
-
 }
