@@ -59,6 +59,10 @@ public final class MitabFunctions {
     private static Map interactorCountCache = new LRUMap(2500);
     private static Map interactionCountCache = new LRUMap(2500);
 
+    //Initials
+    private static final String proteinInitial = "PR";
+    private static final String smallMoleculeInitial = "SM";
+
     private MitabFunctions() {
     }
 
@@ -78,6 +82,61 @@ public final class MitabFunctions {
         }
 
         return false;
+    }
+
+    public static String getInitialForMoleculeType(ExtendedInteractor interactor) {
+
+        if (isProtein(interactor)) {
+            return proteinInitial;
+        }
+        if (isSmallMolecule(interactor)) {
+            return smallMoleculeInitial;
+        }
+        return "";
+    }
+
+
+    public static String getInitialForCrossReference(Collection<CrossReference> crossReferences) {
+
+        String role = "";
+        if (crossReferences.size() == 1) {
+            role = crossReferences.iterator().next().getText();
+            if (role != null && !("unspecified role".equals(role))) {
+                return role.substring(0, 2).toUpperCase();
+            } else {
+                return "";
+            }
+        } else {
+
+            for (CrossReference crossReference : crossReferences) {
+                if (crossReference.getText() != null && !"unspecified role".equals(crossReference.getText())) {
+                    role = role + getFirstLetterofEachToken(crossReference.getText()) + ", ";
+                }
+            }
+
+            if (role.length() > 0) {
+                role = cropLastCharacter(role);
+            }
+        }
+        return role;
+    }
+
+
+    public static String cropLastCharacter(String strToBeCropped) {
+
+        return strToBeCropped.substring(0, strToBeCropped.length() - 2);
+    }
+
+
+    public static String getFirstLetterofEachToken(String stringToken) {
+        String s = "";
+        if (stringToken.split("\\s+").length == 1) {
+            return stringToken.substring(0, 2).toUpperCase();
+        }
+        for (String str : stringToken.split("\\s+")) {
+            s = s + str.substring(0, 1).toUpperCase();
+        }
+        return s;
     }
 
     public static int countHits(String searchQuery, String directory) {

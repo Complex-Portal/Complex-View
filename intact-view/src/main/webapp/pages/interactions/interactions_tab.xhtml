@@ -98,7 +98,7 @@
     <tr:outputText value="#{status.index + 1}"/>
 </tr:column>
 
-<tr:column headerText="Compound Name" sortable="true" sortProperty="idA_s">
+<tr:column headerText="Compound Name" sortable="true" sortProperty="idA_s"  styleClass="cellTextCompound">
     <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="defaultType">
         <f:facet name="MI:0326"><!-- Protein MI identifier-->
             <h:panelGroup>
@@ -130,9 +130,12 @@
             <iav:xrefDataList value="#{binaryInteraction.interactorA.aliases}"/>
         </f:facet>
     </tr:switcher>
+    <!--For MoleculeTye, Role Initials -->
+     <tr:outputText value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA)} - #{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)} - #{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles) }" shortDesc="PR=Protein, SM=Small Molecule, DR=Drug, DT=Drug Target, EN=Enzyme, ET=Enzyme Target"/>
+
 </tr:column>
 
-<tr:column headerText="Compound Links" sortable="false">
+<tr:column headerText="Compound Links" sortable="false" styleClass="cellTextCompound">
     <!--add compound links -->
     <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus"
                  rows="0">
@@ -167,7 +170,7 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="Target Name" sortable="true" sortProperty="idB_s">
+<tr:column headerText="Target Name" sortable="true" sortProperty="idB_s" styleClass="cellTextTarget">
     <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="defaultType">
         <f:facet name="MI:0326"><!-- Protein MI identifier-->
             <h:panelGroup>
@@ -201,9 +204,11 @@
             <iav:xrefDataList value="#{binaryInteraction.interactorB.aliases}"/>
         </f:facet>
     </tr:switcher>
+    <!--For MoleculeTye, Role Initials for Target-->
+    <tr:outputText value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB)} - #{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)} - #{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles) }" shortDesc="PR=Protein, SM=Small Molecule, DR=Drug, DT=Drug Target, EN=Enzyme, ET=Enzyme Target"/>
 </tr:column>
 
-<tr:column headerText="Target Links" sortable="false">
+<tr:column headerText="Target Links" sortable="false" styleClass="cellTextTarget">
     <!--add target links -->
     <tr:iterator var="xref" value="#{binaryInteraction.interactorB.identifiers}"
                  varStatus="rowStatus" rows="0">
@@ -238,7 +243,7 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="Compound Aliases" sortable="true" sortProperty="altidA_s">
+<tr:column headerText="Compound Aliases" sortable="true" sortProperty="altidA_s" styleClass="cellTextCompound">
     <iam:collapsibleIterator id="csd_altIdA_#{status.index}"
                              disclosed="#{searchBean.showAlternativeIds}"
                              value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
@@ -247,7 +252,7 @@
     </iam:collapsibleIterator>
 </tr:column>
 
-<tr:column headerText="Target Aliases" sortable="true" sortProperty="altidB_s">
+<tr:column headerText="Target Aliases" sortable="true" sortProperty="altidB_s" styleClass="cellTextTarget">
     <iam:collapsibleIterator id="csd_altIdB_#{status.index}"
                              disclosed="#{searchBean.showAlternativeIds}"
                              value="#{binaryInteraction.interactorB.alternativeIdentifiers}"
@@ -256,7 +261,7 @@
     </iam:collapsibleIterator>
 </tr:column>
 
-<tr:column headerText="Compound species" sortable="true" sortProperty="taxidA_s">
+<tr:column headerText="Compound species" sortable="true" sortProperty="taxidA_s" styleClass="cellTextCompound">
     <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="OtherType">
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:outputText value="  "/>
@@ -273,7 +278,7 @@
     </tr:switcher>
 </tr:column>
 
-<tr:column headerText="Target species" sortable="true" sortProperty="taxidB_s">
+<tr:column headerText="Target species" sortable="true" sortProperty="taxidB_s" styleClass="cellTextTarget">
     <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="OtherType">
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:outputText value="&#160;"/>
@@ -290,7 +295,7 @@
     </tr:switcher>
 </tr:column>
 
-<tr:column headerText="First Author" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="pubauth_s">
+<tr:column headerText="First Author" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="pubauth_s" styleClass="cellTextInteraction">
     <tr:iterator var="author" value="#{binaryInteraction.authors}" rows="0">
             <span style="display:block">
                 <nobr>
@@ -301,27 +306,27 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="PubMed identifier" sortable="true" sortProperty="pubid_s">
+<tr:column headerText="PubMed identifier" sortable="true" sortProperty="pubid_s" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
 </tr:column>
 
-<tr:column headerText="Interaction type" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="type_s">
+<tr:column headerText="Interaction type" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="type_s" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 
 <tr:column headerText="Interaction detection method" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="detmethod_s">
+           sortProperty="detmethod_s" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 
-<tr:column headerText="Source database(s)" sortable="true" sortProperty="source_s">
+<tr:column headerText="Source database(s)" sortable="true" sortProperty="source_s" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
 </tr:column>
-<tr:column headerText="Interaction AC" sortable="true" sortProperty="interaction_id_s">
+<tr:column headerText="Interaction AC" sortable="true" sortProperty="interaction_id_s" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>
 </tr:column>
 <tr:column headerText="Confidence Value(s)" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="confidence_s">
+           sortProperty="confidence_s" styleClass="cellTextInteraction">
     <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
                         <span style="display:block">
                             <nobr>
@@ -331,22 +336,22 @@
     </tr:iterator>
 </tr:column>
 <tr:column headerText="Compound Experimental role" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="experimentalRoleA_s">
+           sortProperty="experimentalRoleA_s" styleClass="cellTextCompound">
     <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Target Experimental role" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="experimentalRoleB_s">
+           sortProperty="experimentalRoleB_s" styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Compound Biological role" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="biologicalRoleA_s">
+           sortProperty="biologicalRoleA_s" styleClass="cellTextCompound">
     <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Target Biological role" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="biologicalRoleB_s">
+           sortProperty="biologicalRoleB_s" styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column rendered="#{searchBean.expandedView}" sortable="true" sortProperty="propertiesA_s">
+<tr:column rendered="#{searchBean.expandedView}" sortable="true" sortProperty="propertiesA_s" styleClass="cellTextCompound">
     <f:facet name="header">
         <tr:panelGroupLayout layout="vertical">
             <tr:outputText value="Compound Properties"/>
@@ -366,7 +371,7 @@
 
 </tr:column>
 <tr:column headerText="Target Properties" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="propertiesB_s">
+           sortProperty="propertiesB_s" styleClass="cellTextTarget">
     <iam:collapsibleIterator id="csd_propsB_#{status.index}"
                              disclosed="#{searchBean.showProperties}"
                              value="#{binaryInteraction.propertiesB}"
@@ -380,22 +385,22 @@
     </iam:collapsibleIterator>
 </tr:column>
 <tr:column headerText="Compound Interactor type" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="typeA_s">
+           sortProperty="typeA_s" styleClass="cellTextCompound">
     <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
 </tr:column>
 <tr:column headerText="Target Interactor type" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="typeB_s">
+           sortProperty="typeB_s" styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>
 </tr:column>
 <tr:column headerText="Host organism" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="hostOrganism_s">
+           sortProperty="hostOrganism_s" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 <tr:column headerText="Expansion method" rendered="#{searchBean.expandedView}" sortable="true"
-           sortProperty="expansion_s">
+           sortProperty="expansion_s" styleClass="cellTextInteraction">
     <tr:outputText value="#{binaryInteraction.expansionMethod}"/>
 </tr:column>
-<tr:column headerText="Dataset" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="dataset_s">
+<tr:column headerText="Dataset" rendered="#{searchBean.expandedView}" sortable="true" sortProperty="dataset_s" styleClass="cellTextInteraction">
     <tr:iterator var="dataset" value="#{binaryInteraction.dataset}" rows="0">
                         <span style="display:block">
                             <nobr>

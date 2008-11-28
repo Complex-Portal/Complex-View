@@ -399,6 +399,20 @@ af|column::cell-text-band a.OraLink {
     font-size: 8pt;
 }
 
+/**for compound and target columns **/
+
+.cellTextCompound {
+   background-color:#f6faf4;
+}
+
+.cellTextTarget {
+  background-color: #eef5f5;
+}
+
+.cellTextInteraction {
+  background-color: #eeeeee;
+}
+
 
 /** breadcrumbs  **/
 /******************/
