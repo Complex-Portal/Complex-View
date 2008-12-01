@@ -18,6 +18,8 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.context.IntactSession;
 import uk.ac.ebi.intact.context.UserContext;
 import uk.ac.ebi.intact.context.impl.WebappSession;
+import uk.ac.ebi.intact.context.impl.StandaloneSession;
+import uk.ac.ebi.intact.config.impl.StandardCoreDataConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -35,9 +37,6 @@ public class UserAuthenticator {
 
     private static final Log log = LogFactory.getLog(UserAuthenticator.class);
 
-    // boolean to knwow if the db driver has been loaded. (boolean default value is false)
-    private static boolean driverLoaded;
-
     /**
      * Authenticate a user by accessing a persistent system using given
      * user name and password
@@ -51,7 +50,7 @@ public class UserAuthenticator {
     public static EditUserI authenticate(String username, String password, HttpServletRequest request)
             throws AuthenticateException {
 
-        Connection connection = null;
+        if (log.isDebugEnabled()) log.debug("Authenticating user: "+username);
 
         // The authenticate method is called from the LoginAction. This LoginAction handles the request ending with
         // *login. The request ending with *login are not filtered by the IntactSessionRequestFilter. Therefore we
@@ -61,87 +60,57 @@ public class UserAuthenticator {
         // creates a connection using a the default user name and password and not the one provided in the login
         // page by the user. This connection will of course work but won't allow us to know if the specific login
         // and password given are valid).
-        HttpSession session = request.getSession();
-        IntactSession intactSession = new WebappSession( session.getServletContext(), session, request );
-        IntactContext context = IntactConfigurator.createIntactContext( intactSession );
+
+//        HttpSession session = request.getSession();
+//        IntactSession intactSession = new WebappSession( session.getServletContext(), session, request );
+//        IntactContext context = IntactConfigurator.createIntactContext( intactSession );
+
+        // check if the user exists by trying to open a JDBC connection for that user
+        StandardCoreDataConfig stdDataConfig = new StandardCoreDataConfig(new StandaloneSession());
+
+        Configuration configuration = stdDataConfig.getConfiguration();
+        configuration.configure();
+
+        String url = configuration.getProperty(Environment.URL);
+        String driver = configuration.getProperty(Environment.DRIVER);
+
+        try
+        {
+            Class.forName(driver);
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new AuthenticateException("Problem loading database driver", e);
+        }
+
+        try {
+            Connection conn = DriverManager.getConnection(url, username, password);
+            conn.close();
+        } catch (SQLException e) {
+            throw new AuthenticateException("Could not get connection for user : " + username +": Problem " +
+                        "spliting the url to get the db sid" );
+        }
+
+
+        // get the database name from the connection url
+        String databaseName = null;
+
+        String splitUrl[] = url.split(":");
+        if (splitUrl.length != 0) {
+            databaseName = splitUrl[splitUrl.length - 1];
+        } else {
+            throw new AuthenticateException("Couldn't get database name from connection URL: "+url);
+        }
+
+        IntactContext context = IntactContext.getCurrentInstance();
 
         // Set the userId and userPassword of the UserContext
         UserContext userContext = context.getUserContext();
         userContext.setUserId( username );
         userContext.setUserPassword( password );
 
-        String databaseName = "";
-        try {
-            // Get the Connection for the given username and password.
-            connection = getConnection(username, password);
-            // Get the databaseName to give it to the EditUser constructor, this value will be used to display the
-            // database name on the side bar of the editor page. I'm taking it from the url, but I guess it could
-            // be taken from somewhere else.
-            String url = connection.getMetaData().getURL();
-            String splitUrl[] = url.split(":");
-            if(splitUrl.length != 0){
-                databaseName = splitUrl[splitUrl.length - 1];
-            }else{
-                //The connection must be associated to a url, if it's not send an AuthenticateException.
-                throw new AuthenticateException("Could not get connection for user : " + username +": Problem " +
-                        "spliting the url to get the db sid" );
-            }
-            log.debug("The database name is : " + databaseName);
-        } catch (SQLException e) {
-            // Was used before when *login request was filetered by the  IntactSessionRequestFilter. Not used anymore
-            // but let it here as an example in case we would put back the filtering.
-            //IntactSessionRequestFilter.setCommitErrorMessage(IntactSessionRequestFilter.COULD_NOT_LOGIN, IntactContext.getCurrentInstance().getSession());
-
-            // If getConnection() or connection.getMetaData().getUrl() throw an SQLException, send an
-            // AuthenticateException. The web.xml of the Editor is set so that it will display a specific message for
-            // authenticate Exception ('Wrong login or password')
-            throw new AuthenticateException("Could not get connection for user : " + username + ": " + e);
-        }finally{
-            // We make sure that the Connection is closed
-            if(connection != null){
-                try{
-                    if(connection.isClosed()){
-                        connection.close();
-                    }
-                }catch(SQLException e){
-                    log.error("Could not close connection : " + e);
-                    throw new AuthenticateException("Could not close connection : " + e);
-                }
-
-            }
-        }
         return new EditUser(username, password, databaseName);
     }
 
 
-    private static Connection getConnection(String userLogin, String userPassword) throws SQLException {
-        Connection connection = null;
-
-        if (IntactContext.currentInstanceExists())
-        {
-            Configuration configuration = (Configuration)IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig().getConfiguration();
-
-            String url = configuration.getProperty(Environment.URL);
-
-            if (!driverLoaded)
-            {
-                String driverClass = configuration.getProperty(Environment.DRIVER);
-                try
-                {
-                    Class.forName(driverClass);
-                }
-                catch (ClassNotFoundException e)
-                {
-                    e.printStackTrace();
-                }
-                driverLoaded = true;
-            }
-
-            if (userLogin != null)
-            {
-                connection = DriverManager.getConnection(url, userLogin, userPassword);
-            }
-        }
-        return connection;
-    }
 }

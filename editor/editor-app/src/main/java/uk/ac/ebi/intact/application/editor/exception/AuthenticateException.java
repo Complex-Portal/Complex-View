@@ -13,13 +13,20 @@ package uk.ac.ebi.intact.application.editor.exception;
  * @author Sugath Mudali (smudali@ebi.ac.uk)
  * @version $Id$
  */
-public class AuthenticateException extends BaseException {
+public class AuthenticateException extends Exception {
 
-    /**
-     * Constructor with a message.
-     * @param msg the message explaing the exception.
-     */
-    public AuthenticateException(String msg) {
-        super(msg);
+    public AuthenticateException() {
+    }
+
+    public AuthenticateException(String message) {
+        super(message);
+    }
+
+    public AuthenticateException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public AuthenticateException(Throwable cause) {
+        super(cause);
     }
 }

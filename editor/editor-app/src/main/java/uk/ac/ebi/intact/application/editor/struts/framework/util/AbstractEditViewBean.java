@@ -1440,14 +1440,14 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
                 log.info("We are going to unlink, the shared annotation "+ annot.getAc() + " from this annotated object.");
                 myAnnotObject.removeAnnotation(annot);
             }else{
-                log.error("Not shared annotation, we delete it.");
+                log.debug("Annotation is not shared, so we delete it: "+annot.getAnnotationText());
                 annotationDao.delete(annot);
                 myAnnotObject.removeAnnotation(annot);
             }
 
             Annotation correspondingAnnotation = getCorrespondingAnnotation(myAnnotObject, annot);
             if(correspondingAnnotation != null){
-                log.debug("deleting annot");
+                log.debug("Deleting annot: "+correspondingAnnotation.getAnnotationText());
                 myAnnotObject.removeAnnotation(correspondingAnnotation);
             }
         }
@@ -1460,7 +1460,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             Annotation correspondingAnnotation = getCorrespondingAnnotation(myAnnotObject, annot);
 
             if(correspondingAnnotation == null){
-                log.error("Add annot " +  annot.getAnnotationText());
+                log.debug("Adding annotation " +  annot.getAnnotationText());
                 // Need this to generate the PK for the indirection table.
                 //annotationDao.persist(annot);
                 annotations.add(annot);

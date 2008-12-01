@@ -87,7 +87,7 @@
 
         <init-param>
             <param-name>uk.ac.ebi.intact.filter.EXCLUDED_EXTENSIONS</param-name>
-            <param-value>*.jpg,*.gif,*login</param-value>
+            <param-value>*.jpg,*.gif</param-value>
             <description>
                 List of extensions. If the request URL ends with one of the params provided,
                 it won't be filtered by the IntactSessionRequestFilter and no IntactContext
@@ -112,9 +112,6 @@
     <!-- Listeners -->
     <listener>
         <listener-class>uk.ac.ebi.intact.webapp.BasicStartupIntactListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>uk.ac.ebi.intact.application.editor.hibernate.ConnectionSessionListener</listener-class>
     </listener>
 
     <!-- =================================================================== -->

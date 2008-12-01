@@ -22,8 +22,7 @@
         <jetty.context>editor</jetty.context>
 
         <maven.test.skip>true</maven.test.skip>
-        <db.connectionProviderClass>uk.ac.ebi.intact.application.editor.hibernate.EditorConnectionProvider
-        </db.connectionProviderClass>
+
         <core.version>1.9.5</core.version>
         <bridges.version>2.0.5</bridges.version>
     </properties>
