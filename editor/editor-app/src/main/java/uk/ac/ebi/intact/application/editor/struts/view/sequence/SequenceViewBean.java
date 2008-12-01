@@ -168,9 +168,18 @@ public abstract class SequenceViewBean extends AbstractEditViewBean<Polymer> {
 
         // Have we set the annotated object for the view?
         if (polymer == null) {
+
+            // hack, peptides are not handled by the PolymerFactory. We will pass a protein type
+            // if it is a peptide
+            CvInteractorType type = intType;
+
+            if (CvInteractorType.PEPTIDE_MI_REF.equals(type.getIdentifier())) {
+                type = cvObjectDao.getByPsiMiRef(CvInteractorType.PROTEIN_MI_REF);
+            }
+
             // Not persisted; create a new Polymer using the factory
             polymer = PolymerFactory.factory(IntactContext.getCurrentInstance().getConfig().getInstitution(), biosrc,
-                    getShortLabel(), intType);
+                    getShortLabel(), type);
             setAnnotatedObject(polymer);
         }
         else {
