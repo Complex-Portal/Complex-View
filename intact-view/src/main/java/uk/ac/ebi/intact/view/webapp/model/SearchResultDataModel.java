@@ -84,6 +84,10 @@ public class SearchResultDataModel extends SortableModel implements Serializable
     }
 
     public void fetchResults() throws SearchEngineException {
+        if (searchQuery == null || searchQuery.length() == 0) {
+            searchQuery = "*";
+        }
+
         if (log.isDebugEnabled()) log.debug("Fetching results: "+searchQuery+" - First: "+firstResult+" - Sorting: "+sortColumn+" "+(ascending? "ASC)" : "DESC)"));
 
         Sort sort = new Sort(sortColumn, !ascending);

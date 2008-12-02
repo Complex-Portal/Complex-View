@@ -15,144 +15,183 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Holds user query and filters.
+ * TODO comment that class header
  *
- * @author Samuel Kerrien (skerrien@ebi.ac.uk)
+ * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
- * @since 0.9
  */
 public class UserQuery {
+
+    private static final Log log = LogFactory.getLog( UserQuery.class );
 
     public static final Pattern CHEBI_PATTERN = Pattern.compile( "CHEBI:\\d+" );
     public static final Pattern GO_PATTERN = Pattern.compile( "GO:\\d+" );
 
-    private static final Log log = LogFactory.getLog( UserQuery.class );
+    private enum QueryType { INTERACTOR_QUERY, INTERACTION_QUERY }
 
     private String searchQuery;
     private String ontologySearchQuery;
-    private String displayQuery;
-    private boolean currentOntologyQuery;
 
-    /**
-     * The current list of filters to be applied onto the search query.
-     */
+    private String interactorTypeMi;
+
+    private List<String> properties;
+
+    private String[] datasets;
+    private String[] sources;
+
     private List<String> filters;
 
-    //////////////////
-    // Constructors
-
     public UserQuery() {
-        filters = new ArrayList<String>();
+        this.filters = new ArrayList<String>();
+
+        this.properties = new ArrayList<String>();
     }
 
-    public void processIncomingFilter( String filter ) {
-        if ( log.isDebugEnabled() ) {
-            log.debug( "Processing incomming filter: " + filter );
+    public String createInteractorQuery() {
+        return createFilteredQuery(QueryType.INTERACTOR_QUERY);
+    }
+
+    public String createInteractionQuery() {
+        return createFilteredQuery(QueryType.INTERACTION_QUERY);
+    }
+
+    protected String createFilteredQuery(QueryType type) {
+        String propertiesField = "";
+
+        switch (type) {
+            case INTERACTION_QUERY:
+                propertiesField = "properties";
+                break;
+            case INTERACTOR_QUERY:
+                propertiesField = "propertiesA";
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected QueryType: "+type);
         }
 
-        if ( filter != null ) {
-            if ( !filters.contains( filter ) && filter != null && filter.trim().length() > 0) {
-                filters.add( filter );
+        StringBuilder sbQuery = new StringBuilder(filters.size() * 16);
+
+        if (searchQuery != null && !"*".equals(searchQuery) && !"?".equals(searchQuery)) {
+            append(sbQuery, null, searchQuery);
+        }
+
+        if (ontologySearchQuery != null) {
+            append(sbQuery, null, prepareOntologyQuery(ontologySearchQuery));
+        }
+
+        if (type == QueryType.INTERACTOR_QUERY && interactorTypeMi != null) {
+            append(sbQuery, "typeA", interactorTypeMi);
+        }
+
+        if (properties.size() > 0) {
+            for (String term : properties) {
+                append(sbQuery, propertiesField, term);
             }
         }
 
-        if ( log.isDebugEnabled() ) {
-            log.debug( "After processing, filters are: " + filters );
+        return sbQuery.toString().trim();
+    }
+
+    private void append(StringBuilder sbQuery, String field, String value) {
+        if (value == null) return;
+
+        if (!value.startsWith("+")) sbQuery.append("+");
+
+        if (field != null) {
+            sbQuery.append(field).append(":");
+            value = escapeIfNecessary(value);
         }
+
+        sbQuery.append(value);
+
+
+        sbQuery.append(" ");
+    }
+
+    private String prepareOntologyQuery(String ontologySearchQuery) {
+        String identifier = escapeIfNecessary(ontologySearchQuery);
+        return "(detmethod:"+identifier+" type:"+identifier+" properties:"+identifier+")";
+    }
+
+    public String getDisplayQuery() {
+        List<String> displayedItems = new ArrayList<String>();
+
+        if (searchQuery != null && !"*".equals(searchQuery) && !"?".equals(searchQuery)) {
+            displayedItems.add(searchQuery);
+        }
+
+        if (ontologySearchQuery != null) {
+            displayedItems.add(escapeIfNecessary(ontologySearchQuery));
+        }
+
+        for (String property : properties) {
+            displayedItems.add(escapeIfNecessary(property));
+        }
+
+        if (displayedItems.isEmpty()) {
+            return "*";
+        }
+
+        return StringUtils.join(displayedItems, " AND ").trim();
+    }
+
+    public boolean isCurrentOntologyQuery() {
+        return (searchQuery == null && ontologySearchQuery != null);
     }
 
     public String getCurrentQuery() {
         String query;
-        if ( currentOntologyQuery ) {
+        if ( isCurrentOntologyQuery() ) {
             query = ontologySearchQuery;
         } else {
             query = searchQuery;
         }
 
         if ("*".equals(query) || "?".equals(query)) {
-
             query = "";
+        } 
 
-        } else if ( queryNeedsEscaping( query ) ) {
-
-            query = "\"" + query + "\"";
-            if ( log.isDebugEnabled() ) {
-                log.debug( "This looks like a GO or CHEBI identifier, we are escaping to: " + query );
-            }
-        }
+        query = escapeIfNecessary(query);
 
         return query;
     }
 
-    private boolean queryNeedsEscaping( String query ) {
-        query = query.toUpperCase().trim();
-        return isGoIdentifier( query ) || isChebiIdentifier( query );
+     private String escapeIfNecessary( String query ) {
+        query = query.trim();
+
+         if (query.startsWith("\"") && query.endsWith("\"")) {
+             return query;
+         }
+
+        if (query.contains(":") || query.contains("(") || query.contains(")")) {
+            query = "\"" + query + "\"";
+        }
+
+        return query;
     }
 
     private static boolean isGoIdentifier( String s ) {
-        return GO_PATTERN.matcher( s ).matches();
+        return GO_PATTERN.matcher( s.toUpperCase() ).matches();
     }
 
     private static boolean isChebiIdentifier( String s ) {
-        return CHEBI_PATTERN.matcher( s ).matches();
+        return CHEBI_PATTERN.matcher( s.toUpperCase() ).matches();
     }
-
-    public String getInteractionSearchQuery() {
-        String query = buildFilteredLuceneQuery( "properties" );
-        log.debug( "getInteractionSearchQuery(): " + query );
-        return query;
-    }
-
-    public String getInteractorSearchQuery() {
-        String query = buildFilteredLuceneQuery( "propertiesA" );
-        log.debug( "getInteractorSearchQuery(): " + query );
-        return query;
-    }
-
-    private String buildFilteredLuceneQuery( String luceneFilterField ) {
-        final String query;
-        if ( filters.isEmpty() ) {
-            query = getCurrentQuery();
-        } else {
-            String cq = getCurrentQuery();
-            if( cq.length() == 0 ) {
-                query = formatFilter( luceneFilterField );
-            } else {
-                query = "+(" + cq + ") " + formatFilter( luceneFilterField );
-            }
-        }
-        return query;
-    }
-
-    private String formatFilter( String luceneField ) {
-        StringBuilder sb = new StringBuilder( filters.size() * 10 );
-        for ( Iterator<String> iterator = filters.iterator(); iterator.hasNext(); ) {
-            String filter = iterator.next();
-            if ( luceneField != null ) {
-                sb.append( "+" ).append( luceneField ).append( ":" );
-            }
-            sb.append( "\"" ).append( filter ).append( "\"" ).append( " " );
-        }
-        return sb.toString().trim();
-    }
-
-    ///////////////////////////
-    // Getters and Setters
 
     public String getSearchQuery() {
         return searchQuery;
     }
 
-    public void setSearchQuery( String searchQuery ) {
+    public void setSearchQuery(String searchQuery) {
         this.searchQuery = searchQuery;
     }
 
@@ -160,57 +199,47 @@ public class UserQuery {
         return ontologySearchQuery;
     }
 
-    public void setOntologySearchQuery( String ontologySearchQuery ) {
+    public void setOntologySearchQuery(String ontologySearchQuery) {
         this.ontologySearchQuery = ontologySearchQuery;
-    }
-
-    public String getDisplayQuery() {
-        return displayQuery + buildDisplayFilter();
-    }
-
-    private String buildDisplayFilter() {
-        StringBuilder sb = new StringBuilder( filters.size() * 10 );
-        if( getCurrentQuery().length() > 0 && !filters.isEmpty()) {
-            sb.append( " and " );
-        }
-        for ( Iterator<String> iterator = filters.iterator(); iterator.hasNext(); ) {
-            String filter = iterator.next();
-            sb.append( filter );
-            if(iterator.hasNext()) {
-                sb.append( " and " );
-            }
-        }
-        return sb.toString();
-    }
-
-    public void setDisplayQuery( String displayQuery ) {
-        this.displayQuery = displayQuery;
-    }
-
-    public boolean isCurrentOntologyQuery() {
-        return currentOntologyQuery;
-    }
-
-    public void setCurrentOntologyQuery( boolean currentOntologyQuery ) {
-        this.currentOntologyQuery = currentOntologyQuery;
     }
 
     public List<String> getFilters() {
         return filters;
     }
 
-    public void setFilters( List<String> filters ) {
+    public void setFilters(List<String> filters) {
         this.filters = filters;
     }
 
-    @Override
-    public String toString() {
-        return "UserQuery{" +
-               "searchQuery='" + searchQuery + '\'' +
-               ", ontologySearchQuery='" + ontologySearchQuery + '\'' +
-               ", displayQuery='" + displayQuery + '\'' +
-               ", currentOntologyQuery=" + currentOntologyQuery +
-               ", filters=" + filters +
-               '}';
+    public String[] getSources() {
+        return sources;
+    }
+
+    public void setSources(String[] sources) {
+        this.sources = sources;
+    }
+
+    public String[] getDatasets() {
+        return datasets;
+    }
+
+    public void setDatasets(String[] datasets) {
+        this.datasets = datasets;
+    }
+
+    public List<String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<String> properties) {
+        this.properties = properties;
+    }
+
+    public String getInteractorTypeMi() {
+        return interactorTypeMi;
+    }
+
+    public void setInteractorTypeMi(String interactorTypeMi) {
+        this.interactorTypeMi = interactorTypeMi;
     }
 }

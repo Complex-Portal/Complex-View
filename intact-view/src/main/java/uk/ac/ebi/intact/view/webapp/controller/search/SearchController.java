@@ -95,7 +95,7 @@ public class SearchController extends JpaBaseController {
 
 
     public SearchController() {
-        userQuery = new UserQuery();
+        this.userQuery = new UserQuery();
     }
 
     @PostConstruct
@@ -111,34 +111,33 @@ public class SearchController extends JpaBaseController {
         String ontologyQueryParam = context.getExternalContext().getRequestParameterMap().get(ONTOLOGY_QUERY_PARAM);
 
         if (queryParam != null && queryParam.length()>0) {
-            userQuery.setDisplayQuery( queryParam );
+            if (log.isDebugEnabled()) log.debug("Searching using query parameter: "+queryParam);
+
+            this.userQuery = new UserQuery();
             userQuery.setSearchQuery( queryParam );
             doBinarySearch( userQuery );
         }
 
         if ( ontologyQueryParam != null && ontologyQueryParam.length()>0) {
-            doOntologySearch( ontologyQueryParam );
-        }
+            if (log.isDebugEnabled()) log.debug("Searching using ontology query parameter: "+queryParam);
 
-        if (userQuery.getSearchQuery() == null) {
-            if (log.isDebugEnabled()) log.debug("User search query is null. Searching all.");
-
-            userQuery.setSearchQuery( "*" );
-            userQuery.setDisplayQuery( "*" );
-            doBinarySearch(userQuery);
+            this.userQuery = new UserQuery();
+            userQuery.setOntologySearchQuery(ontologyQueryParam);
+            doBinarySearch( userQuery );
         }
     }
 
     public String doBinarySearchAction() {
         userQuery.getFilters().clear();
-        userQuery.setDisplayQuery( userQuery.getSearchQuery() );
-        userQuery.setCurrentOntologyQuery( false );
+
         doBinarySearch( userQuery );
 
         return "interactions";
     }
 
     public String doOntologySearchAction() {
+        userQuery.getFilters().clear();
+
         final String query = userQuery.getOntologySearchQuery();
 
         if ( query == null) {
@@ -146,30 +145,9 @@ public class SearchController extends JpaBaseController {
             return "search";
         }
 
-        doOntologySearch(query);
+        doBinarySearch( userQuery );
 
         return "interactions";
-    }
-
-    public void doOntologySearch(String ontologySearch) {
-        userQuery.setCurrentOntologyQuery( true );
-        userQuery.setDisplayQuery( ontologySearch );
-        userQuery.getFilters().clear();
-
-        final String formattedQuery = prepareOntologyQuery(ontologySearch);
-        userQuery.setOntologySearchQuery( formattedQuery );
-        doBinarySearch( userQuery );
-        userQuery.setOntologySearchQuery( ontologySearch );
-    }
-
-    private String prepareOntologyQuery(String ontologySearchQuery) {
-        String identifier = (ontologySearchQuery.startsWith("\""))? ontologySearchQuery : "\""+ontologySearchQuery+"\"";
-        return "detmethod:"+identifier+" type:"+identifier+" properties:"+identifier;
-    }
-
-    public void doBinarySearch(ActionEvent evt) {
-        userQuery.getFilters().clear();
-        doBinarySearch( userQuery );
     }
 
     public void doFilteredBinarySearch(ActionEvent evt) {
@@ -188,20 +166,14 @@ public class SearchController extends JpaBaseController {
         if( query == null || termId == null ) {
             throw new IllegalStateException( "Query or TermId was null. termId:"+termId+" query:"+query );
         }
-        userQuery.processIncomingFilter( termId );
+        userQuery.getProperties().add( termId );
 
         doBinarySearch( userQuery );
     }
 
     private void doBinarySearch(UserQuery userQuery) {
 
-        String query = userQuery.getInteractionSearchQuery();
-
-        if (log.isDebugEnabled()) log.debug("Searching interactions (raw): " + query);
-
-        query = QueryHelper.prepareQuery(query);
-
-        if (log.isDebugEnabled()) log.debug("Searching interactions (prepared query): " + query);
+        String query = userQuery.createInteractionQuery();
 
         final SearchConfig config = appConfigBean.getConfig();
 
@@ -228,27 +200,25 @@ public class SearchController extends JpaBaseController {
             e.printStackTrace();
         }
 
-        doInteractorSearch(userQuery.getInteractorSearchQuery());
+        doInteractorSearch(userQuery);
     }
 
-    public void doInteractorSearch(String query) {
+    public void doInteractorSearch(UserQuery query) {
         doProteinsSearch(query);
         doSmallMoleculeSearch(query);
         interactorTotalResults = smallMoleculeTotalResults + proteinTotalResults;
     }
 
-    private void doProteinsSearch(String query) {
-        // reset the status of the range choice bar
-        if (log.isDebugEnabled()) log.debug("Searching proteins (raw): " + query);
+    private void doProteinsSearch(UserQuery query) {
+        query.setInteractorTypeMi(CvInteractorType.PROTEIN_MI_REF);
 
-        query = QueryHelper.prepareInteractorQuery(query, CvInteractorType.PROTEIN_MI_REF);
-
-        if (log.isDebugEnabled()) log.debug("Searching proteins (prepared query): " + query);
+        if (log.isDebugEnabled()) log.debug("Searching proteins: " + query);
 
         String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
 
         try {
-            interactorResults = new SearchResultDataModel(query, indexDirectory, pageSize);
+            String interactorQuery = query.createInteractorQuery();
+            interactorResults = new SearchResultDataModel(interactorQuery, indexDirectory, pageSize);
             proteinTotalResults = interactorResults.getRowCount();
         } catch (TooManyResultsException e) {
             addErrorMessage("Too many proteins found", "Please, refine your query");
@@ -257,18 +227,16 @@ public class SearchController extends JpaBaseController {
         }
     }
 
-    private void doSmallMoleculeSearch(String query) {
-        // reset the status of the range choice bar
-        if (log.isDebugEnabled()) log.debug("Searching small molecules (raw): " + query);
+    private void doSmallMoleculeSearch(UserQuery query) {
+        query.setInteractorTypeMi(CvInteractorType.SMALL_MOLECULE_MI_REF);
 
-        query = QueryHelper.prepareInteractorQuery(query, CvInteractorType.SMALL_MOLECULE_MI_REF);
-
-        if (log.isDebugEnabled()) log.debug("Searching small molecules (prepared query): " + query);
+        if (log.isDebugEnabled()) log.debug("Searching small molecules: " + query);
 
         String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
 
         try {
-            smallMoleculeResults = new SearchResultDataModel(query, indexDirectory, pageSize);
+            String interactorQuery = query.createInteractorQuery();
+            smallMoleculeResults = new SearchResultDataModel(interactorQuery, indexDirectory, pageSize);
             smallMoleculeTotalResults = smallMoleculeResults.getRowCount();
         } catch (TooManyResultsException e) {
             addErrorMessage("Too many small molecules found", "Please, refine your query");
@@ -330,7 +298,6 @@ public class SearchController extends JpaBaseController {
 
         final String query = sb.toString();
         userQuery.setSearchQuery( query );
-        userQuery.setDisplayQuery( query );
 
         doBinarySearch(userQuery);
 
@@ -342,13 +309,7 @@ public class SearchController extends JpaBaseController {
     }
 
     public void resetSearch(ActionEvent event) {
-        final String query = "*";
-        userQuery.setSearchQuery( query );
-        userQuery.setDisplayQuery( query );
-        userQuery.setCurrentOntologyQuery( false );
-        userQuery.setOntologySearchQuery(null);
-        userQuery.getFilters().clear();
-        doBinarySearch( userQuery );
+        this.userQuery = new UserQuery();
     }
 
     // Getters & Setters
