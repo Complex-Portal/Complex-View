@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.view.webapp.util;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.QueryParser;
@@ -54,6 +55,20 @@ public final class MitabFunctions {
 
     private static final String PROTEIN_MI_REF = "MI:0326";
     private static final String SMALLMOLECULE_MI_REF = "MI:0328";
+
+    private static final String ENZYME = "enzyme";
+    private static final String ENZYME_PSI_REF = "MI:0501";
+
+    private static final String ENZYME_TARGET = "enzyme target";
+    private static final String ENZYME_TARGET_PSI_REF = "MI:0502";
+
+    private static final String DRUG = "drug";
+    private static final String DRUG_PSI_REF = "MI:1094";
+
+    private static final String DRUG_TARGET = "drug target";
+    private static final String DRUG_TARGET_PSI_REF = "MI:1095";
+
+
 
     // TODO replace this by EHCache
     private static Map interactorCountCache = new LRUMap(2500);
@@ -92,42 +107,82 @@ public final class MitabFunctions {
         if (isSmallMolecule(interactor)) {
             return smallMoleculeInitial;
         }
-        return "";
+        return "-";
+    }
+
+    public static boolean isEnzyme( Collection<CrossReference> crossReferences ) {
+
+        for ( CrossReference crossReference : crossReferences ) {
+            if ( ENZYME_PSI_REF.equals( crossReference.getIdentifier() ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isEnzymeTarget( Collection<CrossReference> crossReferences ) {
+
+        for ( CrossReference crossReference : crossReferences ) {
+            if ( ENZYME_TARGET_PSI_REF.equals( crossReference.getIdentifier() ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
+    public static boolean isDrug( Collection<CrossReference> crossReferences ) {
+
+        for ( CrossReference crossReference : crossReferences ) {
+            if ( DRUG_PSI_REF.equals( crossReference.getIdentifier() ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isDrugTarget( Collection<CrossReference> crossReferences ) {
+
+        for ( CrossReference crossReference : crossReferences ) {
+            if ( DRUG_TARGET_PSI_REF.equals( crossReference.getIdentifier() ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+   
     public static String getInitialForCrossReference(Collection<CrossReference> crossReferences) {
 
-        String role = "";
+        String role = "-";
         if (crossReferences.size() == 1) {
             role = crossReferences.iterator().next().getText();
             if (role != null && !("unspecified role".equals(role))) {
                 return role.substring(0, 2).toUpperCase();
             } else {
-                return "";
+                return "-";
             }
         } else {
-
-            for (CrossReference crossReference : crossReferences) {
-                if (crossReference.getText() != null && !"unspecified role".equals(crossReference.getText())) {
-                    role = role + getFirstLetterofEachToken(crossReference.getText()) + ", ";
+            List<String> roles = new ArrayList<String>();
+            for ( CrossReference crossReference : crossReferences ) {
+                if ( crossReference.getText() != null && !"unspecified role".equals( crossReference.getText() ) ) {
+                    roles.add( getFirstLetterofEachToken( crossReference.getText() ) );
                 }
             }
 
-            if (role.length() > 0) {
-                role = cropLastCharacter(role);
+            if(roles.size()==1){
+                role = roles.iterator().next();
             }
+            if(roles.size()>1){
+                role = StringUtils.join( roles.toArray(),"," );
+            }
+
         }
         return role;
     }
 
 
-    public static String cropLastCharacter(String strToBeCropped) {
-
-        return strToBeCropped.substring(0, strToBeCropped.length() - 2);
-    }
-
-
+  
     public static String getFirstLetterofEachToken(String stringToken) {
         String s = "";
         if (stringToken.split("\\s+").length == 1) {
