@@ -172,7 +172,6 @@ public class EditorMenuFactory {
         } catch (IntactException e) {
             LOGGER.error("Problem trying to load the MI numbers for the CvInteractorType and children of protein " +
                     "and nucleic acid : ", e);
-            e.printStackTrace();
         }
     }
 
