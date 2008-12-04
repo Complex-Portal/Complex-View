@@ -41,6 +41,7 @@
             <tr:panelGroupLayout layout="vertical">
                 <tr:commandButton id="#{id}" styleClass="submit_button"
                                    text="Search"
+                                   actionListener="#{userQuery.clearSearchFilters}"
                                    action="#{searchBean.doBinarySearchAction}">
                 </tr:commandButton>
 

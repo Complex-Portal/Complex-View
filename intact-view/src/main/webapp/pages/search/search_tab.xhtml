@@ -13,10 +13,25 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
-    <tr:panelHeader text="Quick Search" styleClass="level-one"/>
+    <tr:spacer width="1" height="10"/>
+
+    <!--<tr:panelHeader text="Quick Search" styleClass="level-one">-->
+
+
+    <!--<tr:commandButton text="Clear search" actionListener="#{userQuery.clearSearchFilters}"/>-->
+
+    <tr:panelHorizontalLayout valign="top">
+
+        <f:facet name="separator">
+            <tr:spacer width="10" height="1"/>
+        </f:facet>
+
+        <tr:panelGroupLayout>
+
+            <tr:panelBox text="Quick search" background="dark" inlineStyle="width:100%">
 
         <tr:panelLabelAndMessage label="Search query:">
-            <tr:inputText columns="30" value="#{searchBean.userQuery.searchQuery}"
+            <tr:inputText columns="30" value="#{userQuery.searchQuery}"
                           onfocus="this.select()"
                           onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
             <f:facet name="help">
@@ -25,19 +40,19 @@
                         <tr:group>
                             Protein accession number: e.g.&#160;
                             <tr:commandLink text="Q08345" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="Q08345" target="#{searchBean.userQuery.searchQuery}"/>
+                                <f:setPropertyActionListener value="Q08345" target="#{userQuery.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
                         <tr:group>
                             Drug name: e.g.&#160;
                             <tr:commandLink text="imatinib" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="imatinib" target="#{searchBean.userQuery.searchQuery}"/>
+                                <f:setPropertyActionListener value="imatinib" target="#{userQuery.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
                         <tr:group>
                             Gene name: e.g.&#160;
                             <tr:commandLink text="DDR1" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="DDR1" target="#{searchBean.userQuery.searchQuery}"/>
+                                <f:setPropertyActionListener value="DDR1" target="#{userQuery.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
                     </tr:panelList>
@@ -51,13 +66,19 @@
             </f:facet>
         </tr:panelLabelAndMessage>
 
+            </tr:panelBox>
+
+            <tr:spacer width="1" height="10"/>
+
+            <tr:panelBox text="Ontology Search" background="dark" inlineStyle="width:100%">
+
     <tr:outputText value="Start typing an ontology term, possible completions of the term will be shown:"/>
     <br/><br/>
 
 
           <tr:panelLabelAndMessage label="Ontology query:">
                <iam:inputAutocomplete id="ontologySearchQuery"
-                                   value="#{searchBean.userQuery.ontologySearchQuery}"
+                                   value="#{userQuery.ontologySearchQuery}"
                                    columns="30"
                                    readOnly="false"
                                    locateBackingBean="#{ontologyBean}"
@@ -80,7 +101,7 @@
                               <tr:spacer width="5"/>
                               <tr:commandLink text="association" action="#{searchBean.doOntologySearchAction}">
                                   <f:setPropertyActionListener value="association"
-                                                               target="#{searchBean.userQuery.ontologySearchQuery}"/>
+                                                               target="#{userQuery.ontologySearchQuery}"/>
                               </tr:commandLink>
                           </tr:group>
 
@@ -89,7 +110,7 @@
                               <tr:spacer width="5"/>
                               <tr:commandLink text="MI:0914" action="#{searchBean.doOntologySearchAction}">
                                   <f:setPropertyActionListener value="MI:0914"
-                                                               target="#{searchBean.userQuery.ontologySearchQuery}"/>
+                                                               target="#{userQuery.ontologySearchQuery}"/>
                               </tr:commandLink>
                           </tr:group>
                       </tr:panelList>
@@ -98,6 +119,7 @@
                 <f:facet name="end">
                     <tr:commandButton id="ontologySearchBtn"
                                       text="Search"
+                                      actionListener="#{userQuery.clearSearchFilters}"
                                       action="#{searchBean.doOntologySearchAction}"
                                       styleClass="submit_button"/>
                 </f:facet>
@@ -114,6 +136,20 @@
             <tr:goLink text="InterPro" destination="http://www.ebi.ac.uk/interpro/" targetFrame="_blank"/>
 
         </tr:panelLabelAndMessage>
+
+            </tr:panelBox>
+        </tr:panelGroupLayout>
+
+
+        <tr:panelGroupLayout>
+            <ui:include src="filters.xhtml"/>
+        </tr:panelGroupLayout>
+
+
+    </tr:panelHorizontalLayout>
+
+
+    <!--</tr:panelHeader>-->
 
     <tr:panelHeader text="Other Searches">
 

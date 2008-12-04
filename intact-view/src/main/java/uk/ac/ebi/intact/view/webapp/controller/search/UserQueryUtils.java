@@ -25,6 +25,20 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
  */
 public class UserQueryUtils {
 
+    public static String escapeIfNecessary( String query ) {
+        query = query.trim();
+
+         if (query.startsWith("\"") && query.endsWith("\"")) {
+             return query;
+         }
+
+        if (query.contains(":") || query.contains("(") || query.contains(")") || query.contains(" ")) {
+            query = "\"" + query + "\"";
+        }
+
+        return query;
+    }
+
     public static String getCurrentQueryParam( UserQuery userQuery ) {
         if ( userQuery == null ) {
             throw new NullPointerException( "You must give a non null userQuery" );

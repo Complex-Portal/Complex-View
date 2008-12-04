@@ -33,6 +33,7 @@ public class UserQueryTest {
     @Before
     public void setUp() {
         query = new UserQuery();
+        query.reset();
     }
 
     @After
@@ -41,28 +42,139 @@ public class UserQueryTest {
     }
 
     @Test
-    public void testCreateInteractorQuery() {
+    public void getInteractorQuery() {
         query.setSearchQuery("test");
-        query.getProperties().add("GO:12345");
+        query.addProperty("GO:12345");
         query.setInteractorTypeMi("MI:0123");
         
-        Assert.assertEquals("+test +typeA:\"MI:0123\" +propertiesA:\"GO:12345\"", query.createInteractorQuery());
+        Assert.assertEquals("+test +propertiesA:\"GO:12345\" +typeA:\"MI:0123\"", query.getInteractorQuery());
     }
 
     @Test
-    public void testCreateInteractionQuery() {
+    public void getInteractionQuery() {
         query.setSearchQuery("test");
-        query.getProperties().add("GO:12345");
+        query.addProperty("GO:12345");
         query.setInteractorTypeMi("MI:0123");
 
-        Assert.assertEquals("+test +properties:\"GO:12345\"", query.createInteractionQuery());
+        Assert.assertEquals("+test +properties:\"GO:12345\"", query.getInteractionQuery());
     }
 
     @Test
-    public void testGetDisplayQuery() {
+    public void getInteractionQuery2() {
         query.setSearchQuery("test");
-        query.getProperties().add("GO:12345");
+        query.addProperty("GO:12345");
+        query.setDatasets(new String[]{"dataset1"});
+        query.setSources(new String[]{"sourceA"});
+
+        Assert.assertEquals("+test +properties:\"GO:12345\" +dataset:dataset1 +source:sourceA", query.getInteractionQuery());
+    }
+
+    @Test
+    public void getDisplayQuery() {
+        query.setSearchQuery("test");
+        query.addProperty("GO:12345");
         
         Assert.assertEquals("test AND \"GO:12345\"", query.getDisplayQuery());
+    }
+
+    @Test
+    public void getDisplayQuery2() {
+        query.setSearchQuery("test");
+        query.setInteractorTypeMi("MI:0123");
+        query.addProperty("GO:12345");
+
+        Assert.assertEquals("test AND \"GO:12345\"", query.getDisplayQuery());
+    }
+
+    @Test
+    public void removeClearableFilters() {
+        query.setSearchQuery("test");
+        query.addProperty("GO:12345");
+
+        query.removeClearableFilters();
+        
+        Assert.assertEquals("test", query.getDisplayQuery());
+    }
+
+    @Test
+    public void removeClearableFilters2() {
+        query.setSearchQuery("test");
+        query.addProperty("GO:12345");
+        query.setDatasets(new String[]{"dataset1"});
+        query.setSources(new String[]{"sourceA"});
+        
+        query.removeClearableFilters();
+
+        Assert.assertEquals("+test", query.getInteractionQuery());
+    }
+    
+    @Test
+    public void reset() {
+        query.setSearchQuery("test");
+        query.addProperty("GO:12345");
+
+        query.reset();
+
+        Assert.assertEquals("*", query.getDisplayQuery());
+    }
+
+    @Test
+    public void overridingSearches() {
+        query.setSearchQuery("test");
+
+        Assert.assertEquals("test", query.getDisplayQuery());
+
+        query.setSearchQuery("test2");
+
+        Assert.assertEquals("test2", query.getDisplayQuery());
+    }
+
+    @Test
+    public void overridingOntologySearches() {
+        query.setOntologySearchQuery("test");
+
+        Assert.assertEquals("test", query.getDisplayQuery());
+
+        query.setOntologySearchQuery("test2");
+
+        Assert.assertEquals("test2", query.getDisplayQuery());
+    }
+
+    @Test
+    public void changeSearches() {
+        query.setSearchQuery("test");
+
+        Assert.assertEquals("test", query.getDisplayQuery());
+
+        query.setOntologySearchQuery("test2");
+
+        Assert.assertEquals("test2", query.getDisplayQuery());
+    }
+
+    @Test
+    public void overridingSearches2() {
+        query.setInteractorTypeMi("mi1");
+
+        Assert.assertEquals("+typeA:mi1", query.getInteractorQuery());
+
+        query.setInteractorTypeMi("mi2");
+
+        Assert.assertEquals("+typeA:mi2", query.getInteractorQuery());
+    }
+
+    @Test
+    public void expansionSpoke() {
+        query.setSearchQuery("test");
+        query.setExpansions(new String[] {"lala"});
+
+        Assert.assertEquals("+test -expansion:Spoke", query.getInteractionQuery());
+    }
+
+    @Test
+    public void expansionSpoke_not() {
+        query.setSearchQuery("test");
+        query.setExpansions(new String[] {"lala", FilterPopulatorController.EXPANSION_SPOKE_VALUE});
+
+        Assert.assertEquals("+test", query.getInteractionQuery());
     }
 }

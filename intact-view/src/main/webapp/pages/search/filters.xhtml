@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+    <tr:panelBox text="Filters">
+
+        <tr:panelFormLayout>
+            <tr:selectManyCheckbox label="Datasets" value="#{userQuery.datasets}">
+                <f:selectItems value="#{filterPopulator.datasetSelectItems}"/>
+            </tr:selectManyCheckbox>
+
+            <tr:separator/>
+
+            <tr:selectManyCheckbox label="Sources" value="#{userQuery.sources}">
+                <f:selectItems value="#{filterPopulator.sourceSelectItems}"/>
+            </tr:selectManyCheckbox>
+
+            <tr:separator/>
+
+            <tr:selectManyCheckbox label="Interactions" value="#{userQuery.expansions}">
+                <f:selectItems value="#{filterPopulator.expansionSelectItems}"/>
+            </tr:selectManyCheckbox>
+        </tr:panelFormLayout>
+
+    </tr:panelBox>
+
+</ui:composition>

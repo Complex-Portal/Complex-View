@@ -43,6 +43,9 @@ public class GoBrowserController extends BaseController{
     @Autowired
     private SearchController searchController;
 
+    @Autowired
+    private UserQuery userQuery;
+
     private OntologyTreeModel goOntologyTreeModel;
 
     public GoBrowserController() {
@@ -50,8 +53,6 @@ public class GoBrowserController extends BaseController{
 
     @PostConstruct
     public void init() {
-        final UserQuery userQuery = searchController.getUserQuery();
-
         String searchQuery = userQuery.getCurrentQuery();
         String luceneQuery = searchController.getResults().getResult().getLuceneQuery().toString();
 

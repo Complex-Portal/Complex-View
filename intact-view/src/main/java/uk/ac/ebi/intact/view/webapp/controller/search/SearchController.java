@@ -68,7 +68,7 @@ public class SearchController extends JpaBaseController {
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
-
+    @Autowired
     private UserQuery userQuery;
 
      // vars
@@ -95,7 +95,6 @@ public class SearchController extends JpaBaseController {
 
 
     public SearchController() {
-        this.userQuery = new UserQuery();
     }
 
     @PostConstruct
@@ -109,35 +108,33 @@ public class SearchController extends JpaBaseController {
 
         String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
         String ontologyQueryParam = context.getExternalContext().getRequestParameterMap().get(ONTOLOGY_QUERY_PARAM);
-
+         
         if (queryParam != null && queryParam.length()>0) {
             if (log.isDebugEnabled()) log.debug("Searching using query parameter: "+queryParam);
 
-            this.userQuery = new UserQuery();
+            userQuery.reset();
             userQuery.setSearchQuery( queryParam );
+
             doBinarySearch( userQuery );
         }
 
         if ( ontologyQueryParam != null && ontologyQueryParam.length()>0) {
             if (log.isDebugEnabled()) log.debug("Searching using ontology query parameter: "+queryParam);
 
-            this.userQuery = new UserQuery();
+            userQuery.reset();
             userQuery.setOntologySearchQuery(ontologyQueryParam);
+
             doBinarySearch( userQuery );
         }
     }
 
     public String doBinarySearchAction() {
-        userQuery.getFilters().clear();
-
         doBinarySearch( userQuery );
 
         return "interactions";
     }
 
     public String doOntologySearchAction() {
-        userQuery.getFilters().clear();
-
         final String query = userQuery.getOntologySearchQuery();
 
         if ( query == null) {
@@ -153,27 +150,21 @@ public class SearchController extends JpaBaseController {
     public void doFilteredBinarySearch(ActionEvent evt) {
         final Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 
-        String queryParam = UserQueryUtils.getCurrentQueryParam( userQuery );
         String termParam = UserQueryUtils.getCurrentQueryTermParam( userQuery );
-
-        String query = params.get(queryParam);
         String termId = params.get(termParam);
 
-        if ( log.isDebugEnabled() ) {
-            log.debug( "Query or TermId was null. termId:"+termId+" query:"+query  );
+        if( termId == null ) {
+            throw new IllegalStateException( "TermId was null" );
         }
-
-        if( query == null || termId == null ) {
-            throw new IllegalStateException( "Query or TermId was null. termId:"+termId+" query:"+query );
-        }
-        userQuery.getProperties().add( termId );
+        
+        userQuery.addProperty( termId );
 
         doBinarySearch( userQuery );
     }
 
     private void doBinarySearch(UserQuery userQuery) {
 
-        String query = userQuery.createInteractionQuery();
+        String query = userQuery.getInteractionQuery();
 
         final SearchConfig config = appConfigBean.getConfig();
 
@@ -217,7 +208,7 @@ public class SearchController extends JpaBaseController {
         String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
 
         try {
-            String interactorQuery = query.createInteractorQuery();
+            String interactorQuery = query.getInteractorQuery();
             interactorResults = new SearchResultDataModel(interactorQuery, indexDirectory, pageSize);
             proteinTotalResults = interactorResults.getRowCount();
         } catch (TooManyResultsException e) {
@@ -235,7 +226,7 @@ public class SearchController extends JpaBaseController {
         String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
 
         try {
-            String interactorQuery = query.createInteractorQuery();
+            String interactorQuery = query.getInteractorQuery();
             smallMoleculeResults = new SearchResultDataModel(interactorQuery, indexDirectory, pageSize);
             smallMoleculeTotalResults = smallMoleculeResults.getRowCount();
         } catch (TooManyResultsException e) {
@@ -309,7 +300,7 @@ public class SearchController extends JpaBaseController {
     }
 
     public void resetSearch(ActionEvent event) {
-        this.userQuery = new UserQuery();
+        this.userQuery.reset();
     }
 
     // Getters & Setters
@@ -369,10 +360,6 @@ public class SearchController extends JpaBaseController {
 
     public void setExportFormat( String exportFormat ) {
         this.exportFormat = exportFormat;
-    }
-
-    public UserQuery getUserQuery() {
-        return userQuery;
     }
 
     public int getTotalResults() {
