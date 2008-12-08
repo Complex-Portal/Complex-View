@@ -73,11 +73,11 @@
                 <ui:insert name="listTabContent"/>
             </tr:showDetailItem>
 
-            <!--<tr:showDetailItem text="Molecule View" disabled="#{moleculeViewBean.interactor == null}"-->
-                               <!--disclosed="#{disclosedTabName == 'molecule'}">-->
-                <!--<tr:messages/>-->
-                <!--<ui:insert name="moleculeTabContent"/>-->
-            <!--</tr:showDetailItem>-->
+            <tr:showDetailItem text="Molecule View" disabled="#{moleculeViewBean.interactor == null}"
+                               disclosed="#{disclosedTabName == 'molecule'}">
+                <tr:messages/>
+                <ui:insert name="moleculeTabContent"/>
+            </tr:showDetailItem>
 
             <tr:showDetailItem text="Graph"
                                shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"

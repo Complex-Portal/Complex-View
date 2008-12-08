@@ -78,9 +78,6 @@
                 <h:panelGroup>
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
-                    <iax:goMoleculeView baseUrl="#{intactViewConfiguration.dastyUrl}"
-                            query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
                     <iax:goDrugPortProteinView query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
                 </h:panelGroup>
@@ -98,7 +95,10 @@
                 </h:panelGroup>
             </f:facet>
             <f:facet name="intact">
-                <!-- nothing -->
+                <h:panelGroup>
+                    <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
             </f:facet>
         </tr:switcher>
     </tr:iterator>
