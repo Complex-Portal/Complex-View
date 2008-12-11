@@ -573,14 +573,15 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
 
         CommentBean cb1 = expForm.getNewAnnotation();
 
+        String creator = null;
 
         ExperimentDao experimentDao = DaoProvider.getDaoFactory().getExperimentDao();
         Experiment experiment = experimentDao.getByShortLabel(shortLabel);
         if (experiment == null){
             log.error("Experiment is null,  we won't be abble to get the creator.");
+        } else {
+            creator = experiment.getCreator();
         }
-
-        String creator = experiment.getCreator();
 
         // If the user who is trying to Accept or Review the experiment is the user who has curated the experiment
         // display the error : "You can not Accept or Review your own curated experiment"d
