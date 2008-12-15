@@ -15,13 +15,14 @@
  */
 package uk.ac.ebi.intact.psicquic.ws;
 
+import org.hupo.psi.mi.psicquic.DbRef;
 import org.hupo.psi.mi.psicquic.QueryResponse;
 import org.hupo.psi.mi.psicquic.RequestInfo;
-import org.hupo.psi.mi.psicquic.DbRef;
 import org.junit.*;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import psidev.psi.mi.search.Searcher;
+import psidev.psi.mi.search.index.PsimiIndexWriter;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
+import uk.ac.ebi.intact.psimitab.search.IntactPsimiTabIndexWriter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -33,22 +34,26 @@ import java.util.Arrays;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class IndexBasedPsicquicServiceTest {
+public class IntactPsicquicServiceTest {
 
     private static IntactPsicquicService service;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        InputStream mitabStream = IndexBasedPsicquicServiceTest.class.getResourceAsStream("/META-INF/brca2.mitab.txt");
-        File indexDir = new File("target", "brca-mitab.index");
+        InputStream mitabStream = IntactPsicquicServiceTest.class.getResourceAsStream("/META-INF/imatinib.mitab.txt");
 
-        Searcher.buildIndex(indexDir, mitabStream, true, true);
+        Assert.assertNotNull("Input stream for test file is null", mitabStream);
+
+        File indexDir = new File("target", "imatinib-mitab.index");
+
+        PsimiIndexWriter indexWriter = new IntactPsimiTabIndexWriter();
+        indexWriter.index(indexDir, mitabStream, true, true);
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/META-INF/beans.spring.test.xml"});
         PsicquicConfig config = (PsicquicConfig)context.getBean("psicquicConfig");
         config.setIndexDirectory(indexDir.toString());
 
-	    service = (IntactPsicquicService)context.getBean("indexBasedPsicquicService");
+	    service = (IntactPsicquicService)context.getBean("intactPsicquicService");
     }
 
     @AfterClass
@@ -71,12 +76,12 @@ public class IndexBasedPsicquicServiceTest {
         info.setBlockSize(50);
 
         DbRef dbRef = new DbRef();
-        dbRef.setId("FANCD1");
+        dbRef.setId("Imatinib");
 
         final QueryResponse response = service.getByInteractor(dbRef, info);
 
-        Assert.assertEquals(12, response.getResultInfo().getTotalResults());
-        Assert.assertEquals(12, response.getResultSet().getMitab().split("\n").length);
+        Assert.assertEquals(11, response.getResultInfo().getTotalResults());
+        Assert.assertEquals(11, response.getResultSet().getMitab().split("\n").length);
     }
 
     @Test
@@ -86,11 +91,11 @@ public class IndexBasedPsicquicServiceTest {
         info.setBlockSize(50);
 
         DbRef dbRef = new DbRef();
-        dbRef.setId("EBI-1372935");
+        dbRef.setId("DGI-337977");
 
         final QueryResponse response = service.getByInteraction(dbRef, info);
 
-        Assert.assertEquals(2, response.getResultInfo().getTotalResults());
+        Assert.assertEquals(1, response.getResultInfo().getTotalResults());
     }
 
     @Test
@@ -100,13 +105,13 @@ public class IndexBasedPsicquicServiceTest {
         info.setBlockSize(50);
 
         DbRef dbRef1 = new DbRef();
-        dbRef1.setId("BRCA2");
+        dbRef1.setId("MDR1");
         DbRef dbRef2 = new DbRef();
-        dbRef2.setId("FANCD2");
+        dbRef2.setId("FMS");
 
         final QueryResponse response = service.getByInteractorList(Arrays.asList(dbRef1, dbRef2), info, "OR");
 
-        Assert.assertEquals(14, response.getResultInfo().getTotalResults());
+        Assert.assertEquals(2, response.getResultInfo().getTotalResults());
 
     }
 
@@ -117,13 +122,13 @@ public class IndexBasedPsicquicServiceTest {
         info.setBlockSize(50);
 
         DbRef dbRef1 = new DbRef();
-        dbRef1.setId("BRCA2");
+        dbRef1.setId("Imatinib");
         DbRef dbRef2 = new DbRef();
-        dbRef2.setId("FANCD2");
+        dbRef2.setId("FMS");
 
         final QueryResponse response = service.getByInteractorList(Arrays.asList(dbRef1, dbRef2), info, "AND");
 
-        Assert.assertEquals(2, response.getResultInfo().getTotalResults());
+        Assert.assertEquals(1, response.getResultInfo().getTotalResults());
 
     }
 
@@ -134,9 +139,9 @@ public class IndexBasedPsicquicServiceTest {
         info.setBlockSize(50);
 
         DbRef dbRef1 = new DbRef();
-        dbRef1.setId("EBI-1372935");
+        dbRef1.setId("DGI-337977");
         DbRef dbRef2 = new DbRef();
-        dbRef2.setId("EBI-1372896");
+        dbRef2.setId("DGI-337968");
 
         final QueryResponse response = service.getByInteractionList(Arrays.asList(dbRef1, dbRef2), info);
 
@@ -149,10 +154,10 @@ public class IndexBasedPsicquicServiceTest {
         info.setResultType("psi-mi/tab25");
         info.setBlockSize(50);
 
-        final QueryResponse response = service.getByQuery("FANCD1", info);
+        final QueryResponse response = service.getByQuery("imatinib", info);
 
-        Assert.assertEquals(12, response.getResultInfo().getTotalResults());
-        Assert.assertEquals(12, response.getResultSet().getMitab().split("\n").length);
+        Assert.assertEquals(11, response.getResultInfo().getTotalResults());
+        Assert.assertEquals(11, response.getResultSet().getMitab().split("\n").length);
     }
 
     @Test

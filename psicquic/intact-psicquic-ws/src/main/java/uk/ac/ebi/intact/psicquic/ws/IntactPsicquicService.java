@@ -22,21 +22,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.engine.SearchEngine;
-import psidev.psi.mi.search.engine.impl.BinaryInteractionSearchEngine;
 import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
 import psidev.psi.mi.xml.converter.impl254.EntrySetConverter;
 import psidev.psi.mi.xml.dao.inMemory.InMemoryDAOFactory;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.model.CvXrefQualifier;
-import uk.ac.ebi.intact.model.InstitutionXref;
-import uk.ac.ebi.intact.model.Interactor;
-import uk.ac.ebi.intact.model.IntactEntry;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.entry.IntactEntryFactory;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
+import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
+import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 
 import java.io.IOException;
 import java.util.*;
@@ -66,72 +60,22 @@ public class IntactPsicquicService implements PsicquicService {
     @Autowired
     private PsicquicConfig config;
 
-    private String institutionMi;
-
     public IntactPsicquicService() {
-        for (InstitutionXref xref : IntactContext.getCurrentInstance().getInstitution().getXrefs()) {
-            if (xref.getCvXrefQualifier() != null && CvXrefQualifier.IDENTITY_MI_REF.equals(xref.getCvXrefQualifier().getIdentifier())) {
-                institutionMi = xref.getPrimaryId();
-                break;
-            }
-        }
+
     }
 
     public QueryResponse getByInteractor(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
-        String id = dbRef.getId();
-        String dbAc = dbRef.getDbAc();
+        String query = createQuery("identifiers", dbRef);
 
-        if (id != null) {
-            throw new PsicquicServiceException("To execute a query the DbRef.id must not be null");
-        }
-
-        IntactEntry entry = null;
-
-        if (dbAc != null && dbAc.equals(institutionMi)) {
-//            entry = IntactEntryFactory.createIntactEntry(IntactContext.getCurrentInstance())
-//                    .addInteractorWithAc(id);
-        } else {
-
-        }
-
-
-        return null;
+        return getByQuery(query, requestInfo);
     }
 
 
 
     public QueryResponse getByInteraction(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
-        String id = dbRef.getId();
+        String query = createQuery("interaction_id", dbRef);
 
-        if (id != null) {
-            throw new PsicquicServiceException("To execute a query the DbRef.id must not be null");
-        }
-
-        checkResultType(requestInfo);
-
-        IntactEntry intactEntry = null;
-
-        if (RETURN_TYPE_COUNT.equals(requestInfo.getResultType())) {
-            intactEntry = new IntactEntry();
-            intactEntry.setInstitution(IntactContext.getCurrentInstance().getInstitution());
-
-            requestInfo.setBlockSize(0);
-        } else {
-           intactEntry = IntactEntryFactory.createIntactEntry(IntactContext.getCurrentInstance())
-                    .addInteractionWithAc(id);
-        }
-
-        return createResponse(intactEntry, requestInfo);
-    }
-
-    private QueryResponse createResponse(IntactEntry intactEntry, RequestInfo requestInfo) {
-        QueryResponse response = new QueryResponse();
-        response.
-
-        if (RETURN_TYPE_XML25.equals(requestInfo.getResultType())) {
-
-        }
-        return null;
+        return getByQuery(query, requestInfo);
     }
 
     public QueryResponse getByInteractorList(List<DbRef> dbRefs, RequestInfo requestInfo, String operand) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
@@ -163,7 +107,7 @@ public class IntactPsicquicService implements PsicquicService {
                 sb.append(" ").append(operand).append(" ");
             }
         }
-        
+
         sb.append(")");
 
         return sb.toString();
@@ -172,7 +116,7 @@ public class IntactPsicquicService implements PsicquicService {
     private String createQuery(DbRef dbRef) {
         String db = dbRef.getDbAc();
         String id = dbRef.getId();
-        
+
         return "("+((db == null || db.length() == 0)? "\""+id+"\"" : "\""+db+"\" AND \""+id+"\"")+")";
     }
 
@@ -192,9 +136,9 @@ public class IntactPsicquicService implements PsicquicService {
         logger.debug("Searching: {} ({}/{})", new Object[] {query, requestInfo.getFirstResult(), blockSize});
 
         SearchEngine searchEngine;
-        
+
         try {
-            searchEngine = new BinaryInteractionSearchEngine(config.getIndexDirectory());
+            searchEngine = new IntactSearchEngine(config.getIndexDirectory());
         } catch (IOException e) {
             throw new PsicquicServiceException("Problem creating SearchEngine using directory: "+config.getIndexDirectory(), e);
         }
@@ -270,7 +214,7 @@ public class IntactPsicquicService implements PsicquicService {
     }
 
     private EntrySet createEntrySet(SearchResult searchResult) throws PsicquicServiceException {
-        Tab2Xml tab2Xml = new Tab2Xml();
+        Tab2Xml tab2Xml = new IntactTab2Xml();
         try {
             psidev.psi.mi.xml.model.EntrySet mEntrySet = tab2Xml.convert(searchResult.getData());
 
@@ -282,36 +226,6 @@ public class IntactPsicquicService implements PsicquicService {
         } catch (Exception e) {
             throw new PsicquicServiceException("Problem converting results to PSI-MI XML", e);
         }
-    }
-
-    private QueryResponse createEmptyResponse(RequestInfo requestInfo) {
-        int blockSize = Math.min(requestInfo.getBlockSize(), BLOCKSIZE_MAX);
-
-        QueryResponse queryResponse = new QueryResponse();
-        ResultInfo resultInfo = new ResultInfo();
-        resultInfo.setBlockSize(blockSize);
-        resultInfo.setFirstResult(requestInfo.getFirstResult());
-
-        queryResponse.setResultInfo(resultInfo);
-
-        ResultSet resultSet = new ResultSet();
-        queryResponse.setResultSet(resultSet);
-    }
-
-    private void checkResultType(RequestInfo requestInfo) throws NotSupportedTypeException {
-        String resultType = requestInfo.getResultType();
-
-        if (resultType == null) {
-            requestInfo.setResultType(RETURN_TYPE_DEFAULT);
-        } else {
-            if (!getSupportedReturnTypes().contains(resultType)) {
-                throw new NotSupportedTypeException("Return type is not supported: "+resultType);
-            }
-        }
-    }
-
-    private DaoFactory getDaoFactory() {
-        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
     }
 }
 

@@ -31,7 +31,7 @@
 	<!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
     <jaxws:endpoint id="psicquicService"
 		implementorClass="uk.ac.ebi.intact.psicquic.ws.IntactPsicquicService"
-		implementor="#indexBasedPsicquicService" address="/psicquic">
+		implementor="#intactPsicquicService" address="/psicquic">
 	</jaxws:endpoint>
 
 </beans>
