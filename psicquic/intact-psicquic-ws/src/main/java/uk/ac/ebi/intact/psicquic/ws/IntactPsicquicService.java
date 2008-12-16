@@ -24,11 +24,12 @@ import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.engine.SearchEngine;
 import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
 import psidev.psi.mi.tab.model.BinaryInteraction;
-import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
+import psidev.psi.mi.tab.model.builder.DocumentDefinition;
 import psidev.psi.mi.xml.converter.impl254.EntrySetConverter;
 import psidev.psi.mi.xml.dao.inMemory.InMemoryDAOFactory;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
+import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 
@@ -199,7 +200,7 @@ public class IntactPsicquicService implements PsicquicService {
     }
 
     protected String createMitabResults(SearchResult searchResult) {
-        MitabDocumentDefinition docDef = new MitabDocumentDefinition();
+        DocumentDefinition docDef = new IntactDocumentDefinition();
 
         List<BinaryInteraction> binaryInteractions = searchResult.getData();
 
