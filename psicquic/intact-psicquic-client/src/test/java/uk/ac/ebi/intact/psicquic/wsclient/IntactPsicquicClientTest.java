@@ -15,29 +15,27 @@
  */
 package uk.ac.ebi.intact.psicquic.wsclient;
 
-import org.hupo.psi.mi.psicquic.PsicquicService;
-import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-import org.apache.cxf.frontend.ClientProxyFactoryBean;
+import org.junit.Test;
+import org.junit.Ignore;
+import uk.ac.ebi.intact.model.Interaction;
 
 /**
- * Simple client for PSICQUIC web services.
+ * TODO comment that class header
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class PsicquicClient {
+public class IntactPsicquicClientTest {
 
-    private PsicquicService service;
+    @Test
+    @Ignore
+    public void client() throws Exception {
+        IntactPsicquicClient client = new IntactPsicquicClient("http://localhost:9090/intact-psicquic-ws/webservices/psicquic");
 
-    public PsicquicClient(String serviceAddress) {
-        ClientProxyFactoryBean factory = new JaxWsProxyFactoryBean();
-        factory.setServiceClass(PsicquicService.class);
-        factory.setAddress(serviceAddress);
+        IntactSearchResult searchResult = client.getByInteractor("imatinib", 0, 50);
 
-        this.service = (PsicquicService) factory.create();
-    }
-
-    public PsicquicService getService() {
-        return service;
+        for (Interaction interaction : searchResult.getEntry().getInteractions()) {
+           System.out.println(interaction);
+        }
     }
 }
