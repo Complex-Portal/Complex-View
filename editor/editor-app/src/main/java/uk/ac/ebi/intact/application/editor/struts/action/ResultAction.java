@@ -13,10 +13,9 @@ import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorAction;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.IntactObject;
+import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
+import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,18 +67,31 @@ public class ResultAction extends AbstractEditorAction {
         // The type to edit.
         String type = getValue(request, "type");
 
-        // At this point we should have valid ac and type. Validate them. It is
-        // possible for these parameters to contain invalid characters (as a result
-        // of allowing to access pages directly).
-        if ((ac == null) || (type == null) || !getService().isValidTopic(type)) {
-            LOGGER.error("Invalid values submitted for ac=" + ac + " and type=" + type);
-            ActionMessages errors = new ActionMessages();
-            // The owner of the lock (not the current user).
-            errors.add(ActionMessages.GLOBAL_MESSAGE,
-                    new ActionMessage("error.invalid.edit.inputs"));
-            saveErrors(request, errors);
-            return mapping.findForward(FAILURE);
-        }
+        // special case: if the type is a feature, we will go to its
+        // corresponding interaction view
+
+//        if ("feature".equalsIgnoreCase(type)) {
+//            Feature feature = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+//                    .getFeatureDao().getByAc(ac);
+//            type = "Interaction";
+//
+//            if (feature != null) {
+//                ac = feature.getComponent().getInteractionAc();
+//            }
+//        }
+//
+//        // At this point we should have valid ac and type. Validate them. It is
+//        // possible for these parameters to contain invalid characters (as a result
+//        // of allowing to access pages directly).
+//        if ((ac == null) || (type == null) || !getService().isValidTopic(type)) {
+//            LOGGER.error("Invalid values submitted for ac=" + ac + " and type=" + type);
+//            ActionMessages errors = new ActionMessages();
+//            // The owner of the lock (not the current user).
+//            errors.add(ActionMessages.GLOBAL_MESSAGE,
+//                    new ActionMessage("error.invalid.edit.inputs"));
+//            saveErrors(request, errors);
+//            return mapping.findForward(FAILURE);
+//        }
 
         LOGGER.info("AC: " + ac + " class: " + type);
 

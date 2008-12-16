@@ -79,8 +79,13 @@ public class CancelFeatureAction extends AbstractEditorAction {
         }
 
         user.setSelectedTopic( EditorService.getTopic( Interaction.class ));
-        // Restore the previous view (interaction view).
-        user.restorePreviousView();
+
+        // Restore the previous view
+        boolean hasPreviousView = user.restorePreviousView();
+
+        if (!hasPreviousView) {
+            return mapping.findForward(RESULT);
+        }
 
         // Back to the interaction editor.
         return mapping.findForward(INT);

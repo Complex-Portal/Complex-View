@@ -732,6 +732,11 @@
         path="/do/sm/fill/form"
         redirect="false"
       />
+        <forward
+        name="feature"
+        path="/do/feature/fill/form"
+        redirect="false"
+      />
     </action>
     <action
       path="/int/delete"
