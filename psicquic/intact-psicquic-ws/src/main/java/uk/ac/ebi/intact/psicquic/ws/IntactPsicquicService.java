@@ -219,7 +219,7 @@ public class IntactPsicquicService implements PsicquicService {
             return converter.toJaxb(mEntrySet);
 
         } catch (Exception e) {
-            throw new PsicquicServiceException("Problem converting results to PSI-MI XML", e);
+            throw new PsicquicServiceException("Problem converting results to PSI-MI XML: "+e, e);
         }
     }
 }

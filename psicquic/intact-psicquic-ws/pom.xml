@@ -122,7 +122,6 @@
     </build>
 
     <dependencies>
-
         <!-- IntAct -->
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
