@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.psicquic.ws;
 
 import org.hupo.psi.mi.psicquic.DbRef;
+import org.hupo.psi.mi.psicquic.PsicquicService;
 import org.hupo.psi.mi.psicquic.QueryResponse;
 import org.hupo.psi.mi.psicquic.RequestInfo;
 import org.junit.*;
@@ -36,7 +37,7 @@ import java.util.Arrays;
  */
 public class IntactPsicquicServiceTest {
 
-    private static IntactPsicquicService service;
+    private static PsicquicService service;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -49,11 +50,11 @@ public class IntactPsicquicServiceTest {
         PsimiIndexWriter indexWriter = new IntactPsimiTabIndexWriter();
         indexWriter.index(indexDir, mitabStream, true, true);
 
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/META-INF/beans.spring.test.xml"});
-        PsicquicConfig config = (PsicquicConfig)context.getBean("psicquicConfig");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/META-INF/beans.spring.test.xml", "/jms.spring.xml"});
+        PsicquicConfig config = (PsicquicConfig)context.getBean("testPsicquicConfig");
         config.setIndexDirectory(indexDir.toString());
 
-	    service = (IntactPsicquicService)context.getBean("intactPsicquicService");
+	    service = (PsicquicService)context.getBean("intactPsicquicService");
     }
 
     @AfterClass

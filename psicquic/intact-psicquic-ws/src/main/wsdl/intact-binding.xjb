@@ -12,6 +12,7 @@
 
     <globalBindings>
         <xjc:simple/>
+        <xjc:serializable/>
     </globalBindings>
 
 </bindings>

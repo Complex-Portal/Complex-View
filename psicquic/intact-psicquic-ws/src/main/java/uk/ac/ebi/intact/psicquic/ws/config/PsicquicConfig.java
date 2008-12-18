@@ -27,6 +27,7 @@ public class PsicquicConfig {
     private String artifactId;
     private String version;
     private String indexDirectory;
+    private String statsDirectory;
 
     public PsicquicConfig() {
     }
@@ -61,5 +62,13 @@ public class PsicquicConfig {
 
     public void setIndexDirectory(String indexDirectory) {
         this.indexDirectory = indexDirectory;
+    }
+
+    public String getStatsDirectory() {
+        return statsDirectory;
+    }
+
+    public void setStatsDirectory(String statsDirectory) {
+        this.statsDirectory = statsDirectory;
     }
 }

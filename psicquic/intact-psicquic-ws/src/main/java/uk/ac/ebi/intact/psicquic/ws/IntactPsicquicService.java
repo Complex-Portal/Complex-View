@@ -57,7 +57,7 @@ public class IntactPsicquicService implements PsicquicService {
     private static final String RETURN_TYPE_DEFAULT = RETURN_TYPE_MITAB25;
 
     private static final List<String> SUPPORTED_RETURN_TYPES = Arrays.asList(RETURN_TYPE_XML25, RETURN_TYPE_MITAB25, RETURN_TYPE_COUNT);
-
+    
     @Autowired
     private PsicquicConfig config;
 
@@ -70,8 +70,6 @@ public class IntactPsicquicService implements PsicquicService {
 
         return getByQuery(query, requestInfo);
     }
-
-
 
     public QueryResponse getByInteraction(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
         String query = createQuery("interaction_id", dbRef);
@@ -129,10 +127,6 @@ public class IntactPsicquicService implements PsicquicService {
         if (resultType != null && !getSupportedReturnTypes().contains(resultType)) {
             throw new NotSupportedTypeException("Not supported return type: "+resultType+" - Supported types are: "+getSupportedReturnTypes());
         }
-
-//        if (!new File(config.getIndexDirectory()).exists()) {
-//            throw new PsicquicServiceException("Lucene directory does not exist: "+config.getIndexDirectory());
-//        }
 
         logger.debug("Searching: {} ({}/{})", new Object[] {query, requestInfo.getFirstResult(), blockSize});
 
