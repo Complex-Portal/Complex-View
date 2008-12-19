@@ -9,6 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.UploadedFile;
 
 import javax.xml.transform.*;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -204,6 +206,10 @@ public class PsiReportBuilder {
             }
         }
         catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( "An error occured while validating your data: " + e.getMessage() );
+            context.addMessage( "inputUrl", message );
+
             throw new RuntimeException( "An unexpected error occured during the validation process", e );
         }
 
