@@ -68,9 +68,10 @@ public class PsiReportBuilder {
      * @param name The name of the file, only needed for information purposes
      * @param url  The URL with the PSI xml
      */
-    public PsiReportBuilder(String name, URL url) {
+    public PsiReportBuilder(String name, URL url, File tempFile) {
         this.name = name;
         this.url = url;
+        this.file = tempFile;
 
         this.currentSourceType = SourceType.URL;
     }
@@ -101,7 +102,13 @@ public class PsiReportBuilder {
         PsiReport report = new PsiReport(name);
 
         // second validation: checks that the semantics is right
-        validatePsiFile(report, file);
+        try {
+            validatePsiFile(report, file);
+        } catch (Throwable t) {
+            log.error("Unexpected error thrown", t);
+
+        }
+        System.out.println("Completed file validation ... about to build the report now ...");
 
         if (report.isXmlSyntaxValid()) {
             // creating the view
@@ -177,13 +184,15 @@ public class PsiReportBuilder {
             // we instantiate the MI25 validator
             Mi25Validator validator = new Mi25Validator(ontologyCfg, cvMappingCfg, ruleCfg);
             validator.setUserPreferences(preferences);
+
+            System.out.println("Validation starting");
             final ValidatorReport validatorReport = validator.validate( file );
 
             // finally, we set the messages obtained (if any) to the report
             if (validatorReport.hasSyntaxMessages()) {
                 report.setXmlSyntaxStatus("XML syntax validation failed.");
                 report.setXmlSyntaxStatus(PsiReport.INVALID);
-                report.setXmlSyntaxReport(new ArrayList(validatorReport.getSyntaxMessages()));
+                report.setXmlSyntaxReport(new ArrayList<ValidatorMessage>(validatorReport.getSyntaxMessages()));
             } else {
                 report.setXmlSyntaxStatus(PsiReport.VALID);
             }
@@ -191,17 +200,17 @@ public class PsiReportBuilder {
             if (validatorReport.hasSemanticMessages()) {
                 report.setSemanticsReport("XML semantic validation failed.");
                 report.setSemanticsStatus(PsiReport.INVALID);
-                report.setValidatorMessages(new ArrayList(validatorReport.getSemanticMessages()));
+                report.setValidatorMessages(new ArrayList<ValidatorMessage>(validatorReport.getSemanticMessages()));
             }
         }
         catch (Exception e) {
-            e.printStackTrace(writer);
+            throw new RuntimeException( "An unexpected error occured during the validation process", e );
         }
 
         String output = sw.getBuffer().toString();
 
         // if the output has content, an exception has been thrown, so the validation has failed
-        if (!output.equals("")) {
+        if (output.length() > 0) {
             report.setSemanticsStatus(PsiReport.INVALID);
             report.setSemanticsReport(output);
             return;
@@ -215,19 +224,21 @@ public class PsiReportBuilder {
         // If there are no validatorMessages, the status is "valid" (already set).
         // If there are messages, but all of them are warnings, the status will be "warnings".
         // If there are error or fatal messages, the status, the status will be failed
-        for (ValidatorMessage message : report.getValidatorMessages()) {
-            // if we find a warning, set the status to warning and continue looping
-            if (message.getLevel() == MessageLevel.WARN) {
-                status = PsiReport.WARNINGS;
-                report.setSemanticsReport("Validated with warnings");
-            }
+        if( report.getValidatorMessages() != null ) {
+            for (ValidatorMessage message : report.getValidatorMessages()) {
+                // if we find a warning, set the status to warning and continue looping
+                if (message.getLevel() == MessageLevel.WARN) {
+                    status = PsiReport.WARNINGS;
+                    report.setSemanticsReport("Validated with warnings");
+                }
 
-            // if a message with a level higher than warning is found, set the status to
-            // error and stop the loop
-            if (message.getLevel().isHigher(MessageLevel.WARN)) {
-                status = PsiReport.INVALID;
-                report.setSemanticsReport("Validation failed");
-                break;
+                // if a message with a level higher than warning is found, set the status to
+                // error and stop the loop
+                if (message.getLevel().isHigher(MessageLevel.WARN)) {
+                    status = PsiReport.INVALID;
+                    report.setSemanticsReport("Validation failed");
+                    break;
+                }
             }
         }
 

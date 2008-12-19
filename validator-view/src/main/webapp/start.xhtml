@@ -22,7 +22,7 @@
                         </h:outputLink>
                     </trh:cellFormat>
                     <trh:cellFormat halign="center">
-                        <h:outputText value="The PSI Validator" styleClass="text-align:center"/>
+                        <h1><h:outputText value="The PSI Validator" styleClass="text-align:center"/></h1>
                     </trh:cellFormat>
                     <trh:cellFormat halign="right">
                         <h:outputLink value="http://hupo.org/" styleClass="text-align:right">
@@ -56,35 +56,24 @@
                 </h:selectOneRadio>
             </h:panelGroup>
 
-            <h:panelGrid columns="2" rendered="#{psiValidatorBean.uploadLocalFile}">
-                <tr:panelGroupLayout>
+            <tr:panelGroupLayout rendered="#{psiValidatorBean.uploadLocalFile}">
+                <tr:inputFile label="File:" valueChangeListener="#{psiValidatorBean.onPsiFileUpload}"/>
+                <tr:message for="inputFile" styleClass="error-message"/>
+            </tr:panelGroupLayout>
 
-                    <tr:inputFile label="File:" required="true"
-                                  valueChangeListener="#{psiValidatorBean.psiFile}"/>
+            <tr:panelHorizontalLayout rendered="#{!psiValidatorBean.uploadLocalFile}">
+                <tr:inputText id="inputUrl" label="URL: " columns="80" value="#{psiValidatorBean.psiUrl}"
+                              required="true" validator="#{psiValidatorBean.validateUrlFormat}"/>
+                <tr:message for="inputUrl" styleClass="error-message" />
+            </tr:panelHorizontalLayout>
 
-                    <tr:message for="inputFile" styleClass="error-message"/>
-
-                </tr:panelGroupLayout>
-            </h:panelGrid>
-
-            <h:panelGrid columns="2" rendered="#{!psiValidatorBean.uploadLocalFile}">
-                <h:outputLabel for="inputUrl" value="Url: "/>
-
-                <h:panelGroup>
-
-                    <h:inputText id="inputUrl" size="80" value="#{psiValidatorBean.psiUrl}"
-                                 required="true" validator="#{psiValidatorBean.validateUrlFormat}"/>
-
-                    <tr:message for="inputUrl" styleClass="error-message" />
-
-                </h:panelGroup>
-            </h:panelGrid>
-
-            <h:commandButton value="Validate" actionListener="#{psiValidatorBean.uploadFileAction}"/>
+            <tr:commandButton text="Validate" actionListener="#{psiValidatorBean.validate}"/>
 
             <!-- Uploaded file report table -->
             <tr:panelHeader text="Validation summary"
                     rendered="#{psiValidatorBean.currentPsiReport != null}"/>
+
+            <tr:outputText value="#{psiValidatorBean.currentPsiReport == null ? 'No report available' : 'report available ;)'}" />
 
             <h:panelGrid columns="4" cellspacing="3"
                          rendered="#{psiValidatorBean.currentPsiReport != null}"

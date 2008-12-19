@@ -7,13 +7,13 @@ package uk.ac.ebi.intact.services.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.UploadedFile;
+import org.apache.myfaces.trinidad.component.core.input.CoreInputText;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.faces.controller.BaseController;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
@@ -31,7 +31,7 @@ import java.net.URL;
  * @since 2.0
  */
 @Controller("psiValidatorBean")
-@Scope( "request" )
+@Scope( "conversation.access" )
 public class PsiValidatorBean extends BaseController {
 
     /**
@@ -79,34 +79,51 @@ public class PsiValidatorBean extends BaseController {
             log.debug("Upload type changed, is local file? " + uploadLocalFile);
     }
 
-    public void psiFile(ValueChangeEvent event) {
+    // This is the method invoked when pressing the valdidate button, names after thte variable to be updated.
+    public void onPsiFileUpload(ValueChangeEvent event) {
 
-        psiFile = (UploadedFile) event.getNewValue();
-        if (psiFile != null)
-        {
-            FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage(
-                    "Successfully uploaded file " + psiFile.getFilename() +
-                            " (" + psiFile.getLength() + " bytes)");
-            context.addMessage(event.getComponent().getClientId(context), message);
+        System.out.println("PsiValidatorBean.psiFile: uploadLocalFile=" + uploadLocalFile);
 
-            try {
-                // we use a different upload method, depending on the user selection
-                if (uploadLocalFile) {
-                    uploadFromLocalFile();
-                } else {
-                    uploadFromUrl();
-                }
-            }
-            catch (IOException e) {
-                log.warn("Could not upload data", e);
-                e.printStackTrace();
+        if(  uploadLocalFile ) {
+            psiFile = (UploadedFile) event.getNewValue();
+            if (psiFile != null) {
+                FacesContext context = FacesContext.getCurrentInstance();
+                FacesMessage message = new FacesMessage(
+                        "Successfully uploaded file " + psiFile.getFilename() +
+                                " (" + psiFile.getLength() + " bytes)");
+                context.addMessage(event.getComponent().getClientId(context), message);
+
+            } else {
+                // TODO handle the null file 
             }
         }
     }
 
     /**
-     * Reads the local file
+     * Validates the data entered by the user upon pressing the validate button.
+     * @param event
+     */
+    public void validate( ActionEvent event ) {
+        try {
+            if( uploadLocalFile ) {
+                // we use a different upload method, depending on the user selection
+                uploadFromLocalFile();
+            } else {
+                uploadFromUrl();
+            }
+        } catch (IOException e) {
+            final String msg = "Failed to upload from " + (uploadLocalFile ? "local file" : "URL");
+
+            log.error(msg, e);
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage(msg);
+            context.addMessage(event.getComponent().getClientId(context), message);
+        }
+    }
+
+    /**
+     * Reads the local file.
      *
      * @throws IOException if something has gone wrong with the file
      */
@@ -120,19 +137,21 @@ public class PsiValidatorBean extends BaseController {
             log.info("Uploading local file: " + psiFile.getFilename());
         }
 
-        System.out.println("UploadedFile implementation is: " + psiFile.getClass().getName() );
-
         // and now we can instantiate the builder to create the validation report,
         // using the name of the file and the stream.
         File f = storeAsTemporaryFile( psiFile.getInputStream());
-        // we have the data on disk, 
+        // we have the data on disk, clear memory
         psiFile.dispose();
 
         PsiReportBuilder builder = new PsiReportBuilder( psiFile.getFilename(), f );
 
         // we execute the method of the builder that actually creates the report
+        log.warn("ABout to start building the PSI report");
+        
         this.currentPsiReport = builder.createPsiReport();
+        log.warn("After uploading a local file the report was " + (this.currentPsiReport == null ? "not present" : "present" ));
     }
+
     /**
      * Store the content of the given input stream into a temporary file and return its descriptor.
      *
@@ -184,6 +203,7 @@ public class PsiValidatorBean extends BaseController {
      * @throws IOException if something goes wrong with the file or the connection
      */
     private void uploadFromUrl() throws IOException {
+
         if (log.isInfoEnabled()) {
             log.info("Uploading Url: " + psiUrl);
         }
@@ -192,19 +212,23 @@ public class PsiValidatorBean extends BaseController {
             // we create the URL object with the string provided by the user in the form
             URL url = new URL(psiUrl);
 
+            File f = storeAsTemporaryFile( url.openStream() );
+
             // we only want the name of the file, and not the whole URL.
             // Gets the last part of the URL
             String name = psiUrl.substring(psiUrl.lastIndexOf("/") + 1, psiUrl.length());
 
             // and now we can instantiate the builder to create the validation report,
             // using the name of the file and the URL.
-            PsiReportBuilder builder = new PsiReportBuilder(name, url);
+            PsiReportBuilder builder = new PsiReportBuilder(name, url, f);
 
             // we execute the method of the builder that actually creates the report
+            log.warn("ABout to start building the PSI report");
             this.currentPsiReport = builder.createPsiReport();
+            log.warn("After uploading a URL the report was " + (this.currentPsiReport == null ? "not present" : "present" ));
         }
         catch (MalformedURLException e) {
-            e.printStackTrace();
+            log.error( "The given URL wasn't valid", e );
         }
     }
 
@@ -232,7 +256,7 @@ public class PsiValidatorBean extends BaseController {
         URL url = null;
 
         // Our UIComponent is an instance of UIInput, which is the component behind the text box
-        UIInput inputCompToValidate = (UIInput) toValidate;
+        CoreInputText inputCompToValidate = (CoreInputText) toValidate;
 
         // We get the id of that component. Take into account that the id rendered in the HTML cannot
         // be the same that the real id of the component
@@ -260,14 +284,13 @@ public class PsiValidatorBean extends BaseController {
             // if the url is ok, we try to connect to it and open the stream
             url.openStream();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Throwable e) {
+            log.error("Error while validating the URL.", e);
 
             // if it fails, invalidate the component and add the error message shown to the user
             inputCompToValidate.setValid(false);
             context.addMessage(toValidateClientId, new FacesMessage("Could not read URL content."));
         }
-
     }
 
     // ACCESSOR METHODS
