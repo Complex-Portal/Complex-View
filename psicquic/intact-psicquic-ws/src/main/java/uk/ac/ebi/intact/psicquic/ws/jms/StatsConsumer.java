@@ -58,7 +58,7 @@ public class StatsConsumer extends ConsumerBean implements MessageListener {
     private File statsFile = null;
 
     public void start() throws JMSException {
-        this.statsFile = new File(psicquicConfig.getStatsDirectory(), "queries.log");
+        this.statsFile = new File(psicquicConfig.getStatsDirectory(), "psicquic_usage.log");
 
         String selector = "type = '" + myId + "'";
 

@@ -24,8 +24,6 @@
         <!-- configurable bits -->
 
         <psicquic.index>${intact.interactionIndex}</psicquic.index>
-        <psicquic.stats.dir>${project.build.directory}/stats</psicquic.stats.dir>
-
         <intact.institution>intact</intact.institution>
 
     </properties>

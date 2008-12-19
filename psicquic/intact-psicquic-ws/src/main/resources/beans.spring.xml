@@ -23,7 +23,6 @@
         <property name="artifactId" value="${psicquic.artifactId}"/>
         <property name="version" value="${psicquic.version}"/>
         <property name="indexDirectory" value="${psicquic.index}"/>
-        <property name="statsDirectory" value="${psicquic.stats.dir}"/>
     </bean>
 
 </beans>

@@ -15,12 +15,15 @@
  */
 package uk.ac.ebi.intact.psicquic.ws.config;
 
+import org.springframework.beans.factory.annotation.Configurable;
+
 /**
  * Place-holder for the configuration. Initialized by Spring.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Configurable
 public class PsicquicConfig {
 
     private String groupId;

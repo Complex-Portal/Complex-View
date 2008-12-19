@@ -34,12 +34,32 @@ public class PsicquicInitializingBean implements InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(IntactPsicquicService.class);
 
+    private static final String STATS_DIR_ENV = "psicquic.stats.dir";
+
+    @Autowired
+    private PsicquicConfig config;
+
     @Autowired
     private StatsConsumer statsConsumer;
 
     public void afterPropertiesSet() throws Exception {
-        logger.info("Initializing consumer");
+        // stats directory
+        String statsDir = System.getProperty(STATS_DIR_ENV);
 
+        if (statsDir != null) {
+            logger.info("Usage statistics directory (found as system property): "+statsDir);
+        } else {
+            statsDir = System.getProperty("java.io.tmpdir");
+            logger.warn("Usage statistics directory not configured (system property '"+STATS_DIR_ENV+
+                        "' not found). Using default: "+statsDir);
+        }
+
+        config.setStatsDirectory(statsDir);
+
+        // stats consumer
+        logger.info("Initializing consumer");
         statsConsumer.start();
+
+
     }
 }
