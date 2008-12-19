@@ -18,10 +18,13 @@ import java.util.List;
  * @version $Id$
  * @since 2.0
  */
-public class PsiReport
-{
+public class PsiReport {
 
     private static final Log log = LogFactory.getLog(PsiReport.class);
+
+    public static final String VALID = "valid";
+    public static final String INVALID = "invalid";
+    public static final String WARNINGS = "warnings";
 
     /**
      * Name of the file/report
@@ -36,7 +39,7 @@ public class PsiReport
     /**
      * Report of the validation. If failed, contains the stacktrace
      */
-    private String xmlSyntaxReport;
+    private List<ValidatorMessage> xmlSyntaxReport;
 
     /**
      * The status of the semantics validation (valid|warnings|invalid)
@@ -61,81 +64,88 @@ public class PsiReport
 
     /**
      * Constructor
+     *
      * @param name of the file/report
      */
     public PsiReport(String name) {
-         this.name = name;
+        this.name = name;
     }
 
     // ACCESSOR METHODS
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getXmlSyntaxStatus()
-    {
+    public boolean isXmlSyntaxValid() {
+        return VALID.equals(xmlSyntaxStatus);
+    }
+
+    public boolean isXmlSyntaxWarning() {
+        return WARNINGS.equals(xmlSyntaxStatus);
+    }
+
+    public boolean isXmlSyntaxInvalid() {
+        return INVALID.equals(xmlSyntaxStatus);
+    }
+
+    public String getXmlSyntaxStatus() {
         return xmlSyntaxStatus;
     }
 
-    public void setXmlSyntaxStatus(String xmlSyntaxStatus)
-    {
+    public void setXmlSyntaxStatus(String xmlSyntaxStatus) {
         this.xmlSyntaxStatus = xmlSyntaxStatus;
     }
 
-    public String getXmlSyntaxReport()
-    {
+    public List<ValidatorMessage> getXmlSyntaxReport() {
         return xmlSyntaxReport;
     }
 
-    public void setXmlSyntaxReport(String xmlSyntaxReport)
-    {
+    public void setXmlSyntaxReport(List<ValidatorMessage> xmlSyntaxReport) {
         this.xmlSyntaxReport = xmlSyntaxReport;
     }
 
-    public String getSemanticsStatus()
-    {
+    public boolean isXmlSemanticValid() {
+        return VALID.equals(semanticsStatus);
+    }
+
+    public boolean isXmlSemanticInvalid() {
+        return INVALID.equals(semanticsStatus);
+    }
+
+    public String getSemanticsStatus() {
         return semanticsStatus;
     }
 
-    public void setSemanticsStatus(String semanticsStatus)
-    {
+    public void setSemanticsStatus(String semanticsStatus) {
         this.semanticsStatus = semanticsStatus;
     }
 
-    public String getSemanticsReport()
-    {
+    public String getSemanticsReport() {
         return semanticsReport;
     }
 
-    public void setSemanticsReport(String semanticsReport)
-    {
+    public void setSemanticsReport(String semanticsReport) {
         this.semanticsReport = semanticsReport;
     }
 
-    public String getHtmlView()
-    {
+    public String getHtmlView() {
         return htmlView;
     }
 
-    public void setHtmlView(String htmlView)
-    {
+    public void setHtmlView(String htmlView) {
         this.htmlView = htmlView;
     }
 
-    public List<ValidatorMessage> getValidatorMessages()
-    {
+    public List<ValidatorMessage> getValidatorMessages() {
         return validatorMessages;
     }
 
-    public void setValidatorMessages(List<ValidatorMessage> validatorMessages)
-    {
+    public void setValidatorMessages(List<ValidatorMessage> validatorMessages) {
         this.validatorMessages = validatorMessages;
     }
 }

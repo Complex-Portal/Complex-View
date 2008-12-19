@@ -55,9 +55,9 @@
 
         </trh:head>
 
-         <tr:form id="ebiForm">
+         <tr:form id="ebiForm" usesUpload="true">
 
-              <!-- To avoid expired sessions, poll every 25 mins -->
+        <!-- To avoid expired sessions, poll every 25 mins -->
         <tr:poll interval="#{15*60*1000}"/>
 
             <!-- EBI header -->
@@ -75,20 +75,20 @@
             <table class="contentspane" id="contentspane" summary="The main content pane of the page"
                    style="width: 100%">
                 <tr>
-                    <td class="leftmargin">
-                        <img src="http://www.ebi.ac.uk/inc/images/spacer.gif" class="spacer" alt="spacer"/>
-                    </td>
+                    <!--<td class="leftmargin">-->
+                        <!--<img src="http://www.ebi.ac.uk/inc/images/spacer.gif" class="spacer" alt="spacer"/>-->
+                    <!--</td>-->
 
-                        <td class="leftmenucell" id="leftmenucell">
-                            <div class="leftmenu" id="leftmenu"
-                                 style="width: 145px; visibility: visible; display: block;">
+                        <!--<td class="leftmenucell" id="leftmenucell">-->
+                            <!--<div class="leftmenu" id="leftmenu"-->
+                                 <!--style="width: 145px; visibility: visible; display: block;">-->
                                 <!-- InstanceBeginEditable name="leftnav" -->
 
                                 <!-- start left menu here  -->
-                                <ui:insert name="sidebar"/>
+                                <!--<ui:insert name="sidebar"/>-->
 
-                            </div>
-                        </td>
+                            <!--</div>-->
+                        <!--</td>-->
 
                     <td class="contentsarea" id="contentsarea">
                         <!-- InstanceBeginEditable name="contents" -->

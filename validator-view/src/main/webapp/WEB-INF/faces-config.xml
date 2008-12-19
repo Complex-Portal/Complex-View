@@ -1,32 +1,23 @@
 <?xml version="1.0"?>
 <faces-config version="1.2" xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xi="http://www.w3.org/2001/XInclude"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
+              xmlns:xi="http://www.w3.org/2001/XInclude"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd">
 
-  <application>
-      <default-render-kit-id>
-          org.apache.myfaces.trinidad.core
-      </default-render-kit-id>
-      <el-resolver>
-          org.springframework.web.jsf.el.SpringBeanFacesELResolver
-      </el-resolver>
-      <resource-bundle>
-          <base-name>uk.ac.ebi.faces.EbiTest</base-name>
-          <var>ebiTest</var>
-      </resource-bundle>
-  </application>
+    <application>
+        <default-render-kit-id>
+            org.apache.myfaces.trinidad.core
+        </default-render-kit-id>
 
-    <!-- ====================== -->
-    <!-- Backing beans          -->
-    <!-- ====================== -->
+        <el-resolver>
+            org.springframework.web.jsf.el.SpringBeanFacesELResolver
+        </el-resolver>
 
-    <managed-bean>
-        <managed-bean-name>searchBean</managed-bean-name>
-        <managed-bean-class>uk.ac.ebi.faces.controller.search.SearchController</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
-    </managed-bean>
-
+        <resource-bundle>
+            <base-name>uk.ac.ebi.faces.EbiTest</base-name>
+            <var>ebiTest</var>
+        </resource-bundle>
+    </application>
 
     <!-- ====================== -->
     <!-- Navigation rules       -->
@@ -38,13 +29,5 @@
             <to-view-id>/start.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-
-    <navigation-rule>
-        <navigation-case>
-            <from-outcome>results</from-outcome>
-            <to-view-id>/pages/search_results.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
-
 
 </faces-config>
