@@ -30,6 +30,8 @@ import java.io.Serializable;
  */
 public class StatsUnit implements Serializable {
 
+    private static final long serialVersionUID = 1448281813;
+
     private String methodName;
     private String query;
     private String operand;

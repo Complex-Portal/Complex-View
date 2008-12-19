@@ -57,7 +57,7 @@ public class StatisticsAspect  {
         StatsUnit statsUnit = new StatsUnit();
         statsUnit.setTimestamp(new DateTime());
 
-        if (webServiceContext != null) {
+        if (webServiceContext != null && webServiceContext.getMessageContext() != null) {
             MessageContext ctx = webServiceContext.getMessageContext();
             HttpServletRequest request = (HttpServletRequest) ctx.get(AbstractHTTPDestination.HTTP_REQUEST);
 

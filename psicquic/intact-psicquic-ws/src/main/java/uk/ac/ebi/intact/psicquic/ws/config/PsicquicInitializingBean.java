@@ -44,14 +44,20 @@ public class PsicquicInitializingBean implements InitializingBean {
 
     public void afterPropertiesSet() throws Exception {
         // stats directory
-        String statsDir = System.getProperty(STATS_DIR_ENV);
+        String statsDir = config.getStatsDirectory();
 
-        if (statsDir != null) {
-            logger.info("Usage statistics directory (found as system property): "+statsDir);
+        if (statsDir == null) {
+            statsDir = System.getProperty(STATS_DIR_ENV);
+
+            if (statsDir != null) {
+                logger.info("Usage statistics directory (found as system property): "+statsDir);
+            } else {
+                statsDir = System.getProperty("java.io.tmpdir");
+                logger.warn("Usage statistics directory not configured (system property '"+STATS_DIR_ENV+
+                            "' not found). Using default: "+statsDir);
+            }
         } else {
-            statsDir = System.getProperty("java.io.tmpdir");
-            logger.warn("Usage statistics directory not configured (system property '"+STATS_DIR_ENV+
-                        "' not found). Using default: "+statsDir);
+            logger.info("Usage statistics directory: "+statsDir);
         }
 
         config.setStatsDirectory(statsDir);
