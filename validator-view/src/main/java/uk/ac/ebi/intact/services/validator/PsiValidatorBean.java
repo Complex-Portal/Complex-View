@@ -8,6 +8,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.UploadedFile;
 import org.apache.myfaces.trinidad.component.core.input.CoreInputText;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.orchestra.viewController.annotations.InitView;
+import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.faces.controller.BaseController;
@@ -32,7 +35,10 @@ import java.net.URL;
  */
 @Controller("psiValidatorBean")
 @Scope( "conversation.access" )
+@ViewController(viewIds = "/start.xhtml")
 public class PsiValidatorBean extends BaseController {
+
+    public static final String URL_PARAM = "url";
 
     /**
      * Logging is an essential part of an application
@@ -79,6 +85,29 @@ public class PsiValidatorBean extends BaseController {
             log.debug("Upload type changed, is local file? " + uploadLocalFile);
     }
 
+    @PreRenderView
+    public void initialParams() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        String urlParam = context.getExternalContext().getRequestParameterMap().get(URL_PARAM);
+
+        if (urlParam != null) {
+            if (log.isInfoEnabled()) {
+                log.info( "User submitted a request with data specified in the URL: " + urlParam );
+            }
+
+            uploadLocalFile=false;
+            psiUrl = urlParam;
+            try {
+                uploadFromUrl();
+            } catch (IOException e) {
+                final String msg = "Failed to upload PSI data from given URL";
+                FacesMessage message = new FacesMessage(msg);
+                context.addMessage( "inputUrl", message );
+            }
+        }
+    }
+
     // This is the method invoked when pressing the valdidate button, names after thte variable to be updated.
     public void onPsiFileUpload(ValueChangeEvent event) {
 
@@ -93,8 +122,6 @@ public class PsiValidatorBean extends BaseController {
                                 " (" + psiFile.getLength() + " bytes)");
                 context.addMessage(event.getComponent().getClientId(context), message);
 
-            } else {
-                // TODO handle the null file 
             }
         }
     }
