@@ -138,10 +138,10 @@ public class PsiValidatorBean extends BaseController {
             } else {
                 uploadFromUrl();
             }
-        } catch (IOException e) {
+        } catch (Throwable t) {
             final String msg = "Failed to upload from " + (uploadLocalFile ? "local file" : "URL");
 
-            log.error(msg, e);
+            log.error(msg, t);
 
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage(msg);
