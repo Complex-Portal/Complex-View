@@ -11,150 +11,208 @@
 
     <ui:define name="content">
 
-        <h:panelGrid columns="1" style="width:100%">
+        <trh:tableLayout width="100%">
 
-            <!-- Header -->
-            <trh:tableLayout width="100%">
-                <trh:rowLayout>
-                    <trh:cellFormat halign="left">
-                        <h:outputLink value="http://psidev.sourceforge.net/" styleClass="text-align:left">
-                            <h:graphicImage url="images/psi.gif" style="border:0"/>
-                        </h:outputLink>
-                    </trh:cellFormat>
-                    <trh:cellFormat halign="center">
-                        <h1><h:outputText value="The PSI Validator" styleClass="text-align:center"/></h1>
-                    </trh:cellFormat>
-                    <trh:cellFormat halign="right">
-                        <h:outputLink value="http://hupo.org/" styleClass="text-align:right">
-                            <h:graphicImage url="images/hupo.gif" style="border:0"/>
-                        </h:outputLink>
-                    </trh:cellFormat>
-                </trh:rowLayout>
-            </trh:tableLayout>
+            <trh:rowLayout>
+                <trh:cellFormat>
+
+                    <!-- Header -->
+                    <trh:tableLayout width="100%">
+                        <trh:rowLayout>
+                            <trh:cellFormat halign="left">
+                                <tr:goLink destination="http://psidev.sourceforge.net/" styleClass="text-align:left">
+                                    <tr:image source="images/psi.gif" styleClass="border:0"/>
+                                </tr:goLink>
+                            </trh:cellFormat>
+                            <trh:cellFormat halign="center">
+                                <h1><tr:outputText value="The PSI-MI 2.5 Validator" styleClass="text-align:center"/></h1>
+                            </trh:cellFormat>
+                            <trh:cellFormat halign="right">
+                                <tr:goLink destination="http://hupo.org/" styleClass="text-align:right">
+                                    <tr:image source="images/hupo.gif" styleClass="border:0"/>
+                                </tr:goLink>
+                            </trh:cellFormat>
+                        </trh:rowLayout>
+                    </trh:tableLayout>
+
+                </trh:cellFormat>
+            </trh:rowLayout>
+
 
             <!-- Description -->
-            <tr:panelHeader text="Overview"/>
 
-            <h:panelGroup>
-                <h:outputText value="The PSI Validator validate files in "/>
-                <h:outputLink value="http://psidev.sourceforge.net/mi/rel25/" target="_blank">
-                    <h:outputText value="PSI MI 2.5"/>
-                </h:outputLink>
-                <h:outputText value=" XML format."/>
-            </h:panelGroup>
+            <trh:rowLayout>
+                <trh:cellFormat>
+
+                    <tr:panelHeader text="Overview"/>
+
+                    <tr:group>
+                        <tr:outputText value="The PSI Validator validate files in "/>
+                        <tr:goLink destination="http://psidev.sourceforge.net/mi/rel25/" targetFrame="_blank">
+                            <tr:outputText value="PSI MI 2.5"/>
+                        </tr:goLink>
+                        <tr:outputText value=" XML format."/>
+                    </tr:group>
+
+                </trh:cellFormat>
+            </trh:rowLayout>
+
 
             <!-- File upload -->
-            <tr:panelHeader text="Upload PSI-MI XML 2.5 data"/>
 
-            <h:panelGroup>
-                <h:outputLabel for="sourceSelector" value="Source: "/>
-                <h:selectOneRadio id="sourceSelector" value="local" layout="pageDirection"
-                                  valueChangeListener="#{psiValidatorBean.uploadTypeChanged}"
-                                  onchange="submit()">
-                    <f:selectItem itemLabel="From local file" itemValue="local"/>
-                    <f:selectItem itemLabel="From URL" itemValue="url"/>
-                </h:selectOneRadio>
-            </h:panelGroup>
+            <trh:rowLayout>
+                <trh:cellFormat>
 
-            <tr:panelGroupLayout rendered="#{psiValidatorBean.uploadLocalFile}">
-                <tr:panelHorizontalLayout>
-                    <tr:inputFile label="File:" valueChangeListener="#{psiValidatorBean.onPsiFileUpload}"/>
-                </tr:panelHorizontalLayout>
-                <tr:message for="inputFile" styleClass="error-message"/>
-            </tr:panelGroupLayout>
+                    <tr:spacer height="20" />
 
-            <tr:panelHorizontalLayout rendered="#{!psiValidatorBean.uploadLocalFile}">
-                <tr:panelHorizontalLayout>
-                    <tr:inputText id="inputUrl" label="URL: " columns="80" value="#{psiValidatorBean.psiUrl}"
-                                  required="true" validator="#{psiValidatorBean.validateUrlFormat}"/>
-                </tr:panelHorizontalLayout>
-                <tr:message for="inputUrl" styleClass="error-message" />
-            </tr:panelHorizontalLayout>
+                    <tr:panelHeader text="Upload PSI-MI XML 2.5 data"/>
 
-            <tr:commandButton text="Validate" actionListener="#{psiValidatorBean.validate}"/>
+                    <trh:tableLayout borderWidth="0" cellPadding="5">
+                        <trh:rowLayout>
+                            <trh:cellFormat width="50" valign="top">
+                                <tr:outputText value="Source: " />
+                            </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:selectOneRadio id="sourceSelector" value="local" simple="true"
+                                                   valueChangeListener="#{psiValidatorBean.uploadTypeChanged}"
+                                                   onchange="submit()">
+                                    <tr:selectItem label="From local file" value="local"/>
+                                    <tr:selectItem label="From URL" value="url"/>
+                                </tr:selectOneRadio>
+                            </trh:cellFormat>
+                        </trh:rowLayout>
+
+                        <trh:rowLayout rendered="#{psiValidatorBean.uploadLocalFile}">
+                            <trh:cellFormat width="50" halign="right">
+                                <tr:outputText value="File: " />
+                            </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:group>
+                                    <tr:inputFile valueChangeListener="#{psiValidatorBean.onPsiFileUpload}" simple="true"/>
+                                    <tr:message for="inputFile" styleClass="error-message"/>
+                                </tr:group>
+                            </trh:cellFormat>
+                        </trh:rowLayout>
+
+                        <trh:rowLayout rendered="#{!psiValidatorBean.uploadLocalFile}">
+                            <trh:cellFormat width="50" halign="right">
+                                <tr:outputText value="URL: "/>
+                            </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:group>
+                                    <tr:inputText id="inputUrl" columns="80" value="#{psiValidatorBean.psiUrl}"
+                                                  required="true" validator="#{psiValidatorBean.validateUrlFormat}"
+                                                  simple="true"/>
+                                    <tr:message for="inputUrl" styleClass="error-message" />
+                                </tr:group>
+                            </trh:cellFormat>
+                        </trh:rowLayout>
+                    </trh:tableLayout>
+
+                    <tr:commandButton text="Validate" actionListener="#{psiValidatorBean.validate}"/>
+
+
+                </trh:cellFormat>
+            </trh:rowLayout>
 
             <tr:messages globalOnly="true"/>
 
+
             <!-- Uploaded file report table -->
-            <tr:panelHeader text="Validation summary"
-                    rendered="#{psiValidatorBean.currentPsiReport != null}"/>
 
-            <trh:tableLayout borderWidth="0"
-                             cellSpacing="15"
-                             cellPadding="0"
-                             halign="left"
-                             width="400"
-                             rendered="#{psiValidatorBean.currentPsiReport != null}">
-                <trh:rowLayout>
-                    <trh:cellFormat/>
-                    <trh:cellFormat>Filename: </trh:cellFormat>
-                    <trh:cellFormat>
-                        <h:outputText value="#{psiValidatorBean.currentPsiReport.name}"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat/>
-                </trh:rowLayout>
+            <trh:rowLayout>
+                <trh:cellFormat>
 
-                <trh:rowLayout>
-                    <trh:cellFormat>
-                        <h:graphicImage url="images/icon_success_sml.gif"
-                                        rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxValid}"/>
-                        <h:graphicImage url="images/icon_error_sml.gif"
-                                        rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <h:outputText value="XML Syntax"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <h:outputText value="#{psiValidatorBean.currentPsiReport.xmlSyntaxStatus}"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:panelHorizontalLayout rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}">
-                            <h:outputLink value="#xml_report">
-                                <h:outputText value="Report"/>
-                            </h:outputLink>
-                            <h:outputLink value="#html_view" rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxValid}">
-                                <h:outputText value="HTML View"/>
-                            </h:outputLink>
-                        </tr:panelHorizontalLayout>
-                    </trh:cellFormat>
-                </trh:rowLayout>
+                    <tr:spacer height="20" />
 
-                <trh:rowLayout>
-                    <trh:cellFormat>
-                        <h:graphicImage url="images/icon_success_sml.gif"
-                                        rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticValid}"/>
-                        <h:graphicImage url="images/icon_warning_sml.gif"
-                                        rendered="#{psiValidatorBean.currentPsiReport.semanticsStatus == 'warnings'}"/>
-                        <h:graphicImage url="images/icon_error_sml.gif"
-                                        rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticInvalid}"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <h:outputText value="XML Semantics"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <h:outputText value="#{psiValidatorBean.currentPsiReport.semanticsStatus}"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <h:outputLink value="#semantics_report" rendered="#{psiValidatorBean.currentPsiReport.semanticsReport != null}">
-                            <h:outputText value="Report"/>
-                        </h:outputLink>
-                    </trh:cellFormat>
-                </trh:rowLayout>
-            </trh:tableLayout>
+                    <tr:panelHeader text="Validation summary"
+                                    rendered="#{psiValidatorBean.currentPsiReport != null}"/>
 
-        </h:panelGrid>
+                    <trh:tableLayout borderWidth="0"
+                                     cellSpacing="5"
+                                     cellPadding="0"
+                                     halign="left"
+                                     width="400"
+                                     rendered="#{psiValidatorBean.currentPsiReport != null}">
+                        <trh:rowLayout>
+                            <trh:cellFormat/>
+                            <trh:cellFormat>Filename: </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:outputText value="#{psiValidatorBean.currentPsiReport.name}"/>
+                            </trh:cellFormat>
+                            <trh:cellFormat/>
+                        </trh:rowLayout>
+
+                        <trh:rowLayout>
+                            <trh:cellFormat>
+                                <tr:image source="images/icon_success_sml.gif"
+                                                rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxValid}"/>
+                                <tr:image source="images/icon_error_sml.gif"
+                                                rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}"/>
+                            </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:outputText value="XML Syntax"/>
+                            </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:outputText value="#{psiValidatorBean.currentPsiReport.xmlSyntaxStatus}"/>
+                            </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:panelHorizontalLayout rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}">
+                                    <tr:goLink destination="#xml_report">
+                                        <tr:outputText value="Report"/>
+                                    </tr:goLink>
+                                    <tr:goLink destination="#html_view" rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxValid}">
+                                        <tr:outputText value="HTML View"/>
+                                    </tr:goLink>
+                                </tr:panelHorizontalLayout>
+                            </trh:cellFormat>
+                        </trh:rowLayout>
+
+                        <trh:rowLayout>
+                            <trh:cellFormat>
+                                <tr:image source="images/icon_success_sml.gif"
+                                                rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticValid}"/>
+                                <tr:image source="images/icon_warning_sml.gif"
+                                                rendered="#{psiValidatorBean.currentPsiReport.semanticsStatus == 'warnings'}"/>
+                                <tr:image source="images/icon_error_sml.gif"
+                                                rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticInvalid}"/>
+                            </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:outputText value="XML Semantics"/>
+                            </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:outputText value="#{psiValidatorBean.currentPsiReport.semanticsStatus}"/>
+                            </trh:cellFormat>
+                            <trh:cellFormat>
+                                <tr:goLink destination="#semantics_report" rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticInvalid}">
+                                    <tr:outputText value="Report"/>
+                                </tr:goLink>
+                            </trh:cellFormat>
+                        </trh:rowLayout>
+                    </trh:tableLayout>
+
+                </trh:cellFormat>
+            </trh:rowLayout>
+
+        </trh:tableLayout>
+
+
+        <tr:spacer height="20" />    
 
         <!-- XML Syntax Validation Report -->
-        <h:panelGrid columns="1" rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}">
-            <a name="xml_report"/>
-            <tr:panelHeader text="XML Syntax Validation Report"/>
-            <h:outputText value="#{psiValidatorBean.currentPsiReport.xmlSyntaxReport}" styleClass="report"/>
+        <tr:panelHorizontalLayout rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}">
+
+            <tr:group>
+                <a name="xml_report"/>
+                <tr:panelHeader text="XML Syntax Validation Report"/>
+                <tr:outputText value="#{psiValidatorBean.currentPsiReport.xmlSyntaxReport}" styleClass="report"/>
+            </tr:group>
 
             <tr:table var="msg" value="#{psiValidatorBean.currentPsiReport.xmlSyntaxReport}">
                 <tr:column >
-                    <h:graphicImage url="images/icon_warning_sml.gif" rendered="#{msg.level == 'WARN'}" title="#{msg.level}"/>
-                    <h:graphicImage url="images/icon_error_sml.gif" rendered="#{msg.level == 'ERROR'}" title="#{msg.level}"/>
-                    <h:graphicImage url="images/icon_error_sml.gif" rendered="#{msg.level == 'FATAL'}" title="#{msg.level}"/>
+                    <tr:image source="images/icon_warning_sml.gif" rendered="#{msg.level == 'WARN'}" shortDesc="#{msg.level}"/>
+                    <tr:image source="images/icon_error_sml.gif" rendered="#{msg.level == 'ERROR'}" shortDesc="#{msg.level}"/>
+                    <tr:image source="images/icon_error_sml.gif" rendered="#{msg.level == 'FATAL'}" shortDesc="#{msg.level}"/>
                 </tr:column>
 
                 <tr:column headerText="Description">
@@ -163,25 +221,26 @@
 
                 <!-- Build a links to respective object anchor's -->
                 <tr:column headerText="Context">
-                    <h:outputText value="#{msg.context}"/>
+                    <tr:outputText value="#{msg.context}"/>
                 </tr:column>
             </tr:table>
-        </h:panelGrid>
+        </tr:panelHorizontalLayout>
 
 
         <!-- XML Semantic Validation Report (if any messages) -->
-        <h:panelGrid columns="1" rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticInvalid}">
+        <tr:group rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticInvalid}">
             <a name="semantics_report"/>
-            <tr:panelHeader text="PSI MI 2.5 semantic validation report"/>
-            <pre>
-               <h:outputText value="#{psiValidatorBean.currentPsiReport.semanticsReport}" styleClass="report"/>
-            </pre>
+            <tr:panelHeader text="PSI MI 2.5 Semantic Validation Report"/>
+            <!--<pre>-->
+               <!--<tr:outputText value="#{psiValidatorBean.currentPsiReport.semanticsReport}" styleClass="report"/>-->
+            <!--</pre>-->
+            <tr:outputText value="#{psiValidatorBean.currentPsiReport.messageCount} message#{psiValidatorBean.currentPsiReport.messageCount >1 ? 's' : ''}" />
 
             <tr:table var="msg" value="#{psiValidatorBean.currentPsiReport.validatorMessages}">
                 <tr:column >
-                    <h:graphicImage url="images/icon_warning_sml.gif" rendered="#{msg.level == 'WARN'}" title="#{msg.level}"/>
-                    <h:graphicImage url="images/icon_error_sml.gif" rendered="#{msg.level == 'ERROR'}" title="#{msg.level}"/>
-                    <h:graphicImage url="images/icon_error_sml.gif" rendered="#{msg.level == 'FATAL'}" title="#{msg.level}"/>
+                    <tr:image source="images/icon_warning_sml.gif" rendered="#{msg.level == 'WARN'}" shortDesc="#{msg.level}"/>
+                    <tr:image source="images/icon_error_sml.gif" rendered="#{msg.level == 'ERROR'}" shortDesc="#{msg.level}"/>
+                    <tr:image source="images/icon_error_sml.gif" rendered="#{msg.level == 'FATAL'}" shortDesc="#{msg.level}"/>
                 </tr:column>
                 
                 <tr:column headerText="Description">
@@ -190,32 +249,36 @@
 
                 <!-- Build a links to respective object anchor's -->
                 <tr:column headerText="Context">
-                    <h:outputLink value="#e#{msg.context.experimentId}" rendered="#{msg.context.experimentId != -1}">
+                    <tr:goLink destination="#e#{msg.context.experimentId}" rendered="#{msg.context.experimentId != -1}">
                         <nobr><tr:outputText value="Experiment ##{msg.context.experimentId}" /></nobr>
-                    </h:outputLink>
-                    <h:outputLink value="#ix#{msg.context.interactionId}" rendered="#{msg.context.interactionId != -1}">
+                    </tr:goLink>
+                    <tr:goLink destination="#ix#{msg.context.interactionId}" rendered="#{msg.context.interactionId != -1}">
                         <nobr><tr:outputText value="Interaction ##{msg.context.interactionId}" /></nobr>
-                    </h:outputLink>
-                    <h:outputLink value="#p#{msg.context.participantId}" rendered="#{msg.context.participantId != -1}">
+                    </tr:goLink>
+                    <tr:goLink destination="#p#{msg.context.participantId}" rendered="#{msg.context.participantId != -1}">
                         <nobr><tr:outputText value="Participant ##{msg.context.participantId}" /></nobr>
-                    </h:outputLink>
-                    <h:outputLink value="#i#{msg.context.interactorId}" rendered="#{msg.context.interactorId != -1}">
+                    </tr:goLink>
+                    <tr:goLink destination="#i#{msg.context.interactorId}" rendered="#{msg.context.interactorId != -1}">
                         <nobr><tr:outputText value="Interactor ##{msg.context.interactorId}" /></nobr>
-                    </h:outputLink>
-                    <h:outputLink value="#f#{msg.context.featureId}" rendered="#{msg.context.featureId != -1}">
+                    </tr:goLink>
+                    <tr:goLink destination="#f#{msg.context.featureId}" rendered="#{msg.context.featureId != -1}">
                         <nobr><tr:outputText value="Feature ##{msg.context.featureId}" /></nobr>
-                    </h:outputLink>
+                    </tr:goLink>
                 </tr:column>
             </tr:table>
 
-        </h:panelGrid>
+        </tr:group>
+
 
         <!-- HTML View -->
-        <h:panelGrid columns="1" rendered="#{psiValidatorBean.currentPsiReport != null and psiValidatorBean.currentPsiReport.xmlSyntaxValid}">
+        <tr:group rendered="#{psiValidatorBean.currentPsiReport != null and psiValidatorBean.currentPsiReport.xmlSyntaxValid}">
+            <tr:spacer height="20" />
             <a name="html_view"/>
             <tr:panelHeader text="HTML View"/>
-            <h:outputText value="#{psiValidatorBean.currentPsiReport.htmlView}" escape="false"/>
-        </h:panelGrid>
+            <div>
+                <tr:outputText value="#{psiValidatorBean.currentPsiReport.htmlView}" escape="false"/>
+            </div>
+        </tr:group>
 
     </ui:define>
 

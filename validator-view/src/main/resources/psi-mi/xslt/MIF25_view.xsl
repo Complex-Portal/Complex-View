@@ -35,10 +35,9 @@ Notes:
             media-type="text/html"
             standalone="yes"/>
 
-<xsl:param name="base" select="'http://psidev.sourceforge.net'"/>
+<xsl:param name="base" select="'http://psidev.info'"/>
 
 <xsl:param name="word.wrap" select="10"/>
-<!--xsl:param name="word.sep"><br/></xsl:param-->
 <xsl:param name="word.sep"  select="' '"/>
 
 <xsl:param name="swissProtUrl"
@@ -55,6 +54,8 @@ Notes:
            select="'http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&amp;db=PubMed&amp;&amp;dopt=Citation&amp;list_uids='"/>
 <xsl:param name="newtUrl"
            select="'http://www.ebi.ac.uk/newt/display?search='"/>
+<xsl:param name="olsUrl"
+           select="'http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId='"/>
 
 <xsl:template match="psi:entrySet">
     <html>
@@ -96,21 +97,21 @@ Notes:
             </style>
         </head>
         <body>
-            <div id="header">
-                <a href="{$base}">
-                    <img src="{$base}/images/psi.gif" border="0" align="left"/>
-                </a>
-                <a href="http://www.hupo.org/">
-                    <img src="{$base}/images/hupo.gif" border="0" align="right"/>
-                </a>
-                <h2 align="center">
-                    <a href="{$base}">Proteomics Standards Initiative</a>
-                </h2>
-                <h2 align="center">
-                    Molecular Interaction Version
-                    <xsl:value-of select="concat(@level, '.', @version)"/>
-                </h2>
-            </div>
+            <!--<div id="header">-->
+                <!--<a href="{$base}">-->
+                    <!--<img src="{$base}/images/psi.gif" border="0" align="left"/>-->
+                <!--</a>-->
+                <!--<a href="http://www.hupo.org/">-->
+                    <!--<img src="{$base}/images/hupo.gif" border="0" align="right"/>-->
+                <!--</a>-->
+                <!--<h2 align="center">-->
+                    <!--<a href="{$base}">Proteomics Standards Initiative</a>-->
+                <!--</h2>-->
+                <!--<h2 align="center">-->
+                    <!--Molecular Interaction Version-->
+                    <!--<xsl:value-of select="concat(@level, '.', @version)"/>-->
+                <!--</h2>-->
+            <!--</div>-->
             <xsl:apply-templates/>
         </body>
     </html>
@@ -151,7 +152,6 @@ Notes:
         <td class="normal-cell"><xsl:value-of select="text()"/></td>
     </tr>
 </xsl:template>
-
 
 <xsl:template match="psi:names">
     <tr>
@@ -241,6 +241,9 @@ Notes:
         <xsl:when test="@dbAc = 'MI:0486'">
             <xsl:value-of select="concat($uniProtUrl, @id)"/>
         </xsl:when>
+        <xsl:when test="@dbAc = 'MI:0488'">
+            <xsl:value-of select="concat($olsUrl, @id)"/>
+        </xsl:when>
     </xsl:choose>
 </xsl:template>
 
@@ -257,7 +260,6 @@ Notes:
         </td>
     </tr>
 </xsl:template>
-
 
 <xsl:template match="psi:availability">
     <tr>

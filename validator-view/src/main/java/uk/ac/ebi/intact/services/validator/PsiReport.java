@@ -145,6 +145,10 @@ public class PsiReport {
         return validatorMessages;
     }
 
+    public int getMessageCount() {
+        return validatorMessages.size();
+    }
+
     public void setValidatorMessages(List<ValidatorMessage> validatorMessages) {
         this.validatorMessages = validatorMessages;
     }
