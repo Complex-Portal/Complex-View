@@ -48,8 +48,8 @@
 
                     <tr:group>
                         <tr:outputText value="The PSI Validator validate files in "/>
-                        <tr:goLink destination="http://psidev.sourceforge.net/mi/rel25/" targetFrame="_blank">
-                            <tr:outputText value="PSI MI 2.5"/>
+                        <tr:goLink destination="http://www.psidev.info/index.php?q=node/60" targetFrame="_blank">
+                            <tr:outputText value="PSI-MI 2.5"/>
                         </tr:goLink>
                         <tr:outputText value=" XML format."/>
                     </tr:group>
@@ -111,7 +111,6 @@
 
                     <tr:commandButton text="Validate" actionListener="#{psiValidatorBean.validate}"/>
 
-
                 </trh:cellFormat>
             </trh:rowLayout>
 
@@ -132,7 +131,7 @@
                                      cellSpacing="5"
                                      cellPadding="0"
                                      halign="left"
-                                     width="400"
+                                     width="600"
                                      rendered="#{psiValidatorBean.currentPsiReport != null}">
                         <trh:rowLayout>
                             <trh:cellFormat/>
@@ -200,15 +199,15 @@
         <tr:spacer height="20" />    
 
         <!-- XML Syntax Validation Report -->
-        <tr:panelHorizontalLayout rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}">
+        <tr:group rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}">
 
             <tr:group>
                 <a name="xml_report"/>
                 <tr:panelHeader text="XML Syntax Validation Report"/>
-                <tr:outputText value="#{psiValidatorBean.currentPsiReport.xmlSyntaxReport}" styleClass="report"/>
+                <!--<tr:outputText value="#{psiValidatorBean.currentPsiReport.xmlSyntaxReport}" styleClass="report"/>-->
             </tr:group>
 
-            <tr:table var="msg" value="#{psiValidatorBean.currentPsiReport.xmlSyntaxReport}">
+            <tr:table width="800" var="msg" value="#{psiValidatorBean.currentPsiReport.xmlSyntaxReport}">
                 <tr:column >
                     <tr:image source="images/icon_warning_sml.gif" rendered="#{msg.level == 'WARN'}" shortDesc="#{msg.level}"/>
                     <tr:image source="images/icon_error_sml.gif" rendered="#{msg.level == 'ERROR'}" shortDesc="#{msg.level}"/>
@@ -220,11 +219,11 @@
                 </tr:column>
 
                 <!-- Build a links to respective object anchor's -->
-                <tr:column headerText="Context">
-                    <tr:outputText value="#{msg.context}"/>
-                </tr:column>
+                <!--<tr:column headerText="Context">-->
+                    <!--<tr:outputText value="Line #{msg.context.lineNumber}"/>-->
+                <!--</tr:column>-->
             </tr:table>
-        </tr:panelHorizontalLayout>
+        </tr:group>
 
 
         <!-- XML Semantic Validation Report (if any messages) -->
