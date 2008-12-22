@@ -181,7 +181,7 @@ public class PsiReportBuilder {
             UserPreferences preferences = new UserPreferences();
             preferences.setKeepDownloadedOntologiesOnDisk(true);
             preferences.setWorkDirectory(new File(System.getProperty("java.io.tmpdir")));
-            preferences.setSaxValidationEnabled(false);
+            preferences.setSaxValidationEnabled(true);
 
             // we instantiate the MI25 validator
             Mi25Validator validator = new Mi25Validator(ontologyCfg, cvMappingCfg, ruleCfg);
@@ -208,7 +208,7 @@ public class PsiReportBuilder {
         catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage( "An error occured while validating your data: " + e.getMessage() );
-            context.addMessage( "inputUrl", message );
+            context.addMessage( null, message );
 
             throw new RuntimeException( "An unexpected error occured during the validation process", e );
         }
