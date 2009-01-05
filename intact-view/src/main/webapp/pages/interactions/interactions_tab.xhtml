@@ -140,13 +140,13 @@
 
         <trh:rowLayout>
             <trh:cellFormat halign="center" width="15" inlineStyle="background:#006666;color:white" rendered="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA)}" shortDesc="PR=Protein, SM=Small Molecule"/>
+                <tr:outputText value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA)}" shortDesc="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA)=='PR'? 'PR=Protein': 'SM=Small Molecule'}"/>
             </trh:cellFormat>
             <trh:cellFormat halign="center" width="15" inlineStyle="background:#e33e3e;color:white" rendered="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)}" shortDesc="DR=Drug, DT=Drug Target"/>
+                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)=='DR'? 'DR=Drug' : 'DT=Drug Target'}"/>
             </trh:cellFormat>
            <trh:cellFormat halign="center" width="15" inlineStyle="background:#73b360;color:white" rendered="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles)}" shortDesc="EN=Enzyme, ET=Enzyme Target "/>
+                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles) =='EN' ? 'EN=Enzyme' : 'ET=Enzyme Target'}"/>
             </trh:cellFormat>
         </trh:rowLayout>
     </trh:tableLayout>
@@ -231,13 +231,13 @@
 
         <trh:rowLayout>
             <trh:cellFormat halign="center" width="15" inlineStyle="background:#006666;color:white" rendered="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB)}" shortDesc="PR=Protein, SM=Small Molecule"/>
+                <tr:outputText value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB)}" shortDesc= "#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB)=='PR'? 'PR=Protein': 'SM=Small Molecule'}"/>
             </trh:cellFormat>
             <trh:cellFormat halign="center" width="15" inlineStyle="background:#e33e3e;color:white" rendered="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)}" shortDesc="DR=Drug, DT=Drug Target"/>
+                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)}" shortDesc= "#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)=='DR'? 'DR=Drug' : 'DT=Drug Target'}"/>
             </trh:cellFormat>
            <trh:cellFormat halign="center" width="15" inlineStyle="background:#73b360;color:white" rendered="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles)}" shortDesc="EN=Enzyme, ET=Enzyme Target "/>
+                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles) =='EN' ? 'EN=Enzyme' : 'ET=Enzyme Target'}" />
             </trh:cellFormat>
         </trh:rowLayout>
     </trh:tableLayout>
