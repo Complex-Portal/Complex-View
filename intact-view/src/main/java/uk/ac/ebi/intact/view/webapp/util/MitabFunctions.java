@@ -387,4 +387,12 @@ public final class MitabFunctions {
         return filteredList;
     }
 
+    public static boolean getSelectedFromMap( Map columnMap, String columnName ) {
+
+        if ( columnMap.containsKey( columnName ) ) {
+            return ( Boolean ) columnMap.get( columnName );
+        }
+         return false;
+     }
+
 }

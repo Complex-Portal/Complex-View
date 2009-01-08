@@ -94,6 +94,15 @@
     </function>
 
 
+     <function>
+        <function-name>getSelectedFromMap</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>boolean
+            getSelectedFromMap(java.util.Map,java.lang.String)
+        </function-signature>
+    </function>
+
+
 
 
 </facelet-taglib>

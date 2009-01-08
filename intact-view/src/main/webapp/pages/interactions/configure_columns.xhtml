@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsp="http://java.sun.com/JSP/Page"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view">
+
+    <tr:document>
+        <tr:form>
+
+            <tr:panelHeader text="Configure columns in #{intactView['webapp.name']}">
+                <tr:panelHorizontalLayout>
+                    <tr:outputText value="Please select the columns to be displayed and press"/>
+                    <tr:outputText value="    "/>
+                    <tr:commandButton text="Update" action="#{configureColumn.updateColumn}"/>
+                    <tr:commandButton text="Standard" action="#{configureColumn.selectDefault}"/>
+                    <tr:commandButton text="Extended" action="#{configureColumn.selectAll}"/>
+                    <tr:commandButton text="None" action="#{configureColumn.selectNone}"/>
+
+                </tr:panelHorizontalLayout>
+                <tr:separator/>
+
+                <tr:panelFormLayout>
+                    <tr:selectManyCheckbox label="Columns" value="#{configureColumn.columns}">
+                        <f:selectItems value="#{configureColumn.columnsSelectItems}"/>
+                    </tr:selectManyCheckbox>
+                </tr:panelFormLayout>
+
+                <tr:separator/>
+
+            </tr:panelHeader>
+        </tr:form>
+    </tr:document>
+
+</ui:composition>

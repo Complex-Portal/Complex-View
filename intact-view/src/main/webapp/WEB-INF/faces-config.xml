@@ -114,4 +114,12 @@
         </navigation-case>
       </navigation-rule>
 
+    <navigation-rule>
+           <navigation-case>
+             <from-outcome>dialog:configure.columns</from-outcome>
+             <to-view-id>/pages/interactions/configure_columns.xhtml</to-view-id>
+           </navigation-case>
+         </navigation-rule>
+
+
 </faces-config>
