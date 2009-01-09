@@ -185,7 +185,6 @@ public class ConfigureColumnBean {
             columns.add( INTERACTION_DETECTION_METHOD );
             columns.add( SOURCE_DATABASE );
             columns.add( INTERACTION_AC );
-            columns.add( INTERACTION_AC );
             columns.add( CONFIDENCE_VALUE );
             columns.add( COMPOUND_EXPERIMENTAL_ROLE );
             columns.add( TARGET_EXPERIMENTAL_ROLE );
@@ -253,7 +252,6 @@ public class ConfigureColumnBean {
         searchBean.setExpandedView( true );
         columns = new ArrayList<String>();
         columns = populateColumns( columns, true );
-        RequestContext.getCurrentInstance().returnFromDialog( columns, null );
         return null;
     }
 
@@ -274,7 +272,6 @@ public class ConfigureColumnBean {
         //atleast one column should be selected otherwise nullpointer exception is thrown by jsf view
         columns.add( COMPOUND_NAME );
         log.debug( "columns size from selectNone " + columns.size() );
-        RequestContext.getCurrentInstance().returnFromDialog( columns, null );
         return null;
     }
 
@@ -293,7 +290,6 @@ public class ConfigureColumnBean {
         columns = new ArrayList<String>();
         columns = populateColumns( columns, false );
         log.debug( "columns size from selectDefault " + columns.size() );
-        RequestContext.getCurrentInstance().returnFromDialog( columns, null );
         return null;
 
     }

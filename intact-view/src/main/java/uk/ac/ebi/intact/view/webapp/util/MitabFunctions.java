@@ -36,10 +36,7 @@ import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Functions to be used in the UI to control the display.
@@ -163,7 +160,7 @@ public final class MitabFunctions {
                 return "-";
             }
         } else {
-            List<String> roles = new ArrayList<String>();
+            Set<String> roles = new HashSet<String>();
             for ( CrossReference crossReference : crossReferences ) {
                 if ( crossReference.getText() != null && !"unspecified role".equals( crossReference.getText() ) ) {
                     roles.add( getFirstLetterofEachToken( crossReference.getText() ) );

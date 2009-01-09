@@ -48,6 +48,12 @@ public class SearchResultDataModel extends SortableModel implements Serializable
 
     static {
         DEFAULT_SORT_COLUMN = new MitabDocumentDefinition().getColumnDefinition(MitabDocumentDefinition.ID_INTERACTOR_A).getSortableColumnName();
+
+        /**
+         * If you set the DEFAULT_SORT_COLUMN as relevanescore_s make sure
+         * you are using the latest index with relevancescore column in it
+         */
+        //DEFAULT_SORT_COLUMN = "relevancescore_s";
     }
 
     private String searchQuery;
