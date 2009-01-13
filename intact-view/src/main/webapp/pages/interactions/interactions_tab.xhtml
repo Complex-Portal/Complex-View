@@ -392,7 +392,7 @@
            sortProperty="biologicalRoleB_s" styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column rendered="#{searchBean.expandedView and iamf:getSelectedFromMap(configureColumn.columnMap,'Compound Properties')}" sortable="true" sortProperty="propertiesA_s" styleClass="cellTextCompound">
+<tr:column rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Compound Properties')}" sortable="true" sortProperty="propertiesA_s" styleClass="cellTextCompound">
     <f:facet name="header">
         <tr:panelGroupLayout layout="vertical">
             <tr:outputText value="Compound Properties"/>
