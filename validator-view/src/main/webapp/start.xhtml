@@ -60,58 +60,126 @@
 
             <!-- File upload -->
 
-            <trh:rowLayout>
+            <!--<trh:rowLayout halign="left">-->
+                <!--<tr:spacer height="20" />-->
+                <!--<tr:panelHeader text="Upload PSI-MI XML 2.5 data"/>-->
+            <!--</trh:rowLayout>-->
+
+            <trh:rowLayout >
                 <trh:cellFormat>
 
                     <tr:spacer height="20" />
-
                     <tr:panelHeader text="Upload PSI-MI XML 2.5 data"/>
 
                     <trh:tableLayout borderWidth="0" cellPadding="5">
                         <trh:rowLayout>
-                            <trh:cellFormat width="50" valign="top">
-                                <tr:outputText value="Source: " />
-                            </trh:cellFormat>
-                            <trh:cellFormat>
-                                <tr:selectOneRadio id="sourceSelector" value="local" simple="true"
-                                                   valueChangeListener="#{psiValidatorBean.uploadTypeChanged}"
-                                                   onchange="submit()">
-                                    <tr:selectItem label="From local file" value="local"/>
-                                    <tr:selectItem label="From URL" value="url"/>
-                                </tr:selectOneRadio>
-                            </trh:cellFormat>
-                        </trh:rowLayout>
 
-                        <trh:rowLayout rendered="#{psiValidatorBean.uploadLocalFile}">
-                            <trh:cellFormat width="50" halign="right">
-                                <tr:outputText value="File: " />
-                            </trh:cellFormat>
                             <trh:cellFormat>
-                                <tr:group>
-                                    <tr:inputFile valueChangeListener="#{psiValidatorBean.onPsiFileUpload}" simple="true"/>
-                                    <tr:message for="inputFile" styleClass="error-message"/>
-                                </tr:group>
-                            </trh:cellFormat>
-                        </trh:rowLayout>
 
-                        <trh:rowLayout rendered="#{!psiValidatorBean.uploadLocalFile}">
-                            <trh:cellFormat width="50" halign="right">
-                                <tr:outputText value="URL: "/>
+                                <trh:tableLayout borderWidth="0" cellPadding="5">
+                                    <trh:rowLayout>
+                                        <trh:cellFormat valign="top">
+
+                                            <!-- Source -->
+                                            <trh:tableLayout borderWidth="0" cellPadding="5">
+                                                <trh:rowLayout>
+                                                    <trh:cellFormat valign="top">
+                                                        <tr:outputText value="Source: " />
+                                                    </trh:cellFormat>
+                                                    <trh:cellFormat>
+                                                        <tr:selectOneRadio id="sourceSelector" value="local" simple="true"
+                                                                           valueChangeListener="#{psiValidatorBean.uploadTypeChanged}"
+                                                                           onchange="submit()">
+                                                            <tr:selectItem label="From local file" value="local"/>
+                                                            <tr:selectItem label="From URL" value="url"/>
+                                                        </tr:selectOneRadio>
+                                                    </trh:cellFormat>
+                                                </trh:rowLayout>
+                                            </trh:tableLayout>
+
+                                        </trh:cellFormat>
+                                         <trh:cellFormat halign="left" valign="top">
+
+                                             <!-- Scope -->
+                                             <trh:tableLayout borderWidth="0" cellPadding="5">
+                                                 <trh:rowLayout>
+                                                     <trh:cellFormat valign="top">
+                                                         <tr:outputText value="Validation scope: " />
+                                                     </trh:cellFormat>
+                                                     <trh:cellFormat>
+                                                         <tr:selectOneRadio id="scopeSelector" value="mimix" simple="true"
+                                                                            valueChangeListener="#{psiValidatorBean.validationScopeChanged}"
+                                                                            onchange="submit()">
+                                                             <tr:selectItem label="Syntax only" value="syntax"/>
+                                                             <tr:selectItem label="CV only" value="cv-mapping"/>
+                                                             <tr:selectItem label="MIMIx" value="mimix"/>
+                                                             <tr:selectItem label="IMEx" value="imex"/>
+                                                         </tr:selectOneRadio>
+                                                     </trh:cellFormat>
+                                                 </trh:rowLayout>
+                                             </trh:tableLayout>
+
+                                         </trh:cellFormat>
+                                    </trh:rowLayout>
+
+                                    <trh:rowLayout>
+
+                                        <trh:cellFormat columnSpan="2" valign="top">
+                                            <!--TODO how to span 2 cells ??-->
+                                            <!-- File/URL input -->
+                                            <trh:tableLayout>
+                                                <trh:rowLayout rendered="#{psiValidatorBean.uploadLocalFile}">
+                                                    <trh:cellFormat halign="right">
+                                                        <tr:outputText value="File: " />
+                                                    </trh:cellFormat>
+                                                    <trh:cellFormat>
+                                                        <tr:group>
+                                                            <tr:inputFile valueChangeListener="#{psiValidatorBean.onPsiFileUpload}" simple="true"/>
+                                                            <tr:message for="inputFile" styleClass="error-message"/>
+                                                        </tr:group>
+                                                    </trh:cellFormat>
+                                                </trh:rowLayout>
+
+                                                <trh:rowLayout rendered="#{!psiValidatorBean.uploadLocalFile}">
+                                                    <trh:cellFormat halign="right">
+                                                        <tr:outputText value="URL: "/>
+                                                    </trh:cellFormat>
+                                                    <trh:cellFormat>
+                                                        <tr:group>
+                                                            <tr:inputText id="inputUrl" columns="80" value="#{psiValidatorBean.psiUrl}"
+                                                                          required="true" validator="#{psiValidatorBean.validateUrlFormat}"
+                                                                          simple="true"/>
+                                                            <tr:message for="inputUrl" styleClass="error-message" />
+                                                        </tr:group>
+                                                    </trh:cellFormat>
+                                                </trh:rowLayout>
+                                            </trh:tableLayout>
+                                            
+                                        </trh:cellFormat>
+
+                                    </trh:rowLayout>
+
+                                    <trh:rowLayout>
+
+                                        <trh:cellFormat columnSpan="2" valign="top">
+                                            <!--TODO how to span 2 cells ??-->
+                                            <!-- Validate button -->
+                                            <tr:commandButton text="Validate" actionListener="#{psiValidatorBean.validate}"/>
+
+                                        </trh:cellFormat>
+
+                                    </trh:rowLayout>
+                                </trh:tableLayout>
+
+                                <!-- END OF TABLE -->
+
                             </trh:cellFormat>
-                            <trh:cellFormat>
-                                <tr:group>
-                                    <tr:inputText id="inputUrl" columns="80" value="#{psiValidatorBean.psiUrl}"
-                                                  required="true" validator="#{psiValidatorBean.validateUrlFormat}"
-                                                  simple="true"/>
-                                    <tr:message for="inputUrl" styleClass="error-message" />
-                                </tr:group>
-                            </trh:cellFormat>
+
                         </trh:rowLayout>
                     </trh:tableLayout>
 
-                    <tr:commandButton text="Validate" actionListener="#{psiValidatorBean.validate}"/>
-
                 </trh:cellFormat>
+
             </trh:rowLayout>
 
             <tr:messages globalOnly="true"/>
@@ -218,6 +286,7 @@
                     <tr:outputText value="#{msg.message}" />
                 </tr:column>
 
+                <!-- TODO rules only seem to be showing line number 1, always :( -->
                 <!-- Build a links to respective object anchor's -->
                 <!--<tr:column headerText="Context">-->
                     <!--<tr:outputText value="Line #{msg.context.lineNumber}"/>-->
@@ -227,6 +296,7 @@
 
 
         <!-- XML Semantic Validation Report (if any messages) -->
+        <!-- TODO show tips and rule details -->
         <tr:group rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticInvalid}">
             <a name="semantics_report"/>
             <tr:panelHeader text="PSI MI 2.5 Semantic Validation Report"/>

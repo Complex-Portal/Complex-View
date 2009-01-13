@@ -51,6 +51,8 @@ public class PsiReportBuilder {
      */
     private File file;
 
+    private ValidationScope validationScope;
+
     /**
      * Handy enumeration to avoid null checks on the previous attributes, when trying to determine
      * whether the info comes from URL or a stream.
@@ -70,11 +72,12 @@ public class PsiReportBuilder {
      * @param name The name of the file, only needed for information purposes
      * @param url  The URL with the PSI xml
      */
-    public PsiReportBuilder(String name, URL url, File tempFile) {
+    public PsiReportBuilder( String name, URL url, File tempFile, ValidationScope validationScope ) {
         this.name = name;
         this.url = url;
         this.file = tempFile;
-
+        this.validationScope = validationScope;
+        
         this.currentSourceType = SourceType.URL;
     }
 
@@ -86,9 +89,10 @@ public class PsiReportBuilder {
      *             resettable in order to build the report properly. The stream will be reset a few times, so the
      *             information is parsed in the different validation phases
      */
-    public PsiReportBuilder(String name, File file) {
+    public PsiReportBuilder(String name, File file, ValidationScope validationScope) {
         this.name = name;
         this.file = file;
+        this.validationScope = validationScope;
 
         this.currentSourceType = SourceType.FILE;
     }
@@ -151,8 +155,8 @@ public class PsiReportBuilder {
             // the output stream with the html content
             transformedOutput = TransformationUtil.transformToHtml(is).toString();
         }
-        catch (TransformerException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            log.error( "Failed to produce the HTML view", e );
         }
         report.setHtmlView(transformedOutput);
     }
@@ -163,19 +167,44 @@ public class PsiReportBuilder {
      * @param report the PsiReport to complete
      * @param file   the psi xml file
      */
-    private static void validatePsiFile(PsiReport report, File file) {
+    private void validatePsiFile(PsiReport report, File file) {
 
         // Printwriter to get the stacktrace messages
         StringWriter sw = new StringWriter(1024);
-        PrintWriter writer = new PrintWriter(sw);
 
         try {
-            // TODO here we could use ValidatorProfile to encapsulate a set of configuration files so the user can choose what to validate !!
-
             // We read the configuration file, included inside the jar
-            InputStream cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
-            InputStream ruleCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/object-rules.xml");
             InputStream ontologyCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/ontologies.xml");
+            InputStream cvMappingCfg = null;
+            InputStream ruleCfg = null;
+
+            if( validationScope == null ) {
+                // set default value
+                log.warn( "The application didn't get a valid validation scope (null), setting default to MIMIx." );
+                validationScope = ValidationScope.MIMIX;
+            }
+
+            if( validationScope.equals( ValidationScope.SYNTAX ) ){
+
+                // nothing
+
+            } else if( validationScope.equals( ValidationScope.CV_ONLY ) ){
+
+                cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
+
+            } else if( validationScope.equals( ValidationScope.MIMIX ) ){
+
+                cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
+                ruleCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/mimix-object-rules.xml");
+
+            } else if( validationScope.equals( ValidationScope.IMEX ) ){
+
+                cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
+                ruleCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/imex-object-rules.xml");
+
+            } else {
+                throw new IllegalStateException( "Unsupported validation scope: '"+ validationScope +"', the application is not correctly configured." );
+            }
 
             // set work directory
             UserPreferences preferences = new UserPreferences();
@@ -199,13 +228,18 @@ public class PsiReportBuilder {
                 report.setXmlSyntaxStatus(PsiReport.VALID);
             }
 
+            if( ! validationScope.involveSemanticValidation() ) {
+                // there is no semantic involved so set message accoringly
+                report.setSemanticsStatus(PsiReport.NOT_RUN);
+            }
+
             if (validatorReport.hasSemanticMessages()) {
                 report.setSemanticsReport("XML semantic validation failed.");
                 report.setSemanticsStatus(PsiReport.INVALID);
                 report.setValidatorMessages(new ArrayList<ValidatorMessage>(validatorReport.getSemanticMessages()));
             }
-        }
-        catch (Exception e) {
+
+        } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage( "An error occured while validating your data: " + e.getMessage() );
             context.addMessage( null, message );

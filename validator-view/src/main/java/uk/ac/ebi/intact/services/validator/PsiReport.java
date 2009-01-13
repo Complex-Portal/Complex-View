@@ -25,6 +25,7 @@ public class PsiReport {
     public static final String VALID = "valid";
     public static final String INVALID = "invalid";
     public static final String WARNINGS = "warnings";
+    public static final String NOT_RUN = "not run";
 
     /**
      * Name of the file/report

@@ -51,6 +51,11 @@ public class PsiValidatorBean extends BaseController {
     private boolean uploadLocalFile;
 
     /**
+     * The type of validation to be performed: syntax, cv, MIMIX, IMEx.
+     */
+    private ValidationScope validationScope;
+
+    /**
      * The file to upload
      */
     private UploadedFile psiFile;
@@ -83,6 +88,19 @@ public class PsiValidatorBean extends BaseController {
 
         if (log.isDebugEnabled())
             log.debug("Upload type changed, is local file? " + uploadLocalFile);
+    }
+
+    /**
+     * This is a valueChangeEvent. When the selection of File/URL is changed, this event is fired.
+     *
+     * @param vce needed in valueChangeEvent methods. From it we get the new value
+     */
+    public void validationScopeChanged(ValueChangeEvent vce) {
+        String type = (String) vce.getNewValue();
+        validationScope  = ValidationScope.forName( type );
+
+        if (log.isDebugEnabled())
+            log.debug("Validation scope changed to '" + validationScope + "'");
     }
 
     @PreRenderView
@@ -170,13 +188,15 @@ public class PsiValidatorBean extends BaseController {
         // we have the data on disk, clear memory
         psiFile.dispose();
 
-        PsiReportBuilder builder = new PsiReportBuilder( psiFile.getFilename(), f );
+        PsiReportBuilder builder = new PsiReportBuilder( psiFile.getFilename(), f, validationScope );
 
         // we execute the method of the builder that actually creates the report
-        log.warn("ABout to start building the PSI report");
+        log.warn("About to start building the PSI report");
         
         this.currentPsiReport = builder.createPsiReport();
-        log.warn("After uploading a local file the report was " + (this.currentPsiReport == null ? "not present" : "present" ));
+        if ( log.isWarnEnabled() ) {
+            log.warn("After uploading a local file the report was " + (this.currentPsiReport == null ? "not present" : "present" ));
+        }
     }
 
     /**
@@ -247,7 +267,7 @@ public class PsiValidatorBean extends BaseController {
 
             // and now we can instantiate the builder to create the validation report,
             // using the name of the file and the URL.
-            PsiReportBuilder builder = new PsiReportBuilder(name, url, f);
+            PsiReportBuilder builder = new PsiReportBuilder(name, url, f, validationScope);
 
             // we execute the method of the builder that actually creates the report
             log.warn("ABout to start building the PSI report");

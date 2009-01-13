@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objectRuleList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:noNamespaceSchemaLocation="http://www.psidev.info/files/validator/object-rule.xsd">
+
+    <!-- (!) Keep these rule by alphabetical order, that's easier to maintain. -->
+
+    <!-- IMEx rules-->
+    <rule class="psidev.psi.mi.validator.extension.rules.imex.InteractionSourceIdentityXrefRule"/>
+    <rule class="psidev.psi.mi.validator.extension.rules.imex.ProteinIdentityRule"/>
+    <rule class="psidev.psi.mi.validator.extension.rules.imex.SingleExperimentRoleRule"/>
+
+    <!-- MIMIx rules -->
+    <rule class="psidev.psi.mi.validator.extension.rules.ConfidenceScoreRule"/>
+    <rule class="psidev.psi.mi.validator.extension.rules.ExperimentBibRefRule"/>
+    <rule class="psidev.psi.mi.validator.extension.rules.ExperimentHostOrganismRule"/>
+    <!--<rule class="psidev.psi.mi.validator.extension.rules.InteractionDetectionMethod2ExperimentalRoleDependencyRule"/>-->
+    <rule class="psidev.psi.mi.validator.extension.rules.InteractorIdentityRule"/>
+    <rule class="psidev.psi.mi.validator.extension.rules.InteractorNameRule"/>
+    <rule class="psidev.psi.mi.validator.extension.rules.InteractorOrganismRule"/>
+    <rule class="psidev.psi.mi.validator.extension.rules.InteractorSequenceAlphabetRule"/>
+    <!--<rule class="psidev.psi.mi.validator.extension.rules.ParticipantSeqXrefRule"/>-->
+
+</objectRuleList>
