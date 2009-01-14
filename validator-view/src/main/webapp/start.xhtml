@@ -78,7 +78,7 @@
 
                                 <trh:tableLayout borderWidth="0" cellPadding="5">
                                     <trh:rowLayout>
-                                        <trh:cellFormat valign="top">
+                                        <trh:cellFormat width="250" valign="top">
 
                                             <!-- Source -->
                                             <trh:tableLayout borderWidth="0" cellPadding="5">
@@ -125,7 +125,7 @@
                                     <trh:rowLayout>
 
                                         <trh:cellFormat columnSpan="2" valign="top">
-                                            <!--TODO how to span 2 cells ??-->
+
                                             <!-- File/URL input -->
                                             <trh:tableLayout>
                                                 <trh:rowLayout rendered="#{psiValidatorBean.uploadLocalFile}">
@@ -134,7 +134,7 @@
                                                     </trh:cellFormat>
                                                     <trh:cellFormat>
                                                         <tr:group>
-                                                            <tr:inputFile valueChangeListener="#{psiValidatorBean.onPsiFileUpload}" simple="true"/>
+                                                            <tr:inputFile columns="60" valueChangeListener="#{psiValidatorBean.onPsiFileUpload}" simple="true"/>
                                                             <tr:message for="inputFile" styleClass="error-message"/>
                                                         </tr:group>
                                                     </trh:cellFormat>
@@ -146,7 +146,7 @@
                                                     </trh:cellFormat>
                                                     <trh:cellFormat>
                                                         <tr:group>
-                                                            <tr:inputText id="inputUrl" columns="80" value="#{psiValidatorBean.psiUrl}"
+                                                            <tr:inputText id="inputUrl" columns="70" value="#{psiValidatorBean.psiUrl}"
                                                                           required="true" validator="#{psiValidatorBean.validateUrlFormat}"
                                                                           simple="true"/>
                                                             <tr:message for="inputUrl" styleClass="error-message" />
@@ -162,7 +162,7 @@
                                     <trh:rowLayout>
 
                                         <trh:cellFormat columnSpan="2" valign="top">
-                                            <!--TODO how to span 2 cells ??-->
+                                            
                                             <!-- Validate button -->
                                             <tr:commandButton text="Validate" actionListener="#{psiValidatorBean.validate}"/>
 
