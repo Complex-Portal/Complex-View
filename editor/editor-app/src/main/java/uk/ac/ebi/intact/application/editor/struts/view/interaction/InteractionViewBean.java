@@ -601,6 +601,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         }
         // We should have this component.
         assert compBean != null;
+        log.warn( "The feature cannot be saved as we cannot finds its component "+ compAc +" in the view; Components' ACs were: [" + printComponentAc( myComponents ) + "]");
 
         // The feature to AC to compare with.
         String featureAc = feature.getAc();
@@ -645,6 +646,14 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             FeatureBean destFb = getFeatureBean(featureBean.getBoundDomainAc());
             destFb.setBoundDomain(featureBean.getShortLabel());
         }
+    }
+
+    private String printComponentAc( List<ComponentBean> myComponents ) {
+        StringBuilder sb = new StringBuilder();
+        for ( ComponentBean c : myComponents ) {
+            sb.append( c.getAc() ).append(" ");
+        }
+        return sb.toString();
     }
 
     /**
