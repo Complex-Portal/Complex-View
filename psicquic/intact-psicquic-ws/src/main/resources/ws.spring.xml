@@ -26,9 +26,10 @@
 
 	<!-- Service endpoint -->
 	<!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
-    <jaxws:endpoint id="psicquicService"
-		implementorClass="uk.ac.ebi.intact.psicquic.ws.IntactPsicquicService"
-		implementor="#intactPsicquicService" address="/psicquic">
+    <jaxws:endpoint xmlns:s="http://org.hupo.psi/mi/psicquic"
+                    id="psicquicService" serviceName="s:PsicquicService"
+		            implementorClass="uk.ac.ebi.intact.psicquic.ws.IntactPsicquicService"
+		            implementor="#intactPsicquicService" address="/psicquic">
 	</jaxws:endpoint>
 
 </beans>
