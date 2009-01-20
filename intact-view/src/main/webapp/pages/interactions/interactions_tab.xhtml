@@ -30,7 +30,7 @@
           summary="Binary Interactions"
           emptyText="No interactions found matching the query."
           rows="#{searchBean.pageSize}" rowBandingInterval="1"
-          partialTriggers=":interactionResults:btnToogleProps :interactionResults:btnStandardView :interactionResults:btnExpandedView :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn">
+          partialTriggers=":interactionResults:btnToogleProps  :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn :interactionResults:listSortableColumns :interactionResults:listSortableColumnsOrder">
 
 <f:facet name="actions">
     <tr:panelHorizontalLayout>
@@ -42,7 +42,7 @@
                                  value="#{searchBean.results}"
                                  rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
                                  rendered="#{searchBean.results.rowCount gt searchBean.pageSize}"/>
-
+ <!--
         <tr:panelHorizontalLayout>
             <f:facet name="separator">
                 <tr:outputFormatted value="&#160;"/>
@@ -66,7 +66,7 @@
                                              target="#{searchBean.expandedView}"/>
             </tr:commandLink>
         </tr:panelHorizontalLayout>
-
+-->
         <tr:commandLink id="btnToogleProps" immediate="true" rendered="#{searchBean.expandedView}"
                         text="#{searchBean.showProperties? 'Hide all properties' : 'Show all properties'}"
                         partialSubmit="true" inlineStyle="white-space:nowrap;">
@@ -92,6 +92,17 @@
 
             <tr:commandButton id="btnConfigureColumn" text="Configure Column" action="dialog:configure.columns" partialSubmit="true" returnListener="#{configureColumn.handleReturn}"
                                      windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
+                        
+            <tr:selectOneChoice id="listSortableColumns" label="Sort Rows By: " value="#{searchBean.userSortColumn}" autoSubmit="true" valueChangeListener="#{searchBean.userSort}">
+                <tr:selectItem label="Relevance Score" value="relevancescore_s"/>
+                <tr:selectItem label="Compound Name" value="nameA_s"/>
+                <tr:selectItem label="Target Name" value="nameB_s"/>
+            </tr:selectOneChoice>
+
+            <tr:selectOneChoice id="listSortableColumnsOrder" label="Order By: " value="#{searchBean.ascending}" autoSubmit="true" valueChangeListener="#{searchBean.userSortOrder}">
+                <tr:selectItem label="Ascending" value="true"/>
+                <tr:selectItem label="Descending" value="false"/>
+            </tr:selectOneChoice>
 
 
         </tr:panelGroupLayout>

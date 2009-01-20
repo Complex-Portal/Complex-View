@@ -25,6 +25,7 @@ import psidev.psi.mi.search.engine.SearchEngineException;
 import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
+import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
@@ -47,13 +48,13 @@ public class SearchResultDataModel extends SortableModel implements Serializable
     private static final String DEFAULT_SORT_COLUMN;
 
     static {
-        DEFAULT_SORT_COLUMN = new MitabDocumentDefinition().getColumnDefinition(MitabDocumentDefinition.ID_INTERACTOR_A).getSortableColumnName();
+        //DEFAULT_SORT_COLUMN = new MitabDocumentDefinition().getColumnDefinition(MitabDocumentDefinition.ID_INTERACTOR_A).getSortableColumnName();
 
         /**
          * If you set the DEFAULT_SORT_COLUMN as relevanescore_s make sure
          * you are using the latest index with relevancescore column in it
          */
-        //DEFAULT_SORT_COLUMN = "relevancescore_s";
+        DEFAULT_SORT_COLUMN = "relevancescore_s";
     }
 
     private String searchQuery;
@@ -71,10 +72,26 @@ public class SearchResultDataModel extends SortableModel implements Serializable
 
     private Map<String,Boolean> columnSorts;
 
-    public SearchResultDataModel(String searchQuery, String indexDirectory, int pageSize) throws TooManyResultsException {
+     public SearchResultDataModel(String searchQuery, String indexDirectory, int pageSize) throws TooManyResultsException {
+        this(searchQuery,indexDirectory,pageSize,null);
+     }
+
+    public SearchResultDataModel(String searchQuery, String indexDirectory, int pageSize, UserQuery userQuery) throws TooManyResultsException {
         this.searchQuery = searchQuery;
         this.indexDirectory = indexDirectory;
         this.pageSize = pageSize;
+
+        if ( userQuery != null ) {
+            if ( userQuery.getUserSortColumn() != null ) {
+                this.sortColumn = userQuery.getUserSortColumn();
+            }
+            this.ascending = userQuery.getUserSortOrder();
+        }
+
+        if ( log.isDebugEnabled() ) {
+            log.debug( "SortColumn <-> SortOrder   "+ sortColumn + "<->" + ascending);
+        }
+
 
         columnSorts = new HashMap<String,Boolean>(16);
 

@@ -26,6 +26,7 @@ import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,13 @@ public class SearchController extends JpaBaseController {
     // io
     private String exportFormat;
 
+    //sorting
+    private static final String DEFAULT_SORT_COLUMN = "relevancescore_s";
+    private static final boolean DEFAULT_SORT_ORDER = true;
+
+    private String userSortColumn = DEFAULT_SORT_COLUMN;
+    //as the Sort constructor is Sort(String field, boolean reverse)
+    private boolean ascending = DEFAULT_SORT_ORDER;
 
     public SearchController() {
     }
@@ -111,6 +119,10 @@ public class SearchController extends JpaBaseController {
          
         if (queryParam != null && queryParam.length()>0) {
             if (log.isDebugEnabled()) log.debug("Searching using query parameter: "+queryParam);
+
+            //for sorting and ordering
+            this.setUserSortColumn(DEFAULT_SORT_COLUMN);
+            this.setAscending( DEFAULT_SORT_ORDER );
 
             userQuery.reset();
             userQuery.setSearchQuery( queryParam );
@@ -176,7 +188,7 @@ public class SearchController extends JpaBaseController {
         String indexDirectory = intactViewConfiguration.getDefaultIndexLocation();
 
         try {
-            results = new SearchResultDataModel(query, indexDirectory, pageSize);
+            results = new SearchResultDataModel(query, indexDirectory, pageSize,userQuery);
 
             totalResults = results.getRowCount();
 
@@ -303,6 +315,36 @@ public class SearchController extends JpaBaseController {
         this.userQuery.reset();
     }
 
+    public void userSort( ValueChangeEvent event ) {
+        String sortableColumn = (String)event.getNewValue();
+
+        if ( sortableColumn == null ) {
+            sortableColumn = DEFAULT_SORT_COLUMN;
+        }
+
+        userQuery.setUserSortColumn( sortableColumn );
+        this.setUserSortColumn( sortableColumn );
+        userQuery.setUserSortOrder(DEFAULT_SORT_ORDER);
+        this.setAscending( DEFAULT_SORT_ORDER );
+        doBinarySearch( userQuery );
+
+    }
+
+    public void userSortOrder( ValueChangeEvent event ) {
+        Boolean sortOrder =  (Boolean) event.getNewValue();
+
+        if ( sortOrder == null ) {
+            userQuery.setUserSortOrder( DEFAULT_SORT_ORDER );
+        } else {
+            userQuery.setUserSortColumn( this.getUserSortColumn());
+            userQuery.setUserSortOrder( sortOrder );
+            this.setAscending(sortOrder);
+            doBinarySearch( userQuery );
+        }
+
+    }
+
+
     // Getters & Setters
     /////////////////////
 
@@ -396,5 +438,21 @@ public class SearchController extends JpaBaseController {
 
     public SearchResultDataModel getSmallMoleculeResults() {
         return smallMoleculeResults;
+    }
+
+    public String getUserSortColumn() {
+        return userSortColumn;
+    }
+
+    public void setUserSortColumn( String userSortColumn ) {
+        this.userSortColumn = userSortColumn;
+    }
+
+    public boolean isAscending() {
+        return ascending;
+    }
+
+    public void setAscending( boolean ascending ) {
+        this.ascending = ascending;
     }
 }

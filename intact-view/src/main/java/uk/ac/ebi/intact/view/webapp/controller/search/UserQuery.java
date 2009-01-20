@@ -52,6 +52,15 @@ public class UserQuery {
     private List<SearchFilter> interactionFilters;
     private List<SearchFilter> interactorFilters;
 
+    //for sorting and ordering
+    private static final String DEFAULT_SORT_COLUMN = "relevancescore_s";
+    private static final boolean DEFAULT_SORT_ORDER = true;
+
+
+    private String userSortColumn = DEFAULT_SORT_COLUMN;
+    private boolean userSortOrder = DEFAULT_SORT_ORDER;
+
+
     public UserQuery() {
     }
 
@@ -61,6 +70,9 @@ public class UserQuery {
         this.ontologySearchQuery = null;
         this.interactionFilters = new LinkedList<SearchFilter>();
         this.interactorFilters = new LinkedList<SearchFilter>();
+
+        this.userSortColumn = DEFAULT_SORT_COLUMN;
+        this.userSortOrder = DEFAULT_SORT_ORDER;
 
         if (filterPopulator != null) {
             setDatasets(filterPopulator.getDatasets().toArray(new String[filterPopulator.getDatasets().size()]));
@@ -388,5 +400,21 @@ public class UserQuery {
 
     public void setInteractorFilters(List<SearchFilter> interactorFilters) {
         this.interactorFilters = interactorFilters;
+    }
+
+    public String getUserSortColumn() {
+        return userSortColumn;
+    }
+
+    public void setUserSortColumn( String userSortColumn ) {
+        this.userSortColumn = userSortColumn;
+    }
+
+    public boolean getUserSortOrder() {
+        return userSortOrder;
+    }
+
+    public void setUserSortOrder( boolean userSortOrder ) {
+        this.userSortOrder = userSortOrder;
     }
 }
