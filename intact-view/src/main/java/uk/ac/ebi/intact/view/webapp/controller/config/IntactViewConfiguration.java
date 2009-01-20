@@ -16,9 +16,15 @@
 package uk.ac.ebi.intact.view.webapp.controller.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
+import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
+import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 
 import javax.persistence.EntityManagerFactory;
+import javax.annotation.PostConstruct;
+import java.io.File;
 
 /**
  * IntactView configuration bean.
@@ -27,6 +33,8 @@ import javax.persistence.EntityManagerFactory;
  * @version $Id$
  */
 public class IntactViewConfiguration extends BaseController {
+
+    private static final Log log = LogFactory.getLog( IntactViewConfiguration.class );
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -48,7 +56,6 @@ public class IntactViewConfiguration extends BaseController {
     private String chebiChemicalSearchPath;
     private String intactSecret;
     private int luceneMaxCombinations;
-    private boolean doNotUseOls;
     private String googleAnalyticsTracker;
     private int maxOntologySuggestions;
     private String mailRecipients;
@@ -61,6 +68,25 @@ public class IntactViewConfiguration extends BaseController {
     public IntactViewConfiguration() {
     }
 
+    @PostConstruct
+    public void refreshDefaultIndicesFromConfigFile() {
+       // if the config file exists, use it to load the default indices
+        if (configFile == null || new File(configFile).exists()) {
+            if (log.isInfoEnabled()) log.info("Config file found. Using it to set the default indices");
+
+            SearchConfig searchConfig = WebappUtils.readConfiguration(configFile);
+
+            defaultIndexLocation = WebappUtils.getDefaultInteractionIndex(searchConfig).getLocation();
+            defaultInteractorIndexLocation = WebappUtils.getDefaultInteractorIndex(searchConfig).getLocation();
+            defaultOntologiesIndexLocation = WebappUtils.getDefaultOntologiesIndex(searchConfig).getLocation();
+
+            if (log.isDebugEnabled()) {
+                log.debug("\tDefault interaction index: "+defaultIndexLocation);
+                log.debug("\tDefault interactor index: "+defaultInteractorIndexLocation);
+                log.debug("\tDefault ontologies index: "+defaultOntologiesIndexLocation);
+            }
+        }
+    }
 
     public void closeEntityManagerFactory() {
         entityManagerFactory.close();

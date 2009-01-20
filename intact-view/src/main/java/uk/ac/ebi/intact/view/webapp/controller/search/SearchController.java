@@ -173,7 +173,7 @@ public class SearchController extends JpaBaseController {
             return;
         }
 
-        String indexDirectory = WebappUtils.getDefaultInteractionIndex(config).getLocation();
+        String indexDirectory = intactViewConfiguration.getDefaultIndexLocation();
 
         try {
             results = new SearchResultDataModel(query, indexDirectory, pageSize);
@@ -205,7 +205,7 @@ public class SearchController extends JpaBaseController {
 
         if (log.isDebugEnabled()) log.debug("Searching proteins: " + query);
 
-        String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
+        String indexDirectory = intactViewConfiguration.getDefaultInteractorIndexLocation();
 
         try {
             String interactorQuery = query.getInteractorQuery();
@@ -223,7 +223,7 @@ public class SearchController extends JpaBaseController {
 
         if (log.isDebugEnabled()) log.debug("Searching small molecules: " + query);
 
-        String indexDirectory = WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig()).getLocation();
+        String indexDirectory = intactViewConfiguration.getDefaultInteractorIndexLocation();
 
         try {
             String interactorQuery = query.getInteractorQuery();

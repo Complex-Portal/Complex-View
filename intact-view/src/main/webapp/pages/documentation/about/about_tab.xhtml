@@ -13,16 +13,54 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
-    <tr:panelHeader text="Welcome to DrugPort" styleClass="level-one"/>
-    DrugPort provides a freely available, open source database system and analysis tools for drug-target interactions. DrugPort combines detailed drug (i.e. chemical, pharmacological, and pharmaceutical) data with molecular target (i.e. sequence, structure, and pathway) information. Version 0.9 of the database is structured around the known druggable genome, an expanding list of ~4000 known and predicted drug targets.
+     <div style="float:right; padding-left: 20px; background-color: white">
 
-    <tr:panelHeader text="Project aims" styleClass="level-one"/>
-    The stated aim of DrugPort is to give the entire drug-discovery community access to all publicly available chemistry space and molecular targetspace. Using this information, researchers will be able to use computational methods to select the most efficient small molecule libraries and targets to support high throughput screening, cross screening and structure activity relationship (SAR) analysis, to support drug discovery, safety and efficacy studies, respectively.
+         <tr:panelBox text="Basic Statistics">
+             The Database contains:
+             <ul>
+                 <li>
+                     <h:outputText value="#{statisticsController.binaryInteractionCount}">
+                         <f:convertNumber pattern="#,###"/>
+                     </h:outputText>
+                     <h:outputText value=" binary interactions."/>
+                 </li>
+                 <li>
+                     <h:outputText value="#{statisticsController.proteinCount}">
+                         <f:convertNumber pattern="#,###"/>
+                     </h:outputText>
+                     <h:outputText value=" proteins."/>
+                 </li>
+                 <li>
+                     <h:outputText value="#{statisticsController.experimentCount}">
+                         <f:convertNumber pattern="#,###"/>
+                     </h:outputText>
+                     <h:outputText value=" experiments."/>
+                 </li>
+                 <li>
+                     <h:outputText value="#{statisticsController.cvTermsCount}">
+                         <f:convertNumber pattern="#,###"/>
+                     </h:outputText>
+                     <h:outputText value=" controlled vocabulary terms."/>
+                 </li>
+             </ul>
+         </tr:panelBox>
 
-    <tr:panelHeader text="Acknowledgements" styleClass="level-one"/>
-    DrugPort has been created as a result of a public-private partnership between EBI and the<tr:outputText
-        value=" "/><tr:goLink text="EBI Industry Partners" targetFrame="_blank"
-                              destination="http://www.ebi.ac.uk/industry/ind-prog-index.html"/>. The current version of DrugPort is populated with curated, publicly available data imported from<tr:outputText
-        value=" "/><tr:goLink text="DrugBank." targetFrame="_blank" destination="http://www.drugbank.ca/"/>
+     </div>
+
+    <tr:panelHeader text="Welcome to DrugPort">
+        DrugPort provides a freely available, open source database system and analysis tools for drug-target interactions. DrugPort combines detailed drug (i.e. chemical, pharmacological, and pharmaceutical) data with molecular target (i.e. sequence, structure, and pathway) information. Version 0.9 of the database is structured around the known druggable genome, an expanding list of ~4000 known and predicted drug targets.
+
+    </tr:panelHeader>
+    <tr:panelHeader text="Project aims">
+        The stated aim of DrugPort is to give the entire drug-discovery community access to all publicly available chemistry space and molecular targetspace. Using this information, researchers will be able to use computational methods to select the most efficient small molecule libraries and targets to support high throughput screening, cross screening and structure activity relationship (SAR) analysis, to support drug discovery, safety and efficacy studies, respectively.
+    </tr:panelHeader>
+
+    <tr:panelHeader text="Acknowledgements">
+        DrugPort has been created as a result of a public-private partnership between EBI and the<tr:outputText
+            value=" "/><tr:goLink text="EBI Industry Partners" targetFrame="_blank"
+                                  destination="http://www.ebi.ac.uk/industry/ind-prog-index.html"/>. The current version of DrugPort is populated with curated, publicly available data imported from<tr:outputText
+            value=" "/><tr:goLink text="DrugBank." targetFrame="_blank" destination="http://www.drugbank.ca/"/>
+
+    </tr:panelHeader>
 
 </ui:composition>

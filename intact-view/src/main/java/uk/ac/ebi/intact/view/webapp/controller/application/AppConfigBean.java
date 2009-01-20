@@ -42,10 +42,6 @@ public class AppConfigBean implements Serializable {
 
     private Log log = LogFactory.getLog(AppConfigBean.class);
 
-    public static final String DEFAULT_CONFIG_FILE_INIT_PARAM = "intact.DEFAULT_CONFIG_FILE";
-    public static final String DEFAULT_INDEX_LOCATION_INIT_PARAM = "intact.DEFAULT_INDEX";
-    public static final String DEFAULT_INTERACTOR_INDEX_LOCATION_INIT_PARAM = "intact.DEFAULT_INTERACTOR_INDEX";
-
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
@@ -64,12 +60,14 @@ public class AppConfigBean implements Serializable {
     public void setup() {
         configFileLocation = intactViewConfiguration.getConfigFile();
 
-        try {
-            if (log.isInfoEnabled()) log.info("Trying to read configuration from: " + configFileLocation);
-            config = WebappUtils.readConfiguration(configFileLocation);
-        }
-        catch (IntactViewException e) {
-            e.printStackTrace();
+        if (config == null) {
+            try {
+                if (log.isInfoEnabled()) log.info("Trying to read configuration from: " + configFileLocation);
+                config = WebappUtils.readConfiguration(configFileLocation);
+            }
+            catch (IntactViewException e) {
+                e.printStackTrace();
+            }
         }
 
         if (config == null) {

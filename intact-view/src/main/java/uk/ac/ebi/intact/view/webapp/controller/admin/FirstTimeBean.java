@@ -42,7 +42,6 @@ import java.io.IOException;
  */
 @Controller("firstTimeBean")
 @Scope("request")
-@ViewController(viewIds = "/first_time_config.xhtml")
 public class FirstTimeBean extends BaseController {
 
     private User user;
@@ -130,6 +129,9 @@ public class FirstTimeBean extends BaseController {
 
         WebappUtils.writeConfiguration(config, new File(configBean.getConfigFileLocation()));
         configBean.setConfig(config);
+
+        intactViewConfiguration.setConfigFile(configBean.getConfigFileLocation());
+        intactViewConfiguration.refreshDefaultIndicesFromConfigFile();
 
         try {
             ontologyBean.loadOntologies(config);

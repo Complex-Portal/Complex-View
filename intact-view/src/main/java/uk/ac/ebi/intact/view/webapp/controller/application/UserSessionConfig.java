@@ -37,7 +37,6 @@ public class UserSessionConfig {
     private AppConfigBean appConfigBean;
 
     public UserSessionConfig() {
-        System.out.println("\n\n\nNEW SESSION CONFIG\n\n\n");
     }
 
     public IntactViewConfiguration getIntactViewConfiguration() {

@@ -38,7 +38,7 @@
         <property name="dastyUrl" value="${intact.dasty.url}"/>
         <property name="intactSecret" value="${intact.secret}"/>
         <property name="luceneMaxCombinations" value="${intact.search.lucene.maxcombinations}"/>
-        <property name="maxOntologySuggestions" value="${intact.search.ontologies.maxsuggestions}"/> 
+        <property name="maxOntologySuggestions" value="${intact.search.ontologies.maxsuggestions}"/>
         <property name="googleAnalyticsTracker" value="${intact.google.analytics.tracker}"/>
         <property name="mailRecipients" value="${intact.mail.recipients}"/>
         <property name="webappVersion" value="${version}"/>
@@ -51,6 +51,7 @@
             <map>
                 <entry key="intactview:name=intactConfiguration" value-ref="intactViewConfiguration"/>
                 <entry key="intactview:name=dataSource" value-ref="dataSource"/>
+                <entry key="intactview:name=adminController" value-ref="adminController"/>
             </map>
         </property>
     </bean>
