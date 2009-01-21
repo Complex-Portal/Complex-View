@@ -23,23 +23,37 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxws-maven-plugin</artifactId>
-                <version>1.0-beta-1-EBI-20070310</version>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>2.1.3</version>
                 <executions>
                     <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <sourceRoot>${basedir}/target/generated/java</sourceRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/wsdl/SearchService.wsdl</wsdl>
+                                    <!--<extraargs>-->
+                                            <!--<extraarg>-b</extraarg>-->
+                                            <!--<extraarg>${basedir}/src/main/wsdl/intact-binding.xjb</extraarg>-->
+                                          <!--</extraargs>-->
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
                         <goals>
-                            <goal>wsimport</goal>
+                            <goal>wsdl2java</goal>
                         </goals>
                     </execution>
                 </executions>
                 <dependencies>
-                    <dependency>
-                        <groupId>xfire</groupId>
-                        <artifactId>xfire-jsr181-api</artifactId>
-                        <version>1.0-M1</version>
-                    </dependency>
-                </dependencies>
+                	<dependency>
+                  		<groupId>xerces</groupId>
+                  		<artifactId>xercesImpl</artifactId>
+                  		<version>2.8.1</version>
+               		</dependency>
+            	</dependencies>
             </plugin>
         </plugins>
     </build>
