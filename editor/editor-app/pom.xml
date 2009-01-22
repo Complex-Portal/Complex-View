@@ -24,7 +24,7 @@
         <maven.test.skip>true</maven.test.skip>
 
         <core.version>1.9.5</core.version>
-        <bridges.version>2.0.5</bridges.version>
+        <bridges.version>2.0.8-SNAPSHOT</bridges.version>
     </properties>
 
     <build>
