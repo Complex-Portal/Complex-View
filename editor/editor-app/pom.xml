@@ -24,7 +24,7 @@
         <maven.test.skip>true</maven.test.skip>
 
         <core.version>1.9.5</core.version>
-        <bridges.version>2.0.8-SNAPSHOT</bridges.version>
+        <bridges.version>2.0.8</bridges.version>
     </properties>
 
     <build>
@@ -125,6 +125,12 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.bridges</groupId>
             <artifactId>intact-go</artifactId>
+            <version>${bridges.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.bridges</groupId>
+            <artifactId>intact-uniprot</artifactId>
             <version>${bridges.version}</version>
         </dependency>
 
