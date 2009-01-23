@@ -44,6 +44,7 @@ public class UserQuery {
     private String ontologySearchQuery;
 
     private String interactorTypeMi;
+    private String[] interactorTypeMis;
 
     private String[] datasets;
     private String[] sources;
@@ -384,6 +385,19 @@ public class UserQuery {
             final SimpleFilter searchFilter = new SimpleFilter(interactorTypeMi, "typeA", true);
             interactorFilters.add(searchFilter);
         }
+    }
+
+    public String[] getInteractorTypeMis() {
+        return interactorTypeMis;
+    }
+
+    public void setInteractorTypeMis( String[] interactorTypeMis ) {
+        removeFiltersWithField( "typeA" );
+
+        DisjunctionSearchFilter disjFilter = createDisjunctionFilter(interactorTypeMis, "typeA");
+        interactorFilters.add( disjFilter );
+
+        this.interactorTypeMis = interactorTypeMis;
     }
 
     public List<SearchFilter> getInteractionFilters() {

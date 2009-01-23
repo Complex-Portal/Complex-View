@@ -19,6 +19,11 @@
             <ui:include src="compound_list_tab.xhtml"/>
         </tr:showDetailItem>
 
+        <tr:showDetailItem text="Nucleic Acids (#{searchBean.nucleicacidTotalResults})"
+                           disclosed="#{disclosedListTabName == 'nucleicacidList'}">
+            <ui:include src="nucleicacid_list_tab.xhtml"/>
+        </tr:showDetailItem>
+
     </tr:panelTabbed>
 
 </ui:composition>

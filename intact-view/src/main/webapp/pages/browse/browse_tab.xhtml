@@ -136,4 +136,50 @@
 
     </tr:panelHeader>
 
+    <br/><br/><br/>
+    <tr:panelHeader text="Nucleic Acids">
+
+            <trh:tableLayout borderWidth="0"
+                             cellSpacing="5"
+                             cellPadding="0"
+                             halign="left"
+                             width="300">
+
+                <trh:rowLayout>
+                    <trh:cellFormat halign="center" width="15">
+
+                    </trh:cellFormat>
+                    <trh:cellFormat>
+                        <tr:commandLink text="All" action="list.proteins"/>
+                    </trh:cellFormat>
+                  </trh:rowLayout>
+
+                    <trh:rowLayout>
+                        <trh:cellFormat halign="center" width="15">
+                            <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                        </trh:cellFormat>
+                        <trh:cellFormat>
+                            <tr:goLink text="By DNA" targetFrame="_blank"
+                                       destination="http://www.google.com"/>
+                        </trh:cellFormat>
+                    </trh:rowLayout>
+
+
+                    <trh:rowLayout>
+                        <trh:cellFormat halign="center" width="15">
+                            <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                        </trh:cellFormat>
+                        <trh:cellFormat>
+                            <tr:goLink text="By RNA" targetFrame="_blank"
+                                       destination="http://www.google.com"/>
+                        </trh:cellFormat>
+                    </trh:rowLayout>
+
+
+            
+            </trh:tableLayout>
+
+     
+    </tr:panelHeader>
+
 </ui:composition>
