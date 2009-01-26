@@ -155,14 +155,25 @@
                      >
 
         <trh:rowLayout>
-            <trh:cellFormat halign="center" width="15" inlineStyle="background:#006666;color:white" rendered="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA)}" shortDesc="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA)=='PR'? 'PR=Protein': 'SM=Small Molecule'}"/>
+            <c:set var="interactorTypeA" value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA)}"/>
+            <trh:cellFormat halign="center" width="15" inlineStyle="background:#006666;color:white"
+                            rendered="#{interactorTypeA[0] !=null and interactorTypeA[0] != '-' }">
+                <tr:outputText value="#{interactorTypeA[0]}" shortDesc="#{interactorTypeA[1]}"/>
             </trh:cellFormat>
-            <trh:cellFormat halign="center" width="15" inlineStyle="background:#e33e3e;color:white" rendered="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)=='DR'? 'DR=Drug' : 'DT=Drug Target'}"/>
+            <c:set var="expRoleA"
+                   value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)}"/>
+            <trh:cellFormat halign="center" width="15" inlineStyle="background:#e33e3e;color:white"
+                            rendered="#{expRoleA[0] !=null and expRoleA[0] != '-'}">
+                <tr:outputText value="#{expRoleA[0]}" shortDesc="#{expRoleA[1]}"/>
+                <!--tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)=='DR'? 'DR=Drug' : 'DT=Drug Target'}"/-->
             </trh:cellFormat>
-           <trh:cellFormat halign="center" width="15" inlineStyle="background:#73b360;color:white" rendered="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles) =='EN' ? 'EN=Enzyme' : 'ET=Enzyme Target'}"/>
+            <c:set var="bioRoleA"
+                   value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles)}"/>
+            <trh:cellFormat halign="center" width="15" inlineStyle="background:#73b360;color:white"
+                            rendered="#{bioRoleA[0] !=null and bioRoleA[0] != '-' }">
+                <tr:outputText value="#{bioRoleA[0]}" shortDesc="#{bioRoleA[1]}"/>
+
+                <!--tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles) =='EN' ? 'EN=Enzyme' : 'ET=Enzyme Target'}"/-->
             </trh:cellFormat>
         </trh:rowLayout>
     </trh:tableLayout>
@@ -245,18 +256,28 @@
                      halign="left"
                      >
 
-        <trh:rowLayout>
-            <trh:cellFormat halign="center" width="15" inlineStyle="background:#006666;color:white" rendered="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB)}" shortDesc= "#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB)=='PR'? 'PR=Protein': 'SM=Small Molecule'}"/>
-            </trh:cellFormat>
-            <trh:cellFormat halign="center" width="15" inlineStyle="background:#e33e3e;color:white" rendered="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)}" shortDesc= "#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)=='DR'? 'DR=Drug' : 'DT=Drug Target'}"/>
-            </trh:cellFormat>
-           <trh:cellFormat halign="center" width="15" inlineStyle="background:#73b360;color:white" rendered="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles) != '-' }">
-                <tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles) =='EN' ? 'EN=Enzyme' : 'ET=Enzyme Target'}" />
-            </trh:cellFormat>
-        </trh:rowLayout>
-    </trh:tableLayout>
+         <trh:rowLayout>
+             <c:set var="interactorTypeB" value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB)}"/>
+             <trh:cellFormat halign="center" width="15" inlineStyle="background:#006666;color:white"
+                             rendered="#{interactorTypeB[0] != null and interactorTypeB[0] != '-' }">
+                 <tr:outputText value="#{interactorTypeB[0]}" shortDesc="#{interactorTypeB[1]}"/>
+             </trh:cellFormat>
+             <c:set var="expRoleB"
+                    value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)}"/>
+             <trh:cellFormat halign="center" width="15" inlineStyle="background:#e33e3e;color:white"
+                             rendered="#{expRoleB[0] !=null and expRoleB[0] != '-' }">
+                 <tr:outputText value="#{expRoleB[0]}" shortDesc="#{expRoleB[1]}"/>
+                 <!--tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)}" shortDesc= "#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)=='DR'? 'DR=Drug' : 'DT=Drug Target'}"/-->
+             </trh:cellFormat>
+             <c:set var="bioRoleB"
+                    value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles)}"/>
+             <trh:cellFormat halign="center" width="15" inlineStyle="background:#73b360;color:white"
+                             rendered="#{bioRoleB[0] !=null and bioRoleB[0] != '-' }">
+                 <tr:outputText value="#{bioRoleB[0]}" shortDesc="#{bioRoleB[1]}"/>
+                 <!--tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles) =='EN' ? 'EN=Enzyme' : 'ET=Enzyme Target'}" /-->
+             </trh:cellFormat>
+         </trh:rowLayout>
+     </trh:tableLayout>
 
 </tr:column>
 

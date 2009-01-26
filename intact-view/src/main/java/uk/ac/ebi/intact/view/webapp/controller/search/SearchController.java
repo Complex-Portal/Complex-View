@@ -221,7 +221,7 @@ public class SearchController extends JpaBaseController {
         doDnaSearch(query);
         doRnaSearch(query);
         //for dgi
-        interactorTotalResults = getSumOfAll(smallMoleculeTotalResults, proteinTotalResults);
+        //interactorTotalResults = getSumOfAll(smallMoleculeTotalResults, proteinTotalResults);
         //for intact
         nucleicacidTotalResults = getSumOfAll( dnaTotalResults,rnaTotalResults );
         interactorTotalResults = getSumOfAll(smallMoleculeTotalResults, proteinTotalResults,dnaTotalResults,rnaTotalResults);

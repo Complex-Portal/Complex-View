@@ -86,6 +86,27 @@
 
     <navigation-rule>
         <navigation-case>
+            <from-outcome>list.nucleicacids</from-outcome>
+            <to-view-id>/pages/list/nucleicacid_list.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>list.dna</from-outcome>
+            <to-view-id>/pages/list/dna_list.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>list.rna</from-outcome>
+            <to-view-id>/pages/list/rna_list.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
             <from-outcome>molecule</from-outcome>
             <to-view-id>/pages/molecule/molecule.xhtml</to-view-id>
         </navigation-case>

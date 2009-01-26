@@ -150,7 +150,7 @@
 
                     </trh:cellFormat>
                     <trh:cellFormat>
-                        <tr:commandLink text="All" action="list.proteins"/>
+                        <tr:commandLink text="All" action="list.nucleicacids"/>
                     </trh:cellFormat>
                   </trh:rowLayout>
 
@@ -159,8 +159,7 @@
                             <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
-                            <tr:goLink text="By DNA" targetFrame="_blank"
-                                       destination="http://www.google.com"/>
+                           <tr:commandLink text="By DNA" action="list.dna"/>
                         </trh:cellFormat>
                     </trh:rowLayout>
 
@@ -170,8 +169,7 @@
                             <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
-                            <tr:goLink text="By RNA" targetFrame="_blank"
-                                       destination="http://www.google.com"/>
+                                <tr:commandLink text="By RNA" action="list.rna"/>
                         </trh:cellFormat>
                     </trh:rowLayout>
 

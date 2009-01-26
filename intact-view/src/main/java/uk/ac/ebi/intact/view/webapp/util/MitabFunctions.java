@@ -96,15 +96,20 @@ public final class MitabFunctions {
         return false;
     }
 
-    public static String getInitialForMoleculeType(ExtendedInteractor interactor) {
+   
 
-        if (isProtein(interactor)) {
-            return proteinInitial;
+    public static String[] getInitialForMoleculeType( ExtendedInteractor interactor ) {
+
+        String[] typeAndDesc = new String[2];
+        if ( interactor.getInteractorType() != null ) {
+            typeAndDesc[0] = getFirstLetterofEachToken( interactor.getInteractorType().getText() );
+            typeAndDesc[1] = typeAndDesc[0] + " = " + interactor.getInteractorType().getText();
+        } else {
+            typeAndDesc[0] = "-";
+            typeAndDesc[1] = "-";
         }
-        if (isSmallMolecule(interactor)) {
-            return smallMoleculeInitial;
-        }
-        return "-";
+
+        return typeAndDesc;
     }
 
     public static boolean isEnzyme( Collection<CrossReference> crossReferences ) {
@@ -148,38 +153,54 @@ public final class MitabFunctions {
         return false;
     }
 
-   
-    public static String getInitialForCrossReference(Collection<CrossReference> crossReferences) {
 
-        String role = "-";
-        if (crossReferences.size() == 1) {
+
+    public static String[] getInitialForCrossReference( Collection<CrossReference> crossReferences ) {
+
+        String[] roleAndDesc = new String[2];
+        String role;
+        if ( crossReferences.size() == 1 ) {
             role = crossReferences.iterator().next().getText();
-            if (role != null && !("unspecified role".equals(role))) {
-                return role.substring(0, 2).toUpperCase();
+            if ( role != null && !( "unspecified role".equals( role ) ) ) {
+                roleAndDesc[0] = getFirstLetterofEachToken( role ).toUpperCase();
+                roleAndDesc[1] = roleAndDesc[0] + " = " + role;
             } else {
-                return "-";
+                roleAndDesc[0] = "-";
+                roleAndDesc[1] = "-";
             }
         } else {
-            Set<String> roles = new HashSet<String>();
+            Set<String> rolesSymbol = new HashSet<String>();
+            Set<String> rolesDesc = new HashSet<String>();
+           
             for ( CrossReference crossReference : crossReferences ) {
                 if ( crossReference.getText() != null && !"unspecified role".equals( crossReference.getText() ) ) {
-                    roles.add( getFirstLetterofEachToken( crossReference.getText() ) );
+                    String symbol = getFirstLetterofEachToken( crossReference.getText());
+                    rolesSymbol.add( symbol );
+                    rolesDesc.add( symbol + " = "+ crossReference.getText() );
                 }
             }
 
-            if(roles.size()==1){
-                role = roles.iterator().next();
+            if ( rolesSymbol.size() == 1 ) {
+                String symbol = rolesSymbol.iterator().next();
+                String desc = rolesDesc.iterator().next();
+                if ( symbol != null && symbol.length() > 0 ) {
+                    roleAndDesc[0] = symbol;
+                    roleAndDesc[1] = symbol + " = "+desc;
+                } else {
+                    roleAndDesc[0] = "-";
+                    roleAndDesc[1] = "-";
+                }
             }
-            if(roles.size()>1){
-                role = StringUtils.join( roles.toArray(),"," );
+            else if ( rolesSymbol.size() > 1 ) {
+                roleAndDesc[0] = StringUtils.join( rolesSymbol.toArray(), "," );
+                roleAndDesc[1] = StringUtils.join( rolesDesc.toArray(), "," );
             }
 
         }
-        return role;
+        return roleAndDesc;
     }
 
 
-  
     public static String getFirstLetterofEachToken(String stringToken) {
         String s = "";
         if (stringToken.split("\\s+").length == 1) {
