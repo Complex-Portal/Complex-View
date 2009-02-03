@@ -15,6 +15,10 @@
           <base-name>uk.ac.ebi.intact.IntactView</base-name>
           <var>intactView</var>
       </resource-bundle>
+      <resource-bundle>
+          <base-name>uk.ac.ebi.intact.Messages</base-name>
+          <var>messages</var>
+      </resource-bundle>
   </application>
 
     <lifecycle>

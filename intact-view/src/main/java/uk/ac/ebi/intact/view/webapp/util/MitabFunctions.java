@@ -26,6 +26,7 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import psidev.psi.mi.tab.model.CrossReference;
+import psidev.psi.mi.tab.model.Alias;
 import uk.ac.ebi.intact.model.CvAliasType;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.model.Interactor;
@@ -316,39 +317,59 @@ public final class MitabFunctions {
 
     /**
      * Gets the name for a protein, getting the first available after evaluating in this order:
-     * gene name > commercial name > synonim > locus > orf > AC.
+     * First check if it has aliases then return the first one
+     * If name is still null, get alternativeidentifiers and look for commercial names
+     * If name is still null, get the Interactor from the database and check for aliases based on priority and return one
+     * gene name > commercial name > synonym > locus > orf > shortlabel.
+     * If name is still null, return IntAct Ac
      * @param interactor
      * @return
      */
-    public static String getProteinDisplayName(ExtendedInteractor interactor) {
-       String name = null;
+    public static String getInteractorDisplayName( ExtendedInteractor interactor ) {
+        String name = null;
 
-        if (!interactor.getAliases().isEmpty()) {
+        if ( !interactor.getAliases().isEmpty() ) {
             name = interactor.getAliases().iterator().next().getName();
-        } else {
-            for (CrossReference xref : interactor.getAlternativeIdentifiers()) {
 
-                if ("commercial name".equals(xref.getText())) {
+        } else {
+            /*for ( CrossReference xref : interactor.getAlternativeIdentifiers() ) {
+                System.out.println( " Xrefs " +xref);
+
+                if ( "commercial name".equals( xref.getText() ) ) {
                     name = xref.getIdentifier();
                 }
+            }*/
+
+            if (name==null &&  !interactor.getAlternativeIdentifiers().isEmpty() ) {
+            name = interactor.getAlternativeIdentifiers().iterator().next().getText();
+
             }
 
-            if (name == null) {
-                String intactAc = getIntactIdentifierFromCrossReferences(interactor.getIdentifiers());
+            String intactAc = null;
+            if(name == null){
 
-                if (intactAc != null) {
-                    Interactor intactInteractor = Functions.getInteractorByAc(intactAc);
-                    InteractorAlias alias = getAliasByPriority(intactInteractor, CvAliasType.GENE_NAME_MI_REF,
-                                                                        "MI:2003", // commercial name
-                                                                        CvAliasType.GO_SYNONYM_MI_REF,
-                                                                        CvAliasType.LOCUS_NAME_MI_REF,
-                                                                        CvAliasType.ORF_NAME_MI_REF);
-                    if (alias != null) {
-                        name = alias.getName();
-                    } else {
-                        name = intactInteractor.getAc();
-                    }
-                }
+                intactAc = getIntactIdentifierFromCrossReferences( interactor.getIdentifiers() );
+                /*if(intactAc!=null){
+                Interactor intactInteractor = Functions.getInteractorByAc( intactAc );
+
+                InteractorAlias alias = getAliasByPriority( intactInteractor,CvAliasType.GENE_NAME_MI_REF,
+                                                             "MI:2003", //commercial name
+                                                             CvAliasType.GENE_NAME_SYNONYM_MI_REF,
+                                                             CvAliasType.GO_SYNONYM_MI_REF,
+                                                             CvAliasType.LOCUS_NAME_MI_REF,
+                                                             CvAliasType.ORF_NAME_MI_REF
+                                                              );
+
+                           if ( alias != null ) {
+                               name = alias.getName();
+                           }
+                }*/
+
+            }
+
+            if(name == null && intactAc!=null){
+                name = intactAc;
+              
             }
         }
 
@@ -377,16 +398,35 @@ public final class MitabFunctions {
         return "-";
     }
 
-    private static InteractorAlias getAliasByPriority(Interactor intactInteractor, String ... aliasTypes) {
+
+    /*private static Alias getAliasByPriority(ExtendedInteractor interactor, String ... aliasTypes) {
         for (String aliasType : aliasTypes) {
-            for (InteractorAlias alias : intactInteractor.getAliases()) {
-                if (alias.getCvAliasType() != null && aliasType.equals(alias.getCvAliasType().getIdentifier())) {
+             for (Alias alias : interactor.getAliases()) {
+                if (alias.getAliasType() != null && aliasType.equals(alias.getAliasType().trim())) {
                     return alias;
                 }
             }
         }
-
         return null;
+    }*/
+
+   private static InteractorAlias getAliasByPriority(Interactor intactInteractor, String ... aliasTypes) {
+
+       InteractorAlias shortLabelAlias = null;
+        for (String aliasType : aliasTypes) {
+            for (InteractorAlias alias : intactInteractor.getAliases()) {
+                System.out.println( " alias  " + alias);
+                if (alias.getCvAliasType() != null && aliasType.equals(alias.getCvAliasType().getIdentifier())) {
+                    return alias;
+                }
+                if("shortlabel".equals(alias.getName())){
+                  shortLabelAlias = alias;
+                }
+            }
+        }
+
+       //return shortlabel
+        return shortLabelAlias;
     }
 
 

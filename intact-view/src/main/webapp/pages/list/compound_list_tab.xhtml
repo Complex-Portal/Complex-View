@@ -53,8 +53,9 @@
     <tr:outputText value="#{status.index + 1}"/>
 </tr:column>
 
-<tr:column headerText="Names" sortable="true" sortProperty="aliasA_s">
-    <tr:iterator var="xref" value="#{compound.alternativeIdentifiers}" varStatus="rowStatus" rows="0">
+<tr:column headerText="#{messages['list.names']}" sortable="true" sortProperty="aliasA_s">
+    <h:outputText value="#{iamf:getInteractorDisplayName(compound)}"/>
+    <!--<tr:iterator var="xref" value="#{compound.alternativeIdentifiers}" varStatus="rowStatus" rows="0">
         <tr:switcher facetName="#{xref.text}">
             <f:facet name="commercial name">
                 <h:panelGroup>
@@ -63,11 +64,11 @@
                 </h:panelGroup>
             </f:facet>
         </tr:switcher>
-    </tr:iterator>
+    </tr:iterator>-->
 </tr:column>
 
 <!---->
-<tr:column headerText="Structure" inlineStyle="background-color:white; vertical-align:middle; text-align: center;">
+<tr:column headerText="#{messages['list.structure']}" inlineStyle="background-color:white; vertical-align:middle; text-align: center;">
     <tr:iterator var="xref" value="#{compound.identifiers}" varStatus="rowStatus" rows="0">
         <tr:switcher facetName="#{xref.database}">
             <f:facet name="drugbank">
@@ -80,7 +81,7 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="Links">
+<tr:column headerText="#{messages['list.links']}">
 
     <tr:iterator var="xref" value="#{compound.identifiers}" varStatus="rowStatus" rows="0">
         <tr:switcher facetName="#{xref.database}">
@@ -108,15 +109,15 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="DGI Accession number" sortable="true" sortProperty="idA_s">
+<tr:column headerText="#{messages['list.accessionnumber']}" sortable="true" sortProperty="idA_s">
     <h:outputText value="#{iamf:getIntactIdentifierFromCrossReferences(compound.identifiers)}"/>
 </tr:column>
 
-<tr:column headerText="Drug Type" sortable="true" sortProperty="idA_s">
+<tr:column headerText="#{messages['list.drugtype']}" sortable="true" sortProperty="idA_s">
     <h:outputText value="#{iamf:getDrugStatus(compound)}"/>
 </tr:column>
 
-<tr:column headerText="Brand Name">
+<tr:column headerText="#{messages['list.brandname']}">
    
      <iam:collapsibleIterator id="csd_altIdA_#{status.index}"
                              disclosed="#{searchBean.showBrandNames}"
@@ -132,7 +133,7 @@
     </iam:collapsibleIterator>
 </tr:column>
 
-<tr:column headerText="Description">
+<tr:column headerText="#{messages['list.description']}">
     <ui:param name="intactIdentifier"
               value="#{iamf:getIntactIdentifierFromCrossReferences(compound.identifiers)}"/>
     <ui:param name="interactor" value="#{iaf:getInteractorByAc(intactIdentifier)}"/>
