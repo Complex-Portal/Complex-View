@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import psidev.psi.mi.validator.extension.Mi25Validator;
 import psidev.psi.mi.validator.ValidatorReport;
+import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
 import psidev.psi.tools.validator.ValidatorMessage;
 import psidev.psi.tools.validator.MessageLevel;
 import psidev.psi.tools.validator.preferences.UserPreferences;
@@ -153,7 +154,10 @@ public class PsiReportBuilder {
         try {
             // we transform the xml to html using an utility class that returns
             // the output stream with the html content
-            transformedOutput = TransformationUtil.transformToHtml(is).toString();
+            final ByteArrayOutputStream os = new ByteArrayOutputStream( 4096 );
+            XslTransformerUtils.viewPsiMi25( is, os );
+            transformedOutput = os.toString();
+//            transformedOutput = TransformationUtil.transformToHtml(is).toString();
         }
         catch (Exception e) {
             log.error( "Failed to produce the HTML view", e );
