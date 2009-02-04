@@ -38,6 +38,8 @@ import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper;
 
 import java.util.*;
+import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Functions to be used in the UI to control the display.
@@ -446,5 +448,10 @@ public final class MitabFunctions {
         }
          return false;
      }
+
+    public static String encodeURL(String stringToBeEncoded) throws UnsupportedEncodingException {
+        String encodedString = URLEncoder.encode(stringToBeEncoded,"UTF-8");
+        return encodedString;
+    }
 
 }

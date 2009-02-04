@@ -104,6 +104,14 @@
     </function>
 
 
+     <function>
+        <function-name>encodeURL</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>java.lang.String
+            encodeURL(java.lang.String)
+        </function-signature>
+    </function>
+
 
 
 </facelet-taglib>
