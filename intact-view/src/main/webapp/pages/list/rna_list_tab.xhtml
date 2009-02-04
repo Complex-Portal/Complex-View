@@ -26,7 +26,7 @@
 <tr:table id="rnaListResults" value="#{searchBean.rnaResults}" var="binaryInteraction" varStatus="status"
           summary="Binary Interactions" emptyText="No interactions found matching the query."
           rows="#{searchBean.pageSize}" rowBandingInterval="1"
-          rowSelection="multiple">
+          rowSelection="none">
 
 <tr:column>
     <tr:outputText value="#{status.index + 1}"/>

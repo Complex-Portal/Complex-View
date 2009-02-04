@@ -330,23 +330,19 @@ public final class MitabFunctions {
 
         if ( !interactor.getAliases().isEmpty() ) {
             name = interactor.getAliases().iterator().next().getName();
-
         } else {
-            /*for ( CrossReference xref : interactor.getAlternativeIdentifiers() ) {
-                System.out.println( " Xrefs " +xref);
-
-                if ( "commercial name".equals( xref.getText() ) ) {
+            for ( CrossReference xref : interactor.getAlternativeIdentifiers() ) {
+                   if ( "commercial name".equals( xref.getText() ) ) {
                     name = xref.getIdentifier();
                 }
-            }*/
+            }
 
             if (name==null &&  !interactor.getAlternativeIdentifiers().isEmpty() ) {
             name = interactor.getAlternativeIdentifiers().iterator().next().getText();
-
             }
-
+        }
             String intactAc = null;
-            if(name == null){
+            if(name == null || name.length()==0){
 
                 intactAc = getIntactIdentifierFromCrossReferences( interactor.getIdentifiers() );
                 /*if(intactAc!=null){
@@ -365,14 +361,12 @@ public final class MitabFunctions {
                            }
                 }*/
 
-            }
+                if ( intactAc != null ) {
+                    name = intactAc;
+                    return name;
+                }
 
-            if(name == null && intactAc!=null){
-                name = intactAc;
-              
             }
-        }
-
         return name;
     }
 

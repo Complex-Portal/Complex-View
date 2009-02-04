@@ -55,14 +55,14 @@ public class ConfigureColumnBean {
     private List<SelectItem> columnsSelectItems;
 
 
-    private static final String COMPOUND_NAME = "Compound Name";
-    private static final String COMPOUND_LINKS = "Compound Links";
-    private static final String TARGET_NAME = "Target Name";
-    private static final String TARGET_LINKS = "Target Links";
-    private static final String COMPOUND_ALIASES = "Compound Aliases";
-    private static final String TARGET_ALIASES = "Target Aliases";
-    private static final String COMPOUND_SPECIES = "Compound Species";
-    private static final String TARGET_SPECIES = "Target Species";
+    /*private static final String MOLECULE_A_NAME = "Compound Name";
+    private static final String MOLECULE_A_LINKS = "Compound Links";
+    private static final String MOLECULE_B_NAME = "Target Name";
+    private static final String MOLECULE_B_LINKS = "Target Links";
+    private static final String MOLECULE_A_ALIASES = "Compound Aliases";
+    private static final String MOLECULE_B_ALIASES = "Target Aliases";
+    private static final String MOLECULE_A_SPECIES = "Compound Species";
+    private static final String MOLECULE_B_SPECIES = "Target Species";
     private static final String FIRST_AUTHOR = "First Author";
     private static final String PUBMED_IDENTIFIER = "PubMed Identifier";
     private static final String INTERACTION_TYPE = "Interaction Type";
@@ -70,26 +70,54 @@ public class ConfigureColumnBean {
     private static final String SOURCE_DATABASE = "Source Database";
     private static final String INTERACTION_AC = "Interaction AC";
     private static final String CONFIDENCE_VALUE = "Confidence Value";
-    private static final String COMPOUND_EXPERIMENTAL_ROLE = "Compound Experimental Role";
-    private static final String TARGET_EXPERIMENTAL_ROLE = "Target Experimental Role";
-    private static final String COMPOUND_BIOLOGICAL_ROLE = "Compound Biological Role";
-    private static final String TARGET_BIOLOGICAL_ROLE = "Target Biological Role";
-    private static final String COMPOUND_PROPERTIES = "Compound Properties";
-    private static final String TARGET_PROPERTIES = "Target Properties";
-    private static final String COMPOUND_INTERACTOR_TYPE = "Compound Interactor Type";
-    private static final String TARGET_INTERACTOR_TYPE = "Target Interactor Type";
+    private static final String MOLECULE_A_EXPERIMENTAL_ROLE = "Compound Experimental Role";
+    private static final String MOLECULE_B_EXPERIMENTAL_ROLE = "Target Experimental Role";
+    private static final String MOLECULE_A_BIOLOGICAL_ROLE = "Compound Biological Role";
+    private static final String MOLECULE_B_BIOLOGICAL_ROLE = "Target Biological Role";
+    private static final String MOLECULE_A_PROPERTIES = "Compound Properties";
+    private static final String MOLECULE_B_PROPERTIES = "Target Properties";
+    private static final String MOLECULE_A_INTERACTOR_TYPE = "Compound Interactor Type";
+    private static final String MOLECULE_B_INTERACTOR_TYPE = "Target Interactor Type";
     private static final String HOST_ORGANISM = "Host Organism";
     private static final String EXPANSION_METHOD = "Expansion Method";
     private static final String DATASET = "Dataset";
+*/
 
-    private boolean isCompoundNameSelected = true;
-    private boolean isCompoundLinksSelected = true;
-    private boolean isTargetNameSelected = true;
-    private boolean isTargetLinksSelected = true;
-    private boolean isCompoundAliasesSelected = true;
-    private boolean isTargetAliasesSelected = true;
-    private boolean isCompoundSpeciesSelected = true;
-    private boolean isTargetSpeciesSelected = true;
+    private static String MOLECULE_A_NAME = "moleculeA.name";
+    private static String MOLECULE_A_LINKS = "moleculeA.links";
+    private static String MOLECULE_B_NAME = "moleculeB.name";
+    private static String MOLECULE_B_LINKS = "moleculeB.links";
+    private static String MOLECULE_A_ALIASES = "moleculeA.aliases";
+    private static String MOLECULE_B_ALIASES = "moleculeB.aliases";
+    private static String MOLECULE_A_SPECIES = "moleculeA.species";
+    private static String MOLECULE_B_SPECIES = "moleculeB.species";
+    private static String FIRST_AUTHOR = "interaction.firstauthor";
+    private static String PUBMED_IDENTIFIER = "interaction.pubmedid";
+    private static String INTERACTION_TYPE = "interaction.interactiontype";
+    private static String INTERACTION_DETECTION_METHOD = "interaction.detectionmethod";
+    private static String SOURCE_DATABASE = "interaction.sourcedb";
+    private static String INTERACTION_AC = "interaction.ac";
+    private static String CONFIDENCE_VALUE = "interaction.confidencevalue";
+    private static String MOLECULE_A_EXPERIMENTAL_ROLE = "moleculeA.exprole";
+    private static String MOLECULE_B_EXPERIMENTAL_ROLE = "moleculeB.exprole";
+    private static String MOLECULE_A_BIOLOGICAL_ROLE = "moleculeA.biorole";
+    private static String MOLECULE_B_BIOLOGICAL_ROLE = "moleculeB.biorole";
+    private static String MOLECULE_A_PROPERTIES = "moleculeA.properties";
+    private static String MOLECULE_B_PROPERTIES = "moleculeB.properties";
+    private static String MOLECULE_A_INTERACTOR_TYPE = "moleculeA.interactortype";
+    private static String MOLECULE_B_INTERACTOR_TYPE = "moleculeB.interactortype";
+    private static String HOST_ORGANISM = "interaction.hostorganism";
+    private static String EXPANSION_METHOD = "interaction.expansionmethod";
+    private static String DATASET = "interaction.dataset";
+
+    private boolean isMoleculeASelected = true;
+    private boolean isMoleculeALinksSelected = true;
+    private boolean isMoleculeBNameSelected = true;
+    private boolean isMoleculeBLinksSelected = true;
+    private boolean isMoleculeAAliasesSelected = true;
+    private boolean isMoleculeBAliasesSelected = true;
+    private boolean isMoleculeASpeciesSelected = true;
+    private boolean isMoleculeBSpeciesSelected = true;
     private boolean isFirstAuthorSelected;
     private boolean isPubMedIdentifierSelected = true;
     private boolean isInteractionTypeSelected;
@@ -97,17 +125,30 @@ public class ConfigureColumnBean {
     private boolean isSourceDatabaseSelected = true;
     private boolean isInteractionACSelected = true;
     private boolean isConfidenceValueSelected;
-    private boolean isCompoundExperimentalRoleSelected;
-    private boolean isTargetExperimentalRoleSelected;
-    private boolean isCompoundBiologicalRoleSelected;
-    private boolean isTargetBiologicalRoleSelected;
-    private boolean isCompoundPropertiesSelected;
-    private boolean isTargetPropertiesSelected;
-    private boolean isCompoundInteractorTypeSelected;
-    private boolean isTargetInteractorTypeSelected;
+    private boolean isMoleculeAExperimentalRoleSelected;
+    private boolean isMoleculeBExperimentalRoleSelected;
+    private boolean isMoleculeABiologicalRoleSelected;
+    private boolean isMoleculeBBiologicalRoleSelected;
+    private boolean isMoleculeAPropertiesSelected;
+    private boolean isMoleculeBPropertiesSelected;
+    private boolean isMoleculeAInteractorTypeSelected;
+    private boolean isMoleculeBInteractorTypeSelected;
     private boolean isHostOrganismSelected;
     private boolean isExpansionMethodSelected;
     private boolean isDatasetSelected;
+
+    private static ResourceBundle rb = null;
+
+    static {
+
+        rb = ResourceBundle.getBundle( "uk.ac.ebi.intact.Messages" );
+        if ( rb == null ) {
+            throw new NullPointerException( "Please check if the Messages.properties file exist and is declared in faces-config under the resource-bundle element" );
+        }
+      
+    }
+
+
 
 
     public ConfigureColumnBean() {
@@ -115,14 +156,14 @@ public class ConfigureColumnBean {
         //initialize column Map
         this.columnMap = new LinkedHashMap<String, Boolean>();
 
-        columnMap.put( COMPOUND_NAME, isCompoundNameSelected );
-        columnMap.put( COMPOUND_LINKS, isCompoundLinksSelected );
-        columnMap.put( TARGET_NAME, isTargetNameSelected );
-        columnMap.put( TARGET_LINKS, isTargetLinksSelected );
-        columnMap.put( COMPOUND_ALIASES, isCompoundAliasesSelected );
-        columnMap.put( TARGET_ALIASES, isTargetAliasesSelected );
-        columnMap.put( COMPOUND_SPECIES, isCompoundSpeciesSelected );
-        columnMap.put( TARGET_SPECIES, isTargetSpeciesSelected );
+        columnMap.put( MOLECULE_A_NAME, isMoleculeASelected );
+        columnMap.put( MOLECULE_A_LINKS, isMoleculeALinksSelected );
+        columnMap.put( MOLECULE_B_NAME, isMoleculeBNameSelected );
+        columnMap.put( MOLECULE_B_LINKS, isMoleculeBLinksSelected );
+        columnMap.put( MOLECULE_A_ALIASES, isMoleculeAAliasesSelected );
+        columnMap.put( MOLECULE_B_ALIASES, isMoleculeBAliasesSelected );
+        columnMap.put( MOLECULE_A_SPECIES, isMoleculeASpeciesSelected );
+        columnMap.put( MOLECULE_B_SPECIES, isMoleculeBSpeciesSelected );
         columnMap.put( FIRST_AUTHOR, isFirstAuthorSelected );
         columnMap.put( PUBMED_IDENTIFIER, isPubMedIdentifierSelected );
         columnMap.put( INTERACTION_TYPE, isInteractionTypeSelected );
@@ -130,14 +171,14 @@ public class ConfigureColumnBean {
         columnMap.put( SOURCE_DATABASE, isSourceDatabaseSelected );
         columnMap.put( INTERACTION_AC, isInteractionACSelected );
         columnMap.put( CONFIDENCE_VALUE, isConfidenceValueSelected );
-        columnMap.put( COMPOUND_EXPERIMENTAL_ROLE, isCompoundExperimentalRoleSelected );
-        columnMap.put( TARGET_EXPERIMENTAL_ROLE, isTargetExperimentalRoleSelected );
-        columnMap.put( COMPOUND_BIOLOGICAL_ROLE, isCompoundBiologicalRoleSelected );
-        columnMap.put( TARGET_BIOLOGICAL_ROLE, isTargetBiologicalRoleSelected );
-        columnMap.put( COMPOUND_PROPERTIES, isCompoundPropertiesSelected );
-        columnMap.put( TARGET_PROPERTIES, isTargetPropertiesSelected );
-        columnMap.put( COMPOUND_INTERACTOR_TYPE, isCompoundInteractorTypeSelected );
-        columnMap.put( TARGET_INTERACTOR_TYPE, isTargetInteractorTypeSelected );
+        columnMap.put( MOLECULE_A_EXPERIMENTAL_ROLE, isMoleculeAExperimentalRoleSelected );
+        columnMap.put( MOLECULE_B_EXPERIMENTAL_ROLE, isMoleculeBExperimentalRoleSelected );
+        columnMap.put( MOLECULE_A_BIOLOGICAL_ROLE, isMoleculeABiologicalRoleSelected );
+        columnMap.put( MOLECULE_B_BIOLOGICAL_ROLE, isMoleculeBBiologicalRoleSelected );
+        columnMap.put( MOLECULE_A_PROPERTIES, isMoleculeAPropertiesSelected );
+        columnMap.put( MOLECULE_B_PROPERTIES, isMoleculeBPropertiesSelected );
+        columnMap.put( MOLECULE_A_INTERACTOR_TYPE, isMoleculeAInteractorTypeSelected );
+        columnMap.put( MOLECULE_B_INTERACTOR_TYPE, isMoleculeBInteractorTypeSelected );
         columnMap.put( HOST_ORGANISM, isHostOrganismSelected );
         columnMap.put( EXPANSION_METHOD, isExpansionMethodSelected );
         columnMap.put( DATASET, isDatasetSelected );
@@ -171,14 +212,14 @@ public class ConfigureColumnBean {
     private List<String> populateColumns( List<String> columns, boolean isExpanded ) {
 
         if ( isExpanded ) {
-            columns.add( COMPOUND_NAME );
-            columns.add( COMPOUND_LINKS );
-            columns.add( TARGET_NAME );
-            columns.add( TARGET_LINKS );
-            columns.add( COMPOUND_ALIASES );
-            columns.add( TARGET_ALIASES );
-            columns.add( COMPOUND_SPECIES );
-            columns.add( TARGET_SPECIES );
+            columns.add( MOLECULE_A_NAME );
+            columns.add( MOLECULE_A_LINKS );
+            columns.add( MOLECULE_B_NAME );
+            columns.add( MOLECULE_B_LINKS );
+            columns.add( MOLECULE_A_ALIASES );
+            columns.add( MOLECULE_B_ALIASES );
+            columns.add( MOLECULE_A_SPECIES );
+            columns.add( MOLECULE_B_SPECIES );
             columns.add( FIRST_AUTHOR );
             columns.add( PUBMED_IDENTIFIER );
             columns.add( INTERACTION_TYPE );
@@ -186,26 +227,26 @@ public class ConfigureColumnBean {
             columns.add( SOURCE_DATABASE );
             columns.add( INTERACTION_AC );
             columns.add( CONFIDENCE_VALUE );
-            columns.add( COMPOUND_EXPERIMENTAL_ROLE );
-            columns.add( TARGET_EXPERIMENTAL_ROLE );
-            columns.add( COMPOUND_BIOLOGICAL_ROLE );
-            columns.add( TARGET_BIOLOGICAL_ROLE );
-            columns.add( COMPOUND_PROPERTIES );
-            columns.add( TARGET_PROPERTIES );
-            columns.add( COMPOUND_INTERACTOR_TYPE );
-            columns.add( TARGET_INTERACTOR_TYPE );
+            columns.add( MOLECULE_A_EXPERIMENTAL_ROLE );
+            columns.add( MOLECULE_B_EXPERIMENTAL_ROLE );
+            columns.add( MOLECULE_A_BIOLOGICAL_ROLE );
+            columns.add( MOLECULE_B_BIOLOGICAL_ROLE );
+            columns.add( MOLECULE_A_PROPERTIES );
+            columns.add( MOLECULE_B_PROPERTIES );
+            columns.add( MOLECULE_A_INTERACTOR_TYPE );
+            columns.add( MOLECULE_B_INTERACTOR_TYPE );
             columns.add( HOST_ORGANISM );
             columns.add( EXPANSION_METHOD );
             columns.add( DATASET );
         } else {
-            columns.add( COMPOUND_NAME );
-            columns.add( COMPOUND_LINKS );
-            columns.add( TARGET_NAME );
-            columns.add( TARGET_LINKS );
-            columns.add( COMPOUND_ALIASES );
-            columns.add( TARGET_ALIASES );
-            columns.add( COMPOUND_SPECIES );
-            columns.add( TARGET_SPECIES );
+            columns.add( MOLECULE_A_NAME );
+            columns.add( MOLECULE_A_LINKS );
+            columns.add( MOLECULE_B_NAME );
+            columns.add( MOLECULE_B_LINKS );
+            columns.add( MOLECULE_A_ALIASES );
+            columns.add( MOLECULE_B_ALIASES );
+            columns.add( MOLECULE_A_SPECIES );
+            columns.add( MOLECULE_B_SPECIES );
             columns.add( PUBMED_IDENTIFIER );
             columns.add( SOURCE_DATABASE );
             columns.add( INTERACTION_AC );
@@ -217,7 +258,7 @@ public class ConfigureColumnBean {
         List<SelectItem> selectItems = new ArrayList<SelectItem>();
 
         for ( String s : columnMap.keySet() ) {
-            selectItems.add( new SelectItem( s ) );
+            selectItems.add( new SelectItem( s,rb.getString(s ).trim()) );
         }
 
         return selectItems;
@@ -270,7 +311,7 @@ public class ConfigureColumnBean {
         searchBean.setExpandedView( false );
         columns = new ArrayList<String>();
         //atleast one column should be selected otherwise nullpointer exception is thrown by jsf view
-        columns.add( COMPOUND_NAME );
+        columns.add( MOLECULE_A_NAME );
         log.debug( "columns size from selectNone " + columns.size() );
         return null;
     }
@@ -334,60 +375,60 @@ public class ConfigureColumnBean {
         this.columnMap = columnMap;
     }
 
-    public boolean isCompoundNameSelected() {
-        return isCompoundNameSelected;
+    public boolean isMoleculeASelected() {
+        return isMoleculeASelected;
     }
 
-    public void setCompoundNameSelected( boolean compoundNameSelected ) {
-        isCompoundNameSelected = compoundNameSelected;
+    public void setMoleculeASelected( boolean moleculeASelected ) {
+        isMoleculeASelected = moleculeASelected;
     }
 
-    public boolean isCompoundLinksSelected() {
-        return isCompoundLinksSelected;
+    public boolean isMoleculeALinksSelected() {
+        return isMoleculeALinksSelected;
     }
 
-    public void setCompoundLinksSelected( boolean compoundLinksSelected ) {
-        isCompoundLinksSelected = compoundLinksSelected;
+    public void setMoleculeALinksSelected( boolean moleculeALinksSelected ) {
+        isMoleculeALinksSelected = moleculeALinksSelected;
     }
 
-    public boolean isTargetNameSelected() {
-        return isTargetNameSelected;
+    public boolean isMoleculeBNameSelected() {
+        return isMoleculeBNameSelected;
     }
 
-    public void setTargetNameSelected( boolean targetNameSelected ) {
-        isTargetNameSelected = targetNameSelected;
+    public void setMoleculeBNameSelected( boolean moleculeBNameSelected ) {
+        isMoleculeBNameSelected = moleculeBNameSelected;
     }
 
-    public boolean isTargetLinksSelected() {
-        return isTargetLinksSelected;
+    public boolean isMoleculeBLinksSelected() {
+        return isMoleculeBLinksSelected;
     }
 
-    public void setTargetLinksSelected( boolean targetLinksSelected ) {
-        isTargetLinksSelected = targetLinksSelected;
+    public void setMoleculeBLinksSelected( boolean moleculeBLinksSelected ) {
+        isMoleculeBLinksSelected = moleculeBLinksSelected;
     }
 
-    public boolean isCompoundAliasesSelected() {
-        return isCompoundAliasesSelected;
+    public boolean isMoleculeAAliasesSelected() {
+        return isMoleculeAAliasesSelected;
     }
 
-    public void setCompoundAliasesSelected( boolean compoundAliasesSelected ) {
-        isCompoundAliasesSelected = compoundAliasesSelected;
+    public void setMoleculeAAliasesSelected( boolean moleculeAAliasesSelected ) {
+        isMoleculeAAliasesSelected = moleculeAAliasesSelected;
     }
 
-    public boolean isCompoundSpeciesSelected() {
-        return isCompoundSpeciesSelected;
+    public boolean isMoleculeASpeciesSelected() {
+        return isMoleculeASpeciesSelected;
     }
 
-    public void setCompoundSpeciesSelected( boolean compoundSpeciesSelected ) {
-        isCompoundSpeciesSelected = compoundSpeciesSelected;
+    public void setMoleculeASpeciesSelected( boolean moleculeASpeciesSelected ) {
+        isMoleculeASpeciesSelected = moleculeASpeciesSelected;
     }
 
-    public boolean isTargetSpeciesSelected() {
-        return isTargetSpeciesSelected;
+    public boolean isMoleculeBSpeciesSelected() {
+        return isMoleculeBSpeciesSelected;
     }
 
-    public void setTargetSpeciesSelected( boolean targetSpeciesSelected ) {
-        isTargetSpeciesSelected = targetSpeciesSelected;
+    public void setMoleculeBSpeciesSelected( boolean moleculeBSpeciesSelected ) {
+        isMoleculeBSpeciesSelected = moleculeBSpeciesSelected;
     }
 
     public boolean isFirstAuthorSelected() {
@@ -446,68 +487,68 @@ public class ConfigureColumnBean {
         isConfidenceValueSelected = confidenceValueSelected;
     }
 
-    public boolean isCompoundExperimentalRoleSelected() {
-        return isCompoundExperimentalRoleSelected;
+    public boolean isMoleculeAExperimentalRoleSelected() {
+        return isMoleculeAExperimentalRoleSelected;
     }
 
-    public void setCompoundExperimentalRoleSelected( boolean compoundExperimentalRoleSelected ) {
-        isCompoundExperimentalRoleSelected = compoundExperimentalRoleSelected;
+    public void setMoleculeAExperimentalRoleSelected( boolean moleculeAExperimentalRoleSelected ) {
+        isMoleculeAExperimentalRoleSelected = moleculeAExperimentalRoleSelected;
     }
 
-    public boolean isTargetExperimentalRoleSelected() {
-        return isTargetExperimentalRoleSelected;
+    public boolean isMoleculeBExperimentalRoleSelected() {
+        return isMoleculeBExperimentalRoleSelected;
     }
 
-    public void setTargetExperimentalRoleSelected( boolean targetExperimentalRoleSelected ) {
-        isTargetExperimentalRoleSelected = targetExperimentalRoleSelected;
+    public void setMoleculeBExperimentalRoleSelected( boolean moleculeBExperimentalRoleSelected ) {
+        isMoleculeBExperimentalRoleSelected = moleculeBExperimentalRoleSelected;
     }
 
-    public boolean isCompoundBiologicalRoleSelected() {
-        return isCompoundBiologicalRoleSelected;
+    public boolean isMoleculeABiologicalRoleSelected() {
+        return isMoleculeABiologicalRoleSelected;
     }
 
-    public void setCompoundBiologicalRoleSelected( boolean compoundBiologicalRoleSelected ) {
-        isCompoundBiologicalRoleSelected = compoundBiologicalRoleSelected;
+    public void setMoleculeABiologicalRoleSelected( boolean moleculeABiologicalRoleSelected ) {
+        isMoleculeABiologicalRoleSelected = moleculeABiologicalRoleSelected;
     }
 
-    public boolean isTargetBiologicalRoleSelected() {
-        return isTargetBiologicalRoleSelected;
+    public boolean isMoleculeBBiologicalRoleSelected() {
+        return isMoleculeBBiologicalRoleSelected;
     }
 
-    public void setTargetBiologicalRoleSelected( boolean targetBiologicalRoleSelected ) {
-        isTargetBiologicalRoleSelected = targetBiologicalRoleSelected;
+    public void setMoleculeBBiologicalRoleSelected( boolean moleculeBBiologicalRoleSelected ) {
+        isMoleculeBBiologicalRoleSelected = moleculeBBiologicalRoleSelected;
     }
 
-    public boolean isCompoundPropertiesSelected() {
-        return isCompoundPropertiesSelected;
+    public boolean isMoleculeAPropertiesSelected() {
+        return isMoleculeAPropertiesSelected;
     }
 
-    public void setCompoundPropertiesSelected( boolean compoundPropertiesSelected ) {
-        isCompoundPropertiesSelected = compoundPropertiesSelected;
+    public void setMoleculeAPropertiesSelected( boolean moleculeAPropertiesSelected ) {
+        isMoleculeAPropertiesSelected = moleculeAPropertiesSelected;
     }
 
-    public boolean isTargetPropertiesSelected() {
-        return isTargetPropertiesSelected;
+    public boolean isMoleculeBPropertiesSelected() {
+        return isMoleculeBPropertiesSelected;
     }
 
-    public void setTargetPropertiesSelected( boolean targetPropertiesSelected ) {
-        isTargetPropertiesSelected = targetPropertiesSelected;
+    public void setMoleculeBPropertiesSelected( boolean moleculeBPropertiesSelected ) {
+        isMoleculeBPropertiesSelected = moleculeBPropertiesSelected;
     }
 
-    public boolean isCompoundInteractorTypeSelected() {
-        return isCompoundInteractorTypeSelected;
+    public boolean isMoleculeAInteractorTypeSelected() {
+        return isMoleculeAInteractorTypeSelected;
     }
 
-    public void setCompoundInteractorTypeSelected( boolean compoundInteractorTypeSelected ) {
-        isCompoundInteractorTypeSelected = compoundInteractorTypeSelected;
+    public void setMoleculeAInteractorTypeSelected( boolean moleculeAInteractorTypeSelected ) {
+        isMoleculeAInteractorTypeSelected = moleculeAInteractorTypeSelected;
     }
 
-    public boolean isTargetInteractorTypeSelected() {
-        return isTargetInteractorTypeSelected;
+    public boolean isMoleculeBInteractorTypeSelected() {
+        return isMoleculeBInteractorTypeSelected;
     }
 
-    public void setTargetInteractorTypeSelected( boolean targetInteractorTypeSelected ) {
-        isTargetInteractorTypeSelected = targetInteractorTypeSelected;
+    public void setMoleculeBInteractorTypeSelected( boolean moleculeBInteractorTypeSelected ) {
+        isMoleculeBInteractorTypeSelected = moleculeBInteractorTypeSelected;
     }
 
     public boolean isHostOrganismSelected() {
@@ -535,12 +576,12 @@ public class ConfigureColumnBean {
     }
 
 
-    public boolean isTargetAliasesSelected() {
-        return isTargetAliasesSelected;
+    public boolean isMoleculeBAliasesSelected() {
+        return isMoleculeBAliasesSelected;
     }
 
-    public void setTargetAliasesSelected( boolean targetAliasesSelected ) {
-        isTargetAliasesSelected = targetAliasesSelected;
+    public void setMoleculeBAliasesSelected( boolean moleculeBAliasesSelected ) {
+        isMoleculeBAliasesSelected = moleculeBAliasesSelected;
     }
 
     public List<String> getColumns() {
