@@ -268,12 +268,12 @@
 
 
         <!-- XML Semantic Validation Report (if any messages) -->
-        <!-- TODO show tips and rule details -->
 
         <a name="semantics_report"/>
         <tr:panelHeader text="PSI MI 2.5 Semantic Validation Report" rendered="#{psiValidatorBean.currentPsiReport.semanticReportAvailable}">
 
-            <tr:outputText value="#{psiValidatorBean.currentPsiReport.interactionCount} interaction#{psiValidatorBean.currentPsiReport.messageCount >1 ? 's' : ''} validated." />
+            <!-- TODO Display the count of interaction validated -->
+            <!--<tr:outputText value="#{psiValidatorBean.currentPsiReport.interactionCount} interaction#{psiValidatorBean.currentPsiReport.messageCount >1 ? 's' : ''} validated." />-->
 
             <tr:table width="90%" var="msg" value="#{psiValidatorBean.currentPsiReport.validatorMessages}">
 
