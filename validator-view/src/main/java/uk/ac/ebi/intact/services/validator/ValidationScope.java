@@ -66,6 +66,6 @@ public enum ValidationScope {
     }
 
     public boolean involveSemanticValidation() {
-        return isSame( MIMIX ) || isBroader( MIMIX );
+        return isBroader( SYNTAX );
     }
 }

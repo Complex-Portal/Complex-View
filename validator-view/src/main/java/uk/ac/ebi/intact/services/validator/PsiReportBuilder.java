@@ -6,21 +6,18 @@ package uk.ac.ebi.intact.services.validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.trinidad.model.UploadedFile;
+import psidev.psi.mi.validator.ValidatorReport;
+import psidev.psi.mi.validator.extension.Mi25Validator;
+import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
+import psidev.psi.tools.validator.MessageLevel;
+import psidev.psi.tools.validator.ValidatorMessage;
+import psidev.psi.tools.validator.preferences.UserPreferences;
 
-import javax.xml.transform.*;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-
-import psidev.psi.mi.validator.extension.Mi25Validator;
-import psidev.psi.mi.validator.ValidatorReport;
-import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
-import psidev.psi.tools.validator.ValidatorMessage;
-import psidev.psi.tools.validator.MessageLevel;
-import psidev.psi.tools.validator.preferences.UserPreferences;
 
 /**
  * This class is the responsible of reading and validating the PSI File and creating a validation report
@@ -115,7 +112,7 @@ public class PsiReportBuilder {
             log.error("Unexpected error thrown", t);
 
         }
-        System.out.println("Completed file validation ... about to build the report now ...");
+        log.debug("Completed file validation ... about to build the report now ...");
 
         if (report.isXmlSyntaxValid()) {
             // creating the view
@@ -182,33 +179,39 @@ public class PsiReportBuilder {
             InputStream cvMappingCfg = null;
             InputStream ruleCfg = null;
 
+            if ( log.isInfoEnabled() ) {
+                log.info( "Selected validation scope: " + validationScope );
+            }
+
             if( validationScope == null ) {
                 // set default value
                 log.warn( "The application didn't get a valid validation scope (null), setting default to MIMIx." );
                 validationScope = ValidationScope.MIMIX;
             }
 
-            if( validationScope.equals( ValidationScope.SYNTAX ) ){
+            switch( validationScope ) {
+                case SYNTAX:
+                    break;
 
-                // nothing
+                case CV_ONLY:
+                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
+                    break;
 
-            } else if( validationScope.equals( ValidationScope.CV_ONLY ) ){
+                case MIMIX:
+                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
+                    ruleCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/mimix-object-rules.xml");
+                    break;
 
-                cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
+                case IMEX:
+                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
+                    ruleCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/imex-object-rules.xml");
+                    break;
 
-            } else if( validationScope.equals( ValidationScope.MIMIX ) ){
-
-                cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
-                ruleCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/mimix-object-rules.xml");
-
-            } else if( validationScope.equals( ValidationScope.IMEX ) ){
-
-                cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
-                ruleCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/imex-object-rules.xml");
-
-            } else {
-                throw new IllegalStateException( "Unsupported validation scope: '"+ validationScope +"', the application is not correctly configured." );
+                default:
+                    throw new IllegalStateException( "Unsupported validation scope: '"+ validationScope +"', the application is not correctly configured." );
             }
+
+            log.info( "Is the Cv mapping file null: " + ( cvMappingCfg == null ) );
 
             // set work directory
             UserPreferences preferences = new UserPreferences();
@@ -220,8 +223,12 @@ public class PsiReportBuilder {
             Mi25Validator validator = new Mi25Validator(ontologyCfg, cvMappingCfg, ruleCfg);
             validator.setUserPreferences(preferences);
 
-            System.out.println("Validation starting");
+            log.debug("Validation starting");
             final ValidatorReport validatorReport = validator.validate( file );
+            log.info( "Validator reported " + validatorReport.getSyntaxMessages().size() + " syntax messages" );
+            log.info( "Validator reported " + validatorReport.getSemanticMessages().size() + " semantic messages" );
+
+            report.setInteractionCount( validatorReport.getInteractionCount() );
 
             // finally, we set the messages obtained (if any) to the report
             if (validatorReport.hasSyntaxMessages()) {
@@ -235,12 +242,45 @@ public class PsiReportBuilder {
             if( ! validationScope.involveSemanticValidation() ) {
                 // there is no semantic involved so set message accoringly
                 report.setSemanticsStatus(PsiReport.NOT_RUN);
-            }
+                report.setSemanticsReport("Semantic validation was not requested");
 
-            if (validatorReport.hasSemanticMessages()) {
-                report.setSemanticsReport("XML semantic validation failed.");
-                report.setSemanticsStatus(PsiReport.INVALID);
+            } else if ( validatorReport.hasSemanticMessages()) {
+
                 report.setValidatorMessages(new ArrayList<ValidatorMessage>(validatorReport.getSemanticMessages()));
+
+                // we need to determine the status of the semantics validation.
+                // If there are no validatorMessages, the status is "valid" (already set).
+                // If there are messages, but all of them are warnings, the status will be "warnings".
+                // If there are error or fatal messages, the status, the status will be failed
+                String status = null;
+
+                if( report.getValidatorMessages() != null ) {
+                    for (ValidatorMessage message : report.getValidatorMessages()) {
+                        // if we find a warning, set the status to warning and continue looping
+                        if (message.getLevel() == MessageLevel.WARN) {
+                            status = PsiReport.WARNINGS;
+                            report.setSemanticsReport("Validated with warnings");
+                        }
+
+                        // if a message with a level higher than warning is found, set the status to
+                        // error and stop the loop
+                        if (message.getLevel().isHigher(MessageLevel.WARN)) {
+                            status = PsiReport.INVALID;
+                            report.setSemanticsReport("Validation failed");
+                            break;
+                        }
+                    }
+
+                    report.setSemanticsStatus( status );
+                }
+
+                // set the status to the report
+                report.setSemanticsStatus(status);
+
+            } else {
+
+                report.setSemanticsStatus(PsiReport.VALID);
+                report.setSemanticsReport("Document is valid");
             }
 
         } catch (Exception e) {
@@ -259,34 +299,5 @@ public class PsiReportBuilder {
             report.setSemanticsReport(output);
             return;
         }
-
-        // if the output does not contain anything, no exception has been thrown, validation ok
-        String status = PsiReport.VALID;
-        report.setSemanticsReport("Document is valid");
-
-        // we need to determine the status of the semantics validation.
-        // If there are no validatorMessages, the status is "valid" (already set).
-        // If there are messages, but all of them are warnings, the status will be "warnings".
-        // If there are error or fatal messages, the status, the status will be failed
-        if( report.getValidatorMessages() != null ) {
-            for (ValidatorMessage message : report.getValidatorMessages()) {
-                // if we find a warning, set the status to warning and continue looping
-                if (message.getLevel() == MessageLevel.WARN) {
-                    status = PsiReport.WARNINGS;
-                    report.setSemanticsReport("Validated with warnings");
-                }
-
-                // if a message with a level higher than warning is found, set the status to
-                // error and stop the loop
-                if (message.getLevel().isHigher(MessageLevel.WARN)) {
-                    status = PsiReport.INVALID;
-                    report.setSemanticsReport("Validation failed");
-                    break;
-                }
-            }
-        }
-
-        // set the status to the report
-        report.setSemanticsStatus(status);
     }
 }

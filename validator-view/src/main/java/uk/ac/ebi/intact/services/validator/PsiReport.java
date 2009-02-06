@@ -122,6 +122,10 @@ public class PsiReport {
         return semanticsStatus;
     }
 
+    public boolean isSemanticReportAvailable() {
+        return ! NOT_RUN.equals(semanticsStatus);
+    }
+
     public void setSemanticsStatus(String semanticsStatus) {
         this.semanticsStatus = semanticsStatus;
     }
@@ -152,5 +156,15 @@ public class PsiReport {
 
     public void setValidatorMessages(List<ValidatorMessage> validatorMessages) {
         this.validatorMessages = validatorMessages;
+    }
+
+    private int interactionCount;
+
+    public void setInteractionCount( int interactionCount ) {
+        this.interactionCount = interactionCount;
+    }
+
+    public int getInteractionCount() {
+        return interactionCount;
     }
 }

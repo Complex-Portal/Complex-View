@@ -26,6 +26,23 @@
                             </trh:cellFormat>
                             <trh:cellFormat halign="center">
                                 <h1><tr:outputText value="The PSI-MI 2.5 Validator" styleClass="text-align:center"/></h1>
+                                <trh:tableLayout width="70%" borderWidth="0">
+                                <trh:rowLayout>
+                                         <trh:cellFormat halign="center" valign="middle">
+                                             <tr:image source="images/beta_icon.jpg" styleClass="border:0"/>
+                                         </trh:cellFormat>
+                                         <trh:cellFormat halign="left" valign="middle">
+                                             <tr:outputText value="This is a beta version of the PSI-MI Semantic Validator v2.0" />
+                                             <br/>
+                                             <tr:outputText value="You can access the previous version of the validator " />
+                                             <tr:goLink destination="http://www.ebi.ac.uk/intact/validator-v1" styleClass="text-align:left">
+                                                 <tr:outputText value="here" />
+                                             </tr:goLink>
+                                             <tr:outputText value="." />
+                                             <br/>
+                                         </trh:cellFormat>
+                                     </trh:rowLayout>
+                                </trh:tableLayout>
                             </trh:cellFormat>
                             <trh:cellFormat halign="right">
                                 <tr:goLink destination="http://hupo.org/" styleClass="text-align:right">
@@ -92,10 +109,10 @@
                                            label="Validation scope:"
                                            valueChangeListener="#{psiValidatorBean.validationScopeChanged}"
                                            onclick="submit()">
-                            <tr:selectItem label="Syntax only" value="syntax"/>
-                            <tr:selectItem label="CV only" value="cv-mapping"/>
-                            <tr:selectItem label="MIMIx" value="mimix"/>
-                            <tr:selectItem label="IMEx" value="imex"/>
+                            <tr:selectItem label="XML Syntax Only" value="syntax"/>
+                            <tr:selectItem label="Controlled Vocabulary Usage" value="cv-mapping"/>
+                            <tr:selectItem label="MIMIx" shortDesc="Minimum Information about a Molecular Interaction guidelines" value="mimix"/>
+                            <tr:selectItem label="IMEx" shortDesc="International Molecular Exchange guidelines" value="imex"/>
                         </tr:selectOneRadio>
                     </tr:panelHorizontalLayout>
 
@@ -117,8 +134,8 @@
 
                 <tr:panelHorizontalLayout>
 
-                    <tr:commandButton text="Validate" actionListener="#{psiValidatorBean.validate}"
-                                      onclick="document.getElementById('progress_image').style.display = 'block'"/>
+                    <tr:commandButton id="submit_button" text="Validate" actionListener="#{psiValidatorBean.validate}"
+                                      onclick="document.getElementById('progress_image').style.display = 'block'; document.getElementById('submit_button').disabled=true"/>
 
                     <tr:spacer width="20"/>
 
@@ -186,7 +203,12 @@
                                 </trh:cellFormat>
                             </trh:rowLayout>
 
-                            <trh:rowLayout>
+                            <!-- TODO It would be desirable to have a row here giving a report on CV usage
+                                 One could run 2 validators, 1 for CV usage, the other for extra semantic checks
+                                 and aggregate the errors into the same report.
+                            -->
+
+                            <trh:rowLayout rendered="#{psiValidatorBean.currentPsiReport.semanticReportAvailable}">
                                 <trh:cellFormat>
                                     <tr:image source="images/icon_success_sml.gif"
                                               rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticValid}"/>
@@ -249,35 +271,58 @@
         <!-- TODO show tips and rule details -->
 
         <a name="semantics_report"/>
-        <tr:panelHeader text="PSI MI 2.5 Semantic Validation Report" rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticInvalid}">
+        <tr:panelHeader text="PSI MI 2.5 Semantic Validation Report" rendered="#{psiValidatorBean.currentPsiReport.semanticReportAvailable}">
 
-            <tr:outputText value="#{psiValidatorBean.currentPsiReport.messageCount} message#{psiValidatorBean.currentPsiReport.messageCount >1 ? 's' : ''}" />
+            <tr:outputText value="#{psiValidatorBean.currentPsiReport.interactionCount} interaction#{psiValidatorBean.currentPsiReport.messageCount >1 ? 's' : ''} validated." />
 
-            <tr:table var="msg" value="#{psiValidatorBean.currentPsiReport.validatorMessages}">
+            <tr:table width="90%" var="msg" value="#{psiValidatorBean.currentPsiReport.validatorMessages}">
 
                 <f:facet name="detailStamp">
 
-                    <!-- TODO only show something for an ObjectRule -->
+                    <tr:switcher facetName="#{msg.rule.class.simpleName}" defaultFacet="default" >
 
-                    <tr:panelFormLayout>
-                        <tr:panelLabelAndMessage label="Name:">
-                            <tr:outputText value="#{msg.rule.name}"/>
-                        </tr:panelLabelAndMessage>
+                        <f:facet name="default">
+                            <tr:panelFormLayout>
+                                <tr:panelLabelAndMessage label="Type:">
+                                    <tr:outputText value="User defined rule"/>
+                                </tr:panelLabelAndMessage>
 
-                        <tr:panelLabelAndMessage label="Description:">
-                            <tr:outputText value="#{msg.rule.description}"/>
-                        </tr:panelLabelAndMessage>
+                                <tr:panelLabelAndMessage label="Name:">
+                                    <tr:outputText value="#{msg.rule.name}"/>
+                                </tr:panelLabelAndMessage>
 
-                        <tr:panelLabelAndMessage label="Tips:" inlineStyle="vertical-align:top;" >
-                            <tr:panelList>
-                                <tr:iterator value="#{msg.rule.howToFixTips}" var="tip"
-                                             rendered="#{msg.rule.howToFixTips != null and not empty(msg.rule.howToFixTips)}">
-                                     <tr:outputText value="#{tip}"/>
-                                </tr:iterator>
-                            </tr:panelList>
-                        </tr:panelLabelAndMessage>
+                                <tr:panelLabelAndMessage label="Description:">
+                                    <tr:outputText value="#{msg.rule.description}"/>
+                                </tr:panelLabelAndMessage>
 
-                    </tr:panelFormLayout>
+                                <tr:panelLabelAndMessage label="Tips:" inlineStyle="vertical-align:top;" >
+                                    <tr:panelList>
+                                        <tr:iterator value="#{msg.rule.howToFixTips}" var="tip"
+                                                     rendered="#{msg.rule.howToFixTips != null and not empty(msg.rule.howToFixTips)}">
+                                            <tr:outputText value="#{tip}"/>
+                                        </tr:iterator>
+                                    </tr:panelList>
+                                </tr:panelLabelAndMessage>
+                            </tr:panelFormLayout>
+                        </f:facet >
+
+                        <f:facet name="CvRuleImpl">
+                            <tr:panelFormLayout>
+                                <tr:panelLabelAndMessage label="Type:">
+                                    <tr:outputText value="Controlled vocabulary usage rule"/>
+                                </tr:panelLabelAndMessage>
+
+                                <tr:panelLabelAndMessage label="Scope:">
+                                    <tr:outputText value="#{msg.rule.name}"/>
+                                </tr:panelLabelAndMessage>
+
+                                <tr:panelLabelAndMessage label="Requirement:">
+                                    <tr:outputText value="#{msg.rule.requirementLevel}"/>
+                                </tr:panelLabelAndMessage>
+                            </tr:panelFormLayout>
+                        </f:facet >
+
+                    </tr:switcher>
 
                 </f:facet>
 
@@ -290,37 +335,6 @@
                 <tr:column headerText="Description">
                     <tr:outputText value="#{msg.message}" />
                 </tr:column>
-
-                <!--<tr:column headerText="Details">-->
-
-                    <!-- TODO differenciate Object rule from CvMappingRule -->
-
-                    <!--<tr:panelPopup title="Title: #{msg.rule.name}" >-->
-
-                        <!--<f:facet name="trigger">-->
-                            <!--<tr:image source="images/external_link.gif"/>-->
-                        <!--</f:facet>-->
-                        <!--<tr:panelGroupLayout layout="vertical">-->
-
-                            <!--<tr:panelFormLayout>-->
-
-                                <!--<tr:outputText value="Name:"/>-->
-                                <!--<tr:outputText value="#{msg.rule.name}"/>-->
-                                <!--<tr:outputText value="Description: "/>-->
-                                <!--<tr:outputText value="#{msg.rule.description}"/>-->
-
-                                <!--<tr:outputText value="Tips: "/>-->
-                                <!--<tr:table var="tip" value="#{msg.rule.howToFixTips}"-->
-                                          <!--rendered="#{msg.rule.howToFixTips != null and fn:length(msg.rule.howToFixTips) gt 0}" >-->
-                                    <!--<tr:outputText value="- #{tip}"/>-->
-                                <!--</tr:table>-->
-                            <!--</tr:panelFormLayout>-->
-
-                        <!--</tr:panelGroupLayout>-->
-
-                    <!--</tr:panelPopup>-->
-
-                <!--</tr:column>-->
 
                 <!-- Build a links to respective object anchor's -->
                 <tr:column headerText="Context">
