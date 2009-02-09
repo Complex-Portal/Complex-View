@@ -237,6 +237,14 @@
             </exclusions>
         </dependency>
 
+        <!-- psidev -->
+         <dependency>
+            <groupId>psidev.psi.mi</groupId>
+            <artifactId>psi25-xml</artifactId>
+            <version>1.7.4-SNAPSHOT</version>
+        </dependency>
+
+
         <!-- other -->
         <dependency>
             <groupId>xerces</groupId>

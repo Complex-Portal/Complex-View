@@ -26,10 +26,28 @@
 <tr:table id="dnaListResults" value="#{searchBean.dnaResults}" var="binaryInteraction" varStatus="status"
           summary="Binary Interactions" emptyText="No interactions found matching the query."
           rows="#{searchBean.pageSize}" rowBandingInterval="1"
-          rowSelection="none">
+          rowSelection="multiple">
 
+    <f:facet name="actions">
+        <tr:panelHorizontalLayout inlineStyle="width:100%">
+            <f:facet name="separator">
+                <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
+            </f:facet>
 
-<tr:column>
+            <tr:panelButtonBar id="buttonBar">
+                <strong>
+                    <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
+                </strong>
+                <tr:commandButton text="Search Interactions"
+                                  actionListener="#{searchBean.doSearchInteractionsFromDnaListSelection}"
+                                  action="interactions"/>
+
+            </tr:panelButtonBar>
+
+        </tr:panelHorizontalLayout>
+    </f:facet>
+
+    <tr:column>
     <tr:outputText value="#{status.index + 1}"/>
 </tr:column>
 

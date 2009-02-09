@@ -41,6 +41,7 @@ import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
 import psidev.psi.mi.xml.converter.ConverterException;
 import psidev.psi.mi.xml.model.EntrySet;
 import psidev.psi.mi.xml.PsimiXmlWriter;
+import psidev.psi.mi.xml.PsimiXmlVersion;
 import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
@@ -74,8 +75,8 @@ public class BinaryInteractionsExporter {
             exportToMiTab(os, searchQuery);
         } else if ("mitab_intact".equals(format)) {
             exportToMiTabIntact(os, searchQuery);
-        } else if ("xml".equals(format)) {
-            exportToMiXml(os, searchQuery);
+        } else if ("xml_2_53".equals(format) || "xml_2_54".equals(format)) {
+            exportToMiXml(os, searchQuery,format);
         } else if ("xml_html".equals(format)) {
             exportToMiXmlTransformed(os, searchQuery);
         } else {
@@ -169,7 +170,12 @@ public class BinaryInteractionsExporter {
         } while (!interactions.isEmpty());
     }
 
-    public void exportToMiXml(OutputStream os, String searchQuery) throws IOException {
+
+    public void exportToMiXml( OutputStream os, String searchQuery ) throws IOException {
+        exportToMiXml( os, searchQuery, "xml_2_54" );
+    }
+
+    public void exportToMiXml(OutputStream os, String searchQuery,String format) throws IOException {
         Writer out = new OutputStreamWriter(os, "UTF-8");
 
         IntactSearchEngine engine;
@@ -198,7 +204,15 @@ public class BinaryInteractionsExporter {
             throw new IntactViewException("Problem converting interactions from MITAB to XML", e);
         }
 
-        PsimiXmlWriter writer = new PsimiXmlWriter();
+        PsimiXmlWriter writer = null;
+        if ( "xml_2_53".equals( format ) ) {
+            writer = new PsimiXmlWriter( PsimiXmlVersion.VERSION_253 );
+        } else if ( "xml_2_54".equals( format ) ) {
+            writer = new PsimiXmlWriter( PsimiXmlVersion.VERSION_254 );
+        } else {
+            writer = new PsimiXmlWriter( PsimiXmlVersion.VERSION_25_UNDEFINED );
+        }
+
         try {
             writer.write(entrySet, out);
         } catch (Exception e) {
@@ -214,7 +228,7 @@ public class BinaryInteractionsExporter {
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
 
         try {
-            transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF25_view.xsl"));
+            transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
         } catch (TransformerException e) {
             throw new IntactViewException("Problem transforming XML to HTML", e);
         }

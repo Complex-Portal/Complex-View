@@ -61,6 +61,9 @@ public class SearchController extends JpaBaseController {
     public static final String INTERACTIONS_TABLE_ID = "interactionResults";
     public static final String PROTEINS_TABLE_ID = "proteinListResults";
     public static final String COMPOUNDS_TABLE_ID = "compoundListResults";
+    public static final String DNA_TABLE_ID = "dnaListResults";
+    public static final String RNA_TABLE_ID = "rnaListResults";
+
 
     // injected
     @Autowired
@@ -337,6 +340,14 @@ public class SearchController extends JpaBaseController {
 
     public void doSearchInteractionsFromProteinListSelection(ActionEvent evt) {
         doSearchInteractionsFromListSelection( PROTEINS_TABLE_ID, "intact" );
+    }
+
+    public void doSearchInteractionsFromDnaListSelection( ActionEvent evt ) {
+        doSearchInteractionsFromListSelection( DNA_TABLE_ID, "intact" );
+    }
+
+    public void doSearchInteractionsFromRnaListSelection( ActionEvent evt ) {
+        doSearchInteractionsFromListSelection( RNA_TABLE_ID, "intact" );
     }
 
     private void doSearchInteractionsFromListSelection(String tableName, String database ) {
