@@ -224,15 +224,15 @@ to use the fullqualified class name. -->
     <context-param>
         <!-- Maximum disk space per request (in bytes) -->
         <param-name>org.apache.myfaces.trinidad.UPLOAD_MAX_DISK_SPACE</param-name>
-        <!-- Use 5,000K -->
-        <param-value>5120000</param-value>
+        <!-- Use 10Mb -->
+        <param-value>10000000</param-value>
     </context-param>
-    <context-param>
+    <!--<context-param>-->
         <!-- directory to store temporary files -->
-        <param-name>org.apache.myfaces.trinidad.UPLOAD_TEMP_DIR</param-name>
+        <!--<param-name>org.apache.myfaces.trinidad.UPLOAD_TEMP_DIR</param-name>-->
         <!-- Use a TrinidadUploads subdirectory of /tmp -->
-        <param-value>C:/TrinidadUploads/</param-value>
-    </context-param>
+        <!--<param-value>C:/TrinidadUploads/</param-value>-->
+    <!--</context-param>-->
 
 
     <!-- Orchestra Filter -->
