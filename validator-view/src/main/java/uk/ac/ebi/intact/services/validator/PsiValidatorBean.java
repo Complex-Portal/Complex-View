@@ -7,9 +7,11 @@ package uk.ac.ebi.intact.services.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.UploadedFile;
+import org.apache.myfaces.trinidad.model.DefaultBoundedRangeModel;
 import org.apache.myfaces.trinidad.component.core.input.CoreInputText;
+import org.apache.myfaces.trinidad.event.DisclosureEvent;
+import org.apache.myfaces.trinidad.event.PollEvent;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.orchestra.viewController.annotations.InitView;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,8 @@ import javax.faces.event.ValueChangeEvent;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * This is the managed bean that contains the model of the information show to the user. From this bean,
@@ -33,17 +37,30 @@ import java.net.URL;
  * @version $Id$
  * @since 2.0
  */
-@Controller("psiValidatorBean")
+@Controller( "psiValidatorBean" )
 @Scope( "conversation.access" )
-@ViewController(viewIds = "/start.xhtml")
+@ViewController( viewIds = "/start.xhtml" )
 public class PsiValidatorBean extends BaseController {
+
+    static private List<String> PROGRESS_STEPS;
+
+    static {
+        PROGRESS_STEPS = new ArrayList<String>();
+
+        /* 0 */ PROGRESS_STEPS.add( "Uploading data to be validated" );
+        /* 1 */ PROGRESS_STEPS.add( "Configuring the validator" );
+        /* 2 */ PROGRESS_STEPS.add( "Running XML validation" );
+        /* 3 */ PROGRESS_STEPS.add( "Running controlled vocabulary mapping checks" );
+        /* 4 */ PROGRESS_STEPS.add( "Running semantic validation" );
+        /* 5 */ PROGRESS_STEPS.add( "Building validation report" );
+    }
 
     public static final String URL_PARAM = "url";
 
     /**
      * Logging is an essential part of an application
      */
-    private static final Log log = LogFactory.getLog(PsiValidatorBean.class);
+    private static final Log log = LogFactory.getLog( PsiValidatorBean.class );
 
     /**
      * If true, a local file is selected to be uploaded
@@ -56,6 +73,11 @@ public class PsiValidatorBean extends BaseController {
     private ValidationScope validationScope;
 
     /**
+     * Data model to be validated. Default value is PSI-MI (Note: this should be reflected in the tabbedPanel)
+     */
+    private DataModel model = DataModel.PSI_MI;
+
+    /**
      * The file to upload
      */
     private UploadedFile psiFile;
@@ -64,6 +86,11 @@ public class PsiValidatorBean extends BaseController {
      * The URL to upload
      */
     private String psiUrl;
+
+    /**
+     * dData model of the validation progress.
+     */
+    protected volatile DefaultBoundedRangeModel progressModel;
 
     /**
      * If we are viewing a report, this is the report viewed
@@ -82,12 +109,12 @@ public class PsiValidatorBean extends BaseController {
      *
      * @param vce needed in valueChangeEvent methods. From it we get the new value
      */
-    public void uploadTypeChanged(ValueChangeEvent vce) {
-        String type = (String) vce.getNewValue();
-        uploadLocalFile = type.equals("local");
+    public void uploadTypeChanged( ValueChangeEvent vce ) {
+        String type = ( String ) vce.getNewValue();
+        uploadLocalFile = type.equals( "local" );
 
-        if (log.isDebugEnabled())
-            log.debug("Upload type changed, is local file? " + uploadLocalFile);
+        if ( log.isDebugEnabled() )
+            log.debug( "Upload type changed, is local file? " + uploadLocalFile );
     }
 
     /**
@@ -95,50 +122,84 @@ public class PsiValidatorBean extends BaseController {
      *
      * @param vce needed in valueChangeEvent methods. From it we get the new value
      */
-    public void validationScopeChanged(ValueChangeEvent vce) {
-        String type = (String) vce.getNewValue();
-        validationScope  = ValidationScope.forName( type );
+    public void validationScopeChangedMI( ValueChangeEvent vce ) {
+        String type = ( String ) vce.getNewValue();
+        validationScope = ValidationScope.forName( type );
+        if ( log.isDebugEnabled() ) log.debug( "MI Validation scope changed to '" + validationScope + "'" );
+    }
 
-        if (log.isDebugEnabled())
-            log.debug("Validation scope changed to '" + validationScope + "'");
+    public void validationScopeChangedPAR( ValueChangeEvent vce ) {
+        String type = ( String ) vce.getNewValue();
+        validationScope = ValidationScope.forName( type );
+        if ( log.isDebugEnabled() ) log.debug( "PAR Validation scope changed to '" + validationScope + "'" );
+    }
+
+    public void validationModelChangedMI( DisclosureEvent event ) {
+        if ( event.isExpanded() ) {
+            model = DataModel.PSI_MI;
+            if ( log.isDebugEnabled() ) log.debug( "Data model set to '" + model + "'" );
+        }
+    }
+
+    public void validationModelChangedPAR( DisclosureEvent event ) {
+        if ( event.isExpanded() ) {
+            model = DataModel.PSI_PAR;
+            if ( log.isDebugEnabled() ) log.debug( "Data model set to '" + model + "'" );
+        }
+    }
+
+//    public void onPoll( PollEvent event ) {
+//        if ( progressModel != null && ( progressModel.getMaximum() <= progressModel.getValue() ) ) {
+//            // one can attach processing at the end of a poll event
+//            System.out.println( "Polling just happened, current status message is: " + PROGRESS_STEPS.get( (int)progressModel.getValue() ));
+//
+//        }
+//    }
+
+    public List<String> getProgressSteps() {
+        return PROGRESS_STEPS;
+    }
+
+    public DefaultBoundedRangeModel getProgressModel() {
+        return progressModel;
     }
 
     @PreRenderView
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();
 
-        String urlParam = context.getExternalContext().getRequestParameterMap().get(URL_PARAM);
+        String urlParam = context.getExternalContext().getRequestParameterMap().get( URL_PARAM );
 
-        if (urlParam != null) {
-            if (log.isInfoEnabled()) {
+        if ( urlParam != null ) {
+            if ( log.isInfoEnabled() ) {
                 log.info( "User submitted a request with data specified in the URL: " + urlParam );
             }
 
-            uploadLocalFile=false;
+            uploadLocalFile = false;
             psiUrl = urlParam;
             try {
                 uploadFromUrl();
-            } catch (IOException e) {
+            } catch ( IOException e ) {
                 final String msg = "Failed to upload PSI data from given URL";
-                FacesMessage message = new FacesMessage(msg);
+                FacesMessage message = new FacesMessage( msg );
                 context.addMessage( "inputUrl", message );
             }
         }
     }
 
     // This is the method invoked when pressing the valdidate button, names after thte variable to be updated.
-    public void onPsiFileUpload(ValueChangeEvent event) {
+    public void onPsiFileUpload( ValueChangeEvent event ) {
 
-        System.out.println("PsiValidatorBean.psiFile: uploadLocalFile=" + uploadLocalFile);
+        System.out.println( "PsiValidatorBean.psiFile: uploadLocalFile=" + uploadLocalFile );
 
-        if(  uploadLocalFile ) {
-            psiFile = (UploadedFile) event.getNewValue();
-            if (psiFile != null) {
+        if ( uploadLocalFile ) {
+            psiFile = ( UploadedFile ) event.getNewValue();
+            if ( psiFile != null ) {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FacesMessage message = new FacesMessage(
                         "Successfully uploaded file " + psiFile.getFilename() +
-                                " (" + psiFile.getLength() + " bytes)");
-                context.addMessage(event.getComponent().getClientId(context), message);
+                        " (" + psiFile.getLength() + " bytes)" );
+                context.addMessage( event.getComponent().getClientId( context ), message );
 
             }
         }
@@ -146,24 +207,30 @@ public class PsiValidatorBean extends BaseController {
 
     /**
      * Validates the data entered by the user upon pressing the validate button.
+     *
      * @param event
      */
     public void validate( ActionEvent event ) {
+
+        // initialize progress
+        progressModel = new DefaultBoundedRangeModel(-1, 5);
+        progressModel.setValue( 0 );
+
         try {
-            if( uploadLocalFile ) {
+            if ( uploadLocalFile ) {
                 // we use a different upload method, depending on the user selection
                 uploadFromLocalFile();
             } else {
                 uploadFromUrl();
             }
-        } catch (Throwable t) {
-            final String msg = "Failed to upload from " + (uploadLocalFile ? "local file" : "URL");
+        } catch ( Throwable t ) {
+            final String msg = "Failed to upload from " + ( uploadLocalFile ? "local file" : "URL" );
 
-            log.error(msg, t);
+            log.error( msg, t );
 
             FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage(msg);
-            context.addMessage(event.getComponent().getClientId(context), message);
+            FacesMessage message = new FacesMessage( msg );
+            context.addMessage( event.getComponent().getClientId( context ), message );
         }
     }
 
@@ -174,28 +241,28 @@ public class PsiValidatorBean extends BaseController {
      */
     private void uploadFromLocalFile() throws IOException {
 
-        if( psiFile == null ) {
-            throw new IllegalStateException("Failed to upload the file");
+        if ( psiFile == null ) {
+            throw new IllegalStateException( "Failed to upload the file" );
         }
 
-        if (log.isInfoEnabled()) {
-            log.info("Uploading local file: " + psiFile.getFilename());
+        if ( log.isInfoEnabled() ) {
+            log.info( "Uploading local file: " + psiFile.getFilename() );
         }
 
         // and now we can instantiate the builder to create the validation report,
         // using the name of the file and the stream.
-        File f = storeAsTemporaryFile( psiFile.getInputStream());
+        File f = storeAsTemporaryFile( psiFile.getInputStream() );
         // we have the data on disk, clear memory
         psiFile.dispose();
 
-        PsiReportBuilder builder = new PsiReportBuilder( psiFile.getFilename(), f, validationScope );
+        PsiReportBuilder builder = new PsiReportBuilder( psiFile.getFilename(), f, model, validationScope, progressModel );
 
         // we execute the method of the builder that actually creates the report
-        log.warn("About to start building the PSI report");
-        
+        log.warn( "About to start building the PSI report" );
+
         this.currentPsiReport = builder.createPsiReport();
         if ( log.isWarnEnabled() ) {
-            log.warn("After uploading a local file the report was " + (this.currentPsiReport == null ? "not present" : "present" ));
+            log.warn( "After uploading a local file the report was " + ( this.currentPsiReport == null ? "not present" : "present" ) );
         }
     }
 
@@ -251,31 +318,34 @@ public class PsiValidatorBean extends BaseController {
      */
     private void uploadFromUrl() throws IOException {
 
-        if (log.isInfoEnabled()) {
-            log.info("Uploading Url: " + psiUrl);
+        if ( log.isInfoEnabled() ) {
+            log.info( "Uploading Url: " + psiUrl );
         }
 
         try {
             // we create the URL object with the string provided by the user in the form
-            URL url = new URL(psiUrl);
+            URL url = new URL( psiUrl );
 
             File f = storeAsTemporaryFile( url.openStream() );
 
             // we only want the name of the file, and not the whole URL.
             // Gets the last part of the URL
-            String name = psiUrl.substring(psiUrl.lastIndexOf("/") + 1, psiUrl.length());
+            String name = psiUrl.substring( psiUrl.lastIndexOf( "/" ) + 1, psiUrl.length() );
 
             // and now we can instantiate the builder to create the validation report,
             // using the name of the file and the URL.
-            PsiReportBuilder builder = new PsiReportBuilder(name, url, f, validationScope);
+            PsiReportBuilder builder = new PsiReportBuilder( name, url, f, model, validationScope, progressModel );
 
             // we execute the method of the builder that actually creates the report
-            log.warn("ABout to start building the PSI report");
+            log.warn( "About to start building the PSI report" );
             this.currentPsiReport = builder.createPsiReport();
-            log.warn("After uploading a URL the report was " + (this.currentPsiReport == null ? "not present" : "present" ));
+            log.warn( "After uploading a URL the report was " + ( this.currentPsiReport == null ? "not present" : "present" ) );
         }
-        catch (MalformedURLException e) {
+        catch ( MalformedURLException e ) {
+            // TODO log an error using FacesMessage
             log.error( "The given URL wasn't valid", e );
+
+
         }
     }
 
@@ -288,11 +358,11 @@ public class PsiValidatorBean extends BaseController {
      * @param toValidate The UIComponent to validate (this is a UIInput component), the controller of the text box
      * @param value      The value provided in the text box by the user
      */
-    public void validateUrlFormat(FacesContext context,
-                                  UIComponent toValidate,
-                                  Object value) {
-        if (log.isDebugEnabled()) {
-            log.debug("Validating URL: " + value);
+    public void validateUrlFormat( FacesContext context,
+                                   UIComponent toValidate,
+                                   Object value ) {
+        if ( log.isDebugEnabled() ) {
+            log.debug( "Validating URL: " + value );
         }
 
         // we put the current report to null.
@@ -303,27 +373,27 @@ public class PsiValidatorBean extends BaseController {
         URL url = null;
 
         // Our UIComponent is an instance of UIInput, which is the component behind the text box
-        CoreInputText inputCompToValidate = (CoreInputText) toValidate;
+        CoreInputText inputCompToValidate = ( CoreInputText ) toValidate;
 
         // We get the id of that component. Take into account that the id rendered in the HTML cannot
         // be the same that the real id of the component
-        String toValidateClientId = inputCompToValidate.getClientId(context);
+        String toValidateClientId = inputCompToValidate.getClientId( context );
 
         try {
             // we create the url with the value provided. If a MalformedUrlException is thrown,
             // that means that the url does not have the appropiate form
-            url = new URL((String) value);
+            url = new URL( ( String ) value );
         }
-        catch (MalformedURLException e) {
-            log.warn("Invalid URL given by the user: " + value, e);
+        catch ( MalformedURLException e ) {
+            log.warn( "Invalid URL given by the user: " + value, e );
 
             // if it fails, we need to invalidate the component (this is the way to tell in JSF
             // that there has been an invalid value)
-            inputCompToValidate.setValid(false);
+            inputCompToValidate.setValid( false );
 
             // we add the message error to the facesContext, using the clientId of the component.
             // This way, the message will be rendered in the expected place
-            context.addMessage(toValidateClientId, new FacesMessage("The given URL was not valid."));
+            context.addMessage( toValidateClientId, new FacesMessage( "The given URL was not valid." ) );
             return;
         }
 
@@ -331,12 +401,12 @@ public class PsiValidatorBean extends BaseController {
             // if the url is ok, we try to connect to it and open the stream
             url.openStream();
         }
-        catch (Throwable e) {
-            log.error("Error while validating the URL.", e);
+        catch ( Throwable e ) {
+            log.error( "Error while validating the URL.", e );
 
             // if it fails, invalidate the component and add the error message shown to the user
-            inputCompToValidate.setValid(false);
-            context.addMessage(toValidateClientId, new FacesMessage("Could not read URL content."));
+            inputCompToValidate.setValid( false );
+            context.addMessage( toValidateClientId, new FacesMessage( "Could not read URL content." ) );
         }
     }
 
@@ -346,7 +416,7 @@ public class PsiValidatorBean extends BaseController {
         return uploadLocalFile;
     }
 
-    public void setUploadLocalFile(boolean uploadLocalFile) {
+    public void setUploadLocalFile( boolean uploadLocalFile ) {
         this.uploadLocalFile = uploadLocalFile;
     }
 
@@ -354,7 +424,7 @@ public class PsiValidatorBean extends BaseController {
         return psiFile;
     }
 
-    public void setPsiFile(UploadedFile psiFile) {
+    public void setPsiFile( UploadedFile psiFile ) {
         this.psiFile = psiFile;
     }
 
@@ -362,7 +432,7 @@ public class PsiValidatorBean extends BaseController {
         return psiUrl;
     }
 
-    public void setPsiUrl(String psiUrl) {
+    public void setPsiUrl( String psiUrl ) {
         this.psiUrl = psiUrl;
     }
 
@@ -370,7 +440,7 @@ public class PsiValidatorBean extends BaseController {
         return currentPsiReport;
     }
 
-    public void setCurrentPsiReport(PsiReport currentPsiReport) {
+    public void setCurrentPsiReport( PsiReport currentPsiReport ) {
         this.currentPsiReport = currentPsiReport;
     }
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui:composition
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://java.sun.com/jsf/core"
@@ -65,11 +66,15 @@
         <tr:panelHeader text="Overview">
 
             <tr:group>
-                <tr:outputText value="The PSI Validator validate files in "/>
+                <tr:outputText value="The PSI Validator currently validate files in "/>
                 <tr:goLink destination="http://www.psidev.info/index.php?q=node/60" targetFrame="_blank">
-                    <tr:outputText value="PSI-MI 2.5"/>
+                    <tr:outputText value="PSI-MI XML 2.5"/>
                 </tr:goLink>
-                <tr:outputText value=" XML format."/>
+                <tr:outputText value=" and "/>
+                <tr:goLink destination="http://www.psidev.info/index.php?q=node/281" targetFrame="_blank">
+                    <tr:outputText value="PSI-PAR"/>
+                </tr:goLink>
+                <tr:outputText value=" format."/>
             </tr:group>
 
         </tr:panelHeader>
@@ -87,42 +92,82 @@
                     <tr:spacer height="15"/>
                 </f:facet>
 
-                <h:panelGrid width="400">
+                <trh:tableLayout width="600">
 
-                    <tr:panelHorizontalLayout valign="top" >
+                    <trh:rowLayout>
+                        <trh:cellFormat width="10%">
+                            <!-- source -->
+                            <tr:selectOneRadio id="sourceSelector" value="local"
+                                               label="Source:"
+                                               valueChangeListener="#{psiValidatorBean.uploadTypeChanged}"
+                                               onclick="submit()">
+                                <tr:selectItem label="From local file" value="local"/>
+                                <tr:selectItem label="From URL" value="url"/>
 
-                        <f:facet name="separator">
-                            <tr:spacer width="50"/>
-                        </f:facet>
+                            </tr:selectOneRadio>
+                        </trh:cellFormat>
+                        <trh:cellFormat >
+                            <tr:spacer width="60"/>
+                        </trh:cellFormat>
+                        <trh:cellFormat width="15%">
+                            <!-- model & scope -->
+                            <tr:panelTabbed position="above">
+                                <tr:showDetailItem text="Molecular Interactions"
+                                                   disclosureListener="#{psiValidatorBean.validationModelChangedMI}">
 
-                        <!-- Source -->
-                        <tr:selectOneRadio id="sourceSelector" value="local"
-                                           label="Source:"
-                                           valueChangeListener="#{psiValidatorBean.uploadTypeChanged}"
-                                           onclick="submit()">
-                            <tr:selectItem label="From local file" value="local"/>
-                            <tr:selectItem label="From URL" value="url"/>
-                        </tr:selectOneRadio>
+                                    <tr:panelHorizontalLayout valign="top">
+                                        <tr:outputText value="Validation scope " />
 
-                        <!-- Scope -->
-                        <tr:selectOneRadio id="scopeSelector" value="mimix"
-                                           label="Validation scope:"
-                                           valueChangeListener="#{psiValidatorBean.validationScopeChanged}"
-                                           onclick="submit()">
-                            <tr:selectItem label="XML Syntax Only" value="syntax"/>
-                            <tr:selectItem label="Controlled Vocabulary Usage" value="cv-mapping"/>
-                            <tr:selectItem label="MIMIx" shortDesc="Minimum Information about a Molecular Interaction guidelines" value="mimix"/>
-                            <tr:selectItem label="IMEx" shortDesc="International Molecular Exchange guidelines" value="imex"/>
-                        </tr:selectOneRadio>
-                    </tr:panelHorizontalLayout>
+                                        <tr:commandLink action="dialog:miDocumentation" partialSubmit="true"
+                                                        useWindow="true" windowHeight="400" windowWidth="500">
+                                            <tr:image source="images/icon_help.gif"/>
+                                        </tr:commandLink>
 
-                </h:panelGrid>
+                                        <tr:selectOneRadio id="scopeSelector" value="mimix"
+                                                           valueChangeListener="#{psiValidatorBean.validationScopeChangedMI}"
+                                                           onclick="submit()">
+                                            <tr:selectItem label="XML Syntax Only" value="syntax"/>
+                                            <tr:selectItem label="Controlled Vocabulary Usage" value="cv-only"/>
+                                            <tr:selectItem label="MIMIx" shortDesc="Minimum Information about a Molecular Interaction guidelines" value="mimix"/>
+                                            <tr:selectItem label="IMEx" shortDesc="International Molecular Exchange guidelines" value="imex"/>
+                                        </tr:selectOneRadio>
+                                    </tr:panelHorizontalLayout>
+
+                                </tr:showDetailItem>
+
+                                <tr:showDetailItem text="Protein Affinity Reagent (beta)"
+                                                   disclosureListener="#{psiValidatorBean.validationModelChangedPAR}" >
+
+                                    <tr:panelHorizontalLayout valign="top">
+                                        <tr:outputText value="Validation scope " />
+
+                                        <tr:commandLink action="dialog:parDocumentation" partialSubmit="true"
+                                                        useWindow="true" windowHeight="400" windowWidth="500">
+                                            <tr:image source="images/icon_help.gif"/>
+                                        </tr:commandLink>
+
+                                        <tr:selectOneRadio id="scopeSelector" value="cv-only"
+                                                           valueChangeListener="#{psiValidatorBean.validationScopeChangedPAR}"
+                                                           onclick="submit()">
+                                            <tr:selectItem label="XML Syntax Only" value="syntax"/>
+                                            <tr:selectItem label="Controlled Vocabulary Usage" value="cv-only"/>
+                                        </tr:selectOneRadio>
+                                    </tr:panelHorizontalLayout>
+
+                                </tr:showDetailItem>
+                            </tr:panelTabbed>
+                        </trh:cellFormat>
+                        <trh:cellFormat width="70%">
+                        </trh:cellFormat>
+                    </trh:rowLayout>
+
+                </trh:tableLayout>
 
                 <!-- File/URL input -->
+                <tr:group>
                 <tr:group rendered="#{psiValidatorBean.uploadLocalFile}">
-                    <tr:inputFile columns="60" label="File:"
+                    <tr:inputFile id="my_input_file" columns="60" label="File:"
                                   valueChangeListener="#{psiValidatorBean.onPsiFileUpload}" />
-                    <tr:message for="inputFile" styleClass="error-message"/>
                 </tr:group>
 
                 <tr:group rendered="#{!psiValidatorBean.uploadLocalFile}">
@@ -130,6 +175,7 @@
                                   columns="70" value="#{psiValidatorBean.psiUrl}"
                                   validator="#{psiValidatorBean.validateUrlFormat}"/>
                     <tr:message for="inputUrl" styleClass="error-message" />
+                </tr:group>
                 </tr:group>
 
                 <tr:panelHorizontalLayout>
@@ -139,8 +185,27 @@
 
                     <tr:spacer width="20"/>
 
-                    <tr:image id="progress_image" inlineStyle="display:none;"
-                              source="/images/wait_red_indicator.gif"/>
+                    <tr:image id="progress_image" inlineStyle="display:none;" source="/images/wait_red_indicator.gif"/>
+
+                    <!--<tr:poll interval="2000" id="pollid" /> --><!-- pollListener="#{psiValidatorBean.onPoll}" -->
+                    <!--<tr:panelGroupLayout layout="horizontal">-->
+                        <!--<tr:spacer width="30"/>-->
+                        <!--<tr:panelGroupLayout layout="vertical" partialTriggers="pollid" id="pg2">-->
+                            <!--<c:forEach var="progressStep"-->
+                                       <!--varStatus="vs"-->
+                                       <!--begin="0"-->
+                                       <!--end="#{psiValidatorBean.progressModel.maximum}"-->
+                                       <!--items="#{psiValidatorBean.progressSteps}">-->
+
+                                <!--<tr:panelGroupLayout layout="horizontal">-->
+                                    <!--<tr:outputText value="#{progressStep}"-->
+                                                   <!--styleClass="AFFieldText"-->
+                                                   <!--rendered="#{psiValidatorBean.progressModel.value >= vs.index}"/>-->
+                                <!--</tr:panelGroupLayout>-->
+                            <!--</c:forEach>-->
+                        <!--</tr:panelGroupLayout>-->
+                    <!--</tr:panelGroupLayout>-->
+
                 </tr:panelHorizontalLayout>
 
             </tr:panelGroupLayout>

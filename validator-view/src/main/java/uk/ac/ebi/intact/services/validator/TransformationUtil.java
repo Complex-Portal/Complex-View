@@ -37,7 +37,7 @@ public class TransformationUtil {
      */
     public static OutputStream transformToHtml(InputStream is) throws TransformerException {
         // we use and xslt file to transform to HTML, provided in the jar
-        InputStream xslt = TransformationUtil.class.getResourceAsStream("/psi-mi/xslt/MIF25_view.xsl");
+        InputStream xslt = TransformationUtil.class.getResourceAsStream( "/validator/xslt/MIF25_view.xsl" );
         return transform(is, xslt);
     }
 
@@ -50,7 +50,7 @@ public class TransformationUtil {
      */
     public static OutputStream transformToExpanded(InputStream is) throws TransformerException {
         // we use and xslt file to transform to the expanded version, provided in the jar
-        InputStream xslt = TransformationUtil.class.getResourceAsStream("/psi-mi/xslt/MIF25_expand.xsl");
+        InputStream xslt = TransformationUtil.class.getResourceAsStream( "/validator/xslt/MIF25_expand.xsl" );
         return transform(is, xslt);
     }
 

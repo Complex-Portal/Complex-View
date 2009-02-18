@@ -6,9 +6,10 @@ package uk.ac.ebi.intact.services.validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.trinidad.model.DefaultBoundedRangeModel;
+import org.apache.myfaces.trinidad.model.BoundedRangeModel;
 import psidev.psi.mi.validator.ValidatorReport;
 import psidev.psi.mi.validator.extension.Mi25Validator;
-import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
 import psidev.psi.tools.validator.MessageLevel;
 import psidev.psi.tools.validator.ValidatorMessage;
 import psidev.psi.tools.validator.preferences.UserPreferences;
@@ -51,6 +52,8 @@ public class PsiReportBuilder {
 
     private ValidationScope validationScope;
 
+    private DataModel model;
+
     /**
      * Handy enumeration to avoid null checks on the previous attributes, when trying to determine
      * whether the info comes from URL or a stream.
@@ -64,17 +67,21 @@ public class PsiReportBuilder {
      */
     private SourceType currentSourceType;
 
+    private DefaultBoundedRangeModel progressModel;
+
     /**
      * Creates a PsiReportBuilder instance using an URL
      *
      * @param name The name of the file, only needed for information purposes
      * @param url  The URL with the PSI xml
      */
-    public PsiReportBuilder( String name, URL url, File tempFile, ValidationScope validationScope ) {
+    public PsiReportBuilder( String name, URL url, File tempFile, DataModel model, ValidationScope validationScope, DefaultBoundedRangeModel progressModel ) {
         this.name = name;
         this.url = url;
         this.file = tempFile;
         this.validationScope = validationScope;
+        this.model = model;
+        this.progressModel = progressModel;
         
         this.currentSourceType = SourceType.URL;
     }
@@ -87,10 +94,12 @@ public class PsiReportBuilder {
      *             resettable in order to build the report properly. The stream will be reset a few times, so the
      *             information is parsed in the different validation phases
      */
-    public PsiReportBuilder(String name, File file, ValidationScope validationScope) {
+    public PsiReportBuilder(String name, File file, DataModel model, ValidationScope validationScope, DefaultBoundedRangeModel progressModel) {
         this.name = name;
         this.file = file;
         this.validationScope = validationScope;
+        this.model = model;
+        this.progressModel = progressModel;
 
         this.currentSourceType = SourceType.FILE;
     }
@@ -107,19 +116,39 @@ public class PsiReportBuilder {
 
         // second validation: checks that the semantics is right
         try {
-            validatePsiFile(report, file);
+
+            System.out.println( "The model in use is: " + model );
+
+            if( model.equals( DataModel.PSI_MI ) ) {
+                 validatePsiMiFile(report, file);
+            } else if( model.equals( DataModel.PSI_PAR ) ) {
+                 validatePsiParFile(report, file);
+            } else {
+                throw new IllegalStateException( "Unknown data model: " + model );
+            }
+
         } catch (Throwable t) {
             log.error("Unexpected error thrown", t);
 
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                                         "Sorry, an unexpected error occur, please contact the " +
+                                                         "administrator of this web site if the issue persist.",
+                                                         t.getMessage());
+            context.addMessage(null, facesMessage);
         }
+
         log.debug("Completed file validation ... about to build the report now ...");
 
         if (report.isXmlSyntaxValid()) {
-            // creating the view
-            createHtmlView(report, getInputStream());
+            // creating the view if the model supports it
+            if( model.hasHtmlViewBuilder() ) {
+                model.createHtmlView( report, getInputStream() );
+            }
+//            createHtmlView(report, getInputStream());
         } else {
             //if the xml validation is wrong, the second validation won't be run
-            report.setSemanticsStatus("not checked, XML syntax needs to be valid first");
+            report.setSemanticsStatus( PsiReport.NOT_RUN ); // not checked, XML syntax needs to be valid first
         }
 
         return report;
@@ -141,51 +170,30 @@ public class PsiReportBuilder {
     }
 
     /**
-     * Creates the HTML view using Xstl Transformation, and sets it to the report
-     *
-     * @param report The report to set the view
-     * @param is     The input stream with the PSI XML file
-     */
-    private static void createHtmlView(PsiReport report, InputStream is) {
-        String transformedOutput = null;
-        try {
-            // we transform the xml to html using an utility class that returns
-            // the output stream with the html content
-            final ByteArrayOutputStream os = new ByteArrayOutputStream( 4096 );
-            XslTransformerUtils.viewPsiMi25( is, os );
-            transformedOutput = os.toString();
-//            transformedOutput = TransformationUtil.transformToHtml(is).toString();
-        }
-        catch (Exception e) {
-            log.error( "Failed to produce the HTML view", e );
-        }
-        report.setHtmlView(transformedOutput);
-    }
-
-    /**
-     * Validates the PSI Semantics
+     * Validates PSI-MI data.
      *
      * @param report the PsiReport to complete
      * @param file   the psi xml file
      */
-    private void validatePsiFile(PsiReport report, File file) {
+    private void validatePsiMiFile(PsiReport report, File file) {
 
         // Printwriter to get the stacktrace messages
         StringWriter sw = new StringWriter(1024);
 
         try {
             // We read the configuration file, included inside the jar
-            InputStream ontologyCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/ontologies.xml");
+            InputStream ontologyCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/ontologies.xml" );
             InputStream cvMappingCfg = null;
             InputStream ruleCfg = null;
 
             if ( log.isInfoEnabled() ) {
+                log.info( "Model: " + model );
                 log.info( "Selected validation scope: " + validationScope );
             }
 
             if( validationScope == null ) {
                 // set default value
-                log.warn( "The application didn't get a valid validation scope (null), setting default to MIMIx." );
+                log.warn( "The application didn't get a valid validation scope (null), setting MI default to MIMIx." );
                 validationScope = ValidationScope.MIMIX;
             }
 
@@ -194,17 +202,17 @@ public class PsiReportBuilder {
                     break;
 
                 case CV_ONLY:
-                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
+                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/cv-mapping.xml" );
                     break;
 
                 case MIMIX:
-                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
-                    ruleCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/mimix-object-rules.xml");
+                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/cv-mapping.xml" );
+                    ruleCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/mimix-object-rules.xml" );
                     break;
 
                 case IMEX:
-                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/cv-mapping.xml");
-                    ruleCfg = PsiReportBuilder.class.getResourceAsStream("/psi-mi/validator-config/imex-object-rules.xml");
+                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/cv-mapping.xml" );
+                    ruleCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/imex-object-rules.xml" );
                     break;
 
                 default:
@@ -213,6 +221,91 @@ public class PsiReportBuilder {
 
             log.info( "Is the Cv mapping file null: " + ( cvMappingCfg == null ) );
 
+            // run validation
+            validatePsiFile( report, file, ontologyCfg, cvMappingCfg, ruleCfg );
+
+        } catch (Throwable t) {
+
+            log.error( "An error occured while configuring the MI validator", t );
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( "An error occured while validating your data: " + t.getMessage() );
+            context.addMessage( null, message );
+        }
+    }
+
+    /**
+     * Validates PSI-PAR data.
+     *
+     * @param report the PsiReport to complete
+     * @param file   the psi xml file
+     */
+    private void validatePsiParFile(PsiReport report, File file) {
+
+        try {
+            // We read the configuration file, included inside the jar
+            InputStream ontologyCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_par/ontologies.xml" );
+            InputStream cvMappingCfg = null;
+            InputStream ruleCfg = null;
+
+            if ( log.isInfoEnabled() ) {
+                log.info( "Model: " + model );
+                log.info( "Selected validation scope: " + validationScope );
+            }
+
+            if( validationScope == null ) {
+                // set default value
+                log.warn( "The application didn't get a valid validation scope (null), setting PAR default to CV Mapping." );
+                validationScope = ValidationScope.CV_ONLY;
+            }
+
+            switch( validationScope ) {
+                case SYNTAX:
+                    break;
+
+                case CV_ONLY:
+                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_par/cv-mapping.xml" );
+                    break;
+
+                default:
+                    throw new IllegalStateException( "Unsupported validation scope: '"+ validationScope +"', the application is not correctly configured." );
+            }
+
+            log.info( "Is the Cv mapping file null: " + ( cvMappingCfg == null ) );
+
+            // run validation
+            validatePsiFile( report, file, ontologyCfg, cvMappingCfg, ruleCfg );
+
+        } catch (Throwable t) {
+
+            log.error( "An error occured while configuring the PAR validator", t );
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( "An error occured while validating your data: " + t.getMessage() );
+            context.addMessage( null, message );
+        }
+    }
+
+    /**
+     * Runs the validation with a given set of configuration files.
+     *
+     * @param report report to be filled as an outcome of the validation process.
+     * @param file the data to validate.
+     * @param ontologyCfg ontology configuration to be passed to the validator.
+     * @param cvMappingCfg CV mapping to be passed to the validator.
+     * @param ruleCfg Object rules to be passed to the validator.
+     */
+    private void validatePsiFile(PsiReport report, File file,
+                                 InputStream ontologyCfg,
+                                 InputStream cvMappingCfg,
+                                 InputStream ruleCfg) {
+
+        // Printwriter to get the stacktrace messages
+        StringWriter sw = new StringWriter(1024);
+
+        progressModel.setValue( 1L );
+
+        try{
             // set work directory
             UserPreferences preferences = new UserPreferences();
             preferences.setKeepDownloadedOntologiesOnDisk(true);
@@ -224,9 +317,16 @@ public class PsiReportBuilder {
             validator.setUserPreferences(preferences);
 
             log.debug("Validation starting");
+            progressModel.setValue( 4L );
+
             final ValidatorReport validatorReport = validator.validate( file );
-            log.info( "Validator reported " + validatorReport.getSyntaxMessages().size() + " syntax messages" );
-            log.info( "Validator reported " + validatorReport.getSemanticMessages().size() + " semantic messages" );
+
+            progressModel.setValue( 5L );
+
+            if ( log.isInfoEnabled() ) {
+                log.info( "Validator reported " + validatorReport.getSyntaxMessages().size() + " syntax messages" );
+                log.info( "Validator reported " + validatorReport.getSemanticMessages().size() + " semantic messages" );
+            }
 
             report.setInteractionCount( validatorReport.getInteractionCount() );
 
@@ -283,12 +383,10 @@ public class PsiReportBuilder {
                 report.setSemanticsReport("Document is valid");
             }
 
-        } catch (Exception e) {
+        } catch (Throwable t) {
             FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage( "An error occured while validating your data: " + e.getMessage() );
+            FacesMessage message = new FacesMessage( "An error occured while validating your data: " + t.getMessage() );
             context.addMessage( null, message );
-
-            throw new RuntimeException( "An unexpected error occured during the validation process", e );
         }
 
         String output = sw.getBuffer().toString();

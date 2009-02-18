@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:trh="http://myfaces.apache.org/trinidad/html"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:c="http://java.sun.com/jstl/core"
+        xmlns:ebi="http://ebi.ac.uk/faces/components" >
+
+    <tr:document title="Help">
+
+        <tr:panelHeader text="PSI-MI Validation Scopes">
+
+            The validation scopes described below define the the stringency of the validation rules applied to a dataset.
+            As the image below illustrates, the currently supported scopes are built on top of one another. Increasing
+            progressively their specificity.
+
+            <br/>
+            <br/>
+
+            <trh:tableLayout width="100%">
+                <trh:rowLayout>
+                    <trh:cellFormat halign="center">
+                        <tr:image source="images/mi_scopes.PNG"/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+            </trh:tableLayout>
+
+            <tr:panelHeader text="XML syntax">
+                <tr:outputText value="Checks that the document to validate is properly defined according to the following XML schemas:"/>
+                <br/>
+                <ul>
+                    <li><tr:goLink destination="http://psidev.sourceforge.net/mi/rel25/src/MIF253.xsd" targetFrame="_blank">PSI-MI XML 2.5.3</tr:goLink></li>
+                    <li><tr:goLink destination="http://psidev.sourceforge.net/mi/rel25/src/MIF254.xsd" targetFrame="_blank">PSI-MI XML 2.5.4</tr:goLink></li>
+                </ul>
+
+                <tr:outputText value="You can also look at the alto-generated documentation of the schema "/>
+                <tr:goLink destination="http://psidev.sourceforge.net/mi/rel25/doc/" targetFrame="_blank">2.5.3</tr:goLink>
+
+                <br/>
+                <br/>
+
+                <tr:outputText value="Note: If your document doesn't pass this validation stage, none of the scope below can be executed."/>
+
+            </tr:panelHeader>
+
+            <tr:panelHeader text="Controlled Vocabulary Usage">
+
+                This scope makes sure that the use of controlled vocabularies is correct. That is, for each controlled
+                vocabulary place-holder, it checks that one uses the appropriate set of terms as defined in the
+                <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI" targetFrame="_blank"> PSI-MI ontology</tr:goLink>.
+
+                The rule is currently looking at:
+                <ul>
+                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0001&amp;termName=interaction%20detection%20method" targetFrame="_blank">Interaction detection methods</tr:goLink></li>
+                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0190&amp;termName=interaction%20type" targetFrame="_blank">Interaction types</tr:goLink></li>
+                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0002&amp;termName=participant%20identification%20method" targetFrame="_blank">Participant identification methods</tr:goLink></li>
+                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0495&amp;termName=experimental%20role" targetFrame="_blank">Participant's experimental roles</tr:goLink></li>
+                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0500&amp;termName=biological%20role" targetFrame="_blank">Participant's biological roles</tr:goLink></li>
+                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0003&amp;termName=feature%20detection%20dethod" targetFrame="_blank">Participant's Feature detection method</tr:goLink></li>
+                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0003&amp;termName=feature%20detection%20dethod" targetFrame="_blank">Experiment's feature detection method</tr:goLink></li>
+                    <li>Participant's feature type (in
+                        <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0116&amp;termName=feature%20type" targetFrame="_blank"> PSI-MI </tr:goLink>
+                        or
+                        <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MOD&amp;termId=MOD%3A00000&amp;termName=protein%20modification" targetFrame="_blank"> PSI-MOD</tr:goLink>
+                        )
+                    </li>
+                    <li>Experiment's bibliographical references (
+                        <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0446&amp;termName=pubmed" targetFrame="_blank">pubmed </tr:goLink>
+                        or
+                        <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0574&amp;termName=DOI" targetFrame="_blank"> DOI</tr:goLink>
+                        )
+                    </li>
+                </ul>
+
+            </tr:panelHeader>
+
+            <tr:panelHeader text="MIMIx guidelines">
+
+                This scopes checks that the Minimum Information required for reporting a Molecular Interaction eXperiment (<tr:goLink destination="http://www.ncbi.nlm.nih.gov/pubmed/17687370" targetFrame="_blank">MIMIx</tr:goLink>) are respected.
+
+            </tr:panelHeader>
+
+            <tr:panelHeader text="IMEx curation Standards">
+
+                This scopes checks that the curation standards agreed by the  International Molecular Exchange Consortium (<tr:goLink destination="http://imex.sourceforge.net/" targetFrame="_blank">IMEx</tr:goLink>) are respected.
+                <br/>
+                The curation manual can be accessed <tr:goLink destination="http://imex.sourceforge.net/doc/imex-curationManual.doc" targetFrame="_blank"> here</tr:goLink>.
+
+            </tr:panelHeader>
+
+            <br/>
+            <br/>
+
+        </tr:panelHeader>
+
+    </tr:document>
+
+</ui:composition>
