@@ -137,6 +137,7 @@ public class PsiValidatorBean extends BaseController {
     public void validationModelChangedMI( DisclosureEvent event ) {
         if ( event.isExpanded() ) {
             model = DataModel.PSI_MI;
+            validationScope = ValidationScope.MIMIX; // set to default
             if ( log.isDebugEnabled() ) log.debug( "Data model set to '" + model + "'" );
         }
     }
@@ -144,6 +145,7 @@ public class PsiValidatorBean extends BaseController {
     public void validationModelChangedPAR( DisclosureEvent event ) {
         if ( event.isExpanded() ) {
             model = DataModel.PSI_PAR;
+            validationScope = ValidationScope.CV_ONLY; // set to default
             if ( log.isDebugEnabled() ) log.debug( "Data model set to '" + model + "'" );
         }
     }
@@ -342,10 +344,12 @@ public class PsiValidatorBean extends BaseController {
             log.warn( "After uploading a URL the report was " + ( this.currentPsiReport == null ? "not present" : "present" ) );
         }
         catch ( MalformedURLException e ) {
-            // TODO log an error using FacesMessage
-            log.error( "The given URL wasn't valid", e );
+            final String msg = "The given URL wasn't valid";
+            log.error( msg, e );
 
-
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( msg );
+            context.addMessage( null, message );
         }
     }
 

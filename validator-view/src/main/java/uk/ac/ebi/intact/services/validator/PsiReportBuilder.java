@@ -136,6 +136,8 @@ public class PsiReportBuilder {
                                                          "administrator of this web site if the issue persist.",
                                                          t.getMessage());
             context.addMessage(null, facesMessage);
+
+            return report;
         }
 
         log.debug("Completed file validation ... about to build the report now ...");
@@ -145,7 +147,6 @@ public class PsiReportBuilder {
             if( model.hasHtmlViewBuilder() ) {
                 model.createHtmlView( report, getInputStream() );
             }
-//            createHtmlView(report, getInputStream());
         } else {
             //if the xml validation is wrong, the second validation won't be run
             report.setSemanticsStatus( PsiReport.NOT_RUN ); // not checked, XML syntax needs to be valid first
@@ -384,9 +385,14 @@ public class PsiReportBuilder {
             }
 
         } catch (Throwable t) {
+            final String msg = "An error occured while validating your data: ";
+            log.error( msg, t );
+
             FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage( "An error occured while validating your data: " + t.getMessage() );
+            FacesMessage message = new FacesMessage( msg + t.getMessage() );
             context.addMessage( null, message );
+
+            return;
         }
 
         String output = sw.getBuffer().toString();
