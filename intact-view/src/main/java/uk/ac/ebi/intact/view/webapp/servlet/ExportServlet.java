@@ -17,7 +17,8 @@ package uk.ac.ebi.intact.view.webapp.servlet;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrQuery;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
@@ -56,8 +57,8 @@ public class ExportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         IntactViewConfiguration intactViewConfiguration = (IntactViewConfiguration) applicationContext.getBean("intactViewConfiguration");
-        SearchConfig searchConfig = WebappUtils.readConfiguration(intactViewConfiguration.getConfigFile());
-        String defaultIndex = WebappUtils.getDefaultInteractionIndex(searchConfig).getLocation();
+
+        SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
 
         String searchQuery = request.getParameter(PARAM_QUERY);
         String format = request.getParameter(PARAM_FORMAT);
@@ -65,7 +66,7 @@ public class ExportServlet extends HttpServlet {
         String sortColumn = request.getParameter(PARAM_SORT);
         String sortAsc = request.getParameter(PARAM_SORT_ASC);
 
-        BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(defaultIndex, sortColumn, Boolean.parseBoolean(sortAsc));
+        BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(solrServer, sortColumn, (Boolean.parseBoolean(sortAsc))? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
         exporter.searchAndExport(response.getOutputStream(), searchQuery, format);
     }
 

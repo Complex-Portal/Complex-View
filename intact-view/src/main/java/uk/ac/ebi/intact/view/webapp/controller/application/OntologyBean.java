@@ -25,8 +25,6 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.*;
@@ -71,14 +69,15 @@ public class OntologyBean implements Serializable {
         this.ontologiesIndexSearcher = new OntologiesIndexSearcher(ontologyIndexDirectory);
     }
 
-    public void loadOntologies(SearchConfig config) throws IOException {
+    public void loadOntologies() throws IOException {
+        if (intactViewConfiguration.getInteractionSolrServer() == null) {
+           if (log.isErrorEnabled()) log.error("Cannot load ontologies as the Solr server is not configured");
+            return;
+        }
         if (log.isInfoEnabled()) log.info("Loading and indexing ontologies");
 
-        final Index defaultIndex = WebappUtils.getDefaultInteractionIndex(config);
-        final Directory defaultIndexDirectory = FSDirectory.getDirectory(defaultIndex.getLocation());
-
         OntologiesIndexWriter ontologiesIndexWriter = new OntologiesIndexWriter();
-        ontologiesIndexWriter.createIndex(defaultIndexDirectory, ontologyIndexDirectory);
+        ontologiesIndexWriter.createIndex(intactViewConfiguration.getInteractionSolrServer(), ontologyIndexDirectory);
 
         if (log.isInfoEnabled()) {
             int count = countDocsInIndex(ontologyIndexDirectory);

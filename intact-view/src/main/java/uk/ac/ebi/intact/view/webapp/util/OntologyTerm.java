@@ -26,11 +26,17 @@ public class OntologyTerm {
     private String identifier;
     private String label;
     private String databaseLabel;
+    private int count;
 
     public OntologyTerm(String identifier, String label, String databaseLabel) {
         this.identifier = identifier;
         this.label = label;
         this.databaseLabel = databaseLabel;
+    }
+
+    public OntologyTerm(String identifier, String label, String databaseLabel, int count) {
+        this(identifier, label, databaseLabel);
+        this.count = count;
     }
 
     public String getIdentifier() {
@@ -45,6 +51,14 @@ public class OntologyTerm {
         return databaseLabel;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -52,6 +66,7 @@ public class OntologyTerm {
         sb.append("{databaseLabel='").append(databaseLabel).append('\'');
         sb.append(", identifier='").append(identifier).append('\'');
         sb.append(", label='").append(label).append('\'');
+        sb.append(", count='").append(count).append('\'');
         sb.append('}');
         return sb.toString();
     }

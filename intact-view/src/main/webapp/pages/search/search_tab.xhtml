@@ -39,8 +39,8 @@
                     <tr:panelList>
                         <tr:group>
                             Protein accession number: e.g.&#160;
-                            <tr:commandLink text="Q08345" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="Q08345" target="#{userQuery.searchQuery}"/>
+                            <tr:commandLink text="P20053" action="#{searchBean.doBinarySearchAction}">
+                                <f:setPropertyActionListener value="P20053" target="#{userQuery.searchQuery}"/>
                             </tr:commandLink>
                         </tr:group>
                         <tr:group>
@@ -90,6 +90,7 @@
                    <tr:group>
                        <tr:outputText value="#{ontologyTerm.identifier}" inlineStyle="font-weight:bold; color: #e65555"/>
                        <tr:outputText value=" #{ontologyTerm.label}"/>
+                       <tr:outputText value=" (#{ontologyTerm.count})" inlineStyle="font-weight:bold; color: #00cc99"/>
                    </tr:group>
                </iam:inputAutocomplete>
 

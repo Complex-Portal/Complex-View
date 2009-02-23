@@ -8,12 +8,12 @@ import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.tab.model.CrossReference;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
@@ -21,12 +21,14 @@ import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
+import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.transaction.NotSupportedException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -75,9 +77,6 @@ public class SearchController extends JpaBaseController {
     @Autowired
     private UserQuery userQuery;
 
-     // vars
-    private int pageSize = 30;
-
     private int totalResults;
     private int interactorTotalResults;
     private int proteinTotalResults;
@@ -96,7 +95,7 @@ public class SearchController extends JpaBaseController {
     private boolean expandedView;
 
     // results
-    private SearchResultDataModel results;
+    private SolrSearchResultDataModel results;
     private SearchResultDataModel interactorResults;
     private SearchResultDataModel smallMoleculeResults;
     private SearchResultDataModel dnaResults;
@@ -117,11 +116,6 @@ public class SearchController extends JpaBaseController {
     public SearchController() {
     }
 
-    @PostConstruct
-    public void postInstantiation() {
-        BooleanQuery.setMaxClauseCount(intactViewConfiguration.getLuceneMaxCombinations());
-    }
-
     @PreRenderView
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -139,7 +133,9 @@ public class SearchController extends JpaBaseController {
             userQuery.reset();
             userQuery.setSearchQuery( queryParam );
 
-            doBinarySearch( userQuery );
+            SolrQuery solrQuery = userQuery.createSolrQuery();
+
+            doBinarySearch( solrQuery );
         }
 
         if ( ontologyQueryParam != null && ontologyQueryParam.length()>0) {
@@ -148,12 +144,16 @@ public class SearchController extends JpaBaseController {
             userQuery.reset();
             userQuery.setOntologySearchQuery(ontologyQueryParam);
 
-            doBinarySearch( userQuery );
+            SolrQuery solrQuery = userQuery.createSolrQuery();
+
+            doBinarySearch( solrQuery );
         }
     }
 
     public String doBinarySearchAction() {
-        doBinarySearch( userQuery );
+        SolrQuery solrQuery = userQuery.createSolrQuery();
+
+        doBinarySearch( solrQuery );
 
         return "interactions";
     }
@@ -166,7 +166,10 @@ public class SearchController extends JpaBaseController {
             return "search";
         }
 
-        doBinarySearch( userQuery );
+        SolrQuery solrQuery = userQuery.createSolrQuery();
+        solrQuery.setQuery("*:*");
+
+        doBinarySearch( solrQuery );
 
         return "interactions";
     }
@@ -180,27 +183,23 @@ public class SearchController extends JpaBaseController {
         if( termId == null ) {
             throw new IllegalStateException( "TermId was null" );
         }
-        
-        userQuery.addProperty( termId );
 
-        doBinarySearch( userQuery );
+        // TODO is this needed?
+        //userQuery.addProperty( termId );
+
+        if (true) throw new UnsupportedOperationException("This has been modified");
+
+        SolrQuery solrQuery = userQuery.createSolrQuery();
+
+        doBinarySearch( solrQuery );
     }
 
-    private void doBinarySearch(UserQuery userQuery) {
+    private void doBinarySearch(SolrQuery solrQuery) {
 
-        String query = userQuery.getInteractionQuery();
-
-        final SearchConfig config = appConfigBean.getConfig();
-
-        if (config == null) {
-            addErrorMessage("Configuration file was not found", "Run the first time setup or check the application configuration");
-            return;
-        }
-
-        String indexDirectory = intactViewConfiguration.getDefaultIndexLocation();
+        SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
 
         try {
-            results = new SearchResultDataModel(query, indexDirectory, pageSize,userQuery);
+            results = new SolrSearchResultDataModel(solrServer, solrQuery);
 
             totalResults = results.getRowCount();
 
@@ -215,7 +214,8 @@ public class SearchController extends JpaBaseController {
             e.printStackTrace();
         }
 
-        doInteractorSearch(userQuery);
+        // TODO implement interactor query
+        //doInteractorSearch(userQuery);
     }
 
     public void doInteractorSearch(UserQuery query) {
@@ -240,14 +240,18 @@ public class SearchController extends JpaBaseController {
     }
 
     private void doProteinsSearch(UserQuery query) {
-        query.setInteractorTypeMi(CvInteractorType.PROTEIN_MI_REF);
 
-        String indexDirectory = intactViewConfiguration.getDefaultInteractorIndexLocation();
+        if (true) throw new UnsupportedOperationException("This has been modified");
+
+        // TODO fix this
+        //query.setInteractorTypeMi(CvInteractorType.PROTEIN_MI_REF);
+        String indexDirectory = "";
 
         try {
-            String interactorQuery = query.getInteractorQuery();
+            String interactorQuery = null;
+            //String interactorQuery = query.getInteractorQuery();
             if (log.isDebugEnabled()) log.debug("Searching proteins with interactorQuery : " + interactorQuery);
-            interactorResults = new SearchResultDataModel(interactorQuery, indexDirectory, pageSize);
+            interactorResults = new SearchResultDataModel(interactorQuery, indexDirectory, userQuery.getPageSize());
             proteinTotalResults = interactorResults.getRowCount();
         } catch (TooManyResultsException e) {
             addErrorMessage("Too many proteins found", "Please, refine your query");
@@ -257,14 +261,18 @@ public class SearchController extends JpaBaseController {
     }
 
     private void doSmallMoleculeSearch(UserQuery query) {
-        query.setInteractorTypeMi(CvInteractorType.SMALL_MOLECULE_MI_REF);
 
-        String indexDirectory = intactViewConfiguration.getDefaultInteractorIndexLocation();
+         if (true) throw new UnsupportedOperationException("This has been modified");
+
+        // TODO fix this
+        //query.setInteractorTypeMi(CvInteractorType.SMALL_MOLECULE_MI_REF);
+        String indexDirectory = "";
 
         try {
-            String interactorQuery = query.getInteractorQuery();
+            //String interactorQuery = query.getInteractorQuery();
+            String interactorQuery = null;
             if (log.isDebugEnabled()) log.debug("Searching small molecules with interactorQuery: " + interactorQuery);
-            smallMoleculeResults = new SearchResultDataModel(interactorQuery, indexDirectory, pageSize);
+            smallMoleculeResults = new SearchResultDataModel(interactorQuery, indexDirectory, userQuery.getPageSize());
             smallMoleculeTotalResults = smallMoleculeResults.getRowCount();
         } catch (TooManyResultsException e) {
             addErrorMessage("Too many small molecules found", "Please, refine your query");
@@ -276,14 +284,18 @@ public class SearchController extends JpaBaseController {
     private void doDnaSearch(UserQuery query) {
         //dna->MI:0319,ds dna->MI:0681, ss dna->MI:0680
         //String[] interactorTypes = new String[] {CvInteractorType.DNA_MI_REF,"MI:0680","MI:0681"};
-        query.setInteractorTypeMi( CvInteractorType.DNA_MI_REF );
 
-        String indexDirectory = intactViewConfiguration.getDefaultInteractorIndexLocation();
+         if (true) throw new UnsupportedOperationException("This has been modified");
+
+        // TODO fix this
+        //query.setInteractorTypeMi( CvInteractorType.DNA_MI_REF );
+        String indexDirectory = "";
 
         try {
-            String interactorQuery = query.getInteractorQuery();
+            String interactorQuery = null;
+            //String interactorQuery = query.getInteractorQuery();
             if (log.isDebugEnabled()) log.debug("Searching dna with interactorQuery : " + interactorQuery);
-            dnaResults = new SearchResultDataModel(interactorQuery, indexDirectory, pageSize);
+            dnaResults = new SearchResultDataModel(interactorQuery, indexDirectory, userQuery.getPageSize());
             dnaTotalResults = dnaResults.getRowCount();
 
             if ( log.isDebugEnabled() )log.debug( "dnaTotalResults " + dnaTotalResults);
@@ -300,14 +312,18 @@ public class SearchController extends JpaBaseController {
     private void doRnaSearch( UserQuery query ) {
         //rna->MI:0320,mrna->MI:0324,trna->MI:0325,rrna->0608,snrna->0607,sirna->0610
         //String[] interactorTypes = new String[]{CvInteractorType.RNA_MI_REF, "MI:0324", "MI:0325","MI:0608","MI:0607","MI:0610"};
-        query.setInteractorTypeMi( CvInteractorType.RNA_MI_REF );
 
-        String indexDirectory = intactViewConfiguration.getDefaultInteractorIndexLocation();
+        if (true) throw new UnsupportedOperationException("This has been modified");
+
+        // TODO fix this
+        //query.setInteractorTypeMi( CvInteractorType.RNA_MI_REF );
+        String indexDirectory = "";
 
         try {
-            String interactorQuery = query.getInteractorQuery();
+            String interactorQuery = null;
+            //String interactorQuery = query.getInteractorQuery();
             if ( log.isDebugEnabled() ) log.debug( "Searching rna with interactorQuery : " + interactorQuery );
-            rnaResults = new SearchResultDataModel( interactorQuery, indexDirectory, pageSize );
+            rnaResults = new SearchResultDataModel( interactorQuery, indexDirectory, userQuery.getPageSize() );
             rnaTotalResults = rnaResults.getRowCount();
 
             if ( log.isDebugEnabled() ) log.debug( "rnaTotalResults " + rnaTotalResults );
@@ -328,10 +344,6 @@ public class SearchController extends JpaBaseController {
         table.setFirst(evt.getNewStart());
 
         refreshTable(INTERACTIONS_TABLE_ID, results);
-    }
-
-    public Index getDefaultIndex() {
-        return WebappUtils.getDefaultInteractionIndex(appConfigBean.getConfig());
     }
 
     public void doSearchInteractionsFromCompoundListSelection(ActionEvent evt) {
@@ -383,13 +395,11 @@ public class SearchController extends JpaBaseController {
         final String query = sb.toString();
         userQuery.setSearchQuery( query );
 
-        doBinarySearch(userQuery);
+        SolrQuery solrQuery = userQuery.createSolrQuery();
+
+        doBinarySearch(solrQuery);
 
         resetSelection(tableName);
-    }
-
-    public Index getDefaultInteractorIndex() {
-        return WebappUtils.getDefaultInteractorIndex(appConfigBean.getConfig());
     }
 
     public void resetSearch(ActionEvent event) {
@@ -407,7 +417,10 @@ public class SearchController extends JpaBaseController {
         this.setUserSortColumn( sortableColumn );
         userQuery.setUserSortOrder(DEFAULT_SORT_ORDER);
         this.setAscending( DEFAULT_SORT_ORDER );
-        doBinarySearch( userQuery );
+
+        SolrQuery solrQuery = userQuery.createSolrQuery();
+
+        doBinarySearch( solrQuery );
 
     }
 
@@ -420,7 +433,10 @@ public class SearchController extends JpaBaseController {
             userQuery.setUserSortColumn( this.getUserSortColumn());
             userQuery.setUserSortOrder( sortOrder );
             this.setAscending(sortOrder);
-            doBinarySearch( userQuery );
+
+            SolrQuery solrQuery = userQuery.createSolrQuery();
+
+            doBinarySearch( solrQuery );
         }
 
     }
@@ -429,20 +445,12 @@ public class SearchController extends JpaBaseController {
     // Getters & Setters
     /////////////////////
 
-    public SearchResultDataModel getResults() {
+    public SolrSearchResultDataModel getResults() {
         return results;
     }
 
-    public void setResults( SearchResultDataModel results ) {
+    public void setResults( SolrSearchResultDataModel results ) {
         this.results = results;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize( int pageSize ) {
-        this.pageSize = pageSize;
     }
 
     public boolean isShowProperties() {

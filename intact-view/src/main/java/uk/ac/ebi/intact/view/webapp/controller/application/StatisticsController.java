@@ -20,10 +20,13 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.solr.client.solrj.SolrServer;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -56,7 +59,7 @@ public class StatisticsController extends JpaBaseController {
         if (log.isInfoEnabled()) log.info("Calculating statistics");
 
         // index stats
-        binaryInteractionCount = WebappUtils.countItemsInIndex(intactViewConfiguration.getDefaultIndexLocation());
+        binaryInteractionCount = countBinaryInteractionsFromIndex();
 
         // database stats
         DaoFactory daoFactory = getDaoFactory();
@@ -64,6 +67,15 @@ public class StatisticsController extends JpaBaseController {
         proteinCount = daoFactory.getProteinDao().countAll();
         experimentCount = daoFactory.getExperimentDao().countAll();
         cvTermsCount = daoFactory.getCvObjectDao().countAll();
+    }
+
+    private int countBinaryInteractionsFromIndex() {
+        SolrServer solrServer = intactViewConfiguration.getOntologySolrServer();
+        IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
+
+        final SolrSearchResult result = searcher.search("*:*", 0, 0);
+        int count = Long.valueOf(result.getTotalCount()).intValue();
+        return count;
     }
 
     public int getCvTermsCount() {

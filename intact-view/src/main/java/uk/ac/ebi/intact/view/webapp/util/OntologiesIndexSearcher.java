@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.view.webapp.util;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
@@ -64,7 +65,7 @@ public class OntologiesIndexSearcher {
 
     public List<OntologyTerm> search(String strQuery) throws IOException, ParseException {
         QueryParser queryParser = new QueryParser("identifier", new StandardAnalyzer());
-        return search(queryParser.parse(strQuery), new Sort("label_sorted"));
+        return search(queryParser.parse(strQuery), new Sort("count", true));
     }
 
     public List<OntologyTerm> search(Query query, Sort sort) throws IOException {
@@ -91,6 +92,8 @@ public class OntologiesIndexSearcher {
         String label = document.getField("label").stringValue();
         String databaseLabel = document.getField("databaseLabel").stringValue();
 
-        return new OntologyTerm(identifier, label, databaseLabel);
+        int count = Integer.parseInt(document.getField("count").stringValue());
+
+        return new OntologyTerm(identifier, label, databaseLabel, count);
     }
 }

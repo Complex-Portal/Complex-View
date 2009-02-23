@@ -23,4 +23,18 @@
         </tr:group>
     </tr:panelGroupLayout>
 
+    <tr:showDetail disclosedText="Close filters" undisclosedText="Show filters">
+        <tr:panelGroupLayout>
+           <ui:decorate template="/pages/search/filters.xhtml">
+               <ui:define name="actions_bottom">
+                   <tr:panelHorizontalLayout halign="right" inlineStyle="width:100%">
+                        <tr:commandButton text="Filter results" action="#{searchBean.doBinarySearchAction}"/>
+                   </tr:panelHorizontalLayout>
+               </ui:define>
+           </ui:decorate>
+        </tr:panelGroupLayout>
+        
+    </tr:showDetail>
+
+
 </ui:composition>

@@ -29,7 +29,7 @@
 <tr:table id="interactionResults" value="#{searchBean.results}" var="binaryInteraction" varStatus="status"
           summary="Binary Interactions"
           emptyText="No interactions found matching the query."
-          rows="#{searchBean.pageSize}" rowBandingInterval="1"
+          rows="#{userQuery.pageSize}" rowBandingInterval="1"
           partialTriggers=":interactionResults:btnToogleProps  :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn :interactionResults:listSortableColumns :interactionResults:listSortableColumnsOrder">
 
 <f:facet name="actions">
@@ -41,32 +41,8 @@
         <tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"
                                  value="#{searchBean.results}"
                                  rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
-                                 rendered="#{searchBean.results.rowCount gt searchBean.pageSize}"/>
- <!--
-        <tr:panelHorizontalLayout>
-            <f:facet name="separator">
-                <tr:outputFormatted value="&#160;"/>
-            </f:facet>
+                                 rendered="#{searchBean.results.rowCount gt userQuery.pageSize}"/>
 
-            <strong>
-                <tr:outputText value="View: "/>
-            </strong>
-
-            <tr:commandLink id="btnStandardView"
-                            text="Standard" disabled="#{!searchBean.expandedView}"
-                            partialSubmit="true" inlineStyle="white-space:nowrap;">
-                <f:setPropertyActionListener value="#{false}"
-                                             target="#{searchBean.expandedView}"/>
-             </tr:commandLink>
-            <tr:outputText value="-"/>
-            <tr:commandLink id="btnExpandedView"
-                            text="Extended" disabled="#{searchBean.expandedView}"
-                            partialSubmit="true" inlineStyle="white-space:nowrap;">
-                <f:setPropertyActionListener value="#{true}"
-                                             target="#{searchBean.expandedView}"/>
-            </tr:commandLink>
-        </tr:panelHorizontalLayout>
--->
         <tr:commandLink id="btnToogleProps" immediate="true" rendered="#{searchBean.expandedView}"
                         text="#{searchBean.showProperties? 'Hide all properties' : 'Show all properties'}"
                         partialSubmit="true" inlineStyle="white-space:nowrap;">
@@ -118,37 +94,7 @@
 
 <tr:column headerText="#{messages['moleculeA.name']}" sortable="true" sortProperty="idA_s"  styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
    <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
-   <!-- <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="defaultType">
-        <f:facet name="MI:0326">--><!-- Protein MI identifier--><!--
-            <h:panelGroup>
-                <tr:iterator var="alias" value="#{binaryInteraction.interactorA.aliases}"
-                             varStatus="rowStatus" rows="0">
-                    <tr:outputText value="#{alias.name}"/>
-                    <tr:outputText value="; "
-                                   rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorA.aliases)}"/>
-                </tr:iterator>
 
-                --><!-- HACK: Aparently we can find at this moment proteins with commercial/drug band names, that come from Drugbank --><!--
-                <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
-                             rows="0" rendered="#{empty binaryInteraction.interactorA.aliases}">
-                    <h:panelGroup rendered="#{altid.text == 'commercial name'}">
-                        <tr:outputText value="#{altid.identifier}"/>
-                    </h:panelGroup>
-                </tr:iterator>
-            </h:panelGroup>
-        </f:facet>
-        <f:facet name="MI:0328">--><!-- Smallmolecule MI identifier--><!--
-            <tr:iterator var="altid" value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
-                         rows="0">
-                <h:panelGroup rendered="#{altid.text == 'commercial name'}">
-                    <tr:outputText value="#{altid.identifier}"/>
-                </h:panelGroup>
-            </tr:iterator>
-        </f:facet>
-        <f:facet name="defaultType">
-            <iav:xrefDataList value="#{binaryInteraction.interactorA.aliases}"/>
-        </f:facet>
-    </tr:switcher>-->
     <!--For MoleculeTye, Role Initials -->
     <trh:tableLayout borderWidth="0"
                      cellSpacing="0"
@@ -219,39 +165,7 @@
 
 <tr:column headerText="#{messages['moleculeB.name']}" sortable="true" sortProperty="idB_s" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.name')}">
     <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorB)}"/>
-    <!--<tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="defaultType">
-        <f:facet name="MI:0326">--><!-- Protein MI identifier--><!--
-            <h:panelGroup>
-                <tr:iterator var="alias" value="#{binaryInteraction.interactorB.aliases}"
-                             varStatus="rowStatus" rows="0">
-                    <tr:outputText value="#{alias.name}"/>
-                    <tr:outputText value="; "
-                                   rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorB.aliases)}"/>
-                </tr:iterator>
-
-                --><!-- HACK: Aparently we can find at this moment proteins with commercial/drug band names, that come from Drugbank --><!--
-                <tr:iterator var="altid" value="#{binaryInteraction.interactorB.alternativeIdentifiers}"
-                             rows="0" rendered="#{empty binaryInteraction.interactorB.aliases}">
-                    <h:panelGroup rendered="#{altid.text == 'commercial name'}">
-                        <tr:outputText value="#{altid.identifier}"/>
-                    </h:panelGroup>
-                </tr:iterator>
-            </h:panelGroup>
-        </f:facet>
-        <f:facet name="MI:0328">--><!-- Smallmolecule MI identifier--><!--
-            <tr:iterator var="altid" value="#{binaryInteraction.interactorB.alternativeIdentifiers}"
-                         varStatus="rowStatus" rows="0">
-                <h:panelGroup rendered="#{altid.text == 'commercial name'}">
-                    <tr:outputText value="#{altid.identifier}"/>
-                    <tr:outputText value="; "
-                                   rendered="#{rowStatus.index + 1 lt fn:length(binaryInteraction.interactorB.alternativeIdentifiers)}"/>
-                </h:panelGroup>
-            </tr:iterator>
-        </f:facet>
-        <f:facet name="defaultType">
-            <iav:xrefDataList value="#{binaryInteraction.interactorB.aliases}"/>
-        </f:facet>
-    </tr:switcher>-->
+    
     <!--For MoleculeTye, Role Initials for Target-->
      <trh:tableLayout borderWidth="0"
                      cellSpacing="0"

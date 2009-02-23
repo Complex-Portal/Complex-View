@@ -16,11 +16,9 @@
 package uk.ac.ebi.intact.view.webapp.io;
 
 import org.apache.lucene.search.Sort;
-import org.apache.commons.io.IOUtils;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrQuery;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -47,6 +45,8 @@ import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 
 /**
  * Exports to MITAB
@@ -56,18 +56,18 @@ import uk.ac.ebi.intact.view.webapp.IntactViewException;
  */
 public class BinaryInteractionsExporter {
 
-    private String luceneIndex;
+    private SolrServer solrServer;
     private String sortColumn;
-    private boolean sortAscendant;
+    private SolrQuery.ORDER sortOrder;
 
-    public BinaryInteractionsExporter(String luceneIndex) {
-        this.luceneIndex = luceneIndex;
+    public BinaryInteractionsExporter(SolrServer solrServer) {
+        this.solrServer = solrServer;
     }
 
-    public BinaryInteractionsExporter(String luceneIndex, String sortColumn, boolean sortAscendant) {
-        this.luceneIndex = luceneIndex;
+    public BinaryInteractionsExporter(SolrServer solrServer, String sortColumn, SolrQuery.ORDER sortOrder) {
+        this(solrServer);
         this.sortColumn = sortColumn;
-        this.sortAscendant = sortAscendant;
+        this.sortOrder = sortOrder;
     }
 
     public void searchAndExport(OutputStream os, String searchQuery, String format) throws IOException {
@@ -85,75 +85,40 @@ public class BinaryInteractionsExporter {
     }
     
      public void exportToMiTab(OutputStream os, String searchQuery) throws IOException {
-        Writer out = new OutputStreamWriter(os);
-
-        String indexDir = luceneIndex;
-
-        List interactions;
-        Integer firstResult = 0;
-        Integer maxResults = 50;
-
-        boolean headerEnabled = true;
-
-        do {
-
-            Sort sort = null;
-
-            if (sortColumn != null && sortColumn.length() > 0) {
-                sort = new Sort(sortColumn, !sortAscendant);
-            }
-
-            SearchResult result = Searcher.search(searchQuery, indexDir, firstResult, maxResults, sort);
-            interactions = result.getData();
-
-            PsimiTabWriter writer = new PsimiTabWriter();
-            writer.setHeaderEnabled(headerEnabled);
-            try {
-                writer.write(interactions, out);
-            } catch (ConverterException e) {
-                throw new IntactViewException("Problem exporting interactions", e);
-            }
-
-            headerEnabled = false;
-
-            firstResult = firstResult + maxResults;
-
-            out.flush();
-
-        } while (!interactions.isEmpty());
+         PsimiTabWriter writer = new PsimiTabWriter();
+         Writer out = new OutputStreamWriter(os);
+         writeMitab(out, writer, searchQuery);
     }
 
-    private void exportToMiTabIntact(OutputStream os, String searchQuery) throws IOException, IntactViewException {
-        Writer out = new OutputStreamWriter(os, "UTF-8");
+     private void exportToMiTabIntact(OutputStream os, String searchQuery) throws IOException, IntactViewException {
+         PsimiTabWriter writer = new IntactPsimiTabWriter();
+         Writer out = new OutputStreamWriter(os);
+         writeMitab(out, writer, searchQuery);
+    }
 
-        String indexDir = luceneIndex;
-
-        List interactions;
+    private void writeMitab(Writer out, PsimiTabWriter writer, String searchQuery) throws IOException {
         Integer firstResult = 0;
         Integer maxResults = 50;
 
         boolean headerEnabled = true;
 
+        Collection interactions;
+
         do {
+            SolrQuery query = new SolrQuery(searchQuery);
+            query.setStart(firstResult);
+            query.setRows(maxResults);
 
-            Sort sort = null;
-
-            if (sortColumn != null && sortColumn.length() > 0) {
-                sort = new Sort(sortColumn, !sortAscendant);
+            if (sortColumn != null) {
+                query.setSortField(sortColumn, sortOrder);
             }
 
-            IntactSearchEngine engine;
-            try {
-                engine = new IntactSearchEngine(indexDir);
-            }
-            catch (IOException e) {
-                throw new SearchEngineException(e);
-            }
+            IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
+            SolrSearchResult result = searcher.search(query);
 
-            SearchResult<IntactBinaryInteraction> result = engine.search(searchQuery, firstResult, maxResults, sort);
-            interactions = result.getData();
+            interactions = result.getBinaryInteractionList();
 
-            PsimiTabWriter writer = new IntactPsimiTabWriter();
+
             writer.setHeaderEnabled(headerEnabled);
             try {
                 writer.write(interactions, out);
@@ -178,22 +143,17 @@ public class BinaryInteractionsExporter {
     public void exportToMiXml(OutputStream os, String searchQuery,String format) throws IOException {
         Writer out = new OutputStreamWriter(os, "UTF-8");
 
-        IntactSearchEngine engine;
-            try {
-                engine = new IntactSearchEngine(luceneIndex);
-            }
-            catch (IOException e) {
-                throw new SearchEngineException(e);
-            }
+        IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
 
         // count first as a security measure
-        SearchResult<IntactBinaryInteraction> result1 = engine.search(searchQuery, 0, 1);
+        SolrSearchResult result1 = searcher.search(searchQuery, 0, 0);
+
         if (result1.getTotalCount() > 1000) {
             throw new IntactViewException("Too many interactions to export to XML. Maximum is 1000");
         }
 
-        SearchResult<IntactBinaryInteraction> result = engine.search(searchQuery, null, null);
-        Collection<IntactBinaryInteraction> interactions = result.getData();
+        SolrSearchResult result = searcher.search(searchQuery, null, null);
+        Collection<IntactBinaryInteraction> interactions = result.getBinaryInteractionList();
 
         Tab2Xml tab2Xml = new IntactTab2Xml();
 

@@ -22,8 +22,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.Index;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.commons.util.DesEncrypter;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
@@ -56,99 +54,12 @@ public class WebappUtils {
     private WebappUtils() {
     }
 
-    public static SearchConfig readConfiguration(String configFileXml) throws IntactViewException {
-        File file = new File(configFileXml);
-
-        if (!file.exists()) return null;
-        if (file.isDirectory()) return null;
-
-        SearchConfig config;
-        try {
-            config = (SearchConfig) readConfigXml(new FileInputStream(file));
-        }
-        catch (Exception e) {
-            throw new IntactViewException(e);
-        }
-
-        return config;
-    }
-
-    public static synchronized void writeConfiguration(SearchConfig config, OutputStream output) {
-        try {
-            JAXBContext jc = JAXBContext.newInstance(SearchConfig.class.getPackage().getName());
-            Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(config, output);
-        }
-        catch (JAXBException e) {
-            throw new IntactViewException(e);
-        }
-    }
-
-    public static void writeConfiguration(SearchConfig config, File outputFile) {
-        try {
-            FileOutputStream fos = new FileOutputStream(outputFile);
-            writeConfiguration(config, fos);
-            fos.close();
-        }
-        catch (IOException e) {
-            throw new IntactViewException(e);
-        }
-    }
-
-    public static Index getDefaultInteractionIndex(SearchConfig config) {
-        for (Index index : config.getInteractionIndices()) {
-            if (index.isDefault()) {
-                return index;
-            }
-        }
-
-        return null;
-    }
-
-    public static Index getDefaultInteractorIndex(SearchConfig config) {
-        for (Index index : config.getInteractorIndices()) {
-            if (index.isDefault()) {
-                return index;
-            }
-        }
-
-        return null;
-    }
-
-    public static Index getDefaultOntologiesIndex(SearchConfig config) {
-        for (Index index : config.getOntologiesIndices()) {
-            if (index.isDefault()) {
-                return index;
-            }
-        }
-
-        return null;
-    }
-
-    private static Object readConfigXml(InputStream is) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(SearchConfig.class.getPackage().getName());
-        Unmarshaller unmarshaller = jc.createUnmarshaller();
-        return unmarshaller.unmarshal(is);
-    }
-
     public static String encrypt(FacesContext facesContext, String str) throws IntactViewException {
         return new DesEncrypter(secretKey(facesContext)).encrypt(str);
     }
 
     public static String decrypt(FacesContext facesContext, String str) throws IntactViewException {
         return new DesEncrypter(secretKey(facesContext)).decrypt(str);
-    }
-
-    public static int countItemsInIndex(String directory) throws IOException {
-        Directory indexDir = FSDirectory.getDirectory(directory);
-
-        IndexReader reader = new IndexSearcher(indexDir).getIndexReader();
-        int items = reader.maxDoc();
-        reader.close();
-
-        return items;
     }
 
     private static SecretKey secretKey(FacesContext facesContext) {

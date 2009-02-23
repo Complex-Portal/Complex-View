@@ -18,9 +18,11 @@ package uk.ac.ebi.intact.view.webapp.controller.browse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.solr.client.solrj.SolrQuery;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
+import uk.ac.ebi.intact.bridges.ontologies.OntologyIndexSearcher;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.view.webapp.controller.application.IndexRequestController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.view.webapp.util.ChebiOntologyTerm;
@@ -40,9 +42,6 @@ import javax.annotation.PostConstruct;
 public class ChebiBrowserController extends BaseController {
 
     @Autowired
-    private IndexRequestController indexRequestController;
-
-    @Autowired
     private SearchController searchController;
 
     @Autowired
@@ -56,10 +55,15 @@ public class ChebiBrowserController extends BaseController {
 
     @PostConstruct
     public void init() {
-        String searchQuery = userQuery.getCurrentQuery();
-        String luceneQuery = searchController.getResults().getResult().getLuceneQuery().toString();
+        SolrQuery query = userQuery.createSolrQuery();
 
-        final OntologyTerm chebiOntologyRoot = new ChebiOntologyTerm( indexRequestController.getOntologyIndexSearcher() );
+        // TODO fix this
+        String luceneQuery = "";
+        String searchQuery = null;
+        OntologyIndexSearcher searcher = null;
+        //String luceneQuery = searchController.getResults().getResult().getLuceneQuery().toString();
+
+        final OntologyTerm chebiOntologyRoot = new ChebiOntologyTerm( searcher );
         chebiOntologyTreeModel = new OntologyTreeModel( chebiOntologyRoot,
                                                         null,
                                                         null,

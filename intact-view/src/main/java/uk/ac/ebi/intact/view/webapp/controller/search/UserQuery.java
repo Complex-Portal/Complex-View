@@ -17,7 +17,9 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -43,24 +45,18 @@ public class UserQuery {
     private String searchQuery;
     private String ontologySearchQuery;
 
-    private String interactorTypeMi;
-    private String[] interactorTypeMis;
-
     private String[] datasets;
     private String[] sources;
     private String[] expansions;
 
-    private List<SearchFilter> interactionFilters;
-    private List<SearchFilter> interactorFilters;
-
     //for sorting and ordering
-    private static final String DEFAULT_SORT_COLUMN = "relevancescore_s";
+    private static final String DEFAULT_SORT_COLUMN = "relevancescore";
     private static final boolean DEFAULT_SORT_ORDER = true;
-
 
     private String userSortColumn = DEFAULT_SORT_COLUMN;
     private boolean userSortOrder = DEFAULT_SORT_ORDER;
 
+    private int pageSize = 30;
 
     public UserQuery() {
     }
@@ -69,9 +65,6 @@ public class UserQuery {
     public void reset() {
         this.searchQuery = null;
         this.ontologySearchQuery = null;
-        this.interactionFilters = new LinkedList<SearchFilter>();
-        this.interactorFilters = new LinkedList<SearchFilter>();
-
         this.userSortColumn = DEFAULT_SORT_COLUMN;
         this.userSortOrder = DEFAULT_SORT_ORDER;
 
@@ -82,98 +75,95 @@ public class UserQuery {
         }
     }
 
-    public void clearSearchFilters(ActionEvent evt) {
-        removeClearableFilters();
-    }
-
-    public void removeClearableFilters() {
-        removeClearableFilters(interactionFilters);
-        removeClearableFilters(interactorFilters);
-    }
-
-    protected void removeClearableFilters(Collection<SearchFilter> filters) {
-        for (Iterator<SearchFilter> filterIterator = filters.iterator(); filterIterator.hasNext();) {
-            SearchFilter searchFilter =  filterIterator.next();
-            if (searchFilter.isClearable()) {
-                filterIterator.remove();
-            }
+    public SolrQuery createSolrQuery() {
+        if (searchQuery == null || searchQuery.equals("*") || searchQuery.equals("?")) {
+            searchQuery = "*:*";
         }
-    }
-    
-    public String getInteractorQuery() {
-        return createFilteredQuery(interactorFilters);
-    }
+        
+        SolrQuery query = new SolrQuery(searchQuery);
+        query.setSortField(userSortColumn, (userSortOrder)? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+        query.setRows(pageSize);
 
-    public String getInteractionQuery() {
-        return createFilteredQuery(interactionFilters);
-    }
-
-    protected String createFilteredQuery(Collection<SearchFilter> filters) {
-        StringBuilder sbQuery = new StringBuilder(filters.size() * 32);
-
-        for (SearchFilter filter : filters) {
-
-            String filterLucene = filter.toLuceneSyntax();
-
-            if (filterLucene.length() > 0) {
-                if (filter.isNegated()) {
-                    if (!filterLucene.startsWith("-")) sbQuery.append("-");
-                } else {
-                    if (!filterLucene.startsWith("+")) sbQuery.append("+");
-                }
-                
-                sbQuery.append(filterLucene);
-                sbQuery.append(" ");
-            }
-
+        if (ontologySearchQuery != null) {
+            String ontologySearch = escapeIfNecessary(ontologySearchQuery);
+            
+            query.addFilterQuery("+(detmethod:"+ontologySearch+" type:"+ontologySearch+" properties:"+ontologySearch+")");
         }
 
-        return sbQuery.toString().trim();
-    }
-    
-    private String prepareOntologyQuery(String ontologySearchQuery) {
-        String identifier = escapeIfNecessary(ontologySearchQuery);
-        return "(detmethod:"+identifier+" type:"+identifier+" properties:"+identifier+")";
+        addFilteredQuery(query, "dataset", filterPopulator.getDatasets(), datasets);
+        addFilteredQuery(query, "source", filterPopulator.getSources(), sources);
+        addFilteredQuery(query, "expansion", filterPopulator.getExpansions(), expansions);
+
+        return query;
     }
 
     public String getDisplayQuery() {
-        if (interactionFilters.isEmpty()) {
-            return "*";
+        return searchQuery + (isUsingFilters()? " (using filters)" : "");
+    }
+
+    public boolean isUsingFilters() {
+        return createSolrQuery().getFilterQueries().length > 0;
+    }
+
+    private void addFilteredQuery(SolrQuery query, String field, Collection<String> allItems, String[] selectedItems) {
+
+        if (allItems.size() == selectedItems.length) {
+            // all items are selected - nothing to be done
+            return;
         }
 
-        List<SearchFilter> nonEmptyFilters = new ArrayList<SearchFilter>();
+        Collection<String> included;
 
-        for (SearchFilter filter : interactionFilters) {
-            if (filter.toDisplay().length() > 0) {
-                nonEmptyFilters.add(filter);
-            }
+        if (!containsNotSpecified(selectedItems)) {
+            included = Arrays.asList(selectedItems);
+        } else {
+            included = Collections.EMPTY_LIST;
         }
 
-        return StringUtils.join(nonEmptyFilters, " AND ");
+        Collection<String> excluded;
+
+        if (containsNotSpecified(selectedItems)) {
+            excluded = CollectionUtils.subtract(allItems, Arrays.asList(selectedItems));
+        } else {
+            excluded = Collections.EMPTY_LIST;
+        }
+
+        if (!included.isEmpty()) {
+            String lq = createLuceneQuery(included);
+            query.addFilterQuery("+"+field+":"+lq);
+        }
+
+        if (!excluded.isEmpty()) {
+            String lq = createLuceneQuery(excluded);
+            query.addFilterQuery("-"+field+":"+lq);
+        }
+    }
+
+    private String createLuceneQuery(Collection<String> items) {
+        StringBuilder sb = new StringBuilder(items.size()*64);
+
+        sb.append('(');
+
+        for (String item : items) {
+            sb.append('\"').append(item).append("\" ");
+
+        }
+        sb.append(')');
+        return sb.toString();
+    }
+
+    public Collection<String> getDatasetsToInclude() {
+        if (!containsNotSpecified(datasets)) {
+            return Arrays.asList(datasets);
+        }
+        return Collections.EMPTY_LIST;
     }
 
     public boolean isCurrentOntologyQuery() {
         return (searchQuery == null && ontologySearchQuery != null);
     }
 
-    public String getCurrentQuery() {
-        String query;
-        if ( isCurrentOntologyQuery() ) {
-            query = ontologySearchQuery;
-        } else {
-            query = searchQuery;
-        }
-
-        if ("*".equals(query) || "?".equals(query)) {
-            query = "";
-        } 
-
-        query = escapeIfNecessary(query);
-
-        return query;
-    }
-
-     private String escapeIfNecessary( String query ) {
+        private String escapeIfNecessary( String query ) {
         query = query.trim();
 
          if (query.startsWith("\"") && query.endsWith("\"")) {
@@ -192,20 +182,8 @@ public class UserQuery {
     }
 
     public void setSearchQuery(String searchQuery) {
-        removeSearches();
-
         this.searchQuery = searchQuery;
         this.ontologySearchQuery = null;
-
-        if (searchQuery != null && !"*".equals(searchQuery) && !"?".equals(searchQuery)) {
-            final SimpleFilter searchFilter = new SimpleFilter(searchQuery, false);
-            interactionFilters.add(searchFilter);
-            interactorFilters.add(searchFilter);
-        }
-    }
-
-    public void removeCurrentSearchQuery() {
-        removeFiltersWithDisplayValue(this.searchQuery);
     }
 
     public String getOntologySearchQuery() {
@@ -213,87 +191,17 @@ public class UserQuery {
     }
 
     public void setOntologySearchQuery(String ontologySearchQuery) {
-        removeSearches();
-
         this.ontologySearchQuery = ontologySearchQuery;
         this.searchQuery = null;
-
-        if (ontologySearchQuery != null) {
-            final SimpleFilter searchFilter = new SimpleFilter(prepareOntologyQuery(ontologySearchQuery), null, false, ontologySearchQuery);
-            interactionFilters.add(searchFilter);
-            interactorFilters.add(searchFilter);
-        }
     }
 
-    public void removeCurrentOntologySearchQuery() {
-        removeFiltersWithDisplayValue(this.ontologySearchQuery);
-    }
-
-    public void removeSearches() {
-        removeFiltersWithDisplayValue(this.searchQuery);
-        removeFiltersWithDisplayValue(this.ontologySearchQuery);
-    }
-
-    private void removeFiltersWithDisplayValue(String searchQuery) {
-        removeFilterWithDisplayValue(searchQuery, interactionFilters);
-        removeFilterWithDisplayValue(searchQuery, interactorFilters);
-    }
-
-    private void removeFilterWithDisplayValue(String searchQuery, Collection<SearchFilter> filters) {
-        for (Iterator<SearchFilter> searchFilterIterator = filters.iterator(); searchFilterIterator.hasNext();) {
-            SearchFilter searchFilter = searchFilterIterator.next();
-
-            if (searchFilter.getDisplayValue().equals(searchQuery)) {
-                searchFilterIterator.remove();
-            }
-        }
-    }
-
-    private void removeFiltersWithField(String field) {
-        removeFiltersWithField(field, interactionFilters);
-        removeFiltersWithField(field, interactorFilters);
-    }
-
-    private void removeFiltersWithField(String field, Collection<SearchFilter> filters) {
-        if (field == null) return;
-
-        for (Iterator<SearchFilter> searchFilterIterator = filters.iterator(); searchFilterIterator.hasNext();) {
-            SearchFilter searchFilter = searchFilterIterator.next();
-
-            if (field.equals(searchFilter.getField())) {
-                searchFilterIterator.remove();
-            }
-        }
-    }
-
-    private DisjunctionSearchFilter createDisjunctionFilter(String[] sources, String field) {
-        List<SearchFilter> filters = new ArrayList<SearchFilter>();
-
-        if (sources != null) {
-            for (String source : sources) {
-                final SimpleFilter searchFilter = new SimpleFilter(source, field, true);
-                filters.add(searchFilter);
-            }
-        }
-
-        return new DisjunctionSearchFilter(filters, field);
-    }
 
     public String[] getSources() {
         return sources;
     }
 
     public void setSources(String[] sources) {
-        removeFiltersWithField("source");
-
         this.sources = sources;
-
-        if (sources != null && sources.length > 0) {
-            DisjunctionSearchFilter disjFilter = createDisjunctionFilter(sources, "source");
-
-            interactionFilters.add(disjFilter);
-            interactorFilters.add(disjFilter);
-        }
     }
 
     public String[] getDatasets() {
@@ -301,29 +209,7 @@ public class UserQuery {
     }
 
     public void setDatasets(String[] datasets) {
-        removeFiltersWithField("dataset");
-
         this.datasets = datasets;
-
-        // If the 'not specified' item is selected, we exclude for the search those items
-        // in the list wich are not selected.
-        DisjunctionSearchFilter disjFilter = null;
-
-        if (datasets != null && datasets.length > 0) {
-            if (containsNotSpecified(datasets)) {
-               List<String> allDatasets = filterPopulator.getDatasets();
-               Collection<String> unselectedDatasets = CollectionUtils.subtract(allDatasets, Arrays.asList(datasets));
-
-                disjFilter = createDisjunctionFilter(unselectedDatasets.toArray(new String[unselectedDatasets.size()]), "dataset");
-                disjFilter.setNegated(true);
-                
-            } else {
-                disjFilter = createDisjunctionFilter(datasets, "dataset");
-            }
-        }
-
-        interactionFilters.add(disjFilter);
-        interactorFilters.add(disjFilter);
     }
 
     public String[] getExpansions() {
@@ -331,89 +217,20 @@ public class UserQuery {
     }
 
     public void setExpansions(String[] expansions) {
-        removeFiltersWithField("expansion");
-
         this.expansions = expansions;
-
-        if (expansions == null) return;
-
-        // exclude spoke expansions if the spoke checkbox is not selected
-
-        boolean spokeSelected = false;
-
-        for (String expansion : expansions) {
-            if (FilterPopulatorController.EXPANSION_SPOKE_VALUE.equals(expansion)) {
-                spokeSelected = true;
-            }
-        }
-
-        if (!spokeSelected) {
-            SimpleFilter filter = new SimpleFilter("Spoke", "expansion", true, "Spoke Expansion");
-            filter.setNegated(true);
-            
-            interactionFilters.add(filter);
-            interactorFilters.add(filter);
-        }
     }
 
     public static boolean containsNotSpecified(String[] values) {
         for (String value : values) {
-            if (FilterPopulatorController.NOT_SPECIFIED_VALUE.equals(value)) {
+            if (isNotSpecified(value)) {
                 return true;
             }
         }
         return false;
     }
 
-    public void addProperty(String term) {
-        if (term == null) return;
-
-        interactionFilters.add(new SimpleFilter(term, "properties", true));
-        interactorFilters.add(new SimpleFilter(term, "propertiesA", true));
-    }
-
-    public String getInteractorTypeMi() {
-        return interactorTypeMi;
-    }
-
-    public void setInteractorTypeMi(String interactorTypeMi) {
-        removeFiltersWithField("typeA");
-
-        this.interactorTypeMi = interactorTypeMi;
-
-        if (interactorTypeMi != null) {
-            final SimpleFilter searchFilter = new SimpleFilter(interactorTypeMi, "typeA", true);
-            interactorFilters.add(searchFilter);
-        }
-    }
-
-    public String[] getInteractorTypeMis() {
-        return interactorTypeMis;
-    }
-
-    public void setInteractorTypeMis( String[] interactorTypeMis ) {
-        removeFiltersWithField( "typeA" );
-
-        DisjunctionSearchFilter disjFilter = createDisjunctionFilter(interactorTypeMis, "typeA");
-        interactorFilters.add( disjFilter );
-
-        this.interactorTypeMis = interactorTypeMis;
-    }
-
-    public List<SearchFilter> getInteractionFilters() {
-        return interactionFilters;
-    }
-
-    public void setInteractionFilters(List<SearchFilter> interactionFilters) {
-        this.interactionFilters = interactionFilters;
-    }
-
-    public List<SearchFilter> getInteractorFilters() {
-        return interactorFilters;
-    }
-
-    public void setInteractorFilters(List<SearchFilter> interactorFilters) {
-        this.interactorFilters = interactorFilters;
+    private static boolean isNotSpecified(String value) {
+        return FilterPopulatorController.NOT_SPECIFIED_VALUE.equals(value);
     }
 
     public String getUserSortColumn() {
@@ -430,5 +247,13 @@ public class UserQuery {
 
     public void setUserSortOrder( boolean userSortOrder ) {
         this.userSortOrder = userSortOrder;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 }

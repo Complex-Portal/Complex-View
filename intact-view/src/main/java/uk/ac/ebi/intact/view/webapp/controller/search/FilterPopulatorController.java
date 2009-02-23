@@ -64,52 +64,77 @@ public class FilterPopulatorController {
 
         if (log.isDebugEnabled()) log.debug("\tPreloading datasets");
 
-        datasets = listDatasets();
-        datasetSelectItems = createSelectItems(datasets);
+        datasetSelectItems = listDatasets();
+        datasets = getValues(datasetSelectItems);
 
         if (log.isDebugEnabled()) log.debug("\tPreloading sources");
 
-        sources = listSources();
-        sourceSelectItems = createSelectItems(sources);
+        sourceSelectItems = listSources();
+        sources = getValues(sourceSelectItems);
 
          if (log.isDebugEnabled()) log.debug("\tPreloading expansions");
 
-        expansions = listExpansions();
-        expansionSelectItems = createSelectItems(expansions);
+        expansionSelectItems = listExpansionSelectItems();
+        expansions = getValues(expansionSelectItems);
     }
 
-    private List<SelectItem> createSelectItems(Collection<String> values) {
-        List<SelectItem> selectItems = new ArrayList<SelectItem>();
+    private List<String> getValues(Collection<SelectItem> selectItems) {
+        List<String> values = new ArrayList<String>();
 
-        for (String value : values) {
-            selectItems.add(new SelectItem(value));
+        for (SelectItem selectItem : selectItems) {
+            values.add((String)selectItem.getValue());
         }
 
-        return selectItems;
+        return values;
     }
 
-    private List<String> listDatasets() {
+    private List<SelectItem> listDatasets() {
         Query query = entityManagerFactory.createEntityManager().createQuery("select distinct a.annotationText from Annotation a " +
                                                 "where a.cvTopic.identifier = :datasetMi");
         query.setParameter("datasetMi", CvTopic.DATASET_MI_REF);
 
         List<String> datasetResults = query.getResultList();
 
-        List<String> datasets = new ArrayList<String>(datasetResults);
-        datasets.add(NOT_SPECIFIED_VALUE);
+        List<SelectItem> datasets = new ArrayList<SelectItem>(datasetResults.size()+1);
+
+        for (String dataset : datasetResults) {
+            String[] ds = dataset.split("-");
+            String value;
+            String description;
+
+            if (ds.length > 1) {
+                value = ds[0].trim();
+                description = ds[1].trim();
+            } else {
+                value = ds[0];
+                description = ds[0];
+            }
+
+            datasets.add(new SelectItem(dataset, value, description));
+        }
+
+        datasets.add(new SelectItem(NOT_SPECIFIED_VALUE));
 
         return datasets;
     }
 
-    private List<String> listSources() {
+    private List<SelectItem> listSources() {
         Query query = entityManagerFactory.createEntityManager().createQuery("select distinct i.owner.shortLabel from InteractionImpl i");
-        return query.getResultList();
+        List<String> sourceResults = query.getResultList();
+
+        List<SelectItem> sources = new ArrayList<SelectItem>(sourceResults.size());
+
+        for (String source : sourceResults) {
+            sources.add(new SelectItem(source));
+        }
+
+        return sources;
     }
 
-    private List<String> listExpansions() {
-        List<String> expansions = new ArrayList<String>(2);
-        expansions.add("Reported as real binary");
-        expansions.add(EXPANSION_SPOKE_VALUE);
+    private List<SelectItem> listExpansionSelectItems() {
+        List<SelectItem> expansions = new ArrayList<SelectItem>(2);
+        expansions.add(new SelectItem(NOT_SPECIFIED_VALUE, "Reported as real binary"));
+        expansions.add(new SelectItem(EXPANSION_SPOKE_VALUE));
 
         return expansions;
     }

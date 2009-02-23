@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 The European Bioinformatics Institute, and others.
+ * Copyright 2009 The European Bioinformatics Institute, and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,90 +11,66 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- *  limitations under the License.
+ * limitations under the License.
  */
 package uk.ac.ebi.intact.view.webapp.model;
 
+import org.apache.myfaces.trinidad.model.SortableModel;
+import org.apache.myfaces.trinidad.model.SortCriterion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.Sort;
-import org.apache.myfaces.trinidad.model.SortCriterion;
-import org.apache.myfaces.trinidad.model.SortableModel;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
+
+import java.io.Serializable;
+import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.engine.SearchEngineException;
-import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
+import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
- * TODO comment this!
+ * TODO comment that class header
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Deprecated
-public class SearchResultDataModel extends SortableModel implements Serializable {
+public class SolrSearchResultDataModel extends SortableModel implements Serializable {
 
-    private static final Log log = LogFactory.getLog(SearchResultDataModel.class);
+    private static final Log log = LogFactory.getLog(SolrSearchResultDataModel.class);
 
-    private static final String DEFAULT_SORT_COLUMN;
+    private static String DEFAULT_SORT_COLUMN = "relevancescore";
 
-    static {
-        //DEFAULT_SORT_COLUMN = new MitabDocumentDefinition().getColumnDefinition(MitabDocumentDefinition.ID_INTERACTOR_A).getSortableColumnName();
+    private SolrQuery solrQuery;
+    private SolrServer solrServer;
 
-        /**
-         * If you set the DEFAULT_SORT_COLUMN as relevanescore_s make sure
-         * you are using the latest index with relevancescore column in it
-         */
-        DEFAULT_SORT_COLUMN = "relevancescore_s";
-    }
-
-    private String searchQuery;
-    private String indexDirectory;
-
-    private SearchResult result;
+    private SolrSearchResult result;
     private int rowIndex = -1;
     private int firstResult = 0;
-    private int pageSize;
 
     private String sortColumn = DEFAULT_SORT_COLUMN;
-    private boolean ascending = true;
+    private SolrQuery.ORDER sortOrder = SolrQuery.ORDER.asc;
 
-    private long elapsedTimeMillis = -1;
-
-    private Map<String,Boolean> columnSorts;
-
-     public SearchResultDataModel(String searchQuery, String indexDirectory, int pageSize) throws TooManyResultsException {
-        this(searchQuery,indexDirectory,pageSize,null);
-     }
-
-    public SearchResultDataModel(String searchQuery, String indexDirectory, int pageSize, UserQuery userQuery) throws TooManyResultsException {
-        this.searchQuery = searchQuery;
-        this.indexDirectory = indexDirectory;
-        this.pageSize = pageSize;
-
-        if ( userQuery != null ) {
-            if ( userQuery.getUserSortColumn() != null ) {
-                this.sortColumn = userQuery.getUserSortColumn();
-            }
-            this.ascending = userQuery.getUserSortOrder();
-        }
-
-        if ( log.isDebugEnabled() ) {
-            log.debug( "SortColumn <-> SortOrder   "+ sortColumn + "<->" + ascending);
-        }
+    private Map<String,SolrQuery.ORDER> columnSorts;
 
 
-        columnSorts = new HashMap<String,Boolean>(16);
+    public SolrSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery) throws TooManyResultsException {
+        this.solrServer = solrServer;
+        this.solrQuery = solrQuery;
+
+        columnSorts = new HashMap<String,SolrQuery.ORDER>(16);
 
         try {
             setRowIndex(0);
@@ -107,34 +83,25 @@ public class SearchResultDataModel extends SortableModel implements Serializable
         setWrappedData(result);
     }
 
-    public void fetchResults() throws SearchEngineException {
-        if (searchQuery == null || searchQuery.length() == 0) {
-            searchQuery = "*";
+    protected void fetchResults() throws SearchEngineException {
+        if (solrQuery == null) {
+            throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
 
-        if (log.isDebugEnabled()) log.debug("Fetching results: "+searchQuery+" - First: "+firstResult+" - Sorting: "+sortColumn+" "+(ascending? "ASC)" : "DESC)"));
+        solrQuery.setStart(firstResult);
 
-        Sort sort = new Sort(sortColumn, !ascending);
-
-        long startTime = System.currentTimeMillis();
-
-        IntactSearchEngine engine;
-        try
-        {
-            engine = new IntactSearchEngine(indexDirectory);
-        }
-        catch (IOException e)
-        {
-            throw new SearchEngineException(e);
+        for (Map.Entry<String,SolrQuery.ORDER> colSortEntry : columnSorts.entrySet()) {
+            solrQuery.addSortField(colSortEntry.getKey(), colSortEntry.getValue());
         }
 
-        this.result = engine.search(searchQuery, firstResult, pageSize, sort);
+        if (log.isDebugEnabled()) log.debug("Fetching results: "+solrQuery);
 
-        elapsedTimeMillis = System.currentTimeMillis() - startTime;
+        IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
+        result = searcher.search(solrQuery);
     }
 
     public int getRowCount() {
-        return result.getTotalCount();
+        return Long.valueOf(result.getTotalCount()).intValue();
     }
 
     public Object getRowData() {
@@ -151,8 +118,9 @@ public class SearchResultDataModel extends SortableModel implements Serializable
             throw new IllegalArgumentException("row is unavailable");
         }
 
-        final IntactBinaryInteraction binaryInteraction = (IntactBinaryInteraction) result.getData().get(rowIndex - result.getFirstResult());
+        List<IntactBinaryInteraction> interactions = new ArrayList<IntactBinaryInteraction>(result.getBinaryInteractionList());
 
+        final IntactBinaryInteraction binaryInteraction = interactions.get(rowIndex - solrQuery.getStart());
         return binaryInteraction;
     }
 
@@ -173,7 +141,7 @@ public class SearchResultDataModel extends SortableModel implements Serializable
     }
 
     protected boolean isRowWithinResultRange() {
-        return (getRowIndex() >= firstResult) && (getRowIndex() < (firstResult+pageSize));
+        return (getRowIndex() >= firstResult) && (getRowIndex() < (firstResult+solrQuery.getRows()));
     }
 
     public void setRowIndex(int rowIndex) {
@@ -205,11 +173,12 @@ public class SearchResultDataModel extends SortableModel implements Serializable
             this.sortColumn = criterion.getProperty();
 
             if (columnSorts.containsKey(sortColumn)) {
-                this.ascending = !columnSorts.get(sortColumn);
+                SolrQuery.ORDER currentOrder = columnSorts.get(sortColumn);
+                sortOrder = currentOrder.reverse();
             } else {
-                this.ascending = criterion.isAscending();
+                sortOrder = SolrQuery.ORDER.asc;
             }
-            columnSorts.put(sortColumn, ascending);
+            columnSorts.put(sortColumn, sortOrder);
 
             if (log.isDebugEnabled())
                 log.debug("\tSorting by '" + criterion.getProperty() + "' " + (criterion.isAscending() ? "ASC" : "DESC"));
@@ -246,12 +215,12 @@ public class SearchResultDataModel extends SortableModel implements Serializable
     }
 
 
-    public SearchResult getResult() {
+    public SolrSearchResult getResult() {
         return result;
     }
 
-    public String getSearchQuery() {
-        return searchQuery;
+    public SolrQuery getSearchQuery() {
+        return solrQuery;
     }
 
     public String getSortColumn() {
@@ -261,33 +230,12 @@ public class SearchResultDataModel extends SortableModel implements Serializable
     public void setSortColumn(String sortColumn) {
         this.sortColumn = sortColumn;
     }
-
-    public boolean isAscending() {
-        return ascending;
-    }
-
-    public void setAscending(boolean ascending) {
-        this.ascending = ascending;
-    }
-
-    public long getElapsedTimeMillis() {
-        return elapsedTimeMillis;
-    }
-
-    public double getElapsedTimeSecs() {
-        return (double)elapsedTimeMillis/1000;
-    }
-
-
+    
     public int getFirstResult() {
         return firstResult;
     }
 
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public String getIndexDirectory() {
-        return indexDirectory;
+    public boolean isAscending() {
+        return (sortOrder == SolrQuery.ORDER.asc);
     }
 }

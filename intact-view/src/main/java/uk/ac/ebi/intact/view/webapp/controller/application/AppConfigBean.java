@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.ac.ebi.intact.binarysearch.webapp.generated.SearchConfig;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
@@ -48,7 +47,6 @@ public class AppConfigBean implements Serializable {
     @Autowired
     private OntologyBean ontologyBean;
 
-    private SearchConfig config;
     private String configFileLocation;
 
     private XrefLinkContext linkContext;
@@ -60,21 +58,11 @@ public class AppConfigBean implements Serializable {
     public void setup() {
         configFileLocation = intactViewConfiguration.getConfigFile();
 
-        if (config == null) {
-            try {
-                if (log.isInfoEnabled()) log.info("Trying to read configuration from: " + configFileLocation);
-                config = WebappUtils.readConfiguration(configFileLocation);
-            }
-            catch (IntactViewException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (config == null) {
+        if (!new File(configFileLocation).exists()) {
             if (log.isInfoEnabled()) log.info("No configuration File found. First time setup");
         } else {
             try {
-                ontologyBean.loadOntologies(config);
+                ontologyBean.loadOntologies();
             } catch (Exception e) {
                 throw new IntactException("Problem loading ontologies", e);
             }
@@ -82,14 +70,6 @@ public class AppConfigBean implements Serializable {
 
         if (log.isInfoEnabled()) log.info("Initializing xref link context...");
         this.linkContext = XrefLinkContextFactory.createDefaultXrefLinkContext();
-    }
-
-    public SearchConfig getConfig() {
-        return config;
-    }
-
-    public void setConfig(SearchConfig config) {
-        this.config = config;
     }
 
     public XrefLinkContext getLinkContext() {

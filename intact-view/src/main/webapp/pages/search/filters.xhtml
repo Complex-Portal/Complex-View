@@ -8,7 +8,10 @@
 
     <tr:panelBox text="Filters">
 
+        <ui:insert name="actions_bottom"/>
+
         <tr:panelFormLayout>
+
             <tr:selectManyCheckbox label="Datasets" value="#{userQuery.datasets}">
                 <f:selectItems value="#{filterPopulator.datasetSelectItems}"/>
             </tr:selectManyCheckbox>
@@ -24,7 +27,10 @@
             <tr:selectManyCheckbox label="Interactions" value="#{userQuery.expansions}">
                 <f:selectItems value="#{filterPopulator.expansionSelectItems}"/>
             </tr:selectManyCheckbox>
+
         </tr:panelFormLayout>
+
+        <ui:insert name="actions_bottom"/>
 
     </tr:panelBox>
 
