@@ -61,6 +61,10 @@
         <das.annotationserver.intact.url>${appRoot}/das-srv/dgi/das/intact/</das.annotationserver.intact.url>
         <das.annotationserver.chebi.url>${appRoot}/das-srv/dgi/das/chebi/</das.annotationserver.chebi.url>
 
+        <!--<intact.recipients/>-->
+        <!--<intact.proxy.host/>-->
+        <!--<intact.proxy.port/>-->
+
     </properties>
 
     <build>

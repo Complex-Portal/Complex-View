@@ -40,7 +40,9 @@
         <property name="intactSecret" value="${intact.secret}"/>
         <property name="maxOntologySuggestions" value="${intact.search.ontologies.maxsuggestions}"/>
         <property name="googleAnalyticsTracker" value="${intact.google.analytics.tracker}"/>
-        <!--<property name="mailRecipients" value="${intact.recipients}"/>-->
+        <property name="mailRecipients" value="${intact.mail.recipients}"/>
+        <property name="proxyHost" value="${intact.proxy.host}"/>
+        <property name="proxyPort" value="${intact.proxy.port}"/>
         <property name="webappVersion" value="${version}"/>
         <property name="webappBuildNumber" value="${buildNumber}"/>
     </bean>

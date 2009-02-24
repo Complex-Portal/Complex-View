@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.view.webapp.controller.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
@@ -58,7 +60,9 @@ public class IntactViewConfiguration extends BaseController {
     private static final String INTACT_SECRET = "intact.secret";
     private static final String INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS = "intact.search.ontologies.maxsuggestions";
     private static final String INTACT_GOOGLE_ANALYTICS_TRACKER = "intact.google.analytics.tracker";
-    private static final String INTACT_RECIPIENTS = "intact.recipients";
+    private static final String INTACT_RECIPIENTS = "intact.mail.recipients";
+    private static final String PROXY_HOST = "intact.proxy.host";
+    private static final String PROXY_PORT = "intact.proxy.port";
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -86,6 +90,8 @@ public class IntactViewConfiguration extends BaseController {
     private String webappVersion;
     private String webappBuildNumber;
     private String dastyUrl;
+    private String proxyHost;
+    private String proxyPort;
 
     public IntactViewConfiguration() {
     }
@@ -134,6 +140,8 @@ public class IntactViewConfiguration extends BaseController {
         maxOntologySuggestions = Integer.parseInt(properties.getProperty(INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS, String.valueOf(maxOntologySuggestions)));
         googleAnalyticsTracker = properties.getProperty(INTACT_GOOGLE_ANALYTICS_TRACKER, googleAnalyticsTracker);
         mailRecipients = properties.getProperty(INTACT_RECIPIENTS, mailRecipients);
+        proxyHost = properties.getProperty(PROXY_HOST, proxyHost);
+        proxyPort = properties.getProperty(PROXY_PORT, proxyPort);
     }
 
     public void storeConfiguration() throws IOException {
@@ -160,6 +168,8 @@ public class IntactViewConfiguration extends BaseController {
         addProperty(properties, INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS, String.valueOf(maxOntologySuggestions));
         addProperty(properties, INTACT_GOOGLE_ANALYTICS_TRACKER, googleAnalyticsTracker);
         addProperty(properties, INTACT_RECIPIENTS, mailRecipients);
+        addProperty(properties, PROXY_HOST, proxyHost);
+        addProperty(properties, PROXY_PORT, proxyPort);
 
         Writer writer = new FileWriter(configFile);
         properties.store(writer, webappName+ " configuration");
@@ -168,9 +178,13 @@ public class IntactViewConfiguration extends BaseController {
     }
 
     private void addProperty(Properties properties, String key, String value) {
-        if (value != null) {
+        if (isValueSet(value)) {
             properties.setProperty(key, value);
         }
+    }
+
+    private boolean isValueSet(String value) {
+        return value != null && !value.startsWith("$");
     }
 
     public void closeEntityManagerFactory() {
@@ -333,7 +347,10 @@ public class IntactViewConfiguration extends BaseController {
     public SolrServer getInteractionSolrServer() {
         if (solrInteractionsUrl != null) {
             try {
-                return new CommonsHttpSolrServer(solrInteractionsUrl);
+
+                HttpClient httpClient = createHttpClient();
+
+                return new CommonsHttpSolrServer(solrInteractionsUrl, httpClient);
             } catch (MalformedURLException e) {
                 throw new IntactViewException("Malformed Solr URL: "+ solrInteractionsUrl, e);
             }
@@ -345,7 +362,9 @@ public class IntactViewConfiguration extends BaseController {
     public SolrServer getOntologySolrServer() {
         if (solrInteractionsUrl != null) {
             try {
-                return new CommonsHttpSolrServer(solrOntologiesUrl);
+                HttpClient httpClient = createHttpClient();
+
+                return new CommonsHttpSolrServer(solrOntologiesUrl, httpClient);
             } catch (MalformedURLException e) {
                 throw new IntactViewException("Malformed Solr URL: "+ solrOntologiesUrl, e);
             }
@@ -354,11 +373,37 @@ public class IntactViewConfiguration extends BaseController {
         return null;
     }
 
+    private HttpClient createHttpClient() {
+        HttpClient httpClient = new HttpClient();
+
+        if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
+                isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
+            httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+        }
+        return httpClient;
+    }
+
     public void setSolrOntologiesUrl(String solrOntologiesUrl) {
         this.solrOntologiesUrl = solrOntologiesUrl;
     }
 
     public String getSolrOntologiesUrl() {
         return solrOntologiesUrl;
+    }
+
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+
+    public String getProxyPort() {
+        return proxyPort;
+    }
+
+    public void setProxyPort(String proxyPort) {
+        this.proxyPort = proxyPort;
     }
 }
