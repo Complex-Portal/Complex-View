@@ -20,26 +20,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
-import org.apache.myfaces.trinidad.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.tab.model.Alias;
-import psidev.psi.mi.tab.model.CrossReference;
-import uk.ac.ebi.intact.model.CvDatabase;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
-import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
-import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.util.ExternalDbLinker;
 
 import javax.faces.event.ActionEvent;
-import javax.faces.context.FacesContext;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIViewRoot;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.io.IOException;
+import java.util.Set;
 
 /**
  * Controller for the browse tab
@@ -79,15 +68,18 @@ public class BrowseController extends JpaBaseController {
      */
     public void createListofIdentifiers( DisclosureEvent evt ) {
 
-        List<IntactBinaryInteraction> interactions;
-        if ( searchController.getInteractorResults() != null ) {
-            interactions = searchController.getInteractorResults().getResult().getData();
+         // TODO fix this
+         if (true) throw new UnsupportedOperationException("Fix this");
 
-            this.interproIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.INTERPRO_SEPERATOR );
-            this.chromosomalLocationIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.CHROMOSOME_SEPERATOR );
-            this.mRNAExpressionIdentifierList = appendIdentifiers( dbLinker.getUniqueGeneNames( interactions ), dbLinker.EXPRESSION_SEPERATOR );
-            this.reactomeIdentifierList =  dbLinker.getUniqueUniprotIds( interactions ).toArray( new String[]{} );
-        }
+//        List<IntactBinaryInteraction> interactions;
+//        if ( searchController.getProteinResultDataModel() != null ) {
+//            interactions = searchController.getProteinResultDataModel().getResult().getData();
+//
+//            this.interproIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.INTERPRO_SEPERATOR );
+//            this.chromosomalLocationIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.CHROMOSOME_SEPERATOR );
+//            this.mRNAExpressionIdentifierList = appendIdentifiers( dbLinker.getUniqueGeneNames( interactions ), dbLinker.EXPRESSION_SEPERATOR );
+//            this.reactomeIdentifierList =  dbLinker.getUniqueUniprotIds( interactions ).toArray( new String[]{} );
+//        }
 
         if ( log.isTraceEnabled() ) {
             log.trace( "interproIdentifierList " + interproIdentifierList );

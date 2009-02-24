@@ -59,7 +59,7 @@
             </tr:showDetailItem>
 
             <tr:showDetailItem text="Browse"
-                               disabled="#{searchBean.interactorTotalResults == 0}"
+                               disabled="#{searchBean.totalResults == 0}"
                                disclosed="#{disclosedTabName == 'browse'}"
                                disclosureListener="#{browseBean.createListofIdentifiers}">
                 <tr:messages/>
@@ -67,8 +67,9 @@
             </tr:showDetailItem>
 
             <tr:showDetailItem text="Lists"
-                               disabled="#{searchBean.interactorTotalResults == 0 and searchBean.smallMoleculeTotalResults == 0}"
-                               disclosed="#{disclosedTabName == 'list'}">
+                               disabled="#{searchBean.totalResults == 0}"
+                               disclosed="#{disclosedTabName == 'list'}"
+                               disclosureListener="#{searchBean.onListDisclosureChanged}">
                 <tr:messages/>
                 <ui:insert name="listTabContent"/>
             </tr:showDetailItem>

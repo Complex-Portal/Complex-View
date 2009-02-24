@@ -16,8 +16,6 @@
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +23,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
-import javax.faces.event.ActionEvent;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * TODO comment that class header
@@ -42,7 +41,7 @@ public class UserQuery {
     @Autowired
     private FilterPopulatorController filterPopulator;
 
-    private String searchQuery;
+    private String searchQuery = "*:*";
     private String ontologySearchQuery;
 
     private String[] datasets;
@@ -102,7 +101,9 @@ public class UserQuery {
     }
 
     public boolean isUsingFilters() {
-        return createSolrQuery().getFilterQueries().length > 0;
+        final String[] filterQueries = createSolrQuery().getFilterQueries();
+
+        return (filterQueries != null && filterQueries.length > 0);
     }
 
     private void addFilteredQuery(SolrQuery query, String field, Collection<String> allItems, String[] selectedItems) {

@@ -2,14 +2,14 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.search.BooleanQuery;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.UIXTable;
+import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -19,16 +19,14 @@ import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.view.webapp.model.InteractorSearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
-import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
-import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
+import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 
-import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
-import javax.transaction.NotSupportedException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +94,7 @@ public class SearchController extends JpaBaseController {
 
     // results
     private SolrSearchResultDataModel results;
-    private SearchResultDataModel interactorResults;
+    private InteractorSearchResultDataModel proteinResultDataModel;
     private SearchResultDataModel smallMoleculeResults;
     private SearchResultDataModel dnaResults;
     private SearchResultDataModel rnaResults;
@@ -218,46 +216,34 @@ public class SearchController extends JpaBaseController {
         //doInteractorSearch(userQuery);
     }
 
+    public void onListDisclosureChanged(DisclosureEvent evt) {
+        if (evt.isExpanded()) {
+             doProteinsSearch();
+        }
+    }
+
     public void doInteractorSearch(UserQuery query) {
-        doProteinsSearch(query);
+        doProteinsSearch();
         doSmallMoleculeSearch(query);
         doDnaSearch(query);
         doRnaSearch(query);
         //for dgi
         //interactorTotalResults = getSumOfAll(smallMoleculeTotalResults, proteinTotalResults);
         //for intact
-        nucleicacidTotalResults = getSumOfAll( dnaTotalResults,rnaTotalResults );
-        interactorTotalResults = getSumOfAll(smallMoleculeTotalResults, proteinTotalResults,dnaTotalResults,rnaTotalResults);
+        nucleicacidTotalResults = dnaTotalResults + rnaTotalResults;
+        interactorTotalResults = smallMoleculeTotalResults + proteinTotalResults + dnaTotalResults + rnaTotalResults;
 
     }
 
-    private int getSumOfAll(int... results){
-        int sum = 0;
-        for ( int result : results ) {
-          sum = sum + result;
-        }
-     return sum;
-    }
+    private void doProteinsSearch() {
+        final SolrQuery solrQuery = userQuery.createSolrQuery();
 
-    private void doProteinsSearch(UserQuery query) {
+        if (log.isDebugEnabled()) log.debug("Searching proteins for query: " + solrQuery);
 
-        if (true) throw new UnsupportedOperationException("This has been modified");
-
-        // TODO fix this
-        //query.setInteractorTypeMi(CvInteractorType.PROTEIN_MI_REF);
-        String indexDirectory = "";
-
-        try {
-            String interactorQuery = null;
-            //String interactorQuery = query.getInteractorQuery();
-            if (log.isDebugEnabled()) log.debug("Searching proteins with interactorQuery : " + interactorQuery);
-            interactorResults = new SearchResultDataModel(interactorQuery, indexDirectory, userQuery.getPageSize());
-            proteinTotalResults = interactorResults.getRowCount();
-        } catch (TooManyResultsException e) {
-            addErrorMessage("Too many proteins found", "Please, refine your query");
-            proteinTotalResults = 0;
-            interactorTotalResults = 0;
-        }
+        proteinResultDataModel = new InteractorSearchResultDataModel(intactViewConfiguration.getInteractionSolrServer(), 
+                                                                     solrQuery,
+                                                                     CvInteractorType.PROTEIN_MI_REF);
+        proteinTotalResults = proteinResultDataModel.getRowCount();
     }
 
     private void doSmallMoleculeSearch(UserQuery query) {
@@ -509,12 +495,12 @@ public class SearchController extends JpaBaseController {
         this.interactorTotalResults = interactorTotalResults;
     }
 
-    public SearchResultDataModel getInteractorResults() {
-        return interactorResults;
+    public InteractorSearchResultDataModel getProteinResultDataModel() {
+        return proteinResultDataModel;
     }
 
-    public void setInteractorResults( SearchResultDataModel interactorResults ) {
-        this.interactorResults = interactorResults;
+    public void setProteinResultDataModel( InteractorSearchResultDataModel proteinResultDataModel) {
+        this.proteinResultDataModel = proteinResultDataModel;
     }
 
     public int getSmallMoleculeTotalResults() {

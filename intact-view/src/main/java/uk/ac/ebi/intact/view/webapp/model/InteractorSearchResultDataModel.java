@@ -15,26 +15,22 @@
  */
 package uk.ac.ebi.intact.view.webapp.model;
 
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.myfaces.trinidad.model.SortableModel;
-import org.apache.myfaces.trinidad.model.SortCriterion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.io.Serializable;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-
-import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import org.apache.myfaces.trinidad.model.SortableModel;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
 import psidev.psi.mi.search.engine.SearchEngineException;
+import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.InteractorIdCount;
+import uk.ac.ebi.intact.model.Interactor;
 
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO comment that class header
@@ -51,31 +47,26 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
     private SolrQuery solrQuery;
     private SolrServer solrServer;
 
-    private SolrSearchResult result;
+    private String interactorTypeMi;
+
+    private List<InteractorIdCount> idCounts;
+
     private int rowIndex = -1;
     private int firstResult = 0;
 
     private String sortColumn = DEFAULT_SORT_COLUMN;
     private SolrQuery.ORDER sortOrder = SolrQuery.ORDER.asc;
 
-    private Map<String,SolrQuery.ORDER> columnSorts;
 
-
-    public InteractorSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery, String interactorTypeMi) throws TooManyResultsException {
+    public InteractorSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery, String interactorTypeMi)  {
         this.solrServer = solrServer;
         this.solrQuery = solrQuery;
+        this.interactorTypeMi = interactorTypeMi;
 
-        columnSorts = new HashMap<String,SolrQuery.ORDER>(16);
+        setRowIndex(0);
+        fetchResults();
 
-        try {
-            setRowIndex(0);
-            fetchResults();
-        }
-        catch (SearchEngineException e) {
-            throw new TooManyResultsException(e);
-        }
-
-        setWrappedData(result);
+        setWrappedData(idCounts);
     }
 
     protected void fetchResults() throws SearchEngineException {
@@ -83,40 +74,33 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
 
-        solrQuery.setStart(firstResult);
+        if (log.isDebugEnabled()) log.debug("Fetching interactor for query: "+solrQuery);
 
-        for (Map.Entry<String,SolrQuery.ORDER> colSortEntry : columnSorts.entrySet()) {
-            solrQuery.addSortField(colSortEntry.getKey(), colSortEntry.getValue());
-        }
-
-        if (log.isDebugEnabled()) log.debug("Fetching results: "+solrQuery);
+        
 
         IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
-        result = searcher.search(solrQuery);
+        idCounts = new ArrayList<InteractorIdCount>(searcher.searchInteractors(solrQuery, interactorTypeMi));
     }
 
     public int getRowCount() {
-        return Long.valueOf(result.getTotalCount()).intValue();
+        return idCounts.size();
     }
 
     public Object getRowData() {
-        if (result == null) {
+        if (idCounts == null) {
             return null;
-        }
-
-        if (!isRowWithinResultRange()) {
-            firstResult = getRowIndex();
-            fetchResults();
         }
 
         if (!isRowAvailable()) {
             throw new IllegalArgumentException("row is unavailable");
         }
 
-        List<IntactBinaryInteraction> interactions = new ArrayList<IntactBinaryInteraction>(result.getBinaryInteractionList());
+        InteractorIdCount idCount = idCounts.get(getRowIndex());
 
-        final IntactBinaryInteraction binaryInteraction = interactions.get(rowIndex - solrQuery.getStart());
-        return binaryInteraction;
+        Interactor interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+                .getInteractorDao().getByAc(idCount.getAc());
+
+        return new InteractorWrapper(interactor, idCount.getCount());
     }
 
     public int getRowIndex() {
@@ -124,19 +108,15 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
     }
 
     public Object getWrappedData() {
-        return result;
+        return idCounts;
     }
 
     public boolean isRowAvailable() {
-        if (result == null) {
+        if (idCounts == null) {
             return false;
         }
 
-        return rowIndex >= 0 && rowIndex < result.getTotalCount();
-    }
-
-    protected boolean isRowWithinResultRange() {
-        return (getRowIndex() >= firstResult) && (getRowIndex() < (firstResult+solrQuery.getRows()));
+        return rowIndex >= 0 && rowIndex < getRowCount();
     }
 
     public void setRowIndex(int rowIndex) {
@@ -145,7 +125,7 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
         }
         int oldRowIndex = rowIndex;
         this.rowIndex = rowIndex;
-        if (result != null && oldRowIndex != this.rowIndex) {
+        if (idCounts != null && oldRowIndex != this.rowIndex) {
             Object data = isRowAvailable() ? getRowData() : null;
             DataModelEvent event = new DataModelEvent(this, this.rowIndex, data);
             DataModelListener[] listeners = getDataModelListeners();
@@ -153,44 +133,6 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
                 listeners[i].rowSelected(event);
             }
         }
-    }
-
-    @Override
-    public void setSortCriteria(List<SortCriterion> criteria) {
-        if ((criteria == null) || (criteria.isEmpty())) {
-            this.sortColumn = DEFAULT_SORT_COLUMN;
-            columnSorts.clear();
-        }
-        else {
-            // only use the first criterion
-            SortCriterion criterion = criteria.get(0);
-
-            this.sortColumn = criterion.getProperty();
-
-            if (columnSorts.containsKey(sortColumn)) {
-                SolrQuery.ORDER currentOrder = columnSorts.get(sortColumn);
-                sortOrder = currentOrder.reverse();
-            } else {
-                sortOrder = SolrQuery.ORDER.asc;
-            }
-            columnSorts.put(sortColumn, sortOrder);
-
-            if (log.isDebugEnabled())
-                log.debug("\tSorting by '" + criterion.getProperty() + "' " + (criterion.isAscending() ? "ASC" : "DESC"));
-        }
-
-        fetchResults();
-    }
-
-    /**
-     * Checks to see if the underlying collection is sortable by the given property.
-     *
-     * @param property The name of the property to sort the underlying collection by.
-     * @return true, if the property implements java.lang.Comparable
-     */
-    @Override
-    public boolean isSortable(String property) {
-        return true;
     }
 
     @Override
@@ -210,8 +152,8 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
     }
 
 
-    public SolrSearchResult getResult() {
-        return result;
+    public List<InteractorIdCount> getInteractorIdCounts() {
+        return idCounts;
     }
 
     public SolrQuery getSearchQuery() {
