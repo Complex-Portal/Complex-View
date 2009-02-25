@@ -72,8 +72,8 @@ public class BrowseController extends JpaBaseController {
          if (true) throw new UnsupportedOperationException("Fix this");
 
 //        List<IntactBinaryInteraction> interactions;
-//        if ( searchController.getProteinResultDataModel() != null ) {
-//            interactions = searchController.getProteinResultDataModel().getResult().getData();
+//        if ( searchController.getProteinResults() != null ) {
+//            interactions = searchController.getProteinResults().getResult().getData();
 //
 //            this.interproIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.INTERPRO_SEPERATOR );
 //            this.chromosomalLocationIdentifierList = appendIdentifiers( dbLinker.getUniqueUniprotIds( interactions ), dbLinker.CHROMOSOME_SEPERATOR );

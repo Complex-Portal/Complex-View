@@ -14,128 +14,113 @@
                 xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
-<!-- RESULT SUMMARY -->
+    <!-- RESULT SUMMARY -->
 
-<ui:include src="/pages/inc/queryDisplay.xhtml" />
+    <ui:include src="/pages/inc/queryDisplay.xhtml"/>
 
-<br/>    
+    <br/>
 
-<!-- RESULTS TABLE -->
+    <!-- RESULTS TABLE -->
 
 
-<tr:table id="proteinListResults" value="#{searchBean.proteinResultDataModel}" var="interactorWrapper" varStatus="status"
-          summary="Proteins" emptyText="No proteins found matching the query."
-          rows="#{userQuery.pageSize}" rowBandingInterval="1"
-          rowSelection="multiple">
+    <tr:table id="proteinListResults" value="#{searchBean.proteinResults}" var="interactorWrapper" varStatus="status"
+              summary="Proteins" emptyText="No proteins found matching the query."
+              rows="#{userQuery.pageSize}" rowBandingInterval="1"
+              rowSelection="multiple">
 
-<f:facet name="actions">
-    <tr:panelHorizontalLayout inlineStyle="width:100%">
-        <f:facet name="separator">
-            <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
+        <f:facet name="actions">
+            <tr:panelHorizontalLayout inlineStyle="width:100%">
+                <f:facet name="separator">
+                    <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
+                </f:facet>
+
+                <tr:panelButtonBar id="buttonBar">
+                    <strong>
+                        <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
+                    </strong>
+                    <tr:commandButton text="Search Interactions"
+                                      actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
+                                      action="interactions"/>
+
+                    <tr:commandButton text="Pathways" partialSubmit="true"
+                                      actionListener="#{proteinListController.goReactome}"/>
+
+                    <tr:commandButton text="Domains" partialSubmit="true"
+                                      actionListener="#{proteinListController.goDomains}"/>
+
+                    <tr:commandButton text="mRNA Expression" partialSubmit="true"
+                                      actionListener="#{proteinListController.goExpression}"/>
+
+                    <tr:commandButton text="Chromosome Location" partialSubmit="true"
+                                      icon="/images/logos/ensembl_12.png"
+                                      actionListener="#{proteinListController.goChromosomalLocation}"/>
+
+                </tr:panelButtonBar>
+
+            </tr:panelHorizontalLayout>
         </f:facet>
 
-        <tr:panelButtonBar id="buttonBar">
-            <strong>
-                <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
-            </strong>
-            <tr:commandButton text="Search Interactions"
-                              actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
-                              action="interactions"/>
+        <tr:column>
+            <tr:outputText value="#{status.index + 1}"/>
+        </tr:column>
 
-            <tr:commandButton text="Pathways" partialSubmit="true"
-                              actionListener="#{proteinListController.goReactome}"/>
+        <tr:column headerText="#{messages['list.names']}">
+            <tr:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
+        </tr:column>
 
-            <tr:commandButton text="Domains" partialSubmit="true"
-                              actionListener="#{proteinListController.goDomains}"/>
+        <tr:column headerText="Interactions">
+            <tr:outputText value="#{interactorWrapper.count}"/>
+        </tr:column>
 
-            <tr:commandButton text="mRNA Expression" partialSubmit="true"
-                              actionListener="#{proteinListController.goExpression}"/>
+        <tr:column headerText="#{messages['list.links']}">
 
-            <tr:commandButton text="Chromosome Location" partialSubmit="true"
-                              icon="/images/logos/ensembl_12.png"
-                              actionListener="#{proteinListController.goChromosomalLocation}"/>
+            <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}"
+                         varStatus="rowStatus" rows="0">
+                <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
+                    <f:facet name="uniprotkb">
+                        <h:panelGroup rendered="#{xref.cvXrefQualifier.identifier == 'MI:0356'}">
+                            <iax:goUniprot query="#{xref.primaryId}" onlyLogo="true"/>
+                            <br/>
+                            <!--<iax:goDrugPortProteinView query="#{xref.primaryId}" onlyLogo="true"/>-->
+                            <!--<br/>-->
+                        </h:panelGroup>
+                    </f:facet>
+                    <f:facet name="chebi">
+                        <h:panelGroup>
+                            <iax:goChebi query="#{xref.primaryId}" onlyLogo="true"/>
+                            <br/>
+                        </h:panelGroup>
+                    </f:facet>
+                    <f:facet name="drugbank">
+                        <h:panelGroup>
+                            <iax:goDrugbank query="#{xref.primaryId}" onlyLogo="true"/>
+                            <br/>
+                        </h:panelGroup>
+                    </f:facet>
+                </tr:switcher>
+            </tr:iterator>
+            <h:panelGroup>
+                <iax:goMoleculeView query="#{interactorWrapper.interactor.ac}" onlyLogo="true"/>
+                <br/>
+            </h:panelGroup>
+        </tr:column>
 
-        </tr:panelButtonBar>
+        <tr:column headerText="#{messages['list.species']}">
+            <iax:goOls query="#{interactorWrapper.interactor.bioSource.taxId}"
+                       termName="#{interactorWrapper.interactor.bioSource.shortLabel}"/>
+        </tr:column>
 
-    </tr:panelHorizontalLayout>
-</f:facet>
+        <tr:column headerText="#{messages['list.accessionnumber']}">
+            <tr:outputText value="#{interactorWrapper.interactor.ac}"/>
+        </tr:column>
 
-<tr:column>
-    <tr:outputText value="#{status.index + 1}"/>
-</tr:column>
+        <tr:column headerText="#{messages['list.description']}">
+            <ui:param name="intactIdentifier"
+                      value="#{interactorWrapper.interactor.ac}"/>
+            <ui:param name="interactor" value="#{interactorWrapper.interactor}"/>
+            <tr:outputText value="#{interactorWrapper.interactor.fullName}"/>
+        </tr:column>
 
-    <tr:column headerText="#{messages['list.names']}">
-        <h:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
-    </tr:column>
-
-<!--<tr:column headerText="#{messages['list.names']}" sortable="true" sortProperty="aliasA_s">-->
-    <!--<h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>-->
-<!--</tr:column>-->
-
-
-<!--<tr:column headerText="#{messages['list.links']}">-->
-
-    <!--<tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}"-->
-                 <!--varStatus="rowStatus" rows="0">-->
-        <!--<tr:switcher facetName="#{xref.database}">-->
-            <!--<f:facet name="uniprotkb">-->
-                <!--<h:panelGroup>-->
-                    <!--<iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>-->
-                    <!--<br/>-->
-                    <!--<iax:goDrugPortProteinView query="#{xref.identifier}" onlyLogo="true"/>-->
-                    <!--<br/>-->
-                <!--</h:panelGroup>-->
-            <!--</f:facet>-->
-            <!--<f:facet name="chebi">-->
-                <!--<h:panelGroup>-->
-                    <!--<iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>-->
-                    <!--<br/>-->
-                <!--</h:panelGroup>-->
-            <!--</f:facet>-->
-            <!--<f:facet name="drugbank">-->
-                <!--<h:panelGroup>-->
-                    <!--<iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>-->
-                    <!--<br/>-->
-                <!--</h:panelGroup>-->
-            <!--</f:facet>-->
-            <!--<f:facet name="intact">-->
-                <!--<h:panelGroup>-->
-                    <!--<iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>-->
-                    <!--<br/>-->
-                <!--</h:panelGroup>-->
-            <!--</f:facet>-->
-        <!--</tr:switcher>-->
-    <!--</tr:iterator>-->
-<!--</tr:column>-->
-
-<!--<tr:column headerText="#{messages['list.species']}" sortable="true" sortProperty="taxidA_s">-->
-    <!--<tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="OtherType">-->
-        <!--<f:facet name="MI:0328">--><!-- Smallmolecule MI identifier-->
-            <!--<tr:outputText value="  "/>-->
-        <!--</f:facet>-->
-        <!--<f:facet name="OtherType">-->
-            <!--<tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}">-->
-                <!--<tr:iterator var="xref" value="#{organism.identifiers}"-->
-                             <!--varStatus="rowStatus" rows="0">-->
-                    <!--<iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>-->
-                <!--</tr:iterator>-->
-                <!--<tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>-->
-            <!--</tr:iterator>-->
-        <!--</f:facet>-->
-    <!--</tr:switcher>-->
-<!--</tr:column>-->
-
-<!--<tr:column headerText="#{messages['list.accessionnumber']}" sortable="true" sortProperty="idA_s">-->
-    <!--<h:outputText value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>-->
-<!--</tr:column>-->
-
-<!--<tr:column headerText="#{messages['list.description']}">-->
-    <!--<ui:param name="intactIdentifier"-->
-              <!--value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"/>-->
-    <!--<ui:param name="interactor" value="#{iaf:getInteractorByAc(intactIdentifier)}"/>-->
-    <!--<tr:outputText value="#{interactor.fullName}"/>-->
-<!--</tr:column>-->
-
-</tr:table>
+    </tr:table>
 
 </ui:composition>

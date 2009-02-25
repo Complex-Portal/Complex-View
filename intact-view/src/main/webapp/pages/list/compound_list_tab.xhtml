@@ -23,13 +23,11 @@
 
 <!-- RESULTS TABLE -->
 
-<tr:table id="compoundListResults" value="#{searchBean.smallMoleculeResults}" var="binaryInteraction"
+<tr:table id="compoundListResults" value="#{searchBean.smallMoleculeResults}" var="interactorWrapper"
           varStatus="status"
           summary="Compounds" emptyText="No compounds found matching the query."
-          rows="#{searchBean.pageSize}" rowBandingInterval="1"
+          rows="#{userQuery.pageSize}" rowBandingInterval="1"
           rowSelection="multiple">
-
-<c:set var="compound" value="#{binaryInteraction.interactorA}"/>
 
 <f:facet name="actions">
     <tr:panelHorizontalLayout inlineStyle="width:100%">
@@ -53,24 +51,18 @@
     <tr:outputText value="#{status.index + 1}"/>
 </tr:column>
 
-<tr:column headerText="#{messages['list.names']}" sortable="true" sortProperty="aliasA_s">
-    <h:outputText value="#{iamf:getInteractorDisplayName(compound)}"/>
-    <!--<tr:iterator var="xref" value="#{compound.alternativeIdentifiers}" varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.text}">
-            <f:facet name="commercial name">
-                <h:panelGroup>
-                    <h:outputText value="#{xref.identifier}"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-        </tr:switcher>
-    </tr:iterator>-->
-</tr:column>
+<tr:column headerText="#{messages['list.names']}">
+        <tr:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
+    </tr:column>
+
+    <tr:column headerText="Interactions">
+        <tr:outputText value="#{interactorWrapper.count}"/>
+    </tr:column>
 
 <!---->
 <tr:column headerText="#{messages['list.structure']}" inlineStyle="background-color:white; vertical-align:middle; text-align: center;">
-    <tr:iterator var="xref" value="#{compound.identifiers}" varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.database}">
+    <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}" varStatus="rowStatus" rows="0">
+        <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
             <f:facet name="drugbank">
                 <h:panelGroup>
                     <iav:imageCompoundStructure id="#{xref.identifier}"/>
@@ -83,25 +75,18 @@
 
 <tr:column headerText="#{messages['list.links']}">
 
-    <tr:iterator var="xref" value="#{compound.identifiers}" varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.database}">
+    <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}"
+                 varStatus="rowStatus" rows="0">
+        <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
             <f:facet name="drugbank">
                 <h:panelGroup>
-                    <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                    <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(compound))}"/>
+                    <iax:goDrugbank query="#{xref.primaryId}" onlyLogo="true"/>
                     <br/>
                 </h:panelGroup>
             </f:facet>
-        </tr:switcher>
-    </tr:iterator>
-
-    <!-- Also collect Chebi identifiers from properties -->
-    <tr:iterator var="xref" value="#{compound.properties}" varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.database}">
             <f:facet name="chebi">
                 <h:panelGroup>
-                    <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
+                    <iax:goChebi query="#{xref.primaryId}" onlyLogo="true"/>
                     <br/>
                 </h:panelGroup>
             </f:facet>
@@ -109,36 +94,60 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="#{messages['list.accessionnumber']}" sortable="true" sortProperty="idA_s">
-    <h:outputText value="#{iamf:getIntactIdentifierFromCrossReferences(compound.identifiers)}"/>
+
+<!--<tr:column headerText="#{messages['list.links']}">-->
+
+    <!--<tr:iterator var="xref" value="#{compound.identifiers}" varStatus="rowStatus" rows="0">-->
+        <!--<tr:switcher facetName="#{xref.database}">-->
+            <!--<f:facet name="chebi">-->
+                <!--<h:panelGroup>-->
+                    <!--<iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>-->
+                    <!--<br/>-->
+                <!--</h:panelGroup>-->
+            <!--</f:facet>-->
+            <!--<f:facet name="drugbank">-->
+                <!--<h:panelGroup>-->
+                    <!--<iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>-->
+                    <!--<br/>-->
+                    <!--<iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(compound))}"/>-->
+                    <!--<br/>-->
+                <!--</h:panelGroup>-->
+            <!--</f:facet>-->
+        <!--</tr:switcher>-->
+    <!--</tr:iterator>-->
+<!--</tr:column>-->
+
+ <tr:column headerText="#{messages['list.accessionnumber']}" >
+    <tr:outputText value="#{interactorWrapper.interactor.ac}"/>
 </tr:column>
 
-<tr:column headerText="#{messages['list.drugtype']}" sortable="true" sortProperty="idA_s">
-    <h:outputText value="#{iamf:getDrugStatus(compound)}"/>
-</tr:column>
+   <!--<tr:column headerText="#{messages['list.drugtype']}" sortable="true" sortProperty="idA_s">-->
+    <!--<h:outputText value="#{iamf:getDrugStatus(compound)}"/>-->
+<!--</tr:column>-->
 
-<tr:column headerText="#{messages['list.brandname']}">
-   
-     <iam:collapsibleIterator id="csd_altIdA_#{status.index}"
-                             disclosed="#{searchBean.showBrandNames}"
-                             value="#{iamf:getFilteredCrossReferences(compound.alternativeIdentifiers,'drug brand name')}"
-                             maxShown="5">
-         <tr:switcher facetName="#{item.text}">
-            <f:facet name="drug brand name">
-                <h:panelGroup>
-                    <h:outputText value="#{item.identifier}"/>
-                </h:panelGroup>
-            </f:facet>
-        </tr:switcher>
-    </iam:collapsibleIterator>
-</tr:column>
+<!--<tr:column headerText="#{messages['list.brandname']}">-->
+   <!---->
+     <!--<iam:collapsibleIterator id="csd_altIdA_#{status.index}"-->
+                             <!--disclosed="#{searchBean.showBrandNames}"-->
+                             <!--value="#{iamf:getFilteredCrossReferences(compound.alternativeIdentifiers,'drug brand name')}"-->
+                             <!--maxShown="5">-->
+         <!--<tr:switcher facetName="#{item.text}">-->
+            <!--<f:facet name="drug brand name">-->
+                <!--<h:panelGroup>-->
+                    <!--<h:outputText value="#{item.identifier}"/>-->
+                <!--</h:panelGroup>-->
+            <!--</f:facet>-->
+        <!--</tr:switcher>-->
+    <!--</iam:collapsibleIterator>-->
+<!--</tr:column>-->
 
-<tr:column headerText="#{messages['list.description']}">
-    <ui:param name="intactIdentifier"
-              value="#{iamf:getIntactIdentifierFromCrossReferences(compound.identifiers)}"/>
-    <ui:param name="interactor" value="#{iaf:getInteractorByAc(intactIdentifier)}"/>
-    <tr:outputText value="#{interactor.fullName}"/>
-</tr:column>
+    <tr:column headerText="#{messages['list.description']}">
+        <ui:param name="intactIdentifier"
+                  value="#{interactorWrapper.interactor.ac}"/>
+        <ui:param name="interactor" value="#{interactorWrapper.interactor}"/>
+        <tr:outputText value="#{interactorWrapper.interactor.fullName}"/>
+    </tr:column>
+
 
 </tr:table>
 

@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.model;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.SortableModel;
@@ -31,6 +32,7 @@ import javax.faces.model.DataModelListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO comment that class header
@@ -47,7 +49,7 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
     private SolrQuery solrQuery;
     private SolrServer solrServer;
 
-    private String interactorTypeMi;
+    private String[] interactorTypeMis;
 
     private List<InteractorIdCount> idCounts;
 
@@ -57,11 +59,16 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
     private String sortColumn = DEFAULT_SORT_COLUMN;
     private SolrQuery.ORDER sortOrder = SolrQuery.ORDER.asc;
 
+    private Map<String,List<InteractorIdCount>> cache = new LRUMap(5);
 
     public InteractorSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery, String interactorTypeMi)  {
+        this(solrServer, solrQuery, new String[] {interactorTypeMi});
+    }
+
+    public InteractorSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery, String[] interactorTypeMis)  {
         this.solrServer = solrServer;
         this.solrQuery = solrQuery;
-        this.interactorTypeMi = interactorTypeMi;
+        this.interactorTypeMis = interactorTypeMis;
 
         setRowIndex(0);
         fetchResults();
@@ -74,12 +81,20 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
 
-        if (log.isDebugEnabled()) log.debug("Fetching interactor for query: "+solrQuery);
+        String cacheKey = solrQuery+"_"+ interactorTypeMis;
 
-        
+        if (cache.containsKey(cacheKey)) {
+            if (log.isDebugEnabled()) log.debug("Fetching interactors for query (cache hit): "+solrQuery);
 
-        IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
-        idCounts = new ArrayList<InteractorIdCount>(searcher.searchInteractors(solrQuery, interactorTypeMi));
+            idCounts = cache.get(cacheKey);
+        } else {
+            if (log.isDebugEnabled()) log.debug("Fetching interactors for query: "+solrQuery);
+
+            IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
+            idCounts = new ArrayList<InteractorIdCount>(searcher.searchInteractors(solrQuery, interactorTypeMis).values());
+
+            cache.put(cacheKey, idCounts);
+        }
     }
 
     public int getRowCount() {
@@ -175,4 +190,5 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
     public boolean isAscending() {
         return (sortOrder == SolrQuery.ORDER.asc);
     }
+
 }

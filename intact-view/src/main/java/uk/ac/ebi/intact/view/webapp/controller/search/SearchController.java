@@ -20,13 +20,13 @@ import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.model.InteractorSearchResultDataModel;
-import uk.ac.ebi.intact.view.webapp.model.SearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -80,11 +80,7 @@ public class SearchController extends JpaBaseController {
     private int proteinTotalResults;
     private int smallMoleculeTotalResults;
 
-    private int nucleicacidTotalResults;
-    private int dnaTotalResults;
-    private int rnaTotalResults;
-
-
+    private int nucleicAcidTotalResults;
 
     private boolean showProperties;
     private boolean showAlternativeIds;
@@ -94,10 +90,9 @@ public class SearchController extends JpaBaseController {
 
     // results
     private SolrSearchResultDataModel results;
-    private InteractorSearchResultDataModel proteinResultDataModel;
-    private SearchResultDataModel smallMoleculeResults;
-    private SearchResultDataModel dnaResults;
-    private SearchResultDataModel rnaResults;
+    private InteractorSearchResultDataModel proteinResults;
+    private InteractorSearchResultDataModel smallMoleculeResults;
+    private InteractorSearchResultDataModel nucleicAcidResults;
 
 
     // io
@@ -218,108 +213,48 @@ public class SearchController extends JpaBaseController {
 
     public void onListDisclosureChanged(DisclosureEvent evt) {
         if (evt.isExpanded()) {
-             doProteinsSearch();
+             doInteractorsSearch();
         }
     }
 
-    public void doInteractorSearch(UserQuery query) {
+    public void doInteractorsSearch() {
         doProteinsSearch();
-        doSmallMoleculeSearch(query);
-        doDnaSearch(query);
-        doRnaSearch(query);
-        //for dgi
-        //interactorTotalResults = getSumOfAll(smallMoleculeTotalResults, proteinTotalResults);
-        //for intact
-        nucleicacidTotalResults = dnaTotalResults + rnaTotalResults;
-        interactorTotalResults = smallMoleculeTotalResults + proteinTotalResults + dnaTotalResults + rnaTotalResults;
+        doSmallMoleculeSearch();
+        doNucleicAcidSearch();
+
+        interactorTotalResults = smallMoleculeTotalResults + proteinTotalResults + nucleicAcidTotalResults;
 
     }
 
     private void doProteinsSearch() {
+        proteinResults = doInteractorSearch(new String[] {CvInteractorType.PROTEIN_MI_REF, CvInteractorType.PEPTIDE_MI_REF});
+        proteinTotalResults = proteinResults.getRowCount();
+    }
+
+    private void doSmallMoleculeSearch() {
+        smallMoleculeResults = doInteractorSearch(CvInteractorType.SMALL_MOLECULE_MI_REF);
+        smallMoleculeTotalResults = smallMoleculeResults.getRowCount();
+    }
+
+    private void doNucleicAcidSearch() {
+        nucleicAcidResults = doInteractorSearch(new String[] {CvInteractorType.DNA_MI_REF, CvInteractorType.RNA_MI_REF});
+        nucleicAcidTotalResults = nucleicAcidResults.getRowCount();
+    }
+
+    public InteractorSearchResultDataModel doInteractorSearch(String interactorTypeMi) {
+        return doInteractorSearch(new String[] {interactorTypeMi});
+    }
+
+    public InteractorSearchResultDataModel doInteractorSearch(String[] interactorTypeMis) {
         final SolrQuery solrQuery = userQuery.createSolrQuery();
 
-        if (log.isDebugEnabled()) log.debug("Searching proteins for query: " + solrQuery);
+        if (log.isDebugEnabled()) log.debug("Searching interactors of type ("+ Arrays.toString(interactorTypeMis)+") for query: " + solrQuery);
 
-        proteinResultDataModel = new InteractorSearchResultDataModel(intactViewConfiguration.getInteractionSolrServer(), 
-                                                                     solrQuery,
-                                                                     CvInteractorType.PROTEIN_MI_REF);
-        proteinTotalResults = proteinResultDataModel.getRowCount();
-    }
-
-    private void doSmallMoleculeSearch(UserQuery query) {
-
-         if (true) throw new UnsupportedOperationException("This has been modified");
-
-        // TODO fix this
-        //query.setInteractorTypeMi(CvInteractorType.SMALL_MOLECULE_MI_REF);
-        String indexDirectory = "";
-
-        try {
-            //String interactorQuery = query.getInteractorQuery();
-            String interactorQuery = null;
-            if (log.isDebugEnabled()) log.debug("Searching small molecules with interactorQuery: " + interactorQuery);
-            smallMoleculeResults = new SearchResultDataModel(interactorQuery, indexDirectory, userQuery.getPageSize());
-            smallMoleculeTotalResults = smallMoleculeResults.getRowCount();
-        } catch (TooManyResultsException e) {
-            addErrorMessage("Too many small molecules found", "Please, refine your query");
-            smallMoleculeTotalResults = 0;
-            interactorTotalResults = 0;
-        }
-    }
-
-    private void doDnaSearch(UserQuery query) {
-        //dna->MI:0319,ds dna->MI:0681, ss dna->MI:0680
-        //String[] interactorTypes = new String[] {CvInteractorType.DNA_MI_REF,"MI:0680","MI:0681"};
-
-         if (true) throw new UnsupportedOperationException("This has been modified");
-
-        // TODO fix this
-        //query.setInteractorTypeMi( CvInteractorType.DNA_MI_REF );
-        String indexDirectory = "";
-
-        try {
-            String interactorQuery = null;
-            //String interactorQuery = query.getInteractorQuery();
-            if (log.isDebugEnabled()) log.debug("Searching dna with interactorQuery : " + interactorQuery);
-            dnaResults = new SearchResultDataModel(interactorQuery, indexDirectory, userQuery.getPageSize());
-            dnaTotalResults = dnaResults.getRowCount();
-
-            if ( log.isDebugEnabled() )log.debug( "dnaTotalResults " + dnaTotalResults);
-
-
-        } catch (TooManyResultsException e) {
-            addErrorMessage("Too many dnas found", "Please, refine your query");
-            dnaTotalResults = 0;
-            interactorTotalResults = 0;
-        }
-    }
-
-
-    private void doRnaSearch( UserQuery query ) {
-        //rna->MI:0320,mrna->MI:0324,trna->MI:0325,rrna->0608,snrna->0607,sirna->0610
-        //String[] interactorTypes = new String[]{CvInteractorType.RNA_MI_REF, "MI:0324", "MI:0325","MI:0608","MI:0607","MI:0610"};
-
-        if (true) throw new UnsupportedOperationException("This has been modified");
-
-        // TODO fix this
-        //query.setInteractorTypeMi( CvInteractorType.RNA_MI_REF );
-        String indexDirectory = "";
-
-        try {
-            String interactorQuery = null;
-            //String interactorQuery = query.getInteractorQuery();
-            if ( log.isDebugEnabled() ) log.debug( "Searching rna with interactorQuery : " + interactorQuery );
-            rnaResults = new SearchResultDataModel( interactorQuery, indexDirectory, userQuery.getPageSize() );
-            rnaTotalResults = rnaResults.getRowCount();
-
-            if ( log.isDebugEnabled() ) log.debug( "rnaTotalResults " + rnaTotalResults );
-
-
-        } catch ( TooManyResultsException e ) {
-            addErrorMessage( "Too many rnas found", "Please, refine your query" );
-            rnaTotalResults = 0;
-            interactorTotalResults = 0;
-        }
+        final InteractorSearchResultDataModel interactorResults
+                = new InteractorSearchResultDataModel(intactViewConfiguration.getInteractionSolrServer(),
+                                                      solrQuery,
+                                                      interactorTypeMis);
+        return interactorResults;
     }
 
 
@@ -495,12 +430,12 @@ public class SearchController extends JpaBaseController {
         this.interactorTotalResults = interactorTotalResults;
     }
 
-    public InteractorSearchResultDataModel getProteinResultDataModel() {
-        return proteinResultDataModel;
+    public InteractorSearchResultDataModel getProteinResults() {
+        return proteinResults;
     }
 
-    public void setProteinResultDataModel( InteractorSearchResultDataModel proteinResultDataModel) {
-        this.proteinResultDataModel = proteinResultDataModel;
+    public void setProteinResults( InteractorSearchResultDataModel proteinResults) {
+        this.proteinResults = proteinResults;
     }
 
     public int getSmallMoleculeTotalResults() {
@@ -511,7 +446,7 @@ public class SearchController extends JpaBaseController {
         return proteinTotalResults;
     }
 
-    public SearchResultDataModel getSmallMoleculeResults() {
+    public InteractorSearchResultDataModel getSmallMoleculeResults() {
         return smallMoleculeResults;
     }
 
@@ -531,43 +466,15 @@ public class SearchController extends JpaBaseController {
         this.ascending = ascending;
     }
 
-    public int getDnaTotalResults() {
-        return dnaTotalResults;
+    public int getNucleicAcidTotalResults() {
+        return nucleicAcidTotalResults;
     }
 
-    public void setDnaTotalResults( int dnaTotalResults ) {
-        this.dnaTotalResults = dnaTotalResults;
+    public void setNucleicAcidTotalResults( int nucleicAcidTotalResults) {
+        this.nucleicAcidTotalResults = nucleicAcidTotalResults;
     }
 
-    public int getRnaTotalResults() {
-        return rnaTotalResults;
-    }
-
-    public void setRnaTotalResults( int rnaTotalResults ) {
-        this.rnaTotalResults = rnaTotalResults;
-    }
-
-    public int getNucleicacidTotalResults() {
-        return nucleicacidTotalResults;
-    }
-
-    public void setNucleicacidTotalResults( int nucleicacidTotalResults ) {
-        this.nucleicacidTotalResults = nucleicacidTotalResults;
-    }
-
-    public SearchResultDataModel getDnaResults() {
-        return dnaResults;
-    }
-
-    public void setDnaResults( SearchResultDataModel dnaResults ) {
-        this.dnaResults = dnaResults;
-    }
-
-    public SearchResultDataModel getRnaResults() {
-        return rnaResults;
-    }
-
-    public void setRnaResults( SearchResultDataModel rnaResults ) {
-        this.rnaResults = rnaResults;
+    public InteractorSearchResultDataModel getNucleicAcidResults() {
+        return nucleicAcidResults;
     }
 }
