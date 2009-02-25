@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>uk.ac.ebi.intact.service</groupId>
+        <artifactId>service-master</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>uk.ac.ebi.intact.service.psicquic</groupId>
+    <artifactId>psicquic-master</artifactId>
+    <packaging>pom</packaging>
+    <version>1.6.0-SNAPSHOT</version>
+
+    <name>PSICQUIC Services</name>
+    <description>PSICQUIC Master POM</description>
+    <url>http://www.ebi.ac.uk/~intact/devsite/service</url>
+
+    <modules>
+        <module>intact-psicquic-client</module>
+		<module>intact-psicquic-ws</module>
+  </modules>
+
+    <scm>
+        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/psicquic</connection>
+        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/psicquic</developerConnection>
+        <url>http://svn.sourceforge.net/viewcvs.cgi/intact/repo/service/trunk/psicquic</url>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>ebi-repo</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>ebi-repo-snapshots</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+</project>
