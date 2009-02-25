@@ -13,13 +13,11 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.model.CvInteractorType;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
-import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.model.InteractorSearchResultDataModel;
+import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 
@@ -61,13 +59,7 @@ public class SearchController extends JpaBaseController {
     public static final String INTERACTIONS_TABLE_ID = "interactionResults";
     public static final String PROTEINS_TABLE_ID = "proteinListResults";
     public static final String COMPOUNDS_TABLE_ID = "compoundListResults";
-    public static final String DNA_TABLE_ID = "dnaListResults";
-    public static final String RNA_TABLE_ID = "rnaListResults";
-
-
-    // injected
-    @Autowired
-    private AppConfigBean appConfigBean;
+    public static final String NUCLEIC_ACID_TABLE_ID = "nucleicAcidListResults";
 
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
@@ -268,43 +260,35 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doSearchInteractionsFromCompoundListSelection(ActionEvent evt) {
-        doSearchInteractionsFromListSelection( COMPOUNDS_TABLE_ID, "intact" );
+        doSearchInteractionsFromListSelection( COMPOUNDS_TABLE_ID );
     }
 
     public void doSearchInteractionsFromProteinListSelection(ActionEvent evt) {
-        doSearchInteractionsFromListSelection( PROTEINS_TABLE_ID, "intact" );
+        try {
+            doSearchInteractionsFromListSelection( PROTEINS_TABLE_ID );
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     public void doSearchInteractionsFromDnaListSelection( ActionEvent evt ) {
-        doSearchInteractionsFromListSelection( DNA_TABLE_ID, "intact" );
+        doSearchInteractionsFromListSelection(NUCLEIC_ACID_TABLE_ID);
     }
 
-    public void doSearchInteractionsFromRnaListSelection( ActionEvent evt ) {
-        doSearchInteractionsFromListSelection( RNA_TABLE_ID, "intact" );
-    }
-
-    private void doSearchInteractionsFromListSelection(String tableName, String database ) {
-        final List<IntactBinaryInteraction> selected = getSelected(tableName);
+    private void doSearchInteractionsFromListSelection(String tableName ) {
+        final List<InteractorWrapper> selected = getSelected(tableName);
 
         if (selected.size() == 0) {
             return;
         }
 
         StringBuilder sb = new StringBuilder( selected.size() * 10 );
-        sb.append("id:(");
+        sb.append("identifier:(");
 
-        for (Iterator<IntactBinaryInteraction> iterator = selected.iterator(); iterator.hasNext();) {
-            IntactBinaryInteraction intactBinaryInteraction = iterator.next();
+        for (Iterator<InteractorWrapper> iterator = selected.iterator(); iterator.hasNext();) {
+            InteractorWrapper interactorWrapper = iterator.next();
 
-            String identifier = null;
-
-            for (CrossReference xref : intactBinaryInteraction.getInteractorA().getIdentifiers()) {
-                if (database.equals(xref.getDatabase())) {
-                    identifier = xref.getIdentifier();
-                }
-            }
-
-            sb.append(identifier);
+            sb.append(interactorWrapper.getInteractor().getAc());
 
             if (iterator.hasNext()) {
                 sb.append(" ");
