@@ -6,7 +6,6 @@
     <CvReferenceList>
         <CvReference cvName="PSI-MI" cvIdentifier="MI"/>
         <CvReference cvName="PSI-MOD" cvIdentifier="MOD"/>
-        <CvReference cvName="Gene Ontology" cvIdentifier="GO"/>
     </CvReferenceList>
 
    <CvMappingRuleList>
@@ -86,26 +85,6 @@
                       requirementLevel="MAY">
            <CvTerm termAccession="MI:0495" allowChildren="true" termName="experimental role" useTerm="false" cvIdentifierRef="MI"/>
        </CvMappingRule>
-
-       <!-- This is already taken care of in the Object rules -->
-       <!--<CvMappingRule id="R10" name=""-->
-                      <!--cvElementPath="/entrySet/entry/interactionList/interaction/participants/interactor/xref/primaryRef/@dbAc"-->
-                      <!--cvTermsCombinationLogic="OR"-->
-                      <!--scopePath="/entrySet/entry/interactionList/interaction/participants/interactor"-->
-                      <!--requirementLevel="MUST">-->
-           <!--<CvTerm termAccession="MI:0683" allowChildren="true" termName="sequence database" useTerm="false" cvIdentifierRef="MI"/>-->
-       <!--</CvMappingRule>-->
-
-       <!-- NOTE: Problem integrating GO terms -->
-       <!--<CvMappingRule id="R11" name=""-->
-                      <!--cvElementPath="/entrySet/entry/interactionList/interaction/participants/interactor/xref/secondaryRef/@id"-->
-                      <!--cvTermsCombinationLogic="OR"-->
-                      <!--scopePath="/entrySet/entry/interactionList/interaction/participants/interactor/xref"-->
-                      <!--requirementLevel="MAY">-->
-           <!--<CvTerm termAccession="GO:0005575" allowChildren="true" termName="cellular_component" useTerm="false" cvIdentifierRef="GO"/>-->
-           <!--<CvTerm termAccession="GO:0003674" allowChildren="true" termName="molecular_function" useTerm="false" cvIdentifierRef="GO"/>-->
-           <!--<CvTerm termAccession="GO:0008150" allowChildren="true" termName="biological_process" useTerm="false" cvIdentifierRef="GO"/>-->
-       <!--</CvMappingRule>-->
 
    </CvMappingRuleList>
 </CvMapping>
