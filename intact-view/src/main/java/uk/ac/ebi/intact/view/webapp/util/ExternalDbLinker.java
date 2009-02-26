@@ -23,15 +23,9 @@ import org.apache.myfaces.trinidad.util.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.tab.model.Alias;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.faces.context.FacesContext;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Utility class for linking to external database resources
@@ -129,31 +123,5 @@ public class ExternalDbLinker {
         sb.append(formName).append(".appendChild(");
         sb.append(name).append("Input");
         sb.append(");\n");
-    }
-
-    public static Set<String> getUniqueGeneNames( List<IntactBinaryInteraction> interactions ) {
-        Set<String> geneNames = new HashSet<String>();
-
-        for ( IntactBinaryInteraction interaction : interactions ) {
-            final Collection<Alias> aliases = interaction.getInteractorA().getAliases();
-
-            for ( Alias alias : aliases ) {
-                geneNames.add( alias.getName() );
-            }
-        }
-        return geneNames;
-    }
-
-    public static Set<String> getUniqueUniprotIds( List<IntactBinaryInteraction> interactions ) {
-        Set<String> uniprotIds = new HashSet<String>();
-
-        for ( IntactBinaryInteraction interaction : interactions ) {
-            String uniprotId = MitabFunctions.getUniprotIdentifierFromCrossReferences( interaction.getInteractorA().getIdentifiers() );
-
-            if ( uniprotId != null ) {
-                uniprotIds.add( uniprotId );
-            }
-        }
-        return uniprotIds;
     }
 }

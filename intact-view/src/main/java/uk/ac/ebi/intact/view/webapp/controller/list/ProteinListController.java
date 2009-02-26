@@ -16,16 +16,20 @@
 package uk.ac.ebi.intact.view.webapp.controller.list;
 
 
+import org.apache.myfaces.trinidad.context.RequestContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.myfaces.trinidad.context.RequestContext;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.InteractorXref;
+import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
+import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 import uk.ac.ebi.intact.view.webapp.util.ExternalDbLinker;
 
 import javax.faces.event.ActionEvent;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,15 +52,39 @@ public class ProteinListController extends BaseController {
 
     private String[] getSelectedUniprotIds() {
 
-        final List<IntactBinaryInteraction> interactions = getSelected( SearchController.PROTEINS_TABLE_ID );
-        Set<String> uniprotIds = dbLinker.getUniqueUniprotIds( interactions );
+        final List<InteractorWrapper> interactorWrappers = getSelected( SearchController.PROTEINS_TABLE_ID );
+
+        Set<String> uniprotIds = new HashSet<String>();
+
+        for (InteractorWrapper interactorWrapper : interactorWrappers) {
+            Interactor interactor = interactorWrapper.getInteractor();
+
+            final InteractorXref xref = ProteinUtils.getUniprotXref(interactor);
+
+            if (xref != null) {
+                uniprotIds.add(xref.getPrimaryId());
+            }
+        }
+
         return uniprotIds.toArray( new String[uniprotIds.size()] );
     }
 
     private String[] getSelectedGeneNames() {
 
-        final List<IntactBinaryInteraction> interactions = getSelected( SearchController.PROTEINS_TABLE_ID );
-        Set<String> geneNames = dbLinker.getUniqueGeneNames( interactions );
+        final List<InteractorWrapper> interactorWrappers = getSelected( SearchController.PROTEINS_TABLE_ID );
+
+        Set<String> geneNames = new HashSet<String>();
+
+        for (InteractorWrapper interactorWrapper : interactorWrappers) {
+            Interactor interactor = interactorWrapper.getInteractor();
+
+            final String geneName = ProteinUtils.getGeneName(interactor);
+
+            if (geneName != null) {
+                geneNames.add(geneName);
+            }
+        }
+
         return geneNames.toArray( new String[geneNames.size()] );
     }
 
