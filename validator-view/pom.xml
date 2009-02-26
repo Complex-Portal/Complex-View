@@ -24,6 +24,9 @@
     </properties>
 
     <build>
+
+        <finalName>intact-${artifactId}-v${version}-${buildNumber}</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
