@@ -117,7 +117,9 @@ public class PsiReportBuilder {
         // second validation: checks that the semantics is right
         try {
 
-            System.out.println( "The model in use is: " + model );
+            if ( log.isDebugEnabled() ) {
+                log.debug( "The model in use is: " + model );
+            }
 
             if( model.equals( DataModel.PSI_MI ) ) {
                  validatePsiMiFile(report, file);
@@ -385,11 +387,21 @@ public class PsiReportBuilder {
             }
 
         } catch (Throwable t) {
-            final String msg = "An error occured while validating your data: ";
+
+            StringBuilder sb = new StringBuilder( 512 );
+            sb.append( "An error occured while validating your data model" );
+
+            Throwable cause = t.getCause();
+            while( cause != null ) {
+                sb.append( " > " ).append( cause.getMessage() );
+                cause = cause.getCause();
+            }
+
+            String msg = sb.toString();
             log.error( msg, t );
 
             FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage( msg + t.getMessage() );
+            FacesMessage message = new FacesMessage( msg );
             context.addMessage( null, message );
 
             return;

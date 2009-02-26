@@ -56,6 +56,7 @@ public class PsiValidatorBean extends BaseController {
     }
 
     public static final String URL_PARAM = "url";
+    public static final String MODEL_PARAM = "model";
 
     /**
      * Logging is an essential part of an application
@@ -171,21 +172,41 @@ public class PsiValidatorBean extends BaseController {
         FacesContext context = FacesContext.getCurrentInstance();
 
         String urlParam = context.getExternalContext().getRequestParameterMap().get( URL_PARAM );
+        String modelParam = context.getExternalContext().getRequestParameterMap().get( MODEL_PARAM );
 
-        if ( urlParam != null ) {
+        if ( urlParam != null && modelParam != null) {
             if ( log.isInfoEnabled() ) {
                 log.info( "User submitted a request with data specified in the URL: " + urlParam );
+            }
+
+            if( modelParam.equalsIgnoreCase( "PAR" ) || modelParam.equalsIgnoreCase( "PSI-PAR" ) ) {
+                model = DataModel.PSI_PAR;
+            } else if( modelParam.equalsIgnoreCase( "MI" ) || modelParam.equalsIgnoreCase( "PSI-MI" ) ) {
+                model = DataModel.PSI_MI;
+            } else {
+                String msg = "You have tried to validate a file via URL, however the data model you have specified '"+
+                             modelParam +"' was not recognized. Please use one of the following 'MI', 'PSI-MI' or " +
+                             "'PAR', 'PSI-PAR'";
+                FacesMessage message = new FacesMessage( msg );
+                context.addMessage( null, message );
+                return;
             }
 
             uploadLocalFile = false;
             psiUrl = urlParam;
             try {
+                initializeProgressModel();
                 uploadFromUrl();
             } catch ( IOException e ) {
                 final String msg = "Failed to upload PSI data from given URL";
-                FacesMessage message = new FacesMessage( msg );
+                FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_WARN, msg, null );
                 context.addMessage( "inputUrl", message );
             }
+        } else if( urlParam != null || modelParam != null ) {
+            String msg = "You have tried to validate a file via URL, however you haven't provided all required " +
+                         "parameters. Please specify 'url' and 'model' ('PSI-MI' or 'PSI-PAR').";
+                FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_WARN, msg, null );
+                context.addMessage( null, message );
         }
     }
 
@@ -214,9 +235,7 @@ public class PsiValidatorBean extends BaseController {
      */
     public void validate( ActionEvent event ) {
 
-        // initialize progress
-        progressModel = new DefaultBoundedRangeModel(-1, 5);
-        progressModel.setValue( 0 );
+        initializeProgressModel();
 
         try {
             if ( uploadLocalFile ) {
@@ -234,6 +253,11 @@ public class PsiValidatorBean extends BaseController {
             FacesMessage message = new FacesMessage( msg );
             context.addMessage( event.getComponent().getClientId( context ), message );
         }
+    }
+
+    private void initializeProgressModel() {
+        progressModel = new DefaultBoundedRangeModel(-1, 5);
+        progressModel.setValue( 0 );
     }
 
     /**
@@ -343,12 +367,13 @@ public class PsiValidatorBean extends BaseController {
             this.currentPsiReport = builder.createPsiReport();
             log.warn( "After uploading a URL the report was " + ( this.currentPsiReport == null ? "not present" : "present" ) );
         }
-        catch ( MalformedURLException e ) {
+        catch ( Throwable e ) {
+            currentPsiReport = null;
             final String msg = "The given URL wasn't valid";
             log.error( msg, e );
 
             FacesContext context = FacesContext.getCurrentInstance();
-            FacesMessage message = new FacesMessage( msg );
+            FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_WARN, msg, null );
             context.addMessage( null, message );
         }
     }
