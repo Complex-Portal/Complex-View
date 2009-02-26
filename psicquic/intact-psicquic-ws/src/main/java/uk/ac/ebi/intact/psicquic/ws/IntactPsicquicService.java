@@ -20,6 +20,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.common.SolrDocument;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.engine.SearchEngine;
 import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
@@ -32,9 +37,11 @@ import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.converter.SolrDocumentConverter;
 
 import java.io.IOException;
 import java.util.*;
+import java.net.MalformedURLException;
 
 /**
  * This web service is based on a PSIMITAB lucene's directory to search and return the results.
@@ -47,9 +54,9 @@ public class IntactPsicquicService implements PsicquicService {
 
     private final Logger logger = LoggerFactory.getLogger(IntactPsicquicService.class);
 
-    private static final String RETURN_TYPE_XML25 = "psi-mi/xml25";
-    private static final String RETURN_TYPE_MITAB25 = "psi-mi/tab25";
-    private static final String RETURN_TYPE_COUNT = "count";
+    public static final String RETURN_TYPE_XML25 = "psi-mi/xml25";
+    public static final String RETURN_TYPE_MITAB25 = "psi-mi/tab25";
+    public static final String RETURN_TYPE_COUNT = "count";
 
     private static final String NEW_LINE = System.getProperty("line.separator");
 
@@ -60,31 +67,36 @@ public class IntactPsicquicService implements PsicquicService {
     
     @Autowired
     private PsicquicConfig config;
+    
+    private static final String IDENTIFIER_FIELD = "identifier";
+    private static final String INTERACTION_ID_FIELD = "interaction_id";
 
     public IntactPsicquicService() {
 
     }
 
     public QueryResponse getByInteractor(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
-        String query = createQuery("identifiers", dbRef);
+        String query = createQuery( IDENTIFIER_FIELD, dbRef);
 
         return getByQuery(query, requestInfo);
     }
 
     public QueryResponse getByInteraction(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
-        String query = createQuery("interaction_id", dbRef);
+        String query = createQuery( INTERACTION_ID_FIELD, dbRef);
 
         return getByQuery(query, requestInfo);
     }
 
     public QueryResponse getByInteractorList(List<DbRef> dbRefs, RequestInfo requestInfo, String operand) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
-        String query = createQuery("identifiers", dbRefs, operand);
+        String query = createQuery( IDENTIFIER_FIELD, dbRefs, operand);
+
+        
 
         return getByQuery(query, requestInfo);
     }
 
     public QueryResponse getByInteractionList(List<DbRef> dbRefs, RequestInfo requestInfo) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
-        String query = createQuery("interaction_id", dbRefs, "OR");
+        String query = createQuery( INTERACTION_ID_FIELD, dbRefs, "OR");
 
         return getByQuery(query, requestInfo);
     }
@@ -119,7 +131,9 @@ public class IntactPsicquicService implements PsicquicService {
         return "("+((db == null || db.length() == 0)? "\""+id+"\"" : "\""+db+"\" AND \""+id+"\"")+")";
     }
 
-    public QueryResponse getByQuery(String query, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
+    public QueryResponse getByQuery(String query, RequestInfo requestInfo) throws NotSupportedMethodException,
+                                                                                  NotSupportedTypeException,
+                                                                                  PsicquicServiceException {
         final int blockSize = Math.min(requestInfo.getBlockSize(), BLOCKSIZE_MAX);
 
         final String resultType = requestInfo.getResultType();
@@ -130,29 +144,63 @@ public class IntactPsicquicService implements PsicquicService {
 
         logger.debug("Searching: {} ({}/{})", new Object[] {query, requestInfo.getFirstResult(), blockSize});
 
-        SearchEngine searchEngine;
+        /////////////////////////////////////////////////////////////////
 
         try {
-            searchEngine = new IntactSearchEngine(config.getIndexDirectory());
-        } catch (IOException e) {
-            throw new PsicquicServiceException("Problem creating SearchEngine using directory: "+config.getIndexDirectory(), e);
-        }
+            SolrServer server = new CommonsHttpSolrServer( config.getSolrServerUrl() );
 
-        SearchResult searchResult = searchEngine.search(query, requestInfo.getFirstResult(), blockSize);
+            SolrQuery solrQuery = new SolrQuery( query )
+                    .setStart( requestInfo.getFirstResult() )
+                    .setRows( blockSize );
 
-        // preparing the response
+            org.apache.solr.client.solrj.response.QueryResponse solryResponse = server.query(solrQuery);
+
+
+            // preparing the response
         QueryResponse queryResponse = new QueryResponse();
         ResultInfo resultInfo = new ResultInfo();
         resultInfo.setBlockSize(blockSize);
         resultInfo.setFirstResult(requestInfo.getFirstResult());
-        resultInfo.setTotalResults(searchResult.getTotalCount());
+        resultInfo.setTotalResults( (int) solryResponse.getResults().getNumFound() );
 
         queryResponse.setResultInfo(resultInfo);
 
-        ResultSet resultSet = createResultSet(searchResult, requestInfo);
+        ResultSet resultSet = createResultSet(solryResponse, requestInfo);
         queryResponse.setResultSet(resultSet);
 
         return queryResponse;
+
+        } catch ( Throwable t ) {
+            throw new PsicquicServiceException( "An error occured while searching the Solr index: " +
+                                                config.getSolrServerUrl(), t );
+        }
+
+        /////////////////////////////////////////////////////////////////
+
+
+//        SearchEngine searchEngine;
+//
+//        try {
+//            searchEngine = new IntactSearchEngine(config.getIndexDirectory());
+//        } catch (IOException e) {
+//            throw new PsicquicServiceException("Problem creating SearchEngine using directory: "+config.getIndexDirectory(), e);
+//        }
+//
+//        SearchResult searchResult = searchEngine.search(query, requestInfo.getFirstResult(), blockSize);
+//
+//        // preparing the response
+//        QueryResponse queryResponse = new QueryResponse();
+//        ResultInfo resultInfo = new ResultInfo();
+//        resultInfo.setBlockSize(blockSize);
+//        resultInfo.setFirstResult(requestInfo.getFirstResult());
+//        resultInfo.setTotalResults(searchResult.getTotalCount());
+//
+//        queryResponse.setResultInfo(resultInfo);
+//
+//        ResultSet resultSet = createResultSet(searchResult, requestInfo);
+//        queryResponse.setResultSet(resultSet);
+//
+//        return queryResponse;
     }
 
     public String getVersion() {
@@ -166,6 +214,8 @@ public class IntactPsicquicService implements PsicquicService {
     public List<String> getSupportedDbAcs() {
         return Collections.EMPTY_LIST;
     }
+
+    // Lucene
 
     protected ResultSet createResultSet(SearchResult searchResult, RequestInfo requestInfo) throws PsicquicServiceException,
                                                                                                    NotSupportedTypeException {
@@ -192,7 +242,6 @@ public class IntactPsicquicService implements PsicquicService {
 
         return resultSet;
     }
-
     protected String createMitabResults(SearchResult searchResult) {
         DocumentDefinition docDef = new IntactDocumentDefinition();
 
@@ -222,5 +271,75 @@ public class IntactPsicquicService implements PsicquicService {
             throw new PsicquicServiceException("Problem converting results to PSI-MI XML: "+e, e);
         }
     }
-}
 
+    // Solr
+
+    protected ResultSet createResultSet(org.apache.solr.client.solrj.response.QueryResponse searchResult,
+                                        RequestInfo requestInfo) throws PsicquicServiceException,
+                                                                        NotSupportedTypeException {
+        ResultSet resultSet = new ResultSet();
+
+        String resultType = (requestInfo.getResultType() != null)? requestInfo.getResultType() : RETURN_TYPE_DEFAULT;
+
+        if (RETURN_TYPE_MITAB25.equals(resultType)) {
+            if (logger.isDebugEnabled()) logger.debug("Creating PSI-MI TAB");
+
+            String mitab = createMitabResults(searchResult);
+            resultSet.setMitab(mitab);
+        } else if (RETURN_TYPE_XML25.equals(resultType)) {
+            if (logger.isDebugEnabled()) logger.debug("Creating PSI-MI XML");
+
+            EntrySet jEntrySet = createEntrySet(searchResult);
+            resultSet.setEntrySet(jEntrySet);
+        } else if (RETURN_TYPE_COUNT.equals(resultType)) {
+            if (logger.isDebugEnabled()) logger.debug("Count query");
+            // nothing to be done here
+        } else {
+            throw new NotSupportedTypeException("Not supported return type: "+resultType+" - Supported types are: "+getSupportedReturnTypes());
+        }
+
+        return resultSet;
+    }
+
+    protected String createMitabResults(org.apache.solr.client.solrj.response.QueryResponse searchResult) {
+        SolrDocumentConverter converter = new SolrDocumentConverter( new IntactDocumentDefinition() );
+
+        StringBuilder sb = new StringBuilder((int)searchResult.getResults().getNumFound() * 512);
+        final ListIterator<SolrDocument> docIterator = searchResult.getResults().listIterator();
+        while ( docIterator.hasNext() ) {
+            SolrDocument solrDocument = docIterator.next();
+            final String mitabLine = converter.toMitabLine( solrDocument );
+
+            sb.append(mitabLine);
+            sb.append(NEW_LINE);
+        }
+        return sb.toString();
+    }
+
+    private EntrySet createEntrySet(org.apache.solr.client.solrj.response.QueryResponse searchResult) throws PsicquicServiceException {
+        Tab2Xml tab2Xml = new IntactTab2Xml();
+
+        // first collect all MITAB interactions
+        SolrDocumentConverter solrConverter = new SolrDocumentConverter( new IntactDocumentDefinition() );
+        final ListIterator<SolrDocument> docIterator = searchResult.getResults().listIterator();
+        Collection<BinaryInteraction> interactions = new ArrayList<BinaryInteraction>( );
+        while ( docIterator.hasNext() ) {
+            SolrDocument solrDocument = docIterator.next();
+            final BinaryInteraction bi = solrConverter.toBinaryInteraction( solrDocument );
+            interactions.add( bi );
+        }
+
+        // then convert them into PSI-MI XML
+        try {
+            psidev.psi.mi.xml.model.EntrySet mEntrySet = tab2Xml.convert(interactions);
+
+            EntrySetConverter converter = new EntrySetConverter();
+            converter.setDAOFactory(new InMemoryDAOFactory());
+
+            return converter.toJaxb(mEntrySet);
+
+        } catch (Exception e) {
+            throw new PsicquicServiceException("Problem converting results to PSI-MI XML: "+e, e);
+        }
+    }
+}

@@ -24,13 +24,17 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import psidev.psi.mi.search.index.PsimiIndexWriter;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psimitab.search.IntactPsimiTabIndexWriter;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrIndexer;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.CoreNames;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.server.SolrJettyRunner;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * TODO comment that class header
+ * IntactPsicquicService Tester.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -39,41 +43,47 @@ public class IntactPsicquicServiceTest {
 
     private static PsicquicService service;
 
+    private static SolrJettyRunner solrJettyRunner;
+
     @BeforeClass
-    public static void beforeClass() throws Exception {
+    public static void setupSolrPsicquicService() throws Exception {
+
+        // Start a jetty server to host the solr index
+        solrJettyRunner = new SolrJettyRunner();
+        solrJettyRunner.setPort( 19876 );
+        solrJettyRunner.start();
+
+        // index data to be hosted by PSICQUIC
         InputStream mitabStream = IntactPsicquicServiceTest.class.getResourceAsStream("/META-INF/imatinib.mitab.txt");
 
         Assert.assertNotNull("Input stream for test file is null", mitabStream);
 
-        File indexDir = new File("target", "imatinib-mitab.index");
-
-        PsimiIndexWriter indexWriter = new IntactPsimiTabIndexWriter();
-        indexWriter.index(indexDir, mitabStream, true, true);
+        IntactSolrIndexer indexer = new IntactSolrIndexer(solrJettyRunner.getSolrUrl( CoreNames.CORE_PUB ),
+                                                          solrJettyRunner.getSolrUrl( CoreNames.CORE_ONTOLOGY_PUB ));
+        final int lineCount = indexer.indexMitab( mitabStream, true );
+        System.out.println( "Line indexed: " + lineCount );
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/META-INF/beans.spring.test.xml", "/jms.spring.xml"});
         PsicquicConfig config = (PsicquicConfig)context.getBean("testPsicquicConfig");
-        config.setIndexDirectory(indexDir.toString());
+        config.setSolrServerUrl( solrJettyRunner.getSolrUrl( CoreNames.CORE_PUB ) );
 
-	    service = (PsicquicService)context.getBean("intactPsicquicService");
+	    service = (PsicquicService) context.getBean("intactPsicquicService");
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
+
+//        solrJettyRunner.join(); // keep the server running ...
+
+        solrJettyRunner.stop();
+        solrJettyRunner = null;
         service = null;
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
     public void testGetByInteractor() throws Exception {
         RequestInfo info = new RequestInfo();
-        info.setResultType("psi-mi/tab25");
+        info.setResultType( IntactPsicquicService.RETURN_TYPE_MITAB25 );
         info.setBlockSize(50);
 
         DbRef dbRef = new DbRef();
@@ -88,7 +98,7 @@ public class IntactPsicquicServiceTest {
     @Test
     public void testGetByInteraction() throws Exception {
         RequestInfo info = new RequestInfo();
-        info.setResultType("psi-mi/tab25");
+        info.setResultType( IntactPsicquicService.RETURN_TYPE_MITAB25 );
         info.setBlockSize(50);
 
         DbRef dbRef = new DbRef();
@@ -102,7 +112,7 @@ public class IntactPsicquicServiceTest {
     @Test
     public void testGetByInteractorList_operandOR() throws Exception {
         RequestInfo info = new RequestInfo();
-        info.setResultType("psi-mi/tab25");
+        info.setResultType( IntactPsicquicService.RETURN_TYPE_MITAB25 );
         info.setBlockSize(50);
 
         DbRef dbRef1 = new DbRef();
@@ -119,7 +129,7 @@ public class IntactPsicquicServiceTest {
     @Test
     public void testGetByInteractorList_operandAND() throws Exception {
         RequestInfo info = new RequestInfo();
-        info.setResultType("psi-mi/tab25");
+        info.setResultType( IntactPsicquicService.RETURN_TYPE_MITAB25 );
         info.setBlockSize(50);
 
         DbRef dbRef1 = new DbRef();
@@ -136,7 +146,7 @@ public class IntactPsicquicServiceTest {
     @Test
     public void testGetByInteractionList() throws Exception {
         RequestInfo info = new RequestInfo();
-        info.setResultType("psi-mi/tab25");
+        info.setResultType( IntactPsicquicService.RETURN_TYPE_MITAB25 );
         info.setBlockSize(50);
 
         DbRef dbRef1 = new DbRef();
@@ -152,7 +162,7 @@ public class IntactPsicquicServiceTest {
     @Test
     public void testGetByQuery() throws Exception {
         RequestInfo info = new RequestInfo();
-        info.setResultType("psi-mi/tab25");
+        info.setResultType( IntactPsicquicService.RETURN_TYPE_MITAB25 );
         info.setBlockSize(50);
 
         final QueryResponse response = service.getByQuery("imatinib", info);
@@ -165,5 +175,4 @@ public class IntactPsicquicServiceTest {
     public void testGetVersion() {
         Assert.assertEquals("TEST.VERSION", service.getVersion());
     }
-
 }

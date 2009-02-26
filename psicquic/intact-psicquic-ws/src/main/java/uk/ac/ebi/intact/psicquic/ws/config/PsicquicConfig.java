@@ -29,7 +29,8 @@ public class PsicquicConfig {
     private String groupId;
     private String artifactId;
     private String version;
-    private String indexDirectory;
+    private String solrServerUrl;
+
     private String statsDirectory;
 
     public PsicquicConfig() {
@@ -59,12 +60,12 @@ public class PsicquicConfig {
         this.version = version;
     }
 
-    public String getIndexDirectory() {
-        return indexDirectory;
+    public String getSolrServerUrl() {
+        return solrServerUrl;
     }
 
-    public void setIndexDirectory(String indexDirectory) {
-        this.indexDirectory = indexDirectory;
+    public void setSolrServerUrl( String solrServerUrl ) {
+        this.solrServerUrl = solrServerUrl;
     }
 
     public String getStatsDirectory() {

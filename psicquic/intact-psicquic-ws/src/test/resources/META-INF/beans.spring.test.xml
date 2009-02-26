@@ -22,7 +22,7 @@
         <property name="groupId" value="groupId"/>
         <property name="artifactId" value="artifactId"/>
         <property name="version" value="TEST.VERSION"/>
-        <property name="indexDirectory" value=""/>
+        <property name="solrServerUrl" value=""/>
         <property name="statsDirectory" value="target/stats"/>
     </bean>
 

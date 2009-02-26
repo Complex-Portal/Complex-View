@@ -25,7 +25,7 @@ import uk.ac.ebi.intact.psicquic.ws.aop.StatsUnit;
 import javax.jms.*;
 
 /**
- * TODO comment that class header
+ * Statistics producer.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -50,5 +50,4 @@ public class StatsProducer {
             }
         });
     }
-
 }

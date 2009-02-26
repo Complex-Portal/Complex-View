@@ -29,7 +29,7 @@ import javax.jms.*;
 import java.io.File;
 
 /**
- * TODO comment that class header
+ * Statistics consumer.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -141,4 +141,3 @@ public class StatsConsumer extends ConsumerBean implements MessageListener {
         this.template = template;
     }
 }
-

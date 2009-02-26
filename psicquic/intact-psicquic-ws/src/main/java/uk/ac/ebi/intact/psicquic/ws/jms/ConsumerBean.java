@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO comment that class header
+ * Message Consumer.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$

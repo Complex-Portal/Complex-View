@@ -24,7 +24,7 @@ import uk.ac.ebi.intact.psicquic.ws.IntactPsicquicService;
 import uk.ac.ebi.intact.psicquic.ws.jms.StatsConsumer;
 
 /**
- * TODO comment that class header
+ * Psicquic Initializing Bean.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -65,7 +65,5 @@ public class PsicquicInitializingBean implements InitializingBean {
         // stats consumer
         logger.info("Initializing consumer");
         statsConsumer.start();
-
-
     }
 }
