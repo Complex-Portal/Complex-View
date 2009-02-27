@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on Jul 1, 2005 4:34:02 PM -->
+<!--  designed by Duncan Legge - Master's student from the University of Leeds - dlegge@ebi.ac.uk   -->
+<html>
+   <head>
+      <title>
+         IntAct Q&amp;A Developer #01
+      </title>
+      <meta name="GENERATOR" content="Arachnophilia 5.2" />
+      <meta name="FORMATTER" content="Arachnophilia 5.2" />
+      <link rel="stylesheet" type="text/css" href="intactdjl.css" />
+   </head>
+
+   <body>
+      <table border="0" height="100%" width="100%">
+         <tr>
+            <td valign="top" rowspan="2" height="100%" width="1%">
+               <table class="left" height="100%" width="1%">
+                  <tr>
+                     <td align="top" valign="top">
+                        <a href="http://www.ebi.ac.uk/intact/index.jsp" target="_blank" title="Opens new window"><img border="0" src="images/logo_intact.png"></a>
+                        <br>
+                        <br>
+                        <p class="links">
+                        &ordm;&nbsp;
+			<a class="links" href="http://www.ebi.ac.uk/intact/index.jsp" target="_blank" title="Opens new window">IntAct</a>
+                        <br>
+                        <nobr>&ordm;&nbsp;
+			<a class="links" href="http://www.ebi.ac.uk/intact/search/do/initAdvSearch" target="_blank" title="Opens new window">Advanced Search</a></nobr>
+                        </p>
+                     </td>
+                  </tr>
+               </table>
+            </td>
+            <td valign="top" height=100%>
+               <table border="0" height="100%" width="100%">
+                  <tr>
+                     <td class="header" height="30" width="100%" colspan="2">
+                        <a class="header" href="index.html">&nbsp;&nbsp;Help &amp; Tutorial Website</a>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td height="5" colspan="2" valign="top">
+                        <hr />
+                     </td>
+                  </tr>
+                  <tr>
+                     <td width="50%" height="18" valign="top" align="LEFT">
+                        <a href="index.html" title="IntAct Q&A Homepage">Home</a>
+                        &nbsp;&nbsp;&#47;&nbsp;&nbsp; 
+                        <a href="IntActQ&A_Developer_Contents.html">Developer_Contents </a>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td height="5" colspan="2" align="left" valign="top">
+                        <center>
+                           <hr>
+                        </center>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" align="left" valign="center">
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" align="center" valign="middle" height"=100%">
+                        <table class="inset" width="75%" height="50%">
+                           <tr>
+                              <td height="33" class="inset">
+                                 <div align="center">
+                                    <b> 
+				     								How does the database IntAct work?
+				    							</b>
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="inset" height="228" colspan="2" valign="TOP">
+                                 <p>
+                                 <h4>
+                                    Implementation overview
+                                 </h4>
+                                 </p>
+                                 &nbsp; 
+                                 <p class="centeredImage">
+                                 <img border="0" class="screengrab" src="images/architecture_50perc.PNG" alt="IntAct Database Architecture">
+                                 </p>
+                                 <p>
+                                 <h4>
+                                    Web Browser
+                                 </h4>
+                                 Software application used to interface with IntAct. For example 
+                                 <a target="_blank" href="http://www.mozilla.com/firefox/">Mozilla Firefox</a>, Netscape Navigator, Microsoft Internet Explorer.
+                                 <br>
+                                 <br>
+											<h4>
+                                    Web-based Programs
+                                 </h4>
+                                 Search, HierarchView, Editor, NiMe, statisticView, Pay as you go, graph2mif
+                                 <br>
+                                 <br>
+                                 Search
+                                 <br>
+                                 Enables a user to search the IntAct database using Gene name, IntAct Ac, UniProtKB Ac, UniProtKB Id,  InterPro Ac, GO Id or PubMed Id.
+                                 <br>
+                                 <br>
+                                 HierarchView
+                                 <br>
+                                 Provides a visual representation of Interactions using Graph theory where the proteins are represented by nodes (or vertices) and 
+                                 interactions by lines (or edges). 
+                                 <br>
+                                 Editor
+                                 <br>
+                                 Program used by IntAct curators to add and edit molecular interaction data.
+                                 <br>
+                                 <br>
+                                 MiNe
+                                 <br>
+                                 Undertakes the task of computing the minimal connecting networks for a given set of proteins. The results are viewed using HierarchView.
+                                 <br>
+                                 <br>
+                                 Pay as you go (Targets)
+                                 <br>
+                                 This is designed to determine using only the data which is currently available in the IntAct database and exploiting the scale-free 
+                                 distribution of protein interaction networks which proteins are likely to be central in Interaction Networks and thus will be good 
+                                 candidates as “baits” in Interaction detection experiments.
+                                 <br>
+                                 <br>
+                                 graph2mif
+                                 <br>
+                                 Given the IntAct accession number of a protein, it will generate the interaction network around this protein and return it in PSI 
+                                 format. The URL with a sample accession number is:
+                                 http://www.ebi.ac.uk/intact/graph2mif/getXML?ac=EBI-367&amp;depth=1&amp;strict=false 
+                                 <br>
+                                 <br>
+                                 Web Container (Tomcat)
+                                 <br>
+                                 Apache Tomcat is the Servlet container that is used to implement Java Servlet and JavaServer Pages technologies. 
+                                 <br>
+                                 <br>
+                                 MVC(Struts) 
+                                 <br>
+                                 Open source frameworks and toolkits, a variation of the classic Model-View-Controller (MVC) design paradigm, that helps developers 
+                                 build applications for the web.
+                                 <br>
+                                 <br>
+                                 <h4>
+                                    Java Object Layer
+                                 </h4>
+                                 This models the data and provides the Java objects required to represent the data. The 
+                                 <a href="http://intact.sourceforge.net/uml/intactCore.gif" title="IntAct UML diagram" target="_blank">UML diagram</a>
+                                 that shows how the objects relate to one another and to see the application-programming interface (
+                                 <a href="http://intact.sourceforge.net/doc/api/index.html" title="IntAct API" target="_blank">API</a>
+                                 )
+                                 , which gives details of the set of commonly used methods.
+                                 <br>
+                                 <br>
+                                 <h4>
+                                    Object Relational Mapping (OJB)
+                                 </h4>
+                                 IntAct uses Apache Object Relational Bridge (OJB), which is an “Object/Relational mapping tool that allows transparent persistence for 
+                                 Java Objects against relational databases”. OJB uses an XML based Object/Relational mapping for flexibility, scalability and functionality. 
+                                 It can be thought of as like a XML directory which lists the Java Object and directs them to the correct table in the database.
+                                 <br>
+                                 <br>
+                                 <h4>
+                                    Oracle &amp; PosgresSOL
+                                 </h4>
+                                 Both are Relational Database Management System(s) (RDSM), which are used to hold and access IntAct data. The main difference between 
+                                 them is that Oracle is commercial software which is not open-source but well developed for complex applications while 
+                                 <a href="http://www.postgresql.org/" title="PostgreSQL Global Development Group" target="_blank">PosgresSQL</a>
+                                 is 
+                                 free to download and open-source. Currently Oracle is used for the public version of IntAct while the PosgresSQL database is used
+                                 for development purposes.
+                                 <br>
+                                 <br>
+                                 <h4>
+                                    Shell &amp; Scripts
+                                 </h4>
+                                 These refer to UNIX utilities used in the production of new releases. Scripts aid the IntAct developers to automate repetitive tasks in 
+                                 compiling the data for a new release.
+                                 </p>
+                                 <br>
+                                 <br>
+                              </td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" valign="bottom" height=5%>
+                        <table align="bottom" border="0" width="100%" height="20">
+                           <tr>
+                              <td height="25" colspan="2" align="left">
+                                 <hr>
+                              </td>
+                           </tr>
+                           <tr>
+                              <div class="footer">
+                                 <td class="footer">
+                                    <p class="footer">
+                                    Please send any questions or suggestions to 
+                                    <a class="footer" href="mailto:intact-help@ebi.ac.uk">intact-help@ebi.ac.uk</a>
+                                    <br>
+                                    Last modified:
+                                    <i>11-May-2005 10:28 PM by dlegge</i>
+                                    </p>
+                                 </td>
+                              </div>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </table>
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

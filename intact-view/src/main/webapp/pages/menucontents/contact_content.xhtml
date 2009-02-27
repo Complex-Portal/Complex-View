@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                 template="/WEB-INF/facelets/layout/template.xhtml">
+
+        <!-- Mandatorty params -->
+        <ui:param name="sectionTitle" value="Contact"/>
+
+        <ui:define name="content">
+
+            <h1>Contact us:</h1>
+
+                Should you require help on any matter related to IntAct, please submit your question to our
+               <a href="http://www.ebi.ac.uk/support/index.php?query=intact" target="_blank">helpdesk</a>.
+
+            <br/>
+            <br/>
+
+            <h1>Mailing lists, bug reports:</h1>
+
+            The following mailing lists have been set up:
+            <ul>
+                <li>intact-announce@lists.sourceforge.net <br/>
+                    General IntAct announcements. Low traffic.
+                    <a href="http://lists.sourceforge.net/lists/listinfo/intact-announce" target="_blank">Subscribe/unsubscribe</a>
+                    here.<br/>
+                </li>
+                <li>
+                    You might also want to submit a <a href="http://sourceforge.net/tracker/?group_id=62732" target="_blank">feature
+                    request or bug report</a>. <br/>
+                </li>
+            </ul>
+
+        </ui:define>
+
+    </ui:composition>

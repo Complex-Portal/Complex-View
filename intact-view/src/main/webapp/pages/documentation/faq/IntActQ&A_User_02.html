@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!-- Created on Jul 1, 2005 4:34:02 PM -->
+
+<html>
+
+   <head>
+      <title>
+         IntAct Q&amp;A User #02
+      </title>
+      <meta name="GENERATOR" content="Arachnophilia 5.2">
+      <meta name="FORMATTER" content="Arachnophilia 5.2">
+      <link rel="stylesheet" type="text/css" href="intactdjl.css">
+   </head>
+
+   <body>
+      <table border="0" height="100%" width="100%">
+         <tr>
+            <td valign="top" rowspan="2" height="100%" width="1%">
+               <table class="left" height="100%" width="1%">
+                  <tr>
+                     <td align="top" valign="top">
+                        <a href="http://www.ebi.ac.uk/intact/index.jsp" target="_blank" title="Opens new window"><img border="0" src="images/logo_intact.png"></a>
+                        <br>
+                        <br>
+                        <p class="links">
+                        &ordm;&nbsp;
+			<a class="links" href="http://www.ebi.ac.uk/intact/index.jsp" target="_blank" title="Opens new window">IntAct</a>
+                        <br>
+                        <nobr>&ordm;&nbsp;
+			<a class="links" href="http://www.ebi.ac.uk/intact/search/do/initAdvSearch" target="_blank" title="Opens new window">Advanced Search</a></nobr>
+                        </p>
+                     </td>
+                  </tr>
+               </table>
+            </td>
+            <td valign="top" height=100%>
+               <table border="0" height="100%" width="100%">
+                  <tr>
+                     <td class="header" height="30" width="100%" colspan="2">
+                        <a class="header" href="index.html">&nbsp;&nbsp;Help &amp; Tutorial Website</a>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td height="5" colspan="2" valign="top">
+                        <hr>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td width="50%" height="18" valign="top" align="LEFT">
+                        <a href="index.html" title="IntAct Q&A Homepage">Home</a>
+                        &nbsp;&nbsp;&#47;&nbsp;&nbsp;
+                        <a href="IntActQ&A_User_Contents.html">User_Contents</a>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td height="5" colspan="2" align="left" valign="top">
+                        <center>
+                           <hr>
+                        </center>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" align="left" valign="center">
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" align="center" valign="top" height="100%">
+                        <table class="inset" width="75%" height="75%">
+                           <tr>
+                              <td height="33" class="inset">
+                                 <div align="CENTER">
+                                    <strong>
+                                       What is controlled vocabulary and why use them?
+                                    </strong>
+                                    <br>
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td  class="inset">
+                                 <p>
+                                 When annotating molecular interactions it is vital that the same vocabulary is used throughout otherwise data mining (searches) would be incomplete and thus a bad representation of the data held in the database. For example, if database curators entered the experiment method, yeast-2-hybrid, differently (e.g. Y2H, yeast_2_hybrid, yeast two hybrid, etc) any search using only one of those terms would only find a portion of the data. A controlled vocabulary stipulates a default term to be used such that all curators use the term “yeast two hybrid” consistently throughout the database, and the user is made aware of this. Then a search using this term will retrieve 100% of the required data.
+                                 </p>
+                                 <p class="centeredImage">
+                                 <img border="0" class="screengrab" src="images/User_02_pic01.png" alt="Controlled Vocabulary Demo">
+                                 </p>
+                                 <p>
+                                 The controlled vocabularies take the form of a tree/hierarchical structure. The picture below shows how the annotation gets more specific further down the tree.
+                                 </p>
+                                 <p class="centeredImage">
+                                 <img border="0" class="screengrab" src="images/User_02_pic02.png" alt="DAG structure">
+                                 </p>
+                                 <p>
+                                 In graph theory, a genre of Mathematics, such structures are called directed acyclic graphs (DAG) as the hierarchy is one-way and thus no cycles are formed. One of the rules of DAGs is that all parent terms of a term are also correct. This is called the True Path Rule. IntAct annotates molecular interactions with as much detail as possible to ensure maximum benefit to researchers.
+                                 </p>
+                                 <p>
+                                 The controlled vocaulary used by IntAct can be viewed 
+                                 <a href="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/cv/index.html" title="IntAct Controlled Vocabulary" target="_blank">here</a>. 
+                                 </p>
+                                 <p class="centeredImage">
+                                 <img border="0" class="screengrab" src="images/User_02_pic03.png" alt="IntAct CVs">
+                                 </p>
+                                 <p>
+                                 To view the IntAct controlled vocabularies and see their hierarchical structure, it is recommended that you download the free program DAG-Edit, and import the IntAct CVs by downloading the two files shown at the bottom of the screen above ("allCVsInDAGEditFormat") to get something like the picture below.
+                                 </p>
+                                 <p class="centeredImage">
+                                 <img border="0" class="screengrab" src="images/User_02_pic04.png" alt="DAG-Edit">
+                                 </p>
+                              </td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" valign="bottom" height=5%>
+                        <table align="bottom" border="0" width="100%" height="20">
+                           <tr>
+                              <td height="25" colspan="2" align="left">
+                                 <hr>
+                              </td>
+                           </tr>
+                           <tr>
+                              <div class="footer">
+                                 <td class="footer">
+                                    <p class="footer">
+                                    Please send any questions or suggestions to 
+                                    <a class="footer" href="mailto:intact-help@ebi.ac.uk">intact-help@ebi.ac.uk</a>
+                                    <br>
+                                    Last modified:
+                                    <i>11-May-2005 10:28 PM by dlegge</i>
+                                    </p>
+                                 </td>
+                              </div>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </table>
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

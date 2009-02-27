@@ -1,0 +1,434 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!-- Created on Jul 1, 2005 4:34:02 PM -->
+
+<html>
+
+   <head>
+      <title>
+         IntAct Q&amp;A User #1
+      </title>
+      <meta name="GENERATOR" content="Arachnophilia 5.2">
+      <meta name="FORMATTER" content="Arachnophilia 5.2">
+      <link rel="stylesheet" type="text/css" href="intactdjl.css">
+   </head>
+
+   <body>
+      <table border="0" height="100%" width="100%">
+         <tr>
+            <td valign="top" rowspan="2" height="100%" width="1%">
+               <table class="left" height="100%" width="1%">
+                  <tr>
+                     <td align="top" valign="top">
+                        <a href="http://www.ebi.ac.uk/intact/index.jsp" target="_blank" title="Opens new window"><img border="0" src="images/logo_intact.png"></a>
+                        <br>
+                        <br>
+                        <p class="links">
+                        &ordm;&nbsp;
+			<a class="links" href="http://www.ebi.ac.uk/intact/index.jsp" target="_blank" title="Opens new window">IntAct</a>
+                        <br>
+                        <nobr>&ordm;&nbsp;
+			<a class="links" href="http://www.ebi.ac.uk/intact/search/do/initAdvSearch" target="_blank" title="Opens new window">Advanced Search</a></nobr>
+                        </p>
+                     </td>
+                  </tr>
+               </table>
+            </td>
+            <td valign="top" height=100%>
+               <table border="0" height="100%" width="100%">
+                  <tr>
+                     <td class="header" height="30" width="100%" colspan="2">
+                        <a class="header" href="index.html">&nbsp;&nbsp;Help &amp; Tutorial Website</a>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td height="5" colspan="2" valign="top">
+                        <hr>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td width="50%" height="18" valign="top" align="LEFT">
+                        <a href="index.html" title="IntAct Q&A Homepage">Home</a>
+                        &nbsp;&nbsp;&#47;&nbsp;&nbsp;
+                        <a href="IntActQ&A_User_Contents.html">User_Contents</a>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td height="5" colspan="2" align="left" valign="top">
+                        <center>
+                           <hr>
+                        </center>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" align="left" valign="center">
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" align="center" valign="top" height="100%">
+                        <table class="inset" width="75%" height="75%">
+                           <tr>
+                              <td height="33" class="inset">
+                                 <div align="CENTER">
+                                    <strong>
+                                       Experiment, Interaction, Interactor? Please explain?
+                                    </strong>
+                                    <br>
+                                 </div>
+                              </td>
+                           </tr>
+                           <tr>
+                              <td class="inset" height="593"  colspan="2" valign="TOP">
+                                 <p>
+                                 An experiment consists of many interactions which contain two or more interactors. An interactor can be either an individual protein or a protein complex (i.e. the result of a previous interaction). Therefore an interaction can consists of two or more protein or complex. Let me explain:
+                                 </p>
+                                 <p>
+                                 In order to model molecular interactions IntAct has designed three (virtual) objects; Experiment, Interaction and Interactor. For example the two interactions (A &amp; B) can be described by a single Experiment. InteractionA consists of two interactors protein1 and protein2, the two interactors in InteractionB are InteractionA and protein3. Now read the first paragraph again and see if it makes more sense.
+                                 </p>
+                                 <p class="centeredImage">
+                                 <img border="0" src="images/User_01_pic01.png" width="544" height="268">
+                                 </p>
+                                 <br>
+                                 <br>
+                                 <br>
+                                 <p align="center">
+                                 <strong>
+                                    More Details
+                                 </strong>
+                                 </p>
+                                 <p>
+                                 Each Object (Experiment, Interaction, Interactor) has attributes assigned which provide a detailed description. This is important as 
+                                 specific features of an experiment can have a profound impact on the type of interaction. For example:
+                                 </p>
+                                 <ul>
+                                    <li>&nbsp;&nbsp;Host organism - experiments with the same gene from the same organisms might behave differently when studied in a 
+                                    different host, for example proteins expressed in a yeast 2-hybrid system loose all temporal and spatial control of their expression 
+                                    pattern imposed in their normal cellular environment. Protein expression system &#8211; eukaryotic proteins may loose post 
+                                    translational modifications essential for molecular interactions when expressed in a bacterial system.
+                                    </li>
+                                 </ul>
+                                 <br>
+                                 <br>
+                                 Common To All Objects
+                                 <table align="CENTER" width="95%" border="1" cellspacing="3" cellpadding="3">
+                                    <tr>
+                                       <td width="21%">
+                                          <div align="CENTER">
+                                             <em>
+                                                Attribute
+                                             </em>
+                                          </div>
+                                       </td>
+                                       <td width="79%">
+
+                                          <div align="CENTER">
+                                             <em>
+                                                Description
+                                             </em>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          Name
+                                       </td>
+                                       <td>
+                                          <p>
+                                          Example: gavin-20005 (Experiment); ga-205(Interaction)
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          Accession Number
+                                       </td>
+                                       <td>
+                                          <p>
+                                          IntAct Accession. Every IntAct object has a unique accession code which starts with &quot;EBI-&quot; and then a number. It is 
+                                          these accession codes that enable the hierarchical data structure.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          Description
+                                       </td>
+                                       <td>
+                                          <p>
+                                          A brief statement describing the contents of the object
+                                          </p>
+                                       </td>
+                                    </tr>
+                                 </table>
+                                 <br>
+                                 <p class="centeredImage">
+                                 <img border="0" class="screengrab" src="images/User_01_pic02.png" width="690" height="536">
+                                 </p>
+                                 <br>
+                                 <br>
+                                 Experiment
+
+                                 <table align="CENTER" width="95%" border="1" cellspacing="3" cellpadding="3">
+                                    <tr>
+                                       <td width="19%">
+                                          <div align="CENTER">
+                                             <em>
+                                                Attribute
+                                             </em>
+                                          </div>
+                                       </td>
+                                       <td width="81%">
+                                          <div align="CENTER">
+                                             <em>
+                                                Description
+                                             </em>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          Interaction identification
+                                       </td>
+                                       <td>
+                                          <p>
+                                          The experimental method by which the interaction has been detected.
+                                          <br>
+                                          Example: yeast two hybrid.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          Participant identification
+                                       </td>
+                                       <td>
+                                          <p>
+                                          The experimental method by which the molecules participating in the interaction have been detected.
+                                          Example: Mass spectrometry.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          Host
+                                       </td>
+                                       <td>
+                                          <p>
+                                          The biological system in which the interaction took place in the experiment. Example: Yeast (
+                                          <em>
+                                             Saccharomyces cerevisiae
+                                          </em>
+                                          ); the host organism of a yeast two hybrid experiment is "Yeast" even when the system is being used to investigate human proteins.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          Annotation
+                                       </td>
+                                       <td>
+                                          <p>
+                                          Comment for public view
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+
+                                       <td>
+                                          Cross reference
+                                       </td>
+                                       <td>
+                                          <p>
+                                          Cross-references to other databases. A cross-reference has the following attributes:
+                                          <ul>
+                                             <li>
+                                             <b>Name</b>:The name of the external database.
+                                             </li>
+                                             <li>
+                                             <b>Primary id</b>: The primary id or accession number of the object in the external database.
+                                             </li>
+                                             <li>
+                                             <b>Secondary id</b>: The secondary id of the object in the external database.
+                                             </li>
+                                             <li>
+                                             <b>Crossreference type</b>: The type of crossreference.
+                                             <p>
+                                             </p>
+                                             </li>
+                                          </ul>
+                                       </td>
+                                    </tr>
+                                 </table>
+                                 <br>
+                                 <br>
+                                 Interaction
+                                 <table align="CENTER" width="95%" border="1" cellspacing="3" cellpadding="3">
+                                    <tr>
+                                       <td width="21%">
+                                          <div align="CENTER">
+                                             <em>
+                                                Attribute
+                                             </em>
+                                          </div>
+                                       </td>
+                                       <td width="79%">
+
+                                          <div align="CENTER">
+                                             <em>
+                                                Description
+                                             </em>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td height="25">
+                                          Interaction type
+                                       </td>
+                                       <td>
+                                          <p>
+                                          A description of the type of interaction.
+                                          Example: Physical interaction.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          kD
+                                       </td>
+                                       <td>
+                                          <p>
+                                          The dissociation constant.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                 </table>
+                                 <br>
+                                 <br>
+                                 <br>
+                                 <br>
+                                 <br>
+                                 <br>
+                                 <p class="centeredImage">
+                                 <img border="0" class="screengrab" src="images/User_01_pic03.png">
+                                 </p>
+                                 <br>
+                                 <br>
+                                 Interactor (Protein)
+                                 <table align="CENTER" width="95%" border="1" cellspacing="3" cellpadding="3">
+                                    <tr>
+                                       <td width="21%">
+                                          <div align="CENTER">
+                                             <em>
+                                                Attribute
+                                             </em>
+                                          </div>
+                                       </td>
+                                       <td width="79%">
+                                          <div align="CENTER">
+                                             <em>
+                                                Description
+                                             </em>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td height="59">
+                                          Source
+                                       </td>
+                                       <td>
+                                          <p>
+                                          The biological system in which the interactor normally is found. For a human protein, the BioSource would be &quot;Human&quot;, even if it has been expressed in Yeast in a particular experiment.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td height="25">
+                                          Gene names
+                                       </td>
+                                       <td>
+                                          <p>
+                                          Gene names.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td height="25">
+                                          Cross reference
+                                       </td>
+                                       <td>
+                                          <p>
+                                          Cross-references to other databases with information on the specific protein.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          Sequence length
+                                       </td>
+                                       <td>
+                                          <p>
+                                          Number of amino acid sequences which constitute the protein
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          CRC64 checksum
+                                       </td>
+                                       <td>
+                                          <p>
+                                          The CRC64 checksum for the amino acid sequence. This checksum is used to quickly detect if the amino acid sequence has changed, for example during an update process.  It is also used to check if the amino acid sequence has potentially been corrupted.  The algorithm to compute the CRC64 is described in the ISO 3309 standard. The generator polynomial is x64 + x4 + x3 + x + 1.   Reference: Press W.H., Flannery B.P., Teukolsky S.A. and Vetterling W.T. "Numerical recipes in C", 2nd ed., pp896-902, Cambridge University Press (1993).   It should be noted that while, in theory, two different sequences could have the same CRC64 value, the likelihood that this would happen is extremely low.
+                                          </p>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          Sequence
+                                       </td>
+                                       <td>
+                                          <p>
+                                          Amino acid sequence of the protein
+                                          </p>
+                                       </td>
+                                    </tr>
+                                 </table>
+                                 <p>
+                                 ***&nbsp;&nbsp;For a Flash-movie tutorial explaining how Experiments, Interactions and Interactors are laid-out on the IntAct website click 
+                                 <a href="IntActQ&A_User_Demo01.html" title="IntAct Demonstration ~6MB">here</a>
+                                 &nbsp;&nbsp;***
+                                 </p>
+                              </td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan="2" valign="bottom" height=5%>
+                        <table align="bottom" border="0" width="100%" height="20">
+                           <tr>
+                              <td height="25" colspan="2" align="left">
+                                 <hr>
+                              </td>
+                           </tr>
+                           <tr>
+                              <div class="footer">
+                                 <td class="footer">
+                                    <p class="footer">
+                                    Please send any questions or suggestions to 
+                                    <a class="footer" href="mailto:intact-help@ebi.ac.uk">intact-help@ebi.ac.uk</a>
+                                    <br>
+                                    Last modified:
+                                    <i>11-May-2005 10:28 PM by dlegge</i>
+                                    </p>
+                                 </td>
+                              </div>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </table>
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

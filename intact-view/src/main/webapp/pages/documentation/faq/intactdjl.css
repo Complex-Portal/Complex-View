@@ -1,0 +1,52 @@
+/*  --~~{  This is the Style Sheet used to format the IntAct help/tutorail webpages  }~~--  */
+
+/*  Below is the formatting for the grey bar on the left  */
+p.links				{font-family:arial ; font-size: 9pt ; color:#000000 ; text-align:left}
+a.links:link			{font-family:Arial ; color:#000000 ; text-decoration:none}	
+a.links:visited		{font-family:Arial ; color:#000000 ; text-decoration:none}
+a.links:active  		{font-family:Arial ; color:#FFFFFF ; text-decoration:underline}
+a.links:hover  		{font-family:Arial ; color:#FFFFFF ; text-decoration:underline}
+table.left				{background-color:#cccccc ; border-width:0px ; padding:10px ; margin:0px}
+
+/*  Below is the formatting for the header of the webpages  */
+td.header			{background-color:#336666 ; align:left ; verticle:align}
+a.header:link		{font-family:verdana ; color:#FFFFFF ; font-size: 16pt ; text-decoration:none ; font-weight: bold}	
+a.header:visited	{font-family:verdana ; color:#FFFFFF ; font-size: 16pt ; text-decoration:none ; font-weight: bold}
+a.header:active  	{font-family:verdana ; color:#00CED1 ; font-size: 16pt ; text-decoration:underline ; font-weight: bold}
+a.header:hover  	{font-family:verdana ; color:#00CED1 ; font-size: 16pt ; text-decoration:underline ; font-weight: bold}
+
+/*  Below is the formatting for the main body of the webpages  */
+body					{font-family:verdana ; font-size:12pt ;  background-image:url(images/IntAct_Background.png) ; bgcolor="#ffffff"}
+p						{font-family:verdana ; font-size:12pt ; text-align:justify}
+h2						{font-family:verdana ; color:#FFFFFF ; font-size:125%}
+h3						{font-family:verdana ; font-size:150%}
+li						{font-size:12pt }
+font.qnos			{font-weight:bolder ; color:00008B }
+a:link					{font-family:verdana ; color:#00008B ; text-decoration:none}	
+a:visited				{font-family:verdana ; color:#00008B ; text-decoration:none}
+a:active  				{font-family:verdana ; color:#000000 ; text-decoration:underline}
+a:hover  				{font-family:verdana ; color:#000000 ; text-decoration:underline}
+p.centeredImage	{text-align:center; margin-top:20px; margin-bottom:20px; padding:0px}
+table.inset			{border-color:#D3D3D3 ; border-width: 0 0 2px 2px ; border-style:solid ; background-color:#E4E8FC} 
+td.inset				{border-color:#D3D3D3 ; border-width: 2px 2px 0 0 ; border-style:solid ; margin:2; padding:10px ; background-color:#E4E8FC}
+table.psimi			{border-style:none ; background-color:#D3D3D3} 
+td.psimi				{border-style:none ; padding:10px ; background-color:#D3D3D3}
+p.psimi				{font-family: courier ; font-size:10pt}
+img.screengrab		{border: 2px solid #191970}					
+
+/*  Below is the formatting for the images of the homeopage  */
+td.header			{background-color:#336666 ; align:left ; verticle:align}
+a.images:link		{font-family:verdana ; color:#E4E8FC ; font-size: 16pt ; text-decoration:none ; font-weight: bold}	
+a.images:visited	{font-family:verdana ; color:#E4E8FC ; font-size: 16pt ; text-decoration:none ; font-weight: bold}
+a.images:active  	{font-family:verdana ; color:#00CED1 ; font-size: 16pt ; text-decoration:underline ; font-weight: bold}
+a.images:hover  	{font-family:verdana ; color:#00CED1 ; font-size: 16pt ; text-decoration:underline ; font-weight: bold}
+
+/*  Below is the formatting for the footer of the webpages  */
+.footer				{align:left ; verticle-align:bottom}
+.footer				{font-family:verdana ; font-size: 10pt ; color: #A9A9A9}
+.footer:link			{font-family:verdana ; color:#A9A9A9 ; text-decoration:none}	
+.footer:visited		{font-family:verdana ; color:#A9A9A9 ; text-decoration:none}
+.footer:active  		{font-family:verdana ; color:#000000 ; text-decoration:underline}
+.footer:hover 		{font-family:verdana ; color:#000000 ; text-decoration:underline}
+
+/*  designed by Duncan Legge - Master's student from the University of Leeds - duncan@sticklesstills.co.uk  */
