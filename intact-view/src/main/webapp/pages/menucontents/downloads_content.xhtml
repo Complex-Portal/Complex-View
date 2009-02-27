@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+
+        <h1>Downloads</h1>
+
+        <ui:param name="ftp" value="#{intactViewConfiguration.ftpUrl}"/>
+
+        <ul>
+            <li>
+                IntAct is released weekly. All IntAct data and software is freely available to all users,
+                academic or commercial, under the terms of the Apache License, Version 2.0, from
+                <a href="#{ftp}" target="_blank">#{ftp}</a>
+            </li>
+            <li>Contents of the IntAct FTP directory:
+                <ul>
+                    <li><a href="#{ftp}/all.zip" >all.zip</a>: entire contents of this directory,
+                        compressed.
+                    </li>
+                    <li><a href="#{ftp}/cv" target="_blank">cv</a>: controlled vocabularies.</li>
+                    <li><a href="#{ftp}/psi1" target="_blank">psi1</a>: IntAct data in PSI-MI 1.0 format.
+                        See the <a href="http://psidev.sourceforge.net/mi/xml/doc/MIF.html" target="_blank">PSI
+                        website</a> for a detailed format description.
+                        This format is now superseeded by the PSI 2.5 format.
+                    </li>
+                    <li><a href="#{ftp}/psi25" target="_blank">psi25</a>: IntAct data in PSI-MI 2.5 format.
+                        See the <a href="http://psidev.sourceforge.net/mi/rel25" target="_blank">PSI website</a> for a
+                        detailed format description.
+                    </li>
+                    <li><a href="#{ftp}/psimitab" target="_blank">psimitab</a>: IntAct data in PSI-MI TAB format.
+                        See the <a href="#{ftp}/psimitab/README" target="_blank">README</a> for a
+                        detailed format description.
+                        <br/>
+                        <a href="#{ftp}/psimitab/intact.zip" target="_blank">intact.zip</a>: entire contents of the database in a single file.
+                        <br/>
+                        <a href="#{ftp}/psimitab/pmidMITAB.zip" target="_blank">pmidMITAB.zip</a>: entire contents of the database, each file represents a publication.
+                    </li>
+                    <li><a href="#{ftp}/various" target="_blank">various</a>: Data subsets for exchange with
+                        collaborating databases.
+                    </li>
+                    <li><a href="#{ftp}/various/data-mining" target="_black">Sentences for text-mining</a> - textual evidence of manually curated interactions.</li>
+                </ul>
+            </li>
+
+        </ul>
+
+    </ui:composition>
+

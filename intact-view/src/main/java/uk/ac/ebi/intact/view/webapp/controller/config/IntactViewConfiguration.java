@@ -46,6 +46,8 @@ public class IntactViewConfiguration extends BaseController {
     private static final String INTACT_VIEW_APPROOT = "intact.view.approot";
     private static final String INTACT_MENU_URL = "intact.menu.url";
     private static final String INTACT_NEWS_URL = "intact.news.url";
+    private static final String INTACT_DOTM_URL = "intact.dotm.url";
+    private static final String INTACT_FTP_URL = "intact.ftp.url";
     private static final String INTACT_NEWS_MAXINBOX = "intact.news.maxinbox";
     private static final String INTACT_CONFIGFILE = "intact.configfile";
     private static final String INTACT_GRAPH_MAX_INTERACTION_COUNT = "intact.graph.maxInteractionCount";
@@ -70,6 +72,8 @@ public class IntactViewConfiguration extends BaseController {
     private String appRoot;
     private String menuUrl;
     private String newsUrl;
+    private String dotmUrl;
+    private String ftpUrl;
     private int maxNewsInBox;
     private String warningMessage;
     private String configFile;
@@ -125,6 +129,8 @@ public class IntactViewConfiguration extends BaseController {
         appRoot = properties.getProperty(INTACT_VIEW_APPROOT, appRoot);
         menuUrl = properties.getProperty(INTACT_MENU_URL, menuUrl);
         newsUrl = properties.getProperty(INTACT_NEWS_URL, newsUrl);
+        dotmUrl = properties.getProperty(INTACT_DOTM_URL, dotmUrl);
+        ftpUrl = properties.getProperty(INTACT_FTP_URL, ftpUrl);
         maxNewsInBox = Integer.parseInt(properties.getProperty(INTACT_NEWS_MAXINBOX, String.valueOf(maxNewsInBox)));
         configFile = properties.getProperty(INTACT_CONFIGFILE, configFile);
         graphMaxInteractionCount = Integer.parseInt(properties.getProperty(INTACT_GRAPH_MAX_INTERACTION_COUNT, String.valueOf(graphMaxInteractionCount)));
@@ -153,6 +159,8 @@ public class IntactViewConfiguration extends BaseController {
         addProperty(properties, INTACT_VIEW_APPROOT, appRoot);
         addProperty(properties, INTACT_MENU_URL, menuUrl);
         addProperty(properties, INTACT_NEWS_URL, newsUrl);
+        addProperty(properties, INTACT_DOTM_URL, dotmUrl);
+        addProperty(properties, INTACT_FTP_URL, ftpUrl);
         addProperty(properties, INTACT_NEWS_MAXINBOX, String.valueOf(maxNewsInBox));
         addProperty(properties, INTACT_CONFIGFILE, configFile);
         addProperty(properties, INTACT_GRAPH_MAX_INTERACTION_COUNT, String.valueOf(graphMaxInteractionCount));
@@ -213,6 +221,22 @@ public class IntactViewConfiguration extends BaseController {
 
     public void setNewsUrl(String newsUrl) {
         this.newsUrl = newsUrl;
+    }
+
+    public String getDotmUrl() {
+        return dotmUrl;
+    }
+
+    public void setDotmUrl( String dotmUrl ) {
+        this.dotmUrl = dotmUrl;
+    }
+
+    public String getFtpUrl() {
+        return ftpUrl;
+    }
+
+    public void setFtpUrl( String ftpUrl ) {
+        this.ftpUrl = ftpUrl;
     }
 
     public int getMaxNewsInBox() {

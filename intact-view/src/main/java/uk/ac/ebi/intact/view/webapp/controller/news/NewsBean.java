@@ -41,7 +41,7 @@ import org.springframework.context.annotation.Scope;
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
  */
-@Controller
+@Controller("newsBean")
 @Scope("request")
 public class NewsBean implements Serializable {
 

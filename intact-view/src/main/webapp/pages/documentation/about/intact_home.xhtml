@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:tr="http://myfaces.apache.org/trinidad"
+      xmlns:trh="http://myfaces.apache.org/trinidad/html"
+      xmlns:ebi="http://ebi.ac.uk/faces/components"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<head>
+    <title></title>
+</head>
+<body>
+
+<f:view>
+<ui:composition>
+
+<div style="float:right; padding-left: 20px; padding-top: 20px; background-color: white">
+
+    <tr:panelBox text="Basic Statistics">
+        The Database contains:
+        <ul>
+            <li>
+                <h:outputText value="#{statisticsController.binaryInteractionCount}">
+                    <f:convertNumber pattern="#,###"/>
+                </h:outputText>
+                <h:outputText value=" binary interactions."/>
+            </li>
+            <li>
+                <h:outputText value="#{statisticsController.proteinCount}">
+                    <f:convertNumber pattern="#,###"/>
+                </h:outputText>
+                <h:outputText value=" proteins."/>
+            </li>
+            <li>
+                <h:outputText value="#{statisticsController.experimentCount}">
+                    <f:convertNumber pattern="#,###"/>
+                </h:outputText>
+                <h:outputText value=" experiments."/>
+            </li>
+            <li>
+                <h:outputText value="#{statisticsController.cvTermsCount}">
+                    <f:convertNumber pattern="#,###"/>
+                </h:outputText>
+                <h:outputText value=" controlled vocabulary terms."/>
+            </li>
+        </ul>
+    </tr:panelBox>
+
+</div>
+
+
+<table>
+    <tr>
+        <td class="intact_table">
+            <h1>IntAct Home</h1>
+
+            <h:panelGroup rendered="#{not empty newsBean.urgentNews}">
+                <ebi:panelUrgentNews value="#{newsBean.urgentNews}"/>
+            </h:panelGroup>
+
+            <h2>Search IntAct</h2>
+
+            <p>
+                To perform a search in the IntAct database use the search box in the top left corner.
+            </p>
+
+            <f:facet name="separator">
+            <tr:spacer width="10" height="1"/>
+        </f:facet>
+
+            <tr:panelGroupLayout>
+
+                <!--<tr:panelBox text="Quick search" background="dark" inlineStyle="width:100%">-->
+
+                    <tr:panelLabelAndMessage label="Examples:">
+                        <br/>
+                       <!-- <tr:inputText columns="30" value="#{userQuery.searchQuery}"
+                                      onfocus="this.select()"
+                                      onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>-->
+
+                            <tr:group>
+                                <tr:panelList>
+                                    <tr:group>
+                                        Gene name: e.g.<tr:spacer width="5"/>
+                                        <tr:commandLink text="BRCA2" action="#{searchBean.doBinarySearchAction}">
+                                            <f:setPropertyActionListener value="BRCA2"
+                                                                         target="#{userQuery.searchQuery}"/>
+                                        </tr:commandLink>
+                                    </tr:group>
+                                    <tr:group>
+                                        UniProtKB Ac: e.g.<tr:spacer width="5"/>
+                                        <tr:commandLink text="Q06609" action="#{searchBean.doBinarySearchAction}">
+                                            <f:setPropertyActionListener value="Q06609"
+                                                                         target="#{userQuery.searchQuery}"/>
+                                        </tr:commandLink>
+                                    </tr:group>
+                                    <tr:group>
+                                        UniProtKB Id: e.g.<tr:spacer width="5"/>
+                                        <tr:commandLink text="dmc1" action="#{searchBean.doBinarySearchAction}">
+                                            <f:setPropertyActionListener value="dmc1"
+                                                                         target="#{userQuery.searchQuery}"/>
+                                        </tr:commandLink>
+                                    </tr:group>
+                                    <tr:group>
+                                        Pubmed Id: e.g.<tr:spacer width="5"/>
+                                        <tr:commandLink text="10831611" action="#{searchBean.doBinarySearchAction}">
+                                            <f:setPropertyActionListener value="10831611"
+                                                                         target="#{userQuery.searchQuery}"/>
+                                        </tr:commandLink>
+                                    </tr:group>
+                                </tr:panelList>
+                            </tr:group>
+                      
+                    </tr:panelLabelAndMessage>
+               <!-- </tr:panelBox>-->
+            </tr:panelGroupLayout>
+
+
+            <h2>Introduction</h2>
+
+            IntAct provides a freely available, open source database system and analysis tools for protein interaction
+            data. All interactions are derived from literature curation or direct user submissions and are freely
+            available.
+
+        </td>
+        <!--<td class="intact_table">
+            <ui:include src="statistics_box.xhtml"/>
+        </td>-->
+    </tr>
+</table>
+
+
+<c:if test="#{dataSetsBean.dataSetOfTheMonth != null}">
+
+    <h2>Dataset of the month: #{dataSetsBean.dataSetOfTheMonth.month}</h2>
+
+    <ul>
+        <li>
+            <ui:param name="dataSet" value="#{dataSetsBean.dataSetOfTheMonth}"/>
+            <ui:include src="/pages/dotm/dotm_template.xhtml"/>
+        </li>
+    </ul>
+
+    <h:outputText value="Go to "/>
+    <h:commandLink value="Archive" action="dotm_archive"/>.
+
+</c:if>
+
+<c:if test="#{dataSetsBean.dataSetOfTheMonth == null}">
+
+    Dataset of the month is null
+
+</c:if>
+
+<h2>License</h2>
+
+<p>All software, available on this site, is under the <a
+        href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License,
+    version 2</a>, and all data under the <a
+        href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attribution License</a>.
+    This means that you are
+    free to copy, distribute, display and make commercial use of all records
+    from the IntAct database provided appropriate credit is given.</p>
+
+<h2>Acknowledgements</h2>
+
+<table cellspacing="5" border="0">
+    <tr>
+        <td align="right" valign="top">
+            <a href="http://www.cordis.lu/life/" target="_blank">
+                <img src="http://www.ebi.ac.uk/Information/images/logo_eu_small.gif" width="75" height="50"
+                     alt="Fundings"
+                     border="0"/></a>
+        </td>
+        <td align="left">
+            IntAct is funded by the European Commission under FELICS, contract number 021902 (RII3) within
+            the Research Infrastructure Action of the FP6 "Structuring the European Research Area" Programme.
+            <br/>
+            Formerly IntAct was funded by EU grant number QLRI-CT-2001-00015 under the RTD programme
+            "Quality of Life and Management of Living Resources".
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <a href="http://www.ebi.ac.uk/proteomics/">
+                <img src="http://www.ebi.ac.uk/Groups/images/logo_proteomics_small.gif"
+                     width="75" height="50" alt="Proteomics Services Team" border="0"/></a>
+        </td>
+        <td align="left">
+            Part of the Proteomics Services Team.
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <a href="http://imex.sourceforge.net/" target="_blank">
+                <img src="http://imex.sourceforge.net/index_files/image002.jpg"
+                     width="50" height="50" alt="IMEX" border="0"/></a>
+        </td>
+        <td align="left">
+            Member IMEX (International Molecular Exchange Consortium)
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <a href="http://sourceforge.net/" target="_blank">
+                <img src="http://sourceforge.net/sflogo.php?group_id=62732&amp;type=5"
+                     alt="SourceForge" border="1" width="100"/>
+            </a>
+        </td>
+        <td align="left">
+            Hosted by Sourceforge.net.
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <a href="http://www.jetbrains.com/idea/" target="_blank"><img border="0"
+                                                                          alt="Developed with IntelliJ IDEA"
+                                                                          title="Developed with IntelliJ IDEA"
+                                                                          src="http://www.jetbrains.com/img/linklogos/idea125x37_1.gif"/></a>
+        </td>
+        <td align="left">
+            Developed with IntelliJ IDEA
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <a href="http://www.yourkit.com" target="_blank"><img
+                    src="http://www.ebi.ac.uk/intact/site/images/yourkit.gif"
+                    alt="YourKit" width="100" border="0" height="36"/>
+            </a>
+        </td>
+        <td align="left">
+            Profiled by YourKit Java Profiler.
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <a href="http://www.cenqua.com/clover/" target="_blank"><img
+                    src="http://www.ebi.ac.uk/intact/site/images/clover_logo.gif"
+                    alt="Clover" width="100" border="0"/></a>
+        </td>
+        <td align="left">
+            Test coverage by Clover.
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            <a href="http://www.gentleware.com" target="_blank"><img
+                    src="http://www.gentleware.com/uploads/pics/poseidon_withlogo_01.png"
+                    alt="Poseidon for UML" width="100" border="0"/></a>
+        </td>
+        <td align="left">
+            UML by Poseidon.
+        </td>
+    </tr>
+</table>
+
+</ui:composition>
+</f:view>
+
+</body>
+</html>
+

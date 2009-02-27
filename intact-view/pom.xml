@@ -43,6 +43,8 @@
         <!-- Webapp default config -->
         <intact.menu.url>http://www.ebi.ac.uk/~intact/site/menu/menu-latest.xml</intact.menu.url>
         <intact.news.url>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</intact.news.url>
+        <intact.dotm.url>http://www.ebi.ac.uk/~intact/site/dotm/dotm-1.1.xml</intact.dotm.url>
+        <intact.ftp.url>ftp://ftp.ebi.ac.uk/pub/databases/intact/current</intact.ftp.url>
 
         <intact.webapp.name>IntAct</intact.webapp.name>
         <intact.webapp.logo.url>http://www.ebi.ac.uk/intact/site/images/logo_intact_small.gif</intact.webapp.logo.url>
@@ -90,6 +92,26 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
+            </plugin>
+
+
+           <!-- Conversion of XML Schema into Java source code using JAXB-XJC -->
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+	            <artifactId>maven-jaxb2-plugin</artifactId>
+                <configuration>
+                    <schemaDirectory>src/main/resources/META-INF</schemaDirectory>
+                    <bindingDirectory>src/main/resources/META-INF</bindingDirectory>
+                    <generatePackage>uk.ac.ebi.intact.view.webapp.controller.news.items</generatePackage>
+                    <extension>true</extension>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
@@ -432,5 +454,23 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- JAXB related deps -->
+               <dependency>
+                   <groupId>com.sun.xml.bind</groupId>
+                   <artifactId>jaxb-impl</artifactId>
+                   <version>2.1.3</version>
+               </dependency>
+               <dependency>
+                   <groupId>stax</groupId>
+                   <artifactId>stax</artifactId>
+                   <version>1.2.0</version>
+               </dependency>
+               <dependency>
+                   <groupId>javax.xml.bind</groupId>
+                   <artifactId>jaxb-api</artifactId>
+                   <version>2.1</version>
+               </dependency>
+          
+       
     </dependencies>
 </project>

@@ -26,6 +26,8 @@
         <property name="appRoot" value="${intact.view.approot}"/>
         <property name="menuUrl" value="${intact.menu.url}"/>
         <property name="newsUrl" value="${intact.news.url}"/>
+        <property name="dotmUrl" value="${intact.dotm.url}"/>
+        <property name="ftpUrl" value="${intact.ftp.url}"/>
         <property name="maxNewsInBox" value="${intact.news.maxinbox}"/>
         <property name="configFile" value="${intact.configfile}"/>
         <property name="graphMaxInteractionCount" value="${intact.graph.maxInteractionCount}"/>

@@ -1,17 +1,26 @@
 <bindings
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns="http://java.sun.com/xml/ns/jaxb"
-    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-    version="1.0">
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns="http://java.sun.com/xml/ns/jaxb"
+        xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        version="2.1">
 
     <globalBindings >
          <xjc:simple />
+         <xjc:serializable/>
      </globalBindings>
 
-    <bindings schemaLocation="search-config-0_4.xsd" node="/xsd:schema" >
+   <!-- <bindings schemaLocation="search-config-0_4.xsd" node="/xs:schema" >
         <schemaBindings>
             <package name="uk.ac.ebi.intact.binarysearch.webapp.generated"/>
         </schemaBindings>
-    </bindings>
+    </bindings>-->
+
+    <bindings schemaLocation="dotm-1_1.xsd" node="/xs:schema">
+           <schemaBindings>
+               <package name="uk.ac.ebi.intact.view.webapp.controller.news.items"/>
+           </schemaBindings>
+       </bindings>
+
+    
    
 </bindings>

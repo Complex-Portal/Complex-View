@@ -40,6 +40,12 @@ a.OraLink:hover {
     text-decoration: none;
 }
 
+.OraLink:hover::SideMenu {
+    text-decoration:underline;
+}
+
+
+
 /** icons **/
 /***********/
 

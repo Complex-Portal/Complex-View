@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+
+
+
+ <tr:panelHorizontalLayout halign="left" valign="top">
+    <trh:tableLayout borderWidth="0"
+                     cellSpacing="5"
+                     cellPadding="2"
+                     halign="left"
+                     width="300">
+
+        <trh:rowLayout>
+            <trh:cellFormat >
+                <tr:goLink text="IntAct Home" destination="/main.xhtml"/>
+            </trh:cellFormat>
+        </trh:rowLayout>
+
+      
+        <trh:rowLayout>
+            <trh:cellFormat>
+                <tr:commandLink text="Tools" action="menu.tools" />
+            </trh:cellFormat>
+        </trh:rowLayout>
+
+        <trh:rowLayout>
+            <trh:cellFormat>
+                <tr:commandLink text="Data Submission" action="menu.data_submission" />
+            </trh:cellFormat>
+        </trh:rowLayout>
+
+        <trh:rowLayout>
+            <trh:cellFormat>
+                <tr:commandLink text="Downloads" action="menu.downloads"/>
+            </trh:cellFormat>
+        </trh:rowLayout>
+
+         <trh:rowLayout>
+            <trh:cellFormat>
+                <tr:panelAccordion discloseNone="true">
+                  <tr:showDetailItem text="Documentation">
+                      <tr:panelGroupLayout layout="vertical">
+                          <f:facet name="separator">
+                              <tr:spacer height="5"/>
+                          </f:facet>
+                          <tr:spacer/>
+                           <tr:commandLink text="Data and Curation" action="menu.data_curation"/>
+                           <tr:goLink text="Developer Resources" destination="http://www.ebi.ac.uk/~intact/devsite" targetFrame="_blank"/>
+                           <tr:commandLink text="Publications" action="menu.publications"/>
+                           <tr:goLink text="Statistics" destination="http://www.ebi.ac.uk/intact/statisticView" targetFrame="_blank"/>
+                      </tr:panelGroupLayout>
+                  </tr:showDetailItem>
+                </tr:panelAccordion>
+            </trh:cellFormat>
+        </trh:rowLayout>
+
+        <trh:rowLayout>
+            <trh:cellFormat>
+                <tr:commandLink text="Contact IntAct" action="menu.contactus"/>
+            </trh:cellFormat>
+        </trh:rowLayout>
+
+    </trh:tableLayout>
+
+</tr:panelHorizontalLayout>
+
+</ui:composition>

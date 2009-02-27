@@ -95,7 +95,7 @@
         </navigation-case>
     </navigation-rule>
 
-    <navigation-rule>
+   <!-- <navigation-rule>
         <navigation-case>
             <from-outcome>list.dna</from-outcome>
             <to-view-id>/pages/list/dna_list.xhtml</to-view-id>
@@ -107,7 +107,7 @@
             <from-outcome>list.rna</from-outcome>
             <to-view-id>/pages/list/rna_list.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule>
+    </navigation-rule>-->
 
     <navigation-rule>
         <navigation-case>
@@ -145,6 +145,56 @@
              <to-view-id>/pages/interactions/configure_columns.xhtml</to-view-id>
            </navigation-case>
          </navigation-rule>
+   <!--dataset of the month-->
+      <navigation-rule>
+           <navigation-case>
+            <from-outcome>dotm_archive</from-outcome>
+            <to-view-id>/pages/dotm/dotm_archive.xhtml</to-view-id>
+        </navigation-case>
+       </navigation-rule>
 
+    <!-- left menu actions-->
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>menu.data_submission</from-outcome>
+            <to-view-id>/pages/menucontents/data_submission.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>menu.tools</from-outcome>
+            <to-view-id>/pages/menucontents/tools.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>menu.downloads</from-outcome>
+            <to-view-id>/pages/menucontents/downloads.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+     <navigation-rule>
+        <navigation-case>
+            <from-outcome>menu.contactus</from-outcome>
+            <to-view-id>/pages/menucontents/contact_content.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>menu.data_curation</from-outcome>
+            <to-view-id>/pages/menucontents/data_curation.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>menu.publications</from-outcome>
+            <to-view-id>/pages/menucontents/publications.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 
 </faces-config>

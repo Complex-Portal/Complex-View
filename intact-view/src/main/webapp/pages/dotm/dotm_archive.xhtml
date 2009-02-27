@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                template="/main_template.xhtml">
+
+
+        <!-- Mandatorty params -->
+        <ui:param name="sectionTitle" value="Datasets of the month - Archive"/>
+
+        <ui:define name="content">
+
+            <h1>Datasets of the month - Archive</h1>
+
+            <!--
+            <t:dataList var="dataSet" value="#{dataSetsBean.dataSets}">
+                      <ui:define name="dotm">
+                        <ui:param name="dataSet" value="#{dataSet}"/>
+                        <ui:include src="dotm_template.xhtml.xhtml"/>
+                    </ui:define>
+            </t:dataList>
+            -->
+            <ul>
+                <c:forEach var="dataSet" items="#{dataSetsBean.dataSets}">
+                    <li>
+                            <ui:param name="dataSet" value="#{dataSet}"/>
+                            <ui:param name="includeDate" value="true"/>
+                            <ui:include src="/pages/dotm/dotm_template.xhtml"/>
+                    </li>
+                </c:forEach>
+            </ul>
+
+        </ui:define>
+
+    </ui:composition>
+

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+
+    <a id="#{dataSet.title}"/>
+
+    <strong>#{dataSet.title}.</strong>
+
+    <c:if test="#{includeDate}">
+        <h:outputText value=" [#{dataSet.month}, #{dataSet.year}]"/>
+    </c:if>
+
+    <h:dataTable var="pubmed" value="#{dataSet.pubmeds}">
+        <h:column>
+            <h:outputText value="#{pubmed.author}"/>
+        </h:column>
+        <h:column>
+            <h:outputText value="  "/>
+        </h:column>
+        <h:column>
+            <h:outputLink
+                    value="http://www.ebi.ac.uk/intact/binary-search/faces/search.xhtml?query=pubid%3A#{pubmed.id}"
+                    target="_blank">
+                <h:graphicImage alt="IntAct" value="#{intactView['webapp.logo.url']}"
+                                style="border:0" width="40"/>
+            </h:outputLink>
+        </h:column>
+        <h:column>
+            <h:panelGrid columns="1" cellpadding="0" cellspacing="0">
+                <h:outputLink
+                        value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.zip">
+                    <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                                    style="border:0"/>
+                </h:outputLink>
+                <h:outputLink
+                        value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi1/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.zip">
+                    <h:graphicImage alt="PSI 1.0" value="/images/psi10.png"
+                                    style="border:0"/>
+                </h:outputLink>
+            </h:panelGrid>
+        </h:column>
+        <h:column>
+            <h:outputLink
+                    value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psimitab/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.txt">
+                <h:graphicImage alt="PSIMITAB" value="/images/mitab.png"
+                                style="border:0"/>
+            </h:outputLink>
+        </h:column>
+    </h:dataTable>
+
+</ui:composition>
+  

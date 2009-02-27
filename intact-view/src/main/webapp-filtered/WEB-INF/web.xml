@@ -30,6 +30,14 @@
         <param-value>${intact.news.url}</param-value>
     </context-param>
 
+    <context-param>
+        <description>
+            Where to find the Dataset of the Month XML file
+        </description>
+        <param-name>uk.ac.ebi.intact.DATASET_OF_THE_MONTH_URL</param-name>
+        <param-value>${intact.dotm.url}</param-value>
+    </context-param>
+
     <!-- MyFaces -->
 
     <!--<context-param>-->
