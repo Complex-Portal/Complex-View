@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
+import javax.faces.component.UIParameter;
+import javax.faces.event.ActionEvent;
+
 /**
  * JSF Utilities
  *
@@ -80,5 +83,11 @@ public class JsfUtils
             }
         }
         throw new RuntimeException("Parameter "+parameterName+" not found");
+    }
+
+    public static String getFirstParamValue(ActionEvent evt) {
+        UIParameter param = (UIParameter) evt.getComponent().getChildren().get(0);
+        String term = (String) param.getValue();
+        return term;
     }
 }
