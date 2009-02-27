@@ -30,43 +30,10 @@
     <title><tiles:getAsString name="title"/></title>
     <!-- Don't put the base tag here; let the browser sort out the URLs -->
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/layouts/styles/intact.css"/>
-    <link rel="stylesheet" type="text/css" href="http://www.ebi.ac.uk/inc/css/contents.css"/>
     <link rel="stylesheet" type="text/css" href="http://www.ebi.ac.uk/inc/css/userstyles.css"/>
-    <link rel="stylesheet" type="text/css" href="http://www.ebi.ac.uk/inc/css/sidebars.css"/>
-
-
-
 
     <!-- Needed to setup Tooltip for buttonBar.html. -->
     <script type="text/javascript" src="<%= request.getContextPath()%>/layouts/overLIB/overlib.js"></script>
-
-    <SCRIPT LANGUAGE="JavaScript">
-    <!-- Original:  Corey (638@gohip.com ) -->
-    <!-- Web Site:   http://six38.tripod.com -->
-    <!-- This script and many more are available free online at -->
-    <!-- The JavaScript Source!! http://javascript.internet.com -->
-    <!-- Begin
-    var start=new Date();
-        start=Date.parse(start)/1000;
-        var counts=60;
-        function CountDown(){
-            var now=new Date();
-            now=Date.parse(now)/1000;
-            var x=parseInt(counts-(now-start),10);
-            if(document.form1){document.form1.clock.value = x;}
-            if(x>0){
-                timerID=setTimeout("CountDown()", 100)
-            }else{
-                location.href="http://localhost:8081/intact/search-app"
-            }
-        }
-    //  End -->
-    </script>
-    <SCRIPT LANGUAGE="JavaScript">
-    <!--
-    window.setTimeout('CountDown()',100);
-    -->
-    </script>
 
 </head>
 
@@ -108,7 +75,7 @@
                                         This application is going to be phased out in June 2009.
                                         <br/>
                                         If you need to link to IntAct from your application, please read our
-                                        <a href="http://www.ebi.ac.uk/intact">documentation</a>.
+                                        <a href="http://www.ebi.ac.uk/~intact/how_to_link.html">documentation</a>.
                                         <br/>
                                         Please visit our new portal by clicking <a href="http://www.ebi.ac.uk/intact">here</a>.
                                     </div>

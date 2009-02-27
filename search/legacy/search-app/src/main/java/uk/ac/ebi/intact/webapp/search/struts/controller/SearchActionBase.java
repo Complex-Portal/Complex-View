@@ -81,10 +81,15 @@ public abstract class SearchActionBase extends IntactSearchAction
 
         // redirect to the dispatcher if the binary view is required
         String binaryView = request.getParameter("binary");
-        if (binaryView != null && binaryView.length() > 0)
-        {
-             log.debug("Request URL contains the binary parameter. Preparing the binary view...");
-             return prepareBinaryView(binaryView, mapping);
+        if (binaryView != null && binaryView.length() > 0) {
+            log.debug("Request URL contains the binary parameter. Preparing the binary view...");
+
+            final String[] acs = binaryView.split( "," );
+            final String myQuery = "%2bid:"+ acs[0] +"+%2bid:"+acs[1];
+
+            // forward back to the intact web site
+            return new ActionForward( "http://www.ebi.ac.uk/intact/binary-search/faces/search.xhtml?query=" + myQuery, true );
+//             return prepareBinaryView(binaryView, mapping);
         }        
 
         //clear the error message
