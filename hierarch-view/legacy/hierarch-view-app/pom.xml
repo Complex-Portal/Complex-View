@@ -23,7 +23,9 @@
         <jetty.port>9095</jetty.port>
         <db.alias>nodb</db.alias>
 
+        <!-- default value in case you haven't defined these in a profile ${HOME}/.m2/settings.xml-->
         <intact.interactionIndex>/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current</intact.interactionIndex>
+        <intact.solr.interactions.url>http://padney.ebi.ac.uk:8080/solr/core_stage</intact.solr.interactions.url>
     </properties>
 
     <build>
@@ -41,6 +43,15 @@
     </build>
       
     <dependencies>
+
+        <!-- Solr based search -->
+        <dependency>
+            <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
+            <artifactId>intact-solr</artifactId>
+            <version>2.0.3-SNAPSHOT</version>
+        </dependency>
+        
+        <!-- Lucene based search -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
@@ -72,17 +83,17 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psimitab</artifactId>
-            <version>2.0.2-SNAPSHOT</version>
+            <version>2.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
+            <version>1.7.3</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psimitab-converters</artifactId>
-            <version>2.0.2-SNAPSHOT</version>
+            <version>2.0.3-SNAPSHOT</version>
         </dependency>
 
         <!-- Binary Search Client -->

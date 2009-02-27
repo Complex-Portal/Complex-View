@@ -165,7 +165,7 @@ public class BinaryWebService implements DataService {
         return searchHelper.getSearchCritera();
     }
 
-    public String getDbName() throws HierarchViewDataException {
+    public String getDataSourceName() throws HierarchViewDataException {
         return client.getBinarySearchPort().getVersion();
     }
 }

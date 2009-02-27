@@ -32,20 +32,18 @@ public class DataServiceFactory {
     public static DataService buildDataService( String source ) {
         DataService dataservice = null;
 
-        if ( source.equals( "database" ) ) {
+        if ( source.equals( "solr" ) ) {
+            dataservice = new SolrDataSevice();
+        } else if ( source.equals( "database" ) ) {
             dataservice = new DatabaseService();
-        }
-
-        if ( source.equals( "webservice" ) ) {
+        } else if ( source.equals( "webservice" ) ) {
             dataservice = new BinaryWebService();
-        }
-
-        if ( source.equals( "mock" ) ) {
-            dataservice = new DataServiceMock();
-        }
-
-        if ( source.equals( "local" ) ) {
+        } else if ( source.equals( "local" ) ) {
             dataservice = new LocalIndexDataSevice();
+        } else if ( source.equals( "mock" ) ) {
+            dataservice = new DataServiceMock();
+        } else {
+            throw new IllegalStateException( "Unknown source '"+ source +"', could not setup a DataService." );
         }
 
         if ( logger.isDebugEnabled() ) logger.debug( "Used data source=" + source );

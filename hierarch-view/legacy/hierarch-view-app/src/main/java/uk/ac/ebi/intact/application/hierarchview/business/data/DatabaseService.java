@@ -82,16 +82,17 @@ public class DatabaseService implements DataService, Serializable {
                 binaryInteractions = i2t.convert( interactions );
 
                 chrono.stop();
+                if ( logger.isDebugEnabled() ) {
+                    String msg = new StringBuffer( 128 ).append( "Time for converting data (" )
+                            .append( interactions.size() ).append( " Interaction(s) to " )
+                            .append( binaryInteractions.size() ).append( " BinaryInteraction(s)):" )
+                            .append( chrono ).toString();
 
-                String msg = new StringBuffer( 128 ).append( "Time for converting data (" )
-                        .append( interactions.size() ).append( " Interaction(s) to " )
-                        .append( binaryInteractions.size() ).append( " BinaryInteraction(s)):" )
-                        .append( chrono ).toString();
-
-                logger.info( msg );
+                    logger.info( msg );
+                }
 
             } else {
-                logger.warn( "No result by database query for " + ac );
+                logger.info( "No result by database query for " + ac );
             }
         }
         return binaryInteractions;
@@ -126,16 +127,19 @@ public class DatabaseService implements DataService, Serializable {
 
         chrono.stop();
 
-        String msg;
-        if ( binaryInteractions.isEmpty() ) {
-            msg = new StringBuffer( 128 ).append( "No result(s) by search in database for query " )
-                    .append( query ).append( chrono ).toString();
-        } else {
-            msg = new StringBuffer( 128 ).append( "Time for retreiving data from database(" )
-                    .append( binaryInteractions.size() ).append( " BinaryInteractions) :" )
-                    .append( chrono ).toString();
+        if ( logger.isDebugEnabled() ) {
+            String msg;
+            if ( binaryInteractions.isEmpty() ) {
+                msg = new StringBuffer( 128 ).append( "No result(s) by search in database for query " )
+                        .append( query ).append( chrono ).toString();
+            } else {
+                msg = new StringBuffer( 128 ).append( "Time for retreiving data from database(" )
+                        .append( binaryInteractions.size() ).append( " BinaryInteractions) :" )
+                        .append( chrono ).toString();
+            }
+            logger.info( msg );
         }
-        logger.info( msg );
+
 
         if ( binaryInteractions.size() > HVNetworkBuilder.getMaxInteractions() ) {
             throw new MultipleResultException( "Result of " + query + " get more than " + HVNetworkBuilder.getMaxInteractions() + " interactions." );
@@ -182,7 +186,7 @@ public class DatabaseService implements DataService, Serializable {
         return results;
     }
 
-    public String getDbName() throws HierarchViewDataException {
+    public String getDataSourceName() throws HierarchViewDataException {
         try {
             return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getBaseDao().getDbName();
         } catch ( SQLException e ) {

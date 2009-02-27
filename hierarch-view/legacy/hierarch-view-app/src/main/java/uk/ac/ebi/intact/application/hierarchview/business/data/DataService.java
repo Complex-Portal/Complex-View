@@ -35,6 +35,5 @@ public interface DataService {
 
     Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException;
 
-    String getDbName() throws HierarchViewDataException;
-
+    String getDataSourceName() throws HierarchViewDataException;
 }

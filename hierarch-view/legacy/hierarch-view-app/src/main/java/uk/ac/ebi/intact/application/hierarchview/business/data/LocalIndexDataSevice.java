@@ -101,7 +101,7 @@ public class LocalIndexDataSevice implements DataService {
         return new SearchHelper().getSearchCritera();
     }
 
-    public String getDbName() throws HierarchViewDataException {
+    public String getDataSourceName() throws HierarchViewDataException {
         return "local index";
     }
 

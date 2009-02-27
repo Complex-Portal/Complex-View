@@ -11,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataServiceFactory;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DatabaseService;
-import uk.ac.ebi.intact.application.hierarchview.business.data.DataServiceMock;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
@@ -437,7 +436,7 @@ public class IntactUser implements IntactUserI {
 
     public String getDatabaseName() {
         try {
-            return getDataService().getDbName();
+            return getDataService().getDataSourceName();
         }
         catch ( HierarchViewDataException e ) {
             e.printStackTrace();
