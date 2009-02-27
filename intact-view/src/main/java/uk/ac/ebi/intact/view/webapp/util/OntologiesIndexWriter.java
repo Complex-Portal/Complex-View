@@ -17,31 +17,27 @@ package uk.ac.ebi.intact.view.webapp.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.document.FieldSelector;
-import org.apache.lucene.document.MapFieldSelector;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.params.FacetParams;
 import psidev.psi.mi.tab.model.builder.CrossReferenceFieldBuilder;
 import psidev.psi.mi.tab.model.builder.FieldBuilder;
+import uk.ac.ebi.intact.view.webapp.IntactViewException;
 
 import java.io.IOException;
-import java.util.*;
-
-import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Writes the ontologies using data from the used terms (go, interpro, chebi,
@@ -51,6 +47,8 @@ import uk.ac.ebi.intact.view.webapp.IntactViewException;
  * @version $Id$
  */
 public class OntologiesIndexWriter {
+
+    private static final Log log = LogFactory.getLog( OntologiesIndexWriter.class );
 
     public OntologiesIndexWriter() {
     }
@@ -133,17 +131,21 @@ public class OntologiesIndexWriter {
 
         QueryResponse queryResponse = solrServer.query(query);
 
-        FacetField detmethodField = queryResponse.getFacetField(fieldName);
+        FacetField facetField = queryResponse.getFacetField(fieldName);
 
         List<FieldCount> fields = new ArrayList<FieldCount>(Long.valueOf(queryResponse.getResults().getNumFound()).intValue());
 
         FieldBuilder fieldBuilder = new CrossReferenceFieldBuilder();
 
-        for (FacetField.Count c : detmethodField.getValues()) {
-            psidev.psi.mi.tab.model.builder.Field field = fieldBuilder.createField(c.getName());
-            FieldCount fc = new FieldCount(field, c.getCount());
-            fields.add(fc);
+        if (facetField != null && facetField.getValues() != null) {
+            for (FacetField.Count c : facetField.getValues()) {
+                psidev.psi.mi.tab.model.builder.Field field = fieldBuilder.createField(c.getName());
+                FieldCount fc = new FieldCount(field, c.getCount());
+                fields.add(fc);
+            }
         }
+
+        if (log.isDebugEnabled()) log.debug("Terms found for fieldName '"+fieldName+"': "+fields.size()+" / query: "+query);
 
         return fields;
     }
