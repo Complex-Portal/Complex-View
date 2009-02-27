@@ -15,10 +15,9 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.QueryParser;
@@ -26,20 +25,16 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import psidev.psi.mi.tab.model.CrossReference;
-import psidev.psi.mi.tab.model.Alias;
-import uk.ac.ebi.intact.model.CvAliasType;
-import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.InteractorAlias;
-import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
 import uk.ac.ebi.intact.psimitab.model.Annotation;
+import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
 import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
-import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper;
 
-import java.util.*;
-import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Functions to be used in the UI to control the display.
@@ -68,11 +63,6 @@ public final class MitabFunctions {
     private static final String DRUG_TARGET = "drug target";
     private static final String DRUG_TARGET_PSI_REF = "MI:1095";
 
-
-
-    // TODO replace this by EHCache
-    private static Map interactorCountCache = new LRUMap(2500);
-    private static Map interactionCountCache = new LRUMap(2500);
 
     //Initials
     private static final String proteinInitial = "PR";
@@ -242,58 +232,6 @@ public final class MitabFunctions {
         } catch (Exception e) {
             throw new SearchWebappException("Cannot count hits using query: "+searchQuery+" / in index: "+directory, e);
         }
-    }
-
-    public static OntologyTermWrapper populateCounts(OntologyTermWrapper otw, String interactorDirectory, String interactionDirectory, String interactorType) {
-        int interactorCount;
-        int interactionCount = 0;
-
-        if (otw.getInteractorCount() > 0) {
-            // counts have been calculated already, stop here.
-            return otw;
-        }
-
-        String interactorSearchQuery=null;
-
-        if( CvInteractorType.PROTEIN_MI_REF.equals( interactorType )){
-          interactorSearchQuery = otw.getInteractorSearchQuery()+" AND typeA:\""+ CvInteractorType.PROTEIN_MI_REF+"\"";
-        }else if(CvInteractorType.SMALL_MOLECULE_MI_REF.equals( interactorType )){
-          interactorSearchQuery = otw.getInteractorSearchQuery()+" AND typeA:\""+ CvInteractorType.SMALL_MOLECULE_MI_REF+"\"";
-        }
-
-        if ( log.isTraceEnabled() ) {
-            log.trace( "InteractorSearchQuery: " +interactorSearchQuery );
-        }
-
-        if (interactorCountCache.containsKey(interactorSearchQuery)) {
-            interactorCount = (Integer) interactorCountCache.get(interactorSearchQuery);
-        } else {
-            interactorCount = countHits(interactorSearchQuery, interactorDirectory);
-
-            interactorCountCache.put(interactorSearchQuery, interactorCount);
-        }
-
-        if (interactorCount > 0) {
-
-            final String interactionSearchQuery = otw.getInteractionSearchQuery();
-
-            if ( log.isTraceEnabled() ) {
-                log.trace(" InteractionSearchQuery: " + interactionSearchQuery  );
-            }
-
-            if (interactionCountCache.containsKey(interactionSearchQuery)) {
-                interactionCount = (Integer) interactionCountCache.get(interactionSearchQuery);
-            } else {
-                interactionCount = countHits(interactionSearchQuery, interactionDirectory);
-
-                interactionCountCache.put(interactionSearchQuery, interactionCount);
-            }
-        }
-
-        otw.setInteractorCount(interactorCount);
-        otw.setInteractionCount(interactionCount);
-
-        return otw;
     }
 
     public static String getIntactIdentifierFromCrossReferences(Collection xrefs) {

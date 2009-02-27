@@ -53,8 +53,6 @@
                             <tr:outputText value="#{otw.term.name}"/>
                         </tr:column>
 
-                        <c:set var="countedOtw" value="${iam:populateCounts(otw, indexRequestController.defaultInteractorIndex, indexRequestController.defaultInteractionIndex, 'MI:0326')}"/>
-
                     </f:facet>
                     <tr:column>
                         <f:facet name="header">
@@ -62,34 +60,19 @@
                         </f:facet>
                         <tr:outputText value="#{otw.term.id}"/>
                     </tr:column>
-                    <tr:column inlineStyle="text-align:center;">
-                        <f:facet name="header">
-                            <tr:outputText value="# Proteins"/>
-                        </f:facet>
 
-                        <tr:group>
-                            <tr:commandLink text="#{countedOtw.interactorCount}" rendered="#{countedOtw.interactorCount > 0}"
-                                            actionListener="#{searchBean.doFilteredBinarySearch}"
-                                            action="list.proteins">
-                                <f:param name="termId" value="#{otw.term.id}" />
-                            </tr:commandLink>
-
-                            <tr:outputText value="0" rendered="#{countedOtw.interactorCount == 0}" />
-                        </tr:group>
-
-                    </tr:column>
                     <tr:column inlineStyle="text-align:center;">
                         <f:facet name="header">
                             <tr:outputText value="# Interactions"/>
                         </f:facet>
                         <tr:group>
-                             <tr:commandLink text="#{countedOtw.interactionCount}" rendered="#{countedOtw.interactionCount > 0}"
+                             <tr:commandLink text="#{otw.interactionCount}" rendered="#{otw.interactionCount > 0}"
                                              actionListener="#{searchBean.doFilteredBinarySearch}"
                                              action="interactions">
                                  <f:param name="termId" value="#{otw.term.id}" />
                             </tr:commandLink>
 
-                            <tr:outputText value="0" rendered="#{countedOtw.interactionCount == 0}"/>
+                            <tr:outputText value="0" rendered="#{otw.interactionCount == 0}"/>
                         </tr:group>
                     </tr:column>
       

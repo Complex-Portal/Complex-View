@@ -31,6 +31,7 @@ import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +82,7 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
 
-        String cacheKey = solrQuery+"_"+ interactorTypeMis;
+        String cacheKey = solrQuery+"_"+ Arrays.toString(interactorTypeMis);
 
         if (cache.containsKey(cacheKey)) {
             if (log.isDebugEnabled()) log.debug("Fetching interactors for query (cache hit): "+solrQuery);

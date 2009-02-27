@@ -43,54 +43,36 @@
                     <tr:spacer width="50px"/>
                 </f:facet>
 
-                 <tr:treeTable var="otw" value="#{chebiBrowser.ontologyTreeModel}" rootNodeRendered="false" >
-
+                <tr:treeTable var="otw" value="#{chebiBrowser.ontologyTreeModel}" rootNodeRendered="false" >
 
                     <f:facet name="nodeStamp">
                         <tr:column>
                             <f:facet name="header">
-                                <tr:outputText value="CHEBI Name"/>
+                                <tr:outputText value="ChEBI Name"/>
                             </f:facet>
                             <tr:outputText value="#{otw.term.name}"/>
                         </tr:column>
 
-                        <c:set var="countedOtw" value="${iam:populateCounts(otw, indexRequestController.defaultInteractorIndex, indexRequestController.defaultInteractionIndex,'MI:0328')}"/>
-
                     </f:facet>
                     <tr:column>
                         <f:facet name="header">
-                            <tr:outputText value="CHEBI ID"/>
+                            <tr:outputText value="ChEBI ID"/>
                         </f:facet>
                         <tr:outputText value="#{otw.term.id}"/>
                     </tr:column>
-                    <tr:column inlineStyle="text-align:center;">
-                        <f:facet name="header">
-                            <tr:outputText value="# Small Molecules"/>
-                        </f:facet>
 
-                        <tr:group>
-                            <tr:commandLink text="#{countedOtw.interactorCount}" rendered="#{countedOtw.interactorCount > 0}"
-                                            actionListener="#{searchBean.doFilteredBinarySearch}"
-                                            action="list.compounds">
-                                <f:param name="termId" value="#{otw.term.id}" />
-                            </tr:commandLink>
-
-                            <tr:outputText value="0" rendered="#{countedOtw.interactorCount == 0}" />
-                        </tr:group>
-
-                    </tr:column>
                     <tr:column inlineStyle="text-align:center;">
                         <f:facet name="header">
                             <tr:outputText value="# Interactions"/>
                         </f:facet>
                         <tr:group>
-                             <tr:commandLink text="#{countedOtw.interactionCount}" rendered="#{countedOtw.interactionCount > 0}"
+                             <tr:commandLink text="#{otw.interactionCount}" rendered="#{otw.interactionCount > 0}"
                                              actionListener="#{searchBean.doFilteredBinarySearch}"
                                              action="interactions">
                                  <f:param name="termId" value="#{otw.term.id}" />
                             </tr:commandLink>
 
-                            <tr:outputText value="0" rendered="#{countedOtw.interactionCount == 0}"/>
+                            <tr:outputText value="0" rendered="#{otw.interactionCount == 0}"/>
                         </tr:group>
                     </tr:column>
 

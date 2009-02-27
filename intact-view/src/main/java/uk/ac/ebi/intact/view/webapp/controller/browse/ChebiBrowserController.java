@@ -15,19 +15,10 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.solr.client.solrj.SolrQuery;
-import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
-import uk.ac.ebi.intact.bridges.ontologies.OntologyIndexSearcher;
-import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
-import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
-import uk.ac.ebi.intact.view.webapp.util.ChebiOntologyTerm;
-
-import javax.annotation.PostConstruct;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
+import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 
 
 /**
@@ -39,42 +30,20 @@ import javax.annotation.PostConstruct;
  */
 @Controller( "chebiBrowser" )
 @Scope( "request" )
-public class ChebiBrowserController extends BaseController {
+public class ChebiBrowserController extends OntologyBrowserController {
 
-    @Autowired
-    private SearchController searchController;
+    @Override
+    protected RootTerm createRootTerm(OntologySearcher ontologySearcher) {
+        final RootTerm rootTerm = new RootTerm( ontologySearcher, "ChEBI Ontology" );
+        rootTerm.addChild("CHEBI:36342", "Subatomic particle");
+        rootTerm.addChild("CHEBI:24431", "Molecular structure");
+        rootTerm.addChild("CHEBI:50906", "Role");
 
-    @Autowired
-    private UserQuery userQuery;
-
-    private OntologyTreeModel chebiOntologyTreeModel;
-
-
-    public ChebiBrowserController() {
+        return rootTerm;
     }
 
-    @PostConstruct
-    public void init() {
-        SolrQuery query = userQuery.createSolrQuery();
-
-        // TODO fix this
-        String luceneQuery = "";
-        String searchQuery = null;
-        OntologyIndexSearcher searcher = null;
-        //String luceneQuery = searchController.getResults().getResult().getLuceneQuery().toString();
-
-        final OntologyTerm chebiOntologyRoot = new ChebiOntologyTerm( searcher );
-        chebiOntologyTreeModel = new OntologyTreeModel( chebiOntologyRoot,
-                                                        null,
-                                                        null,
-                                                        searchQuery,
-                                                        luceneQuery );
-
+    @Override
+    protected String getFieldName() {
+        return "chebi_expanded_id";
     }
-
-    public OntologyTreeModel getOntologyTreeModel() {
-        return chebiOntologyTreeModel;
-    }
-
-
 }

@@ -15,18 +15,10 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.apache.solr.client.solrj.SolrQuery;
-import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
-import uk.ac.ebi.intact.bridges.ontologies.OntologyIndexSearcher;
-import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
-import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
-import uk.ac.ebi.intact.view.webapp.util.GoOntologyTerm;
-
-import javax.annotation.PostConstruct;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
+import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 
 /**
  * Controller for GoBrowsing
@@ -36,38 +28,19 @@ import javax.annotation.PostConstruct;
  */
 @Controller("goBrowser")
 @Scope("request")
-public class GoBrowserController extends BaseController{
+public class GoBrowserController extends OntologyBrowserController {
 
-    @Autowired
-    private SearchController searchController;
-
-    @Autowired
-    private UserQuery userQuery;
-
-    private OntologyTreeModel goOntologyTreeModel;
-
-    public GoBrowserController() {
+    @Override
+    protected RootTerm createRootTerm(OntologySearcher ontologySearcher) {
+        final RootTerm rootTerm = new RootTerm( ontologySearcher, "GO Ontology" );
+        rootTerm.addChild("GO:0008150", "Biological process");
+        rootTerm.addChild("GO:0003674", "Molecular function");
+        rootTerm.addChild("GO:0005575", "Cellular component");
+        return rootTerm;
     }
 
-    @PostConstruct
-    public void init() {
-        SolrQuery query = userQuery.createSolrQuery();
-
-        // TODO fix this
-        String luceneQuery = "";
-        String searchQuery = null;
-        OntologyIndexSearcher searcher = null;
-        //String luceneQuery = searchController.getResults().getResult().getLuceneQuery().toString();
-
-        final OntologyTerm goOntologyRoot = new GoOntologyTerm(searcher);
-        goOntologyTreeModel = new OntologyTreeModel(goOntologyRoot,
-                                                      null,
-                                                      null,
-                                                      searchQuery,
-                                                      luceneQuery);
-    }
-
-    public OntologyTreeModel getOntologyTreeModel() {
-        return goOntologyTreeModel;
+    @Override
+    protected String getFieldName() {
+        return "go_expanded_id";
     }
 }

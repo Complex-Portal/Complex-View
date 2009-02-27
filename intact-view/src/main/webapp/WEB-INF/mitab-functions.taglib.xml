@@ -23,11 +23,6 @@
         <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
         <function-signature>int countHits(java.lang.String,java.lang.String)</function-signature>
     </function>
-    <function>
-        <function-name>populateCounts</function-name>
-        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
-        <function-signature>uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper populateCounts(uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper,java.lang.String,java.lang.String,java.lang.String)</function-signature>
-    </function>
 
     <function>
         <function-name>getIntactIdentifierFromCrossReferences</function-name>

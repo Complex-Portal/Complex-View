@@ -13,7 +13,7 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
-    <c:set var="displayWarning" value="#{searchBean.results.pageSize lt searchBean.interactorTotalResults}" />
+    <c:set var="displayWarning" value="#{browseBean.maxSize lt searchBean.interactorTotalResults}" />
 
     <ui:include src="/pages/inc/queryDisplay.xhtml" />
     

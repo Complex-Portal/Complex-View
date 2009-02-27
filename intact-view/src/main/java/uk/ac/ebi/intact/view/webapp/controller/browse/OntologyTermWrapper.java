@@ -15,13 +15,10 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
-import org.apache.lucene.search.IndexSearcher;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
+import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Ontology term wrapper.
@@ -32,54 +29,29 @@ import java.util.List;
 public class OntologyTermWrapper {
 
     private OntologyTerm term;
-    private int interactionCount;
-    private int interactorCount;
-    private IndexSearcher interactionIndexSearcher;
-    private IndexSearcher interactorIndexSearcher;
-    private String baseQuery;
-    private String interactorSearchQuery;
-    private String interactionSearchQuery;
-    private String luceneQuery;
+    private long interactionCount;
+
+    private Map<String, Long> termsCountMap;
+    private boolean showIfEmpty = false;
 
     private OntologyTermWrapper parent;
 
     private List<OntologyTermWrapper> children;
 
-    private String interactionColour;
-    private String interactorColour;
-
-    protected OntologyTermWrapper(OntologyTerm term, IndexSearcher interactionIndexSearcher, IndexSearcher interactorIndexSearcher, String baseQuery,String luceneQuery) {
-        this(term, interactionIndexSearcher, interactorIndexSearcher, baseQuery,luceneQuery, true);
-    }
-
-    protected OntologyTermWrapper(OntologyTerm term, IndexSearcher interactionIndexSearcher, IndexSearcher interactorIndexSearcher, String baseQuery, String luceneQuery, boolean countInteractors) {
+    public OntologyTermWrapper(OntologyTerm term, Map<String, Long> termsCountMap, boolean showIfEmpty) {
         this.term = term;
-        this.interactionIndexSearcher = interactionIndexSearcher;
-        this.interactorIndexSearcher = interactorIndexSearcher;
-        this.baseQuery = baseQuery;
-        this.luceneQuery = luceneQuery;
+        this.termsCountMap = termsCountMap;
+        this.showIfEmpty = showIfEmpty;
 
-        this.interactorSearchQuery = prepareProteinQuery(term.getId(), luceneQuery);
-        this.interactionSearchQuery = prepareInteractionQuery(term.getId(), luceneQuery);
+        Long count = termsCountMap.get(term.getId());
 
-        if (term == null) throw new NullPointerException("Term is necessary");
-
+        if (count != null) {
+            interactionCount = count;
+        }
     }
 
     public OntologyTerm getTerm() {
         return term;
-    }
-
-    public int getInteractorCount() {
-        return interactorCount;
-    }
-
-    public void setInteractorCount(int interactorCount) {
-        this.interactorCount = interactorCount;
-    }
-
-    public void add(int countToAdd) {
-        this.interactorCount = this.interactorCount + countToAdd;
     }
 
     public List<OntologyTermWrapper> getChildren() {
@@ -90,36 +62,17 @@ public class OntologyTermWrapper {
         children = new ArrayList<OntologyTermWrapper>();
 
         for (OntologyTerm child : term.getChildren()) {
-            OntologyTermWrapper otwChild = new OntologyTermWrapper(child, interactionIndexSearcher, interactorIndexSearcher, baseQuery, luceneQuery);
+            OntologyTermWrapper otwChild = new OntologyTermWrapper(child, termsCountMap, showIfEmpty);
 
-            children.add(otwChild);
-            otwChild.setParent(this);
+            if (showIfEmpty || otwChild.getInteractionCount() > 0 || (term instanceof RootTerm)) {
+                children.add(otwChild);
+                otwChild.setParent(this);
+            } 
         }
 
         Collections.sort(children, new OntologyTermWrapperComparator());
 
         return children;
-    }
-
-    private String prepareInteractionQuery( String id, String luceneQuery ) {
-        return prepareQuery( "properties", id, luceneQuery );
-    }
-
-    private String prepareProteinQuery( String id, String luceneQuery ) {
-        return prepareQuery( "propertiesA", id, luceneQuery );
-    }
-
-    private String prepareQuery(String field, String id, String baseQuery) {
-        StringBuilder query = new StringBuilder( (baseQuery == null ? 0 : baseQuery.length()) + 32);
-
-        if (baseQuery != null && !baseQuery.isEmpty() &&
-            !baseQuery.equals("*") && !baseQuery.equals("?")) {
-            query.append("(").append(baseQuery).append(") AND ");
-        }
-
-        query.append(field + ":\"").append(id).append("\"");
-
-        return query.toString();
     }
 
     public OntologyTermWrapper getParent() {
@@ -130,43 +83,7 @@ public class OntologyTermWrapper {
         this.parent = parent;
     }
 
-    public Integer getChildrenInteractorTotalCount() {
-        int totalCount = 0;
-
-        for (OntologyTermWrapper child : getChildren()) {
-            totalCount = totalCount + child.getInteractorCount();
-        }
-
-        return totalCount;
-    }
-
-    public int getChildrenInteractionTotalCount() {
-        int totalCount = 0;
-
-        for (OntologyTermWrapper child : getChildren()) {
-            totalCount = totalCount + child.getInteractionCount();
-        }
-
-        return totalCount;
-    }
-
-    public String getInteractorColour() {
-        return interactorColour;
-    }
-
-    public void setInteractorColour(String interactorColour) {
-        this.interactorColour = interactorColour;
-    }
-
-    public String getInteractionColour() {
-        return interactionColour;
-    }
-
-    public void setInteractionColour(String interactionColour) {
-        this.interactionColour = interactionColour;
-    }
-
-    public int getInteractionCount() {
+    public long getInteractionCount() {
         return interactionCount;
     }
 
@@ -174,42 +91,10 @@ public class OntologyTermWrapper {
         this.interactionCount = interactionCount;
     }
 
-    public String getInteractorSearchQuery() {
-        return interactorSearchQuery;
-    }
-
-    public void setInteractorSearchQuery(String searchQuery) {
-        this.interactorSearchQuery = searchQuery;
-    }
-
-    public String getInteractionSearchQuery() {
-        return interactionSearchQuery;
-    }
-
-    public void setInteractionSearchQuery(String searchQuery) {
-        this.interactionSearchQuery = searchQuery;
-    }
-
-    public String getBaseQuery() {
-        return baseQuery;
-    }
-
-    public void setBaseQuery( String baseQuery ) {
-        this.baseQuery = baseQuery;
-    }
-
-    public String getLuceneQuery() {
-        return luceneQuery;
-    }
-
-    public void setLuceneQuery( String luceneQuery ) {
-        this.luceneQuery = luceneQuery;
-    }
-
     private class OntologyTermWrapperComparator implements Comparator<OntologyTermWrapper> {
 
         public int compare(OntologyTermWrapper o1, OntologyTermWrapper o2) {
-            if (o1.getInteractorCount() > o2.getInteractorCount()) {
+            if (o1.getInteractionCount() > o2.getInteractionCount()) {
                 return -1;
             } else {
                 return +1;
