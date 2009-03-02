@@ -59,7 +59,7 @@ Optionally define the URL parametres. Makes Dasty2 independent from the URL.
 		<iframe src="/inc/head.html" name="head" id="head" frameborder="0" marginwidth="0px" marginheight="0px" scrolling="no"  width="100%" style="position:absolute; z-index: 1; height: 57px;">Your browser does not support inline frames or is currently configured not to display inline frames. Content can be viewed at actual source page: http://www.ebi.ac.uk/inc/head.html</iframe>
 	</div>
     
-	<div class="menucontents">
+	<div class="general">
 <!-- END EBI CODE -->
 
 		<? include("ebi_body.php"); ?>

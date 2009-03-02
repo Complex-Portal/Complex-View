@@ -18,7 +18,9 @@
 
     <tr:panelHeader text="Network visualisation" />
 
-    <tr:image source="#{intactViewConfiguration.hierarchViewUrl}/GenerateImage?query=#{userQuery.interactionQuery}&amp;h=700&amp;w=700"
+    #{userQuery.hierarchViewUrl}&amp;h=700&amp;w=700
+
+    <tr:image source="#{userQuery.hierarchViewUrl}&amp;h=700&amp;w=700"
               inlineStyle="border-width:0" />
 
 </ui:composition>

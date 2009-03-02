@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+
+                template="/WEB-INF/facelets/layout/template-ebi.xhtml">
+
+    <ui:param name="hideSidebar" value="true"/>
+
+    <ui:define name="content">
+
+        <p>
+            <ui:include src="/pages/documentation/about/intact_home.xhtml"/>
+        </p>
+
+        <p>
+            <ui:include src="tools_content.xhtml"/>
+        </p>
+
+        <p>
+            <ui:include src="data_submission_content.xhtml"/>
+        </p>
+
+        <p>
+            <ui:include src="downloads_content.xhtml"/>
+        </p>
+
+        <p>
+            <ui:include src="publications_content.xhtml"/>
+        </p>
+    </ui:define>
+
+</ui:composition>

@@ -21,10 +21,13 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -40,6 +43,9 @@ public class UserQuery {
 
     @Autowired
     private FilterPopulatorController filterPopulator;
+
+    @Autowired
+    private IntactViewConfiguration intactViewConfiguration;
 
     private String searchQuery = "*:*";
     private String ontologySearchQuery;
@@ -108,6 +114,21 @@ public class UserQuery {
 
     public String getDisplayQuery() {
         return searchQuery;
+    }
+
+    public String getHierarchViewUrl() {
+        StringBuilder sb = new StringBuilder(256);
+
+        sb.append(intactViewConfiguration.getHierarchViewImageUrl());
+        sb.append("?sq=");
+
+        try {
+            sb.append(URLEncoder.encode(createSolrQuery().toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return sb.toString();
     }
 
     public boolean isUsingFilters() {

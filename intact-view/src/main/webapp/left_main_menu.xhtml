@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+
+    <trh:script text="text/javascript">
+        function ebifaces__toggleState(li)
+        {
+            var className = li.className;
+            var showChildren = false;
+
+            if (className == 'clickme')
+            {
+                li.className = 'clickmeopen';
+                showChildren = true;
+            }
+            else if (className == 'clickmeopen')
+            {
+                li.className = 'clickme';
+                showChildren = false;
+            }
+
+
+            var childUl = li.getElementsByTagName('ul')[0];
+
+            if (childUl != null)
+            {
+                ebifaces__toggleULBlock(childUl, showChildren);
+            }
+
+        }
+
+        function ebifaces__toggleULBlock(ul, showChildren)
+        {
+            if (showChildren)
+            {
+                ul.style.display = 'block';
+            }
+            else
+            {
+                ul.style.display = 'none';
+            }
+        }
+
+    </trh:script>
+
+
+    <ul id="menu" class="sidemenu">
+
+        <li class="leftmenudivider"></li>
+
+        <li><tr:commandLink text="Home" action="main"/></li>
+        <li><tr:commandLink text="Advanced Search" action="search"/></li>
+        <li><tr:commandLink text="Tools" action="documentation.tools"/></li>
+        <li><tr:commandLink text="Data Submission" action="documentation.data_submission"/></li>
+        <li><tr:commandLink text="Downloads" action="documentation.downloads"/></li>
+
+        <li class="clickme" onclick="ebifaces__toggleState(this)">
+            <a href="left_main_menu.xhtml#"></a>Documentation
+            <ul style="margin: 0; display:'none';">
+
+                <li><tr:commandLink text="Data and Curation" action="documentation.data_curation"/></li>
+                <li><tr:goLink text="Developer Resources" destination="http://www.ebi.ac.uk/~intact/devsite"
+                               targetFrame="_blank"/></li>
+                <li><tr:commandLink text="Publications" action="documentation.publications"/></li>
+                <li><tr:goLink text="Statistics" destination="http://www.ebi.ac.uk/intact/statisticView"
+                               targetFrame="_blank"/></li>
+
+            </ul>
+        </li>
+
+        <li><tr:commandLink text="Contact Us" action="documentation.contactus"/></li>
+
+        <li class="leftmenudivider"></li>
+
+        <li><tr:commandLink text="Printer Friendly View" action="documentation.printerfriendly"/></li>
+
+        <li class="leftmenudivider"></li>
+
+    </ul>
+      
+</ui:composition>

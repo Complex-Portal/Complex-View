@@ -162,47 +162,53 @@
         </navigation-case>
     </navigation-rule>
 
-    <!-- left menu actions-->
+    <!-- Documentation pages -->
     <navigation-rule>
         <navigation-case>
-            <from-outcome>menu.data_submission</from-outcome>
-            <to-view-id>/pages/menucontents/data_submission.xhtml</to-view-id>
+            <from-outcome>documentation.data_submission</from-outcome>
+            <to-view-id>/pages/documentation/data_submission.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
-            <from-outcome>menu.tools</from-outcome>
-            <to-view-id>/pages/menucontents/tools.xhtml</to-view-id>
+            <from-outcome>documentation.tools</from-outcome>
+            <to-view-id>/pages/documentation/tools.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
-            <from-outcome>menu.downloads</from-outcome>
-            <to-view-id>/pages/menucontents/downloads.xhtml</to-view-id>
+            <from-outcome>documentation.downloads</from-outcome>
+            <to-view-id>/pages/documentation/downloads.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
      <navigation-rule>
         <navigation-case>
-            <from-outcome>menu.contactus</from-outcome>
-            <to-view-id>/pages/menucontents/contact_content.xhtml</to-view-id>
+            <from-outcome>documentation.contactus</from-outcome>
+            <to-view-id>/pages/documentation/contact_content.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
-            <from-outcome>menu.data_curation</from-outcome>
-            <to-view-id>/pages/menucontents/data_curation.xhtml</to-view-id>
+            <from-outcome>documentation.data_curation</from-outcome>
+            <to-view-id>/pages/documentation/data_curation.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>documentation.publications</from-outcome>
+            <to-view-id>/pages/documentation/publications.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
-            <from-outcome>menu.publications</from-outcome>
-            <to-view-id>/pages/menucontents/publications.xhtml</to-view-id>
+            <from-outcome>documentation.printerfriendly</from-outcome>
+            <to-view-id>/pages/documentation/all_printer_friendly.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
