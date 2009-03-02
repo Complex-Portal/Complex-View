@@ -33,7 +33,7 @@ public interface DataService {
 
     Collection<String> getCentralProteins();
 
-    Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException;
+    Collection<BinaryInteraction> getBinaryInteractionsByQueryString( UserQuery query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException;
 
     String getDataSourceName() throws HierarchViewDataException;
 }

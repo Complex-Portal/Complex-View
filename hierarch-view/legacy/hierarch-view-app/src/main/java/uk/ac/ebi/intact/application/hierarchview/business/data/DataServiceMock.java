@@ -67,8 +67,8 @@ public class DataServiceMock implements DataService {
         return centralProteins;
     }
 
-    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
-        this.query = query;
+    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( UserQuery query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
+        this.query = query.getQuery();
 
         try {
             File file = null;

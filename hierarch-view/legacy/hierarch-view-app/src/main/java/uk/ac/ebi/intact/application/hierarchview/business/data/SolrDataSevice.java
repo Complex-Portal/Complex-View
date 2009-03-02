@@ -57,7 +57,7 @@ public class SolrDataSevice implements DataService {
     private static final Log log = LogFactory.getLog( SolrDataSevice.class );
 
     private Collection<String> centralProteins;
-    private String query;
+    private UserQuery userQuery;
     private String solrServerUrl;
     Collection<BinaryInteraction> interactions;
     SolrServer solrServer;
@@ -88,6 +88,8 @@ public class SolrDataSevice implements DataService {
 
     public Collection<String> getCentralProteins() {
 
+        String query = userQuery.getQuery();
+
         if ( query.contains( ", " ) ) {
             for ( String q : query.split( "," ) ) {
                 findCentralProteins( interactions, q.trim() );
@@ -99,21 +101,20 @@ public class SolrDataSevice implements DataService {
         return centralProteins;
     }
 
-    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
+    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( UserQuery userQuery ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
 
-        this.query = query;
+        this.userQuery = userQuery;
+
+        SolrQuery query = userQuery.getSolrQuery();
 
         try {
-            SolrQuery solrQuery = new SolrQuery( query )
-                    .setStart( 0 )
-                    .setRows( HVNetworkBuilder.getMaxInteractions() );
 
             if ( log.isDebugEnabled() ) {
-                log.debug( "Solr query: " + solrQuery );
+                log.debug( "Solr query: " + query );
             }
 
 
-            QueryResponse solrResponse = solrServer.query( solrQuery );
+            QueryResponse solrResponse = solrServer.query( query );
 
             if ( solrResponse.getResults().getNumFound() > HVNetworkBuilder.getMaxInteractions() ) {
                 throw new MultipleResultException( "Query '" + query +

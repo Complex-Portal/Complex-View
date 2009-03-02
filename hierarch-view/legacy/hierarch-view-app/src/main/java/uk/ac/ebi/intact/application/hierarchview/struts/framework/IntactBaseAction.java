@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMessages;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUser;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.data.UserQuery;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.DrawGraph;
@@ -359,7 +360,7 @@ public abstract class IntactBaseAction extends Action {
             switch ( action ) {
                 case StrutsConstants.CREATE_INTERACTION_NETWORK:
                     try {
-                        in = builder.buildBinaryGraphNetwork( queryString );
+                        in = builder.buildBinaryGraphNetwork( new UserQuery(queryString) );
 
                         if ( logger.isDebugEnabled() ) {
                             logger.debug( "Creating a new Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
@@ -402,7 +403,7 @@ public abstract class IntactBaseAction extends Action {
 
                     try {
                         int size_before = in.getBinaryInteraction().size();
-                        in = builder.fusionBinaryGraphNetwork( in, queryString );
+                        in = builder.fusionBinaryGraphNetwork( in, new UserQuery(queryString) );
                         user.pushNetwork( in );
                         if ( logger.isDebugEnabled() ) {
                             logger.debug( "Adding a new Network with " + in.getBinaryInteraction().size() + " BinaryInteractions " +
@@ -459,12 +460,12 @@ public abstract class IntactBaseAction extends Action {
                                         logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );
                                     }
                                 } else {
-                                    in = builder.buildBinaryGraphNetwork( queryString );
+                                    in = builder.buildBinaryGraphNetwork( new UserQuery(queryString) );
                                     in.setDepthToDefault();
                                 }
                             } else {
                                 logger.info( queryString );
-                                in = builder.buildBinaryGraphNetwork( queryString );
+                                in = builder.buildBinaryGraphNetwork( new UserQuery(queryString) );
                                 if ( logger.isDebugEnabled() ) {
                                     logger.debug( "Update current Network with " + in.getBinaryInteraction().size() + " BinaryInteractions." );
                                     logger.debug( "Number of Central Nodes is " + in.getCentralNodes().size() );

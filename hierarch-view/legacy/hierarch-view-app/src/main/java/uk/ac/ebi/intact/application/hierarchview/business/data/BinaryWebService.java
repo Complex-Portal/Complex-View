@@ -55,10 +55,13 @@ public class BinaryWebService implements DataService {
         return centralProteins;
     }
 
-    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
+    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( UserQuery userQuery ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
         Chrono chrono = new Chrono();
         chrono.start();
         centralProteins = new ArrayList<String>();
+
+        String query = userQuery.getQuery();
+
         Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
         SearchResult result = client.findBinaryInteractions( query );
         if ( result.getTotalCount() > HVNetworkBuilder.getMaxInteractions() ) {

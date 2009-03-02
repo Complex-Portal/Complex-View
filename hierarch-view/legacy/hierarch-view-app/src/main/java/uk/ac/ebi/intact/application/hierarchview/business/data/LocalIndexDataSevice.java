@@ -71,15 +71,15 @@ public class LocalIndexDataSevice implements DataService {
         return centralProteins;
     }
 
-    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
-        this.query = query;
+    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( UserQuery query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
+        this.query = query.getQuery();
         if ( localIndexPath == null ) {
             throw new HierarchViewDataException( "NO local index path is found. Please specify one in " + StrutsConstants.SEARCH_PROPERTY_FILE );
         }         
 
         try {
             IntactSearchEngine searchEngine = new IntactSearchEngine( localIndexPath );
-            this.searchResult = searchEngine.search( query, 0, HVNetworkBuilder.getMaxInteractions() );
+            this.searchResult = searchEngine.search( query.getQuery(), 0, HVNetworkBuilder.getMaxInteractions() );
 
             if ( searchResult.getTotalCount() > HVNetworkBuilder.getMaxInteractions() ) {
                 throw new MultipleResultException( "Query '" + query + "' returns more interactions than the maximum allowed (" + HVNetworkBuilder.getMaxInteractions() + ")." );

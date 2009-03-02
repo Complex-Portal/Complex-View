@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
+import uk.ac.ebi.intact.application.hierarchview.business.data.UserQuery;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.NetworkBuildException;
@@ -56,8 +57,6 @@ public class HVNetworkBuilder {
     public static final List<String> NODE_SOURCES;
 
     public static final List<String> EDGE_SOURCES;
-
-    private String currentQuery;
 
     static {
         // the default size should be big enough
@@ -167,8 +166,7 @@ public class HVNetworkBuilder {
         return MAX_PROTEINS;
     }
 
-    public Network buildBinaryGraphNetwork( String queryString ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
-        currentQuery = queryString;
+    public Network buildBinaryGraphNetwork( UserQuery queryString ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
         Collection<BinaryInteraction> bis = dataservice.getBinaryInteractionsByQueryString( queryString );
         Collection<String> centralProteinAcs = dataservice.getCentralProteins();
 
@@ -179,13 +177,13 @@ public class HVNetworkBuilder {
         return new InteractionNetwork( builder.createGraphNetwork( bis, centralProteinAcs ) );
     }
 
-    public Network fusionBinaryGraphNetwork( Network in, String queryString ) throws HierarchViewDataException, NetworkBuildException, MultipleResultException, ProteinNotFoundException {
+    public Network fusionBinaryGraphNetwork( Network in, UserQuery userQuery ) throws HierarchViewDataException, NetworkBuildException, MultipleResultException, ProteinNotFoundException {
 
         in.initNodes();
         in.initEdges();
         BinaryGraphNetwork network1 = ( BinaryGraphNetwork ) in.getGraphNetwork();
 
-        Collection<BinaryInteraction> bis = dataservice.getBinaryInteractionsByQueryString( queryString );
+        Collection<BinaryInteraction> bis = dataservice.getBinaryInteractionsByQueryString( userQuery );
 
         if ( bis != null && !bis.isEmpty() ) {
             Collection<String> centralProteinAcs = dataservice.getCentralProteins();
@@ -194,7 +192,6 @@ public class HVNetworkBuilder {
 
                 BinaryGraphNetwork network2 = builder.createGraphNetwork( bis, centralProteinAcs );
                 Network network = new InteractionNetwork( merger.mergeGraphNetworks( network1, network2 ) );
-                currentQuery = queryString;
 
                 return network;
 
@@ -220,7 +217,7 @@ public class HVNetworkBuilder {
             if ( iterator.hasNext() ) query.append( ", " );
         }
 
-        network = fusionBinaryGraphNetwork( network, query.toString() );
+        network = fusionBinaryGraphNetwork( network, new UserQuery(query.toString()) );
         return network;
     }
 }

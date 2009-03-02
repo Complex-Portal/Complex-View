@@ -10,9 +10,11 @@ import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.solr.client.solrj.SolrQuery;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
 import uk.ac.ebi.intact.application.hierarchview.business.data.LocalIndexDataSevice;
+import uk.ac.ebi.intact.application.hierarchview.business.data.UserQuery;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.DrawGraph;
@@ -28,6 +30,8 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 
 /**
@@ -60,14 +64,23 @@ public class GenerateImage extends HttpServlet {
             // get the current user session
             HttpSession session = aRequest.getSession( false );
 
-            String query = aRequest.getParameter("query");
+            String queryParam = aRequest.getParameter("query");
+            String solrQueryParam = aRequest.getParameter("sq");
 
-            ImageBean imageBean;
+            UserQuery query = null;
+            ImageBean imageBean = null;
 
-            if ( query == null ) {
+            if (queryParam != null) {
+                query = new UserQuery(queryParam);
+            } else if (queryParam != null) {
+                SolrQuery solrQuery = createSolrQueryFromURL(solrQueryParam);
+                query = new UserQuery(solrQuery);
+            } else {
                 IntactUserI user = ( IntactUserI ) session.getAttribute( Constants.USER_KEY );
                 imageBean = user.getImageBean();
-            } else {
+            }
+
+            if (imageBean == null) {
                 // search and create image
                 String widthParam = aRequest.getParameter("w");
                 String heightParam = aRequest.getParameter("h");
@@ -78,8 +91,8 @@ public class GenerateImage extends HttpServlet {
                 int width = 400;
                 int height = 400;
 
-                if (query == null) {
-                    throw new IllegalStateException("Parameter 'query' is needed if the session does not exist (direct call to the servlet)");
+                if (queryParam == null || solrQueryParam == null) {
+                    throw new IllegalStateException("Parameters 'query' or 'sq' (solr query) are needed if the session does not exist (direct call to the servlet)");
                 }
 
                 if (widthParam != null) {
@@ -161,6 +174,26 @@ public class GenerateImage extends HttpServlet {
             }
         }
     } // doGet
+
+    private SolrQuery createSolrQueryFromURL(String solrQueryParam) throws UnsupportedEncodingException {
+        String s = URLDecoder.decode(solrQueryParam, "UTF-8");
+
+        String[] stokens = s.split("&");
+
+        SolrQuery solrQuery = new SolrQuery();
+        solrQuery.setRows(HVNetworkBuilder.getMaxInteractions());
+
+        for (String stoken : stokens) {
+            String[] param = stoken.split("=");
+
+            if (param[0].equals("q")) {
+                solrQuery.setQuery(param[1]);
+            } else if (param[0].equals("fq")) {
+                solrQuery.addFilterQuery(param[1]);
+            }
+        }
+        return solrQuery;
+    }
 }
 
 

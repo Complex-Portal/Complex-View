@@ -98,14 +98,14 @@ public class DatabaseService implements DataService, Serializable {
         return binaryInteractions;
     }
 
-    public Collection getBinaryInteractionsByQueryString( String query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
+    public Collection getBinaryInteractionsByQueryString( UserQuery query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
         Chrono chrono = new Chrono();
         chrono.start();
 
         centralProteins = new ArrayList<String>();
 
         Collection<BinaryInteraction> binaryInteractions = new ArrayList<BinaryInteraction>();
-        Collection<Interactor> interactors = getInteractorByQuery( query );
+        Collection<Interactor> interactors = getInteractorByQuery( query.getQuery() );
 
 
         if ( interactors != null && !interactors.isEmpty() ) {

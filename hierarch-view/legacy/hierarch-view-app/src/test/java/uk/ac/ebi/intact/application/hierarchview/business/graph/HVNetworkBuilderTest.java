@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataService;
 import uk.ac.ebi.intact.application.hierarchview.business.data.DataServiceMock;
+import uk.ac.ebi.intact.application.hierarchview.business.data.UserQuery;
 import uk.ac.ebi.intact.service.graph.Node;
 
 /**
@@ -35,7 +36,7 @@ public class HVNetworkBuilderTest {
         DataService dataservice = new DataServiceMock();
         HVNetworkBuilder builder = new HVNetworkBuilder( dataservice );
 
-        Network network = builder.buildBinaryGraphNetwork( "brca2" );
+        Network network = builder.buildBinaryGraphNetwork( new UserQuery("brca2") );
 
         assertNotNull( network );
         assertEquals( 2, network.getCentralNodes().size() );
