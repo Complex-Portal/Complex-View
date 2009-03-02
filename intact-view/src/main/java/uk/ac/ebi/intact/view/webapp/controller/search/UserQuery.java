@@ -24,7 +24,6 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 
 import javax.annotation.PostConstruct;
-import javax.faces.component.UIParameter;
 import javax.faces.event.ActionEvent;
 import java.util.*;
 
@@ -73,11 +72,16 @@ public class UserQuery {
         this.userSortColumn = DEFAULT_SORT_COLUMN;
         this.userSortOrder = DEFAULT_SORT_ORDER;
 
-        if (filterPopulator != null) {
-            setDatasets(filterPopulator.getDatasets().toArray(new String[filterPopulator.getDatasets().size()]));
-            setSources(filterPopulator.getSources().toArray(new String[filterPopulator.getSources().size()]));
-            setExpansions(filterPopulator.getExpansions().toArray(new String[filterPopulator.getExpansions().size()]));
-        }
+        clearFilters();
+    }
+
+    public void clearFilters() {
+        setDatasets(filterPopulator.getDatasets().toArray(new String[filterPopulator.getDatasets().size()]));
+        setSources(filterPopulator.getSources().toArray(new String[filterPopulator.getSources().size()]));
+        setExpansions(filterPopulator.getExpansions().toArray(new String[filterPopulator.getExpansions().size()]));
+
+        chebiTerms.clear();
+        goTerms.clear();
     }
 
     public SolrQuery createSolrQuery() {
@@ -103,7 +107,7 @@ public class UserQuery {
     }
 
     public String getDisplayQuery() {
-        return searchQuery + (isUsingFilters()? " (using filters)" : "");
+        return searchQuery;
     }
 
     public boolean isUsingFilters() {
@@ -165,12 +169,6 @@ public class UserQuery {
 
     public void addChebiTerm(ActionEvent evt) {
         chebiTerms.add(JsfUtils.getFirstParamValue(evt));
-    }
-
-    private String getFirstParamValue(ActionEvent evt) {
-        UIParameter param = (UIParameter) evt.getComponent().getChildren().get(0);
-        String term = (String) param.getValue();
-        return term;
     }
 
     public Collection<String> getDatasetsToInclude() {

@@ -145,6 +145,11 @@ public class SearchController extends JpaBaseController {
         return "interactions";
     }
 
+    public void clearFilterAndSearch(ActionEvent evt) {
+        userQuery.clearFilters();
+        doBinarySearch(userQuery.createSolrQuery());
+    }
+
     public String doOntologySearchAction() {
         final String query = userQuery.getOntologySearchQuery();
 

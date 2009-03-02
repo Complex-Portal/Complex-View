@@ -137,21 +137,30 @@
           <from-outcome>dialog:help.miql</from-outcome>
           <to-view-id>/pages/search/help_miql.xhtml</to-view-id>
         </navigation-case>
-      </navigation-rule>
+    </navigation-rule>
 
     <navigation-rule>
-           <navigation-case>
-             <from-outcome>dialog:configure.columns</from-outcome>
-             <to-view-id>/pages/interactions/configure_columns.xhtml</to-view-id>
-           </navigation-case>
-         </navigation-rule>
-   <!--dataset of the month-->
-      <navigation-rule>
-           <navigation-case>
+        <navigation-case>
+            <from-outcome>dialog:configure.columns</from-outcome>
+            <to-view-id>/pages/interactions/configure_columns.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <!-- filters -->
+    <navigation-rule>
+        <navigation-case>
+          <from-outcome>dialog:filters</from-outcome>
+          <to-view-id>/pages/inc/filters_dialog.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <!--dataset of the month-->
+    <navigation-rule>
+        <navigation-case>
             <from-outcome>dotm_archive</from-outcome>
             <to-view-id>/pages/dotm/dotm_archive.xhtml</to-view-id>
         </navigation-case>
-       </navigation-rule>
+    </navigation-rule>
 
     <!-- left menu actions-->
     <navigation-rule>
