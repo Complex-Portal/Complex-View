@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.view.webapp.controller.browse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.ChildPropertyTreeModel;
+import org.apache.myfaces.trinidad.model.TreeModel;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
@@ -52,7 +53,10 @@ public abstract class OntologyBrowserController extends BaseController {
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
-    private ChildPropertyTreeModel ontologyTreeModel;
+    @Autowired
+    private BrowserCache browserCache;
+
+    private TreeModel ontologyTreeModel;
 
     public OntologyBrowserController() {
     }
@@ -64,32 +68,40 @@ public abstract class OntologyBrowserController extends BaseController {
     @PostConstruct
     public void init() {
         OntologySearcher ontologySearcher = new OntologySearcher(intactViewConfiguration.getOntologySolrServer());
-        createOntologyTreeModel(createRootTerm(ontologySearcher));
+        ontologyTreeModel = createOntologyTreeModel(createRootTerm(ontologySearcher));
     }
 
 
-    protected void createOntologyTreeModel(RootTerm rootTerm) {
-        SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
-        String facetField = getFieldName();
+    protected TreeModel createOntologyTreeModel(RootTerm rootTerm) {
+        final SolrQuery query = userQuery.createSolrQuery();
+        final String facetField = getFieldName();
 
-        SolrQuery query = userQuery.createSolrQuery();
-        query.setRows(0);
-        query.setFacet(true);
-        query.setFacetLimit(Integer.MAX_VALUE);
-        query.setFacetMinCount(1);
-        query.setFacetSort(FacetParams.FACET_SORT_COUNT);
-        query.addFacetField(facetField);
+        if (browserCache.containsKey(facetField, query)) {
+            return browserCache.get(facetField, query);
+        }
+
+        SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
+
+        // we copy the query, because we don't want to modify the current query instance.
+        // otherwise the cache would not have the same key.
+        SolrQuery queryCopy = query.getCopy();
+        queryCopy.setRows(0);
+        queryCopy.setFacet(true);
+        queryCopy.setFacetLimit(Integer.MAX_VALUE);
+        queryCopy.setFacetMinCount(1);
+        queryCopy.setFacetSort(FacetParams.FACET_SORT_COUNT);
+        queryCopy.addFacetField(facetField);
 
         final QueryResponse queryResponse;
 
         try {
-             if (log.isDebugEnabled()) log.debug("Loading ontology counts: "+query);
+             if (log.isDebugEnabled()) log.debug("Loading ontology counts: "+queryCopy);
 
-             queryResponse = solrServer.query(query);
+             queryResponse = solrServer.query(queryCopy);
          } catch (Throwable e) {
              addErrorMessage("Problem counting ontology terms: ", e.getMessage());
              e.printStackTrace();
-             return;
+             return null;
          }
 
         final FacetField field = queryResponse.getFacetField(facetField);
@@ -104,10 +116,14 @@ public abstract class OntologyBrowserController extends BaseController {
 
         OntologyTermWrapper otwRoot = new OntologyTermWrapper(rootTerm, termsCountMap, false);
 
-        ontologyTreeModel = new ChildPropertyTreeModel( otwRoot, "children");
+        TreeModel treeModel = new ChildPropertyTreeModel( otwRoot, "children");
+
+        browserCache.put(facetField, query, treeModel);
+
+        return treeModel;
     }
 
-    public ChildPropertyTreeModel getOntologyTreeModel() {
+    public TreeModel getOntologyTreeModel() {
         return ontologyTreeModel;
     }
 

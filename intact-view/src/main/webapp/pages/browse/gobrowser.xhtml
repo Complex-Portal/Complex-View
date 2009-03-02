@@ -67,8 +67,8 @@
                         </f:facet>
                         <tr:group>
                              <tr:commandLink text="#{otw.interactionCount}" rendered="#{otw.interactionCount > 0}"
-                                             actionListener="#{searchBean.doFilteredBinarySearch}"
-                                             action="interactions">
+                                             actionListener="#{userQuery.addGoTerm}"
+                                             action="#{searchBean.doBinarySearchAction}">
                                  <f:param name="termId" value="#{otw.term.id}" />
                             </tr:commandLink>
 

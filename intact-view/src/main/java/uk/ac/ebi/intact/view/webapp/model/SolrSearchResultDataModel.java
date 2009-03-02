@@ -15,31 +15,23 @@
  */
 package uk.ac.ebi.intact.view.webapp.model;
 
-import org.apache.myfaces.trinidad.model.SortableModel;
-import org.apache.myfaces.trinidad.model.SortCriterion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.search.Sort;
+import org.apache.myfaces.trinidad.model.SortCriterion;
+import org.apache.myfaces.trinidad.model.SortableModel;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
-
-import java.io.Serializable;
-import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-
-import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.search.engine.SearchEngineException;
-import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
-import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * TODO comment that class header
@@ -66,24 +58,23 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
     private Map<String,SolrQuery.ORDER> columnSorts;
 
 
-    public SolrSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery) throws TooManyResultsException {
+    public SolrSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery) {
+        if (solrQuery == null) {
+            throw new IllegalArgumentException("Trying to create data model with a null SolrQuery");
+        }
+
         this.solrServer = solrServer;
-        this.solrQuery = solrQuery;
+        this.solrQuery = solrQuery.getCopy();
 
-        columnSorts = new HashMap<String,SolrQuery.ORDER>(16);
+        columnSorts = new HashMap<String, SolrQuery.ORDER>(16);
 
-        try {
-            setRowIndex(0);
-            fetchResults();
-        }
-        catch (SearchEngineException e) {
-            throw new TooManyResultsException(e);
-        }
+        setRowIndex(0);
+        fetchResults();
 
         setWrappedData(result);
     }
 
-    protected void fetchResults() throws SearchEngineException {
+    protected void fetchResults() {
         if (solrQuery == null) {
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }

@@ -21,11 +21,12 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import javax.faces.component.UIParameter;
+import javax.faces.event.ActionEvent;
+import java.util.*;
 
 /**
  * TODO comment that class header
@@ -48,6 +49,9 @@ public class UserQuery {
     private String[] sources;
     private String[] expansions;
 
+    private List<String> goTerms;
+    private List<String> chebiTerms;
+
     //for sorting and ordering
     private static final String DEFAULT_SORT_COLUMN = "relevancescore_s";
     private static final boolean DEFAULT_SORT_ORDER = true;
@@ -58,6 +62,8 @@ public class UserQuery {
     private int pageSize = 30;
 
     public UserQuery() {
+        this.goTerms = new ArrayList<String>();
+        this.chebiTerms = new ArrayList<String>();
     }
 
     @PostConstruct
@@ -151,6 +157,20 @@ public class UserQuery {
         }
         sb.append(')');
         return sb.toString();
+    }
+
+    public void addGoTerm(ActionEvent evt) {
+        goTerms.add(JsfUtils.getFirstParamValue(evt));
+    }
+
+    public void addChebiTerm(ActionEvent evt) {
+        chebiTerms.add(JsfUtils.getFirstParamValue(evt));
+    }
+
+    private String getFirstParamValue(ActionEvent evt) {
+        UIParameter param = (UIParameter) evt.getComponent().getChildren().get(0);
+        String term = (String) param.getValue();
+        return term;
     }
 
     public Collection<String> getDatasetsToInclude() {

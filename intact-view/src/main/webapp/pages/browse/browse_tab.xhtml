@@ -32,7 +32,7 @@
                         
                     </trh:cellFormat>
                     <trh:cellFormat>
-                        <tr:commandLink text="All" action="list.proteins"/>
+                        <tr:commandLink text="List All" action="list.proteins"/>
                     </trh:cellFormat>
                 </trh:rowLayout>
 
@@ -94,7 +94,7 @@
                          icon="/images/warning.gif"
                          rendered="#{displayWarning}">
                 <tr:outputText value="Please be aware that due to the number of interaction currently available in
-                                      your dataset, only the first #{searchBean.results.pageSize} interactors' identifier will be passed on to
+                                      your dataset, only the first #{userQuery.pageSize} interactor identifiers will be passed on to
                                       third party resources. In order to make this clear, we will display the icon"/>
                 <tr:spacer width="3" />
                 <tr:image source="/images/warning.gif"/>
@@ -119,7 +119,8 @@
 
                 </trh:cellFormat>
                 <trh:cellFormat>
-                    <tr:commandLink text="All" action="list.compounds"/>
+                    <tr:commandLink text="List All" action="list.compounds"
+                            disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
                 </trh:cellFormat>
             </trh:rowLayout>
 
@@ -128,7 +129,8 @@
 
                 </trh:cellFormat>
                 <trh:cellFormat>
-                   <tr:commandLink text="By ChEBI Ontology (CHEBI)" action="browse.chebibrowser"/>
+                   <tr:commandLink text="By ChEBI Ontology (CHEBI)" action="browse.chebibrowser"
+                           disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
                 </trh:cellFormat>
             </trh:rowLayout>
 
@@ -137,7 +139,7 @@
     </tr:panelHeader>
 
     <br/><br/><br/>
-    <tr:panelHeader text="Nucleic Acids">
+    <tr:panelHeader text="Nucleic Acids (#{searchBean.nucleicAcidTotalResults})">
 
             <trh:tableLayout borderWidth="0"
                              cellSpacing="5"
@@ -150,28 +152,10 @@
 
                     </trh:cellFormat>
                     <trh:cellFormat>
-                        <tr:commandLink text="All" action="list.nucleicacids"/>
+                        <tr:commandLink text="List All" action="list.nucleicacids"
+                                disabled="#{searchBean.nucleicAcidTotalResults == 0}"/>
                     </trh:cellFormat>
                   </trh:rowLayout>
-
-                    <trh:rowLayout>
-                        <trh:cellFormat halign="center" width="15">
-                            <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
-                        </trh:cellFormat>
-                        <trh:cellFormat>
-                           <tr:commandLink text="By DNA" action="list.dna"/>
-                        </trh:cellFormat>
-                    </trh:rowLayout>
-
-
-                    <trh:rowLayout>
-                        <trh:cellFormat halign="center" width="15">
-                            <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
-                        </trh:cellFormat>
-                        <trh:cellFormat>
-                                <tr:commandLink text="By RNA" action="list.rna"/>
-                        </trh:cellFormat>
-                    </trh:rowLayout>
 
 
             

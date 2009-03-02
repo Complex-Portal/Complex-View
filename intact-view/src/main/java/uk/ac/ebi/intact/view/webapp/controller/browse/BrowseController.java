@@ -31,6 +31,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.view.webapp.util.ExternalDbLinker;
 
@@ -62,6 +63,9 @@ public class BrowseController extends JpaBaseController {
     @Autowired
     private ExternalDbLinker dbLinker;
 
+    @Autowired
+    private SearchController searchController;
+
     private int maxSize = 50;
 
     private List<String> uniprotAcs;
@@ -84,6 +88,8 @@ public class BrowseController extends JpaBaseController {
      * @param evt DisclosureEvent
      */
     public void createListofIdentifiers( DisclosureEvent evt ) {
+         searchController.onListDisclosureChanged(evt);
+
          uniprotAcs = new ArrayList<String>(maxSize);
          geneNames = new ArrayList<String>(maxSize);
 

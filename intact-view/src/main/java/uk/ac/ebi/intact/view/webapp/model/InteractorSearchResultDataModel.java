@@ -67,8 +67,12 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
     }
 
     public InteractorSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery, String[] interactorTypeMis)  {
+        if (solrQuery == null) {
+            throw new IllegalArgumentException("Trying to create data model with a null SolrQuery");
+        }
+
         this.solrServer = solrServer;
-        this.solrQuery = solrQuery;
+        this.solrQuery = solrQuery.getCopy();
         this.interactorTypeMis = interactorTypeMis;
 
         setRowIndex(0);

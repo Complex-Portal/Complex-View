@@ -15,20 +15,19 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.news;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.faces.DataLoadingException;
-import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets.Dataset;
-import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets;
-import uk.ac.ebi.intact.view.webapp.controller.news.utils.SiteUtils;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets;
+import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets.Dataset;
+import uk.ac.ebi.intact.view.webapp.controller.news.utils.SiteUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
-import java.util.List;
 import java.util.ArrayList;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
 /**
  * TODO comment this!
@@ -38,7 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 
 @Controller( "dataSetsBean" )
-@Scope( "request" )
+@Scope( "session" )
 public class DataSetsBean implements Serializable {
 
     //public static final String DATASET_OF_THE_MONTH_URL = "intact.dotm.url";

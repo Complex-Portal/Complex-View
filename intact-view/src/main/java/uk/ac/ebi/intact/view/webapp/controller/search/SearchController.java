@@ -19,7 +19,6 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.model.InteractorSearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
-import uk.ac.ebi.intact.view.webapp.model.TooManyResultsException;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -27,7 +26,6 @@ import javax.faces.event.ValueChangeEvent;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Search controller.
@@ -46,7 +44,8 @@ import java.util.Map;
                            "/pages/molecule/molecule.xhtml",
                            "/pages/graph/graph.xhtml",
                            "/pages/browse/browse.xhtml",
-                           "/pages/browse/gobrowser.xhtml"})
+                           "/pages/browse/gobrowser.xhtml",
+                           "/pages/browse/chebibrowser.xhtml"})
 public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
@@ -66,6 +65,9 @@ public class SearchController extends JpaBaseController {
 
     @Autowired
     private UserQuery userQuery;
+
+    @Autowired
+    private SearchCache searchCache;
 
     private int totalResults;
     private int interactorTotalResults;
@@ -159,48 +161,26 @@ public class SearchController extends JpaBaseController {
         return "interactions";
     }
 
-    public void doFilteredBinarySearch(ActionEvent evt) {
-        final Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-
-        String termParam = UserQueryUtils.getCurrentQueryTermParam( userQuery );
-        String termId = params.get(termParam);
-
-        if( termId == null ) {
-            throw new IllegalStateException( "TermId was null" );
-        }
-
-        // TODO is this needed?
-        //userQuery.addProperty( termId );
-
-        if (true) throw new UnsupportedOperationException("This has been modified");
-
-        SolrQuery solrQuery = userQuery.createSolrQuery();
-
-        doBinarySearch( solrQuery );
-    }
-
     private void doBinarySearch(SolrQuery solrQuery) {
 
-        SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
+        results = createInteractionDataModel(solrQuery);
 
-        try {
-            results = new SolrSearchResultDataModel(solrServer, solrQuery);
+        totalResults = results.getRowCount();
 
-            totalResults = results.getRowCount();
+        if (log.isDebugEnabled()) log.debug("\tResults: " + results.getRowCount());
 
-            if (log.isDebugEnabled()) log.debug("\tResults: " + results.getRowCount());
+        if (totalResults == 0) {
+            addErrorMessage("Your query didn't return any results", "Use a different query");
+        }
+    }
 
-            if (totalResults == 0) {
-                addErrorMessage("Your query didn't return any results", "Use a different query");
-            }
-
-        } catch (TooManyResultsException e) {
-            addErrorMessage("Too many results found", "Please, refine your query");
-            e.printStackTrace();
+    private SolrSearchResultDataModel createInteractionDataModel(SolrQuery query) {
+        if (searchCache.containsInteractionKey(query)) {
+            return searchCache.getInteractionModel(query);
         }
 
-        // TODO implement interactor query
-        //doInteractorSearch(userQuery);
+        SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
+        return new SolrSearchResultDataModel(solrServer, query);
     }
 
     public void onListDisclosureChanged(DisclosureEvent evt) {
@@ -239,6 +219,10 @@ public class SearchController extends JpaBaseController {
 
     public InteractorSearchResultDataModel doInteractorSearch(String[] interactorTypeMis) {
         final SolrQuery solrQuery = userQuery.createSolrQuery();
+
+        if (searchCache.containsInteractorKey(solrQuery, interactorTypeMis)) {
+            return searchCache.getInteractorModel(solrQuery, interactorTypeMis);
+        }
 
         if (log.isDebugEnabled()) log.debug("Searching interactors of type ("+ Arrays.toString(interactorTypeMis)+") for query: " + solrQuery);
 
