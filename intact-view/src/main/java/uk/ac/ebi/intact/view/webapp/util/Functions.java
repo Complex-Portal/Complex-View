@@ -117,5 +117,4 @@ public final class Functions {
     public static boolean isNucleicAcid(Interactor interactor) {
         return (interactor instanceof NucleicAcid);
     }
-
 }

@@ -19,12 +19,6 @@
     </function>
 
     <function>
-        <function-name>countHits</function-name>
-        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
-        <function-signature>int countHits(java.lang.String,java.lang.String)</function-signature>
-    </function>
-
-    <function>
         <function-name>getIntactIdentifierFromCrossReferences</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
         <function-signature>java.lang.String getIntactIdentifierFromCrossReferences(java.util.Collection)</function-signature>

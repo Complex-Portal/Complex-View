@@ -67,19 +67,20 @@
                          targetFrame="_blank"
                          destination="/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}&amp;sort=#{searchBean.results.sortColumn}&amp;asc=#{searchBean.results.ascending}"/>
 
-            <tr:commandButton id="btnConfigureColumn" text="Configure Columns" action="dialog:configure.columns" partialSubmit="true" returnListener="#{configureColumn.handleReturn}"
+            <tr:commandButton id="btnConfigureColumn" text="Change Columns Displayed" action="dialog:configure.columns" partialSubmit="true" returnListener="#{configureColumn.handleReturn}"
                                      windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
                         
-            <tr:selectOneChoice id="listSortableColumns" label="Sort Rows By: " value="#{searchBean.userSortColumn}" autoSubmit="true" valueChangeListener="#{searchBean.userSort}">
-                <tr:selectItem label="Relevance Score" value="relevancescore_s"/>
-                <tr:selectItem label="Name molecule A" value="nameA_s"/>
-                <tr:selectItem label="Name molecule B" value="nameB_s"/>
-            </tr:selectOneChoice>
+            <!--<tr:selectOneChoice id="listSortableColumns" label="Sort Rows By: " value="#{searchBean.userSortColumn}" autoSubmit="true" valueChangeListener="#{searchBean.userSort}">-->
+                <!--<tr:selectItem label="Relevance Score" value="relevancescore_s"/>-->
+                <!--<tr:selectItem label="Name molecule A" value="nameA_s"/>-->
+                <!--<tr:selectItem label="Name molecule B" value="nameB_s"/>-->
+                <!--<tr:selectItem label="Interacting molecules" value="rigid"/>-->
+            <!--</tr:selectOneChoice>-->
 
-            <tr:selectOneChoice id="listSortableColumnsOrder" label="Order By: " value="#{searchBean.ascending}" autoSubmit="true" valueChangeListener="#{searchBean.userSortOrder}">
-                <tr:selectItem label="Ascending" value="true"/>
-                <tr:selectItem label="Descending" value="false"/>
-            </tr:selectOneChoice>
+            <!--<tr:selectOneChoice id="listSortableColumnsOrder" label="Order By: " value="#{searchBean.ascending}" autoSubmit="true" valueChangeListener="#{searchBean.userSortOrder}">-->
+                <!--<tr:selectItem label="Ascending" value="true"/>-->
+                <!--<tr:selectItem label="Descending" value="false"/>-->
+            <!--</tr:selectOneChoice>-->
 
 
         </tr:panelGroupLayout>
@@ -92,43 +93,38 @@
     <tr:outputText value="#{status.index + 1}"/>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.name']}" sortable="true" sortProperty="idA_s"  styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
+<tr:column headerText="#{messages['moleculeA.name']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
    <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
 
     <!--For MoleculeTye, Role Initials -->
     <trh:tableLayout borderWidth="0"
-                     cellSpacing="0"
+                     cellSpacing="1"
                      cellPadding="0"
                      halign="left"
                      >
 
         <trh:rowLayout>
-            <c:set var="interactorTypeA" value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorA)}"/>
-            <trh:cellFormat halign="center" width="15" inlineStyle="background:#006666;color:white"
-                            rendered="#{interactorTypeA[0] !=null and interactorTypeA[0] != '-' }">
-                <tr:outputText value="#{interactorTypeA[0]}" shortDesc="#{interactorTypeA[1]}"/>
-            </trh:cellFormat>
-            <c:set var="expRoleA"
-                   value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)}"/>
-            <trh:cellFormat halign="center" width="15" inlineStyle="background:#e33e3e;color:white"
-                            rendered="#{expRoleA[0] !=null and expRoleA[0] != '-'}">
-                <tr:outputText value="#{expRoleA[0]}" shortDesc="#{expRoleA[1]}"/>
-                <!--tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.experimentalRoles)=='DR'? 'DR=Drug' : 'DT=Drug Target'}"/-->
-            </trh:cellFormat>
-            <c:set var="bioRoleA"
-                   value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles)}"/>
-            <trh:cellFormat halign="center" width="15" inlineStyle="background:#73b360;color:white"
-                            rendered="#{bioRoleA[0] !=null and bioRoleA[0] != '-' }">
-                <tr:outputText value="#{bioRoleA[0]}" shortDesc="#{bioRoleA[1]}"/>
-
-                <!--tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorA.biologicalRoles) =='EN' ? 'EN=Enzyme' : 'ET=Enzyme Target'}"/-->
-            </trh:cellFormat>
+            <tr:iterator var="cvXref" value="#{binaryInteraction.interactorTypeA}" rows="-1">
+                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 </trh:cellFormat>
+             </tr:iterator>
+            <tr:iterator var="cvXref" value="#{binaryInteraction.experimentalRolesInteractorA}" rows="-1">
+                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 </trh:cellFormat>
+             </tr:iterator>
+             <tr:iterator var="cvXref" value="#{binaryInteraction.biologicalRolesInteractorA}" rows="-1">
+                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 </trh:cellFormat>
+             </tr:iterator>
         </trh:rowLayout>
     </trh:tableLayout>
  
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.links']}" sortable="false" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.links')}">
+<tr:column headerText="#{messages['moleculeA.links']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.links')}">
     <!--add compound links -->
     <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus"
                  rows="0">
@@ -163,42 +159,39 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.name']}" sortable="true" sortProperty="idB_s" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.name')}">
+<tr:column headerText="#{messages['moleculeB.name']}" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.name')}">
     <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorB)}"/>
     
     <!--For MoleculeTye, Role Initials for Target-->
      <trh:tableLayout borderWidth="0"
-                     cellSpacing="0"
+                     cellSpacing="1"
                      cellPadding="0"
                      halign="left"
                      >
 
          <trh:rowLayout>
-             <c:set var="interactorTypeB" value="#{iamf:getInitialForMoleculeType(binaryInteraction.interactorB)}"/>
-             <trh:cellFormat halign="center" width="15" inlineStyle="background:#006666;color:white"
-                             rendered="#{interactorTypeB[0] != null and interactorTypeB[0] != '-' }">
-                 <tr:outputText value="#{interactorTypeB[0]}" shortDesc="#{interactorTypeB[1]}"/>
-             </trh:cellFormat>
-             <c:set var="expRoleB"
-                    value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)}"/>
-             <trh:cellFormat halign="center" width="15" inlineStyle="background:#e33e3e;color:white"
-                             rendered="#{expRoleB[0] !=null and expRoleB[0] != '-' }">
-                 <tr:outputText value="#{expRoleB[0]}" shortDesc="#{expRoleB[1]}"/>
-                 <!--tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)}" shortDesc= "#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.experimentalRoles)=='DR'? 'DR=Drug' : 'DT=Drug Target'}"/-->
-             </trh:cellFormat>
-             <c:set var="bioRoleB"
-                    value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles)}"/>
-             <trh:cellFormat halign="center" width="15" inlineStyle="background:#73b360;color:white"
-                             rendered="#{bioRoleB[0] !=null and bioRoleB[0] != '-' }">
-                 <tr:outputText value="#{bioRoleB[0]}" shortDesc="#{bioRoleB[1]}"/>
-                 <!--tr:outputText value="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles)}" shortDesc="#{iamf:getInitialForCrossReference(binaryInteraction.interactorB.biologicalRoles) =='EN' ? 'EN=Enzyme' : 'ET=Enzyme Target'}" /-->
-             </trh:cellFormat>
+             <tr:iterator var="cvXref" value="#{binaryInteraction.interactorTypeB}" rows="-1">
+                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 </trh:cellFormat>
+             </tr:iterator>
+             <tr:iterator var="cvXref" value="#{binaryInteraction.experimentalRolesInteractorB}" rows="-1">
+                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 </trh:cellFormat>
+             </tr:iterator>
+             <tr:iterator var="cvXref" value="#{binaryInteraction.biologicalRolesInteractorB}" rows="-1">
+                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 </trh:cellFormat>
+             </tr:iterator>
+
          </trh:rowLayout>
      </trh:tableLayout>
 
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.links']}" sortable="false" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.links')}">
+<tr:column headerText="#{messages['moleculeB.links']}" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.links')}">
     <!--add target links -->
     <tr:iterator var="xref" value="#{binaryInteraction.interactorB.identifiers}"
                  varStatus="rowStatus" rows="0">
@@ -233,7 +226,7 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.aliases']}" sortable="true" sortProperty="altidA_s" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.aliases')}">
+<tr:column headerText="#{messages['moleculeA.aliases']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.aliases')}">
     <iam:collapsibleIterator id="csd_altIdA_#{status.index}"
                              disclosed="#{searchBean.showAlternativeIds}"
                              value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
@@ -242,7 +235,7 @@
     </iam:collapsibleIterator>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.aliases']}" sortable="true" sortProperty="altidB_s" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.aliases')}">
+<tr:column headerText="#{messages['moleculeB.aliases']}" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.aliases')}">
     <iam:collapsibleIterator id="csd_altIdB_#{status.index}"
                              disclosed="#{searchBean.showAlternativeIds}"
                              value="#{binaryInteraction.interactorB.alternativeIdentifiers}"
@@ -251,7 +244,7 @@
     </iam:collapsibleIterator>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.species']}" sortable="true" sortProperty="taxidA_s" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.species')}">
+<tr:column headerText="#{messages['moleculeA.species']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.species')}">
     <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="OtherType">
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:outputText value="  "/>
@@ -268,7 +261,7 @@
     </tr:switcher>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.species']}" sortable="true" sortProperty="taxidB_s" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.species')}">
+<tr:column headerText="#{messages['moleculeB.species']}" sortProperty="taxidB_s" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.species')}">
     <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="OtherType">
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:outputText value="&#160;"/>
@@ -285,7 +278,7 @@
     </tr:switcher>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.firstauthor']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.firstauthor')}" sortable="true" sortProperty="pubauth_s" styleClass="cellTextInteraction" >
+<tr:column headerText="#{messages['interaction.firstauthor']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.firstauthor')}" sortProperty="pubauth_s" styleClass="cellTextInteraction" >
     <tr:iterator var="author" value="#{binaryInteraction.authors}" rows="0">
             <span style="display:block">
                 <nobr>
@@ -296,31 +289,31 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.pubmedid']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.pubmedid')}"  sortable="true" sortProperty="pubid_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.pubmedid']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.pubmedid')}"  sortProperty="pubid_s" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.interactiontype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.interactiontype')}" sortable="true" sortProperty="type_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.interactiontype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.interactiontype')}" sortProperty="type_s" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.detectionmethod']}" rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.detectionmethod')}" sortable="true"
-           sortProperty="detmethod_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.detectionmethod']}" rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.detectionmethod')}"
+           styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.sourcedb']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.sourcedb')}"  sortable="true" sortProperty="source_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.sourcedb']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.sourcedb')}" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
 </tr:column>
-<tr:column headerText="#{messages['interaction.ac']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.ac')}" sortable="true" sortProperty="interaction_id_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.ac']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.ac')}" styleClass="cellTextInteraction">
     <!--<iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>-->
     <c:set var="interactionAc" value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactionAcs)}" />
     <tr:commandLink action="details"  text="#{interactionAc}">
         <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
     </tr:commandLink>
 </tr:column>
-<tr:column headerText="#{messages['interaction.confidencevalue']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.confidencevalue')}" sortable="true"
-           sortProperty="confidence_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.confidencevalue']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.confidencevalue')}"
+           styleClass="cellTextInteraction">
     <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
             <span style="display:block">
                 <nobr>
@@ -329,23 +322,23 @@
             </span>
     </tr:iterator>
 </tr:column>
-<tr:column headerText="#{messages['moleculeA.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.exprole')}" sortable="true"
-           sortProperty="experimentalRoleA_s" styleClass="cellTextCompound">
+<tr:column headerText="#{messages['moleculeA.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.exprole')}"
+           styleClass="cellTextCompound">
     <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="#{messages['moleculeB.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.exprole')}" sortable="true"
-           sortProperty="experimentalRoleB_s" styleClass="cellTextTarget">
+<tr:column headerText="#{messages['moleculeB.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.exprole')}"
+           styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="#{messages['moleculeA.biorole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.biorole')}" sortable="true"
-           sortProperty="biologicalRoleA_s" styleClass="cellTextCompound">
+<tr:column headerText="#{messages['moleculeA.biorole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.biorole')}"
+           styleClass="cellTextCompound">
     <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="#{messages['moleculeB.biorole']}" rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.biorole')}" sortable="true"
-           sortProperty="biologicalRoleB_s" styleClass="cellTextTarget">
+<tr:column headerText="#{messages['moleculeB.biorole']}" rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.biorole')}"
+           styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.properties')}" sortable="true" sortProperty="propertiesA_s" styleClass="cellTextCompound">
+<tr:column rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.properties')}" styleClass="cellTextCompound">
     <f:facet name="header">
         <tr:panelGroupLayout layout="vertical">
             <tr:outputText value="#{messages['moleculeA.properties']}"/>
@@ -364,8 +357,8 @@
     </iam:collapsibleIterator>
 
 </tr:column>
-<tr:column headerText="#{messages['moleculeB.properties']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.properties')}" sortable="true"
-           sortProperty="propertiesB_s" styleClass="cellTextTarget">
+<tr:column headerText="#{messages['moleculeB.properties']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.properties')}"
+           styleClass="cellTextTarget">
     <iam:collapsibleIterator id="csd_propsB_#{status.index}"
                              disclosed="#{searchBean.showProperties}"
                              value="#{binaryInteraction.propertiesB}"
@@ -378,23 +371,23 @@
                    disabled="#{xrefUrl == null or xrefUrl == '#'}"/>
     </iam:collapsibleIterator>
 </tr:column>
-<tr:column headerText="#{messages['moleculeA.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.interactortype')}" sortable="true"
-           sortProperty="typeA_s" styleClass="cellTextCompound">
+<tr:column headerText="#{messages['moleculeA.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.interactortype')}"
+           styleClass="cellTextCompound">
     <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
 </tr:column>
-<tr:column headerText="#{messages['moleculeB.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.interactortype')}" sortable="true"
-           sortProperty="typeB_s" styleClass="cellTextTarget">
+<tr:column headerText="#{messages['moleculeB.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.interactortype')}"
+           styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>
 </tr:column>
-<tr:column headerText="#{messages['interaction.hostorganism']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Host Organism')}" sortable="true"
-           sortProperty="hostOrganism_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.hostorganism']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Host Organism')}"
+           styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Expansion Method')}" sortable="true"
-           sortProperty="expansion_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Expansion Method')}"
+           styleClass="cellTextInteraction">
     <tr:outputText value="#{binaryInteraction.expansionMethod}"/>
 </tr:column>
-<tr:column headerText="#{messages['interaction.dataset']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Dataset')}" sortable="true" sortProperty="dataset_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.dataset']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Dataset')}" styleClass="cellTextInteraction">
     <tr:iterator var="dataset" value="#{binaryInteraction.dataset}" rows="0">
                         <span style="display:block">
                             <nobr>

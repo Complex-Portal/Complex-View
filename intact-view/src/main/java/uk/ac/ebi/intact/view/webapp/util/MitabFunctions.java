@@ -18,19 +18,11 @@ package uk.ac.ebi.intact.view.webapp.util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
 import psidev.psi.mi.tab.model.CrossReference;
-import uk.ac.ebi.intact.model.Interactor;
-import uk.ac.ebi.intact.model.InteractorAlias;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.model.Annotation;
 import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
-import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
-import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
+import uk.ac.ebi.intact.psimitab.util.IntactPsimitabUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -51,22 +43,14 @@ public final class MitabFunctions {
     private static final String PROTEIN_MI_REF = "MI:0326";
     private static final String SMALLMOLECULE_MI_REF = "MI:0328";
 
-    private static final String ENZYME = "enzyme";
     private static final String ENZYME_PSI_REF = "MI:0501";
 
-    private static final String ENZYME_TARGET = "enzyme target";
     private static final String ENZYME_TARGET_PSI_REF = "MI:0502";
 
-    private static final String DRUG = "drug";
     private static final String DRUG_PSI_REF = "MI:1094";
 
-    private static final String DRUG_TARGET = "drug target";
     private static final String DRUG_TARGET_PSI_REF = "MI:1095";
 
-
-    //Initials
-    private static final String proteinInitial = "PR";
-    private static final String smallMoleculeInitial = "SM";
 
     private MitabFunctions() {
     }
@@ -205,35 +189,6 @@ public final class MitabFunctions {
         return s;
     }
 
-    public static int countHits(String searchQuery, String directory) {
-
-        try {
-            IndexSearcher searcher = new IndexSearcher(directory);
-
-            String[] defaultFields = new IntactSearchEngine("").getSearchFields();
-
-            long startTime = System.currentTimeMillis();
-
-            QueryParser parser = new MultiFieldQueryParser(defaultFields, new StandardAnalyzer());
-
-            Query query = parser.parse(searchQuery);
-            Hits hits = searcher.search(query);
-
-            if ( log.isTraceEnabled() ) {
-                log.trace("Counted: "+query.toString()+" - "+hits.length()+" / Elapsed time: "+(System.currentTimeMillis()-startTime)+" ms - Directory: "+directory  );
-            }
-
-            int count = hits.length();
-
-            searcher.close();
-
-            return count;
-
-        } catch (Exception e) {
-            throw new SearchWebappException("Cannot count hits using query: "+searchQuery+" / in index: "+directory, e);
-        }
-    }
-
     public static String getIntactIdentifierFromCrossReferences(Collection xrefs) {
         return getIdentifierFromCrossReferences(xrefs, "intact");
     }
@@ -255,62 +210,10 @@ public final class MitabFunctions {
         return null;
     }
 
-    /**
-     * Gets the name for a protein, getting the first available after evaluating in this order:
-     * First check if it has aliases then return the first one
-     * If name is still null, get alternativeidentifiers and look for commercial names
-     * If name is still null, get the Interactor from the database and check for aliases based on priority and return one
-     * gene name > commercial name > synonym > locus > orf > shortlabel.
-     * If name is still null, return IntAct Ac
-     * @param interactor
-     * @return
-     */
+
     public static String getInteractorDisplayName( ExtendedInteractor interactor ) {
-        String name = null;
-
-        // TODO this method does not implement the expected behaviour
-
-        if ( !interactor.getAliases().isEmpty() ) {
-            name = interactor.getAliases().iterator().next().getName();
-        } else {
-            for ( CrossReference xref : interactor.getAlternativeIdentifiers() ) {
-                if ( "commercial name".equals( xref.getText() ) ) {
-                    name = xref.getIdentifier();
-                }
-            }
-
-            if (name == null &&  !interactor.getAlternativeIdentifiers().isEmpty() ) {
-                name = interactor.getAlternativeIdentifiers().iterator().next().getIdentifier();
-            }
-        }
-
-        String intactAc = null;
-        if(name == null || name.length()==0){
-
-            intactAc = getIntactIdentifierFromCrossReferences( interactor.getIdentifiers() );
-            /*if(intactAc!=null){
-            Interactor intactInteractor = Functions.getInteractorByAc( intactAc );
-
-            InteractorAlias alias = getAliasByPriority( intactInteractor,CvAliasType.GENE_NAME_MI_REF,
-                                                         "MI:2003", //commercial name
-                                                         CvAliasType.GENE_NAME_SYNONYM_MI_REF,
-                                                         CvAliasType.GO_SYNONYM_MI_REF,
-                                                         CvAliasType.LOCUS_NAME_MI_REF,
-                                                         CvAliasType.ORF_NAME_MI_REF
-                                                          );
-
-                       if ( alias != null ) {
-                           name = alias.getName();
-                       }
-            }*/
-
-            if ( intactAc != null ) {
-                name = intactAc;
-                return name;
-            }
-
-        }
-        return name;
+        IntactBinaryInteraction ibi = new IntactBinaryInteraction(interactor, interactor);
+        return IntactPsimitabUtils.getInteractorAName(ibi);
     }
 
 
@@ -334,38 +237,6 @@ public final class MitabFunctions {
         }
         return "-";
     }
-
-
-    /*private static Alias getAliasByPriority(ExtendedInteractor interactor, String ... aliasTypes) {
-        for (String aliasType : aliasTypes) {
-             for (Alias alias : interactor.getAliases()) {
-                if (alias.getAliasType() != null && aliasType.equals(alias.getAliasType().trim())) {
-                    return alias;
-                }
-            }
-        }
-        return null;
-    }*/
-
-   private static InteractorAlias getAliasByPriority(Interactor intactInteractor, String ... aliasTypes) {
-
-       InteractorAlias shortLabelAlias = null;
-        for (String aliasType : aliasTypes) {
-            for (InteractorAlias alias : intactInteractor.getAliases()) {
-                System.out.println( " alias  " + alias);
-                if (alias.getCvAliasType() != null && aliasType.equals(alias.getCvAliasType().getIdentifier())) {
-                    return alias;
-                }
-                if("shortlabel".equals(alias.getName())){
-                  shortLabelAlias = alias;
-                }
-            }
-        }
-
-       //return shortlabel
-        return shortLabelAlias;
-    }
-
 
     public static Collection getFilteredCrossReferences( Collection xrefs, String filter ) {
         if ( filter == null ) {

@@ -51,6 +51,7 @@ public class FilterPopulatorController {
     private List<SelectItem> sourceSelectItems;
 
     private List<SelectItem> expansionSelectItems;
+
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 

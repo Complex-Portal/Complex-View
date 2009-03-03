@@ -43,7 +43,7 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
 
     private static final Log log = LogFactory.getLog(SolrSearchResultDataModel.class);
 
-    private static String DEFAULT_SORT_COLUMN = "relevancescore";
+    private static String DEFAULT_SORT_COLUMN = "rigid";
 
     private SolrQuery solrQuery;
     private SolrServer solrServer;
