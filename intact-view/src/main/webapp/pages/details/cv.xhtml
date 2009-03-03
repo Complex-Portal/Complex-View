@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsp="http://java.sun.com/JSP/Page"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view" xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+    <tr:document>
+
+        <tr:panelHeader text="#{cvBean.className}">
+
+            <tr:panelFormLayout>
+                <tr:panelLabelAndMessage label="Accession:">
+                    <tr:inputText readOnly="true" value="#{cvBean.cvObject.ac}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Name:">
+                    <tr:inputText readOnly="true" value="#{cvBean.cvObject.shortLabel}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Description:">
+                    <tr:inputText readOnly="true"
+                                  value="#{(cvBean.cvObject.fullName == null ? '-' : cvBean.cvObject.fullName )}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Xrefs:" rendered="#{not empty cvBean.cvObject.xrefs}">
+                    <ui:decorate template="/pages/details/xrefs.xhtml">
+                        <ui:param name="xrefs" value="#{cvBean.cvObject.xrefs}"/>
+                    </ui:decorate>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty cvBean.cvObject.annotations}">
+                    <ui:decorate template="/pages/details/annotations.xhtml">
+                        <ui:param name="annotations" value="#{cvBean.cvObject.annotations}"/>
+                    </ui:decorate>
+                </tr:panelLabelAndMessage>
+
+            </tr:panelFormLayout>
+
+        </tr:panelHeader>
+
+    </tr:document>
+
+</ui:composition>

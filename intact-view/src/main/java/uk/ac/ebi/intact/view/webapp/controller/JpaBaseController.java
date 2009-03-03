@@ -9,7 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * TODO comment this
+ * Abstract controller giving access to IntAct database access via JPA.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$

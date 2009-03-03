@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+        <tr:table var="annot" value="#{annotations}" >
+
+            <tr:column headerText="Topic">
+                <tr:commandLink action="dialog:cv.view" partialSubmit="true"
+                                windowWidth="600" windowHeight="600"
+                                immediate="true" useWindow="true">
+                    <tr:inputText readOnly="true" value="#{annot.cvTopic.shortLabel}: " inlineStyle="background-color:#EDF6F5; font-weight:bold;"/>
+                    <f:setPropertyActionListener value="#{annot.cvTopic.ac}" target="#{cvBean.objectAc}"/>
+                </tr:commandLink>
+            </tr:column>
+
+            <tr:column headerText="Text">
+                 <tr:outputText value="#{(annot.annotationText == null ? '-' : annot.annotationText )}"/>
+            </tr:column>
+
+        </tr:table>
+
+</ui:composition>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+    <tr:table var="domain" value="#{bindingDomains}">
+
+        <tr:column headerText="Type">
+            <tr:commandLink action="dialog:cv.view" partialSubmit="true"
+                            windowWidth="600" windowHeight="600"
+                            immediate="true" useWindow="true">
+                <tr:inputText readOnly="true" value="#{domain.cvFeatureType.shortLabel}: "
+                              inlineStyle="background-color:#EDF6F5; font-weight:bold;"/>
+                <f:setPropertyActionListener value="#{domain.cvFeatureType.ac}" target="#{cvBean.objectAc}"/>
+            </tr:commandLink>
+        </tr:column>
+
+        <tr:column headerText="Detection Method">
+            <tr:commandLink action="dialog:cv.view" partialSubmit="true"
+                            windowWidth="600" windowHeight="600"
+                            immediate="true" useWindow="true">
+                <tr:inputText readOnly="true" value="#{domain.cvFeatureIdentification.shortLabel}: "
+                              inlineStyle="background-color:#EDF6F5; font-weight:bold;"/>
+                <f:setPropertyActionListener value="#{domain.cvFeatureIdentification.ac}" target="#{cvBean.objectAc}"/>
+            </tr:commandLink>
+        </tr:column>
+
+        <tr:column headerText="Region">
+            <tr:iterator value="#{domain.ranges}" var="range">
+                <tr:outputText value="#{range}"/>
+            </tr:iterator>
+        </tr:column>
+
+    </tr:table>
+
+</ui:composition>

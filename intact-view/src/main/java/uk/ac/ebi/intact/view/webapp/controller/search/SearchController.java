@@ -109,7 +109,7 @@ public class SearchController extends JpaBaseController {
 
         String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
         String ontologyQueryParam = context.getExternalContext().getRequestParameterMap().get(ONTOLOGY_QUERY_PARAM);
-         
+
         if (queryParam != null && queryParam.length()>0) {
             if (log.isDebugEnabled()) log.debug("Searching using query parameter: "+queryParam);
 
@@ -166,7 +166,7 @@ public class SearchController extends JpaBaseController {
         return "interactions";
     }
 
-    private void doBinarySearch(SolrQuery solrQuery) {
+    public void doBinarySearch(SolrQuery solrQuery) {
 
         results = createInteractionDataModel(solrQuery);
 

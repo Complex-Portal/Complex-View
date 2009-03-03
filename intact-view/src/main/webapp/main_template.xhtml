@@ -45,12 +45,6 @@
                 <ui:insert name="aboutTabContent"/>
             </tr:showDetailItem>
 
-            <!--<tr:showDetailItem text="OldHome"
-                               disclosed="#{disclosedTabName == 'about'}">
-                <tr:messages/>
-                <ui:insert name="aboutTabContent"/>
-            </tr:showDetailItem>-->
-
             <tr:showDetailItem text="Search"
                                disclosed="#{disclosedTabName == 'search'}">
                 <tr:messages/>
@@ -80,6 +74,12 @@
                 <ui:insert name="listTabContent"/>
             </tr:showDetailItem>
 
+            <tr:showDetailItem text="Interaction Details" disabled="#{detailsBean.interaction == null}"
+                               disclosed="#{disclosedTabName == 'details'}">
+                <tr:messages/>
+                <ui:insert name="detailsTabContent"/>
+            </tr:showDetailItem>
+
             <tr:showDetailItem text="Molecule View" disabled="#{moleculeViewBean.interactor == null}"
                                disclosed="#{disclosedTabName == 'molecule'}">
                 <tr:messages/>
@@ -92,9 +92,6 @@
                 <tr:messages/>
                 <ui:insert name="graphTabContent"/>
             </tr:showDetailItem>
-
-
-
 
         </tr:panelTabbed>
 

@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.faces.component.UIParameter;
 import javax.faces.event.ActionEvent;
 
@@ -90,4 +92,20 @@ public class JsfUtils
         String term = (String) param.getValue();
         return term;
     }
+
+    public static String concat( String a, String b ) {
+        return StringUtils.join( new String[]{a, b}, null );
+    }
+
+    public static String concat( String a, String b, String c ) {
+        return StringUtils.join( new String[]{a, b, c}, null );
+    }
+
+    public static String concat( String a, String b, String c, String d ) {
+        return StringUtils.join( new String[]{a, b, c, d}, null );
+    }
+
+//    public static String concat( String... a ) {
+//        return StringUtils.join( a, null );
+//    }
 }

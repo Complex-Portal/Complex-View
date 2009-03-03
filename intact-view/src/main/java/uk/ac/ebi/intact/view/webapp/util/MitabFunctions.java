@@ -268,45 +268,48 @@ public final class MitabFunctions {
     public static String getInteractorDisplayName( ExtendedInteractor interactor ) {
         String name = null;
 
+        // TODO this method does not implement the expected behaviour
+
         if ( !interactor.getAliases().isEmpty() ) {
             name = interactor.getAliases().iterator().next().getName();
         } else {
             for ( CrossReference xref : interactor.getAlternativeIdentifiers() ) {
-                   if ( "commercial name".equals( xref.getText() ) ) {
+                if ( "commercial name".equals( xref.getText() ) ) {
                     name = xref.getIdentifier();
                 }
             }
 
-            if (name==null &&  !interactor.getAlternativeIdentifiers().isEmpty() ) {
-            name = interactor.getAlternativeIdentifiers().iterator().next().getText();
+            if (name == null &&  !interactor.getAlternativeIdentifiers().isEmpty() ) {
+                name = interactor.getAlternativeIdentifiers().iterator().next().getIdentifier();
             }
         }
-            String intactAc = null;
-            if(name == null || name.length()==0){
 
-                intactAc = getIntactIdentifierFromCrossReferences( interactor.getIdentifiers() );
-                /*if(intactAc!=null){
-                Interactor intactInteractor = Functions.getInteractorByAc( intactAc );
+        String intactAc = null;
+        if(name == null || name.length()==0){
 
-                InteractorAlias alias = getAliasByPriority( intactInteractor,CvAliasType.GENE_NAME_MI_REF,
-                                                             "MI:2003", //commercial name
-                                                             CvAliasType.GENE_NAME_SYNONYM_MI_REF,
-                                                             CvAliasType.GO_SYNONYM_MI_REF,
-                                                             CvAliasType.LOCUS_NAME_MI_REF,
-                                                             CvAliasType.ORF_NAME_MI_REF
-                                                              );
+            intactAc = getIntactIdentifierFromCrossReferences( interactor.getIdentifiers() );
+            /*if(intactAc!=null){
+            Interactor intactInteractor = Functions.getInteractorByAc( intactAc );
 
-                           if ( alias != null ) {
-                               name = alias.getName();
-                           }
-                }*/
+            InteractorAlias alias = getAliasByPriority( intactInteractor,CvAliasType.GENE_NAME_MI_REF,
+                                                         "MI:2003", //commercial name
+                                                         CvAliasType.GENE_NAME_SYNONYM_MI_REF,
+                                                         CvAliasType.GO_SYNONYM_MI_REF,
+                                                         CvAliasType.LOCUS_NAME_MI_REF,
+                                                         CvAliasType.ORF_NAME_MI_REF
+                                                          );
 
-                if ( intactAc != null ) {
-                    name = intactAc;
-                    return name;
-                }
+                       if ( alias != null ) {
+                           name = alias.getName();
+                       }
+            }*/
 
+            if ( intactAc != null ) {
+                name = intactAc;
+                return name;
             }
+
+        }
         return name;
     }
 

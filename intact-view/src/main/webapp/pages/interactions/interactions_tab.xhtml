@@ -313,16 +313,20 @@
     <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
 </tr:column>
 <tr:column headerText="#{messages['interaction.ac']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.ac')}" sortable="true" sortProperty="interaction_id_s" styleClass="cellTextInteraction">
-    <iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>
+    <!--<iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>-->
+    <c:set var="interactionAc" value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactionAcs)}" />
+    <tr:commandLink action="details"  text="#{interactionAc}">
+        <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
+    </tr:commandLink>
 </tr:column>
 <tr:column headerText="#{messages['interaction.confidencevalue']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.confidencevalue')}" sortable="true"
            sortProperty="confidence_s" styleClass="cellTextInteraction">
     <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
-                        <span style="display:block">
-                            <nobr>
-                                <tr:outputText value="#{confidence.type}:#{confidence.value}"/>
-                            </nobr>
-                        </span>
+            <span style="display:block">
+                <nobr>
+                    <tr:outputText value="#{confidence.type}:#{confidence.value}"/>
+                </nobr>
+            </span>
     </tr:iterator>
 </tr:column>
 <tr:column headerText="#{messages['moleculeA.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.exprole')}" sortable="true"

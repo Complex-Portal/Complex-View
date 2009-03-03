@@ -35,6 +35,11 @@
         <source>facelets/components/view/XrefDataList.xhtml</source>
     </tag>
 
+    <tag>
+        <tag-name>displayXrefs</tag-name>
+        <source>facelets/components/view/XrefDataList.xhtml</source>
+    </tag>
+
     <function>
         <function-name>xrefUrl</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.XrefLinkGenerator</function-class>

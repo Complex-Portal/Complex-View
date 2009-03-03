@@ -30,5 +30,20 @@
         <function-class>uk.ac.ebi.intact.view.webapp.util.JsfUtils</function-class>
         <function-signature>java.lang.String valueFromConverter(java.lang.Object, java.lang.String)</function-signature>
     </function>
+    <function>
+       <function-name>concat2</function-name>
+       <function-class>uk.ac.ebi.intact.view.webapp.util.JsfUtils</function-class>
+       <function-signature>java.lang.String concat(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+       <function-name>concat3</function-name>
+       <function-class>uk.ac.ebi.intact.view.webapp.util.JsfUtils</function-class>
+       <function-signature>java.lang.String concat(java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+       <function-name>concat4</function-name>
+       <function-class>uk.ac.ebi.intact.view.webapp.util.JsfUtils</function-class>
+       <function-signature>java.lang.String concat(java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
     
 </facelet-taglib>

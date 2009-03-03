@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+
+    <c:set var="interaction" value="#{detailsBean.interaction}" />
+    <tr:panelHeader text="Interaction">
+
+        <tr:panelFormLayout>
+            <tr:panelLabelAndMessage label="Accession:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <tr:outputText value="#{interaction.ac}"/>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Name:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <tr:outputText value="#{interaction.shortLabel}"/>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Description:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <tr:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Type:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <ui:decorate template="/pages/details/cvPopup.xhtml">
+                    <ui:param name="cv" value="#{interaction.cvInteractionType}"/>
+                </ui:decorate>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelHeader text="Cross References" rendered="#{not empty interaction.xrefs}">
+                <ui:decorate template="/pages/details/xrefs.xhtml">
+                    <ui:param name="xrefs" value="#{interaction.xrefs}"/>
+                </ui:decorate>
+            </tr:panelHeader>
+
+            <tr:panelHeader text="Annotations" rendered="#{not empty interaction.annotations}">
+                <ui:decorate template="/pages/details/annotations.xhtml">
+                    <ui:param name="annotations" value="#{interaction.annotations}"/>
+                </ui:decorate>
+            </tr:panelHeader>
+
+        </tr:panelFormLayout>
+
+    </tr:panelHeader>
+
+
+    <c:set var="participantCount" value="#{fn:length(interaction.components)}" />
+    <c:set var="text" value="#{iam:concat3('s (',participantCount,')')}" />
+    <tr:panelHeader text="Participant#{(participantCount > 1 ? text : '')}">
+
+        <tr:table var="participant" value="#{interaction.components}" rows="0">
+
+               <c:set var="interactor" value="#{participant.interactor}" />
+               <f:facet name="detailStamp">
+                     <tr:panelFormLayout>
+
+                         <tr:panelHeader text="Cross References" rendered="#{not empty participant.xrefs}">
+                             <ui:decorate template="/pages/details/xrefs.xhtml">
+                                 <ui:param name="xrefs" value="#{participant.xrefs}"/>
+                             </ui:decorate>
+                         </tr:panelHeader>
+
+                         <tr:panelHeader text="Annotations" rendered="#{not empty participant.annotations}">
+                             <ui:decorate template="/pages/details/annotations.xhtml">
+                                 <ui:param name="annotations" value="#{participant.annotations}"/>
+                             </ui:decorate>
+                         </tr:panelHeader>
+
+                         <tr:panelHeader text="Binding Domains" rendered="#{not empty participant.bindingDomains}">
+
+                             <!-- TODO Check that this feature actually works -->
+
+                             <ui:decorate template="/pages/details/bindingDomains.xhtml">
+                                 <ui:param name="bindingDomains" value="#{participant.bindingDomains}"/>
+                             </ui:decorate>
+                         </tr:panelHeader>                         
+
+                         <tr:panelHeader text="Experimental Parameters" rendered="#{not empty participant.parameters}">
+                             <tr:outputText value="To be implemented ..." />
+                         </tr:panelHeader>
+
+                     </tr:panelFormLayout>
+               </f:facet>
+
+            <tr:column headerText="Name" sortable="true" sortProperty="interactor.shortLabel">
+                <tr:outputText value="#{interactor.shortLabel}" />
+            </tr:column>
+
+            <tr:column headerText="Ac">
+                <tr:outputText value="#{interactor.ac}" />
+            </tr:column>
+
+            <tr:column headerText="Interactor type" sortable="true" sortProperty="interactor.cvInteractorType.shortLabel">
+                <ui:decorate template="/pages/details/cvPopup.xhtml">
+                    <ui:param name="cv" value="#{interactor.cvInteractorType}"/>
+                </ui:decorate>
+            </tr:column>
+
+            <tr:column headerText="Stoichiometry">
+                <tr:outputText value="#{(participant.stoichiometry > 0 ? participant.stoichiometry : '-')}" />
+            </tr:column>
+
+            <tr:column headerText="Interactor description">
+                <tr:outputText value="#{interactor.fullName}" />
+            </tr:column>
+
+            <tr:column headerText="Expression system">
+                <tr:group rendered="#{participant.expressedIn != null}">
+                    <ui:decorate template="/pages/details/biosourcePopup.xhtml">
+                        <ui:param name="biosource" value="#{participant.expressedIn}"/>
+                    </ui:decorate>
+                </tr:group>
+                <tr:outputText value="-" rendered="#{participant.expressedIn == null}"/>
+            </tr:column>
+
+            <tr:column headerText="Identifier">
+                   <tr:iterator var="xref" value="#{iaf:getIdentityXrefs(interactor)}"
+                                varStatus="rowStatus" rows="0">
+                       <tr:outputText value="#{xref.primaryId}" />
+                   </tr:iterator>
+            </tr:column>
+
+            <tr:column headerText="Gene name">
+                <tr:outputText value="#{iaf:getGeneName(interactor)}" />
+            </tr:column>
+
+            <tr:column headerText="Biological role" sortable="true" sortProperty="cvBiologicalRole.shortLabel">
+                <ui:decorate template="/pages/details/cvPopup.xhtml">
+                    <ui:param name="cv" value="#{participant.cvBiologicalRole}"/>
+                </ui:decorate>
+            </tr:column>
+
+            <tr:column headerText="Experimental role" sortable="true" sortProperty="cvExperimentalRole.shortLabel">
+                <ui:decorate template="/pages/details/cvPopup.xhtml">
+                    <ui:param name="cv" value="#{participant.cvExperimentalRole}"/>
+                </ui:decorate>
+            </tr:column>
+
+        </tr:table>
+
+    </tr:panelHeader>
+
+
+    <c:set var="experiment" value="#{detailsBean.experiment}" />
+    <c:set var="interactionCount" value="#{fn:length(experiment.interactions)}" />
+    <tr:panelHeader text="Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})">
+
+        <tr:panelFormLayout>
+            <tr:panelLabelAndMessage label="Accession:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <tr:outputText value="#{experiment.ac}"/>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Accession:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <!--<tr:inputText readOnly="true" value="#{experiment.shortLabel}"/>-->
+                <tr:outputText value="#{experiment.shortLabel}" />
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Host organism:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <ui:decorate template="/pages/details/biosourcePopup.xhtml">
+                    <ui:param name="biosource" value="#{experiment.bioSource}"/>
+                </ui:decorate>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Interaction Detection Method:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <ui:decorate template="/pages/details/cvPopup.xhtml">
+                    <ui:param name="cv" value="#{experiment.cvInteraction}"/>
+                </ui:decorate>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Participant Identification Method:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <ui:decorate template="/pages/details/cvPopup.xhtml">
+                    <ui:param name="cv" value="#{experiment.cvIdentification}"/>
+                </ui:decorate>
+            </tr:panelLabelAndMessage>
+
+
+            <tr:panelHeader text="Cross References" rendered="#{not empty experiment.xrefs}">
+                <ui:decorate template="/pages/details/xrefs.xhtml">
+                    <ui:param name="xrefs" value="#{experiment.xrefs}"/>
+                </ui:decorate>
+            </tr:panelHeader>
+
+            <c:set var="experimentAnnotations" value="#{detailsBean.experimentAnnotations}"/>
+            <tr:panelHeader text="Annotations" rendered="#{not empty experimentAnnotations}">
+                <ui:decorate template="/pages/details/annotations.xhtml">
+                    <ui:param name="annotations" value="#{experimentAnnotations}"/>
+                </ui:decorate>
+            </tr:panelHeader>
+
+        </tr:panelFormLayout>
+
+    </tr:panelHeader>
+
+
+    <c:set var="publication" value="#{experiment.publication}" />
+    <tr:panelHeader text="Publication">
+
+        <tr:panelFormLayout>
+            <tr:panelLabelAndMessage label="Title:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <tr:inputText readOnly="true" value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Journal:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <tr:inputText readOnly="true" value="#{detailsBean.journal}"/>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Year of Publication:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <tr:inputText readOnly="true" value="#{detailsBean.publicationYear}"/>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Author List:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <tr:inputText readOnly="true" value="#{detailsBean.authorList}"/>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Xrefs:" rendered="#{not empty publication.xrefs}"
+                                     labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <ui:decorate template="/pages/details/xrefs.xhtml">
+                    <ui:param name="xrefs" value="#{publication.xrefs}"/>
+                </ui:decorate>
+            </tr:panelLabelAndMessage>
+
+            <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty publication.annotations}"
+                                     labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                <ui:decorate template="/pages/details/annotations.xhtml">
+                    <ui:param name="annotations" value="#{publication.annotations}"/>
+                </ui:decorate>
+            </tr:panelLabelAndMessage>
+        </tr:panelFormLayout>
+
+    </tr:panelHeader>
+
+</ui:composition>

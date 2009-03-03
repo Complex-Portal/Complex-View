@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+    <tr:table var="xref" value="#{xrefs}">
+
+        <tr:column headerText="Database">
+            <ui:decorate template="/pages/details/cvPopup.xhtml">
+                <ui:param name="cv" value="#{xref.cvDatabase}"/>
+            </ui:decorate>
+        </tr:column>
+
+        <tr:column headerText="Identifier">
+            <tr:inputText readOnly="true" value="#{xref.primaryId}"/>
+        </tr:column>
+
+        <tr:column headerText="Secondary Identifier">
+            <tr:inputText readOnly="true"
+                          value="#{(xref.secondaryId == null ? '-' : xref.secondaryId )}"/>
+        </tr:column>
+
+        <tr:column headerText="Qualifier">
+            <ui:decorate template="/pages/details/cvPopup.xhtml">
+                <ui:param name="cv" value="#{xref.cvXrefQualifier}"/>
+            </ui:decorate>
+        </tr:column>
+
+    </tr:table>
+
+</ui:composition>
