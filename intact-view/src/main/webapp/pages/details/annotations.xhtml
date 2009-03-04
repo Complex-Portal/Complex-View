@@ -9,12 +9,9 @@
         <tr:table var="annot" value="#{annotations}" >
 
             <tr:column headerText="Topic">
-                <tr:commandLink action="dialog:cv.view" partialSubmit="true"
-                                windowWidth="600" windowHeight="600"
-                                immediate="true" useWindow="true">
-                    <tr:inputText readOnly="true" value="#{annot.cvTopic.shortLabel}: " inlineStyle="background-color:#EDF6F5; font-weight:bold;"/>
-                    <f:setPropertyActionListener value="#{annot.cvTopic.ac}" target="#{cvBean.objectAc}"/>
-                </tr:commandLink>
+                <ui:decorate template="/pages/details/cvPopup.xhtml">
+                    <ui:param name="cv" value="#{annot.cvTopic}"/>
+                </ui:decorate>
             </tr:column>
 
             <tr:column headerText="Text">

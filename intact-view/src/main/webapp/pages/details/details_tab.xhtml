@@ -56,6 +56,14 @@
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
+            <tr:spacer height="10" rendered="#{not empty interaction.parameters}"/>
+            <tr:panelLabelAndMessage label="Experimental Parameters:" rendered="#{not empty interaction.parameters}"
+                                     labelStyle="font-weight:bold;">
+
+                <tr:outputText value="To be implemented ..." />
+
+            </tr:panelLabelAndMessage>
+
         </tr:panelFormLayout>
 
     </tr:panelHeader>
@@ -71,30 +79,37 @@
                <f:facet name="detailStamp">
                      <tr:panelFormLayout>
 
-                         <tr:panelHeader text="Cross References" rendered="#{not empty participant.xrefs}">
+                         <tr:spacer height="10" rendered="#{not empty participant.xrefs}"/>
+                         <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty participant.xrefs}"
+                                                  labelStyle="font-weight:bold;">
                              <ui:decorate template="/pages/details/xrefs.xhtml">
                                  <ui:param name="xrefs" value="#{participant.xrefs}"/>
                              </ui:decorate>
-                         </tr:panelHeader>
+                         </tr:panelLabelAndMessage>
 
-                         <tr:panelHeader text="Annotations" rendered="#{not empty participant.annotations}">
+                         <tr:spacer height="10" rendered="#{not empty participant.annotations}"/>
+                         <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty participant.annotations}"
+                                                  labelStyle="font-weight:bold;">
                              <ui:decorate template="/pages/details/annotations.xhtml">
                                  <ui:param name="annotations" value="#{participant.annotations}"/>
                              </ui:decorate>
-                         </tr:panelHeader>
+                         </tr:panelLabelAndMessage>
 
-                         <tr:panelHeader text="Binding Domains" rendered="#{not empty participant.bindingDomains}">
-
-                             <!-- TODO Check that this feature actually works -->
-
+                         <tr:spacer height="10" rendered="#{not empty participant.bindingDomains}"/>
+                         <tr:panelLabelAndMessage label="Binding Domains:" rendered="#{not empty participant.bindingDomains}"
+                                                  labelStyle="font-weight:bold;">
                              <ui:decorate template="/pages/details/bindingDomains.xhtml">
                                  <ui:param name="bindingDomains" value="#{participant.bindingDomains}"/>
                              </ui:decorate>
-                         </tr:panelHeader>                         
+                         </tr:panelLabelAndMessage>
 
-                         <tr:panelHeader text="Experimental Parameters" rendered="#{not empty participant.parameters}">
+                         <tr:spacer height="10" rendered="#{not empty participant.parameters}"/>
+                         <tr:panelLabelAndMessage label="Experimental Parameters:" rendered="#{not empty participant.parameters}"
+                                                  labelStyle="font-weight:bold;">
+
                              <tr:outputText value="To be implemented ..." />
-                         </tr:panelHeader>
+
+                         </tr:panelLabelAndMessage>
 
                      </tr:panelFormLayout>
                </f:facet>
@@ -168,7 +183,6 @@
             </tr:panelLabelAndMessage>
 
             <tr:panelLabelAndMessage label="Accession:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                <!--<tr:inputText readOnly="true" value="#{experiment.shortLabel}"/>-->
                 <tr:outputText value="#{experiment.shortLabel}" />
             </tr:panelLabelAndMessage>
 

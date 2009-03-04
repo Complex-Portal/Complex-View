@@ -6,34 +6,38 @@
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
-    <tr:table var="domain" value="#{bindingDomains}">
+    <tr:iterator value="#{bindingDomains}" var="domain" varStatus="status">
+          <tr:panelHorizontalLayout>
+                <ui:decorate template="/pages/details/cvPopup.xhtml">
+                    <ui:param name="cv" value="#{domain.cvFeatureType}"/>
+                </ui:decorate>
+                &#160;
+                <tr:outputText value="#{domain.shortLabel} of #{domain.component.interactor.shortLabel}" />
+                &#160;
+                <tr:iterator value="#{domain.ranges}" var="range">
+                    <tr:outputText value="#{range}" />
+                </tr:iterator>
+            </tr:panelHorizontalLayout>
+    </tr:iterator>
 
-        <tr:column headerText="Type">
-            <tr:commandLink action="dialog:cv.view" partialSubmit="true"
-                            windowWidth="600" windowHeight="600"
-                            immediate="true" useWindow="true">
-                <tr:inputText readOnly="true" value="#{domain.cvFeatureType.shortLabel}: "
-                              inlineStyle="background-color:#EDF6F5; font-weight:bold;"/>
-                <f:setPropertyActionListener value="#{domain.cvFeatureType.ac}" target="#{cvBean.objectAc}"/>
-            </tr:commandLink>
-        </tr:column>
+    <!--<tr:table var="domain" value="#{bindingDomains}">-->
 
-        <tr:column headerText="Detection Method">
-            <tr:commandLink action="dialog:cv.view" partialSubmit="true"
-                            windowWidth="600" windowHeight="600"
-                            immediate="true" useWindow="true">
-                <tr:inputText readOnly="true" value="#{domain.cvFeatureIdentification.shortLabel}: "
-                              inlineStyle="background-color:#EDF6F5; font-weight:bold;"/>
-                <f:setPropertyActionListener value="#{domain.cvFeatureIdentification.ac}" target="#{cvBean.objectAc}"/>
-            </tr:commandLink>
-        </tr:column>
+        <!--<tr:column headerText="Text representation">-->
 
-        <tr:column headerText="Region">
-            <tr:iterator value="#{domain.ranges}" var="range">
-                <tr:outputText value="#{range}"/>
-            </tr:iterator>
-        </tr:column>
+            <!--<tr:panelHorizontalLayout>-->
+                <!--<ui:decorate template="/pages/details/cvPopup.xhtml">-->
+                    <!--<ui:param name="cv" value="#{domain.cvFeatureType}"/>-->
+                <!--</ui:decorate>-->
+                <!--&#160;-->
+                <!--<tr:outputText value="#{domain.shortLabel} of #{domain.component.interactor.shortLabel}" />-->
+                <!--&#160;-->
+                <!--<tr:iterator value="#{domain.ranges}" var="range">-->
+                    <!--<tr:outputText value="#{range}" />-->
+                <!--</tr:iterator>-->
+            <!--</tr:panelHorizontalLayout>-->
 
-    </tr:table>
+        <!--</tr:column>-->
+
+    <!--</tr:table>-->
 
 </ui:composition>

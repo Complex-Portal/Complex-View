@@ -14,32 +14,48 @@
         <tr:panelHeader text="Organism">
 
             <tr:panelFormLayout>
-                <tr:panelLabelAndMessage label="Accession:">
+                <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
                     <tr:inputText readOnly="true" value="#{biosourceBean.bioSource.ac}"/>
                 </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Name:">
+                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
                     <tr:inputText readOnly="true" value="#{biosourceBean.bioSource.shortLabel}"/>
                 </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Description:">
+                <tr:panelLabelAndMessage label="Description:" rendered="#{biosourceBean.bioSource.shortLabel != biosourceBean.bioSource.fullName}" 
+                                         labelStyle="font-weight:bold;">
                     <tr:inputText readOnly="true"
                                   value="#{(biosourceBean.bioSource.fullName == null ? '-' : biosourceBean.bioSource.fullName )}"/>
                 </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Xrefs:" rendered="#{not empty biosourceBean.bioSource.xrefs}">
-                    <ui:decorate template="/pages/details/xrefs.xhtml">
-                        <ui:param name="xrefs" value="#{cvBean.cvObject.xrefs}"/>
-                    </ui:decorate>
-                </tr:panelLabelAndMessage>
-
-                <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty biosourceBean.bioSource.annotations}">
-                    <ui:decorate template="/pages/details/annotations.xhtml">
-                        <ui:param name="annotations" value="#{biosourceBean.bioSource.annotations}"/>
-                    </ui:decorate>
-                </tr:panelLabelAndMessage>
-
             </tr:panelFormLayout>
+
+            <trh:tableLayout width="690" cellPadding="3" cellSpacing="0">
+                <trh:rowLayout rendered="#{not empty biosourceBean.bioSource.xrefs}">
+                    <trh:cellFormat valign="top">
+                        <tr:spacer height="10"/>
+                        <tr:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat>
+                        <tr:spacer height="10"/>
+                        <ui:decorate template="/pages/details/xrefs.xhtml">
+                            <ui:param name="xrefs" value="#{biosourceBean.bioSource.xrefs}"/>
+                        </ui:decorate>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+                <trh:rowLayout rendered="#{not empty biosourceBean.bioSource.annotations}">
+                    <trh:cellFormat valign="top">
+                        <tr:spacer height="10"/>
+                        <tr:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat>
+                        <tr:spacer height="10"/>
+                        <ui:decorate template="/pages/details/annotations.xhtml">
+                            <ui:param name="annotations" value="#{biosourceBean.bioSource.annotations}"/>
+                        </ui:decorate>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+            </trh:tableLayout>
 
         </tr:panelHeader>
 
