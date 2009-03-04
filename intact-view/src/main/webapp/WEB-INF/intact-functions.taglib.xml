@@ -47,6 +47,12 @@
     </function>
 
     <function>
+        <function-name>calculateDbXrefUrl</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String calculateXrefUrl(uk.ac.ebi.intact.model.CvDatabase,java.lang.String)</function-signature>
+    </function>
+
+    <function>
         <function-name>toDateTime</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
         <function-signature>org.joda.time.DateTime toDateTime(java.lang.Long)</function-signature>

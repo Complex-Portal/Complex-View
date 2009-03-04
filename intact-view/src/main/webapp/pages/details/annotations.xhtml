@@ -3,6 +3,8 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
@@ -14,8 +16,10 @@
                 </ui:decorate>
             </tr:column>
 
+            <c:set var="isUrl" value="#{sf:convertToBoolean(annot.cvTopic.identifier == 'MI:0614')}" />
             <tr:column headerText="Text">
-                 <tr:outputText value="#{(annot.annotationText == null ? '-' : annot.annotationText )}"/>
+                <tr:outputText value="#{(annot.annotationText == null ? '-' : annot.annotationText )}" rendered="#{!isUrl}"/>
+                <tr:goLink text="#{annot.annotationText}" destination="#{annot.annotationText}" targetFrame="_blank" rendered="#{isUrl}"/>
             </tr:column>
 
         </tr:table>

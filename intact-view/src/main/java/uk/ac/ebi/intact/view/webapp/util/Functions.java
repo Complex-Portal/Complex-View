@@ -98,6 +98,32 @@ public final class Functions {
         return replacedUrl;
     }
 
+    /**
+     * Calculates the XREFs, associated to a database and for the AC/query provided
+     * @param db the CvDatabase to get the URL template from
+     * @param ac Accession to use in the URL
+     * @return
+     */
+    public static String calculateXrefUrl(CvDatabase db, String ac) {
+        String xrefUrl = null;
+
+        if (db != null) {
+            Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(db, CvTopic.SEARCH_URL);
+
+            if (annotation != null) {
+                xrefUrl = annotation.getAnnotationText();
+            }
+        }
+
+        String replacedUrl = null;
+
+        if (xrefUrl != null) {
+            replacedUrl = xrefUrl.replaceAll("\\$\\{ac\\}", ac);
+        }
+
+        return replacedUrl;
+    }
+
     public static Interactor getInteractorByAc( String intactAc ) {
         return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getInteractorDao().getByAc( intactAc );
     }
