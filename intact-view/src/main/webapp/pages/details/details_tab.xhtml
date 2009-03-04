@@ -36,17 +36,25 @@
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
-            <tr:panelHeader text="Cross References" rendered="#{not empty interaction.xrefs}">
+        </tr:panelFormLayout>
+
+        <tr:panelFormLayout>
+
+            <tr:spacer height="10" rendered="#{not empty interaction.xrefs}"/>
+            <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty interaction.xrefs}"
+                                     labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/xrefs.xhtml">
                     <ui:param name="xrefs" value="#{interaction.xrefs}"/>
                 </ui:decorate>
-            </tr:panelHeader>
+            </tr:panelLabelAndMessage>
 
-            <tr:panelHeader text="Annotations" rendered="#{not empty interaction.annotations}">
+            <tr:spacer height="10" rendered="#{not empty interaction.annotations}"/>
+            <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty interaction.annotations}"
+                                     labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/annotations.xhtml">
                     <ui:param name="annotations" value="#{interaction.annotations}"/>
                 </ui:decorate>
-            </tr:panelHeader>
+            </tr:panelLabelAndMessage>
 
         </tr:panelFormLayout>
 
@@ -182,19 +190,26 @@
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
+        </tr:panelFormLayout>
 
-            <tr:panelHeader text="Cross References" rendered="#{not empty experiment.xrefs}">
+        <tr:panelFormLayout>
+
+            <tr:spacer height="10" rendered="#{not empty experiment.xrefs}"/>
+            <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty experiment.xrefs}"
+                                     labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/xrefs.xhtml">
                     <ui:param name="xrefs" value="#{experiment.xrefs}"/>
                 </ui:decorate>
-            </tr:panelHeader>
+            </tr:panelLabelAndMessage>
 
             <c:set var="experimentAnnotations" value="#{detailsBean.experimentAnnotations}"/>
-            <tr:panelHeader text="Annotations" rendered="#{not empty experimentAnnotations}">
+            <tr:spacer height="10" rendered="#{not empty experimentAnnotations}"/>
+            <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty experimentAnnotations}"
+                                     labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/annotations.xhtml">
                     <ui:param name="annotations" value="#{experimentAnnotations}"/>
                 </ui:decorate>
-            </tr:panelHeader>
+            </tr:panelLabelAndMessage>
 
         </tr:panelFormLayout>
 
@@ -221,19 +236,26 @@
                 <tr:inputText readOnly="true" value="#{detailsBean.authorList}"/>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Xrefs:" rendered="#{not empty publication.xrefs}"
-                                     labelStyle="background-color:#EDF6F5; font-weight:bold;">
+        </tr:panelFormLayout>
+
+        <tr:panelFormLayout>
+
+            <tr:spacer height="10" rendered="#{not empty publication.xrefs}"/>
+            <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty publication.xrefs}"
+                                     labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/xrefs.xhtml">
                     <ui:param name="xrefs" value="#{publication.xrefs}"/>
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
+            <tr:spacer height="10" rendered="#{not empty publication.annotations}"/>
             <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty publication.annotations}"
-                                     labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                                     labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/annotations.xhtml">
                     <ui:param name="annotations" value="#{publication.annotations}"/>
                 </ui:decorate>
             </tr:panelLabelAndMessage>
+            
         </tr:panelFormLayout>
 
     </tr:panelHeader>
