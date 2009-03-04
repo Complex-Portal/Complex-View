@@ -148,7 +148,9 @@
             <tr:column headerText="Identifier">
                    <tr:iterator var="xref" value="#{iaf:getIdentityXrefs(interactor)}"
                                 varStatus="rowStatus" rows="0">
-                       <tr:outputText value="#{xref.primaryId}" />
+                       <tr:goLink text="#{xref.primaryId}"
+                                  destination="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}"
+                                  targetFrame="_blank"/>
                    </tr:iterator>
             </tr:column>
 
