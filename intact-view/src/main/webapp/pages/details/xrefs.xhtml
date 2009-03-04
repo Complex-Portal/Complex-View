@@ -15,12 +15,13 @@
         </tr:column>
 
         <tr:column headerText="Identifier">
-            <tr:inputText readOnly="true" value="#{xref.primaryId}"/>
+            <tr:goLink text="#{xref.primaryId}"
+                       destination="#{iaf:calculateXrefUrl(facesContext, xref.cvDatabase.identifier, xref.primaryId)}"
+                       targetFrame="_blank"/>
         </tr:column>
 
         <tr:column headerText="Secondary Identifier">
-            <tr:inputText readOnly="true"
-                          value="#{(xref.secondaryId == null ? '-' : xref.secondaryId )}"/>
+            <tr:inputText readOnly="true" value="#{(xref.secondaryId == null ? '-' : xref.secondaryId )}"/>
         </tr:column>
 
         <tr:column headerText="Qualifier">
