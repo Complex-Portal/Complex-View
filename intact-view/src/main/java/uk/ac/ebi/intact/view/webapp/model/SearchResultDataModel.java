@@ -55,7 +55,7 @@ public class SearchResultDataModel extends SortableModel implements Serializable
          * If you set the DEFAULT_SORT_COLUMN as relevanescore_s make sure
          * you are using the latest index with relevancescore column in it
          */
-        DEFAULT_SORT_COLUMN = "relevancescore_s";
+        DEFAULT_SORT_COLUMN = "rigid";
     }
 
     private String searchQuery;

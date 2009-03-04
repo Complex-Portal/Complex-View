@@ -29,6 +29,7 @@ import java.io.*;
 import java.util.List;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Map;
 
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.Searcher;
@@ -105,7 +106,8 @@ public class BinaryInteractionsExporter {
         Collection interactions;
 
         do {
-            SolrQuery query = new SolrQuery(searchQuery);
+            //SolrQuery query = new SolrQuery(searchQuery);
+            SolrQuery query = convertToSolrQuery( searchQuery );
             query.setStart(firstResult);
             query.setRows(maxResults);
 
@@ -146,13 +148,17 @@ public class BinaryInteractionsExporter {
         IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
 
         // count first as a security measure
-        SolrSearchResult result1 = searcher.search(searchQuery, 0, 0);
+        //SolrSearchResult result1 = searcher.search(searchQuery, 0, 0);
+        SolrQuery solrQuery = convertToSolrQuery( searchQuery );
+        SolrSearchResult result1 = searcher.search(solrQuery);
 
         if (result1.getTotalCount() > 1000) {
             throw new IntactViewException("Too many interactions to export to XML. Maximum is 1000");
         }
 
-        SolrSearchResult result = searcher.search(searchQuery, null, null);
+        //SolrSearchResult result = searcher.search(searchQuery, null, null);
+        solrQuery.setRows(Integer.MAX_VALUE);
+        SolrSearchResult result = searcher.search(solrQuery);
         Collection<IntactBinaryInteraction> interactions = result.getBinaryInteractionList();
 
         Tab2Xml tab2Xml = new IntactTab2Xml();
@@ -214,5 +220,31 @@ public class BinaryInteractionsExporter {
         Transformer trans = transFact.newTransformer(xsltSource);
 
         trans.transform(xmlSource, new StreamResult(outputStream));
+    }
+
+
+    private SolrQuery convertToSolrQuery( String searchQuery ) {
+
+        if ( searchQuery == null ) {
+            throw new NullPointerException( "You must give a non null searchQuery" );
+        }
+
+        SolrQuery solrQuery = new SolrQuery();
+        if ( searchQuery.contains( "&" ) ) {
+            final String[] params = searchQuery.split( "&" );
+            for ( String param : params ) {
+                if ( param.contains( "=" ) ) {
+                    final String[] keyval = param.split( "=" );
+                    if ( keyval != null && keyval.length == 2 ) {
+                        if ( "q".equals( keyval[0] ) ) {
+                            solrQuery.setQuery( keyval[1] );
+                        }
+                    }
+                }
+
+            }
+
+        }
+        return solrQuery;
     }
 }

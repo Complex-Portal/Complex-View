@@ -258,7 +258,11 @@
             <artifactId>psi25-xml</artifactId>
             <version>1.7.4-SNAPSHOT</version>
         </dependency>
-
+         <dependency>
+            <groupId>psidev.psi.mi</groupId>
+            <artifactId>psimitab</artifactId>
+            <version>1.7.4-SNAPSHOT</version>
+        </dependency>
 
         <!-- other -->
         <dependency>

@@ -58,7 +58,7 @@ public class UserQuery {
     private List<String> chebiTerms;
 
     //for sorting and ordering
-    private static final String DEFAULT_SORT_COLUMN = "relevancescore_s";
+    private static final String DEFAULT_SORT_COLUMN = "rigid";
     private static final boolean DEFAULT_SORT_ORDER = true;
 
     private String userSortColumn = DEFAULT_SORT_COLUMN;

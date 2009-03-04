@@ -65,7 +65,7 @@
             <tr:goButton text="Export" partialTriggers="exportFormatSelect"
                          disabled="#{searchBean.exportFormat == null}"
                          targetFrame="_blank"
-                         destination="/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}&amp;sort=#{searchBean.results.sortColumn}&amp;asc=#{searchBean.results.ascending}"/>
+                         destination="/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}"/>
 
             <tr:commandButton id="btnConfigureColumn" text="Change Columns Displayed" action="dialog:configure.columns" partialSubmit="true" returnListener="#{configureColumn.handleReturn}"
                                      windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />

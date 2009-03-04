@@ -93,7 +93,7 @@ public class SearchController extends JpaBaseController {
     private String exportFormat;
 
     //sorting
-    private static final String DEFAULT_SORT_COLUMN = "relevancescore_s";
+    private static final String DEFAULT_SORT_COLUMN = "rigid";
     private static final boolean DEFAULT_SORT_ORDER = true;
 
     private String userSortColumn = DEFAULT_SORT_COLUMN;
