@@ -231,46 +231,65 @@
 
 
     <c:set var="publication" value="#{experiment.publication}" />
+    <c:set var="pmid" value="#{iaf:getPubmedId(experiment)}" />
     <tr:panelHeader text="Publication">
 
-        <tr:panelFormLayout>
-            <tr:panelLabelAndMessage label="Title:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                <tr:inputText readOnly="true" value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
-            </tr:panelLabelAndMessage>
+        <tr:panelHorizontalLayout>
 
-            <tr:panelLabelAndMessage label="Journal:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                <tr:inputText readOnly="true" value="#{detailsBean.journal}"/>
-            </tr:panelLabelAndMessage>
+            <tr:group>
+                <tr:panelFormLayout>
+                    <tr:panelLabelAndMessage label="Author List:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                        <tr:inputText readOnly="true" value="#{detailsBean.authorList}"/>
+                    </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Year of Publication:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                <tr:inputText readOnly="true" value="#{detailsBean.publicationYear}"/>
-            </tr:panelLabelAndMessage>
+                    <tr:panelLabelAndMessage label="Title:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                        <tr:inputText readOnly="true" value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
+                    </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Author List:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                <tr:inputText readOnly="true" value="#{detailsBean.authorList}"/>
-            </tr:panelLabelAndMessage>
+                    <tr:panelLabelAndMessage label="Journal:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                        <tr:inputText readOnly="true" value="#{detailsBean.journal}"/>
+                    </tr:panelLabelAndMessage>
 
-        </tr:panelFormLayout>
+                    <tr:panelLabelAndMessage label="Year of Publication:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                        <tr:inputText readOnly="true" value="#{detailsBean.publicationYear}"/>
+                    </tr:panelLabelAndMessage>
 
-        <tr:panelFormLayout>
+                    <tr:panelLabelAndMessage label="PubMed Id:" rendered="#{pmid != null}" 
+                                             labelStyle="background-color:#EDF6F5; font-weight:bold;">
+                        <tr:inputText readOnly="true" value="#{pmid}"/>
+                    </tr:panelLabelAndMessage>
+                </tr:panelFormLayout>
 
-            <tr:spacer height="10" rendered="#{not empty publication.xrefs}"/>
-            <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty publication.xrefs}"
-                                     labelStyle="font-weight:bold;">
-                <ui:decorate template="/pages/details/xrefs.xhtml">
-                    <ui:param name="xrefs" value="#{publication.xrefs}"/>
-                </ui:decorate>
-            </tr:panelLabelAndMessage>
+                <tr:panelFormLayout>
 
-            <tr:spacer height="10" rendered="#{not empty publication.annotations}"/>
-            <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty publication.annotations}"
-                                     labelStyle="font-weight:bold;">
-                <ui:decorate template="/pages/details/annotations.xhtml">
-                    <ui:param name="annotations" value="#{publication.annotations}"/>
-                </ui:decorate>
-            </tr:panelLabelAndMessage>
-            
-        </tr:panelFormLayout>
+                    <tr:spacer height="10" rendered="#{not empty publication.xrefs}"/>
+                    <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty publication.xrefs}"
+                                             labelStyle="font-weight:bold;">
+                        <ui:decorate template="/pages/details/xrefs.xhtml">
+                            <ui:param name="xrefs" value="#{publication.xrefs}"/>
+                        </ui:decorate>
+                    </tr:panelLabelAndMessage>
+
+                    <tr:spacer height="10" rendered="#{not empty publication.annotations}"/>
+                    <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty publication.annotations}"
+                                             labelStyle="font-weight:bold;">
+                        <ui:decorate template="/pages/details/annotations.xhtml">
+                            <ui:param name="annotations" value="#{publication.annotations}"/>
+                        </ui:decorate>
+                    </tr:panelLabelAndMessage>
+
+                </tr:panelFormLayout>
+            </tr:group>
+
+            <tr:spacer width="20"/>
+
+            <tr:panelBox text="Links" background="dark" inlineStyle="width:100%">
+                <tr:commandLink text="Show all interactions" action="#{searchBean.doBinarySearchAction}">
+                    <f:setPropertyActionListener value="#{pmid}" target="#{userQuery.searchQuery}"/>
+                </tr:commandLink>
+            </tr:panelBox>
+
+        </tr:panelHorizontalLayout>
 
     </tr:panelHeader>
 
