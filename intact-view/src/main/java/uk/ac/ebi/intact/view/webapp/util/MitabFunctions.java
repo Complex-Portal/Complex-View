@@ -253,6 +253,30 @@ public final class MitabFunctions {
         return filteredList;
     }
 
+    /**
+     * Filter the given collection by removing any xref that have any of the two filters.
+     * @param xrefs
+     * @param databaseFilter
+     * @param textFilter
+     * @return
+     */
+    public static Collection getExclusionFilteredCrossReferences( Collection xrefs, String databaseFilter, String textFilter ) {
+        if ( databaseFilter == null && textFilter == null) {
+            throw new NullPointerException( "You must give at least one non null filter" );
+        }
+
+        List<CrossReference> filteredList = new ArrayList<CrossReference>();
+
+        for ( CrossReference xref : ( Collection<CrossReference> ) xrefs ) {
+            if ( (databaseFilter != null && !databaseFilter.equals( xref.getDatabase() ))
+                 &&
+                 (textFilter != null && !textFilter.equals( xref.getText() ) ) ) {
+                filteredList.add( xref );
+            }
+        }
+        return filteredList;
+    }
+
     public static boolean getSelectedFromMap( Map columnMap, String columnName ) {
 
         if ( columnMap.containsKey( columnName ) ) {
