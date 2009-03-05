@@ -38,33 +38,32 @@
 
         </tr:panelFormLayout>
 
-        <tr:panelFormLayout inlineStyle="width:100%;">
-
-            <tr:spacer height="10" rendered="#{not empty interaction.xrefs}"/>
-            <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty interaction.xrefs}"
-                                     labelStyle="font-weight:bold;">
-                <ui:decorate template="/pages/details/xrefs.xhtml">
-                    <ui:param name="xrefs" value="#{interaction.xrefs}"/>
-                </ui:decorate>
-            </tr:panelLabelAndMessage>
-
-            <tr:spacer height="10" rendered="#{not empty interaction.annotations}"/>
-            <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty interaction.annotations}"
-                                     labelStyle="font-weight:bold;">
-                <ui:decorate template="/pages/details/annotations.xhtml">
-                    <ui:param name="annotations" value="#{interaction.annotations}"/>
-                </ui:decorate>
-            </tr:panelLabelAndMessage>
-
-            <tr:spacer height="10" rendered="#{not empty interaction.parameters}"/>
-            <tr:panelLabelAndMessage label="Experimental Parameters:" rendered="#{not empty interaction.parameters}"
-                                     labelStyle="font-weight:bold;">
-
-                <tr:outputText value="To be implemented ..." />
-
-            </tr:panelLabelAndMessage>
-
-        </tr:panelFormLayout>
+        <trh:tableLayout width="1000" cellPadding="3" cellSpacing="0">
+            <trh:rowLayout rendered="#{not empty interaction.xrefs}">
+                <trh:cellFormat valign="top">
+                    <tr:spacer height="10"/>
+                    <tr:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
+                </trh:cellFormat>
+                <trh:cellFormat>
+                    <tr:spacer height="10"/>
+                    <ui:decorate template="/pages/details/xrefs.xhtml">
+                        <ui:param name="xrefs" value="#{interaction.xrefs}"/>
+                    </ui:decorate>
+                </trh:cellFormat>
+            </trh:rowLayout>
+            <trh:rowLayout rendered="#{not empty interaction.annotations}">
+                <trh:cellFormat valign="top">
+                    <tr:spacer height="10"/>
+                    <tr:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
+                </trh:cellFormat>
+                <trh:cellFormat>
+                    <tr:spacer height="10"/>
+                    <ui:decorate template="/pages/details/annotations.xhtml">
+                        <ui:param name="annotations" value="#{interaction.annotations}"/>
+                    </ui:decorate>
+                </trh:cellFormat>
+            </trh:rowLayout>
+        </trh:tableLayout>
 
     </tr:panelHeader>
 
@@ -208,26 +207,33 @@
 
         </tr:panelFormLayout>
 
-        <tr:panelFormLayout inlineStyle="width:100%">
-
-            <tr:spacer height="10" rendered="#{not empty experiment.xrefs}"/>
-            <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty experiment.xrefs}"
-                                     labelStyle="font-weight:bold;">
-                <ui:decorate template="/pages/details/xrefs.xhtml">
-                    <ui:param name="xrefs" value="#{experiment.xrefs}"/>
-                </ui:decorate>
-            </tr:panelLabelAndMessage>
-
-            <c:set var="experimentAnnotations" value="#{detailsBean.experimentAnnotations}"/>
-            <tr:spacer height="10" rendered="#{not empty experimentAnnotations}"/>
-            <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty experimentAnnotations}"
-                                     labelStyle="font-weight:bold;">
-                <ui:decorate template="/pages/details/annotations.xhtml">
-                    <ui:param name="annotations" value="#{experimentAnnotations}"/>
-                </ui:decorate>
-            </tr:panelLabelAndMessage>
-
-        </tr:panelFormLayout>
+        <c:set var="experimentAnnotations" value="#{detailsBean.experimentAnnotations}"/>
+        <trh:tableLayout width="1000" cellPadding="3" cellSpacing="0">
+            <trh:rowLayout rendered="#{not empty experiment.xrefs}">
+                <trh:cellFormat valign="top">
+                    <tr:spacer height="10"/>
+                    <tr:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
+                </trh:cellFormat>
+                <trh:cellFormat>
+                    <tr:spacer height="10"/>
+                    <ui:decorate template="/pages/details/xrefs.xhtml">
+                        <ui:param name="xrefs" value="#{experiment.xrefs}"/>
+                    </ui:decorate>
+                </trh:cellFormat>
+            </trh:rowLayout>
+            <trh:rowLayout rendered="#{not empty experimentAnnotations}">
+                <trh:cellFormat valign="top">
+                    <tr:spacer height="10"/>
+                    <tr:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
+                </trh:cellFormat>
+                <trh:cellFormat>
+                    <tr:spacer height="10"/>
+                    <ui:decorate template="/pages/details/annotations.xhtml">
+                        <ui:param name="annotations" value="#{experimentAnnotations}"/>
+                    </ui:decorate>
+                </trh:cellFormat>
+            </trh:rowLayout>
+        </trh:tableLayout>
 
     </tr:panelHeader>
 
