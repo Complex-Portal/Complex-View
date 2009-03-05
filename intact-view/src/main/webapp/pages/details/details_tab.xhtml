@@ -17,20 +17,20 @@
     <c:set var="interaction" value="#{detailsBean.interaction}" />
     <tr:panelHeader text="Interaction">
 
-        <tr:panelFormLayout>
-            <tr:panelLabelAndMessage label="Accession:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+        <tr:panelFormLayout inlineStyle="width:100%;">
+            <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
                 <tr:outputText value="#{interaction.ac}"/>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Name:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+            <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
                 <tr:outputText value="#{interaction.shortLabel}"/>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Description:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+            <tr:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;">
                 <tr:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Type:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+            <tr:panelLabelAndMessage label="Type:" labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/cvPopup.xhtml">
                     <ui:param name="cv" value="#{interaction.cvInteractionType}"/>
                 </ui:decorate>
@@ -38,7 +38,7 @@
 
         </tr:panelFormLayout>
 
-        <tr:panelFormLayout>
+        <tr:panelFormLayout inlineStyle="width:100%;">
 
             <tr:spacer height="10" rendered="#{not empty interaction.xrefs}"/>
             <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty interaction.xrefs}"
@@ -73,11 +73,11 @@
     <c:set var="text" value="#{iam:concat3('s (',participantCount,')')}" />
     <tr:panelHeader text="Participant#{(participantCount > 1 ? text : '')}">
 
-        <tr:table var="participant" value="#{interaction.components}" rows="0">
+        <tr:table var="participant" value="#{interaction.components}" rows="0" width="800">
 
                <c:set var="interactor" value="#{participant.interactor}" />
                <f:facet name="detailStamp">
-                     <tr:panelFormLayout>
+                     <tr:panelFormLayout inlineStyle="width:100%;">
 
                          <tr:spacer height="10" rendered="#{not empty participant.xrefs}"/>
                          <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty participant.xrefs}"
@@ -179,28 +179,28 @@
     <c:set var="interactionCount" value="#{fn:length(experiment.interactions)}" />
     <tr:panelHeader text="Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})">
 
-        <tr:panelFormLayout>
-            <tr:panelLabelAndMessage label="Accession:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+        <tr:panelFormLayout inlineStyle="width:100%">
+            <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
                 <tr:outputText value="#{experiment.ac}"/>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Accession:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+            <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
                 <tr:outputText value="#{experiment.shortLabel}" />
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Host organism:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+            <tr:panelLabelAndMessage label="Host organism:" labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/biosourcePopup.xhtml">
                     <ui:param name="biosource" value="#{experiment.bioSource}"/>
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Interaction Detection Method:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+            <tr:panelLabelAndMessage label="Interaction Detection Method:" labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/cvPopup.xhtml">
                     <ui:param name="cv" value="#{experiment.cvInteraction}"/>
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Participant Identification Method:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
+            <tr:panelLabelAndMessage label="Participant Identification Method:" labelStyle="font-weight:bold;">
                 <ui:decorate template="/pages/details/cvPopup.xhtml">
                     <ui:param name="cv" value="#{experiment.cvIdentification}"/>
                 </ui:decorate>
@@ -208,7 +208,7 @@
 
         </tr:panelFormLayout>
 
-        <tr:panelFormLayout>
+        <tr:panelFormLayout inlineStyle="width:100%">
 
             <tr:spacer height="10" rendered="#{not empty experiment.xrefs}"/>
             <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty experiment.xrefs}"
@@ -234,64 +234,70 @@
 
     <c:set var="publication" value="#{experiment.publication}" />
     <c:set var="pmid" value="#{iaf:getPubmedId(experiment)}" />
-    <tr:panelHeader text="Publication">
+    <tr:panelHeader text="Publication" inlineStyle="width:100%;">
 
-        <tr:panelHorizontalLayout>
+        <trh:tableLayout>
+            <trh:rowLayout>
+                <trh:cellFormat width="85%">
 
-            <tr:group>
-                <tr:panelFormLayout>
-                    <tr:panelLabelAndMessage label="Author List:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                        <tr:inputText readOnly="true" value="#{detailsBean.authorList}"/>
-                    </tr:panelLabelAndMessage>
+                    <tr:panelFormLayout inlineStyle="width:600px">
 
-                    <tr:panelLabelAndMessage label="Title:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                        <tr:inputText readOnly="true" value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
-                    </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Author List:" labelStyle="font-weight:bold;">
+                            <tr:outputText value="#{detailsBean.authorList}"/>
+                        </tr:panelLabelAndMessage>
 
-                    <tr:panelLabelAndMessage label="Journal:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                        <tr:inputText readOnly="true" value="#{detailsBean.journal}"/>
-                    </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Title:" labelStyle="font-weight:bold;">
+                            <tr:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
+                        </tr:panelLabelAndMessage>
 
-                    <tr:panelLabelAndMessage label="Year of Publication:" labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                        <tr:inputText readOnly="true" value="#{detailsBean.publicationYear}"/>
-                    </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Journal:" labelStyle="font-weight:bold;">
+                            <tr:outputText value="#{detailsBean.journal}"/>
+                        </tr:panelLabelAndMessage>
 
-                    <tr:panelLabelAndMessage label="PubMed Id:" rendered="#{pmid != null}" 
-                                             labelStyle="background-color:#EDF6F5; font-weight:bold;">
-                        <tr:inputText readOnly="true" value="#{pmid}"/>
-                    </tr:panelLabelAndMessage>
-                </tr:panelFormLayout>
+                        <tr:panelLabelAndMessage label="Year of Publication:" labelStyle="font-weight:bold;">
+                            <tr:outputText value="#{detailsBean.publicationYear}"/>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelFormLayout>
+                        <tr:panelLabelAndMessage label="PubMed Id:" rendered="#{pmid != null}"
+                                                 labelStyle="font-weight:bold;">
+                            <tr:outputText value="#{pmid}"/>
+                        </tr:panelLabelAndMessage>
 
-                    <tr:spacer height="10" rendered="#{not empty publication.xrefs}"/>
-                    <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty publication.xrefs}"
-                                             labelStyle="font-weight:bold;">
-                        <ui:decorate template="/pages/details/xrefs.xhtml">
-                            <ui:param name="xrefs" value="#{publication.xrefs}"/>
-                        </ui:decorate>
-                    </tr:panelLabelAndMessage>
+                    </tr:panelFormLayout>
 
-                    <tr:spacer height="10" rendered="#{not empty publication.annotations}"/>
-                    <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty publication.annotations}"
-                                             labelStyle="font-weight:bold;">
-                        <ui:decorate template="/pages/details/annotations.xhtml">
-                            <ui:param name="annotations" value="#{publication.annotations}"/>
-                        </ui:decorate>
-                    </tr:panelLabelAndMessage>
+                    <tr:panelFormLayout inlineStyle="width:600px">
 
-                </tr:panelFormLayout>
-            </tr:group>
+                        <tr:spacer height="10" rendered="#{not empty publication.xrefs}"/>
+                        <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty publication.xrefs}"
+                                                 labelStyle="font-weight:bold;">
+                            <ui:decorate template="/pages/details/xrefs.xhtml">
+                                <ui:param name="xrefs" value="#{publication.xrefs}"/>
+                            </ui:decorate>
+                        </tr:panelLabelAndMessage>
 
-            <tr:spacer width="20"/>
+                        <tr:spacer height="10" rendered="#{not empty publication.annotations}"/>
+                        <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty publication.annotations}"
+                                                 labelStyle="font-weight:bold;">
+                            <ui:decorate template="/pages/details/annotations.xhtml">
+                                <ui:param name="annotations" value="#{publication.annotations}"/>
+                            </ui:decorate>
+                        </tr:panelLabelAndMessage>
 
-            <tr:panelBox text="Links" background="dark" inlineStyle="width:100%">
-                <tr:commandLink text="Show all interactions" action="#{searchBean.doBinarySearchAction}">
-                    <f:setPropertyActionListener value="#{pmid}" target="#{userQuery.searchQuery}"/>
-                </tr:commandLink>
-            </tr:panelBox>
+                    </tr:panelFormLayout>
 
-        </tr:panelHorizontalLayout>
+                </trh:cellFormat>
+
+                <trh:cellFormat width="15%">
+
+                    <tr:panelBox text="Links" background="dark" inlineStyle="width:100%">
+                        <tr:commandLink text="Show all interactions" action="#{searchBean.doBinarySearchAction}">
+                            <f:setPropertyActionListener value="#{pmid}" target="#{userQuery.searchQuery}"/>
+                        </tr:commandLink>
+                    </tr:panelBox>
+
+                </trh:cellFormat>
+            </trh:rowLayout>
+        </trh:tableLayout>
 
     </tr:panelHeader>
 
