@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp codebase="http://www.ebi.ac.uk/~skerrien/cytoscape-webstart" href="cy1.jnlp">
+<jnlp codebase="http://www.ebi.ac.uk/~skerrien/cytoscape-trunk-webstart">
   <security>
     <all-permissions />
   </security>
@@ -129,9 +129,9 @@
     <argument>edu.ucsd.bioeng.coreplugin.tableImport.TableImportPlugin</argument>
     <argument>-p</argument>
     <argument>yfiles.YFilesLayoutPlugin</argument>
-
     <argument>-N</argument>
-    <argument>{export-file-url}</argument>
+    <argument>filePath</argument>
+
   </application-desc>
 </jnlp>
 

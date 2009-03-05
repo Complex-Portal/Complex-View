@@ -25,6 +25,8 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletContext;
 import java.io.*;
+import java.text.MessageFormat;
+import java.net.URLEncoder;
 
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
@@ -39,6 +41,9 @@ public class CytoscapeServlet extends HttpServlet {
 
     private WebApplicationContext applicationContext;
 
+    public static final String PARAM_QUERY = "query";
+    public static final String PARAM_FORMAT = "format";
+
 
     @Override
     public void init( ServletConfig config ) throws ServletException {
@@ -51,31 +56,44 @@ public class CytoscapeServlet extends HttpServlet {
 
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
-        IntactViewConfiguration intactViewConfiguration = ( IntactViewConfiguration ) applicationContext.getBean( "intactViewConfiguration" );
 
-        String urlToXmlFile = "http://www.ebi.ac.uk/~skerrien/cytoscape-webstart/data/10220385.xml";
+        String searchQuery = request.getParameter(PARAM_QUERY);
+        searchQuery = encodeURL( searchQuery );
+        String format = request.getParameter(PARAM_FORMAT);
+
+        //final String requestURI = "http://"+request.getRemoteHost()+":"+request.getRemotePort()+request.getContextPath();
+        String urlToXmlExportServlet = "http://localhost:9092/intact/view/export?query="+searchQuery+"&format="+format;
 
         response.setContentType("application/x-java-jnlp-file");
 
-		// Read the cytoscape.jnlp from from WEB-INF directory.
-		String filename = "/WEB-INF/cytoscape/cytoscape.jnlp";
-		ServletContext context = getServletContext();
-		InputStream is = context.getResourceAsStream(filename);
-		if (is != null) {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-			PrintWriter writer = response.getWriter();
-			String text = "";
+        // Read the cytoscape.jnlp from from WEB-INF directory.
+        String filename = "/WEB-INF/cytoscape/cytoscape.jnlp";
+        ServletContext context = getServletContext();
+        InputStream is = context.getResourceAsStream(filename);
+        if (is != null) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            PrintWriter writer = response.getWriter();
+            String text = "";
 
             while ((text = reader.readLine()) != null) {
-                if(text.matches("<argument>\\{export-file-url\\}</argument>")){
-                    text = "<argument>"+urlToXmlFile+"</argument>";
+                if(text.contains("filePath")){
+                    text = text.replace( "filePath",urlToXmlExportServlet);
                 }
-				writer.println(text);
-			}
+                System.out.println( text );
+                writer.println(text);
+            }
             writer.close();
 		}
 
-
         
     }
+
+    private static String encodeURL(String stringToBeEncoded) throws UnsupportedEncodingException {
+           String encodedString="";
+           if(stringToBeEncoded!=null){
+           encodedString = URLEncoder.encode(stringToBeEncoded,"UTF-8");
+           }
+           return encodedString;
+       }
+
 }

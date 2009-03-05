@@ -286,7 +286,10 @@ public final class MitabFunctions {
      }
 
     public static String encodeURL(String stringToBeEncoded) throws UnsupportedEncodingException {
-        String encodedString = URLEncoder.encode(stringToBeEncoded,"UTF-8");
+        String encodedString="";
+        if(stringToBeEncoded!=null){
+        encodedString = URLEncoder.encode(stringToBeEncoded,"UTF-8");
+        }
         return encodedString;
     }
 

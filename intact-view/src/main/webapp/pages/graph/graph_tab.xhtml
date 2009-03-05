@@ -10,13 +10,18 @@
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                xmlns:iaf="http://intact.ebi.ac.uk/functions">
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions">
 
     <!-- RESULT SUMMARY -->
 
     <ui:include src="/pages/inc/queryDisplay.xhtml" />
 
-    <tr:panelHeader text="Network visualisation" />
+    <tr:panelHeader text="Network visualisation through Cytoscape" />
+    <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_54">
+    <tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Cytoscape"/>
+    </tr:goLink>
+    <tr:panelHeader text="Network visualisation through Hierarchview" />
 
     #{userQuery.hierarchViewUrl}&amp;h=700&amp;w=700
 

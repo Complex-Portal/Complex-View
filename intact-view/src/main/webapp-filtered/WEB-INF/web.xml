@@ -398,6 +398,18 @@
         <url-pattern>/export</url-pattern>
     </servlet-mapping>
 
+<!-- Cytoscape Servlets -->
+    <servlet>
+        <servlet-name>exportCytoscape</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.cytoscape.CytoscapeServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>exportCytoscape</servlet-name>
+        <url-pattern>/exportCytoscape</url-pattern>
+    </servlet-mapping>
+
+
     <!-- Welcome files -->
     <welcome-file-list>
         <welcome-file>/index.jsp</welcome-file>
