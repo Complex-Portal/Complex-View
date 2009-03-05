@@ -40,11 +40,11 @@
 
         <trh:tableLayout width="1000" cellPadding="3" cellSpacing="0">
             <trh:rowLayout rendered="#{not empty interaction.xrefs}">
-                <trh:cellFormat valign="top">
+                <trh:cellFormat valign="top" width="100">
                     <tr:spacer height="10"/>
                     <tr:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
                 </trh:cellFormat>
-                <trh:cellFormat>
+                <trh:cellFormat  halign="left">
                     <tr:spacer height="10"/>
                     <ui:decorate template="/pages/details/xrefs.xhtml">
                         <ui:param name="xrefs" value="#{interaction.xrefs}"/>
@@ -52,7 +52,7 @@
                 </trh:cellFormat>
             </trh:rowLayout>
             <trh:rowLayout rendered="#{not empty interaction.annotations}">
-                <trh:cellFormat valign="top">
+                <trh:cellFormat valign="top" halign="left" width="100">
                     <tr:spacer height="10"/>
                     <tr:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
                 </trh:cellFormat>
@@ -210,11 +210,11 @@
         <c:set var="experimentAnnotations" value="#{detailsBean.experimentAnnotations}"/>
         <trh:tableLayout width="1000" cellPadding="3" cellSpacing="0">
             <trh:rowLayout rendered="#{not empty experiment.xrefs}">
-                <trh:cellFormat valign="top">
+                <trh:cellFormat valign="top" width="100">
                     <tr:spacer height="10"/>
                     <tr:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
                 </trh:cellFormat>
-                <trh:cellFormat>
+                <trh:cellFormat  halign="left">
                     <tr:spacer height="10"/>
                     <ui:decorate template="/pages/details/xrefs.xhtml">
                         <ui:param name="xrefs" value="#{experiment.xrefs}"/>
@@ -222,11 +222,11 @@
                 </trh:cellFormat>
             </trh:rowLayout>
             <trh:rowLayout rendered="#{not empty experimentAnnotations}">
-                <trh:cellFormat valign="top">
+                <trh:cellFormat valign="top" width="100">
                     <tr:spacer height="10"/>
                     <tr:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
                 </trh:cellFormat>
-                <trh:cellFormat>
+                <trh:cellFormat  halign="left">
                     <tr:spacer height="10"/>
                     <ui:decorate template="/pages/details/annotations.xhtml">
                         <ui:param name="annotations" value="#{experimentAnnotations}"/>
