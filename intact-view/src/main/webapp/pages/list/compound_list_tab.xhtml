@@ -15,142 +15,99 @@
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
-<!-- RESULT SUMMARY -->
+    <!-- RESULT SUMMARY -->
 
-<ui:include src="/pages/inc/queryDisplay.xhtml" />
+    <ui:include src="/pages/inc/queryDisplay.xhtml"/>
 
-<br/>
+    <br/>
 
-<!-- RESULTS TABLE -->
+    <!-- RESULTS TABLE -->
 
-<tr:table id="compoundListResults" value="#{searchBean.smallMoleculeResults}" var="interactorWrapper"
-          varStatus="status"
-          summary="Compounds" emptyText="No compounds found matching the query."
-          rows="#{userQuery.pageSize}" rowBandingInterval="1"
-          rowSelection="multiple">
+    <tr:table id="compoundListResults" value="#{searchBean.smallMoleculeResults}" var="interactorWrapper"
+              varStatus="status"
+              summary="Compounds" emptyText="No compounds found matching the query."
+              rows="#{userQuery.pageSize}" rowBandingInterval="1"
+              rowSelection="multiple">
 
-<f:facet name="actions">
-    <tr:panelHorizontalLayout inlineStyle="width:100%">
-        <f:facet name="separator">
-            <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
+        <f:facet name="actions">
+            <tr:panelHorizontalLayout inlineStyle="width:100%">
+                <f:facet name="separator">
+                    <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
+                </f:facet>
+
+                <tr:panelButtonBar id="buttonBar">
+                    <strong>
+                        <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
+                    </strong>
+                    <tr:commandButton text="Search Interactions"
+                                      actionListener="#{searchBean.doSearchInteractionsFromCompoundListSelection}"
+                                      action="interactions"/>
+                </tr:panelButtonBar>
+
+            </tr:panelHorizontalLayout>
         </f:facet>
 
-        <tr:panelButtonBar id="buttonBar">
-            <strong>
-                <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
-            </strong>
-            <tr:commandButton text="Search Interactions"
-                              actionListener="#{searchBean.doSearchInteractionsFromCompoundListSelection}"
-                              action="interactions"/>
-        </tr:panelButtonBar>
+        <tr:column>
+            <tr:outputText value="#{status.index + 1}"/>
+        </tr:column>
 
-    </tr:panelHorizontalLayout>
-</f:facet>
+        <tr:column headerText="#{messages['list.names']}">
+            <tr:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
+        </tr:column>
 
-<tr:column>
-    <tr:outputText value="#{status.index + 1}"/>
-</tr:column>
+        <tr:column headerText="Interactions">
+            <tr:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
+                <f:setPropertyActionListener value="#{interactorWrapper.interactor.ac}"
+                                             target="#{userQuery.searchQuery}"/>
+            </tr:commandLink>
+        </tr:column>
 
-<tr:column headerText="#{messages['list.names']}">
-        <tr:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
-    </tr:column>
+        <tr:column headerText="#{messages['list.structure']}"
+                   inlineStyle="background-color:white; vertical-align:middle; text-align: center;">
+            <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}" varStatus="rowStatus" rows="0">
+                <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
+                    <f:facet name="drugbank">
+                        <h:panelGroup>
+                            <iav:imageCompoundStructure id="#{xref.identifier}"/>
+                            <br/>
+                        </h:panelGroup>
+                    </f:facet>
+                </tr:switcher>
+            </tr:iterator>
+        </tr:column>
 
-    <tr:column headerText="Interactions">
-        <tr:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
-            <f:setPropertyActionListener value="#{interactorWrapper.interactor.ac}" target="#{userQuery.searchQuery}"/>
-        </tr:commandLink>
-    </tr:column>
+        <tr:column headerText="#{messages['list.links']}">
 
-<!---->
-<tr:column headerText="#{messages['list.structure']}" inlineStyle="background-color:white; vertical-align:middle; text-align: center;">
-    <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}" varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
-            <f:facet name="drugbank">
-                <h:panelGroup>
-                    <iav:imageCompoundStructure id="#{xref.identifier}"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-        </tr:switcher>
-    </tr:iterator>
-</tr:column>
+            <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}"
+                         varStatus="rowStatus" rows="0">
+                <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
+                    <f:facet name="drugbank">
+                        <h:panelGroup>
+                            <iax:goDrugbank query="#{xref.primaryId}" onlyLogo="true"/>
+                            <br/>
+                        </h:panelGroup>
+                    </f:facet>
+                    <f:facet name="chebi">
+                        <h:panelGroup>
+                            <iax:goChebi query="#{xref.primaryId}" onlyLogo="true"/>
+                            <br/>
+                        </h:panelGroup>
+                    </f:facet>
+                </tr:switcher>
+            </tr:iterator>
+        </tr:column>
 
-<tr:column headerText="#{messages['list.links']}">
+        <tr:column headerText="#{messages['list.accessionnumber']}">
+            <tr:outputText value="#{interactorWrapper.interactor.ac}"/>
+        </tr:column>
 
-    <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}"
-                 varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
-            <f:facet name="drugbank">
-                <h:panelGroup>
-                    <iax:goDrugbank query="#{xref.primaryId}" onlyLogo="true"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-            <f:facet name="chebi">
-                <h:panelGroup>
-                    <iax:goChebi query="#{xref.primaryId}" onlyLogo="true"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-        </tr:switcher>
-    </tr:iterator>
-</tr:column>
+        <tr:column headerText="#{messages['list.description']}">
+            <ui:param name="intactIdentifier"
+                      value="#{interactorWrapper.interactor.ac}"/>
+            <ui:param name="interactor" value="#{interactorWrapper.interactor}"/>
+            <tr:outputText value="#{interactorWrapper.interactor.fullName}"/>
+        </tr:column>
 
-
-<!--<tr:column headerText="#{messages['list.links']}">-->
-
-    <!--<tr:iterator var="xref" value="#{compound.identifiers}" varStatus="rowStatus" rows="0">-->
-        <!--<tr:switcher facetName="#{xref.database}">-->
-            <!--<f:facet name="chebi">-->
-                <!--<h:panelGroup>-->
-                    <!--<iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>-->
-                    <!--<br/>-->
-                <!--</h:panelGroup>-->
-            <!--</f:facet>-->
-            <!--<f:facet name="drugbank">-->
-                <!--<h:panelGroup>-->
-                    <!--<iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>-->
-                    <!--<br/>-->
-                    <!--<iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(compound))}"/>-->
-                    <!--<br/>-->
-                <!--</h:panelGroup>-->
-            <!--</f:facet>-->
-        <!--</tr:switcher>-->
-    <!--</tr:iterator>-->
-<!--</tr:column>-->
-
- <tr:column headerText="#{messages['list.accessionnumber']}" >
-    <tr:outputText value="#{interactorWrapper.interactor.ac}"/>
-</tr:column>
-
-   <!--<tr:column headerText="#{messages['list.drugtype']}" sortable="true" sortProperty="idA_s">-->
-    <!--<h:outputText value="#{iamf:getDrugStatus(compound)}"/>-->
-<!--</tr:column>-->
-
-<!--<tr:column headerText="#{messages['list.brandname']}">-->
-   <!---->
-     <!--<iam:collapsibleIterator id="csd_altIdA_#{status.index}"-->
-                             <!--disclosed="#{searchBean.showBrandNames}"-->
-                             <!--value="#{iamf:getFilteredCrossReferences(compound.alternativeIdentifiers,'drug brand name')}"-->
-                             <!--maxShown="5">-->
-         <!--<tr:switcher facetName="#{item.text}">-->
-            <!--<f:facet name="drug brand name">-->
-                <!--<h:panelGroup>-->
-                    <!--<h:outputText value="#{item.identifier}"/>-->
-                <!--</h:panelGroup>-->
-            <!--</f:facet>-->
-        <!--</tr:switcher>-->
-    <!--</iam:collapsibleIterator>-->
-<!--</tr:column>-->
-
-    <tr:column headerText="#{messages['list.description']}">
-        <ui:param name="intactIdentifier"
-                  value="#{interactorWrapper.interactor.ac}"/>
-        <ui:param name="interactor" value="#{interactorWrapper.interactor}"/>
-        <tr:outputText value="#{interactorWrapper.interactor.fullName}"/>
-    </tr:column>
-
-
-</tr:table>
+    </tr:table>
 
 </ui:composition>
