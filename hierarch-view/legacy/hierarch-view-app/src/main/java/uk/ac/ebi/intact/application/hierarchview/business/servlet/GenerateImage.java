@@ -13,8 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import uk.ac.ebi.intact.application.hierarchview.business.Constants;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
-import uk.ac.ebi.intact.application.hierarchview.business.data.LocalIndexDataSevice;
-import uk.ac.ebi.intact.application.hierarchview.business.data.UserQuery;
+import uk.ac.ebi.intact.application.hierarchview.business.data.*;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.DrawGraph;
@@ -65,6 +64,8 @@ public class GenerateImage extends HttpServlet {
             HttpSession session = aRequest.getSession( false );
 
             String queryParam = aRequest.getParameter("query");
+
+            // TODO issue, we are going to ahve problems if the query param used doesn't match the data service configured in HV
             String solrQueryParam = aRequest.getParameter("sq");
 
             UserQuery query = null;
@@ -72,7 +73,7 @@ public class GenerateImage extends HttpServlet {
 
             if (queryParam != null) {
                 query = new UserQuery(queryParam);
-            } else if (queryParam != null) {
+            } else if (solrQueryParam != null) {
                 SolrQuery solrQuery = createSolrQueryFromURL(solrQueryParam);
                 query = new UserQuery(solrQuery);
             } else {
@@ -91,7 +92,7 @@ public class GenerateImage extends HttpServlet {
                 int width = 400;
                 int height = 400;
 
-                if (queryParam == null || solrQueryParam == null) {
+                if (queryParam == null && solrQueryParam == null) {
                     throw new IllegalStateException("Parameters 'query' or 'sq' (solr query) are needed if the session does not exist (direct call to the servlet)");
                 }
 
@@ -105,7 +106,8 @@ public class GenerateImage extends HttpServlet {
                     height = Math.min(height, MAX_HEIGHT);
                 }
 
-                LocalIndexDataSevice dataService = new LocalIndexDataSevice();
+                final DataService dataService =
+                        DataServiceFactory.buildDataService( IntactUserI.SEARCH_PROPERTIES.getProperty( "search.source.name" ) );
 
                 Network network;
 

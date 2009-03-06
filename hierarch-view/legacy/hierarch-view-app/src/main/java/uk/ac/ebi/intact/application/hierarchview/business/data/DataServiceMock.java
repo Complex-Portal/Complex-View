@@ -21,7 +21,6 @@ import psidev.psi.mi.xml.converter.ConverterException;
 import uk.ac.ebi.intact.application.hierarchview.exception.HierarchViewDataException;
 import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultException;
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
-import uk.ac.ebi.intact.psimitab.IntactPsimiTabReader;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
 import uk.ac.ebi.intact.searchengine.SearchHelperI;
@@ -30,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,12 +67,11 @@ public class DataServiceMock implements DataService {
         return centralProteins;
     }
 
-    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( UserQuery query ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
-        this.query = query.getQuery();
+    public Collection<BinaryInteraction> getBinaryInteractionsByQueryString( UserQuery userQuery ) throws HierarchViewDataException, MultipleResultException, ProteinNotFoundException {
+        query = userQuery.getQuery();
 
         try {
             File file = null;
-
             if ( query.equals( "brca2" ) ) {
                 file = getFileByResources( "/test-files/brca2.txt", DataServiceMock.class );
             }

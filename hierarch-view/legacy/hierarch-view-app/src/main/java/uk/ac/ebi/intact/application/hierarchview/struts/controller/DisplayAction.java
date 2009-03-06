@@ -11,8 +11,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.solr.client.solrj.SolrQuery;
 import uk.ac.ebi.intact.application.hierarchview.business.IntactUserI;
+import uk.ac.ebi.intact.application.hierarchview.business.data.UserQuery;
 import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
+import uk.ac.ebi.intact.application.hierarchview.business.graph.HVNetworkBuilder;
 import uk.ac.ebi.intact.application.hierarchview.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.application.hierarchview.struts.framework.IntactBaseAction;
@@ -24,7 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.net.URLDecoder;
 
 /**
  * Action allowing to display an interaction network. It integrates the
@@ -92,6 +97,12 @@ public final class DisplayAction extends IntactBaseAction {
 
         if (AC == null) {
             AC = request.getParameter("query");
+        }
+
+        if(AC == null){
+        String solrQueryParam = request.getParameter("sq");
+        SolrQuery solrQuery = createSolrQueryFromURL(solrQueryParam);
+        AC= solrQuery.getQuery();
         }
 
         String methodLabel = request.getParameter( "method" );
@@ -212,5 +223,26 @@ public final class DisplayAction extends IntactBaseAction {
         return ( mapping.findForward( "success" ) );
 
     } // execute
+
+
+    private SolrQuery createSolrQueryFromURL(String solrQueryParam) throws UnsupportedEncodingException {
+        String s = URLDecoder.decode(solrQueryParam, "UTF-8");
+
+        String[] stokens = s.split("&");
+
+        SolrQuery solrQuery = new SolrQuery();
+        solrQuery.setRows( HVNetworkBuilder.getMaxInteractions());
+
+        for (String stoken : stokens) {
+            String[] param = stoken.split("=");
+
+            if (param[0].equals("q")) {
+                solrQuery.setQuery(param[1]);
+            } else if (param[0].equals("fq")) {
+                solrQuery.addFilterQuery(param[1]);
+            }
+        }
+        return solrQuery;
+    }
 }
 
