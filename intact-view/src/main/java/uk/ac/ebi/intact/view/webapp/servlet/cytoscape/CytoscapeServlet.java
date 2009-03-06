@@ -55,9 +55,8 @@ public class CytoscapeServlet extends HttpServlet {
         searchQuery = encodeURL( searchQuery );
         String format = request.getParameter(PARAM_FORMAT);
 
-        String requestURI = "http://"+request.getRemoteHost()+":"+request.getServerPort()+request.getContextPath();
+        String requestURI = "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
         String urlToXmlExportServlet = requestURI+"/export?query="+searchQuery+"&format="+format;
-
         response.setContentType("application/x-java-jnlp-file");
 
         // Read the cytoscape.jnlp from from WEB-INF directory.
