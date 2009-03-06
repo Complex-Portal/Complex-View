@@ -39,8 +39,6 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
  */
 public class CytoscapeServlet extends HttpServlet {
 
-    private WebApplicationContext applicationContext;
-
     public static final String PARAM_QUERY = "query";
     public static final String PARAM_FORMAT = "format";
 
@@ -48,10 +46,6 @@ public class CytoscapeServlet extends HttpServlet {
     @Override
     public void init( ServletConfig config ) throws ServletException {
         super.init( config );
-
-        ServletContext context = getServletContext();
-        applicationContext = WebApplicationContextUtils.getWebApplicationContext( context );
-
     }
 
     @Override
@@ -61,8 +55,8 @@ public class CytoscapeServlet extends HttpServlet {
         searchQuery = encodeURL( searchQuery );
         String format = request.getParameter(PARAM_FORMAT);
 
-        //final String requestURI = "http://"+request.getRemoteHost()+":"+request.getRemotePort()+request.getContextPath();
-        String urlToXmlExportServlet = "http://localhost:9092/intact/view/export?query="+searchQuery+"&format="+format;
+        String requestURI = "http://"+request.getRemoteHost()+":"+request.getServerPort()+request.getContextPath();
+        String urlToXmlExportServlet = requestURI+"/export?query="+searchQuery+"&format="+format;
 
         response.setContentType("application/x-java-jnlp-file");
 
@@ -79,7 +73,6 @@ public class CytoscapeServlet extends HttpServlet {
                 if(text.contains("filePath")){
                     text = text.replace( "filePath",urlToXmlExportServlet);
                 }
-                System.out.println( text );
                 writer.println(text);
             }
             writer.close();

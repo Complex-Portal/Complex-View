@@ -152,6 +152,8 @@ public class BinaryInteractionsExporter {
         SolrQuery solrQuery = convertToSolrQuery( searchQuery );
         SolrSearchResult result1 = searcher.search(solrQuery);
 
+        System.out.println( " result1  "+ result1.getTotalCount() );
+
         if (result1.getTotalCount() > 1000) {
             throw new IntactViewException("Too many interactions to export to XML. Maximum is 1000");
         }
@@ -160,6 +162,8 @@ public class BinaryInteractionsExporter {
         solrQuery.setRows(Integer.MAX_VALUE);
         SolrSearchResult result = searcher.search(solrQuery);
         Collection<IntactBinaryInteraction> interactions = result.getBinaryInteractionList();
+
+        System.out.println( " interactions count " + interactions.size());
 
         Tab2Xml tab2Xml = new IntactTab2Xml();
 
