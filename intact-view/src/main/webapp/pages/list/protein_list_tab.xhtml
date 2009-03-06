@@ -69,7 +69,9 @@
         </tr:column>
 
         <tr:column headerText="Interactions">
-            <tr:outputText value="#{interactorWrapper.count}"/>
+            <tr:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
+                <f:setPropertyActionListener value="#{interactorWrapper.interactor.ac}" target="#{userQuery.searchQuery}"/>
+            </tr:commandLink>
         </tr:column>
 
         <tr:column headerText="#{messages['list.links']}">
