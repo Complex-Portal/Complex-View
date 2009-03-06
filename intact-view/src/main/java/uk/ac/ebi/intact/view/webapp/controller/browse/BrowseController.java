@@ -139,7 +139,7 @@ public class BrowseController extends JpaBaseController {
 
         this.interproIdentifierList = appendIdentifiers( uniprotAcs, ExternalDbLinker.INTERPRO_SEPERATOR);
         this.chromosomalLocationIdentifierList = appendIdentifiers( uniprotAcs, ExternalDbLinker.CHROMOSOME_SEPERATOR);
-        this.mRNAExpressionIdentifierList = appendIdentifiers( geneNames, ExternalDbLinker.EXPRESSION_SEPERATOR);
+        this.mRNAExpressionIdentifierList = appendIdentifiers( uniprotAcs, ExternalDbLinker.EXPRESSION_SEPERATOR);
         this.reactomeIdentifierList =  uniprotAcs.toArray( new String[uniprotAcs.size()] );
     }
 

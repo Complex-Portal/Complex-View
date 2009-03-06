@@ -94,8 +94,8 @@ public class ProteinListController extends BaseController {
     }
 
     public void goExpression( ActionEvent evt ) {
-        String[] selectedGeneNames = getSelectedGeneNames();
-        dbLinker.goExternalLink( dbLinker.EXPRESSIONURL_PREFIX, dbLinker.EXPRESSIONURL_SUFFIX, dbLinker.EXPRESSION_SEPERATOR, selectedGeneNames );
+        String[] selectedUniprotIds = getSelectedUniprotIds();
+        dbLinker.goExternalLink( dbLinker.EXPRESSIONURL_PREFIX, dbLinker.EXPRESSIONURL_SUFFIX, dbLinker.EXPRESSION_SEPERATOR, selectedUniprotIds );
     }
 
     public void goChromosomalLocation( ActionEvent evt ) {

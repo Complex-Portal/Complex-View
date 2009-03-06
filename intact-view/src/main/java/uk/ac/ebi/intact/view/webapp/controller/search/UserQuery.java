@@ -131,6 +131,22 @@ public class UserQuery {
         return sb.toString();
     }
 
+
+    public String getHierarchViewSearchUrl() {
+        StringBuilder sb = new StringBuilder(256);
+
+        sb.append(intactViewConfiguration.getHierarchViewSearchUrl());
+        sb.append("?sq=");
+
+        try {
+            sb.append(URLEncoder.encode(createSolrQuery().toString(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return sb.toString();
+    }
+
     public String getHierarchViewUrl() {
         StringBuilder sb = new StringBuilder(256);
 

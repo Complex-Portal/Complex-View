@@ -52,7 +52,7 @@
         <google.analytics.tracker></google.analytics.tracker>
 
         <!-- Other intact apps -->
-        <intact.hierarchview.url>${appRoot}/hierarchView</intact.hierarchview.url>
+       <!-- <intact.hierarchview.url>${appRoot}/hierarchView</intact.hierarchview.url>-->
         <intactview.graph.maxInteractionCount>500</intactview.graph.maxInteractionCount>
 
         <!-- ChEBI -->

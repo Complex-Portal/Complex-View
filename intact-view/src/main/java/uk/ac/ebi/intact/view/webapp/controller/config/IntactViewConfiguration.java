@@ -55,6 +55,7 @@ public class IntactViewConfiguration extends BaseController {
     private static final String INTACT_SOLR_ONTOLOGIES_URL = "intact.solr.ontologies.url";
     private static final String INTACT_HIERARCHVIEW_URL = "intact.hierarchview.url";
     private static final String INTACT_HIERARCHVIEW_IMAGEURL = "intact.hierarchview.imageurl";
+    private static final String INTACT_HIERARCHVIEW_SEARCHURL = "intact.hierarchview.searchurl";
     private static final String INTACT_HIERARCHVIEW_MAXINTERACTIONS = "intact.hierarchview.maxinteractions";
     private static final String INTACT_CHEBI_URL = "intact.chebi.url";
     private static final String INTACT_CHEBI_SEARCH_PATH = "intact.chebi.search.path";
@@ -82,6 +83,7 @@ public class IntactViewConfiguration extends BaseController {
     private String solrOntologiesUrl;
     private String hierarchViewUrl;
     private String hierarchViewImageUrl;
+    private String hierarchViewSearchUrl;
     private String hierarchViewMaxInteractions;
     private String chebiUrl;
     private String chebiChemicalSearchPath;
@@ -138,6 +140,7 @@ public class IntactViewConfiguration extends BaseController {
         solrOntologiesUrl = properties.getProperty(INTACT_SOLR_ONTOLOGIES_URL, solrOntologiesUrl);
         hierarchViewUrl = properties.getProperty(INTACT_HIERARCHVIEW_URL, hierarchViewUrl);
         hierarchViewImageUrl = properties.getProperty(INTACT_HIERARCHVIEW_IMAGEURL, hierarchViewImageUrl);
+        hierarchViewSearchUrl = properties.getProperty(INTACT_HIERARCHVIEW_SEARCHURL, hierarchViewSearchUrl);
         hierarchViewMaxInteractions = properties.getProperty(INTACT_HIERARCHVIEW_MAXINTERACTIONS, hierarchViewMaxInteractions);
         chebiUrl = properties.getProperty(INTACT_CHEBI_URL, chebiUrl);
         chebiChemicalSearchPath = properties.getProperty(INTACT_CHEBI_SEARCH_PATH, chebiChemicalSearchPath);
@@ -293,6 +296,14 @@ public class IntactViewConfiguration extends BaseController {
 
     public void setHierarchViewImageUrl(String hierarchViewImageUrl) {
         this.hierarchViewImageUrl = hierarchViewImageUrl;
+    }
+
+    public String getHierarchViewSearchUrl() {
+        return hierarchViewSearchUrl;
+    }
+
+    public void setHierarchViewSearchUrl( String hierarchViewSearchUrl ) {
+        this.hierarchViewSearchUrl = hierarchViewSearchUrl;
     }
 
     public String getHierarchViewMaxInteractions() {
