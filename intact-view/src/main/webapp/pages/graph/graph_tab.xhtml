@@ -14,18 +14,38 @@
                 xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions">
 
     <!-- RESULT SUMMARY -->
-
     <ui:include src="/pages/inc/queryDisplay.xhtml" />
 
-    <tr:panelHeader text="Network visualisation through Cytoscape" />
-    <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_53">
-    <tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Cytoscape"/>
-    </tr:goLink>
-    <tr:panelHeader text="Network visualisation through Hierarchview" />
+    <tr:panelHeader text="Network visualisation" >
 
-    #{userQuery.hierarchViewUrl}&amp;h=700&amp;w=700
+        <tr:panelHorizontalLayout>
 
-    <tr:image source="#{userQuery.hierarchViewUrl}&amp;h=700&amp;w=700"
-              inlineStyle="border-width:0" />
+            <!--#{userQuery.hierarchViewUrl}&amp;h=700&amp;w=700-->
+            <tr:goLink destination="#{userQuery.hierarchViewUrl}" targetFrame="_blank">
+                <tr:image source="#{userQuery.hierarchViewImageUrl}&amp;h=700&amp;w=700"
+                          inlineStyle="border-width:0"/>
+            </tr:goLink>
+
+            <tr:spacer width="50" />
+
+            <tr:panelBox text="Open in Cytoscape" inlineStyle="width:180px;">
+
+                <tr:panelHorizontalLayout halign="center">
+                    <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_53">
+                        <tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Cytoscape"/>
+                    </tr:goLink>
+                </tr:panelHorizontalLayout>
+                
+                <br/>
+                <tr:outputText value="This is going to open current search in a " />
+                <tr:goLink text="WebStart" destination="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" targetFrame="_blank"/>
+                <tr:outputText value=" version of " />
+                <tr:goLink text="Cytoscape 2.6.2" destination="http://www.cytoscape.org/" targetFrame="_blank"/>
+
+            </tr:panelBox>
+
+        </tr:panelHorizontalLayout>
+
+    </tr:panelHeader>
 
 </ui:composition>
