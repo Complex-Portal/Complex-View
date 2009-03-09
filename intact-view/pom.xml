@@ -30,7 +30,7 @@
     <properties>
         <debug>true</debug>
 
-        <jetty.port>9092</jetty.port>
+        <jetty.port>9095</jetty.port>
         <jetty.context>view</jetty.context>
 
         <appRoot>/intact</appRoot>
@@ -59,9 +59,9 @@
         <chebi.url>http://www.ebi.ac.uk/chebi</chebi.url>
 
         <!-- Das -->
-        <das.referenceserver.url>${appRoot}/das-srv/dgi/das/dgi/</das.referenceserver.url>
-        <das.annotationserver.intact.url>${appRoot}/das-srv/dgi/das/intact/</das.annotationserver.intact.url>
-        <das.annotationserver.chebi.url>${appRoot}/das-srv/dgi/das/chebi/</das.annotationserver.chebi.url>
+        <das.referenceserver.url>${appRoot}/das-intact/das/</das.referenceserver.url>
+        <das.annotationserver.intact.url>${appRoot}/das-intact/das/</das.annotationserver.intact.url>
+        <das.annotationserver.chebi.url>${appRoot}/das-intact/das/</das.annotationserver.chebi.url>
 
         <!--<intact.recipients/>-->
         <!--<intact.proxy.host/>-->
