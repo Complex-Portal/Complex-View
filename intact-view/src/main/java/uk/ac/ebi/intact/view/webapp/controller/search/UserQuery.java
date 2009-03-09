@@ -170,6 +170,10 @@ public class UserQuery {
 
     private void addFilteredQuery(SolrQuery query, String field, Collection<String> allItems, String[] selectedItems) {
 
+        if (selectedItems == null) {
+            selectedItems = new String[0];
+        }
+
         if (allItems.size() == selectedItems.length) {
             // all items are selected - nothing to be done
             return;
