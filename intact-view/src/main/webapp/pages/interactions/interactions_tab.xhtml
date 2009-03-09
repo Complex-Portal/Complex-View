@@ -200,8 +200,8 @@
                 <h:panelGroup>
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
-                    <iax:goDrugPortProteinView query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
+                    <!--<iax:goDrugPortProteinView query="#{xref.identifier}" onlyLogo="true"/>
+                    <br/>-->
                 </h:panelGroup>
             </f:facet>
             <f:facet name="chebi">
@@ -210,7 +210,7 @@
                     <br/>
                 </h:panelGroup>
             </f:facet>
-            <f:facet name="drugbank">
+           <f:facet name="drugbank">
                 <h:panelGroup>
                     <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
@@ -383,15 +383,15 @@
            styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>
 </tr:column>
-<tr:column headerText="#{messages['interaction.hostorganism']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Host Organism')}"
+<tr:column headerText="#{messages['interaction.hostorganism']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.hostorganism')}"
            styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Expansion Method')}"
+<tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.expansionmethod')}"
            styleClass="cellTextInteraction">
     <tr:outputText value="#{binaryInteraction.expansionMethod}"/>
 </tr:column>
-<tr:column headerText="#{messages['interaction.dataset']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'Dataset')}" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.dataset']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.dataset')}" styleClass="cellTextInteraction">
     <tr:iterator var="dataset" value="#{binaryInteraction.dataset}" rows="0">
                         <span style="display:block">
                             <nobr>
