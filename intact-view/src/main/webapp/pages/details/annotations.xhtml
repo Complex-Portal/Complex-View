@@ -8,16 +8,19 @@
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
-        <tr:table var="annot" value="#{annotations}" >
+        <tr:table var="annot" value="#{annotations}">
 
-            <tr:column headerText="Topic">
+            <tr:column inlineStyle="font-weight:bold;">
+                <!-- headerText="Topic" -->
                 <ui:decorate template="/pages/details/cvPopup.xhtml">
                     <ui:param name="cv" value="#{annot.cvTopic}"/>
+                    <ui:param name="linkStyle" value="font-weight:bold;"/>
                 </ui:decorate>
             </tr:column>
 
             <c:set var="isUrl" value="#{sf:convertToBoolean(annot.cvTopic.identifier == 'MI:0614')}" />
-            <tr:column headerText="Text">
+            <tr:column >
+                <!--headerText="Text"-->
                 <tr:outputText value="#{(annot.annotationText == null ? '-' : annot.annotationText )}" rendered="#{!isUrl}"/>
                 <tr:goLink text="#{annot.annotationText}" destination="#{annot.annotationText}" targetFrame="_blank" rendered="#{isUrl}"/>
             </tr:column>

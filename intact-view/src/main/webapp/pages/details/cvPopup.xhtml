@@ -6,11 +6,14 @@
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
-    <tr:commandLink action="dialog:cv.view" text="#{cv.shortLabel}"
+    <tr:commandLink action="dialog:cv.view"
                     partialSubmit="true"
                     windowWidth="700" windowHeight="400"
                     immediate="true" useWindow="true">
+
+        <tr:outputText value="#{cv.shortLabel}" inlineStyle="#{linkStyle}" />
         <f:setPropertyActionListener value="#{cv.ac}" target="#{cvBean.objectAc}"/>
+
     </tr:commandLink>
 
 </ui:composition>

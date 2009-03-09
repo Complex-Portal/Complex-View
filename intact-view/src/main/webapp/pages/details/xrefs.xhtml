@@ -9,22 +9,27 @@
 
     <tr:table var="xref" value="#{xrefs}">
 
-        <tr:column headerText="Database">
+        <tr:column>
+            <!--headerText="Database"-->
             <ui:decorate template="/pages/details/cvPopup.xhtml">
                 <ui:param name="cv" value="#{xref.cvDatabase}"/>
+                <ui:param name="linkStyle" value="font-weight:bold;"/>
             </ui:decorate>
         </tr:column>
 
-        <tr:column headerText="Identifier">
+        <tr:column >
+            <!--headerText="Identifier"-->
             <tr:goLink text="#{xref.primaryId}" destination="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}"
                        targetFrame="_blank"/>
         </tr:column>
 
-        <tr:column headerText="Secondary Identifier">
+        <tr:column >
+            <!--headerText="Secondary Identifier"-->
             <tr:inputText readOnly="true" value="#{(xref.secondaryId == null ? '-' : xref.secondaryId )}"/>
         </tr:column>
 
-        <tr:column headerText="Qualifier">
+        <tr:column >
+            <!--headerText="Qualifier"-->
             <ui:decorate template="/pages/details/cvPopup.xhtml">
                 <ui:param name="cv" value="#{xref.cvXrefQualifier}"/>
             </ui:decorate>
