@@ -179,12 +179,4 @@ public class FilterPopulatorController {
         return expansionSelectItems;
     }
 
-    public void doFilterAction( ActionEvent event) {
-        if ( log.isDebugEnabled() ) {
-            log.debug( " doFilterAction called" );
-        }
-        RequestContext.getCurrentInstance().returnFromDialog( null, null );
-    }
-
-
 }

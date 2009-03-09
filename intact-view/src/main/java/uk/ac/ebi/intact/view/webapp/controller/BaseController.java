@@ -89,6 +89,14 @@ public abstract class BaseController implements Serializable {
         return FacesContext.getCurrentInstance().getViewRoot().findComponent(componentId);
     }
 
+    protected void refreshComponent(String componentId) {
+        UIComponent comp = getComponentFromView(componentId);
+
+        if (comp != null) {
+            RequestContext.getCurrentInstance().addPartialTarget(comp);
+        }
+    }
+
     /**
      * Use this method to get a value using a list of parameter names. The names are iterated in order
      * and if a value is found, that value is return. This method is useful to create synonym parameters.

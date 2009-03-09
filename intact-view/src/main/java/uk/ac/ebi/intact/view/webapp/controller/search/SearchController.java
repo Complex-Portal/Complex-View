@@ -25,6 +25,7 @@ import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.component.UIComponent;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -147,9 +148,14 @@ public class SearchController extends JpaBaseController {
         return "interactions";
     }
 
-    public void clearFilterAndSearch(ActionEvent evt) {
+    public void doBinarySearch(ActionEvent evt) {
+        refreshComponent("mainPanels");
+        doBinarySearchAction();
+    }
+
+    public void doClearFilterAndSearch(ActionEvent evt) {
         userQuery.clearFilters();
-        doBinarySearch(userQuery.createSolrQuery());
+        doBinarySearch(evt);
     }
 
     public String doOntologySearchAction() {
@@ -169,7 +175,6 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doBinarySearch(SolrQuery solrQuery) {
-
         results = createInteractionDataModel(solrQuery);
 
         totalResults = results.getRowCount();
@@ -337,18 +342,13 @@ public class SearchController extends JpaBaseController {
 
     }
 
-    public void handleReturnFromDialog( ReturnEvent event ) {
-        SolrQuery solrQuery = userQuery.createSolrQuery();
-        doBinarySearch( solrQuery );
+    public void refreshWhenClosingDialog( ReturnEvent event ) {
+        refreshComponent("mainPanels");
     }
 
-    public void doFilterAction( ActionEvent event ) {
-        if ( log.isDebugEnabled() ) {
-            log.debug( " doFilterAction called" );
-        }
-
-        Object returnedValue = userQuery.createSolrQuery();
-        RequestContext.getCurrentInstance().returnFromDialog( returnedValue, null );
+    public void doBinarySearchAndCloseDialog( ActionEvent event ) {
+        doBinarySearch(event);
+        RequestContext.getCurrentInstance().returnFromDialog( null, null );
     }
     // Getters & Setters
     /////////////////////

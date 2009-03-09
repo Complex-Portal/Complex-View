@@ -37,7 +37,7 @@
         </tr:panelGroupLayout>
 
 
-        <tr:panelTabbed position="above">
+        <tr:panelTabbed position="above" id="mainPanels">
 
             <tr:showDetailItem text="Home"
                                disclosed="#{disclosedTabName == 'about'}">
@@ -53,7 +53,7 @@
 
             <tr:showDetailItem text="Interactions (#{searchBean.totalResults})"
                                disabled="#{searchBean.totalResults == 0}"
-                               disclosed="#{disclosedTabName == 'interactions'}" partialTriggers=":interactionResults:btnConfigureFilter">
+                               disclosed="#{disclosedTabName == 'interactions'}">
                 <tr:messages/>
                 <ui:insert name="interactionsTabContent"/>
             </tr:showDetailItem>

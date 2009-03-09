@@ -25,11 +25,11 @@
         <tr:group rendered="#{userQuery.usingFilters}">
             &#160;
             <tr:outputText value="(using filters - "/>
-            <tr:commandLink text="modify" action="dialog:filters"
-                            immediate="true" useWindow="true" windowWidth="600"
-                            partialSubmit="true" returnListener="#{searchBean.handleReturnFromDialog}"/>
+            <tr:commandLink id="linkModifyFilters" text="modify" action="dialog:filters"
+                            immediate="true" useWindow="true" windowWidth="600" partialSubmit="true"
+                    returnListener="#{searchBean.refreshWhenClosingDialog}"/>
             <tr:outputText value=" | "/>
-            <tr:commandLink text="clear" actionListener="#{searchBean.clearFilterAndSearch}"
+            <tr:commandLink text="clear" actionListener="#{searchBean.doClearFilterAndSearch}"
                             partialSubmit="true"/>
             <tr:outputText value=")"/>
         </tr:group>
