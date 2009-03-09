@@ -53,7 +53,7 @@
 
             <tr:showDetailItem text="Interactions (#{searchBean.totalResults})"
                                disabled="#{searchBean.totalResults == 0}"
-                               disclosed="#{disclosedTabName == 'interactions'}">
+                               disclosed="#{disclosedTabName == 'interactions'}" partialTriggers=":interactionResults:btnConfigureFilter">
                 <tr:messages/>
                 <ui:insert name="interactionsTabContent"/>
             </tr:showDetailItem>

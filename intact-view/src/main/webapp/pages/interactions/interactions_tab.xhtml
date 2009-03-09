@@ -30,7 +30,7 @@
           summary="Binary Interactions"
           emptyText="No interactions found matching the query."
           rows="#{userQuery.pageSize}" rowBandingInterval="1"
-          partialTriggers=":interactionResults:btnToogleProps  :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn :interactionResults:listSortableColumns :interactionResults:listSortableColumnsOrder">
+          partialTriggers=":interactionResults:btnToogleProps  :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn :interactionResults:listSortableColumns :interactionResults:listSortableColumnsOrder :interactionResults:btnConfigureFilter">
 
 <f:facet name="actions">
     <tr:panelHorizontalLayout>
@@ -68,6 +68,9 @@
                          destination="/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}"/>
 
             <tr:commandButton id="btnConfigureColumn" text="Change Columns Displayed" action="dialog:configure.columns" partialSubmit="true" returnListener="#{configureColumn.handleReturn}"
+                                     windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
+
+             <tr:commandButton id="btnConfigureFilter" text="Modify Filters" action="dialog:filters" partialSubmit="true" returnListener="#{searchBean.handleReturnFromDialog}"
                                      windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
                         
             <!--<tr:selectOneChoice id="listSortableColumns" label="Sort Rows By: " value="#{searchBean.userSortColumn}" autoSubmit="true" valueChangeListener="#{searchBean.userSort}">-->

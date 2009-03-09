@@ -8,6 +8,8 @@ import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
+import org.apache.myfaces.trinidad.event.ReturnEvent;
+import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -335,7 +337,19 @@ public class SearchController extends JpaBaseController {
 
     }
 
+    public void handleReturnFromDialog( ReturnEvent event ) {
+        SolrQuery solrQuery = userQuery.createSolrQuery();
+        doBinarySearch( solrQuery );
+    }
 
+    public void doFilterAction( ActionEvent event ) {
+        if ( log.isDebugEnabled() ) {
+            log.debug( " doFilterAction called" );
+        }
+
+        Object returnedValue = userQuery.createSolrQuery();
+        RequestContext.getCurrentInstance().returnFromDialog( returnedValue, null );
+    }
     // Getters & Setters
     /////////////////////
 

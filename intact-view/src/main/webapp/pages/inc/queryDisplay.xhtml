@@ -27,7 +27,7 @@
             <tr:outputText value="(using filters - "/>
             <tr:commandLink text="modify" action="dialog:filters"
                             immediate="true" useWindow="true" windowWidth="600"
-                            partialSubmit="true"/>
+                            partialSubmit="true" returnListener="#{searchBean.handleReturnFromDialog}"/>
             <tr:outputText value=" | "/>
             <tr:commandLink text="clear" actionListener="#{searchBean.clearFilterAndSearch}"
                             partialSubmit="true"/>

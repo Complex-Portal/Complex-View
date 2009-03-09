@@ -17,12 +17,15 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.trinidad.context.RequestContext;
+import org.apache.myfaces.trinidad.event.ReturnEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.model.CvTopic;
 
 import javax.annotation.PostConstruct;
 import javax.faces.model.SelectItem;
+import javax.faces.event.ActionEvent;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import java.util.ArrayList;
@@ -175,4 +178,13 @@ public class FilterPopulatorController {
     public List<SelectItem> getExpansionSelectItems() {
         return expansionSelectItems;
     }
+
+    public void doFilterAction( ActionEvent event) {
+        if ( log.isDebugEnabled() ) {
+            log.debug( " doFilterAction called" );
+        }
+        RequestContext.getCurrentInstance().returnFromDialog( null, null );
+    }
+
+
 }
