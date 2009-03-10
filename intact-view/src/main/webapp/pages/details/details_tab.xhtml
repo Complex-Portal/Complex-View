@@ -197,44 +197,7 @@
 
         <tr:table var="participant" value="#{interaction.components}" rows="0" width="900">
 
-               <c:set var="interactor" value="#{participant.interactor}" />
-               <f:facet name="detailStamp">
-                     <tr:panelFormLayout inlineStyle="width:100%;">
-
-                         <tr:spacer height="10" rendered="#{not empty participant.xrefs}"/>
-                         <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty participant.xrefs}"
-                                                  labelStyle="font-weight:bold;">
-                             <ui:decorate template="/pages/details/xrefs.xhtml">
-                                 <ui:param name="xrefs" value="#{participant.xrefs}"/>
-                             </ui:decorate>
-                         </tr:panelLabelAndMessage>
-
-                         <tr:spacer height="10" rendered="#{not empty participant.annotations}"/>
-                         <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty participant.annotations}"
-                                                  labelStyle="font-weight:bold;">
-                             <ui:decorate template="/pages/details/annotations.xhtml">
-                                 <ui:param name="annotations" value="#{participant.annotations}"/>
-                             </ui:decorate>
-                         </tr:panelLabelAndMessage>
-
-                         <tr:spacer height="10" rendered="#{not empty participant.bindingDomains}"/>
-                         <tr:panelLabelAndMessage label="Binding Domains:" rendered="#{not empty participant.bindingDomains}"
-                                                  labelStyle="font-weight:bold;">
-                             <ui:decorate template="/pages/details/bindingDomains.xhtml">
-                                 <ui:param name="bindingDomains" value="#{participant.bindingDomains}"/>
-                             </ui:decorate>
-                         </tr:panelLabelAndMessage>
-
-                         <tr:spacer height="10" rendered="#{not empty participant.parameters}"/>
-                         <tr:panelLabelAndMessage label="Experimental Parameters:" rendered="#{not empty participant.parameters}"
-                                                  labelStyle="font-weight:bold;">
-
-                             <tr:outputText value="To be implemented ..." />
-
-                         </tr:panelLabelAndMessage>
-
-                     </tr:panelFormLayout>
-               </f:facet>
+            <c:set var="interactor" value="#{participant.interactor}" />
 
             <tr:column headerText="Name" sortable="true" sortProperty="interactor.shortLabel">
                 <tr:outputText value="#{interactor.shortLabel}" />
@@ -331,7 +294,93 @@
                 <tr:outputText value="#{(participant.stoichiometry > 0 ? participant.stoichiometry : '-')}" />
             </tr:column>
 
+            <tr:column headerText="More...">
+
+                <c:set var="annotationCount" value="#{fn:length(participant.xrefs) + fn:length(participant.annotations) + fn:length(participant.aliases)}" />
+                <c:set var="parameterCount" value="#{fn:length(participant.parameters)}" />
+                <c:set var="domainCount" value="#{fn:length(participant.bindingDomains)}" />
+
+                <trh:tableLayout width="30" cellSpacing="2" cellPadding="2">
+                    <trh:rowLayout>
+                        <trh:cellFormat inlineStyle="background-color:#{annotationCount>0 ? '#ed8585' : 'lightgray'};" width="10"> <!-- red cell -->
+
+                            <tr:commandLink action="dialog:participant.view" rendered="#{annotationCount>0}"
+                                            partialSubmit="true" immediate="true"
+                                            useWindow="true" windowWidth="700" windowHeight="400">
+                                <f:setPropertyActionListener value="#{participant}" target="#{participantBean.participant}"/>
+                                <tr:outputText value="A" shortDesc="#{annotationCount} Annotations" inlineStyle="font-weight:bold;color:white;"/>
+                            </tr:commandLink>
+
+                            <tr:outputText value="A" shortDesc="#{annotationCount} Annotation" rendered="#{annotationCount == 0}"
+                                           inlineStyle="font-weight:bold;color:white;"/>
+
+                        </trh:cellFormat>
+                        <trh:cellFormat inlineStyle="background-color:#{parameterCount>0 ? '#a1c7c7' : 'lightgray'};" width="10"> <!-- blue cell -->
+
+                            <tr:commandLink action="dialog:participant.view" rendered="#{parameterCount>0}"
+                                            partialSubmit="true" immediate="true"
+                                            useWindow="true" windowWidth="700" windowHeight="400">
+                                <f:setPropertyActionListener value="#{participant}" target="#{participantBean.participant}"/>
+                                <tr:outputText value="P" shortDesc="#{parameterCount} Parameters" inlineStyle="font-weight:bold;color:white;"/>
+                            </tr:commandLink>
+
+                            <tr:outputText value="P" shortDesc="#{parameterCount} Parameter" rendered="#{parameterCount == 0}"
+                                           inlineStyle="font-weight:bold;color:white;"/>
+
+                        </trh:cellFormat>
+                        <trh:cellFormat inlineStyle="background-color:#{domainCount>0 ? '#a7cf9b' : 'lightgray'};" width="10">  <!-- green cell -->
+
+                            <tr:commandLink action="dialog:participant.view" rendered="#{domainCount>0}"
+                                            partialSubmit="true" immediate="true"
+                                            useWindow="true" windowWidth="700" windowHeight="400">
+                                <f:setPropertyActionListener value="#{participant}" target="#{participantBean.participant}"/>
+                                <tr:outputText value="D" shortDesc="#{domainCount} Binding domains" inlineStyle="font-weight:bold;color:white;"/>
+                            </tr:commandLink>
+
+                            <tr:outputText value="D" shortDesc="#{domainCount} Binding domain" rendered="#{domainCount == 0}"
+                                           inlineStyle="font-weight:bold;color:white;"/>
+
+                        </trh:cellFormat>
+                    </trh:rowLayout>
+
+                </trh:tableLayout>
+
+            </tr:column>
+
         </tr:table>
+
+        <br/>
+
+        <tr:panelHorizontalLayout inlineStyle="width:1000px;" valign="top" halign="right">
+            <tr:outputText value="Legend: " inlineStyle="font-weight:bold;"/>
+
+            <trh:tableLayout width="350" cellSpacing="2" cellPadding="2">
+                <trh:rowLayout>
+                    <trh:cellFormat inlineStyle="background-color:#ed8585;" width="10"> <!-- red cell -->
+                        <tr:outputText value="A" inlineStyle="font-weight:bold;color:white;"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat >
+                        <tr:outputText value="Participant's annotations available"/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+                <trh:rowLayout>
+                    <trh:cellFormat inlineStyle="background-color:#a1c7c7;" width="10"> <!-- blue cell -->
+                        <tr:outputText value="P" inlineStyle="font-weight:bold;color:white;"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat >
+                        <tr:outputText value="Participant's experimental paramters available"/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+                <trh:rowLayout>
+                    <trh:cellFormat inlineStyle="background-color:#a7cf9b;" width="10">  <!-- green cell -->
+                        <tr:outputText value="D" inlineStyle="font-weight:bold;color:white;"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat >
+                        <tr:outputText value="Participant's binding domains available"/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+            </trh:tableLayout>
+        </tr:panelHorizontalLayout>
 
     </tr:panelHeader>
 

@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsp="http://java.sun.com/JSP/Page"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view" xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions">
+
+    <tr:document>
+
+        <tr:panelHeader text="Participant">
+
+            <c:set var="participant" value="#{participantBean.participant}" />
+
+            <tr:panelFormLayout inlineStyle="width:100%">
+
+                <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{participant.ac}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{participant.interactor.shortLabel}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Primary identifier:" labelStyle="font-weight:bold;">
+                    <tr:iterator var="xref" value="#{iaf:getIdentityXrefs(participant.interactor)}"
+                                 varStatus="rowStatus" rows="0">
+                        <tr:goLink text="#{xref.primaryId}"
+                                   destination="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}"
+                                   targetFrame="_blank"/>
+                    </tr:iterator>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Molecule type:" labelStyle="font-weight:bold;">
+                    <ui:decorate template="/pages/details/cvPopup.xhtml">
+                        <ui:param name="cv" value="#{participant.interactor.cvInteractorType}"/>
+                    </ui:decorate>
+                </tr:panelLabelAndMessage>
+
+            </tr:panelFormLayout>
+
+            <tr:panelFormLayout inlineStyle="width:100%;">
+
+                <tr:spacer height="10" rendered="#{not empty participant.xrefs}"/>
+                <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty participant.xrefs}"
+                                         labelStyle="font-weight:bold;">
+
+                    <ui:decorate template="/pages/details/xrefs.xhtml">
+                        <ui:param name="xrefs" value="#{participant.xrefs}"/>
+                    </ui:decorate>
+
+                </tr:panelLabelAndMessage>
+
+                <tr:spacer height="10" rendered="#{not empty participant.annotations}"/>
+                <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty participant.annotations}"
+                                         labelStyle="font-weight:bold;">
+
+                    <ui:decorate template="/pages/details/annotations.xhtml">
+                        <ui:param name="annotations" value="#{participant.annotations}"/>
+                    </ui:decorate>
+
+                </tr:panelLabelAndMessage>
+
+                <tr:spacer height="10" rendered="#{not empty participant.bindingDomains}"/>
+                <tr:panelLabelAndMessage label="Binding Domains:" rendered="#{not empty participant.bindingDomains}"
+                                         labelStyle="font-weight:bold;">
+
+                    <ui:decorate template="/pages/details/bindingDomains.xhtml">
+                        <ui:param name="bindingDomains" value="#{participant.bindingDomains}"/>
+                    </ui:decorate>
+
+                </tr:panelLabelAndMessage>
+
+                <tr:spacer height="10" rendered="#{not empty participant.parameters}"/>
+                <tr:panelLabelAndMessage label="Experimental Parameters:" rendered="#{not empty participant.parameters}"
+                                         labelStyle="font-weight:bold;">
+
+                    <ui:decorate template="/pages/details/parameters.xhtml">
+                        <ui:param name="parameters" value="#{participant.parameters}"/>
+                    </ui:decorate>
+
+                </tr:panelLabelAndMessage>
+
+            </tr:panelFormLayout>
+
+        </tr:panelHeader>
+
+    </tr:document>
+
+</ui:composition>
