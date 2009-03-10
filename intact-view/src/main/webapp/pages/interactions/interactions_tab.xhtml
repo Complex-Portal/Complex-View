@@ -309,7 +309,7 @@
     <iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.sourcedb']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.sourcedb')}" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.sourcedb']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.sourcedb')}" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
 </tr:column>
 <tr:column headerText="#{messages['interaction.ac']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.ac')}" styleClass="cellTextInteraction">
@@ -390,7 +390,7 @@
            styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
 </tr:column>
-<tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.expansionmethod')}"
+<tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.expansionmethod')}"
            styleClass="cellTextInteraction">
     <tr:outputText value="#{binaryInteraction.expansionMethod}"/>
 </tr:column>

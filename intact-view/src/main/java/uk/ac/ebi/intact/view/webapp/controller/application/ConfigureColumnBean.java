@@ -248,7 +248,7 @@ public class ConfigureColumnBean {
             columns.add( MOLECULE_A_SPECIES );
             columns.add( MOLECULE_B_SPECIES );
             columns.add( PUBMED_IDENTIFIER );
-            columns.add( SOURCE_DATABASE );
+            columns.add( EXPANSION_METHOD );
             columns.add( INTERACTION_AC );
         }
         return columns;

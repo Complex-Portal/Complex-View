@@ -49,10 +49,10 @@
     <tr:outputText value="Implicit*" inlineStyle="font-weight: bold"/>
     <tr:outputText value="Example" inlineStyle="font-weight: bold"/>
 
-    <tr:outputText value="id"/>
+    <tr:outputText value="idA"/>
     <tr:outputText value="Identifiers (A or B)"/>
     <tr:outputText value="No"/>
-    <iav:queryLink value="id:P123*"/>
+    <iav:queryLink value="idA:P74565"/>
 
     <tr:outputText value="alias"/>
     <tr:outputText value="Aliases (A or B)"/>
@@ -62,7 +62,7 @@
     <tr:outputText value="identifiers"/>
     <tr:outputText value="Identifiers and Aliases undistinctively"/>
     <tr:outputText value="Yes"/>
-    <iav:queryLink value="identifiers:DB00619"/>
+    <iav:queryLink value="identifier:P74565"/>
 
     <tr:outputText value="pubauth"/>
     <tr:outputText value="Publication 1st author(s)"/>
@@ -109,7 +109,7 @@
     <tr:outputText value="interaction_id"/>
     <tr:outputText value="Interaction identifier(s)"/>
     <tr:outputText value="Yes"/>
-    <iav:queryLink value="interaction_id:DGI-337971"/>
+    <iav:queryLink value="interaction_id:EBI-761050"/>
 
     <!--
     <tr:outputText value="confidence"/>
@@ -117,7 +117,7 @@
     <tr:outputText value="No"/>
     <tr:outputText value="confidence:"/>
      -->
-    <tr:outputText value="annotationA"/>
+   <!-- <tr:outputText value="annotationA"/>
     <tr:outputText value="Annotations Interactor A"/>
     <tr:outputText value="No"/>
     <iav:queryLink value="annotationA:approved"/>
@@ -125,14 +125,14 @@
     <tr:outputText value="annotationB"/>
     <tr:outputText value="Annotations Interactor B"/>
     <tr:outputText value="No"/>
-    <iav:queryLink value="annotationB:experimental"/>
+    <iav:queryLink value="annotationB:experimental"/>-->
 
     <tr:outputText value="annotation"/>
-    <tr:outputText value="Annotations Interactor A and B"/>
+    <tr:outputText value="Annotations Interactor A or B"/>
     <tr:outputText value="No"/>
     <iav:queryLink value="annotation:experimental"/>
 
-    <tr:outputText value="propertiesA"/>
+   <!-- <tr:outputText value="propertiesA"/>
     <tr:outputText value="Properties of Interactor A"/>
     <tr:outputText value="No"/>
     <iav:queryLink value="properties:&quot;GO:0005794&quot;"/>
@@ -141,9 +141,9 @@
     <tr:outputText value="Properties of Interactor B"/>
     <tr:outputText value="No"/>
     <iav:queryLink value="properties:&quot;IPR011527&quot;"/>
-
+-->
     <tr:outputText value="properties"/>
-    <tr:outputText value="Properties of Interactor A and B (note that this field also contains parent terms of ontology terms of GO, InterPro and PSI-MI)"/>
+    <tr:outputText value="Properties of Interactor A or B (note that this field also contains parent terms of ontology terms of GO, InterPro and PSI-MI)"/>
     <tr:outputText value="Yes"/>
     <iav:queryLink value="properties:&quot;1GQ5&quot;"/>
 
@@ -155,27 +155,17 @@
     <tr:outputText value="dataset"/>
     <tr:outputText value="Dataset name(s)"/>
     <tr:outputText value="Yes"/>
-    <iav:queryLink value="dataset:drugbank"/>
+    <iav:queryLink value="dataset:Apoptosis"/>
 
-    <tr:outputText value="experimentalRoleA"/>
-    <tr:outputText value="Experimental role(s) interactor A"/>
+    <tr:outputText value="experimentalRole"/>
+    <tr:outputText value="Experimental role(s) interactor A or interactor B"/>
     <tr:outputText value="No"/>
-    <iav:queryLink value="experimentalRoleA:drug"/>
+    <iav:queryLink value="experimentalRole:prey"/>
 
-    <tr:outputText value="experimentalRoleB"/>
-    <tr:outputText value="Experimental role(s) interactor B"/>
+    <tr:outputText value="biologicalRole"/>
+    <tr:outputText value="Biological role(s) interactor A or interactor B"/>
     <tr:outputText value="No"/>
-    <iav:queryLink value="experimentalRoleB:&quot;drug target&quot;"/>
-
-    <tr:outputText value="biologicalRoleA"/>
-    <tr:outputText value="Biological role(s) interactor A"/>
-    <tr:outputText value="No"/>
-    <iav:queryLink value="biologicalRoleA:&quot;enzyme target&quot;"/>
-
-    <tr:outputText value="biologicalRoleB"/>
-    <tr:outputText value="Biological role(s) interactor B"/>
-    <tr:outputText value="No"/>
-    <iav:queryLink value="biologicalRoleB:enzyme"/>
+    <iav:queryLink value="biologicalRole:enzyme"/>
 
     <tr:outputText value="hostOrganism"/>
     <tr:outputText value="Host organism in which the interaction was detected"/>
