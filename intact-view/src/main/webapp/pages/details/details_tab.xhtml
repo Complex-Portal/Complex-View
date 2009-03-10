@@ -18,7 +18,7 @@
     <c:set var="interactionCount" value="#{fn:length(experiment.interactions)}" />
     <tr:panelHeader text="Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})">
 
-        <tr:panelFormLayout inlineStyle="width:100%">
+        <tr:panelFormLayout inlineStyle="width:100%" >
             <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
                 <tr:outputText value="#{experiment.ac}"/>
             </tr:panelLabelAndMessage>
