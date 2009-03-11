@@ -41,6 +41,8 @@ import psidev.psi.mi.xml.converter.ConverterException;
 import psidev.psi.mi.xml.model.EntrySet;
 import psidev.psi.mi.xml.PsimiXmlWriter;
 import psidev.psi.mi.xml.PsimiXmlVersion;
+import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
+import psidev.psi.mi.xml.stylesheets.XslTransformException;
 import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
@@ -198,9 +200,10 @@ public class BinaryInteractionsExporter {
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
 
         try {
-            transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
-        } catch (TransformerException e) {
-            throw new IntactViewException("Problem transforming XML to HTML", e);
+            XslTransformerUtils.viewPsiMi25( bais, os );
+            //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
+        }  catch ( XslTransformException e ) {
+            throw new IntactViewException("Problem transforming XML to HTML(XslTransformException)", e);
         }
     }
 

@@ -3,7 +3,7 @@
                 xmlns:psi="net:sf:psidev:mi"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-
+    
 <!--
 @id: $Id$
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -11,7 +11,7 @@ This XSLT-Script was designed for generating HTML out of a PSI-MI-XML-File,
 which satisfies MIF.xsd.
 Its only a visualisation and does not show all details included in PSI !
 
-The implementation is highly recursive - a lot of templates are used at
+The implementation is highly recursive - a lot of templates are used at 
 different Levels.
 This XSLT-Script was developed and tested using SAXON 6.5.2.
 
@@ -35,10 +35,9 @@ Notes:
             media-type="text/html"
             standalone="yes"/>
 
-<xsl:param name="base" select="'http://psidev.sourceforge.net'"/>
+<xsl:param name="base" select="'http://psidev.info'"/>
 
 <xsl:param name="word.wrap" select="10"/>
-<!--xsl:param name="word.sep"><br/></xsl:param-->
 <xsl:param name="word.sep"  select="' '"/>
 
 <xsl:param name="swissProtUrl"
@@ -59,6 +58,9 @@ Notes:
            select="'http://www.drugbank.ca/drugs/'"/>
 <xsl:param name="pubchemUrl"
            select="'http://www.ncbi.nlm.nih.gov/sites/entrez?db=pccompound&amp;term='"/>
+<xsl:param name="pdbUrl"
+           select="'http://www.rcsb.org/pdb/explore/explore.do?structureId='"/>
+'"/>
 
 
 <xsl:template match="psi:entrySet">
@@ -101,21 +103,21 @@ Notes:
             </style>
         </head>
         <body>
-            <div id="header">
-                <a href="{$base}">
-                    <img src="{$base}/images/psi.gif" border="0" align="left"/>
-                </a>
-                <a href="http://www.hupo.org/">
-                    <img src="{$base}/images/hupo.gif" border="0" align="right"/>
-                </a>
-                <h2 align="center">
-                    <a href="{$base}">Proteomics Standards Initiative</a>
-                </h2>
-                <h2 align="center">
-                    Molecular Interaction Version
-                    <xsl:value-of select="concat(@level, '.', @version)"/>
-                </h2>
-            </div>
+            <!--<div id="header">-->
+                <!--<a href="{$base}">-->
+                    <!--<img src="{$base}/images/psi.gif" border="0" align="left"/>-->
+                <!--</a>-->
+                <!--<a href="http://www.hupo.org/">-->
+                    <!--<img src="{$base}/images/hupo.gif" border="0" align="right"/>-->
+                <!--</a>-->
+                <!--<h2 align="center">-->
+                    <!--<a href="{$base}">Proteomics Standards Initiative</a>-->
+                <!--</h2>-->
+                <!--<h2 align="center">-->
+                    <!--Molecular Interaction Version-->
+                    <!--<xsl:value-of select="concat(@level, '.', @version)"/>-->
+                <!--</h2>-->
+            <!--</div>-->
             <xsl:apply-templates/>
         </body>
     </html>
@@ -127,6 +129,7 @@ Notes:
 
 <!-- TODO: find out why matching elements with no name (text nodes?) -->
 <xsl:template match="node()" mode="title">
+    <xsl:comment><xsl:value-of select="name(.)"/></xsl:comment>
     <xsl:if test="string-length(name(.)) > 0">
         <xsl:comment><xsl:value-of select="name(.)"/></xsl:comment>
         <div id="{name(.)}">
@@ -156,7 +159,6 @@ Notes:
         <td class="normal-cell"><xsl:value-of select="text()"/></td>
     </tr>
 </xsl:template>
-
 
 <xsl:template match="psi:names">
     <tr>
@@ -189,7 +191,11 @@ Notes:
 </xsl:template>
 
 <xsl:template match="psi:bibref | psi:xref">
-    <xsl:apply-templates/>
+    <xsl:apply-templates>
+        <!-- Sort Xrefs by database-->
+        <xsl:sort select="@db" order="descending"/>
+        <xsl:sort select="@refType"/>
+    </xsl:apply-templates>
 </xsl:template>
 
 <xsl:template match="psi:primaryRef | psi:secondaryRef">
@@ -199,7 +205,7 @@ Notes:
         </xsl:variable>
         <td class="table-title">
             <xsl:value-of select="@db"/>
-            <xsl:apply-templates select="@version"/>
+            <!--<xsl:apply-templates select="@version"/>-->
         </td>
         <td class="normal-cell">
             <xsl:choose>
@@ -214,6 +220,11 @@ Notes:
                 </xsl:otherwise>
             </xsl:choose>
             <xsl:apply-templates select="@secondary"/>
+            <xsl:choose>
+                <xsl:when test="@refType">
+                    <font color="lightgray"> [<xsl:apply-templates select="@refType"/>]</font>
+                </xsl:when>
+            </xsl:choose>
         </td>
     </tr>
 </xsl:template>
@@ -252,6 +263,9 @@ Notes:
         <xsl:when test="@db = 'drugbank' or @dbAc = 'MI:2002'">
             <xsl:value-of select="concat($drugbankUrl, @id)"/>
         </xsl:when>
+        <xsl:when test="@db = 'rcsb pdb' or @dbAc = 'MI:0460'">
+            <xsl:value-of select="concat($pdbUrl, @id)"/>
+        </xsl:when>
     </xsl:choose>
 </xsl:template>
 
@@ -269,11 +283,24 @@ Notes:
     </tr>
 </xsl:template>
 
+<!--<xsl:template match="psi:availabilityList">-->
+    <!--<tr>-->
+        <!--<td class="table-title">Availability</td>-->
+        <!--<td>-->
+            <!--<table cellspacing="0" style="border: 1px solid rgb(238, 238, 238);">-->
+                <!--<tbody>-->
+                    <!--<xsl:apply-templates/>-->
+                <!--</tbody>-->
+            <!--</table>-->
+        <!--</td>-->
+    <!--</tr>-->
+<!--</xsl:template>-->
 
 <xsl:template match="psi:availability">
     <tr>
+        <td class="table-title">Availability</td>
         <td class="normal-cell">
-            <a name="{@id}"><xsl:value-of select="@id"/></a>:
+            <a name="a{@id}"><xsl:value-of select="@id"/></a>:
             <xsl:value-of select="."/>
         </td>
     </tr>
@@ -352,7 +379,7 @@ Notes:
 
 <xsl:template match="psi:participant">
   <tr>
-      <td class="table-title">Participant #<xsl:value-of select="@id"/></td>
+      <td class="table-title"><a name="p{@id}">Participant #<xsl:value-of select="@id"/></a></td>
       <td class="normal-cell">
         <table style="border: 1px solid #eee" cellspacing="1">
             <tr>
@@ -369,6 +396,7 @@ Notes:
             </tr>
             <xsl:apply-templates select="psi:featureList/psi:feature"/>
             <xsl:apply-templates select="psi:hostOrganismList/psi:hostOrganism"/>
+            <xsl:apply-templates select="psi:parameterList"/>
         </table>
       </td>
   </tr>
@@ -389,7 +417,7 @@ Notes:
 <xsl:template match="psi:feature">
     <tr>
         <td class="table-title">
-            Feature #<xsl:value-of select="@id"/>
+            <a name="f{@id}">Feature #<xsl:value-of select="@id"/></a>
         </td>
         <td class="normal-cell">
             <xsl:apply-templates select="psi:featureType/psi:names/psi:shortLabel"/>
@@ -408,18 +436,23 @@ Notes:
 </xsl:template>
 
 <xsl:template match="psi:experimentRef">
-    <td class="normal-cell">
+    <!--<td class="normal-cell">-->
         <a href="#e{.}">
             <xsl:apply-templates select="/psi:entrySet/psi:entry/psi:experimentList/psi:experimentDescription[@id = current()/text()]"
                                  mode="ref">
                 <xsl:with-param name="label" select="'Experiment'"/>
             </xsl:apply-templates>
         </a>
-    </td>
+    <!--</td>-->
 </xsl:template>
 
 <xsl:template match="psi:availabilityRef">
-    <tr><td class="normal-cell"><a href="#a{.}"><xsl:value-of select="."/></a></td></tr>
+    <tr>
+        <td class="table-title">Availability</td>
+        <td class="normal-cell">
+            <a href="#a{.}"><xsl:value-of select="."/></a>
+        </td>
+    </tr>
 </xsl:template>
 
 <xsl:template match="psi:interactorRef" mode="participant">
@@ -488,6 +521,66 @@ Notes:
             <xsl:with-param name="title" select="'Interactor Type'"/>
         </xsl:apply-templates>
     </tr>
+</xsl:template>
+
+<xsl:template match="psi:parameterList">
+    <tr>
+        <td class="table-title">Parameters</td>
+        <td>
+            <table cellspacing="0" style="border: 1px solid rgb(238, 238, 238);">
+                <tbody>
+                    <xsl:apply-templates/>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</xsl:template>
+
+<xsl:template match="psi:parameter">
+    <xsl:param name="term" select="@term"/>
+    <xsl:param name="unit" select="@unit"/>
+    <xsl:param name="pbase" select="@base"/>
+    <xsl:param name="factor" select="@factor"/>
+    <xsl:param name="exponent" select="@exponent"/>
+    <xsl:param name="uncertainty" select="@uncertainty"/>
+
+    <tr>
+        <td class="table-title"><xsl:value-of select="$term"/>:</td>
+        <td class="normal-cell">
+
+            <xsl:value-of select="$factor"/>
+            <xsl:choose>
+                <xsl:when test="$pbase">
+                    x <xsl:value-of select="$pbase"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    x 10
+                </xsl:otherwise>
+            </xsl:choose>
+
+            <xsl:choose>
+                <xsl:when test="$exponent">
+                    <sup><xsl:value-of select="$exponent"/></sup>
+                </xsl:when>
+                <xsl:otherwise>
+                    <sup>0</sup>
+                </xsl:otherwise>
+            </xsl:choose>
+
+            <xsl:choose>
+                <xsl:when test="$uncertainty">
+                    +/- <xsl:value-of select="$uncertainty"/>
+                </xsl:when>
+            </xsl:choose>
+
+            <xsl:choose>
+                <xsl:when test="$unit">
+                    (<xsl:value-of select="$unit"/>)
+                </xsl:when>
+            </xsl:choose>
+        </td>
+    </tr>
+
 </xsl:template>
 
 <xsl:template match="psi:organism | psi:hostOrganism">
