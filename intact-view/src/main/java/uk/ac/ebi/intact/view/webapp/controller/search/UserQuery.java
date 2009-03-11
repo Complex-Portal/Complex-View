@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -54,8 +57,8 @@ public class UserQuery {
     private String[] sources;
     private String[] expansions;
 
-    private List<String> goTerms;
-    private List<String> chebiTerms;
+    private String[] goTerms;
+    private String[] chebiTerms;
 
     //for sorting and ordering
     private static final String DEFAULT_SORT_COLUMN = "rigid";
@@ -67,8 +70,6 @@ public class UserQuery {
     private int pageSize = 30;
 
     public UserQuery() {
-        this.goTerms = new ArrayList<String>();
-        this.chebiTerms = new ArrayList<String>();
     }
 
     @PostConstruct
@@ -86,8 +87,12 @@ public class UserQuery {
         setSources(filterPopulator.getSources().toArray(new String[filterPopulator.getSources().size()]));
         setExpansions(filterPopulator.getExpansions().toArray(new String[filterPopulator.getExpansions().size()]));
 
-        chebiTerms.clear();
-        goTerms.clear();
+        chebiTerms = new String[0];
+        goTerms = new String[0];
+    }
+
+    public void clearSearchFilters(ActionEvent evt) {
+        clearFilters();
     }
 
     public SolrQuery createSolrQuery() {
@@ -220,11 +225,13 @@ public class UserQuery {
     }
 
     public void addGoTerm(ActionEvent evt) {
-        goTerms.add(JsfUtils.getFirstParamValue(evt));
+        String param = JsfUtils.getFirstParamValue(evt);
+        ArrayUtils.add(goTerms, param);
     }
 
     public void addChebiTerm(ActionEvent evt) {
-        chebiTerms.add(JsfUtils.getFirstParamValue(evt));
+        String param = JsfUtils.getFirstParamValue(evt);
+        ArrayUtils.add(chebiTerms, param);
     }
 
     public Collection<String> getDatasetsToInclude() {
@@ -250,6 +257,12 @@ public class UserQuery {
         }
 
         return query;
+    }
+
+    public void onOntologySearchCheckboxChanged(ValueChangeEvent evt) {
+        if (Boolean.FALSE.equals(evt.getNewValue())) {
+            ontologySearchQuery = null;
+        }
     }
 
     public String getSearchQuery() {
@@ -330,5 +343,39 @@ public class UserQuery {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String[] getGoTerms() {
+        return goTerms;
+    }
+
+    public void setGoTerms(String[] goTerms) {
+        this.goTerms = goTerms;
+    }
+
+    public String[] getChebiTerms() {
+        return chebiTerms;
+    }
+
+    public void setChebiTerms(String[] chebiTerms) {
+        this.chebiTerms = chebiTerms;
+    }
+
+    public List<SelectItem> getGoTermsSelectItems() {
+        return createSelectItems(goTerms);
+    }
+
+    public List<SelectItem> getChebiTermsSelectItems() {
+        return createSelectItems(chebiTerms);
+    }
+
+    private List<SelectItem> createSelectItems(String[] values) {
+        List<SelectItem> selectItems = new ArrayList<SelectItem>(values.length);
+
+        for (String term : values) {
+            selectItems.add(new SelectItem(term));
+        }
+
+        return selectItems;
     }
 }

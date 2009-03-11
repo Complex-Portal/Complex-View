@@ -43,7 +43,8 @@
                     <tr:spacer width="50px"/>
                 </f:facet>
 
-                <tr:treeTable var="otw" value="#{chebiBrowser.ontologyTreeModel}" rootNodeRendered="false" >
+                <tr:treeTable var="otw" value="#{chebiBrowser.ontologyTreeModel}" rootNodeRendered="false"
+                        expandAllEnabled="false">
 
                     <f:facet name="nodeStamp">
                         <tr:column>
@@ -67,8 +68,8 @@
                         </f:facet>
                         <tr:group>
                              <tr:commandLink text="#{otw.interactionCount}" rendered="#{otw.interactionCount > 0}"
-                                             actionListener="#{searchBean.doFilteredBinarySearch}"
-                                             action="interactions">
+                                              actionListener="#{userQuery.addChebiTerm}"
+                                             action="#{searchBean.doBinarySearchAction}">
                                  <f:param name="termId" value="#{otw.term.id}" />
                             </tr:commandLink>
 

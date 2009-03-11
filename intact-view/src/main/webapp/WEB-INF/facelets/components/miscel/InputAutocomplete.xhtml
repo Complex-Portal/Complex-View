@@ -177,7 +177,7 @@
             id="table" var="row" value="#{autocompleteResult}" rows="#{maxSuggestions == null? 20 : maxSuggestions}" width="100%" partialTriggers="action" varStatus="status">
             <tr:column>
                 <div id="#{jsTableId}#{status.index}" class="autocomplete-line" onmouseover="this.className='autocomplete-selected-line';"
-                    onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}');" >
+                    onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}'); return false; " >
 
                     <c:set var="#{var}" value="#{row}"/>
 

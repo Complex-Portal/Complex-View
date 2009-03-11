@@ -87,11 +87,11 @@
                                    locateVisibleFieldName="identifier"
                                    maxSuggestions="#{intactViewConfiguration.maxOntologySuggestions}"
                                    var="ontologyTerm">
-                   <tr:group>
-                       <tr:outputText value="#{ontologyTerm.identifier}" inlineStyle="font-weight:bold; color: #e65555"/>
-                       <tr:outputText value=" #{ontologyTerm.label}"/>
-                       <tr:outputText value=" (#{ontologyTerm.count})" inlineStyle="font-weight:bold; color: #00cc99"/>
-                   </tr:group>
+
+                   <span style="font-weight:bold; color: #e65555; display:inline;">#{ontologyTerm.identifier}</span>
+                   <span style="display:inline;">#{ontologyTerm.label}</span>
+                   <span style="font-weight:bold; color: #00cc99; display:inline;">(#{ontologyTerm.count})</span>
+ 
                </iam:inputAutocomplete>
 
               <f:facet name="help">
@@ -120,7 +120,6 @@
                 <f:facet name="end">
                     <tr:commandButton id="ontologySearchBtn"
                                       text="Search"
-                                      actionListener="#{userQuery.clearSearchFilters}"
                                       action="#{searchBean.doOntologySearchAction}"
                                       styleClass="submit_button"/>
                 </f:facet>

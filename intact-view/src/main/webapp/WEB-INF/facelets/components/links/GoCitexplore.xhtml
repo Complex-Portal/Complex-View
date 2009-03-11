@@ -10,7 +10,7 @@
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
-    <tr:goLink targetFrame="uniprot" text="#{(text != null)? text : query}"
+    <tr:goLink targetFrame="citexplore" text="#{(text != null)? text : query}"
                disabled="#{disabled != null? disabled : false}"
             destination="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=#{query}&amp;dataSource=MED">
         <ui:insert/>

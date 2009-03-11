@@ -30,7 +30,7 @@
           summary="Binary Interactions"
           emptyText="No interactions found matching the query."
           rows="#{userQuery.pageSize}" rowBandingInterval="1"
-          partialTriggers=":interactionResults:btnToogleProps  :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn :interactionResults:btnConfigureFilter">
+          partialTriggers=":interactionResults:btnToogleProps  :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn">
 
 <f:facet name="actions">
     <tr:panelHorizontalLayout>
@@ -58,7 +58,7 @@
                 <tr:selectItem label="MI-TAB (Expanded)" value="mitab_intact"/>
                 <tr:selectItem label="MI-XML 2.5(v2.53)" value="xml_2_53" disabled="#{searchBean.results.rowCount ge 1000}"/>
                 <tr:selectItem label="MI-XML 2.5(v2.54)" value="xml_2_54" disabled="#{searchBean.results.rowCount ge 1000}"/>
-                <tr:selectItem label="MI-XML 2.5(HTML view)" value="xml_html"
+                <tr:selectItem labelGG="MI-XML 2.5(HTML view)" value="xml_html"
                                disabled="#{searchBean.results.rowCount ge 1000}"/>
             </tr:selectOneChoice>
 
@@ -70,7 +70,7 @@
             <tr:commandButton id="btnConfigureColumn" text="Change Columns Displayed" action="dialog:configure.columns" partialSubmit="true" returnListener="#{configureColumn.handleReturn}"
                                      windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
 
-             <tr:commandButton id="btnConfigureFilter" text="Modify Filters" action="dialog:filters" partialSubmit="true" returnListener="#{searchBean.refreshWhenClosingDialog}"
+             <tr:commandButton text="Modify Filters" action="dialog:filters" partialSubmit="true" returnListener="#{searchBean.refreshWhenClosingDialog}"
                                      windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
                         
             <!--<tr:selectOneChoice id="listSortableColumns" label="Sort Rows By: " value="#{searchBean.userSortColumn}" autoSubmit="true" valueChangeListener="#{searchBean.userSort}">-->

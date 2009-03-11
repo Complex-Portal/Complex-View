@@ -28,10 +28,12 @@ import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.URLDecoder;
 
 /**
  * TODO comment that class header
@@ -85,7 +87,13 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
             solrQuery.addSortField(colSortEntry.getKey(), colSortEntry.getValue());
         }
 
-        if (log.isDebugEnabled()) log.debug("Fetching results: "+solrQuery);
+        if (log.isDebugEnabled()) {
+            try {
+                log.debug("Fetching results: "+ URLDecoder.decode(solrQuery.toString(), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
 
         IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
         result = searcher.search(solrQuery);
