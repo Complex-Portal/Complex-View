@@ -6,10 +6,10 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.UIXTable;
+import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.myfaces.trinidad.event.ReturnEvent;
-import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,8 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.view.webapp.controller.details.DetailsController;
+import uk.ac.ebi.intact.view.webapp.controller.moleculeview.MoleculeViewController;
 import uk.ac.ebi.intact.view.webapp.model.InteractorSearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
@@ -25,7 +27,6 @@ import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.component.UIComponent;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -71,6 +72,12 @@ public class SearchController extends JpaBaseController {
 
     @Autowired
     private SearchCache searchCache;
+
+    @Autowired
+    private DetailsController detailsController;
+
+    @Autowired
+    private MoleculeViewController moleculeViewController;
 
     private int totalResults;
     private int interactorTotalResults;
@@ -148,6 +155,12 @@ public class SearchController extends JpaBaseController {
         return "interactions";
     }
 
+    public String doNewBinarySearch() {
+        resetDetailControllers();
+        
+        return doBinarySearchAction();
+    }
+
     public void doBinarySearch(ActionEvent evt) {
         refreshComponent("mainPanels");
         doBinarySearchAction();
@@ -172,6 +185,16 @@ public class SearchController extends JpaBaseController {
         doBinarySearch( solrQuery );
 
         return "interactions";
+    }
+
+    public String doNewOntologySearch() {
+        resetDetailControllers();
+        return doOntologySearchAction();
+    }
+
+    private void resetDetailControllers() {
+        detailsController.setInteraction(null);
+        moleculeViewController.setInteractor(null);
     }
 
     public void doBinarySearch(SolrQuery solrQuery) {
