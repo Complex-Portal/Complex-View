@@ -275,7 +275,7 @@ function configuration()
 		/**
 		* REFERENCE SERVER
 		*/		
-			sequence_url[0] = ['dgi', proxy_url + '?t=' + timeout + '&m=sequence&q=' + query_id + '&s=${das.referenceserver.url}']; // UNIPROT REFERENCE SERVER
+			sequence_url[0] = ['intact', proxy_url + '?t=' + timeout + '&m=sequence&q=' + query_id + '&s=${das.referenceserver.url}']; // INTACT REFERENCE SERVER
 			//sequence_url[0] = ['uniprot', 'files/seq_A4_Human_uniprot02.xml']; // LOCAL SEQUENCE (just for testing purposes)
 					
 		/**
