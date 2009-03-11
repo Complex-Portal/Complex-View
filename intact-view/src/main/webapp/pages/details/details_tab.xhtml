@@ -124,40 +124,48 @@
     <c:set var="interaction" value="#{detailsBean.interaction}" />
     <tr:panelHeader text="Interaction">
 
-        <tr:panelFormLayout inlineStyle="width:100%;">
-            <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                <tr:outputText value="#{interaction.ac}"/>
-            </tr:panelLabelAndMessage>
+        <tr:panelHorizontalLayout>
 
-            <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                <tr:outputText value="#{interaction.shortLabel}"/>
-            </tr:panelLabelAndMessage>
+            <tr:panelFormLayout inlineStyle="width:100%;">
+                <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{interaction.ac}"/>
+                </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;">
-                <tr:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
-            </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{interaction.shortLabel}"/>
+                </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Type:" labelStyle="font-weight:bold;">
-                <ui:decorate template="/pages/details/cvPopup.xhtml">
-                    <ui:param name="cv" value="#{interaction.cvInteractionType}"/>
-                </ui:decorate>
-            </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
+                </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty interaction.xrefs}"
-                                     labelStyle="font-weight:bold;">
-                <ui:decorate template="/pages/details/xrefs.xhtml">
-                    <ui:param name="xrefs" value="#{interaction.xrefs}"/>
-                </ui:decorate>
-            </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Type:" labelStyle="font-weight:bold;">
+                    <ui:decorate template="/pages/details/cvPopup.xhtml">
+                        <ui:param name="cv" value="#{interaction.cvInteractionType}"/>
+                    </ui:decorate>
+                </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty interaction.annotations}"
-                                     labelStyle="font-weight:bold;">
-                <ui:decorate template="/pages/details/annotations.xhtml">
-                    <ui:param name="annotations" value="#{interaction.annotations}"/>
-                </ui:decorate>
-            </tr:panelLabelAndMessage>
+                <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty interaction.xrefs}"
+                                         labelStyle="font-weight:bold;">
+                    <ui:decorate template="/pages/details/xrefs.xhtml">
+                        <ui:param name="xrefs" value="#{interaction.xrefs}"/>
+                    </ui:decorate>
+                </tr:panelLabelAndMessage>
 
-        </tr:panelFormLayout>
+                <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty interaction.annotations}"
+                                         labelStyle="font-weight:bold;">
+                    <ui:decorate template="/pages/details/annotations.xhtml">
+                        <ui:param name="annotations" value="#{interaction.annotations}"/>
+                    </ui:decorate>
+                </tr:panelLabelAndMessage>
+
+            </tr:panelFormLayout>
+
+            <tr:panelBox text="Links" background="dark" inlineStyle="width:100%">
+                <tr:commandLink text="Find similar interactions" action="browse.complex" />
+            </tr:panelBox>
+
+        </tr:panelHorizontalLayout>
 
     </tr:panelHeader>
 

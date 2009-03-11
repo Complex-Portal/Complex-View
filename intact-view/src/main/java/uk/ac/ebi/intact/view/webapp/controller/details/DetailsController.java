@@ -44,7 +44,8 @@ import java.util.ArrayList;
 @Controller( "detailsBean" )
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-@ViewController(viewIds = {"/pages/details/details.xhtml"})
+@ViewController(viewIds = {"/pages/details/details.xhtml",
+                           "/pages/details/complex/complex.xhtml"})
 public class DetailsController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog( DetailsController.class );

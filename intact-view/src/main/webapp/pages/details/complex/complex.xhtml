@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsp="http://java.sun.com/JSP/Page"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+
+                template="/main.xhtml">
+
+    <ui:param name="disclosedTabName" value="details"/>
+
+    <ui:define name="detailsTabContent">
+
+        <tr:spacer height="5"/>
+
+        <tr:panelHorizontalLayout valign="middle">
+            <tr:image source="/images/back_arrow.gif" />
+            <tr:commandLink text="Back to Interaction Details" action="details"/>
+        </tr:panelHorizontalLayout>
+
+        <tr:panelHeader text="Similarity search for complex interaction">
+
+            <c:set var="interaction" value="#{detailsBean.interaction}" />
+
+            <tr:panelFormLayout inlineStyle="width:100%">
+
+                <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{interaction.ac}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{interaction.shortLabel}"/>
+                </tr:panelLabelAndMessage>
+
+            </tr:panelFormLayout>
+
+        </tr:panelHeader>
+    
+    </ui:define>
+
+</ui:composition>
