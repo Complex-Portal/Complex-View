@@ -10,6 +10,7 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
 
                 template="/main.xhtml">
 
@@ -20,14 +21,13 @@
         <tr:spacer height="5"/>
 
         <tr:panelHorizontalLayout valign="middle">
-            <tr:image source="/images/back_arrow.gif" />
+            <tr:image source="/images/back_arrow.gif"/>
             <tr:commandLink text="Back to Interaction Details" action="details"/>
         </tr:panelHorizontalLayout>
 
         <tr:panelHeader text="Similarity search for complex interaction">
 
-            <c:set var="interaction" value="#{detailsBean.interaction}" />
-
+            <c:set var="interaction" value="#{detailsBean.interaction}"/>
             <tr:panelFormLayout inlineStyle="width:100%">
 
                 <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
@@ -38,10 +38,130 @@
                     <tr:outputText value="#{interaction.shortLabel}"/>
                 </tr:panelLabelAndMessage>
 
+                <tr:panelLabelAndMessage label="Participant count:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{fn:length( interaction.components )}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Similar interaction count:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{fn:length( matrix.similarInteractions )}"/>
+                </tr:panelLabelAndMessage>
+
             </tr:panelFormLayout>
 
+            <br/>
+
+            <c:set var="matrix" value="#{detailsBean.similarInteractionMatrix}"/>
+
+
+            <trh:tableLayout cellSpacing="3" cellPadding="2">
+
+                <!-- Table Header-->
+                <trh:rowLayout>
+                    <trh:cellFormat>Interactions</trh:cellFormat>
+
+                    <tr:iterator value="#{matrix.members}" var="member" rows="0">
+
+                        <trh:cellFormat>
+                            <tr:outputText value="#{member.shortLabel}" shortDesc="#{member.fullName}" />
+                        </trh:cellFormat>
+
+                        </tr:iterator>
+
+                    <trh:cellFormat>Other participants</trh:cellFormat>
+                </trh:rowLayout>
+
+                <!-- Table Body-->
+                <tr:iterator value="#{matrix.similarInteractions}" var="si" rows="0">
+                    <trh:rowLayout>
+                        <trh:cellFormat>
+                            <tr:commandLink action="details">
+                                <tr:outputText value="#{si.shortLabel}" shortDesc="#{si.fullName}" />
+                                <f:setPropertyActionListener value="#{si.ac}" target="#{detailsBean.interactionAc}"/>
+                            </tr:commandLink>
+                        </trh:cellFormat>
+
+                        <tr:iterator value="#{matrix.members}" var="member" rows="0">
+
+                            <trh:cellFormat halign="center">
+
+                                <c:set var="display" value="#{iam:isMemberPresent( si, member )}" />
+
+                                <tr:outputText value=" " rendered="#{!display}" />
+
+                                <tr:image source="/images/ok.gif" rendered="#{display}"
+                                          shortDesc="This molecule is present in this interaction"/>
+
+                            </trh:cellFormat>
+
+                        </tr:iterator>
+
+                        <trh:cellFormat>
+                            <iam:collapsibleIterator id="mtx_participant_#{status.index}"
+                                                     disclosed="false"
+                                                     value="#{si.others}"
+                                                     maxShown="3">
+
+                                <!-- TODO link to Dasty2 -->
+                                <tr:outputText value="#{item.shortLabel}" shortDesc="#{item.fullName}"/>
+
+                            </iam:collapsibleIterator>
+                        </trh:cellFormat>
+                    </trh:rowLayout>
+                </tr:iterator>
+            </trh:tableLayout>
+
+
+
+
+
+            <!--<tr:table var="si" value="#{matrix.similarInteractions}">-->
+
+                <!--<tr:column>-->
+
+                    <!--<f:facet name="header">-->
+                        <!--<tr:outputText value="Interactions" />-->
+                    <!--</f:facet>-->
+
+                    <!--<tr:commandLink action="details">-->
+                        <!--<tr:outputText value="#{si.shortLabel}" shortDesc="#{si.fullName}" />-->
+                        <!--<f:setPropertyActionListener value="#{si.ac}" target="#{detailsBean.interactionAc}"/>-->
+                    <!--</tr:commandLink>-->
+
+                <!--</tr:column>-->
+
+                <!--<tr:iterator value="#{matrix.members}" var="member">-->
+
+                    <!--<tr:column headerText="#{member.shortLabel}">-->
+
+                        <!--<f:facet name="header">-->
+                             <!--TODO link to Dasty2-->
+                            <!--<tr:outputText value="#{member.shortLabel}" shortDesc="#{member.fullName}" />-->
+                        <!--</f:facet>-->
+
+                        <!--<tr:image source="/images/ok.gif" rendered="#{iam:isMemberPresent( si, member )}"-->
+                                  <!--shortDesc="This molecule is present in this interaction"/>-->
+
+                    <!--</tr:column>-->
+
+                <!--</tr:iterator>-->
+
+                <!--<tr:column headerText="Other participant(s)">-->
+                    <!--<iam:collapsibleIterator id="mtx_particpant_#{status.index}"-->
+                                             <!--disclosed="false"-->
+                                             <!--value="#{si.others}"-->
+                                             <!--maxShown="5">-->
+
+                        <!-- TODO link to Dasty2 -->
+                        <!--<tr:outputText value="#{item.shortLabel}" shortDesc="#{item.fullName}"/>-->
+
+                    <!--</iam:collapsibleIterator>-->
+                <!--</tr:column>-->
+
+            <!--</tr:table>-->
+
+
         </tr:panelHeader>
-    
+
     </ui:define>
 
 </ui:composition>
