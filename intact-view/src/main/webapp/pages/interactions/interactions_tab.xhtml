@@ -113,8 +113,9 @@
                  </trh:cellFormat>
              </tr:iterator>
             <tr:iterator var="cvXref" value="#{binaryInteraction.experimentalRolesInteractorA}" rows="-1">
-                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
-                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 <c:set var="cvXrefText" value="#{cvXref.text eq 'unspecified role' ?'unspecified exprole': cvXref.text}"/>
+                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXrefText].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                 <tr:outputText value="#{iconGenerator.colourMap[cvXrefText].initials}" shortDesc="#{cvXref.text}"/>
                  </trh:cellFormat>
              </tr:iterator>
              <tr:iterator var="cvXref" value="#{binaryInteraction.biologicalRolesInteractorA}" rows="-1">
@@ -179,8 +180,9 @@
                  </trh:cellFormat>
              </tr:iterator>
              <tr:iterator var="cvXref" value="#{binaryInteraction.experimentalRolesInteractorB}" rows="-1">
-                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
-                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 <c:set var="cvXrefText" value="#{cvXref.text eq 'unspecified role' ?'unspecified exprole': cvXref.text}"/>
+                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXrefText].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                 <tr:outputText value="#{iconGenerator.colourMap[cvXrefText].initials}" shortDesc="#{cvXref.text}"/>
                  </trh:cellFormat>
              </tr:iterator>
              <tr:iterator var="cvXref" value="#{binaryInteraction.biologicalRolesInteractorB}" rows="-1">

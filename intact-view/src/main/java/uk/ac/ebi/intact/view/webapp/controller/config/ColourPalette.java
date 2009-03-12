@@ -82,7 +82,7 @@ public class ColourPalette {
         if (redIndex == lenght()) {
             redIndex = 0;
         }
-        String colour = getGreenHex(redIndex);
+        String colour = getRedHex(redIndex);
         redIndex++;
 
         return colour;
