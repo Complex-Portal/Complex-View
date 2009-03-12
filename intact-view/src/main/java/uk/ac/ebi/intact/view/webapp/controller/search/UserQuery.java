@@ -118,7 +118,8 @@ public class UserQuery {
     }
 
     public String getDisplayQuery() {
-        return searchQuery;
+        return ontologySearchQuery != null ? ontologySearchQuery : searchQuery;
+        //return searchQuery;
     }
 
     public String getHierarchViewImageUrl() {

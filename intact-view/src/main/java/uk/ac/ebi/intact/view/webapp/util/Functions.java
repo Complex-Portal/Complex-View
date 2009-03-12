@@ -35,6 +35,8 @@ import java.util.Map;
  */
 public final class Functions {
     private static final String MI_TO_XREF_URL_MAP_PARAM = Functions.class+".MI_TO_XREF_URL_MAP";
+    private static final String PUBMED_NCBI_URL="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=${ac}&dopt=Abstract";
+    private static final String CITEXPLORE_URL="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=${ac}&dataSource=MED";
 
     private Functions() {
     }
@@ -112,6 +114,9 @@ public final class Functions {
 
             if (annotation != null) {
                 xrefUrl = annotation.getAnnotationText();
+            }
+            if(PUBMED_NCBI_URL.equals( xrefUrl )){
+                xrefUrl = CITEXPLORE_URL;
             }
         }
 
