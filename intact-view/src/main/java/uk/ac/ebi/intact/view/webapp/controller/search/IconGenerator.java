@@ -71,7 +71,9 @@ public class IconGenerator extends JpaBaseController{
 
         for (String label : expRoleLabels) {
             String colour = colourPalette.getNextRed();
-
+            if("unspecified role".equals( label )){
+                label = "unspecified exprole";
+            }
             colourMap.put(label, new ColouredCv(label, colour));
         }
 
@@ -116,6 +118,9 @@ public class IconGenerator extends JpaBaseController{
         private ColouredCv(String text, String colourHex) {
             this.text = text;
             this.colourHex = colourHex;
+            if("prey".equals( text )){
+            text = "PY";
+            }
             this.initials = text.substring(0,2).toUpperCase();
         }
 
