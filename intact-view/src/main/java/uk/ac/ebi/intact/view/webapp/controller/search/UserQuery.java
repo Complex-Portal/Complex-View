@@ -114,12 +114,20 @@ public class UserQuery {
         addFilteredQuery(query, "source", filterPopulator.getSources(), sources);
         addFilteredQuery(query, "expansion", filterPopulator.getExpansions(), expansions);
 
+        //addFilteredQuery(query, "go_expanded_id", goTerms);
+        //addFilteredQuery(query, "chebi_expanded_id", chebiTerms);
+
         return query;
     }
 
     public String getDisplayQuery() {
-        return ontologySearchQuery != null ? ontologySearchQuery : searchQuery;
-        //return searchQuery;
+        String query = ontologySearchQuery != null ? ontologySearchQuery : searchQuery;
+
+        if ("*:*".equals(query)) {
+            query = "*";
+        }
+
+        return query;
     }
 
     public String getHierarchViewImageUrl() {
@@ -172,6 +180,12 @@ public class UserQuery {
         final String[] filterQueries = createSolrQuery().getFilterQueries();
 
         return (filterQueries != null && filterQueries.length > 0);
+    }
+
+    private void addFilteredQuery(SolrQuery query, String field, String[] items) {
+        if (items.length == 0) return;
+        
+        query.addFilterQuery("+"+field+":"+createLuceneQuery(Arrays.asList(items)));
     }
 
     private void addFilteredQuery(SolrQuery query, String field, Collection<String> allItems, String[] selectedItems) {
@@ -281,7 +295,6 @@ public class UserQuery {
 
     public void setOntologySearchQuery(String ontologySearchQuery) {
         this.ontologySearchQuery = ontologySearchQuery;
-        this.searchQuery = null;
     }
 
 

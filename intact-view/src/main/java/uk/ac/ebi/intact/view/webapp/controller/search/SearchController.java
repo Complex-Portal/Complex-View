@@ -157,6 +157,8 @@ public class SearchController extends JpaBaseController {
 
     public String doNewBinarySearch() {
         resetDetailControllers();
+
+        userQuery.setOntologySearchQuery(null);
         
         return doBinarySearchAction();
     }
