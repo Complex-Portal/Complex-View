@@ -105,7 +105,11 @@ public class JsfUtils
         return StringUtils.join( new String[]{a, b, c, d}, null );
     }
 
-//    public static String concat( String... a ) {
-//        return StringUtils.join( a, null );
-//    }
+    /**
+     * makes available the current time.
+     * @return
+     */
+    public static long currentTimeMillis() {
+        return System.currentTimeMillis();
+    }
 }

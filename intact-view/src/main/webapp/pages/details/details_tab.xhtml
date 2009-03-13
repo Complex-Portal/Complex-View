@@ -162,12 +162,29 @@
             </tr:panelFormLayout>
 
             <tr:panelBox text="Links" background="dark" inlineStyle="width:100%">
-                <tr:commandLink text="Find similar interactions" action="browse.complex" />
+                <tr:panelHorizontalLayout>
+
+                    <tr:commandLink text="Find similar interactions" action="browse.complex"
+                                    onclick="document.getElementById('progress_image').style.display = 'block';"/>
+
+                    <tr:image id="progress_image" inlineStyle="display:none;" source="/images/wait_red_indicator.gif"/>
+
+                </tr:panelHorizontalLayout>
             </tr:panelBox>
 
         </tr:panelHorizontalLayout>
 
     </tr:panelHeader>
+
+    <tr:iterator value="#{interaction.components}" var="c" >
+        <tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"
+                                 value="#{interaction.components}"
+                                 rows="30" rangeChangeListener="#{detailsBean.rangeChanged}"
+                                 rendered="#{searchBean.results.rowCount gt userQuery.pageSize}"/>
+        <tr:outputText value="c.ac"/>
+        <br/>
+    </tr:iterator>
+
 
 
     <c:set var="participantCount" value="#{fn:length(interaction.components)}" />

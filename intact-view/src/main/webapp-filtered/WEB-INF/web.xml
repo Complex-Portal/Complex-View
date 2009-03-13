@@ -387,7 +387,7 @@
         <url-pattern>*.dasProxy</url-pattern>
     </servlet-mapping>
 
-    <!-- Binary Search Servlets -->
+    <!-- Binary Search Servlet -->
     <servlet>
         <servlet-name>export</servlet-name>
         <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.ExportServlet</servlet-class>
@@ -398,7 +398,7 @@
         <url-pattern>/export</url-pattern>
     </servlet-mapping>
 
-<!-- Cytoscape Servlets -->
+    <!-- Cytoscape Servlet -->
     <servlet>
         <servlet-name>exportCytoscape</servlet-name>
         <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.cytoscape.CytoscapeServlet</servlet-class>
@@ -409,6 +409,16 @@
         <url-pattern>/exportCytoscape</url-pattern>
     </servlet-mapping>
 
+    <!-- Table Header Servlet -->
+    <servlet>
+        <servlet-name>tableHeader</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.TableHeaderServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>tableHeader</servlet-name>
+        <url-pattern>/tableHeader</url-pattern>
+    </servlet-mapping>
 
     <!-- Welcome files -->
     <welcome-file-list>

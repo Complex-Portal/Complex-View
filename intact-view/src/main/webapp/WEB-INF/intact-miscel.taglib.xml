@@ -50,4 +50,10 @@
        <function-signature>boolean isMemberPresent( uk.ac.ebi.intact.view.webapp.controller.details.complex.SimilarInteraction, uk.ac.ebi.intact.view.webapp.controller.details.complex.SimpleInteractor)</function-signature>
     </function>
 
+    <function>
+       <function-name>currentTimeMillis</function-name>
+       <function-class>uk.ac.ebi.intact.view.webapp.util.JsfUtils</function-class>
+       <function-signature>long currentTimeMillis()</function-signature>
+    </function>
+
 </facelet-taglib>

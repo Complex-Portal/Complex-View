@@ -21,6 +21,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.trinidad.event.RangeChangeEvent;
+import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,7 @@ import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimpleInteractor;
 import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimilarInteraction;
 import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimilarInteractionsMatrix;
+import uk.ac.ebi.intact.view.webapp.controller.details.complex.TableHeaderController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.context.IntactContext;
@@ -170,7 +173,19 @@ public class DetailsController extends JpaBaseController {
     ///////////////////
     // Complex View
 
+    public void rangeChanged( RangeChangeEvent evt) {
+        final int newStart = evt.getNewStart();
+        System.out.println( "newStart = " + newStart );
+//        UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("tableid");
+//        table.setFirst(evt.getNewStart());
+
+//        refreshTable(INTERACTIONS_TABLE_ID, results);
+    }
+
     private SimilarInteractionsMatrix matrix;
+
+    @Autowired
+    private TableHeaderController tableHeaderController;
 
     public SimilarInteractionsMatrix getSimilarInteractionMatrix() {
 
@@ -261,6 +276,9 @@ public class DetailsController extends JpaBaseController {
                                                                     interaction.getFullName() ),
                                               similarInteractions,
                                               orderedReferenceMembers );
+
+        tableHeaderController.setLabels( orderedReferenceMembers );
+
         return matrix;
     }
 
