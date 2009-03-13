@@ -328,8 +328,10 @@ public class SearchController extends JpaBaseController {
         resetSelection(tableName);
     }
 
-    public void resetSearch(ActionEvent event) {
+    public String resetSearch() {
         this.userQuery.reset();
+        this.userQuery.setSearchQuery( "*:*" );
+        return doNewBinarySearch();
     }
 
     public void userSort( ValueChangeEvent event ) {
