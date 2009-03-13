@@ -110,6 +110,18 @@ af|panelTabbed::body af|panelHeader::level-one
     padding:0pt;
 }
 
+/** panelForLayout **/
+/** -------------- **/
+
+af|panelFormLayout::content-cell {
+    white-space:normal;
+}
+
+af|panelFormLayout::label-cell {
+    font-weight:bold;
+}
+
+
 /** panelBox    **/
 /** ----------- **/
 

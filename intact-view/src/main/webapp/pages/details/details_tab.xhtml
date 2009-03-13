@@ -18,43 +18,47 @@
     <c:set var="interactionCount" value="#{fn:length(experiment.interactions)}" />
     <tr:panelHeader text="Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})">
 
-        <tr:panelFormLayout inlineStyle="width:100%" >
-            <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+        <!--<trh:tableLayout>-->
+            <!--<trh:rowLayout>-->
+                <!--<trh:cellFormat></trh:cellFormat>-->
+            <!--</trh:rowLayout>-->
+        <!--</trh:tableLayout>-->
+
+        <tr:panelFormLayout inlineStyle="width:80%" >
+            <tr:panelLabelAndMessage label="Accession:">
                 <tr:outputText value="#{experiment.ac}"/>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+            <tr:panelLabelAndMessage label="Name:">
                 <tr:outputText value="#{experiment.shortLabel}" />
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Host organism:" labelStyle="font-weight:bold;">
+            <tr:panelLabelAndMessage label="Host organism:">
                 <ui:decorate template="/pages/details/biosourcePopup.xhtml">
                     <ui:param name="biosource" value="#{experiment.bioSource}"/>
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Interaction Detection Method:" labelStyle="font-weight:bold;">
+            <tr:panelLabelAndMessage label="Interaction Detection Method:">
                 <ui:decorate template="/pages/details/cvPopup.xhtml">
                     <ui:param name="cv" value="#{experiment.cvInteraction}"/>
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Participant Identification Method:" labelStyle="font-weight:bold;">
+            <tr:panelLabelAndMessage label="Participant Identification Method:">
                 <ui:decorate template="/pages/details/cvPopup.xhtml">
                     <ui:param name="cv" value="#{experiment.cvIdentification}"/>
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
-            <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty experiment.xrefs}"
-                                     labelStyle="font-weight:bold;">
+            <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty experiment.xrefs}">
                 <ui:decorate template="/pages/details/xrefs.xhtml">
                     <ui:param name="xrefs" value="#{experiment.xrefs}"/>
                 </ui:decorate>
             </tr:panelLabelAndMessage>
 
             <c:set var="experimentAnnotations" value="#{detailsBean.experimentAnnotations}"/>
-            <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty experimentAnnotations}"
-                                     labelStyle="font-weight:bold;">
+            <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty experimentAnnotations}">
                 <ui:decorate template="/pages/details/annotations.xhtml">
                     <ui:param name="annotations" value="#{experimentAnnotations}"/>
                 </ui:decorate>
@@ -69,129 +73,140 @@
     <c:set var="pmid" value="#{iaf:getPubmedId(experiment)}" />
     <tr:panelHeader text="Publication" inlineStyle="width:100%;">
 
-        <tr:panelHorizontalLayout valign="bottom">
+        <trh:tableLayout width="100%">
+            <trh:rowLayout>
+                <trh:cellFormat width="80%">
+                    <tr:panelFormLayout >
 
-            <tr:panelFormLayout inlineStyle="width:1000px;">
+                        <tr:panelLabelAndMessage label="Author List:" >
+                            <tr:outputText value="#{detailsBean.authorList}"/>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Author List:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{detailsBean.authorList}"/>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Title:" >
+                            <tr:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Title:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Journal:" >
+                            <tr:outputText value="#{detailsBean.journal}"/>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Journal:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{detailsBean.journal}"/>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Year of Publication:" >
+                            <tr:outputText value="#{detailsBean.publicationYear}"/>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Year of Publication:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{detailsBean.publicationYear}"/>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="PubMed Id:" rendered="#{pmid != null}"
+                                                >
+                            <tr:outputText value="#{pmid}"/>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="PubMed Id:" rendered="#{pmid != null}"
-                                         labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{pmid}"/>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty publication.xrefs}">
+                            <ui:decorate template="/pages/details/xrefs.xhtml">
+                                <ui:param name="xrefs" value="#{publication.xrefs}"/>
+                            </ui:decorate>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty publication.xrefs}"
-                                         labelStyle="font-weight:bold;">
-                    <ui:decorate template="/pages/details/xrefs.xhtml">
-                        <ui:param name="xrefs" value="#{publication.xrefs}"/>
-                    </ui:decorate>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty publication.annotations}">
+                            <ui:decorate template="/pages/details/annotations.xhtml">
+                                <ui:param name="annotations" value="#{publication.annotations}"/>
+                            </ui:decorate>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty publication.annotations}"
-                                         labelStyle="font-weight:bold;">
-                    <ui:decorate template="/pages/details/annotations.xhtml">
-                        <ui:param name="annotations" value="#{publication.annotations}"/>
-                    </ui:decorate>
-                </tr:panelLabelAndMessage>
+                    </tr:panelFormLayout>
 
-            </tr:panelFormLayout>
+                </trh:cellFormat>
 
-            <tr:panelBox text="Links" background="dark" inlineStyle="width:100%">
-                <tr:commandLink text="Show all interactions" action="#{searchBean.doBinarySearchAction}">
-                    <f:setPropertyActionListener value="#{pmid}" target="#{userQuery.searchQuery}"/>
-                </tr:commandLink>
-            </tr:panelBox>
+                <trh:cellFormat width="20%" halign="right" valign="top">
 
-        </tr:panelHorizontalLayout>
-                
+                    <tr:panelBox text="Links">
+                        <tr:commandLink text="Show all interactions" action="#{searchBean.doBinarySearchAction}">
+                            <f:setPropertyActionListener value="#{pmid}" target="#{userQuery.searchQuery}"/>
+                        </tr:commandLink>
+                    </tr:panelBox>
+
+                </trh:cellFormat>
+            </trh:rowLayout>
+        </trh:tableLayout>
+
     </tr:panelHeader>
 
     
     <c:set var="interaction" value="#{detailsBean.interaction}" />
     <tr:panelHeader text="Interaction">
 
-        <tr:panelHorizontalLayout>
+        <trh:tableLayout width="100%">
+            <trh:rowLayout>
+                <trh:cellFormat width="80%">
+                    <tr:panelFormLayout>
+                        <tr:panelLabelAndMessage label="Accession:">
+                            <tr:outputText value="#{interaction.ac}"/>
+                        </tr:panelLabelAndMessage>
 
-            <tr:panelFormLayout inlineStyle="width:100%;">
-                <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{interaction.ac}"/>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Name:">
+                            <tr:outputText value="#{interaction.shortLabel}"/>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{interaction.shortLabel}"/>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Description:">
+                            <tr:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Type:">
+                            <ui:decorate template="/pages/details/cvPopup.xhtml">
+                                <ui:param name="cv" value="#{interaction.cvInteractionType}"/>
+                            </ui:decorate>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Type:" labelStyle="font-weight:bold;">
-                    <ui:decorate template="/pages/details/cvPopup.xhtml">
-                        <ui:param name="cv" value="#{interaction.cvInteractionType}"/>
-                    </ui:decorate>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty interaction.xrefs}"
+                                >
+                            <ui:decorate template="/pages/details/xrefs.xhtml">
+                                <ui:param name="xrefs" value="#{interaction.xrefs}"/>
+                            </ui:decorate>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Cross References:" rendered="#{not empty interaction.xrefs}"
-                                         labelStyle="font-weight:bold;">
-                    <ui:decorate template="/pages/details/xrefs.xhtml">
-                        <ui:param name="xrefs" value="#{interaction.xrefs}"/>
-                    </ui:decorate>
-                </tr:panelLabelAndMessage>
+                        <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty interaction.annotations}"
+                                >
+                            <ui:decorate template="/pages/details/annotations.xhtml">
+                                <ui:param name="annotations" value="#{interaction.annotations}"/>
+                            </ui:decorate>
+                        </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Annotations:" rendered="#{not empty interaction.annotations}"
-                                         labelStyle="font-weight:bold;">
-                    <ui:decorate template="/pages/details/annotations.xhtml">
-                        <ui:param name="annotations" value="#{interaction.annotations}"/>
-                    </ui:decorate>
-                </tr:panelLabelAndMessage>
+                    </tr:panelFormLayout>
 
-            </tr:panelFormLayout>
+                </trh:cellFormat>
 
-            <tr:panelBox text="Links" background="dark" inlineStyle="width:100%">
-                <tr:panelHorizontalLayout>
+                <trh:cellFormat halign="right" valign="top" width="20%">
 
-                    <tr:commandLink text="Find similar interactions" action="browse.complex"
-                                    onclick="document.getElementById('progress_image').style.display = 'block';"/>
+                    <tr:panelBox text="Links">
 
-                    <tr:image id="progress_image" inlineStyle="display:none;" source="/images/wait_red_indicator.gif"/>
+                        <tr:commandLink text="Find similar interactions" action="browse.complex"
+                                        onclick="document.getElementById('progress_image').style.display = 'block'; document.getElementById('progress_text').style.display = 'block';"/>
 
-                </tr:panelHorizontalLayout>
-            </tr:panelBox>
+                        <tr:panelHorizontalLayout valign="top">
+                            <tr:image id="progress_image" inlineStyle="display:none;" source="/images/wait_red_indicator.gif"/>
+                            <tr:outputText id="progress_text" inlineStyle="display:none;" value="This search may take up to a few minutes when the number of participant is high. Please be patient." />
 
-        </tr:panelHorizontalLayout>
+                        </tr:panelHorizontalLayout>
+                    </tr:panelBox>
+
+                </trh:cellFormat>
+            </trh:rowLayout>
+        </trh:tableLayout>
 
     </tr:panelHeader>
 
-    <tr:iterator value="#{interaction.components}" var="c" >
-        <tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"
-                                 value="#{interaction.components}"
-                                 rows="30" rangeChangeListener="#{detailsBean.rangeChanged}"
-                                 rendered="#{searchBean.results.rowCount gt userQuery.pageSize}"/>
-        <tr:outputText value="c.ac"/>
-        <br/>
-    </tr:iterator>
-
-
+    <!--<tr:iterator value="#{interaction.components}" var="c" >-->
+        <!--<tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"-->
+                                 <!--value="#{interaction.components}"-->
+                                 <!--rows="30" rangeChangeListener="#{detailsBean.rangeChanged}"-->
+                                 <!--rendered="#{searchBean.results.rowCount gt userQuery.pageSize}"/>-->
+        <!--<tr:outputText value="c.ac"/>-->
+        <!--<br/>-->
+    <!--</tr:iterator>-->
 
     <c:set var="participantCount" value="#{fn:length(interaction.components)}" />
     <c:set var="text" value="#{iam:concat3('s (',participantCount,')')}" />
     <tr:panelHeader text="Participant#{(participantCount > 1 ? text : '')}">
 
-        <tr:table var="participant" value="#{interaction.components}" rows="0" width="900">
+        <tr:table var="participant" value="#{interaction.components}" rows="0" width="80%">
 
             <c:set var="interactor" value="#{participant.interactor}" />
 
@@ -286,10 +301,6 @@
                 </ui:decorate>
             </tr:column>
 
-            <tr:column headerText="Stoichiometry">
-                <tr:outputText value="#{(participant.stoichiometry > 0 ? participant.stoichiometry : '-')}" />
-            </tr:column>
-
             <tr:column headerText="More...">
 
                 <c:set var="annotationCount" value="#{fn:length(participant.xrefs) + fn:length(participant.annotations) + fn:length(participant.aliases)}" />
@@ -324,6 +335,19 @@
                                            inlineStyle="font-weight:bold;color:white;"/>
 
                         </trh:cellFormat>
+                        <trh:cellFormat inlineStyle="background-color:#{participant.stoichiometry > 0 ? '#9e9e9e' : 'lightgray'};" width="10"> <!-- gray cell -->
+
+                            <tr:commandLink action="dialog:participant.view" rendered="#{parameterCount>0}"
+                                            partialSubmit="true" immediate="true"
+                                            useWindow="true" windowWidth="700" windowHeight="400">
+                                <f:setPropertyActionListener value="#{participant}" target="#{participantBean.participant}"/>
+                                <tr:outputText value="S" shortDesc="Stoichiometry: #{participant.stoichiometry}" inlineStyle="font-weight:bold;color:white;"/>
+                            </tr:commandLink>
+
+                            <tr:outputText value="S" shortDesc="#{parameterCount} Parameter" rendered="#{parameterCount == 0}"
+                                           inlineStyle="font-weight:bold;color:white;"/>
+
+                        </trh:cellFormat>
                         <trh:cellFormat inlineStyle="background-color:#{domainCount>0 ? '#a7cf9b' : 'lightgray'};" width="10">  <!-- green cell -->
 
                             <tr:commandLink action="dialog:participant.view" rendered="#{domainCount>0}"
@@ -347,7 +371,7 @@
 
         <br/>
 
-        <tr:panelHorizontalLayout inlineStyle="width:1000px;" valign="top" halign="right">
+        <tr:panelHorizontalLayout inlineStyle="width:80%;" valign="top" halign="right">
             <tr:outputText value="Legend: " inlineStyle="font-weight:bold;"/>
 
             <trh:tableLayout width="350" cellSpacing="2" cellPadding="2">
@@ -356,7 +380,7 @@
                         <tr:outputText value="A" inlineStyle="font-weight:bold;color:white;"/>
                     </trh:cellFormat>
                     <trh:cellFormat >
-                        <tr:outputText value="Participant's annotations available"/>
+                        <tr:outputText value="Participant annotation available"/>
                     </trh:cellFormat>
                 </trh:rowLayout>
                 <trh:rowLayout>
@@ -364,7 +388,15 @@
                         <tr:outputText value="P" inlineStyle="font-weight:bold;color:white;"/>
                     </trh:cellFormat>
                     <trh:cellFormat >
-                        <tr:outputText value="Participant's experimental paramters available"/>
+                        <tr:outputText value="Participant experimental parameter available"/>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+                <trh:rowLayout>
+                    <trh:cellFormat inlineStyle="background-color:#9e9e9e;" width="10"> <!-- gray cell -->
+                        <tr:outputText value="S" inlineStyle="font-weight:bold;color:white;"/>
+                    </trh:cellFormat>
+                    <trh:cellFormat >
+                        <tr:outputText value="Participant stoichiometry available"/>
                     </trh:cellFormat>
                 </trh:rowLayout>
                 <trh:rowLayout>
@@ -372,7 +404,7 @@
                         <tr:outputText value="D" inlineStyle="font-weight:bold;color:white;"/>
                     </trh:cellFormat>
                     <trh:cellFormat >
-                        <tr:outputText value="Experimental features of the molecule as used in the assay"/>
+                        <tr:outputText value="Experimental domain information available"/>
                     </trh:cellFormat>
                 </trh:rowLayout>
             </trh:tableLayout>
