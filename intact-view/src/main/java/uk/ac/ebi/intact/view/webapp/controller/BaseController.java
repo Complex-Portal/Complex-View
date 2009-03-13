@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * TODO comment this
+ * IntAct JSF Base Controller.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
