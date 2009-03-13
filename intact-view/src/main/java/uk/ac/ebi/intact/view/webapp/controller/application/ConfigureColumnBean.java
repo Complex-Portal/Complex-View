@@ -15,22 +15,20 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.application;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.trinidad.event.ReturnEvent;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.collections.ListUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 
 import javax.annotation.PostConstruct;
 import javax.faces.model.SelectItem;
 import java.util.*;
-
-
-import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 
 /**
  * This class is used to configure columns(select and unselect columns to view) in Interaction view
@@ -340,9 +338,14 @@ public class ConfigureColumnBean {
      *
      * @param event ReturnEvent
      */
-    public void handleReturn( ReturnEvent event ) {
+    public void handleColumnDialogReturn( ReturnEvent event ) {
         Object returnedValue = event.getReturnValue();
-        log.debug( " handleReturn called  from ConfigureColumn " + returnedValue );
+
+        if (returnedValue == null) {
+            return;
+        }
+
+        log.debug( " handleColumnDialogReturn called  from ConfigureColumn " + returnedValue );
 
         List<String> selectedColumns = ( List<String> ) returnedValue;
         List<String> allColumns = new ArrayList( columnMap.keySet() );

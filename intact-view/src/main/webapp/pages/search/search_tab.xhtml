@@ -102,8 +102,8 @@
                                 <tr:group>
                                     <tr:outputText value="Term name:"/>
                                     <tr:spacer width="5"/>
-                                    <tr:commandLink text="association" action="#{searchBean.doNewOntologySearch}">
-                                        <f:setPropertyActionListener value="association"
+                                    <tr:commandLink text="2 hybrid" action="#{searchBean.doNewOntologySearch}">
+                                        <f:setPropertyActionListener value="2 hybrid"
                                                                      target="#{userQuery.ontologySearchQuery}"/>
                                     </tr:commandLink>
                                 </tr:group>
@@ -111,10 +111,12 @@
                                 <tr:group>
                                     <tr:outputText value="Term identifier:"/>
                                     <tr:spacer width="5"/>
-                                    <tr:commandLink text="MI:0914" action="#{searchBean.doNewOntologySearch}">
-                                        <f:setPropertyActionListener value="MI:0914"
+                                    <tr:commandLink text="MI:0019" action="#{searchBean.doNewOntologySearch}">
+                                        <f:setPropertyActionListener value="MI:0019"
                                                                      target="#{userQuery.ontologySearchQuery}"/>
                                     </tr:commandLink>
+                                    <tr:spacer width="5"/>
+                                    <tr:outputText value="(coimmunoprecipitation)"/>
                                 </tr:group>
                             </tr:panelList>
                         </tr:group>

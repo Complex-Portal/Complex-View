@@ -67,7 +67,7 @@
                          targetFrame="_blank"
                          destination="/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}"/>
 
-            <tr:commandButton id="btnConfigureColumn" text="Change Columns Displayed" action="dialog:configure.columns" partialSubmit="true" returnListener="#{configureColumn.handleReturn}"
+            <tr:commandButton id="btnConfigureColumn" text="Change Columns Displayed" action="dialog:configure.columns" partialSubmit="true" returnListener="#{configureColumn.handleColumnDialogReturn}"
                                      windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
 
              <tr:commandButton text="Modify Filters" action="dialog:filters" partialSubmit="true" returnListener="#{searchBean.refreshWhenClosingDialog}"
