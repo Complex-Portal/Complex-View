@@ -11,6 +11,7 @@
                 xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
 
                 template="/main.xhtml">
 
@@ -69,7 +70,7 @@
                 </tr>
 
                 <!-- Table Body-->
-                <tr:iterator value="#{matrix.similarInteractions}" var="si" rows="0">
+                <tr:iterator value="#{matrix.similarInteractions}" var="si" rows="0" varStatus="status">
 
                     <tr>
 
@@ -100,7 +101,21 @@
 
                         </tr:iterator>
 
-                        <td>&#160;<!-- Cell necessary to cope with the end of the table header--></td>
+                        <td align="center">
+                            <!-- Cell necessary to cope with the end of the table header-->
+                            <tr:outputText value="o:" inlineStyle="font-weight:bold; color:#bfbfbf;"/>
+                            <tr:outputText value="#{fn:length(si.others)}" inlineStyle="color:#000000;"/>
+
+                            <!--<trh:tableLayout cellSpacing="1">-->
+                                <!--<trh:rowLayout>-->
+                                    <!--<trh:cellFormat halign="center" inlineStyle="background-color:#dedede;" width="30">  --><!-- red cell -->
+                                        <!--<tr:outputText value="#{fn:length(si.others)}"-->
+                                                       <!--shortDesc="Count of other molecules present in this interaction"-->
+                                                       <!--inlineStyle="font-size:6pt; color:white;"/>-->
+                                    <!--</trh:cellFormat>-->
+                                <!--</trh:rowLayout>-->
+                            <!--</trh:tableLayout>-->
+                        </td>
 
                         <td>
                             <iam:collapsibleIterator id="mtx_participant_#{status.index}"
@@ -108,8 +123,7 @@
                                                      value="#{si.others}"
                                                      maxShown="3">
 
-                                 <!--TODO link to Dasty2-->
-                                <tr:outputText value="#{item.shortLabel}" shortDesc="#{item.fullName}"/>
+                                <iax:goMoleculeView query="#{item.ac}" text="#{item.shortLabel}" onlyLogo="false"/>
 
                             </iam:collapsibleIterator>
                         </td>
@@ -117,6 +131,34 @@
                     </tr>
 
                 </tr:iterator>
+
+                <tr>
+                    <td colspan="#{fn:length(matrix.members) + 3}" align="right">
+                        &#160;
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="#{fn:length(matrix.members) + 3}" align="right">
+                        <tr:panelHorizontalLayout>
+                            <tr:outputText value="Legend: " inlineStyle="font-weight:bold;"/>
+
+                            <tr:spacer width="30" />
+
+                            <trh:tableLayout cellSpacing="10">
+                                <trh:rowLayout>
+                                    <trh:cellFormat width="10">  <!-- light red cell -->
+                                        <tr:outputText value="o:" inlineStyle="font-weight:bold; color:#bfbfbf;"/>
+                                        <tr:outputText value="x" inlineStyle="color:#000000;"/>
+                                    </trh:cellFormat>
+                                    <trh:cellFormat >
+                                        <tr:outputText value="Count of other molecules present in this interaction"/>
+                                    </trh:cellFormat>
+                                </trh:rowLayout>
+                            </trh:tableLayout>
+                        </tr:panelHorizontalLayout>
+                    </td>
+                </tr>
 
             </trh:tableLayout>
 

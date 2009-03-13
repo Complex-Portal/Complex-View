@@ -190,7 +190,13 @@ public class DetailsController extends JpaBaseController {
     public SimilarInteractionsMatrix getSimilarInteractionMatrix() {
 
         if( matrix != null ) {
-            return matrix;
+
+            if( matrix.getInvestigatedInteraction().getAc().equals( interaction.getAc() ) ) {
+                return matrix;
+            }
+
+            // reset cache
+            matrix = null;
         }
 
         DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();

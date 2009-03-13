@@ -32,7 +32,10 @@ public class SimilarInteractionsMatrix {
 
     private List<SimpleInteractor> members;
 
-    public SimilarInteractionsMatrix( SimpleInteractor investigatedInteraction, List<SimilarInteraction> similarInteractions, List<SimpleInteractor> members ) {
+    public SimilarInteractionsMatrix( SimpleInteractor investigatedInteraction,
+                                      List<SimilarInteraction> similarInteractions,
+                                      List<SimpleInteractor> members ) {
+        
         if ( investigatedInteraction == null ) {
             throw new IllegalArgumentException( "You must give a non null investigatedInteraction" );
         }
