@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:jsp="http://java.sun.com/JSP/Page"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:c="http://java.sun.com/jstl/core"
-      xmlns:tr="http://myfaces.apache.org/trinidad"
-      xmlns:trh="http://myfaces.apache.org/trinidad/html"
-      xmlns:ebi="http://ebi.ac.uk/faces/components"
-      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-<head>
-    <title></title>
-</head>
-<body>
-
-<f:view>
-<ui:composition>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions">
 
 <div style="float:right; padding-left: 20px; padding-top: 20px; background-color: white">
 
@@ -58,16 +53,16 @@
 <table>
     <tr>
         <td class="intact_table">
-            <h1>IntAct Home</h1>
+            <h1>#{intactView['webapp.name']} Home</h1>
 
             <h:panelGroup rendered="#{not empty newsBean.urgentNews}">
                 <ebi:panelUrgentNews value="#{newsBean.urgentNews}"/>
             </h:panelGroup>
 
-            <h2>Search IntAct</h2>
+            <h2>Search #{intactView['webapp.name']}</h2>
 
             <p>
-                To perform a search in the IntAct database use the search box in the top left corner.
+                To perform a search in the #{intactView['webapp.name']} database use the search box in the top left corner.
             </p>
 
             <f:facet name="separator">
@@ -124,7 +119,7 @@
 
             <h2>Introduction</h2>
 
-            IntAct provides a freely available, open source database system and analysis tools for protein interaction
+            #{intactView['webapp.name']} provides a freely available, open source database system and analysis tools for protein interaction
             data. All interactions are derived from literature curation or direct user submissions and are freely
             available.
 
@@ -166,7 +161,7 @@
         href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attribution License</a>.
     This means that you are
     free to copy, distribute, display and make commercial use of all records
-    from the IntAct database provided appropriate credit is given.</p>
+    from the #{intactView['webapp.name']} database provided appropriate credit is given.</p>
 
 <h2>Acknowledgements</h2>
 
@@ -262,8 +257,4 @@
 </table>
 
 </ui:composition>
-</f:view>
-
-</body>
-</html>
 

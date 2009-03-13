@@ -51,11 +51,13 @@
         <!--<ebi:dynamicMenu id="menu1" sourceUrl="#{intactViewConfiguration.menuUrl}"/>-->
         <ui:include src="/left_main_menu.xhtml"/>
 
-        <ebi:news id="news1"
-                  sourceUrl="#{intactViewConfiguration.newsUrl}"
-                  maxShown="#{intactViewConfiguration.maxNewsInBox}"
-                  newsFeedUrl="#{intactViewConfiguration.appRoot}/view/feed"
-                  archiveUrl="#{intactViewConfiguration.appRoot}/view/pages/news/news_archive.xhtml"/>
+        <h:panelGroup rendered="#{intactView['webapp.name'] == 'IntAct'}">
+            <ebi:news id="news1"
+                      sourceUrl="#{intactViewConfiguration.newsUrl}"
+                      maxShown="#{intactViewConfiguration.maxNewsInBox}"
+                      newsFeedUrl="#{intactViewConfiguration.appRoot}/view/feed"
+                      archiveUrl="#{intactViewConfiguration.appRoot}/view/pages/news/news_archive.xhtml"/>
+        </h:panelGroup>
 
     </ui:define>
 

@@ -29,11 +29,13 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * TODO comment that class header
+ * This is now deprecated. It was redirecting to the first time configuration page
+ * if the configuration was not found.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Deprecated
 public class SearchConfigCheckPhaseListener implements PhaseListener {
 
     private static final String FIRST_TIME_CONFIG_XHTML = "first_time_config.xhtml";
