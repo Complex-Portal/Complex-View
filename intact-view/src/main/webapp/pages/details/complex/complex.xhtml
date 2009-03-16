@@ -30,6 +30,9 @@
 
         <tr:panelHeader text="Similarity search for complex interaction">
 
+            <trh:tableLayout width="100%">
+                <trh:rowLayout>
+                    <trh:cellFormat width="30%">
             <c:set var="interaction" value="#{detailsBean.interaction}"/>
             <tr:panelFormLayout inlineStyle="width:100%">
 
@@ -50,6 +53,16 @@
                 </tr:panelLabelAndMessage>
 
             </tr:panelFormLayout>
+                    </trh:cellFormat>
+                    <trh:cellFormat width="70%" halign="right" valign="top">
+                        <tr:panelBox text="Note:" background="dark">
+                            <tr:outputText
+                                    value="This view shows interactions similar to ${interaction.shortLabel}. That is, having at least one participant in common."/>
+                        </tr:panelBox>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+            </trh:tableLayout>
+
 
             <br/>
 

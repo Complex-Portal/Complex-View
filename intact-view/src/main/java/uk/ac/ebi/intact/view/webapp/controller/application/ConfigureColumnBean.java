@@ -120,7 +120,7 @@ public class ConfigureColumnBean {
     private boolean isPubMedIdentifierSelected = true;
     private boolean isInteractionTypeSelected;
     private boolean isInteractionDetectionMethodSelected;
-    private boolean isSourceDatabaseSelected = true;
+    private boolean isSourceDatabaseSelected;
     private boolean isInteractionACSelected = true;
     private boolean isConfidenceValueSelected;
     private boolean isMoleculeAExperimentalRoleSelected;
@@ -132,7 +132,7 @@ public class ConfigureColumnBean {
     private boolean isMoleculeAInteractorTypeSelected;
     private boolean isMoleculeBInteractorTypeSelected;
     private boolean isHostOrganismSelected;
-    private boolean isExpansionMethodSelected;
+    private boolean isExpansionMethodSelected =true;
     private boolean isDatasetSelected;
 
     private static ResourceBundle rb = null;
