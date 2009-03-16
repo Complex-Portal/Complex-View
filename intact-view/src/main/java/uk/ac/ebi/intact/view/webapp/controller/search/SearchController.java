@@ -145,6 +145,22 @@ public class SearchController extends JpaBaseController {
 
             doBinarySearch( solrQuery );
         }
+
+
+        if(userQuery!=null && userQuery.getSearchQuery()==null){
+          if (log.isDebugEnabled()) log.debug("Searching using query parameter when searchQuery is : *:*");
+
+            //for sorting and ordering
+            this.setUserSortColumn(DEFAULT_SORT_COLUMN);
+            this.setAscending( DEFAULT_SORT_ORDER );
+
+            userQuery.reset();
+            userQuery.setSearchQuery( "*" );
+
+            SolrQuery solrQuery = userQuery.createSolrQuery();
+
+            doBinarySearch( solrQuery );
+        }
     }
 
     public String doBinarySearchAction() {
