@@ -17,6 +17,8 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ import java.util.*;
 @Scope("conversation.access")
 @ConversationName("general")
 public class UserQuery {
+
+    private static final Log log = LogFactory.getLog( UserQuery.class );
 
     @Autowired
     private FilterPopulatorController filterPopulator;
@@ -114,8 +118,8 @@ public class UserQuery {
         addFilteredQuery(query, "source", filterPopulator.getSources(), sources);
         addFilteredQuery(query, "expansion", filterPopulator.getExpansions(), expansions);
 
-        //addFilteredQuery(query, "go_expanded_id", goTerms);
-        //addFilteredQuery(query, "chebi_expanded_id", chebiTerms);
+        addFilteredQuery(query, "go_expanded_id", goTerms);
+        addFilteredQuery(query, "chebi_expanded_id", chebiTerms);
 
         return query;
     }
@@ -188,7 +192,10 @@ public class UserQuery {
         query.addFilterQuery("+"+field+":"+createLuceneQuery(Arrays.asList(items)));
     }
 
-    private void addFilteredQuery(SolrQuery query, String field, Collection<String> allItems, String[] selectedItems) {
+    private void addFilteredQuery(SolrQuery query,
+                                  String field,
+                                  Collection<String> allItems,
+                                  String[] selectedItems) {
 
         if (selectedItems == null) {
             selectedItems = new String[0];
@@ -241,12 +248,12 @@ public class UserQuery {
 
     public void addGoTerm(ActionEvent evt) {
         String param = JsfUtils.getFirstParamValue(evt);
-        ArrayUtils.add(goTerms, param);
+        goTerms = (String[])ArrayUtils.add(goTerms, param);
     }
 
     public void addChebiTerm(ActionEvent evt) {
         String param = JsfUtils.getFirstParamValue(evt);
-        ArrayUtils.add(chebiTerms, param);
+        chebiTerms = (String[]) ArrayUtils.add(chebiTerms, param);
     }
 
     public Collection<String> getDatasetsToInclude() {
@@ -260,7 +267,7 @@ public class UserQuery {
         return (searchQuery == null && ontologySearchQuery != null);
     }
 
-        private String escapeIfNecessary( String query ) {
+    private String escapeIfNecessary( String query ) {
         query = query.trim();
 
          if (query.startsWith("\"") && query.endsWith("\"")) {
