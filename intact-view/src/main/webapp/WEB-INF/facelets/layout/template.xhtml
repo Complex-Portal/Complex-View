@@ -51,7 +51,7 @@
         <!--<ebi:dynamicMenu id="menu1" sourceUrl="#{intactViewConfiguration.menuUrl}"/>-->
         <ui:include src="/left_main_menu.xhtml"/>
 
-        <h:panelGroup rendered="#{intactView['webapp.name'] == 'IntAct'}">
+        <h:panelGroup>
             <ebi:news id="news1"
                       sourceUrl="#{intactViewConfiguration.newsUrl}"
                       maxShown="#{intactViewConfiguration.maxNewsInBox}"
