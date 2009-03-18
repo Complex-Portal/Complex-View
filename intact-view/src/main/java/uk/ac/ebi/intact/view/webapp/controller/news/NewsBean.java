@@ -34,6 +34,8 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * News backing bean.
@@ -52,13 +54,17 @@ public class NewsBean implements Serializable {
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
+    private static final Log log = LogFactory.getLog( NewsBean.class );
+
     public NewsBean() {
     }
 
     @PostConstruct
     public void setup() {
         String newsXml = intactViewConfiguration.getNewsUrl();
-
+        if ( log.isDebugEnabled() ) {
+            log.debug( "newsXml " + newsXml);
+        }
         newsObject = NewsUtil.readNews( newsXml );
         news = newsObject.getNewsItem();
 
