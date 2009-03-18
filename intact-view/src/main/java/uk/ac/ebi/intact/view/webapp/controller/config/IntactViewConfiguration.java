@@ -182,10 +182,10 @@ public class IntactViewConfiguration extends BaseController {
         addProperty(properties, PROXY_HOST, proxyHost);
         addProperty(properties, PROXY_PORT, proxyPort);
 
-        Writer writer = new FileWriter(configFile);
-        properties.store(writer, webappName+ " configuration");
-        writer.close();
-
+        final FileOutputStream os = new FileOutputStream( configFile );
+        properties.store( os, webappName+ " configuration");
+        os.flush();
+        os.close();
     }
 
     private void addProperty(Properties properties, String key, String value) {
