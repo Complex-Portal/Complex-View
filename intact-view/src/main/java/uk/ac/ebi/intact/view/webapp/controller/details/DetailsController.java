@@ -271,7 +271,6 @@ public class DetailsController extends JpaBaseController {
         // ordering reference members alphabetically
         List<SimpleInteractor> orderedReferenceMembers = Lists.newArrayList( referenceMembers );
         Collections.sort(  orderedReferenceMembers, new Comparator<SimpleInteractor>() {
-            @Override
             public int compare( SimpleInteractor o1, SimpleInteractor o2 ) {
                 return o1.getShortLabel().compareTo( o2.getShortLabel() );
             }
