@@ -15,15 +15,13 @@
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
     <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
-    <version>0.9-SNAPSHOT</version>
+    <version>1.0-beta-1</version>
 
     <name>IntAct Services :: View</name>
 
     <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view
-        </connection>
-        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view
-        </developerConnection>
+        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view</connection>
+        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view</developerConnection>
         <url>https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view/</url>
     </scm>
 
