@@ -116,7 +116,7 @@
 
                         <td align="left">
                             <!-- Cell necessary to cope with the end of the table header-->
-                            <tr:panelHorizontalLayout>
+                            <tr:panelHorizontalLayout rendered="#{fn:length(si.others) gt 0}">
                                 <tr:spacer width="7"/>
                                 <tr:outputText value="o:" inlineStyle="font-weight:bold; color:#bfbfbf;"/>
                                 <tr:outputText value="#{fn:length(si.others)}" inlineStyle="color:#000000;"/>
