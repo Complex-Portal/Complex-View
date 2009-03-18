@@ -187,7 +187,7 @@ public class UserQuery {
     }
 
     private void addFilteredQuery(SolrQuery query, String field, String[] items) {
-        if (items.length == 0) return;
+        if (items == null || items.length == 0) return;
         
         query.addFilterQuery("+"+field+":"+createLuceneQuery(Arrays.asList(items)));
     }
