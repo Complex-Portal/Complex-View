@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Collection;
 
 import com.google.common.collect.Lists;
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 
 /**
  * Holds the labels to be displayed in the table header of the similar interaction search result page.
@@ -32,7 +33,7 @@ import com.google.common.collect.Lists;
  */
 @Controller( "tableHeaderBean" )
 @Scope("session")
-public class TableHeaderController {
+public class TableHeaderController extends BaseController {
 
     private List<String> tableHeaderLabels;
 
