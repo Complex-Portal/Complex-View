@@ -62,8 +62,8 @@ public class NewsBean implements Serializable {
     @PostConstruct
     public void setup() {
         String newsXml = intactViewConfiguration.getNewsUrl();
-        if ( log.isDebugEnabled() ) {
-            log.debug( "newsXml " + newsXml);
+        if ( log.isTraceEnabled() ) {
+            log.trace( "newsXml " + newsXml);
         }
         newsObject = NewsUtil.readNews( newsXml );
         news = newsObject.getNewsItem();
