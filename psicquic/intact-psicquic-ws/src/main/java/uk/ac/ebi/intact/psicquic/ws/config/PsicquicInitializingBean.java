@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.apache.commons.httpclient.HttpClient;
 import uk.ac.ebi.intact.psicquic.ws.IntactPsicquicService;
 import uk.ac.ebi.intact.psicquic.ws.jms.StatsConsumer;
 
@@ -43,6 +44,16 @@ public class PsicquicInitializingBean implements InitializingBean {
     private StatsConsumer statsConsumer;
 
     public void afterPropertiesSet() throws Exception {
+        // proxy set
+        if (config.getProxyHost() != null && config.getProxyHost().length() > 0) {
+            if (logger.isInfoEnabled()) logger.info("Using proxy host: "+config.getProxyHost());
+            System.setProperty("http.proxyHost", config.getProxyHost());
+        }
+        if (config.getProxyPort() != null && config.getProxyPort().length() > 0) {
+            if (logger.isInfoEnabled()) logger.info("Using proxy port: "+config.getProxyPort());
+            System.setProperty("http.proxyPort", config.getProxyPort());
+        }
+
         // stats directory
         String statsDir = config.getStatsDirectory();
 

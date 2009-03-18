@@ -25,6 +25,7 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrDocument;
+import org.apache.commons.httpclient.HttpClient;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.search.engine.SearchEngine;
 import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
@@ -147,7 +148,7 @@ public class IntactPsicquicService implements PsicquicService {
         /////////////////////////////////////////////////////////////////
 
         try {
-            SolrServer server = new CommonsHttpSolrServer( config.getSolrServerUrl() );
+            SolrServer server = new CommonsHttpSolrServer( config.getSolrServerUrl(), createHttpClient() );
 
             SolrQuery solrQuery = new SolrQuery( query )
                     .setStart( requestInfo.getFirstResult() )
@@ -177,30 +178,6 @@ public class IntactPsicquicService implements PsicquicService {
 
         /////////////////////////////////////////////////////////////////
 
-
-//        SearchEngine searchEngine;
-//
-//        try {
-//            searchEngine = new IntactSearchEngine(config.getIndexDirectory());
-//        } catch (IOException e) {
-//            throw new PsicquicServiceException("Problem creating SearchEngine using directory: "+config.getIndexDirectory(), e);
-//        }
-//
-//        SearchResult searchResult = searchEngine.search(query, requestInfo.getFirstResult(), blockSize);
-//
-//        // preparing the response
-//        QueryResponse queryResponse = new QueryResponse();
-//        ResultInfo resultInfo = new ResultInfo();
-//        resultInfo.setBlockSize(blockSize);
-//        resultInfo.setFirstResult(requestInfo.getFirstResult());
-//        resultInfo.setTotalResults(searchResult.getTotalCount());
-//
-//        queryResponse.setResultInfo(resultInfo);
-//
-//        ResultSet resultSet = createResultSet(searchResult, requestInfo);
-//        queryResponse.setResultSet(resultSet);
-//
-//        return queryResponse;
     }
 
     public String getVersion() {
@@ -341,5 +318,22 @@ public class IntactPsicquicService implements PsicquicService {
         } catch (Exception e) {
             throw new PsicquicServiceException("Problem converting results to PSI-MI XML: "+e, e);
         }
+    }
+
+     private HttpClient createHttpClient() {
+        HttpClient httpClient = new HttpClient();
+
+        String proxyHost = config.getProxyHost();
+        String proxyPort = config.getProxyPort();
+
+        if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
+                isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
+            httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+        }
+        return httpClient;
+    }
+
+    private boolean isValueSet(String value) {
+        return value != null && !value.startsWith("$");
     }
 }

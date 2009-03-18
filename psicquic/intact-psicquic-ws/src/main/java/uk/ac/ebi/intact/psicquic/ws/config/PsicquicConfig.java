@@ -30,6 +30,8 @@ public class PsicquicConfig {
     private String artifactId;
     private String version;
     private String solrServerUrl;
+    private String proxyHost;
+    private String proxyPort;
 
     private String statsDirectory;
 
@@ -74,5 +76,21 @@ public class PsicquicConfig {
 
     public void setStatsDirectory(String statsDirectory) {
         this.statsDirectory = statsDirectory;
+    }
+
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+
+    public String getProxyPort() {
+        return proxyPort;
+    }
+
+    public void setProxyPort(String proxyPort) {
+        this.proxyPort = proxyPort;
     }
 }
