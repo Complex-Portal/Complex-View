@@ -114,20 +114,13 @@
 
                         </tr:iterator>
 
-                        <td align="center">
+                        <td align="left">
                             <!-- Cell necessary to cope with the end of the table header-->
-                            <tr:outputText value="o:" inlineStyle="font-weight:bold; color:#bfbfbf;"/>
-                            <tr:outputText value="#{fn:length(si.others)}" inlineStyle="color:#000000;"/>
-
-                            <!--<trh:tableLayout cellSpacing="1">-->
-                                <!--<trh:rowLayout>-->
-                                    <!--<trh:cellFormat halign="center" inlineStyle="background-color:#dedede;" width="30">  --><!-- red cell -->
-                                        <!--<tr:outputText value="#{fn:length(si.others)}"-->
-                                                       <!--shortDesc="Count of other molecules present in this interaction"-->
-                                                       <!--inlineStyle="font-size:6pt; color:white;"/>-->
-                                    <!--</trh:cellFormat>-->
-                                <!--</trh:rowLayout>-->
-                            <!--</trh:tableLayout>-->
+                            <tr:panelHorizontalLayout>
+                                <tr:spacer width="7"/>
+                                <tr:outputText value="o:" inlineStyle="font-weight:bold; color:#bfbfbf;"/>
+                                <tr:outputText value="#{fn:length(si.others)}" inlineStyle="color:#000000;"/>
+                            </tr:panelHorizontalLayout>
                         </td>
 
                         <td>
@@ -144,7 +137,6 @@
                     </tr>
 
                 </tr:iterator>
-
                 <tr>
                     <td colspan="#{fn:length(matrix.members) + 3}" align="right">
                         &#160;
