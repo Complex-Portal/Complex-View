@@ -244,6 +244,9 @@ public class BinaryInteractionsExporter {
                     final String[] keyval = param.split( "=" );
                     if ( keyval != null && keyval.length == 2 ) {
                         if ( "q".equals( keyval[0] ) ) {
+                            if("*%3A*".equals(keyval[1])){
+                              keyval[1]="*:*";
+                            }
                             solrQuery.setQuery( keyval[1] );
                         }
                     }
