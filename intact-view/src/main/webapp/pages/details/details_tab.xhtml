@@ -309,7 +309,7 @@
 
                 <trh:tableLayout width="30" cellSpacing="2" cellPadding="2">
                     <trh:rowLayout>
-                        <trh:cellFormat inlineStyle="background-color:#{annotationCount>0 ? '#ed8585' : 'lightgray'};" width="10"> <!-- red cell -->
+                        <trh:cellFormat inlineStyle="background-color:#{annotationCount>0 ? '#a7cf9b' : 'lightgray'};" width="10"> <!-- green cell -->
 
                             <tr:commandLink action="dialog:participant.view" rendered="#{annotationCount>0}"
                                             partialSubmit="true" immediate="true"
@@ -348,7 +348,7 @@
                                            inlineStyle="font-weight:bold;color:white;"/>
 
                         </trh:cellFormat>
-                        <trh:cellFormat inlineStyle="background-color:#{domainCount>0 ? '#a7cf9b' : 'lightgray'};" width="10">  <!-- green cell -->
+                        <trh:cellFormat inlineStyle="background-color:#{domainCount>0 ? '#ed8585' : 'lightgray'};" width="10">  <!-- red cell -->
 
                             <tr:commandLink action="dialog:participant.view" rendered="#{domainCount>0}"
                                             partialSubmit="true" immediate="true"
@@ -370,13 +370,14 @@
         </tr:table>
 
         <br/>
-
+        <!--red   #ed8585 -->
+        <!--green #a7cf9b -->
         <tr:panelHorizontalLayout inlineStyle="width:80%;" valign="top" halign="right">
             <tr:outputText value="Legend: " inlineStyle="font-weight:bold;"/>
 
             <trh:tableLayout width="350" cellSpacing="2" cellPadding="2">
                 <trh:rowLayout>
-                    <trh:cellFormat inlineStyle="background-color:#ed8585;" width="10"> <!-- red cell -->
+                    <trh:cellFormat inlineStyle="background-color:#a7cf9b;" width="10"> <!-- red cell -->
                         <tr:outputText value="A" inlineStyle="font-weight:bold;color:white;"/>
                     </trh:cellFormat>
                     <trh:cellFormat >
@@ -400,7 +401,7 @@
                     </trh:cellFormat>
                 </trh:rowLayout>
                 <trh:rowLayout>
-                    <trh:cellFormat inlineStyle="background-color:#a7cf9b;" width="10">  <!-- green cell -->
+                    <trh:cellFormat inlineStyle="background-color:#ed8585;" width="10">  <!-- green cell -->
                         <tr:outputText value="D" inlineStyle="font-weight:bold;color:white;"/>
                     </trh:cellFormat>
                     <trh:cellFormat >
