@@ -216,14 +216,21 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doBinarySearch(SolrQuery solrQuery) {
-        results = createInteractionDataModel(solrQuery);
+        try {
+            results = createInteractionDataModel( solrQuery );
 
-        totalResults = results.getRowCount();
+            totalResults = results.getRowCount();
 
-        if (log.isDebugEnabled()) log.debug("\tResults: " + results.getRowCount());
+            if ( log.isDebugEnabled() ) log.debug( "\tResults: " + results.getRowCount() );
 
-        if (totalResults == 0) {
-            addErrorMessage("Your query didn't return any results", "Use a different query");
+            if ( totalResults == 0 ) {
+                addErrorMessage( "Your query didn't return any results", "Use a different query" );
+            }
+        }
+        catch ( uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrException solrException ) {
+            if ( solrQuery.getQuery() != null && solrQuery.getQuery().startsWith( "*" ) ) {
+                addErrorMessage( "Wrong query format", "Currently Lucene doesn't support queries prefixed with wildcard('*'). However, Lucene does supports queries ending with '*'. Please do reformat your query" );
+            }
         }
     }
 
