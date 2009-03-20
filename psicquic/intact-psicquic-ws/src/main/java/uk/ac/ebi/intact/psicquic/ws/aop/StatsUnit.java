@@ -32,6 +32,7 @@ public class StatsUnit implements Serializable {
 
     private static final long serialVersionUID = 1448281813;
 
+    private String service;
     private String methodName;
     private String query;
     private String operand;
@@ -43,6 +44,14 @@ public class StatsUnit implements Serializable {
     private String userAgent;
 
     public StatsUnit() {
+    }
+
+    public String getService() {
+        return service;
+    }
+
+    public void setService(String service) {
+        this.service = service;
     }
 
     public String getRemoteAddress() {
@@ -122,6 +131,7 @@ public class StatsUnit implements Serializable {
         final StringBuilder sb = new StringBuilder();
         sb.append("StatsUnit");
         sb.append("{methodName='").append(methodName).append('\'');
+        sb.append(", service='").append(service).append('\'');
         sb.append(", query='").append(query).append('\'');
         sb.append(", operand='").append(operand).append('\'');
         sb.append(", timestamp=").append(timestamp);

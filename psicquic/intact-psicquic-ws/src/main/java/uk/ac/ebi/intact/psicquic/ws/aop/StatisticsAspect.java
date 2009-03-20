@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.intact.psicquic.ws.jms.StatsProducer;
+import uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
@@ -54,19 +55,7 @@ public class StatisticsAspect  {
 
     @Around("execution(org.hupo.psi.mi.psicquic.QueryResponse getBy*(..))")
     private Object recordStats(ProceedingJoinPoint pjp) throws Throwable{
-        StatsUnit statsUnit = new StatsUnit();
-        statsUnit.setTimestamp(new DateTime());
-
-        if (webServiceContext != null && webServiceContext.getMessageContext() != null) {
-            MessageContext ctx = webServiceContext.getMessageContext();
-            HttpServletRequest request = (HttpServletRequest) ctx.get(AbstractHTTPDestination.HTTP_REQUEST);
-
-            statsUnit.setRemoteAddress(request.getRemoteAddr());
-
-            if (request.getHeader("User-Agent") != null) {
-                statsUnit.setUserAgent(request.getHeader("User-Agent"));
-            }
-        }
+        StatsUnit statsUnit = createStatsUnit();
 
         populateStatsFromJoinpoint(statsUnit, pjp);
 
@@ -86,6 +75,45 @@ public class StatisticsAspect  {
         return response;
     }
 
+     @Around("execution(uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput getBy*(..))")
+     private Object recordRestStats(ProceedingJoinPoint pjp) throws Throwable {
+         StatsUnit statsUnit = createStatsUnit();
+
+         populateStatsFromJoinpoint(statsUnit, pjp);
+
+         statsUnit.setOperand(findOperand(pjp));
+
+         long startInstant = System.currentTimeMillis();
+
+         PsicquicStreamingOutput response = (PsicquicStreamingOutput) pjp.proceed();
+
+         long endInstant = System.currentTimeMillis();
+
+         statsUnit.setQueryResponse(response.getQueryResponse());
+         statsUnit.setExecutionTime(new Interval(startInstant, endInstant));
+
+         statsProducer.sendMessage(statsUnit);
+
+         return response;
+     }
+
+    private StatsUnit createStatsUnit() {
+        StatsUnit statsUnit = new StatsUnit();
+        statsUnit.setTimestamp(new DateTime());
+
+        if (webServiceContext != null && webServiceContext.getMessageContext() != null) {
+            MessageContext ctx = webServiceContext.getMessageContext();
+            HttpServletRequest request = (HttpServletRequest) ctx.get(AbstractHTTPDestination.HTTP_REQUEST);
+
+            statsUnit.setRemoteAddress(request.getRemoteAddr());
+
+            if (request.getHeader("User-Agent") != null) {
+                statsUnit.setUserAgent(request.getHeader("User-Agent"));
+            }
+        }
+        return statsUnit;
+    }
+
     private void populateStatsFromJoinpoint(StatsUnit statsUnit, ProceedingJoinPoint pjp) {
         statsUnit.setMethodName(pjp.getSignature().getName());
 
@@ -96,7 +124,15 @@ public class StatisticsAspect  {
         statsUnit.setQuery(query);
 
         // request info
-        statsUnit.setRequestInfo((RequestInfo)methodArgs[1]);
+        if (methodArgs.length > 1 && methodArgs[1] instanceof RequestInfo) {
+            statsUnit.setRequestInfo((RequestInfo)methodArgs[1]);
+        } else {
+            RequestInfo reqInfo = new RequestInfo();
+            reqInfo.setFirstResult(0);
+            reqInfo.setBlockSize(Integer.MAX_VALUE);
+            reqInfo.setResultType("");
+            statsUnit.setRequestInfo(reqInfo);
+        }
 
         // operand
         if (methodArgs.length >= 3) {

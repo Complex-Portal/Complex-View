@@ -37,9 +37,13 @@ import psidev.psi.mi.xml254.jaxb.EntrySet;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.converter.SolrDocumentConverter;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;
 import java.net.MalformedURLException;
@@ -72,9 +76,9 @@ public class IntactPsicquicService implements PsicquicService {
     private static final String IDENTIFIER_FIELD = "identifier";
     private static final String INTERACTION_ID_FIELD = "interaction_id";
 
-    public IntactPsicquicService() {
-
+    public IntactPsicquicService() { 
     }
+
 
     public QueryResponse getByInteractor(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
         String query = createQuery( IDENTIFIER_FIELD, dbRef);
@@ -148,25 +152,21 @@ public class IntactPsicquicService implements PsicquicService {
         /////////////////////////////////////////////////////////////////
 
         try {
-            SolrServer server = new CommonsHttpSolrServer( config.getSolrServerUrl(), createHttpClient() );
-
-            SolrQuery solrQuery = new SolrQuery( query )
-                    .setStart( requestInfo.getFirstResult() )
-                    .setRows( blockSize );
-
-            org.apache.solr.client.solrj.response.QueryResponse solryResponse = server.query(solrQuery);
-
+            SolrServer solrServer = new CommonsHttpSolrServer( config.getSolrServerUrl(), createHttpClient());
+            
+            IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
+            SolrSearchResult solrSearchResult = searcher.search(query, requestInfo.getFirstResult(), blockSize);
 
             // preparing the response
-        QueryResponse queryResponse = new QueryResponse();
-        ResultInfo resultInfo = new ResultInfo();
-        resultInfo.setBlockSize(blockSize);
-        resultInfo.setFirstResult(requestInfo.getFirstResult());
-        resultInfo.setTotalResults( (int) solryResponse.getResults().getNumFound() );
+            QueryResponse queryResponse = new QueryResponse();
+            ResultInfo resultInfo = new ResultInfo();
+            resultInfo.setBlockSize(blockSize);
+            resultInfo.setFirstResult(requestInfo.getFirstResult());
+            resultInfo.setTotalResults((int) solrSearchResult.getTotalCount() );
 
         queryResponse.setResultInfo(resultInfo);
 
-        ResultSet resultSet = createResultSet(solryResponse, requestInfo);
+        ResultSet resultSet = createResultSet(solrSearchResult, requestInfo);
         queryResponse.setResultSet(resultSet);
 
         return queryResponse;
@@ -194,7 +194,7 @@ public class IntactPsicquicService implements PsicquicService {
 
     // Lucene
 
-    protected ResultSet createResultSet(SearchResult searchResult, RequestInfo requestInfo) throws PsicquicServiceException,
+    protected ResultSet createResultSet(SolrSearchResult searchResult, RequestInfo requestInfo) throws PsicquicServiceException,
                                                                                                    NotSupportedTypeException {
         ResultSet resultSet = new ResultSet();
 
@@ -219,10 +219,10 @@ public class IntactPsicquicService implements PsicquicService {
 
         return resultSet;
     }
-    protected String createMitabResults(SearchResult searchResult) {
+    protected String createMitabResults(SolrSearchResult searchResult) {
         DocumentDefinition docDef = new IntactDocumentDefinition();
 
-        List<BinaryInteraction> binaryInteractions = searchResult.getData();
+        Collection<IntactBinaryInteraction> binaryInteractions = searchResult.getBinaryInteractionList();
 
         StringBuilder sb = new StringBuilder(binaryInteractions.size() * 512);
 
@@ -234,10 +234,12 @@ public class IntactPsicquicService implements PsicquicService {
         return sb.toString();
     }
 
-    private EntrySet createEntrySet(SearchResult searchResult) throws PsicquicServiceException {
-        Tab2Xml tab2Xml = new IntactTab2Xml();
+    private EntrySet createEntrySet(SolrSearchResult searchResult) throws PsicquicServiceException {
+        IntactTab2Xml tab2Xml = new IntactTab2Xml();
         try {
-            psidev.psi.mi.xml.model.EntrySet mEntrySet = tab2Xml.convert(searchResult.getData());
+            Collection binaryInteractions = searchResult.getBinaryInteractionList();
+
+            psidev.psi.mi.xml.model.EntrySet mEntrySet = tab2Xml.convert(binaryInteractions);
 
             EntrySetConverter converter = new EntrySetConverter();
             converter.setDAOFactory(new InMemoryDAOFactory());

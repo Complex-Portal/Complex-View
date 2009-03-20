@@ -23,6 +23,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.hupo.psi.mi.psicquic.QueryResponse;
+import org.hupo.psi.mi.psicquic.RequestInfo;
+
 /**
  * TODO comment that class header
  *
@@ -41,18 +44,22 @@ public class StatsCsvWriter {
 
         Writer writer = new FileWriter(file, append);
 
+        QueryResponse queryResponse = statsUnit.getQueryResponse();
+        RequestInfo requestInfo = statsUnit.getRequestInfo();
+
         CSVWriter csvWriter = new CSVWriter(writer);
         csvWriter.writeNext(new String[] {
                 statsUnit.getTimestamp().toString(),
+                statsUnit.getService(),
                 statsUnit.getMethodName(),
                 String.valueOf(statsUnit.getExecutionTime().toDuration().getMillis()),
                 statsUnit.getQuery(),
                 statsUnit.getOperand() == null? "" : statsUnit.getOperand(),
-                statsUnit.getRequestInfo().getResultType(),
-                String.valueOf(statsUnit.getQueryResponse().getResultInfo().getTotalResults()),
-                String.valueOf(statsUnit.getRequestInfo().getFirstResult()),
-                String.valueOf(statsUnit.getRequestInfo().getBlockSize()),
-                String.valueOf(statsUnit.getQueryResponse().getResultInfo().getBlockSize()),
+                requestInfo == null? "" : requestInfo.getResultType(),
+                String.valueOf(queryResponse == null? "" : queryResponse.getResultInfo().getTotalResults()),
+                String.valueOf(requestInfo == null? "" : requestInfo.getFirstResult()),
+                String.valueOf(requestInfo == null? "" : requestInfo.getBlockSize()),
+                String.valueOf(queryResponse == null? "" : queryResponse.getResultInfo().getBlockSize()),
                 statsUnit.getRemoteAddress() == null? "" : statsUnit.getRemoteAddress(),
                 statsUnit.getUserAgent() == null? "" : statsUnit.getUserAgent()
         } );
