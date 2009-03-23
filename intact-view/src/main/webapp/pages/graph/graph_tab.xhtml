@@ -18,32 +18,69 @@
 
     <tr:panelHeader text="Network visualisation" >
 
-        <tr:panelHorizontalLayout valign="top">
 
-            <tr:goLink destination="#{userQuery.hierarchViewSearchUrl}" targetFrame="_blank">
-                <tr:image source="#{userQuery.hierarchViewImageUrl}&amp;h=700&amp;w=700"
-                          inlineStyle="border-width:0"/>
-            </tr:goLink>
+        <trh:tableLayout width="100%">
+            <trh:rowLayout>
+                <trh:cellFormat width="80%">
 
-            <tr:spacer width="50" />
-
-            <tr:panelBox text="Open in Cytoscape" inlineStyle="width:180px;">
-
-                <tr:panelHorizontalLayout halign="center">
-                    <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_53">
-                        <tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Cytoscape"/>
+                    <tr:goLink destination="#{userQuery.hierarchViewSearchUrl}" targetFrame="_blank">
+                        <tr:image source="#{userQuery.hierarchViewImageUrl}&amp;h=700&amp;w=700"
+                                  inlineStyle="border-width:0"/>
                     </tr:goLink>
-                </tr:panelHorizontalLayout>
-                
-                <br/>
-                <tr:outputText value="This is going to open current search in a " />
-                <tr:goLink text="WebStart" destination="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" targetFrame="_blank"/>
-                <tr:outputText value=" version of " />
-                <tr:goLink text="Cytoscape 2.6.2" destination="http://www.cytoscape.org/" targetFrame="_blank"/>
 
-            </tr:panelBox>
+                </trh:cellFormat>
 
-        </tr:panelHorizontalLayout>
+                <trh:cellFormat width="20%" halign="right" valign="top">
+
+                    <tr:panelBox text="Open in Cytoscape" inlineStyle="width:250px;">
+
+                        <tr:panelHorizontalLayout halign="center">
+                            <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_53">
+                                <tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Cytoscape"/>
+                            </tr:goLink>
+                        </tr:panelHorizontalLayout>
+
+                        <br/>
+
+                        <tr:outputText value="This is going to open current search in a WebStart " />
+                        <tr:goLink destination="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" targetFrame="_blank">
+                            <tr:image source="/images/question_icon_red.gif" shortDesc="What is a WebStart application ?"/>
+                        </tr:goLink>
+                        <tr:outputText value=" version of " />
+                        <tr:goLink text="Cytoscape 2.6.2" destination="http://www.cytoscape.org/" targetFrame="_blank"/>
+
+                    </tr:panelBox>
+
+                </trh:cellFormat>
+            </trh:rowLayout>
+        </trh:tableLayout>
+
+        <!--<tr:panelHorizontalLayout valign="top">-->
+
+            <!--<tr:goLink destination="#{userQuery.hierarchViewSearchUrl}" targetFrame="_blank">-->
+                <!--<tr:image source="#{userQuery.hierarchViewImageUrl}&amp;h=700&amp;w=700"-->
+                          <!--inlineStyle="border-width:0"/>-->
+            <!--</tr:goLink>-->
+
+            <!--<tr:spacer width="50" />-->
+
+            <!--<tr:panelBox text="Open in Cytoscape" inlineStyle="width:180px;">-->
+
+                <!--<tr:panelHorizontalLayout halign="center">-->
+                    <!--<tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_53">-->
+                        <!--<tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Cytoscape"/>-->
+                    <!--</tr:goLink>-->
+                <!--</tr:panelHorizontalLayout>-->
+                <!---->
+                <!--<br/>-->
+                <!--<tr:outputText value="This is going to open current search in a " />-->
+                <!--<tr:goLink text="WebStart" destination="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" targetFrame="_blank"/>-->
+                <!--<tr:outputText value=" version of " />-->
+                <!--<tr:goLink text="Cytoscape 2.6.2" destination="http://www.cytoscape.org/" targetFrame="_blank"/>-->
+
+            <!--</tr:panelBox>-->
+
+        <!--</tr:panelHorizontalLayout>-->
 
     </tr:panelHeader>
 
