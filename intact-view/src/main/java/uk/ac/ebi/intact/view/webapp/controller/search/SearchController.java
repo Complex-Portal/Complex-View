@@ -226,10 +226,15 @@ public class SearchController extends JpaBaseController {
             if ( totalResults == 0 ) {
                 addErrorMessage( "Your query didn't return any results", "Use a different query" );
             }
-        }
-        catch ( uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrException solrException ) {
-            if ( solrQuery.getQuery() != null && solrQuery.getQuery().startsWith( "*" ) ) {
-                addErrorMessage( "Wrong query format", "Currently Lucene doesn't support queries prefixed with wildcard('*'). However, Lucene does supports queries ending with '*'. Please do reformat your query" );
+
+        } catch ( uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrException solrException ) {
+
+            final String query = solrQuery.getQuery();
+            if ( query != null && ( query.startsWith( "*" ) || query.startsWith( "?" ) ) ) {
+                addErrorMessage( "Your query is not correctly formatted",
+                                 "Currently we do not support queries prefixed with wildcard characters such as '*' or '?'. " +
+                                 "However, wildcard characters can be used anywhere else in one's query (eg. g?vin or gav* for gavin). " +
+                                 "Please do reformat your query." );
             }
         }
     }
