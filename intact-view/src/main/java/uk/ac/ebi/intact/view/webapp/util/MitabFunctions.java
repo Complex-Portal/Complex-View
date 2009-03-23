@@ -26,6 +26,7 @@ import uk.ac.ebi.intact.psimitab.util.IntactPsimitabUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -285,12 +286,19 @@ public final class MitabFunctions {
          return false;
      }
 
-    public static String encodeURL(String stringToBeEncoded) throws UnsupportedEncodingException {
-        String encodedString="";
-        if(stringToBeEncoded!=null){
-        encodedString = URLEncoder.encode(stringToBeEncoded,"UTF-8");
+    public static String encodeURL( String toEncode ) throws UnsupportedEncodingException {
+        String s = "";
+        if ( toEncode != null ) {
+            s = URLEncoder.encode( toEncode, "UTF-8" );
         }
-        return encodedString;
+        return s;
     }
 
+    public static String decodeURL( String toDecode ) throws UnsupportedEncodingException {
+        String s = "";
+        if ( toDecode != null ) {
+            s = URLDecoder.decode( toDecode, "UTF-8" );
+        }
+        return s;
+    }
 }
