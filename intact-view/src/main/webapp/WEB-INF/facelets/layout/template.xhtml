@@ -55,8 +55,9 @@
             <ebi:news id="news1"
                       sourceUrl="#{intactViewConfiguration.newsUrl}"
                       maxShown="#{intactViewConfiguration.maxNewsInBox}"
-                      newsFeedUrl="#{intactViewConfiguration.appRoot}/view/feed"
-                      archiveUrl="#{intactViewConfiguration.appRoot}/view/pages/news/news_archive.xhtml"/>
+                      newsFeedUrl="#{facesContext.externalContext.requestContextPath}/feed"
+                      archiveUrl="#{facesContext.externalContext.requestContextPath}/pages/news/news_archive.xhtml"/>
+                   
         </h:panelGroup>
 
     </ui:define>

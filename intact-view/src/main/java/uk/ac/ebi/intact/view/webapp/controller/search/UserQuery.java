@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
+import uk.ac.ebi.intact.view.webapp.util.OntologyTerm;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
@@ -63,6 +64,8 @@ public class UserQuery {
 
     private String[] goTerms;
     private String[] chebiTerms;
+
+    private Map<String,String> termMap= new HashMap<String,String>();
 
     //for sorting and ordering
     private static final String DEFAULT_SORT_COLUMN = "rigid";
@@ -248,12 +251,16 @@ public class UserQuery {
 
     public void addGoTerm(ActionEvent evt) {
         String param = JsfUtils.getFirstParamValue(evt);
+        String termName = (String)JsfUtils.getParameterValue("termName", evt);
         goTerms = (String[])ArrayUtils.add(goTerms, param);
+        termMap.put( param,termName );
     }
 
     public void addChebiTerm(ActionEvent evt) {
         String param = JsfUtils.getFirstParamValue(evt);
+        String termName = (String)JsfUtils.getParameterValue("termName", evt);
         chebiTerms = (String[]) ArrayUtils.add(chebiTerms, param);
+        termMap.put( param,termName );
     }
 
     public Collection<String> getDatasetsToInclude() {
@@ -393,8 +400,12 @@ public class UserQuery {
     private List<SelectItem> createSelectItems(String[] values) {
         List<SelectItem> selectItems = new ArrayList<SelectItem>(values.length);
 
-        for (String term : values) {
-            selectItems.add(new SelectItem(term));
+        for ( String term : values ) {
+            if ( termMap.containsKey( term ) ) {
+                selectItems.add( new SelectItem( term, term + " (" + termMap.get( term ) + ")" ) );
+            } else {
+                selectItems.add( new SelectItem( term ) );
+            }
         }
 
         return selectItems;

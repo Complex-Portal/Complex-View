@@ -71,6 +71,7 @@
                                              actionListener="#{userQuery.addGoTerm}"
                                              action="#{searchBean.doBinarySearchAction}">
                                  <f:param name="termId" value="#{otw.term.id}" />
+                                 <f:param name="termName" value="#{otw.term.name}" />
                             </tr:commandLink>
 
                             <tr:outputText value="0" rendered="#{otw.interactionCount == 0}"/>
