@@ -30,7 +30,7 @@
           summary="Binary Interactions"
           emptyText="No interactions found matching the query."
           rows="#{userQuery.pageSize}" rowBandingInterval="1"
-          partialTriggers=":interactionResults:btnToogleProps  :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn">
+          partialTriggers=":interactionResults:btnToogleProps :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn">
 
 <f:facet name="actions">
     <tr:panelHorizontalLayout>
@@ -51,6 +51,7 @@
         </tr:commandLink>
 
         <tr:panelGroupLayout layout="horizontal">
+
             <tr:selectOneChoice id="exportFormatSelect"
                                 label="Export to:" unselectedLabel="Select format..."
                                 value="#{searchBean.exportFormat}" autoSubmit="true">
@@ -67,11 +68,13 @@
                          targetFrame="_blank"
                          destination="/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}"/>
 
-            <tr:commandButton id="btnConfigureColumn" text="Change Columns Displayed" action="dialog:configure.columns" partialSubmit="true" returnListener="#{configureColumn.handleColumnDialogReturn}"
-                                     windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
+            <tr:commandButton id="btnConfigureColumn" text="Change Columns Displayed" action="dialog:configure.columns"
+                              partialSubmit="true" returnListener="#{configureColumn.handleColumnDialogReturn}"
+                              windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
 
-             <tr:commandButton text="Modify Filters" action="dialog:filters" partialSubmit="true" returnListener="#{searchBean.refreshWhenClosingDialog}"
-                                     windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
+             <tr:commandButton text="Modify Filters" action="dialog:filters" partialSubmit="true"
+                               returnListener="#{searchBean.refreshWhenClosingDialog}"
+                               windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
                         
             <!--<tr:selectOneChoice id="listSortableColumns" label="Sort Rows By: " value="#{searchBean.userSortColumn}" autoSubmit="true" valueChangeListener="#{searchBean.userSort}">-->
                 <!--<tr:selectItem label="Relevance Score" value="relevancescore_s"/>-->
@@ -84,7 +87,6 @@
                 <!--<tr:selectItem label="Ascending" value="true"/>-->
                 <!--<tr:selectItem label="Descending" value="false"/>-->
             <!--</tr:selectOneChoice>-->
-
 
         </tr:panelGroupLayout>
 
@@ -327,6 +329,7 @@
 <tr:column headerText="#{messages['interaction.sourcedb']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.sourcedb')}" styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
 </tr:column>
+
 <tr:column headerText="#{messages['interaction.ac']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.ac')}" styleClass="cellTextInteraction">
     <!--<iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>-->
     <c:set var="interactionAc" value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactionAcs)}" />
@@ -334,6 +337,7 @@
         <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
     </tr:commandLink>
 </tr:column>
+
 <tr:column headerText="#{messages['interaction.confidencevalue']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.confidencevalue')}"
            styleClass="cellTextInteraction">
     <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
@@ -344,22 +348,27 @@
             </span>
     </tr:iterator>
 </tr:column>
+
 <tr:column headerText="#{messages['moleculeA.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.exprole')}"
            styleClass="cellTextCompound">
     <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
+
 <tr:column headerText="#{messages['moleculeB.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.exprole')}"
            styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
+
 <tr:column headerText="#{messages['moleculeA.biorole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.biorole')}"
            styleClass="cellTextCompound">
     <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
 </tr:column>
+
 <tr:column headerText="#{messages['moleculeB.biorole']}" rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.biorole')}"
            styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
 </tr:column>
+
 <tr:column rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.properties')}" styleClass="cellTextCompound">
     <f:facet name="header">
         <tr:panelGroupLayout layout="vertical">
@@ -379,6 +388,7 @@
     </iam:collapsibleIterator>
 
 </tr:column>
+
 <tr:column headerText="#{messages['moleculeB.properties']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.properties')}"
            styleClass="cellTextTarget">
     <iam:collapsibleIterator id="csd_propsB_#{status.index}"
@@ -393,22 +403,27 @@
                    disabled="#{xrefUrl == null or xrefUrl == '#'}"/>
     </iam:collapsibleIterator>
 </tr:column>
+
 <tr:column headerText="#{messages['moleculeA.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.interactortype')}"
            styleClass="cellTextCompound">
     <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
 </tr:column>
+
 <tr:column headerText="#{messages['moleculeB.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.interactortype')}"
            styleClass="cellTextTarget">
     <iav:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>
 </tr:column>
+
 <tr:column headerText="#{messages['interaction.hostorganism']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.hostorganism')}"
            styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
 </tr:column>
+
 <tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.expansionmethod')}"
            styleClass="cellTextInteraction">
     <tr:outputText value="#{binaryInteraction.expansionMethod}"/>
 </tr:column>
+
 <tr:column headerText="#{messages['interaction.dataset']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.dataset')}" styleClass="cellTextInteraction">
     <tr:iterator var="dataset" value="#{binaryInteraction.dataset}" rows="0">
                         <span style="display:block">
