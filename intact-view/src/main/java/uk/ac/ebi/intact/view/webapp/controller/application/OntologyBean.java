@@ -146,6 +146,12 @@ public class OntologyBean implements Serializable {
             return "*";
         }
 
+        //some terms may contains hyphen eg: S-adenosyl-L-methionine,
+        // and searching for adenosyl-* will not return any result as - is a Lucene Keyword
+        if ( strFieldValue.contains( "-" ) ) {
+            strFieldValue = strFieldValue.replaceAll( "-", "\\\\-" );
+            addWildcard = false;
+        }
         if (addWildcard) {
             if ( !strFieldValue.endsWith( "*" ) ) {
                 strFieldValue = strFieldValue + "*";
