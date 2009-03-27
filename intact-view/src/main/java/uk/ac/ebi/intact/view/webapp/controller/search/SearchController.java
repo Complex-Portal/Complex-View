@@ -232,7 +232,7 @@ public class SearchController extends JpaBaseController {
             final String query = solrQuery.getQuery();
             if ( query != null && ( query.startsWith( "*" ) || query.startsWith( "?" ) ) ) {
                 userQuery.setSearchQuery( "*:*" );
-                addErrorMessage( "Your query is not correctly formatted",
+                addErrorMessage( "Your query '"+ query +"' is not correctly formatted",
                                  "Currently we do not support queries prefixed with wildcard characters such as '*' or '?'. " +
                                  "However, wildcard characters can be used anywhere else in one's query (eg. g?vin or gav* for gavin). " +
                                  "Please do reformat your query." );
