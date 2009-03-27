@@ -148,7 +148,7 @@ public class ProteinSearchAction extends AbstractEditorAction {
 
         UniprotService uniprotRemoteService = new UniprotRemoteService();
         ProteinService proteinService = ProteinServiceFactory.getInstance().buildProteinService( uniprotRemoteService );
-        proteinService.setBioSourceService( BioSourceServiceFactory.getInstance().buildBioSourceService( new NewtTaxonomyService() ) );
+        proteinService.setBioSourceService( BioSourceServiceFactory.getInstance().buildBioSourceService() );
 
         log.debug("ProteinSearchAction.execute 1");
         ResultWrapper rw = null;

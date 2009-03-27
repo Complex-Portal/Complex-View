@@ -521,6 +521,9 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             return "";
         }
         String topic = EditorService.getTopic(getEditClass());
+        if ( "InteractionImpl".equals( topic ) ) {
+            topic = "Interaction";
+        }
         return "<a href=\"" + "javascript:show('" + topic + "', '" + getShortLabel() + "')\""
                 + ">" + getAc() + "</a>";
     }
