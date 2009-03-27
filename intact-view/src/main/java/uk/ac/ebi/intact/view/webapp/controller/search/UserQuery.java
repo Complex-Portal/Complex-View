@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
-import uk.ac.ebi.intact.view.webapp.util.OntologyTerm;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
@@ -36,8 +35,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
+import com.google.common.collect.Maps;
+
 /**
- * TODO comment that class header
+ * User query object wrapper.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -48,6 +49,11 @@ import java.util.*;
 public class UserQuery {
 
     private static final Log log = LogFactory.getLog( UserQuery.class );
+    private static final String TERM_NAME_PARAM = "termName";
+
+    private enum BooleanOperator {
+        AND, OR;
+    }
 
     @Autowired
     private FilterPopulatorController filterPopulator;
@@ -65,7 +71,7 @@ public class UserQuery {
     private String[] goTerms;
     private String[] chebiTerms;
 
-    private Map<String,String> termMap= new HashMap<String,String>();
+    private Map<String, String> termMap = Maps.newHashMap();
 
     //for sorting and ordering
     private static final String DEFAULT_SORT_COLUMN = "rigid";
@@ -96,6 +102,7 @@ public class UserQuery {
 
         chebiTerms = new String[0];
         goTerms = new String[0];
+        termMap.clear();
     }
 
     public void clearSearchFilters(ActionEvent evt) {
@@ -117,7 +124,7 @@ public class UserQuery {
             query.addFilterQuery("+(detmethod:"+ontologySearch+" type:"+ontologySearch+" properties:"+ontologySearch+")");
         }
 
-        addFilteredQuery(query, "dataset", filterPopulator.getDatasets(), datasets);
+        addFilteredQuery(query, "dataset", filterPopulator.getDatasets(), selectDatasetNames( datasets ));
         addFilteredQuery(query, "source", filterPopulator.getSources(), sources);
         addFilteredQuery(query, "expansion", filterPopulator.getExpansions(), expansions);
 
@@ -125,6 +132,25 @@ public class UserQuery {
         addFilteredQuery(query, "chebi_expanded_id", chebiTerms);
 
         return query;
+    }
+
+    /**
+     * Strips the dataset of their dataset definition, only keeping the dataset name.
+     * @param datasets an array of datasets, foramtted as: 'name - description'
+     * @return a null array of the same length as datasets containing only the names of the given datasets.
+     */
+    private String[] selectDatasetNames( String[] datasets ) {
+        String[] datasetNames = new String[datasets.length];
+        for ( int i = 0; i < datasets.length; i++ ) {
+            String dataset = datasets[i];
+            final int idx = dataset.indexOf( '-' );
+            String name = dataset;
+            if( idx != -1 ) {
+                name = dataset.substring( 0, idx ).trim();
+            }
+            datasetNames[i] = name ;
+        }
+        return datasetNames;
     }
 
     public String getDisplayQuery() {
@@ -137,46 +163,65 @@ public class UserQuery {
         return query;
     }
 
-    public String getHierarchViewImageUrl() {
-        StringBuilder sb = new StringBuilder(256);
+    private SolrQuery createSolrQueryForHierarchView() {
+        // export all available rows
+        return createSolrQuery().setRows( 0 );
+    }
 
-        sb.append(intactViewConfiguration.getHierarchViewImageUrl());
-        sb.append("?sq=");
+    /**
+     * Builds a String representation of a Solr query without size constraint. The query would return all document hit.
+     * @return a non null string.
+     */
+    public String getSolrQueryString() {
+        return getSolrQueryString( createSolrQuery().setRows( 0 ));
+    }
 
-        try {
-            sb.append(URLEncoder.encode(createSolrQuery().toString(), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+    private String getSolrQueryString( SolrQuery query ) {
+        StringBuilder sb = new StringBuilder(128);
+        boolean first=true;
+        final Iterator<String> namesIterator = query.getParameterNamesIterator();
+        while ( namesIterator.hasNext() ) {
+            String paramName =  namesIterator.next();
+            final String[] params = query.getParams( paramName );
+
+            for (String param : params) {
+                if (!first) sb.append('&');
+                first=false;
+                sb.append(paramName);
+                sb.append('=');
+                if( param != null ) {
+                    sb.append( param );
+                }
+            }
         }
-
         return sb.toString();
     }
 
+    public String getHierarchViewImageUrl() {
+        return buildHierarchViewURL( intactViewConfiguration.getHierarchViewImageUrl() );
+    }
 
     public String getHierarchViewSearchUrl() {
-        StringBuilder sb = new StringBuilder(256);
-
-        sb.append(intactViewConfiguration.getHierarchViewSearchUrl());
-        sb.append("?sq=");
-
-        try {
-            sb.append(URLEncoder.encode(createSolrQuery().toString(), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-
-        return sb.toString();
+        return buildHierarchViewURL( intactViewConfiguration.getHierarchViewSearchUrl() );
     }
 
     public String getHierarchViewUrl() {
+        return buildHierarchViewURL( intactViewConfiguration.getHierarchViewUrl() );
+    }
+
+    private String buildHierarchViewURL( String prefix ) {
         StringBuilder sb = new StringBuilder(256);
 
-        sb.append(intactViewConfiguration.getHierarchViewUrl());
+        sb.append(prefix);
         sb.append("?sq=");
 
         try {
-            sb.append(URLEncoder.encode(createSolrQuery().toString(), "UTF-8"));
+            final SolrQuery solrQuery = createSolrQueryForHierarchView();
+            final String q = getSolrQueryString( solrQuery );
+            final String qe = URLEncoder.encode( q, "UTF-8" );
+            sb.append( qe );
         } catch (UnsupportedEncodingException e) {
+            // cannot happen
             throw new RuntimeException(e);
         }
 
@@ -191,8 +236,7 @@ public class UserQuery {
 
     private void addFilteredQuery(SolrQuery query, String field, String[] items) {
         if (items == null || items.length == 0) return;
-        
-        query.addFilterQuery("+"+field+":"+createLuceneQuery(Arrays.asList(items)));
+        query.addFilterQuery( "+" + field + ":" + createLuceneQuery(Arrays.asList(items), BooleanOperator.AND ));
     }
 
     private void addFilteredQuery(SolrQuery query,
@@ -226,39 +270,39 @@ public class UserQuery {
         }
 
         if (!included.isEmpty()) {
-            String lq = createLuceneQuery(included);
-            query.addFilterQuery("+"+field+":"+lq);
+            String lq = createLuceneQuery(included, BooleanOperator.OR );
+            query.addFilterQuery( "+" + field + ":" + lq );
         }
 
         if (!excluded.isEmpty()) {
-            String lq = createLuceneQuery(excluded);
-            query.addFilterQuery("-"+field+":"+lq);
+            String lq = createLuceneQuery(excluded, BooleanOperator.OR );
+            query.addFilterQuery( "-" + field + ":" + lq );
         }
     }
 
-    private String createLuceneQuery(Collection<String> items) {
-        StringBuilder sb = new StringBuilder(items.size()*64);
+    private String createLuceneQuery(Collection<String> items, BooleanOperator operator) {
+        StringBuilder sb = new StringBuilder( items.size() * 64 );
 
         sb.append('(');
+        String operatorStr = operator.equals(BooleanOperator.AND) ? "+" : "";
 
         for (String item : items) {
-            sb.append('\"').append(item).append("\" ");
-
+            sb.append(operatorStr).append('\"').append(item).append("\" ");
         }
-        sb.append(')');
+        sb.deleteCharAt( sb.length() - 1 ).append(')');
         return sb.toString();
     }
 
     public void addGoTerm(ActionEvent evt) {
         String param = JsfUtils.getFirstParamValue(evt);
-        String termName = (String)JsfUtils.getParameterValue("termName", evt);
+        String termName = (String)JsfUtils.getParameterValue( TERM_NAME_PARAM, evt);
         goTerms = (String[])ArrayUtils.add(goTerms, param);
         termMap.put( param,termName );
     }
 
     public void addChebiTerm(ActionEvent evt) {
         String param = JsfUtils.getFirstParamValue(evt);
-        String termName = (String)JsfUtils.getParameterValue("termName", evt);
+        String termName = (String)JsfUtils.getParameterValue( TERM_NAME_PARAM, evt);
         chebiTerms = (String[]) ArrayUtils.add(chebiTerms, param);
         termMap.put( param,termName );
     }
@@ -310,7 +354,6 @@ public class UserQuery {
     public void setOntologySearchQuery(String ontologySearchQuery) {
         this.ontologySearchQuery = ontologySearchQuery;
     }
-
 
     public String[] getSources() {
         return sources;
