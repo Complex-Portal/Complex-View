@@ -18,6 +18,9 @@ package uk.ac.ebi.intact.view.webapp.io;
 import org.apache.lucene.search.Sort;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.common.params.CommonParams;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Source;
@@ -59,6 +62,8 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
  */
 public class BinaryInteractionsExporter {
 
+    private static final Log log = LogFactory.getLog( BinaryInteractionsExporter.class );
+
     private SolrServer solrServer;
     private String sortColumn;
     private SolrQuery.ORDER sortOrder;
@@ -73,17 +78,17 @@ public class BinaryInteractionsExporter {
         this.sortOrder = sortOrder;
     }
 
-    public void searchAndExport(OutputStream os, String searchQuery, String format) throws IOException {
-        if ("mitab".equals(format)) {
-            exportToMiTab(os, searchQuery);
-        } else if ("mitab_intact".equals(format)) {
-            exportToMiTabIntact(os, searchQuery);
-        } else if ("xml_2_53".equals(format) || "xml_2_54".equals(format)) {
-            exportToMiXml(os, searchQuery,format);
-        } else if ("xml_html".equals(format)) {
-            exportToMiXmlTransformed(os, searchQuery);
+    public void searchAndExport( OutputStream os, String searchQuery, String format ) throws IOException {
+        if ( "mitab".equals( format ) ) {
+            exportToMiTab( os, searchQuery );
+        } else if ( "mitab_intact".equals( format ) ) {
+            exportToMiTabIntact( os, searchQuery );
+        } else if ( "xml_2_53".equals( format ) || "xml_2_54".equals( format ) ) {
+            exportToMiXml( os, searchQuery, format );
+        } else if ( "xml_html".equals( format ) ) {
+            exportToMiXmlTransformed( os, searchQuery );
         } else {
-            throw new IntactViewException("Format is not correct: " + format + ". Possible values: mitab, mitab_intact.");
+            throw new IntactViewException( "Format is not correct: " + format + ". Possible values: mitab, mitab_intact." );
         }
     }
     
@@ -239,18 +244,27 @@ public class BinaryInteractionsExporter {
                 if ( param.contains( "=" ) ) {
                     final String[] keyval = param.split( "=" );
                     if ( keyval != null && keyval.length == 2 ) {
-                        if ( "q".equals( keyval[0] ) ) {
+                        if ( CommonParams.Q.equals( keyval[0] ) ) {
                             if("*%3A*".equals(keyval[1])){
                               keyval[1]="*:*";
                             }
                             solrQuery.setQuery( keyval[1] );
-                        }
+                        } else if ( CommonParams.FQ.equals( keyval[0] ) ) {
+                            if("*%3A*".equals(keyval[1])){
+                              keyval[1]="*:*";
+                            }
+                            solrQuery.setParam( CommonParams.FQ, keyval[1] );
+                        } 
                     }
                 }
-
             }
-
         }
+
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Given Solr query:     " + searchQuery );
+            log.trace( "converted Solr Query: " + solrQuery.toString() );
+        }
+
         return solrQuery;
     }
 }
