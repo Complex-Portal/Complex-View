@@ -25,6 +25,9 @@
                     <tr:goLink destination="#{userQuery.hierarchViewSearchUrl}" targetFrame="_blank">
                         <tr:image source="#{userQuery.hierarchViewImageUrl}&amp;h=700&amp;w=700" inlineStyle="border-width:0"/>
                     </tr:goLink>
+                    <br/>
+
+                    <tr:outputText value="Click on the image above to open this network in HierarchView." />
 
                 </trh:cellFormat>
 
@@ -33,7 +36,7 @@
                     <tr:panelBox text="Open in Cytoscape" inlineStyle="width:250px;">
 
                         <tr:panelHorizontalLayout halign="center">
-                            <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_53">
+                            <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
                                 <tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Cytoscape"/>
                             </tr:goLink>
                         </tr:panelHorizontalLayout>
@@ -44,8 +47,16 @@
                         <tr:goLink destination="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" targetFrame="_blank">
                             <tr:image source="/images/question_icon_red.gif" shortDesc="What is a WebStart application ?"/>
                         </tr:goLink>
-                        <tr:outputText value=" version of " />
-                        <tr:goLink text="Cytoscape 2.6.2" destination="http://www.cytoscape.org/" targetFrame="_blank"/>
+                        <tr:outputText value=" version of Cytoscape 2.6.2 " />
+
+                        <tr:goLink destination="http://www.cytoscape.org/" targetFrame="_blank">
+                            <tr:image source="/images/question_icon_red.gif" shortDesc="What is Cytoscape ?"/>
+                        </tr:goLink>
+
+                        <br/>
+                        <br/>
+
+                        <tr:outputText value="Click on the Cytoscape icon above to open Cytoscape." />
 
                     </tr:panelBox>
 
