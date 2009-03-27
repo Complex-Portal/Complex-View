@@ -160,6 +160,9 @@ public class UserQuery {
             query = "*";
         }
 
+        if ( termMap.containsKey( query ) ) {
+            query = query + " (" + termMap.get( query ) + ")";
+        }
         return query;
     }
 
@@ -452,5 +455,13 @@ public class UserQuery {
         }
 
         return selectItems;
+    }
+
+    public Map<String, String> getTermMap() {
+        return termMap;
+    }
+
+    public void setTermMap( Map<String, String> termMap ) {
+        this.termMap = termMap;
     }
 }

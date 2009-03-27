@@ -119,7 +119,7 @@ public class ConfigureColumnBean {
     private boolean isFirstAuthorSelected;
     private boolean isPubMedIdentifierSelected = true;
     private boolean isInteractionTypeSelected;
-    private boolean isInteractionDetectionMethodSelected;
+    private boolean isInteractionDetectionMethodSelected =true;
     private boolean isSourceDatabaseSelected;
     private boolean isInteractionACSelected = true;
     private boolean isConfidenceValueSelected;
@@ -248,6 +248,7 @@ public class ConfigureColumnBean {
             columns.add( PUBMED_IDENTIFIER );
             columns.add( EXPANSION_METHOD );
             columns.add( INTERACTION_AC );
+            columns.add( INTERACTION_DETECTION_METHOD );
         }
         return columns;
     }

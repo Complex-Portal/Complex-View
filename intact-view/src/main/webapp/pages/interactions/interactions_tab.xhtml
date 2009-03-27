@@ -321,7 +321,7 @@
     <iav:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.detectionmethod']}" rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.detectionmethod')}"
+<tr:column headerText="#{messages['interaction.detectionmethod']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.detectionmethod')}"
            styleClass="cellTextInteraction">
     <iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
 </tr:column>

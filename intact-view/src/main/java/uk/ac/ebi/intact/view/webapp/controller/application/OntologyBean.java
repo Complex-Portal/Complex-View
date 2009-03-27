@@ -26,6 +26,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
+import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.*;
 
@@ -39,6 +40,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 /**
  * Backing bean for Ontology Search and Autocomplete feature
  *
@@ -55,6 +57,8 @@ public class OntologyBean implements Serializable {
 
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
+    @Autowired
+    private UserQuery userQuery;
 
     public OntologyBean() {
         String tempDir = System.getProperty("java.io.tmpdir");
@@ -128,13 +132,27 @@ public class OntologyBean implements Serializable {
         }
 
         List<OntologyTerm> result = search( formattedQuery );
+        List<OntologyTerm> otherResult = Lists.newArrayList();
 
         if (result.size() > intactViewConfiguration.getMaxOntologySuggestions()) {
             final int furtherTermCount = result.size() - intactViewConfiguration.getMaxOntologySuggestions();
+            otherResult = result.subList(intactViewConfiguration.getMaxOntologySuggestions()-1,result.size()  );
             result = result.subList(0, intactViewConfiguration.getMaxOntologySuggestions()-1);
-            result.add(new OntologyTerm("*", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na"));
+
+            int otherCount =0;
+            for ( OntologyTerm ontologyTerm : otherResult ) {
+               otherCount = otherCount + ontologyTerm.getCount();
+            }
+            //result.add(new OntologyTerm("*", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na"));
+            result.add(new OntologyTerm("*", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na", otherCount ));
         }
 
+        //clear the term map otherwise it keeps growing
+        //this termmap is used for display query of Go term with id:name, Ref: getDisplayQuery() in UserQuery.java
+           userQuery.getTermMap().clear();
+        for ( OntologyTerm ontologyTerm : result ) {
+           userQuery.getTermMap().put( ontologyTerm.getIdentifier(), ontologyTerm.getLabel() );
+        }
         final ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{autocompleteResult}", Collection.class);
         ve.setValue(facesContext.getELContext(), result);
     }
