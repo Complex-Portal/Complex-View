@@ -47,7 +47,7 @@
 
                 <trh:rowLayout>
                     <trh:cellFormat halign="center" width="15">
-                        <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                        <tr:image source="/images/warning_icon.png" rendered="#{displayWarning}"/>
                     </trh:cellFormat>
                     <trh:cellFormat>
                         <tr:goLink text="By Interpro Domain" targetFrame="_blank"
@@ -57,7 +57,7 @@
 
                 <trh:rowLayout>
                     <trh:cellFormat halign="center" width="15">
-                        <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                        <tr:image source="/images/warning_icon.png" rendered="#{displayWarning}"/>
                     </trh:cellFormat>
                     <trh:cellFormat>
 
@@ -70,7 +70,7 @@
 
                 <trh:rowLayout>
                     <trh:cellFormat halign="center" width="15">
-                        <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                        <tr:image source="/images/warning_icon.png" rendered="#{displayWarning}"/>
                     </trh:cellFormat>
                     <trh:cellFormat>
                         <tr:goLink text="By Chromosomal Location" targetFrame="_blank"
@@ -80,7 +80,7 @@
 
                 <trh:rowLayout>
                     <trh:cellFormat halign="center" width="15">
-                        <tr:image source="/images/warning.gif" rendered="#{displayWarning}"/>
+                        <tr:image source="/images/warning_icon.png" rendered="#{displayWarning}"/>
                     </trh:cellFormat>
                     <trh:cellFormat>
                         <tr:goLink text="By mRNA expression" targetFrame="_blank"
@@ -91,13 +91,13 @@
             </trh:tableLayout>
 
             <tr:panelBox text="Numerous interactors available" background="dark"
-                         icon="/images/warning.gif"
+                         icon="/images/warning_icon.png"
                          rendered="#{displayWarning}">
                 <tr:outputText value="Please be aware that due to the number of interaction currently available in
                                       your dataset, only the first #{userQuery.pageSize} interactor identifiers will be passed on to
                                       third party resources. In order to make this clear, we will display the icon"/>
                 <tr:spacer width="3" />
-                <tr:image source="/images/warning.gif"/>
+                <tr:image source="/images/warning_icon.png"/>
                 <tr:spacer width="3" />
                 <tr:outputText value="whenever this restriction applies."/>
             </tr:panelBox>
