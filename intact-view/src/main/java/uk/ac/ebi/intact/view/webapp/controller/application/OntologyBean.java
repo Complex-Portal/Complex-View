@@ -108,8 +108,7 @@ public class OntologyBean implements Serializable {
         return ontologiesIndexSearcher.search(query, sort);
     }
 
-//for Autocomplete box 
-
+    //for Autocomplete box
 
     @SuppressWarnings( "unchecked" )
     public void fillAutocomplete( ActionEvent event ) throws IOException, ParseException {
