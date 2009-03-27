@@ -19,6 +19,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
 import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
@@ -30,6 +32,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
 
 
 /**
@@ -37,6 +40,8 @@ import java.io.IOException;
  * @version $Id$
  */
 public class ExportServlet extends HttpServlet {
+
+    private static final Log log = LogFactory.getLog( ExportServlet.class );
 
     public static final String PARAM_SORT = "sort";
     public static final String PARAM_SORT_ASC = "asc";
@@ -51,7 +56,6 @@ public class ExportServlet extends HttpServlet {
 
         ServletContext context = getServletContext();
         applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
-
     }
 
     @Override
@@ -61,6 +65,15 @@ public class ExportServlet extends HttpServlet {
         SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
 
         String searchQuery = request.getParameter(PARAM_QUERY);
+
+        if ( log.isDebugEnabled() ) {
+            log.debug( "Export query prior to decoding: " + searchQuery );
+            if( searchQuery != null ) {
+                searchQuery = URLDecoder.decode( searchQuery, "UTF-8" );
+                log.debug( "Export query after decoding: " + searchQuery );
+            }
+        }
+
         String format = request.getParameter(PARAM_FORMAT);
 
         String sortColumn = request.getParameter(PARAM_SORT);
@@ -69,6 +82,4 @@ public class ExportServlet extends HttpServlet {
         BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(solrServer, sortColumn, (Boolean.parseBoolean(sortAsc))? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
         exporter.searchAndExport(response.getOutputStream(), searchQuery, format);
     }
-
-
 }
