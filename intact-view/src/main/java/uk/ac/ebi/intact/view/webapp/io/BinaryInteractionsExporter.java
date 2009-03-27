@@ -250,9 +250,6 @@ public class BinaryInteractionsExporter {
                             }
                             solrQuery.setQuery( keyval[1] );
                         } else if ( CommonParams.FQ.equals( keyval[0] ) ) {
-                            if("*%3A*".equals(keyval[1])){
-                              keyval[1]="*:*";
-                            }
                             solrQuery.setParam( CommonParams.FQ, keyval[1] );
                         } 
                     }
