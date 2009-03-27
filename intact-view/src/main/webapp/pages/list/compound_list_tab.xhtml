@@ -67,7 +67,17 @@
                 <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
                     <f:facet name="drugbank">
                         <h:panelGroup>
-                            <iav:imageCompoundStructure id="#{xref.identifier}"/>
+                            <iav:imageCompoundStructure id="#{xref.primaryId}"/>
+                            <br/>
+                        </h:panelGroup>
+                    </f:facet>
+                    <f:facet name="chebi">
+                        <h:panelGroup>
+                            <h:outputLink value="http://www.ebi.ac.uk/chebi/displayImage.do?defaultImage=true&amp;imageIndex=0&amp;chebiId=#{xref.primaryId}" target="_blank">
+                            <tr:image source="http://www.ebi.ac.uk/chebi/displayImage.do?defaultImage=true&amp;imageIndex=0&amp;chebiId=#{xref.primaryId}"
+                                      shortDesc="#{xref.primaryId}" inlineStyle="height:100px;width:100px;border-width:0"/>
+                            </h:outputLink>
+                     
                             <br/>
                         </h:panelGroup>
                     </f:facet>
