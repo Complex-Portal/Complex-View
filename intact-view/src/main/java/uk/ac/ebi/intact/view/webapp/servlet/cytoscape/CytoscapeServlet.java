@@ -15,20 +15,17 @@
  */
 package uk.ac.ebi.intact.view.webapp.servlet.cytoscape;
 
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletContext;
 import java.io.*;
-import java.text.MessageFormat;
 import java.net.URLEncoder;
-
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 /**
  * Servlet used to export a JNLP file in order to laod Cytoscape as a web start.
@@ -38,6 +35,10 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
  * @since 0.9
  */
 public class CytoscapeServlet extends HttpServlet {
+
+    private static final Log log = LogFactory.getLog( CytoscapeServlet.class );
+
+    public static final String DATA_URL = "intactDataURL";
 
     public static final String PARAM_QUERY = "query";
     public static final String PARAM_FORMAT = "format";
@@ -51,37 +52,56 @@ public class CytoscapeServlet extends HttpServlet {
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 
         String searchQuery = request.getParameter( PARAM_QUERY );
-        searchQuery = encodeURL( searchQuery );
-        String format = request.getParameter( PARAM_FORMAT );
 
-        String requestURI = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-        String urlToXmlExportServlet = requestURI + "/export?query=" + searchQuery + "&format=" + format;
+        if ( log.isDebugEnabled() ) log.debug( "Generating a JNLP file to start Cytoscape with query: " + searchQuery );
+
+        searchQuery = encodeURL( searchQuery );
+        if ( log.isTraceEnabled() ) log.trace( "Encoded query: " + searchQuery );
+
+        final String format = request.getParameter( PARAM_FORMAT );
+
+        final String serverContext = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        final String exportUrl = serverContext + "/export?query=" + searchQuery + "&format=" + format;
+
         response.setContentType( "application/x-java-jnlp-file" );
 
-        // Read the cytoscape.jnlp from from WEB-INF directory.
+        // Read the template cytoscape.jnlp from from WEB-INF directory.
         String filename = "/WEB-INF/cytoscape/cytoscape.jnlp";
         ServletContext context = getServletContext();
         InputStream is = context.getResourceAsStream( filename );
-        if ( is != null ) {
-            BufferedReader reader = new BufferedReader( new InputStreamReader( is ) );
-            PrintWriter writer = response.getWriter();
-            String text = "";
 
-            while ( ( text = reader.readLine() ) != null ) {
-                if ( text.contains( "filePath" ) ) {
-                    text = text.replace( "filePath", urlToXmlExportServlet );
+        PrintWriter writer = null;
+        try {
+            if ( is != null ) {
+                BufferedReader reader = new BufferedReader( new InputStreamReader( is ) );
+                writer = response.getWriter();
+                String text = null;
+
+                if ( log.isTraceEnabled() ) log.trace( "Starting JNLP export ..." );
+
+                while ( ( text = reader.readLine() ) != null ) {
+                    if ( text.contains( DATA_URL ) ) {
+                        text = text.replace( DATA_URL, exportUrl );
+                    }
+
+                    if ( log.isTraceEnabled() ) log.trace( text );
+
+                    writer.println( text );
+                    writer.flush();
                 }
-                writer.println( text );
+                if ( log.isTraceEnabled() ) log.trace( "Completed JNLP export." );
             }
-            writer.close();
+        } finally {
+            if ( writer != null ) {
+                writer.close();
+            }
         }
     }
 
-    private static String encodeURL( String stringToBeEncoded ) throws UnsupportedEncodingException {
-        String encodedString = "";
-        if ( stringToBeEncoded != null ) {
-            encodedString = URLEncoder.encode( stringToBeEncoded, "UTF-8" );
+    private static String encodeURL( String url ) throws UnsupportedEncodingException {
+        if ( url == null ) {
+            throw new IllegalArgumentException( "You must give a non null url" );
         }
-        return encodedString;
+        return URLEncoder.encode( url, "UTF-8" );
     }
 }
