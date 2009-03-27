@@ -178,5 +178,4 @@ public class FilterPopulatorController {
     public List<SelectItem> getExpansionSelectItems() {
         return expansionSelectItems;
     }
-
 }
