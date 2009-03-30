@@ -66,7 +66,7 @@ public class BrowseController extends JpaBaseController {
     @Autowired
     private SearchController searchController;
 
-    private int maxSize = 50;
+    private int maxSize = 200;
 
     private List<String> uniprotAcs;
     private List<String> geneNames;
