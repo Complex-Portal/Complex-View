@@ -350,6 +350,10 @@ public class UserQuery {
         this.ontologySearchQuery = null;
     }
 
+    public void resetSearchQuery(){
+        this.searchQuery = "*:*";
+    }
+
     public String getOntologySearchQuery() {
         return ontologySearchQuery;
     }
