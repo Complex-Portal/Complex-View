@@ -32,32 +32,37 @@
 
             <trh:tableLayout width="100%">
                 <trh:rowLayout>
-                    <trh:cellFormat width="30%">
-            <c:set var="interaction" value="#{detailsBean.interaction}"/>
-            <tr:panelFormLayout inlineStyle="width:100%">
+                    <trh:cellFormat width="30%" valign="top">
+                        <c:set var="interaction" value="#{detailsBean.interaction}"/>
+                        <tr:panelFormLayout inlineStyle="width:100%">
 
-                <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{interaction.ac}"/>
-                </tr:panelLabelAndMessage>
+                            <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                                <tr:outputText value="#{interaction.ac}"/>
+                            </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{interaction.shortLabel}"/>
-                </tr:panelLabelAndMessage>
+                            <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                                <tr:outputText value="#{interaction.shortLabel}"/>
+                            </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Participant count:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{fn:length( interaction.components )}"/>
-                </tr:panelLabelAndMessage>
+                            <tr:panelLabelAndMessage label="Participant count:" labelStyle="font-weight:bold;">
+                                <tr:outputText value="#{fn:length( interaction.components )}"/>
+                            </tr:panelLabelAndMessage>
 
-                <tr:panelLabelAndMessage label="Similar interaction count:" labelStyle="font-weight:bold;">
-                    <tr:outputText value="#{fn:length( matrix.similarInteractions )}"/>
-                </tr:panelLabelAndMessage>
+                            <tr:panelLabelAndMessage label="Similar interaction count:" labelStyle="font-weight:bold;">
+                                <tr:outputText value="#{fn:length( matrix.similarInteractions )}"/>
+                            </tr:panelLabelAndMessage>
 
-            </tr:panelFormLayout>
+                        </tr:panelFormLayout>
                     </trh:cellFormat>
                     <trh:cellFormat width="70%" halign="right" valign="top">
                         <tr:panelBox text="Note:" background="dark">
-                            <tr:outputText
-                                    value="This view shows interactions similar to ${interaction.shortLabel}. That is, having at least one participant in common."/>
+                            <tr:outputText value="This view shows interactions similar to ${interaction.shortLabel}. That is, having at least one participant in common."/>
+                            <br/>
+                            <tr:panelAccordion discloseNone="true">
+                                <tr:showDetailItem text="What does that table mean ?" immediate="true">
+                                    <tr:image source="/images/documentation/complex-table-doc2.png" />
+                                </tr:showDetailItem>
+                            </tr:panelAccordion>
                         </tr:panelBox>
                     </trh:cellFormat>
                 </trh:rowLayout>
@@ -116,10 +121,15 @@
 
                         <td align="left">
                             <!-- Cell necessary to cope with the end of the table header-->
-                            <tr:panelHorizontalLayout rendered="#{fn:length(si.others) gt 0}">
+                            <tr:panelHorizontalLayout>
                                 <tr:spacer width="7"/>
-                                <tr:outputText value="o:" inlineStyle="font-weight:bold; color:#bfbfbf;"/>
-                                <tr:outputText value="#{fn:length(si.others)}" inlineStyle="color:#000000;"/>
+                                <tr:outputText value="#{si.memberCount}"
+                                               inlineStyle="color:#a7cf9b;font-weight:bold;"
+                                               shortDesc="Count of matching molecules" /> <!-- green -->
+                                <tr:outputText value=" / " />
+                                <tr:outputText value="#{si.totalParticipantCount}"
+                                               inlineStyle="color:#a7cf9b;font-weight:bold;"
+                                               shortDesc="Total count of participants in this interaction" />   <!-- red -->
                             </tr:panelHorizontalLayout>
                         </td>
 
@@ -153,11 +163,10 @@
                             <trh:tableLayout cellSpacing="10">
                                 <trh:rowLayout>
                                     <trh:cellFormat width="10">  <!-- light red cell -->
-                                        <tr:outputText value="o:" inlineStyle="font-weight:bold; color:#bfbfbf;"/>
-                                        <tr:outputText value="x" inlineStyle="color:#000000;"/>
+                                        <tr:outputText value="x/y" inlineStyle="font-weight:bold; color:#a7cf9b;"/>
                                     </trh:cellFormat>
                                     <trh:cellFormat >
-                                        <tr:outputText value="Count of other molecules present in this interaction"/>
+                                        <tr:outputText value="Count of matching molecules / Total count of participants in this interaction"/>
                                     </trh:cellFormat>
                                 </trh:rowLayout>
                             </trh:tableLayout>

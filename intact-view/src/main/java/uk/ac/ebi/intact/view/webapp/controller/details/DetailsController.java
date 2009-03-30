@@ -230,7 +230,7 @@ public class DetailsController extends JpaBaseController {
                 if ( map.containsKey( key ) ) {
                     si = map.get( key );
                 } else {
-                    si = new SimilarInteraction( i.getAc(), i.getShortLabel() );
+                    si = new SimilarInteraction( i.getAc(), i.getShortLabel(), i.getComponents().size() );
                     map.put( key, si );
                 }
 
@@ -263,7 +263,7 @@ public class DetailsController extends JpaBaseController {
             for ( SimilarInteraction si : similarInteractions ) {
 
                 log.debug( StringUtils.rightPad( si.getShortLabel(), 20 ) + " " +
-                           StringUtils.rightPad( si.getMemberCount() + "/" + si.getOthersCount(), 10 ) + "\t[" +
+                           StringUtils.rightPad( si.getMemberCount() + "/" + si.getTotalParticipantCount(), 10 ) + "\t[" +
                            printSimpleInteractors( si.getMembers() ) + "]" );
             }
         }
@@ -277,10 +277,10 @@ public class DetailsController extends JpaBaseController {
         } );
 
         matrix = new SimilarInteractionsMatrix( new SimpleInteractor( interaction.getAc(),
-                                                                    interaction.getShortLabel(),
-                                                                    interaction.getFullName() ),
-                                              similarInteractions,
-                                              orderedReferenceMembers );
+                                                                      interaction.getShortLabel(),
+                                                                      interaction.getFullName() ),
+                                                similarInteractions,
+                                                orderedReferenceMembers );
 
         tableHeaderController.setLabels( orderedReferenceMembers );
 

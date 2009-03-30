@@ -34,10 +34,13 @@ public class SimilarInteraction extends SimpleInteractor {
     
     private Set<SimpleInteractor> others;
 
-    public SimilarInteraction( String ac, String shortLabel ) {
+    private int totalParticipantCount;
+
+    public SimilarInteraction( String ac, String shortLabel, int totalParticipantCount ) {
         super( ac, shortLabel );
         members = Sets.newHashSet();
         others = Sets.newHashSet();
+        this.totalParticipantCount = totalParticipantCount;
     }
 
     public int getMemberCount() {
@@ -46,6 +49,10 @@ public class SimilarInteraction extends SimpleInteractor {
 
     public int getOthersCount() {
         return others.size();
+    }
+
+    public int getTotalParticipantCount() {
+        return totalParticipantCount;
     }
 
     public Collection<SimpleInteractor> getMembers() {
