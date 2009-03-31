@@ -172,7 +172,7 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doNewBinarySearch() {
-        userQuery.clearFilters();
+//        userQuery.clearFilters();
         resetDetailControllers();
 
         userQuery.setOntologySearchQuery(null);
@@ -207,7 +207,7 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doNewOntologySearch() {
-        userQuery.clearFilters();
+//        userQuery.clearFilters();
         userQuery.resetSearchQuery();
         resetDetailControllers();
         return doOntologySearchAction();
