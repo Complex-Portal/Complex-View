@@ -93,8 +93,11 @@ public class FilterPopulatorController {
     }
 
     private List<SelectItem> listDatasets() {
-        Query query = entityManagerFactory.createEntityManager().createQuery("select distinct a.annotationText from Annotation a " +
-                                                "where a.cvTopic.identifier = :datasetMi");
+        Query query = entityManagerFactory.createEntityManager()
+                .createQuery("select distinct a.annotationText " +
+                             "from Annotation a " +
+                             "where a.cvTopic.identifier = :datasetMi");
+
         query.setParameter("datasetMi", CvTopic.DATASET_MI_REF);
 
         List<String> datasetResults = query.getResultList();
