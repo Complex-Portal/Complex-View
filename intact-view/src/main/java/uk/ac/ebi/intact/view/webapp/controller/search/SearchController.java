@@ -172,7 +172,6 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doNewBinarySearch() {
-//        userQuery.clearFilters();
         resetDetailControllers();
 
         userQuery.setOntologySearchQuery(null);
@@ -190,6 +189,30 @@ public class SearchController extends JpaBaseController {
         doBinarySearch(evt);
     }
 
+    public int getCountUnfilteredInteractions() {
+
+        String query = userQuery.getSearchQuery();
+        if ( log.isDebugEnabled() ) {
+            log.debug( "getCountUnfilteredInteractions: quick search is '"+ query+"'" );
+        }
+
+        if( query == null ) {
+            String q = userQuery.getOntologySearchQuery();
+            query = buildSolrOntologyQuery( q );
+            log.debug( "getCountUnfilteredInteractions: ontology search is '"+ query+"'" );
+        }
+        
+        SolrQuery solrQuery = userQuery.createSolrQuery( false );
+        solrQuery.setQuery(query);
+
+        final SolrSearchResultDataModel tempResults = createInteractionDataModel( solrQuery );
+        return tempResults.getRowCount();
+    }
+
+    private String buildSolrOntologyQuery( String q ) {
+        return "+(detmethod:\""+ q +"\" type:\""+ q +"\" properties:\""+ q +"\")";
+    }
+
     public String doOntologySearchAction() {
         final String query = userQuery.getOntologySearchQuery();
 
@@ -199,7 +222,7 @@ public class SearchController extends JpaBaseController {
         }
 
         SolrQuery solrQuery = userQuery.createSolrQuery();
-        solrQuery.setQuery("*:*");
+        solrQuery.setQuery(buildSolrOntologyQuery( query ));
 
         doBinarySearch( solrQuery );
 
@@ -207,7 +230,6 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doNewOntologySearch() {
-//        userQuery.clearFilters();
         userQuery.resetSearchQuery();
         resetDetailControllers();
         return doOntologySearchAction();

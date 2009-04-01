@@ -22,17 +22,39 @@
             <!--<em> (Note: To 'Browse All' click the 'Clear' button on the left menu) </em>-->
         </tr:group>
 
-        <tr:group rendered="#{userQuery.usingFilters}">
-            &#160;
-            <tr:outputText value="(using filters - "/>
-            <tr:commandLink id="linkModifyFilters" text="modify" action="dialog:filters"
-                            immediate="true" useWindow="true" windowWidth="600" partialSubmit="true"
-                    returnListener="#{searchBean.refreshWhenClosingDialog}"/>
-            <tr:outputText value=" | "/>
-            <tr:commandLink text="clear" actionListener="#{searchBean.doClearFilterAndSearch}"
-                            partialSubmit="true"/>
-            <tr:outputText value=")"/>
-        </tr:group>
+        <c:set var="unfilteredCount" value="#{searchBean.countUnfilteredInteractions}" />
+
+        <tr:switcher defaultFacet="at_least_one" facetName="#{searchBean.totalResults}" rendered="#{userQuery.usingFilters}">
+            <f:facet name="0">
+                <h:panelGroup>
+                    &#160;&#160;
+                    <tr:image source="/images/warning_icon.png" />
+                    &#160;
+                    <tr:outputText value="There are currently some filters enabled, without which you would have found #{unfilteredCount} interaction#{unfilteredCount>1?'s':''}. ("/>
+                    <tr:commandLink id="linkModifyFilters" text="modify" action="dialog:filters"
+                                    immediate="true" useWindow="true" windowWidth="600" partialSubmit="true"
+                                    returnListener="#{searchBean.refreshWhenClosingDialog}"/>
+                    <tr:outputText value=" | "/>
+                    <tr:commandLink text="clear" actionListener="#{searchBean.doClearFilterAndSearch}"
+                                    partialSubmit="true"/>
+                    <tr:outputText value=")"/>
+                </h:panelGroup>
+            </f:facet>
+
+            <f:facet name="at_least_one">
+                <h:panelGroup>
+                    &#160;
+                    <tr:outputText value="(using filters - "/>
+                    <tr:commandLink id="linkModifyFilters" text="modify" action="dialog:filters"
+                                    immediate="true" useWindow="true" windowWidth="600" partialSubmit="true"
+                                    returnListener="#{searchBean.refreshWhenClosingDialog}"/>
+                    <tr:outputText value=" | "/>
+                    <tr:commandLink text="clear" actionListener="#{searchBean.doClearFilterAndSearch}"
+                                    partialSubmit="true"/>
+                    <tr:outputText value=")"/>
+                </h:panelGroup>
+            </f:facet>
+        </tr:switcher>
 
     </tr:panelGroupLayout>
 

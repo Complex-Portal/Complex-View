@@ -110,6 +110,10 @@ public class UserQuery {
     }
 
     public SolrQuery createSolrQuery() {
+        return createSolrQuery( true ); // by default include filters.
+    }
+
+    public SolrQuery createSolrQuery( final boolean includeFilters ) {
         if (searchQuery == null || searchQuery.equals("*") || searchQuery.equals("?")) {
             searchQuery = "*:*";
         }
@@ -118,18 +122,20 @@ public class UserQuery {
         query.setSortField(userSortColumn, (userSortOrder)? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
         query.setRows(pageSize);
 
-        if (ontologySearchQuery != null) {
+       /* if (ontologySearchQuery != null) {
             String ontologySearch = escapeIfNecessary(ontologySearchQuery);
             
             query.addFilterQuery("+(detmethod:"+ontologySearch+" type:"+ontologySearch+" properties:"+ontologySearch+")");
+        }*/
+
+        if( includeFilters ) {
+            addFilteredQuery(query, "dataset", filterPopulator.getDatasets(), selectDatasetNames( datasets ));
+            addFilteredQuery(query, "source", filterPopulator.getSources(), sources);
+            addFilteredQuery(query, "expansion", filterPopulator.getExpansions(), expansions);
+
+            addFilteredQuery(query, "go_expanded_id", goTerms);
+            addFilteredQuery(query, "chebi_expanded_id", chebiTerms);
         }
-
-        addFilteredQuery(query, "dataset", filterPopulator.getDatasets(), selectDatasetNames( datasets ));
-        addFilteredQuery(query, "source", filterPopulator.getSources(), sources);
-        addFilteredQuery(query, "expansion", filterPopulator.getExpansions(), expansions);
-
-        addFilteredQuery(query, "go_expanded_id", goTerms);
-        addFilteredQuery(query, "chebi_expanded_id", chebiTerms);
 
         return query;
     }
@@ -168,7 +174,7 @@ public class UserQuery {
 
     private SolrQuery createSolrQueryForHierarchView() {
         // export all available rows
-        return createSolrQuery().setRows( 0 );
+        return createSolrQuery( true ).setRows( 0 );
     }
 
     /**
@@ -176,7 +182,7 @@ public class UserQuery {
      * @return a non null string.
      */
     public String getSolrQueryString() {
-        return getSolrQueryString( createSolrQuery().setRows( 0 ));
+        return getSolrQueryString( createSolrQuery( true ).setRows( 0 ));
     }
 
     private String getSolrQueryString( SolrQuery query ) {
@@ -232,8 +238,7 @@ public class UserQuery {
     }
 
     public boolean isUsingFilters() {
-        final String[] filterQueries = createSolrQuery().getFilterQueries();
-
+        final String[] filterQueries = createSolrQuery( true ).getFilterQueries();
         return (filterQueries != null && filterQueries.length > 0);
     }
 
