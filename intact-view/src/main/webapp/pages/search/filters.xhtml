@@ -10,9 +10,22 @@
 
         <tr:panelFormLayout>
 
-            <ui:insert name="filters_top"/>
-            
-            <tr:selectManyCheckbox label="Datasets" value="#{userQuery.datasets}">
+            <!--<ui:insert name="filters_top"/>-->
+            <!--The above statement is not working...so have replaced the insert with the code from filters_dialog.xhtml directly..Probably Bruno could fix it later(Prem:01Apr09) -->
+
+            <tr:selectManyCheckbox label="GO Terms" value="#{userQuery.goTerms}" rendered="#{not empty userQuery.goTerms}">
+                <f:selectItems value="#{userQuery.goTermsSelectItems}"/>
+            </tr:selectManyCheckbox>
+
+            <tr:separator rendered="#{not empty userQuery.goTerms}"/>
+
+            <tr:selectManyCheckbox label="ChEBI Terms" value="#{userQuery.chebiTerms}" rendered="#{not empty userQuery.chebiTerms}">
+                <f:selectItems value="#{userQuery.chebiTermsSelectItems}"/>
+            </tr:selectManyCheckbox>
+
+            <tr:separator rendered="#{not empty userQuery.chebiTerms}"/>
+
+            <tr:selectManyCheckbox label="Datasets" value="#{userQuery.datasets}" id="ia_dataset" partialTriggers="true">
                 <f:selectItems value="#{filterPopulator.datasetSelectItems}"/>
             </tr:selectManyCheckbox>
 
