@@ -145,6 +145,26 @@
 
                 </tr:panelLabelAndMessage>
 
+                <br/>
+
+                <tr:panelAccordion discloseNone="true">
+                    <tr:showDetailItem text="Why do I find less interactions using the Quick Search ?" immediate="true">
+                        <br/>
+                        The ontology search is designed to provide search facilities on a given set of ontologies.
+                        Furthermore, whenever you search for a given ontology term, it also includes the interactions of
+                        all children that may have been used to annotated the participant of these interactions.
+                        <br/>
+                        <br/>
+                        Example: Let's look at a GO term like synapse (GO:0045202), when searching for synapse in the
+                        ontology search, we actually search for that term but also all of its children as depicted below:
+                        
+                        <blockquote><tr:image source="/images/documentation/go_synapse.png" /></blockquote>
+
+                        However, when searching for that same term in quick search, we will only present you with the
+                        interactions for which this and only this term was found.
+                    </tr:showDetailItem>
+                </tr:panelAccordion>
+
             </tr:panelBox>
         </tr:panelGroupLayout>
 
