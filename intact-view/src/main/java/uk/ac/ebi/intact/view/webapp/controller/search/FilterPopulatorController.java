@@ -140,9 +140,8 @@ public class FilterPopulatorController {
 
     private List<SelectItem> listExpansionSelectItems() {
         List<SelectItem> expansions = new ArrayList<SelectItem>(2);
-        expansions.add(new SelectItem(NOT_SPECIFIED_VALUE, "Reported as real binary"));
-        expansions.add(new SelectItem(EXPANSION_SPOKE_VALUE));
-
+        expansions.add(new SelectItem(NOT_SPECIFIED_VALUE, "Reported as real binary (e.g. 2 hybrid)"));
+        expansions.add(new SelectItem(EXPANSION_SPOKE_VALUE, "Spoke expanded co-complex (e.g. pulldown)"));
         return expansions;
     }
 
