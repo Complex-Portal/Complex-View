@@ -44,7 +44,7 @@ public class FilterPopulatorController {
     private static final Log log = LogFactory.getLog( FilterPopulatorController.class );
 
     public static final String NOT_SPECIFIED_VALUE = "Not specified";
-    public static final String EXPANSION_SPOKE_VALUE = "Spoke expansion";
+    public static final String EXPANSION_SPOKE_VALUE = "Spoke";
 
     private List<String> datasets;
     private List<String> sources;
