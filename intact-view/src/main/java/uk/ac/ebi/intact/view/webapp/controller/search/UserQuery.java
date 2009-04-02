@@ -117,7 +117,18 @@ public class UserQuery {
         if (searchQuery == null || searchQuery.equals("*") || searchQuery.equals("?")) {
             searchQuery = "*:*";
         }
-        
+
+        //include regular expression here
+        searchQuery = searchQuery.trim();
+        if(searchQuery.matches("\\w+\\s+\\w+")){  //example: 2 hybrid  will become "2 hybrid"
+            searchQuery = "\""+searchQuery + "\"";
+        }
+
+        if ( searchQuery.matches( "CHEBI:\\w+" ) || searchQuery.matches( "GO:\\w+" ) || searchQuery.matches( "MI:\\w+" ) ) {
+            searchQuery = "\"" + searchQuery + "\"";
+        }
+
+
         SolrQuery query = new SolrQuery(searchQuery);
         query.setSortField(userSortColumn, (userSortOrder)? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
         query.setRows(pageSize);
