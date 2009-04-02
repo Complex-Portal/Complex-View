@@ -192,18 +192,19 @@ public class SearchController extends JpaBaseController {
     public int getCountUnfilteredInteractions() {
 
         String query = userQuery.getSearchQuery();
-        if ( log.isDebugEnabled() ) {
-            log.debug( "getCountUnfilteredInteractions: quick search is '"+ query+"'" );
-        }
-
+        
         if( query == null ) {
             String q = userQuery.getOntologySearchQuery();
             query = buildSolrOntologyQuery( q );
-            log.debug( "getCountUnfilteredInteractions: ontology search is '"+ query+"'" );
         }
         
-        SolrQuery solrQuery = userQuery.createSolrQuery( false );
+        final SolrQuery solrQuery = userQuery.createSolrQuery( false );
         solrQuery.setQuery(query);
+        solrQuery.setRows( 0 );
+
+        if ( log.isDebugEnabled() ) {
+            log.debug( "getCountUnfilteredInteractions: '"+ solrQuery.toString() +"'" );
+        }
 
         final SolrSearchResultDataModel tempResults = createInteractionDataModel( solrQuery );
         return tempResults.getRowCount();
