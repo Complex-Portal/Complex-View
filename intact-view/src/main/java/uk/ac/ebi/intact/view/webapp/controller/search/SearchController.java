@@ -191,6 +191,10 @@ public class SearchController extends JpaBaseController {
 
     public int getCountUnfilteredInteractions() {
 
+        if( !userQuery.isUsingFilters() ) {
+            return totalResults;
+        }
+
         String query = userQuery.getSearchQuery();
         
         if( query == null ) {
