@@ -28,10 +28,12 @@
 
     <ui:define name="sidebar">
 
-        <h:graphicImage alt="#{intactView['webapp.name']} Logo"
-                        url="#{intactView['webapp.logo.url']}"
-                        rendered="#{intactView['webapp.logo.url'] != ''}"
-                        style="border:0"/>
+        <tr:panelHorizontalLayout halign="center">
+            <h:graphicImage alt="#{intactView['webapp.name']} Logo"
+                            url="#{intactView['webapp.logo.url']}"
+                            rendered="#{intactView['webapp.logo.url'] != ''}"
+                            style="border:0"/>
+        </tr:panelHorizontalLayout>
 
         <trh:script>
             function intact_clearAndFocusField(id) {
