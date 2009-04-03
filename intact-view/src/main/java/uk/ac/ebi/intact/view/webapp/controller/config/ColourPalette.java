@@ -18,7 +18,7 @@ package uk.ac.ebi.intact.view.webapp.controller.config;
 import org.springframework.stereotype.Controller;
 
 /**
- * TODO comment that class header
+ * Colour Palette.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$

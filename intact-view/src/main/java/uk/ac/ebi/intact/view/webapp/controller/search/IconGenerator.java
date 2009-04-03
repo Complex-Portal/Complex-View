@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO comment that class header
+ * Icon Generator.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$

@@ -71,7 +71,6 @@ public abstract class OntologyBrowserController extends BaseController {
         ontologyTreeModel = createOntologyTreeModel(createRootTerm(ontologySearcher));
     }
 
-
     protected TreeModel createOntologyTreeModel(RootTerm rootTerm) {
         final SolrQuery query = userQuery.createSolrQuery();
         final String facetField = getFieldName();
@@ -126,6 +125,4 @@ public abstract class OntologyBrowserController extends BaseController {
     public TreeModel getOntologyTreeModel() {
         return ontologyTreeModel;
     }
-
-
 }

@@ -32,6 +32,8 @@ import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 @Scope( "request" )
 public class ChebiBrowserController extends OntologyBrowserController {
 
+    public static final String FIELD_NAME = "chebi_expanded_id";
+
     @Override
     protected RootTerm createRootTerm(OntologySearcher ontologySearcher) {
         final RootTerm rootTerm = new RootTerm( ontologySearcher, "ChEBI Ontology" );
@@ -44,6 +46,6 @@ public class ChebiBrowserController extends OntologyBrowserController {
 
     @Override
     protected String getFieldName() {
-        return "chebi_expanded_id";
+        return FIELD_NAME;
     }
 }

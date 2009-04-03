@@ -30,6 +30,8 @@ import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 @Scope("request")
 public class GoBrowserController extends OntologyBrowserController {
 
+    public static final String FIELD_NAME = "go_expanded_id";
+
     @Override
     protected RootTerm createRootTerm(OntologySearcher ontologySearcher) {
         final RootTerm rootTerm = new RootTerm( ontologySearcher, "GO Ontology" );
@@ -41,6 +43,6 @@ public class GoBrowserController extends OntologyBrowserController {
 
     @Override
     protected String getFieldName() {
-        return "go_expanded_id";
+        return FIELD_NAME;
     }
 }

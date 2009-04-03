@@ -12,6 +12,7 @@ import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.myfaces.trinidad.event.ReturnEvent;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.axis.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -146,8 +147,7 @@ public class SearchController extends JpaBaseController {
             doBinarySearch( solrQuery );
         }
 
-
-        if(userQuery!=null && userQuery.getSearchQuery()==null){
+        if(userQuery != null && userQuery.getSearchQuery() == null && userQuery.getOntologySearchQuery() == null){
           if (log.isDebugEnabled()) log.debug("Searching using query parameter when searchQuery is : *:*");
 
             //for sorting and ordering
@@ -195,15 +195,7 @@ public class SearchController extends JpaBaseController {
             return totalResults;
         }
 
-        String query = userQuery.getSearchQuery();
-        
-        if( query == null ) {
-            String q = userQuery.getOntologySearchQuery();
-            query = buildSolrOntologyQuery( q );
-        }
-        
         final SolrQuery solrQuery = userQuery.createSolrQuery( false );
-        solrQuery.setQuery(query);
         solrQuery.setRows( 0 );
 
         if ( log.isDebugEnabled() ) {
@@ -212,14 +204,6 @@ public class SearchController extends JpaBaseController {
 
         final SolrSearchResultDataModel tempResults = createInteractionDataModel( solrQuery );
         return tempResults.getRowCount();
-    }
-
-    private String buildSolrOntologyQuery( String q ) {
-        if ( ! ( q.startsWith( "\"" ) && q.endsWith( "\"" ) ) ) {
-            // if the query is not escaped already, then do it.
-            q = "\"" + q + "\"";
-        }
-        return "+(detmethod:" + q + " type:" + q + " properties:" + q + ")";
     }
 
     public String doOntologySearchAction() {
@@ -231,7 +215,6 @@ public class SearchController extends JpaBaseController {
         }
 
         SolrQuery solrQuery = userQuery.createSolrQuery();
-        solrQuery.setQuery(buildSolrOntologyQuery( query ));
 
         doBinarySearch( solrQuery );
 
@@ -251,6 +234,8 @@ public class SearchController extends JpaBaseController {
 
     public void doBinarySearch(SolrQuery solrQuery) {
         try {
+            if ( log.isDebugEnabled() ) {log.debug( "\tSolrQuery:  "+ solrQuery.getQuery() );}
+
             results = createInteractionDataModel( solrQuery );
 
             totalResults = results.getRowCount();
