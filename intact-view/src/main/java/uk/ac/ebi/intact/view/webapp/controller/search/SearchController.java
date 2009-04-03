@@ -215,11 +215,11 @@ public class SearchController extends JpaBaseController {
     }
 
     private String buildSolrOntologyQuery( String q ) {
-        if ( q.startsWith( "\"" ) && q.endsWith( "\"" ) ) {
-            return "+(detmethod:" + q + " type:" + q + " properties:" + q + ")";
-        } else {
-            return "+(detmethod:\"" + q + "\" type:\"" + q + "\" properties:\"" + q + "\")";
+        if ( ! ( q.startsWith( "\"" ) && q.endsWith( "\"" ) ) ) {
+            // if the query is not escaped already, then do it.
+            q = "\"" + q + "\"";
         }
+        return "+(detmethod:" + q + " type:" + q + " properties:" + q + ")";
     }
 
     public String doOntologySearchAction() {
