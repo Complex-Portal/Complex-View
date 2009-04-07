@@ -25,7 +25,7 @@
 
             <tr:separator rendered="#{not empty userQuery.chebiTerms}"/>
 
-            <tr:selectManyCheckbox label="Datasets" value="#{userQuery.datasets}" id="ia_dataset" partialTriggers="true">
+            <tr:selectManyCheckbox label="Datasets" value="#{userQuery.datasets}">
                 <f:selectItems value="#{filterPopulator.datasetSelectItems}"/>
             </tr:selectManyCheckbox>
 

@@ -56,31 +56,31 @@
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>client</param-value>
     </context-param>
-    <context-param>
-        <description>Only applicable if state saving method is "server" (= default).
-            Defines the amount (default = 20) of the latest views are stored in session.
-        </description>
-        <param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>
-        <param-value>20</param-value>
-    </context-param>
-    <context-param>
-        <description>Only applicable if state saving method is "server" (= default).
-            If true (default) the state will be serialized to a byte stream before it
-            is written to the session.
-            If false the state will not be serialized to a byte stream.
-        </description>
-        <param-name>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <description>Only applicable if state saving method is "server" (= default) and if
-            org.apache.myfaces.SERIALIZE_STATE_IN_SESSION is true (= default)
-            If true (default) the serialized state will be compressed before it
-            is written to the session. If false the state will not be compressed.
-        </description>
-        <param-name>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</param-name>
-        <param-value>true</param-value>
-    </context-param>
+    <!--<context-param>-->
+        <!--<description>Only applicable if state saving method is "server" (= default).-->
+            <!--Defines the amount (default = 20) of the latest views are stored in session.-->
+        <!--</description>-->
+        <!--<param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>-->
+        <!--<param-value>20</param-value>-->
+    <!--</context-param>-->
+    <!--<context-param>-->
+        <!--<description>Only applicable if state saving method is "server" (= default).-->
+            <!--If true (default) the state will be serialized to a byte stream before it-->
+            <!--is written to the session.-->
+            <!--If false the state will not be serialized to a byte stream.-->
+        <!--</description>-->
+        <!--<param-name>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</param-name>-->
+        <!--<param-value>true</param-value>-->
+    <!--</context-param>-->
+    <!--<context-param>-->
+        <!--<description>Only applicable if state saving method is "server" (= default) and if-->
+            <!--org.apache.myfaces.SERIALIZE_STATE_IN_SESSION is true (= default)-->
+            <!--If true (default) the serialized state will be compressed before it-->
+            <!--is written to the session. If false the state will not be compressed.-->
+        <!--</description>-->
+        <!--<param-name>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</param-name>-->
+        <!--<param-value>true</param-value>-->
+    <!--</context-param>-->
     <context-param>
         <description>This parameter tells MyFaces if javascript code should be allowed in the
             rendered HTML output.
