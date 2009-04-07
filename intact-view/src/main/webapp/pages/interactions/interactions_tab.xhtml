@@ -29,7 +29,7 @@
 <tr:table id="interactionResults" value="#{searchBean.results}" var="binaryInteraction" varStatus="status"
           summary="Binary Interactions"
           emptyText="No interactions found matching the query."
-          rows="#{userQuery.pageSize}" rowBandingInterval="1"
+          rows="#{userQuery.pageSize}" rowBandingInterval="1" rangeChangeListener="#{searchBean.rangeChanged}"
           partialTriggers=":interactionResults:btnToogleProps :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn">
 
 <f:facet name="actions">
@@ -39,7 +39,7 @@
         </f:facet>
 
         <tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"
-                                 value="#{searchBean.results}"
+                                 value="#{searchBean.results}" first="#{searchBean.firstResultIndex}"
                                  rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
                                  rendered="#{searchBean.results.rowCount gt userQuery.pageSize}"/>
 

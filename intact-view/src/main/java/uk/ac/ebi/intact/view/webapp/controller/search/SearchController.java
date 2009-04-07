@@ -545,4 +545,9 @@ public class SearchController extends JpaBaseController {
     public int getUnfilteredTotalCount() {
         return unfilteredTotalCount;
     }
+
+    public String getFirstResultIndex() {
+        UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(INTERACTIONS_TABLE_ID);
+        return String.valueOf(table.getFirst());
+    }
 }
