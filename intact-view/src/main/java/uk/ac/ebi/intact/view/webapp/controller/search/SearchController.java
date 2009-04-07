@@ -86,6 +86,8 @@ public class SearchController extends JpaBaseController {
 
     private int nucleicAcidTotalResults;
 
+    private int unfilteredTotalCount;
+
     private boolean showProperties;
     private boolean showAlternativeIds;
     private boolean showBrandNames;
@@ -188,23 +190,6 @@ public class SearchController extends JpaBaseController {
         doBinarySearch(evt);
     }
 
-    public int getCountUnfilteredInteractions() {
-
-        if( !userQuery.isUsingFilters() ) {
-            return totalResults;
-        }
-
-        final SolrQuery solrQuery = userQuery.createSolrQuery( false );
-        solrQuery.setRows( 0 );
-
-        if ( log.isDebugEnabled() ) {
-            log.debug( "getCountUnfilteredInteractions: '"+ solrQuery.toString() +"'" );
-        }
-
-        final SolrSearchResultDataModel tempResults = createInteractionDataModel( solrQuery );
-        return tempResults.getRowCount();
-    }
-
     public String doOntologySearchAction() {
         final String query = userQuery.getOntologySearchQuery();
 
@@ -238,6 +223,7 @@ public class SearchController extends JpaBaseController {
             results = createInteractionDataModel( solrQuery );
 
             totalResults = results.getRowCount();
+            unfilteredTotalCount = countUnfilteredInteractions();
 
             if ( log.isDebugEnabled() ) log.debug( "\tResults: " + results.getRowCount() );
 
@@ -315,6 +301,23 @@ public class SearchController extends JpaBaseController {
                                                       solrQuery,
                                                       interactorTypeMis);
         return interactorResults;
+    }
+
+    private int countUnfilteredInteractions() {
+
+        if( !userQuery.isUsingFilters() ) {
+            return totalResults;
+        }
+
+        final SolrQuery solrQuery = userQuery.createSolrQuery( false );
+        solrQuery.setRows( 0 );
+
+        if ( log.isDebugEnabled() ) {
+            log.debug( "getCountUnfilteredInteractions: '"+ solrQuery.toString() +"'" );
+        }
+
+        final SolrSearchResultDataModel tempResults = createInteractionDataModel( solrQuery );
+        return tempResults.getRowCount();
     }
 
 
@@ -537,5 +540,9 @@ public class SearchController extends JpaBaseController {
 
     public InteractorSearchResultDataModel getNucleicAcidResults() {
         return nucleicAcidResults;
+    }
+
+    public int getUnfilteredTotalCount() {
+        return unfilteredTotalCount;
     }
 }
