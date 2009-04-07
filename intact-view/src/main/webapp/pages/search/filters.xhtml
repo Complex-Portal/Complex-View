@@ -8,10 +8,6 @@
 
     <tr:panelBox text="Filters">
 
-        <tr:panelFormLayout>
-
-            <!--<ui:insert name="filters_top"/>-->
-            <!--The above statement is not working...so have replaced the insert with the code from filters_dialog.xhtml directly..Probably Bruno could fix it later(Prem:01Apr09) -->
 
             <tr:selectManyCheckbox label="GO Terms" value="#{userQuery.goTerms}" rendered="#{not empty userQuery.goTerms}">
                 <f:selectItems value="#{userQuery.goTermsSelectItems}"/>
@@ -25,9 +21,20 @@
 
             <tr:separator rendered="#{not empty userQuery.chebiTerms}"/>
 
-            <tr:selectManyCheckbox label="Datasets" value="#{userQuery.datasets}">
+            <div style="float: right;">
+                <tr:image source="/images/selectall.gif"/>&#160;
+                <tr:commandLink id="selDatasets" text="select all"
+                                actionListener="#{userQuery.doSelectAllDatasets}" partialSubmit="true"/> <br/>
+                <tr:image source="/images/deselectall.gif"/>&#160;
+                <tr:commandLink id="deselDatasets" text="select none"
+                                actionListener="#{userQuery.doUnselectDatasets}" partialSubmit="true"/>
+            </div>
+
+            <tr:selectManyCheckbox label="Datasets" value="#{userQuery.datasets}"
+                                   partialTriggers="selDatasets deselDatasets">
                 <f:selectItems value="#{filterPopulator.datasetSelectItems}"/>
             </tr:selectManyCheckbox>
+
 
             <!-- TODO Enable this when we have more than 1 source to show in the database -->
             <!--<tr:separator/>-->
@@ -44,7 +51,6 @@
 
             <ui:insert name="filters_bottom"/>
             
-        </tr:panelFormLayout>
 
     </tr:panelBox>
 

@@ -15,18 +15,19 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
+import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.browse.ChebiBrowserController;
 import uk.ac.ebi.intact.view.webapp.controller.browse.GoBrowserController;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 
 import javax.annotation.PostConstruct;
@@ -36,8 +37,6 @@ import javax.faces.model.SelectItem;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
-
-import com.google.common.collect.Maps;
 
 /**
  * User query object wrapper.
@@ -100,10 +99,10 @@ public class UserQuery {
     }
 
     public void clearFilters() {
-        setDatasets(filterPopulator.getDatasets().toArray(new String[filterPopulator.getDatasets().size()]));
         setSources(filterPopulator.getSources().toArray(new String[filterPopulator.getSources().size()]));
         setExpansions(filterPopulator.getExpansions().toArray(new String[filterPopulator.getExpansions().size()]));
 
+        datasets = new String[0];
         chebiTerms = new String[0];
         goTerms = new String[0];
         termMap.clear();
@@ -364,24 +363,18 @@ public class UserQuery {
         return (searchQuery == null && ontologySearchQuery != null);
     }
 
-    private String escapeIfNecessary( String query ) {
-        query = query.trim();
-
-         if (query.startsWith("\"") && query.endsWith("\"")) {
-             return query;
-         }
-
-        if (query.contains(":") || query.contains("(") || query.contains(")")) {
-            query = "\"" + query + "\"";
-        }
-
-        return query;
-    }
-
     public void onOntologySearchCheckboxChanged(ValueChangeEvent evt) {
         if (Boolean.FALSE.equals(evt.getNewValue())) {
             ontologySearchQuery = null;
         }
+    }
+
+    public void doSelectAllDatasets(ActionEvent evt) {
+        setDatasets(filterPopulator.getDatasets().toArray(new String[filterPopulator.getDatasets().size()]));
+    }
+
+    public void doUnselectDatasets(ActionEvent evt) {
+        datasets = new String[0];
     }
 
     public String getSearchQuery() {
