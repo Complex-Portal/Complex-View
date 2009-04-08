@@ -143,15 +143,13 @@ public class UserQuery {
             q = buildSolrOntologyQuery( ontologySearchQuery );
         }
 
-        //include regular expression here
-        q = q.trim();
-        if(q.matches("\\w+\\s+\\w+")){  //example: 2 hybrid  will become "2 hybrid"
-            q = "\""+ q + "\"";
+        if (q == null) {
+            throw new IllegalStateException("Could build query. It was null");
         }
 
-        if ( q.matches( "CHEBI:\\w+" ) || q.matches( "GO:\\w+" ) || q.matches( "MI:\\w+" ) ) {
-            q = "\"" + q + "\"";
-        }
+        q = q.trim();
+
+        q = quoteIfCommonIdWithColon(q);
 
         SolrQuery query = new SolrQuery( q );
         query.setSortField(userSortColumn, (userSortOrder)? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
@@ -167,6 +165,13 @@ public class UserQuery {
         }
 
         return query;
+    }
+
+    private String quoteIfCommonIdWithColon(String q) {
+        if ( q.matches( "CHEBI:\\w+" ) || q.matches( "GO:\\w+" ) || q.matches( "MI:\\w+" ) ) {
+            q = "\"" + q + "\"";
+        }
+        return q;
     }
 
     private String buildSolrOntologyQuery( String q ) {
@@ -276,6 +281,7 @@ public class UserQuery {
 
     public boolean isUsingFilters() {
         final String[] filterQueries = createSolrQuery( true ).getFilterQueries();
+
         return (filterQueries != null && filterQueries.length > 0);
     }
 
