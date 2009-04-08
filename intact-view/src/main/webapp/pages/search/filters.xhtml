@@ -8,6 +8,12 @@
 
     <tr:panelBox text="Filters">
 
+        <tr:panelTip>
+            You can use these filters to limit the results of your search. Whenever an item is selected, the results
+            of the search will only return results that match the selected filters.
+        </tr:panelTip>
+
+        <tr:separator/>
 
             <tr:selectManyCheckbox label="GO Terms" value="#{userQuery.goTerms}" rendered="#{not empty userQuery.goTerms}">
                 <f:selectItems value="#{userQuery.goTermsSelectItems}"/>
