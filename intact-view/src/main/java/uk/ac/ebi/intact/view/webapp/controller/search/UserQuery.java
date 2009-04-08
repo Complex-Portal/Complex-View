@@ -86,6 +86,7 @@ public class UserQuery {
     private int pageSize = 30;
 
     public UserQuery() {
+        clearFilters();
     }
 
     @PostConstruct
@@ -99,13 +100,6 @@ public class UserQuery {
     }
 
     public void clearFilters() {
-        setSources(filterPopulator.getSources().toArray(new String[filterPopulator.getSources().size()]));
-        setExpansions(filterPopulator.getExpansions().toArray(new String[filterPopulator.getExpansions().size()]));
-
-        datasets = new String[0];
-        chebiTerms = new String[0];
-        goTerms = new String[0];
-        termMap.clear();
     }
 
     public void clearSearchFilters(ActionEvent evt) {
@@ -163,6 +157,10 @@ public class UserQuery {
 
             addFilteredQuery(query, GoBrowserController.FIELD_NAME, goTerms);
             addFilteredQuery(query, ChebiBrowserController.FIELD_NAME, chebiTerms);
+
+            if (log.isDebugEnabled() && query.getFilterQueries() != null && query.getFilterQueries().length > 0) {
+                log.debug("Including filters: "+Arrays.toString(query.getFilterQueries()));
+            }
         }
 
         return query;
@@ -199,6 +197,8 @@ public class UserQuery {
      * @return a null array of the same length as datasets containing only the names of the given datasets.
      */
     private String[] selectDatasetNames( String[] datasets ) {
+        if (datasets == null) datasets = new String[0];
+        
         String[] datasetNames = new String[datasets.length];
         for ( int i = 0; i < datasets.length; i++ ) {
             String dataset = datasets[i];
@@ -279,7 +279,6 @@ public class UserQuery {
 
     public boolean isUsingFilters() {
         final String[] filterQueries = createSolrQuery( true ).getFilterQueries();
-
         return (filterQueries != null && filterQueries.length > 0);
     }
 
@@ -295,11 +294,6 @@ public class UserQuery {
 
         if (selectedItems == null) {
             selectedItems = new String[0];
-        }
-
-        if (allItems.size() == selectedItems.length) {
-            // all items are selected - nothing to be done
-            return;
         }
 
         Collection<String> included;

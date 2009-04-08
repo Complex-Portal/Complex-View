@@ -22,8 +22,7 @@
             <!--<em> (Note: To 'Browse All' click the 'Clear' button on the left menu) </em>-->
         </tr:group>
 
-
-        <div style="display: #{userQuery.usingFilters? 'inline' : 'none'}">
+        <tr:panelGroupLayout inlineStyle="display: #{userQuery.usingFilters? 'inline' : 'none'}">
                 <h:panelGroup rendered="#{searchBean.totalResults == 0}">
                     &#160;&#160;
                     <tr:image source="/images/warning_icon.png" />
@@ -42,7 +41,7 @@
                                     partialSubmit="true"/>
                     <tr:outputText value=")"/>
                 </h:panelGroup>
-        </div>
+        </tr:panelGroupLayout>
 
     </tr:panelGroupLayout>
 
