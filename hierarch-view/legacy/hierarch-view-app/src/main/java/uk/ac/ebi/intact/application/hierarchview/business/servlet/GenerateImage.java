@@ -19,6 +19,7 @@ import uk.ac.ebi.intact.application.hierarchview.business.graph.Network;
 import uk.ac.ebi.intact.application.hierarchview.business.image.DrawGraph;
 import uk.ac.ebi.intact.application.hierarchview.business.image.ImageBean;
 import uk.ac.ebi.intact.util.Chrono;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.params.UrlSolrParams;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -180,20 +181,10 @@ public class GenerateImage extends HttpServlet {
     private SolrQuery createSolrQueryFromURL(String solrQueryParam) throws UnsupportedEncodingException {
         String s = URLDecoder.decode(solrQueryParam, "UTF-8");
 
-        String[] stokens = s.split("&");
-
         SolrQuery solrQuery = new SolrQuery();
+        solrQuery.add(new UrlSolrParams(s));
         solrQuery.setRows(HVNetworkBuilder.getMaxInteractions());
 
-        for (String stoken : stokens) {
-            String[] param = stoken.split("=");
-
-            if (param[0].equals("q")) {
-                solrQuery.setQuery(param[1]);
-            } else if (param[0].equals("fq")) {
-                solrQuery.addFilterQuery(param[1]);
-            }
-        }
         return solrQuery;
     }
 }

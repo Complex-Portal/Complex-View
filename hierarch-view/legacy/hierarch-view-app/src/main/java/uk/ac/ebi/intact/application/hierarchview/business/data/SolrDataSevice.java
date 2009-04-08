@@ -33,6 +33,7 @@ import uk.ac.ebi.intact.application.hierarchview.exception.MultipleResultExcepti
 import uk.ac.ebi.intact.application.hierarchview.exception.ProteinNotFoundException;
 import uk.ac.ebi.intact.application.hierarchview.struts.StrutsConstants;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.converter.SolrDocumentConverter;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 import uk.ac.ebi.intact.searchengine.CriteriaBean;
@@ -113,6 +114,7 @@ public class SolrDataSevice implements DataService {
                 log.debug( "Solr query: " + query );
             }
 
+            query.setFields(FieldNames.LINE);
 
             QueryResponse solrResponse = solrServer.query( query );
 
@@ -128,7 +130,7 @@ public class SolrDataSevice implements DataService {
             interactions.clear();
             while ( documentIterator.hasNext() ) {
                 SolrDocument solrDocument = documentIterator.next();
-                interactions.add( ( IntactBinaryInteraction ) converter.toBinaryInteraction( solrDocument ) );
+                interactions.add( converter.toBinaryInteraction( solrDocument ) );
             }
 
         } catch ( SolrServerException e ) {
