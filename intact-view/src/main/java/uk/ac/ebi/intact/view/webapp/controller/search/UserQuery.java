@@ -169,7 +169,7 @@ public class UserQuery {
     }
 
     public String getDisplayQuery() {
-        String query = ontologySearchQuery != null ? addQuotesIfMissing(ontologySearchQuery) : searchQuery;
+        String query = ontologySearchQuery != null ? JsfUtils.surroundByQuotesIfMissing(ontologySearchQuery) : searchQuery;
 
         if ( STAR_QUERY.equals(query)) {
             query = "*";
@@ -189,15 +189,8 @@ public class UserQuery {
     }
 
     private String buildSolrOntologyQuery( String q ) {
-        q = addQuotesIfMissing(q);
+        q = JsfUtils.surroundByQuotesIfMissing(q);
         return "+(detmethod:" + q + " type:" + q + " properties:" + q + ")";
-    }
-
-    private String addQuotesIfMissing(String q) {
-        if ( ! ( q.startsWith( "\"" ) && q.endsWith( "\"" ) ) ) {
-            q = "\"" + q + "\"";
-        }
-        return q;
     }
 
     /**

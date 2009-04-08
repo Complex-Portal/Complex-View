@@ -30,6 +30,7 @@ import javax.faces.event.ActionEvent;
 
 public class JsfUtils
 {
+    private static final String QUOTATION_MARK = "\"";
 
     /**
      * Uses the converter identified by converterId to convert the value to a String.
@@ -103,6 +104,16 @@ public class JsfUtils
 
     public static String concat( String a, String b, String c, String d ) {
         return StringUtils.join( new String[]{a, b, c, d}, null );
+    }
+
+    public static String surroundByQuotesIfMissing(String s) {
+        if (s == null) return null;
+
+        if ( ! ( s.startsWith(QUOTATION_MARK) && s.endsWith(QUOTATION_MARK) ) ) {
+            s = QUOTATION_MARK + s + QUOTATION_MARK;
+        }
+
+        return s;
     }
 
     /**

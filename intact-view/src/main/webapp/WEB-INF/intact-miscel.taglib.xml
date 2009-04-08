@@ -56,4 +56,10 @@
        <function-signature>long currentTimeMillis()</function-signature>
     </function>
 
+    <function>
+        <function-name>surroundByQuotesIfMissing</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.JsfUtils</function-class>
+        <function-signature>java.lang.String surroundByQuotesIfMissing(java.lang.String)</function-signature>
+    </function>
+
 </facelet-taglib>

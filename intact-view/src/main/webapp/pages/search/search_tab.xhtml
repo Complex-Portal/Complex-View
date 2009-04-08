@@ -57,6 +57,22 @@
                                         <f:setPropertyActionListener value="DDR1" target="#{userQuery.searchQuery}"/>
                                     </tr:commandLink>
                                 </tr:group>
+                                <tr:group>
+                                    Phrases (surrounded by quotes): e.g.
+                                    <tr:commandLink action="#{searchBean.doNewBinarySearch}">
+                                        <f:setPropertyActionListener value="#{iam:surroundByQuotesIfMissing('NADH dehydrogenase')}" target="#{userQuery.searchQuery}"/>
+                                        "NADH dehydrogenase"
+                                    </tr:commandLink>
+
+                                </tr:group>
+                                <tr:group>
+                                    and much more by using the &#160;
+                                    <tr:commandLink text="Molecular Interaction Query Language"
+                                                    action="dialog:help.miql" partialSubmit="true"
+                                                    windowWidth="600" windowHeight="600" immediate="true"
+                                                    useWindow="true"/>
+                                    &#160;(MIQL).
+                                </tr:group>
                             </tr:panelList>
                         </tr:group>
                     </f:facet>
