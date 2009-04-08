@@ -70,7 +70,7 @@
 
         <tr:column headerText="Interactions">
             <tr:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
-                <f:setPropertyActionListener value="#{userQuery.searchQuery} +id:#{interactorWrapper.interactor.ac}" target="#{userQuery.searchQuery}"/>
+                <f:setPropertyActionListener value="+(#{userQuery.searchQuery}) +#{interactorWrapper.interactor.ac}" target="#{userQuery.searchQuery}"/>
             </tr:commandLink>
         </tr:column>
 
