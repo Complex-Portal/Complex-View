@@ -128,7 +128,8 @@ public class UserQuery {
         }
 
         if( ontologySearchQuery == null &&
-            (searchQuery == null || searchQuery.equals("*") || searchQuery.equals("?"))) {
+            (searchQuery == null || searchQuery.trim().length() == 0 ||
+                    searchQuery.equals("*") || searchQuery.equals("?"))) {
             if ( log.isTraceEnabled() ) {
                 log.trace( "Resetting the searchQuery to *:*" );
             }
@@ -139,6 +140,10 @@ public class UserQuery {
         String q = null;
         if( searchQuery != null ) {
             q = searchQuery;
+
+            q = q.trim();
+            q = quoteIfCommonIdWithColon(q);
+
         } else if( ontologySearchQuery != null ) {
             q = buildSolrOntologyQuery( ontologySearchQuery );
         }
@@ -146,10 +151,6 @@ public class UserQuery {
         if (q == null) {
             throw new IllegalStateException("Could build query. It was null");
         }
-
-        q = q.trim();
-
-        q = quoteIfCommonIdWithColon(q);
 
         SolrQuery query = new SolrQuery( q );
         query.setSortField(userSortColumn, (userSortOrder)? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
@@ -167,6 +168,19 @@ public class UserQuery {
         return query;
     }
 
+    public String getDisplayQuery() {
+        String query = ontologySearchQuery != null ? addQuotesIfMissing(ontologySearchQuery) : searchQuery;
+
+        if ( STAR_QUERY.equals(query)) {
+            query = "*";
+        }
+
+        if ( termMap.containsKey( query ) ) {
+            query = query + " (" + termMap.get( query ) + ")";
+        }
+        return query;
+    }
+
     private String quoteIfCommonIdWithColon(String q) {
         if ( q.matches( "CHEBI:\\w+" ) || q.matches( "GO:\\w+" ) || q.matches( "MI:\\w+" ) ) {
             q = "\"" + q + "\"";
@@ -175,11 +189,15 @@ public class UserQuery {
     }
 
     private String buildSolrOntologyQuery( String q ) {
+        q = addQuotesIfMissing(q);
+        return "+(detmethod:" + q + " type:" + q + " properties:" + q + ")";
+    }
+
+    private String addQuotesIfMissing(String q) {
         if ( ! ( q.startsWith( "\"" ) && q.endsWith( "\"" ) ) ) {
-            // if the query is not escaped already, then do it.
             q = "\"" + q + "\"";
         }
-        return "+(detmethod:" + q + " type:" + q + " properties:" + q + ")";
+        return q;
     }
 
     /**
@@ -199,19 +217,6 @@ public class UserQuery {
             datasetNames[i] = name ;
         }
         return datasetNames;
-    }
-
-    public String getDisplayQuery() {
-        String query = ontologySearchQuery != null ? ontologySearchQuery : searchQuery;
-
-        if ( STAR_QUERY.equals(query)) {
-            query = "*";
-        }
-
-        if ( termMap.containsKey( query ) ) {
-            query = query + " (" + termMap.get( query ) + ")";
-        }
-        return query;
     }
 
     private SolrQuery createSolrQueryForHierarchView() {
