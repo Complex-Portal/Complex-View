@@ -15,44 +15,29 @@
  */
 package uk.ac.ebi.intact.view.webapp.io;
 
-import org.apache.lucene.search.Sort;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.common.params.CommonParams;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.util.List;
-import java.util.Collection;
-import java.util.ArrayList;
-import java.util.Map;
-
-import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.search.Searcher;
-import psidev.psi.mi.search.engine.SearchEngineException;
+import org.apache.commons.logging.LogFactory;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
 import psidev.psi.mi.tab.PsimiTabWriter;
-import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
+import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.xml.PsimiXmlVersion;
+import psidev.psi.mi.xml.PsimiXmlWriter;
 import psidev.psi.mi.xml.converter.ConverterException;
 import psidev.psi.mi.xml.model.EntrySet;
-import psidev.psi.mi.xml.PsimiXmlWriter;
-import psidev.psi.mi.xml.PsimiXmlVersion;
-import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
 import psidev.psi.mi.xml.stylesheets.XslTransformException;
-import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
+import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Exports to MITAB
@@ -65,20 +50,12 @@ public class BinaryInteractionsExporter {
     private static final Log log = LogFactory.getLog( BinaryInteractionsExporter.class );
 
     private SolrServer solrServer;
-    private String sortColumn;
-    private SolrQuery.ORDER sortOrder;
 
     public BinaryInteractionsExporter(SolrServer solrServer) {
         this.solrServer = solrServer;
     }
 
-    public BinaryInteractionsExporter(SolrServer solrServer, String sortColumn, SolrQuery.ORDER sortOrder) {
-        this(solrServer);
-        this.sortColumn = sortColumn;
-        this.sortOrder = sortOrder;
-    }
-
-    public void searchAndExport( OutputStream os, String searchQuery, String format ) throws IOException {
+    public void searchAndExport( OutputStream os, SolrQuery searchQuery, String format ) throws IOException {
         if ( "mitab".equals( format ) ) {
             exportToMiTab( os, searchQuery );
         } else if ( "mitab_intact".equals( format ) ) {
@@ -92,19 +69,19 @@ public class BinaryInteractionsExporter {
         }
     }
     
-     public void exportToMiTab(OutputStream os, String searchQuery) throws IOException {
+     public void exportToMiTab(OutputStream os, SolrQuery searchQuery) throws IOException {
          PsimiTabWriter writer = new PsimiTabWriter();
          Writer out = new OutputStreamWriter(os);
          writeMitab(out, writer, searchQuery);
     }
 
-     private void exportToMiTabIntact(OutputStream os, String searchQuery) throws IOException, IntactViewException {
+     private void exportToMiTabIntact(OutputStream os, SolrQuery searchQuery) throws IOException, IntactViewException {
          PsimiTabWriter writer = new IntactPsimiTabWriter();
          Writer out = new OutputStreamWriter(os);
          writeMitab(out, writer, searchQuery);
     }
 
-    private void writeMitab(Writer out, PsimiTabWriter writer, String searchQuery) throws IOException {
+    private void writeMitab(Writer out, PsimiTabWriter writer, SolrQuery query) throws IOException {
         Integer firstResult = 0;
         Integer maxResults = 50;
 
@@ -114,13 +91,9 @@ public class BinaryInteractionsExporter {
 
         do {
             //SolrQuery query = new SolrQuery(searchQuery);
-            SolrQuery query = convertToSolrQuery( searchQuery );
+            //SolrQuery query = convertToSolrQuery( searchQuery );
             query.setStart(firstResult);
             query.setRows(maxResults);
-
-            if (sortColumn != null) {
-                query.setSortField(sortColumn, sortOrder);
-            }
 
             IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
             SolrSearchResult result = searcher.search(query);
@@ -145,18 +118,15 @@ public class BinaryInteractionsExporter {
     }
 
 
-    public void exportToMiXml( OutputStream os, String searchQuery ) throws IOException {
+    public void exportToMiXml( OutputStream os, SolrQuery searchQuery ) throws IOException {
         exportToMiXml( os, searchQuery, "xml_2_54" );
     }
 
-    public void exportToMiXml(OutputStream os, String searchQuery,String format) throws IOException {
+    public void exportToMiXml(OutputStream os, SolrQuery solrQuery, String format) throws IOException {
         Writer out = new OutputStreamWriter(os, "UTF-8");
 
         IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
 
-        // count first as a security measure
-        //SolrSearchResult result1 = searcher.search(searchQuery, 0, 0);
-        SolrQuery solrQuery = convertToSolrQuery( searchQuery );
         SolrSearchResult result1 = searcher.search(solrQuery);
 
         if (result1.getTotalCount() > 1000) {
@@ -193,7 +163,7 @@ public class BinaryInteractionsExporter {
         }
     }
 
-    public void exportToMiXmlTransformed(OutputStream os, String searchQuery) throws IOException {
+    public void exportToMiXmlTransformed(OutputStream os, SolrQuery searchQuery) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         exportToMiXml(baos, searchQuery);
@@ -208,60 +178,4 @@ public class BinaryInteractionsExporter {
         }
     }
 
-    /**
-     * The actual method that does the transformation
-     * @param isToTransform The stream to transform
-     * @param xslt The stream with the XSLT rules
-     * @return The transformed stream
-     * @throws TransformerException thrown if something has been wrong with the transformation
-     */
-    private static void transform(OutputStream outputStream, InputStream isToTransform, InputStream xslt) throws TransformerException
-    {
-
-        // JAXP reads data using the Source interface
-        Source xmlSource = new StreamSource(isToTransform);
-        Source xsltSource = new StreamSource(xslt);
-
-        // the factory pattern supports different XSLT processors
-        TransformerFactory transFact =
-                TransformerFactory.newInstance();
-        Transformer trans = transFact.newTransformer(xsltSource);
-
-        trans.transform(xmlSource, new StreamResult(outputStream));
-    }
-
-
-    private SolrQuery convertToSolrQuery( String searchQuery ) {
-
-        if ( searchQuery == null ) {
-            throw new NullPointerException( "You must give a non null searchQuery" );
-        }
-
-        SolrQuery solrQuery = new SolrQuery();
-        if ( searchQuery.contains( "&" ) ) {
-            final String[] params = searchQuery.split( "&" );
-            for ( String param : params ) {
-                if ( param.contains( "=" ) ) {
-                    final String[] keyval = param.split( "=" );
-                    if ( keyval != null && keyval.length == 2 ) {
-                        if ( CommonParams.Q.equals( keyval[0] ) ) {
-                            if("*%3A*".equals(keyval[1])){
-                              keyval[1]="*:*";
-                            }
-                            solrQuery.setQuery( keyval[1] );
-                        } else if ( CommonParams.FQ.equals( keyval[0] ) ) {
-                            solrQuery.setParam( CommonParams.FQ, keyval[1] );
-                        } 
-                    }
-                }
-            }
-        }
-
-        if ( log.isTraceEnabled() ) {
-            log.trace( "Given Solr query:     " + searchQuery );
-            log.trace( "converted Solr Query: " + solrQuery.toString() );
-        }
-
-        return solrQuery;
-    }
 }

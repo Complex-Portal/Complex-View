@@ -86,7 +86,6 @@ public class UserQuery {
     private int pageSize = 30;
 
     public UserQuery() {
-        clearFilters();
     }
 
     @PostConstruct
@@ -100,6 +99,12 @@ public class UserQuery {
     }
 
     public void clearFilters() {
+        datasets = new String[0];
+        sources = new String[0];
+        expansions = new String[0];
+        chebiTerms = new String[0];
+        goTerms = new String[0];
+        termMap.clear();
     }
 
     public void clearSearchFilters(ActionEvent evt) {
@@ -157,10 +162,6 @@ public class UserQuery {
 
             addFilteredQuery(query, GoBrowserController.FIELD_NAME, goTerms);
             addFilteredQuery(query, ChebiBrowserController.FIELD_NAME, chebiTerms);
-
-            if (log.isDebugEnabled() && query.getFilterQueries() != null && query.getFilterQueries().length > 0) {
-                log.debug("Including filters: "+Arrays.toString(query.getFilterQueries()));
-            }
         }
 
         return query;

@@ -15,15 +15,15 @@
  */
 package uk.ac.ebi.intact.view.webapp.servlet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.params.UrlSolrParams;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
-import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -79,7 +79,33 @@ public class ExportServlet extends HttpServlet {
         String sortColumn = request.getParameter(PARAM_SORT);
         String sortAsc = request.getParameter(PARAM_SORT_ASC);
 
-        BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(solrServer, sortColumn, (Boolean.parseBoolean(sortAsc))? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
-        exporter.searchAndExport(response.getOutputStream(), searchQuery, format);
+        boolean sort = Boolean.parseBoolean(sortAsc);
+
+        SolrQuery solrQuery = convertToSolrQuery(searchQuery);
+
+        if (sortColumn != null) {
+            solrQuery.setSortField(sortColumn, sort? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+        }
+
+        BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(solrServer);
+        exporter.searchAndExport(response.getOutputStream(), solrQuery, format);
     }
+
+     private SolrQuery convertToSolrQuery(String searchQuery) {
+
+         if (searchQuery == null) {
+             throw new NullPointerException("You must give a non null searchQuery");
+         }
+
+         SolrQuery solrQuery = new SolrQuery();
+         solrQuery.add(new UrlSolrParams(searchQuery));
+
+         if (log.isDebugEnabled()) {
+             log.debug("Given Solr query:     " + searchQuery);
+             log.debug("converted Solr Query: " + solrQuery.toString());
+         }
+
+         return solrQuery;
+     }
+
 }
