@@ -28,7 +28,7 @@
                     &#160;&#160;
                     <tr:image source="/images/warning_icon.png" />
                     &#160;
-                    <tr:outputText value="There are currently some filters enabled, without which you would have found #{searchBean.unfilteredTotalCount} interaction#{searchBean.unfilteredTotalCount gt 1?'s':''}.  "/>
+                    <tr:outputText value="There are currently some filters enabled, without which you would have found #{searchBean.unfilteredTotalCount} interaction#{searchBean.unfilteredTotalCount eq 1? '' : 's'}.  "/>
                </h:panelGroup>
 
                 <h:panelGroup style="display: #{searchBean.totalResults gt 0}">
