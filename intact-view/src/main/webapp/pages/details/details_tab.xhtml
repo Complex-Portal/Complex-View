@@ -327,14 +327,14 @@
                         </trh:cellFormat>
                         <trh:cellFormat inlineStyle="background-color:#{participant.stoichiometry > 0 ? '#9e9e9e' : 'lightgray'};" width="10"> <!-- gray cell -->
 
-                            <tr:commandLink action="dialog:participant.view" rendered="#{parameterCount>0}"
+                            <tr:commandLink action="dialog:participant.view" rendered="#{participant.stoichiometry gt 0}"
                                             partialSubmit="true" immediate="true"
                                             useWindow="true" windowWidth="700" windowHeight="400">
                                 <f:setPropertyActionListener value="#{participant}" target="#{participantBean.participant}"/>
                                 <tr:outputText value="S" shortDesc="Stoichiometry: #{participant.stoichiometry}" inlineStyle="font-weight:bold;color:white;"/>
                             </tr:commandLink>
 
-                            <tr:outputText value="S" shortDesc="#{parameterCount} Parameter" rendered="#{parameterCount == 0}"
+                            <tr:outputText value="S" shortDesc="Stoichiometry: none" rendered="#{participant.stoichiometry eq 0}"
                                            inlineStyle="font-weight:bold;color:white;"/>
 
                         </trh:cellFormat>
