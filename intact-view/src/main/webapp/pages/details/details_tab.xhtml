@@ -193,7 +193,7 @@
     </tr:panelHeader>
 
     <c:set var="participantCount" value="#{fn:length(interaction.components)}" />
-    <c:set var="text" value="#{iam:concat3('s (',participantCount,')')}" />
+    <c:set var="text" value="s (#{participantCount})" />
     <tr:panelHeader text="Participant#{(participantCount > 1 ? text : '')}">
 
         <tr:table var="participant" value="#{interaction.components}" rows="0" width="80%">
