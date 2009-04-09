@@ -42,18 +42,18 @@
                                       actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
                                       action="interactions"/>
 
-                    <tr:commandButton text="Pathways" partialSubmit="true"
-                                      actionListener="#{proteinListController.goReactome}"/>
-
                     <tr:commandButton text="Domains" partialSubmit="true"
                                       actionListener="#{proteinListController.goDomains}"/>
 
-                    <tr:commandButton text="mRNA Expression" partialSubmit="true"
-                                      actionListener="#{proteinListController.goExpression}"/>
+                    <tr:commandButton text="Pathways" partialSubmit="true"
+                                      actionListener="#{proteinListController.goReactome}"/>
 
                     <tr:commandButton text="Chromosome Location" partialSubmit="true"
                                       icon="/images/logos/ensembl_12.png"
                                       actionListener="#{proteinListController.goChromosomalLocation}"/>
+
+                    <tr:commandButton text="mRNA Expression" partialSubmit="true"
+                                      actionListener="#{proteinListController.goExpression}"/>
 
                 </tr:panelButtonBar>
 
