@@ -57,10 +57,10 @@
                                 value="#{searchBean.exportFormat}" autoSubmit="true">
                 <tr:selectItem label="MI-TAB" value="mitab"/>
                 <tr:selectItem label="MI-TAB (Expanded)" value="mitab_intact"/>
-                <tr:selectItem label="MI-XML 2.5.3" value="xml_2_53" disabled="#{searchBean.results.rowCount ge 1000}"/>
-                <tr:selectItem label="MI-XML 2.5.4" value="xml_2_54" disabled="#{searchBean.results.rowCount ge 1000}"/>
+                <tr:selectItem label="MI-XML 2.5.3" value="xml_2_53" disabled="#{searchBean.results.rowCount ge 500}"/>
+                <tr:selectItem label="MI-XML 2.5.4" value="xml_2_54" disabled="#{searchBean.results.rowCount ge 500}"/>
                 <tr:selectItem label="MI-XML 2.5(HTML view)" value="xml_html"
-                               disabled="#{searchBean.results.rowCount ge 1000}"/>
+                               disabled="#{searchBean.results.rowCount ge 500}"/>
             </tr:selectOneChoice>
 
             <tr:goButton text="Export" partialTriggers="exportFormatSelect"
