@@ -13,16 +13,29 @@
         <tr:form>
 
             <tr:panelHeader text="Configure columns in #{intactView['webapp.name']}">
-                <tr:panelHorizontalLayout>
-                    <tr:outputText value="Select the columns to be displayed and press "/>
-                    <tr:outputText value="  "/>
-                    <tr:commandButton text="Update" action="#{configureColumn.updateColumn}"/>
-                    <tr:commandButton text="Standard" action="#{configureColumn.selectDefault}"/>
-                    <tr:commandButton text="Extended" action="#{configureColumn.selectAll}"/>
-                    <tr:commandButton text="None" action="#{configureColumn.selectNone}"/>
-
-                </tr:panelHorizontalLayout>
+             <tr:panelHorizontalLayout>
+                    <tr:outputText value="Select the columns to be displayed and click "/>
+                    <tr:spacer width="5px"/>
+                    <tr:commandLink text="Update" action="#{configureColumn.updateColumn}"/>
+                 </tr:panelHorizontalLayout>
                 <tr:separator/>
+
+
+                <tr:panelGroupLayout>
+                <div style="float: right;">
+                    <tr:panelGroupLayout>
+                        <tr:panelLabelAndMessage label="Select:">
+                            <tr:panelButtonBar>
+                                <tr:commandLink text="Standard"
+                                                action="#{configureColumn.selectDefault}"/>
+                                <tr:commandLink text="Extended"
+                                                action="#{configureColumn.selectAll}"/>
+                                  <tr:commandLink text="None"
+                                                action="#{configureColumn.selectNone}"/>
+                            </tr:panelButtonBar>
+                        </tr:panelLabelAndMessage>
+                    </tr:panelGroupLayout>
+                </div>
 
                 <tr:panelFormLayout>
                     <tr:selectManyCheckbox label="Columns" value="#{configureColumn.columns}" required="true">
@@ -30,6 +43,7 @@
                     </tr:selectManyCheckbox>
                 </tr:panelFormLayout>
 
+                </tr:panelGroupLayout>
                 <tr:separator/>
 
             </tr:panelHeader>
