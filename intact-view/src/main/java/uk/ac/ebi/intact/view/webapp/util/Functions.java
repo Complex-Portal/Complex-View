@@ -38,6 +38,9 @@ public final class Functions {
     private static final String PUBMED_NCBI_URL="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=${ac}&dopt=Abstract";
     private static final String CITEXPLORE_URL="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=${ac}&dataSource=MED";
 
+    private static final String OLD_NEWT_URL = "http://www.ebi.ac.uk/newt/display?search=${ac}";
+    private static final String NEW_NEWT_URL = "http://www.uniprot.org/taxonomy/${ac}";
+
     private Functions() {
     }
 
@@ -118,9 +121,13 @@ public final class Functions {
             if(PUBMED_NCBI_URL.equals( xrefUrl )){
                 xrefUrl = CITEXPLORE_URL;
             }
+            if(OLD_NEWT_URL.equals( xrefUrl )){
+                xrefUrl = NEW_NEWT_URL;
+            }
         }
 
         String replacedUrl = null;
+
 
         if (xrefUrl != null) {
             replacedUrl = xrefUrl.replaceAll("\\$\\{ac\\}", ac);
