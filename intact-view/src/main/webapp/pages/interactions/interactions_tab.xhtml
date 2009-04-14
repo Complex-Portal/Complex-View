@@ -92,6 +92,14 @@
 
 <tr:column>
     <tr:outputText value="#{status.index + 1}"/>
+
+    <c:set var="interactionAc" value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactionAcs)}" />
+
+    <tr:commandLink action="details" shortDesc="Display details for this interaction">
+        <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
+        <tr:image source="/images/magnify.png"/>
+    </tr:commandLink>
+
 </tr:column>
 
 <tr:column headerText="#{messages['moleculeA.name']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
@@ -328,8 +336,7 @@
 
 <tr:column headerText="#{messages['interaction.ac']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.ac')}" styleClass="cellTextInteraction">
     <!--<iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>-->
-    <c:set var="interactionAc" value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactionAcs)}" />
-    <tr:commandLink action="details"  text="#{interactionAc}">
+    <tr:commandLink action="details" text="#{interactionAc}">
         <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
     </tr:commandLink>
 </tr:column>
