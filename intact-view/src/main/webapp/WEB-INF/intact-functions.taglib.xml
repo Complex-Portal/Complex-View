@@ -106,5 +106,12 @@
         <function-signature>uk.ac.ebi.intact.model.Interactor getInteractorByAc(java.lang.String)</function-signature>
     </function>
 
+    <function>
+        <function-name>getCvObjectFromIdentifier</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
+        <function-signature>uk.ac.ebi.intact.model.CvObject
+            getCvObjectFromIdentifier(javax.faces.context.FacesContext,java.lang.String,java.lang.String)
+        </function-signature>
+    </function>
 
 </facelet-taglib>

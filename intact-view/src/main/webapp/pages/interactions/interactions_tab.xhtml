@@ -114,21 +114,36 @@
 
         <trh:rowLayout>
             <tr:iterator var="cvXref" value="#{binaryInteraction.interactorTypeA}" rows="-1">
-                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
-                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
-                 </trh:cellFormat>
-             </tr:iterator>
+                <c:set var="cvobject" value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'type')}"/>
+                <trh:cellFormat halign="center" width="15"
+                                inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                    <ui:decorate template="/pages/details/cvPopupRoles.xhtml">
+                        <ui:param name="cv" value="#{cvobject}"/>
+                    </ui:decorate>
+                </trh:cellFormat>
+            </tr:iterator>
             <tr:iterator var="cvXref" value="#{binaryInteraction.experimentalRolesInteractorA}" rows="-1">
-                 <c:set var="cvXrefText" value="#{cvXref.text eq 'unspecified role' ?'unspecified exprole': cvXref.text}"/>
-                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXrefText].colourHex};color:black;font-size:xx-small; border:black solid 1px">
-                 <tr:outputText value="#{iconGenerator.colourMap[cvXrefText].initials}" shortDesc="#{cvXref.text}"/>
-                 </trh:cellFormat>
-             </tr:iterator>
-             <tr:iterator var="cvXref" value="#{binaryInteraction.biologicalRolesInteractorA}" rows="-1">
-                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
-                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
-                 </trh:cellFormat>
-             </tr:iterator>
+                <c:set var="cvobject"
+                       value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'expRole')}"/>
+                <c:set var="cvXrefText"
+                       value="#{cvXref.text eq 'unspecified role' ?'unspecified exprole': cvXref.text}"/>
+                <trh:cellFormat halign="center" width="15"
+                                inlineStyle="background:#{iconGenerator.colourMap[cvXrefText].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                    <ui:decorate template="/pages/details/cvPopupRoles.xhtml">
+                        <ui:param name="cv" value="#{cvobject}"/>
+                    </ui:decorate>
+                </trh:cellFormat>
+            </tr:iterator>
+            <tr:iterator var="cvXref" value="#{binaryInteraction.biologicalRolesInteractorA}" rows="-1">
+                <c:set var="cvobject"
+                       value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'bioRole')}"/>
+                <trh:cellFormat halign="center" width="15"
+                                inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                    <ui:decorate template="/pages/details/cvPopupRoles.xhtml">
+                        <ui:param name="cv" value="#{cvobject}"/>
+                    </ui:decorate>
+                </trh:cellFormat>
+            </tr:iterator>
         </trh:rowLayout>
     </trh:tableLayout>
  
@@ -187,19 +202,34 @@
 
          <trh:rowLayout>
              <tr:iterator var="cvXref" value="#{binaryInteraction.interactorTypeB}" rows="-1">
-                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
-                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 <c:set var="cvobject" value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'type')}"/>
+                 <trh:cellFormat halign="center" width="15"
+                                 inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                     <ui:decorate template="/pages/details/cvPopupRoles.xhtml">
+                         <ui:param name="cv" value="#{cvobject}"/>
+                     </ui:decorate>
                  </trh:cellFormat>
              </tr:iterator>
              <tr:iterator var="cvXref" value="#{binaryInteraction.experimentalRolesInteractorB}" rows="-1">
-                 <c:set var="cvXrefText" value="#{cvXref.text eq 'unspecified role' ?'unspecified exprole': cvXref.text}"/>
-                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXrefText].colourHex};color:black;font-size:xx-small; border:black solid 1px">
-                 <tr:outputText value="#{iconGenerator.colourMap[cvXrefText].initials}" shortDesc="#{cvXref.text}"/>
+                 <c:set var="cvobject"
+                        value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'expRole')}"/>
+                 <c:set var="cvXrefText"
+                        value="#{cvXref.text eq 'unspecified role' ?'unspecified exprole': cvXref.text}"/>
+                 <trh:cellFormat halign="center" width="15"
+                                 inlineStyle="background:#{iconGenerator.colourMap[cvXrefText].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                     <ui:decorate template="/pages/details/cvPopupRoles.xhtml">
+                         <ui:param name="cv" value="#{cvobject}"/>
+                     </ui:decorate>
                  </trh:cellFormat>
              </tr:iterator>
              <tr:iterator var="cvXref" value="#{binaryInteraction.biologicalRolesInteractorB}" rows="-1">
-                 <trh:cellFormat halign="center" width="15" inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
-                 <tr:outputText value="#{iconGenerator.colourMap[cvXref.text].initials}" shortDesc="#{cvXref.text}"/>
+                 <c:set var="cvobject"
+                        value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'bioRole')}"/>
+                 <trh:cellFormat halign="center" width="15"
+                                 inlineStyle="background:#{iconGenerator.colourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                     <ui:decorate template="/pages/details/cvPopupRoles.xhtml">
+                         <ui:param name="cv" value="#{cvobject}"/>
+                     </ui:decorate>
                  </trh:cellFormat>
              </tr:iterator>
 

@@ -35,6 +35,7 @@ import java.util.Map;
  */
 public final class Functions {
     private static final String MI_TO_XREF_URL_MAP_PARAM = Functions.class+".MI_TO_XREF_URL_MAP";
+    private static final String MI_TO_CV_MAP_PARAM = Functions.class+".MI_TO_CV_MAP";
     private static final String PUBMED_NCBI_URL="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=${ac}&dopt=Abstract";
     private static final String CITEXPLORE_URL="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=${ac}&dataSource=MED";
 
@@ -101,6 +102,38 @@ public final class Functions {
         }
 
         return replacedUrl;
+    }
+
+
+    public static CvObject getCvObjectFromIdentifier( FacesContext facesContext, String mi,String cvType ) {
+
+        Map<String, CvObject> miToCv = ( Map<String, CvObject> ) ( ( HttpSession ) facesContext.getExternalContext().getSession( false ) )
+                .getAttribute( MI_TO_CV_MAP_PARAM );
+
+        if ( miToCv == null ) {
+            miToCv = new HashMap<String, CvObject>();
+            ( ( HttpSession ) facesContext.getExternalContext().getSession( false ) )
+                    .setAttribute( MI_TO_CV_MAP_PARAM, miToCv );
+        }
+        CvObject cvObject;
+        if ( miToCv.containsKey( mi ) ) {
+            cvObject = miToCv.get( mi );
+        } else {
+            //have to do this way, because query with MI:0499 (unspecified role) returns more than one row and IntactException is thrown 
+            CvObjectDao<CvObject> cvObjectDao = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao();
+            if("expRole".equals(cvType  )){
+                final CvExperimentalRole cvExpRole = cvObjectDao.getByPrimaryId( CvExperimentalRole.class, mi );
+                cvObject = cvExpRole;
+            }else if ("bioRole".equals( cvType )){
+                final CvBiologicalRole cvBioRole = cvObjectDao.getByPrimaryId( CvBiologicalRole.class, mi );
+                cvObject = cvBioRole;
+            }else{
+            cvObject = cvObjectDao.getByPsiMiRef( mi );
+            }
+            // even store nulls, so the queries are not performed again
+            miToCv.put( mi, cvObject );
+        }
+        return cvObject;
     }
 
     /**
