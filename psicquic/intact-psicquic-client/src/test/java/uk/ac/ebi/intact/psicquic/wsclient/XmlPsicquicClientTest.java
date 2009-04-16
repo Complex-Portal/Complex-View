@@ -35,8 +35,8 @@ public class XmlPsicquicClientTest {
         XmlPsicquicClient client = new XmlPsicquicClient("http://www.ebi.ac.uk/tc-test/intact/psicquic/webservices/psicquic");
 
         XmlSearchResult searchResult = client.getByInteractor("brca2", 0, 50);
-                      cac
-        for (Entry esvntry : searchResult.getEntrySet().getEntries()) {
+
+        for (Entry entry : searchResult.getEntrySet().getEntries()) {
             for (Interaction interaction : entry.getInteractions()) {
                System.out.println(interaction);
             }

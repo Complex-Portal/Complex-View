@@ -34,7 +34,7 @@ import java.util.ArrayList;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public abstract class AbstractPsicquicClient<T> {
+public abstract class AbstractPsicquicClient<T> implements PsicquicClient<T> {
 
     private PsicquicService service;
 
@@ -51,16 +51,6 @@ public abstract class AbstractPsicquicClient<T> {
     public PsicquicService getService() {
         return service;
     }
-
-    public abstract T getByQuery(String query, int firstResult, int maxResults) throws PsicquicClientException;
-
-    public abstract T getByInteractor(String identifier, int firstResult, int maxResults) throws PsicquicClientException;
-
-    public abstract T getByInteraction(String identifier, int firstResult, int maxResults) throws PsicquicClientException;
-
-    public abstract T getByInteractionList(String[] identifiers, int firstResult, int maxResults) throws PsicquicClientException;
-
-    public abstract T getByInteractorList(String[] identifiers, QueryOperand operand, int firstResult, int maxResults) throws PsicquicClientException;
 
     protected RequestInfo createRequestInfo(String returnType, int firstResult, int maxResults) {
         RequestInfo requestInfo = new RequestInfo();

@@ -30,7 +30,7 @@ public class MitabPsicquicClientTest {
 
     @Test
     public void client() throws Exception {
-        MitabPsicquicClient client = new MitabPsicquicClient("http://localhost:9090/intact-psicquic-ws/webservices/psicquic");
+        MitabPsicquicClient client = new MitabPsicquicClient("http://www.ebi.ac.uk/intact/psicquic/webservices/psicquic");
 
         SearchResult<IntactBinaryInteraction> searchResult = client.getByInteractor("brca2", 0, 50);
         
