@@ -30,7 +30,7 @@ import javax.jms.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller
+//@Controller
 public class StatsProducer {
 
     @Autowired

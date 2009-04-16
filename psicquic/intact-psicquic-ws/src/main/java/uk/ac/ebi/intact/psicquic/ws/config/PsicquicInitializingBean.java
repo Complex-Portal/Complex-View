@@ -40,8 +40,8 @@ public class PsicquicInitializingBean implements InitializingBean {
     @Autowired
     private PsicquicConfig config;
 
-    @Autowired
-    private StatsConsumer statsConsumer;
+    //@Autowired
+    //private StatsConsumer statsConsumer;
 
     public void afterPropertiesSet() throws Exception {
         // proxy set
@@ -75,6 +75,6 @@ public class PsicquicInitializingBean implements InitializingBean {
 
         // stats consumer
         logger.info("Initializing consumer");
-        statsConsumer.start();
+        //statsConsumer.start();
     }
 }

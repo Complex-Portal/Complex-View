@@ -31,13 +31,12 @@ import psidev.psi.mi.xml.model.Interaction;
 public class XmlPsicquicClientTest {
 
     @Test
-    @Ignore
     public void client() throws Exception {
-        XmlPsicquicClient client = new XmlPsicquicClient("http://localhost:9090/intact-psicquic-ws/webservices/psicquic");
+        XmlPsicquicClient client = new XmlPsicquicClient("http://www.ebi.ac.uk/tc-test/intact/psicquic/webservices/psicquic");
 
-        XmlSearchResult searchResult = client.getByInteractor("imatinib", 0, 50);
-        
-        for (Entry entry : searchResult.getEntrySet().getEntries()) {
+        XmlSearchResult searchResult = client.getByInteractor("brca2", 0, 50);
+                      cac
+        for (Entry esvntry : searchResult.getEntrySet().getEntries()) {
             for (Interaction interaction : entry.getInteractions()) {
                System.out.println(interaction);
             }

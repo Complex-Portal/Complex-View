@@ -34,7 +34,7 @@ import java.io.File;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller
+//@Controller
 public class StatsConsumer extends ConsumerBean implements MessageListener {
 
     private final Logger logger = LoggerFactory.getLogger(StatsConsumer.class);

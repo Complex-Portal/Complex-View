@@ -42,8 +42,8 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Component
-@Aspect
+//@Component
+//@Aspect
 public class StatisticsAspect  {
 
     @Autowired
@@ -189,7 +189,7 @@ public class StatisticsAspect  {
                 return (String) methodArgs[2];
             }
         }
-        
+
         return null;
     }
 }

@@ -28,11 +28,10 @@ import uk.ac.ebi.intact.model.Interaction;
 public class IntactPsicquicClientTest {
 
     @Test
-    @Ignore
     public void client() throws Exception {
         IntactPsicquicClient client = new IntactPsicquicClient("http://localhost:9090/intact-psicquic-ws/webservices/psicquic");
 
-        IntactSearchResult searchResult = client.getByInteractor("imatinib", 0, 50);
+        IntactSearchResult searchResult = client.getByInteractor("brca2", 0, 50);
 
         for (Interaction interaction : searchResult.getEntry().getInteractions()) {
            System.out.println(interaction);

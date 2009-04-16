@@ -29,11 +29,10 @@ import psidev.psi.mi.search.SearchResult;
 public class MitabPsicquicClientTest {
 
     @Test
-    @Ignore
     public void client() throws Exception {
         MitabPsicquicClient client = new MitabPsicquicClient("http://localhost:9090/intact-psicquic-ws/webservices/psicquic");
 
-        SearchResult<IntactBinaryInteraction> searchResult = client.getByInteractor("imatinib", 0, 50);
+        SearchResult<IntactBinaryInteraction> searchResult = client.getByInteractor("brca2", 0, 50);
         
         for (IntactBinaryInteraction ibi : searchResult.getData()) {
             System.out.println(ibi.getInteractionAcs());
