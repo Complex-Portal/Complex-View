@@ -147,34 +147,43 @@ public class IntactPsicquicService implements PsicquicService {
             throw new NotSupportedTypeException("Not supported return type: "+resultType+" - Supported types are: "+getSupportedReturnTypes());
         }
 
-        logger.debug("Searching: {} ({}/{})", new Object[] {query, requestInfo.getFirstResult(), blockSize});
+        logger.debug("Searching: {} ({}/{}) with type {}", new Object[] {query, requestInfo.getFirstResult(), blockSize, resultType});
 
         /////////////////////////////////////////////////////////////////
 
-        try {
-            SolrServer solrServer = new CommonsHttpSolrServer( config.getSolrServerUrl(), createHttpClient());
-            
-            IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
-            SolrSearchResult solrSearchResult = searcher.search(query, requestInfo.getFirstResult(), blockSize);
+        SolrSearchResult solrSearchResult;
 
-            // preparing the response
+        try {
+            SolrServer solrServer = new CommonsHttpSolrServer(config.getSolrServerUrl(), createHttpClient());
+
+            IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
+            solrSearchResult = searcher.search(query, requestInfo.getFirstResult(), blockSize);
+
+        } catch (Throwable t) {
+            throw new PsicquicServiceException("An error occured while searching the Solr index: " +
+                    config.getSolrServerUrl(), t);
+        }
+
+        // preparing the response
+        try {
             QueryResponse queryResponse = new QueryResponse();
             ResultInfo resultInfo = new ResultInfo();
             resultInfo.setBlockSize(blockSize);
             resultInfo.setFirstResult(requestInfo.getFirstResult());
             resultInfo.setTotalResults((int) solrSearchResult.getTotalCount() );
 
-        queryResponse.setResultInfo(resultInfo);
+            queryResponse.setResultInfo(resultInfo);
 
-        ResultSet resultSet = createResultSet(solrSearchResult, requestInfo);
-        queryResponse.setResultSet(resultSet);
+            ResultSet resultSet = createResultSet(solrSearchResult, requestInfo);
+            queryResponse.setResultSet(resultSet);
 
-        return queryResponse;
+            return queryResponse;
 
-        } catch ( Throwable t ) {
-            throw new PsicquicServiceException( "An error occured while searching the Solr index: " +
-                                                config.getSolrServerUrl(), t );
+        } catch (Throwable e) {
+            logger.error("Problem creating the response for result type: "+resultType, e);
+            throw new PsicquicServiceException("Problem creating the response for result type: "+resultType, e);
         }
+
 
         /////////////////////////////////////////////////////////////////
 
