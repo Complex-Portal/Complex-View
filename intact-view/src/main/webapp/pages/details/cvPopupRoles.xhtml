@@ -12,7 +12,7 @@
                     immediate="true" useWindow="true">
 
         <tr:outputText value="#{iconGenerator.colourMap[cv.shortLabel].initials}" shortDesc="#{cv.shortLabel}" inlineStyle="#{linkStyle}"/>
-        <f:setPropertyActionListener value="#{cv.ac}" target="#{cvBean.objectAc}"/>
+        <f:setPropertyActionListener value="#{cv}" target="#{cvBean.cvObject}"/>
 
     </tr:commandLink>
 
