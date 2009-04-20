@@ -1,20 +1,9 @@
 package uk.ac.ebi.intact.psicquic.ws;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.hupo.psi.mi.psicquic.*;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.StreamingOutput;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
-
-import java.io.OutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput;
 
@@ -59,11 +48,7 @@ public class IntactPsicquicRestService implements PsicquicRestService {
         reqInfo.setFirstResult(0);
         reqInfo.setBlockSize(50);
 
-        System.out.println("Searching: "+query);
-
-       QueryResponse response = psicquicService.getByQuery(query, reqInfo);
-
-        System.out.println("Results: "+response.getResultInfo().getTotalResults());
+        QueryResponse response = psicquicService.getByQuery(query, reqInfo);
 
         return response.getResultSet().getEntrySet();
     }

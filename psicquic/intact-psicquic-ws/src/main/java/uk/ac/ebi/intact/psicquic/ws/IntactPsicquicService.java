@@ -15,38 +15,30 @@
  */
 package uk.ac.ebi.intact.psicquic.ws;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.common.SolrDocument;
 import org.hupo.psi.mi.psicquic.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.solr.common.SolrDocument;
-import org.apache.commons.httpclient.HttpClient;
-import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.search.engine.SearchEngine;
 import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.builder.DocumentDefinition;
 import psidev.psi.mi.xml.converter.impl254.EntrySetConverter;
 import psidev.psi.mi.xml.dao.inMemory.InMemoryDAOFactory;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
-import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
-import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
-import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.search.IntactSearchEngine;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.converter.SolrDocumentConverter;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.converter.SolrDocumentConverter;
+import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
+import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.*;
-import java.net.MalformedURLException;
 
 /**
  * This web service is based on a PSIMITAB lucene's directory to search and return the results.
@@ -160,6 +152,8 @@ public class IntactPsicquicService implements PsicquicService {
             solrSearchResult = searcher.search(query, requestInfo.getFirstResult(), blockSize);
 
         } catch (Throwable t) {
+            logger.error("An error occured while searching the Solr index: " +
+                    config.getSolrServerUrl(), t);
             throw new PsicquicServiceException("An error occured while searching the Solr index: " +
                     config.getSolrServerUrl(), t);
         }
