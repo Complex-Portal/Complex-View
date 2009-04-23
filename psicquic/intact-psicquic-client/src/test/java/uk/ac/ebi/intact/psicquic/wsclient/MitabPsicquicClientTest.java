@@ -20,6 +20,8 @@ import org.junit.Ignore;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import psidev.psi.mi.search.SearchResult;
 
+import java.util.Arrays;
+
 /**
  * TODO comment that class header
  *
@@ -30,9 +32,9 @@ public class MitabPsicquicClientTest {
 
     @Test
     public void client() throws Exception {
-        MitabPsicquicClient client = new MitabPsicquicClient("http://www.ebi.ac.uk/intact/psicquic/webservices/psicquic");
+        MitabPsicquicClient client = new MitabPsicquicClient("http://localhost:9090/intact-psicquic-ws/webservices/psicquic");
 
-        SearchResult<IntactBinaryInteraction> searchResult = client.getByInteractor("brca2", 0, 50);
+        SearchResult<IntactBinaryInteraction> searchResult = client.getByInteractorList(new String[] {"Q9VXG8", "P38111"}, QueryOperand.OR, 0, 50);
         
         for (IntactBinaryInteraction ibi : searchResult.getData()) {
             System.out.println(ibi.getInteractionAcs());
