@@ -15,33 +15,32 @@
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
     <tr:panelGroupLayout layout="horizontal" id="searchSummary">
-        <tr:group>
-            Displaying results for query:
-            <strong><ebi:outputText id="queryText" value="#{userQuery.displayQuery}" maxLength="50"
-                                    expandMessage="[+]" collapseMessage="[-]"/></strong>
-            <!--<em> (Note: To 'Browse All' click the 'Clear' button on the left menu) </em>-->
-        </tr:group>
+        <!--<tr:group>-->
+            <!--Displaying results for query:-->
+            <!--<strong><ebi:outputText id="queryText" value="#{userQuery.displayQuery}" maxLength="50"-->
+                                    <!--expandMessage="[+]" collapseMessage="[-]"/></strong>-->
+        <!--</tr:group>-->
 
-        <tr:panelGroupLayout inlineStyle="display: #{userQuery.usingFilters? 'inline' : 'none'}">
-                <h:panelGroup rendered="#{searchBean.totalResults == 0}">
-                    &#160;&#160;
-                    <tr:image source="/images/warning_icon.png" />
-                    &#160;
-                    <tr:outputText value="There are currently some filters enabled, without which you would have found #{searchBean.unfilteredTotalCount} interaction#{searchBean.unfilteredTotalCount eq 1? '' : 's'}.  "/>
-               </h:panelGroup>
+        <!--<tr:panelGroupLayout inlineStyle="display: #{userQuery.usingFilters? 'inline' : 'none'}">-->
+                <!--<h:panelGroup rendered="#{searchBean.totalResults == 0}">-->
+                    <!--&#160;&#160;-->
+                    <!--<tr:image source="/images/warning_icon.png" />-->
+                    <!--&#160;-->
+                    <!--<tr:outputText value="There are currently some filters enabled, without which you would have found #{searchBean.unfilteredTotalCount} interaction#{searchBean.unfilteredTotalCount eq 1? '' : 's'}.  "/>-->
+               <!--</h:panelGroup>-->
 
-                <h:panelGroup style="display: #{searchBean.totalResults gt 0}">
-                    &#160;
-                    <tr:outputText value="(using filters - "/>
-                    <tr:commandLink id="linkModifyFilters" text="modify" action="dialog:filters"
-                                    immediate="true" useWindow="true" windowWidth="600" partialSubmit="true"
-                                    returnListener="#{searchBean.refreshWhenClosingDialog}"/>
-                    <tr:outputText value=" | "/>
-                    <tr:commandLink text="clear" actionListener="#{searchBean.doClearFilterAndSearch}"
-                                    action="interactions" partialSubmit="true"/>
-                    <tr:outputText value=")"/>
-                </h:panelGroup>
-        </tr:panelGroupLayout>
+                <!--<h:panelGroup style="display: #{searchBean.totalResults gt 0}">-->
+                    <!--&#160;-->
+                    <!--<tr:outputText value="(using filters - "/>-->
+                    <!--<tr:commandLink id="linkModifyFilters" text="modify" action="dialog:filters"-->
+                                    <!--immediate="true" useWindow="true" windowWidth="600" partialSubmit="true"-->
+                                    <!--returnListener="#{searchBean.refreshWhenClosingDialog}"/>-->
+                    <!--<tr:outputText value=" | "/>-->
+                    <!--<tr:commandLink text="clear" actionListener="#{searchBean.doClearFilterAndSearch}"-->
+                                    <!--action="interactions" partialSubmit="true"/>-->
+                    <!--<tr:outputText value=")"/>-->
+                <!--</h:panelGroup>-->
+        <!--</tr:panelGroupLayout>-->
 
     </tr:panelGroupLayout>
 

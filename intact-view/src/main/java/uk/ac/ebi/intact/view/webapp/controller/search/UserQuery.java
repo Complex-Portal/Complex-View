@@ -16,7 +16,6 @@
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,8 +24,8 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.view.webapp.controller.browse.ChebiBrowserController;
-import uk.ac.ebi.intact.view.webapp.controller.browse.GoBrowserController;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 
@@ -47,16 +46,12 @@ import java.util.*;
 @Controller("userQuery")
 @Scope("conversation.access")
 @ConversationName("general")
-public class UserQuery {
+public class UserQuery extends BaseController {
 
     private static final Log log = LogFactory.getLog( UserQuery.class );
 
     private static final String TERM_NAME_PARAM = "termName";
     public static final String STAR_QUERY = "*:*";
-
-    private enum BooleanOperator {
-        AND, OR;
-    }
 
     @Autowired
     private FilterPopulatorController filterPopulator;
@@ -66,6 +61,8 @@ public class UserQuery {
 
     private String searchQuery = STAR_QUERY;
     private String ontologySearchQuery;
+
+    private List<QueryToken> queryTokenList;
 
     private String[] datasets;
     private String[] sources;
@@ -85,7 +82,17 @@ public class UserQuery {
 
     private int pageSize = 30;
 
+    private boolean showNewFieldPanel;
+    private QueryToken newQueryToken;
+
+
+    private SearchField[] searchFields;
+
+    private List<SelectItem> searchFieldSelectItems;
+    private Map<String,SearchField> searchFieldsMap;
+
     public UserQuery() {
+        this.queryTokenList = new ArrayList<QueryToken>();
     }
 
     @PostConstruct
@@ -96,6 +103,10 @@ public class UserQuery {
         this.userSortOrder = DEFAULT_SORT_ORDER;
 
         clearFilters();
+
+        initSearchFields();
+
+
     }
 
     public void clearFilters() {
@@ -105,6 +116,44 @@ public class UserQuery {
         chebiTerms = new String[0];
         goTerms = new String[0];
         termMap.clear();
+        queryTokenList.clear();
+    }
+
+    private void initSearchFields() {
+
+        searchFields = new SearchField[]{
+                new SearchField("", "All"),
+                new SearchField(FieldNames.IDENTIFIER, "Participant Id"),
+                new SearchField(FieldNames.INTERACTION_ID, "Interaction Id"),
+                new SearchField(FieldNames.GENE_NAME, "Gene name"),
+                new SearchField(FieldNames.DETMETHOD, "Detection method"),
+                new SearchField(FieldNames.TYPE, "Interaction type"),
+                new SearchField("species", "Organism"),
+                new SearchField(FieldNames.PUBID, "Pubmed Id"),
+                new SearchField(FieldNames.PUBAUTH, "Author"),
+                new SearchField("biologicalRole", "Biological role"),
+                new SearchField("experimentalRole", "Experimental role"),
+                new SearchField("go_expanded_id", "GO"),
+                new SearchField("chebi_expanded_id", "ChEBI"),
+                new SearchField("intepro_expanded_id", "Interpro"),
+                new SearchField("properties", "Participant cross-reference"),
+                new SearchField(FieldNames.EXPANSION, "Expansion algorithm", filterPopulator.getExpansionSelectItems()),
+                new SearchField(FieldNames.SOURCE, "Source", filterPopulator.getSourceSelectItems()),
+                new SearchField(FieldNames.DATASET, "Dataset", filterPopulator.getDatasetSelectItems()),
+                new SearchField(FieldNames.RIGID, "RIGID")
+        };
+
+        searchFieldSelectItems = new ArrayList<SelectItem>(searchFields.length);
+
+        for (SearchField searchField : searchFields) {
+            searchFieldSelectItems.add(new SelectItem(searchField.getName(), searchField.getDisplayName()));
+        }
+
+        searchFieldsMap = new HashMap<String, SearchField>();
+
+        for (SearchField field : searchFields) {
+            searchFieldsMap.put(field.getName(), field);
+        }
     }
 
     public void clearSearchFilters(ActionEvent evt) {
@@ -129,9 +178,6 @@ public class UserQuery {
         if( ontologySearchQuery == null &&
             (searchQuery == null || searchQuery.trim().length() == 0 ||
                     searchQuery.equals("*") || searchQuery.equals("?"))) {
-            if ( log.isTraceEnabled() ) {
-                log.trace( "Resetting the searchQuery to *:*" );
-            }
             searchQuery = STAR_QUERY;
         }
 
@@ -141,7 +187,7 @@ public class UserQuery {
             q = searchQuery;
 
             q = q.trim();
-            q = quoteIfCommonIdWithColon(q);
+            //q = quoteIfCommonIdWithColon(q);
 
         } else if( ontologySearchQuery != null ) {
             q = buildSolrOntologyQuery( ontologySearchQuery );
@@ -156,12 +202,20 @@ public class UserQuery {
         query.setRows(pageSize);
 
         if( includeFilters ) {
+            /*
             addFilteredQuery(query, "dataset", filterPopulator.getDatasets(), selectDatasetNames( datasets ));
             addFilteredQuery(query, "source", filterPopulator.getSources(), sources);
             addFilteredQuery(query, "expansion", filterPopulator.getExpansions(), expansions);
 
             addFilteredQuery(query, GoBrowserController.FIELD_NAME, goTerms);
             addFilteredQuery(query, ChebiBrowserController.FIELD_NAME, chebiTerms);
+              */
+//            for (QueryToken token : queryTokenList) {
+//                if (!token.getQuery().equals(q)) {
+//                    query.addFilterQuery(token.toQuerySyntax());
+//                }
+//            }
+
         }
 
         return query;
@@ -192,26 +246,58 @@ public class UserQuery {
         return "+(detmethod:" + q + " type:" + q + " properties:" + q + ")";
     }
 
-    /**
-     * Strips the dataset of their dataset definition, only keeping the dataset name.
-     * @param datasets an array of datasets, foramtted as: 'name - description'
-     * @return a null array of the same length as datasets containing only the names of the given datasets.
-     */
-    private String[] selectDatasetNames( String[] datasets ) {
-        if (datasets == null) datasets = new String[0];
-        
-        String[] datasetNames = new String[datasets.length];
-        for ( int i = 0; i < datasets.length; i++ ) {
-            String dataset = datasets[i];
-            final int idx = dataset.indexOf( '-' );
-            String name = dataset;
-            if( idx != -1 ) {
-                name = dataset.substring( 0, idx ).trim();
-            }
-            datasetNames[i] = name ;
-        }
-        return datasetNames;
+    public void doShowAddFieldPanel(ActionEvent evt) {
+        showAddFieldsPanel();
+        newQueryToken = new QueryToken("");
     }
+
+    public void doAddFieldToQuery(ActionEvent evt) {
+        doAddFieldToQuery(newQueryToken);
+    }
+
+    public void doAddFieldToQuery(QueryToken queryToken) {
+        if (!isWildcardQuery(queryToken.getQuery())) {
+
+            if (isWildcardQuery(searchQuery)) {
+                searchQuery = queryToken.toQuerySyntax(true);
+            } else {
+                searchQuery = surroundByBracesIfNecessary(searchQuery);
+                searchQuery = searchQuery + " "+queryToken.toQuerySyntax();
+            }
+        }
+
+        hideAddFieldsPanel();
+    }
+
+    public boolean isWildcardQuery() {
+        return isWildcardQuery(searchQuery);
+    }
+
+    private boolean isWildcardQuery(String query) {
+        return (query.trim().length() == 0 || "*".equals(query) || "*:*".equals(query));
+    }
+
+    private String surroundByBracesIfNecessary(String query) {
+        if (query.contains(" AND ") || query.contains(" OR ")) {
+            query = "("+query+")";
+        }
+
+        return query;
+    }
+
+    public void doCancelAddField(ActionEvent evt) {
+        hideAddFieldsPanel();
+    }
+
+    private void showAddFieldsPanel() {
+        showNewFieldPanel = true;
+    }
+
+    private void hideAddFieldsPanel() {
+        newQueryToken = null;
+        showNewFieldPanel = false;
+    }
+
 
     private SolrQuery createSolrQueryForHierarchView() {
         // export all available rows
@@ -283,65 +369,13 @@ public class UserQuery {
         return (filterQueries != null && filterQueries.length > 0);
     }
 
-    private void addFilteredQuery(SolrQuery query, String field, String[] items) {
-        if (items == null || items.length == 0) return;
-        query.addFilterQuery( "+" + field + ":" + createLuceneQuery(Arrays.asList(items), BooleanOperator.AND ));
-    }
-
-    private void addFilteredQuery(SolrQuery query,
-                                  String field,
-                                  Collection<String> allItems,
-                                  String[] selectedItems) {
-
-        if (selectedItems == null) {
-            selectedItems = new String[0];
-        }
-
-        Collection<String> included;
-
-        if (!containsNotSpecified(selectedItems)) {
-            included = Arrays.asList(selectedItems);
-        } else {
-            included = Collections.EMPTY_LIST;
-        }
-
-        Collection<String> excluded;
-
-        if (containsNotSpecified(selectedItems)) {
-            excluded = CollectionUtils.subtract(allItems, Arrays.asList(selectedItems));
-        } else {
-            excluded = Collections.EMPTY_LIST;
-        }
-
-        if (!included.isEmpty()) {
-            String lq = createLuceneQuery(included, BooleanOperator.OR );
-            query.addFilterQuery( "+" + field + ":" + lq );
-        }
-
-        if (!excluded.isEmpty()) {
-            String lq = createLuceneQuery(excluded, BooleanOperator.OR );
-            query.addFilterQuery( "-" + field + ":" + lq );
-        }
-    }
-
-    private String createLuceneQuery(Collection<String> items, BooleanOperator operator) {
-        StringBuilder sb = new StringBuilder( items.size() * 64 );
-
-        sb.append('(');
-        String operatorStr = operator.equals(BooleanOperator.AND) ? "+" : "";
-
-        for (String item : items) {
-            sb.append(operatorStr).append('\"').append(item).append("\" ");
-        }
-        sb.deleteCharAt( sb.length() - 1 ).append(')');
-        return sb.toString();
-    }
-
     public void addGoTerm(ActionEvent evt) {
         String param = JsfUtils.getFirstParamValue(evt);
         String termName = (String)JsfUtils.getParameterValue( TERM_NAME_PARAM, evt);
         goTerms = (String[])ArrayUtils.add(goTerms, param);
         termMap.put( param,termName );
+
+        addToTokenList(FieldNames.DB_GO, termName);
     }
 
     public void addChebiTerm(ActionEvent evt) {
@@ -349,6 +383,18 @@ public class UserQuery {
         String termName = (String)JsfUtils.getParameterValue( TERM_NAME_PARAM, evt);
         chebiTerms = (String[]) ArrayUtils.add(chebiTerms, param);
         termMap.put( param,termName );
+
+        addToTokenList(FieldNames.DB_CHEBI, termName);
+    }
+
+    public void doAddParamTermToQuery(ActionEvent evt) {
+        String operand = (String)JsfUtils.getParameterValue( "operand", evt);
+        String field = (String)JsfUtils.getParameterValue( "field", evt);
+        String query = (String)JsfUtils.getParameterValue( "queryValue", evt);
+
+        //termMap.put( param,termName );
+
+        doAddFieldToQuery(new QueryToken(query, field, BooleanOperand.valueOf(operand)));
     }
 
     public Collection<String> getDatasetsToInclude() {
@@ -376,7 +422,24 @@ public class UserQuery {
         datasets = new String[0];
     }
 
+    private void addToTokenList(String fieldName, String value) {
+        QueryToken token = new QueryToken(value, fieldName);
+
+        if (!queryTokenList.contains(token)) {
+            queryTokenList.add(token);
+        }
+    }
+
+    private void addToTokenList(String fieldName, String[] values) {
+        for (String value : values) {
+           addToTokenList(fieldName, value);
+        }
+    }
+
     public String getSearchQuery() {
+        if ("*:*".equals(searchQuery)) {
+            searchQuery = "";
+        }
         return searchQuery;
     }
 
@@ -411,6 +474,8 @@ public class UserQuery {
 
     public void setDatasets(String[] datasets) {
         this.datasets = datasets;
+
+        addToTokenList(FieldNames.DATASET, datasets);
     }
 
     public String[] getExpansions() {
@@ -419,6 +484,8 @@ public class UserQuery {
 
     public void setExpansions(String[] expansions) {
         this.expansions = expansions;
+
+        addToTokenList(FieldNames.DATASET, datasets);
     }
 
     public static boolean containsNotSpecified(String[] values) {
@@ -502,5 +569,33 @@ public class UserQuery {
 
     public void setTermMap( Map<String, String> termMap ) {
         this.termMap = termMap;
+    }
+
+       public List<SelectItem> getSearchFieldSelectItems() {
+        return searchFieldSelectItems;
+    }
+
+    public List<QueryToken> getQueryTokenList() {
+        return queryTokenList;
+    }
+
+    public void setQueryTokenList(List<QueryToken> queryTokenList) {
+        this.queryTokenList = queryTokenList;
+    }
+
+    public boolean isShowNewFieldPanel() {
+        return showNewFieldPanel;
+    }
+
+    public QueryToken getNewQueryToken() {
+        return newQueryToken;
+    }
+
+    public void setNewQueryToken(QueryToken newQueryToken) {
+        this.newQueryToken = newQueryToken;
+    }
+
+    public Map<String, SearchField> getSearchFieldsMap() {
+        return searchFieldsMap;
     }
 }

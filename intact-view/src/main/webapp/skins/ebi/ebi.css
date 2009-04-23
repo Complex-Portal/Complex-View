@@ -140,7 +140,7 @@ af|panelBox::light af|panelBox::content{
 }
 
 af|panelBox::light af|panelBox::header {
-    background: #EDF6F5 url("http://www.ebi.ac.uk/inc/images/head_blue2d.gif") no-repeat scroll right top;
+    background: #EDF6F5 url("http://www.ebi.ac.uk/inc/images/head_blue2d.gif") repeat-x scroll right top;
     border-collapse: collapse;
     border-width: 0px 0px 1px;
     color: #1F1F1F;
@@ -157,7 +157,7 @@ af|panelBox::light af|panelBox::body {
 }
 
 af|panelBox::light af|panelBox::content {
-    background: transparent url("http://www.ebi.ac.uk/inc/images/head_blue3b.gif") no-repeat scroll right top;
+    background: transparent url("http://www.ebi.ac.uk/inc/images/head_blue3b.gif") repeat-x scroll right top;
     margin: 0px 0px 0px 2px;
     padding: 3px 4px 5px;
     vertical-align: top;

@@ -190,6 +190,13 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+
+        <!-- PrimeFaces repo -->
+        <repository>
+            <id>prime-repo</id>
+            <name>Prime Technology Maven Repository</name>
+            <url>http://repository.prime.com.tr/</url>
+        </repository>
     </repositories>
 
     <!-- Project dependencies -->
@@ -360,6 +367,8 @@
             <scope>compile</scope>
         </dependency>
 
+
+        <!-- MyFaces orchestra -->
         <dependency>
             <groupId>org.apache.myfaces.orchestra</groupId>
             <artifactId>myfaces-orchestra-core15</artifactId>
@@ -371,6 +380,14 @@
             <artifactId>myfaces-orchestra-core</artifactId>
             <version>1.3-SNAPSHOT</version>
         </dependency>
+
+        <!-- PrimeFaces -->
+        <!--<dependency>-->
+            <!--<groupId>org.primefaces</groupId>-->
+            <!--<artifactId>primefaces-ui</artifactId>-->
+            <!--<version>0.8.2</version>-->
+        <!--</dependency>-->
+
 
         <dependency>
             <groupId>commons-el</groupId>
@@ -422,4 +439,5 @@
         </dependency>
 
     </dependencies>
+
 </project>

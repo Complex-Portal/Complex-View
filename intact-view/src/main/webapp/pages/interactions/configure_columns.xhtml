@@ -16,7 +16,7 @@
              <tr:panelHorizontalLayout>
                     <tr:outputText value="Select the columns to be displayed and click "/>
                     <tr:spacer width="5px"/>
-                    <tr:commandLink text="Update" action="#{configureColumn.updateColumn}"/>
+                    <tr:commandButton text="Update" action="#{configureColumn.updateColumn}"/>
                  </tr:panelHorizontalLayout>
                 <tr:separator/>
 
@@ -28,8 +28,10 @@
                             <tr:panelButtonBar>
                                 <tr:commandLink text="Standard"
                                                 action="#{configureColumn.selectDefault}"/>
+                                |
                                 <tr:commandLink text="Extended"
                                                 action="#{configureColumn.selectAll}"/>
+                                |
                                   <tr:commandLink text="None"
                                                 action="#{configureColumn.selectNone}"/>
                             </tr:panelButtonBar>

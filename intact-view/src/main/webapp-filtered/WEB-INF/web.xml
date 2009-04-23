@@ -41,13 +41,13 @@
     <!-- MyFaces -->
 
     <!--<context-param>-->
-        <!--<description>Comma separated list of URIs of (additional) faces config files.-->
-            <!--(e.g. /WEB-INF/my-config.xml)-->
-            <!--See JSF 1.0 PRD2, 10.3.2-->
-            <!--Attention: You do not need to put /WEB-INF/faces-config.xml in here.-->
-        <!--</description>-->
-        <!--<param-name>javax.faces.CONFIG_FILES</param-name>-->
-        <!--<param-value>/WEB-INF/navigation-faces-config.xml</param-value>-->
+    <!--<description>Comma separated list of URIs of (additional) faces config files.-->
+    <!--(e.g. /WEB-INF/my-config.xml)-->
+    <!--See JSF 1.0 PRD2, 10.3.2-->
+    <!--Attention: You do not need to put /WEB-INF/faces-config.xml in here.-->
+    <!--</description>-->
+    <!--<param-name>javax.faces.CONFIG_FILES</param-name>-->
+    <!--<param-value>/WEB-INF/navigation-faces-config.xml</param-value>-->
     <!--</context-param>-->
     <context-param>
         <description>State saving method: "client" or "server" (= default)
@@ -57,29 +57,29 @@
         <param-value>client</param-value>
     </context-param>
     <!--<context-param>-->
-        <!--<description>Only applicable if state saving method is "server" (= default).-->
-            <!--Defines the amount (default = 20) of the latest views are stored in session.-->
-        <!--</description>-->
-        <!--<param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>-->
-        <!--<param-value>20</param-value>-->
+    <!--<description>Only applicable if state saving method is "server" (= default).-->
+    <!--Defines the amount (default = 20) of the latest views are stored in session.-->
+    <!--</description>-->
+    <!--<param-name>org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION</param-name>-->
+    <!--<param-value>20</param-value>-->
     <!--</context-param>-->
     <!--<context-param>-->
-        <!--<description>Only applicable if state saving method is "server" (= default).-->
-            <!--If true (default) the state will be serialized to a byte stream before it-->
-            <!--is written to the session.-->
-            <!--If false the state will not be serialized to a byte stream.-->
-        <!--</description>-->
-        <!--<param-name>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</param-name>-->
-        <!--<param-value>true</param-value>-->
+    <!--<description>Only applicable if state saving method is "server" (= default).-->
+    <!--If true (default) the state will be serialized to a byte stream before it-->
+    <!--is written to the session.-->
+    <!--If false the state will not be serialized to a byte stream.-->
+    <!--</description>-->
+    <!--<param-name>org.apache.myfaces.SERIALIZE_STATE_IN_SESSION</param-name>-->
+    <!--<param-value>true</param-value>-->
     <!--</context-param>-->
     <!--<context-param>-->
-        <!--<description>Only applicable if state saving method is "server" (= default) and if-->
-            <!--org.apache.myfaces.SERIALIZE_STATE_IN_SESSION is true (= default)-->
-            <!--If true (default) the serialized state will be compressed before it-->
-            <!--is written to the session. If false the state will not be compressed.-->
-        <!--</description>-->
-        <!--<param-name>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</param-name>-->
-        <!--<param-value>true</param-value>-->
+    <!--<description>Only applicable if state saving method is "server" (= default) and if-->
+    <!--org.apache.myfaces.SERIALIZE_STATE_IN_SESSION is true (= default)-->
+    <!--If true (default) the serialized state will be compressed before it-->
+    <!--is written to the session. If false the state will not be compressed.-->
+    <!--</description>-->
+    <!--<param-name>org.apache.myfaces.COMPRESS_STATE_IN_SESSION</param-name>-->
+    <!--<param-value>true</param-value>-->
     <!--</context-param>-->
     <context-param>
         <description>This parameter tells MyFaces if javascript code should be allowed in the
@@ -134,13 +134,13 @@
         <param-value>true</param-value>
     </context-param>
 
-  <context-param>
-      <description>
-          Whether to enable custom error handling or not
-      </description>
-      <param-name>org.apache.myfaces.ERROR_HANDLING</param-name>
-      <param-value>true</param-value>
-  </context-param>
+    <context-param>
+        <description>
+            Whether to enable custom error handling or not
+        </description>
+        <param-name>org.apache.myfaces.ERROR_HANDLING</param-name>
+        <param-value>true</param-value>
+    </context-param>
 
     <context-param>
         <description>
@@ -151,7 +151,6 @@
         <param-name>org.apache.myfaces.ERROR_TEMPLATE_RESOURCE</param-name>
         <param-value>/error/ebi-dev-error.xml</param-value>
     </context-param>
-
 
 
     <!-- Facelets -->
@@ -323,7 +322,7 @@
     This can be removed if using Facelets >= 1.15
     -->
     <!--<listener>-->
-        <!--<listener-class>uk.ac.ebi.faces.webapp.EvilOpenFilesListener</listener-class>-->
+    <!--<listener-class>uk.ac.ebi.faces.webapp.EvilOpenFilesListener</listener-class>-->
     <!--</listener>-->
 
     <!-- Spring Framework 2.0 -->
@@ -364,6 +363,20 @@
         <servlet-name>resources</servlet-name>
         <url-pattern>/adf/*</url-pattern>
     </servlet-mapping>
+
+    <!-- PrimeFaces resources -->
+    <!--<servlet>-->
+        <!--<servlet-name>Resource Servlet</servlet-name>-->
+        <!--<servlet-class>-->
+            <!--org.primefaces.ui.resource.ResourceServlet-->
+        <!--</servlet-class>-->
+        <!--<load-on-startup>1</load-on-startup>-->
+    <!--</servlet>-->
+
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>Resource Servlet</servlet-name>-->
+        <!--<url-pattern>/primefaces_resources/*</url-pattern>-->
+    <!--</servlet-mapping>-->
 
     <!-- News feed -->
     <servlet>
@@ -441,8 +454,8 @@
     </error-page>
 
     <!--<error-page>-->
-        <!--<exception-type>uk.ac.ebi.intact.view.webapp.IntactViewException</exception-type>-->
-        <!--<location>/main.xhtml</location>-->
+    <!--<exception-type>uk.ac.ebi.intact.view.webapp.IntactViewException</exception-type>-->
+    <!--<location>/main.xhtml</location>-->
     <!--</error-page>-->
 
 

@@ -68,10 +68,11 @@
                         </f:facet>
                         <tr:group>
                              <tr:commandLink text="#{otw.interactionCount}" rendered="#{otw.interactionCount > 0}"
-                                              actionListener="#{userQuery.addChebiTerm}"
+                                              actionListener="#{userQuery.doAddParamTermToQuery}"
                                              action="#{searchBean.doBinarySearchAction}">
-                                 <f:param name="termId" value="#{otw.term.id}" />
-                                 <f:param name="termName" value="#{otw.term.name}" />
+                                 <f:param name="operand" value="AND"/>
+                                 <f:param name="field" value="chebi_expanded_id"/>
+                                 <f:param name="queryValue" value="#{otw.term.id}" />
                             </tr:commandLink>
 
                             <tr:outputText value="0" rendered="#{otw.interactionCount == 0}"/>

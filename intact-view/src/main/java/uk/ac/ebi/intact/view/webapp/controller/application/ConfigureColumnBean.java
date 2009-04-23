@@ -51,36 +51,6 @@ public class ConfigureColumnBean {
 
     private List<String> columns;
     private List<SelectItem> columnsSelectItems;
-
-
-    /*private static final String MOLECULE_A_NAME = "Compound Name";
-    private static final String MOLECULE_A_LINKS = "Compound Links";
-    private static final String MOLECULE_B_NAME = "Target Name";
-    private static final String MOLECULE_B_LINKS = "Target Links";
-    private static final String MOLECULE_A_ALIASES = "Compound Aliases";
-    private static final String MOLECULE_B_ALIASES = "Target Aliases";
-    private static final String MOLECULE_A_SPECIES = "Compound Species";
-    private static final String MOLECULE_B_SPECIES = "Target Species";
-    private static final String FIRST_AUTHOR = "First Author";
-    private static final String PUBMED_IDENTIFIER = "PubMed Identifier";
-    private static final String INTERACTION_TYPE = "Interaction Type";
-    private static final String INTERACTION_DETECTION_METHOD = "Interaction Detection Method";
-    private static final String SOURCE_DATABASE = "Source Database";
-    private static final String INTERACTION_AC = "Interaction AC";
-    private static final String CONFIDENCE_VALUE = "Confidence Value";
-    private static final String MOLECULE_A_EXPERIMENTAL_ROLE = "Compound Experimental Role";
-    private static final String MOLECULE_B_EXPERIMENTAL_ROLE = "Target Experimental Role";
-    private static final String MOLECULE_A_BIOLOGICAL_ROLE = "Compound Biological Role";
-    private static final String MOLECULE_B_BIOLOGICAL_ROLE = "Target Biological Role";
-    private static final String MOLECULE_A_PROPERTIES = "Compound Properties";
-    private static final String MOLECULE_B_PROPERTIES = "Target Properties";
-    private static final String MOLECULE_A_INTERACTOR_TYPE = "Compound Interactor Type";
-    private static final String MOLECULE_B_INTERACTOR_TYPE = "Target Interactor Type";
-    private static final String HOST_ORGANISM = "Host Organism";
-    private static final String EXPANSION_METHOD = "Expansion Method";
-    private static final String DATASET = "Dataset";
-*/
-
     private static String MOLECULE_A_NAME = "moleculeA.name";
     private static String MOLECULE_A_LINKS = "moleculeA.links";
     private static String MOLECULE_B_NAME = "moleculeB.name";
@@ -270,9 +240,6 @@ public class ConfigureColumnBean {
      * @return null
      */
     public String updateColumn() {
-        if ( log.isDebugEnabled() ) {
-            log.debug( " updateColumn called" );
-        }
         searchBean.setExpandedView( false );
         Object returnedValue = columns;
         RequestContext.getCurrentInstance().returnFromDialog( returnedValue, null );
@@ -286,9 +253,6 @@ public class ConfigureColumnBean {
      * @return null
      */
     public String selectAll() {
-        if ( log.isDebugEnabled() ) {
-            log.debug( "select all called" );
-        }
         searchBean.setExpandedView( true );
         columns = new ArrayList<String>();
         columns = populateColumns( columns, true );
@@ -302,16 +266,11 @@ public class ConfigureColumnBean {
      * @return null
      */
     public String selectNone() {
-
-        if ( log.isDebugEnabled() ) {
-            log.debug( "select none called" );
-        }
-
         searchBean.setExpandedView( false );
         columns = new ArrayList<String>();
         //atleast one column should be selected otherwise nullpointer exception is thrown by jsf view
         columns.add( MOLECULE_A_NAME );
-        log.debug( "columns size from selectNone " + columns.size() );
+
         return null;
     }
 
@@ -322,14 +281,9 @@ public class ConfigureColumnBean {
      * @return null
      */
     public String selectDefault() {
-        if ( log.isDebugEnabled() ) {
-            log.debug( "select default called" );
-        }
-
         searchBean.setExpandedView( false );
         columns = new ArrayList<String>();
         columns = populateColumns( columns, false );
-        log.debug( "columns size from selectDefault " + columns.size() );
         return null;
 
     }
@@ -346,15 +300,12 @@ public class ConfigureColumnBean {
             return;
         }
 
-        log.debug( " handleColumnDialogReturn called  from ConfigureColumn " + returnedValue );
-
         List<String> selectedColumns = ( List<String> ) returnedValue;
         List<String> allColumns = new ArrayList( columnMap.keySet() );
         List<String> unselectedColumns = ListUtils.subtract( allColumns, selectedColumns );
 
 
         for ( String column : selectedColumns ) {
-            log.debug( " column selected " + column );
             //get the keys and set the value to false...
             if ( columnMap.containsKey( column ) ) {
                 columnMap.put( column, true );
