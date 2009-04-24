@@ -15,10 +15,10 @@
  */
 package uk.ac.ebi.intact.psicquic.wsclient;
 
-import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
+import org.hupo.psi.mi.psicquic.wsclient.*;
+import psidev.psi.mi.xml.model.EntrySet;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.converter.shared.EntryConverter;
 import uk.ac.ebi.intact.model.IntactEntry;
-import psidev.psi.mi.xml.model.EntrySet;
 
 /**
  * Client for a PSICQUIC Web service that returns IntAct model objects.
@@ -26,7 +26,7 @@ import psidev.psi.mi.xml.model.EntrySet;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class IntactPsicquicClient extends AbstractPsicquicClient<IntactSearchResult>{
+public class IntactPsicquicClient extends AbstractPsicquicClient<IntactSearchResult> {
 
     private XmlPsicquicClient xmlClient;
 
