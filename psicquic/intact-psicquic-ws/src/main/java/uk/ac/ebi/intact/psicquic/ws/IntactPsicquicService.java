@@ -171,7 +171,7 @@ public class IntactPsicquicService implements PsicquicService {
 
             queryResponse.setResultInfo(resultInfo);
 
-            ResultSet resultSet = createResultSet(solrSearchResult, requestInfo);
+            ResultSet resultSet = createResultSet(query, solrSearchResult, requestInfo);
             queryResponse.setResultSet(resultSet);
 
             return queryResponse;
@@ -200,7 +200,7 @@ public class IntactPsicquicService implements PsicquicService {
 
     // Lucene
 
-    protected ResultSet createResultSet(SolrSearchResult searchResult, RequestInfo requestInfo) throws PsicquicServiceException,
+    protected ResultSet createResultSet(String query, SolrSearchResult searchResult, RequestInfo requestInfo) throws PsicquicServiceException,
                                                                                                    NotSupportedTypeException {
         ResultSet resultSet = new ResultSet();
 
@@ -216,6 +216,33 @@ public class IntactPsicquicService implements PsicquicService {
 
             EntrySet jEntrySet = createEntrySet(searchResult);
             resultSet.setEntrySet(jEntrySet);
+
+            // add some annotations
+            if (!jEntrySet.getEntries().isEmpty()) {
+                AttributeList attrList = new AttributeList();
+
+                Entry entry = jEntrySet.getEntries().iterator().next();
+
+                Attribute attr = new Attribute();
+                attr.setValue("Data retrieved using the PSICQUIC service. Query: "+query);
+                attrList.getAttributes().add(attr);
+
+                Attribute attr2 = new Attribute();
+                attr2.setValue("Total results found: "+searchResult.getTotalCount());
+                attrList.getAttributes().add(attr2);
+
+                // add warning if the batch size requested is higher than the maximum allowed
+                if (requestInfo.getBlockSize() > BLOCKSIZE_MAX && BLOCKSIZE_MAX < searchResult.getTotalCount()) {
+                    Attribute attrWarning = new Attribute();
+                    attrWarning.setValue("Warning: The requested block size (" + requestInfo.getBlockSize() + ") was higher than the maximum allowed (" + BLOCKSIZE_MAX + ") by PSICQUIC the service. " +
+                            BLOCKSIZE_MAX + " results were returned from a total found of "+searchResult.getTotalCount());
+                    attrList.getAttributes().add(attrWarning);
+
+                }
+
+                entry.setAttributeList(attrList);
+            }
+
         } else if (RETURN_TYPE_COUNT.equals(resultType)) {
             if (logger.isDebugEnabled()) logger.debug("Count query");
             // nothing to be done here
@@ -255,62 +282,6 @@ public class IntactPsicquicService implements PsicquicService {
         } catch (Exception e) {
             throw new PsicquicServiceException("Problem converting results to PSI-MI XML: "+e, e);
         }
-    }
-
-    // Solr
-
-    protected ResultSet createResultSet(String query, org.apache.solr.client.solrj.response.QueryResponse searchResult,
-                                        RequestInfo requestInfo) throws PsicquicServiceException,
-                                                                        NotSupportedTypeException {
-        ResultSet resultSet = new ResultSet();
-
-        String resultType = (requestInfo.getResultType() != null)? requestInfo.getResultType() : RETURN_TYPE_DEFAULT;
-
-        if (RETURN_TYPE_MITAB25.equals(resultType)) {
-            if (logger.isDebugEnabled()) logger.debug("Creating PSI-MI TAB");
-
-            String mitab = createMitabResults(searchResult);
-            resultSet.setMitab(mitab);
-        } else if (RETURN_TYPE_XML25.equals(resultType)) {
-            if (logger.isDebugEnabled()) logger.debug("Creating PSI-MI XML");
-
-            EntrySet jEntrySet = createEntrySet(searchResult);
-            resultSet.setEntrySet(jEntrySet);
-
-            // add some annotations
-            if (!jEntrySet.getEntries().isEmpty()) {
-                AttributeList attrList = new AttributeList();
-
-                Entry entry = jEntrySet.getEntries().iterator().next();
-
-                Attribute attr = new Attribute();
-                attr.setValue("Data retrieved using the PSICQUIC service. Query: "+query);
-                attrList.getAttributes().add(attr);
-
-                Attribute attr2 = new Attribute();
-                attr2.setValue("Total results found: "+searchResult.getResults().getNumFound());
-                attrList.getAttributes().add(attr2);
-
-                // add warning if the batch size requested is higher than the maximum allowed
-                if (requestInfo.getBlockSize() > BLOCKSIZE_MAX && BLOCKSIZE_MAX < searchResult.getResults().getNumFound()) {
-                    Attribute attrWarning = new Attribute();
-                    attrWarning.setValue("Warning: The requested block size (" + requestInfo.getBlockSize() + ") was higher than the maximum allowed (" + BLOCKSIZE_MAX + ") by PSICQUIC the service. " +
-                            BLOCKSIZE_MAX + " results were returned from a total found of "+searchResult.getResults().getNumFound());
-                    attrList.getAttributes().add(attrWarning);
-
-                }
-
-                entry.setAttributeList(attrList);
-            }
-
-        } else if (RETURN_TYPE_COUNT.equals(resultType)) {
-            if (logger.isDebugEnabled()) logger.debug("Count query");
-            // nothing to be done here
-        } else {
-            throw new NotSupportedTypeException("Not supported return type: "+resultType+" - Supported types are: "+getSupportedReturnTypes());
-        }
-
-        return resultSet;
     }
 
     protected String createMitabResults(org.apache.solr.client.solrj.response.QueryResponse searchResult) {
