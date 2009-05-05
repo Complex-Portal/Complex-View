@@ -68,7 +68,7 @@ public class PsicquicStreamingOutput implements StreamingOutput {
 
             firstResult = firstResult + maxResults;
 
-        } while (response.getResultSet().getMitab().length() > 0);
+        } while (firstResult < response.getResultInfo().getTotalResults());
 
         out.close();
     }
