@@ -15,14 +15,14 @@
  */
 package uk.ac.ebi.intact.psicquic.ws.util;
 
-import org.hupo.psi.mi.psicquic.RequestInfo;
-import org.hupo.psi.mi.psicquic.QueryResponse;
 import org.hupo.psi.mi.psicquic.PsicquicService;
+import org.hupo.psi.mi.psicquic.QueryResponse;
+import org.hupo.psi.mi.psicquic.RequestInfo;
 
-import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.WebApplicationException;
-import java.io.OutputStream;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 /**
@@ -36,10 +36,14 @@ public class PsicquicStreamingOutput implements StreamingOutput {
     private PsicquicService psicquicService;
     private String query;
     private QueryResponse response;
+    private int firstResult;
+    private int maxResults;
 
-    public PsicquicStreamingOutput(PsicquicService psicquicService, String query) {
+    public PsicquicStreamingOutput(PsicquicService psicquicService, String query, int firstResult, int maxResults) {
         this.psicquicService = psicquicService;
         this.query = query;
+        this.firstResult = firstResult;
+        this.maxResults = maxResults;
     }
 
     public void write(OutputStream outputStream) throws IOException, WebApplicationException {
@@ -48,14 +52,9 @@ public class PsicquicStreamingOutput implements StreamingOutput {
 
         PrintWriter out = new PrintWriter(outputStream);
 
-        int firstResult = 0;
-        int maxResults = 50;
-
         do {
             reqInfo.setFirstResult(firstResult);
             reqInfo.setBlockSize(maxResults);
-
-            System.out.println("Searching: " + query + " " + firstResult);
 
             try {
                 response = psicquicService.getByQuery(query, reqInfo);

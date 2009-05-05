@@ -16,41 +16,82 @@ import uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput;
 @Controller
 public class IntactPsicquicRestService implements PsicquicRestService {
 
-    @Autowired
+     @Autowired
     private PsicquicConfig config;
 
     @Autowired
     private PsicquicService psicquicService;
 
-    public PsicquicStreamingOutput getByInteractor(String interactorAc, String db) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
+    public Object getByInteractor(String interactorAc, String db, String format, String firstResult, String maxResults) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
         String query = "id:"+createQueryValue(interactorAc, db);
-        return getByQuery(query);
+        return getByQuery(query, format, firstResult, maxResults);
     }
 
-    public PsicquicStreamingOutput getByInteraction(String interactionAc, String db) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
+    public Object getByInteraction(String interactionAc, String db, String format, String firstResult, String maxResults) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
         String query = "interaction_id:"+createQueryValue(interactionAc, db);
-        return getByQuery(query);
+        return getByQuery(query, format, firstResult, maxResults);
     }
 
-    public PsicquicStreamingOutput getByQuery(final String query) throws PsicquicServiceException,
+    public Object getByQuery(String query, String format,
+                                                 String firstResultStr,
+                                                 String maxResultsStr) throws PsicquicServiceException,
                                                                  NotSupportedMethodException,
                                                                  NotSupportedTypeException {
-        return new PsicquicStreamingOutput(psicquicService, query);
-    }
+        int firstResult;
+        int maxResults;
 
+        try {
+            firstResult =Integer.parseInt(firstResultStr);
+        } catch (NumberFormatException e) {
+            throw new PsicquicServiceException("firstResult parameter is not a number: "+firstResultStr);
+        }
+
+        try {
+            maxResults = Integer.parseInt(maxResultsStr);
+        } catch (NumberFormatException e) {
+            throw new PsicquicServiceException("maxResults parameter is not a number: "+maxResultsStr);
+        }
+
+        if ("xml25".equals(format)) {
+            return getByQueryXml(query, firstResult, maxResults);
+        } else if ("count".equals(format)) {
+            return count(query);
+        }
+
+        return new PsicquicStreamingOutput(psicquicService, query, firstResult, maxResults);
+    }
     public String getVersion() {
         return config.getVersion();
     }
 
-    public EntrySet getEntrySetByQuery(String query) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
+    public EntrySet getByQueryXml(String query,
+                                  int firstResult,
+                                  int maxResults) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
         RequestInfo reqInfo = new RequestInfo();
         reqInfo.setResultType("psi-mi/xml25");
-        reqInfo.setFirstResult(0);
-        reqInfo.setBlockSize(50);
+
+        try {
+            reqInfo.setFirstResult(firstResult);
+        } catch (NumberFormatException e) {
+            throw new PsicquicServiceException("firstResult parameter is not a number: "+firstResult);
+        }
+
+        try {
+            reqInfo.setBlockSize(maxResults);
+        } catch (NumberFormatException e) {
+            throw new PsicquicServiceException("maxResults parameter is not a number: "+maxResults);
+        }
 
         QueryResponse response = psicquicService.getByQuery(query, reqInfo);
 
         return response.getResultSet().getEntrySet();
+    }
+
+    private int count(String query) throws NotSupportedTypeException, NotSupportedMethodException, PsicquicServiceException {
+        RequestInfo reqInfo = new RequestInfo();
+        reqInfo.setResultType("count");
+        QueryResponse response = psicquicService.getByQuery(query, reqInfo);
+        return response.getResultInfo().getTotalResults();
     }
 
     private String createQueryValue(String interactorAc, String db) {

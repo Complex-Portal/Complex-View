@@ -29,6 +29,9 @@ import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.builder.DocumentDefinition;
 import psidev.psi.mi.xml.converter.impl254.EntrySetConverter;
 import psidev.psi.mi.xml.dao.inMemory.InMemoryDAOFactory;
+import psidev.psi.mi.xml254.jaxb.Attribute;
+import psidev.psi.mi.xml254.jaxb.AttributeList;
+import psidev.psi.mi.xml254.jaxb.Entry;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
@@ -256,7 +259,7 @@ public class IntactPsicquicService implements PsicquicService {
 
     // Solr
 
-    protected ResultSet createResultSet(org.apache.solr.client.solrj.response.QueryResponse searchResult,
+    protected ResultSet createResultSet(String query, org.apache.solr.client.solrj.response.QueryResponse searchResult,
                                         RequestInfo requestInfo) throws PsicquicServiceException,
                                                                         NotSupportedTypeException {
         ResultSet resultSet = new ResultSet();
@@ -273,6 +276,33 @@ public class IntactPsicquicService implements PsicquicService {
 
             EntrySet jEntrySet = createEntrySet(searchResult);
             resultSet.setEntrySet(jEntrySet);
+
+            // add some annotations
+            if (!jEntrySet.getEntries().isEmpty()) {
+                AttributeList attrList = new AttributeList();
+
+                Entry entry = jEntrySet.getEntries().iterator().next();
+
+                Attribute attr = new Attribute();
+                attr.setValue("Data retrieved using the PSICQUIC service. Query: "+query);
+                attrList.getAttributes().add(attr);
+
+                Attribute attr2 = new Attribute();
+                attr2.setValue("Total results found: "+searchResult.getResults().getNumFound());
+                attrList.getAttributes().add(attr2);
+
+                // add warning if the batch size requested is higher than the maximum allowed
+                if (requestInfo.getBlockSize() > BLOCKSIZE_MAX && BLOCKSIZE_MAX < searchResult.getResults().getNumFound()) {
+                    Attribute attrWarning = new Attribute();
+                    attrWarning.setValue("Warning: The requested block size (" + requestInfo.getBlockSize() + ") was higher than the maximum allowed (" + BLOCKSIZE_MAX + ") by PSICQUIC the service. " +
+                            BLOCKSIZE_MAX + " results were returned from a total found of "+searchResult.getResults().getNumFound());
+                    attrList.getAttributes().add(attrWarning);
+
+                }
+
+                entry.setAttributeList(attrList);
+            }
+
         } else if (RETURN_TYPE_COUNT.equals(resultType)) {
             if (logger.isDebugEnabled()) logger.debug("Count query");
             // nothing to be done here
@@ -299,6 +329,10 @@ public class IntactPsicquicService implements PsicquicService {
     }
 
     private EntrySet createEntrySet(org.apache.solr.client.solrj.response.QueryResponse searchResult) throws PsicquicServiceException {
+        if (searchResult.getResults().getNumFound() == 0) {
+            return new EntrySet();
+        }
+
         Tab2Xml tab2Xml = new IntactTab2Xml();
 
         // first collect all MITAB interactions
