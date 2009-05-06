@@ -21,6 +21,10 @@ import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
 import uk.ac.ebi.intact.util.NewtServerProxy;
+import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyService;
+import uk.ac.ebi.intact.bridges.taxonomy.OLSTaxonomyService;
+import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyTerm;
+import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyServiceException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -167,6 +171,9 @@ public class BioSourceAction extends AbstractEditorAction {
     private NewtServerProxy.NewtResponse getNewtResponse(EditUserI user,
                                                          String taxid,
                                                          HttpServletRequest request) {
+
+        TaxonomyService service = new OLSTaxonomyService();
+
         // To report errors.
         ActionMessages errors;
 
@@ -175,23 +182,29 @@ public class BioSourceAction extends AbstractEditorAction {
 
         // Query the server.
         NewtServerProxy.NewtResponse newtResponse = null;
+        TaxonomyTerm term = null;
         try {
-            newtResponse = newtServer.query(Integer.parseInt(taxid));
-        }
-        catch (IOException ioe) {
-            // Error in communcating with the server.
-            LOGGER.error(" Error in communicating with the server : ",ioe);
-            errors = new ActionMessages();
-            errors.add("bs.taxid",
-                    new ActionMessage("error.newt.connection", ioe.getMessage()));
-            saveErrors(request, errors);
-        }
-        catch (NewtServerProxy.TaxIdNotFoundException ex) {
-            LOGGER.error("The taxid " + taxid + " couldn't be found in Newt", ex);
+            term = service.getTaxonomyTerm( Integer.parseInt(taxid) );
+        } catch (NumberFormatException e) {
+            LOGGER.error("The taxid " + taxid + " is not an integer value", e);
             errors = new ActionMessages();
             errors.add("bs.taxid", new ActionMessage("error.newt.search", taxid));
             saveErrors(request, errors);
         }
+        catch (TaxonomyServiceException e) {
+            LOGGER.error("The taxid " + taxid + " couldn't be found in the taxonomy service ("+ service.getClass().getSimpleName() +")", e);
+            errors = new ActionMessages();
+            errors.add("bs.taxid", new ActionMessage("error.newt.search", taxid));
+            saveErrors(request, errors);
+        }
+
+        if( term == null ) {
+            return null;
+        }
+
+        newtResponse = new NewtServerProxy.NewtResponse( String.valueOf( term.getTaxid() ),
+                                                         term.getCommonName(),
+                                                         term.getScientificName() );
         return newtResponse;
     }
 
