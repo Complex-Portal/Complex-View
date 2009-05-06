@@ -26,18 +26,21 @@ import uk.ac.ebi.intact.view.webapp.util.RootTerm;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller("goBrowser")
+@Controller("taxonomyBrowser")
 @Scope("request")
-public class GoBrowserController extends OntologyBrowserController {
+public class TaxonomyBrowserController extends OntologyBrowserController {
 
-    public static final String FIELD_NAME = "go_expanded_id";
+    public static final String FIELD_NAME = "taxid_expanded_id";
 
     @Override
     protected RootTerm createRootTerm(OntologySearcher ontologySearcher) {
-        final RootTerm rootTerm = new RootTerm( ontologySearcher, "GO Ontology" );
-        rootTerm.addChild("GO:0008150", "Biological process");
-        rootTerm.addChild("GO:0003674", "Molecular function");
-        rootTerm.addChild("GO:0005575", "Cellular component");
+        final RootTerm rootTerm = new RootTerm(ontologySearcher, "Taxonomy");
+        rootTerm.addChild("10239", "Viruses");
+        rootTerm.addChild("12884", "Viroids");
+        rootTerm.addChild("12908", "unclassified sequences");
+        rootTerm.addChild("131567", "cellular organisms");
+        rootTerm.addChild("28384", "other sequences");
+
         return rootTerm;
     }
 

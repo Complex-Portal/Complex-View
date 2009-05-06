@@ -45,7 +45,7 @@ public class ChebiBrowserController extends OntologyBrowserController {
     }
 
     @Override
-    protected String getFieldName() {
+    public String getFieldName() {
         return FIELD_NAME;
     }
 }

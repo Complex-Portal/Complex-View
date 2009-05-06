@@ -63,7 +63,7 @@ public abstract class OntologyBrowserController extends BaseController {
 
     protected abstract RootTerm createRootTerm(OntologySearcher ontologySearcher);
 
-    protected abstract String getFieldName();
+    public abstract String getFieldName();
 
     @PostConstruct
     public void init() {
@@ -107,7 +107,7 @@ public abstract class OntologyBrowserController extends BaseController {
 
         Map<String,Long> termsCountMap = new HashMap<String,Long>(1024);
 
-        if (field != null) {
+        if (field != null && field.getValues() != null) {
             for (FacetField.Count c : field.getValues()) {
                 termsCountMap.put(c.getName(), c.getCount());
             }

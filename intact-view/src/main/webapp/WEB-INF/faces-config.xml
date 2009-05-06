@@ -70,6 +70,13 @@
 
     <navigation-rule>
         <navigation-case>
+            <from-outcome>browse.taxonomybrowser</from-outcome>
+            <to-view-id>/pages/browse/taxonomybrowser.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
             <from-outcome>list</from-outcome>
             <to-view-id>/pages/list/list_tab.xhtml</to-view-id>
         </navigation-case>
