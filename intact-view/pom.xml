@@ -97,7 +97,6 @@
                 </configuration>
             </plugin>
 
-
            <!-- Conversion of XML Schema into Java source code using JAXB-XJC -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -211,7 +210,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-core</artifactId>
-            <version>1.9.4</version>
+            <version>1.9.6</version>
         </dependency>
 
         <dependency>
@@ -266,12 +265,12 @@
          <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psi25-xml</artifactId>
-            <version>1.7.4-SNAPSHOT</version>
+            <version>1.7.5-SNAPSHOT</version>
         </dependency>
          <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.7.4-SNAPSHOT</version>
+            <version>1.7.5-SNAPSHOT</version>
         </dependency>
 
         <!-- other -->
