@@ -84,7 +84,7 @@ public class ExportServlet extends HttpServlet {
         SolrQuery solrQuery = convertToSolrQuery(searchQuery);
 
         if (sortColumn != null) {
-            solrQuery.setSortField(sortColumn, sort? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+            solrQuery.setSortField(sortColumn, sort ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc );
         }
 
         BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(solrServer);
@@ -107,5 +107,4 @@ public class ExportServlet extends HttpServlet {
 
          return solrQuery;
      }
-
 }
