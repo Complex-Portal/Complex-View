@@ -16,6 +16,8 @@
 package uk.ac.ebi.intact.view.webapp.util;
 
 import org.joda.time.DateTime;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import uk.ac.ebi.intact.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -34,6 +36,9 @@ import java.util.Map;
  * @version $Id$
  */
 public final class Functions {
+
+    private static final Log log = LogFactory.getLog( Functions.class );
+
     private static final String MI_TO_XREF_URL_MAP_PARAM = Functions.class+".MI_TO_XREF_URL_MAP";
     private static final String MI_TO_CV_MAP_PARAM = Functions.class+".MI_TO_CV_MAP";
     private static final String PUBMED_NCBI_URL="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=${ac}&dopt=Abstract";
@@ -107,28 +112,28 @@ public final class Functions {
 
     public static CvObject getCvObjectFromIdentifier( FacesContext facesContext, String mi,String cvType ) {
 
-        Map<String, CvObject> miToCv = ( Map<String, CvObject> ) ( ( HttpSession ) facesContext.getExternalContext().getSession( false ) )
-                .getAttribute( MI_TO_CV_MAP_PARAM );
+        final HttpSession session = ( HttpSession ) facesContext.getExternalContext().getSession( false );
+        Map<String, CvObject> miToCv = ( Map<String, CvObject> ) session.getAttribute( MI_TO_CV_MAP_PARAM );
 
         if ( miToCv == null ) {
             miToCv = new HashMap<String, CvObject>();
-            ( ( HttpSession ) facesContext.getExternalContext().getSession( false ) )
-                    .setAttribute( MI_TO_CV_MAP_PARAM, miToCv );
+            session.setAttribute( MI_TO_CV_MAP_PARAM, miToCv );
         }
+
         CvObject cvObject;
         if ( miToCv.containsKey( mi ) ) {
             cvObject = miToCv.get( mi );
         } else {
-            //have to do this way, because query with MI:0499 (unspecified role) returns more than one row and IntactException is thrown 
+            //have to do this way, because query with MI:0499 (unspecified role) returns more than one row and IntactException is thrown
             CvObjectDao<CvObject> cvObjectDao = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao();
-            if("expRole".equals(cvType  )){
+            if ( "expRole".equals( cvType ) ) {
                 final CvExperimentalRole cvExpRole = cvObjectDao.getByPrimaryId( CvExperimentalRole.class, mi );
                 cvObject = cvExpRole;
-            }else if ("bioRole".equals( cvType )){
+            } else if ( "bioRole".equals( cvType ) ) {
                 final CvBiologicalRole cvBioRole = cvObjectDao.getByPrimaryId( CvBiologicalRole.class, mi );
                 cvObject = cvBioRole;
-            }else{
-            cvObject = cvObjectDao.getByPsiMiRef( mi );
+            } else {
+                cvObject = cvObjectDao.getByPsiMiRef( mi );
             }
             // even store nulls, so the queries are not performed again
             miToCv.put( mi, cvObject );
