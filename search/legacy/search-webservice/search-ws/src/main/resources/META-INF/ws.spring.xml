@@ -24,7 +24,7 @@
 
 	<!-- Service endpoint -->
 	<!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
-    <jaxws:endpoint xmlns:s="http://uk.ac.ebi.intact/searchws"
+    <jaxws:endpoint xmlns:s="http://ebi.ac.uk/intact/search/wsclient/generated"
                     id="searchService" serviceName="s:SearchService"
 		            implementorClass="uk.ac.ebi.intact.search.ws.Search"
 		            implementor="#search" address="/search">

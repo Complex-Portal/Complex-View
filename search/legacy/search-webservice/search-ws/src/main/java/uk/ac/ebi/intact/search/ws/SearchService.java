@@ -2,6 +2,7 @@ package uk.ac.ebi.intact.search.ws;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import javax.jws.WebService;
 import java.util.List;
 
 /**
@@ -10,6 +11,7 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@WebService(targetNamespace = "http://ebi.ac.uk/intact/search/wsclient/generated")
 public interface SearchService {
     @WebMethod()
     InteractionInfo[] getInteractionInfoUsingUniprotIds(String uniprotId1, String uniprotId2);
