@@ -21,7 +21,7 @@
 
     <artifactId>search-ws</artifactId>
     <packaging>war</packaging>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
 
     <name>IntAct Services :: Search :: Legacy :: Search WebService :: Service</name>
     <description>A web service interface to retrieve data from intact</description>
