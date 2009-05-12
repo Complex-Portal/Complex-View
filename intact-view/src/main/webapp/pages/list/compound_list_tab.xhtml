@@ -59,11 +59,14 @@
             <tr:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
                 <f:setPropertyActionListener value="+(#{userQuery.searchQuery}) +#{interactorWrapper.interactor.ac}" target="#{userQuery.searchQuery}"/>
             </tr:commandLink>
+            <!--<tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}" varStatus="rowStatus" rows="0">-->
+                <!--<tr:outputText value="#{xref.primaryid}" />-->
+            <!--</tr:iterator>-->
         </tr:column>
 
         <tr:column headerText="#{messages['list.structure']}"
                    inlineStyle="background-color:white; vertical-align:middle; text-align: center;">
-            <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}" varStatus="rowStatus" rows="0">
+            <tr:iterator var="xref" value="#{iaf:getIdentityXrefs(interactorWrapper.interactor)}" varStatus="rowStatus" rows="0">
                 <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
                     <f:facet name="drugbank">
                         <h:panelGroup>
@@ -87,7 +90,7 @@
 
         <tr:column headerText="#{messages['list.links']}">
 
-            <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}"
+            <tr:iterator var="xref" value="#{iaf:getIdentityXrefs(interactorWrapper.interactor)}"
                          varStatus="rowStatus" rows="0">
                 <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
                     <f:facet name="drugbank">
