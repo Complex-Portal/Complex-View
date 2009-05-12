@@ -69,13 +69,13 @@ public class BinaryInteractionsExporter {
         }
     }
     
-     public void exportToMiTab(OutputStream os, SolrQuery searchQuery) throws IOException {
+    public void exportToMiTab(OutputStream os, SolrQuery searchQuery) throws IOException {
          PsimiTabWriter writer = new PsimiTabWriter();
          Writer out = new OutputStreamWriter(os);
          writeMitab(out, writer, searchQuery);
     }
 
-     private void exportToMiTabIntact(OutputStream os, SolrQuery searchQuery) throws IOException, IntactViewException {
+    private void exportToMiTabIntact(OutputStream os, SolrQuery searchQuery) throws IOException, IntactViewException {
          PsimiTabWriter writer = new IntactPsimiTabWriter();
          Writer out = new OutputStreamWriter(os);
          writeMitab(out, writer, searchQuery);
@@ -116,7 +116,6 @@ public class BinaryInteractionsExporter {
 
         } while (!interactions.isEmpty());
     }
-
 
     public void exportToMiXml( OutputStream os, SolrQuery searchQuery ) throws IOException {
         exportToMiXml( os, searchQuery, "xml_2_54" );
@@ -177,5 +176,4 @@ public class BinaryInteractionsExporter {
             throw new IntactViewException("Problem transforming XML to HTML(XslTransformException)", e);
         }
     }
-
 }
