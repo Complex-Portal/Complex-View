@@ -139,7 +139,10 @@
                                                      value="#{si.others}"
                                                      maxShown="3">
 
-                                <iax:goMoleculeView query="#{item.ac}" text="#{item.shortLabel}" onlyLogo="false"/>
+                                <tr:commandLink action="molecule">
+                                    <f:setPropertyActionListener value="#{item.ac}" target="#{moleculeViewBean.interactorAc}"/>
+                                    <tr:outputText value="#{item.shortLabel}" />
+                                </tr:commandLink>
 
                             </iam:collapsibleIterator>
                         </td>
