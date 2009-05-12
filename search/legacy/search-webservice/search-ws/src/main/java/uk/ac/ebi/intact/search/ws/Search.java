@@ -64,8 +64,6 @@ public class Search implements SearchService {
         List<ProteinImpl> protsForId1 = proteinDao.getByUniprotId(uniprotId1);
         List<ProteinImpl> protsForId2 = proteinDao.getByUniprotId(uniprotId2);
 
-        System.out.println("PROTS: "+protsForId1);
-
         List<InteractionInfo> interInfos = new ArrayList<InteractionInfo>();
 
         for (Protein prot1 : protsForId1)
