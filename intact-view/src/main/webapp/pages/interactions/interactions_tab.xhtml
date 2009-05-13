@@ -448,7 +448,12 @@
 
 <tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.expansionmethod')}"
            styleClass="cellTextInteraction">
-    <tr:outputText value="#{binaryInteraction.expansionMethod}"/>
+    <tr:commandLink action="dialog:faq.expansion"
+                    partialSubmit="true"
+                    windowWidth="700" windowHeight="500"
+                    immediate="true" useWindow="true">
+        <tr:outputText value="#{binaryInteraction.expansionMethod}"/>
+    </tr:commandLink>
 </tr:column>
 
 <tr:column headerText="#{messages['interaction.dataset']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.dataset')}" styleClass="cellTextInteraction">

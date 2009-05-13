@@ -249,8 +249,8 @@
 
     <navigation-rule>
         <navigation-case>
-          <from-outcome>dialog:faq.spoke</from-outcome>
-          <to-view-id>/pages/faq/spoke.xhtml</to-view-id>
+          <from-outcome>dialog:faq.expansion</from-outcome>
+          <to-view-id>/pages/documentation/faq/complex_expansion.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
