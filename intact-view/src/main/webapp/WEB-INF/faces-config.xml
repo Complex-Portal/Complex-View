@@ -136,7 +136,7 @@
           <from-outcome>dialog:cv.view</from-outcome>
           <to-view-id>/pages/details/cv.xhtml</to-view-id>
         </navigation-case>
-      </navigation-rule>
+    </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
@@ -246,5 +246,13 @@
             <to-view-id>/pages/documentation/all_printer_friendly.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+          <from-outcome>dialog:faq.spoke</from-outcome>
+          <to-view-id>/pages/faq/spoke.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
 
 </faces-config>

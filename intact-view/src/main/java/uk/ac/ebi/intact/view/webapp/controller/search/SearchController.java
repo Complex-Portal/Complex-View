@@ -228,7 +228,7 @@ public class SearchController extends JpaBaseController {
             if ( log.isDebugEnabled() ) log.debug( "\tResults: " + results.getRowCount() );
 
             if ( totalResults == 0 ) {
-                addErrorMessage( "Your query didn't return any results", "Use a different query" );
+                addInfoMessage( "Your query didn't return any results", "Use a different query" );
             }
 
         } catch ( uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrException solrException ) {
@@ -319,7 +319,6 @@ public class SearchController extends JpaBaseController {
         final SolrSearchResultDataModel tempResults = createInteractionDataModel( solrQuery );
         return tempResults.getRowCount();
     }
-
 
     public void rangeChanged(RangeChangeEvent evt) {
         results.setRowIndex(evt.getNewStart());
@@ -427,6 +426,8 @@ public class SearchController extends JpaBaseController {
         doBinarySearch(event);
         RequestContext.getCurrentInstance().returnFromDialog( null, null );
     }
+
+
     // Getters & Setters
     /////////////////////
 

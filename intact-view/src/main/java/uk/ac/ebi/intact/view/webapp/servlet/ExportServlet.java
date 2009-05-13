@@ -82,6 +82,7 @@ public class ExportServlet extends HttpServlet {
         boolean sort = Boolean.parseBoolean(sortAsc);
 
         SolrQuery solrQuery = convertToSolrQuery(searchQuery);
+        solrQuery.setStart( 0 );
 
         if (sortColumn != null) {
             solrQuery.setSortField(sortColumn, sort ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc );
@@ -91,7 +92,7 @@ public class ExportServlet extends HttpServlet {
         exporter.searchAndExport(response.getOutputStream(), solrQuery, format);
     }
 
-     private SolrQuery convertToSolrQuery(String searchQuery) {
+    private SolrQuery convertToSolrQuery(String searchQuery) {
 
          if (searchQuery == null) {
              throw new NullPointerException("You must give a non null searchQuery");

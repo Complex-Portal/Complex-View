@@ -105,13 +105,8 @@
 <tr:column headerText="#{messages['moleculeA.name']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
    <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
 
-    <!--For MoleculeTye, Role Initials -->
-    <trh:tableLayout borderWidth="0"
-                     cellSpacing="1"
-                     cellPadding="0"
-                     halign="left"
-                     >
-
+    <!--For MoleculeType, Role Initials -->
+    <trh:tableLayout borderWidth="0" cellSpacing="1" cellPadding="0" halign="left">
         <trh:rowLayout>
             <tr:iterator var="cvXref" value="#{binaryInteraction.interactorTypeA}" rows="-1">
                 <c:set var="cvobject" value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'type')}"/>
@@ -151,8 +146,7 @@
 
 <tr:column headerText="#{messages['moleculeA.links']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.links')}">
     <!--add  links -->
-    <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus"
-                 rows="0">
+    <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus" rows="0">
         <tr:switcher facetName="#{xref.database}">
             <f:facet name="uniprotkb">
                 <h:panelGroup>
