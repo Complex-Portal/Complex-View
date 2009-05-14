@@ -47,6 +47,10 @@
         <source>facelets/components/links/GoUniprot.xhtml</source>
     </tag>
     <tag>
+        <tag-name>goUniprotTaxonomy</tag-name>
+        <source>facelets/components/links/GoUniprotTaxonomy.xhtml</source>
+    </tag>
+    <tag>
         <tag-name>goOls</tag-name>
         <source>facelets/components/links/GoOls.xhtml</source>
     </tag>

@@ -113,6 +113,16 @@
         </attribute>
     </tag>
     <tag>
+        <name>goUniprotTaxonomy</name>
+        <attribute>
+            <name>query</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>onlyLogo</name>
+        </attribute>
+    </tag>
+    <tag>
         <name>goOls</name>
         <attribute>
             <name>termName</name>

@@ -346,7 +346,7 @@
             <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}" rows="0">
                 <tr:iterator var="xref" value="#{organism.identifiers}"
                              varStatus="rowStatus" rows="0">
-                    <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
+                    <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
                 </tr:iterator>
                 <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>
             </tr:iterator>
@@ -363,7 +363,7 @@
             <tr:iterator var="organism" value="#{binaryInteraction.interactorB.organism}"
                          varStatus="rowStatus" rows="0">
                 <tr:iterator var="xref" value="#{organism.identifiers}" rows="0">
-                    <iax:goOls query="#{xref.identifier}" termName="#{xref.text}"/>
+                    <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
                 </tr:iterator>
                 <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>
             </tr:iterator>
@@ -484,7 +484,11 @@
 
 <tr:column headerText="#{messages['interaction.hostorganism']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.hostorganism')}"
            styleClass="cellTextInteraction">
-    <iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>
+    <tr:iterator var="xref" value="#{binaryInteraction.hostOrganism}" rows="0">
+        <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
+    </tr:iterator>
+
+    <!--<iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>-->
 </tr:column>
 
 <tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.expansionmethod')}"
