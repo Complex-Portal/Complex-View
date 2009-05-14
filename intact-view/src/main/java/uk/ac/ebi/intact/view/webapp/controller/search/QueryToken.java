@@ -105,7 +105,13 @@ public class QueryToken {
     }
 
     public String surroundByQuotesIfNecessary(String query) {
-        if (query.contains(" ") || query.contains(":") || query.contains("(") || query.contains(")")) {
+        if (query.contains(" ") ||
+                query.contains(":") ||
+                query.contains("(") ||
+                query.contains(")") ||
+                query.contains(" ") ||
+                query.contains("-") ||
+                query.contains("+")) {
             query = "\""+query+"\"";
         }
 
