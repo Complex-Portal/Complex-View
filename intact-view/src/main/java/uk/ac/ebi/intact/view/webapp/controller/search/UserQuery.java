@@ -30,6 +30,7 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -267,6 +268,21 @@ public class UserQuery extends BaseController {
         }
 
         hideAddFieldsPanel();
+    }
+
+    public void doAddTermToQuery(ActionEvent evt) {
+        Map<String, String> requestParamsMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+
+        String operandStr = requestParamsMap.get("token_operand");
+        BooleanOperand operand = BooleanOperand.valueOf(operandStr);
+        boolean not = requestParamsMap.containsKey("token_not");
+        String query = requestParamsMap.get("token_query");
+        String field = requestParamsMap.get("token_field");
+
+        QueryToken token = new QueryToken(query, field, operand);
+        token.setNotQuery(not);
+
+        doAddFieldToQuery(token);
     }
 
     public boolean isWildcardQuery() {

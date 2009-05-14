@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.LazyLoadedOntologyTerm;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
@@ -44,7 +45,11 @@ public class RootTerm implements OntologyTerm {
     }
 
     public boolean addChild(String id, String name) {
-        return children.add(new LazyLoadedOntologyTerm( ontologySearcher, id, name ));
+        try {
+            return children.add(new LazyLoadedOntologyTerm( ontologySearcher, id, name ));
+        } catch (SolrServerException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getId() {

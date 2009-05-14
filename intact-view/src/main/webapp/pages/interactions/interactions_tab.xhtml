@@ -20,9 +20,44 @@
 
 <!-- RESULT SUMMARY -->
 
-<ui:include src="/pages/inc/queryDisplay.xhtml" />
 
-<br/>
+<!--<div style="float:right">-->
+    <!--<tr:commandLink text="What is this view?" action="blah"/>-->
+<!--</div>-->
+
+<tr:panelHorizontalLayout inlineStyle="margin-left: 10px; margin-top:5px">
+    <f:facet name="separator">
+            &#160;
+        </f:facet>
+
+    <tr:image source="/images/browse.png"/>
+    Browse by
+    <tr:panelHorizontalLayout >
+        <f:facet name="separator">
+            ,&#160;
+        </f:facet>
+        <tr:commandLink text="taxonomy" action="browse.taxonomybrowser"/>
+        <tr:commandLink text="gene ontology" action="browse.gobrowser"/>
+        <tr:commandLink text="ChEBI ontology" action="browse.chebibrowser"/>
+    </tr:panelHorizontalLayout>
+</tr:panelHorizontalLayout>
+
+<tr:separator/>
+
+<tr:panelGroupLayout rendered="#{facetController.expansionCount.spokeCount > 0}"
+                     inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
+    > The results contain <strong>#{facetController.expansionCount.spokeCount}</strong> binary interactions originating from Spoke expanded co-complexes. You may want to
+    &#160;
+    <tr:commandLink text="filter" actionListener="#{userQuery.doAddTermToQuery}">
+        <f:param name="token_operand" value="AND"/>
+        <f:param name="token_not" value="not"/>
+        <f:param name="token_query" value="spoke"/>
+        <f:param name="token_field" value="expansion"/>
+    </tr:commandLink>
+    &#160;them.
+    
+    <tr:separator/>
+</tr:panelGroupLayout>
 
 <!-- RESULTS TABLE -->
 
@@ -68,7 +103,8 @@
                          targetFrame="_blank"
                          destination="/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}"/>
 
-            <tr:commandButton id="btnConfigureColumn" text="Change Columns Displayed" action="dialog:configure.columns"
+            <tr:commandButton id="btnConfigureColumn"
+                              text="Change Columns Displayed" action="dialog:configure.columns"
                               partialSubmit="true" returnListener="#{configureColumn.handleColumnDialogReturn}"
                               windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
                         

@@ -29,11 +29,11 @@ import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.net.URLDecoder;
 
 /**
  * TODO comment that class header
@@ -81,7 +81,10 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
 
-        solrQuery.setStart(firstResult);
+        solrQuery.setStart(firstResult)
+            .setFacet(true)
+            .setFacetMissing(true)
+            .addFacetField("expansion");
 
         for (Map.Entry<String,SolrQuery.ORDER> colSortEntry : columnSorts.entrySet()) {
             solrQuery.addSortField(colSortEntry.getKey(), colSortEntry.getValue());
