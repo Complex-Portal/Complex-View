@@ -109,7 +109,6 @@ public class QueryToken {
                 query.contains(":") ||
                 query.contains("(") ||
                 query.contains(")") ||
-                query.contains(" ") ||
                 query.contains("-") ||
                 query.contains("+")) {
             query = "\""+query+"\"";
