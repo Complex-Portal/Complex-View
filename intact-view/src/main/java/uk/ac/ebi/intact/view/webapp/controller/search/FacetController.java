@@ -20,7 +20,9 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.view.webapp.controller.search.facet.ExpansionCount;
+import uk.ac.ebi.intact.view.webapp.controller.search.facet.InteractorTypeCount;
 
 /**
  * TODO comment that class header
@@ -41,10 +43,18 @@ public class FacetController {
 
 
     public ExpansionCount getExpansionCount() {
+        FacetField facetField = getFacetField(FieldNames.EXPANSION);
+        return new ExpansionCount(facetField);
+    }
+
+    public InteractorTypeCount getInteractorTypeCount() {
+        FacetField facetField = getFacetField("interactorType_id");
+        return new InteractorTypeCount(facetField);
+    }
+
+    private FacetField getFacetField(String field) {
         QueryResponse queryResponse = searchController.getResults().getResult().getQueryResponse();
 
-        FacetField facetField = queryResponse.getFacetField("expansion");
-
-        return new ExpansionCount(facetField);
+        return queryResponse.getFacetField(field);
     }
 }

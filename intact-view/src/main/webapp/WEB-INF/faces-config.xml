@@ -247,10 +247,26 @@
         </navigation-case>
     </navigation-rule>
 
+    <!-- Contextual help -->
+
     <navigation-rule>
         <navigation-case>
           <from-outcome>dialog:faq.expansion</from-outcome>
           <to-view-id>/pages/documentation/faq/complex_expansion.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+          <from-outcome>dialog:faq.whatis.interactions</from-outcome>
+          <to-view-id>/pages/documentation/faq/whatis_interactions.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+          <from-outcome>dialog:faq.whatis.lists</from-outcome>
+          <to-view-id>/pages/documentation/faq/whatis_lists.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 

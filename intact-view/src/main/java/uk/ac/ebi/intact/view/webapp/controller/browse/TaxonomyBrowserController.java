@@ -37,10 +37,10 @@ public class TaxonomyBrowserController extends OntologyBrowserController {
         final RootTerm rootTerm = new RootTerm(ontologySearcher, "Taxonomy");
 //        rootTerm.addChild("-1", "In vitro");
         rootTerm.addChild("10239", "Viruses");
-        rootTerm.addChild("12884", "Viroids");
-        rootTerm.addChild("12908", "unclassified sequences");
+//        rootTerm.addChild("12884", "Viroids");
+//        rootTerm.addChild("12908", "unclassified sequences");
         rootTerm.addChild("131567", "cellular organisms");
-        rootTerm.addChild("28384", "other sequences");
+//        rootTerm.addChild("28384", "other sequences");
 
         return rootTerm;
     }

@@ -16,24 +16,39 @@
 package uk.ac.ebi.intact.view.webapp.controller.search.facet;
 
 import org.apache.solr.client.solrj.response.FacetField;
+import uk.ac.ebi.intact.model.CvInteractorType;
 
 /**
-*
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class ExpansionCount extends AbstractCount {
+public class InteractorTypeCount extends AbstractCount {
 
-    public ExpansionCount(FacetField facetField) {
+    public InteractorTypeCount(FacetField facetField) {
         super(facetField);
     }
 
-    public long getSpokeCount() {
-        return getCount("spoke");
-    }
-    
-    public long getPhysicalCount() {
-       return getCount(null);
+    public long getPeptideCount() {
+        return getCount(CvInteractorType.PEPTIDE_MI_REF);
     }
 
+    public long getProteinCount() {
+        return getCount(CvInteractorType.PROTEIN_MI_REF);
+    }
+
+    public long getSmallMoleculeCount() {
+        return getCount(CvInteractorType.SMALL_MOLECULE_MI_REF);
+    }
+
+    public long getDnaCount() {
+        return getCount(CvInteractorType.DNA_MI_REF);
+    }
+
+    public long getRnaCount() {
+        return getCount(CvInteractorType.RNA_MI_REF);
+    }
+
+    public long getNucleicAcidCount() {
+        return getCount(CvInteractorType.NUCLEIC_ACID_MI_REF);
+    }
 }

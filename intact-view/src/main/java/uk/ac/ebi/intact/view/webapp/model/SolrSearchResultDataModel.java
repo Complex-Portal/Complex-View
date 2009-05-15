@@ -21,6 +21,7 @@ import org.apache.myfaces.trinidad.model.SortCriterion;
 import org.apache.myfaces.trinidad.model.SortableModel;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
@@ -84,7 +85,8 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
         solrQuery.setStart(firstResult)
             .setFacet(true)
             .setFacetMissing(true)
-            .addFacetField("expansion");
+            .addFacetField(FieldNames.EXPANSION)
+            .addFacetField("interactorType_id");
 
         for (Map.Entry<String,SolrQuery.ORDER> colSortEntry : columnSorts.entrySet()) {
             solrQuery.addSortField(colSortEntry.getKey(), colSortEntry.getValue());

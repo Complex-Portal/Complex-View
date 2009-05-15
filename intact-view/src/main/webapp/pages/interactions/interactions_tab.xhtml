@@ -18,12 +18,12 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://intact.ebi.ac.uk/miscel /WEB-INF/intact-miscel.tld">
 
-<!-- RESULT SUMMARY -->
+<!-- Info section on top of the results -->
 
-
-<!--<div style="float:right">-->
-    <!--<tr:commandLink text="What is this view?" action="blah"/>-->
-<!--</div>-->
+<div style="float:right">
+    <tr:commandLink text="What is this view?" action="dialog:faq.whatis.interactions" 
+                    partialSubmit="true"/>
+</div>
 
 <tr:panelHorizontalLayout inlineStyle="margin-left: 10px; margin-top:5px">
     <f:facet name="separator">
@@ -38,7 +38,8 @@
         </f:facet>
         <tr:commandLink text="taxonomy" action="browse.taxonomybrowser"/>
         <tr:commandLink text="gene ontology" action="browse.gobrowser"/>
-        <tr:commandLink text="ChEBI ontology" action="browse.chebibrowser"/>
+        <tr:commandLink text="ChEBI ontology" action="browse.chebibrowser"
+                rendered="#{facetController.interactorTypeCount.smallMoleculeCount > 0}"/>
     </tr:panelHorizontalLayout>
 </tr:panelHorizontalLayout>
 

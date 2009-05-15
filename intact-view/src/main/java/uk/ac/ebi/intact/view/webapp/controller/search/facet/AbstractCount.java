@@ -17,23 +17,50 @@ package uk.ac.ebi.intact.view.webapp.controller.search.facet;
 
 import org.apache.solr.client.solrj.response.FacetField;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
-*
+ * Contains the counts for faceted searches.
+ *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class ExpansionCount extends AbstractCount {
+public abstract class AbstractCount {
 
-    public ExpansionCount(FacetField facetField) {
-        super(facetField);
+    private static final String MISSING_KEY = "missing";
+
+    private Map<String,Long> counts;
+
+    public AbstractCount(FacetField facetField) {
+        counts = new HashMap<String, Long>();
+        
+        for (FacetField.Count c : facetField.getValues()) {
+            String key = c.getName();
+            if (key == null) {
+                key = MISSING_KEY;
+            }
+            counts.put(key, c.getCount());
+        }
     }
 
     public long getSpokeCount() {
         return getCount("spoke");
     }
-    
+
     public long getPhysicalCount() {
-       return getCount(null);
+       return getCount(MISSING_KEY);
     }
 
+    protected long getCount(String name) {
+        if (counts.containsKey(name)) {
+            return counts.get(name);
+        }
+
+        return 0;
+    }
+
+    public Map<String, Long> getCounts() {
+        return counts;
+    }
 }
