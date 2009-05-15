@@ -460,6 +460,14 @@ public class UserQuery extends BaseController {
     }
 
     public void setSearchQuery(String searchQuery) {
+
+        if (searchQuery != null) {
+            searchQuery = searchQuery.replaceAll(" and ", " AND ");
+            searchQuery = searchQuery.replaceAll(" or ", " OR ");
+            searchQuery = searchQuery.replaceAll(" not ", " NOT ");
+            searchQuery = searchQuery.replaceAll("^not ", "NOT ");
+        }
+
         this.searchQuery = searchQuery;
         this.ontologySearchQuery = null;
     }
