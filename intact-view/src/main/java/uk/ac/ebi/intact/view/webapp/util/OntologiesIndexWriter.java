@@ -61,6 +61,7 @@ public class OntologiesIndexWriter {
         Collection<FieldCount> goFields = null;
         Collection<FieldCount> inteproFields = null;
         Collection<FieldCount> chebiFields = null;
+        Collection<FieldCount> taxonomyFields = null;
 
         try {
             detMethodFields = loadAllTermsForField(solrServer, "detmethod_expanded_ms");
@@ -68,6 +69,7 @@ public class OntologiesIndexWriter {
             goFields = loadAllTermsForField(solrServer, "go_expanded_ms");
             inteproFields = loadAllTermsForField(solrServer, "interpro_expanded_ms");
             chebiFields = loadAllTermsForField(solrServer, "chebi_expanded_ms");
+            taxonomyFields = loadAllTermsForField(solrServer, "taxid_expanded_ms");
         } catch (SolrServerException e) {
             throw new IntactViewException("Problem loading terms from SolrServer: "+solrServer, e);
         }
@@ -79,6 +81,7 @@ public class OntologiesIndexWriter {
         addDocsToIndex(termIndexWriter, createDocuments(goFields));
         addDocsToIndex(termIndexWriter, createDocuments(inteproFields));
         addDocsToIndex(termIndexWriter, createDocuments(chebiFields));
+        addDocsToIndex(termIndexWriter, createDocuments(taxonomyFields));
 
         termIndexWriter.optimize();
         termIndexWriter.close();
@@ -95,6 +98,11 @@ public class OntologiesIndexWriter {
         List<Document> docs = new ArrayList<Document>(fieldCounts.size());
 
         for (FieldCount fieldCount : fieldCounts) {
+            final psidev.psi.mi.tab.model.builder.Field field = fieldCount.getField();
+            if( field.getType() == null || field.getValue() == null ) {
+                log.warn( "Skipping invalid Field: [Type:" + field.getType() + " | Value:" + field.getValue() + " | Description:" + field.getDescription() + "]" );
+                continue;
+            }
             Document doc = createDocument(fieldCount);
             docs.add(doc);
         }
@@ -112,7 +120,7 @@ public class OntologiesIndexWriter {
     	    document.add(new Field("label_sorted", fieldCount.getField().getDescription(), Store.NO, Index.UN_TOKENIZED));
         }
 
-    	document.add(new Field("databaseLabel", fieldCount.getField().getType(), Store.YES, Index.TOKENIZED));
+        document.add(new Field("databaseLabel", fieldCount.getField().getType(), Store.YES, Index.TOKENIZED));
     	document.add(new Field("databaseLabel_sorted", fieldCount.getField().getType(), Store.NO, Index.UN_TOKENIZED));
 
         document.add(new Field("count", String.valueOf(fieldCount.getCount()), Store.YES, Index.UN_TOKENIZED));
@@ -150,7 +158,6 @@ public class OntologiesIndexWriter {
         return fields;
     }
 
-
     private static class FieldCount {
 
         private psidev.psi.mi.tab.model.builder.Field field;
@@ -169,6 +176,4 @@ public class OntologiesIndexWriter {
             return count;
         }
     }
-
 }
-

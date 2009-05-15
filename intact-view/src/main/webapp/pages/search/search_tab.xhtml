@@ -131,6 +131,15 @@
                                     <tr:group>
                                         <tr:outputText value="Term name:"/>
                                         <tr:spacer width="5"/>
+                                        <tr:commandLink text="mammalia" action="#{searchBean.doNewOntologySearch}">
+                                            <f:setPropertyActionListener value="mammalia"
+                                                                         target="#{userQuery.ontologySearchQuery}"/>
+                                        </tr:commandLink>
+                                    </tr:group>
+
+                                    <tr:group>
+                                        <tr:outputText value="Term name:"/>
+                                        <tr:spacer width="5"/>
                                         <tr:commandLink text="2 hybrid" action="#{searchBean.doNewOntologySearch}">
                                             <f:setPropertyActionListener value="2 hybrid"
                                                                          target="#{userQuery.ontologySearchQuery}"/>
@@ -167,8 +176,12 @@
                         <tr:goLink text="PSI-MI" destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI"
                                    targetFrame="_blank"/>
                         <tr:outputText value=", "/>
-                        <tr:goLink text="CHEBI"
+                        <tr:goLink text="ChEBI"
                                    destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=CHEBI"
+                                   targetFrame="_blank"/>
+                        <tr:outputText value=", "/>
+                        <tr:goLink text="UniProt Taxonomy"
+                                   destination="http://www.uniprot.org/taxonomy"
                                    targetFrame="_blank"/>
                         <tr:outputText value=" and "/>
                         <tr:goLink text="InterPro" destination="http://www.ebi.ac.uk/interpro/" targetFrame="_blank"/>

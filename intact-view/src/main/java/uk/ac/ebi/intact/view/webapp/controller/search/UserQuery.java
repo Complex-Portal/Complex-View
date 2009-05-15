@@ -244,7 +244,7 @@ public class UserQuery extends BaseController {
 
     private String buildSolrOntologyQuery( String q ) {
         q = JsfUtils.surroundByQuotesIfMissing(q);
-        return "+(detmethod:" + q + " type:" + q + " properties:" + q + ")";
+        return "+(detmethod:" + q + " type:" + q + " properties:" + q + " species:"+ q +")";
     }
 
     public void doShowAddFieldPanel(ActionEvent evt) {
