@@ -167,63 +167,26 @@ public class UserQuery extends BaseController {
 
     public SolrQuery createSolrQuery( final boolean includeFilters ) {
 
-        if ( log.isTraceEnabled() ) {
-            log.trace( "query state: [ontologySearchQuery:"+ontologySearchQuery+"] [searchQuery:"+searchQuery+"]" );
-        }
-
-        if( ontologySearchQuery != null && searchQuery != null ) {
-            throw new IllegalStateException( "Unexpectedly the user query holds both a quick search ("+ searchQuery +
-                                             ") and ontlogy search query ("+ ontologySearchQuery +") !" );
-        }
-
-        if( ontologySearchQuery == null &&
-            (searchQuery == null || searchQuery.trim().length() == 0 ||
-                    searchQuery.equals("*") || searchQuery.equals("?"))) {
+        if( searchQuery == null || searchQuery.trim().length() == 0 ||
+                    searchQuery.equals("*") || searchQuery.equals("?")) {
             searchQuery = STAR_QUERY;
         }
 
-        // select one or the other depending which one is not null
-        String q = null;
-        if( searchQuery != null ) {
-            q = searchQuery;
-
-            q = q.trim();
-            //q = quoteIfCommonIdWithColon(q);
-
-        } else if( ontologySearchQuery != null ) {
-            q = buildSolrOntologyQuery( ontologySearchQuery );
-        }
-
-        if (q == null) {
-            throw new IllegalStateException("Could build query. It was null");
-        }
+        String q = searchQuery.trim();
 
         SolrQuery query = new SolrQuery( q );
         query.setSortField(userSortColumn, (userSortOrder)? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
         query.setRows(pageSize);
 
-        if( includeFilters ) {
-            /*
-            addFilteredQuery(query, "dataset", filterPopulator.getDatasets(), selectDatasetNames( datasets ));
-            addFilteredQuery(query, "source", filterPopulator.getSources(), sources);
-            addFilteredQuery(query, "expansion", filterPopulator.getExpansions(), expansions);
-
-            addFilteredQuery(query, GoBrowserController.FIELD_NAME, goTerms);
-            addFilteredQuery(query, ChebiBrowserController.FIELD_NAME, chebiTerms);
-              */
-//            for (QueryToken token : queryTokenList) {
-//                if (!token.getQuery().equals(q)) {
-//                    query.addFilterQuery(token.toQuerySyntax());
-//                }
-//            }
-
-        }
-
         return query;
     }
 
+    public void prepareFromOntologySearch(ActionEvent evt) {
+        setSearchQuery(buildSolrOntologyQuery(ontologySearchQuery));
+    }
+
     public String getDisplayQuery() {
-        String query = ontologySearchQuery != null ? JsfUtils.surroundByQuotesIfMissing(ontologySearchQuery) : searchQuery;
+        String query = "";
 
         if ( STAR_QUERY.equals(query)) {
             query = "*";
@@ -235,16 +198,9 @@ public class UserQuery extends BaseController {
         return query;
     }
 
-    private String quoteIfCommonIdWithColon(String q) {
-        if ( q.matches( "CHEBI:\\w+" ) || q.matches( "GO:\\w+" ) || q.matches( "MI:\\w+" ) ) {
-            q = "\"" + q + "\"";
-        }
-        return q;
-    }
-
     private String buildSolrOntologyQuery( String q ) {
         q = JsfUtils.surroundByQuotesIfMissing(q);
-        return "+(detmethod:" + q + " type:" + q + " properties:" + q + " species:"+ q +")";
+        return "detmethod:" + q + " OR type:" + q + " OR properties:" + q + " OR species:"+ q ;
     }
 
     public void doShowAddFieldPanel(ActionEvent evt) {

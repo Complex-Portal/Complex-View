@@ -162,7 +162,8 @@
                         <f:facet name="end">
                             <tr:commandButton id="ontologySearchBtn"
                                               text="Search"
-                                              action="#{searchBean.doNewOntologySearch}"
+                                              actionListener="#{userQuery.prepareFromOntologySearch}"
+                                              action="#{searchBean.doBinarySearchAction}"
                                               styleClass="submit_button"/>
                         </f:facet>
                     </tr:panelLabelAndMessage>
