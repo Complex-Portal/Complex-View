@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:trh="http://myfaces.apache.org/trinidad/html"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:c="http://java.sun.com/jstl/core"
+        xmlns:ebi="http://ebi.ac.uk/faces/components">
+
+    <tr:document title="What is this view?">
+
+        <tr:panelHeader text="Searching Interactions (Search Tab)" inlineStyle="margin-left: 10px; margin-right:10px">
+
+            As you can see in this tab we are now trying to give you more targeted
+            choice to do your queries, please note that the examples provided
+            in this tab are live links so you can simply click them to see the resulting
+            interactions sets.
+
+            <tr:panelHeader text="Using the Quick Search">
+                In this search panel you are free to type anything that might relate
+                to interactions, whether it is properties of their interactor (gene name,
+                identifiers, GO term…) or more specific to the interaction like publication,
+                authors, experimental detection method, ...
+
+                <p>Some examples:</p>
+
+                <ul>
+                    <li>
+                        Try the query: <span style="font-family: Courier, 'Courier New', monospace">imatinib</span>
+                        <br/>
+                        This is a drug for which we have curated a number of interactions.
+                        <br/>
+                        Once you press the search button you should be taken to the Interaction Tab that lists 130 binary interactions.
+                        <br/>
+                        If you want to construct more complex queries we recommend you take a look
+                        at the Molecular Interaction Query Language, accessible from the quick
+                        search panel.
+                    </li>
+                    <li>
+                        Try the query: <span
+                            style="font-family: Courier, 'Courier New', monospace">species:yeast AND type:"direct interaction"</span>
+                        <br/>
+                        This query selects all interactions involving yeast interactors that have been shown
+                        to have direct interactions. If you customize the column display of the interaction tab, you will see that not only “direct interaction” have been selected but also children terms in the PSI-MI ontology.
+                    </li>
+                </ul>
+            </tr:panelHeader>
+
+            <tr:panelHeader text="Using the Ontology Search">
+                Open the Rearch Tab. This panel is specialised to give you an easy
+                access to ontology search. So far you can search on 4 ontologies:
+
+                <ul>
+                    <li>Gene Ontology</li>
+                    <li>InterPro</li>
+                    <li>PSI-MI</li>
+                    <li>ChEBI</li>
+                </ul>
+
+                <p>Whenever you start typing a query in this search panel, the system will
+                    search as you type and propose a list of matching controlled vocabulary terms.
+                    You can then select one of them and select matching interactions.</p>
+
+                <p>
+                    For example, type: <span
+                        style="font-family: Courier, 'Courier New', monospace">cancer</span>
+                    <br/>
+                    You will be presented with a few choices, please note that each term is
+                    followed by the count of matching interactions in the IntAct database.
+                </p>
+
+                <p>Select a term with the mouse or using the keyboard cursor keys and you will
+                    be taken to the interaction tab.</p>
+            </tr:panelHeader>
+
+            <tr:panelHeader text="Searching the Compound chemical structure"
+                            rendered="#{intactViewConfiguration.chebiSearchEnabled}">
+                <p>In this panel you will be able to draw all or part of a chemical structure
+                    and search for chemical compounds. If you get any matched, you can then see
+                    all interactions involving them.</p>
+
+                <p>First you have to open up the chemical search panel so that the applet
+                    can load, it might take a few seconds. Then you can start drawing your
+                    structure, for instance:</p>
+
+                <p>Once you have drawn your structure, select Similarity and press Search.
+                    You should be presented with a list of matching compound. Now choose one
+                    molecule and click the link: <span
+                        style="font-family: Courier, 'Courier New', monospace">IntAct interactions</span>. You will be taken to the
+                    interaction tab to review the data.</p>
+            </tr:panelHeader>
+
+        </tr:panelHeader>
+
+    </tr:document>
+
+</ui:composition>

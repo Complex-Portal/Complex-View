@@ -15,21 +15,20 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import uk.ac.ebi.intact.view.webapp.controller.BaseController;
+import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 
-import javax.persistence.EntityManagerFactory;
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManagerFactory;
 import java.io.*;
-import java.util.Properties;
 import java.net.MalformedURLException;
+import java.util.Properties;
 
 /**
  * IntactView configuration bean.
@@ -66,6 +65,7 @@ public class IntactViewConfiguration extends BaseController {
     private static final String INTACT_RECIPIENTS = "intact.mail.recipients";
     private static final String PROXY_HOST = "intact.proxy.host";
     private static final String PROXY_PORT = "intact.proxy.port";
+    private static final String INTACT_CHEBI_SEARCH_ENABLED = "intact.chebi.search";
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -98,6 +98,7 @@ public class IntactViewConfiguration extends BaseController {
     private String dastyUrl;
     private String proxyHost;
     private String proxyPort;
+    private boolean chebiSearchEnabled;
 
     public IntactViewConfiguration() {
     }
@@ -151,6 +152,7 @@ public class IntactViewConfiguration extends BaseController {
         mailRecipients = properties.getProperty(INTACT_RECIPIENTS, mailRecipients);
         proxyHost = properties.getProperty(PROXY_HOST, proxyHost);
         proxyPort = properties.getProperty(PROXY_PORT, proxyPort);
+        chebiSearchEnabled = Boolean.valueOf(properties.getProperty(INTACT_CHEBI_SEARCH_ENABLED, "true"));
     }
 
     public void storeConfiguration() throws IOException {
@@ -181,6 +183,7 @@ public class IntactViewConfiguration extends BaseController {
         addProperty(properties, INTACT_RECIPIENTS, mailRecipients);
         addProperty(properties, PROXY_HOST, proxyHost);
         addProperty(properties, PROXY_PORT, proxyPort);
+        addProperty(properties, INTACT_CHEBI_SEARCH_ENABLED, String.valueOf(chebiSearchEnabled));
 
         final FileOutputStream os = new FileOutputStream( configFile );
         properties.store( os, webappName+ " configuration");
@@ -440,5 +443,13 @@ public class IntactViewConfiguration extends BaseController {
 
     public void setProxyPort(String proxyPort) {
         this.proxyPort = proxyPort;
+    }
+
+    public boolean isChebiSearchEnabled() {
+        return chebiSearchEnabled;
+    }
+
+    public void setChebiSearchEnabled(boolean chebiSearchEnabled) {
+        this.chebiSearchEnabled = chebiSearchEnabled;
     }
 }

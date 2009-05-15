@@ -258,8 +258,22 @@
 
     <navigation-rule>
         <navigation-case>
+          <from-outcome>dialog:faq.whatis.search</from-outcome>
+          <to-view-id>/pages/documentation/faq/whatis_search.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
           <from-outcome>dialog:faq.whatis.interactions</from-outcome>
           <to-view-id>/pages/documentation/faq/whatis_interactions.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <navigation-case>
+          <from-outcome>dialog:faq.whatis.browser</from-outcome>
+          <to-view-id>/pages/documentation/faq/whatis_browser.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
