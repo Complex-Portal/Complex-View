@@ -32,15 +32,21 @@ public abstract class AbstractCount {
 
     private Map<String,Long> counts;
 
-    public AbstractCount(FacetField facetField) {
+    public AbstractCount() {
         counts = new HashMap<String, Long>();
-        
-        for (FacetField.Count c : facetField.getValues()) {
-            String key = c.getName();
-            if (key == null) {
-                key = MISSING_KEY;
+    }
+
+    public AbstractCount(FacetField facetField) {
+        this();
+
+        if (facetField != null) {
+            for (FacetField.Count c : facetField.getValues()) {
+                String key = c.getName();
+                if (key == null) {
+                    key = MISSING_KEY;
+                }
+                counts.put(key, c.getCount());
             }
-            counts.put(key, c.getCount());
         }
     }
 

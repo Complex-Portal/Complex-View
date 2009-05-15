@@ -10,8 +10,62 @@
 
     <tr:document title="What is this view?">
 
-        <tr:panelHeader text="Binary interactions"/>
+        <tr:panelHeader text="Binary interactions" inlineStyle="margin-left: 10px; margin-right:10px">
 
+            <p>
+            In this tab, we display the list of interaction that you have selected using one of our
+            search features. Despite the fact that our data are annotated to accurately reflect
+            the interactions reported in scientific literature, the data is shown in this view
+            as binary interactions. Whenever the data was reported as a co-complex involving more
+            than two molecules, we store it as such in the IntAct database and post-process it so
+            the portal can show it as binary interaction. This post-processing is the Spoke Expansion
+            model (connects bait to all preys):
+            </p>
+
+            <tr:panelHorizontalLayout halign="center">
+                    <tr:image source="/images/documentation/matrix-spoke.png"
+                              shortDesc="Spoke and Matrix Expansion Algorithm"/>
+            </tr:panelHorizontalLayout>
+
+            <p>
+            At any moment you can choose to display the expansion column in this view in order to see
+            which interaction are spoke expanded and which are not.
+            </p>
+
+            <tr:panelHeader text="Description of what has changed">
+                <ul>
+                    <li>We have added some icons in the first two column to indicate the roles of the
+                        molecule in the interactions.
+                    </li>
+                    <li>We have added icons with hyperlinks to the reference databases of the interacting
+                        molecule, as well as links to our molecule viewer: Dasty2, which will give you more
+                        information about the molecule (once clicked, it opens the Molecule View tab).
+                    </li>
+                    <li>We have added more download options to allow users to retrieve their interaction set
+                        using more standard formats such as PSI-MI XML and PSIMITAB.
+                    </li>
+                </ul>
+            </tr:panelHeader>
+
+            <tr:panelHeader text="Configuring the view to your need">
+                In the header of the interaction table you will find a button: ‘Change Column Display’
+                that will show you all the columns available and allow you to update the current
+                selected set.
+            </tr:panelHeader>
+
+            <tr:panelHeader text="Downloading the data into Standard formats">
+                In the header of the interaction table you will find a drop down list that contains
+                all the formats currently supported when downloading the interaction data. Select
+                one of them and click the export button next to the list. Please note that PSI-MI XML
+                is only available when the interaction set is no bigger than 1000 interactions.
+            </tr:panelHeader>
+
+            <tr:panelHeader text="Opening the interaction details">
+                Clicking on the magnifying glass in the first column of the interaction table
+                will open the details of the corresponding interaction in the Interaction Details tab,
+                giving you access to more details of the manually curated record.
+            </tr:panelHeader>
+        </tr:panelHeader>
 
     </tr:document>
 

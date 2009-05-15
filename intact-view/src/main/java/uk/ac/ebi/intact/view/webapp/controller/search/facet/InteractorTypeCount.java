@@ -24,6 +24,10 @@ import uk.ac.ebi.intact.model.CvInteractorType;
  */
 public class InteractorTypeCount extends AbstractCount {
 
+    public InteractorTypeCount() {
+        super();
+    }
+
     public InteractorTypeCount(FacetField facetField) {
         super(facetField);
     }

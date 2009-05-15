@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.view.webapp.controller.search.facet.ExpansionCount;
 import uk.ac.ebi.intact.view.webapp.controller.search.facet.InteractorTypeCount;
+import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
 
 /**
  * TODO comment that class header
@@ -53,7 +54,13 @@ public class FacetController {
     }
 
     private FacetField getFacetField(String field) {
-        QueryResponse queryResponse = searchController.getResults().getResult().getQueryResponse();
+        SolrSearchResultDataModel model = searchController.getResults();
+
+        if (model == null) {
+            return null;
+        }
+
+        QueryResponse queryResponse = model.getResult().getQueryResponse();
 
         return queryResponse.getFacetField(field);
     }
