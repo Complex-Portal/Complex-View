@@ -41,7 +41,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Controller for the browse tab
+ * Controller for the browse tab.
  *
  * @author Prem Anand (prem@ebi.ac.uk)
  * @version $Id$
@@ -79,7 +79,6 @@ public class BrowseController extends JpaBaseController {
 
    
     public BrowseController() {
-
     }
 
      /**
@@ -89,60 +88,72 @@ public class BrowseController extends JpaBaseController {
      */
     public void createListofIdentifiers( DisclosureEvent evt ) {
          searchController.onListDisclosureChanged(evt);
+         buildListOfIdentifiers();
+    }
 
-         uniprotAcs = new ArrayList<String>(maxSize);
-         geneNames = new ArrayList<String>(maxSize);
+    public void createListofIdentifiers( ActionEvent evt ) {
+        buildListOfIdentifiers();
+    }
 
-         final String uniprotFieldName = "uniprotkb_id";
-         final String geneNameFieldName = "geneName";
+    public String createListofIdentifiersAndBrowse() {
+        buildListOfIdentifiers();
+        searchController.doInteractorsSearch();
+        return "browse";
+    }
 
-         SolrQuery query = userQuery.createSolrQuery();
-         query.setRows(0);
-         query.setFacet(true);
-         query.setFacetLimit(maxSize);
-         query.setFacetMinCount(1);
-         query.setFacetSort(FacetParams.FACET_SORT_COUNT);
-         query.addFacetField(uniprotFieldName);
-         query.addFacetField(geneNameFieldName);
+    private void buildListOfIdentifiers() {
+        uniprotAcs = new ArrayList<String>(maxSize);
+        geneNames = new ArrayList<String>(maxSize);
 
-         final SolrServer solrServer = intactViewConfig.getInteractionSolrServer();
-         QueryResponse queryResponse;
+        final String uniprotFieldName = "uniprotkb_id";
+        final String geneNameFieldName = "geneName";
 
-         try {
-             if (log.isDebugEnabled()) log.debug("Loading browsing id space using query: "+query);
+        SolrQuery query = userQuery.createSolrQuery();
+        query.setRows(0);
+        query.setFacet(true);
+        query.setFacetLimit(maxSize);
+        query.setFacetMinCount(1);
+        query.setFacetSort( FacetParams.FACET_SORT_COUNT);
+        query.addFacetField(uniprotFieldName);
+        query.addFacetField(geneNameFieldName);
 
-             queryResponse = solrServer.query(query);
-         } catch (SolrServerException e) {
-             addErrorMessage("Problem loading uniprot ACs", e.getMessage());
-             e.printStackTrace();
-             return;
-         }
+        final SolrServer solrServer = intactViewConfig.getInteractionSolrServer();
+        QueryResponse queryResponse;
 
-         final FacetField uniprotField = queryResponse.getFacetField(uniprotFieldName);
-         
-         if (uniprotField != null && uniprotField.getValues() != null) {
-              for (FacetField.Count c : uniprotField.getValues()) {
-                  uniprotAcs.add(c.getName());
-              }
-         }
+        try {
+            if (log.isDebugEnabled()) log.debug("Loading browsing id space using query: "+query);
 
-         final FacetField geneNameField = queryResponse.getFacetField(geneNameFieldName);
+            queryResponse = solrServer.query(query);
+        } catch ( SolrServerException e) {
+            addErrorMessage("Problem loading uniprot ACs", e.getMessage());
+            e.printStackTrace();
+            return;
+        }
 
-         if (geneNameField != null && geneNameField.getValues() != null) {
-              for (FacetField.Count c : geneNameField.getValues()) {
-                  geneNames.add(c.getName());
-              }
-         }
+        final FacetField uniprotField = queryResponse.getFacetField(uniprotFieldName);
 
-         if (log.isDebugEnabled()) log.debug("Browse uniprot ACs: "+uniprotAcs);
-         if (log.isDebugEnabled()) log.debug("Browse gene names: "+geneNames);
+        if (uniprotField != null && uniprotField.getValues() != null) {
+             for (FacetField.Count c : uniprotField.getValues()) {
+                 uniprotAcs.add(c.getName());
+             }
+        }
+
+        final FacetField geneNameField = queryResponse.getFacetField(geneNameFieldName);
+
+        if (geneNameField != null && geneNameField.getValues() != null) {
+             for (FacetField.Count c : geneNameField.getValues()) {
+                 geneNames.add(c.getName());
+             }
+        }
+
+        if (log.isDebugEnabled()) log.debug("Browse uniprot ACs: "+uniprotAcs);
+        if (log.isDebugEnabled()) log.debug("Browse gene names: "+geneNames);
 
         this.interproIdentifierList = appendIdentifiers( uniprotAcs, ExternalDbLinker.INTERPRO_SEPERATOR);
         this.chromosomalLocationIdentifierList = appendIdentifiers( uniprotAcs, ExternalDbLinker.CHROMOSOME_SEPERATOR);
         this.mRNAExpressionIdentifierList = appendIdentifiers( uniprotAcs, ExternalDbLinker.EXPRESSION_SEPERATOR);
         this.reactomeIdentifierList =  uniprotAcs.toArray( new String[uniprotAcs.size()] );
     }
-
 
     private String appendIdentifiers( Collection<String> uniqueIdentifiers, String separator ) {
         if ( uniqueIdentifiers != null && separator != null && !uniqueIdentifiers.isEmpty()) {
