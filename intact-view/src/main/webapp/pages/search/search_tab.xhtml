@@ -15,11 +15,14 @@
                 xmlns:o="http://myfaces.apache.org/orchestra">
 
 <div style="float:right;">
-        <tr:commandLink text="What is this view?" action="dialog:faq.whatis.search"
+       <tr:commandLink action="dialog:faq.whatis.search"
                         partialSubmit="true" useWindow="true"
                         windowWidth="700" windowHeight="500"
-                        immediate="true"/>
-    </div>
+                        immediate="true">
+            What is this view
+            <tr:image source="/images/help.png"/>
+        </tr:commandLink>
+</div>
 
 <tr:spacer height="10"/>
 
@@ -82,10 +85,13 @@
 
                     <tr:panelTip>
                         You can do more powerful queries by using the&#160;
-                        <tr:commandLink text="Molecular Interaction Query Language"
-                                        action="dialog:help.miql" partialSubmit="true"
-                                        windowWidth="600" windowHeight="600" immediate="true"
-                                        useWindow="true"/>.
+                        <tr:commandLink action="dialog:help.miql"
+                                        partialSubmit="true" useWindow="true"
+                                        windowWidth="600" windowHeight="600"
+                                        immediate="true">
+                            Molecular Interaction Query Language
+                            <tr:image source="/images/help.png"  inlineStyle="vertical-align: baseline"/>
+                        </tr:commandLink>
                     </tr:panelTip>
 
                 </tr:panelBox>

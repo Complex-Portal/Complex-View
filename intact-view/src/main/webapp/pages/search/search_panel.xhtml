@@ -10,10 +10,13 @@
     <tr:panelBox inlineStyle="width:100%" partialTriggers="addFieldBtn cancelFieldBtn">
         
         <div style="float:right">
-            <tr:commandLink text="MIQL syntax reference"
-                            action="dialog:help.miql" partialSubmit="true"
-                            windowWidth="600" windowHeight="600" immediate="true"
-                            useWindow="true"/>
+            <tr:commandLink action="dialog:help.miql"
+                            partialSubmit="true" useWindow="true"
+                            windowWidth="600" windowHeight="600"
+                            immediate="true">
+                MIQL syntax reference
+                <tr:image source="/images/help.png" inlineStyle="vertical-align: baseline"/>
+            </tr:commandLink>
         </div>
         
         <tr:panelHorizontalLayout valign="top">

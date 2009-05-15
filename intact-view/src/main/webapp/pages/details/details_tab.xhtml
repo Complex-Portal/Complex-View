@@ -255,7 +255,7 @@
                 <tr:outputText value="#{interactor.fullName}" />
             </tr:column>
 
-            <tr:column headerText="Specie">
+            <tr:column headerText="Species">
                 <tr:group rendered="#{interactor.bioSource != null}">
                     <ui:decorate template="/pages/details/biosourcePopup.xhtml">
                         <ui:param name="biosource" value="#{interactor.bioSource}"/>

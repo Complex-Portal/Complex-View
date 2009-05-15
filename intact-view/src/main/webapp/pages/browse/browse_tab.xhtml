@@ -16,10 +16,13 @@
     <c:set var="displayWarning" value="#{browseBean.maxSize lt searchBean.interactorTotalResults}" />
 
     <div style="float:right; margin-top: -10px">
-        <tr:commandLink text="What is this view?" action="dialog:faq.whatis.browser"
+        <tr:commandLink action="dialog:faq.whatis.browser"
                         partialSubmit="true" useWindow="true"
                         windowWidth="700" windowHeight="500"
-                        immediate="true"/>
+                        immediate="true">
+            What is this view
+            <tr:image source="/images/help.png"/>
+        </tr:commandLink>
     </div>
     
     <tr:panelHeader text="Proteins (#{searchBean.proteinTotalResults})">
