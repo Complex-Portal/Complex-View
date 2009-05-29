@@ -5,24 +5,14 @@
         version="2.1">
 
     <bindings schemaLocation="http://psidev.sourceforge.net/mi/rel25/src/MIF254.xsd" node="/xs:schema">
-        <globalBindings>
-        <xjc:simple/>
-    </globalBindings>
-
         <schemaBindings>
             <package name="psidev.psi.mi.xml254.jaxb"/>
         </schemaBindings>
     </bindings>
 
-    <!--<bindings schemaLocation="http://psidev.sourceforge.net/mi/rel25/src/MIF254.xsd" node="/xs:schema">-->
-        <!--<globalBindings>-->
-        <!--<xjc:simple/>-->
-        <!--<xjc:serializable/>-->
-    <!--</globalBindings>-->
-        <!---->
-        <!--<schemaBindings>-->
-            <!--<package name="psidev.psi.mi.xml254.jaxb"/>-->
-        <!--</schemaBindings>-->
-    <!--</bindings>-->
+    <globalBindings>
+        <xjc:simple/>
+        <xjc:serializable/>
+    </globalBindings>
 
 </bindings>
