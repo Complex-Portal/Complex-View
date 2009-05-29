@@ -41,6 +41,7 @@ import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 
+import javax.jws.WebService;
 import java.util.*;
 
 /**
@@ -69,6 +70,7 @@ public class IntactPsicquicService implements PsicquicService {
     private PsicquicConfig config;
     
     private static final String IDENTIFIER_FIELD = "identifier";
+    private static final String ALIAS_FIELD = "alias";
     private static final String INTERACTION_ID_FIELD = "interaction_id";
 
     public IntactPsicquicService() { 
@@ -76,9 +78,10 @@ public class IntactPsicquicService implements PsicquicService {
 
 
     public QueryResponse getByInteractor(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
-        String query = createQuery( IDENTIFIER_FIELD, dbRef);
+        String queryId = createQuery( IDENTIFIER_FIELD, dbRef);
+        String queryAlias = createQuery( ALIAS_FIELD, dbRef);
 
-        return getByQuery(query, requestInfo);
+        return getByQuery(queryId+" OR "+queryAlias, requestInfo);
     }
 
     public QueryResponse getByInteraction(DbRef dbRef, RequestInfo requestInfo) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {

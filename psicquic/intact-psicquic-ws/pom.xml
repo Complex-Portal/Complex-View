@@ -19,7 +19,7 @@
 
     <properties>
         <cxf.version>2.2.1</cxf.version>
-        <spring.version>2.5.5</spring.version>
+        <spring.version>2.5.6</spring.version>
 
         <!-- configurable bits -->
 
@@ -62,7 +62,7 @@
                                     <wsdl>${basedir}/src/main/wsdl/psicquic.wsdl</wsdl>
                                     <extraargs>
                                             <extraarg>-b</extraarg>
-                                            <extraarg>${basedir}/src/main/wsdl/intact-binding.xjb</extraarg>
+                                            <extraarg>${basedir}/src/main/wsdl/psicquic-bindings.xjb</extraarg>
                                           </extraargs>
                                 </wsdlOption>
                             </wsdlOptions>

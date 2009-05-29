@@ -7,6 +7,8 @@ import psidev.psi.mi.xml254.jaxb.EntrySet;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput;
 
+import javax.ws.rs.core.Response;
+
 /**
  * This web service is based on a PSIMITAB SOLR index to search and return the results.
  *
@@ -23,7 +25,7 @@ public class IntactPsicquicRestService implements PsicquicRestService {
     private PsicquicService psicquicService;
 
     public Object getByInteractor(String interactorAc, String db, String format, String firstResult, String maxResults) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
-        String query = "id:"+createQueryValue(interactorAc, db);
+        String query = "id:"+createQueryValue(interactorAc, db)+ " OR alias:"+createQueryValue(interactorAc, db);
         return getByQuery(query, format, firstResult, maxResults);
     }
 
@@ -58,7 +60,8 @@ public class IntactPsicquicRestService implements PsicquicRestService {
             return count(query);
         }
 
-        return new PsicquicStreamingOutput(psicquicService, query, firstResult, maxResults);
+        PsicquicStreamingOutput result = new PsicquicStreamingOutput(psicquicService, query, firstResult, maxResults);
+        return Response.status(200).type("text/plain").entity(result).build();
     }
     public String getVersion() {
         return config.getVersion();
