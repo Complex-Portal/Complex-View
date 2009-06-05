@@ -3,12 +3,7 @@ var testing = false,  		  // used for testing
 	alignments = new Array(), // array of parsed alignments
 	nalignments = 0;		  // number of alignments	
 
-/**
-* called with url of alignment file to load and parse
-*/
-function parseAlignment(url){
-	loadAlignment(url);
-}
+
 
 // <------------- definition of an alignment -------------->
 
@@ -36,8 +31,8 @@ function segment(objid,start,end){
 	this.end = end;
 }
 /**
-*  Compare 2 segments and return a boolean
-*/
+ *  Compare 2 segments and return a boolean
+ */
 segment.prototype.equals=function(segm){
 	if ((this.objid==segm.objid)&&(this.start==segm.start)&&(this.end==segm.end)){
 		return true;
@@ -46,33 +41,30 @@ segment.prototype.equals=function(segm){
 }
 
 /**
-*  defines a block contained withing an alignment
-*  @params: order: blockOrder attribute, segments: segments found in block
-*/
+ *  defines a block contained withing an alignment
+ *  @params: order: blockOrder attribute, segments: segments found in block
+ */
 function block(order,segments){
 	this.order = order;
 	this.segments = segments;
 }
 
 /**
-*  defines an alignment
-*  @params: atype: alignType attribute, blocks: blocks found in the alignment
-*/
+ *  defines an alignment
+ *  @params: atype: alignType attribute, blocks: blocks found in the alignment
+ */
 function alignment(atype,alignObjects,blocks){
 	this.atype = atype;
 	this.alignObjects = alignObjects;
 	this.blocks = blocks;
-	//printOnTest("atype: " + atype);
-	//printOnTest("aObjects: " + alignObjects);
-	//printOnTest("blocks: " + blocks);
-	//new Object;
+	
 }
 
 // <------------ Loading and Parsing --------------->
 
 /**
-* parse the xml alignment file received in doc
-*/
+ * parse the xml alignment file received in doc
+ */
 function doParseAligment(doc){ 
 	var alignElms = doc.documentElement.getElementsByTagName("alignment");
 	if (alignElms.length==0){
@@ -110,11 +102,12 @@ function doParseAligment(doc){
 		}
 		adata.innerHTML = listAlignments()+extra;
 	}
+	iniStructPanel();
 }
 
 /**
-* parse an xml alignObject
-*/
+ * parse an xml alignObject
+ */
 function parseAlignObject(obj){
 	accessionid = obj.attributes.getNamedItem("dbAccessionId").value;
 	type = obj.attributes.getNamedItem("type").value;
@@ -128,13 +121,13 @@ function parseAlignObject(obj){
 				property = detail.attributes.getNamedItem("property").value; // printOnTest("type:"+type+" ,prop:"+property);
 				switch(property){
 					case "header":
-						header = getNodeData(detail);
+						header = getNodeData2(detail);
 					break;
 					case "title":
-						title = getNodeData(detail);
+						title = getNodeData2(detail);
 					break;
 					case "molecule description":
-						descr = getNodeData(detail);
+						descr = getNodeData2(detail);
 					break;
 				}
 			}
@@ -144,9 +137,9 @@ function parseAlignObject(obj){
 }
 
 /**
-* return content if text node, empty string otherwise
-*/
-function getNodeData(node){
+ * return content if text node, empty string otherwise
+ */
+function getNodeData2(node){
 	if(!node.hasChildNodes)
 		return "";
 	for(var j=0;j<node.childNodes.length;j++){
@@ -287,42 +280,6 @@ function extrapolateSegment(segmentQuery){
 	return null;
 }
  
-/**
-* load the xml alignment file from the server
-*/
-function loadAlignment(url){
-	var http_request = false;
-	if (window.XMLHttpRequest) { 
-		http_request = new XMLHttpRequest();
-		if (http_request.overrideMimeType) { http_request.overrideMimeType('text/xml');} // Rafa
-	} else if (window.ActiveXObject) { // IE.
-		try {
-			http_request = new ActiveXObject("Msxml2.XMLHTTP");
-		} catch (e) {
-			try {
-				http_request = new ActiveXObject("Microsoft.XMLHTTP");
-			} catch (e) {}
-		}
-	}
-	http_request.open('GET', url, true);
-	http_request.onreadystatechange = function(){
-		if (http_request.readyState == 4) {
-			if (http_request.status == 200) { 
-				if(http_request.responseText && testing)
-					document.getElementById("xmlalgn").value= http_request.responseText;
-				//if(http_request.responseXML && http_request.responseXML.contentType=="text/xml") // Rafa
-				if(http_request.responseXML){
-					doParseAligment(http_request.responseXML);
-					//Only load the applet and the dropdown after parse the alignment
-					iniStructPanel();
-				}else
-					alert("wrong type alignment");	
-			}else
-				alert("wrong code");
-		}
-	}
-	http_request.send(null);
-}
 
 /**
 *  get an array of the parsed structure with the name of the pdb's files

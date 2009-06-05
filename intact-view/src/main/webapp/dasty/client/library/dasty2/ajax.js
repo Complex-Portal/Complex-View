@@ -30,7 +30,7 @@
 					}
 				else
 					{
-						if(use_das_registry == 1)
+						if(use_das_registry == true)
 							{
 								makeDasRegistryRequest();
 							}

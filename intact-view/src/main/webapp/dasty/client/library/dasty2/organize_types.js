@@ -49,15 +49,19 @@
 		new_feature_list[i]["type"] = finfo[fids[same_fids[i]][1][0]]["type_id"];		// TYPE
 		new_feature_list[i]["type_data"] = finfo[fids[same_fids[i]][1][0]]["type_data"];		// TYPE
 		new_feature_list[i]["category"] = finfo[fids[same_fids[i]][1][0]]["type_category"];	// CATEGORY
-		new_feature_list[i]["feature_id"] = finfo[fids[same_fids[i]][1][0]]["feature_id"];	// ID
+		new_feature_list[i]["method"] = finfo[fids[same_fids[i]][1][0]]["method_data"];	// METHOD
+		//new_feature_list[i]["feature_id"] = finfo[fids[same_fids[i]][1][0]]["feature_id"];	// ID		
+		//new_feature_list[i]["feature_label"] = '';	// ID
 		new_feature_list[i]["server"] = finfo[fids[same_fids[i]][1][0]]["annotation_server"];	// SERVER
 		new_feature_list[i]["registry_uri"] = finfo[fids[same_fids[i]][1][0]]["annotation_server_uri"];	// SERVER ID (REGISTRY URI)
 		new_feature_list[i]["version"] = annotation_version[finfo[fids[same_fids[i]][1][0]]["xmlnumber"]];	// ANNOTATION VERSION boolean "1/0". "1" means the feature file has the same version than the sequence file.
 		
+		var featureLabelsPerLines = '';
 		for(var a = 0; a < fids[same_fids[i]][1].length; a++)
 		   {
 		      new_feature_list[i]["features"].push(fids[same_fids[i]][1][a]); 
 		   }
+		   
 		line_name = "gr_item" + featureXML_num + "_" + new_feature_list[i]["type"] + "_" + new_feature_list[i]["line"];  
 		line_id_name.push(line_name);
 		
@@ -73,7 +77,6 @@
 		dasty2.line_id_name2_length++;
 		
 	   }
-	   //printOnTest(line_id_name);
 	   
 	   if(same_fids.length > 0)
 	   		{
@@ -180,15 +183,19 @@
 		new_feature_list[i+nfl_length]["feature_group"] = 0;		// boolean. 1 mean feature with the same ID o group
 		new_feature_list[i+nfl_length]["type"] = finfo[fids[non_same_fids[i]][1][0]]["type_id"];		// TYPE ID
 		new_feature_list[i+nfl_length]["type_data"] = finfo[fids[non_same_fids[i]][1][0]]["type_data"];		// TYPE DATA
+		new_feature_list[i+nfl_length]["method"] = finfo[fids[non_same_fids[i]][1][0]]["method_data"];	// CATEGORY 
 		new_feature_list[i+nfl_length]["category"] = finfo[fids[non_same_fids[i]][1][0]]["type_category"];	// CATEGORY 
-		new_feature_list[i+nfl_length]["feature_id"] = finfo[fids[non_same_fids[i]][1][0]]["feature_id"];	// ID
+		//new_feature_list[i+nfl_length]["feature_id"] = finfo[fids[non_same_fids[i]][1][0]]["feature_id"];	// ID
+		//new_feature_list[i+nfl_length]["feature_label"] = finfo[fids[non_same_fids[i]][1][0]]["feature_label"];	// ID	
+		//new_feature_list[i+nfl_length]["feature_label"] = '';
 		new_feature_list[i+nfl_length]["server"] = finfo[fids[non_same_fids[i]][1][0]]["annotation_server"];	// SERVER
 		new_feature_list[i+nfl_length]["registry_uri"] = finfo[fids[non_same_fids[i]][1][0]]["annotation_server_uri"];	// SERVER ID (REGISTRY URI)
 		new_feature_list[i+nfl_length]["version"] = annotation_version[finfo[fids[non_same_fids[i]][1][0]]["xmlnumber"]];	// ANNOTATION VERSION
 		
+		var featureLabelsPerLines = '';
 		for(var a = 0; a < line[i].length; a++)
 		   {
-		      new_feature_list[i+nfl_length]["features"].push(line[i][a]); 
+		      new_feature_list[i+nfl_length]["features"].push(line[i][a]);		  
 		   }
 		   
 		line_name = "gr_item" + featureXML_num + "_" + new_feature_list[i+nfl_length]["type"] + "_" + new_feature_list[i+nfl_length]["line"];

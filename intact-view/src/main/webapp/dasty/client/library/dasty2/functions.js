@@ -40,7 +40,8 @@ function printOnTest(arg)
 	
 	  
 function highlightSequence(fstart, fend, aa_num_per_line, color)
-	{
+	{ 
+		fstart-=1;fend-=1;
 	   	for(var i=0;i<sequence_info["sequence_length"];i++){
 			var spanBase = document.getElementById("aa_"+(i+1));
 	   		if ((i>=fstart)&&(i<=fend)){
@@ -278,7 +279,16 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 						{
 							mo_img_category_column.innerHTML = minus_icon;
 						}
-
+					var mo_img_method_column = document.getElementById("menu_mo_img_method_column");
+					if (show_col_method == 1)
+						{
+							mo_img_method_column.innerHTML = plus_icon;
+						}
+					else
+						{
+							mo_img_method_column.innerHTML = minus_icon;
+						}
+						
 					var mo_img_type_column = document.getElementById("menu_mo_img_type_column");
 					if (show_col_type == 1)
 						{
@@ -286,7 +296,7 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 						}
 					else
 						{
-							mo_img_type_column.innerHTML = plus_icon;
+							mo_img_type_column.innerHTML = minus_icon;
 						}
 
 					var mo_img_server_column = document.getElementById("menu_mo_img_server_column");
@@ -435,12 +445,12 @@ function iniStructPanel(){
 	if (alignments==null)
 		{
 			//document.getElementById("applet").innerHTML="<b>WARNING:</b><i>Dasty2 could not find PDBs associated to this protein ID</i>";
-			document.getElementById("display_protstru_div").innerHTML="<br>&nbsp;&nbsp;<span class='title' style='font-style:italic;'>Dasty2 could not find PDBs associated to this protein ID</span><br>&nbsp;";
+			document.getElementById("display_protstru_div").innerHTML="<br>&nbsp;&nbsp;<span class='title' style='font-style:italic;'>Dasty2 could not find PDBs associated to this protein ID on the 'biojavapdbuniprot' DAS aligment server</span><br>&nbsp;";
 			return;
 		}
 	else
 		{
-			document.getElementById("display_protstru_div").innerHTML="<div id='applet3d' style='width:100%; height:100%'></div><table width='100%'><tr><td><div id='Applet_Size'></div></td><td rowspan='3' align='right' valign='top'><div id='dropdown'></div></td></tr><tr><td><div id='StruPane_Title'>Structure [Id here]</div></td></tr><tr><td><div id='structureInfo'><p id='structureInfoP'>Additional info here</p></div></td></tr><tr><td colspan='2'><span style='border-top: 1px dotted #999999; display:block; text-align:right;'><a style='text-decoration:none;color:#999999;' href='javascript:changeStructure();'>Restore image</a></span></td></tr></table>"
+			document.getElementById("display_protstru_div").innerHTML="<div id='applet3d' style='width:100%; height:100%'></div><table width='100%'><tr><td><div id='Applet_Size'></div></td><td rowspan='3' align='right' valign='top'><div id='dropdown'></div></td></tr><tr><td><div id='StruPane_Title'>Structure [Id here]</div></td></tr><tr><td><div id='structureInfo'><p id='structureInfoP'>Additional info here</p></div></td></tr><tr><td colspan='2'><span style='border-top: 1px dotted #999999; display:block; text-align:right;'><a style='text-decoration:none;color:#999999;' href='javascript:changeStructure();'>view/restore image</a></span></td></tr></table>"
 		}
 	
 	var divDd=document.getElementById("dropdown");
@@ -510,8 +520,10 @@ function changeStructure(){
 	if (punto!=-1){
 		PDBid=PDBname.substring(0,punto);
 		structureChain=trim(PDBname.substring(punto+1));
+		//var pathPDB="pdb/"+PDBid+".pdb";
+		//ajaxCall(proxy_url+"?t=10&s=http://www.rcsb.org/pdb/files&m=pdb&q="+PDBid+".pdb",changePDBFile);
 		var pathPDB="pdb/"+PDBid+".pdb";
-		ajaxCall(proxy_url+"?t=10&s=http://www.rcsb.org/pdb/files&m=pdb&q="+PDBid+".pdb",changePDBFile);
+		makePDBRequest(PDBid);
 
 		//Find the block with the PDB block target
 		for(i=0;i<alignments.length;i++){
@@ -562,7 +574,8 @@ function trim(cadena){
 */
 function getJmolLoadScript() { 
 	if  (PDBid!="") {
-		var script ="load "+path_pdb_files+PDBid+".pdb; select all; cartoon on; wireframe off; spacefill off; color chain;";
+        var pathToPdb = proxy_url+"?t=10&s=http://www.rcsb.org/pdb/files&m=pdb&q="+PDBid+".pdb";
+		var script ="load "+pathToPdb+"; select all; cartoon on; wireframe off; spacefill off; color chain;";
 		return script;
    }
    alert("error in pdb file");
@@ -659,18 +672,18 @@ function createDivOfSize(){
 	var small=document.createElement("input");
 	small.setAttribute("type","button");
 	small.setAttribute("value","Small");
-	small.setAttribute("onclick","changeAppletSize(330,330)");
+	small.setAttribute("onclick","changeAppletSize(330,330); changeStructure()");
 	
 	div.appendChild(small);
 	var medium=document.createElement("input");
 	medium.setAttribute("type","button");
 	medium.setAttribute("value","Medium");
-	medium.setAttribute("onclick","changeAppletSize(600,600)");
+	medium.setAttribute("onclick","changeAppletSize(600,600); changeStructure()");
 	div.appendChild(medium);
 	var large=document.createElement("input");
 	large.setAttribute("type","button");
 	large.setAttribute("value","Large");
-	large.setAttribute("onclick","changeAppletSize(800,800)");
+	large.setAttribute("onclick","changeAppletSize(800,800); changeStructure()");
 	div.appendChild(large);
 	return div;
 }

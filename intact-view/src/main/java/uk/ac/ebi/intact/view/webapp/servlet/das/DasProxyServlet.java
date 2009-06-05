@@ -115,6 +115,10 @@ public class DasProxyServlet extends HttpServlet {
         String regLabel = req.getParameter("l");
         String regType = req.getParameter("c");
 
+        if (log.isTraceEnabled()) {
+            log.trace("Received request: " + req.getRequestURL() + "?" + req.getQueryString());
+        }
+
         // add trailing slash to the server if missing
         if (!serverUrl.endsWith("/")) {
             serverUrl = serverUrl + "/";
@@ -124,10 +128,6 @@ public class DasProxyServlet extends HttpServlet {
 //            log.debug("Received request for: serverUrl="+serverUrl+"; "+method+"="+method+"; query="+query+
 //            "; timeout="+timeoutValue+"; regAuthority="+regAuthority+"; regLabel="+regLabel+"; regType="+regType);
 //        }
-
-        if (log.isTraceEnabled()) {
-            log.trace("Received request: " + req.getRequestURL() + "?" + req.getQueryString());
-        }
 
         // define the timeout
         int timeout;
@@ -196,7 +196,7 @@ public class DasProxyServlet extends HttpServlet {
 
             } catch (IOException e) {
                 dasCode = 401;
-                log.error("Problem opening connection to: "+urlStr);
+                log.error("Problem opening connection to: "+urlStr+" - "+e.getMessage());
             }
         }
 

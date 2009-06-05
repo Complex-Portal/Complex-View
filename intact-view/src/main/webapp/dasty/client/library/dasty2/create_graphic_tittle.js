@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------------------	
 // GRAPHIC TITTLE
 //------------------------------------------------------------------------------------------			
-function createGraphicTittle(tagId, width_ul, left_div_category, width_div_category, left_div_type, width_div_type, left_div_id, width_div_id, left_div_graphic, width_div_graphic, left_div_server, width_div_server, height_div, show_col_id_temp, left_div_warning, width_div_warning)
+function createGraphicTittle(tagId, width_ul, left_div_category, width_div_category, left_div_type, width_div_type, left_div_method, width_div_method, left_div_id, width_div_id, left_div_graphic, width_div_graphic, left_div_server, width_div_server, height_div, show_col_id_temp, left_div_warning, width_div_warning)
 	{
         var div = document.getElementById(tagId);
         var my_ul = document.createElement("ul");
@@ -39,19 +39,19 @@ function createGraphicTittle(tagId, width_ul, left_div_category, width_div_categ
 			//mycurrent_category_text.setAttribute("onclick", "sorting('category')");
 			mycurrent_category_text.onclick = new Function("sorting('category');");
 				
-			var mycurrent_category_text_content = document.createTextNode("CATEGORY ");
+			var mycurrent_category_text_content = document.createTextNode("EVIDENCE (Category) ");
 			var mycurrent_category_img_content = document.createElement("img");
 			if(sortOrderCategory == 1)
 				{
-					mycurrent_category_img_content.setAttribute("src", dasty_path+"img/arrowup.gif");
+					mycurrent_category_img_content.setAttribute("src", "img/arrowup.gif");				
 				}
 			else if(sortOrderCategory == -1)
 				{
-					mycurrent_category_img_content.setAttribute("src", dasty_path+"img/arrowdown.gif");
+					mycurrent_category_img_content.setAttribute("src", "img/arrowdown.gif");
 				}
 			else
 				{
-					mycurrent_category_img_content.setAttribute("src", dasty_path+"img/arrownone.gif");
+					mycurrent_category_img_content.setAttribute("src", "img/arrownone.gif");
 				}
 				
 			mycurrent_category_text.appendChild(mycurrent_category_text_content);
@@ -60,6 +60,51 @@ function createGraphicTittle(tagId, width_ul, left_div_category, width_div_categ
 			
 			mycurrent_li.appendChild(mycurrent_div_category); // left_div_category, width_div_category, height_div 
 		   }
+		   
+
+
+		//------------------------------------------
+		// METHOD
+		//------------------------------------------
+		if (show_col_method == 1)
+		   {			
+			var mycurrent_div_method = document.createElement("div");
+			mycurrent_div_method.setAttribute("class", "gr_div gr_row_tittle");
+			mycurrent_div_method.setAttribute("className", "gr_div gr_row_tittle");
+			//mycurrent_div_method.setAttribute("style", "top:0px; left:" + left_div_method + "px; width:" + width_div_method + "px; height:" + height_div + "px;");	
+			mycurrent_div_method.style.cssText = "top:0px; left:" + left_div_method + "px; width:" + width_div_method + "px; height:" + height_div + "px;";
+				
+			var mycurrent_method_text = document.createElement("a");
+			mycurrent_method_text.setAttribute("class", "gr_text_02");	
+			mycurrent_method_text.setAttribute("className", "gr_text_02");
+			//mycurrent_category_text.setAttribute("href", "");
+			
+			
+			//mycurrent_category_text.setAttribute("onclick", "sorting('category')");
+			mycurrent_method_text.onclick = new Function("sorting('method');");
+				
+			var mycurrent_method_text_content = document.createTextNode("METHOD ");
+			var mycurrent_method_img_content = document.createElement("img");
+			if(sortOrderMethod == 1)
+				{
+					mycurrent_method_img_content.setAttribute("src", "img/arrowup.gif");				
+				}
+			else if(sortOrderMethod == -1)
+				{
+					mycurrent_method_img_content.setAttribute("src", "img/arrowdown.gif");
+				}
+			else
+				{
+					mycurrent_method_img_content.setAttribute("src", "img/arrownone.gif");
+				}
+				
+			mycurrent_method_text.appendChild(mycurrent_method_text_content);
+			mycurrent_method_text.appendChild(mycurrent_method_img_content);
+			mycurrent_div_method.appendChild(mycurrent_method_text);
+			
+			mycurrent_li.appendChild(mycurrent_div_method); // left_div_category, width_div_category, height_div 
+		   }
+
 		   
 		//------------------------------------------
 		// TYPEs
@@ -80,19 +125,19 @@ function createGraphicTittle(tagId, width_ul, left_div_category, width_div_categ
 			//mycurrent_type_text.setAttribute("onclick", "sorting('type')");
 			mycurrent_type_text.onclick = new Function("sorting('type');");
 				
-			var mycurrent_type_text_content = document.createTextNode("TYPE ");
+			var mycurrent_type_text_content = document.createTextNode("FEATURE TYPE ");
 			var mycurrent_type_img_content = document.createElement("img");
 			if(sortOrderType== 1)
 				{
-					mycurrent_type_img_content.setAttribute("src", dasty_path+"img/arrowup.gif");
+					mycurrent_type_img_content.setAttribute("src", "img/arrowup.gif");				
 				}
 			else if(sortOrderType == -1)
 				{
-					mycurrent_type_img_content.setAttribute("src", dasty_path+"img/arrowdown.gif");
+					mycurrent_type_img_content.setAttribute("src", "img/arrowdown.gif");
 				}
 			else
 				{
-					mycurrent_type_img_content.setAttribute("src", dasty_path+"img/arrownone.gif");
+					mycurrent_type_img_content.setAttribute("src", "img/arrownone.gif");
 				}
 				
 			mycurrent_type_text.appendChild(mycurrent_type_text_content);
@@ -121,7 +166,7 @@ function createGraphicTittle(tagId, width_ul, left_div_category, width_div_categ
 			//mycurrent_id_text.setAttribute("onclick", "sorting('id')");
 			mycurrent_id_text.onclick = new Function("sorting('id');");
 				
-			var mycurrent_id_text_content = document.createTextNode("ID ");
+			var mycurrent_id_text_content = document.createTextNode("LABELS ");
 				
 			mycurrent_id_text.appendChild(mycurrent_id_text_content);
 			mycurrent_div_id.appendChild(mycurrent_id_text);
@@ -145,7 +190,7 @@ function createGraphicTittle(tagId, width_ul, left_div_category, width_div_categ
 			mycurrent_graphic_text.setAttribute("className", "gr_text_02");	
 			//mycurrent_graphic_text.setAttribute("href", "");
 				
-			var mycurrent_graphic_text_content = document.createTextNode("FEATURE ANNOTATONS ");
+			var mycurrent_graphic_text_content = document.createTextNode("FEATURE ANNOTATIONS ");
 				
 			mycurrent_graphic_text.appendChild(mycurrent_graphic_text_content);
 			mycurrent_div_graphic.appendChild(mycurrent_graphic_text);
@@ -215,19 +260,19 @@ function createGraphicTittle(tagId, width_ul, left_div_category, width_div_categ
 			//mycurrent_server_text.setAttribute("onclick", "sorting('server')");
 			mycurrent_server_text.onclick = new Function("sorting('server');")
 				
-			var mycurrent_server_text_content = document.createTextNode("DAS SOURCE ");
+			var mycurrent_server_text_content = document.createTextNode("SERVER NAME ");
 			var mycurrent_server_img_content = document.createElement("img");
 			if(sortOrderServer == 1)
 				{
-					mycurrent_server_img_content.setAttribute("src", dasty_path+"img/arrowup.gif");
+					mycurrent_server_img_content.setAttribute("src", "img/arrowup.gif");				
 				}
 			else if(sortOrderServer == -1)
 				{
-					mycurrent_server_img_content.setAttribute("src", dasty_path+"img/arrowdown.gif");
+					mycurrent_server_img_content.setAttribute("src", "img/arrowdown.gif");
 				}
 			else
 				{
-					mycurrent_server_img_content.setAttribute("src", dasty_path+"img/arrownone.gif");
+					mycurrent_server_img_content.setAttribute("src", "img/arrownone.gif");
 				}
 				
 			mycurrent_server_text.appendChild(mycurrent_server_text_content);

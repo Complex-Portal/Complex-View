@@ -64,7 +64,8 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
      {
 		show_col_graphic = 1;
 		
-		if(isExpanded == 1 && show_col_id == 1)
+		//if(isExpanded == 1 && show_col_id == 1)
+		if(show_col_id == 1)
 			{
 				var show_col_id_temp = 1;
 			}
@@ -77,23 +78,25 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 		var seq_stop = segment_stop;
 		var seq_width = (seq_stop - seq_start);
 		var gr_gap = 1;
-		var cols = show_col_category + show_col_type + show_col_id_temp + show_col_graphic + show_col_warning + show_col_server;
+		var cols = show_col_category + show_col_type + show_col_method + show_col_id_temp + show_col_graphic + show_col_warning + show_col_server;
 		var total_gap = (cols + 1) * gr_gap;
 		
 		var width_ul = graphic_width; // 523 for short and 700 for long display in the dasty2 website. Graphic_width is global!
 		var width_div_category = col_category_width * show_col_category; // col_category_width is global!
 		var width_div_type = col_type_width * show_col_type; // col_type_width is global!
+		var width_div_method = col_method_width * show_col_method; // col_method_width is global!
 		var width_div_id = col_id_width * show_col_id_temp; // col_id_width is global!
 		var width_div_server = col_server_width * show_col_server; // col_server_width is global!
 		var width_div_warning = col_warning_width * show_col_warning; // col_server_width is global!
-		var width_div_graphic = width_ul - (width_div_category + width_div_type + width_div_id + width_div_warning + width_div_server) - (total_gap);
+		var width_div_graphic = width_ul - (width_div_category + width_div_type + width_div_method + width_div_id + width_div_warning + width_div_server) - (total_gap);
 		width_div_graphic_correction = width_div_graphic - 2; // Border correction. The border is actually adding two pixels more.
 		
 		
 		//var left_div_category = (show_col_category * gr_gap) - gr_gap; //show_col_category * gr_gap;
 		//var left_div_type = left_div_category + width_div_category + (show_col_type * gr_gap);
 		var left_div_type = (show_col_type * gr_gap) - gr_gap; //show_col_category * gr_gap;
-		var left_div_id = left_div_type + width_div_type + (show_col_id_temp * gr_gap);
+		var left_div_method = left_div_type + width_div_type + (show_col_method * gr_gap);
+		var left_div_id = left_div_method + width_div_method + (show_col_id_temp * gr_gap);
 		var left_div_graphic = left_div_id + width_div_id + (show_col_graphic * gr_gap);
 		var left_div_warning = left_div_graphic + width_div_graphic + (show_col_server * gr_gap);
 		var left_div_server = left_div_warning + width_div_warning + (show_col_warning * gr_gap);
@@ -182,13 +185,13 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 			  {
 			  	if(show_graphic_tittle_temp == 1)
 				  {
-					 createGraphicTittle(tagId, width_ul, left_div_category, width_div_category, left_div_type, width_div_type, left_div_id, width_div_id, left_div_graphic, width_div_graphic, left_div_server, width_div_server, height_div, show_col_id_temp, left_div_warning, width_div_warning);
+					 createGraphicTittle(tagId, width_ul, left_div_category, width_div_category, left_div_type, width_div_type, left_div_method, width_div_method,left_div_id, width_div_id, left_div_graphic, width_div_graphic, left_div_server, width_div_server, height_div, show_col_id_temp, left_div_warning, width_div_warning);
 					 show_graphic_tittle_temp = 0;
 				  } // if(show_graphic_tittle_temp == 1)
 		 	  }
 			else
 		  	  {
-			  		 createGraphicTittle(tagId, width_ul, left_div_category, width_div_category, left_div_type, width_div_type, left_div_id, width_div_id, left_div_graphic, width_div_graphic, left_div_server, width_div_server, height_div, show_col_id_temp, left_div_warning, width_div_warning);
+			  		 createGraphicTittle(tagId, width_ul, left_div_category, width_div_category, left_div_type, width_div_type, left_div_method, width_div_method, left_div_id, width_div_id, left_div_graphic, width_div_graphic, left_div_server, width_div_server, height_div, show_col_id_temp, left_div_warning, width_div_warning);
 		  	  } // if(origin == "grouping")
 		   } // (show_graphic_tittle == 1)			
 			
@@ -353,12 +356,42 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 				//mycurrent_category_text.setAttribute("class", "gr_text_01");
 				//mycurrent_category_text.setAttribute("className", "gr_text_01");
 				//mycurrent_category_text.setAttribute("href", "");
+								
+				/* OMAR's CODE */
 				
-				var mycurrent_category_text = document.createElement("span");
-				mycurrent_category_text.setAttribute("class", "gr_text_01");
-				mycurrent_category_text.setAttribute("className", "gr_text_01");
+				var catOnto = feature_list[c]["category"];	
+				var catOntoId = "";
+		
+				/* Separate the category ID and term */
+				var catAux = catOnto.split('(');
+				if (catAux[1] != null )
+				{
+					var catAux2 = catAux[1].split(')');
+					catOntoId = catAux2[0].replace(/^\s+|\s+$/gi, ""); // trim function
+					
+					if (catAux[0] != null)
+						catOnto = catAux[0];
+				}
 				
-				var mycurrent_category_text_content = document.createTextNode(feature_list[c]["category"]);
+				/* If the category is not a known ontology, we do not add OLS URL */
+				if(catOntoId)
+				{
+					var mycurrent_category_text = document.createElement("a");
+					mycurrent_category_text.setAttribute("class", "gr_text_01");
+					mycurrent_category_text.setAttribute("className", "gr_text_01");
+					mycurrent_category_text.setAttribute("target", "_type");
+					mycurrent_category_text.setAttribute("href", "http://www.ebi.ac.uk/ontology-lookup/?termId=" + catOntoId);
+				}
+				else
+				{
+					var mycurrent_category_text = document.createElement("span");
+					mycurrent_category_text.setAttribute("class", "gr_text_01");
+					mycurrent_category_text.setAttribute("className", "gr_text_01");	
+				}
+				
+				var mycurrent_category_text_content = document.createTextNode(catOnto);
+				
+				/* \OMAR's CODE */
 				
 				mycurrent_category_text.appendChild(mycurrent_category_text_content);
 				mycurrent_div_category.appendChild(mycurrent_category_text);
@@ -366,7 +399,36 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 				mycurrent_li.appendChild(mycurrent_div_category);
 			   }
 	
-	
+
+		    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+			// CREATE METHOD COLUMN INSIDE THE LIST <LI>
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+			
+			if (show_col_method == 1)
+			   {			
+				var mycurrent_div_method = document.createElement("div");
+				mycurrent_div_method.setAttribute("class", "gr_div gr_row_0" + bg_color + " gr_cell_01");
+				mycurrent_div_method.setAttribute("className", "gr_div gr_row_0" + bg_color + " gr_cell_01");
+				//mycurrent_div_category.setAttribute("style", "top:0px; left:" + left_div_category + "px; width:" + width_div_category + "px; height:" + height_div + "px;");	
+				mycurrent_div_method.style.cssText = "top:0px; left:" + left_div_method + "px; width:" + width_div_method + "px; height:" + height_div + "px;";
+				
+				//var mycurrent_method_text = document.createElement("a");
+				//mycurrent_method_text.setAttribute("class", "gr_text_01");
+				//mycurrent_method_text.setAttribute("className", "gr_text_01");
+				//mycurrent_method_text.setAttribute("href", "");
+				
+				var mycurrent_method_text = document.createElement("span");
+				mycurrent_method_text.setAttribute("class", "gr_text_01");
+				mycurrent_method_text.setAttribute("className", "gr_text_01");
+				
+				var mycurrent_method_text_content = document.createTextNode(feature_list[c]["method"]);
+				
+				mycurrent_method_text.appendChild(mycurrent_method_text_content);
+				mycurrent_div_method.appendChild(mycurrent_method_text);
+				
+				mycurrent_li.appendChild(mycurrent_div_method);
+			   }
+
 	
 	
 			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -413,37 +475,6 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 				
 				mycurrent_li.appendChild(mycurrent_div_type);
 			   }
-			
-			
-			
-			
-			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-			// CREATE ID COLUMN INSIDE LIST <LI>
-			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-			
-			if (show_col_id_temp == 1)
-			  {			
-				var mycurrent_div_id = document.createElement("div");
-				mycurrent_div_id.setAttribute("class", "gr_div gr_row_0" + bg_color + " gr_cell_01");
-				mycurrent_div_id.setAttribute("className", "gr_div gr_row_0" + bg_color + " gr_cell_01");
-				//mycurrent_div_id.setAttribute("style", "top:0px; left:" + left_div_id + "px; width:" + width_div_id + "px; height:" + height_div + "px;");	
-				mycurrent_div_id.style.cssText = "top:0px; left:" + left_div_id + "px; width:" + width_div_id + "px; height:" + height_div + "px;";
-				
-				var mycurrent_id_text = document.createElement("a");
-				mycurrent_id_text.setAttribute("class", "gr_text_01");	
-				mycurrent_id_text.setAttribute("className", "gr_text_01");
-				//mycurrent_id_text.setAttribute("href", "");
-				
-				//var id_row = feature_list[c]["features"][0];
-				//var mycurrent_id_text_content = document.createTextNode(finfo[feature_xmlnumber][id_row]["feature_id"]);
-				var mycurrent_id_text_content = document.createTextNode(feature_list[c]["feature_id"]);
-				
-				mycurrent_id_text.appendChild(mycurrent_id_text_content);
-				mycurrent_div_id.appendChild(mycurrent_id_text);
-				
-				mycurrent_li.appendChild(mycurrent_div_id);
-			  }
-			  
 			  
 			  
 				
@@ -462,7 +493,7 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 					// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 					// RECALCULATE FEATURE SIZE TO FIT IT IN THE GRAPHIC
 					// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-					
+					var feature_labels_perRow = '';
 					for(var n = 0; n < feature_list[c]["features"].length; n++)
 					{
 					  var row = feature_list[c]["features"][n];
@@ -473,6 +504,7 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 						var feature_id = finfo[feature_xmlnumber][row]["feature_id"];
 						var feature_start = finfo[feature_xmlnumber][row]["start_data"];
 						var feature_end =finfo[feature_xmlnumber][row]["end_data"];
+						var feature_label =finfo[feature_xmlnumber][row]["feature_label"];
 					   }
 					  else
 					   {
@@ -480,6 +512,7 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 						var feature_start = finfo[row]["start_data"]; 
 						var feature_end =finfo[row]["end_data"];
 						var feature_xmlnumber = finfo[row]["xmlnumber"];
+						var feature_label = finfo[row]["feature_label"];
 					   }
 					   var feature_width = feature_end - feature_start;
 					   
@@ -489,6 +522,9 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 					   
 					   feature_start = feature_start -1;
 					   feature_width = feature_end - feature_start; // It is 1 pixel bigger
+					   
+					   if(n == 0) {var insConcat = '';} else {var insConcat = ', ';}
+					   feature_labels_perRow = feature_labels_perRow + insConcat + feature_label;
 			   
 			   
 			   
@@ -587,7 +623,47 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 
 			
 			
+			printOnTest(feature_labels_perRow);
 			
+					
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+			// CREATE ID COLUMN INSIDE LIST <LI>
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+			
+			if (show_col_id_temp == 1)
+			  {			
+				var mycurrent_div_id = document.createElement("div");
+				mycurrent_div_id.setAttribute("class", "gr_div gr_row_0" + bg_color + " gr_cell_01");
+				mycurrent_div_id.setAttribute("className", "gr_div gr_row_0" + bg_color + " gr_cell_01");
+				//mycurrent_div_id.setAttribute("style", "top:0px; left:" + left_div_id + "px; width:" + width_div_id + "px; height:" + height_div + "px;");	
+				mycurrent_div_id.style.cssText = "top:0px; left:" + left_div_id + "px; width:" + width_div_id + "px; height:" + height_div + "px;";
+				
+				var mycurrent_id_text = document.createElement("a");
+				mycurrent_id_text.setAttribute("class", "gr_text_01");	
+				mycurrent_id_text.setAttribute("className", "gr_text_01");
+				mycurrent_id_text.style.cssText = "color:#7E7E7E;";
+				mycurrent_id_text.setAttribute("alt", feature_labels_perRow);
+				mycurrent_id_text.setAttribute("href", "javascript:void(0)");
+				
+				mycurrent_id_text.onclick = function()
+				{
+					document.getElementById("system_information").innerHTML = this.getAttribute('alt');
+					return false;
+				}
+				
+				//var id_row = feature_list[c]["features"][0];
+				//var mycurrent_id_text_content = document.createTextNode(finfo[feature_xmlnumber][id_row]["feature_id"]);
+				//var labels = (feature_list[c]["feature_label"].length > 11) ? feature_list[c]["feature_label"].slice(0,12) + "..." : feature_list[c]["feature_label"];
+				var labels = (feature_labels_perRow.length > 11) ? feature_labels_perRow.slice(0,12) + "..." : feature_labels_perRow;
+				//printOnTest(feature_list[c]["feature_label"]);
+				var mycurrent_id_text_content = document.createTextNode(labels);
+				
+				mycurrent_id_text.appendChild(mycurrent_id_text_content);
+				mycurrent_div_id.appendChild(mycurrent_id_text);
+				
+				mycurrent_li.appendChild(mycurrent_div_id);
+			  }
+			  
 
 			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 			// WARNING ICONS
@@ -603,21 +679,21 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 				var mycurrent_warning_img_01 = document.createElement("img");
 				if(feature_list[c]["version"] == 1)
 					{
-						mycurrent_warning_img_01.setAttribute("src", dasty_path+"img/checkmark.gif");
+						mycurrent_warning_img_01.setAttribute("src", "img/checkmark.gif");
 					}
 				else
 					{
-						mycurrent_warning_img_01.setAttribute("src", dasty_path+"img/warning.gif");
+						mycurrent_warning_img_01.setAttribute("src", "img/warning.gif");
 					}
 				
 				var mycurrent_warning_img_02 = document.createElement("img");
 				if (feature_list[c]["feature_group"] == 1)
 					{
-						mycurrent_warning_img_02.setAttribute("src", dasty_path+"img/group.gif");
+						mycurrent_warning_img_02.setAttribute("src", "img/group.gif");
 					}
 				else
 					{
-						mycurrent_warning_img_02.setAttribute("src", dasty_path+"img/group2.gif");
+						mycurrent_warning_img_02.setAttribute("src", "img/group2.gif");
 					}
 
 				mycurrent_div_warning.appendChild(mycurrent_warning_img_01);
@@ -691,10 +767,12 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	} // if(feature_list.length > 0) 
 
-
+		
 		if(origin == "grouping" || origin == "noresults")
 			{
-			count_displayed_groups++;		
+			//count_displayed_groups++;
+			console.log("cdg:" + count_displayed_groups + " , urll:" + feature_url.length);
+			
 			
 		     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 			 // ONCE ALL THE ANNOTATIONS HAVE BEEN LOADED FROM ALL THE SERVERS ...
@@ -729,7 +807,7 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 						 if (isOntologyTreeVisible==true)
 						 	{
 							 create_ontology_tree();
-						    }	
+						    }
 						 create_server_tree();
 						 
 						 
@@ -747,16 +825,20 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 								var system_information = document.getElementById("system_information").innerHTML
 								document.getElementById("system_information").innerHTML = system_information + "<br><span style=\"color:#CC0000\">There were no entries found with the Protein ID: \"<strong>" + query_id + "</strong>\" and the Registry label: \"<strong>" + filterLabel + "</strong>\" </span>";
 							}
-		
-						 
+	
+	
+						document.getElementById("system_information").innerHTML = "load completed!";
+						console.log("load completed!");
+						sorting('type');
 						
-						if(firstTimeSortByType_temp == true)
-							{
-								dasty2.firstTimeSortByType = false;
-								sorting('type');
-							}
-							
-							
+						
+						
+						//if(firstTimeSortByType_temp == true){
+						//	dasty2.firstTimeSortByType = false;
+						//	sorting('type');
+						//}else{
+						//	//SORT BY SOMETHING ELSE
+						//}			
 				// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 			    // AFTER EVERY ASYCRONOUS LOADING ...
     		    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 	

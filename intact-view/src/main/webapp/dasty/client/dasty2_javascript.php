@@ -16,7 +16,6 @@
 <!-- DASTY FUNCTIONS -->
 <script src="library/dasty2/configuration.js" type="text/javascript"></script>
 <script src="library/dasty2/globals.js" type="text/javascript"></script>
-<script src="library/dasty2/ajax.js" type="text/javascript"></script>
 <script src="library/dasty2/request_xml.js" type="text/javascript"></script>
 <script src="library/dasty2/parse_sequence.js" type="text/javascript"></script>
 <script src="library/dasty2/create_seqinfo.js" type="text/javascript"></script>
@@ -27,7 +26,6 @@
 <script src="library/dasty2/identify_fids.js" type="text/javascript"></script>
 <script src="library/dasty2/create_npf.js" type="text/javascript"></script>
 <script src="library/dasty2/functions.js" type="text/javascript"></script>
-<script src="library/dasty2/ajaxCall.js" type="text/javascript"></script>
 <script src="library/dasty2/organize_types.js" type="text/javascript"></script>
 <script src="library/dasty2/grouping.js" type="text/javascript"></script>
 <script src="library/dasty2/create_graphic2.js" type="text/javascript"></script>

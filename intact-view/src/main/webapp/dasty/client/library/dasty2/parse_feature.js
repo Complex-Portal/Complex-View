@@ -1,11 +1,12 @@
-//------------------------------------------------------------------------------------------	
-// "PASRSE A FEATURE XML AND POPULATE GRAPHIC AND NP TABLE"
-//------------------------------------------------------------------------------------------	
-            function parseFeatureXML(featureXML_num) {
-                if (feature_http_request[featureXML_num].readyState == 4) {
-                    document.getElementById("system_information").innerHTML = "... loading features from " + feature_url[featureXML_num].id;
-                    if (feature_http_request[featureXML_num].status == 200) {
+/**
+ * Parse a feature XML, populate the graphic and the Non positional Table
+ * @param xmldoc XMLResponse of the ajax call for the feature
+ * @param featureXML_num number of the feature requested
+ */ 
+function parseFeatureXML(xmldoc,featureXML_num) {
 
+					  
+					  document.getElementById("system_information").innerHTML = "... loading features from " + feature_url[featureXML_num].id;
 					  // DRAWING PROGRESS BAR
 					  servers_count++;
 					  var percentage = parseInt(servers_count*100/feature_url.length);
@@ -13,15 +14,7 @@
 					  	{
 							allSourcesLoaded = true;
 						}
-				  /*
-					  printOnTest(". / . / . / . / . / . / . / . / ");
-			printOnTest("count_displayed_groups: " + count_displayed_groups);
-			printOnTest("feature_url.length:" + feature_url.length);
-			printOnTest("featureXML_num:" + featureXML_num);
-			
-			printOnTest("servers_count:" + servers_count);
-			*/
-			
+	
 					  
 				      progBar(percentage);
 						
@@ -40,13 +33,13 @@
 					  
 					  var firstRequestNumberTemp = dasty2.firstRequestNumber;
 						
-                      var xmldoc = feature_http_request[featureXML_num].responseXML;
+                      //var xmldoc = feature_http_request[featureXML_num].responseXML;
 					  var excep = xmldoc.getElementsByTagName('exception').item(0);
 					  if (excep != null)
 					  	{
 							warning_count++;
 							var server_checking = document.getElementById("display_server_checking").innerHTML;
-							document.getElementById("display_server_checking").innerHTML = server_checking + "<br/><span style=\"color:#FF6600\"><strong>" + servers_count + ".- </strong><a href=\"" + url + "\" target=\"_blank\">" + feature_url[featureXML_num].id + "</a> ... Warning: " + excep.firstChild.data + "</span>";
+							document.getElementById("display_server_checking").innerHTML = server_checking + "<br/><span title=\""+ excep.firstChild.data + "\" style=\"color:#FF6600\"><strong>" + servers_count + ".- </strong><a href=\"" + url + "\" target=\"_blank\">" + feature_url[featureXML_num].id + "</a> ... Warning: " + excep.firstChild.data.slice(0,40) + "...</span>";
 							feature_url[featureXML_num].state = 3;
 					  	}
 					  
@@ -410,7 +403,6 @@
 						  else
 						   {
 							    createGraphic2(featureXML_num, "display_graphic", 0, 0, "noresults");
-								//printOnTest('first' + dasty2.makeAsyncRequest);
 								if(firstRequestNumberTemp <= dasty2.validFirstSources.length)		
 									{
 										if(firstRequestNumberTemp == dasty2.validFirstSources.length)
@@ -448,7 +440,6 @@
 						  
 						  createGraphic2(featureXML_num, "display_graphic", 0, 0, "noresults");
 						  
-						  //printOnTest('second' + dasty2.makeAsyncRequest);
 						  if(firstRequestNumberTemp <= dasty2.validFirstSources.length)		
 								{
 									if(firstRequestNumberTemp == dasty2.validFirstSources.length)
@@ -463,35 +454,5 @@
 								}					
 							
 					    } // if (tf != "null" && tf != "" && tf != null)
-						
-                    } else {
-                        alert('There was a problem with the request: Parse feature - '+feature_http_request[featureXML_num].status+" "+feature_http_request[featureXML_num].statusText);
-                    } // if (feature_http_request[featureXML_num].status == 200)
-                } // if (feature_http_request[featureXML_num].readyState == 4)
-				
-				//alert(standby.length);
-				
-            } // function parseFeatureXML()
-      //
-	  
-	  
-	  
-	  
-/*
-			printOnTest("- - - - - - - - - - - - - - - - - ");
-			printOnTest("count_displayed_groups: " + count_displayed_groups);
-			printOnTest("feature_url.length:" + feature_url.length);
-			
-			printOnTest("servers_count:" + servers_count);
-			printOnTest("warning_count:" + warning_count);
-			printOnTest("no_feature_results_count:" + no_feature_results_count);
-			printOnTest("feature_results_count:" + feature_results_count);
-			
-			
-			
-						if(servers_count == feature_url.length)						
-							{
-
-							}				
-							
-*/
+					
+} // function parseFeatureXML()

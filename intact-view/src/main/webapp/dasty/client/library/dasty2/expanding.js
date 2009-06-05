@@ -30,9 +30,11 @@ function expanding()
 									//expanded_feature_list[row]["features"] = [];
 									expanded_feature_list[row]["features"] = [new_feature_list_info2[a][b]["features"][c]];
 									expanded_feature_list[row]["feature_group"] = new_feature_list_info2[a][b]["feature_group"];
+									expanded_feature_list[row]["method"] = new_feature_list_info2[a][b]["method"];
 									expanded_feature_list[row]["type"] = new_feature_list_info2[a][b]["type"];
 									expanded_feature_list[row]["category"] = new_feature_list_info2[a][b]["category"];
-									expanded_feature_list[row]["feature_id"] = new_feature_list_info2[a][b]["feature_id"];
+									//expanded_feature_list[row]["feature_id"] = new_feature_list_info2[a][b]["feature_id"];
+									expanded_feature_list[row]["feature_label"] = new_feature_list_info2[a][b]["feature_label"];
 									expanded_feature_list[row]["server"] = new_feature_list_info2[a][b]["server"];
 									expanded_feature_list[row]["xmlnumber"] = a;
 									expanded_feature_list[row]["version"] = annotation_version[a];

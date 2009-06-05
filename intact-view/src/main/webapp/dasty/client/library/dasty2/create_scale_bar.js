@@ -57,7 +57,13 @@ function fillScaleBar()
 			}
 
 		
-			 var height_div = (dasty2.countVisibleLines * (height_graphic_feature + 7)) + (tittle_height * 2) + 1;
+			 //var height_div = (dasty2.countVisibleLines * (height_graphic_feature + 7)) + (tittle_height * 2) + 1;
+			 
+			 
+			var graphic_dimensions = $('display_graphic').getDimensions();
+			var slidebar_dimensions = $('gr_slidebar_li').getDimensions();
+			var height_div = graphic_dimensions.height - slidebar_dimensions.height;
+
 			 
 			 if(browser_name == "Microsoft Internet Explorer")
 				{

@@ -90,6 +90,21 @@ function sorting(sortby)
 				 sortOrderType = -1; // Ascending
 				 sortOrderType2 = 1;
 			 }
+			 
+	      //-------------------------------------------------
+		  // ASC DES by Method
+		  //-------------------------------------------------
+		  if(sortOrderMethod == -1)
+		     {
+				sortOrderMethod = 1; // Descending
+				sortOrderMethod2 = -1;
+			 }
+		   else
+		     {
+				 sortOrderMethod = -1; // Ascending
+				 sortOrderMethod2 = 1;
+			 }			 
+			 
 		  //-------------------------------------------------
 		  // ASC DES by Category
 		  //-------------------------------------------------
@@ -172,6 +187,9 @@ function sortCompactArray(sortby)
 		case "type" :
 			one_feature_list.sort(sortByType);
 			break;
+		case "method" :
+			one_feature_list.sort(sortByMethod);
+			break;
 		case "category" :
 			one_feature_list.sort(sortByCategory);
 			break;
@@ -193,6 +211,9 @@ function sortExpandedArray(sortby)
 		case "type" :
 			expanded_feature_list.sort(sortByType);
 			break;
+		case "method" :
+			expanded_feature_list.sort(sortByType);
+			break;
 		case "category" :
 			expanded_feature_list.sort(sortByCategory);
 			break;
@@ -212,7 +233,16 @@ function sortByType(a, b)
 	var y = b.type.toLowerCase();
 	return ((x < y) ? sortOrderType : ((x > y) ? sortOrderType2 : 0));
   } // function sortByType(a, b)
+
   
+function sortByMethod(a, b)
+  {
+	var x = a.method.toLowerCase();
+	var y = b.method.toLowerCase();
+	return ((x < y) ? sortOrderMethod : ((x > y) ? sortOrderMethod2 : 0));
+  } // function sortByType(a, b)
+  
+
 function sortByCategory(a, b)
   {
 	var x = a.category.toLowerCase();
@@ -237,6 +267,7 @@ function sortByVersion(a, b)
 function resetSortingVariables(sortby)
 	{
 		if(sortby != "type") {sortOrderType = 0}
+		if(sortby != "method") {sortOrderMethod = 0}
 		if(sortby != "category") {sortOrderCategory = 0}
 		if(sortby != "server") {sortOrderServer = 0}
 		if(sortby != "version") {sortOrderVersion = 0}

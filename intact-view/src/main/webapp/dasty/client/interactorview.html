@@ -1,3 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="eng">
+<head>
+<title>Dasty2, a protein DAS client</title>
+
+<!-- DASTY2 CSS -->
+<link href="css/dasty2.css" rel="stylesheet" type="text/css">
+<link href="css/window/default.css" rel="stylesheet" type="text/css">
+<link href="css/window/mac_os_x.css" rel="stylesheet" type="text/css">
+
+<!-- EXTERNAL LIBRARIES -->
+<script type="text/javascript" src="library/jmol/Jmol.js"></script>
+<script type="text/javascript" src="library/blueshoes46/core/lang/Bs_Array.class.js"></script>
+<script type="text/javascript" src="library/blueshoes46/components/tree/Bs_Tree.class.js"></script>
+<script type="text/javascript" src="library/blueshoes46/components/tree/Bs_TreeElement.class.js"></script>
+<script type="text/javascript" src="library/blueshoes46/components/checkbox/Bs_Checkbox.class.js"></script>
+<script type="text/javascript" src="library/blueshoes46/core/lang/Bs_Misc.lib.js"></script>
+<script src="library/extra/window/prototype.js" type="text/javascript"></script>
+<script src="library/extra/scriptaculous.js" type="text/javascript"></script>
+<script src="library/extra/window/window.js" type="text/javascript"> </script>
+<script src="library/extra/window/effects.js" type="text/javascript"> </script>
+<script src="library/extra/window/debug.js" type="text/javascript"> </script>
+<script src="library/extra/window/tooltip.js" type="text/javascript"> </script>
+<script src="library/sorttable/sortable.js" type="text/javascript"></script>
+
+<!-- DASTY FUNCTIONS -->
+<script src="library/dasty2/configuration.js" type="text/javascript"></script>
+<script src="library/dasty2/globals.js" type="text/javascript"></script>
+<script src="library/dasty2/request_xml.js" type="text/javascript"></script>
+<script src="library/dasty2/parse_sequence.js" type="text/javascript"></script>
+<script src="library/dasty2/create_seqinfo.js" type="text/javascript"></script>
+<script src="library/dasty2/create_sequence.js" type="text/javascript"></script>
+<script src="library/dasty2/create_feature_details.js" type="text/javascript"></script>
+<script src="library/dasty2/parse_stylesheet.js" type="text/javascript"></script>
+<script src="library/dasty2/parse_feature.js" type="text/javascript"></script>
+<script src="library/dasty2/identify_fids.js" type="text/javascript"></script>
+<script src="library/dasty2/create_npf.js" type="text/javascript"></script>
+<script src="library/dasty2/functions.js" type="text/javascript"></script>
+<script src="library/dasty2/organize_types.js" type="text/javascript"></script>
+<script src="library/dasty2/grouping.js" type="text/javascript"></script>
+<script src="library/dasty2/create_graphic2.js" type="text/javascript"></script>
+<script src="library/dasty2/sorting.js" type="text/javascript"></script>
+<script src="library/dasty2/expanding.js" type="text/javascript"></script>
+<script src="library/dasty2/define_graphic_column.js" type="text/javascript"></script>
+<script src="library/dasty2/create_graphic_tittle.js" type="text/javascript"></script>
+<script src="library/dasty2/zoom.js" type="text/javascript"></script>
+<script src="library/dasty2/create_scale_bar.js" type="text/javascript"></script>
+<script src="library/dasty2/parse_das_registry.js" type="text/javascript"></script>
+<script src="library/dasty2/newid.js" type="text/javascript"></script>
+<script src="library/dasty2/progress_bar.js" type="text/javascript"></script>
+<script src="library/dasty2/change_graphic_width.js" type="text/javascript"></script>
+<script src="library/dasty2/url_redirector.js" type="text/javascript"></script>
+<script src="library/dasty2/create_slide_bar.js" type="text/javascript"></script>
+<script src="library/dasty2/popups.js" type="text/javascript"></script>
+<script src="library/dasty2/parse_alignment.js" type="text/javascript"></script>
+<script src="library/dasty2/parse_ontology.js" type="text/javascript"></script>
+<script src="library/dasty2/create_ontology_tree.js" type="text/javascript"></script>
+
+</head>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Optionally define the URL parametres. Makes Dasty2 independent from the URL.
+<body onload="set_query('P05067', 'BioSapiens', 3, ''), start_dasty(0);">
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<body onload="start_dasty(1);">
+
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td width="600" valign="top">
@@ -47,8 +115,8 @@
 		<td valign="top">
 			<div style="margin-top:10px;"><input type="button" name="cancel_button" id="cancel_button" value="Cancel" onClick="stop()"/></div>	    </td>
 	</tr>
-    <tr>	
-        <td colspan="3" valign="top">	    
+    <tr>
+        <td colspan="3" valign="top">
 			<span style="display:block; border-bottom: 1px solid #000000; font-weight:bold; color:#222222; margin-bottom: 5px; margin-top:15px;">
 			System information:</span>
 			<span style="font-style:italic;" id="system_information">... please be patient, Dasty2 is loading data from the DAS servers</span>								        </td>
@@ -62,10 +130,10 @@
 <!-- END CHECKING -->
     </td>
     <td valign="top">
-    
-    
-    
-<!-- START 3D STRUCTURE -->	
+
+
+
+<!-- START 3D STRUCTURE -->
 <a id="menu_protstru" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_protstru', 'menu_protstru_img', 2)">
 	<span id="menu_protstru_img"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
     PROTEIN STRUCTURE
@@ -80,18 +148,18 @@
 	&nbsp;&nbsp;... Dasty2 is looking for PDB data.
 	  </span>
       <br>&nbsp;
-      </div>         
+      </div>
 </div>
-<!-- END 3D STRUCTURE -->	
-    
-    
+<!-- END 3D STRUCTURE -->
+
+
     </td>
   </tr>
 </table>
 
 
 
-<!-- START FEATURE DETAILS -->	
+<!-- START FEATURE DETAILS -->
 <a id="menu_feature_details" style="display:none; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_feature_details_div', 'menu_feature_details_img', 2)">
 	<span id="menu_feature_details_img"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
     FEATURES DETAILS
@@ -103,9 +171,9 @@
     </span>
     </div>
 </div>
-<!-- END FEATURE DETAILS -->	   
+<!-- END FEATURE DETAILS -->
 
-<!-- START FILTERING OPTIONS -->	
+<!-- START FILTERING OPTIONS -->
 <a id="menu_maniputation_options3" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_maniputation_options3_div', 'menu_maniputation_options3_img', 2)">
 	<span id="menu_maniputation_options3_img"><img src="img/plus02.gif" border="0" align="absbottom" />&nbsp;</span>
     FILTERING BY
@@ -114,31 +182,31 @@
     <table border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td width="350px" valign="top">
-    <span style="color:#CCCCCC;">Click checkbox to hide/show features</span>    
-    <a id="menu_maniputation_options3_type" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_maniputation_options3_type_div', 'menu_maniputation_options3_type_img', 2)"> <span id="menu_maniputation_options3_type_img"><img src="img/plus02.gif" border="0" align="absbottom" />&nbsp;</span>FEATURE TYPES</a>    
+    <span style="color:#CCCCCC;">Click checkbox to hide/show features</span>
+    <a id="menu_maniputation_options3_type" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_maniputation_options3_type_div', 'menu_maniputation_options3_type_img', 2)"> <span id="menu_maniputation_options3_type_img"><img src="img/plus02.gif" border="0" align="absbottom" />&nbsp;</span>FEATURE TYPES</a>
     <div id="display_maniputation_options3_type_div" style="display:block">
         <span class="title" style="font-style:italic;">
         ... please wait untill all the data is loaded in Dasty2.
         </span>
-    </div>    
+    </div>
         </td>
         <td width="350px" valign="top">
-    <span style="color:#CCCCCC;">Click checkbox to hide/show features</span>  
-    <a id="menu_maniputation_options3_server" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_maniputation_options3_server_div', 'menu_maniputation_options3_server_img', 2)"> <span id="menu_maniputation_options3_server_img"><img src="img/plus02.gif" border="0" align="absbottom" />&nbsp;</span>SERVER NAME</a>        
+    <span style="color:#CCCCCC;">Click checkbox to hide/show features</span>
+    <a id="menu_maniputation_options3_server" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_maniputation_options3_server_div', 'menu_maniputation_options3_server_img', 2)"> <span id="menu_maniputation_options3_server_img"><img src="img/plus02.gif" border="0" align="absbottom" />&nbsp;</span>SERVER NAME</a>
     <div id="display_maniputation_options3_server_div" style="display:block">
         <span class="title" style="font-style:italic;">
         ... please wait untill all the data is loaded in Dasty2.
         </span>
-    </div>    
+    </div>
         </td>
         <td width="350px" valign="top">
-    <span style="color:#CCCCCC;">Click checkbox to hide/show features</span>  
-    <a id="menu_maniputation_options3_category" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_maniputation_options3_category_div', 'menu_maniputation_options3_category_img', 2)"> <span id="menu_maniputation_options3_category_img"><img src="img/plus02.gif" border="0" align="absbottom" />&nbsp;</span>EVIDENCE (Category)</a>        
+    <span style="color:#CCCCCC;">Click checkbox to hide/show features</span>
+    <a id="menu_maniputation_options3_category" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_maniputation_options3_category_div', 'menu_maniputation_options3_category_img', 2)"> <span id="menu_maniputation_options3_category_img"><img src="img/plus02.gif" border="0" align="absbottom" />&nbsp;</span>EVIDENCE (Category)</a>
     <div id="display_maniputation_options3_category_div" style="display:block">
         <span class="title" style="font-style:italic;">
         ... please wait untill all the data is loaded in Dasty2.
         </span>
-    </div>    
+    </div>
         </td>
       </tr>
     </table>
@@ -150,7 +218,7 @@
 	<span id="menu_maniputation_options_img"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
     MANIPULATION OPTIONS  (Positional features)
 </a>
-<div id="display_maniputation_options_div" class="divformat" style="display:none"> 
+<div id="display_maniputation_options_div" class="divformat" style="display:none">
     <div id="display_maniputation_options">
 	  <table border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -175,19 +243,19 @@
 		      <span id="menu_mo_img_method_column"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
 		      <span class="columnStyle">Method column</span> </a><br />
 		  </div>
-		  <div id="id_column" style="display:block;">	
+		  <div id="id_column" style="display:block;">
 		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column('id')">
 		      <span id="menu_mo_img_id_column"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
 		      Labels column		      </a><br />
 		    </div>
 		  <br />
-		  <div style="display:block;">	
+		  <div style="display:block;">
 		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_popups()">
 		      <span id="menu_mo_img_popups"><img src="img/notick01.gif" border="0" align="absbottom">&nbsp;</span>
 		      <span class="columnStyle">Retain pop-up windows<br />
 	          </span>			</a>
 		    </div>
-		  <div style="display:none;">	
+		  <div style="display:none;">
 		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:expanding()">
 		      <span id="menu_mo_img_expand"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
 	      Ungroup features		      </a>		    </div></td>
@@ -211,14 +279,14 @@
               <td valign="bottom"><input name="zoom" type="submit" id="zoom" value="zoom" onClick="zoom('zoom_start_px', 'zoom_end_px')" /></td>
 			  <td valign="bottom"><input name="reset" type="submit" id="reset" value="reset" onClick="resetZoom('zoom_start_px', 'zoom_end_px')" /></td>
             </tr>
-          </table>		  </td>	
+          </table>		  </td>
         </tr>
       </table>
 	</div>
 </div>
-<!-- END MANIPULATION OPTIONS -->	
+<!-- END MANIPULATION OPTIONS -->
 
-<!-- START POSITIONAL FEATURES -->	
+<!-- START POSITIONAL FEATURES -->
 <a id="menu_graphic" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_graphic_div', 'menu_graphic_img', 2)">
 	<span id="menu_graphic_img"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
     POSITIONAL FEATURES
@@ -232,14 +300,14 @@
 		<img src="img/group2.gif" align="absbottom"> Features grouped in the same line by Dasty2.
 	</div>
 </div>
-<!-- END POSITIONAL FEATURES -->	
+<!-- END POSITIONAL FEATURES -->
 
 <!-- START MANIPULATION OPTIONS NPF -->
 <a id="menu_maniputation_options_npf" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_maniputation_options_npf_div', 'menu_maniputation_options_img_npf', 2)">
 	<span id="menu_maniputation_options_img_npf"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
     MANIPULATION OPTIONS  (Non positional features)
 </a>
-<div id="display_maniputation_options_npf_div" class="divformat" style="display:none"> 
+<div id="display_maniputation_options_npf_div" class="divformat" style="display:none">
     <div id="display_maniputation_options_npf">
 	  <table border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -273,7 +341,7 @@
 		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('version')">
 		      <span id="menu_mo_img_version_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
 		      <span class="columnStyle">Version column</span> </a><br />
-		  </div>			  
+		  </div>
 		  <div style="display:block;">
 		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('annotation_server')">
 		      <span id="menu_mo_img_server_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
@@ -289,30 +357,30 @@
 		      <span id="menu_mo_img_featureid_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
 		      <span class="columnStyle">Feature id column</span> </a><br />
 		  </div>
-		 
-		
-		</td>	
+
+
+		</td>
         </tr>
       </table>
 	</div>
 </div>
-<!-- END MANIPULATION OPTIONS NPF -->	
+<!-- END MANIPULATION OPTIONS NPF -->
 
 
-<!-- START NON POSITIONAL FEATURES -->	
+<!-- START NON POSITIONAL FEATURES -->
 <a id="menu_nonpositional" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_nonpositional_div', 'menu_nonpositional_img', 2)">
 	<span id="menu_nonpositional_img"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
     NON POSITIONAL FEATURES
 </a>
 <div id="display_nonpositional_div" class="divformat" style="display:none">
     	<div id="display_nonpositional"></div>
-		
+
 		 <div class="divformat" style="display:block">
 			<img src="img/checkmark.gif" align="absbottom"> The annotation is in accordance with the version of the protein sequence.<br />
-			<img src="img/warning.gif" align="absbottom"> Caution! The annotation may refer to an old version.		
+			<img src="img/warning.gif" align="absbottom"> Caution! The annotation may refer to an old version.
 		</div>
 </div>
-<!-- END NON POSITIONAL FEATURES -->		
+<!-- END NON POSITIONAL FEATURES -->
 
 
 <!-- START SEQUENCE -->
@@ -322,8 +390,8 @@
 </a>
 <div id="display_seque_div" class="divformat" style="display:block">
     <div id="display_seque"></div>
-        
-        <!-- START - QUERY INFORMATION -->	
+
+        <!-- START - QUERY INFORMATION -->
 		<a id="menu_query" style="display:none; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_query_div', 'menu_query_img', 2)">
 			<span id="menu_query_img"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
         	QUERY INFORMATION
@@ -331,12 +399,12 @@
     	<div id="display_query_div" style="display:block; margin-top:3px;">
     		<div id="display_query"></div>
     	</div>
-		<!-- END - QUERY INFORMATION --> 
-        
+		<!-- END - QUERY INFORMATION -->
+
 </div>
 <!-- END SEQUENCE -->
-	
-<!-- START TEST -->	
+
+<!-- START TEST -->
 <a id="menu_test" style="display:none; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_test_div', 'menu_test_img', 2)">
 	<span id="menu_test_img"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
     TEST
@@ -345,3 +413,6 @@
     <div id="display_test"></div>
 </div>
 <!-- END TEST -->	
+	
+</body>
+</html>

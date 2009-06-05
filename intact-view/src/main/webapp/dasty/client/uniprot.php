@@ -5,7 +5,7 @@
 <title>Dasty2, an AJAX protein DAS client</title>
 
 <!-- BEGIN UNIPROT CSS -->
-<link href="http://beta.uniprot.org/base.css" rel="stylesheet" type="text/css">
+<link href="http://www.uniprot.org/base.css" rel="stylesheet" type="text/css">
 <!-- END UNIPROT CSS -->
 
 <? include("dasty2_css.php"); ?>
@@ -39,7 +39,7 @@ Optionally define the URL parametres. Makes Dasty2 independent from the URL.
 <table id="header">
   <tbody>
     <tr>
-      <td id="logo"><a accesskey="1" href="http://beta.uniprot.org/"><img alt="" src="http://beta.uniprot.org/images/logo_small.gif" /></a></td>
+      <td id="logo"><a accesskey="1" href="http://www.uniprot.org/"><img alt="" src="http://www.uniprot.org/images/logo_small.gif" /></a></td>
       <td valign="bottom"><table border="0" cellpadding="1" cellspacing="0">
         <tr>
           <td bgcolor="#55729B"><a href="http://www.ebi.ac.uk/dasty/"><img src="img/icon2_dasty.gif" width="14" height="14" /></a></td>
@@ -47,7 +47,7 @@ Optionally define the URL parametres. Makes Dasty2 independent from the URL.
         </tr>
       </table>
       </td>
-      <td id="menu"><a class="style1" href="http://beta.uniprot.org/downloads/">Downloads</a> &middot; <a class="style1" accesskey="9" href="http://beta.uniprot.org/contact/">Contact</a> &middot; <a class="style1" rel="help" href="http://beta.uniprot.org/help/"><strong>Help</strong></a></td>
+      <td id="menu"><a class="style1" href="http://www.uniprot.org/downloads/">Downloads</a> &middot; <a class="style1" accesskey="9" href="http://www.uniprot.org/contact/">Contact</a> &middot; <a class="style1" rel="help" href="http://www.uniprot.org/help/"><strong>Help</strong></a></td>
     </tr>
   </tbody>
 </table>

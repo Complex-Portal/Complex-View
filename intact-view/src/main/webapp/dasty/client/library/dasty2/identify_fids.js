@@ -58,6 +58,11 @@ function lookforSameIdType(featureXML_num, type_counter)
 						 //----------------------------------------------------------------------------------	
 					  }
 			 }
+		  if(dasty2_grouping == false) // RC. 03.05.08
+		  	{
+		  		same_fids = [];
+		  		add_fids = 0;
+			}
 		  if(add_fids == 0)
 		     {
 			   fids[fids_length] = [];
@@ -67,7 +72,6 @@ function lookforSameIdType(featureXML_num, type_counter)
 			 }
 	     }				   
 	 }
-	 
 	 //reorganizeIdTypes(finfo, fids, same_fids); 
 	 organizeIdTypes(featureXML_num, fids, same_fids); 
 	 

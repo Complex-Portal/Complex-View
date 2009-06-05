@@ -15,7 +15,7 @@
 			
 			var uniprot_link = document.createElement("a");
 			uniprot_link.setAttribute("target", "_uniprot");
-			uniprot_link.setAttribute("href", "http://beta.uniprot.org/uniprot/" + object["sequence_id"]);			
+			uniprot_link.setAttribute("href", "http://www.uniprot.org/uniprot/" + object["sequence_id"]);			
 			
 				var uniprot_acc = document.createTextNode(object["sequence_id"]);
 			

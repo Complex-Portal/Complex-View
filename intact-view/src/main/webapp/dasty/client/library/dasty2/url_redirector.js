@@ -132,6 +132,9 @@ function setDastyURLParam(redirection)
 			{
 				timeout = url_timeout;
 			}
+
+//        var dasty_path = getDastyURLParam("path", "path", "path");
+//        alert(dasty_path);
 			
 		if(query_id_null == 0 || redirection == "redirection")	
 			{
@@ -238,7 +241,8 @@ function DastyRedirector()
 function findDastyHtmlPageName(option)
 	{
 		var strHref = document.location.href;
-		var strHref_http = strHref.split("http://");	
+		var protocol = document.location.protocol;
+		var strHref_http = strHref.split(protocol + "//");
 		var url_dir = strHref_http[1].split("/");
 		var url_dir_count = url_dir.length;
 		var url_page = url_dir[url_dir_count - 1];

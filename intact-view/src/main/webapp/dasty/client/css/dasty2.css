@@ -13,7 +13,7 @@
 				font-family: Verdana, Arial, Helvetica, sans-serif;
 				font-size: 8pt;
 				color: #333333;
-				text-align: justify;
+				/* text-align: justify; */
 				border: medium none;
 				margin: 0px;
 			}
@@ -32,7 +32,7 @@
 			table 	{
 			  font-family: Verdana, Arial, Helvetica, sans-serif;
 			  font-size: 8pt;
-			  text-align: justify;
+			  /* text-align: justify; */
 			}
 	
 		/* -----------------------------------------------------------

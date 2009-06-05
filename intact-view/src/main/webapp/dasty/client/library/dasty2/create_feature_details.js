@@ -52,7 +52,7 @@
 								}
 						}
 					var contentDiv = div.innerHTML;
-					div.innerHTML = contentDiv + "<br><a target=\"_blast\" href=\"http://beta.uniprot.org/blast/?about=" + sequence_info.sequence_id + "[" + fetureDetails["start_data"] + "-" + fetureDetails["end_data"] + "]\"><img  border=\"0\" src=\"img/blast_icon.gif\" /></a>";
+					div.innerHTML = contentDiv + "<br><a target=\"_blast\" href=\"http://www.uniprot.org/blast/?about=" + sequence_info.sequence_id + "[" + fetureDetails["start_data"] + "-" + fetureDetails["end_data"] + "]\"><img  border=\"0\" src=\"img/blast_icon.gif\" /></a>";
 				 
 			}	  
 			

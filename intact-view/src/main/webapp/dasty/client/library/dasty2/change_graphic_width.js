@@ -8,7 +8,7 @@ function change_graphic_width(graphic_width_ID)
 		var pixels = parseInt(document.getElementById(graphic_width_ID).value);
 		//alert(pixels);
 		var minimun_feature_size = 50;
-		var minimun_size = (col_category_width * show_col_category) + (col_type_width * show_col_type) + (col_id_width * show_col_id) + (col_server_width * show_col_server) + (col_warning_width * show_col_warning) + minimun_feature_size;
+		var minimun_size = (col_category_width * show_col_category) + (col_method_width * show_col_method) + (col_type_width * show_col_type) + (col_id_width * show_col_id) + (col_server_width * show_col_server) + (col_warning_width * show_col_warning) + minimun_feature_size;
 		if(pixels > minimun_size)
 			{
 				graphic_width = parseInt(pixels);

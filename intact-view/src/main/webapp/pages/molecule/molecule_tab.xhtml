@@ -6,8 +6,8 @@
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
-                xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions" >
@@ -30,8 +30,14 @@
 
     <tr:panelHeader text="Dasty2 visualization">
 
-        <iframe frameborder="0" width="100%" height="1200"
-            src="http://wwwdev.ebi.ac.uk/dasty/client/interactor.php?q=#{uniprotAc}&amp;label=any&amp;t=3">
+        <!--<iframe frameborder="0" width="100%" height="1200"-->
+            <!--src="http://wwwdev.ebi.ac.uk/dasty/client/interactor.php?q=#{uniprotAc}&amp;label=any&amp;t=3">-->
+            <!--Loading Dasty visualization...-->
+        <!--</iframe>-->
+
+
+         <iframe frameborder="0" width="100%" height="1200"
+            src="#{requestConfigBean.absoluteContextPath}/dasty/client/interactorview.html?q=#{uniprotAc}&amp;label=any&amp;t=3&amp;path=#{sf:urlEncode(requestConfigBean.absoluteContextPath)}#{sf:urlEncode('/dasty')}">
             Loading Dasty visualization...
         </iframe>
 

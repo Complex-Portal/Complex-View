@@ -22,8 +22,8 @@
 		<td width="5" valign="top">&nbsp;
 			
 	    </td>
-		<td valign="bottom">
-			<input type="button" name="cancel_button" id="cancel_button" value="Cancel" onClick="stop()"/>
+		<td valign="top">
+		  <div style="margin-top:10px;"><input type="button" name="cancel_button" id="cancel_button" value="Cancel" onClick="stop()"/></div>
 	    </td>
 		<td width="30" valign="top">&nbsp;
 			
@@ -120,10 +120,15 @@
 		      <span id="menu_mo_img_category_column"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
 		      <span class="columnStyle">Category column</span> </a><br />
 		    </div>
-		  <div id="id_column" style="display:none;">	
+       	  <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column('method')">
+		      <span id="menu_mo_img_method_column"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Method column</span> </a><br />
+		    </div>
+		  <div id="id_column" style="display:block;">	
 		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column('id')">
 		      <span id="menu_mo_img_id_column"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
-		      Id column		      </a><br />
+		      Labels column		      </a><br />
 		    </div>
 		  <br />
 		  <div style="display:block;">	
@@ -179,6 +184,70 @@
 </div>
 <!-- END POSITIONAL FEATURES -->	
 
+<!-- START MANIPULATION OPTIONS NPF -->
+<a id="menu_maniputation_options_npf" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_maniputation_options_npf_div', 'menu_maniputation_options_img_npf', 2)">
+	<span id="menu_maniputation_options_img_npf"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
+    MANIPULATION OPTIONS  (Non positional features)
+</a>
+<div id="display_maniputation_options_npf_div" class="divformat" style="display:none"> 
+    <div id="display_maniputation_options_npf">
+	  <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="200" valign="top">
+		  <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('type_id')">
+		      <span id="menu_mo_img_type_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Type column</span> </a><br />
+		    </div>
+		  <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('method_data')">
+		      <span id="menu_mo_img_method_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Method column</span>			</a><br />
+		    </div>
+	  	  <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('feature_label')">
+		      <span id="menu_mo_img_label_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Labels column</span> </a><br />
+		    </div>
+          <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('note_data')">
+		      <span id="menu_mo_img_note_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Note column</span> </a><br />
+		  </div>
+          <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('score_data')">
+		      <span id="menu_mo_img_score_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Score column</span> </a><br />
+		  </div>
+          <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('version')">
+		      <span id="menu_mo_img_version_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Version column</span> </a><br />
+		  </div>			  
+		  <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('annotation_server')">
+		      <span id="menu_mo_img_server_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Server column</span> </a><br />
+		  </div>
+          <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('type_category')">
+		      <span id="menu_mo_img_category_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Category column</span> </a><br />
+		  </div>
+		  <div style="display:block;">
+		    <a style="text-decoration:none; font-size: 8pt;" href="javascript:define_graphic_column_npf('feature_id')">
+		      <span id="menu_mo_img_featureid_column_npf"><img src="img/tick01.gif" border="0" align="absbottom">&nbsp;</span>
+		      <span class="columnStyle">Feature id column</span> </a><br />
+		  </div>
+		 
+		
+		</td>	
+        </tr>
+      </table>
+	</div>
+</div>
+<!-- END MANIPULATION OPTIONS NPF -->	
+
 <!-- START NON POSITIONAL FEATURES -->	
 <a id="menu_nonpositional" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_nonpositional_div', 'menu_nonpositional_img', 2)">
 	<span id="menu_nonpositional_img"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
@@ -186,6 +255,10 @@
 </a>
 <div id="display_nonpositional_div" class="divformat" style="display:none">
     	<div id="display_nonpositional"></div>
+		<div class="divformat" style="display:block">
+			<img src="img/checkmark.gif" align="absbottom"> The annotation is in accordance with the version of the protein sequence.<br />
+			<img src="img/warning.gif" align="absbottom"> Caution! The annotation may refer to an old version.
+		</div>
 </div>
 <!-- END NON POSITIONAL FEATURES -->		
     
@@ -217,7 +290,7 @@
 </a>
 <div id="display_protstru" style="display:block;">
     <span style="color:#999999;">&nbsp;
-    	<a style="text-decoration:none;color:#999999;" href="javascript:pdbOnWindow('display_protstru_div')">Convert this section in a pop-up window</a>
+    	<a style="text-decoration:none;color:#999999;" href="javascript:pdbOnWindow('display_protstru_div')">View in a pop-up window</a>
     </span>
       <div id="display_protstru_div" style="width:350px; background:#FFFFFF">
       <span class="title" style="font-style:italic;">

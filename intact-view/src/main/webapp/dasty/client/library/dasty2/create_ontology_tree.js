@@ -37,11 +37,11 @@ function create_server_tree()
 			server_tree_element[0]['children'][c]['caption'] = dasty2.loadedDasSources[c];
 			server_tree_element[0]['children'][c]['isChecked'] = elementChecked;
 			server_tree_element[0]['children'][c]['onChangeCheckbox'] = display_ontology_servers;
-			server_tree_element[0]['children'][c]['onClick'] = "javascript:printOnSystemInformation('message3')";
+			server_tree_element[0]['children'][c]['onClick'] = "javascript:printOnSystemInformation('" + dasty2.loadedDasSources[c] + " DAS Source')";
 		}
 	server_tree = new Bs_Tree();
-	server_tree.imageDir = dasty_path+'library/blueshoes46/components/tree/img/win98/';
-	server_tree.checkboxSystemImgDir = dasty_path+'library/blueshoes46/components/checkbox/img/win2k_noBorder/';
+	server_tree.imageDir = 'library/blueshoes46/components/tree/img/win98/';
+	server_tree.checkboxSystemImgDir = 'library/blueshoes46/components/checkbox/img/win2k_noBorder/';
 	server_tree.useCheckboxSystem = true;
 	server_tree.checkboxSystemWalkTree = 3;
 	server_tree.initByArray(server_tree_element);
@@ -242,7 +242,7 @@ function printOnSystemInformation(message)
 		document.getElementById("system_information").innerHTML = message;
 	}
 
-/**ï¿½
+/**¨
   *		The algorithm go through the tree from the root to the leafs, when 
   *		find a leaf calls the method isType to see if is a currently used type. 
   *		If is not, the leaf is deleted.  
@@ -284,6 +284,10 @@ function recursivePrune(elem){
 	return 0;
 }
 
+/**
+* the prune function is not used since it has been included in the parsing
+*/
+
 function prune(tree,array,ontoType){
 //	printOnTest("Arreglo original");
 //	printArray(array);
@@ -309,7 +313,7 @@ function prune(tree,array,ontoType){
 	var elementData = new Array;
 	elementData.caption 		= 'Other Terms (Not in the ontology)';
 	elementData.dataContainer	= "other_types";
-	elementData.isOpen			= true;
+	elementData.isOpen			= false;
 	elementData.isChecked		= 2;
 	elementData.children		= new Array;
 	if (ontoType==1){
