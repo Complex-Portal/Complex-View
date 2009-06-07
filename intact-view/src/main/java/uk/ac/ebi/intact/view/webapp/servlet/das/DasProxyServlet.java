@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.view.webapp.servlet.das;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.httpclient.HttpClient;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -71,9 +72,8 @@ public class DasProxyServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        this.proxyHost = config.getInitParameter("uk.ac.ebi.intact.PROXY");
-
-        String portValue = config.getInitParameter("uk.ac.ebi.intact.PORT");
+        this.proxyHost = System.getProperty("proxyHost", null);
+        String portValue = System.getProperty("proxyPort", null);
 
         if (portValue != null) {
             proxyPort = Integer.valueOf(portValue);
