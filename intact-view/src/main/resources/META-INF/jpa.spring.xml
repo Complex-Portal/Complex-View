@@ -25,7 +25,7 @@
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="intact-core-mem"/>
+        <property name="persistenceUnitName" value="intact-core-default"/>
         <property name="dataSource" ref="intactViewDataSource"/>
 
         <property name="jpaProperties">

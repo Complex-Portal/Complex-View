@@ -22,4 +22,9 @@
         <aop:scoped-proxy/>
     </bean>
 
+
+    <bean id="statisticsController" class="uk.ac.ebi.intact.view.webapp.controller.application.StatisticsController">
+        <aop:scoped-proxy/>
+    </bean>
+
 </beans>

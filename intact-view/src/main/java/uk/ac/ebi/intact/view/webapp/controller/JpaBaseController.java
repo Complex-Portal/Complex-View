@@ -1,13 +1,11 @@
 package uk.ac.ebi.intact.view.webapp.controller;
 
-import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
-import org.apache.myfaces.orchestra.conversation.ConversationBindingListener;
-import org.apache.myfaces.orchestra.conversation.ConversationBindingEvent;
-import org.apache.myfaces.orchestra.conversation.ConversationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.myfaces.orchestra.conversation.ConversationBindingEvent;
+import org.apache.myfaces.orchestra.conversation.ConversationBindingListener;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 
 /**
  * Abstract controller giving access to IntAct database access via JPA.
@@ -19,15 +17,12 @@ public abstract class JpaBaseController extends BaseController implements Conver
 
     private static final Log log = LogFactory.getLog( JpaBaseController.class );
 
-    @Autowired
-    private IntactContext intactContext;
-
     protected DaoFactory getDaoFactory() {
         return getIntactContext().getDataContext().getDaoFactory();
     }
 
     protected IntactContext getIntactContext() {
-        return intactContext;
+        return IntactContext.getCurrentInstance();
     }
 
     public void valueBound(ConversationBindingEvent event) {

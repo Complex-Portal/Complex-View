@@ -20,11 +20,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -36,7 +36,7 @@ import java.util.Properties;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class IntactViewConfiguration extends BaseController {
+public class IntactViewConfiguration extends BaseController implements InitializingBean {
 
     private static final Log log = LogFactory.getLog( IntactViewConfiguration.class );
 
@@ -102,8 +102,11 @@ public class IntactViewConfiguration extends BaseController {
 
     public IntactViewConfiguration() {
     }
+    
+    public void afterPropertiesSet() throws Exception {
+        storeIfNew();
+    }
 
-    @PostConstruct
     public void storeIfNew() {
         if (new File(configFile).exists()) {
             try {

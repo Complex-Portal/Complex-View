@@ -19,12 +19,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
-import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.annotation.PostConstruct;
@@ -36,13 +35,15 @@ import java.io.IOException;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller
-public class StatisticsController extends JpaBaseController {
+public class StatisticsController extends BaseController {
 
     private static final Log log = LogFactory.getLog( StatisticsController.class );
 
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
+
+    @Autowired
+    private DaoFactory daoFactory;
 
     private int binaryInteractionCount;
     private int proteinCount;
@@ -62,14 +63,12 @@ public class StatisticsController extends JpaBaseController {
         binaryInteractionCount = countBinaryInteractionsFromIndex();
 
         // database stats
-        DaoFactory daoFactory = getDaoFactory();
-
         proteinCount = daoFactory.getProteinDao().countAll();
         experimentCount = daoFactory.getExperimentDao().countAll();
         cvTermsCount = daoFactory.getCvObjectDao().countAll();
     }
 
-    private int countBinaryInteractionsFromIndex() {
+    public int countBinaryInteractionsFromIndex() {
         SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
         IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
 
