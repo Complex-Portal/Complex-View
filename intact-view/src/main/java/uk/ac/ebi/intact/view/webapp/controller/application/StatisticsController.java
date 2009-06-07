@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
@@ -53,6 +54,7 @@ public class StatisticsController extends JpaBaseController {
     }
 
     @PostConstruct
+    @Transactional
     public void calculateStats() throws IOException {
         if (log.isInfoEnabled()) log.info("Calculating statistics");
 

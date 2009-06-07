@@ -55,7 +55,7 @@
         <property name="beans">
             <map>
                 <entry key="intactview:name=intactConfiguration" value-ref="intactViewConfiguration"/>
-                <entry key="intactview:name=dataSource" value-ref="dataSource"/>
+                <entry key="intactview:name=dataSource" value-ref="intactViewDataSource"/>
                 <entry key="intactview:name=adminController" value-ref="adminController"/>
             </map>
         </property>

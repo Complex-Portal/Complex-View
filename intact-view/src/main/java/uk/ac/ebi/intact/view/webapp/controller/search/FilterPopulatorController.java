@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.CvTopic;
 
 import javax.annotation.PostConstruct;
@@ -89,7 +90,8 @@ public class FilterPopulatorController {
         return values;
     }
 
-    private List<SelectItem> listDatasets() {
+    @Transactional
+    public List<SelectItem> listDatasets() {
         Query query = entityManagerFactory.createEntityManager()
                 .createQuery("select distinct a.annotationText " +
                              "from Annotation a " +
@@ -120,7 +122,8 @@ public class FilterPopulatorController {
         return datasets;
     }
 
-    private List<SelectItem> listSources() {
+    @Transactional
+    public List<SelectItem> listSources() {
         Query query = entityManagerFactory.createEntityManager().createQuery("select distinct i.owner.shortLabel from InteractionImpl i");
         List<String> sourceResults = query.getResultList();
 
