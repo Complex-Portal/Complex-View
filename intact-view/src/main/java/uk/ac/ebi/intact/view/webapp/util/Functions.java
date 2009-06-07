@@ -18,11 +18,11 @@ package uk.ac.ebi.intact.view.webapp.util;
 import org.joda.time.DateTime;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;

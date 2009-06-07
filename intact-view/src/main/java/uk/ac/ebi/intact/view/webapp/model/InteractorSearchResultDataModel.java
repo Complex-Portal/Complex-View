@@ -22,7 +22,7 @@ import org.apache.myfaces.trinidad.model.SortableModel;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import psidev.psi.mi.search.engine.SearchEngineException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.InteractorIdCount;
 import uk.ac.ebi.intact.model.Interactor;

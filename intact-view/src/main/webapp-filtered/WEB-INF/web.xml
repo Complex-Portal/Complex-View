@@ -169,7 +169,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath*:*.spring.xml
+            classpath*:/META-INF/*.spring.xml
         </param-value>
     </context-param>
 
@@ -291,31 +291,6 @@
         <servlet-name>faces</servlet-name>
     </filter-mapping>
 
-    <!-- IntAct Filter -->
-    <filter>
-        <filter-name>intactFilter</filter-name>
-        <filter-class>uk.ac.ebi.intact.webapp.JpaIntactSessionRequestFilter</filter-class>
-        <init-param>
-            <param-name>uk.ac.ebi.intact.filter.MANUAL_TRANSACTION</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>intactFilter</filter-name>
-        <servlet-name>faces</servlet-name>
-    </filter-mapping>
-
-    <!-- IntAct Core Startup-->
-    <listener>
-        <listener-class>uk.ac.ebi.intact.webapp.BasicStartupIntactListener</listener-class>
-    </listener>
-
-    <!-- Intact view listener -->
-    <listener>
-        <description>Listener to startup the application</description>
-        <listener-class>uk.ac.ebi.intact.view.webapp.StartupListener</listener-class>
-    </listener>
 
     <!--
     Listener to force a garbage collection if too many files are open - Only works in UNIX
@@ -325,7 +300,7 @@
     <!--<listener-class>uk.ac.ebi.faces.webapp.EvilOpenFilesListener</listener-class>-->
     <!--</listener>-->
 
-    <!-- Spring Framework 2.0 -->
+    <!-- Spring Framework -->
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener

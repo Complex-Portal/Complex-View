@@ -27,6 +27,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
@@ -36,9 +37,9 @@ import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimilarInteractio
 import uk.ac.ebi.intact.view.webapp.controller.details.complex.TableHeaderController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.InteractionDao;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 
 import javax.faces.context.FacesContext;
 import java.util.*;
