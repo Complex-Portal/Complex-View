@@ -58,7 +58,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String INTACT_HIERARCHVIEW_MAXINTERACTIONS = "intact.hierarchview.maxinteractions";
     private static final String INTACT_CHEBI_URL = "intact.chebi.url";
     private static final String INTACT_CHEBI_SEARCH_PATH = "intact.chebi.search.path";
-    private static final String INTACT_DASTY_URL = "intact.dasty.url";
     private static final String INTACT_SECRET = "intact.secret";
     private static final String INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS = "intact.search.ontologies.maxsuggestions";
     private static final String INTACT_GOOGLE_ANALYTICS_TRACKER = "intact.google.analytics.tracker";
@@ -148,7 +147,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         hierarchViewMaxInteractions = properties.getProperty(INTACT_HIERARCHVIEW_MAXINTERACTIONS, hierarchViewMaxInteractions);
         chebiUrl = properties.getProperty(INTACT_CHEBI_URL, chebiUrl);
         chebiChemicalSearchPath = properties.getProperty(INTACT_CHEBI_SEARCH_PATH, chebiChemicalSearchPath);
-        dastyUrl = properties.getProperty(INTACT_DASTY_URL, dastyUrl);
         intactSecret = properties.getProperty(INTACT_SECRET, intactSecret);
         maxOntologySuggestions = Integer.parseInt(properties.getProperty(INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS, String.valueOf(maxOntologySuggestions)));
         googleAnalyticsTracker = properties.getProperty(INTACT_GOOGLE_ANALYTICS_TRACKER, googleAnalyticsTracker);
@@ -179,7 +177,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, INTACT_HIERARCHVIEW_MAXINTERACTIONS, hierarchViewMaxInteractions);
         addProperty(properties, INTACT_CHEBI_URL, chebiUrl);
         addProperty(properties, INTACT_CHEBI_SEARCH_PATH, chebiChemicalSearchPath);
-        addProperty(properties, INTACT_DASTY_URL, dastyUrl);
         addProperty(properties, INTACT_SECRET, intactSecret);
         addProperty(properties, INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS, String.valueOf(maxOntologySuggestions));
         addProperty(properties, INTACT_GOOGLE_ANALYTICS_TRACKER, googleAnalyticsTracker);
@@ -379,11 +376,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     public void setWebappBuildNumber(String webappBuildNumber) {this.webappBuildNumber = webappBuildNumber;}
 
     public String getWebappBuildNumber() { return webappBuildNumber; }
-
-
-    public void setDastyUrl(String dastyUrl) {this.dastyUrl = dastyUrl;}
-
-    public String getDastyUrl() { return dastyUrl; }
 
     public SolrServer getInteractionSolrServer() {
         if (solrInteractionsUrl != null) {

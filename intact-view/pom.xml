@@ -303,13 +303,14 @@
             <version>1.3.1</version>
         </dependency>
 
-        <!--ols added for ontology search implementation-->
+        <!--ols added for ontology search implementation--> 
+        <!--
         <dependency>
             <groupId>uk.ac.ebi.intact.util</groupId>
             <artifactId>intact-ols</artifactId>
             <version>2.0-beta-10-SNAPSHOT</version>
         </dependency>
-
+-->
         <dependency>
             <groupId>com.sun.facelets</groupId>
             <artifactId>jsf-facelets</artifactId>
@@ -319,14 +320,14 @@
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.7</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-impl</artifactId>
-            <version>1.2.3</version>
+            <version>1.2.7</version>
             <scope>compile</scope>
         </dependency>
 
