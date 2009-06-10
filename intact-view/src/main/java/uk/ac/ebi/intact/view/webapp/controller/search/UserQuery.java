@@ -369,6 +369,13 @@ public class UserQuery extends BaseController {
         doAddFieldToQuery(new QueryToken(query, field, BooleanOperand.valueOf(operand)));
     }
 
+    public void doAddParamOntologyTermToQuery(ActionEvent evt) {
+        String term = (String)JsfUtils.getParameterValue( "term", evt);
+
+        this.ontologySearchQuery = term;
+        prepareFromOntologySearch(evt);
+    }
+
     public Collection<String> getDatasetsToInclude() {
         if (!containsNotSpecified(datasets)) {
             return Arrays.asList(datasets);

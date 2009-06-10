@@ -54,7 +54,7 @@
           p:entityManagerFactory-ref="entityManagerFactory" />
 
     <!-- Trinidad dialog... -->
-   <bean name="org.apache.myfaces.orchestra.conversation.AccessScopeManagerConfiguration"
+   <bean name="accessScopeManagerConfiguration"
          class="org.apache.myfaces.orchestra.conversation.AccessScopeManagerConfiguration"
           scope="singleton">
 

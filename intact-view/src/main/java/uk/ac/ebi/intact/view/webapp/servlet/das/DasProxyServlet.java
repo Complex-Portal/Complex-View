@@ -197,7 +197,7 @@ public class DasProxyServlet extends HttpServlet {
                      contentLength = lengthHeader.getElements()[0].getName();
                  }
 
-                 if (log.isTraceEnabled()) log.trace("\tResponse headers - Das code: " + codeValue+" ; Content-Length: "+contentLength);
+                 if (log.isTraceEnabled()) log.trace("\tResponse headers - Das code: " + codeValue+" ; Content-Length: "+contentLength+"; URL: "+urlStr);
 
                 // evaluate the DAS status code
                 if (codeValue != null) {

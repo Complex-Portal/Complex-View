@@ -131,27 +131,29 @@
                                     <tr:group>
                                         <tr:outputText value="Term name:"/>
                                         <tr:spacer width="5"/>
-                                        <tr:commandLink text="mammalia" action="#{searchBean.doNewOntologySearch}">
-                                            <f:setPropertyActionListener value="mammalia"
-                                                                         target="#{userQuery.ontologySearchQuery}"/>
+                                        <tr:commandLink text="mammalia" actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
+                                                                        action="#{searchBean.doBinarySearchAction}">
+                                            <f:param name="term" value="mammalia"/>
                                         </tr:commandLink>
                                     </tr:group>
 
                                     <tr:group>
                                         <tr:outputText value="Term name:"/>
                                         <tr:spacer width="5"/>
-                                        <tr:commandLink text="2 hybrid" action="#{searchBean.doNewOntologySearch}">
+                                        <tr:commandLink text="2 hybrid" actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
+                                              action="#{searchBean.doBinarySearchAction}">
                                             <f:setPropertyActionListener value="2 hybrid"
                                                                          target="#{userQuery.ontologySearchQuery}"/>
+                                            <f:param name="term" value="2 hybrid"/>
                                         </tr:commandLink>
                                     </tr:group>
 
                                     <tr:group>
                                         <tr:outputText value="Term identifier:"/>
                                         <tr:spacer width="5"/>
-                                        <tr:commandLink text="MI:0019" action="#{searchBean.doNewOntologySearch}">
-                                            <f:setPropertyActionListener value="MI:0019"
-                                                                         target="#{userQuery.ontologySearchQuery}"/>
+                                        <tr:commandLink text="MI:0019" actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
+                                              action="#{searchBean.doBinarySearchAction}">
+                                            <f:param name="term" value="MI:0019"/>
                                         </tr:commandLink>
                                         <tr:spacer width="5"/>
                                         <tr:outputText value="(coimmunoprecipitation)"/>

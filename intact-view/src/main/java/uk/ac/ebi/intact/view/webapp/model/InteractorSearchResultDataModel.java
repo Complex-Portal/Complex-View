@@ -21,8 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.SortableModel;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.springframework.transaction.TransactionStatus;
 import psidev.psi.mi.search.engine.SearchEngineException;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.InteractorIdCount;
 import uk.ac.ebi.intact.model.Interactor;
@@ -117,8 +119,14 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
 
         InteractorIdCount idCount = idCounts.get(getRowIndex());
 
-        Interactor interactor = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+        DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
+        TransactionStatus transactionStatus = dataContext.beginTransaction();
+        Interactor interactor = dataContext.getDaoFactory()
                 .getInteractorDao().getByAc(idCount.getAc());
+
+        System.out.println(interactor);
+
+        dataContext.commitTransaction(transactionStatus);
 
         return new InteractorWrapper(interactor, idCount.getCount());
     }
