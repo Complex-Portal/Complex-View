@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 
 import javax.faces.context.FacesContext;
 
@@ -53,11 +54,37 @@ public class CvObjectDialogController extends JpaBaseController {
 
     public void setObjectAc( String ac ) {
         if ( log.isDebugEnabled() ) {
-            log.debug( "Calling setInteractionAc( '"+ ac +"' )..." );
+            log.debug( "Calling setObjectAc( '"+ ac +"' )..." );
         }
         cvObject = getDaoFactory().getCvObjectDao().getByAc( ac );
         if( cvObject == null ) {
             addErrorMessage( "No CvObject found in the database for ac: " + ac, "" );
+        }
+    }
+
+    public void setIdentifier (String id) {
+        CvObjectDao cvObjectDao;
+
+        if (id.contains("@")) {
+            String[] tokens = id.split("@");
+            String className = tokens[0];
+            id = tokens[1];
+
+            Class type = null;
+            try {
+                type = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                addErrorMessage("No cv object class of type", type.toString());
+            }
+            cvObjectDao = getDaoFactory().getCvObjectDao(type);
+        } else {
+            cvObjectDao = getDaoFactory().getCvObjectDao();
+        }
+
+        cvObject = cvObjectDao.getByPsiMiRef( id );
+        if( cvObject == null ) {
+            addErrorMessage( "No CvObject found in the database with identifier: " + id, "" );
         }
     }
 

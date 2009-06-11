@@ -140,11 +140,9 @@
                                     <tr:group>
                                         <tr:outputText value="Term name:"/>
                                         <tr:spacer width="5"/>
-                                        <tr:commandLink text="2 hybrid" actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
+                                        <tr:commandLink text="two hybrid" actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
                                               action="#{searchBean.doBinarySearchAction}">
-                                            <f:setPropertyActionListener value="2 hybrid"
-                                                                         target="#{userQuery.ontologySearchQuery}"/>
-                                            <f:param name="term" value="2 hybrid"/>
+                                            <f:param name="term" value="two hybrid"/>
                                         </tr:commandLink>
                                     </tr:group>
 

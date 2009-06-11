@@ -28,14 +28,13 @@ import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.InteractorIdCount;
 import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.InteractorXref;
 
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
+import javax.persistence.Query;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * TODO comment that class header
@@ -63,6 +62,7 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
     private SolrQuery.ORDER sortOrder = SolrQuery.ORDER.asc;
 
     private Map<String,List<InteractorIdCount>> cache = new LRUMap(5);
+    private Map<String,InteractorWrapper> interactorCache = new LRUMap(200);
 
     public InteractorSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery, String interactorTypeMi)  {
         this(solrServer, solrQuery, new String[] {interactorTypeMi});
@@ -119,16 +119,32 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
 
         InteractorIdCount idCount = idCounts.get(getRowIndex());
 
+        if (interactorCache.containsKey(idCount.getAc())) {
+            return interactorCache.get(idCount.getAc());
+        }
+
         DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
         TransactionStatus transactionStatus = dataContext.beginTransaction();
-        Interactor interactor = dataContext.getDaoFactory()
-                .getInteractorDao().getByAc(idCount.getAc());
 
-        System.out.println(interactor);
+        Query query = dataContext.getDaoFactory()
+                .getEntityManager().createQuery("select i from InteractorImpl i where i.ac = :ac");
+        query.setParameter("ac", idCount.getAc());
+
+        Interactor interactor = (Interactor) query.getSingleResult();
+        Collection<InteractorXref> xrefs = interactor.getXrefs();
+
+        for (InteractorXref xref : xrefs) {
+            String ac = xref.getAc();
+        }
+
+
+        InteractorWrapper wrapper = new InteractorWrapper(interactor, idCount.getCount());
 
         dataContext.commitTransaction(transactionStatus);
 
-        return new InteractorWrapper(interactor, idCount.getCount());
+        interactorCache.put(idCount.getAc(), wrapper);
+        
+        return wrapper;
     }
 
     public int getRowIndex() {

@@ -288,6 +288,7 @@ public class DasProxyServlet extends HttpServlet {
 
     public void failWithMessage(HttpServletResponse response, String message) throws IOException {
         response.getWriter().write("<exception>" + message + "</exception>");
+        if (log.isErrorEnabled()) log.error(message);
     }
 
     private static String encode(String valueToEncode) {

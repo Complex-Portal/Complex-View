@@ -401,7 +401,13 @@
 
 <tr:column headerText="#{messages['interaction.detectionmethod']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.detectionmethod')}"
            styleClass="cellTextInteraction">
-    <iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>
+    <!--<iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>-->
+    <!--<ui:repeat var="xref" value="#{binaryInteraction.detectionMethods}">-->
+    <ui:include src="xrefCvPopupDialog.xhtml">
+        <ui:param name="xref" value="${binaryInteraction.detectionMethods[0]}"/>
+    </ui:include>
+        <!--<br/>-->
+    <!--</ui:repeat>-->
 </tr:column>
 
 <tr:column headerText="#{messages['interaction.sourcedb']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.sourcedb')}" styleClass="cellTextInteraction">
@@ -428,22 +434,38 @@
 
 <tr:column headerText="#{messages['moleculeA.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.exprole')}"
            styleClass="cellTextCompound">
-    <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
+    <!--<iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>-->
+    <ui:include src="xrefCvPopupDialog.xhtml">
+        <ui:param name="type" value="uk.ac.ebi.intact.model.CvExperimentalRole"/>
+        <ui:param name="xref" value="${binaryInteraction.experimentalRolesInteractorA[0]}"/>
+    </ui:include>
 </tr:column>
 
 <tr:column headerText="#{messages['moleculeB.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.exprole')}"
            styleClass="cellTextTarget">
-    <iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
+    <!--<iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>-->
+    <ui:include src="xrefCvPopupDialog.xhtml">
+        <ui:param name="type" value="uk.ac.ebi.intact.model.CvExperimentalRole"/>
+        <ui:param name="xref" value="${binaryInteraction.experimentalRolesInteractorB[0]}"/>
+    </ui:include>
 </tr:column>
 
 <tr:column headerText="#{messages['moleculeA.biorole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.biorole')}"
            styleClass="cellTextCompound">
-    <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>
+    <!--<iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>-->
+    <ui:include src="xrefCvPopupDialog.xhtml">
+        <ui:param name="type" value="uk.ac.ebi.intact.model.CvBiologicalRole"/>
+        <ui:param name="xref" value="${binaryInteraction.biologicalRolesInteractorA[0]}"/>
+    </ui:include>
 </tr:column>
 
 <tr:column headerText="#{messages['moleculeB.biorole']}" rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.biorole')}"
            styleClass="cellTextTarget">
-    <iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>
+    <!--<iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>-->
+    <ui:include src="xrefCvPopupDialog.xhtml">
+        <ui:param name="type" value="uk.ac.ebi.intact.model.CvBiologicalRole"/>
+        <ui:param name="xref" value="${binaryInteraction.biologicalRolesInteractorB[0]}"/>
+    </ui:include>
 </tr:column>
 
 <tr:column rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.properties')}" styleClass="cellTextCompound">
@@ -483,12 +505,18 @@
 
 <tr:column headerText="#{messages['moleculeA.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.interactortype')}"
            styleClass="cellTextCompound">
-    <iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>
+    <!--<iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>-->
+    <ui:include src="xrefCvPopupDialog.xhtml">
+        <ui:param name="xref" value="${binaryInteraction.interactorTypeA[0]}"/>
+    </ui:include>
 </tr:column>
 
 <tr:column headerText="#{messages['moleculeB.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.interactortype')}"
            styleClass="cellTextTarget">
-    <iav:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>
+    <!--<iav:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>-->
+    <ui:include src="xrefCvPopupDialog.xhtml">
+        <ui:param name="xref" value="${binaryInteraction.interactorTypeB[0]}"/>
+    </ui:include>
 </tr:column>
 
 <tr:column headerText="#{messages['interaction.hostorganism']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.hostorganism')}"

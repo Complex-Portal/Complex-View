@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+    <nobr>
+        <tr:commandLink action="dialog:cv.view"
+                        partialSubmit="true"
+                        windowWidth="700" windowHeight="400"
+                        immediate="true" useWindow="true">
+            <tr:outputText value="#{xref.text}"/>
+            <f:setPropertyActionListener value="#{type != null? type : ''}#{type != null? '@' : ''}#{xref.identifier}" target="#{cvBean.identifier}"/>
+
+        </tr:commandLink>
+    </nobr>
+</ui:composition>
