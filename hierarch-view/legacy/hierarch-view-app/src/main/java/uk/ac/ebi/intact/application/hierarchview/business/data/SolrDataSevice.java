@@ -114,8 +114,6 @@ public class SolrDataSevice implements DataService {
                 log.debug( "Solr query: " + query );
             }
 
-            query.setFields(FieldNames.LINE);
-
             QueryResponse solrResponse = solrServer.query( query );
 
             if ( solrResponse.getResults().getNumFound() > HVNetworkBuilder.getMaxInteractions() ) {

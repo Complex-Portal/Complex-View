@@ -30,6 +30,7 @@ import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.processor.IntactClusterInteractorPairProcessor;
 import uk.ac.ebi.intact.psimitab.converters.expansion.SpokeWithoutBaitExpansion;
+import uk.ac.ebi.intact.psimitab.converters.expansion.NotExpandableInteractionException;
 import uk.ac.ebi.intact.psimitab.converters.Intact2BinaryInteractionConverter;
 import uk.ac.ebi.intact.searchengine.SearchClass;
 import uk.ac.ebi.intact.searchengine.SearchHelper;
@@ -79,7 +80,11 @@ public class DatabaseService implements DataService, Serializable {
                 chrono.start();
 
                 Intact2BinaryInteractionConverter i2t = new Intact2BinaryInteractionConverter(new SpokeWithoutBaitExpansion(), new IntactClusterInteractorPairProcessor());
-                binaryInteractions = i2t.convert( interactions );
+                try {
+                    binaryInteractions = i2t.convert( interactions );
+                } catch (NotExpandableInteractionException e) {
+                    throw new HierarchViewDataException("Cannot expand interactions", e);
+                }
 
                 chrono.stop();
                 if ( logger.isDebugEnabled() ) {
