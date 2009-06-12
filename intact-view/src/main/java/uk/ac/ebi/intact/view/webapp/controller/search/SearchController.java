@@ -46,7 +46,6 @@ import java.util.List;
                            "/pages/interactions/interactions.xhtml",
                            "/pages/list/protein_list.xhtml",
                            "/pages/list/compound_list.xhtml",
-                           "/pages/molecule/molecule.xhtml",
                            "/pages/graph/graph.xhtml",
                            "/pages/browse/browse.xhtml",
                            "/pages/browse/gobrowser.xhtml",

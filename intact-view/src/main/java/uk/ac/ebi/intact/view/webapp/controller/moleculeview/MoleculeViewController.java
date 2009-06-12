@@ -21,11 +21,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
+import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
 import javax.faces.context.FacesContext;
+import java.util.List;
 
 /**
  * TODO comment that class header
@@ -36,12 +42,41 @@ import javax.faces.context.FacesContext;
 @Controller("moleculeViewBean")
 @Scope("conversation.access")
 @ConversationName("general")
+@ViewController( viewIds = {"/pages/molecule/molecule.xhtml"} )
 public class MoleculeViewController extends JpaBaseController{
+
+    private static final Log log = LogFactory.getLog( MoleculeViewController.class );
+
+    private static final String INTERACTOR_AC_PARAM = "interactorAc";
 
     private Interactor interactor;
 
+    @Autowired
+    private SearchController searchController;
+
+    @Autowired
+    private UserQuery userQuery;
 
     public MoleculeViewController() {
+
+    }
+
+    @PreRenderView
+    public void initialParams() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        final String interactorAc = context.getExternalContext().getRequestParameterMap().get(INTERACTOR_AC_PARAM);
+
+        if ( interactorAc != null ) {
+            log.debug( "Parameter " + INTERACTOR_AC_PARAM + " was specified" );
+            setInteractorAc( interactorAc );
+
+            // Update interaction search
+            userQuery.reset();
+            userQuery.setSearchQuery( "id:" + interactorAc );
+            SolrQuery solrQuery = userQuery.createSolrQuery();
+            searchController.doBinarySearch( solrQuery );
+
+        }
 
     }
 

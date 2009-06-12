@@ -61,7 +61,7 @@ public class DetailsController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog( DetailsController.class );
 
-    private static final String INTERACTION_AC_PARAM = "interaction_ac";
+    private static final String INTERACTION_AC_PARAM = "interactionAc";
     private static final String BINARY_PARAM = "binary";
 
     private Interaction interaction;
