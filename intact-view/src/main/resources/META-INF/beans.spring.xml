@@ -50,7 +50,6 @@
     </bean>
 
         <!-- this bean must not be lazily initialized if the exporting is to happen -->
-<!--
     <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
         <property name="beans">
             <map>
@@ -60,5 +59,4 @@
             </map>
         </property>
     </bean>
--->
 </beans>
