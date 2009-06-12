@@ -15,10 +15,6 @@
  */
 package uk.ac.ebi.intact.view.webapp.servlet.das;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,7 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
+import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -149,7 +145,6 @@ public class DasProxyServlet extends HttpServlet {
         InputStream inputStreamToReturn = null;
         int dasCode = 200;
         CacheWriter cacheWriter = null;
-        HttpMethod httpMethod = null;
 
         // check if the answer is cached, otherwise execute the URL query to destination server
         if (cachingEnabled && cachedFile.getFile().exists()) {
@@ -161,43 +156,33 @@ public class DasProxyServlet extends HttpServlet {
             // generate the URL to the DAS Server
             String urlStr = generateUrl(serverUrl, method, query, regAuthority, regLabel, regType);
 
-            if (log.isDebugEnabled()) log.debug("Connecting to URL: " + urlStr+((proxyHost != null)? " - proxy: "+proxyHost+":"+proxyPort : ""));
+            URL url = new URL(urlStr);
 
-            HttpClient httpClient = new HttpClient();
-            httpMethod = new GetMethod(urlStr);
+            if (log.isDebugEnabled()) log.debug("Connecting to URL: " + url);
 
-            if (this.proxyHost != null) {
-                httpClient.getHostConfiguration().setHost(proxyHost, proxyPort);
+            // Create the URL connection, using the http proxy if necessary
+            URLConnection urlConnection;
+
+            if (proxyHost != null) {
+                urlConnection = url.openConnection(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
+            } else {
+                urlConnection = url.openConnection();
             }
 
-            httpClient.getHttpConnectionManager().getParams().setSoTimeout(timeout * 1000);
+            urlConnection.setConnectTimeout(timeout * 1000);
+            urlConnection.setReadTimeout(10 * 1000);
 
-             try {
+            try {
+                urlConnection.connect();
+
                 if ("pdb".equals(method)) {
-                     httpMethod.addRequestHeader("Content-Type", "text/plain");
+                    resp.setContentType("text/plain");
                 } else {
-                    httpMethod.addRequestHeader("Content-Type", "text/xml");
+                    resp.setContentType("text/xml");
                 }
 
-                 int statusCode = httpClient.executeMethod(httpMethod);
-
                 // check the das status code
-                String codeValue = null;
-                String contentLength = "unknown";
-
-                 Header statusHeader = httpMethod.getResponseHeader("X-Das-Status");
-
-                 if (statusHeader != null) {
-                     codeValue = statusHeader.getElements()[0].getName();
-                 }
-
-                 Header lengthHeader = httpMethod.getResponseHeader("Content-Length");
-
-                 if (lengthHeader != null) {
-                     contentLength = lengthHeader.getElements()[0].getName();
-                 }
-
-                 if (log.isTraceEnabled()) log.trace("\tResponse headers - Das code: " + codeValue+" ; Content-Length: "+contentLength+"; URL: "+urlStr);
+                String codeValue = urlConnection.getHeaderField("X-Das-Status");
 
                 // evaluate the DAS status code
                 if (codeValue != null) {
@@ -206,12 +191,11 @@ public class DasProxyServlet extends HttpServlet {
                     dasCode = 200;
                 }
 
-                inputStreamToReturn = httpMethod.getResponseBodyAsStream();
+                inputStreamToReturn = urlConnection.getInputStream();
 
                 cacheWriter = new CacheWriter(cachedFile);
 
             } catch (Exception e) {
-                 httpMethod.releaseConnection();
                 dasCode = 401;
                 log.error("Problem opening connection to: "+urlStr+" - "+e.getMessage());
             }
@@ -226,10 +210,6 @@ public class DasProxyServlet extends HttpServlet {
 
         if (cachingEnabled && cacheWriter != null) {
             cacheWriter.close();
-        }
-
-        if (httpMethod != null) {
-            httpMethod.releaseConnection();
         }
     }
 
