@@ -18,14 +18,14 @@ function ajaxCall(url,callback){
 	http_request.open('GET', url, true);
 	http_request.onreadystatechange = function(){
 		if (http_request.readyState == 4) {
-			if (http_request.status == 200) { 
+			if (http_request.status == 200) {
 				if(http_request.responseXML && http_request.responseXML.contentType=="text/xml"){
 					callback(http_request.responseXML);
 				}else
 				if(http_request.responseText){
 					callback(http_request.responseText);
 				}else
-					alert("error");	
+					alert("error");
 			}else
 				alert("error");
 		}

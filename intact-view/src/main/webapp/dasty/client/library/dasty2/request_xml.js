@@ -104,6 +104,7 @@ function makeRequest(url, xml_type, featureXML_num) {
 	if (xml_type=='sequenceXML') {
 		new Ajax.Request(url,{
 			method: 'get',
+            asynchronous: true,
 			onSuccess: function(transport){
 				parseSequenceXML(transport.responseXML);
 			}
@@ -111,19 +112,19 @@ function makeRequest(url, xml_type, featureXML_num) {
 	} else if (xml_type=='featureXML') {
 		new Ajax.Request(url,{
 			method: 'get',
+            asynchronous: true,
 			onSuccess: function(transport){
 				count_displayed_groups++;
-				console.log("SUCCES: " + count_displayed_groups);
 				parseFeatureXML(transport.responseXML,featureXML_num);
 			},
     		onFailure: function(){
 				count_displayed_groups++;
-				console.log("Failure: " + count_displayed_groups);
 			}
 		});
 	} else if (xml_type=='styleSheetXML') {
 		new Ajax.Request(url,{
 			method: 'get',
+            asynchronous: true,
 			onSuccess: function(transport){
 				parseStylesheetXML(transport.responseXML);
 			}
@@ -131,6 +132,7 @@ function makeRequest(url, xml_type, featureXML_num) {
 	} else if (xml_type=='alignmentStructureXML') {
 		new Ajax.Request(url,{
 			method: 'get',
+            asynchronous: true,
 			onSuccess: function(transport){
 				doParseAligment(transport.responseXML);
 			}
@@ -138,6 +140,7 @@ function makeRequest(url, xml_type, featureXML_num) {
 	} else if (xml_type=='dasRegistryXML') {
 		new Ajax.Request(url,{
 			method: 'get',
+            asynchronous: true,
 			onSuccess: function(transport){
 				parseDasRegistryXML(transport.responseXML);
 			}
@@ -145,6 +148,7 @@ function makeRequest(url, xml_type, featureXML_num) {
 	} else if (xml_type=='PDBFile') {
 		new Ajax.Request(url,{
 			method: 'get',
+            asynchronous: true,
 			onSuccess: function(transport){
 				changePDBFile(transport.responseXML);
 			}

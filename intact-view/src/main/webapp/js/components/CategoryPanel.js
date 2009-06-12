@@ -12,7 +12,7 @@ dojo.declare("ebi.intact.CategoryPanelComp", null, {
     },
 
     expandAll: function(onlyRelevant) {
-        console.log("Expanding groups: "+this.xrefGroups.length);
+        //console.log("Expanding groups: "+this.xrefGroups.length);
 
         for (i=0; i<this.xrefGroups.length; i++) {
             if (onlyRelevant) {
@@ -60,7 +60,7 @@ dojo.declare("ebi.intact.CategoryGroupComp", null, {
     },
 
     toggleExpanded: function() {
-        console.log("Updating expanded state of '"+this.contentDiv.id+"' to "+!this.expanded);
+        //console.log("Updating expanded state of '"+this.contentDiv.id+"' to "+!this.expanded);
 
         this.expanded = !this.expanded;
         this.updateState();

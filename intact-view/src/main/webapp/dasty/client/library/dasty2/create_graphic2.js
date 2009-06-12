@@ -771,7 +771,7 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 		if(origin == "grouping" || origin == "noresults")
 			{
 			//count_displayed_groups++;
-			console.log("cdg:" + count_displayed_groups + " , urll:" + feature_url.length);
+			//console.log("cdg:" + count_displayed_groups + " , urll:" + feature_url.length);
 			
 			
 		     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -828,7 +828,7 @@ function createGraphic2(featureXML_num, tagId, segment_start, segment_stop, orig
 	
 	
 						document.getElementById("system_information").innerHTML = "load completed!";
-						console.log("load completed!");
+						//console.log("load completed!");
 						sorting('type');
 						
 						

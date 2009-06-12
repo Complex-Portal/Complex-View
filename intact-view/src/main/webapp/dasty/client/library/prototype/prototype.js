@@ -401,7 +401,7 @@ Object.extend(String.prototype, {
     return self.div.innerHTML;
   },
 
-  unescapeHTML: function() {
+  unescapeHTML: function() {                                                          on
     var div = new Element('div');
     div.innerHTML = this.stripTags();
     return div.childNodes[0] ? (div.childNodes.length > 1 ?
