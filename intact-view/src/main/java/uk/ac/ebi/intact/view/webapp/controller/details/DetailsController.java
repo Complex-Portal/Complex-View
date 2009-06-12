@@ -15,36 +15,35 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.details;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
-import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
-import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
-import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimpleInteractor;
-import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimilarInteraction;
-import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimilarInteractionsMatrix;
-import uk.ac.ebi.intact.view.webapp.controller.details.complex.TableHeaderController;
-import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
-import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
+import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
+import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimilarInteraction;
+import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimilarInteractionsMatrix;
+import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimpleInteractor;
+import uk.ac.ebi.intact.view.webapp.controller.details.complex.TableHeaderController;
+import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
+import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
 import javax.faces.context.FacesContext;
 import java.util.*;
-
-import com.google.common.collect.*;
 
 /**
  * Details controller.
@@ -63,6 +62,7 @@ public class DetailsController extends JpaBaseController {
     private static final Log log = LogFactory.getLog( DetailsController.class );
 
     private static final String INTERACTION_AC_PARAM = "interaction_ac";
+    private static final String BINARY_PARAM = "binary";
 
     private Interaction interaction;
 
@@ -76,9 +76,7 @@ public class DetailsController extends JpaBaseController {
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();
         final String interactionAc = context.getExternalContext().getRequestParameterMap().get( INTERACTION_AC_PARAM );
-        if ( log.isDebugEnabled() ) {
-            log.debug( "DetailsController: @PreRenderView invoked" );
-        }
+        final String binary = context.getExternalContext().getRequestParameterMap().get( BINARY_PARAM );
 
         if ( interactionAc != null ) {
             log.debug( "Parameter " + INTERACTION_AC_PARAM + " was specified" );
@@ -90,8 +88,34 @@ public class DetailsController extends JpaBaseController {
             SolrQuery solrQuery = userQuery.createSolrQuery();
             searchController.doBinarySearch( solrQuery );
 
-        } else {
-            log.debug( "Parameter " + INTERACTION_AC_PARAM + " was not specified" );
+        }
+
+        if (binary != null) {
+            String[] interactorAcs = binary.split(",");
+
+            if (interactorAcs.length != 2) {
+                addErrorMessage("When the binary parameter is specified, two comma-separated interactor ACs are expected",
+                        "Found: "+interactorAcs.length);
+                return;
+            }
+
+            List<Interaction> interactions = getDaoFactory().getInteractionDao()
+                    .getInteractionsForProtPairAc(interactorAcs[0], interactorAcs[1]);
+
+            if (interactions.size() == 1) {
+                Interaction binaryInteraction = interactions.get(0);
+                setInteraction(binaryInteraction);
+
+                // Update interaction search
+                userQuery.reset();
+                userQuery.setSearchQuery( "interaction_id:" + binaryInteraction.getAc() );
+                SolrQuery solrQuery = userQuery.createSolrQuery();
+                searchController.doBinarySearch( solrQuery );
+
+            } else {
+                addErrorMessage("One interaction only was expected", "Found: "+interactions.size());
+                return;
+            }
         }
     }
 
