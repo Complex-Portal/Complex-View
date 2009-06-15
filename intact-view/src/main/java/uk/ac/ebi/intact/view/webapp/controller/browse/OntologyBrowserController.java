@@ -30,6 +30,7 @@ import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.view.webapp.util.RootTerm;
+import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ public abstract class OntologyBrowserController extends BaseController {
     public OntologyBrowserController() {
     }
 
-    protected abstract RootTerm createRootTerm(OntologySearcher ontologySearcher);
+    protected abstract OntologyTerm createRootTerm(OntologySearcher ontologySearcher);
 
     public abstract String getFieldName();
 
@@ -71,7 +72,7 @@ public abstract class OntologyBrowserController extends BaseController {
         ontologyTreeModel = createOntologyTreeModel(createRootTerm(ontologySearcher));
     }
 
-    protected TreeModel createOntologyTreeModel(RootTerm rootTerm) {
+    protected TreeModel createOntologyTreeModel(OntologyTerm rootTerm) {
         final SolrQuery query = userQuery.createSolrQuery();
         final String facetField = getFieldName();
 

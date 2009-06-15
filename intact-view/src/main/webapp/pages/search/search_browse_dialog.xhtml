@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsp="http://java.sun.com/JSP/Page"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad">
+
+    <!-- Include this hack to avoid using the "general" conversation -->
+    <!--<ui:include src="/pages/inc/dialogConversationHack.xhtml"/>-->
+
+    <tr:document>
+
+        <tr:form>
+
+            <div style="margin:8px">
+
+            Choose a term by clicking on its name. The identifier will be used as the value for the search.
+
+            <tr:spacer height="5"/>
+        
+        <tr:treeTable var="otw" value="#{searchBrowseDialogController.ontologyBrowserController.ontologyTreeModel}" rootNodeRendered="false"
+                      expandAllEnabled="false">
+
+                    <f:facet name="nodeStamp">
+                        <tr:column>
+                            <f:facet name="header">
+                                <tr:outputText value="Name"/>
+                            </f:facet>
+                            <tr:commandLink text="#{otw.term.name}"
+                                            actionListener="#{searchBrowseDialogController.doSelect}">
+                                <f:param name="termId" value="#{otw.term.id}"/>
+                            </tr:commandLink>
+                        </tr:column>
+
+                    </f:facet>
+                    <tr:column>
+                        <f:facet name="header">
+                            <tr:outputText value="ID"/>
+                        </f:facet>
+                        <tr:outputText value="#{otw.term.id}"/>
+                    </tr:column>
+
+                    <tr:column inlineStyle="text-align:center;">
+                        <f:facet name="header">
+                            <tr:outputText value="# Interactions"/>
+                        </f:facet>
+                        <tr:group>
+                             <tr:outputText value="#{otw.interactionCount}" />
+                        </tr:group>
+                    </tr:column>
+
+                </tr:treeTable>
+
+            </div>
+
+        </tr:form>
+
+    </tr:document>
+
+</ui:composition>

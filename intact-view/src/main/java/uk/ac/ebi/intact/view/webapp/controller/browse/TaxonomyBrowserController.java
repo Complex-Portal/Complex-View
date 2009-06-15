@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 import uk.ac.ebi.intact.view.webapp.util.RootTerm;
+import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 
 /**
  * Controller for GoBrowsing
@@ -33,7 +34,7 @@ public class TaxonomyBrowserController extends OntologyBrowserController {
     public static final String FIELD_NAME = "taxid_expanded_id";
 
     @Override
-    protected RootTerm createRootTerm(OntologySearcher ontologySearcher) {
+    protected OntologyTerm createRootTerm(OntologySearcher ontologySearcher) {
         final RootTerm rootTerm = new RootTerm(ontologySearcher, "Taxonomy");
 //        rootTerm.addChild("-1", "In vitro");
         rootTerm.addChild("10239", "Viruses");

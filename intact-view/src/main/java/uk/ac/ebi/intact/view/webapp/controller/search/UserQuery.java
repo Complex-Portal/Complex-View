@@ -23,9 +23,11 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
+import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyBrowserController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 
@@ -60,6 +62,9 @@ public class UserQuery extends BaseController {
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     private String searchQuery = STAR_QUERY;
     private String ontologySearchQuery;
 
@@ -86,11 +91,12 @@ public class UserQuery extends BaseController {
     private boolean showNewFieldPanel;
     private QueryToken newQueryToken;
 
-
     private SearchField[] searchFields;
 
     private List<SelectItem> searchFieldSelectItems;
     private Map<String,SearchField> searchFieldsMap;
+
+    private String searchBrowseName;
 
     public UserQuery() {
         this.queryTokenList = new ArrayList<QueryToken>();
@@ -121,21 +127,20 @@ public class UserQuery extends BaseController {
     }
 
     private void initSearchFields() {
-
         searchFields = new SearchField[]{
                 new SearchField("", "All"),
                 new SearchField(FieldNames.IDENTIFIER, "Participant Id"),
                 new SearchField(FieldNames.INTERACTION_ID, "Interaction Id"),
-                new SearchField(FieldNames.GENE_NAME, "Gene name", true),
-                new SearchField(FieldNames.DETMETHOD, "Detection method"),
-                new SearchField(FieldNames.TYPE, "Interaction type"),
+                new SearchField(FieldNames.GENE_NAME, "Gene name"),
+                new SearchField(FieldNames.DETMETHOD, "Detection method", "detectionMethodBrowser"),
+                new SearchField(FieldNames.TYPE, "Interaction type", "interactionTypeBrowser"),
                 new SearchField("species", "Organism"),
                 new SearchField(FieldNames.PUBID, "Pubmed Id"),
                 new SearchField(FieldNames.PUBAUTH, "Author"),
-                new SearchField("biologicalRole", "Biological role"),
-                new SearchField("experimentalRole", "Experimental role"),
-                new SearchField("go_expanded_id", "GO"),
-                new SearchField("chebi_expanded_id", "ChEBI"),
+                new SearchField("biologicalRole", "Biological role", "biologicalRoleBrowser"),
+                new SearchField("experimentalRole", "Experimental role", "experimentalRoleBrowser"),
+                new SearchField("go_expanded_id", "GO", "goBrowser"),
+                new SearchField("chebi_expanded_id", "ChEBI", "chebiBrowser"),
                 new SearchField("intepro_expanded_id", "Interpro"),
                 new SearchField("properties", "Participant cross-reference"),
                 new SearchField(FieldNames.EXPANSION, "Expansion algorithm", filterPopulator.getExpansionSelectItems()),
@@ -586,5 +591,13 @@ public class UserQuery extends BaseController {
 
     public Map<String, SearchField> getSearchFieldsMap() {
         return searchFieldsMap;
+    }
+
+    public String getSearchBrowseName() {
+        return searchBrowseName;
+    }
+
+    public void setSearchBrowseName(String searchBrowseName) {
+        this.searchBrowseName = searchBrowseName;
     }
 }

@@ -17,7 +17,9 @@ package uk.ac.ebi.intact.view.webapp.controller.browse;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.apache.solr.client.solrj.SolrServerException;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.LazyLoadedOntologyTerm;
 import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 
@@ -27,19 +29,21 @@ import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller("goBrowser")
+@Controller("experimentalRoleBrowser")
 @Scope("request")
-public class GoBrowserController extends OntologyBrowserController {
+public class ExperimentalRoleBrowserController extends OntologyBrowserController {
 
-    public static final String FIELD_NAME = "go_expanded_id";
+    public static final String FIELD_NAME = "experimentalRole_id";
 
     @Override
     protected OntologyTerm createRootTerm(OntologySearcher ontologySearcher) {
-        final RootTerm rootTerm = new RootTerm( ontologySearcher, "GO Ontology" );
-        rootTerm.addChild("GO:0008150", "Biological process");
-        rootTerm.addChild("GO:0003674", "Molecular function");
-        rootTerm.addChild("GO:0005575", "Cellular component");
-        return rootTerm;
+        try {
+            return new LazyLoadedOntologyTerm( ontologySearcher, "MI:0495", "experimental role");
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+            addErrorMessage("Could not load the tree", "");
+        }
+        return null;
     }
 
     @Override

@@ -27,18 +27,19 @@ import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller("goBrowser")
+@Controller("detectionMethodBrowser")
 @Scope("request")
-public class GoBrowserController extends OntologyBrowserController {
+public class DetectionMethodBrowserController extends OntologyBrowserController {
 
-    public static final String FIELD_NAME = "go_expanded_id";
+    public static final String FIELD_NAME = "detmethod_expanded_id";
 
     @Override
     protected OntologyTerm createRootTerm(OntologySearcher ontologySearcher) {
-        final RootTerm rootTerm = new RootTerm( ontologySearcher, "GO Ontology" );
-        rootTerm.addChild("GO:0008150", "Biological process");
-        rootTerm.addChild("GO:0003674", "Molecular function");
-        rootTerm.addChild("GO:0005575", "Cellular component");
+        final RootTerm rootTerm = new RootTerm( ontologySearcher, "Interaction Detection Method" );
+        rootTerm.addChild("MI:0045", "experimental interaction detection");
+        rootTerm.addChild("MI:0063", "interaction prediction");
+        rootTerm.addChild("MI:0362", "inference");
+        rootTerm.addChild("MI:0686", "unspecified method");
         return rootTerm;
     }
 

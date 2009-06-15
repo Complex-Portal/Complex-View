@@ -5,6 +5,8 @@ import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.myfaces.trinidad.component.UIXTree;
 import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.trinidad.model.RowKeySet;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -21,6 +23,9 @@ import java.util.List;
  * @version $Id$
  */
 public abstract class BaseController implements Serializable {
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     protected void addMessage(String message, String detail) {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -114,6 +119,10 @@ public abstract class BaseController implements Serializable {
         }
 
         return null;
+    }
+
+    protected Object getBean(String name) {
+        return applicationContext.getBean(name);
     }
 }
 

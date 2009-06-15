@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
+import javax.faces.model.SelectItem;
+import java.util.List;
+
 /**
  * TODO comment that class header
  *
@@ -25,8 +28,9 @@ public class SearchField {
 
     private String name;
     private String displayName;
-    private Object autocompleteMethod;
+    private List<SelectItem> selectItems;
     private boolean disabled;
+    private String browserControllerName;
 
     public SearchField(String name, String displayName) {
         this.name = name;
@@ -38,9 +42,14 @@ public class SearchField {
         this.disabled = disabled;
     }
 
-    public SearchField(String name, String displayName, Object autocompleteMethod) {
+    public SearchField(String name, String displayName, List<SelectItem> selectItems) {
         this(name, displayName);
-        this.autocompleteMethod = autocompleteMethod;
+        this.selectItems = selectItems;
+    }
+
+    public SearchField(String name, String displayName, String browserControllerName) {
+        this(name, displayName);
+        this.browserControllerName = browserControllerName;
     }
 
     public String getName() {
@@ -59,16 +68,16 @@ public class SearchField {
         this.displayName = displayName;
     }
 
-    public boolean isAutocompleteCapable() {
-        return (autocompleteMethod != null);
+    public boolean isList() {
+        return (selectItems != null);
     }
 
-    public Object getAutocompleteMethod() {
-        return autocompleteMethod;
+    public List<SelectItem> getSelectItems() {
+        return selectItems;
     }
 
-    public void setAutocompleteMethod(Object autocompleteMethod) {
-        this.autocompleteMethod = autocompleteMethod;
+    public void setSelectItems(List<SelectItem> selectItems) {
+        this.selectItems = selectItems;
     }
 
     public boolean isDisabled() {
@@ -77,6 +86,18 @@ public class SearchField {
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public String getBrowserControllerName() {
+        return browserControllerName;
+    }
+
+    public void setBrowserControllerName(String browserControllerName) {
+        this.browserControllerName = browserControllerName;
+    }
+
+    public boolean isOntologyBrowser() {
+        return (browserControllerName != null);
     }
 
     @Override

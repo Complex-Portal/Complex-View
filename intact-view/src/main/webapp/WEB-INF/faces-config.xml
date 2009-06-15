@@ -284,5 +284,12 @@
         </navigation-case>
     </navigation-rule>
 
+    <navigation-rule>
+        <navigation-case>
+          <from-outcome>dialog:search.browse</from-outcome>
+          <to-view-id>/pages/search/search_browse_dialog.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
 
 </faces-config>

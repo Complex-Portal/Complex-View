@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 import uk.ac.ebi.intact.view.webapp.util.RootTerm;
+import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 
 
 /**
@@ -35,7 +36,7 @@ public class ChebiBrowserController extends OntologyBrowserController {
     public static final String FIELD_NAME = "chebi_expanded_id";
 
     @Override
-    protected RootTerm createRootTerm(OntologySearcher ontologySearcher) {
+    protected OntologyTerm createRootTerm(OntologySearcher ontologySearcher) {
         final RootTerm rootTerm = new RootTerm( ontologySearcher, "ChEBI Ontology" );
         rootTerm.addChild("CHEBI:36342", "Subatomic particle");
         rootTerm.addChild("CHEBI:24431", "Molecular structure");
