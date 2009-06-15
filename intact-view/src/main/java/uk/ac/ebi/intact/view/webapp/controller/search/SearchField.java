@@ -26,15 +26,20 @@ public class SearchField {
     private String name;
     private String displayName;
     private Object autocompleteMethod;
+    private boolean disabled;
 
     public SearchField(String name, String displayName) {
         this.name = name;
         this.displayName = displayName;
     }
 
+    public SearchField(String name, String displayName, boolean disabled) {
+        this(name, displayName);
+        this.disabled = disabled;
+    }
+
     public SearchField(String name, String displayName, Object autocompleteMethod) {
-        this.name = name;
-        this.displayName = displayName;
+        this(name, displayName);
         this.autocompleteMethod = autocompleteMethod;
     }
 
@@ -64,6 +69,14 @@ public class SearchField {
 
     public void setAutocompleteMethod(Object autocompleteMethod) {
         this.autocompleteMethod = autocompleteMethod;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     @Override

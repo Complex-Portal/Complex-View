@@ -126,7 +126,7 @@ public class UserQuery extends BaseController {
                 new SearchField("", "All"),
                 new SearchField(FieldNames.IDENTIFIER, "Participant Id"),
                 new SearchField(FieldNames.INTERACTION_ID, "Interaction Id"),
-                new SearchField(FieldNames.GENE_NAME, "Gene name"),
+                new SearchField(FieldNames.GENE_NAME, "Gene name", true),
                 new SearchField(FieldNames.DETMETHOD, "Detection method"),
                 new SearchField(FieldNames.TYPE, "Interaction type"),
                 new SearchField("species", "Organism"),
@@ -147,7 +147,9 @@ public class UserQuery extends BaseController {
         searchFieldSelectItems = new ArrayList<SelectItem>(searchFields.length);
 
         for (SearchField searchField : searchFields) {
-            searchFieldSelectItems.add(new SelectItem(searchField.getName(), searchField.getDisplayName()));
+            SelectItem selectItem = new SelectItem(searchField.getName(), searchField.getDisplayName());
+            selectItem.setDisabled(searchField.isDisabled());
+            searchFieldSelectItems.add(selectItem);
         }
 
         searchFieldsMap = new HashMap<String, SearchField>();
