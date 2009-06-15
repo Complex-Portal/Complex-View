@@ -357,7 +357,7 @@
         <dependency>
             <groupId>org.apache.myfaces.orchestra</groupId>
             <artifactId>myfaces-orchestra-core</artifactId>
-            <version>1.3-SNAPSHOT</version>
+            <version>1.3.1</version>
         </dependency>
 
         <!-- PrimeFaces -->

@@ -15,7 +15,6 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
@@ -148,20 +147,20 @@ public class SearchController extends JpaBaseController {
             doBinarySearch( solrQuery );
         }
 
-        if(userQuery != null && userQuery.getSearchQuery() == null && userQuery.getOntologySearchQuery() == null){
-          if (log.isDebugEnabled()) log.debug("Searching using query parameter when searchQuery is : *:*");
-
-            //for sorting and ordering
-            this.setUserSortColumn(DEFAULT_SORT_COLUMN);
-            this.setAscending( DEFAULT_SORT_ORDER );
-
-            userQuery.reset();
-            userQuery.setSearchQuery( "*" );
-
-            SolrQuery solrQuery = userQuery.createSolrQuery();
-
-            doBinarySearch( solrQuery );
-        }
+//        if(userQuery != null && userQuery.getSearchQuery() == null && userQuery.getOntologySearchQuery() == null){
+//          if (log.isDebugEnabled()) log.debug("Searching using query parameter when searchQuery is : *:*");
+//
+//            //for sorting and ordering
+//            this.setUserSortColumn(DEFAULT_SORT_COLUMN);
+//            this.setAscending( DEFAULT_SORT_ORDER );
+//
+//            userQuery.reset();
+//            userQuery.setSearchQuery( "*" );
+//
+//            SolrQuery solrQuery = userQuery.createSolrQuery();
+//
+//            doBinarySearch( solrQuery );
+//        }
     }
 
     public String doBinarySearchAction() {

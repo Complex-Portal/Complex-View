@@ -9,6 +9,9 @@
                 xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:iav="http://intact.ebi.ac.uk/view">
 
+    <!-- Include this hack to avoid using the "general" conversation -->
+    <ui:include src="/pages/inc/dialogConversationHack.xhtml"/>
+
 <tr:document>
 
 <tr:panelHeader text="Help: Searches in #{intactView['webapp.name']}">
