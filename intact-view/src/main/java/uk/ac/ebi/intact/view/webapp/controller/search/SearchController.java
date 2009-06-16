@@ -324,6 +324,7 @@ public class SearchController extends JpaBaseController {
 
         UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(INTERACTIONS_TABLE_ID);
         table.setFirst(evt.getNewStart());
+        table.setRows(evt.getNewEnd() - evt.getNewStart());
 
         refreshTable(INTERACTIONS_TABLE_ID, results);
     }
