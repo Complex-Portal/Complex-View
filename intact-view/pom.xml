@@ -57,9 +57,7 @@
         <chebi.url>http://www.ebi.ac.uk/chebi</chebi.url>
 
         <!-- Das -->
-        <das.referenceserver.url>${appRoot}/das-intact/das/</das.referenceserver.url>
         <das.annotationserver.intact.url>${appRoot}/das-intact/das/</das.annotationserver.intact.url>
-        <das.annotationserver.chebi.url>${appRoot}/das-intact/das/</das.annotationserver.chebi.url>
 
         <!--<intact.recipients/>-->
         <!--<intact.proxy.host></intact.proxy.host>-->
