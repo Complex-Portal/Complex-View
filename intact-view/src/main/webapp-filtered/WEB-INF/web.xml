@@ -291,15 +291,6 @@
         <servlet-name>faces</servlet-name>
     </filter-mapping>
 
-
-    <!--
-    Listener to force a garbage collection if too many files are open - Only works in UNIX
-    This can be removed if using Facelets >= 1.15
-    -->
-    <!--<listener>-->
-    <!--<listener-class>uk.ac.ebi.faces.webapp.EvilOpenFilesListener</listener-class>-->
-    <!--</listener>-->
-
     <!-- Spring Framework -->
     <listener>
         <listener-class>

@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.view.webapp.controller.moleculeview;
 import org.springframework.stereotype.Controller;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
@@ -51,12 +52,6 @@ public class MoleculeViewController extends JpaBaseController{
 
     private Interactor interactor;
 
-    @Autowired
-    private SearchController searchController;
-
-    @Autowired
-    private UserQuery userQuery;
-
     public MoleculeViewController() {
 
     }
@@ -70,6 +65,9 @@ public class MoleculeViewController extends JpaBaseController{
             log.debug( "Parameter " + INTERACTOR_AC_PARAM + " was specified" );
             setInteractorAc( interactorAc );
 
+            UserQuery userQuery = (UserQuery) getBean("userQuery");
+            SearchController searchController = (SearchController) getBean("searchBean");
+
             // Update interaction search
             userQuery.reset();
             userQuery.setSearchQuery( "id:" + interactorAc );
@@ -80,6 +78,7 @@ public class MoleculeViewController extends JpaBaseController{
 
     }
 
+    @Transactional(readOnly = true)
     public void setInteractorAc(String ac) {
         interactor = getDaoFactory().getInteractorDao().getByAc(ac);
     }

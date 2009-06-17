@@ -67,16 +67,7 @@ public class SearchController extends JpaBaseController {
     private IntactViewConfiguration intactViewConfiguration;
 
     @Autowired
-    private UserQuery userQuery;
-
-    @Autowired
     private SearchCache searchCache;
-
-    @Autowired
-    private DetailsController detailsController;
-
-    @Autowired
-    private MoleculeViewController moleculeViewController;
 
     private int totalResults;
     private int interactorTotalResults;
@@ -121,6 +112,8 @@ public class SearchController extends JpaBaseController {
         String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
         String ontologyQueryParam = context.getExternalContext().getRequestParameterMap().get(ONTOLOGY_QUERY_PARAM);
 
+        UserQuery userQuery = getUserQuery();
+
         if (queryParam != null && queryParam.length()>0) {
             if (log.isDebugEnabled()) log.debug("Searching using query parameter: "+queryParam);
 
@@ -164,6 +157,7 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doBinarySearchAction() {
+        UserQuery userQuery = getUserQuery();
         SolrQuery solrQuery = userQuery.createSolrQuery();
 
         doBinarySearch( solrQuery );
@@ -174,6 +168,7 @@ public class SearchController extends JpaBaseController {
     public String doNewBinarySearch() {
         resetDetailControllers();
 
+        UserQuery userQuery = getUserQuery();
         userQuery.setOntologySearchQuery(null);
         
         return doBinarySearchAction();
@@ -185,11 +180,13 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doClearFilterAndSearch(ActionEvent evt) {
+        UserQuery userQuery = getUserQuery();
         userQuery.clearFilters();
         doBinarySearch(evt);
     }
 
     public String doOntologySearchAction() {
+        UserQuery userQuery = getUserQuery();
         final String query = userQuery.getOntologySearchQuery();
 
         if ( query == null) {
@@ -205,12 +202,16 @@ public class SearchController extends JpaBaseController {
     }
 
     public String doNewOntologySearch() {
+        UserQuery userQuery = getUserQuery();
         userQuery.resetSearchQuery();
         resetDetailControllers();
         return doOntologySearchAction();
     }
 
     private void resetDetailControllers() {
+        DetailsController detailsController = (DetailsController) getBean("detailsBean");
+        MoleculeViewController moleculeViewController = (MoleculeViewController) getBean("moleculeViewBean");
+
         detailsController.setInteraction(null);
         moleculeViewController.setInteractor(null);
     }
@@ -234,7 +235,7 @@ public class SearchController extends JpaBaseController {
 
             final String query = solrQuery.getQuery();
             if ( query != null && ( query.startsWith( "*" ) || query.startsWith( "?" ) ) ) {
-                userQuery.setSearchQuery( "*:*" );
+                getUserQuery().setSearchQuery( "*:*" );
                 addErrorMessage( "Your query '"+ query +"' is not correctly formatted",
                                  "Currently we do not support queries prefixed with wildcard characters such as '*' or '?'. " +
                                  "However, wildcard characters can be used anywhere else in one's query (eg. g?vin or gav* for gavin). " +
@@ -287,6 +288,7 @@ public class SearchController extends JpaBaseController {
     }
 
     public InteractorSearchResultDataModel doInteractorSearch(String[] interactorTypeMis) {
+        UserQuery userQuery = getUserQuery();
         final SolrQuery solrQuery = userQuery.createSolrQuery();
 
         if (searchCache.containsInteractorKey(solrQuery, interactorTypeMis)) {
@@ -303,6 +305,7 @@ public class SearchController extends JpaBaseController {
     }
 
     private int countUnfilteredInteractions() {
+        UserQuery userQuery = getUserQuery();
 
         if( !userQuery.isUsingFilters() ) {
             return totalResults;
@@ -368,6 +371,8 @@ public class SearchController extends JpaBaseController {
         sb.append(")");
 
         final String query = sb.toString();
+
+        UserQuery userQuery = getUserQuery();
         userQuery.setSearchQuery( query );
 
         SolrQuery solrQuery = userQuery.createSolrQuery();
@@ -378,8 +383,9 @@ public class SearchController extends JpaBaseController {
     }
 
     public String resetSearch() {
-        this.userQuery.reset();
-        this.userQuery.setSearchQuery( "*:*" );
+        UserQuery userQuery = getUserQuery();
+        userQuery.reset();
+        userQuery.setSearchQuery( "*:*" );
         return doNewBinarySearch();
     }
 
@@ -389,6 +395,8 @@ public class SearchController extends JpaBaseController {
         if ( sortableColumn == null ) {
             sortableColumn = DEFAULT_SORT_COLUMN;
         }
+
+        UserQuery userQuery = getUserQuery();
 
         userQuery.setUserSortColumn( sortableColumn );
         this.setUserSortColumn( sortableColumn );
@@ -403,6 +411,8 @@ public class SearchController extends JpaBaseController {
 
     public void userSortOrder( ValueChangeEvent event ) {
         Boolean sortOrder =  (Boolean) event.getNewValue();
+
+        UserQuery userQuery = getUserQuery();
 
         if ( sortOrder == null ) {
             userQuery.setUserSortOrder( DEFAULT_SORT_ORDER );
@@ -545,6 +555,10 @@ public class SearchController extends JpaBaseController {
 
     public int getUnfilteredTotalCount() {
         return unfilteredTotalCount;
+    }
+
+    private UserQuery getUserQuery() {
+        return (UserQuery) getBean("userQuery");
     }
 
     public String getFirstResultIndex() {

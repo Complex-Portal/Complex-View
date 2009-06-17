@@ -21,6 +21,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.model.BioSource;
@@ -52,6 +53,7 @@ public class BioSourceDialogController extends JpaBaseController {
         this.bioSource = bioSource;
     }
 
+    @Transactional(readOnly = true)
     public void setObjectAc( String ac ) {
         bioSource = getDaoFactory().getBioSourceDao().getByAc( ac );
         if( bioSource == null ) {

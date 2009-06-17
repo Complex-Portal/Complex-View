@@ -29,6 +29,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
@@ -66,17 +67,15 @@ public class DetailsController extends JpaBaseController {
 
     private Interaction interaction;
 
-    @Autowired
-    private SearchController searchController;
-
-    @Autowired
-    private UserQuery userQuery;
-
     @PreRenderView
+    @Transactional(readOnly = true)
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();
         final String interactionAc = context.getExternalContext().getRequestParameterMap().get( INTERACTION_AC_PARAM );
         final String binary = context.getExternalContext().getRequestParameterMap().get( BINARY_PARAM );
+
+        UserQuery userQuery = (UserQuery) getBean("userQuery");
+        SearchController searchController = (SearchController) getBean("searchBean");
 
         if ( interactionAc != null ) {
             log.debug( "Parameter " + INTERACTION_AC_PARAM + " was specified" );
@@ -131,6 +130,7 @@ public class DetailsController extends JpaBaseController {
         this.interaction = interaction;
     }
 
+    @Transactional(readOnly = true)
     public void setInteractionAc( String interactionAc ) {
         if ( log.isDebugEnabled() ) {
             log.debug( "Calling setInteractionAc( '" + interactionAc + "' )..." );
@@ -212,6 +212,7 @@ public class DetailsController extends JpaBaseController {
     @Autowired
     private TableHeaderController tableHeaderController;
 
+    @Transactional(readOnly = true)
     public SimilarInteractionsMatrix getSimilarInteractionMatrix() {
 
         if( matrix != null ) {

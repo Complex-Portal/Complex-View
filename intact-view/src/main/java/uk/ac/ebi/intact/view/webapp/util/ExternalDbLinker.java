@@ -35,7 +35,6 @@ import javax.faces.context.FacesContext;
  * @since 2.0.1-SNAPSHOT
  */
 @Controller
-@Scope( "conversation.access" )
 public class ExternalDbLinker {
 
     @Autowired

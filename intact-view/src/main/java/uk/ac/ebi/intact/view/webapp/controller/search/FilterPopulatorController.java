@@ -90,7 +90,7 @@ public class FilterPopulatorController {
         return values;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<SelectItem> listDatasets() {
         Query query = entityManagerFactory.createEntityManager()
                 .createQuery("select distinct a.annotationText " +

@@ -58,13 +58,7 @@ public class BrowseController extends JpaBaseController {
     private IntactViewConfiguration intactViewConfig;
 
     @Autowired
-    private UserQuery userQuery;
-
-    @Autowired
     private ExternalDbLinker dbLinker;
-
-    @Autowired
-    private SearchController searchController;
 
     private int maxSize = 200;
 
@@ -87,6 +81,7 @@ public class BrowseController extends JpaBaseController {
      * @param evt DisclosureEvent
      */
     public void createListofIdentifiers( DisclosureEvent evt ) {
+         SearchController searchController = (SearchController) getBean("searchBean");
          searchController.onListDisclosureChanged(evt);
          buildListOfIdentifiers();
     }
@@ -97,6 +92,7 @@ public class BrowseController extends JpaBaseController {
 
     public String createListofIdentifiersAndBrowse() {
         buildListOfIdentifiers();
+        SearchController searchController = (SearchController) getBean("searchBean");
         searchController.doInteractorsSearch();
         return "browse";
     }
@@ -107,6 +103,8 @@ public class BrowseController extends JpaBaseController {
 
         final String uniprotFieldName = "uniprotkb_id";
         final String geneNameFieldName = "geneName";
+
+        UserQuery userQuery = (UserQuery) getBean("userQuery");
 
         SolrQuery query = userQuery.createSolrQuery();
         query.setRows(0);

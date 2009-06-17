@@ -25,10 +25,12 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.*;
+import uk.ac.ebi.intact.core.context.IntactContext;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
@@ -57,8 +59,9 @@ public class OntologyBean implements Serializable {
 
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
+
     @Autowired
-    private UserQuery userQuery;
+    private ApplicationContext applicationContext;
 
     public OntologyBean() {
         String tempDir = System.getProperty("java.io.tmpdir");
@@ -149,7 +152,9 @@ public class OntologyBean implements Serializable {
 
         //clear the term map otherwise it keeps growing
         //this termmap is used for display query of Go term with id:name, Ref: getDisplayQuery() in UserQuery.java
-           userQuery.getTermMap().clear();
+        UserQuery userQuery = (UserQuery) applicationContext.getBean("userQuery");
+        userQuery.getTermMap().clear();
+
         for ( OntologyTerm ontologyTerm : result ) {
            userQuery.getTermMap().put( ontologyTerm.getIdentifier(), ontologyTerm.getLabel() );
         }

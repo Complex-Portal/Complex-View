@@ -55,7 +55,7 @@ public class StatisticsController extends BaseController {
     }
 
     @PostConstruct
-    @Transactional
+    @Transactional(readOnly = true)
     public void calculateStats() throws IOException {
         if (log.isInfoEnabled()) log.info("Calculating statistics");
 
@@ -68,6 +68,7 @@ public class StatisticsController extends BaseController {
         cvTermsCount = daoFactory.getCvObjectDao().countAll();
     }
 
+    @Transactional(readOnly = true)
     public int countBinaryInteractionsFromIndex() {
         SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
         IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);

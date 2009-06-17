@@ -27,7 +27,7 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
  * @version $Id$
  */
 @Controller
-@Scope("session")
+@Scope("conversation.access")
 public class UserSessionConfig {
 
     @Autowired

@@ -21,6 +21,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
@@ -52,6 +53,7 @@ public class CvObjectDialogController extends JpaBaseController {
         this.cvObject = cvObject;
     }
 
+    @Transactional(readOnly = true)
     public void setObjectAc( String ac ) {
         if ( log.isDebugEnabled() ) {
             log.debug( "Calling setObjectAc( '"+ ac +"' )..." );

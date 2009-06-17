@@ -32,7 +32,7 @@ import javax.faces.event.ActionEvent;
  * @version $Id$
  */
 @Controller
-@Scope("conversation.access")
+@Scope("session")
 @ConversationName("general")
 public class SearchBrowseDialogController extends BaseController {
 
