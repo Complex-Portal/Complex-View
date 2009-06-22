@@ -18,7 +18,7 @@
     <name>IntAct Services :: PSICQUIC WS</name>
 
     <properties>
-        <cxf.version>2.2.1</cxf.version>
+        <cxf.version>2.2.3-SNAPSHOT</cxf.version>
         <spring.version>2.5.6</spring.version>
 
         <!-- configurable bits -->
@@ -453,7 +453,7 @@
         <repository>
             <id>apache.snapshots</id>
             <name>Apache Snapshots Repository</name>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <url>http://repository.apache.org/snapshots</url>
         </repository>
 
         <repository>
@@ -471,7 +471,7 @@
         <pluginRepository>
             <id>apache.snapshots</id>
             <name>Apache Snapshots Repository</name>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <url>http://repository.apache.org/snapshots</url>
         </pluginRepository>
 
     </pluginRepositories>
