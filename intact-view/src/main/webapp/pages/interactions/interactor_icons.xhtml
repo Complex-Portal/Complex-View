@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsp="http://java.sun.com/JSP/Page"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions">
+
+    <trh:tableLayout borderWidth="0" cellSpacing="1" cellPadding="0" halign="left">
+        <trh:rowLayout>
+                <c:set var="cvtype" value="#{iaf:getCvObjectFromIdentifier(facesContext,interactor.interactorType.identifier,'uk.ac.ebi.intact.model.CvInteractorType')}"/>
+                <trh:cellFormat halign="center" width="15"
+                                inlineStyle="background:#{iconGeneratorImpl.typeColourMap[interactor.interactorType.identifier].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                    <tr:outputText value="#{iconGeneratorImpl.typeColourMap[cvtype.identifier].initials}" shortDesc="#{cvtype.shortLabel}"/>
+                </trh:cellFormat>
+
+            <tr:iterator var="cvXref" value="#{interactor.experimentalRoles}" rows="-1">
+                <c:set var="cvobject"
+                       value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'uk.ac.ebi.intact.model.CvExperimentalRole')}"/>
+                <trh:cellFormat halign="center" width="15"
+                                inlineStyle="background:#{iconGeneratorImpl.expRoleColourMap[cvXref.identifier].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                    <tr:outputText value="#{iconGeneratorImpl.expRoleColourMap[cvobject.identifier].initials}" shortDesc="#{cvobject.shortLabel}"/>
+                </trh:cellFormat>
+            </tr:iterator>
+            <tr:iterator var="cvXref" value="#{interactor.biologicalRoles}" rows="-1">
+                <c:set var="cvobject"
+                       value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'uk.ac.ebi.intact.model.CvBiologicalRole')}"/>
+                <trh:cellFormat halign="center" width="15"
+                                inlineStyle="background:#{iconGeneratorImpl.bioRoleColourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                    <tr:outputText value="#{iconGeneratorImpl.bioRoleColourMap[cvobject.identifier].initials}" shortDesc="#{cvobject.shortLabel}"/>
+                </trh:cellFormat>
+            </tr:iterator>
+        </trh:rowLayout>
+    </trh:tableLayout>
+</ui:composition>

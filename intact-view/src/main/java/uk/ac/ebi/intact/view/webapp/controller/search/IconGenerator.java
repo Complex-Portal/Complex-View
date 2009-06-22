@@ -1,8 +1,5 @@
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
 import java.util.Map;
 
 /**
@@ -10,9 +7,10 @@ import java.util.Map;
  * @version $Id$
  */
 public interface IconGenerator {
-    @PostConstruct
-    @Transactional(readOnly = true)
+
     void prepareColours();
 
-    Map<String, IconGeneratorImpl.ColouredCv> getColourMap();
+    Map<String, IconGeneratorImpl.ColouredCv> getTypeColourMap();
+    Map<String, IconGeneratorImpl.ColouredCv> getExpRoleColourMap();
+    Map<String, IconGeneratorImpl.ColouredCv> getBioRoleColourMap();
 }

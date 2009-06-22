@@ -26,7 +26,6 @@ import uk.ac.ebi.intact.view.webapp.controller.config.ColourPalette;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,9 @@ public class IconGeneratorImpl extends JpaBaseController implements IconGenerato
 
     private static final Log log = LogFactory.getLog( IconGeneratorImpl.class );
 
-    private Map<String,ColouredCv> colourMap;
+    private Map<String,ColouredCv> typeColourMap;
+    private Map<String,ColouredCv> expRoleColourMap;
+    private Map<String,ColouredCv> bioRoleColourMap;
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -51,7 +52,9 @@ public class IconGeneratorImpl extends JpaBaseController implements IconGenerato
     private ColourPalette colourPalette;
 
     public IconGeneratorImpl() {
-        colourMap = new HashMap<String,ColouredCv>(24);
+        typeColourMap = new HashMap<String,ColouredCv>(24);
+        expRoleColourMap = new HashMap<String,ColouredCv>(24);
+        bioRoleColourMap = new HashMap<String,ColouredCv>(24);
     }
 
     @PostConstruct
@@ -59,55 +62,70 @@ public class IconGeneratorImpl extends JpaBaseController implements IconGenerato
     public void prepareColours() {
         if (log.isInfoEnabled()) log.info("Preparing simple icons for CVs");
 
-        final List<String> proteinTypeLabels = listProteinTypeLabels();
-        Collections.sort(proteinTypeLabels);
+        final List<Object[]> proteinTypeLabels = listProteinTypeLabels();
+        //Collections.sort(proteinTypeLabels);
 
-        for (String label : proteinTypeLabels) {
+        for (Object[] protType : proteinTypeLabels) {
             String colour = colourPalette.getNextGrey();
 
-            colourMap.put(label, new ColouredCv(label, colour));
+            String label = protType[1].toString();
+            String description = protType[0].toString();
+
+            typeColourMap.put(label, new ColouredCv(label, colour, description));
         }
 
-        final List<String> expRoleLabels = listExpRoleLabels();
-        Collections.sort(expRoleLabels);
+        final List<Object[]> expRoleLabels = listExpRoleLabels();
+        //Collections.sort(expRoleLabels);
 
-        for (String label : expRoleLabels) {
+        for (Object[] expRole : expRoleLabels) {
             String colour = colourPalette.getNextRed();
-            if("unspecified role".equals( label )){
-                label = "unspecified exprole";
-            }
-            colourMap.put(label, new ColouredCv(label, colour));
+
+            String label = expRole[1].toString();
+            String description = expRole[0].toString();
+
+            expRoleColourMap.put(label, new ColouredCv(label, colour, description));
         }
 
-        final List<String> bioRoleLabels = listBioRoleLabels();
-        Collections.sort(expRoleLabels);
+        final List<Object[]> bioRoleLabels = listBioRoleLabels();
+        //Collections.sort(expRoleLabels);
 
-        for (String label : bioRoleLabels) {
+        for (Object[] bioRole : bioRoleLabels) {
             String colour = colourPalette.getNextGreen();
 
-            colourMap.put(label, new ColouredCv(label, colour));
+            String label = bioRole[1].toString();
+            String description = bioRole[0].toString();
+
+            bioRoleColourMap.put(label, new ColouredCv(label, colour, description));
         }
     }
 
-    public Map<String, ColouredCv> getColourMap() {
-        return colourMap;
+    public Map<String, ColouredCv> getTypeColourMap() {
+        return typeColourMap;
     }
 
-    private List<String> listProteinTypeLabels() {
+    public Map<String, ColouredCv> getExpRoleColourMap() {
+        return expRoleColourMap;
+    }
+
+    public Map<String, ColouredCv> getBioRoleColourMap() {
+        return bioRoleColourMap;
+    }
+
+    private List<Object[]> listProteinTypeLabels() {
         Query query = entityManagerFactory.createEntityManager()
-                .createQuery("select distinct i.cvInteractorType.shortLabel from InteractorImpl i");
+                .createQuery("select distinct i.cvInteractorType.shortLabel, i.cvInteractorType.identifier from InteractorImpl i");
         return query.getResultList();
     }
 
-    private List<String> listExpRoleLabels() {
+    private List<Object[]> listExpRoleLabels() {
         Query query = entityManagerFactory.createEntityManager()
-                .createQuery("select distinct expRole.shortLabel from Component c inner join c.experimentalRoles as expRole");
+                .createQuery("select distinct expRole.shortLabel, expRole.identifier from Component c inner join c.experimentalRoles as expRole");
         return query.getResultList();
     }
 
-    private List<String> listBioRoleLabels() {
+    private List<Object[]> listBioRoleLabels() {
         Query query = entityManagerFactory.createEntityManager()
-                .createQuery("select distinct c.cvBiologicalRole.shortLabel from Component c");
+                .createQuery("select distinct c.cvBiologicalRole.shortLabel, c.cvBiologicalRole.identifier from Component c");
         return query.getResultList();
     }
 
@@ -116,14 +134,18 @@ public class IconGeneratorImpl extends JpaBaseController implements IconGenerato
         private String colourHex;
         private String text;
         private String initials;
+        private String description;
 
-        private ColouredCv(String text, String colourHex) {
+        private ColouredCv(String text, String colourHex, String description) {
             this.text = text;
             this.colourHex = colourHex;
-            if("prey".equals( text )){
-            text = "PY";
+            this.description = description;
+
+            if("prey".equals( description )){
+                description = "PY";
             }
-            this.initials = text.substring(0,2).toUpperCase();
+
+            this.initials = description.substring(0,2).toUpperCase();
         }
 
         public String getColourHex() {
@@ -136,6 +158,10 @@ public class IconGeneratorImpl extends JpaBaseController implements IconGenerato
 
         public String getInitials() {
             return initials;
+        }
+
+        public String getDescription() {
+            return description;
         }
     }
 

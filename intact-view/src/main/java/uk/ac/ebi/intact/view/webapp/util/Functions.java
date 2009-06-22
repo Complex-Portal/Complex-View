@@ -15,14 +15,14 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
-import org.joda.time.DateTime;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
-import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
@@ -111,6 +111,9 @@ public final class Functions {
 
 
     public static CvObject getCvObjectFromIdentifier( FacesContext facesContext, String mi,String cvType ) {
+        if (mi == null || mi.length() == 0) {
+            return null;
+        }
 
         final HttpSession session = ( HttpSession ) facesContext.getExternalContext().getSession( false );
         Map<String, CvObject> miToCv = ( Map<String, CvObject> ) session.getAttribute( MI_TO_CV_MAP_PARAM );
@@ -120,21 +123,23 @@ public final class Functions {
             session.setAttribute( MI_TO_CV_MAP_PARAM, miToCv );
         }
 
+        Class cvClass;
+
+        try {
+            cvClass = Class.forName(cvType);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("CvObject class not found: "+cvType);
+        }
+
         CvObject cvObject;
         if ( miToCv.containsKey( mi ) ) {
             cvObject = miToCv.get( mi );
         } else {
-            //have to do this way, because query with MI:0499 (unspecified role) returns more than one row and IntactException is thrown
-            CvObjectDao<CvObject> cvObjectDao = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao();
-            if ( "expRole".equals( cvType ) ) {
-                final CvExperimentalRole cvExpRole = cvObjectDao.getByPrimaryId( CvExperimentalRole.class, mi );
-                cvObject = cvExpRole;
-            } else if ( "bioRole".equals( cvType ) ) {
-                final CvBiologicalRole cvBioRole = cvObjectDao.getByPrimaryId( CvBiologicalRole.class, mi );
-                cvObject = cvBioRole;
-            } else {
-                cvObject = cvObjectDao.getByPsiMiRef( mi );
-            }
+            CvObjectDao<?> cvObjectDao = IntactContext.getCurrentInstance().getDataContext()
+                    .getDaoFactory().getCvObjectDao(cvClass);
+
+            cvObject = cvObjectDao.getByPsiMiRef(mi);
+
             // even store nulls, so the queries are not performed again
             miToCv.put( mi, cvObject );
         }
