@@ -21,16 +21,12 @@ import org.hupo.psi.mi.psicquic.QueryResponse;
 import org.hupo.psi.mi.psicquic.RequestInfo;
 import org.junit.*;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import psidev.psi.mi.search.index.PsimiIndexWriter;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
-import uk.ac.ebi.intact.psimitab.search.IntactPsimiTabIndexWriter;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrIndexer;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.CoreNames;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.server.SolrJettyRunner;
 
-import java.io.File;
 import java.io.InputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -63,7 +59,7 @@ public class IntactPsicquicServiceTest {
         final int lineCount = indexer.indexMitab( mitabStream, true );
         System.out.println( "Line indexed: " + lineCount );
 
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/META-INF/beans.spring.test.xml", "/jms.spring.xml"});
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/META-INF/beans.spring.test.xml", "/META-INF/psicquic/jms.spring.xml"});
         PsicquicConfig config = (PsicquicConfig)context.getBean("testPsicquicConfig");
         config.setSolrServerUrl( solrJettyRunner.getSolrUrl( CoreNames.CORE_PUB ) );
 
