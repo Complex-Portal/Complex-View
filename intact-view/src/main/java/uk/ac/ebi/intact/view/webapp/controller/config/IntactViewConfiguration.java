@@ -57,6 +57,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String INTACT_HIERARCHVIEW_SEARCHURL = "intact.hierarchview.searchurl";
     private static final String INTACT_HIERARCHVIEW_MAXINTERACTIONS = "intact.hierarchview.maxinteractions";
     private static final String INTACT_CHEBI_URL = "intact.chebi.url";
+    private static final String INTACT_CHEBI_SEARCH_ENABLED = "intact.chebi.search";
     private static final String INTACT_CHEBI_SEARCH_PATH = "intact.chebi.search.path";
     private static final String INTACT_SECRET = "intact.secret";
     private static final String INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS = "intact.search.ontologies.maxsuggestions";
@@ -64,7 +65,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String INTACT_RECIPIENTS = "intact.mail.recipients";
     private static final String PROXY_HOST = "intact.proxy.host";
     private static final String PROXY_PORT = "intact.proxy.port";
-    private static final String INTACT_CHEBI_SEARCH_ENABLED = "intact.chebi.search";
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -85,6 +85,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private String hierarchViewSearchUrl;
     private String hierarchViewMaxInteractions;
     private String chebiUrl;
+    private boolean chebiSearchEnabled;
     private String chebiChemicalSearchPath;
     private String intactSecret;
     private String googleAnalyticsTracker;
@@ -97,7 +98,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private String dastyUrl;
     private String proxyHost;
     private String proxyPort;
-    private boolean chebiSearchEnabled;
 
     public IntactViewConfiguration() {
     }
@@ -146,6 +146,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         hierarchViewSearchUrl = properties.getProperty(INTACT_HIERARCHVIEW_SEARCHURL, hierarchViewSearchUrl);
         hierarchViewMaxInteractions = properties.getProperty(INTACT_HIERARCHVIEW_MAXINTERACTIONS, hierarchViewMaxInteractions);
         chebiUrl = properties.getProperty(INTACT_CHEBI_URL, chebiUrl);
+        chebiSearchEnabled = Boolean.valueOf(properties.getProperty(INTACT_CHEBI_SEARCH_ENABLED, "true"));
         chebiChemicalSearchPath = properties.getProperty(INTACT_CHEBI_SEARCH_PATH, chebiChemicalSearchPath);
         intactSecret = properties.getProperty(INTACT_SECRET, intactSecret);
         maxOntologySuggestions = Integer.parseInt(properties.getProperty(INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS, String.valueOf(maxOntologySuggestions)));
@@ -153,7 +154,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         mailRecipients = properties.getProperty(INTACT_RECIPIENTS, mailRecipients);
         proxyHost = properties.getProperty(PROXY_HOST, proxyHost);
         proxyPort = properties.getProperty(PROXY_PORT, proxyPort);
-        chebiSearchEnabled = Boolean.valueOf(properties.getProperty(INTACT_CHEBI_SEARCH_ENABLED, "true"));
     }
 
     public void storeConfiguration() throws IOException {
@@ -176,6 +176,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, INTACT_HIERARCHVIEW_IMAGEURL, hierarchViewImageUrl);
         addProperty(properties, INTACT_HIERARCHVIEW_MAXINTERACTIONS, hierarchViewMaxInteractions);
         addProperty(properties, INTACT_CHEBI_URL, chebiUrl);
+        addProperty(properties, INTACT_CHEBI_SEARCH_ENABLED, String.valueOf(chebiSearchEnabled));
         addProperty(properties, INTACT_CHEBI_SEARCH_PATH, chebiChemicalSearchPath);
         addProperty(properties, INTACT_SECRET, intactSecret);
         addProperty(properties, INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS, String.valueOf(maxOntologySuggestions));
@@ -183,7 +184,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, INTACT_RECIPIENTS, mailRecipients);
         addProperty(properties, PROXY_HOST, proxyHost);
         addProperty(properties, PROXY_PORT, proxyPort);
-        addProperty(properties, INTACT_CHEBI_SEARCH_ENABLED, String.valueOf(chebiSearchEnabled));
 
         final FileOutputStream os = new FileOutputStream( configFile );
         properties.store( os, webappName+ " configuration");

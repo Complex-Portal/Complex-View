@@ -55,6 +55,7 @@
 
         <!-- ChEBI -->
         <chebi.url>http://www.ebi.ac.uk/chebi</chebi.url>
+        <chebi.search.enabled>false</chebi.search.enabled>
 
         <!-- Das -->
         <das.annotationserver.intact.url>${appRoot}/das-intact/das/</das.annotationserver.intact.url>

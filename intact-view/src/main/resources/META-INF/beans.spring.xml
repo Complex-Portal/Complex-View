@@ -39,6 +39,7 @@
         <property name="hierarchViewMaxInteractions" value="${intact.hierarchview.maxinteractions}"/>
         <property name="chebiUrl" value="${intact.chebi.url}"/>
         <property name="chebiChemicalSearchPath" value="${intact.chebi.search.path}"/>
+        <property name="chebiSearchEnabled" value="${intact.chebi.search}"/>
         <property name="intactSecret" value="${intact.secret}"/>
         <property name="maxOntologySuggestions" value="${intact.search.ontologies.maxsuggestions}"/>
         <property name="googleAnalyticsTracker" value="${intact.google.analytics.tracker}"/>
