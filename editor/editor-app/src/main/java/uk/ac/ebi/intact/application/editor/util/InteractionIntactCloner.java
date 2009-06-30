@@ -18,16 +18,14 @@ package uk.ac.ebi.intact.application.editor.util;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.*;
 
-
 /**
- * TODO comment that class header
+ * Editor specific cloning routine for interactions.
  *
  * @author Prem Anand (prem@ebi.ac.uk)
  * @version $Id$
  * @since 2.0.1-SNAPSHOT
  */
 public class InteractionIntactCloner extends EditorIntactCloner {
-
 
     /**
      * This cloner will be used by the editor to clone the
@@ -40,24 +38,17 @@ public class InteractionIntactCloner extends EditorIntactCloner {
      * @throws IntactClonerException
      */
     @Override
-
     public Experiment cloneExperiment( Experiment experiment ) throws IntactClonerException {
         return new Experiment();
     }
 
-
     @Override
     protected IntactObject cloneIntactObjectCommon( IntactObject ao, IntactObject clone ) throws IntactClonerException {
 
-        if (clone==null || clone instanceof Interaction ) {
+        if (clone == null || clone instanceof Interaction ) {
             return null;
         }
 
         return super.cloneIntactObjectCommon( ao, clone );
     }
-
-
-
-
-
 }
