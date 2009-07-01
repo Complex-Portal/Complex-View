@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
@@ -11,7 +12,7 @@
 
     <artifactId>editor-app</artifactId>
     <packaging>war</packaging>
-    <version>1.9.0</version>
+    <version>1.9.1</version>
 
     <name>IntAct Services :: Editor :: Editor Webapp</name>
 
@@ -23,7 +24,7 @@
 
         <maven.test.skip>true</maven.test.skip>
 
-        <core.version>1.9.6</core.version>
+        <core.version>1.9.7</core.version>
         <bridges.version>2.0.10</bridges.version>
     </properties>
 
@@ -83,6 +84,13 @@
     </profiles>
 
     <dependencies>
+
+        <!--<dependency>-->
+            <!--<groupId>com.oracle</groupId>-->
+            <!--<artifactId>oracle-thin</artifactId>-->
+            <!--<version>10.2.0.4</version>-->
+        <!--</dependency>-->
+
         <!-- Needed by the EditorTopic plugin -->
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
