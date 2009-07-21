@@ -20,9 +20,9 @@
     <name>IntAct Services :: View</name>
 
     <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view</connection>
-        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view</developerConnection>
-        <url>https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-view/</url>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-view</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-view</developerConnection>
+        <url>https://intact.googlecode.com/svn/repo/service/trunk/intact-view</url>
     </scm>
 
     <properties>
