@@ -54,9 +54,9 @@
     <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
         <property name="beans">
             <map>
-                <entry key="intactview:name=intactConfiguration" value-ref="intactViewConfiguration"/>
-                <entry key="intactview:name=dataSource" value-ref="intactViewDataSource"/>
-                <entry key="intactview:name=adminController" value-ref="adminController"/>
+                <entry key="intactview_${intact.webapp.name}:name=intactConfiguration" value-ref="intactViewConfiguration"/>
+                <entry key="intactview_${intact.webapp.name}:name=dataSource" value-ref="intactViewDataSource"/>
+                <entry key="intactview_${intact.webapp.name}:name=adminController" value-ref="adminController"/>
             </map>
         </property>
     </bean>
