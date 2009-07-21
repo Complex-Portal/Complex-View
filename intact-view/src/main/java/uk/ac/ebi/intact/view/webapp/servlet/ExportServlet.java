@@ -101,6 +101,8 @@ public class ExportServlet extends HttpServlet {
          SolrQuery solrQuery = new SolrQuery();
          solrQuery.add(new UrlSolrParams(searchQuery));
 
+        solrQuery.set(org.apache.solr.common.params.CommonParams.SORT, solrQuery.getSortField().replaceAll("\\+", " "));
+
          if (log.isDebugEnabled()) {
              log.debug("Given Solr query:     " + searchQuery);
              log.debug("converted Solr Query: " + solrQuery.toString());
