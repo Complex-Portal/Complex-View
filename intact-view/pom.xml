@@ -15,7 +15,7 @@
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
     <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
-    <version>1.0-beta-6-SNAPSHOT</version>
+    <version>3.0</version>
 
     <name>IntAct Services :: View</name>
 
@@ -50,7 +50,7 @@
         <google.analytics.tracker></google.analytics.tracker>
 
         <!-- Other intact apps -->
-        <intact.hierarchview.url>http://tc-test-1.ebi.ac.uk:8103/intact/hierarchView</intact.hierarchview.url>
+        <intact.hierarchview.url>http://www.ebi.ac.uk/intact/hierarchView-beta</intact.hierarchview.url>
         <intactview.graph.maxInteractionCount>500</intactview.graph.maxInteractionCount>
 
         <!-- ChEBI -->
