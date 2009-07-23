@@ -30,6 +30,15 @@
         <jetty.port>9090</jetty.port>
     </properties>
 
+    <build>
+       <plugins>
+           <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>maven-buildnumber-plugin</artifactId>
+           </plugin>
+       </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
