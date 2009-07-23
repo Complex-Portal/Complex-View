@@ -33,7 +33,6 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-bean" prefix="bean"%>
 
 <%
-    Log logger = LogFactory.getLog("uk.ac.ebi.intact.statisticView.page.sidebarFilter.jsp");
     StatisticHelper helper = null;
     Date eldest = null;
     try
@@ -41,11 +40,10 @@
         helper = new StatisticHelper();
         Timestamp timestamp = helper.getFirstTimestamp();
         eldest = new Date(timestamp.getTime());
-        logger.info("Oldest date found: " + eldest);
     }
-    catch (Exception nde)
+    catch (Throwable nde)
     {
-        logger.error("Error while trying to get the first timestamp.", nde);
+        throw new ServletException("Error while trying to get the first timestamp.", nde);
     }
 
     /**
@@ -57,6 +55,7 @@
     filters.add(new FilterBean("-", ""));
 
     int i = 1;
+    
     while (calendar.getTime().after(eldest))
     {
         calendar.add(Calendar.MONTH, -1); // previous month

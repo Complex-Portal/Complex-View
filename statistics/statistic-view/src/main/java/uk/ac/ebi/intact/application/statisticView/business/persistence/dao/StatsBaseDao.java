@@ -22,4 +22,5 @@ public interface StatsBaseDao<T extends StatsBase> {
 
     Collection<T> getAll();
 
+    void setEntityClass(Class<T> stats);
 }

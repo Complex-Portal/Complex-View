@@ -15,7 +15,7 @@ import uk.ac.ebi.intact.application.statisticView.business.model.IntactStatistic
 import uk.ac.ebi.intact.application.statisticView.business.persistence.dao.StatsDaoFactory;
 import uk.ac.ebi.intact.application.statisticView.business.util.IntactStatisticComparator;
 import uk.ac.ebi.intact.application.statisticView.graphic.ChartBuilder;
-import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.core.IntactException;
 
 import java.awt.*;
 import java.sql.Timestamp;
@@ -145,12 +145,17 @@ public class StatisticHelper {
     }
 
     private List getIntactStatistics() throws IntactException {
-
         Collection<IntactStatistics> result =
                 StatsDaoFactory.getStatsBaseDao( IntactStatistics.class ).getAll();
 
         ArrayList toSort = new ArrayList( result );
+
+        if (result.isEmpty()) {
+            throw new RuntimeException("No statistics found");
+        }
+
         Collections.sort( toSort, new IntactStatisticComparator() );
+
         return toSort;
     }
 

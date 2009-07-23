@@ -8,7 +8,7 @@ package uk.ac.ebi.intact.application.statisticView.business.data;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.statisticView.business.model.IntactStatistics;
-import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.core.IntactException;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

@@ -15,7 +15,7 @@ import uk.ac.ebi.intact.application.statisticView.business.util.Constants;
 import uk.ac.ebi.intact.application.statisticView.struts.view.FilterForm;
 import uk.ac.ebi.intact.application.statisticView.struts.view.IntactStatisticsBean;
 import uk.ac.ebi.intact.application.statisticView.struts.view.ViewBeanFactory;
-import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.core.IntactException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -21,7 +21,7 @@ import uk.ac.ebi.intact.application.statisticView.business.model.BioSourceStatis
 import uk.ac.ebi.intact.application.statisticView.business.model.IdentificationMethodStatistics;
 import uk.ac.ebi.intact.application.statisticView.business.model.IntactStatistics;
 import uk.ac.ebi.intact.application.statisticView.business.util.IdentificationComparator;
-import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.core.IntactException;
 
 import java.awt.*;
 import java.util.*;

@@ -18,9 +18,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.application.statisticView.business.model.IntactStatistics;
 import uk.ac.ebi.intact.application.statisticView.business.persistence.dao.StatsDaoFactory;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.persistence.dao.BaseDao;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.BaseDao;
 
 import java.sql.SQLException;
 import java.text.ParseException;

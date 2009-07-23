@@ -1,5 +1,4 @@
-<%@ page import="uk.ac.ebi.intact.persistence.dao.DaoFactory" %>
-<%@ page import="uk.ac.ebi.intact.context.IntactContext" %>
+<%@ page import="uk.ac.ebi.intact.core.context.IntactContext" %>
 <%@ page language="java"%>
 
 <!--

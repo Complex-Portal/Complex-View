@@ -8,8 +8,7 @@ package uk.ac.ebi.intact.application.statisticView.business.persistence.dao;
 import org.hibernate.ejb.HibernateEntityManager;
 import uk.ac.ebi.intact.application.statisticView.business.model.StatsBase;
 import uk.ac.ebi.intact.application.statisticView.business.persistence.dao.impl.StatsBaseDaoImpl;
-import uk.ac.ebi.intact.config.DataConfig;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
 
 import javax.persistence.EntityManager;
 import java.sql.Connection;
@@ -24,7 +23,9 @@ import java.sql.Connection;
 public class StatsDaoFactory {
 
     public static <T extends StatsBase> StatsBaseDao getStatsBaseDao( Class<T> stats ) {
-        return new StatsBaseDaoImpl<T>( stats, getEntityManager(), IntactContext.getCurrentInstance().getSession() );
+        StatsBaseDao statsDao = (StatsBaseDao) IntactContext.getCurrentInstance().getSpringContext().getBean("statsBaseDaoImpl");
+        statsDao.setEntityClass(stats);
+        return statsDao;
     }
 
     public static Connection connection() {
@@ -32,8 +33,7 @@ public class StatsDaoFactory {
     }
 
     private static EntityManager getEntityManager() {
-        DataConfig config = IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig();
-        return config.getEntityManagerFactory().createEntityManager();
+        return IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getEntityManager();
     }
 
 }

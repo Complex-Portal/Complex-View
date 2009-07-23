@@ -19,76 +19,22 @@
 
     <distributable/>
 
-    <!-- IntAct Init parameters -->
-    <context-param>
-        <param-name>uk.ac.ebi.intact.AC_PREFIX</param-name>
-        <param-value>EBI</param-value>
-        <description>
-            The Accession Number Prefix for the objects created
-            by the application and stored in the database.
-        </description>
-    </context-param>
-
-    <context-param>
-        <param-name>uk.ac.ebi.intact.INSTITUTION_LABEL</param-name>
-        <param-value>ebi</param-value>
-        <description>
-            The label of the institution, used to retrieve the Institution object
-            if it already exists, or to create a new institution
-        </description>
-    </context-param>
-
-    <context-param>
-        <param-name>uk.ac.ebi.intact.PRELOAD_COMMON_CVOBJECTS</param-name>
-        <param-value>false</param-value>
-        <description>
-            Preload the most common CvObjects on application start, so it is
-            faster to retrieve them later
-        </description>
-    </context-param>
-
-    <context-param>
-        <param-name>uk.ac.ebi.intact.FORCE_NO_SCHEMA_VERSION_CHECK</param-name>
-        <param-value>true</param-value>
-        <description>
-            If true, don't check the schema version agains the intact-core version. Default: false
-        </description>
-    </context-param>
-
-    <!-- Where the log file is stored -->
-    <context-param>
-        <param-name>logfile</param-name>
-        <param-value>intact_log.txt</param-value>
-    </context-param>
 
     <!-- =================================================================== -->
 
-    !-- Filter to init the IntactContext at the beginning of the request and close the
-    transaction at the end -->
-    <filter>
-        <filter-name>intactFilter</filter-name>
-        <filter-class>uk.ac.ebi.intact.webapp.IntactSessionRequestFilter</filter-class>
-        <init-param>
-            <param-name>uk.ac.ebi.intact.filter.EXCLUDED_EXTENSIONS</param-name>
-            <param-value>*.jpg,*.gif,*.png</param-value>
-            <description>
-                List of extensions. If the request URL ends with one of the params provided,
-                it won't be filtered by the IntactSessionRequestFilter and no IntactContext
-                will be created for those requests.
-            </description>
-        </init-param>
-    </filter>
+   <!-- Spring resources -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath*:/META-INF/*.spring.xml
+        </param-value>
+    </context-param>
 
-    <filter-mapping>
-        <filter-name>intactFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <!-- Listeners -->
     <listener>
-        <listener-class>uk.ac.ebi.intact.application.statisticView.webapp.HibernateWebappListener</listener-class>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
     </listener>
-
 
     <!-- =============================== Action Servlet Configuration ==================================== -->
 

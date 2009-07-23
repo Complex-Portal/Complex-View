@@ -28,6 +28,11 @@
 
     <properties>
         <jetty.port>9090</jetty.port>
+
+        <hibernate.driver>${db.driver}</hibernate.driver>
+        <hibernate.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</hibernate.url>
+        <hibernate.user>${db.user}</hibernate.user>
+        <hibernate.password>${db.password}</hibernate.password>
     </properties>
 
     <build>
@@ -43,7 +48,14 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-core</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>xerces</groupId>-->
+            <!--<artifactId>xercesImpl</artifactId>-->
+            <!--<version>2.9.1</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>jfree</groupId>
@@ -51,12 +63,12 @@
             <version>1.0.9</version>
         </dependency>
 
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.1</version>
-            <scope>runtime</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>commons-dbcp</groupId>-->
+            <!--<artifactId>commons-dbcp</artifactId>-->
+            <!--<version>1.1</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>commons-dbutils</groupId>
             <artifactId>commons-dbutils</artifactId>
