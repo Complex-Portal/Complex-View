@@ -238,12 +238,12 @@
          <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psi25-xml</artifactId>
-            <version>1.7.5-SNAPSHOT</version>
+            <version>1.7.6-SNAPSHOT</version>
         </dependency>
          <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.7.5-SNAPSHOT</version>
+            <version>1.7.6-SNAPSHOT</version>
         </dependency>
 
         <!-- other -->
