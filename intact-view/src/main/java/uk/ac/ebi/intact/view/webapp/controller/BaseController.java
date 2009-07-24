@@ -1,16 +1,21 @@
 package uk.ac.ebi.intact.view.webapp.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.conversation.ConversationBindingEvent;
+import org.apache.myfaces.orchestra.conversation.ConversationBindingListener;
 import org.apache.myfaces.trinidad.component.UIXCollection;
 import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.myfaces.trinidad.component.UIXTree;
 import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.trinidad.model.RowKeySet;
-import org.springframework.context.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,7 +27,9 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public abstract class BaseController implements Serializable {
+public abstract class BaseController implements Serializable, ConversationBindingListener {
+
+    private static final Log log = LogFactory.getLog( BaseController.class );
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -123,6 +130,23 @@ public abstract class BaseController implements Serializable {
 
     protected Object getBean(String name) {
         return applicationContext.getBean(name);
+    }
+
+    public void valueBound(ConversationBindingEvent event) {
+
+        if (log.isDebugEnabled()) {
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            log.debug("Conversation event (value bound): conversation="+event.getConversation().getName()+
+                ", name="+event.getName()+", session: "+request.getSession().getId());
+        }
+    }
+
+    public void valueUnbound(ConversationBindingEvent event) {
+        if (log.isDebugEnabled()) {
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            log.debug("Conversation event (value unbound): conversation="+event.getConversation().getName()+
+                    ", name="+event.getName()+", session: "+request.getSession().getId());
+        }
     }
 }
 
