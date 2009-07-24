@@ -19,6 +19,10 @@
           <base-name>uk.ac.ebi.intact.Messages</base-name>
           <var>messages</var>
       </resource-bundle>
+      <resource-bundle>
+          <base-name>uk.ac.ebi.intact.binarysearch.BuildInfo</base-name>
+          <var>buildInfo</var>
+      </resource-bundle>
   </application>
 
     <lifecycle>
