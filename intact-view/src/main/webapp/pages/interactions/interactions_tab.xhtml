@@ -170,6 +170,12 @@
                 <h:panelGroup>
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
+                    <c:set value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"
+                           var="intactXrefA"/>
+                    <tr:commandLink action="molecule">
+                        <f:setPropertyActionListener value="#{intactXrefA}" target="#{moleculeViewBean.interactorAc}"/>
+                        <tr:image source="/images/logos/dasty2_logo_50.png" inlineStyle="border-width:0"/>
+                    </tr:commandLink>
                 </h:panelGroup>
             </f:facet>
             <f:facet name="chebi">
@@ -186,20 +192,9 @@
                     <br/>
                 </h:panelGroup>
             </f:facet>
-            <!--<f:facet name="intact">
-                <h:panelGroup>
-                    <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>-->
         </tr:switcher>
     </tr:iterator>
-    <c:set value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"
-           var="intactXrefA"/>
-    <tr:commandLink action="molecule">
-        <f:setPropertyActionListener value="#{intactXrefA}" target="#{moleculeViewBean.interactorAc}"/>
-        <tr:image source="/images/logos/dasty2_logo_50.png" inlineStyle="border-width:0"/>
-    </tr:commandLink>
+
 </tr:column>
 
 <tr:column headerText="#{messages['moleculeB.name']}" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.name')}">
@@ -221,8 +216,12 @@
                 <h:panelGroup>
                     <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
                     <br/>
-                    <!--<iax:goDrugPortProteinView query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>-->
+                    <c:set value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorB.identifiers)}"
+                           var="intactXrefB"/>
+                    <tr:commandLink action="molecule">
+                        <f:setPropertyActionListener value="#{intactXrefB}" target="#{moleculeViewBean.interactorAc}"/>
+                        <tr:image source="/images/logos/dasty2_logo_50.png" inlineStyle="border-width:0"/>
+                    </tr:commandLink>
                 </h:panelGroup>
             </f:facet>
             <f:facet name="chebi">
@@ -237,21 +236,8 @@
                     <br/>
                 </h:panelGroup>
             </f:facet>
-            <!--<f:facet name="intact">
-                <h:panelGroup>
-                    <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>-->
         </tr:switcher>
     </tr:iterator>
-    <c:set value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorB.identifiers)}"
-           var="intactXrefB"/>
-    <tr:commandLink action="molecule">
-        <f:setPropertyActionListener value="#{intactXrefB}" target="#{moleculeViewBean.interactorAc}"/>
-        <tr:image source="/images/logos/dasty2_logo_50.png" inlineStyle="border-width:0"/>
-    </tr:commandLink>
-
 </tr:column>
 
 <tr:column headerText="#{messages['moleculeA.aliases']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.aliases')}">
