@@ -361,6 +361,17 @@
         <url-pattern>/feed</url-pattern>
     </servlet-mapping>
 
+    <!-- Redirection servlet, for legacy inbound traffic -->
+    <servlet>
+        <servlet-name>legacyRedirection</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.LegacyRedirectionServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>legacyRedirection</servlet-name>
+        <url-pattern>/site/*</url-pattern>
+    </servlet-mapping>
+
     <!-- DAS Proxy Servlet -->
     <servlet>
         <servlet-name>das</servlet-name>
