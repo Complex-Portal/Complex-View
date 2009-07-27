@@ -48,6 +48,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String INTACT_DOTM_URL = "intact.dotm.url";
     private static final String INTACT_FTP_URL = "intact.ftp.url";
     private static final String INTACT_NEWS_MAXINBOX = "intact.news.maxinbox";
+    private static final String INTACT_WARNING_MSG = "intact.warning.msg";
     private static final String INTACT_CONFIGFILE = "intact.configfile";
     private static final String INTACT_GRAPH_MAX_INTERACTION_COUNT = "intact.graph.maxInteractionCount";
     private static final String INTACT_SOLR_INTERACTIONS_URL = "intact.solr.interactions.url";
@@ -137,6 +138,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         dotmUrl = properties.getProperty(INTACT_DOTM_URL, dotmUrl);
         ftpUrl = properties.getProperty(INTACT_FTP_URL, ftpUrl);
         maxNewsInBox = Integer.parseInt(properties.getProperty(INTACT_NEWS_MAXINBOX, String.valueOf(maxNewsInBox)));
+        warningMessage = properties.getProperty(INTACT_WARNING_MSG, warningMessage);
         configFile = properties.getProperty(INTACT_CONFIGFILE, configFile);
         graphMaxInteractionCount = Integer.parseInt(properties.getProperty(INTACT_GRAPH_MAX_INTERACTION_COUNT, String.valueOf(graphMaxInteractionCount)));
         solrInteractionsUrl = properties.getProperty(INTACT_SOLR_INTERACTIONS_URL, solrInteractionsUrl);
@@ -168,6 +170,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, INTACT_DOTM_URL, dotmUrl);
         addProperty(properties, INTACT_FTP_URL, ftpUrl);
         addProperty(properties, INTACT_NEWS_MAXINBOX, String.valueOf(maxNewsInBox));
+        addProperty(properties, INTACT_WARNING_MSG, warningMessage);
         addProperty(properties, INTACT_CONFIGFILE, configFile);
         addProperty(properties, INTACT_GRAPH_MAX_INTERACTION_COUNT, String.valueOf(graphMaxInteractionCount));
         addProperty(properties, INTACT_SOLR_INTERACTIONS_URL, solrInteractionsUrl);
