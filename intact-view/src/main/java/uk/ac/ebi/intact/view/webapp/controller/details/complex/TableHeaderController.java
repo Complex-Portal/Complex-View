@@ -15,14 +15,13 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.details.complex;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.context.annotation.Scope;
-
-import java.util.List;
-import java.util.Collection;
-
 import com.google.common.collect.Lists;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Holds the labels to be displayed in the table header of the similar interaction search result page.

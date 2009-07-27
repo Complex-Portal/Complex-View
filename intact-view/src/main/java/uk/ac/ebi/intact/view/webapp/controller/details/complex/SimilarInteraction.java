@@ -15,11 +15,11 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.details.complex;
 
-import com.google.common.collect.Sets;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
-import java.util.Set;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * A row in our matrix of similar interactions.

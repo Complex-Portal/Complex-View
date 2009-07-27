@@ -18,10 +18,6 @@ package uk.ac.ebi.intact.view.webapp.util;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 import uk.ac.ebi.intact.commons.util.DesEncrypter;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
@@ -29,11 +25,6 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.faces.context.FacesContext;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
 
 /**
  * TODO comment this!

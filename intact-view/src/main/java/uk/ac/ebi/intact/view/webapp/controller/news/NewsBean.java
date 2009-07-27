@@ -17,25 +17,24 @@ package uk.ac.ebi.intact.view.webapp.controller.news;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.faces.component.news.FeedType;
 import uk.ac.ebi.faces.component.news.NewsUtil;
 import uk.ac.ebi.faces.model.news.News;
 import uk.ac.ebi.faces.model.news.NewsItem;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
 
 /**
  * News backing bean.

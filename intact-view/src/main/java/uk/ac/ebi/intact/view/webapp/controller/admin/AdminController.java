@@ -15,14 +15,12 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.admin;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.application.StatisticsController;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.FilterPopulatorController;
 
 import java.io.IOException;

@@ -18,16 +18,11 @@ package uk.ac.ebi.intact.view.webapp.controller.details;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
-
-import javax.faces.context.FacesContext;
 
 /**
  * BioSource dialog controller.

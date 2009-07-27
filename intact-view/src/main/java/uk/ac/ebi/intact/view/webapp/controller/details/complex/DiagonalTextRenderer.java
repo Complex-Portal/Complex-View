@@ -18,13 +18,13 @@ package uk.ac.ebi.intact.view.webapp.controller.details.complex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.font.TextLayout;
-import java.awt.image.WritableRenderedImage;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRenderedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**

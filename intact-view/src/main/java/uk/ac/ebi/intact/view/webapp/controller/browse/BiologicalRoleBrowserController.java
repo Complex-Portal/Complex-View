@@ -15,13 +15,12 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.apache.solr.client.solrj.SolrServerException;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.LazyLoadedOntologyTerm;
-import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.LazyLoadedOntologyTerm;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 
 /**
  * Controller for GoBrowsing

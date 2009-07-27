@@ -1,22 +1,21 @@
 package uk.ac.ebi.intact.view.webapp.controller.admin;
 
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.orchestra.viewController.annotations.InitView;
-import org.apache.myfaces.orchestra.conversation.ConversationManager;
 import org.apache.myfaces.orchestra.conversation.Conversation;
+import org.apache.myfaces.orchestra.conversation.ConversationManager;
+import org.apache.myfaces.orchestra.viewController.annotations.InitView;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.hibernate.stat.QueryStatistics;
 import org.hibernate.stat.Statistics;
-import org.springframework.stereotype.Component;
-import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
-import uk.ac.ebi.intact.core.context.IntactContext;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * TODO comment this

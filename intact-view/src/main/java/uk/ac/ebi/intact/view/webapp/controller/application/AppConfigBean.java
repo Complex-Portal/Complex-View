@@ -17,19 +17,13 @@ package uk.ac.ebi.intact.view.webapp.controller.application;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.ac.ebi.intact.view.webapp.util.WebappUtils;
-import uk.ac.ebi.intact.view.webapp.IntactViewException;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
-import javax.faces.context.FacesContext;
 import javax.annotation.PostConstruct;
-import java.io.Serializable;
 import java.io.File;
-import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Application scope bean, with configuration stuff

@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.application;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,10 +28,12 @@ import org.apache.lucene.store.FSDirectory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
-import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
-import uk.ac.ebi.intact.view.webapp.util.*;
-import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
+import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
+import uk.ac.ebi.intact.view.webapp.util.OntologiesIndexSearcher;
+import uk.ac.ebi.intact.view.webapp.util.OntologiesIndexWriter;
+import uk.ac.ebi.intact.view.webapp.util.OntologyTerm;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
@@ -41,8 +44,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.Lists;
 /**
  * Backing bean for Ontology Search and Autocomplete feature
  *

@@ -15,8 +15,6 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.details.complex;
 
-import uk.ac.ebi.intact.view.webapp.controller.details.DetailsController;
-
 /**
  * A lightweight interactor for our complex display.
 *

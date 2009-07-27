@@ -15,13 +15,11 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
-import org.apache.myfaces.trinidad.model.TreeModel;
-import org.apache.myfaces.trinidad.event.LaunchEvent;
-import org.apache.myfaces.trinidad.event.ReturnEvent;
-import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.springframework.stereotype.Controller;
+import org.apache.myfaces.trinidad.context.RequestContext;
+import org.apache.myfaces.trinidad.model.TreeModel;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyBrowserController;
 

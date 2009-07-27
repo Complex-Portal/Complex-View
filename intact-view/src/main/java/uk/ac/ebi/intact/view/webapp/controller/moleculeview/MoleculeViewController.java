@@ -15,24 +15,21 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.moleculeview;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.context.annotation.Scope;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.Interactor;
-import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
 import javax.faces.context.FacesContext;
-import java.util.List;
 
 /**
  * TODO comment that class header

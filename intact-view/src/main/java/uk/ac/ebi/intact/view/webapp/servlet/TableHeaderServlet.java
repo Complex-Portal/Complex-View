@@ -16,28 +16,21 @@
 package uk.ac.ebi.intact.view.webapp.servlet;
 
 
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import uk.ac.ebi.intact.view.webapp.controller.details.complex.DiagonalTextRenderer;
-import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimilarInteractionsMatrix;
-import uk.ac.ebi.intact.view.webapp.controller.details.complex.SimpleInteractor;
 import uk.ac.ebi.intact.view.webapp.controller.details.complex.TableHeaderController;
-import uk.ac.ebi.intact.view.webapp.controller.details.DetailsController;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.awt.image.WritableRenderedImage;
 import java.awt.*;
+import java.awt.image.WritableRenderedImage;
 import java.io.IOException;
-import java.util.*;
-
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 
 /**

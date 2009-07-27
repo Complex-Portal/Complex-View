@@ -16,8 +16,8 @@
 package uk.ac.ebi.intact.view.webapp.controller.list;
 
 
-import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.apache.myfaces.trinidad.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
