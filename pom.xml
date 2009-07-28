@@ -3,7 +3,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>29</version>
+        <version>30</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -89,101 +89,9 @@
                 </configuration>
             </plugin>
 
-                <plugin>
-                    <groupId>uk.ac.ebi.intact.datasets</groupId>
-                    <artifactId>dataset-import-maven-plugin</artifactId>
-                    <version>1.7.0</version>
-                    <executions>
-                        <execution>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>import</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-                <plugin>
-                    <groupId>uk.ac.ebi.intact.datasets</groupId>
-                    <artifactId>dbunit-dataset-maven-plugin</artifactId>
-                    <configuration>
-                        <noexport>true</noexport>
-                        <providerName>PsiTestDatasetProvider</providerName>
-                        <cvConfiguration>
-                            <oboUrl>
-                                http://svn.sourceforge.net/viewvc/*checkout*/intact/repo/utils/data/controlledVocab/psi-mi25-4intact.obo
-                            </oboUrl>
-                            <additionalUrl>
-                                http://intact.svn.sourceforge.net/viewvc/*checkout*/intact/repo/utils/data/controlledVocab/intact-unique.csv
-                            </additionalUrl>
-                            <additionalAnnotationsUrl>
-                                http://intact.svn.sourceforge.net/viewvc/*checkout*/intact/repo/utils/data/controlledVocab/additional-annotations.csv
-                            </additionalAnnotationsUrl>
-                        </cvConfiguration>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>dataset</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
-
-    <profiles>
-        <profile>
-            <id>imex</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>uk.ac.ebi.intact.datasets</groupId>
-                        <artifactId>dataset-import-maven-plugin</artifactId>
-                        <configuration>
-                            <id>IMEX</id>
-                            <provider>uk.ac.ebi.intact.unitdataset.ImexDatasetProvider</provider>
-                            <tempH2>${tempH2}</tempH2>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <dependencies>
-                <dependency>
-                    <groupId>uk.ac.ebi.intact.datasets</groupId>
-                    <artifactId>intact-dataset-imex</artifactId>
-                    <version>1.6.0-SNAPSHOT</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                    <version>1.0.20070429</version>
-                </dependency>
-            </dependencies>
-        </profile>
-         <profile>
-             <id>ebi-db</id>
-             <activation>
-                 <property>
-                     <name>db</name>
-                 </property>
-             </activation>
-             <build>
-                 <plugins>
-                     <plugin>
-                         <groupId>uk.ac.ebi.intact.plugins</groupId>
-                         <artifactId>hibernateconfig-maven-plugin</artifactId>
-                         <configuration>
-                         <formatSql>false</formatSql>
-                         </configuration>
-                     </plugin>
-                 </plugins>
-             </build>
-         </profile>
-     </profiles>
 
     <dependencyManagement>
         <dependencies>
