@@ -46,11 +46,9 @@
 
     </bean>
 
-    <bean id="intactViewDataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="driverClassName" value="${db.driver}"/>
-        <property name="url" value="${hibernate.url}"/>
-        <property name="username" value="${db.user}"/>
-        <property name="password" value="${db.password}"/>
+    <bean id="intactViewDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/${db.jndi}"/>
     </bean>
+
 
 </beans>
