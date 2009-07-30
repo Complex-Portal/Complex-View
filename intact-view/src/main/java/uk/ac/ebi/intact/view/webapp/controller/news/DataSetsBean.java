@@ -18,7 +18,7 @@ package uk.ac.ebi.intact.view.webapp.controller.news;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.faces.DataLoadingException;
+import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets;
 import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets.Dataset;
@@ -59,7 +59,7 @@ public class DataSetsBean implements Serializable {
         try {
             dataSets = SiteUtils.readDatasets( datasetsXml );
         }
-        catch ( DataLoadingException e ) {
+        catch ( IntactViewException e ) {
             e.printStackTrace();
             dataSets = new ArrayList<Dataset>();
         }

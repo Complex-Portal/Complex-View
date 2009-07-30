@@ -7,7 +7,7 @@
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:ebi="http://ebi.ac.uk/faces/components"
+
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
 
@@ -35,30 +35,10 @@
                             style="border:0"/>
         </tr:panelHorizontalLayout>
 
-        <!--<trh:script>-->
-            <!--function intact_clearAndFocusField(id) {-->
-                <!--var elem = document.getElementById(id);-->
-                <!--elem.value = '';-->
-                <!--elem.focus();-->
-            <!--}-->
-
-            <!--dojo.addOnLoad(function () {-->
-                <!--intact_clearAndFocusField('searchSubForm:searchQuery');-->
-            <!--});-->
-
-        <!--</trh:script>-->
-
-        <!--<iav:searchBox id="sideSearchBox" value="#{userQuery.searchQuery}" title="#{intactView['webapp.name']}"/>-->
-
-        <!--<ebi:dynamicMenu id="menu1" sourceUrl="#{intactViewConfiguration.menuUrl}"/>-->
         <ui:include src="/left_main_menu.xhtml"/>
 
         <h:panelGroup>
-            <ebi:news id="news1"
-                      sourceUrl="#{intactViewConfiguration.newsUrl}"
-                      maxShown="#{intactViewConfiguration.maxNewsInBox}"
-                      newsFeedUrl="#{facesContext.externalContext.requestContextPath}/feed"
-                      archiveUrl="#{facesContext.externalContext.requestContextPath}/pages/news/news_archive.xhtml"/>
+            <ui:include src="/news_section.xhtml"/>
                    
         </h:panelGroup>
 

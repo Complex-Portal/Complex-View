@@ -115,6 +115,10 @@
 	            <artifactId>maven-jaxb2-plugin</artifactId>
                 <configuration>
                     <schemaDirectory>src/main/resources/META-INF/schema</schemaDirectory>
+                    <schemaIncludes>
+		        <include>dotm*.xsd</include>
+                        <include>news*.xsd</include>
+                    </schemaIncludes>
                     <bindingDirectory>src/main/resources/META-INF/schema</bindingDirectory>
                     <generatePackage>uk.ac.ebi.intact.view.webapp.controller.news.items</generatePackage>
                     <extension>true</extension>
@@ -188,11 +192,11 @@
         </repository>
 
         <!-- PrimeFaces repo -->
-        <repository>
-            <id>prime-repo</id>
-            <name>Prime Technology Maven Repository</name>
-            <url>http://repository.prime.com.tr/</url>
-        </repository>
+        <!--<repository>-->
+            <!--<id>prime-repo</id>-->
+            <!--<name>Prime Technology Maven Repository</name>-->
+            <!--<url>http://repository.prime.com.tr/</url>-->
+        <!--</repository>-->
     </repositories>
 
     <!-- Project dependencies -->
@@ -310,20 +314,6 @@
         </dependency>
 
         <dependency>
-            <groupId>uk.ac.ebi.faces</groupId>
-            <artifactId>ebifaces-core</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-
-        <!--ols added for ontology search implementation--> 
-        <!--
-        <dependency>
-            <groupId>uk.ac.ebi.intact.util</groupId>
-            <artifactId>intact-ols</artifactId>
-            <version>2.0-beta-10-SNAPSHOT</version>
-        </dependency>
--->
-        <dependency>
             <groupId>com.sun.facelets</groupId>
             <artifactId>jsf-facelets</artifactId>
             <version>1.1.15.B1</version>
@@ -427,6 +417,12 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>rome</artifactId>
+            <version>0.8</version>
         </dependency>
 
     </dependencies>

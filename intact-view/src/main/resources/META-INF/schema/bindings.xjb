@@ -19,8 +19,12 @@
            <schemaBindings>
                <package name="uk.ac.ebi.intact.view.webapp.controller.news.items"/>
            </schemaBindings>
-       </bindings>
+      </bindings>
 
-    
+     <bindings schemaLocation="news-1.3.xsd" node="/xs:schema" >
+        <schemaBindings>
+            <package name="uk.ac.ebi.intact.view.webapp.controller.news.items"/>
+        </schemaBindings>
+    </bindings>
    
 </bindings>

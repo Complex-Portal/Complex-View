@@ -22,11 +22,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.faces.component.news.FeedType;
-import uk.ac.ebi.faces.component.news.NewsUtil;
-import uk.ac.ebi.faces.model.news.News;
-import uk.ac.ebi.faces.model.news.NewsItem;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.view.webapp.controller.news.items.News;
+import uk.ac.ebi.intact.view.webapp.controller.news.items.NewsItem;
+import uk.ac.ebi.intact.view.webapp.controller.news.utils.FeedType;
+import uk.ac.ebi.intact.view.webapp.controller.news.utils.NewsUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -65,7 +65,7 @@ public class NewsBean implements Serializable {
             log.trace( "newsXml " + newsXml);
         }
         newsObject = NewsUtil.readNews( newsXml );
-        news = newsObject.getNewsItem();
+        news = newsObject.getNewsItems();
 
         // urgent news
         urgentNews = new ArrayList<NewsItem>();

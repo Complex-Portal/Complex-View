@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE facelet-taglib PUBLIC
+        "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+        "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+
+<facelet-taglib>
+    <namespace>http://www.ebi.ac.uk/faces/site</namespace>
+
+    <function>
+        <function-name>absoluteContextPath</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>java.lang.String absoluteContextPath()</function-signature>
+    </function>
+
+    <function>
+        <function-name>absoluteEbiUrl</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>java.lang.String absoluteEbiUrl()</function-signature>
+    </function>
+
+    <function>
+        <function-name>convertToDate</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>java.util.Date convertToDate(java.lang.Object,java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <function-name>convertToInt</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>int convertToInteger(java.lang.Object)</function-signature>
+    </function>
+
+    <function>
+        <function-name>convertToBoolean</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>boolean convertToBoolean(java.lang.Object)</function-signature>
+    </function>
+
+    <function>
+        <function-name>isTrimmable</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>boolean isTrimmable(java.lang.String,int)</function-signature>
+    </function>
+
+    <function>
+        <function-name>trim</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>java.lang.String trim(java.lang.String,int)</function-signature>
+    </function>
+
+    <function>
+        <function-name>clientIdFor</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>java.lang.String clientIdFor(javax.faces.component.UIComponent)</function-signature>
+    </function>
+
+    <function>
+        <function-name>uniqueId</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>java.lang.String uniqueId()</function-signature>
+    </function>
+
+    <function>
+        <function-name>isBrowserExplorer</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>boolean isBrowserExplorer()</function-signature>
+    </function>
+
+    <function>
+        <function-name>urlEncode</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>java.lang.String urlEncode(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <function-name>urlDecode</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>java.lang.String urlDecode(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <function-name>resolveExpression</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.SiteFunctions</function-class>
+        <function-signature>java.lang.String resolveExpression(java.lang.String)</function-signature>
+    </function>
+
+</facelet-taglib>

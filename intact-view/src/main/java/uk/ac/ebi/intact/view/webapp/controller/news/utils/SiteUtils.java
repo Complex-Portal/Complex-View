@@ -15,7 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.news.utils;
 
-import uk.ac.ebi.faces.DataLoadingException;
+import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets;
 
 import javax.xml.bind.JAXBContext;
@@ -38,14 +38,14 @@ public class SiteUtils {
 
     private SiteUtils() {}
 
-    public static List<Datasets.Dataset> readDatasets( String datasetsXml ) throws DataLoadingException {
+    public static List<Datasets.Dataset> readDatasets( String datasetsXml ) throws IntactViewException {
         List<Datasets.Dataset> dataSets;
         Datasets datasets;
         try {
             URL datasetsUrl = new URL( datasetsXml );
             datasets = ( Datasets ) readDatasetsXml( datasetsUrl.openStream() );
         } catch ( Throwable e ) {
-            throw new DataLoadingException( e );
+            throw new IntactViewException( e );
         }
 
         if ( datasets != null ) {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://uk.ac.ebi/faces/news"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://uk.ac.ebi/faces/news"
+        elementFormDefault="qualified" version="1.0">
+
+    <xs:element name="news">
+        <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="newsItem" type="newsItem"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="newsItem">
+        <xs:sequence>
+            <xs:element name="date" type="xs:int"/>
+            <xs:element name="title" type="xs:string"/>
+            <xs:element name="description">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="escape" type="xs:boolean" use="optional" default="true"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="moreLink" type="xs:string" minOccurs="0"/>
+            <xs:element name="image" type="xs:string" minOccurs="0"/>
+            <xs:element name="urgent" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

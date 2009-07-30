@@ -1,0 +1,74 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site">
+
+        <c:set var="newsItems" scope="request" value="#{newsBean.news}"/>
+
+        <ui:param name="max" value="#{intactViewConfiguration.maxNewsInBox}"/>
+
+        <script>
+            function ebifaces_news_toggleVisibility(panelId)
+            {
+                var panel = document.getElementById(panelId);
+                var currentVisibility = panel.style.display;
+
+                if (currentVisibility == 'none')
+                {
+                    panel.style.display = 'block';
+                }
+                else
+                {
+                    panel.style.display = 'none';
+                }
+            }
+        </script>
+
+        <div>
+        <div class="iconboxheading" style="#{sf:isBrowserExplorer()? 'width:116px;' : ''}">
+            <a href="#" onclick="ebifaces_news_toggleVisibility('newsBox1')">News</a>
+            <h:outputText value="  "/>
+
+            <c:if test="#{newsFeedUrl != null}">
+                <h:outputLink value="#{newsFeedUrl}">
+                    <h:graphicImage alt="RSS" url="http://www.ebi.ac.uk/intact/site/images/xml_rss2.gif"
+                                    style="border:0"/>
+                </h:outputLink>
+            </c:if>
+        </div>
+        <div id="newsBox1" class="iconboxcontents" style="display:block; #{sf:isBrowserExplorer()? 'width:143px;' : ''}">
+
+            <c:forEach var="newsItem" items="#{newsItems}" end="#{max-1}">
+                <strong>
+                    <h:outputText value="#{sf:convertToDate(newsItem.date,'yyyyMMdd')}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                    <br/>
+
+                    #{newsItem.title}</strong>
+
+                <p>
+
+                    <h:outputText value="#{newsItem.description.value}" escape="#{newsItem.description.escape}"/>
+
+                    <c:if test="#{newsItem.moreLink != null}">
+                        <h:outputText value=" "/>
+                        <h:outputLink value="#{newsItem.moreLink}">
+                            <h:outputText value="[more]"/>
+                        </h:outputLink>
+                    </c:if>
+
+                </p>
+                <br/>
+            </c:forEach>
+
+            <h:outputText value="No news found" rendered="#{empty newsItems}"/>
+
+            <h:outputText value="More news in the " rendered="#{not empty newsItems}"/>
+            <h:commandLink value="Archive" action="news.archive"/>
+
+        </div>
+        </div>
+</ui:composition>

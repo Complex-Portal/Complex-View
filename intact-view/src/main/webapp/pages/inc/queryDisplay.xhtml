@@ -7,7 +7,6 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
-                xmlns:ebi="http://ebi.ac.uk/faces/components"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
@@ -15,11 +14,6 @@
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
     <tr:panelGroupLayout layout="horizontal" id="searchSummary">
-        <!--<tr:group>-->
-            <!--Displaying results for query:-->
-            <!--<strong><ebi:outputText id="queryText" value="#{userQuery.displayQuery}" maxLength="50"-->
-                                    <!--expandMessage="[+]" collapseMessage="[-]"/></strong>-->
-        <!--</tr:group>-->
 
         <!--<tr:panelGroupLayout inlineStyle="display: #{userQuery.usingFilters? 'inline' : 'none'}">-->
                 <!--<h:panelGroup rendered="#{searchBean.totalResults == 0}">-->

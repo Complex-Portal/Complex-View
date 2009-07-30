@@ -8,7 +8,7 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
-                xmlns:ebi="http://ebi.ac.uk/faces/components"
+
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
@@ -54,10 +54,6 @@
     <tr>
         <td class="intact_table">
             <h1>#{intactView['webapp.name']} Home</h1>
-
-            <h:panelGroup rendered="#{not empty newsBean.urgentNews}">
-                <ebi:panelUrgentNews value="#{newsBean.urgentNews}"/>
-            </h:panelGroup>
 
             <h2>Search #{intactView['webapp.name']}</h2>
 
