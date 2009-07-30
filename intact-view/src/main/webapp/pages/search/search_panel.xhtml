@@ -39,11 +39,18 @@
                               text="Search"
                               action="#{searchBean.doNewBinarySearch}"
                               disabled="#{userQuery.showNewFieldPanel}"/>
-            <tr:commandButton text="Clear"
-                              onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
-                              disabled="#{userQuery.showNewFieldPanel}"/>
 
-            <tr:commandLink id="addFieldBtn" text="Fields »"
+            <tr:panelGroupLayout rendered="#{userQuery.showNewFieldPanel}">
+                <input type="button" id="clearSearchBtn" value="Clear"
+                       onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
+                       disabled="true"/>
+            </tr:panelGroupLayout>
+            <tr:panelGroupLayout rendered="#{not userQuery.showNewFieldPanel}">
+                <input type="button" id="clearSearchBtn" value="Clear"
+                       onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"/>
+            </tr:panelGroupLayout>
+
+            <tr:commandLink id="addFieldBtn" text="Show Advanced Fields »"
                             inlineStyle="font-weight:bold"
                     actionListener="#{userQuery.doShowAddFieldPanel}"
                     disabled="#{userQuery.showNewFieldPanel}"

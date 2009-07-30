@@ -140,6 +140,12 @@ public class SearchController extends JpaBaseController {
             doBinarySearch( solrQuery );
         }
 
+        String statusParam = context.getExternalContext().getRequestParameterMap().get("status");
+
+        if (statusParam != null && "exp".equals(statusParam)) {
+            addWarningMessage("Session expired", "The user session was expired due to intactivity or the server being restarted");
+        }
+
         if(userQuery != null && userQuery.getSearchQuery() == null && userQuery.getOntologySearchQuery() == null){
           if (log.isDebugEnabled()) log.debug("Searching using query parameter when searchQuery is : *:*");
 

@@ -292,6 +292,17 @@
         <servlet-name>faces</servlet-name>
     </filter-mapping>
 
+    <!-- Session expired - view expired -->
+    <filter>
+        <filter-name>sessionExpiredFilter</filter-name>
+        <filter-class>uk.ac.ebi.intact.view.webapp.filter.SessionExpiredFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>sessionExpiredFilter</filter-name>
+        <servlet-name>faces</servlet-name>
+    </filter-mapping>
+
     <!-- Spring Framework -->
     <listener>
         <listener-class>
@@ -312,7 +323,6 @@
     <listener>
         <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
    </listener>
-
 
     <!-- Faces Servlet -->
     <servlet>
@@ -423,7 +433,7 @@
     </welcome-file-list>
 
     <session-config>
-        <session-timeout>20</session-timeout>
+        <session-timeout>30</session-timeout>
     </session-config>
 
     <!-- Handling of the HTTP error 404(Not found) and 500(internal server error)-->
