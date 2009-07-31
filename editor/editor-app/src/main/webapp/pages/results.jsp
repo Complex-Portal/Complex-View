@@ -40,7 +40,7 @@
     type="java.util.List"/>
 
 <%-- The uri when clicking on tab links --%>
-<bean:define id="uri" value="<%=request.getContextPath() + "/do/showResults"%>"/>
+<bean:define id="uri" value='<%=request.getContextPath() + "/do/showResults"%>'/>
 
 <html:form action="/secure/edit">
     <display:table width="100%" name="results" pagesize="50" requestURI="<%=uri%>"
