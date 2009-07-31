@@ -15,57 +15,56 @@
  */
 package uk.ac.ebi.intact.view.webapp.servlet;
 
-import com.sun.syndication.feed.synd.SyndFeed;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
-import uk.ac.ebi.intact.view.webapp.controller.news.utils.FeedType;
-import uk.ac.ebi.intact.view.webapp.controller.news.utils.NewsUtil;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Servlet that returns a feed with the news
- *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class NewsFeedServlet extends HttpServlet {
+public class HealthCheckServlet extends HttpServlet {
 
-    public static final String NEWS_URL = "uk.ac.ebi.faces.NEWS_URL";
-
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext context = getServletContext();
         WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
+
         IntactViewConfiguration config = (IntactViewConfiguration) applicationContext.getBean("intactViewConfiguration");
 
-        String newsXml = config.getNewsUrl();
 
-        if (newsXml == null)
-        {
-            throw new IOException("To use the NewsFilterServlet add the init-parameter '"+NEWS_URL+"' to your web.xml. " +
-                                  "Its value has to be a URL containing an XML file with the news.");
+        resp.setContentType("text/plain");
+        resp.getWriter().write("Application: OK\n");
+
+        // db check
+        final IntactContext intactContext = (IntactContext) applicationContext.getBean("intactContext");
+        final DaoFactory daoFactory = intactContext.getDataContext().getDaoFactory();
+        final int count = daoFactory.getInstitutionDao().countAll();
+
+        boolean dbOk = (count > 0);
+        resp.getWriter().write("Database: "+(dbOk? "OK" : "FAILED"));
+        resp.getWriter().write("\n");
+
+        // index check
+        final SolrPingResponse solrPingResponse;
+        try {
+            solrPingResponse = config.getInteractionSolrServer().ping();
+        } catch (SolrServerException e) {
+            throw new ServletException(e);
         }
 
-        SyndFeed feed = NewsUtil.createNewsFeed(NewsUtil.readNews(newsXml));
-
-        try
-        {
-            if (feed != null)
-            {
-                response.setContentType(NewsUtil.XML_MIME_TYPE);
-                NewsUtil.writeFeed(feed, FeedType.DEFAULT, response.getWriter());
-            }
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
-
+        boolean solrOk = (solrPingResponse.getStatus() == 0);
+        resp.getWriter().write("SOLR Index: "+(solrOk? "OK" : "FAILED ("+solrPingResponse.getStatus()+")"));
     }
-
 }

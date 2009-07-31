@@ -57,6 +57,7 @@
                 <entry key="intactview_${intact.webapp.name}:name=intactConfiguration" value-ref="intactViewConfiguration"/>
                 <entry key="intactview_${intact.webapp.name}:name=dataSource" value-ref="intactViewDataSource"/>
                 <entry key="intactview_${intact.webapp.name}:name=adminController" value-ref="adminController"/>
+                <entry key="intactview_${intact.webapp.name}:name=logging" value-ref="log4jMBean"/>
             </map>
         </property>
     </bean>
