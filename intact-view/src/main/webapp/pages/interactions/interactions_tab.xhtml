@@ -75,7 +75,7 @@
 <!-- RESULTS TABLE -->
 
 <tr:table id="interactionResults" value="#{searchBean.results}" var="binaryInteraction" varStatus="status"
-          summary="Binary Interactions"
+          summary="Binary Interactions" horizontalGridVisible="false"
           emptyText="No interactions found matching the query."
           rows="#{userQuery.pageSize}" rowBandingInterval="1" rangeChangeListener="#{searchBean.rangeChanged}"
           partialTriggers=":interactionResults:btnToogleProps :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn">
@@ -152,17 +152,27 @@
 
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.name']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
-   <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
+<tr:column headerText="#{messages['moleculeA.name']}" styleClass="cellTextCompound"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
 
-    <!--For MoleculeType, Role Initials -->
-    <ui:include src="interactor_icons.xhtml">
-        <ui:param name="interactor" value="#{binaryInteraction.interactorA}"/>
-    </ui:include>
+    <h:panelGrid width="100%"  rendered="#{not searchBean.results.sameThanPrevious}">
+
+       <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
+
+        <!--For MoleculeType, Role Initials -->
+        <ui:include src="interactor_icons.xhtml">
+            <ui:param name="interactor" value="#{binaryInteraction.interactorA}"/>
+        </ui:include>
+
+    </h:panelGrid>
  
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.links']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.links')}">
+<tr:column headerText="#{messages['moleculeA.links']}" styleClass="cellTextCompound"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.links')}">
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
     <!--add  links -->
     <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus" rows="0">
         <tr:switcher facetName="#{xref.database}">
@@ -193,11 +203,16 @@
                 </h:panelGroup>
             </f:facet>
         </tr:switcher>
-    </tr:iterator>
+        </tr:iterator>
+    </h:panelGroup>
 
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.name']}" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.name')}">
+<tr:column headerText="#{messages['moleculeB.name']}" styleClass="cellTextTarget"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.name')}">
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+
     <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorB)}"/>
     
      <!--For MoleculeType, Role Initials -->
@@ -205,9 +220,14 @@
         <ui:param name="interactor" value="#{binaryInteraction.interactorB}"/>
     </ui:include>
 
+    </h:panelGroup>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.links']}" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.links')}">
+<tr:column headerText="#{messages['moleculeB.links']}" styleClass="cellTextTarget"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.links')}">
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+
     <!--add target links -->
     <tr:iterator var="xref" value="#{binaryInteraction.interactorB.identifiers}"
                  varStatus="rowStatus" rows="0">
@@ -238,9 +258,15 @@
             </f:facet>
         </tr:switcher>
     </tr:iterator>
+
+    </h:panelGroup>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.aliases']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.aliases')}">
+<tr:column headerText="#{messages['moleculeA.aliases']}" styleClass="cellTextCompound"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.aliases')}">
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+
     <iam:collapsibleIterator id="csd_altIdA_#{status.index}"
                              disclosed="#{searchBean.showAlternativeIds}"
                              value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorA.alternativeIdentifiers,null,'rogid')}"
@@ -249,9 +275,13 @@
         <tr:outputText value="#{item.identifier}"/>
 
     </iam:collapsibleIterator>
+    </h:panelGroup>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.aliases']}" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.aliases')}">
+<tr:column headerText="#{messages['moleculeB.aliases']}" styleClass="cellTextTarget"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.aliases')}">
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
     <iam:collapsibleIterator id="csd_altIdB_#{status.index}"
                              disclosed="#{searchBean.showAlternativeIds}"
                              value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorB.alternativeIdentifiers,null,'rogid')}"
@@ -260,9 +290,13 @@
         <tr:outputText value="#{item.identifier}"/>
 
     </iam:collapsibleIterator>
+    </h:panelGroup>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.species']}" styleClass="cellTextCompound" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.species')}">
+<tr:column headerText="#{messages['moleculeA.species']}" styleClass="cellTextCompound"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.species')}">
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
     <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="OtherType">
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:outputText value="  "/>
@@ -277,9 +311,14 @@
             </tr:iterator>
         </f:facet>
     </tr:switcher>
+    </h:panelGroup>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.species']}" sortProperty="taxidB_s" styleClass="cellTextTarget" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.species')}">
+<tr:column headerText="#{messages['moleculeB.species']}" sortProperty="taxidB_s" styleClass="cellTextTarget"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.species')}">
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+
     <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="OtherType">
         <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
             <tr:outputText value="&#160;"/>
@@ -294,9 +333,12 @@
             </tr:iterator>
         </f:facet>
     </tr:switcher>
+    </h:panelGroup>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.firstauthor']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.firstauthor')}" sortProperty="pubauth_s" styleClass="cellTextInteraction" >
+<tr:column headerText="#{messages['interaction.firstauthor']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.firstauthor')}" sortProperty="pubauth_s" styleClass="cellTextInteraction"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
     <tr:iterator var="author" value="#{binaryInteraction.authors}" rows="0">
             <span style="display:block">
                 <nobr>
@@ -307,15 +349,21 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.pubmedid']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.pubmedid')}"  sortProperty="pubid_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.pubmedid']}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.pubmedid')}"  sortProperty="pubid_s" styleClass="cellTextInteraction"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
     <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.interactiontype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.interactiontype')}" sortProperty="type_s" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.interactiontype']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.interactiontype')}" sortProperty="type_s" styleClass="cellTextInteraction"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
     <iav:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.detectionmethod']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.detectionmethod')}"
+<tr:column headerText="#{messages['interaction.detectionmethod']}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.detectionmethod')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextInteraction">
     <!--<iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>-->
     <!--<ui:repeat var="xref" value="#{binaryInteraction.detectionMethods}">-->
@@ -326,18 +374,24 @@
     <!--</ui:repeat>-->
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.sourcedb']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.sourcedb')}" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.sourcedb']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.sourcedb')}" styleClass="cellTextInteraction"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
     <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.ac']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.ac')}" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.ac']}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.ac')}" styleClass="cellTextInteraction"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
     <!--<iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>-->
     <tr:commandLink action="details" text="#{interactionAc}">
         <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
     </tr:commandLink>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.confidencevalue']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.confidencevalue')}"
+<tr:column headerText="#{messages['interaction.confidencevalue']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.confidencevalue')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextInteraction">
     <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
             <span style="display:block">
@@ -348,7 +402,9 @@
     </tr:iterator>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.exprole')}"
+<tr:column headerText="#{messages['moleculeA.exprole']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.exprole')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextCompound">
     <!--<iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>-->
     <ui:include src="xrefCvPopupDialog.xhtml">
@@ -357,7 +413,9 @@
     </ui:include>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.exprole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.exprole')}"
+<tr:column headerText="#{messages['moleculeB.exprole']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.exprole')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextTarget">
     <!--<iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>-->
     <ui:include src="xrefCvPopupDialog.xhtml">
@@ -366,7 +424,9 @@
     </ui:include>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.biorole']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.biorole')}"
+<tr:column headerText="#{messages['moleculeA.biorole']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.biorole')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextCompound">
     <!--<iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>-->
     <ui:include src="xrefCvPopupDialog.xhtml">
@@ -375,7 +435,9 @@
     </ui:include>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.biorole']}" rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.biorole')}"
+<tr:column headerText="#{messages['moleculeB.biorole']}"
+           rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.biorole')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextTarget">
     <!--<iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>-->
     <ui:include src="xrefCvPopupDialog.xhtml">
@@ -384,7 +446,8 @@
     </ui:include>
 </tr:column>
 
-<tr:column rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.properties')}" styleClass="cellTextCompound">
+<tr:column inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.properties')}" styleClass="cellTextCompound">
     <f:facet name="header">
         <tr:panelGroupLayout layout="vertical">
             <tr:outputText value="#{messages['moleculeA.properties']}"/>
@@ -404,7 +467,9 @@
 
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.properties']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.properties')}"
+<tr:column headerText="#{messages['moleculeB.properties']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.properties')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextTarget">
     <iam:collapsibleIterator id="csd_propsB_#{status.index}"
                              disclosed="#{searchBean.showProperties}"
@@ -419,7 +484,9 @@
     </iam:collapsibleIterator>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeA.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.interactortype')}"
+<tr:column headerText="#{messages['moleculeA.interactortype']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.interactortype')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextCompound">
     <!--<iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>-->
     <ui:include src="xrefCvPopupDialog.xhtml">
@@ -427,7 +494,9 @@
     </ui:include>
 </tr:column>
 
-<tr:column headerText="#{messages['moleculeB.interactortype']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.interactortype')}"
+<tr:column headerText="#{messages['moleculeB.interactortype']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.interactortype')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextTarget">
     <!--<iav:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>-->
     <ui:include src="xrefCvPopupDialog.xhtml">
@@ -435,7 +504,9 @@
     </ui:include>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.hostorganism']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.hostorganism')}"
+<tr:column headerText="#{messages['interaction.hostorganism']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.hostorganism')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextInteraction">
     <tr:iterator var="xref" value="#{binaryInteraction.hostOrganism}" rows="0">
         <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
@@ -444,7 +515,9 @@
     <!--<iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>-->
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.expansionmethod']}" rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.expansionmethod')}"
+<tr:column headerText="#{messages['interaction.expansionmethod']}"
+           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.expansionmethod')}"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextInteraction">
     <tr:commandLink action="dialog:faq.expansion"
                     partialSubmit="true"
@@ -454,7 +527,9 @@
     </tr:commandLink>
 </tr:column>
 
-<tr:column headerText="#{messages['interaction.dataset']}" rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.dataset')}" styleClass="cellTextInteraction">
+<tr:column headerText="#{messages['interaction.dataset']}"
+           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.dataset')}" styleClass="cellTextInteraction"
+           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
     <tr:iterator var="dataset" value="#{binaryInteraction.dataset}" rows="0">
                         <span style="display:block">
                             <nobr>

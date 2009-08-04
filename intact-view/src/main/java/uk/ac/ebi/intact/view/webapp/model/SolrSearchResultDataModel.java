@@ -124,12 +124,17 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
             throw new IllegalArgumentException("row is unavailable");
         }
 
-        List<IntactBinaryInteraction> interactions = new ArrayList<IntactBinaryInteraction>(result.getBinaryInteractionList());
-
-        final IntactBinaryInteraction binaryInteraction = interactions.get(rowIndex - solrQuery.getStart());
+        final IntactBinaryInteraction binaryInteraction = getInteraction(rowIndex);
 
         flipIfNecessary(binaryInteraction);
 
+        return binaryInteraction;
+    }
+
+    private IntactBinaryInteraction getInteraction(int rowIndex) {
+        List<IntactBinaryInteraction> interactions = new ArrayList<IntactBinaryInteraction>(result.getBinaryInteractionList());
+
+        final IntactBinaryInteraction binaryInteraction = interactions.get(rowIndex - solrQuery.getStart());
         return binaryInteraction;
     }
 
@@ -147,6 +152,24 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
         if (interactorAName.compareTo(interactorBName) > 0) {
             binaryInteraction.flip();
         }
+    }
+
+    public boolean isSameThanPrevious() {
+        if (getRowIndex() > solrQuery.getStart()) {
+            final IntactBinaryInteraction previousInteraction = getInteraction(getRowIndex() - 1);
+            final IntactBinaryInteraction currentInteraction = getInteraction(getRowIndex());
+
+            final String previousInteractorAName = MitabFunctions.getInteractorDisplayName(previousInteraction.getInteractorA());
+            final String previousInteractorBName = MitabFunctions.getInteractorDisplayName(previousInteraction.getInteractorB());
+            final String currentInteractorAName = MitabFunctions.getInteractorDisplayName(currentInteraction.getInteractorA());
+            final String currentInteractorBName = MitabFunctions.getInteractorDisplayName(currentInteraction.getInteractorB());
+
+            return previousInteractorAName.equals(currentInteractorAName) &&
+                   previousInteractorBName.equals(currentInteractorBName);
+
+        }
+        
+        return false;
     }
 
     public int getRowIndex() {
