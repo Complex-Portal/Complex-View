@@ -81,7 +81,9 @@ public class SessionExpiredFilter implements Filter {
 
         }
 
-        filterChain.doFilter(request, response);
+        if (filterChain != null) {
+            filterChain.doFilter(request, response);
+        }
 
     }
 

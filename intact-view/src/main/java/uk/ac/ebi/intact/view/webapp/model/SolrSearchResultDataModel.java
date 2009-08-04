@@ -25,6 +25,8 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
+import uk.ac.ebi.intact.view.webapp.util.MitabFunctions;
 
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
@@ -125,7 +127,26 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
         List<IntactBinaryInteraction> interactions = new ArrayList<IntactBinaryInteraction>(result.getBinaryInteractionList());
 
         final IntactBinaryInteraction binaryInteraction = interactions.get(rowIndex - solrQuery.getStart());
+
+        flipIfNecessary(binaryInteraction);
+
         return binaryInteraction;
+    }
+
+    private void flipIfNecessary(IntactBinaryInteraction binaryInteraction) {
+        final ExtendedInteractor interactorA = binaryInteraction.getInteractorA();
+        final ExtendedInteractor interactorB = binaryInteraction.getInteractorB();
+
+        if (MitabFunctions.isSmallMolecule(interactorA) && !MitabFunctions.isSmallMolecule(interactorB)) {
+            return;
+        }
+        
+        final String interactorAName = MitabFunctions.getInteractorDisplayName(interactorA);
+        final String interactorBName = MitabFunctions.getInteractorDisplayName(interactorB);
+
+        if (interactorAName.compareTo(interactorBName) > 0) {
+            binaryInteraction.flip();
+        }
     }
 
     public int getRowIndex() {
