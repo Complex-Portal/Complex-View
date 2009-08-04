@@ -21,6 +21,8 @@ import org.apache.myfaces.trinidad.model.SortCriterion;
 import org.apache.myfaces.trinidad.model.SortableModel;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import psidev.psi.mi.tab.model.Alias;
+import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
@@ -33,10 +35,7 @@ import javax.faces.model.DataModelListener;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * TODO comment that class header
@@ -142,16 +141,61 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
         final ExtendedInteractor interactorA = binaryInteraction.getInteractorA();
         final ExtendedInteractor interactorB = binaryInteraction.getInteractorB();
 
+//        TODO: an attempt to put as interactor A what the user has searched
+//        if (matchesQuery(interactorB)) {
+//            //System.out.println("MATCHES!");
+//            binaryInteraction.flip();
+//            return;
+//        }
+
         if (MitabFunctions.isSmallMolecule(interactorA) && !MitabFunctions.isSmallMolecule(interactorB)) {
             return;
         }
-        
+
         final String interactorAName = MitabFunctions.getInteractorDisplayName(interactorA);
         final String interactorBName = MitabFunctions.getInteractorDisplayName(interactorB);
 
         if (interactorAName.compareTo(interactorBName) > 0) {
             binaryInteraction.flip();
         }
+    }
+
+    private boolean matchesQuery(ExtendedInteractor interactor) {
+        String queries[] = solrQuery.getQuery().split(" ");
+
+        for (String query : queries) {
+            //System.out.println("QUERY: "+query);
+            if (matchesQueryAliases(query, interactor.getAliases())) {
+                //System.out.println("\tAliases: "+interactor.getAliases());
+                //System.out.println("\t\tMATCHED!");
+                return true;
+            } else if (matchesQueryXrefs(query, interactor.getIdentifiers())) {
+                return true;
+            }else if (matchesQueryXrefs(query, interactor.getAlternativeIdentifiers())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private boolean matchesQueryAliases(String query, Collection<Alias> aliases) {
+        for (Alias alias : aliases) {
+            //System.out.println("\t\t\t"+alias.getName().toLowerCase()+" contains "+query.toLowerCase());
+            if (alias.getName().toLowerCase().contains(query.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean matchesQueryXrefs(String query, Collection<CrossReference> xrefs) {
+        for (CrossReference xref : xrefs) {
+            if (xref.getIdentifier().toLowerCase().contains(query.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isSameThanPrevious() {

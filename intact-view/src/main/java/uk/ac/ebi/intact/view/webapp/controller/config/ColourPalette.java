@@ -31,7 +31,7 @@ public class ColourPalette {
     };
 
     private final String[] RED_HEX = new String[] {
-            "#e33e3e", "#e65555", "#ea6e6e", "#ed8585", "#f4b6b6", "#f8cfcf", "#fbe6e6", "#fdf2f2"
+            "#ed8585", "#f4b6b6", "#f8cfcf", "#fbe6e6", "#fdf2f2"
     };
 
     private final String[] GREYISH_HEX = new String[] {
@@ -41,10 +41,6 @@ public class ColourPalette {
     private int greenIndex;
     private int redIndex;
     private int greyIndex;
-
-    public int lenght() {
-        return GREEN_HEX.length;
-    }
 
     public String getGreenHex(int position) {
         return GREEN_HEX[position];
@@ -59,7 +55,7 @@ public class ColourPalette {
     }
 
     public String getNextGreen() {
-        if (greenIndex == lenght()) {
+        if (greenIndex == GREEN_HEX.length) {
             greenIndex = 0;
         }
         String colour = getGreenHex(greenIndex);
@@ -69,7 +65,7 @@ public class ColourPalette {
     }
 
     public String getNextGrey() {
-        if (greyIndex == lenght()) {
+        if (greyIndex == GREYISH_HEX.length) {
             greyIndex = 0;
         }
         String colour = getGreyishHex(greyIndex);
@@ -79,7 +75,7 @@ public class ColourPalette {
     }
 
     public String getNextRed() {
-        if (redIndex == lenght()) {
+        if (redIndex == RED_HEX.length) {
             redIndex = 0;
         }
         String colour = getRedHex(redIndex);

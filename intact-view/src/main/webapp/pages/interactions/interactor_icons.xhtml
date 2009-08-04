@@ -12,7 +12,7 @@
         <trh:rowLayout>
                 <c:set var="cvtype" value="#{iaf:getCvObjectFromIdentifier(facesContext,interactor.interactorType.identifier,'uk.ac.ebi.intact.model.CvInteractorType')}"/>
                 <trh:cellFormat halign="center" width="15"
-                                inlineStyle="background:#{iconGeneratorImpl.typeColourMap[interactor.interactorType.identifier].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                                inlineStyle="background:#{iconGeneratorImpl.typeColourMap[interactor.interactorType.identifier].colourHex};color:#555555;font-size:7pt; border:#ADADAD dotted 1px">
                     <tr:outputText value="#{iconGeneratorImpl.typeColourMap[cvtype.identifier].initials}" shortDesc="#{cvtype.shortLabel}"/>
                 </trh:cellFormat>
 
@@ -20,7 +20,7 @@
                 <c:set var="cvobject"
                        value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'uk.ac.ebi.intact.model.CvExperimentalRole')}"/>
                 <trh:cellFormat halign="center" width="15"
-                                inlineStyle="background:#{iconGeneratorImpl.expRoleColourMap[cvXref.identifier].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                                inlineStyle="background:#{iconGeneratorImpl.expRoleColourMap[cvXref.identifier].colourHex};color:#555555;font-size:7pt; border:#ADADAD solid 1px">
                     <tr:outputText value="#{iconGeneratorImpl.expRoleColourMap[cvobject.identifier].initials}" shortDesc="#{cvobject.shortLabel}"/>
                 </trh:cellFormat>
             </tr:iterator>
@@ -28,7 +28,7 @@
                 <c:set var="cvobject"
                        value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'uk.ac.ebi.intact.model.CvBiologicalRole')}"/>
                 <trh:cellFormat halign="center" width="15"
-                                inlineStyle="background:#{iconGeneratorImpl.bioRoleColourMap[cvXref.text].colourHex};color:black;font-size:xx-small; border:black solid 1px">
+                                inlineStyle="background:#{iconGeneratorImpl.bioRoleColourMap[cvXref.text].colourHex};color:#555555;font-size:7pt; border:#ADADAD dashed 1px">
                     <tr:outputText value="#{iconGeneratorImpl.bioRoleColourMap[cvobject.identifier].initials}" shortDesc="#{cvobject.shortLabel}"/>
                 </trh:cellFormat>
             </tr:iterator>

@@ -156,16 +156,18 @@
            inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
 
-    <h:panelGrid width="100%"  rendered="#{not searchBean.results.sameThanPrevious}">
+    <h:panelGrid width="100%" columns="2" cellpadding="0" cellspacing="1"
+                 rendered="#{not searchBean.results.sameThanPrevious}">
 
        <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
 
         <!--For MoleculeType, Role Initials -->
-        <ui:include src="interactor_icons.xhtml">
-            <ui:param name="interactor" value="#{binaryInteraction.interactorA}"/>
-        </ui:include>
 
     </h:panelGrid>
+
+    <ui:include src="interactor_icons.xhtml">
+            <ui:param name="interactor" value="#{binaryInteraction.interactorA}"/>
+    </ui:include>
  
 </tr:column>
 
@@ -214,13 +216,13 @@
     <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
 
     <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorB)}"/>
-    
-     <!--For MoleculeType, Role Initials -->
+
+    </h:panelGroup>
+
+    <!--For MoleculeType, Role Initials -->
     <ui:include src="interactor_icons.xhtml">
         <ui:param name="interactor" value="#{binaryInteraction.interactorB}"/>
     </ui:include>
-
-    </h:panelGroup>
 </tr:column>
 
 <tr:column headerText="#{messages['moleculeB.links']}" styleClass="cellTextTarget"
