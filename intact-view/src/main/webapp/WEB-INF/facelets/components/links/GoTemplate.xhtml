@@ -15,7 +15,7 @@
 
         <h:outputLink value="#{queryUrl}" target="_blank"
                  disabled="#{disabled != null? ebisf:convertToBoolean(disabled) : false}" rendered="#{showDrugPort}">
-                <tr:image source="#{imageSource}" inlineStyle="border-width:0"
+                <tr:image source="#{imageSource}" inlineStyle="border-width:0" shortDesc="#{query}"
                           rendered="#{showLogoOnly}"/>
             <tr:outputText value="#{(text != null)? text : query}" rendered="#{!showLogoOnly}"/>
         </h:outputLink>
