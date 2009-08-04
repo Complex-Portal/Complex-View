@@ -208,8 +208,8 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
             final String currentInteractorAName = MitabFunctions.getInteractorDisplayName(currentInteraction.getInteractorA());
             final String currentInteractorBName = MitabFunctions.getInteractorDisplayName(currentInteraction.getInteractorB());
 
-            return previousInteractorAName.equals(currentInteractorAName) &&
-                   previousInteractorBName.equals(currentInteractorBName);
+            return previousInteractorAName.equalsIgnoreCase(currentInteractorAName) &&
+                   previousInteractorBName.equalsIgnoreCase(currentInteractorBName);
 
         }
         
