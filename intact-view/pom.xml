@@ -37,6 +37,8 @@
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
         
         <!-- Webapp default config -->
+        <intact.instance.name>default</intact.instance.name>
+
         <intact.menu.url>http://www.ebi.ac.uk/~intact/site/menu/menu-latest.xml</intact.menu.url>
         <intact.news.url>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</intact.news.url>
         <intact.dotm.url>http://www.ebi.ac.uk/~intact/site/dotm/dotm-1.1.xml</intact.dotm.url>

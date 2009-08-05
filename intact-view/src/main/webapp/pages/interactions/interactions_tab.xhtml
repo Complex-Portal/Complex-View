@@ -156,7 +156,7 @@
            inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
 
-    <h:panelGrid width="100%" columns="2" cellpadding="0" cellspacing="1"
+    <h:panelGrid width="100%" columns="1" cellpadding="0" cellspacing="1"
                  rendered="#{not searchBean.results.sameThanPrevious}">
 
        <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
