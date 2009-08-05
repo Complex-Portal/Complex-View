@@ -15,14 +15,11 @@
  */
 package uk.ac.ebi.intact.binarysearch.ws;
 
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+import org.hupo.psi.mi.psicquic.wsclient.PsicquicClientException;
 import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.search.Searcher;
-import psidev.psi.mi.tab.formatter.TabulatedLineFormatter;
-import uk.ac.ebi.intact.psimitab.IntActBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntActColumnHandler;
-import uk.ac.ebi.intact.psimitab.search.IntActSearchEngine;
+import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.tab.model.builder.DocumentDefinition;
+import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -58,32 +55,38 @@ public class BinarySearch {
         
         return findBinaryInteractionsLimited(query, null, null);
     }
-
+                                                          
     @WebMethod(operationName = "findBinaryInteractionsLimited")
     public SimplifiedSearchResult findBinaryInteractionsLimited(@WebParam(name = "query", targetNamespace = NAMESPACE) String query,
                                                       @WebParam(name = "firstResult", targetNamespace = NAMESPACE)Integer firstResult,
                                                       @WebParam(name = "maxResults", targetNamespace = NAMESPACE)Integer maxResults
     ) {
-        IntActSearchEngine searchEngine = null;
-        try {
-            searchEngine = new IntActSearchEngine(getIndexDirectory());
-        } catch (IOException e) {
-            throw new RuntimeException("Problem reading index", e);
-        }
-        SearchResult<IntActBinaryInteraction> sr = Searcher.search(query, firstResult, maxResults, null, searchEngine);
 
-        List<String> interactionLines = new ArrayList<String>(sr.getInteractions().size());
+        IntactPsicquicClient client = new IntactPsicquicClient(getPsicquicEndpoint());
+        DocumentDefinition docDef = new IntactDocumentDefinition();
 
-        TabulatedLineFormatter lineFormatter = new TabulatedLineFormatter();
-        lineFormatter.setBinaryInteractionClass(IntActBinaryInteraction.class);
-        lineFormatter.setColumnHandler(new IntActColumnHandler());
+        if (firstResult == null) firstResult = 0;
+        if (maxResults == null) maxResults = 200;
 
-        for (IntActBinaryInteraction intactBinaryInteraction : sr.getInteractions()) {
-            String line = lineFormatter.format(intactBinaryInteraction);
-            interactionLines.add(line);
-        }
+        SearchResult<BinaryInteraction> searchResult;
+        List<String> interactionLines = new ArrayList<String>(1024);
 
-        return new SimplifiedSearchResult(firstResult, interactionLines, sr.getLuceneQuery(), maxResults, sr.getTotalCount());
+        do {
+            try {
+                searchResult = client.getByQuery(query, firstResult, maxResults);
+            } catch (PsicquicClientException e) {
+                throw new RuntimeException("Problem executing query: " + query, e);
+            }
+
+            for (BinaryInteraction binteraction : searchResult.getData()) {
+                interactionLines.add(docDef.interactionToString(binteraction));
+            }
+
+            firstResult = firstResult + maxResults;
+
+        } while (firstResult < searchResult.getTotalCount());
+
+        return new SimplifiedSearchResult(firstResult, interactionLines, query, maxResults, searchResult.getTotalCount());
     }
 
     @WebMethod()
@@ -98,20 +101,12 @@ public class BinarySearch {
         return null;
     }
 
-    protected Directory getIndexDirectory() {
-        Directory indexDirectory = null;
-
+    protected String getPsicquicEndpoint() {
         MessageContext mc = context.getMessageContext();
         ServletContext servletContex = (ServletContext)
                 mc.get(MessageContext.SERVLET_CONTEXT);
 
-        String indexDir = servletContex.getInitParameter("uk.ac.ebi.intact.binarysearch.INDEX_DIR");
-        try {
-            indexDirectory = FSDirectory.getDirectory(indexDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        return indexDirectory;
+        return servletContex.getInitParameter("uk.ac.ebi.intact.binarysearch.PSICQUIC_ENDPOINT");
     }
 }

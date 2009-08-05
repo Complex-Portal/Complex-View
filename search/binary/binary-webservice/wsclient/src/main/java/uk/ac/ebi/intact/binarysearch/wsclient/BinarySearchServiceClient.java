@@ -84,7 +84,7 @@ public class BinarySearchServiceClient {
     }
 
     public SearchResult<IntactBinaryInteraction> findBinaryInteractionsByIdentifiers(String... identifiers) {
-        String query = "identifiers:" + arrayElementsToOR(identifiers);
+        String query = "identifier:(" + arrayElementsToOR(identifiers)+")";
         return toSearchResult(binarySearch.findBinaryInteractions(query));
     }
 

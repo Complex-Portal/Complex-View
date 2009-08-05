@@ -10,10 +10,10 @@
 
     <context-param>
         <description>
-            IntAct PSIMITAB index
+            IntAct PSICQUIC Endpoint
         </description>
-        <param-name>uk.ac.ebi.intact.binarysearch.INDEX_DIR</param-name>
-        <param-value>/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current</param-value>
+        <param-name>uk.ac.ebi.intact.binarysearch.PSICQUIC_ENDPOINT</param-name>
+        <param-value>http://www.ebi.ac.uk/intact/psicquic/webservices/psicquic</param-value>
     </context-param>
 
     <!-- This listener controls the initialization of the application (e.g. reading init params, etc)
