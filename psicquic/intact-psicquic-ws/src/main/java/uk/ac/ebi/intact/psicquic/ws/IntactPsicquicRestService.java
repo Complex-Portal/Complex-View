@@ -49,7 +49,11 @@ public class IntactPsicquicRestService implements PsicquicRestService {
         }
 
         try {
-            maxResults = Integer.parseInt(maxResultsStr);
+            if (maxResultsStr == null) {
+                maxResults = Integer.MAX_VALUE;
+            } else {
+                maxResults = Integer.parseInt(maxResultsStr);
+            }
         } catch (NumberFormatException e) {
             throw new PsicquicServiceException("maxResults parameter is not a number: "+maxResultsStr);
         }
