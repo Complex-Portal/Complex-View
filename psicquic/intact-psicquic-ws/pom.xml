@@ -18,7 +18,7 @@
     <name>IntAct Services :: PSICQUIC WS</name>
 
     <properties>
-        <cxf.version>2.2.3-SNAPSHOT</cxf.version>
+        <cxf.version>2.2.3</cxf.version>
         <spring.version>2.5.6</spring.version>
 
         <!-- configurable bits -->
@@ -187,7 +187,7 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.7.5-SNAPSHOT</version>
+            <version>1.7.5</version>
         </dependency>
 
         <dependency>

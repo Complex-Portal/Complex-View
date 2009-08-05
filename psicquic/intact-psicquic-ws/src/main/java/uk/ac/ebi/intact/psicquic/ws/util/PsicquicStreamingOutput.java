@@ -52,9 +52,12 @@ public class PsicquicStreamingOutput implements StreamingOutput {
 
         PrintWriter out = new PrintWriter(outputStream);
 
+        int max = firstResult+maxResults;
+
+        reqInfo.setBlockSize(maxResults);
+
         do {
             reqInfo.setFirstResult(firstResult);
-            reqInfo.setBlockSize(maxResults);
 
             try {
                 response = psicquicService.getByQuery(query, reqInfo);
@@ -66,9 +69,9 @@ public class PsicquicStreamingOutput implements StreamingOutput {
 
             out.flush();
 
-            firstResult = firstResult + maxResults;
+            firstResult = firstResult + response.getResultInfo().getBlockSize();
 
-        } while (firstResult < response.getResultInfo().getTotalResults());
+        } while (firstResult < max);
 
         out.close();
     }
