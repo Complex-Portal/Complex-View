@@ -15,7 +15,7 @@
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
     <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
-    <version>3.0</version>
+    <version>3.1-SNAPSHOT</version>
 
     <name>IntAct Services :: View</name>
 
@@ -67,7 +67,7 @@
     </properties>
 
     <build>
-        <!--<finalName>intact-view</finalName>-->
+        <finalName>${artifactId}-${intact.instance.name}-${db.alias}-${version}-${buildNumber}</finalName>
 
         <resources>
             <resource>
