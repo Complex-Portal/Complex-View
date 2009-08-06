@@ -381,6 +381,7 @@
     <servlet-mapping>
         <servlet-name>legacyRedirection</servlet-name>
         <url-pattern>/site/*</url-pattern>
+        <url-pattern>/binary-search/*</url-pattern>
     </servlet-mapping>
 
     <!-- DAS Proxy Servlet -->

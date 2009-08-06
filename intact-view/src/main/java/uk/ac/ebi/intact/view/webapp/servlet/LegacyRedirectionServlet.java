@@ -37,8 +37,22 @@ public class LegacyRedirectionServlet extends HttpServlet {
                request.getServerPort() +
                request.getContextPath();
 
-        if (!absContextPath.contains("/site/")) {
-            response.sendRedirect(absContextPath);
+        String url = request.getRequestURI();
+
+        if (url.contains("/site/")) {
+
+            if (!absContextPath.contains("/site/")) {
+                response.sendRedirect(absContextPath);
+            }
+
+        } else if (url.contains("/binary-search/")) {
+            String queryStr = request.getQueryString();
+
+            if (queryStr.contains("query=")) {
+                String query = (queryStr.substring(url.indexOf("query=")+7));
+
+                response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+query);
+            }
         }
     }
 }
