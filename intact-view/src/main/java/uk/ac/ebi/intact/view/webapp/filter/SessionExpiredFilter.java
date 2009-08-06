@@ -70,12 +70,9 @@ public class SessionExpiredFilter implements Filter {
                         rw.endDocument();
                         rw.close();
 
-                    } else {
-                        // the line below would make any direct request from an external source to go to the redirected url.
-                        //httpServletResponse.sendRedirect(timeoutUrl);
-                    }
+                        return;
 
-                    return;
+                    }                     
                 }
 
             }
