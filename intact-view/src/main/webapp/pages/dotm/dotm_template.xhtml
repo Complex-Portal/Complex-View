@@ -32,8 +32,8 @@
             <tr:commandLink action="#{searchBean.doBinarySearchAction}">
                 <f:setPropertyActionListener value="pubid:#{pubmed.id}"
                                              target="#{userQuery.searchQuery}"/>
-                <tr:image shortDesc="IntAct" value="#{intactView['webapp.logo.url']}"
-                                inlineStyle="widdth:40px"/>
+                <tr:image shortDesc="IntAct" source="#{intactView['webapp.logo.url']}"
+                                inlineStyle="width:40px"/>
             </tr:commandLink>
         </h:column>
         <h:column>
