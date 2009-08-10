@@ -53,6 +53,8 @@ public class LegacyRedirectionServlet extends HttpServlet {
                 String query = queryStr.substring(url.indexOf("query=")+7);
 
                 response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+query);
+            } else {
+               response.sendRedirect(absContextPath); 
             }
         } else if (url.contains("/search/")) {
             // http://www.ebi.ac.uk/intact/search/do/search?binary=EBI-2323272,EBI-1046727
