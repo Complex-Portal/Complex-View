@@ -64,6 +64,8 @@ public class LegacyRedirectionServlet extends HttpServlet {
                 String query = queryStr.substring(url.indexOf("searchString="+14));
 
                 response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+query);
+            } else {
+                response.sendRedirect(absContextPath);
             }
         }
     }
