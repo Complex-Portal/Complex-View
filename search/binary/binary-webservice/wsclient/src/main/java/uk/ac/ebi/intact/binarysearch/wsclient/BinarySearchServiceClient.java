@@ -18,17 +18,18 @@ package uk.ac.ebi.intact.binarysearch.wsclient;
 
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.tab.converter.txt2tab.MitabLineException;
-import psidev.psi.mi.tab.converter.txt2tab.MitabLineParser;
 import uk.ac.ebi.intact.binarysearch.wsclient.generated.BinarySearch;
 import uk.ac.ebi.intact.binarysearch.wsclient.generated.BinarySearchService;
 import uk.ac.ebi.intact.binarysearch.wsclient.generated.SimplifiedSearchResult;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntactColumnHandler;
+import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 
 import javax.xml.namespace.QName;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.lucene.search.BooleanQuery;
 
 /**
  * TODO comment this
@@ -91,22 +92,19 @@ public class BinarySearchServiceClient {
     private static SearchResult<IntactBinaryInteraction> toSearchResult(SimplifiedSearchResult ssr) {
         List<IntactBinaryInteraction> interactions = new ArrayList<IntactBinaryInteraction>(ssr.getInteractionLines().size());
 
-        MitabLineParser parser = new MitabLineParser();
-
-        parser.setBinaryInteractionClass(IntactBinaryInteraction.class);
-        parser.setColumnHandler(new IntactColumnHandler());
+        IntactDocumentDefinition docDef = new IntactDocumentDefinition();
 
         for (String line : ssr.getInteractionLines()) {
             IntactBinaryInteraction interaction = null;
             try {
-                interaction = (IntactBinaryInteraction) parser.parse(line);
-            } catch (MitabLineException e) {
+                interaction = docDef.interactionFromString(line);
+            } catch (Throwable e) {
                 throw new RuntimeException("Wrong line returned by the server: "+line);
             }
             interactions.add(interaction);
         }
 
-        return new SearchResult<IntactBinaryInteraction>(interactions, ssr.getTotalResults(), ssr.getFirstResult(), ssr.getMaxResults(), ssr.getLuceneQuery());
+        return new SearchResult<IntactBinaryInteraction>(interactions, ssr.getTotalResults(), ssr.getFirstResult(), ssr.getMaxResults(), null);
     }
 
 
