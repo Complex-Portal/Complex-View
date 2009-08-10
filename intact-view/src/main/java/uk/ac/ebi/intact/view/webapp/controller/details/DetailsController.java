@@ -101,18 +101,18 @@ public class DetailsController extends JpaBaseController {
             List<Interaction> interactions = getDaoFactory().getInteractionDao()
                     .getInteractionsForProtPairAc(interactorAcs[0], interactorAcs[1]);
 
-            if (interactions.size() == 1) {
+            if (interactions.size() > 0) {
                 Interaction binaryInteraction = interactions.get(0);
                 setInteraction(binaryInteraction);
 
                 // Update interaction search
                 userQuery.reset();
-                userQuery.setSearchQuery( "interaction_id:" + binaryInteraction.getAc() );
+                userQuery.setSearchQuery( "id:("+interactorAcs[0] + " AND " + interactorAcs[1]+")" );
                 SolrQuery solrQuery = userQuery.createSolrQuery();
                 searchController.doBinarySearch( solrQuery );
 
             } else {
-                addErrorMessage("One interaction only was expected", "Found: "+interactions.size());
+                addErrorMessage("No interactions were found", "");
                 return;
             }
         }
