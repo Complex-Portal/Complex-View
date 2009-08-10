@@ -38,6 +38,8 @@ public class LegacyRedirectionServlet extends HttpServlet {
                request.getContextPath();
 
         String url = request.getRequestURI();
+        String queryStr = request.getQueryString();
+
 
         if (url.contains("/site/")) {
 
@@ -46,12 +48,18 @@ public class LegacyRedirectionServlet extends HttpServlet {
             }
 
         } else if (url.contains("/binary-search/")) {
-            String queryStr = request.getQueryString();
 
             if (queryStr.contains("query=")) {
-                String query = (queryStr.substring(url.indexOf("query=")+7));
+                String query = queryStr.substring(url.indexOf("query=")+7);
 
                 response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+query);
+            }
+        } else if (url.contains("/search/")) {
+            // http://www.ebi.ac.uk/intact/search/do/search?binary=EBI-2323272,EBI-1046727
+            if (queryStr.contains("binary=")) {
+                String interactors = queryStr.substring(url.indexOf("binary=")+8);
+
+                response.sendRedirect(absContextPath+"/pages/details/details.xhtml?binary="+interactors);
             }
         }
     }
