@@ -60,6 +60,10 @@ public class LegacyRedirectionServlet extends HttpServlet {
                 String interactors = queryStr.substring(url.indexOf("binary=")+8);
 
                 response.sendRedirect(absContextPath+"/pages/details/details.xhtml?binary="+interactors);
+            } else if (queryStr.contains("searchString=")) {
+                String query = queryStr.substring(url.indexOf("searchString="+14));
+
+                response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+query);
             }
         }
     }
