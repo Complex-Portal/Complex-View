@@ -19,6 +19,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrDocument;
+import org.apache.cxf.feature.Features;
 import org.hupo.psi.mi.psicquic.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,7 @@ import java.io.IOException;
  * @version $Id$
  */
 @Controller
+@Features(features = { "org.apache.cxf.transport.http.gzip.GZIPFeature" })
 public class IntactPsicquicService implements PsicquicService {
 
     private final Logger logger = LoggerFactory.getLogger(IntactPsicquicService.class);
