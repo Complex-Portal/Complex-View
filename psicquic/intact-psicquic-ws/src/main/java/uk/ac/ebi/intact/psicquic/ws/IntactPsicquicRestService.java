@@ -81,7 +81,7 @@ public class IntactPsicquicRestService implements PsicquicRestService {
 
     public Object getSupportedFormats() throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
         List<String> formats = new ArrayList<String>(IntactPsicquicService.SUPPORTED_RETURN_TYPES.size()+1);
-        formats.add(IntactPsicquicService.RETURN_TYPE_MITAB25_BIN);
+        formats.add(strippedMime(IntactPsicquicService.RETURN_TYPE_MITAB25_BIN));
 
         for (String mime : IntactPsicquicService.SUPPORTED_RETURN_TYPES) {
             formats.add(strippedMime(mime));
