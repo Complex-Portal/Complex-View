@@ -41,8 +41,10 @@ import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 
-import javax.jws.WebService;
 import java.util.*;
+import java.util.zip.GZIPOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * This web service is based on a PSIMITAB lucene's directory to search and return the results.
@@ -57,6 +59,7 @@ public class IntactPsicquicService implements PsicquicService {
 
     public static final String RETURN_TYPE_XML25 = "psi-mi/xml25";
     public static final String RETURN_TYPE_MITAB25 = "psi-mi/tab25";
+    public static final String RETURN_TYPE_MITAB25_BIN = "psi-mi/tab25-bin";
     public static final String RETURN_TYPE_COUNT = "count";
 
     private static final String NEW_LINE = System.getProperty("line.separator");

@@ -3,11 +3,15 @@ package uk.ac.ebi.intact.psicquic.ws;
 import org.hupo.psi.mi.psicquic.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.apache.commons.lang.StringUtils;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This web service is based on a PSIMITAB SOLR index to search and return the results.
@@ -58,15 +62,36 @@ public class IntactPsicquicRestService implements PsicquicRestService {
             throw new PsicquicServiceException("maxResults parameter is not a number: "+maxResultsStr);
         }
 
-        if ("xml25".equals(format)) {
+        if (strippedMime(IntactPsicquicService.RETURN_TYPE_XML25).equals(format)) {
             return getByQueryXml(query, firstResult, maxResults);
-        } else if ("count".equals(format)) {
+        } else if (IntactPsicquicService.RETURN_TYPE_COUNT.equals(format)) {
             return count(query);
+        } else if (strippedMime(IntactPsicquicService.RETURN_TYPE_MITAB25_BIN).equals(format)) {
+            PsicquicStreamingOutput result = new PsicquicStreamingOutput(psicquicService, query, firstResult, maxResults, true);
+            return Response.status(200).type("application/x-gzip").entity(result).build();
+        } else if (strippedMime(IntactPsicquicService.RETURN_TYPE_MITAB25).equals(format) || format == null) {
+            PsicquicStreamingOutput result = new PsicquicStreamingOutput(psicquicService, query, firstResult, maxResults);
+            return Response.status(200).type(MediaType.TEXT_PLAIN).entity(result).build();
+        } else {
+            return Response.status(801).type(MediaType.TEXT_PLAIN).entity("Format not supported").build();
         }
 
-        PsicquicStreamingOutput result = new PsicquicStreamingOutput(psicquicService, query, firstResult, maxResults);
-        return Response.status(200).type("text/plain").entity(result).build();
+
     }
+
+    public Object getSupportedFormats() throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
+        List<String> formats = new ArrayList<String>(IntactPsicquicService.SUPPORTED_RETURN_TYPES.size()+1);
+        formats.add(IntactPsicquicService.RETURN_TYPE_MITAB25_BIN);
+
+        for (String mime : IntactPsicquicService.SUPPORTED_RETURN_TYPES) {
+            formats.add(strippedMime(mime));
+        }
+
+        return Response.status(200)
+                .type(MediaType.TEXT_PLAIN)
+                .entity(StringUtils.join(formats, "\n")).build();
+    }
+
     public String getVersion() {
         return config.getVersion();
     }
@@ -108,5 +133,13 @@ public class IntactPsicquicRestService implements PsicquicRestService {
         if (db.length() > 0) sb.append('"');
 
         return sb.toString();
+    }
+
+    private String strippedMime(String mimeType) {
+        if (mimeType.indexOf("/") > -1) {
+            return mimeType.substring(mimeType.indexOf("/")+1);
+        } else {
+            return mimeType;
+        }
     }
 }
