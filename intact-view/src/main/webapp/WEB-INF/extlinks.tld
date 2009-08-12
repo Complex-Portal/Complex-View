@@ -121,6 +121,9 @@
         <attribute>
             <name>onlyLogo</name>
         </attribute>
+        <attribute>
+            <name>termName</name>
+        </attribute>
     </tag>
     <tag>
         <name>goOls</name>
