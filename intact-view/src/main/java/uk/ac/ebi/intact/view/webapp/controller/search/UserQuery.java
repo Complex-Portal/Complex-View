@@ -191,6 +191,9 @@ public class UserQuery extends BaseController {
         searchQuery = searchQuery.trim();
 
         if (!(searchQuery.startsWith("\"") && searchQuery.endsWith("\""))) {
+            searchQuery = searchQuery.replaceAll("\\(", "( ");
+            searchQuery = searchQuery.replaceAll("\\)", " )");
+
             String[] qtokens = searchQuery.split(" ");
 
             StringBuilder sb = new StringBuilder(searchQuery.length()+12);
@@ -207,6 +210,9 @@ public class UserQuery extends BaseController {
             }
 
             searchQuery = sb.toString().trim();
+
+            searchQuery = searchQuery.replaceAll("\\( ", "(");
+            searchQuery = searchQuery.replaceAll(" \\)", ")");
         }
     }
 
