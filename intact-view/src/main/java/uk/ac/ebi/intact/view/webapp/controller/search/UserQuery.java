@@ -178,13 +178,36 @@ public class UserQuery extends BaseController {
             searchQuery = STAR_QUERY;
         }
 
-        String q = searchQuery.trim();
+        autoQuoteWhenNecessary();
 
-        SolrQuery query = new SolrQuery( q );
+        SolrQuery query = new SolrQuery( searchQuery );
         query.setSortField(userSortColumn, (userSortOrder)? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
         query.setRows(pageSize);
 
         return query;
+    }
+
+    private void autoQuoteWhenNecessary() {
+        searchQuery = searchQuery.trim();
+
+        if (!(searchQuery.startsWith("\"") && searchQuery.endsWith("\""))) {
+            String[] qtokens = searchQuery.split(" ");
+
+            StringBuilder sb = new StringBuilder(searchQuery.length()+12);
+
+            for (String qtoken : qtokens) {
+                qtoken = qtoken.trim();
+
+                if (qtoken.startsWith("MI:") ||
+                        qtoken.startsWith("GO:")) {
+                    qtoken = "\""+qtoken+"\"";
+                }
+
+                sb.append(qtoken).append(" ");
+            }
+
+            searchQuery = sb.toString().trim();
+        }
     }
 
     public void prepareFromOntologySearch(ActionEvent evt) {
