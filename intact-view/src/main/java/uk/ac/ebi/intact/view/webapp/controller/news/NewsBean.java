@@ -16,7 +16,6 @@
 package uk.ac.ebi.intact.view.webapp.controller.news;
 
 import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.io.FeedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import uk.ac.ebi.intact.view.webapp.controller.news.utils.NewsUtil;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,19 +59,21 @@ public class NewsBean implements Serializable {
     @PostConstruct
     public void setup() {
         String newsXml = intactViewConfiguration.getNewsUrl();
-        if ( log.isTraceEnabled() ) {
-            log.trace( "newsXml " + newsXml);
-        }
-        newsObject = NewsUtil.readNews( newsXml );
-        news = newsObject.getNewsItems();
+        
+        try {
+            newsObject = NewsUtil.readNews( newsXml );
+            news = newsObject.getNewsItems();
 
-        // urgent news
-        urgentNews = new ArrayList<NewsItem>();
+            // urgent news
+            urgentNews = new ArrayList<NewsItem>();
 
-        for ( NewsItem newsItem : news ) {
-            if ( newsItem.isUrgent() != null && newsItem.isUrgent() ) {
-                urgentNews.add( newsItem );
+            for ( NewsItem newsItem : news ) {
+                if ( newsItem.isUrgent() != null && newsItem.isUrgent() ) {
+                    urgentNews.add( newsItem );
+                }
             }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 
@@ -85,10 +85,7 @@ public class NewsBean implements Serializable {
         try {
             NewsUtil.writeFeed( feed, FeedType.DEFAULT, context );
         }
-        catch ( FeedException e ) {
-            e.printStackTrace();
-        }
-        catch ( IOException e ) {
+        catch ( Throwable e ) {
             e.printStackTrace();
         }
 

@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.view.webapp.controller.news;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets;
 import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets.Dataset;
@@ -55,11 +54,11 @@ public class DataSetsBean implements Serializable {
     @PostConstruct
     public void setUp(){
         String datasetsXml = intactViewConfiguration.getDotmUrl();
-
+         
         try {
             dataSets = SiteUtils.readDatasets( datasetsXml );
         }
-        catch ( IntactViewException e ) {
+        catch ( Throwable e ) {
             e.printStackTrace();
             dataSets = new ArrayList<Dataset>();
         }
