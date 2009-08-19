@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utility class for displaying datasets of the month
+ * Utility class for displaying datasets of the month.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id: SiteUtils.java 7881 2007-03-08 15:49:39Z baranda $
@@ -43,7 +43,9 @@ public class SiteUtils {
         Datasets datasets;
         try {
             URL datasetsUrl = new URL( datasetsXml );
-            datasets = ( Datasets ) readDatasetsXml( datasetsUrl.openStream() );
+            final InputStream is = datasetsUrl.openStream();
+            datasets = ( Datasets ) readDatasetsXml( is );
+            is.close();
         } catch ( Throwable e ) {
             throw new IntactViewException( e );
         }
@@ -62,5 +64,4 @@ public class SiteUtils {
         Unmarshaller unmarshaller = jc.createUnmarshaller();
         return unmarshaller.unmarshal( is );
     }
-
 }
