@@ -57,23 +57,36 @@ public class BinarySearch {
     }
                                                           
     @WebMethod(operationName = "findBinaryInteractionsLimited")
-    public SimplifiedSearchResult findBinaryInteractionsLimited(@WebParam(name = "query", targetNamespace = NAMESPACE) String query,
-                                                      @WebParam(name = "firstResult", targetNamespace = NAMESPACE)Integer firstResult,
-                                                      @WebParam(name = "maxResults", targetNamespace = NAMESPACE)Integer maxResults
-    ) {
+    public SimplifiedSearchResult findBinaryInteractionsLimited(
+            @WebParam(name = "query", targetNamespace = NAMESPACE) final String query,
+            @WebParam(name = "firstResult", targetNamespace = NAMESPACE) final Integer firstResult,
+            @WebParam(name = "maxResults", targetNamespace = NAMESPACE) final Integer maxResults ) {
+
+        final int chunkSize = 200;
+        int startCurrentPage = ( firstResult == null ? 0 : firstResult );
 
         IntactPsicquicClient client = new IntactPsicquicClient(getPsicquicEndpoint());
         DocumentDefinition docDef = new IntactDocumentDefinition();
 
-        if (firstResult == null) firstResult = 0;
-        if (maxResults == null) maxResults = 200;
-
         SearchResult<BinaryInteraction> searchResult;
-        List<String> interactionLines = new ArrayList<String>(1024);
+        List<String> interactionLines = new ArrayList<String>( maxResults );
+
+        boolean firstQueryDone = false;
 
         do {
             try {
                 searchResult = client.getByQuery(query, firstResult, maxResults);
+                if( ! firstQueryDone ) {
+                    firstQueryDone = true;
+
+                    final Integer totalCount = searchResult.getTotalCount();
+                    if( totalCount > maxResults && maxResults > 2000 ) {
+                        throw new RuntimeException( "Please be gentle with our services ! " +
+                                "Your query ("+ query +") hits "+ totalCount +" results. " +
+                                "You must set the 'maxResults' parameter to 2000 maximum and " +
+                                "paginate through the dataset by setting 'firstResult' appropriately." );
+                    }
+                }
             } catch (PsicquicClientException e) {
                 throw new RuntimeException("Problem executing query: " + query, e);
             }
@@ -82,9 +95,9 @@ public class BinarySearch {
                 interactionLines.add(docDef.interactionToString(binteraction));
             }
 
-            firstResult = firstResult + maxResults;
+            startCurrentPage += chunkSize;
 
-        } while (firstResult < searchResult.getTotalCount());
+        } while (startCurrentPage < maxResults);
 
         return new SimplifiedSearchResult(firstResult, interactionLines, query, maxResults, searchResult.getTotalCount());
     }
