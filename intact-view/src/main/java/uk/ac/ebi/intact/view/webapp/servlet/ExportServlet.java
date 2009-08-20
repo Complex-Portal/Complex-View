@@ -66,12 +66,8 @@ public class ExportServlet extends HttpServlet {
 
         String searchQuery = request.getParameter(PARAM_QUERY);
 
-        if ( log.isDebugEnabled() ) {
-            log.debug( "Export query prior to decoding: " + searchQuery );
-            if( searchQuery != null ) {
-                searchQuery = URLDecoder.decode( searchQuery, "UTF-8" );
-                log.debug( "Export query after decoding: " + searchQuery );
-            }
+        if( searchQuery != null ) {
+            searchQuery = URLDecoder.decode( searchQuery, "UTF-8" );
         }
 
         String format = request.getParameter(PARAM_FORMAT);
