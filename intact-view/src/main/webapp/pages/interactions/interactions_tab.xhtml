@@ -394,6 +394,7 @@
                     <tr:commandLink action="details" text="#{interactionAc}">
                         <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
                     </tr:commandLink>
+                    <br/>
                 </h:panelGroup>
             </f:facet>
             <f:facet name="irefindex">
@@ -403,16 +404,12 @@
             </f:facet>
             <f:facet name="otherDBs">
                 <h:panelGroup>
-                    <tr:outputText value="#{xref.identifier}"/>
+                    <tr:outputText value="#{iav:xrefToString(xref, true, true, false)}"/>
                     <br/>
                 </h:panelGroup>
             </f:facet>
         </tr:switcher>
     </tr:iterator>
-
-    <tr:commandLink action="details" text="#{interactionAc}">
-        <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
-    </tr:commandLink>
 </tr:column>
 
 <tr:column headerText="#{messages['interaction.confidencevalue']}"
