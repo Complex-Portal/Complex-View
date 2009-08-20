@@ -107,7 +107,7 @@ public class DetailsController extends JpaBaseController {
 
                 // Update interaction search
                 userQuery.reset();
-                userQuery.setSearchQuery( "id:("+interactorAcs[0] + " AND " + interactorAcs[1]+")" );
+                userQuery.setSearchQuery( interactorAcs[0] + " AND " + interactorAcs[1] );
                 SolrQuery solrQuery = userQuery.createSolrQuery();
                 searchController.doBinarySearch( solrQuery );
 
