@@ -50,17 +50,18 @@
 
 <tr:separator/>
 
+    > <strong>#{searchBean.totalResults}</strong> binary interaction#{searchBean.totalResults != 1? 's were' : ' was'} found.
+
 <tr:panelGroupLayout rendered="#{facetController.expansionCount.spokeCount > 0}"
                      inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
-    > The results contain <strong>#{facetController.expansionCount.spokeCount}</strong> binary interactions originating
+    <strong>#{facetController.expansionCount.spokeCount}</strong> of them are originated
     from&#160;
     <tr:commandLink action="dialog:faq.expansion"
                     partialSubmit="true"
                     windowWidth="700" windowHeight="500"
                     immediate="true" useWindow="true">Spoke expanded co-complexes
         <tr:image source="/images/help.png"/>
-    </tr:commandLink>.
-    You may want to&#160;
+    </tr:commandLink> and you may want to&#160;
     <tr:commandLink text="filter" action="#{searchBean.doBinarySearchAction}" actionListener="#{userQuery.doAddTermToQuery}">
         <f:param name="token_operand" value="AND"/>
         <f:param name="token_not" value="not"/>
@@ -69,13 +70,14 @@
     </tr:commandLink>
     &#160;them.
     
-    <tr:separator/>
 </tr:panelGroupLayout>
+
+<tr:separator/>
 
 <!-- RESULTS TABLE -->
 
 <tr:table id="interactionResults" value="#{searchBean.results}" var="binaryInteraction" varStatus="status"
-          summary="Binary Interactions" horizontalGridVisible="false"
+          summary="Binary Interactions" horizontalGridVisible="false" rendered="#{searchBean.totalResults > 0}"
           emptyText="No interactions found matching the query."
           rows="#{userQuery.pageSize}" rowBandingInterval="1" rangeChangeListener="#{searchBean.rangeChanged}"
           partialTriggers=":interactionResults:btnToogleProps :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn">

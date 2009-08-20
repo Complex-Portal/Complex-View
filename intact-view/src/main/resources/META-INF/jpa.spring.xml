@@ -46,8 +46,12 @@
 
     </bean>
 
-    <bean id="intactViewDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/${db.jndi}"/>
+    <bean id="intactViewDataSource" class="org.apache.myfaces.orchestra.connectionManager.ConnectionManagerDataSource">
+        <property name="dataSource">
+            <bean class="org.springframework.jndi.JndiObjectFactoryBean">
+                <property name="jndiName" value="java:comp/env/${db.jndi}"/>
+            </bean>
+        </property>
     </bean>
 
 
