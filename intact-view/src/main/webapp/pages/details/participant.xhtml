@@ -41,6 +41,10 @@
                     </ui:decorate>
                 </tr:panelLabelAndMessage>
 
+                <tr:panelLabelAndMessage label="Stoichiometry:" labelStyle="font-weight:bold;" rendered="#{participant.stoichiometry > 0}">
+                    <tr:outputText value="#{participant.stoichiometry}"/>
+                </tr:panelLabelAndMessage>
+
             </tr:panelFormLayout>
 
             <tr:panelFormLayout inlineStyle="width:100%;">
