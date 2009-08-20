@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.view.webapp.controller.config;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServer;
@@ -383,10 +384,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     public SolrServer getInteractionSolrServer() {
         if (solrInteractionsUrl != null) {
             try {
-
-                HttpClient httpClient = createHttpClient();
-
-                return new CommonsHttpSolrServer(solrInteractionsUrl, httpClient);
+                return createSolrServer(solrInteractionsUrl);
             } catch (MalformedURLException e) {
                 throw new IntactViewException("Malformed Solr URL: "+ solrInteractionsUrl, e);
             }
@@ -398,9 +396,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     public SolrServer getOntologySolrServer() {
         if (solrInteractionsUrl != null) {
             try {
-                HttpClient httpClient = createHttpClient();
-
-                return new CommonsHttpSolrServer(solrOntologiesUrl, httpClient);
+                return createSolrServer(solrOntologiesUrl);
             } catch (MalformedURLException e) {
                 throw new IntactViewException("Malformed Solr URL: "+ solrOntologiesUrl, e);
             }
@@ -409,14 +405,18 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         return null;
     }
 
-    private HttpClient createHttpClient() {
-        HttpClient httpClient = new HttpClient();
+    private CommonsHttpSolrServer createSolrServer(String solrUrl) throws MalformedURLException {
+        HttpClient httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
         if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
                 isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
             httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
         }
-        return httpClient;
+
+        final CommonsHttpSolrServer solrServer = new CommonsHttpSolrServer(solrUrl, httpClient);
+        solrServer.setMaxTotalConnections(128);
+        solrServer.setDefaultMaxConnectionsPerHost(32);
+        return solrServer;
     }
 
     public void setSolrOntologiesUrl(String solrOntologiesUrl) {
