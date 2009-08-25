@@ -25,7 +25,7 @@
 
         <!-- default value in case you haven't defined these in a profile ${HOME}/.m2/settings.xml-->
         <intact.interactionIndex>/ebi/sp/pro6/intact/public-tomcat/psimitab-index/current</intact.interactionIndex>
-        <intact.solr.interactions.url>http://padney.ebi.ac.uk:8080/solr/core_stage</intact.solr.interactions.url>
+        <intact.solr.interactions.url>http://wwwint.ebi.ac.uk/intact/solr/core_stage</intact.solr.interactions.url>
     </properties>
 
     <build>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.7.4</version>
+            <version>1.7.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.service.search.binary</groupId>
             <artifactId>wsclient</artifactId>
-            <version>1.6.0-rc2-SNAPSHOT</version>
+            <version>1.6.0-rc3-SNAPSHOT</version>
         </dependency>
 
 
