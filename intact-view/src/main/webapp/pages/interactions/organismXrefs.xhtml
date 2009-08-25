@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsp="http://java.sun.com/JSP/Page"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+
+    <tr:document>
+
+        <tr:iterator var="xref" value="#{xrefs}" varStatus="rowStatus" rows="0">
+
+            <tr:switcher facetName="#{xref.identifier}" defaultFacet="OtherTaxid">
+                <f:facet name="-1">
+                    <tr:outputText value="in vitro"/>
+                </f:facet>
+
+                <f:facet name="-2">
+                    <tr:outputText value="chemical synthesis"/>
+                </f:facet>
+
+                <f:facet name="-3">
+                    <tr:outputText value="unknown"/>
+                </f:facet>
+
+                <f:facet name="-4">
+                    <tr:outputText value="in vivo"/>
+                </f:facet>
+
+                <f:facet name="-5">
+                    <tr:outputText value="in silico"/>
+                </f:facet>
+
+                <f:facet name="OtherTaxid">
+                    <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
+                </f:facet>
+            </tr:switcher>
+
+        </tr:iterator>
+
+        <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(xrefs)}"/>
+
+    </tr:document>
+
+</ui:composition>

@@ -306,13 +306,9 @@
             <tr:outputText value="  "/>
         </f:facet>
         <f:facet name="OtherType">
-            <tr:iterator var="organism" value="#{binaryInteraction.interactorA.organism}" rows="0">
-                <tr:iterator var="xref" value="#{organism.identifiers}"
-                             varStatus="rowStatus" rows="0">
-                    <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
-                </tr:iterator>
-                <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>
-            </tr:iterator>
+            <ui:decorate template="/pages/interactions/organism.xhtml">
+                <ui:param name="organism" value="#{binaryInteraction.interactorA.organism}"/>
+            </ui:decorate>
         </f:facet>
     </tr:switcher>
     </h:panelGroup>
@@ -328,13 +324,9 @@
             <tr:outputText value="&#160;"/>
         </f:facet>
         <f:facet name="OtherType">
-            <tr:iterator var="organism" value="#{binaryInteraction.interactorB.organism}"
-                         varStatus="rowStatus" rows="0">
-                <tr:iterator var="xref" value="#{organism.identifiers}" rows="0">
-                    <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
-                </tr:iterator>
-                <tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>
-            </tr:iterator>
+            <ui:decorate template="/pages/interactions/organism.xhtml">
+                <ui:param name="organism" value="#{binaryInteraction.interactorB.organism}"/>
+            </ui:decorate>
         </f:facet>
     </tr:switcher>
     </h:panelGroup>
@@ -523,7 +515,6 @@
            rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.interactortype')}"
            inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextTarget">
-    <!--<iav:xrefDataList value="#{binaryInteraction.interactorTypeB}" onlyText="true"/>-->
     <ui:include src="xrefCvPopupDialog.xhtml">
         <ui:param name="xref" value="${binaryInteraction.interactorTypeB[0]}"/>
     </ui:include>
@@ -533,11 +524,9 @@
            rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.hostorganism')}"
            inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
            styleClass="cellTextInteraction">
-    <tr:iterator var="xref" value="#{binaryInteraction.hostOrganism}" rows="0">
-        <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
-    </tr:iterator>
-
-    <!--<iav:xrefDataList value="#{binaryInteraction.hostOrganism}" onlyText="true" itemPerLine="true"/>-->
+    <ui:decorate template="/pages/interactions/organismXrefs.xhtml">
+        <ui:param name="xrefs" value="#{binaryInteraction.hostOrganism}"/>
+    </ui:decorate>
 </tr:column>
 
 <tr:column headerText="#{messages['interaction.expansionmethod']}"
