@@ -24,7 +24,9 @@ import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.xml.PsimiXmlVersion;
 import psidev.psi.mi.xml.PsimiXmlWriter;
+import psidev.psi.mi.xml.PsimiXmlForm;
 import psidev.psi.mi.xml.converter.ConverterException;
+import psidev.psi.mi.xml.converter.ConverterContext;
 import psidev.psi.mi.xml.model.EntrySet;
 import psidev.psi.mi.xml.stylesheets.XslTransformException;
 import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
@@ -50,19 +52,24 @@ public class BinaryInteractionsExporter {
     private static final Log log = LogFactory.getLog( BinaryInteractionsExporter.class );
 
     private SolrServer solrServer;
+    public static final String XML_2_53 = "xml_2_53";
+    private static final String XML_2_54 = "xml_2_54";
+    private static final String MITAB = "mitab";
+    private static final String MITAB_INTACT = "mitab_intact";
+    private static final String XML_HTML = "xml_html";
 
     public BinaryInteractionsExporter(SolrServer solrServer) {
         this.solrServer = solrServer;
     }
 
     public void searchAndExport( OutputStream os, SolrQuery searchQuery, String format ) throws IOException {
-        if ( "mitab".equals( format ) ) {
+        if ( MITAB.equals( format ) ) {
             exportToMiTab( os, searchQuery );
-        } else if ( "mitab_intact".equals( format ) ) {
+        } else if ( MITAB_INTACT.equals( format ) ) {
             exportToMiTabIntact( os, searchQuery );
-        } else if ( "xml_2_53".equals( format ) || "xml_2_54".equals( format ) ) {
+        } else if ( XML_2_53.equals( format ) || XML_2_54.equals( format ) ) {
             exportToMiXml( os, searchQuery, format );
-        } else if ( "xml_html".equals( format ) ) {
+        } else if ( XML_HTML.equals( format ) ) {
             exportToMiXmlTransformed( os, searchQuery );
         } else {
             throw new IntactViewException( "Format is not correct: " + format + ". Possible values: mitab, mitab_intact." );
@@ -118,7 +125,7 @@ public class BinaryInteractionsExporter {
     }
 
     public void exportToMiXml( OutputStream os, SolrQuery searchQuery ) throws IOException {
-        exportToMiXml( os, searchQuery, "xml_2_54" );
+        exportToMiXml( os, searchQuery, XML_2_54);
     }
 
     public void exportToMiXml(OutputStream os, SolrQuery solrQuery, String format) throws IOException {
@@ -147,9 +154,10 @@ public class BinaryInteractionsExporter {
         }
 
         PsimiXmlWriter writer = null;
-        if ( "xml_2_53".equals( format ) ) {
+        ConverterContext.getInstance().getConverterConfig().setXmlForm(PsimiXmlForm.FORM_COMPACT);
+        if ( XML_2_53.equals( format ) ) {
             writer = new PsimiXmlWriter( PsimiXmlVersion.VERSION_253 );
-        } else if ( "xml_2_54".equals( format ) ) {
+        } else if ( XML_2_54.equals( format ) ) {
             writer = new PsimiXmlWriter( PsimiXmlVersion.VERSION_254 );
         } else {
             writer = new PsimiXmlWriter( PsimiXmlVersion.VERSION_25_UNDEFINED );
