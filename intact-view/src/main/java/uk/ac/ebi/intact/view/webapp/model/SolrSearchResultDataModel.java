@@ -141,12 +141,14 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
         final ExtendedInteractor interactorA = binaryInteraction.getInteractorA();
         final ExtendedInteractor interactorB = binaryInteraction.getInteractorB();
 
-//        TODO: an attempt to put as interactor A what the user has searched
-//        if (matchesQuery(interactorB)) {
-//            //System.out.println("MATCHES!");
-//            binaryInteraction.flip();
-//            return;
-//        }
+        if (matchesQuery(interactorA)) {
+            return;
+        }
+        
+        if (matchesQuery(interactorB)) {
+            binaryInteraction.flip();
+            return;
+        }
 
         if (MitabFunctions.isSmallMolecule(interactorA) && !MitabFunctions.isSmallMolecule(interactorB)) {
             return;
@@ -164,10 +166,13 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
         String queries[] = solrQuery.getQuery().split(" ");
 
         for (String query : queries) {
-            //System.out.println("QUERY: "+query);
+            if ("NOT".equalsIgnoreCase(query) ||
+                "AND".equalsIgnoreCase(query) ||
+                "OR".equalsIgnoreCase(query) ||
+                 query.contains(":")) {
+                continue;
+            }
             if (matchesQueryAliases(query, interactor.getAliases())) {
-                //System.out.println("\tAliases: "+interactor.getAliases());
-                //System.out.println("\t\tMATCHED!");
                 return true;
             } else if (matchesQueryXrefs(query, interactor.getIdentifiers())) {
                 return true;
@@ -181,7 +186,6 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
 
     private boolean matchesQueryAliases(String query, Collection<Alias> aliases) {
         for (Alias alias : aliases) {
-            //System.out.println("\t\t\t"+alias.getName().toLowerCase()+" contains "+query.toLowerCase());
             if (alias.getName().toLowerCase().contains(query.toLowerCase())) {
                 return true;
             }
@@ -203,10 +207,10 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
             final IntactBinaryInteraction previousInteraction = getInteraction(getRowIndex() - 1);
             final IntactBinaryInteraction currentInteraction = getInteraction(getRowIndex());
 
-            final String previousInteractorAName = MitabFunctions.getInteractorDisplayName(previousInteraction.getInteractorA());
-            final String previousInteractorBName = MitabFunctions.getInteractorDisplayName(previousInteraction.getInteractorB());
-            final String currentInteractorAName = MitabFunctions.getInteractorDisplayName(currentInteraction.getInteractorA());
-            final String currentInteractorBName = MitabFunctions.getInteractorDisplayName(currentInteraction.getInteractorB());
+            final String previousInteractorAName = MitabFunctions.getIntactIdentifierFromCrossReferences(previousInteraction.getInteractorA().getIdentifiers());
+            final String previousInteractorBName = MitabFunctions.getIntactIdentifierFromCrossReferences(previousInteraction.getInteractorB().getIdentifiers());
+            final String currentInteractorAName = MitabFunctions.getIntactIdentifierFromCrossReferences(currentInteraction.getInteractorA().getIdentifiers());
+            final String currentInteractorBName = MitabFunctions.getIntactIdentifierFromCrossReferences(currentInteraction.getInteractorB().getIdentifiers());
 
             return previousInteractorAName.equalsIgnoreCase(currentInteractorAName) &&
                    previousInteractorBName.equalsIgnoreCase(currentInteractorBName);
