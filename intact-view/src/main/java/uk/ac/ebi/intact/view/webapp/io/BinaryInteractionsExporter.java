@@ -154,7 +154,6 @@ public class BinaryInteractionsExporter {
         }
 
         PsimiXmlWriter writer = null;
-        ConverterContext.getInstance().getConverterConfig().setXmlForm(PsimiXmlForm.FORM_COMPACT);
         if ( XML_2_53.equals( format ) ) {
             writer = new PsimiXmlWriter( PsimiXmlVersion.VERSION_253 );
         } else if ( XML_2_54.equals( format ) ) {
