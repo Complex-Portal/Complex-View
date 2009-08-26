@@ -18,38 +18,6 @@
             <ui:decorate template="/pages/interactions/organismXrefs.xhtml">
                 <ui:param name="xrefs" value="#{organism.identifiers}"/>
             </ui:decorate>
-            
-                <!--<tr:iterator var="xref" value="#{organism.identifiers}" varStatus="rowStatus" rows="0">-->
-
-                    <!--<tr:switcher facetName="#{xref.identifier}" defaultFacet="OtherTaxid">-->
-                        <!--<f:facet name="-1">-->
-                            <!--<tr:outputText value="in vitro"/>-->
-                         <!--</f:facet>-->
-
-                        <!--<f:facet name="-2">-->
-                            <!--<tr:outputText value="chemical synthesis"/>-->
-                         <!--</f:facet>-->
-
-                        <!--<f:facet name="-3">-->
-                            <!--<tr:outputText value="unknown"/>-->
-                         <!--</f:facet>-->
-
-                        <!--<f:facet name="-4">-->
-                            <!--<tr:outputText value="in vivo"/>-->
-                         <!--</f:facet>-->
-
-                        <!--<f:facet name="-5">-->
-                            <!--<tr:outputText value="in silico"/>-->
-                         <!--</f:facet>-->
-
-                        <!--<f:facet name="OtherTaxid">-->
-                            <!--<iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>-->
-                         <!--</f:facet>-->
-                    <!--</tr:switcher>-->
-
-                <!--</tr:iterator>-->
-
-            <!--<tr:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(organism.identifiers)}"/>-->
 
         </tr:iterator>
 
