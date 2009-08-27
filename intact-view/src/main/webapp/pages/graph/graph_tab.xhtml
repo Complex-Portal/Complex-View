@@ -25,32 +25,36 @@
 
                 <trh:cellFormat width="20%" halign="right" valign="top">
 
-                    <tr:panelBox text="Open in Cytoscape" inlineStyle="width:250px;">
+                    <tr:panelBox text="Open in Cytoscape" inlineStyle="width:280px;">
 
                         <tr:panelHorizontalLayout halign="center">
                             <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
-                                <tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Cytoscape"/>
+                                <tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
                             </tr:goLink>
                         </tr:panelHorizontalLayout>
 
                         <br/>
 
-                        <tr:outputText value="This is going to open current search in a " />
-                        <tr:goLink destination="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" targetFrame="_blank">
-                            WebStart
-                            <tr:image source="/images/help.png" style="vertical-align: baseline"/>
+                        <tr:outputText value="Click " />
+                        <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
+                            &#160;here&#160;
                         </tr:goLink>
-                        <tr:outputText value=" version of " />
+                        <tr:outputText value=" or on the icon above to start Cytoscape." />
+
+                        <br/>
+                        <br/>
+
+                        <tr:outputText value="This is going to open current search in a WebStart" />
+
+                        <tr:goLink destination="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" targetFrame="_blank">
+                            <tr:image source="/images/help.png" style="vertical-align: baseline;"/>
+                        </tr:goLink>
+
+                        <tr:outputText value=" version of Cytoscape 2.6.3" />
 
                         <tr:goLink destination="http://www.cytoscape.org/" targetFrame="_blank">
-                           Cytoscape 2.6.2
-                            <tr:image source="/images/help.png" style="vertical-align: baseline"/>
+                            <tr:image source="/images/help.png" style="vertical-align: baseline;"/>
                         </tr:goLink>
-
-                        <br/>
-                        <br/>
-
-                        <tr:outputText value="Click on the Cytoscape icon above to open Cytoscape." />
 
                     </tr:panelBox>
 
