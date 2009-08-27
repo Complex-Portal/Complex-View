@@ -196,7 +196,7 @@
     <c:set var="text" value="s (#{participantCount})" />
     <tr:panelHeader text="Participant#{(participantCount > 1 ? text : '')}">
 
-        <tr:table var="participant" value="#{interaction.components}" rows="0" width="80%">
+        <tr:table var="participant" value="#{interaction.components}" rows="30" width="80%">
 
             <c:set var="interactor" value="#{participant.interactor}" />
 

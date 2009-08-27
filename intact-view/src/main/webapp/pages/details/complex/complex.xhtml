@@ -27,49 +27,43 @@
         </tr:panelHorizontalLayout>
 
         <c:set var="matrix" value="#{detailsBean.similarInteractionMatrix}"/>
+        <c:set var="interaction" value="#{detailsBean.interaction}"/>
 
         <tr:panelHeader text="Similarity search for complex interaction">
 
-            <trh:tableLayout width="100%">
-                <trh:rowLayout>
-                    <trh:cellFormat width="30%" valign="top">
-                        <c:set var="interaction" value="#{detailsBean.interaction}"/>
-                        <tr:panelFormLayout inlineStyle="width:100%">
-
-                            <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                                <tr:outputText value="#{interaction.ac}"/>
-                            </tr:panelLabelAndMessage>
-
-                            <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                                <tr:outputText value="#{interaction.shortLabel}"/>
-                            </tr:panelLabelAndMessage>
-
-                            <tr:panelLabelAndMessage label="Participant count:" labelStyle="font-weight:bold;">
-                                <tr:outputText value="#{fn:length( interaction.components )}"/>
-                            </tr:panelLabelAndMessage>
-
-                            <tr:panelLabelAndMessage label="Similar interaction count:" labelStyle="font-weight:bold;">
-                                <tr:outputText value="#{fn:length( matrix.similarInteractions )}"/>
-                            </tr:panelLabelAndMessage>
-
-                        </tr:panelFormLayout>
-                    </trh:cellFormat>
-                    <trh:cellFormat width="70%" halign="right" valign="top">
-                        <tr:panelBox text="Note:" background="dark">
-                            <tr:outputText value="This view shows interactions similar to ${interaction.shortLabel}. That is, having at least one participant in common."/>
-                            <br/>
-                            <tr:panelAccordion discloseNone="true">
-                                <tr:showDetailItem text="What does that table mean ?" immediate="true">
-                                    <tr:image source="/images/documentation/complex-table-doc.png" />
-                                </tr:showDetailItem>
-                            </tr:panelAccordion>
-                        </tr:panelBox>
-                    </trh:cellFormat>
-                </trh:rowLayout>
-            </trh:tableLayout>
+            <div style="float:right; z-index:10; position:relative;">
+                <tr:panelBox text="Note:" background="dark">
+                    <tr:outputText
+                            value="This view shows interactions similar to ${interaction.shortLabel}. That is, having at least one participant in common."/>
+                    <br/>
+                    <tr:panelAccordion discloseNone="true">
+                        <tr:showDetailItem text="What does that table mean ?" immediate="true">
+                            <tr:image source="/images/documentation/complex-table-doc.png"/>
+                        </tr:showDetailItem>
+                    </tr:panelAccordion>
+                </tr:panelBox>
+            </div>
 
 
-            <br/>
+
+            <tr:panelFormLayout inlineStyle="width:100%">
+
+                <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{interaction.ac}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{interaction.shortLabel}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Participant count:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{fn:length( interaction.components )}"/>
+                </tr:panelLabelAndMessage>
+
+                <tr:panelLabelAndMessage label="Similar interaction count:" labelStyle="font-weight:bold;">
+                    <tr:outputText value="#{fn:length( matrix.similarInteractions )}"/>
+                </tr:panelLabelAndMessage>
+
 
             <trh:tableLayout borderWidth="0" cellSpacing="0" cellPadding="0">
 
@@ -178,6 +172,8 @@
                 </tr>
 
             </trh:tableLayout>
+
+            </tr:panelFormLayout>
 
         </tr:panelHeader>
 
