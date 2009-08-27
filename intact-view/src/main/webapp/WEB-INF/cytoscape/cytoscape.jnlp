@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp codebase="http://www.ebi.ac.uk/~intact/cytoscape-webstart">
+<jnlp codebase="http://www.ebi.ac.uk/~intact/cytoscape-webstart-2.6.3">
 
     <security>
         <all-permissions/>
@@ -74,7 +74,7 @@
         <jar href="lib/sjsxp.jar"/>
         <jar href="lib/stax-ex.jar"/>
         <jar href="lib/streambuffer.jar"/>
-        <jar href="lib/swing-layout-1.0.1.jar"/>
+        <jar href="lib/swing-layout-1.0.3.jar"/>
         <jar href="lib/swingx-2006_10_27.jar"/>
         <jar href="lib/tclib.jar"/>
         <jar href="lib/undo.support.jar"/>
