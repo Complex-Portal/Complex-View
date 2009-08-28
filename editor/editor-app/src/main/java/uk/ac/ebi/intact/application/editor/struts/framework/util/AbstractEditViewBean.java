@@ -888,7 +888,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
             throw new IntactException("Problem during commit", e);
         }
 
-        IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().clear();
+        //IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().clear();
 
 
     }
