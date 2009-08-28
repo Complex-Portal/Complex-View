@@ -8,14 +8,13 @@ package uk.ac.ebi.intact.application.editor.struts.framework.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.application.editor.util.CvHelper;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
-import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 
 import java.util.*;
 

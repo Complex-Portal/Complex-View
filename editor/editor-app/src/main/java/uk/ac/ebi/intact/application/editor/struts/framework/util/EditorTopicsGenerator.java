@@ -6,18 +6,16 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.framework.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.core.persistence.util.CgLibUtil;
 import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Editable;
 import uk.ac.ebi.intact.model.AnnotatedObjectImpl;
-import uk.ac.ebi.intact.persistence.util.CgLibUtil;
+import uk.ac.ebi.intact.model.Editable;
 
 import java.io.*;
 import java.lang.reflect.Modifier;
 import java.util.Properties;
-
-import org.apache.log4j.Logger;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * This utility class generates EditorTopics.properties file using the

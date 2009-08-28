@@ -12,12 +12,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
-import uk.ac.ebi.intact.application.commons.util.UrlUtil;
+import org.springframework.stereotype.Component;
 import uk.ac.ebi.intact.application.editor.exception.EmptyTopicsException;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.context.IntactInitializationError;
-import uk.ac.ebi.intact.context.IntactSession;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.Interaction;
 
@@ -31,6 +29,7 @@ import java.util.*;
  * @author Sugath Mudali (smudali@ebi.ac.uk)
  * @version $Id$
  */
+@Component
 public class EditorService {
 
     private static final Log log = LogFactory.getLog(EditorService.class);
@@ -65,21 +64,7 @@ public class EditorService {
      */
     private String myHelpUrl;
 
-    // Class Methods
-    public static void initService(ServletContext ctx)
-    {
-        try
-        {
-            EditorService editorService = new EditorService(
-                    "uk.ac.ebi.intact.application.editor.EditorResources");
-            ctx.setAttribute(APP_ATT_NAME, editorService);
-
-        }
-        catch (EmptyTopicsException e)
-        {
-            throw new IntactInitializationError("Error loading topics", e);
-        }
-    }
+    private static ServletContext servletContext;
 
     /**
      * Returns the only instance of this class.
@@ -87,48 +72,7 @@ public class EditorService {
      */
     public static EditorService getInstance()
     {
-        IntactSession session = IntactContext.getCurrentInstance().getSession();
-
-        EditorService editorService = (EditorService) session.getApplicationAttribute(APP_ATT_NAME);
-        if (editorService == null)
-        {
-            try
-            {
-                editorService = new EditorService(
-                        "uk.ac.ebi.intact.application.editor.EditorResources");
-            }
-            catch (EmptyTopicsException e)
-            {
-                throw new IntactInitializationError("Error loading topics", e);
-            }
-
-            session.setApplicationAttribute(APP_ATT_NAME, editorService);
-        }
-
-
-        return editorService;
-    }
-
-    public static EditorService getInstance(ServletContext ctx)
-    {
-
-        EditorService editorService = (EditorService) ctx.getAttribute(APP_ATT_NAME);
-        if (editorService == null)
-        {
-            try
-            {
-                editorService = new EditorService(
-                        "uk.ac.ebi.intact.application.editor.EditorResources");
-            }
-            catch (EmptyTopicsException e)
-            {
-                throw new IntactInitializationError("Error loading topics", e);
-            }
-
-            ctx.setAttribute(APP_ATT_NAME, editorService);
-        }
-
-        return editorService;
+        return (EditorService) IntactContext.getCurrentInstance().getSpringContext().getBean("editorService");
     }
 
     /**
@@ -151,15 +95,14 @@ public class EditorService {
 
     /**
      * Construts with the resource file.
-     * @param name the name of the resource file.
      * @exception MissingResourceException thrown when the resource file is
      * not found.
      * @exception EmptyTopicsException thrown for an empty resource file.
      * @exception IntactException for errors in initializing the institution.
      */
-    private EditorService(String name) throws MissingResourceException,
+    public EditorService() throws MissingResourceException,
             EmptyTopicsException, IntactException {
-        myResources = ResourceBundle.getBundle(name);
+        myResources = ResourceBundle.getBundle("uk.ac.ebi.intact.application.editor.EditorResources");
         myTopics = ResourceBundle.getBundle(myResources.getString("topics"));
         // Must have Intact Types to edit.
         if (!myTopics.getKeys().hasMoreElements()) {
@@ -216,10 +159,23 @@ public class EditorService {
      */
     public String getSearchURL(HttpServletRequest request) {
         if (mySearchUrl == null) {
-            String relativePath = UrlUtil.absolutePathWithoutContext(request);
+            String relativePath = absolutePathWithoutContext(request);
             mySearchUrl = relativePath.concat(myResources.getString("search.url"));
         }
         return mySearchUrl;
+    }
+
+    /**
+     * Gets the absolute path stripping off the context name from the URL
+     * @param request The request in use
+     * @return The absolute path without the context part
+     */
+    private String absolutePathWithoutContext(HttpServletRequest request)
+    {
+        String ctxtPath = request.getContextPath();
+        String absolutePathWithoutContext = ctxtPath.substring(0, ctxtPath.lastIndexOf( "/" )+1);
+
+        return absolutePathWithoutContext;
     }
 
     /**
@@ -231,7 +187,7 @@ public class EditorService {
      */
     public String getHelpURL(HttpServletRequest request) {
         if (myHelpUrl == null) {
-            String relativePath = UrlUtil.absolutePathWithoutContext(request);
+            String relativePath = absolutePathWithoutContext(request);
             myHelpUrl = relativePath.concat(myResources.getString("help.url"));
         }
         return myHelpUrl;

@@ -6,9 +6,9 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.action.biosrc;
 
-import org.apache.struts.action.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorAction;
 import uk.ac.ebi.intact.application.editor.struts.view.XreferenceBean;
@@ -16,19 +16,18 @@ import uk.ac.ebi.intact.application.editor.struts.view.biosrc.BioSourceActionFor
 import uk.ac.ebi.intact.application.editor.struts.view.biosrc.BioSourceViewBean;
 import uk.ac.ebi.intact.application.editor.util.CvHelper;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
-import uk.ac.ebi.intact.util.NewtServerProxy;
-import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyService;
 import uk.ac.ebi.intact.bridges.taxonomy.OLSTaxonomyService;
-import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyTerm;
+import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyService;
 import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyServiceException;
+import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyTerm;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.BioSourceDao;
+import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.util.NewtServerProxy;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -235,7 +234,7 @@ public class BioSourceAction extends AbstractEditorAction {
         CvDatabase db = CvHelper.getNewt();
         // The qualifier is identity
         CvXrefQualifier xqual = DaoProvider.getDaoFactory().getCvObjectDao(CvXrefQualifier.class).getByShortLabel( "identity");
-        return new BioSourceXref(IntactContext.getCurrentInstance().getConfig().getInstitution(), db, taxid, label, null, xqual);
+        return new BioSourceXref(IntactContext.getCurrentInstance().getInstitution(), db, taxid, label, null, xqual);
     }
 
 

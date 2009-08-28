@@ -9,20 +9,16 @@ package uk.ac.ebi.intact.application.editor.struts.view.interaction;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.editor.business.EditorService;
-import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorMenuFactory;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.QueryFactory;
 import uk.ac.ebi.intact.application.editor.struts.view.AbstractEditKeyBean;
 import uk.ac.ebi.intact.application.editor.struts.view.feature.FeatureBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.*;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.ProteinUtils;
-import uk.ac.ebi.intact.model.util.CvObjectUtils;
-import uk.ac.ebi.intact.persistence.dao.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -218,10 +214,10 @@ public class ComponentBean extends AbstractEditKeyBean {
             if ( interactionViewBean != null && interactionViewBean.getAc() != null ) {
                 InteractionDao interactionDao = DaoProvider.getDaoFactory().getInteractionDao();
                 final Interaction originalInteraction = interactionDao.getByAc( interactionViewBean.getAc() );
-                myComponent = new Component( IntactContext.getCurrentInstance().getConfig().getInstitution(), originalInteraction,
+                myComponent = new Component( IntactContext.getCurrentInstance().getInstitution(), originalInteraction,
                                              myInteractor, newExpRole, newBioRole );
             } else {
-                myComponent = new Component( IntactContext.getCurrentInstance().getConfig().getInstitution(), myInteraction,
+                myComponent = new Component( IntactContext.getCurrentInstance().getInstitution(), myInteraction,
                                              myInteractor, newExpRole, newBioRole );
             }
 

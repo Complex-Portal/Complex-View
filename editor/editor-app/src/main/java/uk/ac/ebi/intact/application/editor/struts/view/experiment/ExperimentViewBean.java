@@ -17,13 +17,13 @@ import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorMenuFacto
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.ExperimentRowData;
 import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.BioSourceDao;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
+import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.persistence.dao.InteractionDao;
-import uk.ac.ebi.intact.util.DebugUtil;
 
 import java.util.*;
 
@@ -502,7 +502,7 @@ public class ExperimentViewBean extends AbstractEditViewBean<Experiment> {
         // Have we set the annotated object for the view?
         if (exp == null) {
             // Can't read from the persistent system. Create a new Experiment.
-            exp = new Experiment(IntactContext.getCurrentInstance().getConfig().getInstitution(), getShortLabel(), biosource);
+            exp = new Experiment(IntactContext.getCurrentInstance().getInstitution(), getShortLabel(), biosource);
             setAnnotatedObject(exp);
         }
         else {

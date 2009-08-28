@@ -5,11 +5,11 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.editor.util;
 
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
 
 /**
  * TODO comment it.

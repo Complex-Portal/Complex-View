@@ -10,7 +10,7 @@ import servletunit.struts.MockStrutsTestCase;
 import uk.ac.ebi.intact.application.editor.LoginPropertiesGetter;
 import uk.ac.ebi.intact.application.editor.event.EventListener;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
 
 
 /**

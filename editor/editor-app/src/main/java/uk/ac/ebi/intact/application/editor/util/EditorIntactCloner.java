@@ -16,12 +16,8 @@
 package uk.ac.ebi.intact.application.editor.util;
 
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
-import uk.ac.ebi.intact.context.IntactContext;
-import org.joda.time.DateTime;
-
-import java.util.Date;
+import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)

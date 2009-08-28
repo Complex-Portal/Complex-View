@@ -5,13 +5,12 @@ in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.editor.util;
 
-import uk.ac.ebi.intact.business.IntactException;
+import org.springframework.transaction.TransactionStatus;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.CvObjectUtils;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-//import uk.ac.ebi.intact.persistence.dao.IntactTransaction;
 
-import javax.persistence.EntityTransaction;
 import java.util.Collection;
 import java.util.List;
 
@@ -175,7 +174,7 @@ public class CvHelper {
     public static void main(String[] args) throws IntactException {
 
         //IntactTransaction tx = DaoProvider.getDaoFactory().beginTransaction();
-        EntityTransaction tx = DaoProvider.getDaoFactory().beginTransaction();
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
 
         CvInteractorType newt = CvHelper.getNucleicAcid();//.getNewt();
@@ -183,7 +182,7 @@ public class CvHelper {
         //We should normally do a close session after that as in the IntactRequestSessionFilter but, as this 
         // main is just to show how the cvHelper works I haven't added the getSession() method and the close session...
         try{
-            tx.commit();
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         } catch(Exception e){
             System.out.println("Exception commiting " + e);    
         }

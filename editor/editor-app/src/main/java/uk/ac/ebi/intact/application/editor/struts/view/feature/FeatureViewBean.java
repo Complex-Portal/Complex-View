@@ -10,15 +10,17 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.tiles.ComponentContext;
-import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorMenuFactory;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
+import uk.ac.ebi.intact.core.persistence.dao.RangeDao;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.*;
 
 import java.util.*;
 
@@ -415,7 +417,7 @@ public class FeatureViewBean extends AbstractEditViewBean<Feature> {
         // null if creating a new Feature.
         if (feature == null) {
             // Not persisted; create a new feature object.
-            feature = new Feature(IntactContext.getCurrentInstance().getConfig().getInstitution(), getShortLabel(),
+            feature = new Feature(IntactContext.getCurrentInstance().getInstitution(), getShortLabel(),
                     getComponent(), featureType);
             setAnnotatedObject(feature);
         }

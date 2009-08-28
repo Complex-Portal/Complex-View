@@ -6,8 +6,8 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.view.wrappers;
 
+import uk.ac.ebi.intact.core.persistence.util.CgLibUtil;
 import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.persistence.util.CgLibUtil;
 
 import java.util.Date;
 

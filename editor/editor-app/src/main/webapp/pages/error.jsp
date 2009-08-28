@@ -1,10 +1,10 @@
 <%@ page import="org.apache.commons.lang.exception.ExceptionUtils" %>
 <%@ page import="org.joda.time.DateTime" %>
-<%@ page import="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler" %>
-<%@ page import="uk.ac.ebi.intact.context.IntactContext" %>
-<%@ page import="java.util.Properties" %>
 <%@ page import="uk.ac.ebi.intact.application.editor.business.EditorService" %>
+<%@ page import="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler" %>
+<%@ page import="uk.ac.ebi.intact.core.context.IntactContext" %>
 <%@ page import="java.util.Date" %>
+<%@ page import="java.util.Properties" %>
 <!--
 - Author: Sugath Mudali (smudali@ebi.ac.uk)
 - Version: $Id: error.jsp,v 1.5 2003/03/27 17:34:08 skerrien Exp $

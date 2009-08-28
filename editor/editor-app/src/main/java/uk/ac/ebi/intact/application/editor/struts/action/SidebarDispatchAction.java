@@ -14,12 +14,12 @@ import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorDispat
 import uk.ac.ebi.intact.application.editor.struts.view.CommentBean;
 import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.application.editor.util.SearchClass;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.ProteinImpl;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.searchengine.SearchClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -185,7 +185,7 @@ public class SidebarDispatchAction extends AbstractEditorDispatchAction {
             // The topic for new annotation.
             CvTopic cvTopic = cvObjectDao.getByShortLabel("no-uniprot-update");
 
-            Annotation annotation = new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(),
+            Annotation annotation = new Annotation(IntactContext.getCurrentInstance().getInstitution(),
                     cvTopic,cvTopic.getFullName());
 
             // Add the new annotation as a bean.

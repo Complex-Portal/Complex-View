@@ -8,12 +8,12 @@ package uk.ac.ebi.intact.application.editor.struts.view;
 
 import uk.ac.ebi.intact.application.editor.business.EditorService;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotationDao;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.persistence.dao.AnnotationDao;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
 /**
  * Bean to store data for comments (annotations).
@@ -97,7 +97,7 @@ public class CommentBean extends AbstractEditKeyBean {
 
         // Create a new annotation (true if this object was cloned).
         if (myAnnotation == null) {
-            myAnnotation = new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(), cvtopic);
+            myAnnotation = new Annotation(IntactContext.getCurrentInstance().getInstitution(), cvtopic);
         }
         else {
             if(myAnnotation.getAc() != null){

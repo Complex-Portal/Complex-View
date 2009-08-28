@@ -8,14 +8,19 @@ package uk.ac.ebi.intact.application.editor.struts.action;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessages;
+import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorAction;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
+import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.IntactObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,6 +67,7 @@ public class ResultAction extends AbstractEditorAction {
                                  HttpServletRequest request,
                                  HttpServletResponse response)
             throws Exception {
+
         // The ac to search
         String ac = getValue(request, "ac");
         // The type to edit.
@@ -107,14 +113,20 @@ public class ResultAction extends AbstractEditorAction {
         // The class for the search.
         Class clazz = getModelClass(type);
 
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
         // The selected Annotated object.
         AnnotatedObject annobj = getAnnotatedObject(ac,clazz);//type);//AnnotatedObject) helper.getObjectByAc(clazz, ac));
         // Set the object and the type we are about to edit.
         user.setSelectedTopic(type);
         user.setView(annobj);
 
-        log.info("Number of annotations: " + annobj.getAnnotations().size());
-        log.info("Number of xrefs: " + annobj.getXrefs().size());
+        if (log.isDebugEnabled()) {
+            log.debug("Number of annotations: " + annobj.getAnnotations().size());
+            log.debug("Number of xrefs: " + annobj.getXrefs().size());
+        }
+
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         return mapping.findForward(SUCCESS);
     }

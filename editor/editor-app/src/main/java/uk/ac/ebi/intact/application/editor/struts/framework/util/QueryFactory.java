@@ -6,18 +6,12 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.framework.util;
 
-import uk.ac.ebi.intact.model.Alias;
-import uk.ac.ebi.intact.model.ExperimentXref;
-import uk.ac.ebi.intact.model.InteractorAlias;
-import uk.ac.ebi.intact.model.util.ExperimentUtils;
-import uk.ac.ebi.intact.persistence.dao.XrefDao;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.AliasDao;
-import uk.ac.ebi.intact.business.IntactException;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
+import uk.ac.ebi.intact.core.persistence.dao.AliasDao;
+import uk.ac.ebi.intact.model.InteractorAlias;
 
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * This factory class builds queries for the editor.

@@ -36,13 +36,13 @@ import uk.ac.ebi.intact.application.editor.struts.view.CommentBean;
 import uk.ac.ebi.intact.application.editor.struts.view.XreferenceBean;
 import uk.ac.ebi.intact.application.editor.struts.view.experiment.ExperimentViewBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotationDao;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.ExperimentDao;
+import uk.ac.ebi.intact.core.persistence.dao.XrefDao;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.AnnotationDao;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.persistence.dao.ExperimentDao;
-import uk.ac.ebi.intact.persistence.dao.XrefDao;
 import uk.ac.ebi.intact.util.cdb.ExperimentAutoFill;
 import uk.ac.ebi.intact.util.cdb.PublicationNotFoundException;
 import uk.ac.ebi.intact.util.cdb.UnexpectedException;
@@ -436,7 +436,7 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
                                 ")... no author list will be attached/updated to the experiment." );
         }
 
-        authorListAnnot = new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(), authorListTopic ,authorList);
+        authorListAnnot = new Annotation(IntactContext.getCurrentInstance().getInstitution(), authorListTopic ,authorList);
 
         return authorListAnnot;
     }
@@ -458,7 +458,7 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
             throw new IllegalStateException("Could not find CvTopic: " + CvTopic.PUBLICATION_YEAR_MI_REF);
         }
 
-        pubYearAnnot = new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(), publicationYear ,pubYear);
+        pubYearAnnot = new Annotation(IntactContext.getCurrentInstance().getInstitution(), publicationYear ,pubYear);
 
         return pubYearAnnot;
 
@@ -482,7 +482,7 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
                 throw new IllegalStateException("CvTopic not found: "+journalTopic);
             }
 
-            journalAnnot = new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(), journalTopic ,journal);
+            journalAnnot = new Annotation(IntactContext.getCurrentInstance().getInstitution(), journalTopic ,journal);
 
             return journalAnnot;
         }
@@ -505,7 +505,7 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
             throw new IllegalStateException("CvTopic not found: "+authorEmailTopic);
         }
 
-        authorEmailAnnot = new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(), authorEmailTopic ,authorEmail);
+        authorEmailAnnot = new Annotation(IntactContext.getCurrentInstance().getInstitution(), authorEmailTopic ,authorEmail);
 
         return authorEmailAnnot;
     }
@@ -522,7 +522,7 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
         CvObjectDao<CvObject> cvObjectDao = DaoProvider.getDaoFactory().getCvObjectDao(CvObject.class);
         CvXrefQualifier primaryRefQualifier = (CvXrefQualifier) cvObjectDao.getByXref(CvXrefQualifier.PRIMARY_REFERENCE_MI_REF);
         CvDatabase pubmedDatabase= (CvDatabase) cvObjectDao.getByXref(CvDatabase.PUBMED_MI_REF);
-        pubmedXref=new ExperimentXref(IntactContext.getCurrentInstance().getConfig().getInstitution(),pubmedDatabase,pubmedId,"","",primaryRefQualifier);
+        pubmedXref=new ExperimentXref(IntactContext.getCurrentInstance().getInstitution(),pubmedDatabase,pubmedId,"","",primaryRefQualifier);
         return pubmedXref;
     }
 

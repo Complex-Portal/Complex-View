@@ -7,12 +7,12 @@ in the root directory of this distribution.
 package uk.ac.ebi.intact.application.editor.struts.view.sequence;
 
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorMenuFactory;
-import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.core.IntactException;
 import uk.ac.ebi.intact.model.Protein;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Protein view bean.

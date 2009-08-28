@@ -43,7 +43,7 @@ public class EditorActionServlet extends ActionServlet {
         // Create an instance of EditorService. This will throw an exception
         // if the service can't initialize properly (basically the application
         // wouldn't start)
-        EditorService service = EditorService.getInstance(ctx);
+        EditorService service = EditorService.getInstance();
 
         // Make them accessible for any servlets within the server.
         ctx.setAttribute(EditorConstants.EDITOR_SERVICE, service);

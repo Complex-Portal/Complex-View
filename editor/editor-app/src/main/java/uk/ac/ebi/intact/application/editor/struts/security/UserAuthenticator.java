@@ -6,23 +6,19 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.security;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.cfg.Environment;
+import org.hibernate.ejb.Ejb3Configuration;
 import uk.ac.ebi.intact.application.editor.business.EditUser;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
-import uk.ac.ebi.intact.context.IntactConfigurator;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.context.IntactSession;
-import uk.ac.ebi.intact.context.UserContext;
-import uk.ac.ebi.intact.context.impl.WebappSession;
-import uk.ac.ebi.intact.context.impl.StandaloneSession;
-import uk.ac.ebi.intact.config.impl.StandardCoreDataConfig;
+import uk.ac.ebi.intact.core.config.hibernate.IntactHibernatePersistence;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.context.UserContext;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -66,13 +62,20 @@ public class UserAuthenticator {
 //        IntactContext context = IntactConfigurator.createIntactContext( intactSession );
 
         // check if the user exists by trying to open a JDBC connection for that user
-        StandardCoreDataConfig stdDataConfig = new StandardCoreDataConfig(new StandaloneSession());
 
-        Configuration configuration = stdDataConfig.getConfiguration();
-        configuration.configure();
+        Ejb3Configuration ejbConfig = new IntactHibernatePersistence().getBasicConfiguration();
 
-        String url = configuration.getProperty(Environment.URL);
-        String driver = configuration.getProperty(Environment.DRIVER);
+        //ejbConfig.addProperties(props);
+
+        Configuration configuration = ejbConfig.getHibernateConfiguration();
+
+//        StandardCoreDataConfig stdDataConfig = new StandardCoreDataConfig(new StandaloneSession());
+//
+//        Configuration configuration = stdDataConfig.getConfiguration();
+        final BasicDataSource dataSource = (BasicDataSource) IntactContext.getCurrentInstance().getSpringContext().getBean("intactEditorDataSource");
+
+        String url = dataSource.getUrl();
+        String driver = dataSource.getDriverClassName();
 
         try
         {

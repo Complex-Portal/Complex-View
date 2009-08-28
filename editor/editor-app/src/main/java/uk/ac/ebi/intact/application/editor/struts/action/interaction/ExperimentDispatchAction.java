@@ -7,21 +7,16 @@ in the root directory of this distribution.
 package uk.ac.ebi.intact.application.editor.struts.action.interaction;
 
 import org.apache.struts.action.*;
+import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorDispatchAction;
-import uk.ac.ebi.intact.application.editor.struts.framework.util.QueryFactory;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.ExperimentRowData;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.InteractionActionForm;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.InteractionViewBean;
 import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
-import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.model.CvXrefQualifier;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.ExperimentXref;
-import uk.ac.ebi.intact.model.util.ExperimentUtils;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.context.IntactContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -103,23 +98,26 @@ public class ExperimentDispatchAction extends AbstractEditorDispatchAction {
                                 HttpServletRequest request,
                                 HttpServletResponse response)
             throws Exception {
+
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
         // The form.
         InteractionActionForm intform = (InteractionActionForm) form;
 
         // Search value to search experiment.
         String searchValue = intform.getExpSearchValue();
-        if (searchValue != null){
-             searchValue = searchValue.replaceAll("\\*", "%");
-         }
-          if (searchValue.length() == 0 ) {
+        if (searchValue != null) {
+            searchValue = searchValue.replaceAll("\\*", "%");
+        }
+        if (searchValue.length() == 0) {
             ActionMessages errors = new ActionMessages();
             errors.add("int.exp.search",
-            new ActionMessage("error.int.exp.search.input"));
+                    new ActionMessage("error.int.exp.search.input"));
             saveErrors(request, errors);
             setAnchor(request, intform);
             return mapping.getInputForward();
         }
-                                                                      
+
         // The maximum interactions allowed.
         int max = getService().getInteger("exp.search.limit");
 
@@ -140,6 +138,7 @@ public class ExperimentDispatchAction extends AbstractEditorDispatchAction {
 
         // Add the search result to the holder.
         view.addExperimentToHold(makeExperimentRows(results));
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         return mapping.getInputForward();
     }

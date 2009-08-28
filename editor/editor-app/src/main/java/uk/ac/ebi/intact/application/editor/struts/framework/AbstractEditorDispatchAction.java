@@ -20,11 +20,10 @@ import uk.ac.ebi.intact.application.editor.struts.framework.util.ForwardConstant
 import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.application.editor.util.LockManager;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
 import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.AnnotatedObjectImpl;
-import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
 
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;

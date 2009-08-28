@@ -30,9 +30,10 @@ import uk.ac.ebi.intact.model.*;
  */
 public class EditorFinder extends DefaultFinder {
 
+    public EditorFinder() {
+    }
 
     public String findAc( AnnotatedObject annotatedObject ) {
-
         String ac;
 
         if ( annotatedObject.getAc() != null ) {

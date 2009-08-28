@@ -10,7 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.tiles.ComponentContext;
-import uk.ac.ebi.intact.application.commons.util.AnnotationSection;
+import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.business.EditorService;
 import uk.ac.ebi.intact.application.editor.exception.validation.ValidationException;
@@ -18,20 +18,18 @@ import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 import uk.ac.ebi.intact.application.editor.struts.view.CommentBean;
 import uk.ac.ebi.intact.application.editor.struts.view.XreferenceBean;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.ComponentBean;
+import uk.ac.ebi.intact.application.editor.util.AnnotationSection;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.application.editor.util.EditorFinder;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.business.IntactTransactionException;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.core.persister.PersisterException;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.IntactTransactionException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.*;
+import uk.ac.ebi.intact.core.persistence.util.CgLibUtil;
 import uk.ac.ebi.intact.core.persister.PersisterHelper;
-import uk.ac.ebi.intact.core.persister.CorePersister;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
-import uk.ac.ebi.intact.model.util.InteractionUtils;
 import uk.ac.ebi.intact.model.util.IllegalLabelFormatException;
-import uk.ac.ebi.intact.persistence.dao.*;
-import uk.ac.ebi.intact.persistence.util.CgLibUtil;
+import uk.ac.ebi.intact.model.util.InteractionUtils;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
@@ -281,10 +279,10 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     public void reset(T annobj) {
         if (log.isDebugEnabled()) log.debug("Resetting view, with object: "+annobj.getShortLabel()+" ("+annobj.getAc()+")");
 
-        if (annobj.getAc() != null) {
-            annobj = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
-                    .getAnnotatedObjectDao((Class<T>)annobj.getClass()).getByAc(annobj.getAc());
-        }  
+//        if (annobj.getAc() != null) {
+//            annobj = IntactContext.getCurrentInstance().getDataContext().getDaoFactory()
+//                    .getAnnotatedObjectDao((Class<T>)annobj.getClass()).getByAc(annobj.getAc());
+//        }
         setAc(annobj.getAc());
 
         // no need to call it from here.
@@ -864,7 +862,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     public void persist() {
         // Persist my current state (this takes care of updating the wrapped
         // object with values from the form).
-        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         myAnnotObject = createAnnotatedObjectFromView();
         populateAnnotatedObjectFromView();
@@ -876,26 +874,21 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
         myAnnotObject.setOwner( institution );
 
         try {
-            CorePersister corePersister = new CorePersister();
-            corePersister.setFinder( new EditorFinder() );
-            PersisterHelper.saveOrUpdate(corePersister,myAnnotObject);
+            final PersisterHelper persisterHelper = IntactContext.getCurrentInstance().getPersisterHelper();
+            persisterHelper.save(myAnnotObject);
         } catch (Exception e) {
             throw new IntactException("Exception saving object: " + myAnnotObject.getShortLabel(), e);
         }
 
+        reset(myAnnotObject);
+
         try {
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         } catch (IntactTransactionException e) {
             throw new IntactException("Problem during commit", e);
         }
 
-        reset(myAnnotObject);
-
-        // update the cvObject in the cvContext (application scope)
-        if (myAnnotObject instanceof CvObject) {
-            IntactContext.getCurrentInstance().getCvContext().updateCvObject((CvObject) myAnnotObject);
-            log.info("CvObject updated: " + myAnnotObject);
-        }
+        IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().clear();
 
 
     }

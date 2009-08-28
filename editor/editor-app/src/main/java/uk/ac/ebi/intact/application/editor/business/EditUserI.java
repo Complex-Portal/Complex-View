@@ -10,16 +10,15 @@ import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditVie
 import uk.ac.ebi.intact.application.editor.struts.view.experiment.InteractionRowData;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.ExperimentRowData;
 import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
-import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.application.editor.util.ResultWrapper;
+import uk.ac.ebi.intact.core.IntactException;
 import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.searchengine.ResultWrapper;
-import uk.ac.ebi.intact.searchengine.business.IntactUserI;
+import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.util.NewtServerProxy;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,11 +27,47 @@ import java.util.Set;
  * @author Sugath Mudali (smudali@ebi.ac.uk)
  * @version $Id$
  */
-public interface EditUserI extends IntactUserI, Serializable {
+public interface EditUserI extends Serializable {
 
     // Getter/Setter for topic selected.
     public String getSelectedTopic();
     public void setSelectedTopic(String topic);
+
+    /**
+     * This method provides a means of searching intact objects, within the constraints
+     * provided by the parameters to the method.
+     *
+     * @param objectType  the object type to be searched
+     * @param searchParam the parameter to search on (eg field)
+     * @param searchValue the search value to match with the parameter
+     *
+     * @return the results of the search (empty if no matches were found).
+     *
+     * @throws uk.ac.ebi.intact.core.IntactException
+     *          thrown if problems are encountered during the
+     *          search process.
+     */
+    public <T extends IntactObject> Collection<T> search( Class<T> objectType,
+                                                          String searchParam,
+                                                          String searchValue
+    ) throws IntactException;
+
+    /**
+     * Returns the Intact user.
+     *
+     * @return the Intact user currently logged in. This methods could return null
+     *         if there is no user associated with the current session (e.g., Editor) or
+     *         for errors in retrieving user information from the database.
+     */
+    public String getUserName();
+
+    /**
+     * The name of the database connected to.
+     *
+     * @return the name of the database. Could be null for an error in getting
+     *         the information from the database.
+     */
+    public String getDatabaseName();
 
     /**
      * Returns the state of editing.

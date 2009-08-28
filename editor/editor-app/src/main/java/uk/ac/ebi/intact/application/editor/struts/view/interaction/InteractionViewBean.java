@@ -21,12 +21,12 @@ import uk.ac.ebi.intact.application.editor.struts.view.AbstractEditBean;
 import uk.ac.ebi.intact.application.editor.struts.view.experiment.InteractionRowData;
 import uk.ac.ebi.intact.application.editor.struts.view.feature.FeatureBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.*;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.*;
-import uk.ac.ebi.intact.core.persister.PersisterHelper;
 
+import javax.persistence.FlushModeType;
 import java.util.*;
 
 /**
@@ -886,7 +886,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
     // Implements abstract methods
     @Override
     protected Interaction createAnnotatedObjectFromView() throws IntactException {
-        IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig().setAutoFlush( false );
+        IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getEntityManager().setFlushMode( FlushModeType.COMMIT );
 
         Interaction intact = null;
 
@@ -912,7 +912,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
 
             // Not persisted. Create a new Interaction.
             intact = new InteractionImpl(exps, new ArrayList(),
-                    type, intType, getShortLabel(), IntactContext.getCurrentInstance().getConfig().getInstitution());
+                    type, intType, getShortLabel(), IntactContext.getCurrentInstance().getInstitution());
 
 
         // Get the objects using their short label.
@@ -977,7 +977,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
          }
 
 
-        IntactContext.getCurrentInstance().getConfig().getDefaultDataConfig().setAutoFlush( true );
+        IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getEntityManager().setFlushMode( FlushModeType.AUTO );
 
         return intact;
     }

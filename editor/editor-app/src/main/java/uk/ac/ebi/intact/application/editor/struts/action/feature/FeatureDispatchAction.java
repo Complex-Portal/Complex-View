@@ -6,9 +6,9 @@
 
 package uk.ac.ebi.intact.application.editor.struts.action.feature;
 
-import org.apache.struts.action.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.*;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.business.EditorService;
 import uk.ac.ebi.intact.application.editor.struts.action.CommonDispatchAction;
@@ -16,14 +16,14 @@ import uk.ac.ebi.intact.application.editor.struts.view.feature.FeatureActionForm
 import uk.ac.ebi.intact.application.editor.struts.view.feature.FeatureViewBean;
 import uk.ac.ebi.intact.application.editor.struts.view.interaction.InteractionViewBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.persistence.dao.FeatureDao;
-import uk.ac.ebi.intact.persistence.dao.RangeDao;
-import uk.ac.ebi.intact.core.persister.PersisterHelper;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.FeatureDao;
+import uk.ac.ebi.intact.core.persistence.dao.RangeDao;
 import uk.ac.ebi.intact.core.persister.PersisterException;
+import uk.ac.ebi.intact.core.persister.PersisterHelper;
+import uk.ac.ebi.intact.model.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -163,7 +163,7 @@ public class FeatureDispatchAction extends CommonDispatchAction {
         FeatureViewBean view = ((FeatureViewBean) user.getView());
 
         // The owner for new Features.
-        Institution owner = IntactContext.getCurrentInstance().getConfig().getInstitution();
+        Institution owner = IntactContext.getCurrentInstance().getInstitution();
 
         // CvFeature types.
         CvObjectDao<CvFeatureType> cvFeatureDao = DaoProvider.getDaoFactory().getCvObjectDao(CvFeatureType.class) ;

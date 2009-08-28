@@ -7,12 +7,13 @@ in the root directory of this distribution.
 package uk.ac.ebi.intact.application.editor.struts.action;
 
 import org.apache.struts.action.*;
+import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorAction;
 import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
 import uk.ac.ebi.intact.application.editor.struts.view.AbstractEditBean;
 import uk.ac.ebi.intact.application.editor.struts.view.CommentBean;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -160,9 +161,9 @@ public class AnnotationDispatchAction extends AbstractEditorAction {
         // The current view of the edit session.
         AbstractEditViewBean view = getIntactUser(request).getView();
 
-        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         view.delAnnotation(cb);
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         // Back to the edit form.
         return mapping.getInputForward();

@@ -4,7 +4,7 @@
         handler="uk.ac.ebi.intact.application.editor.struts.framework.util.EditorExceptionHandler"
         key="error.intact"
         path="error.layout"
-        type="uk.ac.ebi.intact.business.IntactException"/>
+        type="uk.ac.ebi.intact.IntactException"/>
 
     <exception
         key="error.session.expired"

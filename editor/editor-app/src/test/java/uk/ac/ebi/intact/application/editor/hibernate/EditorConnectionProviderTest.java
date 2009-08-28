@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import uk.ac.ebi.intact.application.editor.LoginPropertiesGetter;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.model.Protein;
 
 import java.sql.Connection;

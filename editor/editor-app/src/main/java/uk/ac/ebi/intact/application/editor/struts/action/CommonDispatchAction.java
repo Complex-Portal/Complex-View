@@ -9,7 +9,6 @@ package uk.ac.ebi.intact.application.editor.struts.action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.*;
-import uk.ac.ebi.intact.application.commons.util.DateToolbox;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.exception.SessionExpiredException;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorDispatchAction;
@@ -29,17 +28,16 @@ import uk.ac.ebi.intact.application.editor.struts.view.sequence.ProteinViewBean;
 import uk.ac.ebi.intact.application.editor.struts.view.sequence.SequenceViewBean;
 import uk.ac.ebi.intact.application.editor.struts.view.sm.SmallMoleculeViewBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
+import uk.ac.ebi.intact.application.editor.util.DateToolbox;
 import uk.ac.ebi.intact.application.editor.util.EditorIntactCloner;
 import uk.ac.ebi.intact.application.editor.util.InteractionIntactCloner;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.ExperimentDao;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
-import uk.ac.ebi.intact.model.util.XrefUtils;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.persistence.dao.ExperimentDao;
-import uk.ac.ebi.intact.core.persister.PersisterHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -358,10 +356,10 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
         // uk.ac.ebi.intact.model.Xref, out of the XreferenceBean we create an xref and use its method hasValidPrimaryId
         // If if return false we display the error.
         Xref xref = createXref(xb, view);
-        if(!xref.hasValidPrimaryId()){
+        if (!xref.hasValidPrimaryId()) {
             String regExp = getIdRegularExpression(xref.getCvDatabase());
             ActionMessages errors = new ActionMessages();
-            errors.add("new.xref", new ActionMessage("error.xref.pid.not.valid",regExp));
+            errors.add("new.xref", new ActionMessage("error.xref.pid.not.valid", regExp));
             saveErrors(request, errors);
 
             // Set the anchor
@@ -392,7 +390,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
                 // Display the errors in the input page.
                 return mapping.getInputForward();
             }
-            // reset the xref value as the xb value have changed.  
+            // reset the xref value as the xb value have changed.
             xref.setSecondaryId(xb.getSecondaryId());
             xref.setDbRelease(xb.getReleaseNumber());
         }
@@ -617,7 +615,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             if (cb1 != null){
                 description = description + " " + cb1.getDescription();
             }
-            Annotation annotation=new Annotation(IntactContext.getCurrentInstance().getConfig().getInstitution(), cvTopic, description);
+            Annotation annotation=new Annotation(IntactContext.getCurrentInstance().getInstitution(), cvTopic, description);
             CommentBean cb = new CommentBean(annotation);
             AbstractEditViewBean view = getIntactUser(request).getView();
             view.addAnnotation(cb);

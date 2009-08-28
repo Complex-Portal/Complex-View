@@ -8,6 +8,7 @@ package uk.ac.ebi.intact.application.editor.business;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.application.editor.event.EventListener;
 import uk.ac.ebi.intact.application.editor.event.LogoutEvent;
 import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
@@ -19,18 +20,17 @@ import uk.ac.ebi.intact.application.editor.struts.view.interaction.ExperimentRow
 import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.application.editor.util.LockManager;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.business.IntactTransactionException;
-import uk.ac.ebi.intact.context.DataContext;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.application.editor.util.ResultWrapper;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.IntactTransactionException;
+import uk.ac.ebi.intact.core.context.DataContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
+import uk.ac.ebi.intact.core.persistence.util.CgLibUtil;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.model.Interactor;
-import uk.ac.ebi.intact.persistence.dao.AnnotatedObjectDao;
-import uk.ac.ebi.intact.persistence.dao.InteractorDao;
-import uk.ac.ebi.intact.persistence.util.CgLibUtil;
-import uk.ac.ebi.intact.searchengine.ResultWrapper;
-import uk.ac.ebi.intact.searchengine.SearchHelperI;
 import uk.ac.ebi.intact.util.NewtServerProxy;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
 
@@ -208,11 +208,6 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
      * The name of the current database.
      */
     private transient String myDatabaseName;
-
-    /**
-     * The search helper. This is recreated if necessary.
-     */
-    private transient SearchHelperI mySearchHelper;
 
     /**
      * Reference to Newt proxy server instance; transient as it is created
@@ -490,7 +485,7 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
         }
 
         final DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
-        dataContext.beginTransaction();
+        final TransactionStatus transactionStatus = dataContext.beginTransaction();
 
         if (log.isDebugEnabled())
             log.debug("Deleting annotated object: "+annobj.getShortLabel()+" ("+annobj.getAc()+")");
@@ -499,7 +494,7 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
         dataContext.getDaoFactory().getAnnotatedObjectDao(annobj.getClass()).deleteByAc(annobj.getAc());
 
         try {
-            dataContext.commitTransaction();
+            dataContext.commitTransaction(transactionStatus);
         } catch (IntactTransactionException e) {
             throw new IntactException("Problem deleting object: "+annobj.getShortLabel(), e);
         }

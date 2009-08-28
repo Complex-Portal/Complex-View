@@ -6,13 +6,13 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.view.cv;
 
-import org.apache.log4j.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.model.Institution;
 
@@ -63,7 +63,7 @@ public class CvViewBean extends AbstractEditViewBean<CvObject> {
                 Constructor ctr = getEditClass().getDeclaredConstructor(
                         Institution.class, String.class);
                 cvobj = (CvObject) ctr.newInstance(
-                        IntactContext.getCurrentInstance().getConfig().getInstitution(), getShortLabel());
+                        IntactContext.getCurrentInstance().getInstitution(), getShortLabel());
             }
             catch (NoSuchMethodException ne) {
                 // Shouldn't happen.

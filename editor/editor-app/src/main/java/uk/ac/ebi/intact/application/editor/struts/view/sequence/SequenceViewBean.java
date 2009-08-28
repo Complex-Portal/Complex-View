@@ -6,22 +6,22 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.view.sequence;
 
-import org.apache.struts.tiles.ComponentContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts.tiles.ComponentContext;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorMenuFactory;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.BioSourceDao;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.model.Polymer;
 import uk.ac.ebi.intact.model.util.PolymerFactory;
-import uk.ac.ebi.intact.persistence.dao.BioSourceDao;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.util.Crc64;
 
 import java.util.HashMap;
@@ -178,7 +178,7 @@ public abstract class SequenceViewBean extends AbstractEditViewBean<Polymer> {
             }
 
             // Not persisted; create a new Polymer using the factory
-            polymer = PolymerFactory.factory(IntactContext.getCurrentInstance().getConfig().getInstitution(), biosrc,
+            polymer = PolymerFactory.factory(IntactContext.getCurrentInstance().getInstitution(), biosrc,
                     getShortLabel(), type);
             setAnnotatedObject(polymer);
         }

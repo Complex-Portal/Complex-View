@@ -6,17 +6,16 @@
 
 package uk.ac.ebi.intact.application.editor.struts.view.interaction;
 
-import uk.ac.ebi.intact.application.commons.util.XrefHelper;
 import uk.ac.ebi.intact.application.editor.business.EditorService;
 import uk.ac.ebi.intact.application.editor.struts.view.AbstractEditBean;
 import uk.ac.ebi.intact.application.editor.struts.view.wrappers.ResultRowData;
+import uk.ac.ebi.intact.application.editor.util.XrefHelper;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.ExperimentXref;
 import uk.ac.ebi.intact.model.Xref;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 
 import java.util.Date;
-import java.util.Iterator;
 
 /**
  * This class contains data for an Experiment row in the Interaction editor.

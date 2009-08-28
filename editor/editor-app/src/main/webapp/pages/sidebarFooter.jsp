@@ -1,4 +1,3 @@
-<%@ page import="com.sun.jmx.snmp.ThreadContext" %>
 <%@ page language="java"%>
 
 <!--
@@ -21,7 +20,7 @@
     <jsp:useBean id="user"
                  scope="session"
                  beanName="uk.ac.ebi.intact.searchengine.business.IntactUserI"
-                 type="uk.ac.ebi.intact.searchengine.business.IntactUserI"/>
+                 type="uk.ac.ebi.intact.application.editor.business.EditUserI"/>
 
     <c:if test="${not empty user.userName}">
         User: <c:out value="${user.userName}"/>

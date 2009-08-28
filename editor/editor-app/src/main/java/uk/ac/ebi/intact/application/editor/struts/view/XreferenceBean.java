@@ -6,23 +6,20 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.struts.view;
 
-import org.apache.log4j.Logger;
-import org.apache.struts.action.ActionMessage;
-import org.apache.struts.action.ActionMessages;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.application.commons.util.XrefHelper;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
 import uk.ac.ebi.intact.application.editor.business.EditorService;
-import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.application.editor.util.XrefHelper;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
 import uk.ac.ebi.intact.util.go.GoTerm;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -134,19 +131,19 @@ public class XreferenceBean extends AbstractEditKeyBean {
         if (myXref == null) {
             if(annotatedObject instanceof BioSource ){
 
-               myXref = new BioSourceXref(IntactContext.getCurrentInstance().getConfig().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
+               myXref = new BioSourceXref(IntactContext.getCurrentInstance().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
                myXref.setParent(annotatedObject);
             }else if (annotatedObject instanceof CvObject ){
-                myXref = new CvObjectXref(IntactContext.getCurrentInstance().getConfig().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
+                myXref = new CvObjectXref(IntactContext.getCurrentInstance().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
                 myXref.setParent(annotatedObject);
             }else if (annotatedObject instanceof Experiment ){
-                myXref = new ExperimentXref(IntactContext.getCurrentInstance().getConfig().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
+                myXref = new ExperimentXref(IntactContext.getCurrentInstance().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
                 myXref.setParent(annotatedObject);
             }else if (annotatedObject instanceof Feature ){
-                myXref = new FeatureXref(IntactContext.getCurrentInstance().getConfig().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
+                myXref = new FeatureXref(IntactContext.getCurrentInstance().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
                 myXref.setParent(annotatedObject);
             }else if (annotatedObject instanceof Interactor ){
-                myXref = new InteractorXref(IntactContext.getCurrentInstance().getConfig().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
+                myXref = new InteractorXref(IntactContext.getCurrentInstance().getInstitution(), db, myPrimaryId, mySecondaryId, myReleaseNumber, xqual);
                 myXref.setParent(annotatedObject);
             }
             else{
