@@ -56,7 +56,7 @@ public class LegacyRedirectionServlet extends HttpServlet {
             if (queryStr.contains("query=")) {
                 String query = queryStr.substring(url.indexOf("query=")+7);
 
-                response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+query);
+                response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query));
             } else {
                response.sendRedirect(absContextPath); 
             }
@@ -69,10 +69,15 @@ public class LegacyRedirectionServlet extends HttpServlet {
             } else if (queryStr.contains("searchString=")) {
                 String query = queryStr.substring(url.indexOf("searchString=")+14);
 
-                response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+query);
+                response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query));
             } else {
                 response.sendRedirect(absContextPath);
             }
         }
+    }
+
+    private String adaptQuery( String query ) {
+        query = query.replaceAll("identifiers\\:", "id:"); // identifiers field does not exist anymore
+        return query;
     }
 }
