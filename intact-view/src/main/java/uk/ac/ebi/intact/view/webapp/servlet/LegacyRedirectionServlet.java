@@ -61,13 +61,16 @@ public class LegacyRedirectionServlet extends HttpServlet {
                response.sendRedirect(absContextPath); 
             }
         } else if (url.contains("/search")) {
+            // posibiligies:
             // http://www.ebi.ac.uk/intact/search/do/search?binary=EBI-2323272,EBI-1046727
+            // http://www.ebi.ac.uk/intact/search/do/search?filter=ac&searchString=EBI-1638729
+
             if (queryStr.contains("binary=")) {
                 String interactors = queryStr.substring(url.indexOf("binary=")+8);
 
                 response.sendRedirect(absContextPath+"/pages/details/details.xhtml?binary="+interactors);
             } else if (queryStr.contains("searchString=")) {
-                String query = queryStr.substring(url.indexOf("searchString=")+14);
+                String query = queryStr.substring(queryStr.indexOf("searchString=")+13);
 
                 response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query));
             } else {
@@ -79,5 +82,13 @@ public class LegacyRedirectionServlet extends HttpServlet {
     private String adaptQuery( String query ) {
         query = query.replaceAll("identifiers\\:", "id:"); // identifiers field does not exist anymore
         return query;
+    }
+
+    public static void main(String[] args) {
+        String str0 = "http://www.ebi.ac.uk/intact/search/do/search?filter=ac&searchString=EBI-1638729";
+        String str1 = "http://www.ebi.ac.uk/intact/search/do/search?searchString=EBI-1638729&filter=ac";
+        String str2 = "http://www.ebi.ac.uk/intact/search/do/search";
+        
+        System.out.println(str1.substring(str1.indexOf("searchString=")+13));
     }
 }
