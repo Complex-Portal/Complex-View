@@ -83,12 +83,4 @@ public class LegacyRedirectionServlet extends HttpServlet {
         query = query.replaceAll("identifiers\\:", "id:"); // identifiers field does not exist anymore
         return query;
     }
-
-    public static void main(String[] args) {
-        String str0 = "http://www.ebi.ac.uk/intact/search/do/search?filter=ac&searchString=EBI-1638729";
-        String str1 = "http://www.ebi.ac.uk/intact/search/do/search?searchString=EBI-1638729&filter=ac";
-        String str2 = "http://www.ebi.ac.uk/intact/search/do/search";
-        
-        System.out.println(str1.substring(str1.indexOf("searchString=")+13));
-    }
 }
