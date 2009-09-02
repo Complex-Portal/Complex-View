@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.binarysearch.ws;
 
-import org.hupo.psi.mi.psicquic.wsclient.PsicquicClientException;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.builder.DocumentDefinition;
@@ -53,7 +52,7 @@ public class BinarySearch {
                                                          String query) {
         if (query == null) throw new NullPointerException("Query cannot be null");
         
-        return findBinaryInteractionsLimited(query, null, null);
+        return findBinaryInteractionsLimited(query, 0, Integer.MAX_VALUE);
     }
                                                           
     @WebMethod(operationName = "findBinaryInteractionsLimited")
@@ -62,20 +61,27 @@ public class BinarySearch {
             @WebParam(name = "firstResult", targetNamespace = NAMESPACE) final Integer firstResult,
             @WebParam(name = "maxResults", targetNamespace = NAMESPACE) final Integer maxResults ) {
 
+        if (firstResult == null) {
+            throw new NullPointerException("firstResult must not be null");
+        }
+        if (maxResults == null) {
+            throw new NullPointerException("maxResults must not be null");
+        }
+
         final int chunkSize = 200;
-        int startCurrentPage = ( firstResult == null ? 0 : firstResult );
+        int startCurrentPage = firstResult;
 
         IntactPsicquicClient client = new IntactPsicquicClient(getPsicquicEndpoint());
         DocumentDefinition docDef = new IntactDocumentDefinition();
 
         SearchResult<BinaryInteraction> searchResult;
-        List<String> interactionLines = new ArrayList<String>( maxResults );
+        List<String> interactionLines = new ArrayList<String>(chunkSize);
 
         boolean firstQueryDone = false;
 
         do {
             try {
-                searchResult = client.getByQuery(query, firstResult, maxResults);
+                searchResult = client.getByQuery(query, startCurrentPage, maxResults);
                 if( ! firstQueryDone ) {
                     firstQueryDone = true;
 
@@ -83,11 +89,11 @@ public class BinarySearch {
                     if( totalCount > maxResults && maxResults > 2000 ) {
                         throw new RuntimeException( "Please be gentle with our services ! " +
                                 "Your query ("+ query +") hits "+ totalCount +" results. " +
-                                "You must set the 'maxResults' parameter to 2000 maximum and " +
+                                "You must use the method 'findBinaryInteractionsLimited', set the 'maxResults' parameter to 2000 maximum and " +
                                 "paginate through the dataset by setting 'firstResult' appropriately." );
                     }
                 }
-            } catch (PsicquicClientException e) {
+            } catch (Throwable e) {
                 throw new RuntimeException("Problem executing query: " + query, e);
             }
 
@@ -97,7 +103,7 @@ public class BinarySearch {
 
             startCurrentPage += chunkSize;
 
-        } while (startCurrentPage < maxResults);
+        } while (startCurrentPage < searchResult.getTotalCount());
 
         return new SimplifiedSearchResult(firstResult, interactionLines, query, maxResults, searchResult.getTotalCount());
     }
