@@ -28,6 +28,7 @@ import uk.ac.ebi.intact.model.*;
  * @version $Id$
  * @since 2.0.1-SNAPSHOT
  */
+@org.springframework.stereotype.Component
 public class EditorFinder extends DefaultFinder {
 
     public EditorFinder() {

@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.application.editor.util;
 
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.CorePersisterImpl;
+import uk.ac.ebi.intact.core.persister.Finder;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 
 /**
@@ -26,7 +27,7 @@ import uk.ac.ebi.intact.model.AnnotatedObject;
 public class EditorCorePersister extends CorePersisterImpl {
 
     public EditorCorePersister(IntactContext ctx) {
-        super(ctx, new EditorFinder());
+        super(ctx, (Finder) ctx.getSpringContext().getBean("editorFinder"));
     }
 
     @Override
