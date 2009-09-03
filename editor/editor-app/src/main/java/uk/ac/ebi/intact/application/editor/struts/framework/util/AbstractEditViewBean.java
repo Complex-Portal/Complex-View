@@ -873,7 +873,6 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
         try {
             final PersisterHelper persisterHelper = IntactContext.getCurrentInstance().getPersisterHelper();
-            myAnnotObject.setUpdator("LALALA");
             persisterHelper.save(myAnnotObject);
         } catch (Exception e) {
             throw new IntactException("Exception saving object: " + myAnnotObject.getShortLabel(), e);
