@@ -19,6 +19,8 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
+import java.util.Iterator;
+
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -52,6 +54,18 @@ public class EditorIntactCloner extends IntactCloner {
         } else if (clone instanceof Experiment) {
             Experiment experiment = (Experiment)clone;
             experiment.getInteractions().clear();
+
+            Iterator<Annotation> annotIterator = experiment.getAnnotations().iterator();
+
+            while (annotIterator.hasNext()) {
+                Annotation annotation = annotIterator.next();
+
+                if (CvTopic.ACCEPTED.equals(annotation.getCvTopic().getIdentifier())) {
+                    annotIterator.remove();
+                } else if (CvTopic.TO_BE_REVIEWED.equals(annotation.getCvTopic().getIdentifier())) {
+                    annotIterator.remove();
+                }
+            }
         }
 
         if (ao == clone) {
@@ -59,5 +73,10 @@ public class EditorIntactCloner extends IntactCloner {
         }
 
         return super.cloneAnnotatedObjectCommon(ao, clone);
+    }
+
+    @Override
+    public Component cloneComponent(Component component) throws IntactClonerException {
+        return super.cloneComponent(component);
     }
 }

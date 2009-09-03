@@ -10,7 +10,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.tiles.ComponentContext;
-import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.business.EditorService;
 import uk.ac.ebi.intact.application.editor.exception.validation.ValidationException;
@@ -21,7 +20,6 @@ import uk.ac.ebi.intact.application.editor.struts.view.interaction.ComponentBean
 import uk.ac.ebi.intact.application.editor.util.AnnotationSection;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.core.IntactException;
-import uk.ac.ebi.intact.core.IntactTransactionException;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.*;
 import uk.ac.ebi.intact.core.persistence.util.CgLibUtil;
@@ -862,7 +860,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
     public void persist() {
         // Persist my current state (this takes care of updating the wrapped
         // object with values from the form).
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+//        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         myAnnotObject = createAnnotatedObjectFromView();
         populateAnnotatedObjectFromView();
@@ -875,6 +873,7 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
         try {
             final PersisterHelper persisterHelper = IntactContext.getCurrentInstance().getPersisterHelper();
+            myAnnotObject.setUpdator("LALALA");
             persisterHelper.save(myAnnotObject);
         } catch (Exception e) {
             throw new IntactException("Exception saving object: " + myAnnotObject.getShortLabel(), e);
@@ -882,11 +881,11 @@ public abstract class  AbstractEditViewBean<T extends AnnotatedObject> implement
 
         reset(myAnnotObject);
 
-        try {
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
-        } catch (IntactTransactionException e) {
-            throw new IntactException("Problem during commit", e);
-        }
+//        try {
+//            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+//        } catch (IntactTransactionException e) {
+//            throw new IntactException("Problem during commit", e);
+//        }
 
         //IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().clear();
 

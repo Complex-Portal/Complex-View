@@ -167,7 +167,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
             // Add to the view.
             myComponents.add(cb);
             // The componen needs to be updated as well.
-            myComponentsToUpdate.add(cb);
+            //myComponentsToUpdate.add(cb);
         }
     }
 
@@ -954,8 +954,11 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         for ( ComponentBean cb : getComponents() ) {
             log.debug( "component expRole " + cb.getExpRole() );
 
-            if ( cb.getComponent() != null ) {
-                intact.addComponent( cb.getComponent() );
+            final Component component = cb.getComponent();
+
+            if ( component != null ) {
+                component.setInteraction(intact);
+                intact.getComponents().add(component);
             }
         }
 
@@ -1334,7 +1337,7 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
                     }
                 }
 
-                intact.addComponent(comp);
+                intact.getComponents().add(comp);
             } else {
                 throw new IllegalStateException("Component was null, whereas "+myComponentsToUpdate.size()+" components " +
                                                 "have been introduced by the user.");

@@ -156,12 +156,11 @@ public class ProteinSearchAction extends AbstractEditorAction {
         if (log.isDebugEnabled()) {
             log.debug("intactSecondary.getShortLabel()" + ((intactSecondary != null)? intactSecondary.getShortLabel() : null));
         }
-                
-        if (param.equals("spAc")) {
+
+        if ("spAc".equals(param)) {
             try{
-                log.debug("ProteinSearchAction.execute 2");
                 uniprotServiceResult = proteinService.retrieve(value);
-            }catch(Exception e){
+            } catch(Throwable e){
                 log.error(e.getMessage(), e);
                 // This error is already logged from the User class.
                 ActionMessages errors = new ActionMessages();
@@ -171,16 +170,13 @@ public class ProteinSearchAction extends AbstractEditorAction {
             } 
         }
         else {
-            log.debug("ProteinSearchAction.execute 3");
             try {
                 rw = user.lookup(ProteinImpl.class, param, value, max);
                 if(rw.isEmpty()){
                     rw = user.lookup(NucleicAcidImpl.class, param, value,max);
-                    log.debug("ProteinSearchAction.execute 4");
                 }
                 if(rw.isEmpty()){
                     rw = user.lookup(SmallMoleculeImpl.class, param, value,max);
-                    log.debug("ProteinSearchAction.execute 5");
                 }
             }
             catch (IntactException ie) {

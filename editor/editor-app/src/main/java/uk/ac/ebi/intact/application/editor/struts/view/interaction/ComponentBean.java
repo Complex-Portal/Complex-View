@@ -193,7 +193,7 @@ public class ComponentBean extends AbstractEditKeyBean {
         return myComponent;
     }
 
-    // TODO: boolean create is never used????
+
     public Component getComponent(InteractionViewBean interactionViewBean ) throws IntactException {
         CvExperimentalRole newExpRole = getCvExpRole();
         CvBiologicalRole newBioRole = getCvBioRole();
