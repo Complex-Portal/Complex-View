@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -300,9 +299,9 @@ public class LockManager {
      *         are cloned because LockObjects are immutable. The list can be empty
      *         if <code>owner</code> has no locks.
      */
-    public List getLocks(String owner) {
+    public List<LockObject> getLocks(String owner) {
         // The locks to return.
-        List locks = new ArrayList();
+        List<LockObject> locks = new ArrayList<LockObject>();
 
         try {
             myRWLock.readLock().acquire();

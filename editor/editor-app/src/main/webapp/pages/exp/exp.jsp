@@ -13,6 +13,7 @@
 <%@ page language="java"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 
 <script language="JavaScript" type="text/javascript">
     // Set the hidden interaction field when the user clicks on any Interaction

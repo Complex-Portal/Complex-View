@@ -165,6 +165,14 @@ public class SidebarDispatchAction extends AbstractEditorDispatchAction {
         // Handler to the Intact User.
         EditUserI user = getIntactUser(request);
 
+        if (user.isEditing()) {
+            ActionMessage message = new ActionMessage("error.concurrent");
+            ActionMessages messages = new ActionMessages();
+            messages.add(ActionMessages.GLOBAL_MESSAGE, message);
+            saveErrors(request, messages);
+            return mapping.findForward(FAILURE);
+        }
+
         // Set the topic as the selected topic.
         DynaActionForm theForm = (DynaActionForm) form;
         String topic = (String) theForm.get("topic");

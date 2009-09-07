@@ -18,7 +18,6 @@ import uk.ac.ebi.intact.core.config.hibernate.IntactHibernatePersistence;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.context.UserContext;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -43,7 +42,7 @@ public class UserAuthenticator {
      * @exception AuthenticateException invalid user for given
      * <code>username</code> and <code>password</code>.
      */
-    public static EditUserI authenticate(String username, String password, HttpServletRequest request)
+    public static EditUserI authenticate(String username, String password)
             throws AuthenticateException {
 
         if (log.isDebugEnabled()) log.debug("Authenticating user: "+username);
@@ -112,7 +111,12 @@ public class UserAuthenticator {
         userContext.setUserId( username );
         userContext.setUserPassword( password );
 
-        return new EditUser(username, password, databaseName);
+        EditUser user = (EditUser) context.getSpringContext().getBean("user");
+        user.setUserName(username);
+        user.setPassword(password);
+        user.setDatabaseName(databaseName);
+
+        return user;
     }
 
 

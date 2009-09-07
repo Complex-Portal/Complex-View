@@ -20,7 +20,6 @@ import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants
 import uk.ac.ebi.intact.util.DesEncrypter;
 
 import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -84,7 +83,7 @@ public class LoginAction extends AbstractEditorAction {
 
         // Validate the user, if this fail it will sent and AuthenticateException. The web.xml is configured so that
         // those type of Expeption are displayed in a nice message ('Wrong login or password')
-        EditUserI user = UserAuthenticator.authenticate(username, password, request);
+        EditUserI user = UserAuthenticator.authenticate(username, password);
 
         // Must have a valid user.
         assert user != null : "User must exist!";

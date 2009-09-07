@@ -144,13 +144,14 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
                               HttpServletRequest request,
                               HttpServletResponse response)
             throws Exception {
+
+        EditUserI user = getIntactUser(request);
+
         ActionForward forward = submitForm(mapping, form, request, false);
         // Turn editing mode on as it was switched off upon a successfull comitt
         if (forward.equals(mapping.findForward(SUCCESS))) {
-            getIntactUser(request).startEditing();
+            user.startEditing();
         }
-        // Handler to the Intact User.
-        EditUserI user = getIntactUser(request);
 
         // The current view.
         AbstractEditViewBean view = user.getView();

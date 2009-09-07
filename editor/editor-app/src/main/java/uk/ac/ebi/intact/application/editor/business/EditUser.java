@@ -8,10 +8,11 @@ package uk.ac.ebi.intact.application.editor.business;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.application.editor.event.EventListener;
 import uk.ac.ebi.intact.application.editor.event.LogoutEvent;
-import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditViewBeanFactory;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
@@ -55,6 +56,8 @@ import java.util.regex.Pattern;
  * @author Sugath Mudali (smudali@ebi.ac.uk)
  * @version $Id$
  */
+@Component("user")
+@Scope("session")
 public class EditUser implements EditUserI, HttpSessionBindingListener {
 
     private static final Log log = LogFactory.getLog(EditUser.class);
@@ -255,10 +258,22 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
      * @exception IntactException
      * due to an invalid user.
      */
-    public EditUser(String user, String password, String databaseName) throws AuthenticateException {
+    public EditUser(String user, String password, String databaseName) {
         myUserName = user;
         myPassword = password;
         myDatabaseName = databaseName;
+    }
+
+    public void setUserName(String myUserName) {
+        this.myUserName = myUserName;
+    }
+
+    public void setPassword(String myPassword) {
+        this.myPassword = myPassword;
+    }
+
+    public void setDatabaseName(String myDatabaseName) {
+        this.myDatabaseName = myDatabaseName;
     }
 
     // Methods to handle special serialization issues.

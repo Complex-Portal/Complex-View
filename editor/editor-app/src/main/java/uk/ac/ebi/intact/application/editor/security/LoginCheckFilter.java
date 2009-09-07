@@ -91,7 +91,7 @@ public class LoginCheckFilter implements Filter {
                 ourLog.debug("User information found in cookies");
 
                 try {
-                    EditUserI user = UserAuthenticator.authenticate(loginForm.getUsername(), loginForm.getPassword(), request);
+                    EditUserI user = UserAuthenticator.authenticate(loginForm.getUsername(), loginForm.getPassword());
                     session.setAttribute(EditorConstants.LOGGED_IN, Boolean.TRUE);
                     session.setAttribute(EditorConstants.INTACT_USER, user);
 

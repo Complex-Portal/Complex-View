@@ -89,11 +89,7 @@ public abstract class AbstractEditorDispatchAction extends LookupDispatchAction
      */
     protected EditUserI getIntactUser(HttpServletRequest request)
             throws SessionExpiredException {
-        EditUserI user = (EditUserI)
-                getSession(request).getAttribute(EditorConstants.INTACT_USER);
-        if (user == null) {
-            throw new SessionExpiredException();
-        }
+        EditUserI user = (EditUserI) IntactContext.getCurrentInstance().getSpringContext().getBean("user");
         return user;
     }
 

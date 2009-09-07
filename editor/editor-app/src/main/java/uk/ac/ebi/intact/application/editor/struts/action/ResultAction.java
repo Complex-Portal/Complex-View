@@ -8,16 +8,12 @@ package uk.ac.ebi.intact.application.editor.struts.action;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessages;
-import org.springframework.transaction.TransactionStatus;
+import org.apache.struts.action.*;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorAction;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
+import uk.ac.ebi.intact.application.editor.util.LockManager;
 import uk.ac.ebi.intact.core.IntactException;
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
@@ -104,6 +100,14 @@ public class ResultAction extends AbstractEditorAction {
         // Handler to the Intact User.
         EditUserI user = getIntactUser(request);
 
+        if (user.isEditing() && LockManager.getInstance().getLock(ac) == null) {
+            ActionMessage message = new ActionMessage("error.concurrent");
+            ActionMessages messages = new ActionMessages();
+            messages.add(ActionMessages.GLOBAL_MESSAGE, message);
+            saveErrors(request, messages);
+            return mapping.findForward(FAILURE);
+        }
+
         // Try to acquire the lock.
         ActionMessages errors = acquire(ac, user.getUserName());
         if (errors != null) {
@@ -112,8 +116,6 @@ public class ResultAction extends AbstractEditorAction {
         }
         // The class for the search.
         Class clazz = getModelClass(type);
-
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         // The selected Annotated object.
         AnnotatedObject annobj = getAnnotatedObject(ac,clazz);//type);//AnnotatedObject) helper.getObjectByAc(clazz, ac));
@@ -125,8 +127,6 @@ public class ResultAction extends AbstractEditorAction {
             log.debug("Number of annotations: " + annobj.getAnnotations().size());
             log.debug("Number of xrefs: " + annobj.getXrefs().size());
         }
-
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         return mapping.findForward(SUCCESS);
     }

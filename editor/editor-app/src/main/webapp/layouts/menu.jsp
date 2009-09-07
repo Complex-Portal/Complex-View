@@ -1,6 +1,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
 <%-- Menu Layout
   This layout render a menu with links.
@@ -70,7 +71,8 @@
         <tr>
           <td width="10" valign="top" ></td>
           <td valign="top"  >
-          <a href="logout">Logout</a>
+    
+          <a href="<c:url value="/do/logout"/>">Logout</a>
           </td>
         </tr>
 
