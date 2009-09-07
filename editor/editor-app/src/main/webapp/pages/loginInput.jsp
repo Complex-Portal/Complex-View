@@ -23,6 +23,7 @@
             </td>
         </tr>
 
+        <!--
         <tr>
             <th align="right">
                 Remember Me
@@ -31,7 +32,7 @@
                 <input type="checkbox" checked="true" disabled="true" />
             </td>
         </tr>
-
+            -->
         <tr>
             <td align="left">
                 <input type="submit" value="Login"/>

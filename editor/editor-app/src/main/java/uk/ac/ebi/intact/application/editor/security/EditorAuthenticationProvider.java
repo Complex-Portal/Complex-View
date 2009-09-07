@@ -23,7 +23,6 @@ import org.springframework.security.providers.UsernamePasswordAuthenticationToke
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.event.EventListener;
 import uk.ac.ebi.intact.application.editor.event.LoginEvent;
 import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
@@ -47,10 +46,8 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
             log.debug("Authenticating user: "+authentication.getPrincipal());
         }
 
-        EditUserI user;
-
         try {
-            user = UserAuthenticator.authenticate((String)authentication.getPrincipal(), (String)authentication.getCredentials());
+            UserAuthenticator.authenticate((String)authentication.getPrincipal(), (String)authentication.getCredentials());
         } catch (AuthenticateException e) {
             if (log.isInfoEnabled()) log.info("Authentication failed for user: "+authentication.getPrincipal());
 

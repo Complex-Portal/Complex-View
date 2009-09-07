@@ -6,16 +6,18 @@
 
     <http session-fixation-protection="migrateSession">
         <intercept-url pattern="/do/login" filters="none"/>
+        <intercept-url pattern="/pages/login.jsp" filters="none"/>
         <intercept-url pattern="/**" access="ROLE_CURATOR"/>
 
-        <form-login login-page='/do/login' default-target-url="/welcome.jsp"/>
+        <form-login login-page="/pages/login.jsp" default-target-url="/welcome.jsp" authentication-failure-url="/do/login"/>
         <logout logout-url="/do/logout" invalidate-session="true"/>
 
-         <concurrent-session-control max-sessions="1" />
+        <concurrent-session-control max-sessions="1" />
     </http>
 
     <beans:bean class="uk.ac.ebi.intact.application.editor.security.EditorAuthenticationProvider">
         <custom-authentication-provider/>
     </beans:bean>
+
 
 </beans:beans>
