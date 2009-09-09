@@ -6,6 +6,9 @@ in the root directory of this distribution.
 
 package uk.ac.ebi.intact.application.editor.event;
 
+import org.springframework.stereotype.Component;
+import uk.ac.ebi.intact.core.context.IntactContext;
+
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,6 +20,7 @@ import java.util.Set;
  * @author Sugath Mudali (smudali@ebi.ac.uk)
  * @version $Id$
  */
+@Component
 public class EventListener extends Observable {
 
     // -------------------------------------------------------------------------
@@ -58,15 +62,10 @@ public class EventListener extends Observable {
     // -- End of Inner class --------------------------------------------------
 
     /**
-     * The only instance of this class.
-     */
-    private static final EventListener ourInstance = new EventListener();
-
-    /**
      * @return the only instance of this class.
      */
     public static EventListener getInstance() {
-        return ourInstance;
+        return (EventListener) IntactContext.getCurrentInstance().getSpringContext().getBean("eventListener");
     }
 
     /**
@@ -88,6 +87,7 @@ public class EventListener extends Observable {
      */
     @Override
     public void notifyObservers(Object event) {
+        System.out.println("EVENT: "+event);
         // Otherwise it won't propagate changes:
         setChanged();
         super.notifyObservers(event);

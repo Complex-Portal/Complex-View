@@ -17,20 +17,15 @@ package uk.ac.ebi.intact.application.editor.security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.*;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.ac.ebi.intact.application.editor.event.EventListener;
 import uk.ac.ebi.intact.application.editor.event.LoginEvent;
 import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
-import uk.ac.ebi.intact.application.editor.struts.framework.util.EditorConstants;
 import uk.ac.ebi.intact.application.editor.struts.security.UserAuthenticator;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -40,6 +35,9 @@ import javax.servlet.http.HttpServletRequest;
 public class EditorAuthenticationProvider implements AuthenticationProvider {
 
     private static final Log log = LogFactory.getLog( EditorAuthenticationProvider.class );
+
+    @Autowired
+    private EventListener eventListener;
 
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if (log.isDebugEnabled()) {
@@ -56,19 +54,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
 
         if (log.isInfoEnabled()) log.info("Authentication successful for user: "+authentication.getPrincipal());
 
-        ServletRequestAttributes sa = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest request = sa.getRequest();
-
-        // Save the context to avoid repeat calls.
-        ServletContext ctx = request.getSession().getServletContext();
-
-        // Notify the event listener.
-        EventListener listener = (EventListener) ctx.getAttribute(
-                EditorConstants.EVENT_LISTENER);
-        listener.notifyObservers(new LoginEvent((String)authentication.getPrincipal()));
-
-        // Store the server path.
-        ctx.setAttribute(EditorConstants.SERVER_PATH, request.getContextPath());
+        eventListener.notifyObservers(new LoginEvent((String)authentication.getPrincipal()));
 
         GrantedAuthority grantedAuthority = new GrantedAuthorityImpl("ROLE_CURATOR");
         Authentication auth = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(),

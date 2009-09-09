@@ -8,9 +8,12 @@ package uk.ac.ebi.intact.application.editor.business;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.ac.ebi.intact.application.editor.event.EventListener;
 import uk.ac.ebi.intact.application.editor.event.LogoutEvent;
 import uk.ac.ebi.intact.application.editor.struts.framework.util.AbstractEditViewBean;
@@ -36,6 +39,7 @@ import uk.ac.ebi.intact.util.NewtServerProxy;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 import java.io.IOException;
@@ -63,6 +67,9 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
     private static final Log log = LogFactory.getLog(EditUser.class);
 
     private static final int MAX_RESULTS_IN_LIST = 30;
+
+    @Autowired
+    private EventListener eventListener;
 
     // -------------------------------------------------------------------------
 
@@ -296,7 +303,13 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
      * Will call this method when an object is bound to a session.
      * Starts the user view.
      */
-    public void valueBound(HttpSessionBindingEvent event) {}
+    public void valueBound(HttpSessionBindingEvent event) {
+
+        ServletRequestAttributes sa = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest request = sa.getRequest();
+        ServletContext ctx = request.getSession().getServletContext();
+        ctx.setAttribute(EditorConstants.SERVER_PATH, request.getContextPath());
+    }
 
     /**
      * Will call this method when an object is unbound from a session. This
@@ -312,9 +325,7 @@ public class EditUser implements EditUserI, HttpSessionBindingListener {
         LockManager lm = (LockManager) ctx.getAttribute(EditorConstants.LOCK_MGR);
 
         // Notify the event listener.
-        EventListener listener = (EventListener) ctx.getAttribute(
-                EditorConstants.EVENT_LISTENER);
-        listener.notifyObservers(new LogoutEvent(myUserName));
+        eventListener.notifyObservers(new LogoutEvent(myUserName));
 
         // Release all the locks held by this user.
         lm.releaseAllLocks(myUserName);
