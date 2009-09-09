@@ -65,7 +65,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
         // Notify the event listener.
         EventListener listener = (EventListener) ctx.getAttribute(
                 EditorConstants.EVENT_LISTENER);
-        listener.notifyObservers(new LoginEvent((String)authentication.getCredentials()));
+        listener.notifyObservers(new LoginEvent((String)authentication.getPrincipal()));
 
         // Store the server path.
         ctx.setAttribute(EditorConstants.SERVER_PATH, request.getContextPath());
