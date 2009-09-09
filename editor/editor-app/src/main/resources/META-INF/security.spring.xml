@@ -7,6 +7,8 @@
     <http session-fixation-protection="migrateSession">
         <intercept-url pattern="/do/login" filters="none"/>
         <intercept-url pattern="/pages/login.jsp" filters="none"/>
+        <intercept-url pattern="/images/**" filters="none"/>
+        <intercept-url pattern="/layouts/**" filters="none"/>
         <intercept-url pattern="/**" access="ROLE_CURATOR"/>
 
         <form-login login-page="/pages/login.jsp" default-target-url="/welcome.jsp" authentication-failure-url="/do/login"/>

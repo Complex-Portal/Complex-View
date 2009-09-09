@@ -9,6 +9,13 @@
     Version: $Id$
 -->
 
+ <%
+        String path = request.getScheme()+"://" +
+                      request.getServerName()+":" +
+                      request.getServerPort() +
+                      request.getContextPath();
+    %>
+
 <table width="100%" height="100%">
     <tr>
         <td valign="top" height="*">
@@ -17,7 +24,7 @@
                 <%-- Sidebar logo --%>
                 <tr>
                     <td valign="top" align="left" width="113" height="75">
-                        <img src="<%=request.getContextPath()%>/images/logo_intact.gif" border="0">
+                        <img src="<%=path%>/images/logo_intact.gif" border="0">
                     </td>
                 </tr>
 

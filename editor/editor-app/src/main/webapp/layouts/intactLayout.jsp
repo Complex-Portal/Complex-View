@@ -28,9 +28,15 @@
     <meta name='ROBOTS' content='NOINDEX'>
 
     <title><tiles:getAsString name="title"/></title>
+    <%
+        String path = request.getScheme()+"://" +
+                      request.getServerName()+":" +
+                      request.getServerPort() +
+                      request.getContextPath();
+    %>
     <!-- Don't put the base tag here; let the browser sort out the URLs -->
     <link rel="stylesheet" type="text/css"
-        href="<%= request.getContextPath() %>/layouts/styles/intact.css"/>
+        href="<%= path %>/layouts/styles/intact.css"/>
 
 </head>
 
@@ -54,7 +60,7 @@
 
             </tr>
             <tr>
-                <td height="3" background="<%=request.getContextPath()%>/images/hor.gif"></td>
+                <td height="3" background="<%=path%>/images/hor.gif"></td>
             </tr>
             <%-- Content section --%>
             <tr>

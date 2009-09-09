@@ -1,6 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
-<form name="loginForm" action="<c:url value="/j_spring_security_check"/>" method="POST">
+<%
+        String path = request.getScheme()+"://" +
+                      request.getServerName()+":" +
+                      request.getServerPort() +
+                      request.getContextPath();
+    %>
+
+<form name="loginForm" action="<%=path%>/j_spring_security_check" method="POST">
 
     <table border="0" width="100%">
 
