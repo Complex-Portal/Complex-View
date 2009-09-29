@@ -63,22 +63,32 @@ public class DetailsController extends JpaBaseController {
     private static final Log log = LogFactory.getLog( DetailsController.class );
 
     private static final String INTERACTION_AC_PARAM = "interactionAc";
+    private static final String EXPERIMENT_AC_PARAM = "experimentAc";
     private static final String BINARY_PARAM = "binary";
 
     private Interaction interaction;
+
+    private Experiment experiment;
 
     @PreRenderView
     @Transactional(readOnly = true)
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();
         final String interactionAc = context.getExternalContext().getRequestParameterMap().get( INTERACTION_AC_PARAM );
+        final String experimentAc = context.getExternalContext().getRequestParameterMap().get( EXPERIMENT_AC_PARAM );
         final String binary = context.getExternalContext().getRequestParameterMap().get( BINARY_PARAM );
 
         UserQuery userQuery = (UserQuery) getBean("userQuery");
         SearchController searchController = (SearchController) getBean("searchBean");
 
+        if( interactionAc != null && experimentAc != null ) {
+            addErrorMessage( "Please either request an interaction or an experiment accession number.",
+                             "Both were specified." );
+            return;
+        }
+
         if ( interactionAc != null ) {
-            log.debug( "Parameter " + INTERACTION_AC_PARAM + " was specified" );
+            if ( log.isDebugEnabled() ) log.debug( "Parameter " + INTERACTION_AC_PARAM + " was specified" );
             setInteractionAc( interactionAc );
 
             // Update interaction search
@@ -87,6 +97,16 @@ public class DetailsController extends JpaBaseController {
             SolrQuery solrQuery = userQuery.createSolrQuery();
             searchController.doBinarySearch( solrQuery );
 
+        } else if ( experimentAc != null ) {
+
+            if ( log.isDebugEnabled() ) log.debug( "Parameter " + EXPERIMENT_AC_PARAM + " was specified" );
+            setExperimentAc( experimentAc );
+
+            // TODO Update interaction search when experiment ACs are integrated in the Solr index
+            userQuery.reset();
+//            userQuery.setSearchQuery( "interaction_id:" + interactionAc );
+//            SolrQuery solrQuery = userQuery.createSolrQuery();
+//            searchController.doBinarySearch( solrQuery );
         }
 
         if (binary != null) {
@@ -118,6 +138,25 @@ public class DetailsController extends JpaBaseController {
         }
     }
 
+    @Transactional(readOnly = true)
+    private void setExperimentAc( String experimentAc ) {
+        if ( log.isDebugEnabled() ) log.debug( "Calling setExperimentAc( '" + experimentAc + "' )..." );
+        experiment = getDaoFactory().getExperimentDao().getByAc( experimentAc );
+        if ( experiment == null ) {
+            addErrorMessage( "No experiment found in the database for ac: " + experimentAc, "Please try with an other AC." );
+        } else {
+            if ( log.isDebugEnabled() ) log.debug( "Found experiment: " + experiment.getShortLabel() );
+        }
+    }
+
+    public boolean hasExperiment() {
+        return experiment != null;
+    }
+
+    public void setExperiment( Experiment experiment ) {
+        this.experiment = experiment;
+    }
+
     public boolean hasInteraction() {
         return interaction != null;
     }
@@ -132,18 +171,23 @@ public class DetailsController extends JpaBaseController {
 
     @Transactional(readOnly = true)
     public void setInteractionAc( String interactionAc ) {
-        if ( log.isDebugEnabled() ) {
-            log.debug( "Calling setInteractionAc( '" + interactionAc + "' )..." );
-        }
+        if ( log.isDebugEnabled() ) log.debug( "Calling setInteractionAc( '" + interactionAc + "' )..." );
         interaction = getDaoFactory().getInteractionDao().getByAc( interactionAc );
-        if ( interaction == null ) {
-            addErrorMessage( "No interaction found in the database for ac: " + interactionAc, "" );
-        }
+        if ( interaction == null ) addErrorMessage( "No interaction found in the database for ac: " + interactionAc, "" );
     }
 
     public Experiment getExperiment() {
+        Experiment exp = null;
+        if( experiment != null ) {
+            exp = experiment;
+        }
+
         // TODO handle multiple experiment (so far we don't have that kind of data in IntAct).
-        return interaction.getExperiments().iterator().next();
+        // fall back on the experiment of the interaction loaded.
+        if( interaction != null ) {
+            exp = interaction.getExperiments().iterator().next();
+        }
+        return exp;
     }
 
     private static Collection<String> publicationTopics = new ArrayList<String>();
