@@ -263,35 +263,35 @@
     <navigation-rule>
         <navigation-case>
           <from-outcome>dialog:faq.expansion</from-outcome>
-          <to-view-id>/pages/documentation/faq/complex_expansion.xhtml</to-view-id>
+          <to-view-id>/pages/documentation/contextual/complex_expansion.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
           <from-outcome>dialog:faq.whatis.search</from-outcome>
-          <to-view-id>/pages/documentation/faq/whatis_search.xhtml</to-view-id>
+          <to-view-id>/pages/documentation/contextual/whatis_search.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
           <from-outcome>dialog:faq.whatis.interactions</from-outcome>
-          <to-view-id>/pages/documentation/faq/whatis_interactions.xhtml</to-view-id>
+          <to-view-id>/pages/documentation/contextual/whatis_interactions.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
           <from-outcome>dialog:faq.whatis.browser</from-outcome>
-          <to-view-id>/pages/documentation/faq/whatis_browser.xhtml</to-view-id>
+          <to-view-id>/pages/documentation/contextual/whatis_browser.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
         <navigation-case>
           <from-outcome>dialog:faq.whatis.lists</from-outcome>
-          <to-view-id>/pages/documentation/faq/whatis_lists.xhtml</to-view-id>
+          <to-view-id>/pages/documentation/contextual/whatis_lists.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
@@ -301,6 +301,5 @@
           <to-view-id>/pages/search/search_browse_dialog.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-
 
 </faces-config>
