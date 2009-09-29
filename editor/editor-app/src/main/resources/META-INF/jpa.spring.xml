@@ -24,6 +24,12 @@
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
+    <bean id="hibernateJpaVendorAdapter" class="uk.ac.ebi.intact.application.editor.struts.security.EditorJpaVendorAdapter">
+                <property name="databasePlatform" value="${db.dialect}"/>
+                <property name="showSql" value="false"/>
+                <property name="generateDdl" value="false"/>
+            </bean>
+
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="intact-core-default"/>
         <property name="dataSource" ref="intactEditorDataSource"/>
@@ -37,13 +43,8 @@
         </property>
 
         <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="databasePlatform" value="${db.dialect}"/>
-                <property name="showSql" value="false"/>
-                <property name="generateDdl" value="false"/>
-            </bean>
+             <ref bean="hibernateJpaVendorAdapter" />
         </property>
-
     </bean>
 
     <bean id="intactEditorDataSource" class="org.apache.commons.dbcp.BasicDataSource">

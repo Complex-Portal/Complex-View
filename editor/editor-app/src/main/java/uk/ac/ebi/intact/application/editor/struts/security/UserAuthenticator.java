@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.ejb.Ejb3Configuration;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 import uk.ac.ebi.intact.application.editor.business.EditUser;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.exception.AuthenticateException;
@@ -21,6 +22,7 @@ import uk.ac.ebi.intact.core.context.UserContext;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * The custom authenticator for Intact editor.
@@ -62,7 +64,14 @@ public class UserAuthenticator {
 
         // check if the user exists by trying to open a JDBC connection for that user
 
-        Ejb3Configuration ejbConfig = new IntactHibernatePersistence().getBasicConfiguration();
+        final EditorJpaVendorAdapter vendorAdapter =
+                ( EditorJpaVendorAdapter ) IntactContext.getCurrentInstance()
+                        .getSpringContext().getBean( "hibernateJpaVendorAdapter" );
+
+        final Properties properties = new Properties();
+        properties.put( "hibernate.dialect", vendorAdapter.getJpaDatabasePlatform() );
+
+        Ejb3Configuration ejbConfig = new IntactHibernatePersistence().getBasicConfiguration( properties );
 
         //ejbConfig.addProperties(props);
 
@@ -118,6 +127,4 @@ public class UserAuthenticator {
 
         return user;
     }
-
-
 }
