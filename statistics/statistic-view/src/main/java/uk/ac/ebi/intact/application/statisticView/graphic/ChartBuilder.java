@@ -328,7 +328,7 @@ public class ChartBuilder {
         for ( Iterator iterator = taxidFilter.iterator(); iterator.hasNext(); ) {
             Item item = ( Item ) iterator.next();
 
-            dataSet.addValue( item.getInteractionCount(), "Binary Interaction evidences", item.getName() );
+            dataSet.addValue( item.getInteractionCount(), "Binary interaction evidences", item.getName() );
             dataSet.addValue( item.getProteinCount(), "Proteins", item.getName() );
         }
 
