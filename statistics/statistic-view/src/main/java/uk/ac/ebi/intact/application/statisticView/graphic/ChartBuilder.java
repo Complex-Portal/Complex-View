@@ -39,7 +39,7 @@ public class ChartBuilder {
     // all titles of the different intact charts
 
     private static final String IDENTIFICATION_CHART_TITLE = "IntAct interactions by identification method";
-    private static final String BIN_INTERACTION_CHART_TITLE = "IntAct binary interactions";
+    private static final String BIN_INTERACTION_CHART_TITLE = "IntAct binary interaction evidences";
     private static final String INTERACTION_CHART_TITLE = "IntAct interactions";
     private static final String CV_CHART_TITLE = "IntAct controlled vocabulary terms";
     private static final String EXPERIMENT_CHART_TITLE = "IntAct experiments and publications";
@@ -258,15 +258,15 @@ public class ChartBuilder {
 
     static {
         // todo load that from a properties file.
-        taxidFilter.add( new Item( "Human", new String[]{"9606"} ) );
-        taxidFilter.add( new Item( "Mouse", new String[]{"10090"} ) );
+        taxidFilter.add( new Item( "H. sapiens", new String[]{"9606"} ) );
+        taxidFilter.add( new Item( "M. musculus", new String[]{"10090"} ) );
         taxidFilter.add( new Item( "C. elegans", new String[]{"6239"} ) );
         taxidFilter.add( new Item( "D. melanogaster", new String[]{"7227"} ) );
         taxidFilter.add( new Item( "A. thaliana", new String[]{"3702"} ) );
         taxidFilter.add( new Item( "S. cerevisiae", new String[]{"4932"} ) );
         taxidFilter.add( new Item( "S. pombe", new String[]{"4896"} ) );
         taxidFilter.add( new Item( "E. coli (K12)", new String[]{"83333"} ) );
-        taxidFilter.add( new Item( "Rice (japonica)", new String[]{"39947"} ) );
+        taxidFilter.add( new Item( "O. sativa (japonica)", new String[]{"39947"} ) );
     }
 
     /**
@@ -328,7 +328,7 @@ public class ChartBuilder {
         for ( Iterator iterator = taxidFilter.iterator(); iterator.hasNext(); ) {
             Item item = ( Item ) iterator.next();
 
-            dataSet.addValue( item.getInteractionCount(), "Binary Interactions", item.getName() );
+            dataSet.addValue( item.getInteractionCount(), "Binary Interaction evidences", item.getName() );
             dataSet.addValue( item.getProteinCount(), "Proteins", item.getName() );
         }
 

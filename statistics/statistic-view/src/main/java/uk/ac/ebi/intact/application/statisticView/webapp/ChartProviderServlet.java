@@ -50,7 +50,7 @@ public class ChartProviderServlet extends HttpServlet {
         response.setContentType( "image/png" );
 
         log.debug( "Creating buffered chart: " + chartName );
-
+        
         // send the picture
         BufferedImage buf = chart.createBufferedImage( chartSessionInfo.getHeight(),
                                                        chartSessionInfo.getWidth(),
