@@ -248,13 +248,14 @@ public class UserQuery extends BaseController {
     }
 
     public void doAddFieldToQuery(QueryToken queryToken) {
+        searchQuery = surroundByBracesIfNecessary(searchQuery);
+
         if (!isWildcardQuery(queryToken.getQuery())) {
 
             if (isWildcardQuery(searchQuery)) {
                 searchQuery = queryToken.toQuerySyntax(true);
             } else {
-                searchQuery = surroundByBracesIfNecessary(searchQuery);
-                searchQuery = searchQuery + " "+queryToken.toQuerySyntax();
+                searchQuery = searchQuery + " " + queryToken.toQuerySyntax();
             }
         }
 
@@ -285,7 +286,12 @@ public class UserQuery extends BaseController {
     }
 
     private String surroundByBracesIfNecessary(String query) {
-        if (query.contains(" AND ") || query.contains(" OR ")) {
+        if( query.matches( "\\(.*\\)" ) ) {
+            return query;
+        }
+
+        // searching for space should be enough as it covers all 3 other cases, just left them for clarity sake.
+        if  (query.contains(" ") || query.contains(" AND ") || query.contains(" OR ") || query.contains(" +")) {
             query = "("+query+")";
         }
 
