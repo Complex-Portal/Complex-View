@@ -141,24 +141,22 @@ public class SolrSearchResultDataModel extends SortableModel implements Serializ
         final ExtendedInteractor interactorA = binaryInteraction.getInteractorA();
         final ExtendedInteractor interactorB = binaryInteraction.getInteractorB();
 
-        if (matchesQuery(interactorA)) {
-            return;
-        }
-        
-        if (matchesQuery(interactorB)) {
+        final boolean matchesA = matchesQuery(interactorA);
+        final boolean matchesB = matchesQuery(interactorB);
+
+        if (matchesA && !matchesB) {
+            // nothing
+        } else if (!matchesA && matchesB) {
             binaryInteraction.flip();
-            return;
-        }
-
-        if (MitabFunctions.isSmallMolecule(interactorA) && !MitabFunctions.isSmallMolecule(interactorB)) {
-            return;
-        }
-
-        final String interactorAName = MitabFunctions.getInteractorDisplayName(interactorA);
-        final String interactorBName = MitabFunctions.getInteractorDisplayName(interactorB);
-
-        if (interactorAName.compareTo(interactorBName) > 0) {
+        } else if (!MitabFunctions.isSmallMolecule(interactorA) && MitabFunctions.isSmallMolecule(interactorB)) {
             binaryInteraction.flip();
+        } else {
+            final String interactorAName = MitabFunctions.getInteractorDisplayName(interactorA);
+            final String interactorBName = MitabFunctions.getInteractorDisplayName(interactorB);
+
+            if (interactorAName.compareTo(interactorBName) > 0) {
+                binaryInteraction.flip();
+            }
         }
     }
 
