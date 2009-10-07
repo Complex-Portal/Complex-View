@@ -22,10 +22,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * Servlet that does take care of redirecting old URLs to appropriate locations in this web site.
+ *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
+ * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
  */
 public class LegacyRedirectionServlet extends HttpServlet {
+    private static final String QUERY = "query=";
+    private static final String BINARY = "binary=";
+    private static final String SEARCH_STRING = "searchString=";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,7 +50,6 @@ public class LegacyRedirectionServlet extends HttpServlet {
             queryStr = "";
         }
 
-
         if (url.contains("/site")) {
 
             if (!absContextPath.contains("/site")) {
@@ -53,27 +58,48 @@ public class LegacyRedirectionServlet extends HttpServlet {
 
         } else if (url.contains("/binary-search")) {
 
-            if (queryStr.contains("query=")) {
-                String query = queryStr.substring(url.indexOf("query=")+7);
+            if (queryStr.contains( QUERY )) {
+                String query = queryStr.substring(url.indexOf( QUERY )+QUERY.length());
 
                 response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query));
             } else {
                response.sendRedirect(absContextPath); 
             }
+
         } else if (url.contains("/search")) {
-            // posibiligies:
+            // possibilities:
             // http://www.ebi.ac.uk/intact/search/do/search?binary=EBI-2323272,EBI-1046727
             // http://www.ebi.ac.uk/intact/search/do/search?filter=ac&searchString=EBI-1638729
+            // http://www.ebi.ac.uk/intact/search/do/search?searchString=EBI-1379264&filter=ac&searchClass=Experiment&filter=ac
 
-            if (queryStr.contains("binary=")) {
-                String interactors = queryStr.substring(url.indexOf("binary=")+8);
+            if (queryStr.contains( BINARY )) {
 
+                String interactors = queryStr.substring( url.indexOf( BINARY ) + BINARY.length() );
                 response.sendRedirect(absContextPath+"/pages/details/details.xhtml?binary="+interactors);
-            } else if (queryStr.contains("searchString=")) {
-                String query = queryStr.substring(queryStr.indexOf("searchString=")+13);
 
-                response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query));
+            } else if (queryStr.contains( SEARCH_STRING )) {
+
+                String query = queryStr.substring( queryStr.indexOf( SEARCH_STRING ) + SEARCH_STRING.length() );
+
+                if( queryStr.contains("searchClass=Experiment") && queryStr.contains("filter=ac") ) {
+
+                    // we cannot guaranty the order of the parameters in this string, so identify first which param
+                    // comes after searchString before extracting the experimentAc.
+
+                    int searchStrIdx = queryStr.indexOf( SEARCH_STRING );
+                    int endIdx = Math.max( queryStr.indexOf( "&", searchStrIdx ), queryStr.indexOf( "&amp;", searchStrIdx ) );
+                    if( endIdx == -1 ) {
+                        // no param following
+                        endIdx = queryStr.length();
+                    }
+
+                    String experimentAc = queryStr.substring( searchStrIdx + SEARCH_STRING.length(), endIdx );
+                    response.sendRedirect(absContextPath+"/pages/details/details.xhtml?experimentAc="+experimentAc);
+                } else {
+                    response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query));
+                }
             } else {
+
                 response.sendRedirect(absContextPath);
             }
         }
