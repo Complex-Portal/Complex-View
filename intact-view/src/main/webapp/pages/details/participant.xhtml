@@ -10,7 +10,9 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view" xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
-    <tr:document>
+    <tr:document title="Participant: #{participantBean.participant.ac}">
+
+        <tr:form>
 
         <tr:panelHeader text="Participant">
 
@@ -36,9 +38,7 @@
                 </tr:panelLabelAndMessage>
 
                 <tr:panelLabelAndMessage label="Molecule type:" labelStyle="font-weight:bold;">
-                    <ui:decorate template="/pages/details/cvPopup.xhtml">
-                        <ui:param name="cv" value="#{participant.interactor.cvInteractorType}"/>
-                    </ui:decorate>
+                        <tr:outputText value="#{participant.interactor.cvInteractorType.shortLabel}"/>
                 </tr:panelLabelAndMessage>
 
                 <tr:panelLabelAndMessage label="Stoichiometry:" labelStyle="font-weight:bold;" rendered="#{participant.stoichiometry > 0}">
@@ -92,6 +92,8 @@
             </tr:panelFormLayout>
 
         </tr:panelHeader>
+
+        </tr:form>
 
     </tr:document>
 

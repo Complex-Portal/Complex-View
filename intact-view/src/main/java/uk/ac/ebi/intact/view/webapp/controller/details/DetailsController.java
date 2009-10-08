@@ -244,7 +244,6 @@ public class DetailsController extends JpaBaseController {
 
     public void rangeChanged( RangeChangeEvent evt) {
         final int newStart = evt.getNewStart();
-        System.out.println( "newStart = " + newStart );
 //        UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("tableid");
 //        table.setFirst(evt.getNewStart());
 

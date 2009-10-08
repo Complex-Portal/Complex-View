@@ -6,7 +6,7 @@
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
-    <tr:commandLink action="dialog:cv.view"
+    <tr:commandLink action="#{cvBean.launchCvDialogIfNecessary}"
                     partialSubmit="true"
                     windowWidth="700" windowHeight="400"
                     immediate="true" useWindow="true">

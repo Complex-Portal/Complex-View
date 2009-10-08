@@ -9,7 +9,8 @@
 
                 xmlns:iav="http://intact.ebi.ac.uk/view" xmlns:trh="http://myfaces.apache.org/trinidad/html">
 
-    <tr:document>
+    <tr:document title="#{cvBean.className}: #{cvBean.cvObject.shortLabel}">
+        <tr:form>
 
         <tr:panelHeader text="#{cvBean.className}">
 
@@ -38,9 +39,9 @@
                     </trh:cellFormat>
                     <trh:cellFormat>
                         <tr:spacer height="10"/>
-                        <ui:decorate template="/pages/details/xrefs.xhtml">
+                        <ui:include src="/pages/details/xrefs.xhtml">
                             <ui:param name="xrefs" value="#{cvBean.cvObject.xrefs}"/>
-                        </ui:decorate>
+                        </ui:include>
                     </trh:cellFormat>
                 </trh:rowLayout>
                 <trh:rowLayout rendered="#{not empty cvBean.cvObject.annotations}">
@@ -58,6 +59,8 @@
             </trh:tableLayout>
 
         </tr:panelHeader>
+
+        </tr:form>
 
     </tr:document>
 
