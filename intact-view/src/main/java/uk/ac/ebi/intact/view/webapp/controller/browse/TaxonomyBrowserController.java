@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
+import org.apache.myfaces.trinidad.model.TreeModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
@@ -33,6 +34,8 @@ public class TaxonomyBrowserController extends OntologyBrowserController {
 
     public static final String FIELD_NAME = "taxid_expanded_id";
 
+    private boolean skipIntermediateTaxons = true;
+
     @Override
     protected OntologyTerm createRootTerm(OntologySearcher ontologySearcher) {
         final RootTerm rootTerm = new RootTerm(ontologySearcher, "Taxonomy");
@@ -47,7 +50,24 @@ public class TaxonomyBrowserController extends OntologyBrowserController {
     }
 
     @Override
+    protected TreeModel createTreeModel(OntologyTermWrapper otwRoot) {
+        if (skipIntermediateTaxons) {
+            return new AutoExpandedTreeModel( otwRoot, "children");
+        } else {
+            return super.createTreeModel(otwRoot);
+        }
+    }
+
+    @Override
     public String getFieldName() {
         return FIELD_NAME;
+    }
+
+    public boolean isSkipIntermediateTaxons() {
+        return skipIntermediateTaxons;
+    }
+
+    public void setSkipIntermediateTaxons(boolean skipIntermediateTaxons) {
+        this.skipIntermediateTaxons = skipIntermediateTaxons;
     }
 }

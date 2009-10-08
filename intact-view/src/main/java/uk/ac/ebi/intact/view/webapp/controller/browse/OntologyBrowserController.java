@@ -115,11 +115,15 @@ public abstract class OntologyBrowserController extends BaseController {
 
         OntologyTermWrapper otwRoot = new OntologyTermWrapper(rootTerm, termsCountMap, false);
 
-        TreeModel treeModel = new ChildPropertyTreeModel( otwRoot, "children");
+        TreeModel treeModel = createTreeModel(otwRoot);
 
         browserCache.put(facetField, query, treeModel);
 
         return treeModel;
+    }
+
+    protected TreeModel createTreeModel(OntologyTermWrapper otwRoot) {
+        return new ChildPropertyTreeModel( otwRoot, "children");
     }
 
     public TreeModel getOntologyTreeModel() {
