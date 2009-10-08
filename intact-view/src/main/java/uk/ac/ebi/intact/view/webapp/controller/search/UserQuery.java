@@ -131,7 +131,7 @@ public class UserQuery extends BaseController {
                 new SearchField(FieldNames.IDENTIFIER, "Participant Id"),
                 new SearchField(FieldNames.INTERACTION_ID, "Interaction Id"),
                 new SearchField(FieldNames.GENE_NAME, "Gene name"),
-                new SearchField(FieldNames.DETMETHOD, "Detection method", "detectionMethodBrowser"),
+                new SearchField(FieldNames.DETMETHOD, "Interaction detection method", "detectionMethodBrowser"),
                 new SearchField(FieldNames.TYPE, "Interaction type", "interactionTypeBrowser"),
                 new SearchField("species", "Organism", "taxonomyBrowser"),
                 new SearchField(FieldNames.PUBID, "Pubmed Id"),

@@ -96,7 +96,7 @@
 
                     <tr:inputListOfValues value="#{userQuery.newQueryToken.query}" columns="50"
                                           rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"
-                                          icon="/images/magnify.png" windowHeight="400" windowWidth="300"
+                                          icon="/images/magnify.png" windowHeight="500" windowWidth="400"
                                           action="dialog:search.browse" 
                                           searchDesc="Click to get a value">
                         <f:setPropertyActionListener target="#{searchBrowseDialogController.beanName}" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browserControllerName}"/>
