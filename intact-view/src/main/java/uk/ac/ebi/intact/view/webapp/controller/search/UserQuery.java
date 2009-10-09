@@ -234,6 +234,8 @@ public class UserQuery extends BaseController {
     }
 
     private String buildSolrOntologyQuery( String q ) {
+        if (q == null) return "*:*";
+
         q = JsfUtils.surroundByQuotesIfMissing(q);
         return "detmethod:" + q + " OR type:" + q + " OR properties:" + q + " OR species:"+ q ;
     }
