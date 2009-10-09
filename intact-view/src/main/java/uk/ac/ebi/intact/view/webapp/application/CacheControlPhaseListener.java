@@ -40,8 +40,8 @@ public class CacheControlPhaseListener implements PhaseListener {
         FacesContext facesContext = event.getFacesContext();
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
         response.addHeader("Pragma", "no-cache");
-        response.addHeader("Cache-Control", "no-cache");
-        response.addHeader("Cache-Control", "must-revalidate");
-        response.addHeader("Expires", "Mon, 8 Aug 2006 10:00:00 GMT"); // some date in the past
+        response.addHeader("Cache-Control", "no-cache,no-store,max-age=0,must-revalidate");
+        response.setDateHeader("Expires", 0);
+        response.setDateHeader("max-age", 0);
     }
 }
