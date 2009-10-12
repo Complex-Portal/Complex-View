@@ -27,6 +27,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
@@ -40,7 +41,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +51,7 @@ import java.util.Map;
  * @version $Id$
  * @since 2.0.1-SNAPSHOT
  */
-public class OntologyBean implements Serializable {
+public class OntologyBean extends BaseController {
 
     private static final Log log = LogFactory.getLog( OntologyBean.class );
 
@@ -119,7 +119,7 @@ public class OntologyBean implements Serializable {
     //for Autocomplete box
 
     @SuppressWarnings( "unchecked" )
-    public void fillAutocomplete( ActionEvent event ) throws IOException, ParseException {
+    public void fillAutocomplete( ActionEvent event ) {
 
         final FacesContext facesContext = FacesContext.getCurrentInstance();
 
@@ -135,32 +135,36 @@ public class OntologyBean implements Serializable {
             log.debug( "Query formatted for Lucene  " + formattedQuery );
         }
 
-        List<OntologyTerm> result = search( formattedQuery );
-        List<OntologyTerm> otherResult = Lists.newArrayList();
+        try {
+            List<OntologyTerm> result = search( formattedQuery );
+            List<OntologyTerm> otherResult = Lists.newArrayList();
 
-        if (result.size() > intactViewConfiguration.getMaxOntologySuggestions()) {
-            final int furtherTermCount = result.size() - intactViewConfiguration.getMaxOntologySuggestions();
-            otherResult = result.subList(intactViewConfiguration.getMaxOntologySuggestions()-1,result.size()  );
-            result = result.subList(0, intactViewConfiguration.getMaxOntologySuggestions()-1);
+            if (result.size() > intactViewConfiguration.getMaxOntologySuggestions()) {
+                final int furtherTermCount = result.size() - intactViewConfiguration.getMaxOntologySuggestions();
+                otherResult = result.subList(intactViewConfiguration.getMaxOntologySuggestions()-1,result.size()  );
+                result = result.subList(0, intactViewConfiguration.getMaxOntologySuggestions()-1);
 
-            int otherCount =0;
-            for ( OntologyTerm ontologyTerm : otherResult ) {
-               otherCount = otherCount + ontologyTerm.getCount();
+                int otherCount =0;
+                for ( OntologyTerm ontologyTerm : otherResult ) {
+                   otherCount = otherCount + ontologyTerm.getCount();
+                }
+                //result.add(new OntologyTerm("*", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na"));
+                result.add(new OntologyTerm("", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na", otherCount ));
             }
-            //result.add(new OntologyTerm("*", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na"));
-            result.add(new OntologyTerm("*", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na", otherCount ));
-        }
 
-        //clear the term map otherwise it keeps growing
-        //this termmap is used for display query of Go term with id:name, Ref: getDisplayQuery() in UserQuery.java
-        UserQuery userQuery = (UserQuery) applicationContext.getBean("userQuery");
-        userQuery.getTermMap().clear();
+            //clear the term map otherwise it keeps growing
+            //this termmap is used for display query of Go term with id:name, Ref: getDisplayQuery() in UserQuery.java
+            UserQuery userQuery = (UserQuery) applicationContext.getBean("userQuery");
+            userQuery.getTermMap().clear();
 
-        for ( OntologyTerm ontologyTerm : result ) {
-           userQuery.getTermMap().put( ontologyTerm.getIdentifier(), ontologyTerm.getLabel() );
+            for ( OntologyTerm ontologyTerm : result ) {
+               userQuery.getTermMap().put( ontologyTerm.getIdentifier(), ontologyTerm.getLabel() );
+            }
+            final ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{autocompleteResult}", Collection.class);
+            ve.setValue(facesContext.getELContext(), result);
+        } catch (Exception e) {
+            addErrorMessage("Problem finding terms for query", "Internal problem, there's nothing you can do");
         }
-        final ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{autocompleteResult}", Collection.class);
-        ve.setValue(facesContext.getELContext(), result);
     }
 
     public static String prepareOntologyQueryForLucene( String strFieldValue, boolean addWildcard ) {

@@ -182,39 +182,39 @@
             <f:param name="searchFieldRequestParamName" value="#{jsEditId}"/>
         </tr:commandButton>
 
-        <tr:table inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}" onclick="#{hideResultTableFunc}2(this);"
-             var="row" value="#{autocompleteResult}" rows="#{maxSuggestions == null? 20 : maxSuggestions}" width="100%" partialTriggers="action" varStatus="status">
-            <tr:column >
-                <div id="#{jsTableId}#{status.index}" class="autocomplete-line" onmouseover="this.className='autocomplete-selected-line';"
-                    onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}');  return false; " >
-
-                    <c:set var="#{var}" value="#{row}"/>
-
-                    <ui:insert>
-                        <h:outputText value="#{row[locateVisibleFieldName]}" rendered="#{not empty locateVisibleFieldName}"/>
-                        <h:outputText value="#{row[locateValueFieldName]}" rendered="#{empty locateVisibleFieldName}"/>
-                     </ui:insert>
-
-                </div>
-            </tr:column>
-        </tr:table>
-
-        <!--<tr:panelGroupLayout-->
-                             <!--partialTriggers="action" inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}">-->
-            <!--<tr:iterator var="row" value="#{autocompleteResult}" varStatus="status" >-->
+        <!--<tr:table inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}" onclick="#{hideResultTableFunc}2(this);"-->
+             <!--var="row" value="#{autocompleteResult}" rows="#{maxSuggestions == null? 20 : maxSuggestions}" width="100%" partialTriggers="action" varStatus="status">-->
+            <!--<tr:column >-->
                 <!--<div id="#{jsTableId}#{status.index}" class="autocomplete-line" onmouseover="this.className='autocomplete-selected-line';"-->
-                                    <!--onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}'); return false; " >-->
+                    <!--onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}');  return false; " >-->
 
                     <!--<c:set var="#{var}" value="#{row}"/>-->
 
-                       <!--<ui:insert>-->
-                        <!--<h:outputText value="#{row[locateVisibleFieldName]}" rendered="#{not empty locateVisibleFieldName}"/>-->
+                    <!--<ui:insert>-->
+                        <!--<h:outputText value="#{row[locateVisibleFieldName]}" rendered="#{not empty locateVisibleFieldName}" />-->
                         <!--<h:outputText value="#{row[locateValueFieldName]}" rendered="#{empty locateVisibleFieldName}"/>-->
                      <!--</ui:insert>-->
-               <!--</div>-->
 
-            <!--</tr:iterator>-->
-        <!--</tr:panelGroupLayout>-->
+                <!--</div>-->
+            <!--</tr:column>-->
+        <!--</tr:table>-->
+
+        <tr:panelGroupLayout partialTriggers="action" inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}"
+                             onclick="#{hideResultTableFunc}2(this);" >
+            <tr:iterator var="row" value="#{autocompleteResult}" varStatus="status" rows="0" >
+                <div id="#{jsTableId}#{status.index}" class="autocomplete-line" onmouseover="this.className='autocomplete-selected-line';"
+                                    onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}'); return false; ">
+
+                    <c:set var="#{var}" value="#{row}"/>
+
+                       <ui:insert>
+                        <h:outputText value="#{row[locateVisibleFieldName]}" rendered="#{not empty locateVisibleFieldName}"/>
+                        <h:outputText value="#{row[locateValueFieldName]}" rendered="#{empty locateVisibleFieldName}"/>
+                     </ui:insert>
+               </div>
+
+            </tr:iterator>
+        </tr:panelGroupLayout>
     </f:subview>
 
 </ui:component>

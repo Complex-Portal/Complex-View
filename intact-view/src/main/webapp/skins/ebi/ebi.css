@@ -620,8 +620,15 @@ af|commandButton {
 
 /*for autocomplete */
 .autocomplete-line {
-    background-color: #eef5f5;
     cursor:pointer;
+    background-color: white;
+}
+
+.autocomplete-line,
+    .autocomplete-selected-line {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd
 }
 
 .autocomplete-selected-line{

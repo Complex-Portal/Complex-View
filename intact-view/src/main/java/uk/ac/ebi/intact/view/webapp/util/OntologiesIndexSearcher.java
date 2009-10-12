@@ -15,18 +15,22 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.*;
+import org.apache.lucene.search.highlight.*;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.DocIdBitSet;
+import org.apache.lucene.util.Version;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.List;
 
@@ -63,21 +67,34 @@ public class OntologiesIndexSearcher {
     }
 
     public List<OntologyTerm> search(String strQuery) throws IOException, ParseException {
-        QueryParser queryParser = new QueryParser("identifier", new StandardAnalyzer());
-        return search(queryParser.parse(strQuery), new Sort("count", true));
+        QueryParser queryParser = new QueryParser("identifier", new StandardAnalyzer(Version.LUCENE_CURRENT));
+        return search(queryParser.parse(strQuery), new Sort(new SortField("count", SortField.INT, true)));
     }
 
     public List<OntologyTerm> search(Query query, Sort sort) throws IOException {
         List<OntologyTerm> terms = new ArrayList<OntologyTerm>();
 
-        IndexSearcher searcher = new IndexSearcher(indexDirectory);
+        final IndexSearcher searcher = new IndexSearcher(indexDirectory, true);
 
-        final Hits hits = searcher.search(query, sort);
+        Filter filter = new Filter() {
+            @Override
+            public DocIdSet getDocIdSet(IndexReader indexReader) throws IOException {
+                final DocIdBitSet bitSet = new DocIdBitSet(new BitSet());
+                bitSet.getBitSet().flip(0, searcher.getIndexReader().numDocs());
+                return bitSet;
+            }
+        };
 
-        for (int i=0; i<hits.length(); i++) {
-            Document document = hits.doc(i);
+        final TopDocs hits = searcher.search(query, filter, 30, sort);
 
-            OntologyTerm term = createOntologyTerm(document);
+        Formatter formatter = new SimpleHTMLFormatter();
+        Highlighter highlighter = new Highlighter(formatter, new QueryScorer(query) );
+        highlighter.setTextFragmenter(new SimpleFragmenter(20));
+
+        for (ScoreDoc scoreDoc : hits.scoreDocs) {
+            Document document = searcher.getIndexReader().document(scoreDoc.doc);
+
+            OntologyTerm term = createOntologyTerm(document, highlighter);
             terms.add(term);
         }
 
@@ -86,13 +103,29 @@ public class OntologiesIndexSearcher {
         return terms;
     }
 
-    private OntologyTerm createOntologyTerm(Document document) {
+
+
+
+    private OntologyTerm createOntologyTerm(Document document, Highlighter highlighter) throws IOException {
         String identifier = document.getField("identifier").stringValue();
         String label = document.getField("label").stringValue();
         String databaseLabel = document.getField("databaseLabel").stringValue();
 
         int count = Integer.parseInt(document.getField("count").stringValue());
 
+        label = highlightText("label", label, highlighter);
+
         return new OntologyTerm(identifier, label, databaseLabel, count);
+    }
+
+    private String highlightText(String fieldName, String text, Highlighter highlighter) throws IOException {
+        TokenStream tokenStream = new StandardAnalyzer(Version.LUCENE_CURRENT).tokenStream(fieldName, new StringReader(text));
+
+        try {
+            return highlighter.getBestFragments(tokenStream, text, 5, "...");
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw new IOException(e);
+        }
     }
 }
