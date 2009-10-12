@@ -34,7 +34,7 @@
 
     <tr:inputHidden id="#{id}" value="#{value}" />
     <f:subview id="#{autocompleteSubformId}">
-        <trh:script type="text/javascript">
+        <trh:script>
 
             var #{timeoutVar}=null;
             var #{lineArrayVar}=null;
@@ -72,7 +72,7 @@
                         #{selectedLineVar} = 0;
                         firstElement.className='autocomplete-selected-line';
 
-                        table.style.display="";
+                        table.style.display='';
                         table.style.left = edit.style.left;
                         table.style.top = edit.style.top+edit.style.height;
                         table.style.width = edit.offsetWidth;
@@ -94,12 +94,19 @@
             function #{setValuesFromTableFunc}(hiddenValue, editValue){
                 document.getElementById('#{jsEditId}').value=hiddenValue;             //the order matters
                 document.getElementById('#{jsHiddenId}').value=hiddenValue;
-                #{hideResultTableFunc}();
+                //#{hideResultTableFunc}();
             }
             function #{hideResultTableFunc}(){
                 window.clearTimeout(#{timeoutVar});
                 #{timeoutVar}=null;
-                document.getElementById('#{jsTableId}').style.display='none';
+                //document.getElementById('#{jsTableId}').style.display='none';
+                #{selectedLineVar}=null;
+                #{lineArrayVar}=null;
+            }
+            function #{hideResultTableFunc}2(table){
+                window.clearTimeout(#{timeoutVar});
+                #{timeoutVar}=null;
+                table.style.display='none';
                 #{selectedLineVar}=null;
                 #{lineArrayVar}=null;
             }
@@ -115,17 +122,18 @@
                     }
                 }
             }
+
             function #{editKeydownFunc}(event) {
                 window.clearTimeout(#{timeoutVar});
 
                 var _keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
 
                 if(#{selectedLineVar} == null){
-                    if(_keyCode==40) { //down arrow
-                        #{showResultTableFunc}(true);
-                    } else {
+                    //if(_keyCode==40) { //down arrow
+                    //    #{showResultTableFunc}(true);
+                    // } else {
                         #{timeoutVar}=window.setTimeout('#{showResultTableFunc}(false);',900);
-                    }
+                    //}
                 } else {
                     if(_keyCode==38){//up arrow
                         if(#{selectedLineVar} > 0){
@@ -153,6 +161,7 @@
                     }
                 }
                 return true;
+
             }
 
         </trh:script>
@@ -173,11 +182,11 @@
             <f:param name="searchFieldRequestParamName" value="#{jsEditId}"/>
         </tr:commandButton>
 
-        <tr:table inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}"
-            id="table" var="row" value="#{autocompleteResult}" rows="#{maxSuggestions == null? 20 : maxSuggestions}" width="100%" partialTriggers="action" varStatus="status">
-            <tr:column>
+        <tr:table inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}" onclick="#{hideResultTableFunc}2(this);"
+             var="row" value="#{autocompleteResult}" rows="#{maxSuggestions == null? 20 : maxSuggestions}" width="100%" partialTriggers="action" varStatus="status">
+            <tr:column >
                 <div id="#{jsTableId}#{status.index}" class="autocomplete-line" onmouseover="this.className='autocomplete-selected-line';"
-                    onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}'); return false; " >
+                    onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}');  return false; " >
 
                     <c:set var="#{var}" value="#{row}"/>
 
@@ -185,10 +194,27 @@
                         <h:outputText value="#{row[locateVisibleFieldName]}" rendered="#{not empty locateVisibleFieldName}"/>
                         <h:outputText value="#{row[locateValueFieldName]}" rendered="#{empty locateVisibleFieldName}"/>
                      </ui:insert>
-                    
+
                 </div>
             </tr:column>
         </tr:table>
+
+        <!--<tr:panelGroupLayout-->
+                             <!--partialTriggers="action" inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}">-->
+            <!--<tr:iterator var="row" value="#{autocompleteResult}" varStatus="status" >-->
+                <!--<div id="#{jsTableId}#{status.index}" class="autocomplete-line" onmouseover="this.className='autocomplete-selected-line';"-->
+                                    <!--onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}'); return false; " >-->
+
+                    <!--<c:set var="#{var}" value="#{row}"/>-->
+
+                       <!--<ui:insert>-->
+                        <!--<h:outputText value="#{row[locateVisibleFieldName]}" rendered="#{not empty locateVisibleFieldName}"/>-->
+                        <!--<h:outputText value="#{row[locateValueFieldName]}" rendered="#{empty locateVisibleFieldName}"/>-->
+                     <!--</ui:insert>-->
+               <!--</div>-->
+
+            <!--</tr:iterator>-->
+        <!--</tr:panelGroupLayout>-->
     </f:subview>
 
 </ui:component>
