@@ -103,6 +103,10 @@ public class OntologiesIndexWriter {
                 log.warn( "Skipping invalid Field: [Type:" + field.getType() + " | Value:" + field.getValue() + " | Description:" + field.getDescription() + "]" );
                 continue;
             }
+            if ("MI:0000".equals(field.getValue())) {
+                log.debug("Skipping root MI:0000");
+                continue;
+            }
             Document doc = createDocument(fieldCount);
             docs.add(doc);
         }
@@ -113,17 +117,17 @@ public class OntologiesIndexWriter {
     private Document createDocument(FieldCount fieldCount) {
         Document document = new Document();
 
-    	document.add(new Field("identifier", fieldCount.getField().getValue(), Store.YES, Index.UN_TOKENIZED));
+    	document.add(new Field("identifier", fieldCount.getField().getValue(), Store.YES, Index.NOT_ANALYZED));
 
         if (fieldCount.getField().getDescription() != null) {
-    	    document.add(new Field("label", fieldCount.getField().getDescription(), Store.YES, Index.TOKENIZED));
-    	    document.add(new Field("label_sorted", fieldCount.getField().getDescription(), Store.NO, Index.UN_TOKENIZED));
+    	    document.add(new Field("label", fieldCount.getField().getDescription(), Store.YES, Index.ANALYZED));
+    	    document.add(new Field("label_sorted", fieldCount.getField().getDescription(), Store.NO, Index.NOT_ANALYZED));
         }
 
-        document.add(new Field("databaseLabel", fieldCount.getField().getType(), Store.YES, Index.TOKENIZED));
-    	document.add(new Field("databaseLabel_sorted", fieldCount.getField().getType(), Store.NO, Index.UN_TOKENIZED));
+        document.add(new Field("databaseLabel", fieldCount.getField().getType(), Store.YES, Index.ANALYZED));
+    	document.add(new Field("databaseLabel_sorted", fieldCount.getField().getType(), Store.NO, Index.NOT_ANALYZED));
 
-        document.add(new Field("count", String.valueOf(fieldCount.getCount()), Store.YES, Index.UN_TOKENIZED));
+        document.add(new Field("count", String.valueOf(fieldCount.getCount()), Store.YES, Index.NOT_ANALYZED));
 
         return document;
     }
