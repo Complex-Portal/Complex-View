@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.application.editor;
 
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.core.context.IntactContext;
 
 import javax.servlet.*;
@@ -33,17 +34,22 @@ public class JpaFilter implements Filter {
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        final DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
+        final TransactionStatus transactionStatus = dataContext.beginTransaction();
 
         try {
             chain.doFilter(request, response);
         } catch (Throwable e) {
-            IntactContext.getCurrentInstance().getDataContext().rollbackTransaction(transactionStatus);
+            if (!transactionStatus.isCompleted()) {
+                dataContext.rollbackTransaction(transactionStatus);
+            }
             
             throw new IntactException(e);
         }
-        
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+
+        if (!transactionStatus.isCompleted()) {
+            dataContext.commitTransaction(transactionStatus);
+        }
     }
 
     public void destroy() {
