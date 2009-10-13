@@ -97,11 +97,11 @@
                 //#{hideResultTableFunc}();
             }
             function #{hideResultTableFunc}(){
-                window.clearTimeout(#{timeoutVar});
-                #{timeoutVar}=null;
-                //document.getElementById('#{jsTableId}').style.display='none';
-                #{selectedLineVar}=null;
-                #{lineArrayVar}=null;
+                //window.clearTimeout(#{timeoutVar});
+                //#{timeoutVar}=null;
+                document.getElementById('#{jsTableId}').style.display='none';
+                //#{selectedLineVar}=null;
+                //#{lineArrayVar}=null;
             }
             function #{hideResultTableFunc}2(table){
                 window.clearTimeout(#{timeoutVar});
@@ -199,7 +199,8 @@
             <!--</tr:column>-->
         <!--</tr:table>-->
 
-        <tr:panelGroupLayout partialTriggers="action" inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}"
+        <tr:panelGroupLayout id="table"
+                             partialTriggers="action" inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}"
                              onclick="#{hideResultTableFunc}2(this);" >
             <tr:iterator var="row" value="#{autocompleteResult}" varStatus="status" rows="0" >
                 <div id="#{jsTableId}#{status.index}" class="autocomplete-line" onmouseover="this.className='autocomplete-selected-line';"
