@@ -83,15 +83,12 @@ public class EditorIntactCloner extends IntactCloner {
 
             experiment = (Experiment) super.cloneAnnotatedObjectCommon(ao, clone);
 
-            System.out.println( "Attempt to filter the experiment's annotations" );
             Iterator<Annotation> annotIterator = experiment.getAnnotations().iterator();
-
             while (annotIterator.hasNext()) {
                 Annotation annotation = annotIterator.next();
                 System.out.println( annotation );
                 if( EXCLUDED_ANNOTATION_TOPICS.contains( annotation.getCvTopic().getShortLabel()) ) {
                     annotIterator.remove();
-                    System.out.println( annotation.getCvTopic().getShortLabel() + " EXCLUDED !" );
                 }
             }
         }
