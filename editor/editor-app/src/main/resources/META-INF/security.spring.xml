@@ -21,5 +21,4 @@
         <custom-authentication-provider/>
     </beans:bean>
 
-
 </beans:beans>

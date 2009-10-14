@@ -79,7 +79,9 @@
             classpath*:/META-INF/intact.spring.xml,
             classpath*:/META-INF/jpa.spring.xml,
             classpath*:/META-INF/security.spring.xml,
-            classpath*:/META-INF/beans.spring.xml
+            classpath*:/META-INF/beans.spring.xml,
+            classpath*:/META-INF/editor.spring.xml
+
         </param-value>
     </context-param>
 

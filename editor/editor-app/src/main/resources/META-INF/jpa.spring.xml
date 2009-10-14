@@ -54,5 +54,4 @@
           <property name="password" value="${db.password}"/>
     </bean>
 
-
 </beans>

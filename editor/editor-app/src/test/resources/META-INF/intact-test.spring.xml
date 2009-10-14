@@ -11,10 +11,8 @@
            http://www.springframework.org/schema/context/spring-context-2.5.xsd
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-    <context:property-override location="classpath:/META-INF/editor-override.properties"/>
-
-    <bean id="corePersister" class="uk.ac.ebi.intact.application.editor.util.EditorCorePersister" scope="prototype">
-        <constructor-arg ref="intactContext"/>
+    <bean id="intactInitializer" class="uk.ac.ebi.intact.core.context.IntactInitializer" init-method="init">
+        <property name="autoPersist" value="true"/>
     </bean>
 
 </beans>
