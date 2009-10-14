@@ -97,11 +97,11 @@
                 //#{hideResultTableFunc}();
             }
             function #{hideResultTableFunc}(){
-                //window.clearTimeout(#{timeoutVar});
-                //#{timeoutVar}=null;
+                window.clearTimeout(#{timeoutVar});
+                #{timeoutVar}=null;
                 document.getElementById('#{jsTableId}').style.display='none';
-                //#{selectedLineVar}=null;
-                //#{lineArrayVar}=null;
+                #{selectedLineVar}=null;
+                #{lineArrayVar}=null;
             }
             function #{hideResultTableFunc}2(table){
                 window.clearTimeout(#{timeoutVar});
@@ -172,7 +172,7 @@
                     readOnly="#{readOnly}"
                     onkeydown="return #{editKeydownFunc}(event);"
                     onfocus="this.select();"
-                    onblur="window.clearTimeout(#{timeoutVar}); #{checkEmptyEditFunc}(); #{timeoutVar}=window.setTimeout('#{hideResultTableFunc}();',100);"
+                    onblur="window.clearTimeout(#{timeoutVar}); #{checkEmptyEditFunc}(); #{timeoutVar}=window.setTimeout('#{hideResultTableFunc}();',1000);"
                     value="#{value}"/>
 
         <tr:commandButton id="action" inlineStyle="display: none;"
