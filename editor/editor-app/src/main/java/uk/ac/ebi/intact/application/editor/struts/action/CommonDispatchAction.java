@@ -201,9 +201,9 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
         IntactCloner cloner;
 
         if(view instanceof InteractionViewBean){
-         cloner = new InteractionIntactCloner();
-         } else{
-         cloner = new EditorIntactCloner();
+            cloner = new InteractionIntactCloner();
+        } else{
+            cloner = new EditorIntactCloner();
         }
         // Get the original object for clone.
         final AnnotatedObject orig = view.syncAnnotatedObject();
