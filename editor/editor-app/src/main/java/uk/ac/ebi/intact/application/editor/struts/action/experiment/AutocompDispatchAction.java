@@ -31,9 +31,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.*;
 import uk.ac.ebi.intact.application.editor.business.EditUserI;
 import uk.ac.ebi.intact.application.editor.struts.framework.AbstractEditorDispatchAction;
-import uk.ac.ebi.intact.application.editor.struts.framework.EditorFormI;
 import uk.ac.ebi.intact.application.editor.struts.view.CommentBean;
 import uk.ac.ebi.intact.application.editor.struts.view.XreferenceBean;
+import uk.ac.ebi.intact.application.editor.struts.view.experiment.ExperimentActionForm;
 import uk.ac.ebi.intact.application.editor.struts.view.experiment.ExperimentViewBean;
 import uk.ac.ebi.intact.application.editor.util.DaoProvider;
 import uk.ac.ebi.intact.core.IntactException;
@@ -109,14 +109,14 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
             throws Exception {
         // Handler to the Intact User.
 
-        EditorFormI editorForm = (EditorFormI) form;
+        ExperimentActionForm editorForm = (ExperimentActionForm) form;
 
         EditUserI user = getIntactUser(request);
 
         // The current view of the edit session.
         ExperimentViewBean view = (ExperimentViewBean) user.getView();
 
-        String pubmedId=view.getPubmedId();
+        String pubmedId = view.getPubmedId();
         if(pubmedId!=null){
             log.debug("The pubmed is : " + pubmedId);
             pubmedId = pubmedId.trim();
@@ -148,6 +148,12 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
 
             // The ac of the experiment
             String expAc=view.getAc();
+
+            final Experiment exp = (expAc != null)? experimentDao.getByAc(expAc) : null;
+
+            if (exp != null) {
+                exp.getAnnotations().clear();
+            }
 
             /*********************************************************************************************
             C r e a t i n g   t h e   f u l l n a m e   a n d   a d d i n g   i t   t o   t h e   v i e w
@@ -197,8 +203,7 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
                 If this experiment is already attached to an author-list annotation which is in the database, we
                 update the annotationText of the annotation with the new list of author.
                 */
-                if(false=="".equals(expAc) && null != expAc){
-                    Experiment exp = experimentDao.getByAc(expAc);
+                if(exp != null){
                     //get all the annotations contained in the database linked to this experiment
                     Collection annotations = exp.getAnnotations();
                     for (Iterator iterator = annotations.iterator(); iterator.hasNext();) {
@@ -307,8 +312,7 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
                 If this experiment is already attached to an author-list annotation which is in the database, we
                 update the annotationText of the annotation with the new list of author.
                 */
-                if(false=="".equals(expAc) && null != expAc){
-                    Experiment exp = experimentDao.getByAc(expAc);
+                if(exp != null){
                     //get all the annotations contained in the database linked to this experiment
                     Collection<Annotation> annotations = exp.getAnnotations();
                     for (Annotation annot : annotations){
@@ -360,12 +364,11 @@ public class AutocompDispatchAction extends AbstractEditorDispatchAction {
             If this experiment is already attached to a pubmed xreference (with qualifier = primary-reference) which is
             in the database, we update the primaryId with the new one.
             */
-            if(false=="".equals(expAc) && null != expAc){
-                Experiment exp = experimentDao.getByAc(expAc);
+            if(exp != null){
                 Collection<ExperimentXref> xrefs = exp.getXrefs();
 
                 for (ExperimentXref xref : xrefs) {
-                    if(CvDatabase.PUBMED.equals(xref.getCvDatabase().getShortLabel()) && CvXrefQualifier.PRIMARY_REFERENCE.equals(xref.getCvXrefQualifier().getShortLabel()) && false==pubmedId.equals(xref.getPrimaryId())){
+                    if(CvDatabase.PUBMED.equals(xref.getCvDatabase().getShortLabel()) && CvXrefQualifier.PRIMARY_REFERENCE_MI_REF.equals(xref.getCvXrefQualifier().getIdentifier())){
                         xref.setPrimaryId(pubmedId);
                         xrefDao.saveOrUpdate(xref);
 //                        if(helper.isPersistent(xref)){
