@@ -103,9 +103,6 @@ public class OntologiesIndexSearcher {
         return terms;
     }
 
-
-
-
     private OntologyTerm createOntologyTerm(Document document, Highlighter highlighter) throws IOException {
         String identifier = document.getField("identifier").stringValue();
         String label = document.getField("label").stringValue();
@@ -124,8 +121,7 @@ public class OntologiesIndexSearcher {
         try {
             return highlighter.getBestFragments(tokenStream, text, 5, "...");
         } catch (Throwable e) {
-            e.printStackTrace();
-            throw new IOException(e);
+            throw new IOException( e.getMessage() );
         }
     }
 }
