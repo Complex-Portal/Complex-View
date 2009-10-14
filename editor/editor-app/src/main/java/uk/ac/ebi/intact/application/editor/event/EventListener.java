@@ -87,7 +87,6 @@ public class EventListener extends Observable {
      */
     @Override
     public void notifyObservers(Object event) {
-        System.out.println("EVENT: "+event);
         // Otherwise it won't propagate changes:
         setChanged();
         super.notifyObservers(event);

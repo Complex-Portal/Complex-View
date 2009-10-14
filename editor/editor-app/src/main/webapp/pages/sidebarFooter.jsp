@@ -35,7 +35,8 @@
     <i><bean:message bundle="buildInfo" key="build.version"/></i>
     <br/>
 
-    <%=Thread.currentThread().getName()%>
+    <%=Thread.currentThread().getName()%> <br/>
+    Editing: <c:out value="${user.editing}"/>
     <br/>
 
 

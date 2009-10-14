@@ -89,7 +89,13 @@ public class DeleteFormAction extends AbstractEditorAction {
             // Release the lock.
             getLockManager().release(view.getAc());
             releaseView(user);
+
         }
+        
+        if (!user.hasPreviousView()) {
+            user.endEditing();
+        }
+
         // Back to the search page.
         return mapping.findForward(SEARCH);
     }
