@@ -601,59 +601,63 @@ public class InteractionViewBean extends AbstractEditViewBean<Interaction> {
         }
         // We should have this component.
         assert compBean != null;
-        log.warn( "The feature cannot be saved as we cannot finds its component "+ compAc +" in the view; Components' ACs were: [" + printComponentAc( myComponents ) + "]");
+        if( compBean == null ) {
 
-        // The feature to AC to compare with.
-        String featureAc = feature.getAc();
+            log.warn( "The feature cannot be saved as we cannot finds its component "+ compAc +" in the view; Components' ACs were: [" + printComponentAc( myComponents ) + "]");
 
-        // Get corresponding feature bean among this component bean.
-        FeatureBean featureBean = null;
-        for (FeatureBean fb : compBean.getFeatures())
-        {
-            if (fb.getAc().equals(featureAc))
-            {
-                featureBean = fb;
-                break;
+        } else {
+
+            // The feature to AC to compare with.
+            String featureAc = feature.getAc();
+
+            // Get corresponding feature bean among this component bean.
+            FeatureBean featureBean = null;
+            for (FeatureBean fb : compBean.getFeatures()) {
+                if (fb.getAc().equals(featureAc)) {
+                    featureBean = fb;
+                    break;
+                }
             }
-        }
-        // Assume that short label has been changed.
-        boolean labelChanged = true;
+            // Assume that short label has been changed.
+            boolean labelChanged = true;
 
-        // Feature bean can be null for a new feature.
-        if (featureBean == null) {
-            log.debug("No featureBean found attach to this component.");
-            featureBean = new FeatureBean(feature);
-            // Update this component for it to persist correctly.
-            addPolymerToUpdate(compBean);
-        }
-        else {
-            log.debug("FeatureBean found attach to this component.");
-            // The flag is based on the short label of the bean and updated Feature
-            labelChanged = !featureBean.getShortLabel().equals(feature.getShortLabel());
-            // New bean based on the same key as the existing one.
+            // Feature bean can be null for a new feature.
+            if (featureBean == null) {
+                log.debug("No featureBean found attach to this component.");
+                featureBean = new FeatureBean(feature);
+                // Update this component for it to persist correctly.
+                addPolymerToUpdate(compBean);
+
+            } else {
+
+                log.debug("FeatureBean found attach to this component.");
+                // The flag is based on the short label of the bean and updated Feature
+                labelChanged = !featureBean.getShortLabel().equals(feature.getShortLabel());
+                // New bean based on the same key as the existing one.
 //            log.debug("The featureBean key is :" + featureBean.getKey());
-            featureBean = new FeatureBean(feature, featureBean.getKey());
-        }
-        // Should have this feature.
-        assert featureBean != null;
+                featureBean = new FeatureBean(feature, featureBean.getKey());
+            }
+            // Should have this feature.
+            assert featureBean != null;
 
-        // Save the 'updated' feature.
-        compBean.saveFeature(featureBean);
+            // Save the 'updated' feature.
+            compBean.saveFeature(featureBean);
 
-        // This feature may be linked to another feature. If the short label
-        // has been changed, we need to update the linked Feature as well.
-        if (labelChanged && featureBean.hasBoundDomain()) {
-            FeatureBean destFb = getFeatureBean(featureBean.getBoundDomainAc());
-            destFb.setBoundDomain(featureBean.getShortLabel());
+            // This feature may be linked to another feature. If the short label
+            // has been changed, we need to update the linked Feature as well.
+            if (labelChanged && featureBean.hasBoundDomain()) {
+                FeatureBean destFb = getFeatureBean(featureBean.getBoundDomainAc());
+                destFb.setBoundDomain(featureBean.getShortLabel());
+            }
         }
     }
 
     private String printComponentAc( List<ComponentBean> myComponents ) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder( 128 );
         for ( ComponentBean c : myComponents ) {
             sb.append( c.getAc() ).append(" ");
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     /**

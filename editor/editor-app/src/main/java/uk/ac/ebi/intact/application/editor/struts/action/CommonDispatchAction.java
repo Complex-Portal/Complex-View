@@ -505,8 +505,7 @@ public class CommonDispatchAction extends AbstractEditorDispatchAction {
             // Error with updating.
             ActionMessages errors = new ActionMessages();
             // The error message.
-            String msg = ie != null ? ie.getMessage()
-                    : "Update failure, root cause is not available";
+            String msg = ie != null ? ie.getMessage() : "Update failure, root cause is not available";
             errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("error.update", msg, ie));
             request.setAttribute(EditorExceptionHandler.EXCEPTION_PARAM, ie);
             saveErrors(request, errors);
