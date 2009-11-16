@@ -12,8 +12,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
-        <artifactId>search-legacy-master</artifactId>
+        <groupId>uk.ac.ebi.intact.service</groupId>
+        <artifactId>service-master</artifactId>
         <version>1.6.0</version>
     </parent>
 
