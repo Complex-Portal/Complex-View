@@ -31,6 +31,25 @@
         <jetty.port>8081</jetty.port>
     </properties>
 
+    <profiles>
+         <profile>
+             <id>ebi-db</id>
+             <activation>
+                 <property>
+                     <name>db</name>
+                 </property>
+             </activation>
+             <build>
+                 <plugins>
+                     <plugin>
+                         <groupId>uk.ac.ebi.intact.plugins</groupId>
+                         <artifactId>hibernateconfig-maven-plugin</artifactId>
+                     </plugin>
+                 </plugins>
+             </build>
+         </profile>
+   </profiles>
+
     <build>
         <resources>
             <resource>

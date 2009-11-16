@@ -59,13 +59,12 @@
                 <tr>
                     <td height="3" background="<%=request.getContextPath()%>/images/hor.gif"></td>
                 </tr>
+<!--
                 <tr>
-                        <%-- Banner that warns users that this site is to be phased out --%>
                     <td height="100" valign="top" align="center">
                         <table height="100">
                             <tr>
                                 <td height="100" width="600" align="center">
-                                        <%--<a id="important" name="important"/>--%>
                                     <div class="cssinfobox" style="border: 1px dotted rgb(227, 62, 62);">
                                         <span class="red_bold" style="font-size: 14px; text-align: center;">
                                             ** Important Notice About This Web Application **
@@ -84,6 +83,7 @@
                         </table>
                     </td>
             </tr>
+-->
             <%-- Content section --%>
             <tr>
                 <td valign="top" height="*">
