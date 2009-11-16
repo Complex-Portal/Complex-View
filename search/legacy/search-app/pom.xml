@@ -29,6 +29,7 @@
 
     <properties>
         <jetty.port>8081</jetty.port>
+        <db.separator>:</db.separator>
     </properties>
 
     <profiles>
