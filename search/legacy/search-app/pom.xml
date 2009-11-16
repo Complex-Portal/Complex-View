@@ -50,6 +50,36 @@
          </profile>
    </profiles>
 
+   <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>uk.ac.ebi.intact.commons</groupId>
+                    <artifactId>hibernateconfig-maven-plugin</artifactId>
+                    <version>2.1.0</version>
+                    <configuration>
+                        <sessionFactoryName>${sessionFactoryName}</sessionFactoryName>
+                        <dialect>${db.dialect}</dialect>
+                        <driver>${db.driver}</driver>
+                        <url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</url>
+                        <user>${db.user}</user>
+                        <password>${db.password}</password>
+                        <showSql>${showSql}</showSql>
+                        <scope>${hibernate.scope}</scope>
+                        <hbm2ddlAuto>${db.hbm2ddlAuto}</hbm2ddlAuto>
+                        <connectionProviderClass>${db.connectionProviderClass}</connectionProviderClass>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>generate-config</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+    </pluginManagement>
+
+
     <build>
         <resources>
             <resource>
