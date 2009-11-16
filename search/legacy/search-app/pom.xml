@@ -48,9 +48,22 @@
                  </plugins>
              </build>
          </profile>
-   </profiles>
+    </profiles>
 
-   <pluginManagement>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/webapp-filtered</directory>
+                <filtering>true</filtering>
+                <targetPath>../../src/main/webapp</targetPath>
+            </resource>
+        </resources>
+
+        <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>uk.ac.ebi.intact.commons</groupId>
@@ -79,26 +92,13 @@
                 </plugin>
     </pluginManagement>
 
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/webapp-filtered</directory>
-                <filtering>true</filtering>
-                <targetPath>../../src/main/webapp</targetPath>
-            </resource>
-        </resources>
     </build>
 
     <dependencies>
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-core</artifactId>
-            <version>1.9.4</version>
+            <version>1.9.7</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.service.search.legacy</groupId>
