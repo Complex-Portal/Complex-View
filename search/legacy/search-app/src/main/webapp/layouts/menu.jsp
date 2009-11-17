@@ -22,49 +22,49 @@
     String serverPath = request.getContextPath();
 %>
 
-<table>
+<%--<table>--%>
 
-    <logic:present name="title">
-        <tr>
-          <th colspan=2>
-            <div align="left"><strong><tiles:getAsString name="title"/></strong></div>
-          </th>
-        </tr>
-    </logic:present>
+    <%--<logic:present name="title">--%>
+        <%--<tr>--%>
+          <%--<th colspan=2>--%>
+            <%--<div align="left"><strong><tiles:getAsString name="title"/></strong></div>--%>
+          <%--</th>--%>
+        <%--</tr>--%>
+    <%--</logic:present>--%>
 
-    <%-- iterate on items list --%>
-    <logic:iterate id="item" name="items" type="org.apache.struts.tiles.beans.MenuItem" >
-        <%  // Add server url if link start with "/"
-            String link = item.getLink();
-            if (link.startsWith("/")) {
-                // remove the webapp name from the path
-                link = serverPath.substring (0, serverPath.lastIndexOf('/')) + link;
-            }
-        %>
+    <%--&lt;%&ndash; iterate on items list &ndash;%&gt;--%>
+    <%--<logic:iterate id="item" name="items" type="org.apache.struts.tiles.beans.MenuItem" >--%>
+        <%--<%  // Add server url if link start with "/"--%>
+            <%--String link = item.getLink();--%>
+            <%--if (link.startsWith("/")) {--%>
+                <%--// remove the webapp name from the path--%>
+                <%--link = serverPath.substring (0, serverPath.lastIndexOf('/')) + link;--%>
+            <%--}--%>
+        <%--%>--%>
 
-        <tr>
-          <td width="10" valign="top" ></td>
-          <td valign="top"  >
-             <font size="-1"><a href="<%=link%>">
-                <logic:notPresent name="item" property="icon"><%= item.getValue() %></logic:notPresent>
+        <%--<tr>--%>
+          <%--<td width="10" valign="top" ></td>--%>
+          <%--<td valign="top"  >--%>
+             <%--<font size="-1"><a href="<%=link%>">--%>
+                <%--<logic:notPresent name="item" property="icon"><%= item.getValue() %></logic:notPresent>--%>
 
-                <logic:present name="item" property="icon">
+                <%--<logic:present name="item" property="icon">--%>
 
-                    <%
-                        // Add site url if link start with "/"
-                        String icon = item.getIcon();
-                        if (icon.startsWith("/"))
-                           icon = serverPath + icon;
-                    %>
+                    <%--<%--%>
+                        <%--// Add site url if link start with "/"--%>
+                        <%--String icon = item.getIcon();--%>
+                        <%--if (icon.startsWith("/"))--%>
+                           <%--icon = serverPath + icon;--%>
+                    <%--%>--%>
 
-                    <img src='<%= serverPath %><bean:write name="item" property="icon" scope="page"/>'
-                         alt='<bean:write name="item" property="tooltip" scope="page" ignore="true"/>' />
+                    <%--<img src='<%= serverPath %><bean:write name="item" property="icon" scope="page"/>'--%>
+                         <%--alt='<bean:write name="item" property="tooltip" scope="page" ignore="true"/>' />--%>
 
-                </logic:present></a>
-             </font>
-          </td>
-        </tr>
+                <%--</logic:present></a>--%>
+             <%--</font>--%>
+          <%--</td>--%>
+        <%--</tr>--%>
 
-    </logic:iterate>
+    <%--</logic:iterate>--%>
 
-</table>
+<%--</table>--%>
