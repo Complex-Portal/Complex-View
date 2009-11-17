@@ -29,9 +29,9 @@
     </tr>
 
     <%-- Sidebar menu links --%>
-    <tr>
-		<td>
-            <tiles:insert attribute="menu" ignore="true"/>
-        </td>
-	</tr>
+    <%--<tr>--%>
+		<%--<td>--%>
+            <%--<tiles:insert attribute="menu" ignore="true"/>--%>
+        <%--</td>--%>
+	<%--</tr>--%>
 </table>
