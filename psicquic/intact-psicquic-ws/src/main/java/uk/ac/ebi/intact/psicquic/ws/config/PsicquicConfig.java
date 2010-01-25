@@ -37,6 +37,7 @@ public class PsicquicConfig {
     private String groupId;
     private String artifactId;
     private String version;
+    private String specVersion;
     private String solrServerUrl;
     private String proxyHost;
     private String proxyPort;
@@ -69,6 +70,14 @@ public class PsicquicConfig {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getSpecVersion() {
+        return specVersion;
+    }
+
+    public void setSpecVersion(String specVersion) {
+        this.specVersion = specVersion;
     }
 
     public String getSolrServerUrl() {
@@ -127,6 +136,10 @@ public class PsicquicConfig {
         for (DbInfo dbInfo : dbInfos) {
             propMap.put(dbInfo.getKey(), dbInfo.getValue());
         }
+
+        propMap.put("psicquic.spec.version", getSpecVersion());
+        propMap.put("psicquic.implementation.name", "IntAct Implementation");
+        propMap.put("psicquic.implementation.version", getVersion());
 
         return propMap;
     }

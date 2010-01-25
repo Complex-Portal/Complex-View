@@ -22,6 +22,7 @@
         <property name="groupId" value="${psicquic.groupId}"/>
         <property name="artifactId" value="${psicquic.artifactId}"/>
         <property name="version" value="${psicquic.version}"/>
+        <property name="specVersion" value="1.1"/>
         <property name="solrServerUrl" value="${intact.solr.interactions.url}"/>
         <property name="proxyHost" value="${intact.proxy.host}"/>
         <property name="proxyPort" value="${intact.proxy.port}"/>
