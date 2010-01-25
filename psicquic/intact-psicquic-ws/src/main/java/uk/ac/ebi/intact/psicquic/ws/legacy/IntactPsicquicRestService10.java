@@ -1,10 +1,11 @@
-package uk.ac.ebi.intact.psicquic.ws;
+package uk.ac.ebi.intact.psicquic.ws.legacy;
 
 import org.apache.commons.lang.StringUtils;
 import org.hupo.psi.mi.psicquic.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
+import uk.ac.ebi.intact.psicquic.ws.IntactPsicquicService;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput;
 
@@ -12,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This web service is based on a PSIMITAB SOLR index to search and return the results.
@@ -21,7 +21,7 @@ import java.util.Map;
  * @version $Id: IntactPsicquicService.java 12873 2009-03-18 02:51:31Z baranda $
  */
 @Controller
-public class IntactPsicquicRestService implements PsicquicRestService {
+public class IntactPsicquicRestService10 implements PsicquicRestService10 {
 
      @Autowired
     private PsicquicConfig config;
@@ -91,32 +91,6 @@ public class IntactPsicquicRestService implements PsicquicRestService {
         return Response.status(200)
                 .type(MediaType.TEXT_PLAIN)
                 .entity(StringUtils.join(formats, "\n")).build();
-    }
-
-    public Object getProperty(String propertyName) {
-        final String val = config.getProperties().get(propertyName);
-
-        if (val == null) {
-            return Response.status(404)
-                .type(MediaType.TEXT_PLAIN)
-                .entity("Property not found: "+propertyName).build();
-        }
-
-         return Response.status(200)
-                .type(MediaType.TEXT_PLAIN)
-                .entity(val).build();
-    }
-
-    public Object getProperties() {
-        StringBuilder sb = new StringBuilder(256);
-
-        for (Map.Entry entry : config.getProperties().entrySet()) {
-            sb.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
-        }
-
-        return Response.status(200)
-                .type(MediaType.TEXT_PLAIN)
-                .entity(sb.toString()).build();
     }
 
     public String getVersion() {

@@ -25,6 +25,7 @@
         <property name="solrServerUrl" value="${intact.solr.interactions.url}"/>
         <property name="proxyHost" value="${intact.proxy.host}"/>
         <property name="proxyPort" value="${intact.proxy.port}"/>
+        <property name="propertiesAsStrings" value="${psicquic.properties}"/>
     </bean>
 
 </beans>

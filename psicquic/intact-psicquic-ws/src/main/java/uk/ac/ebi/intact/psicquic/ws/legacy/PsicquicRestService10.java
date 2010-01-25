@@ -1,4 +1,4 @@
-package uk.ac.ebi.intact.psicquic.ws;
+package uk.ac.ebi.intact.psicquic.ws.legacy;
 
 import org.hupo.psi.mi.psicquic.NotSupportedMethodException;
 import org.hupo.psi.mi.psicquic.NotSupportedTypeException;
@@ -9,7 +9,7 @@ import javax.ws.rs.*;
 /**
  * RESTful web service.
  *
- * v.1.1/search/query/brca2
+ * v.1.0/search/query/brca2
  * current/search/query/species:human?format=xml25&firstResult=50&maxResults=100
  *
  *
@@ -17,7 +17,7 @@ import javax.ws.rs.*;
  * @version $Id: IntactPsicquicService.java 12873 2009-03-18 02:51:31Z baranda $
  */
 @Path("/search")
-public interface PsicquicRestService {
+public interface PsicquicRestService10 {
 
     @GET
     @Path("/interactor/{interactorAc}")
@@ -53,14 +53,6 @@ public interface PsicquicRestService {
     Object getSupportedFormats() throws PsicquicServiceException,
             NotSupportedMethodException,
             NotSupportedTypeException;
-
-    @GET
-    @Path("/property/{propertyName}")
-    Object getProperty(@PathParam("propertyName") String propertyName);
-
-    @GET
-    @Path("/properties")
-    Object getProperties();
 
     @GET
     @Path("/version")

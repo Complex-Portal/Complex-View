@@ -16,6 +16,14 @@
 package uk.ac.ebi.intact.psicquic.ws.config;
 
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.model.meta.DbInfo;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Place-holder for the configuration. Initialized by Spring.
@@ -32,6 +40,7 @@ public class PsicquicConfig {
     private String solrServerUrl;
     private String proxyHost;
     private String proxyPort;
+    private String propertiesAsStrings;
 
     private String statsDirectory;
 
@@ -92,5 +101,41 @@ public class PsicquicConfig {
 
     public void setProxyPort(String proxyPort) {
         this.proxyPort = proxyPort;
+    }
+
+    @Transactional
+    public Map<String,String> getProperties() {
+        String propsAsString = getPropertiesAsStrings();
+
+        if (propsAsString == null) return Collections.EMPTY_MAP;
+
+        Map<String,String> propMap = new HashMap<String, String>();
+
+        String[] props = propsAsString.split(",");
+
+        for (String prop : props) {
+            String[] propTokens = prop.trim().split("=");
+
+            if (propTokens.length > 1) {
+                propMap.put(propTokens[0], propTokens[1]);
+            } 
+        }
+
+        List<DbInfo> dbInfos = IntactContext.getCurrentInstance().getDaoFactory()
+                .getDbInfoDao().getAll();
+
+        for (DbInfo dbInfo : dbInfos) {
+            propMap.put(dbInfo.getKey(), dbInfo.getValue());
+        }
+
+        return propMap;
+    }
+
+    public String getPropertiesAsStrings() {
+        return propertiesAsStrings;
+    }
+
+    public void setPropertiesAsStrings(String propertiesAsStrings) {
+        this.propertiesAsStrings = propertiesAsStrings;
     }
 }
