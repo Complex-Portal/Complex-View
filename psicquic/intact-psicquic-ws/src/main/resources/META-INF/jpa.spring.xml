@@ -51,6 +51,7 @@
           <property name="driverClassName" value="${db.driver}"/>
           <property name="username" value="${db.user}"/>
           <property name="password" value="${db.password}"/>
+          <property name="testOnBorrow" value="true"/>
     </bean>
 
 </beans>
