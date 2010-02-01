@@ -59,7 +59,7 @@ public class IntactPsicquicRestServiceTest {
                                                           solrJettyRunner.getSolrUrl( CoreNames.CORE_ONTOLOGY_PUB ));
         final int lineCount = indexer.indexMitab( mitabStream, true );
 
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/META-INF/beans.spring.test.xml", "/META-INF/psicquic/jms.spring.xml"});
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/META-INF/beans.spring.test.xml"});
         PsicquicConfig config = (PsicquicConfig)context.getBean("testPsicquicConfig");
         config.setSolrServerUrl( solrJettyRunner.getSolrUrl( CoreNames.CORE_PUB ) );
 
