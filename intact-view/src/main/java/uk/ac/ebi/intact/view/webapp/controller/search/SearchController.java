@@ -105,6 +105,7 @@ public class SearchController extends JpaBaseController {
     // psicquic
     private List<ServiceType> services;
     private int countInOtherDatabases;
+    private int otherDatabasesWithResults;
 
     //sorting
     private static final String DEFAULT_SORT_COLUMN = "rigid";
@@ -281,6 +282,7 @@ public class SearchController extends JpaBaseController {
         }
 
         countInOtherDatabases = 0;
+        otherDatabasesWithResults = 0;
 
 
         for (ServiceType service : services) {
@@ -310,6 +312,10 @@ public class SearchController extends JpaBaseController {
                 }
 
                 countInOtherDatabases += count;
+
+                if (count > 0) {
+                    otherDatabasesWithResults++;
+                }
                 
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -646,5 +652,9 @@ public class SearchController extends JpaBaseController {
 
     public List<ServiceType> getServices() {
         return services;
+    }
+
+    public int getOtherDatabasesWithResults() {
+        return otherDatabasesWithResults;
     }
 }
