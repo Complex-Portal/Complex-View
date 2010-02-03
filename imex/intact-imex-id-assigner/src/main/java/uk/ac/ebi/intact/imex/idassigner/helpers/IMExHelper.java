@@ -5,16 +5,16 @@
  */
 package uk.ac.ebi.intact.imex.idassigner.helpers;
 
-import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.model.CvDatabase;
 import uk.ac.ebi.intact.model.CvXrefQualifier;
 import uk.ac.ebi.intact.util.PropertyLoader;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
 
-import java.util.Properties;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Helper method on the IMEx.properties file.

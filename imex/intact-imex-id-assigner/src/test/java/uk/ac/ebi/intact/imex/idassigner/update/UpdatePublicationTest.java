@@ -1,12 +1,16 @@
 package uk.ac.ebi.intact.imex.idassigner.update;
 
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import uk.ac.ebi.intact.business.IntactTransactionException;
-import uk.ac.ebi.intact.context.IntactContext;
+import org.springframework.transaction.TransactionStatus;
+import uk.ac.ebi.intact.core.IntactTransactionException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotationDao;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.core.persistence.dao.ExperimentDao;
+import uk.ac.ebi.intact.core.persistence.dao.PublicationDao;
 import uk.ac.ebi.intact.imex.idassigner.helpers.CvHelper;
 import uk.ac.ebi.intact.imex.idassigner.helpers.InteractionHelper;
 import uk.ac.ebi.intact.imex.idassigner.id.IMExIdTransformer;
@@ -14,14 +18,12 @@ import uk.ac.ebi.intact.imex.idassigner.id.IMExRange;
 import uk.ac.ebi.intact.imex.idassigner.keyassigner.DummyKeyAssignerService;
 import uk.ac.ebi.intact.imex.idassigner.keyassigner.KeyAssignerServiceException;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.AnnotationDao;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.ExperimentDao;
-import uk.ac.ebi.intact.persistence.dao.PublicationDao;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * UpdatePublication Tester.
@@ -56,7 +58,7 @@ public class UpdatePublicationTest {
         assertNotNull( experiments );
         assertEquals( expectedExperimentCount, experiments.size() );
 
-        Institution owner = IntactContext.getCurrentInstance().getConfig().getInstitution();
+        Institution owner = IntactContext.getCurrentInstance().getInstitution();
         CvTopic accepted = CvHelper.getAccepted();
         for ( Experiment experiment : experiments ) {
             Annotation a = new Annotation( owner, accepted );
@@ -126,16 +128,16 @@ public class UpdatePublicationTest {
 
         final String pmid = "15014444"; // 15039447
 
-        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         acceptAllExperiment( pmid, 2 );
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
 
-        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         DummyKeyAssignerService keyAssigner = new DummyKeyAssignerService( 5L, 2L );
         UpdatePublication updator = new UpdatePublication( keyAssigner );
         updator.update( pmid );
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus2);
 
         // check on the current state of the key assigner.
         assertEquals( 23L, keyAssigner.getLastAccessionReturned() );
@@ -147,9 +149,9 @@ public class UpdatePublicationTest {
         List<Experiment> experiments = edao.getByXrefLike( CvHelper.getPubmed(), pmid );
         assertEquals( 2, experiments.size() );
 
-        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        final TransactionStatus transactionStatus3 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         Collection<IMExRange> ranges = buildRangeForPublication( pmid, 12 );
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus3);
 
         assertNotNull( ranges );
         assertEquals( printCollection(ranges), 1, ranges.size() );
@@ -158,7 +160,7 @@ public class UpdatePublicationTest {
         assertEquals( 5L, range.getFrom() );
         assertEquals( 13L, range.getTo() );
 
-        IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        final TransactionStatus transactionStatus4 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         PublicationDao dao = daoFactory.getPublicationDao();
         List<Publication> publications = dao.getByXrefLike( CvHelper.getPubmed(), CvHelper.getPrimaryReference(), pmid );
         assertNotNull( publications );
@@ -167,6 +169,6 @@ public class UpdatePublicationTest {
 
         assertHasAnnotation( pub, CvHelper.getImexRangeAssigned(), "5..13" );
         assertHasAnnotation( pub, CvHelper.getImexRangeRequested(), "5..23" );
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus4);
     }
 }

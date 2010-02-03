@@ -5,38 +5,6 @@
  */
 package uk.ac.ebi.intact.imex.idassigner.export;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import uk.ac.ebi.intact.application.dataConversion.PsiVersion;
-import uk.ac.ebi.intact.application.dataConversion.psiDownload.UserSessionDownload;
-import uk.ac.ebi.intact.application.dataConversion.psiDownload.xmlGenerator.Interaction2xmlFactory;
-import uk.ac.ebi.intact.application.dataConversion.psiDownload.xmlGenerator.Interaction2xmlI;
-import uk.ac.ebi.intact.application.dataConversion.util.DisplayXML;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.imex.idassigner.helpers.CvHelper;
-import uk.ac.ebi.intact.imex.idassigner.helpers.ExperimentHelper;
-import uk.ac.ebi.intact.imex.idassigner.helpers.InteractionHelper;
-import uk.ac.ebi.intact.imex.idassigner.helpers.PublicationHelper;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.AnnotationDao;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.PublicationDao;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.zip.GZIPOutputStream;
-
 /**
  * TODO comment this
  *
@@ -45,14 +13,14 @@ import java.util.zip.GZIPOutputStream;
  * @since <pre>06-Feb-2006</pre>
  */
 public class IMExExport {
-
+    /*
     public static final Log log = LogFactory.getLog( IMExExport.class );
 
     /**
      * Simple representation of a Date.
      * <p/>
      * Will be used to name our IMEx files.
-     */
+     *
     private static final SimpleDateFormat SIMPLE_DATE_FORMATER = new SimpleDateFormat( "yyyy-MM-dd" );
 
     //////////////////////////
@@ -76,7 +44,7 @@ public class IMExExport {
      * @param document the XML document.
      * @param out      the output file.
      * @throws IOException if an I/O error occurs.
-     */
+     *
     public static void save( Document document, File out ) throws IOException {
 
 //        if ( ! out.exists() ) {
@@ -102,7 +70,7 @@ public class IMExExport {
      * @param in  file to compress
      * @param out compressed file
      * @throws IOException if an I/O error occurs.
-     */
+     *
     public static void compressUsingGZip( File in, File out ) throws IOException {
 
         // Create the GZIP output stream
@@ -220,7 +188,7 @@ public class IMExExport {
                 CvTopic imexExported = CvHelper.getImexExported();
 
                 String text = getToday() + ": Only interaction involving solely Proteins were exported.";
-                Institution owner = IntactContext.getCurrentInstance().getConfig().getInstitution();
+                Institution owner = IntactContext.getCurrentInstance().getInstitution();
                 Annotation annot = new Annotation( owner, imexExported, text );
 
                 if ( !publication.getAnnotations().contains( annot ) ) {
@@ -352,4 +320,5 @@ public class IMExExport {
         IMExExport exporter = new IMExExport();
         exporter.exportIMExFile( publicationIds );
     }
+    */
 }

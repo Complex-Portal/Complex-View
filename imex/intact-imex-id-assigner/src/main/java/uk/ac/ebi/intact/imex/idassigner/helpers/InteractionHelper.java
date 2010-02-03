@@ -5,11 +5,11 @@
  */
 package uk.ac.ebi.intact.imex.idassigner.helpers;
 
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.core.persistence.dao.XrefDao;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.XrefDao;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +38,7 @@ public class InteractionHelper {
      *
      * @return true if the IMEx ID was added successfully, false otherwise (eg. there was already one IMEx id).
      *
-     * @throws uk.ac.ebi.intact.business.IntactException
+     * @throws uk.ac.ebi.intact.core.IntactException
      *
      */
     public static boolean addIMExId( Interaction interaction, String imexId ) throws IntactException {
@@ -48,7 +48,7 @@ public class InteractionHelper {
 
         if ( id == null ) {
             // add a new Xref
-            Institution owner = IntactContext.getCurrentInstance().getConfig().getInstitution();
+            Institution owner = IntactContext.getCurrentInstance().getInstitution();
             InteractorXref xref = new InteractorXref( owner, imex, imexId, null );
             interaction.addXref( xref );
 
@@ -153,7 +153,7 @@ public class InteractionHelper {
         if ( xref == null ) {
             // add a new Xref
             String id = interaction.getAc();
-            Institution owner = IntactContext.getCurrentInstance().getConfig().getInstitution();
+            Institution owner = IntactContext.getCurrentInstance().getInstitution();
             xref = new InteractorXref( owner, currentDatabase, id, imexPrimary );
             interaction.addXref( (InteractorXref ) xref );
 

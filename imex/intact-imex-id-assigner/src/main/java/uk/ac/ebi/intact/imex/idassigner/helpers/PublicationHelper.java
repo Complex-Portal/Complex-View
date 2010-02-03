@@ -7,16 +7,16 @@ package uk.ac.ebi.intact.imex.idassigner.helpers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotationDao;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.core.persistence.dao.PublicationDao;
 import uk.ac.ebi.intact.imex.idassigner.id.IMExIdTransformer;
 import uk.ac.ebi.intact.imex.idassigner.id.IMExRange;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
-import uk.ac.ebi.intact.persistence.dao.AnnotationDao;
-import uk.ac.ebi.intact.persistence.dao.CvObjectDao;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.PublicationDao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -77,14 +77,14 @@ public class PublicationHelper {
      * @param publication the publication onto which we add a new annotation
      * @param imexRange   the range
      *
-     * @throws uk.ac.ebi.intact.business.IntactException
+     * @throws uk.ac.ebi.intact.core.IntactException
      *
      */
     public static void addRequestedAnnotation( Publication publication, IMExRange imexRange ) throws IntactException {
 
         CvTopic imexRangeRequested = CvHelper.getImexRangeRequested();
 
-        Institution owner = IntactContext.getCurrentInstance().getConfig().getInstitution();
+        Institution owner = IntactContext.getCurrentInstance().getInstitution();
         String simpleRange = IMExIdTransformer.formatSimpleRange( imexRange );
         Annotation requested = new Annotation( owner, imexRangeRequested, simpleRange );
 
@@ -204,7 +204,7 @@ public class PublicationHelper {
         DaoFactory daoFactory = IntactContext.getCurrentInstance().getDataContext().getDaoFactory();
         AnnotationDao dao = daoFactory.getAnnotationDao();
 
-        Institution owner = IntactContext.getCurrentInstance().getConfig().getInstitution();
+        Institution owner = IntactContext.getCurrentInstance().getInstitution();
         String simpleRange = IMExIdTransformer.formatSimpleRange( imexRange );
         Annotation requested = new Annotation( owner, imexRangeAssigned, simpleRange );
 
@@ -236,7 +236,7 @@ public class PublicationHelper {
      */
     public static Annotation buildImexExportedAnnotation( String text ) throws IntactException {
         CvTopic imexExported = CvHelper.getImexExported();
-        Institution owner = IntactContext.getCurrentInstance().getConfig().getInstitution();
+        Institution owner = IntactContext.getCurrentInstance().getInstitution();
         Annotation annot = new Annotation( owner, imexExported );
         String today = getTodaySimpleDate();
 

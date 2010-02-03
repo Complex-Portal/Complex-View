@@ -8,8 +8,12 @@ package uk.ac.ebi.intact.imex.idassigner.update;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.business.IntactException;
-import uk.ac.ebi.intact.context.IntactContext;
+import uk.ac.ebi.intact.core.IntactException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.core.persistence.dao.ExperimentDao;
+import uk.ac.ebi.intact.core.persistence.dao.PublicationDao;
+import uk.ac.ebi.intact.core.persistence.dao.XrefDao;
 import uk.ac.ebi.intact.imex.idassigner.helpers.CvHelper;
 import uk.ac.ebi.intact.imex.idassigner.helpers.ExperimentHelper;
 import uk.ac.ebi.intact.imex.idassigner.helpers.InteractionHelper;
@@ -20,10 +24,6 @@ import uk.ac.ebi.intact.imex.idassigner.keyassigner.KeyAssignerService;
 import uk.ac.ebi.intact.imex.idassigner.keyassigner.KeyAssignerServiceException;
 import uk.ac.ebi.intact.imex.idassigner.keyassigner.KeyAssignerServiceI;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.persistence.dao.ExperimentDao;
-import uk.ac.ebi.intact.persistence.dao.PublicationDao;
-import uk.ac.ebi.intact.persistence.dao.XrefDao;
 
 import java.util.*;
 
@@ -179,7 +179,7 @@ public class UpdatePublication {
 
                 log.debug( "Could not find that publication in the database." );
 
-                Institution owner = IntactContext.getCurrentInstance().getConfig().getInstitution();
+                Institution owner = IntactContext.getCurrentInstance().getInstitution();
 
                 // create a new publication
                 publication = new Publication( owner, pmid );
