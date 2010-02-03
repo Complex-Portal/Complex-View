@@ -30,7 +30,7 @@
     </tr:commandLink>
 </div>
 
-<tr:panelHorizontalLayout inlineStyle="margin-left: 10px; margin-top:5px">
+<tr:panelHorizontalLayout inlineStyle="margin-left: 10px; margin-top:5px" rendered="#{searchBean.totalResults gt 0}">
     <f:facet name="separator">
             &#160;
         </f:facet>
@@ -50,11 +50,16 @@
 
 <tr:separator/>
 
-    > <strong>#{searchBean.totalResults}</strong> binary interaction#{searchBean.totalResults != 1? 's were' : ' was'} found.
+    > <strong><tr:outputText value="#{searchBean.totalResults}">
+            <tr:convertNumber pattern="#,###"/>
+        </tr:outputText></strong> binary interaction#{searchBean.totalResults != 1? 's were' : ' was'} found in #{intactViewConfiguration.webappName}.
 
 <tr:panelGroupLayout rendered="#{facetController.expansionCount.spokeCount > 0}"
                      inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
-    <strong>#{facetController.expansionCount.spokeCount}</strong> of them are originated
+    <strong><tr:outputText value="#{facetController.expansionCount.spokeCount}">
+            <tr:convertNumber pattern="#,###"/>
+        </tr:outputText>
+    </strong> of them are originated
     from&#160;
     <tr:commandLink action="dialog:faq.expansion"
                     partialSubmit="true"
@@ -70,6 +75,25 @@
     </tr:commandLink>
     &#160;them.
     
+</tr:panelGroupLayout>
+
+<tr:panelGroupLayout rendered="#{searchBean.countInOtherDatabases gt 0}"
+                     inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
+    <br/>
+    <tr:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
+    <tr:goLink destination="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">
+        <tr:outputText value="#{searchBean.countInOtherDatabases}" inlineStyle="font-weight:bold">
+            <tr:convertNumber pattern="#,###"/>
+        </tr:outputText>
+    </tr:goLink>
+    
+    interactions from <b>#{fn:length(searchBean.services)}</b> other databases.
+    <tr:commandLink action="dialog:faq.psicquic"
+                    partialSubmit="true"
+                    windowWidth="700" windowHeight="500"
+                    immediate="true" useWindow="true">
+        <tr:image source="/images/help.png"/>
+    </tr:commandLink>
 </tr:panelGroupLayout>
 
 <tr:separator/>

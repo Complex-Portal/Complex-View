@@ -1,5 +1,6 @@
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -12,9 +13,16 @@ import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.myfaces.trinidad.event.ReturnEvent;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.hupo.psi.mi.psicquic.registry.ServiceType;
+import org.hupo.psi.mi.psicquic.registry.client.PsicquicRegistryClientException;
+import org.hupo.psi.mi.psicquic.registry.client.registry.DefaultPsicquicRegistryClient;
+import org.hupo.psi.mi.psicquic.registry.client.registry.PsicquicRegistryClient;
+import org.hupo.psi.mi.psicquic.wsclient.UniversalPsicquicClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import psidev.psi.mi.search.SearchResult;
+import psidev.psi.mi.tab.model.BinaryInteraction;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
@@ -27,6 +35,7 @@ import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -90,9 +99,12 @@ public class SearchController extends JpaBaseController {
     private InteractorSearchResultDataModel smallMoleculeResults;
     private InteractorSearchResultDataModel nucleicAcidResults;
 
-
     // io
     private String exportFormat;
+
+    // psicquic
+    private List<ServiceType> services;
+    private int countInOtherDatabases;
 
     //sorting
     private static final String DEFAULT_SORT_COLUMN = "rigid";
@@ -233,9 +245,9 @@ public class SearchController extends JpaBaseController {
 
             if ( log.isDebugEnabled() ) log.debug( "\tResults: " + results.getRowCount() );
 
-            if ( totalResults == 0 ) {
-                addInfoMessage( "Your query didn't return any results", "Use a different query" );
-            }
+//            if ( totalResults == 0 ) {
+//                addInfoMessage( "Your query didn't return any results in "+intactViewConfiguration.getWebappName(), "Try a different query" );
+//            }
 
         } catch ( uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrException solrException ) {
 
@@ -247,6 +259,62 @@ public class SearchController extends JpaBaseController {
                                  "However, wildcard characters can be used anywhere else in one's query (eg. g?vin or gav* for gavin). " +
                                  "Please do reformat your query." );
             }
+        }
+
+        try {
+            countResultsInOtherDatabases();
+        } catch (PsicquicRegistryClientException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void countResultsInOtherDatabases() throws PsicquicRegistryClientException {
+        final String psicquicRegistryUrl = intactViewConfiguration.getPsicquicRegistryUrl();
+
+        if (psicquicRegistryUrl == null || psicquicRegistryUrl.length() == 0) {
+            return;
+        }
+
+        if (services == null) {
+            PsicquicRegistryClient registryClient = new DefaultPsicquicRegistryClient(psicquicRegistryUrl);
+            services = registryClient.listActiveServices();
+        }
+
+        countInOtherDatabases = 0;
+
+
+        for (ServiceType service : services) {
+            if (intactViewConfiguration.getWebappName().contains(service.getName())) {
+                continue;
+            }
+
+            List<String> lines = null;
+            try {
+                String query = getUserQuery().getSearchQuery();
+
+                if (query == null || query.length() == 0) {
+                    query = "*";
+                }
+
+                int count;
+
+                if (service.getRestUrl() != null) {
+                    URL restUrl = new URL(service.getRestUrl()+"query/"+ query +"?format=count");
+                    lines = IOUtils.readLines(restUrl.openStream());
+
+                    count = Integer.parseInt(lines.get(0));
+                } else {
+                    UniversalPsicquicClient client = new UniversalPsicquicClient(service.getSoapUrl());
+                    SearchResult<BinaryInteraction> result = client.getByQuery(query, 0, 0);
+                    count = result.getTotalCount();
+                }
+
+                countInOtherDatabases += count;
+                
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -570,5 +638,13 @@ public class SearchController extends JpaBaseController {
     public String getFirstResultIndex() {
         UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(INTERACTIONS_TABLE_ID);
         return String.valueOf(table.getFirst());
+    }
+
+    public int getCountInOtherDatabases() {
+        return countInOtherDatabases;
+    }
+
+    public List<ServiceType> getServices() {
+        return services;
     }
 }

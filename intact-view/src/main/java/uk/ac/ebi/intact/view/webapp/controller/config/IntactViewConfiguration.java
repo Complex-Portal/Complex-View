@@ -67,6 +67,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String INTACT_RECIPIENTS = "intact.mail.recipients";
     private static final String PROXY_HOST = "intact.proxy.host";
     private static final String PROXY_PORT = "intact.proxy.port";
+    private static final String PSICQUIC_REGISTRY_URL = "psicquic.registry.url";
+    private static final String PSICQUIC_VIEW_URL = "psicquic.view.url";
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -100,6 +102,9 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private String dastyUrl;
     private String proxyHost;
     private String proxyPort;
+
+    private String psicquicRegistryUrl;
+    private String psicquicViewUrl;
 
     public IntactViewConfiguration() {
     }
@@ -157,6 +162,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         mailRecipients = properties.getProperty(INTACT_RECIPIENTS, mailRecipients);
         proxyHost = properties.getProperty(PROXY_HOST, proxyHost);
         proxyPort = properties.getProperty(PROXY_PORT, proxyPort);
+        psicquicRegistryUrl = properties.getProperty(PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
+        psicquicViewUrl = properties.getProperty(PSICQUIC_VIEW_URL, psicquicViewUrl);
     }
 
     public void storeConfiguration() throws IOException {
@@ -188,6 +195,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, INTACT_RECIPIENTS, mailRecipients);
         addProperty(properties, PROXY_HOST, proxyHost);
         addProperty(properties, PROXY_PORT, proxyPort);
+        addProperty(properties, PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
+        addProperty(properties, PSICQUIC_VIEW_URL, psicquicViewUrl);
 
         final FileOutputStream os = new FileOutputStream( configFile );
         properties.store( os, webappName+ " configuration");
@@ -449,5 +458,21 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     public void setChebiSearchEnabled(boolean chebiSearchEnabled) {
         this.chebiSearchEnabled = chebiSearchEnabled;
+    }
+
+    public String getPsicquicRegistryUrl() {
+        return psicquicRegistryUrl;
+    }
+
+    public void setPsicquicRegistryUrl(String psicquicRegistryUrl) {
+        this.psicquicRegistryUrl = psicquicRegistryUrl;
+    }
+
+    public String getPsicquicViewUrl() {
+        return psicquicViewUrl;
+    }
+
+    public void setPsicquicViewUrl(String psicquicViewUrl) {
+        this.psicquicViewUrl = psicquicViewUrl;
     }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:tr="http://myfaces.apache.org/trinidad"
+        xmlns:trh="http://myfaces.apache.org/trinidad/html"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:c="http://java.sun.com/jstl/core"
+        xmlns:ot="http://myfaces.apache.org/orchestra"
+        >
+
+    <!-- Include this hack to avoid loosing the "general" conversation -->
+    <ui:include src="/pages/inc/dialogConversationHack.xhtml"/>
+
+    <ot:separateConversationContext>
+        <tr:document title="Documentation">
+
+            <tr:panelHeader text="How is the number of interactions in other databases obtained?"/>
+            <div style="padding:5px">
+                <p>
+                    <tr:goLink text="PSICQUIC" targetFrame="_blank" destination="http://psicquic.googlecode.com"/>
+                    is a standard way to access molecular interaction databases across which it repeats the same query. The number of databases providing data
+                    may vary, depending on the status of their services and only those that are active are used in this query.
+                    By clicking on the number of interactions you will be redirected to the PSICQUIC View, where you can browse
+                    the results in those other resources.
+                </p>
+                <p>The services currently active are:
+                    <tr:panelList>
+                        <tr:iterator var="service" value="#{searchBean.services}">
+                            <tr:goLink targetFrame="_blank"
+                                       text="#{service.name}" destination="#{service.organizationUrl}"/>
+                        </tr:iterator>
+                    </tr:panelList>
+                </p>
+                <p>
+                    Check the&#160;<tr:goLink text="PSICQUIC site" targetFrame="_blank" destination="http://psicquic.googlecode.com"/> for more information.
+                </p>
+            </div>
+
+        </tr:document>
+    </ot:separateConversationContext>
+
+</ui:composition>
