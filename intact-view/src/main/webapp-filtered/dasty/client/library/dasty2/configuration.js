@@ -413,8 +413,8 @@ function configuration()
 			/**
 			* ALIGNMENTS
 			*/
-					//uniprot_pdb_alignment = proxy_url + '?t=30&m=alignment&q=' + query_id + '&s=http://das.sanger.ac.uk/das/msdpdbsp/';
-					uniprot_pdb_alignment = proxy_url + '?t=30&m=alignment&q=' + query_id + '&s=http://das.sanger.ac.uk/das/biojavapdbuniprot/';
+					uniprot_pdb_alignment = proxy_url + '?t=30&m=alignment&q=' + query_id + '&s=http://das.sanger.ac.uk/das/msdpdbsp/';
+					//uniprot_pdb_alignment = proxy_url + '?t=30&m=alignment&q=' + query_id + '&s=http://das.sanger.ac.uk/das/biojavapdbuniprot/';
 			/**
 			* ONTOLOGY
 			*/

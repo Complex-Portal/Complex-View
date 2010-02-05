@@ -77,8 +77,15 @@
     
 </tr:panelGroupLayout>
 
-<tr:panelGroupLayout rendered="#{searchBean.countInOtherDatabases gt 0}"
-                     inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
+<tr:panelGroupLayout inlineStyle="display:#{searchBean.countInOtherDatabases == -1? 'inline' : 'none'}" partialTriggers=":psicquicPoll">
+    <tr:poll id="psicquicPoll" interval="2000" pollListener="#{searchBean.doPsicquicQuery}"/>
+    <br/>
+    > Counting results in other databases...
+</tr:panelGroupLayout>
+
+<tr:panelGroupLayout partialTriggers="psicquicPoll"
+                     inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px; display:#{(searchBean.countInOtherDatabases gt 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}"
+                     >
     <br/>
     <tr:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
     <tr:goLink destination="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">
@@ -88,6 +95,18 @@
     </tr:goLink>
     
     interactions from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.
+    <tr:commandLink action="dialog:faq.psicquic"
+                    partialSubmit="true"
+                    windowWidth="700" windowHeight="500"
+                    immediate="true" useWindow="true">
+        <tr:image source="/images/help.png"/>
+    </tr:commandLink>
+</tr:panelGroupLayout>
+
+<tr:panelGroupLayout inlineStyle="display:#{(searchBean.countInOtherDatabases == 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}" partialTriggers="psicquicPoll">
+    <tr:poll id="psicquicPoll" interval="2000" pollListener="#{searchBean.doPsicquicQuery}"/>
+    <br/>
+    > No results in other databases.
     <tr:commandLink action="dialog:faq.psicquic"
                     partialSubmit="true"
                     windowWidth="700" windowHeight="500"
