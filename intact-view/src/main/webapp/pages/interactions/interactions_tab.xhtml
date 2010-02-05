@@ -80,7 +80,9 @@
 <tr:panelGroupLayout inlineStyle="display:#{searchBean.countInOtherDatabases == -1? 'inline' : 'none'}" partialTriggers=":psicquicPoll">
     <tr:poll id="psicquicPoll" interval="2000" pollListener="#{searchBean.doPsicquicQuery}"/>
     <br/>
-    > Counting results in other databases...
+    <span style="color:gray">
+    > [Counting results in other databases...]
+    </span>
 </tr:panelGroupLayout>
 
 <tr:panelGroupLayout partialTriggers="psicquicPoll"
