@@ -7,10 +7,8 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.UIXTable;
-import org.apache.myfaces.trinidad.component.core.CorePoll;
 import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
-import org.apache.myfaces.trinidad.event.PollEvent;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.myfaces.trinidad.event.ReturnEvent;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -38,9 +36,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Search controller.
@@ -108,7 +105,7 @@ public class SearchController extends JpaBaseController {
     private List<ServiceType> services;
     private int countInOtherDatabases;
     private int otherDatabasesWithResults;
-    private boolean psicquicQueryRunning;
+    private Map<String,UniversalPsicquicClient> psicquicClientCache;
 
     //sorting
     private static final String DEFAULT_SORT_COLUMN = "rigid";
@@ -192,7 +189,7 @@ public class SearchController extends JpaBaseController {
 
         UserQuery userQuery = getUserQuery();
         userQuery.setOntologySearchQuery(null);
-        
+
         return doBinarySearchAction();
     }
 
@@ -265,30 +262,11 @@ public class SearchController extends JpaBaseController {
             }
         }
 
-        countInOtherDatabases = -1;
-
-    }
-
-    public void doPsicquicQuery(PollEvent pollEvent) {
-        System.out.println("PSICQUIC QUERY");
-        if (psicquicQueryRunning) {
-            System.out.println("\tout");
-            return;
-        }
-
-        psicquicQueryRunning = true;
-
         try {
             countResultsInOtherDatabases();
-        } catch (Exception e) {
+        } catch (PsicquicRegistryClientException e) {
             e.printStackTrace();
         }
-
-        psicquicQueryRunning = false;
-
-        CorePoll poll = (CorePoll) pollEvent.getComponent();
-        poll.setRendered(false);
-        System.out.println("DONE!");
     }
 
     private void countResultsInOtherDatabases() throws PsicquicRegistryClientException {
@@ -322,28 +300,47 @@ public class SearchController extends JpaBaseController {
 
                 int count;
 
-                if (service.getRestUrl() != null) {
-                    URL restUrl = new URL(service.getRestUrl()+"query/"+ query +"?format=count");
-                    lines = IOUtils.readLines(restUrl.openStream());
-
-                    count = Integer.parseInt(lines.get(0));
-                } else {
-                    UniversalPsicquicClient client = new UniversalPsicquicClient(service.getSoapUrl());
+//                if (service.getRestUrl() != null) {
+//                    URL restUrl = new URL(service.getRestUrl()+"query/"+ URLEncoder.encode(query, "utf-8") +"?format=count");
+//                    lines = IOUtils.readLines(restUrl.openStream());
+//
+//                    count = Integer.parseInt(lines.get(0));
+//
+//                    System.out.println(restUrl +" = "+count);
+//                } else {
+                    UniversalPsicquicClient client = getPsicquicClientFromCache(service);
                     SearchResult<BinaryInteraction> result = client.getByQuery(query, 0, 0);
                     count = result.getTotalCount();
-                }
+//                }
 
                 countInOtherDatabases += count;
 
                 if (count > 0) {
                     otherDatabasesWithResults++;
                 }
-                
+
             } catch (Throwable e) {
                 e.printStackTrace();
             }
 
         }
+    }
+
+    private UniversalPsicquicClient getPsicquicClientFromCache(ServiceType service) {
+        if (psicquicClientCache == null) {
+            psicquicClientCache = new HashMap<String, UniversalPsicquicClient>();
+        }
+        
+        UniversalPsicquicClient client;
+
+        if (psicquicClientCache.containsKey(service.getName())) {
+            client = psicquicClientCache.get(service.getName());
+        } else {
+            client = new UniversalPsicquicClient(service.getSoapUrl());
+            psicquicClientCache.put(service.getName(), client);
+        }
+
+        return client;
     }
 
     private SolrSearchResultDataModel createInteractionDataModel(SolrQuery query) {
@@ -678,9 +675,5 @@ public class SearchController extends JpaBaseController {
 
     public int getOtherDatabasesWithResults() {
         return otherDatabasesWithResults;
-    }
-
-    public boolean isPsicquicQueryRunning() {
-        return psicquicQueryRunning;
     }
 }

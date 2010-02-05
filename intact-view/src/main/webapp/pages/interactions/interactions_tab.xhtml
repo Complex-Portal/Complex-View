@@ -74,20 +74,11 @@
         <f:param name="token_field" value="expansion"/>
     </tr:commandLink>
     &#160;them.
-    
+
 </tr:panelGroupLayout>
 
-<tr:panelGroupLayout inlineStyle="display:#{searchBean.countInOtherDatabases == -1? 'inline' : 'none'}" partialTriggers=":psicquicPoll">
-    <tr:poll id="psicquicPoll" interval="2000" pollListener="#{searchBean.doPsicquicQuery}"/>
-    <br/>
-    <span style="color:gray">
-    > [Counting results in other databases...]
-    </span>
-</tr:panelGroupLayout>
-
-<tr:panelGroupLayout partialTriggers="psicquicPoll"
-                     inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px; display:#{(searchBean.countInOtherDatabases gt 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}"
-                     >
+<tr:panelGroupLayout rendered="#{searchBean.countInOtherDatabases gt 0}"
+                     inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
     <br/>
     <tr:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
     <tr:goLink destination="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">
@@ -95,20 +86,8 @@
             <tr:convertNumber pattern="#,###"/>
         </tr:outputText>
     </tr:goLink>
-    
-    interactions from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.
-    <tr:commandLink action="dialog:faq.psicquic"
-                    partialSubmit="true"
-                    windowWidth="700" windowHeight="500"
-                    immediate="true" useWindow="true">
-        <tr:image source="/images/help.png"/>
-    </tr:commandLink>
-</tr:panelGroupLayout>
 
-<tr:panelGroupLayout inlineStyle="display:#{(searchBean.countInOtherDatabases == 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}" partialTriggers="psicquicPoll">
-    <tr:poll id="psicquicPoll" interval="2000" pollListener="#{searchBean.doPsicquicQuery}"/>
-    <br/>
-    > No results in other databases.
+    interactions from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.
     <tr:commandLink action="dialog:faq.psicquic"
                     partialSubmit="true"
                     windowWidth="700" windowHeight="500"
@@ -168,7 +147,7 @@
                               text="Change Columns Displayed" action="dialog:configure.columns"
                               partialSubmit="true" returnListener="#{configureColumn.handleColumnDialogReturn}"
                               windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
-                        
+
             <!--<tr:selectOneChoice id="listSortableColumns" label="Sort Rows By: " value="#{searchBean.userSortColumn}" autoSubmit="true" valueChangeListener="#{searchBean.userSort}">-->
                 <!--<tr:selectItem label="Relevance Score" value="relevancescore_s"/>-->
                 <!--<tr:selectItem label="Name molecule A" value="nameA_s"/>-->
@@ -215,7 +194,7 @@
     <ui:include src="interactor_icons.xhtml">
             <ui:param name="interactor" value="#{binaryInteraction.interactorA}"/>
     </ui:include>
- 
+
 </tr:column>
 
 <tr:column headerText="#{messages['moleculeA.links']}" styleClass="cellTextCompound"
