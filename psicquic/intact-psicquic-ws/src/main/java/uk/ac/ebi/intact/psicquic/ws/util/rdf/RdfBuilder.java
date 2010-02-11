@@ -93,7 +93,7 @@ public class RdfBuilder {
                         interactorUri = INTACT_URI;
                         rdfType = BIOPAX_URI+"PhysicalEntity";
                     } else {
-                        interactorUri = "#_UNKNOWN_";
+                        interactorUri = "http://UNKNOWN.org/#_UNKNOWN_";
                         rdfType = BIOPAX_URI+"PhysicalEntity";
                     }
 
