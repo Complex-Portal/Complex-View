@@ -17,6 +17,9 @@ package uk.ac.ebi.intact.psicquic.ws.util.rdf;
 
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.rdf.model.RDFWriterF;
+import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl;
 import org.hupo.psi.mi.psicquic.PsicquicService;
 import org.hupo.psi.mi.psicquic.QueryResponse;
 import org.hupo.psi.mi.psicquic.RequestInfo;
@@ -49,11 +52,13 @@ public class RdfStreamingOutput implements StreamingOutput {
         final RdfBuilder rdfBuilder = new RdfBuilder();
         final Model model = rdfBuilder.createModel(entrySet);
 
-        //model.write(outputStream, rdfFormat);
+        Writer writer = new StringWriter();
+        model.write(outputStream, rdfFormat);
+        String lala = writer.toString();
+        System.out.println(lala.length());
+
         PrintStream ps = new PrintStream(outputStream);
-        for (int i=0; i<8192; i++) {
-            ps.println(i);
-        }
-        ps.close();
+        ps.print(lala+"\n\n\n\n\n============\n\n\n\n\n");
+        ps.print(lala);
     }
 }
