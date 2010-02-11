@@ -154,7 +154,10 @@ public class IntactPsicquicService implements PsicquicService {
         SolrSearchResult solrSearchResult;
 
         try {
-            SolrServer solrServer = new CommonsHttpSolrServer(config.getSolrServerUrl(), createHttpClient());
+            CommonsHttpSolrServer solrServer = new CommonsHttpSolrServer(config.getSolrServerUrl(), createHttpClient());
+            solrServer.setConnectionTimeout(100 * 1000);
+            solrServer.setSoTimeout(100 * 1000);
+            solrServer.setAllowCompression(true);
 
             IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
             solrSearchResult = searcher.search(query, requestInfo.getFirstResult(), blockSize);
