@@ -50,8 +50,9 @@ public class RdfStreamingOutput implements StreamingOutput {
         final Model model = rdfBuilder.createModel(entrySet);
 
         //model.write(outputStream, rdfFormat);
+        PrintStream ps = new PrintStream(outputStream);
         for (int i=0; i<8192; i++) {
-            System.out.println(i);
+            ps.println(i);
         }
     }
 }
