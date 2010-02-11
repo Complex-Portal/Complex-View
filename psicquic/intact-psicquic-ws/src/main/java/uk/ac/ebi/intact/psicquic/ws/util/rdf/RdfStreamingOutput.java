@@ -54,5 +54,6 @@ public class RdfStreamingOutput implements StreamingOutput {
         for (int i=0; i<8192; i++) {
             ps.println(i);
         }
+        ps.close();
     }
 }
