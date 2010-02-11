@@ -1,5 +1,6 @@
 package uk.ac.ebi.intact.psicquic.ws;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import org.apache.commons.lang.StringUtils;
 import org.hupo.psi.mi.psicquic.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,13 @@ import psidev.psi.mi.xml.dao.inMemory.InMemoryDAOFactory;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput;
+import uk.ac.ebi.intact.psicquic.ws.util.rdf.RdfBuilder;
 import uk.ac.ebi.intact.psicquic.ws.util.rdf.RdfStreamingOutput;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -73,8 +77,19 @@ public class IntactPsicquicRestService implements PsicquicRestService {
             } else if (format.toLowerCase().startsWith("rdf")) {
                 String rdfFormat = getRdfFormatName(format);
                 String mediaType = format.contains("xml")? MediaType.APPLICATION_XML : MediaType.TEXT_PLAIN;
-                RdfStreamingOutput streamingOutput = createRdfStreamingOutput(query, rdfFormat, firstResult, maxResults);
-                return Response.status(200).type(mediaType).entity(streamingOutput).build();
+                //RdfStreamingOutput streamingOutput = createRdfStreamingOutput(query, rdfFormat, firstResult, maxResults);
+                final RdfBuilder rdfBuilder = new RdfBuilder();
+
+                EntrySetConverter converter = new EntrySetConverter();
+        converter.setDAOFactory(new InMemoryDAOFactory());
+        psidev.psi.mi.xml.model.EntrySet entrySet = converter.fromJaxb(getByQueryXml(query, firstResult, maxResults));
+        final Model model = rdfBuilder.createModel(entrySet);
+
+        Writer writer = new StringWriter();
+        model.write(writer, rdfFormat);
+        String lala = writer.toString();
+                return Response.status(200).type(MediaType.APPLICATION_XML).entity(lala).build();
+
             } else if (IntactPsicquicService.RETURN_TYPE_COUNT.equalsIgnoreCase(format)) {
                 return count(query);
             } else if (strippedMime(IntactPsicquicService.RETURN_TYPE_MITAB25_BIN).equalsIgnoreCase(format)) {
