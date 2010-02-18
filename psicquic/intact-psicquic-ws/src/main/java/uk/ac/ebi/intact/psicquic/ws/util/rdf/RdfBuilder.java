@@ -15,13 +15,19 @@
  */
 package uk.ac.ebi.intact.psicquic.ws.util.rdf;
 
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
+import org.apache.commons.collections.CollectionUtils;
 import psidev.psi.mi.xml.model.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -30,21 +36,30 @@ import psidev.psi.mi.xml.model.*;
 public class RdfBuilder {
     private static final String BIOPAX_URI = "http://www.biopax.org/release/biopax-level3.owl#";
     private static final String INTACT_URI = "http://purl.uniprot.org/intact/";
+    private static final String PSIMI_URI = "http://www.ebi.ac.uk/~intact/psimi.owl#";
     private static final String OWL_MI_URI = "http://purl.org/obo/owl/MI#";
 
     public Model createModel(EntrySet entrySet) {
-        Model model = ModelFactory.createDefaultModel();
+        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
         model.setNsPrefix("xsd", XSD.getURI());
         model.setNsPrefix("rdf", RDF.getURI());
         model.setNsPrefix("rdfs", RDFS.getURI());
         model.setNsPrefix("owl", OWL.getURI());
         model.setNsPrefix("bp", BIOPAX_URI);
+        model.setNsPrefix("psimi", PSIMI_URI);
         model.setNsPrefix("owlmi", OWL_MI_URI);
 
-        model.add(OWL.Ontology, OWL.imports, "http://www.biopax.org/release/biopax-level3.owl");
+        model.createOntology("http://www.biopax.org/release/biopax-level3.owl");
+        model.createOntology("http://www.ebi.ac.uk/~intact/psimi.owl");
 
         final Property biopaxNameProp = model.createProperty(BIOPAX_URI + "name");
         final Property commentProp = model.createProperty(BIOPAX_URI + "comment");
+        final Property xrefProp = model.createProperty(BIOPAX_URI + "xref");
+        final Property idProp = model.createProperty(BIOPAX_URI + "id");
+        final Property dbProp = model.createProperty(BIOPAX_URI + "db");
+        final Property dbAcProp = model.createProperty(PSIMI_URI + "dbAc");
+        final Property refTypeAcProp = model.createProperty(PSIMI_URI + "refTypeAc");
+        final Property refTypeProp = model.createProperty(PSIMI_URI + "refType");
 
         for (Entry entry : entrySet.getEntries()) {
 
@@ -97,11 +112,33 @@ public class RdfBuilder {
                         rdfType = BIOPAX_URI+"PhysicalEntity";
                     }
 
-                    Resource proteinRes = model.createResource(interactorUri + processId(mainDbRef.getId()));
-                    proteinRes.addProperty(RDF.type, model.createResource(rdfType));
-                    proteinRes.addLiteral(RDFS.label, interactor.getNames().getShortLabel());
+                    String proteinUri = interactorUri + processId(mainDbRef.getId());
+                    Resource interactorRes = model.createResource(proteinUri);
+                    interactorRes.addProperty(RDF.type, model.createResource(rdfType));
+                    interactorRes.addLiteral(RDFS.label, interactor.getNames().getShortLabel());
 
-                    interactionRes.addProperty(participantProp, proteinRes);
+                    Collection<DbReference> allDbRefs = new ArrayList<DbReference>(interactor.getXref().getSecondaryRef());
+                    allDbRefs.add(interactor.getXref().getPrimaryRef());
+
+                    for (DbReference dbReference : allDbRefs) {
+                        String refTypeAc = dbReference.getRefTypeAc();
+                        Resource xref = model.createResource(new AnonId("xref-"+dbReference.getId()));
+
+                        if (refTypeAc != null && refTypeAc.equals("MI:0356")) { // identity
+                            xref.addProperty(RDF.type, model.createResource(BIOPAX_URI+"UnificationXref"));
+                        } else {
+                            xref.addProperty(RDF.type, model.createResource(BIOPAX_URI+"RelationshipXref"));
+                        }
+                        xref.addLiteral(idProp, dbReference.getId());
+                        xref.addLiteral(dbProp, dbReference.getDb());
+//                        xref.addLiteral(dbAcProp, dbReference.getDbAc());
+//                        xref.addLiteral(refTypeAcProp, dbReference.getRefTypeAc());
+//                        xref.addLiteral(refTypeProp, dbReference.getRefType());
+
+                        interactorRes.addProperty(xrefProp, xref);
+                    }
+
+                    interactionRes.addProperty(participantProp, interactorRes);
                 }
             }
         }

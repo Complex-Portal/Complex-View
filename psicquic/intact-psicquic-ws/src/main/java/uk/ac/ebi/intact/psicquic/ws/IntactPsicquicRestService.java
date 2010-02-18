@@ -16,8 +16,7 @@ import uk.ac.ebi.intact.psicquic.ws.util.rdf.RdfStreamingOutput;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +70,12 @@ public class IntactPsicquicRestService implements PsicquicRestService {
             throw new PsicquicServiceException("maxResults parameter is not a number: "+maxResultsStr);
         }
 
+        format = format.toLowerCase();
+
+        if ("biopax".equals(format)) {
+            format = "rdf-xml-abbrev";
+        }
+
         try {
             if (strippedMime(IntactPsicquicService.RETURN_TYPE_XML25).equalsIgnoreCase(format)) {
                 return getByQueryXml(query, firstResult, maxResults);
@@ -80,15 +85,14 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                 //RdfStreamingOutput streamingOutput = createRdfStreamingOutput(query, rdfFormat, firstResult, maxResults);
                 final RdfBuilder rdfBuilder = new RdfBuilder();
 
-                EntrySetConverter converter = new EntrySetConverter();
-        converter.setDAOFactory(new InMemoryDAOFactory());
-        psidev.psi.mi.xml.model.EntrySet entrySet = converter.fromJaxb(getByQueryXml(query, firstResult, maxResults));
-        final Model model = rdfBuilder.createModel(entrySet);
+                psidev.psi.mi.xml.model.EntrySet entrySet = createEntrySet(query, firstResult, maxResults);
+                final Model model = rdfBuilder.createModel(entrySet);
 
-        Writer writer = new StringWriter();
-        model.write(writer, rdfFormat);
-        String lala = writer.toString();
-                return Response.status(200).type(MediaType.APPLICATION_XML).entity(lala).build();
+                Writer writer = new StringWriter();
+                model.write(writer, rdfFormat);
+                String rdfOutputStr = writer.toString();
+                
+                return Response.status(200).type(mediaType).entity(rdfOutputStr).build();
 
             } else if (IntactPsicquicService.RETURN_TYPE_COUNT.equalsIgnoreCase(format)) {
                 return count(query);
@@ -124,10 +128,15 @@ public class IntactPsicquicRestService implements PsicquicRestService {
     }
 
     private RdfStreamingOutput createRdfStreamingOutput(String query, String rdfFormat, int firstResult, int maxResults) throws ConverterException, PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
+        psidev.psi.mi.xml.model.EntrySet entrySet = createEntrySet(query, firstResult, maxResults);
+        return new RdfStreamingOutput(psicquicService, entrySet, rdfFormat);
+    }
+
+    private psidev.psi.mi.xml.model.EntrySet createEntrySet(String query, int firstResult, int maxResults) throws ConverterException, PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
         EntrySetConverter converter = new EntrySetConverter();
         converter.setDAOFactory(new InMemoryDAOFactory());
         psidev.psi.mi.xml.model.EntrySet entrySet = converter.fromJaxb(getByQueryXml(query, firstResult, maxResults));
-        return new RdfStreamingOutput(psicquicService, entrySet, rdfFormat);
+        return entrySet;
     }
 
     public Object getSupportedFormats() throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
