@@ -1,14 +1,15 @@
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.UIXTable;
+import org.apache.myfaces.trinidad.component.core.CorePoll;
 import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
+import org.apache.myfaces.trinidad.event.PollEvent;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.myfaces.trinidad.event.ReturnEvent;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -35,8 +36,6 @@ import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -106,6 +105,7 @@ public class SearchController extends JpaBaseController {
     private int countInOtherDatabases;
     private int otherDatabasesWithResults;
     private Map<String,UniversalPsicquicClient> psicquicClientCache;
+    private boolean psicquicQueryRunning;
 
     //sorting
     private static final String DEFAULT_SORT_COLUMN = "rigid";
@@ -262,11 +262,27 @@ public class SearchController extends JpaBaseController {
             }
         }
 
+        countInOtherDatabases = -1;
+
+    }
+
+    public void doPsicquicQuery(PollEvent pollEvent) {
+        if (psicquicQueryRunning) {
+            return;
+        }
+
+        psicquicQueryRunning = true;
+
         try {
             countResultsInOtherDatabases();
-        } catch (PsicquicRegistryClientException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        psicquicQueryRunning = false;
+
+        CorePoll poll = (CorePoll) pollEvent.getComponent();
+        poll.setRendered(false);
     }
 
     private void countResultsInOtherDatabases() throws PsicquicRegistryClientException {
@@ -675,5 +691,9 @@ public class SearchController extends JpaBaseController {
 
     public int getOtherDatabasesWithResults() {
         return otherDatabasesWithResults;
+    }
+
+    public boolean isPsicquicQueryRunning() {
+        return psicquicQueryRunning;
     }
 }
