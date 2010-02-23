@@ -74,7 +74,13 @@ public class IntactPsicquicRestService implements PsicquicRestService {
 
         format = format.toLowerCase();
 
-        if ("biopax".equals(format)) {
+        // TODO develMode to be remove when biopax works fine
+        boolean develMode = false;
+        if (format.contains("dev")) {
+            develMode = true;
+        }
+
+        if (format.startsWith("biopax")) {
             format = "rdf-xml-abbrev";
         }
 
@@ -85,7 +91,7 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                 String rdfFormat = getRdfFormatName(format);
                 String mediaType = format.contains("xml")? MediaType.APPLICATION_XML : MediaType.TEXT_PLAIN;
                 //RdfStreamingOutput streamingOutput = createRdfStreamingOutput(query, rdfFormat, firstResult, maxResults);
-                final RdfBuilder rdfBuilder = new RdfBuilder();
+                final RdfBuilder rdfBuilder = new RdfBuilder(develMode);
 
                 psidev.psi.mi.xml.model.EntrySet entrySet = createEntrySet(query, firstResult, maxResults);
                 final String baseUri = "http://www.ebi.ac.uk/intact/";

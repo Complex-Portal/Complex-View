@@ -147,6 +147,7 @@ public class IntactPsicquicService implements PsicquicService {
             throw new NotSupportedTypeException("Not supported return type: "+resultType+" - Supported types are: "+getSupportedReturnTypes());
         }
 
+        System.out.println("SEARCHING: "+query);
         logger.debug("Searching: {} ({}/{}) with type {}", new Object[] {query, requestInfo.getFirstResult(), blockSize, resultType});
 
         /////////////////////////////////////////////////////////////////
