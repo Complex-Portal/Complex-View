@@ -18,15 +18,15 @@ package uk.ac.ebi.intact.psicquic.ws.util.rdf;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.Ontology;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
 import psidev.psi.mi.xml.model.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -38,7 +38,9 @@ public class RdfBuilder {
     private static final String PSIMI_URI = "http://www.ebi.ac.uk/~intact/psimi.owl#";
     private static final String OWL_MI_URI = "http://purl.org/obo/owl/MI#";
 
-    public Model createModel(EntrySet entrySet, String baseUri) {
+    private int xrefCounter = 0;
+
+    public Model createModel(EntrySet entrySet, String baseURI) {
 
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
         model.setNsPrefix("xsd", XSD.getURI());
@@ -49,7 +51,7 @@ public class RdfBuilder {
         model.setNsPrefix("psimi", PSIMI_URI);
         model.setNsPrefix("owlmi", OWL_MI_URI);
 
-        Ontology ontology = model.createOntology(baseUri);
+        Ontology ontology = model.createOntology(baseURI);
         ontology.addImport(model.createResource("http://www.biopax.org/release/biopax-level3.owl"));
         //model.createOntology("http://www.ebi.ac.uk/~intact/psimi.owl");
 
@@ -118,26 +120,36 @@ public class RdfBuilder {
                     interactorRes.addProperty(RDF.type, model.createResource(rdfType));
                     interactorRes.addLiteral(RDFS.label, interactor.getNames().getShortLabel());
 
-                    Collection<DbReference> allDbRefs = new ArrayList<DbReference>(interactor.getXref().getSecondaryRef());
-                    allDbRefs.add(interactor.getXref().getPrimaryRef());
-
-                    for (DbReference dbReference : allDbRefs) {
-                        String refTypeAc = dbReference.getRefTypeAc();
-                        Resource xref = model.createResource(new AnonId("xref-"+dbReference.getId()));
-
-                        if (refTypeAc != null && refTypeAc.equals("MI:0356")) { // identity
-                            xref.addProperty(RDF.type, model.createResource(BIOPAX_URI+"UnificationXref"));
-                        } else {
-                            xref.addProperty(RDF.type, model.createResource(BIOPAX_URI+"RelationshipXref"));
-                        }
-                        xref.addLiteral(idProp, dbReference.getId());
-                        xref.addLiteral(dbProp, dbReference.getDb());
-//                        xref.addLiteral(dbAcProp, dbReference.getDbAc());
-//                        xref.addLiteral(refTypeAcProp, dbReference.getRefTypeAc());
-//                        xref.addLiteral(refTypeProp, dbReference.getRefType());
-
-                        interactorRes.addProperty(xrefProp, xref);
-                    }
+                    // participant xref
+//                    Collection<DbReference> allDbRefs = new ArrayList<DbReference>(interactor.getXref().getSecondaryRef());
+//                    allDbRefs.add(interactor.getXref().getPrimaryRef());
+//
+//                    Resource unificationXref = model.createResource(BIOPAX_URI+"UnificationXref");
+//                    Resource relationshipXref = model.createResource(BIOPAX_URI+"RelationshipXref");
+//
+//                    for (DbReference dbReference : allDbRefs) {
+//                        String refTypeAc = dbReference.getRefTypeAc();
+//
+//                        Resource xrefRes;
+//
+//                        if (refTypeAc != null && refTypeAc.equals("MI:0356")) { // identity
+//                            xrefRes = unificationXref;
+//                        } else {
+//                            xrefRes = relationshipXref;
+//                        }
+//
+//                        String id = dbReference.getId();
+//
+//                        Individual xref = model.createIndividual( baseURI+"#xref-"+ xrefCounter++ +"-"+ id.replaceAll(":", "_"), xrefRes);
+////
+//                        xref.addLiteral(idProp, id);
+//                        xref.addLiteral(dbProp, dbReference.getDb());
+////                        xref.addLiteral(dbAcProp, dbReference.getDbAc());
+////                        xref.addLiteral(refTypeAcProp, dbReference.getRefTypeAc());
+////                        xref.addLiteral(refTypeProp, dbReference.getRefType());
+//
+//                        interactorRes.addProperty(xrefProp, xref);
+//                    }
 
                     interactionRes.addProperty(participantProp, interactorRes);
                 }
