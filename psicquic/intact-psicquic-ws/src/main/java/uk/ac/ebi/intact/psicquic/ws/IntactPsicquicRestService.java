@@ -1,6 +1,7 @@
 package uk.ac.ebi.intact.psicquic.ws;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
 import org.apache.commons.lang.StringUtils;
 import org.hupo.psi.mi.psicquic.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,8 @@ import uk.ac.ebi.intact.psicquic.ws.util.rdf.RdfStreamingOutput;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,10 +88,16 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                 final RdfBuilder rdfBuilder = new RdfBuilder();
 
                 psidev.psi.mi.xml.model.EntrySet entrySet = createEntrySet(query, firstResult, maxResults);
-                final Model model = rdfBuilder.createModel(entrySet);
+                final String baseUri = "http://www.ebi.ac.uk/intact/";
+                final Model model = rdfBuilder.createModel(entrySet, baseUri);
+
+                final RDFWriter rdfWriter = model.getWriter(rdfFormat);
+                rdfWriter.setProperty("xmlbase", baseUri);
+                model.setNsPrefix("", baseUri);
 
                 Writer writer = new StringWriter();
-                model.write(writer, rdfFormat);
+                rdfWriter.write(model, writer, baseUri);
+                
                 String rdfOutputStr = writer.toString();
                 
                 return Response.status(200).type(mediaType).entity(rdfOutputStr).build();

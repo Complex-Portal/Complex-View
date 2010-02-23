@@ -17,13 +17,12 @@ package uk.ac.ebi.intact.psicquic.ws.util.rdf;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.ontology.Ontology;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
-import org.apache.commons.collections.CollectionUtils;
 import psidev.psi.mi.xml.model.*;
 
 import java.util.ArrayList;
@@ -39,7 +38,8 @@ public class RdfBuilder {
     private static final String PSIMI_URI = "http://www.ebi.ac.uk/~intact/psimi.owl#";
     private static final String OWL_MI_URI = "http://purl.org/obo/owl/MI#";
 
-    public Model createModel(EntrySet entrySet) {
+    public Model createModel(EntrySet entrySet, String baseUri) {
+
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
         model.setNsPrefix("xsd", XSD.getURI());
         model.setNsPrefix("rdf", RDF.getURI());
@@ -49,8 +49,9 @@ public class RdfBuilder {
         model.setNsPrefix("psimi", PSIMI_URI);
         model.setNsPrefix("owlmi", OWL_MI_URI);
 
-        model.createOntology("http://www.biopax.org/release/biopax-level3.owl");
-        model.createOntology("http://www.ebi.ac.uk/~intact/psimi.owl");
+        Ontology ontology = model.createOntology(baseUri);
+        ontology.addImport(model.createResource("http://www.biopax.org/release/biopax-level3.owl"));
+        //model.createOntology("http://www.ebi.ac.uk/~intact/psimi.owl");
 
         final Property biopaxNameProp = model.createProperty(BIOPAX_URI + "name");
         final Property commentProp = model.createProperty(BIOPAX_URI + "comment");
