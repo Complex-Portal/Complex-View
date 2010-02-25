@@ -61,9 +61,9 @@ public class LegacyRedirectionServlet extends HttpServlet {
             if (queryStr.contains( QUERY )) {
                 String query = queryStr.substring(url.indexOf( QUERY )+QUERY.length());
 
-                response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query));
+                response.sendRedirect(fixUrl(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query)));
             } else {
-               response.sendRedirect(absContextPath); 
+               response.sendRedirect(fixUrl(absContextPath));
             }
 
         } else if (url.contains("/search")) {
@@ -75,7 +75,7 @@ public class LegacyRedirectionServlet extends HttpServlet {
             if (queryStr.contains( BINARY )) {
 
                 String interactors = queryStr.substring( url.indexOf( BINARY ) + BINARY.length() );
-                response.sendRedirect(absContextPath+"/pages/details/details.xhtml?binary="+interactors);
+                response.sendRedirect(fixUrl(absContextPath+"/pages/details/details.xhtml?binary="+interactors));
 
             } else if (queryStr.contains( SEARCH_STRING )) {
 
@@ -94,15 +94,20 @@ public class LegacyRedirectionServlet extends HttpServlet {
                     }
 
                     String experimentAc = queryStr.substring( searchStrIdx + SEARCH_STRING.length(), endIdx );
-                    response.sendRedirect(absContextPath+"/pages/details/details.xhtml?experimentAc="+experimentAc);
+                    response.sendRedirect(fixUrl(absContextPath+"/pages/details/details.xhtml?experimentAc="+experimentAc));
                 } else {
-                    response.sendRedirect(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query));
+                    response.sendRedirect(fixUrl(absContextPath+"/pages/interactions/interactions.xhtml?query="+adaptQuery(query)));
                 }
             } else {
 
-                response.sendRedirect(absContextPath);
+                response.sendRedirect(fixUrl(absContextPath));
             }
         }
+    }
+
+    private String fixUrl(String url) {
+        url = url.replaceAll("==", "=");
+        return url;
     }
 
     private String adaptQuery( String query ) {
