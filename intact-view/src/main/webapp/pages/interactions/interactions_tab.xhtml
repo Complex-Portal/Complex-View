@@ -105,7 +105,7 @@
 </tr:panelGroupLayout>
 
 <tr:panelGroupLayout inlineStyle="display:#{(searchBean.countInOtherDatabases == 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}" partialTriggers="psicquicPoll">
-    <tr:poll id="psicquicPoll" interval="2000" pollListener="#{searchBean.doPsicquicQuery}"/>
+
     <br/>
     > No results in other databases.
     <tr:commandLink action="dialog:faq.psicquic"
@@ -599,10 +599,12 @@
 
 </tr:table>
 
-<trh:script>
-    dojo.addOnLoad(alert('lala'));
-</trh:script>
+<!--<trh:script>-->
+    <!--dojo.addOnLoad(document.getElementById('pollPanel').style.display = 'inline');-->
+<!--</trh:script>-->
 
-<tr:poll id="psicquicPoll" interval="500" pollListener="#{searchBean.doPsicquicQuery}"/>
+<!--<div id="pollPanel" style="display:none;">-->
+    <tr:poll id="psicquicPoll" interval="10" pollListener="#{searchBean.doPsicquicQuery}"/>
+<!--</div>-->
 
 </ui:composition>
