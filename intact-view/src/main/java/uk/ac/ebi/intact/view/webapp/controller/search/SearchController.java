@@ -343,7 +343,6 @@ public class SearchController extends JpaBaseController {
                     final String imexQuery = createImexQuery(query);
                     SearchResult<BinaryInteraction> imexResult = client.getByQuery(imexQuery, 0, 0);
                     imexCount = imexResult.getTotalCount();
-                    System.out.println(service.getName()+" COUNT "+imexCount);
                 }
 
                 countInOtherDatabases += psicquicCount;
