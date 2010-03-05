@@ -95,13 +95,31 @@
         </tr:outputText>
     </tr:goLink>
 
-    interactions from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.
+    interaction evidences from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.
     <tr:commandLink action="dialog:faq.psicquic"
                     partialSubmit="true"
                     windowWidth="700" windowHeight="500"
                     immediate="true" useWindow="true">
         <tr:image source="/images/help.png"/>
     </tr:commandLink>
+
+    <tr:panelGroupLayout rendered="#{searchBean.countInOtherImexDatabases gt 0}">
+        <br/>
+        <tr:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
+        <tr:goLink destination="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">
+            <tr:outputText value="#{searchBean.countInOtherImexDatabases}" inlineStyle="font-weight:bold">
+                <tr:convertNumber pattern="#,###"/>
+            </tr:outputText>
+        </tr:goLink>
+
+        interaction evidences from <b>#{searchBean.otherImexDatabasesWithResults}</b> other IMEx databases.
+        <tr:commandLink action="dialog:faq.psicquic.imex"
+                        partialSubmit="true"
+                        windowWidth="700" windowHeight="500"
+                        immediate="true" useWindow="true">
+            <tr:image source="/images/help.png"/>
+        </tr:commandLink>
+     </tr:panelGroupLayout>
 </tr:panelGroupLayout>
 
 <tr:panelGroupLayout inlineStyle="display:#{(searchBean.countInOtherDatabases == 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}" partialTriggers="psicquicPoll">

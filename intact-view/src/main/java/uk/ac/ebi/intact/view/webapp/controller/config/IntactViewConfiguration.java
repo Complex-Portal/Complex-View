@@ -69,6 +69,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String PROXY_PORT = "intact.proxy.port";
     private static final String PSICQUIC_REGISTRY_URL = "psicquic.registry.url";
     private static final String PSICQUIC_VIEW_URL = "psicquic.view.url";
+    private static final String IMEX_VIEW_URL = "imex.view.url";
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -105,6 +106,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     private String psicquicRegistryUrl;
     private String psicquicViewUrl;
+    private String imexViewUrl;
 
     public IntactViewConfiguration() {
     }
@@ -164,6 +166,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         proxyPort = properties.getProperty(PROXY_PORT, proxyPort);
         psicquicRegistryUrl = properties.getProperty(PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
         psicquicViewUrl = properties.getProperty(PSICQUIC_VIEW_URL, psicquicViewUrl);
+        imexViewUrl = properties.getProperty(IMEX_VIEW_URL, imexViewUrl);
     }
 
     public void storeConfiguration() throws IOException {
@@ -197,6 +200,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, PROXY_PORT, proxyPort);
         addProperty(properties, PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
         addProperty(properties, PSICQUIC_VIEW_URL, psicquicViewUrl);
+        addProperty(properties, IMEX_VIEW_URL, imexViewUrl);
 
         final FileOutputStream os = new FileOutputStream( configFile );
         properties.store( os, webappName+ " configuration");
@@ -474,5 +478,13 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     public void setPsicquicViewUrl(String psicquicViewUrl) {
         this.psicquicViewUrl = psicquicViewUrl;
+    }
+
+    public String getImexViewUrl() {
+        return imexViewUrl;
+    }
+
+    public void setImexViewUrl(String imexViewUrl) {
+        this.imexViewUrl = imexViewUrl;
     }
 }

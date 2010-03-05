@@ -102,8 +102,11 @@ public class SearchController extends JpaBaseController {
 
     // psicquic
     private List<ServiceType> services;
+    private List<ServiceType> imexServices;
     private int countInOtherDatabases;
+    private int countInOtherImexDatabases;
     private int otherDatabasesWithResults;
+    private int otherImexDatabasesWithResults;
     private Map<String,UniversalPsicquicClient> psicquicClientCache;
     private boolean psicquicQueryRunning;
 
@@ -299,9 +302,23 @@ public class SearchController extends JpaBaseController {
 
         countInOtherDatabases = 0;
         otherDatabasesWithResults = 0;
+        countInOtherDatabases = 0;
+        otherImexDatabasesWithResults = 0;
+
+        imexServices = new ArrayList<ServiceType>(services.size());
 
 
         for (ServiceType service : services) {
+            boolean isImexService = false;
+
+            for (String tag : service.getTags()) {
+                if ("MI:0959".equals(tag)) {
+                    imexServices.add(service);
+                    isImexService = true;
+                    break;
+                }
+            }
+
             if (intactViewConfiguration.getWebappName().contains(service.getName())) {
                 continue;
             }
@@ -314,31 +331,46 @@ public class SearchController extends JpaBaseController {
                     query = "*";
                 }
 
-                int count;
+                int psicquicCount;
+                int imexCount = 0;
 
-//                if (service.getRestUrl() != null) {
-//                    URL restUrl = new URL(service.getRestUrl()+"query/"+ URLEncoder.encode(query, "utf-8") +"?format=count");
-//                    lines = IOUtils.readLines(restUrl.openStream());
-//
-//                    count = Integer.parseInt(lines.get(0));
-//
-//                    System.out.println(restUrl +" = "+count);
-//                } else {
-                    UniversalPsicquicClient client = getPsicquicClientFromCache(service);
-                    SearchResult<BinaryInteraction> result = client.getByQuery(query, 0, 0);
-                    count = result.getTotalCount();
-//                }
+                UniversalPsicquicClient client = getPsicquicClientFromCache(service);
+                SearchResult<BinaryInteraction> psicquicResult = client.getByQuery(query, 0, 0);
+                psicquicCount = psicquicResult.getTotalCount();
 
-                countInOtherDatabases += count;
 
-                if (count > 0) {
+                if (isImexService) {
+                    final String imexQuery = createImexQuery(query);
+                    SearchResult<BinaryInteraction> imexResult = client.getByQuery(imexQuery, 0, 0);
+                    imexCount = imexResult.getTotalCount();
+                    System.out.println(service.getName()+" COUNT "+imexCount);
+                }
+
+                countInOtherDatabases += psicquicCount;
+                countInOtherImexDatabases += imexCount;
+
+                if (psicquicCount > 0) {
                     otherDatabasesWithResults++;
+                }
+
+                if (imexCount > 0) {
+                    otherImexDatabasesWithResults++;
                 }
 
             } catch (Throwable e) {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    private String createImexQuery(String query) {
+        String filter = "interaction_id:imex";
+
+        if (query != null && query.trim().length() > 0 && !"*".equals(query.trim())) {
+            return filter+" AND ("+query.trim()+")";
+        } else {
+            return filter;
         }
     }
 
@@ -695,5 +727,17 @@ public class SearchController extends JpaBaseController {
 
     public boolean isPsicquicQueryRunning() {
         return psicquicQueryRunning;
+    }
+
+    public int getCountInOtherImexDatabases() {
+        return countInOtherImexDatabases;
+    }
+
+    public int getOtherImexDatabasesWithResults() {
+        return otherImexDatabasesWithResults;
+    }
+
+    public List<ServiceType> getImexServices() {
+        return imexServices;
     }
 }
