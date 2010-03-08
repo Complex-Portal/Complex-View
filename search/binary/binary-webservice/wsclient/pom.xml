@@ -177,10 +177,6 @@
                     <artifactId>commons-collections</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
                 </exclusion>
@@ -214,8 +210,7 @@
             <version>${ws.version}</version>
             <type>war</type>
             <scope>provided</scope>
-        </dependency>
-        
+        </dependency>        
 
         <!-- JAX-WS -->
         <dependency>

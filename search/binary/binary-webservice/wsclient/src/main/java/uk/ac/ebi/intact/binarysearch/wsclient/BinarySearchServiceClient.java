@@ -99,7 +99,7 @@ public class BinarySearchServiceClient {
             try {
                 interaction = docDef.interactionFromString(line);
             } catch (Throwable e) {
-                throw new RuntimeException("Wrong line returned by the server: "+line);
+                throw new RuntimeException("Wrong line returned by the server: "+line, e);
             }
             interactions.add(interaction);
         }

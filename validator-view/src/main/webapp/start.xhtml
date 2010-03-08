@@ -35,12 +35,6 @@
                                          <trh:cellFormat halign="left" valign="middle">
                                              <tr:outputText value="This is a beta version of the PSI-MI Semantic Validator v2.0" />
                                              <br/>
-                                             <tr:outputText value="You can access the previous version of the validator " />
-                                             <tr:goLink destination="http://www.ebi.ac.uk/intact/validator-v1" styleClass="text-align:left">
-                                                 <tr:outputText value="here" />
-                                             </tr:goLink>
-                                             <tr:outputText value="." />
-                                             <br/>
                                          </trh:cellFormat>
                                      </trh:rowLayout>
                                 </trh:tableLayout>
@@ -364,7 +358,7 @@
                                 <tr:panelLabelAndMessage label="Tips:" inlineStyle="vertical-align:top;" >
                                     <tr:panelList>
                                         <tr:iterator value="#{msg.rule.howToFixTips}" var="tip"
-                                                     rendered="#{msg.rule.howToFixTips != null and not empty(msg.rule.howToFixTips)}">
+                                                     rendered="#{msg.rule.howToFixTips != null and not empty msg.rule.howToFixTips}">
                                             <tr:outputText value="#{tip}"/>
                                         </tr:iterator>
                                     </tr:panelList>

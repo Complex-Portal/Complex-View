@@ -29,7 +29,7 @@ import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
  */
 public class BinarySearchServiceClientTest {
 
-    private static final String LOCAHOST_URL = "http://localhost:24521/ws/binarysearch?wsdl";
+    private static final String LOCAHOST_URL = "http://www.ebi.ac.uk/intact/binary-search-ws/binarysearch?wsdl";
 
     private BinarySearchServiceClient client;
 
