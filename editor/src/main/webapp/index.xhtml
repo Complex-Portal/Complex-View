@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/template.xhtml">
+
+    <ui:define name="content">
+
+        <f:metadata>
+        <f:viewParam name="name" value="#{editorConfig.test}"/>
+        </f:metadata>
+
+        <h1>
+        WELCOME TO THE EDITOR!
+        </h1>
+
+        <h:outputText value="Hello #{editorConfig.test}" rendered="#{not empty editorConfig.test}"/>
+
+    </ui:define>
+
+</ui:composition>
