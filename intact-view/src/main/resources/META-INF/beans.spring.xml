@@ -28,6 +28,7 @@
         <property name="newsUrl" value="${intact.news.url}"/>
         <property name="dotmUrl" value="${intact.dotm.url}"/>
         <property name="ftpUrl" value="${intact.ftp.url}"/>
+        <property name="faqUrl" value="${intact.faq.url}"/>
         <property name="maxNewsInBox" value="${intact.news.maxinbox}"/>
         <property name="configFile" value="${intact.configfile}"/>
         <property name="graphMaxInteractionCount" value="${intact.graph.maxInteractionCount}"/>

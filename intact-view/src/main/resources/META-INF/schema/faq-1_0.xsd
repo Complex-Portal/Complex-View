@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://uk.ac.ebi/faces/faqs">
+  <xs:element name="faq">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="topic">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="topic_information">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="description" type="xs:string" />
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="item">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="question" type="xs:string" />
+                    <xs:element name="answer" >
+                      	<xs:complexType>
+                    		<xs:simpleContent>
+                        		<xs:extension base="xs:string">
+                            		<xs:attribute name="escape" type="xs:boolean" use="optional" default="true"/>
+                        		</xs:extension>
+                    		</xs:simpleContent>
+                		</xs:complexType>
+                    </xs:element>
+                  </xs:all>
+                  <xs:attribute name="id" type="xs:ID" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

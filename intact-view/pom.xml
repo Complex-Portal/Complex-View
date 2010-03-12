@@ -43,6 +43,7 @@
         <intact.news.url>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</intact.news.url>
         <intact.dotm.url>http://www.ebi.ac.uk/~intact/site/dotm/dotm-1.1.xml</intact.dotm.url>
         <intact.ftp.url>ftp://ftp.ebi.ac.uk/pub/databases/intact/current</intact.ftp.url>
+        <intact.faq.url>http://www.ebi.ac.uk/~epfeif/faq_sample.xml</intact.faq.url>
 
         <intact.webapp.name>IntAct</intact.webapp.name>
         <intact.webapp.logo.url>http://www.ebi.ac.uk/intact/site/images/logo_intact_small.gif</intact.webapp.logo.url>
@@ -123,6 +124,7 @@
                     <schemaIncludes>
 		        <include>dotm*.xsd</include>
                         <include>news*.xsd</include>
+                        <include>faq*.xsd</include>
                     </schemaIncludes>
                     <bindingDirectory>src/main/resources/META-INF/schema</bindingDirectory>
                     <generatePackage>uk.ac.ebi.intact.view.webapp.controller.news.items</generatePackage>
@@ -136,6 +138,16 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-eclipse-plugin</artifactId>
+		<version>2.4</version>
+		<configuration>
+		    <downloadSources>false</downloadSources>
+		    <wtpversion>1.5</wtpversion>
+		</configuration>
+	    </plugin>
+	    
         </plugins>
 
     </build>

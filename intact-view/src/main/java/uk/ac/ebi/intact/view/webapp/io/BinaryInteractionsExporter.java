@@ -50,7 +50,7 @@ import java.util.Collection;
 public class BinaryInteractionsExporter {
 
     private static final Log log = LogFactory.getLog( BinaryInteractionsExporter.class );
-
+    
     private SolrServer solrServer;
     public static final String XML_2_53 = "xml_2_53";
     private static final String XML_2_54 = "xml_2_54";
@@ -74,6 +74,7 @@ public class BinaryInteractionsExporter {
         } else {
             throw new IntactViewException( "Format is not correct: " + format + ". Possible values: mitab, mitab_intact." );
         }
+       
     }
     
     public void exportToMiTab(OutputStream os, SolrQuery searchQuery) throws IOException {

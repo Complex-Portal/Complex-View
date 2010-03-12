@@ -48,6 +48,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String INTACT_NEWS_URL = "intact.news.url";
     private static final String INTACT_DOTM_URL = "intact.dotm.url";
     private static final String INTACT_FTP_URL = "intact.ftp.url";
+    private static final String INTACT_FAQ_URL = "intact.faq.url";
     private static final String INTACT_NEWS_MAXINBOX = "intact.news.maxinbox";
     private static final String INTACT_WARNING_MSG = "intact.warning.msg";
     private static final String INTACT_CONFIGFILE = "intact.configfile";
@@ -79,6 +80,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private String newsUrl;
     private String dotmUrl;
     private String ftpUrl;
+    private String faqUrl;
     private int maxNewsInBox;
     private String warningMessage;
     private String configFile;
@@ -145,6 +147,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         newsUrl = properties.getProperty(INTACT_NEWS_URL, newsUrl);
         dotmUrl = properties.getProperty(INTACT_DOTM_URL, dotmUrl);
         ftpUrl = properties.getProperty(INTACT_FTP_URL, ftpUrl);
+        faqUrl = properties.getProperty(INTACT_FAQ_URL, faqUrl);
         maxNewsInBox = Integer.parseInt(properties.getProperty(INTACT_NEWS_MAXINBOX, String.valueOf(maxNewsInBox)));
         warningMessage = properties.getProperty(INTACT_WARNING_MSG, warningMessage);
         configFile = properties.getProperty(INTACT_CONFIGFILE, configFile);
@@ -180,6 +183,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, INTACT_NEWS_URL, newsUrl);
         addProperty(properties, INTACT_DOTM_URL, dotmUrl);
         addProperty(properties, INTACT_FTP_URL, ftpUrl);
+        addProperty(properties, INTACT_FAQ_URL, faqUrl);
         addProperty(properties, INTACT_NEWS_MAXINBOX, String.valueOf(maxNewsInBox));
         addProperty(properties, INTACT_WARNING_MSG, warningMessage);
         addProperty(properties, INTACT_CONFIGFILE, configFile);
@@ -260,6 +264,14 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     public void setFtpUrl( String ftpUrl ) {
         this.ftpUrl = ftpUrl;
+    }
+    
+    public String getFaqUrl() {
+        return faqUrl;
+    }
+
+    public void setFaqUrl( String faqUrl ) {
+        this.faqUrl = faqUrl;
     }
 
     public int getMaxNewsInBox() {

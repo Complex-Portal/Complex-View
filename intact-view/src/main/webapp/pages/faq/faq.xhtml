@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:sf="http://www.ebi.ac.uk/faces/site"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:tr="http://myfaces.apache.org/trinidad"
+	template="/WEB-INF/facelets/layout/template.xhtml">
+
+
+	<!-- Mandatorty params -->
+	<ui:param name="sectionTitle" value="FAQ - Frequently Asked Questions" />
+
+
+
+	<ui:define name="content">
+
+
+		<tr:panelHeader text="FAQ - Frequently Asked Questions" />
+
+
+
+		<c:forEach var="topic" items="#{faqBean.topics}">
+			<h2>#{topic.topicInformation.name}
+			- <i><font color="#808080">#{topic.topicInformation.description}</font></i></h2>
+
+			<ul type="square">
+				<c:forEach var="item" items="#{topic.items}">
+
+					<a href="##{item.id}">
+					<li>#{item.question}</li>
+					</a>
+
+				</c:forEach>
+			</ul>
+
+		</c:forEach>
+
+		<hr />
+		<br/><br/>
+		<c:forEach var="topic" items="#{faqBean.topics}">
+
+			<h2>#{topic.topicInformation.name} - <i><font color="#808080">#{topic.topicInformation.description}</font></i></h2>
+
+			<c:forEach var="item" items="#{topic.items}">
+				<div id="#{item.id}">
+					<h3>#{item.question}</h3>
+					<br />
+					<h:outputText value="#{item.answer.value}"
+                                      escape="#{item.answer.escape}"/>
+					
+				</div> <br/> 
+			</c:forEach>
+
+
+		</c:forEach>
+
+
+
+
+	</ui:define>
+
+</ui:composition>
