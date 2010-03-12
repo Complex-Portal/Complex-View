@@ -17,31 +17,37 @@ package uk.ac.ebi.intact.editor.security;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.stereotype.Component;
+import uk.ac.ebi.intact.editor.controller.EditorUserContext;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Component
 public class EditorAuthenticationProvider implements AuthenticationProvider {
 
     private static final Log log = LogFactory.getLog( EditorAuthenticationProvider.class );
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if (log.isDebugEnabled()) {
             log.debug("Authenticating user: "+authentication.getPrincipal());
         }
 
-        // TODO authentication
+        EditorUserContext editorUserContext = (EditorUserContext) applicationContext.getBean("editorUserContext");
 
         if (log.isInfoEnabled()) log.info("Authentication successful for user: "+authentication.getPrincipal());
+
+        editorUserContext.setCurrentUser(authentication.getPrincipal().toString());
 
         GrantedAuthority curatorAuthority = new GrantedAuthorityImpl("ROLE_CURATOR");
         GrantedAuthority adminAuthority = new GrantedAuthorityImpl("ROLE_ADMIN");

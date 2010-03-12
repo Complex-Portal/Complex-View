@@ -24,8 +24,18 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 @Scope("session")
-public class UserContext extends BaseController {
+public class EditorUserContext extends BaseController {
 
-    private String name;
+    private String currentUser;
 
+    public EditorUserContext() {
+    }
+
+    public String getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(String currentUser) {
+        this.currentUser = currentUser;
+    }
 }
