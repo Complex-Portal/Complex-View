@@ -5,10 +5,18 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
 
-                template="/main_template.xhtml">
+                template="/curate/curate_template.xhtml">
 
-    <ui:define name="top">
-        Dashboard
+    <ui:define name="topNavigation">
+        <ui:include src="/shared/top_navigation_bar.xhtml">
+            <ui:param name="selected" value="curate"/>
+        </ui:include>
     </ui:define>
-    
+
+    <ui:define name="content">
+       Nothing to curate!
+
+    </ui:define>
+
+
 </ui:composition>
