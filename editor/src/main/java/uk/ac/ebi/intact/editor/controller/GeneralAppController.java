@@ -13,33 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.config;
+package uk.ac.ebi.intact.editor.controller;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class EditorConfig {
+@Controller
+@Scope("singleton")
+public class GeneralAppController {
 
-    private String instanceName;
-    private String logoUrl;
+    private String database;
 
-    public EditorConfig() {
+    public GeneralAppController() {
     }
 
-    public String getInstanceName() {
-        return instanceName;
+    public String getDatabase() {
+        return database;
     }
 
-    public void setInstanceName(String instanceName) {
-        this.instanceName = instanceName;
-    }
-
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
+    public void setDatabase(String database) {
+        this.database = database;
     }
 }

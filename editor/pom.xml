@@ -31,7 +31,11 @@
         <db.jndi>jdbc/IntactEditorDS</db.jndi>
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
 
-         <db.hbm2ddl>none</db.hbm2ddl>
+        <db.hbm2ddl>none</db.hbm2ddl>
+
+        <!-- other property defaults -->
+        <webapp.logo.url>http://www.ebi.ac.uk/intact/images/intact-logo.gif</webapp.logo.url>
+        <intact.instance.name>Not Set</intact.instance.name>
 
     </properties>
 
@@ -139,14 +143,14 @@
 
            <!-- JSF -->
         <dependency>
-            <groupId>com.sun.faces</groupId>
+            <groupId>javax.faces</groupId>
             <artifactId>jsf-api</artifactId>
-            <version>2.0.2</version>
+            <version>2.0.2-FCS</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.faces</groupId>
+            <groupId>javax.faces</groupId>
             <artifactId>jsf-impl</artifactId>
-            <version>2.0.2</version>
+            <version>2.0.2-FCS</version>
         </dependency>
         <dependency>
             <groupId>javax.el</groupId>
@@ -180,10 +184,18 @@
             <version>1.1.1</version>
         </dependency>
 
+        <!-- Primefaces -->
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>2.0.0.RC</version>
+            <version>2.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Atmosphere (Comet) -->
+        <dependency>
+            <groupId>org.atmosphere</groupId>
+            <artifactId>atmosphere-runtime</artifactId>
+            <version>0.5</version>
         </dependency>
 
         <dependency>
@@ -259,18 +271,6 @@
             </snapshots>
         </repository>
 
-        <!-- for jaxb-impl -->
-        <repository>
-            <id>java.net</id>
-            <url>http://download.java.net/maven/1/</url>
-            <layout>legacy</layout>
-        </repository>
-
-        <repository>
-            <id>apache-incubating</id>
-            <url>http://people.apache.org/repo/m2-incubating-repository</url>
-        </repository>
-
         <repository>
             <id>apache.snapshots</id>
             <name>Apache Snapshots Repository</name>
@@ -293,6 +293,20 @@
             <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/external</url>
         </repository>
+
+        <!-- Primefaces -->
+        <repository>
+            <id>prime-repo</id>
+            <name>Prime Technology Maven Repository</name>
+            <url>http://repository.prime.com.tr/</url>
+            <layout>default</layout>
+        </repository>
+
+        <repository>
+            <id>lua</id>
+            <url>http://people.apache.org/~lu4242/myfaces200beta</url>
+        </repository>
+
     </repositories>
 
     <pluginRepositories>

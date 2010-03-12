@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/template.xhtml">
+
+    <ui:define name="top">
+        TOP
+    </ui:define>
+
+    <ui:define name="menubar">
+        <p:menubar autoSubmenuDisplay="true">
+            <p:submenu label="Publication">
+                <p:submenu label="New    >"/>
+                <p:submenu label="Open by PMID"/>
+                <p:submenu label="Open Recent"/>
+            </p:submenu>
+            <p:submenu label="Experiment"/>
+            <p:submenu label="Interaction"/>
+            <p:submenu label="..."/>
+        </p:menubar>
+    </ui:define>
+    
+    <ui:define name="content">
+        <h1>
+        Curate
+        </h1>
+
+        <h:outputText value="Hello #{editorConfig.test}" rendered="#{not empty editorConfig.test}"/>
+
+    </ui:define>
+
+</ui:composition>
