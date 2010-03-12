@@ -1,0 +1,23 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+             http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
+
+    <http session-fixation-protection="newSession">
+        <intercept-url pattern="/login.jsf" filters="none"/>
+        <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
+        <intercept-url pattern="/**" access="ROLE_CURATOR"/>
+
+        <form-login login-page="/login.jsf" default-target-url="/dashboard/dashboard.jsf" authentication-failure-url="/"/>
+        <logout logout-url="/logout" invalidate-session="true"/>
+
+        <concurrent-session-control max-sessions="1" />
+    </http>
+
+    <beans:bean class="uk.ac.ebi.intact.editor.security.EditorAuthenticationProvider">
+        <custom-authentication-provider/>
+    </beans:bean>
+
+
+</beans:beans>
