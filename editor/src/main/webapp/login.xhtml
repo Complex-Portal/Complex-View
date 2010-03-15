@@ -51,7 +51,7 @@
                         <h:graphicImage url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>
                     </div>
 
-                    <p:growl showDetail="true"/>
+                    <p:growl showDetail="false"/>
 
                     <p:panel header="Authentication">
 
@@ -59,13 +59,13 @@
                         <h:outputText value="Username:"/>
                     </label>
                     <br/>
-                    <h:inputText id="j_username" required="true"/>
+                    <h:inputText id="j_username" required="true" requiredMessage="User name is required"/>
 
                     <br/>
                     <br/>
                     <label for="j_password"><h:outputText value="Password:"/></label>
                      <br/>
-                    <h:inputSecret id="j_password" required="true"/>
+                    <h:inputSecret id="j_password" required="true" requiredMessage="Password is required"/>
 
                     <br/>
                     <br/>
