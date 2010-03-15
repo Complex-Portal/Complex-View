@@ -25,12 +25,9 @@
                 height: 150px;
                 margin-left: -250px;
                 position: absolute;
-                top: -150px; 
+                top: -200px; 
                 left: 50%;
 
-                border: 1px solid gray;
-                background-color: #dedede;
-                padding: 40px;
                 font-family: sans-serif;
             }
         </style>
@@ -47,8 +44,14 @@
             <div id="outer">
 
 
-
                 <div id="inner">
+
+                    <div style="text-align:center; padding-bottom: 10px">
+                        <h:graphicImage url="#{editorConfig.logoUrl}"/>
+                    </div>
+
+                    <div style="border: 1px solid gray; background-color: #dedede; padding: 40px;">
+
                     <label for="j_username">
                         <h:outputText value="Username:"/>
                     </label>
@@ -76,6 +79,7 @@
                             action="#{loginBean.doLogin}"
                             value="Login"/>
                 </div>
+                    </div>
             </div>
 
         </h:form>
