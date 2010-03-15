@@ -10,13 +10,17 @@
 <h:head>
 </h:head>
 <h:body>
-    #{dashboardController.lala}
 
-   <h:dataTable var="test" value="#{dashboardController.lala} ">
-            <h:column>
-                 <h:outputText value="#{test} "/>
-            </h:column>
-        </h:dataTable>
+    <p:dataTable var="t" value="#{dashboardController.lala}">
+        <p:column>
+            <f:facet name="Name">
+                Name
+            </f:facet>
+            <h:outputText value="#{t}"/>
+        </p:column>
+    </p:dataTable>
+
+    <br/>
 </h:body>
 
 </f:view>

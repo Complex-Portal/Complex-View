@@ -49,6 +49,7 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T>{
 
     @Override
     public List<T> fetchLazyData(int firstResult, int maxResults) {
+        System.out.println("FETCH DATA!");
         if (!counted) {
             final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 

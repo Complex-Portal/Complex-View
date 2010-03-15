@@ -21,37 +21,35 @@
 
         <p>Hello #{userSessionController.currentUser}</p>
 
-        <p:dataTable var="publication" value="#{dashboardController.allPublications} ">
-            <!--<p:column>-->
-                <!--<f:facet name="header">-->
-                    <!--Shortlabel-->
-                <!--</f:facet>-->
-                <!--<h:outputText value="#{publication.shortLabel} "/>-->
-            <!--</p:column>-->
-
-            <!--<p:column>-->
-                <!--<f:facet name="header">-->
-                    <!--Full name-->
-                <!--</f:facet>-->
-                <!--<h:outputText value="#{publication.fullName} "/>-->
-            <!--</p:column>-->
-
-            <!--<p:column>-->
-                <!--<f:facet name="header">-->
-                    <!--Updated-->
-                <!--</f:facet>-->
-                <!--<h:outputText value="#{publication.updated} "/>-->
-            <!--</p:column>-->
+        <p:dataTable var="publication" value="#{dashboardController.allPublications}"
+                paginator="true" rows="10">
             <p:column>
-                <h:outputText value="#{publication} "/>
+                <f:facet name="header">
+                    Shortlabel
+                </f:facet>
+                <h:outputText value="#{publication.shortLabel} "/>
+            </p:column>
+
+            <p:column>
+                <f:facet name="header">
+                    Full name
+                </f:facet>
+                <h:outputText value="#{publication.fullName} "/>
+            </p:column>
+
+            <p:column>
+                <f:facet name="header">
+                    Updated
+                </f:facet>
+                <h:outputText value="#{publication.updated} "/>
             </p:column>
         </p:dataTable>
 
-        <h:dataTable var="lala" value="#{dashboardController.lala} ">
-            <h:column>
-                 <h:outputText value="#{lala} "/>
-            </h:column>
-        </h:dataTable>
+        <!--<p:dataTable var="lala" value="#{dashboardController.lala}">-->
+            <!--<p:column>-->
+                 <!--<h:outputText value="#{lala} "/>-->
+            <!--</p:column>-->
+        <!--</p:dataTable>-->
 
     </ui:define>
 
