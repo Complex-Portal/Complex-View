@@ -19,9 +19,39 @@
         </f:metadata>
 
 
-        <p>Hello #{editorUserContext.currentUser}</p>
+        <p>Hello #{userSessionController.currentUser}</p>
 
-       Nothing to see here yet!
+        <p:dataTable var="publication" value="#{dashboardController.allPublications} ">
+            <!--<p:column>-->
+                <!--<f:facet name="header">-->
+                    <!--Shortlabel-->
+                <!--</f:facet>-->
+                <!--<h:outputText value="#{publication.shortLabel} "/>-->
+            <!--</p:column>-->
+
+            <!--<p:column>-->
+                <!--<f:facet name="header">-->
+                    <!--Full name-->
+                <!--</f:facet>-->
+                <!--<h:outputText value="#{publication.fullName} "/>-->
+            <!--</p:column>-->
+
+            <!--<p:column>-->
+                <!--<f:facet name="header">-->
+                    <!--Updated-->
+                <!--</f:facet>-->
+                <!--<h:outputText value="#{publication.updated} "/>-->
+            <!--</p:column>-->
+            <p:column>
+                <h:outputText value="#{publication} "/>
+            </p:column>
+        </p:dataTable>
+
+        <h:dataTable var="lala" value="#{dashboardController.lala} ">
+            <h:column>
+                 <h:outputText value="#{lala} "/>
+            </h:column>
+        </h:dataTable>
 
     </ui:define>
 

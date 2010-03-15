@@ -10,20 +10,13 @@
 <h:head>
 </h:head>
 <h:body>
-    <p:menubar autoSubmenuDisplay="true">
-            <p:submenu label="Publication">
-                <p:submenu label="New    >"/>
-                <p:submenu label="Open by PMID"/>
-                <p:submenu label="Open Recent"/>
-            </p:submenu>
-            <p:submenu label="Experiment"/>
-            <p:submenu label="Interaction"/>
-            <p:submenu label="..."/>
-        </p:menubar>
+    #{dashboardController.lala}
 
-    <br/>
-    
-    <p:editor/>
+   <h:dataTable var="test" value="#{dashboardController.lala} ">
+            <h:column>
+                 <h:outputText value="#{test} "/>
+            </h:column>
+        </h:dataTable>
 </h:body>
 
 </f:view>

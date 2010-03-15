@@ -15,12 +15,18 @@
  */
 package uk.ac.ebi.intact.editor.controller.dashboard;
 
+import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.editor.util.HqlLazyDataModel;
+import uk.ac.ebi.intact.model.Publication;
 
 import javax.faces.event.ComponentSystemEvent;
-import javax.faces.model.DataModel;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -30,12 +36,24 @@ import javax.faces.model.DataModel;
 @Scope("session")
 public class DashboardController extends BaseController {
 
-    private DataModel publications;
+    private LazyDataModel<Publication> allPublications;
+
+    @PersistenceContext(name = "intact-core-default")
+    private EntityManager entityManager;
 
     public DashboardController() {
     }
 
     public void loadData(ComponentSystemEvent event) {
-        System.out.println("LOAD DATA!!!");
+        allPublications = new HqlLazyDataModel<Publication>(entityManager, "select count(p) from Publication",
+                                                                           "select p from Publication");
+    }
+
+    public LazyDataModel<Publication> getAllPublications() {
+        return allPublications;
+    }
+
+    public List<String> getLala() {
+        return Arrays.asList("a1", "a2", "a3");
     }
 }
