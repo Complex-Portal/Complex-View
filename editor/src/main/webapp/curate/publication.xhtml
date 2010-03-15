@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/curate/curate_template.xhtml">
+
+    <ui:define name="topNavigation">
+        <ui:include src="/shared/top_navigation_bar.xhtml">
+            <ui:param name="selected" value="curate"/>
+        </ui:include>
+    </ui:define>
+
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewParam name="ac" value="#{publicationController.ac}"/>
+            <f:event type="preRenderView" listener="#{publicationController.loadByAc}"/>
+        </f:metadata>
+
+        <h:panelGroup rendered="#{publicationController.publication == null}">
+            No publication loaded!
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{publicationController.publication != null}">
+
+           Publication: #{publicationController.publication.shortLabel} <br/>
+           Creator: #{publicationController.publication.creator}
+
+        </h:panelGroup>
+
+    </ui:define>
+
+
+</ui:composition>

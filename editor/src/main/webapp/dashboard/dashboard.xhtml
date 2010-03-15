@@ -21,13 +21,17 @@
 
         <p>Hello #{userSessionController.currentUser}</p>
 
+        <h3>All the publications (#{dashboardController.allPublications.rowCount})</h3>
+
         <p:dataTable var="publication" value="#{dashboardController.allPublications}"
                 paginator="true" rows="10" dynamic="true" lazy="true">
             <p:column>
                 <f:facet name="header">
-                    Shortlabel
+                    Publication ID
                 </f:facet>
-                <h:outputText value="#{publication.shortLabel}"/>
+                <h:link outcome="/curate/publication" value="#{publication.shortLabel}">
+                    <f:param name="ac" value="#{publication.ac}"/>
+                </h:link>
             </p:column>
             <p:column>
                 <f:facet name="header">

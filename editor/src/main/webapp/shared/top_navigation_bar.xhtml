@@ -9,7 +9,8 @@
     &#160;|&#160;
     <h:commandLink value="Search" action="/search/search" disabled="#{selected == 'search'}"/>
     &#160;|&#160;
-    <h:commandLink value="Curate" action="/curate/curate" disabled="#{selected == 'curate'}"/>
+    <h:link value="Curate" outcome="/curate/publication" includeViewParams="true"
+            disabled="#{selected == 'curate'}"/>
 
 
 </ui:composition>
