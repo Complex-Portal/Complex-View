@@ -41,26 +41,30 @@
                 id="loginForm"
                 prependId="false">
 
-            <div id="outer">
 
+
+            <div id="outer">
 
                 <div id="inner">
 
                     <div style="text-align:center; padding-bottom: 10px">
-                        <h:graphicImage url="#{editorConfig.logoUrl}"/>
+                        <h:graphicImage url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>
                     </div>
 
-                    <div style="border: 1px solid gray; background-color: #dedede; padding: 40px;">
+                    <p:growl showDetail="true"/>
+
+                    <p:panel header="Authentication">
 
                     <label for="j_username">
                         <h:outputText value="Username:"/>
                     </label>
+                    <br/>
                     <h:inputText id="j_username" required="true"/>
 
                     <br/>
                     <br/>
                     <label for="j_password"><h:outputText value="Password:"/></label>
-
+                     <br/>
                     <h:inputSecret id="j_password" required="true"/>
 
                     <br/>
@@ -78,7 +82,7 @@
                             id="login"
                             action="#{loginBean.doLogin}"
                             value="Login"/>
-                </div>
+                </p:panel>
                     </div>
             </div>
 

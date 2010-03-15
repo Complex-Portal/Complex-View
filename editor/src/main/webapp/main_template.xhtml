@@ -26,7 +26,7 @@
             <table>
                 <tr style="vertical-align:top">
                     <td style="width:1%">
-                    <h:graphicImage url="#{editorConfig.logoUrl}"/>
+                    <h:graphicImage url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>
                 </td>
                     <td>
                         <ui:insert name="top"/>
