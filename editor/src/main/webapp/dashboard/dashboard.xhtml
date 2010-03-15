@@ -14,6 +14,11 @@
     </ui:define>
 
     <ui:define name="content">
+        <f:metadata>
+          <f:event type="preRenderView" listener="#{dashboardController.loadData}"/>
+        </f:metadata>
+
+
         <p>Hello #{editorUserContext.currentUser}</p>
 
        Nothing to see here yet!

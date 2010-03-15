@@ -43,7 +43,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
             log.debug("Authenticating user: "+authentication.getPrincipal());
         }
 
-        UserSessionController userSessionController = (UserSessionController) applicationContext.getBean("editorUserContext");
+        UserSessionController userSessionController = (UserSessionController) applicationContext.getBean("userSessionController");
 
         if (log.isInfoEnabled()) log.info("Authentication successful for user: "+authentication.getPrincipal());
 

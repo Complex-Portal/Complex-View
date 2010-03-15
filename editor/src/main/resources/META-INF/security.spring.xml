@@ -6,6 +6,7 @@
 
     <http session-fixation-protection="migrateSession">
         <intercept-url pattern="/login.jsf" filters="none"/>
+        <intercept-url pattern="/primefaces_resource/**" filters="none" />
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
         <intercept-url pattern="/**" access="ROLE_CURATOR"/>
 
