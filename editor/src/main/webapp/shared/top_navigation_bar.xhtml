@@ -5,9 +5,9 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui">
 
-    <h:commandLink value="Dashboard" action="/dashboard/dashboard" disabled="#{selected == 'dashboard'}"/>
+    <h:link value="Dashboard" outcome="/dashboard/dashboard" disabled="#{selected == 'dashboard'}"/>
     &#160;|&#160;
-    <h:commandLink value="Search" action="/search/search" disabled="#{selected == 'search'}"/>
+    <h:link value="Search" outcome="/search/search" disabled="#{selected == 'search'}"/>
     &#160;|&#160;
     <h:link value="Curate" outcome="/curate/publication" includeViewParams="true"
             disabled="#{selected == 'curate'}"/>

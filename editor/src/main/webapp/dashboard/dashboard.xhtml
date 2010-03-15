@@ -4,6 +4,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
 
                 template="/dashboard/dashboard_template.xhtml">
 
@@ -29,9 +30,11 @@
                 <f:facet name="header">
                     Publication ID
                 </f:facet>
-                <h:link outcome="/curate/publication" value="#{publication.shortLabel}">
-                    <f:param name="ac" value="#{publication.ac}"/>
-                </h:link>
+                <ot:separateConversationContext>
+                    <h:link outcome="/curate/publication" value="#{publication.shortLabel}" includeViewParams="true">
+                        <f:param name="ac" value="#{publication.ac}"/>
+                    </h:link>
+                </ot:separateConversationContext>
             </p:column>
             <p:column>
                 <f:facet name="header">

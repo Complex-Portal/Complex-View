@@ -7,13 +7,8 @@
 
                 template="/curate/curate_template.xhtml">
 
-    <ui:define name="topNavigation">
-        <ui:include src="/shared/top_navigation_bar.xhtml">
-            <ui:param name="selected" value="curate"/>
-        </ui:include>
-    </ui:define>
 
-    <ui:define name="content">
+    <ui:define name="curateContent">
         <f:metadata>
             <f:viewParam name="ac" value="#{publicationController.ac}"/>
             <f:event type="preRenderView" listener="#{publicationController.loadByAc}"/>
@@ -26,7 +21,8 @@
         <h:panelGroup rendered="#{publicationController.publication != null}">
 
            Publication: #{publicationController.publication.shortLabel} <br/>
-           Creator: #{publicationController.publication.creator}
+           Creator: #{publicationController.publication.creator}<br/>
+           AC: #{publicationController.ac}
 
         </h:panelGroup>
 

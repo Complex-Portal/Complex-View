@@ -7,29 +7,38 @@
 
                 template="/main_template.xhtml">
 
+    <ui:define name="topNavigation">
+        <ui:include src="/shared/top_navigation_bar.xhtml">
+            <ui:param name="selected" value="curate"/>
+        </ui:include>
+    </ui:define>
+
     <ui:define name="top">
-        TOP
+        <h:outputText value="#{publicationController.publication.shortLabel}"
+                      rendered="#{publicationController.publication != null}"/>
     </ui:define>
 
-    <ui:define name="menubar">
-        <p:menubar autoSubmenuDisplay="true">
-            <p:submenu label="Publication">
-                <p:submenu label="New    >"/>
-                <p:submenu label="Open by PMID"/>
-                <p:submenu label="Open Recent"/>
-            </p:submenu>
-            <p:submenu label="Experiment"/>
-            <p:submenu label="Interaction"/>
-            <p:submenu label="..."/>
-        </p:menubar>
-    </ui:define>
-    
     <ui:define name="content">
-        <h1>
-        Curate
-        </h1>
+        <div id="menuSection" style="width:98%; position:fixed; margin-top: -10px; margin-left:-10px">
+            <ui:insert name="menubar">
 
-        <h:outputText value="Hello #{editorConfig.test}" rendered="#{not empty editorConfig.test}"/>
+                <p:menubar autoSubmenuDisplay="true">
+                    <p:submenu label="Publication">
+                        <p:submenu label="New    >"/>
+                        <p:submenu label="Open by PMID"/>
+                        <p:submenu label="Open Recent"/>
+                    </p:submenu>
+                    <p:submenu label="Experiments" rendered="#{publicationController.publication != null}"/>
+                    <p:submenu label="Interactions" rendered="#{publicationController.publication != null}"/>
+                    <p:submenu label="..."/>
+                </p:menubar>
+
+            </ui:insert>
+        </div>
+
+        <div style="width:100%; padding-top:30px">
+            <ui:insert name="curateContent"/>
+        </div>
 
     </ui:define>
 

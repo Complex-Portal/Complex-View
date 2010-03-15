@@ -1,56 +1,62 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.prime.com.tr/ui">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.prime.com.tr/ui">
 
 <f:view contentType="text/html">
 
-<h:head>
-    <title>Editor: #{generalAppController.database}</title>
-</h:head>
+    <h:head>
+        <title>Editor: #{generalAppController.database}</title>
+    </h:head>
 
-<h:body bgcolor="white">
-    <h:form id="editorForm">
+    <h:body bgcolor="white">
+        <h:form id="editorForm">
 
-        <p:growl showDetail="true" />
+            <p:growl showDetail="true"/>
 
-        <div id="topNavigation">
-            <ui:insert name="topNavigation">
-                <ui:include src="/shared/top_navigation_bar.xhtml"/>
-            </ui:insert>
-        </div>
+            <p:layout fullPage="true">
 
-        <div id="topSection" style="width:100%;">
-            <table>
-                <tr style="vertical-align:top">
-                    <td style="width:1%">
-                    <h:graphicImage url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>
-                </td>
-                    <td>
-                        <ui:insert name="top"/>
-                    </td>
-                </tr>
-            </table>
-        </div>
+                <p:layoutUnit position="north" resizable="false" minSize="100" maxSize="100">
+                    <div id="topNavigation">
+                        <ui:insert name="topNavigation">
+                            <ui:include src="/shared/top_navigation_bar.xhtml"/>
+                        </ui:insert>
+                    </div>
 
-       <div id="menuSection" style="width:100%">
-            <ui:insert name="menubar">
-                <hr/>
-            </ui:insert>
-        </div>
+                    <div id="topSection" style="width:100%;">
+                        <table>
+                            <tr style="vertical-align:top">
+                                <td style="width:1%">
+                                    <h:graphicImage url="#{editorConfig.logoUrl}"
+                                                    rendered="#{editorConfig.logoUrl != null}"/>
+                                </td>
+                                <td>
+                                    <ui:insert name="top"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
 
-        <div id="contentSection" style="width:100%">
-            <ui:insert name="content"/>
-        </div>
 
-        <div id="footerSection" style="width:100%">
-            <ui:insert name="footer"/>
-        </div>
+                </p:layoutUnit>
 
-    </h:form>
-</h:body>
+                <p:layoutUnit position="center">
+                    <div id="contentSection" style="width:100%">
+                        <ui:insert name="content"/>
+                    </div>
+
+                    <div id="footerSection" style="width:100%">
+                        <ui:insert name="footer"/>
+                    </div>
+                </p:layoutUnit>
+
+            </p:layout>
+
+
+        </h:form>
+    </h:body>
 
 </f:view>
 </html>

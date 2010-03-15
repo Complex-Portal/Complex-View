@@ -40,11 +40,12 @@ public class PublicationController extends BaseController {
     }
 
     public void loadByAc(ComponentSystemEvent event) {
-        System.out.println("AC: "+ac+" | Pub: "+publication);
         if (ac != null) {
             if (publication == null || !ac.equals(publication.getAc())) {
                 publication = IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao().getByAc(ac);
             }
+        } else {
+            ac = publication.getAc();
         }
     }
 
