@@ -11,14 +11,29 @@
 </h:head>
 <h:body>
 
-    <p:dataTable var="t" value="#{dashboardController.lala}">
-        <p:column>
-            <f:facet name="Name">
-                Name
-            </f:facet>
-            <h:outputText value="#{t}"/>
-        </p:column>
-    </p:dataTable>
+   <p:dataTable var="publication" value="#{dashboardController.allPublications}"
+                paginator="true" rows="10">
+            <p:column>
+                <f:facet name="header">
+                    Shortlabel
+                </f:facet>
+                <h:outputText value="#{publication.shortLabel} "/>
+            </p:column>
+
+            <p:column>
+                <f:facet name="header">
+                    Full name
+                </f:facet>
+                <h:outputText value="#{publication.fullName} "/>
+            </p:column>
+
+            <p:column>
+                <f:facet name="header">
+                    Updated
+                </f:facet>
+                <h:outputText value="#{publication.updated} "/>
+            </p:column>
+        </p:dataTable>
 
     <br/>
 </h:body>

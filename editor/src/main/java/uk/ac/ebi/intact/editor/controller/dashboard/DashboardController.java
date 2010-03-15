@@ -19,14 +19,12 @@ import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.BaseController;
-import uk.ac.ebi.intact.editor.util.HqlLazyDataModel;
+import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.Publication;
 
 import javax.faces.event.ComponentSystemEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -45,15 +43,11 @@ public class DashboardController extends BaseController {
     }
 
     public void loadData(ComponentSystemEvent event) {
-        allPublications = new HqlLazyDataModel<Publication>(entityManager, "select count(p) from Publication",
-                                                                           "select p from Publication");
+        allPublications = LazyDataModelFactory.createLazyDataModel(entityManager, "select p from Publication p order by p.updated desc",
+                                                                                  "select count(p) from Publication p");
     }
 
     public LazyDataModel<Publication> getAllPublications() {
         return allPublications;
-    }
-
-    public List<String> getLala() {
-        return Arrays.asList("a1", "a2", "a3");
     }
 }

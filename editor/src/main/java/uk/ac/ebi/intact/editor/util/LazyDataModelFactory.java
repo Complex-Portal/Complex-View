@@ -21,35 +21,30 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class HqlLazyDataModel<T> extends LazyDataModel<T>{
+public class LazyDataModelFactory {
 
-    private EntityManager entityManager;
-    private String hqlQuery;
+    private LazyDataModelFactory() {
 
-    public HqlLazyDataModel(EntityManager entityManager, String hqlQuery, int totalNumRows) {
-        super(totalNumRows);
-        this.entityManager = entityManager;
-        this.hqlQuery = hqlQuery;
     }
 
-    @Override
-    public List<T> fetchLazyData(int firstResult, int maxResults) {
+    public static LazyDataModel createLazyDataModel(EntityManager entityManager, String query, String countQuery) {
         final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
-        Query query = entityManager.createQuery(hqlQuery);
-        query.setFirstResult(firstResult);
-        query.setMaxResults(maxResults);
+            Query q = entityManager.createQuery(countQuery);
+            int totalNumRows = ((Long) q.getSingleResult()).intValue();
 
-        List<T> results = query.getResultList();
-        
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
-        return results;
+        return createLazyDataModel(entityManager, query, totalNumRows);
     }
+
+    public static LazyDataModel createLazyDataModel(EntityManager entityManager, String query, int totalNumRows) {
+        return new HqlLazyDataModel(entityManager, query, totalNumRows);
+    }
+
 }
