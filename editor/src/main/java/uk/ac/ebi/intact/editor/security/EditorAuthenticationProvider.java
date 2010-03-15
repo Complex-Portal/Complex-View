@@ -25,7 +25,7 @@ import org.springframework.security.GrantedAuthority;
 import org.springframework.security.GrantedAuthorityImpl;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import uk.ac.ebi.intact.editor.controller.EditorUserContext;
+import uk.ac.ebi.intact.editor.controller.UserSessionController;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -43,11 +43,11 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
             log.debug("Authenticating user: "+authentication.getPrincipal());
         }
 
-        EditorUserContext editorUserContext = (EditorUserContext) applicationContext.getBean("editorUserContext");
+        UserSessionController userSessionController = (UserSessionController) applicationContext.getBean("editorUserContext");
 
         if (log.isInfoEnabled()) log.info("Authentication successful for user: "+authentication.getPrincipal());
 
-        editorUserContext.setCurrentUser(authentication.getPrincipal().toString());
+        userSessionController.setCurrentUser(authentication.getPrincipal().toString());
 
         GrantedAuthority curatorAuthority = new GrantedAuthorityImpl("ROLE_CURATOR");
         GrantedAuthority adminAuthority = new GrantedAuthorityImpl("ROLE_ADMIN");

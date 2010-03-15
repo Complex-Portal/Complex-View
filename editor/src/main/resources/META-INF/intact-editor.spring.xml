@@ -23,4 +23,21 @@
         <aop:scoped-proxy/>
     </bean>
 
+    <!-- Spring scopes -->
+
+    <!-- JSF 2.0 view scope -->
+    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+        <property name="scopes">
+            <map>
+                <entry key="view">
+                    <bean class="uk.ac.ebi.intact.editor.util.ViewScope"/>
+                </entry>
+                <entry key="flash">
+                    <bean class="uk.ac.ebi.intact.editor.util.FlashScope"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+
 </beans>

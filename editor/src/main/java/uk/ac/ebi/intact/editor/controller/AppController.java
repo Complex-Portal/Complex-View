@@ -23,19 +23,19 @@ import org.springframework.stereotype.Controller;
  * @version $Id$
  */
 @Controller
-@Scope("session")
-public class EditorUserContext extends BaseController {
+@Scope("singleton")
+public class AppController {
 
-    private String currentUser;
+    private String database;
 
-    public EditorUserContext() {
+    public AppController() {
     }
 
-    public String getCurrentUser() {
-        return currentUser;
+    public String getDatabase() {
+        return database;
     }
 
-    public void setCurrentUser(String currentUser) {
-        this.currentUser = currentUser;
+    public void setDatabase(String database) {
+        this.database = database;
     }
 }

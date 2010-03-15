@@ -18,24 +18,27 @@ package uk.ac.ebi.intact.editor.controller;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import java.util.Date;
+
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
 @Controller
-@Scope("singleton")
-public class GeneralAppController {
+@Scope("conversation.access")
+public class MainController extends BaseController {
 
-    private String database;
+    private String test;
 
-    public GeneralAppController() {
+    public MainController() {
+        test = new Date().toString();
     }
 
-    public String getDatabase() {
-        return database;
+    public String getTest() {
+        return test;
     }
 
-    public void setDatabase(String database) {
-        this.database = database;
+    public void setTest(String test) {
+        this.test = test;
     }
 }
