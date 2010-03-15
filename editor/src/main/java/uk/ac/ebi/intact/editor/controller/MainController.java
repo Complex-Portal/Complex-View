@@ -15,10 +15,9 @@
  */
 package uk.ac.ebi.intact.editor.controller;
 
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-
-import java.util.Date;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -26,19 +25,9 @@ import java.util.Date;
  */
 @Controller
 @Scope("conversation.access")
+@ConversationName("general")
 public class MainController extends BaseController {
 
-    private String test;
-
     public MainController() {
-        test = new Date().toString();
-    }
-
-    public String getTest() {
-        return test;
-    }
-
-    public void setTest(String test) {
-        this.test = test;
     }
 }

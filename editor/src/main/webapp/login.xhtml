@@ -1,49 +1,88 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.prime.com.tr/ui">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.prime.com.tr/ui">
 
 <f:view contentType="text/html">
 
-<h:head>
-    <title>Editor: #{generalAppController.database}</title>
-</h:head>
+    <h:head>
+        <title>Editor: #{generalAppController.database}</title>
 
-<h:body bgcolor="white">
-		<h:form
-			id="loginForm"
-            prependId="false">
+        <style type="text/css">
+            #outer {
+                position: absolute;
+                top: 50%;
+                left: 0px;
+                width: 100%;
+                height: 1px;
+                overflow: visible;
+            }
 
-            <label for="j_username">
-                <h:outputText value="Username:" /><br />
-            </label>
-            <h:inputText id="j_username" required="true"/>
+            #inner {
+                width: 250px;
+                height: 150px;
+                margin-left: -250px;
+                position: absolute;
+                top: -150px; 
+                left: 50%;
 
-            <br />
-            <br />
-            <label for="j_password"><h:outputText value="Password:" /><br /></label>
+                border: 1px solid gray;
+                background-color: #dedede;
+                padding: 40px;
+                font-family: sans-serif;
+            }
+        </style>
 
-            <h:inputSecret id="j_password" required="true"/>
+    </h:head>
 
-            <br />
-            <br />
-            <label for="_spring_security_remember_me">
-                <h:outputText value="Remember me" />
-            </label>
-            <h:selectBooleanCheckbox id="_spring_security_remember_me" />
-            <br />
+    <h:body bgcolor="white" style="height:100%">
 
-            <h:commandButton
-                    type="submit"
-                    id="login"
-                    action="#{loginBean.doLogin}"
-				    value="Login" />
 
-		</h:form>
+        <h:form
+                id="loginForm"
+                prependId="false">
+
+            <div id="outer">
+
+
+
+                <div id="inner">
+                    <label for="j_username">
+                        <h:outputText value="Username:"/>
+                    </label>
+                    <h:inputText id="j_username" required="true"/>
+
+                    <br/>
+                    <br/>
+                    <label for="j_password"><h:outputText value="Password:"/></label>
+
+                    <h:inputSecret id="j_password" required="true"/>
+
+                    <br/>
+                    <br/>
+                    <label for="_spring_security_remember_me">
+                        <h:outputText value="Remember me"/>
+                    </label>
+                    <h:selectBooleanCheckbox id="_spring_security_remember_me"/>
+                    <br/>
+
+                    <hr/>
+
+                    <h:commandButton
+                            type="submit"
+                            id="login"
+                            action="#{loginBean.doLogin}"
+                            value="Login"/>
+                </div>
+            </div>
+
+        </h:form>
+
     </h:body>
 
-	</f:view>
-    
+
+</f:view>
+
 </html>
