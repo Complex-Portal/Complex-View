@@ -193,16 +193,41 @@
             <optional>true</optional>
         </dependency>
 
-           <!-- JSF -->
+           <!-- JSF (Mojarra) -->
+        <!--<dependency>-->
+            <!--<groupId>javax.faces</groupId>-->
+            <!--<artifactId>jsf-api</artifactId>-->
+            <!--<version>2.0.2-FCS</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>javax.faces</groupId>-->
+            <!--<artifactId>jsf-impl</artifactId>-->
+            <!--<version>2.0.2-FCS</version>-->
+        <!--</dependency>-->
+
+        <!-- JSF (Mojarra) LATEST -->
+        <!--<dependency>-->
+            <!--<groupId>com.sun.faces</groupId>-->
+            <!--<artifactId>jsf-api</artifactId>-->
+            <!--<version>2.0.3-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sun.faces</groupId>-->
+            <!--<artifactId>jsf-impl</artifactId>-->
+            <!--<version>2.0.3-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        
+
+        <!-- JSF (MyFaces) -->
         <dependency>
-            <groupId>javax.faces</groupId>
-            <artifactId>jsf-api</artifactId>
-            <version>2.0.2-FCS</version>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>javax.faces</groupId>
-            <artifactId>jsf-impl</artifactId>
-            <version>2.0.2-FCS</version>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-impl</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
 
         <!-- JSP 2.2 support (methods etc). May not be needed in recent J2EE 6 app containers -->
@@ -413,11 +438,13 @@
             <id>com.springsource.repository.bundles.release</id>
             <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/release</url>
+            <snapshots><enabled>false</enabled></snapshots>
         </repository>
         <repository>
             <id>com.springsource.repository.bundles.external</id>
             <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
             <url>http://repository.springsource.com/maven/bundles/external</url>
+            <snapshots><enabled>false</enabled></snapshots>
         </repository>
 
         <!-- Primefaces -->
@@ -431,6 +458,13 @@
         <repository>
             <id>lua</id>
             <url>http://people.apache.org/~lu4242/myfaces200beta</url>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+
+        <!-- Mojarra... -->
+        <repository>
+            <id>java.net 2</id>
+            <url>http://download.java.net/maven/2</url>
         </repository>
 
     </repositories>

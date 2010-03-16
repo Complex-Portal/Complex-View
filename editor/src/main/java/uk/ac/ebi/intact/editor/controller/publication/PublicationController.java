@@ -20,8 +20,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.Publication;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 
 /**
@@ -31,22 +33,44 @@ import javax.faces.event.ComponentSystemEvent;
 @Controller
 @Scope("conversation.access")
 @ConversationName("general")
-public class PublicationController extends BaseController {
+public class PublicationController extends JpaAwareController {
 
     private Publication publication;
     private String ac;
 
+    private String openQuery;
+
     public PublicationController() {
     }
 
-    public void loadByAc(ComponentSystemEvent event) {
+    public void loadData(ComponentSystemEvent event) {
+        loadByAc();
+    }
+
+    private void loadByAc() {
         if (ac != null) {
             if (publication == null || !ac.equals(publication.getAc())) {
-                publication = IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao().getByAc(ac);
+                publication = getDaoFactory().getPublicationDao().getByAc(ac);
             }
-        } else {
+        } else if (publication != null) {
             ac = publication.getAc();
         }
+    }
+
+    public void openByPmid(ActionEvent evt) {
+        if (openQuery == null || openQuery.trim().length() == 0) {
+            addErrorMessage("PMID is empty", "No PMID was supplied");
+        } else {
+            Publication publicationToOpen = getDaoFactory().getPublicationDao().getByPubmedId(openQuery);
+
+            if (publicationToOpen == null) {
+                addErrorMessage("PMID not found", "There is no publication with PMID '"+openQuery+"'");
+            } else {
+                publication = publicationToOpen;
+                ac = publication.getAc();
+            }
+        }
+
     }
 
     public String getAc() {
@@ -66,5 +90,13 @@ public class PublicationController extends BaseController {
 
     public void setPublication(Publication publication) {
         this.publication = publication;
+    }
+
+    public String getOpenQuery() {
+        return openQuery;
+    }
+
+    public void setOpenQuery(String openQuery) {
+        this.openQuery = openQuery;
     }
 }

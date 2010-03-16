@@ -5,6 +5,7 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
 
                 template="/curate/curate_template.xhtml">
 
@@ -32,35 +33,8 @@
            AC: #{experimentController.ac}
 
             <h3>Interactions (#{experimentController.countInteractionsByExperimentAc(experimentController.ac)})</h3>
-            <p:dataTable var="interaction" value="#{experimentController.interactionDataModel}"
-                paginator="true" rows="10" dynamic="true" lazy="true">
-                <p:column>
-                <f:facet name="header">
-                    AC
-                </f:facet>
-                    <h:link outcome="/curate/interaction" value="#{interaction.ac}" includeViewParams="true">
-                        <f:param name="ac" value="#{interaction.ac}"/>
-                    </h:link>
-            </p:column>
-                <p:column>
-                <f:facet name="header">
-                    Shorlabel
-                </f:facet>
-                    <h:outputText value="#{interaction.shortLabel}"/>
-            </p:column>
-            <p:column>
-                <f:facet name="header">
-                    Type
-                </f:facet>
-                <h:outputText value="#{interaction.cvInteractionType.shortLabel}"/>
-            </p:column>
-                <p:column>
-                <f:facet name="header">
-                    # Participants
-                </f:facet>
-                <h:outputText value="#{interactionController.countParticipantsByInteractionAc(interaction.ac)}"/>
-            </p:column>
-            </p:dataTable>
+
+            <ia:interactionsTable value="#{experimentController.interactionDataModel}"/>
 
         </h:panelGroup>
 

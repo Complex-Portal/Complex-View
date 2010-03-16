@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+  <composite:interface>
+    <composite:attribute name="value"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+         <p:dataTable var="participant" value="#{cc.attrs.value}"
+                paginator="true" rows="10" lazy="true" dynamic="true">
+                <p:column>
+                <f:facet name="header">
+                    AC
+                </f:facet>
+                <h:outputText value="#{participant.ac}"/>
+            </p:column>
+                <p:column>
+                <f:facet name="header">
+                    Shorlabel
+                </f:facet>
+                    <h:outputText value="#{participant.shortLabel}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    Type
+                </f:facet>
+                <h:outputText value="#{participant.interactor.cvInteractorType.shortLabel}"/>
+            </p:column>
+         </p:dataTable>
+
+    </composite:implementation>
+
+
+
+
+</ui:composition>

@@ -5,6 +5,7 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
 
                 template="/curate/curate_template.xhtml">
 
@@ -35,27 +36,7 @@
 
             <h3>Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})</h3>
 
-            <p:dataTable var="participant" value="#{interactionController.participantDataModel}"
-                paginator="true" rows="10" dynamic="true" lazy="true">
-                <p:column>
-                <f:facet name="header">
-                    AC
-                </f:facet>
-                <h:outputText value="#{participant.ac}"/>
-            </p:column>
-                <p:column>
-                <f:facet name="header">
-                    Shorlabel
-                </f:facet>
-                    <h:outputText value="#{participant.shortLabel}"/>
-            </p:column>
-            <p:column>
-                <f:facet name="header">
-                    Type
-                </f:facet>
-                <h:outputText value="#{participant.interactor.cvInteractorType.shortLabel}"/>
-            </p:column>
-            </p:dataTable>
+            <ia:participantsTable value="#{interactionController.participantDataModel}"/>
 
         </h:panelGroup>
 
