@@ -43,6 +43,19 @@
 
 
 
+                <h:panelGroup rendered="#{facesContext.application.projectStage == 'Development'}">
+                    <script type="text/javascript">
+                        function loginAsAdmin() {
+                            document.getElementById('j_username').value = 'ADMIN';
+                            document.getElementById('j_password').value = 'admin';
+                            document.getElementById('login').click();
+                        }
+                    </script>
+
+                    <h:commandButton value="Login as ADMIN" onclick="loginAsAdmin()"/>
+
+                </h:panelGroup>
+
             <div id="outer">
 
                 <div id="inner">

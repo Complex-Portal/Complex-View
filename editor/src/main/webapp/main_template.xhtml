@@ -52,6 +52,12 @@
                     </div>
                 </p:layoutUnit>
 
+                <p:layoutUnit position="south" rendered="#{facesContext.application.projectStage == 'Development'}"
+                              minSize="30" closable="false"
+                              style="background-color:#FFFACD">
+                     <b>DEVELOPMENT MODE</b>
+                </p:layoutUnit>
+
             </p:layout>
 
 
