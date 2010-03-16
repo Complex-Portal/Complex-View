@@ -10,10 +10,11 @@
         <param-value>server</param-value>
     </context-param>
 
-    <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Development</param-value>
-    </context-param>
+    <!-- The project stage is configured using JNDI -->
+    <!--<context-param>-->
+        <!--<param-name>javax.faces.PROJECT_STAGE</param-name>-->
+        <!--<param-value>Development</param-value>-->
+    <!--</context-param>-->
 
     <context-param>
         <param-name>com.sun.faces.resourceUpdateCheckPeriod</param-name>
