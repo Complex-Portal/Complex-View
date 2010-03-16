@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
+
+                template="/admin/admin_template.xhtml">
+
+    <ui:define name="adminContent">
+
+        <f:metadata>
+          <f:event type="preRenderView" listener="#{userAdminController.loadData}"/>
+        </f:metadata>
+
+        <h3>Users (#{userAdminController.allUsers.rowCount})</h3>
+
+        <p:dataTable var="user" value="#{userAdminController.allUsers}"
+                     paginator="true" rows="10" dynamic="true" lazy="true">
+            <p:column>
+                <f:facet name="header">
+                    Login
+                </f:facet>
+                <ot:separateConversationContext>
+                    <h:link outcome="/admin/users/edit" value="#{user.login}" includeViewParams="true">
+                        <f:param name="login" value="#{user.login}"/>
+                    </h:link>
+                </ot:separateConversationContext>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    First Name
+                </f:facet>
+                <h:outputText value="#{user.firstName}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    Last Name
+                </f:facet>
+                <h:outputText value="#{user.lastName}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    Roles
+                </f:facet>
+                <h:outputText value="#{publication.updated}"/>
+            </p:column>
+        </p:dataTable>
+
+    </ui:define>
+
+</ui:composition>

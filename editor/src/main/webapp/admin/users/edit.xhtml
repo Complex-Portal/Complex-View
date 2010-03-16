@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/admin/admin_template.xhtml">
+
+    <ui:define name="adminContent">
+
+        <f:metadata>
+            <f:viewParam name="login" value="#{userAdminController.userLogin}"/>
+            
+            <f:event type="preRenderView" listener="#{userAdminController.loadRoles}"/>
+            <f:event type="preRenderView" listener="#{userAdminController.loadUserToUpdate}"/>
+        </f:metadata>
+
+        <h:panelGrid columns="2">
+            <h:outputLabel value="Login:"/><h:inputText value="#{userAdminController.userToUpdate.login}"/>
+            <h:outputLabel value="First name:"/><h:inputText value="#{userAdminController.userToUpdate.firstName}"/>
+            <h:outputLabel value="Last name:"/><h:inputText value="#{userAdminController.userToUpdate.lastName}"/>
+            <h:outputLabel value="Email:"/><h:inputText value="#{userAdminController.userToUpdate.email}"/>
+            <h:outputLabel value="Role(s):"/><p:pickList value="#{userAdminController.roles}" var="role"
+                                                         itemLabel="#{role}" itemValue="#{role}">
+                                             </p:pickList>
+
+            <h:commandButton action="#{userAdminController.updateUser}" value="Update"/>
+            <h:link outcome="/admin/list" value="Cancel"/>
+        </h:panelGrid>
+
+    </ui:define>
+
+</ui:composition>

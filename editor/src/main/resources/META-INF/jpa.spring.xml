@@ -18,9 +18,11 @@
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
         <property name="dataSource" ref="intactViewDataSource"/>
+
+        <qualifier value="core"/>
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
 
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
@@ -80,7 +82,19 @@
                 <property name="generateDdl" value="false"/>
             </bean>
         </property>
-    </bean>    
+    </bean>
 
+    <!--
+    http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/transaction.html#tx-multiple-tx-mgrs-with-attransactional
+    -->
+
+    <tx:annotation-driven/>
+
+    <bean id="usersTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="usersEntityManagerFactory"/>
+        <property name="dataSource" ref="intactUsersDataSource"/>
+
+        <qualifier value="users"/>
+    </bean>
 
 </beans>
