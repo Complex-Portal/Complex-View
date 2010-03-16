@@ -16,8 +16,6 @@
 package uk.ac.ebi.intact.editor.util;
 
 import org.primefaces.model.LazyDataModel;
-import org.springframework.transaction.TransactionStatus;
-import uk.ac.ebi.intact.core.context.IntactContext;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -33,12 +31,13 @@ public class LazyDataModelFactory {
     }
 
     public static LazyDataModel createLazyDataModel(EntityManager entityManager, String query, String countQuery) {
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+//        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext()
+//                .beginTransaction(TransactionDefinition.PROPAGATION_MANDATORY);
 
             Query q = entityManager.createQuery(countQuery);
             int totalNumRows = ((Long) q.getSingleResult()).intValue();
 
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+           // IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         return createLazyDataModel(entityManager, query, totalNumRows);
     }

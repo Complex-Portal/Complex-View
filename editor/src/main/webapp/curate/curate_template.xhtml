@@ -14,8 +14,9 @@
     </ui:define>
 
     <ui:define name="top">
-        <h:outputText value="#{publicationController.publication.shortLabel}"
-                      rendered="#{publicationController.publication != null}"/>
+        <h:panelGroup rendered="#{publicationController != null}">
+            <h:link outcome="/curate/publication" value="#{publicationController.publication.shortLabel}"/>
+        </h:panelGroup>
     </ui:define>
 
     <ui:define name="content">

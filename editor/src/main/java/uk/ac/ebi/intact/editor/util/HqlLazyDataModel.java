@@ -16,8 +16,6 @@
 package uk.ac.ebi.intact.editor.util;
 
 import org.primefaces.model.LazyDataModel;
-import org.springframework.transaction.TransactionStatus;
-import uk.ac.ebi.intact.core.context.IntactContext;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -40,15 +38,11 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T>{
 
     @Override
     public List<T> fetchLazyData(int firstResult, int maxResults) {
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-
         Query query = entityManager.createQuery(hqlQuery);
         query.setFirstResult(firstResult);
         query.setMaxResults(maxResults);
 
         List<T> results = query.getResultList();
-        
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         return results;
     }

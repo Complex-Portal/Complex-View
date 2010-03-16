@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/curate/curate_template.xhtml">
+
+
+    <ui:define name="curateContent">
+        <f:metadata>
+            <f:viewParam name="ac" value="#{experimentController.ac}"/>
+            <f:event type="preRenderView" listener="#{experimentController.loadData}"/>
+        </f:metadata>
+
+        <h:panelGroup rendered="#{experimentController.experiment == null}">
+            No experiment loaded!
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{experimentController.experiment != null}">
+
+            <h:link outcome="/curate/publication" value="#{publicationController.publication.shortLabel}" includeViewParams="true"/>
+            &#160;>&#160;
+            #{experimentController.experiment.shortLabel}
+
+            <h2>Experiment</h2>
+
+           Experiment: #{experimentController.experiment.shortLabel} <br/>
+           Creator: #{experimentController.experiment.creator}<br/>
+           AC: #{experimentController.ac}
+
+            <h3>Interactions (#{experimentController.countInteractionsByExperimentAc(experimentController.ac)})</h3>
+            <p:dataTable var="interaction" value="#{experimentController.interactionDataModel}"
+                paginator="true" rows="10" dynamic="true" lazy="true">
+                <p:column>
+                <f:facet name="header">
+                    AC
+                </f:facet>
+                    <h:link outcome="/curate/interaction" value="#{interaction.ac}" includeViewParams="true">
+                        <f:param name="ac" value="#{interaction.ac}"/>
+                    </h:link>
+            </p:column>
+                <p:column>
+                <f:facet name="header">
+                    Shorlabel
+                </f:facet>
+                    <h:outputText value="#{interaction.shortLabel}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    Type
+                </f:facet>
+                <h:outputText value="#{interaction.cvInteractionType.shortLabel}"/>
+            </p:column>
+                <p:column>
+                <f:facet name="header">
+                    # Participants
+                </f:facet>
+                <h:outputText value="#{interactionController.countParticipantsByInteractionAc(interaction.ac)}"/>
+            </p:column>
+            </p:dataTable>
+
+        </h:panelGroup>
+
+    </ui:define>
+
+
+</ui:composition>

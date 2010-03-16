@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/curate/curate_template.xhtml">
+
+
+    <ui:define name="curateContent">
+        <f:metadata>
+            <f:viewParam name="ac" value="#{interactionController.ac}"/>
+            <f:event type="preRenderView" listener="#{interactionController.loadData}"/>
+        </f:metadata>
+
+        <h:panelGroup rendered="#{interactionController.interaction == null}">
+            No interaction loaded!
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{interactionController.interaction != null}">
+
+            <h:link outcome="/curate/publication" value="#{publicationController.publication.shortLabel}" includeViewParams="true"/>
+            &#160;>&#160;
+            <h:link outcome="/curate/experiment" value="#{experimentController.experiment.shortLabel}" includeViewParams="true"/>
+            &#160;>&#160;
+            #{interactionController.interaction.shortLabel}
+
+            <h2>Interaction</h2>
+
+           Interaction: #{interactionController.interaction.shortLabel}<br/>
+           Creator: #{interactionController.interaction.creator}<br/>
+           AC: #{interactionController.ac}
+
+            <h3>Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})</h3>
+
+            <p:dataTable var="participant" value="#{interactionController.participantDataModel}"
+                paginator="true" rows="10" dynamic="true" lazy="true">
+                <p:column>
+                <f:facet name="header">
+                    AC
+                </f:facet>
+                <h:outputText value="#{participant.ac}"/>
+            </p:column>
+                <p:column>
+                <f:facet name="header">
+                    Shorlabel
+                </f:facet>
+                    <h:outputText value="#{participant.shortLabel}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    Type
+                </f:facet>
+                <h:outputText value="#{participant.interactor.cvInteractorType.shortLabel}"/>
+            </p:column>
+            </p:dataTable>
+
+        </h:panelGroup>
+
+    </ui:define>
+
+
+</ui:composition>

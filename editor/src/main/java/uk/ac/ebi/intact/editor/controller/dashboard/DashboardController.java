@@ -18,13 +18,11 @@ package uk.ac.ebi.intact.editor.controller.dashboard;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.Publication;
 
 import javax.faces.event.ComponentSystemEvent;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -32,18 +30,15 @@ import javax.persistence.PersistenceContext;
  */
 @Controller
 @Scope("session")
-public class DashboardController extends BaseController {
+public class DashboardController extends JpaAwareController {
 
     private LazyDataModel<Publication> allPublications;
-
-    @PersistenceContext( unitName = "intact-core-default" )
-    private EntityManager entityManager;
 
     public DashboardController() {
     }
 
     public void loadData(ComponentSystemEvent event) {
-        allPublications = LazyDataModelFactory.createLazyDataModel(entityManager, "select p from Publication p order by p.updated desc",
+        allPublications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(), "select p from Publication p order by p.updated desc",
                                                                                   "select count(p) from Publication p");
     }
 

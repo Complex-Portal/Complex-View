@@ -3,6 +3,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
 
                 template="/curate/curate_template.xhtml">
@@ -20,9 +21,53 @@
 
         <h:panelGroup rendered="#{publicationController.publication != null}">
 
+            <h2>Publication</h2>
+
            Publication: #{publicationController.publication.shortLabel} <br/>
            Creator: #{publicationController.publication.creator}<br/>
            AC: #{publicationController.ac}
+
+            <h3>Experiments (#{fn:length(publicationController.publication.experiments)})</h3>
+            <p:dataTable var="experiment" value="#{publicationController.publication.experiments}">
+                <p:column>
+                <f:facet name="header">
+                    AC
+                </f:facet>
+                <h:outputText value="#{experiment.ac}"/>
+            </p:column>
+                <p:column>
+                <f:facet name="header">
+                    Shorlabel
+                </f:facet>
+                    <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true">
+                        <f:param name="ac" value="#{experiment.ac}"/>
+                    </h:link>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    Interaction detection method
+                </f:facet>
+                <h:outputText value="#{experiment.cvInteraction.shortLabel}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    Participant detection method
+                </f:facet>
+                <h:outputText value="#{experiment.cvIdentification.shortLabel}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    Host organism
+                </f:facet>
+                <h:outputText value="#{experiment.bioSource.shortLabel} (#{experiment.bioSource.taxId})"/>
+            </p:column>
+                <p:column>
+                <f:facet name="header">
+                    # Interactions
+                </f:facet>
+                <h:outputText value="#{experimentController.countInteractionsByExperimentAc(experiment.ac)}"/>
+            </p:column>
+            </p:dataTable>
 
         </h:panelGroup>
 
