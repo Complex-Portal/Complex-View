@@ -59,6 +59,10 @@ public abstract class BaseController implements Serializable {
         FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, message, detail);
         context.addMessage(null, facesMessage);
     }
+
+    protected ApplicationContext getSpringContext() {
+        return applicationContext;
+    }
 }
 
 
