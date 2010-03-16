@@ -36,7 +36,7 @@ public class DashboardController extends BaseController {
 
     private LazyDataModel<Publication> allPublications;
 
-    @PersistenceContext(name = "intact-core-default")
+    @PersistenceContext( unitName = "intact-core-default" )
     private EntityManager entityManager;
 
     public DashboardController() {
