@@ -6,12 +6,8 @@ import org.primefaces.model.DualListModel;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DelegatingTransactionDefinition;
 import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.users.persistence.dao.UserDao;
@@ -19,6 +15,7 @@ import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,12 +39,12 @@ public class UserAdminController extends JpaAwareController {
 
     // User creation
 
-    private String userLogin;
-    private String userEmail;
-    private String userFirstName;
-    private String userLastName;
-    
-    private Collection<String> userRoles;
+    private String loginParam;
+//    private String userEmail;
+//    private String userFirstName;
+//    private String userLastName;
+//
+//    private Collection<String> userRoles;
 
     // roles
 
@@ -55,7 +52,7 @@ public class UserAdminController extends JpaAwareController {
 
     // User update
 
-    private User userToUpdate;
+    private User user;
 
     // User list
 
@@ -65,61 +62,91 @@ public class UserAdminController extends JpaAwareController {
     /////////////////
     // Users
 
-    public String getUserLogin() {
-        return userLogin;
+
+    public User getUser() {
+        return user;
     }
 
-    public void setUserLogin( String userLogin ) {
-        this.userLogin = userLogin;
+    public void setUser( User user ) {
+        this.user = user;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public String getLoginParam() {
+        return loginParam;
     }
 
-    public void setUserEmail( String userEmail ) {
-        this.userEmail = userEmail;
+    public void setLoginParam( String loginParam ) {
+        this.loginParam = loginParam;
     }
 
-    public String getUserFirstName() {
-        return userFirstName;
-    }
-
-    public void setUserFirstName( String userFirstName ) {
-        this.userFirstName = userFirstName;
-    }
-
-    public String getUserLastName() {
-        return userLastName;
-    }
-
-    public void setUserLastName( String userLastName ) {
-        this.userLastName = userLastName;
-    }
+    //    public String getUserLogin() {
+//        return userLogin;
+//    }
+//
+//    public void setUserLogin( String userLogin ) {
+//        this.userLogin = userLogin;
+//    }
+//
+//    public String getUserEmail() {
+//        return userEmail;
+//    }
+//
+//    public void setUserEmail( String userEmail ) {
+//        this.userEmail = userEmail;
+//    }
+//
+//    public String getUserFirstName() {
+//        return userFirstName;
+//    }
+//
+//    public void setUserFirstName( String userFirstName ) {
+//        this.userFirstName = userFirstName;
+//    }
+//
+//    public String getUserLastName() {
+//        return userLastName;
+//    }
+//
+//    public void setUserLastName( String userLastName ) {
+//        this.userLastName = userLastName;
+//    }
 
     ///////////////
     // Actions
 
 
-
+    @Transactional( "users" )
     public String saveUser() {
         final UserDao userDao = daoFactory.getUserDao();
 
-        if ( userDao.getByLogin( userLogin ) != null ) {
-            addWarningMessage( "A user with this login already exist", "" );
-            return "error";
+        boolean created = false;
+        if( ! userDao.isManaged( user ) && ! userDao.isDetached( user ) ) {
+            userDao.persist( user );
+            created = true;
         }
 
-        if ( userDao.getByEmail( userEmail ) != null ) {
-            addWarningMessage( "A user with this email address already exist", "" );
-            return "error";
+        // handle roles
+        final List<String> includedRoles = roles.getTarget();
+        for ( String roleName : includedRoles ) {
+            if( ! user.hasRole( roleName ) ) {
+                final Role r = getUsersDaoFactory().getRoleDao().getRoleByName( roleName );
+                user.addRole( r );
+                log.info( "Added role " + roleName + "to user " + user.getLogin() );
+            }
         }
 
-        final User newUser = new User( userLogin, userFirstName, userLastName, userEmail );
-        userDao.persist( newUser );
-        userDao.flush();
+        final List<String> excludedRoles = roles.getSource();
+        for ( String roleName : excludedRoles ) {
+            if( user.hasRole( roleName ) ) {
+                final Role r = getUsersDaoFactory().getRoleDao().getRoleByName( roleName );
+                user.removeRole( r );
+                log.info( "Removed role " + roleName + "to user " + user.getLogin() );
+            }
+        }
 
-        addInfoMessage( "New user " + userLogin + " was created successfully", "" );
+        userDao.saveOrUpdate( user );
+
+        addInfoMessage( "User " + user.getLogin() + " was "+ (created ? "created" : "updated" ) +" successfully", "" );
 
         return "admin.users.list";
     }
@@ -131,13 +158,13 @@ public class UserAdminController extends JpaAwareController {
         
         Collection<Role> allRoles = getUsersDaoFactory().getRoleDao().getAll();
         log.info( "Found " + allRoles.size() + " role(s) in the database." );
-        if( userToUpdate == null ) {
+        if( user == null ) {
             for ( Role role : allRoles ) {
                 source.add( role.getName() );
             }
         } else {
             for ( Role role : allRoles ) {
-                if( userToUpdate.getRoles().contains( role )) {
+                if( user.getRoles().contains( role )) {
                     target.add( role.getName() );
                 } else {
                     source.add( role.getName() );
@@ -146,6 +173,13 @@ public class UserAdminController extends JpaAwareController {
         }
 
         roles = new DualListModel<String>( source, target );
+    }
+
+    public List<Role> createRoleList( User user) {
+        if( user != null ) {
+            return new ArrayList<Role>( user.getRoles() );
+        }
+        return null;
     }
 
     public void setRoles( DualListModel<String> roles ) {
@@ -157,18 +191,18 @@ public class UserAdminController extends JpaAwareController {
     }
 
     public void loadUserToUpdate() {
-        System.out.println( "Loading user by login '" + userLogin + "'..." );
-        if ( userLogin != null ) {
-            userToUpdate = daoFactory.getUserDao().getByLogin( userLogin );
-            if ( userToUpdate == null ) {
-                addWarningMessage( "Could not find user by login: " + userLogin, "" );
-            }
-        }
-    }
 
-    public String updateUser() {
-        daoFactory.getUserDao().update( userToUpdate );
-        return "admin.users.list";
+        if( loginParam != null ) {
+            // load user and prepare for update
+            System.out.println( "Loading user by login '" + loginParam + "'..." );
+            user = getUsersDaoFactory().getUserDao().getByLogin( loginParam );
+            if (user == null ) {
+                addWarningMessage( "Could not find user by login: " + loginParam, "Please try again." );
+            }
+        } else {
+            // prepare for the creation of the new user
+            user = new User();
+        }
     }
 
     public void loadData( ComponentSystemEvent event ) {

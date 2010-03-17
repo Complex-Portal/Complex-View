@@ -16,6 +16,7 @@
 
         <h3>Users (#{userAdminController.allUsers.rowCount})</h3>
 
+        <!-- TODO: if the user is disabled, show the line red. -->
         <p:dataTable var="user" value="#{userAdminController.allUsers}"
                      paginator="true" rows="10" dynamic="true" lazy="true">
             <p:column>
@@ -44,7 +45,11 @@
                 <f:facet name="header">
                     Roles
                 </f:facet>
-                <h:outputText value="#{publication.updated}"/>
+                <ui:repeat value="#{userAdminController.createRoleList( user )}" var="role" varStatus="status">
+                      <h:outputText value="#{role.name}"/>
+                      <h:outputText value=", " rendered="#{not status.last}"/>
+                </ui:repeat>
+
             </p:column>
         </p:dataTable>
 

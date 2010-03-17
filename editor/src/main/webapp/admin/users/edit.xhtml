@@ -10,23 +10,38 @@
     <ui:define name="adminContent">
 
         <f:metadata>
-            <f:viewParam name="login" value="#{userAdminController.userLogin}"/>
-            
-            <f:event type="preRenderView" listener="#{userAdminController.loadRoles}"/>
+            <f:viewParam name="login" value="#{userAdminController.loginParam}"/>
+
             <f:event type="preRenderView" listener="#{userAdminController.loadUserToUpdate}"/>
+            <f:event type="preRenderView" listener="#{userAdminController.loadRoles}"/>
         </f:metadata>
 
         <h:panelGrid columns="2">
-            <h:outputLabel value="Login:"/><h:inputText value="#{userAdminController.userToUpdate.login}"/>
-            <h:outputLabel value="First name:"/><h:inputText value="#{userAdminController.userToUpdate.firstName}"/>
-            <h:outputLabel value="Last name:"/><h:inputText value="#{userAdminController.userToUpdate.lastName}"/>
-            <h:outputLabel value="Email:"/><h:inputText value="#{userAdminController.userToUpdate.email}"/>
-            <h:outputLabel value="Role(s):"/><p:pickList value="#{userAdminController.roles}" var="role"
-                                                         itemLabel="#{role}" itemValue="#{role}">
-                                             </p:pickList>
+            <h:outputLabel value="Login:"/>
+            <h:inputText value="#{userAdminController.user.login}" required="true" />
 
-            <h:commandButton action="#{userAdminController.updateUser}" value="Update"/>
-            <h:link outcome="/admin/list" value="Cancel"/>
+            <h:outputLabel value="Password:"/>
+            <h:inputText value="#{userAdminController.user.password}" />
+
+            <h:outputLabel value="Disabled:"/>
+            <h:selectBooleanCheckbox value="#{userAdminController.user.disabled}"/>
+
+            <h:outputLabel value="First name:"/>
+            <h:inputText value="#{userAdminController.user.firstName}"/>
+
+            <h:outputLabel value="Last name:"/>
+            <h:inputText value="#{userAdminController.user.lastName}"/>
+
+            <h:outputLabel value="Email:"/>
+            <h:inputText value="#{userAdminController.user.email}" required="true" />
+
+            <h:outputLabel value="Role(s):"/>
+            <p:pickList value="#{userAdminController.roles}" var="role"
+                        itemLabel="#{role}" itemValue="#{role}">
+            </p:pickList>
+
+            <h:commandButton action="#{userAdminController.saveUser}" value="Update"/>
+            <h:link outcome="admin.users.list" value="Cancel"/>
         </h:panelGrid>
 
     </ui:define>
