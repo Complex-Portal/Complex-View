@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.publication;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -29,6 +30,7 @@ import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.Iterator;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -43,6 +45,7 @@ public class PublicationController extends JpaAwareController {
     private String ac;
 
     private String identifier;
+    private String authors;
     private String journal;
     private short year;
 
@@ -72,6 +75,7 @@ public class PublicationController extends JpaAwareController {
         }
 
         if (journal == null) journal = findAnnotationText(CvTopic.JOURNAL_MI_REF);
+        if (authors == null) authors = findAnnotationText(CvTopic.AUTHOR_LIST_MI_REF);
 
         if (year == 0) {
             String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
@@ -157,6 +161,18 @@ public class PublicationController extends JpaAwareController {
             journal = citation.getJournalIssue().getJournal().getISOAbbreviation()+" ("+
                     citation.getJournalIssue().getJournal().getISSN()+")";
             year = citation.getJournalIssue().getYearOfPublication();
+
+            StringBuilder sbAuthors = new StringBuilder(64);
+
+            Iterator<Author> authorIterator = citation.getAuthorCollection().iterator();
+            while (authorIterator.hasNext()) {
+                Author author =  authorIterator.next();
+                sbAuthors.append(author.getLastName()).append(" ").append(author.getInitials()).append(".");
+                if (authorIterator.hasNext()) sbAuthors.append(", ");
+            }
+
+            authors = sbAuthors.toString();
+
         } catch (Throwable e) {
             addErrorMessage("Problem auto-completing publication", e.getMessage());
             e.printStackTrace();
@@ -236,5 +252,13 @@ public class PublicationController extends JpaAwareController {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    public String getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(String authors) {
+        this.authors = authors;
     }
 }

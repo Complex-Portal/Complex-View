@@ -40,6 +40,9 @@
                 <h:outputLabel value="Title: " for="titleTxt"/>
                 <h:inputText id="titleTxt" value="#{publicationController.publication.fullName}" size="80"/>
 
+                <h:outputLabel value="Authors: " for="authorsTxt"/>
+                <h:inputText id="authorsTxt" value="#{publicationController.authors}" size="80"/>
+
                 <h:outputLabel value="Journal: " for="journalTxt"/>
                 <h:inputText id="journalTxt" value="#{publicationController.journal}" size="25"/>
 
@@ -50,11 +53,11 @@
             </h:panelGrid>
 
             </p:outputPanel>
-          
+
             <h3>Experiments (#{fn:length(publicationController.publication.experiments)})</h3>
 
             <ia:experimentsTable value="#{publicationController.publication.experiments}"/>
-
+            
          </h:panelGroup>
 
     </ui:define>

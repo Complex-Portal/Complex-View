@@ -34,7 +34,9 @@
             <f:facet name="header">
                 <h:outputText value="Interaction detection method"/>
             </f:facet>
-            <h:outputText value="#{experiment.cvInteraction.shortLabel}"/>
+            <p:inplace>
+                <h:inputText value="#{experiment.cvInteraction.shortLabel}"/>
+            </p:inplace>
         </p:column>
         <p:column>
             <f:facet name="header">
