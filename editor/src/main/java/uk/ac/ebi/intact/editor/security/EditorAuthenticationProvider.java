@@ -15,17 +15,21 @@
  */
 package uk.ac.ebi.intact.editor.security;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.Authentication;
-import org.springframework.security.AuthenticationException;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
+import org.springframework.security.*;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.users.model.Role;
+import uk.ac.ebi.intact.core.users.model.User;
+import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
+
+import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -36,11 +40,22 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
     private static final Log log = LogFactory.getLog( EditorAuthenticationProvider.class );
 
     @Autowired
+    private UsersDaoFactory usersDaoFactory;
+
+    @Autowired
     private ApplicationContext applicationContext;
 
+    @Transactional( value="users", readOnly = true )
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if (log.isDebugEnabled()) {
             log.debug("Authenticating user: "+authentication.getPrincipal());
+            log.debug("Credentials: "+authentication.getCredentials());
+        }
+
+        final User user = usersDaoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );
+
+        if( user == null || ! user.getPassword().equals( authentication.getCredentials() ) ) {
+            throw new BadCredentialsException( "Unknown user or incorrect password." );
         }
 
         UserSessionController userSessionController = (UserSessionController) applicationContext.getBean("userSessionController");
@@ -49,12 +64,17 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
 
         userSessionController.setCurrentUser(authentication.getPrincipal().toString());
 
-        GrantedAuthority curatorAuthority = new GrantedAuthorityImpl("ROLE_CURATOR");
-        GrantedAuthority adminAuthority = new GrantedAuthorityImpl("ROLE_ADMIN");
-        Authentication auth = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(),
-                new GrantedAuthority[] {curatorAuthority, adminAuthority});
+        Collection<GrantedAuthority> authorities = Lists.newArrayList();
+        log.info( user.getLogin() + " roles: " + user.getRoles() );
+        for ( Role role : user.getRoles() ) {
+            final String authorityName = "ROLE_" + role.getName();
+            log.info( "Adding GrantedAuthority: '"+ authorityName +"'" );
+            authorities.add( new GrantedAuthorityImpl( authorityName ) );
+        }
 
-        return auth;
+        return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
+                                                       authentication.getCredentials(),
+                                                       authorities.toArray( new GrantedAuthority[]{} ) );
     }
 
     public boolean supports(Class authentication) {

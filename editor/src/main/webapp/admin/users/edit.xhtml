@@ -8,6 +8,8 @@
 
     <ui:define name="adminContent">
 
+        <h:outputScript name="scripts/security/sha1.js" />
+
         <f:metadata>
             <f:viewParam name="login" value="#{userAdminController.loginParam}"/>
 
@@ -15,13 +17,15 @@
             <f:event type="preRenderView" listener="#{userAdminController.loadRoles}"/>
         </f:metadata>
 
+        <!-- Field in which the hashed password gets stored -->
+        <h:inputHidden id="passwordHash" value="#{userAdminController.passwordHash}" />
+
         <h:panelGrid columns="2">
             <h:outputLabel value="Login:"/>
             <h:inputText value="#{userAdminController.user.login}" required="true" requiredMessage="You must enter a login" />
 
             <h:outputLabel value="Password:"/>
-
-            <h:inputText value="#{userAdminController.user.password}" />
+            <h:inputSecret id="password" value="#{userAdminController.password}"/>
 
             <h:outputLabel value="Disabled:"/>
             <h:selectBooleanCheckbox value="#{userAdminController.user.disabled}"/>
@@ -40,7 +44,8 @@
                         itemLabel="#{role}" itemValue="#{role}">
             </p:pickList>
 
-            <h:commandButton action="#{userAdminController.saveUser}" value="Update"/>
+            <h:commandButton action="#{userAdminController.saveUser}" value="Save"
+                             onclick="document.getElementById('editorForm:passwordHash').value = hex_sha1(document.getElementById('editorForm:password').value);"/>
             <h:link outcome="admin.users.list" value="Cancel"/>
         </h:panelGrid>
 

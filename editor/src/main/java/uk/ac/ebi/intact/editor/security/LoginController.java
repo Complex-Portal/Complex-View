@@ -30,8 +30,7 @@ import java.io.IOException;
  * @version $Id$
  */
 @Controller
-public class LoginController
-{
+public class LoginController {
 
     public String doLogin() throws IOException, ServletException {
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();

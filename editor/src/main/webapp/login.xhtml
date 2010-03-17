@@ -36,6 +36,7 @@
 
     <h:body bgcolor="white" style="height:100%">
 
+        <h:outputScript name="scripts/security/sha1.js" />
 
         <h:form
                 id="loginForm"
@@ -46,8 +47,8 @@
                 <h:panelGroup rendered="#{facesContext.application.projectStage == 'Development'}">
                     <script type="text/javascript">
                         function loginAsAdmin() {
-                            document.getElementById('j_username').value = 'ADMIN';
-                            document.getElementById('j_password').value = 'admin';
+                            document.getElementById('j_username').value = 'admin';
+                            document.getElementById('j_password_clear').value = 'admin';
                             document.getElementById('login').click();
                         }
                     </script>
@@ -76,9 +77,10 @@
 
                     <br/>
                     <br/>
-                    <label for="j_password"><h:outputText value="Password:"/></label>
+                    <label for="j_password_clear"><h:outputText value="Password:"/></label>
                      <br/>
-                    <h:inputSecret id="j_password" required="true" requiredMessage="Password is required"/>
+                    <h:inputSecret id="j_password_clear" required="true" requiredMessage="Password is required"/>
+                    <h:inputHidden id="j_password"/>
 
                     <br/>
                     <br/>
@@ -94,7 +96,8 @@
                             type="submit"
                             id="login"
                             action="#{loginController.doLogin}"
-                            value="Login"/>
+                            value="Login"
+                            onclick="document.getElementById('j_password').value = hex_sha1(document.getElementById('j_password_clear').value);"/>
                 </p:panel>
                     </div>
             </div>

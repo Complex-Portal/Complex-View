@@ -1,5 +1,6 @@
 package uk.ac.ebi.intact.editor.controller.admin;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DualListModel;
@@ -37,31 +38,19 @@ public class UserAdminController extends JpaAwareController {
     @Autowired
     private UsersDaoFactory daoFactory;
 
-    // User creation
-
     private String loginParam;
-//    private String userEmail;
-//    private String userFirstName;
-//    private String userLastName;
-//
-//    private Collection<String> userRoles;
 
-    // roles
+    private String passwordHash;
+    private String password;
 
     private DualListModel<String> roles;
 
-    // User update
-
     private User user;
-
-    // User list
 
     private LazyDataModel<User> allUsers;
 
-
     /////////////////
     // Users
-
 
     public User getUser() {
         return user;
@@ -79,45 +68,33 @@ public class UserAdminController extends JpaAwareController {
         this.loginParam = loginParam;
     }
 
-    //    public String getUserLogin() {
-//        return userLogin;
-//    }
-//
-//    public void setUserLogin( String userLogin ) {
-//        this.userLogin = userLogin;
-//    }
-//
-//    public String getUserEmail() {
-//        return userEmail;
-//    }
-//
-//    public void setUserEmail( String userEmail ) {
-//        this.userEmail = userEmail;
-//    }
-//
-//    public String getUserFirstName() {
-//        return userFirstName;
-//    }
-//
-//    public void setUserFirstName( String userFirstName ) {
-//        this.userFirstName = userFirstName;
-//    }
-//
-//    public String getUserLastName() {
-//        return userLastName;
-//    }
-//
-//    public void setUserLastName( String userLastName ) {
-//        this.userLastName = userLastName;
-//    }
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash( String passwordHash ) {
+        this.passwordHash = passwordHash;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword( String password ) {
+        this.password = password;
+    }
 
     ///////////////
     // Actions
 
-
     @Transactional( "users" )
     public String saveUser() {
         final UserDao userDao = daoFactory.getUserDao();
+
+        // set hashed password to the user
+        if( ! StringUtils.isEmpty(password) ) {
+            user.setPassword( passwordHash );
+        }
 
         boolean created = false;
         if( ! userDao.isManaged( user ) && ! userDao.isDetached( user ) ) {
