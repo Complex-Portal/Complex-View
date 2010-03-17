@@ -5,17 +5,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Controller;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import uk.ac.ebi.intact.core.users.model.Role;
+import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,15 +34,29 @@ public class ApplicationInitializer implements InitializingBean {
     @Override
     @Transactional( "users" )
     public void afterPropertiesSet() throws Exception {
+        createDefaultRoles();
+        createDefaultUsers();
+    }
+
+    private void createDefaultUsers() {
+        User admin = usersDaoFactory.getUserDao().getByLogin( "admin" );
+        if( admin == null ) {
+            admin = new User( "admin", "N/A", "N/A", "intact-admin@ebi.ac.uk" );
+            admin.setPassword( "admin" );
+            usersDaoFactory.getUserDao().persist( admin );
+        }
+    }
+
+    private void createDefaultRoles() {
         final List<Role> allRoles = usersDaoFactory.getRoleDao().getAll();
-        addMissing( allRoles, "ADMIN" );
-        addMissing( allRoles, "CURATOR" );
-        addMissing( allRoles, "REVIEWER" );
+        addMissingRole( allRoles, "ADMIN" );
+        addMissingRole( allRoles, "CURATOR" );
+        addMissingRole( allRoles, "REVIEWER" );
 
         log.info( "After init: found " + usersDaoFactory.getRoleDao().getAll().size() + " role(s) in the database." );
     }
 
-    private void addMissing( List<Role> allRoles, String roleName ) {
+    private void addMissingRole( List<Role> allRoles, String roleName ) {
         boolean found = false;
         for ( Role role : allRoles ) {
             if( role.getName().equals( roleName ) ) {
