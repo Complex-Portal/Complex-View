@@ -17,7 +17,9 @@ package uk.ac.ebi.intact.editor.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.core.persister.CorePersister;
 import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
 
 import javax.persistence.EntityManager;
@@ -39,6 +41,9 @@ public abstract class JpaAwareController extends BaseController {
     private EntityManager usersEntityManager;
 
     @Autowired
+    private IntactContext intactContext;
+
+    @Autowired
     private DaoFactory daoFactory;
 
     @Autowired
@@ -58,5 +63,13 @@ public abstract class JpaAwareController extends BaseController {
 
     protected UsersDaoFactory getUsersDaoFactory() {
         return usersDaoFactory;
+    }
+
+    protected IntactContext getIntactContext() {
+        return intactContext;
+    }
+
+    protected CorePersister getCorePersister() {
+        return getIntactContext().getCorePersister();
     }
 }

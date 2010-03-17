@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.publication;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
@@ -30,6 +31,7 @@ import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -44,8 +46,11 @@ public class PublicationController extends JpaAwareController {
     private Publication publication;
     private String ac;
 
+    private Date lastSaved;
+
     private String identifier;
     private String authors;
+    private String firstAuthor;
     private String journal;
     private short year;
 
@@ -76,6 +81,10 @@ public class PublicationController extends JpaAwareController {
 
         if (journal == null) journal = findAnnotationText(CvTopic.JOURNAL_MI_REF);
         if (authors == null) authors = findAnnotationText(CvTopic.AUTHOR_LIST_MI_REF);
+
+        if (authors != null) {
+            firstAuthor = authors.split(" ")[0];
+        }
 
         if (year == 0) {
             String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
@@ -173,6 +182,8 @@ public class PublicationController extends JpaAwareController {
 
             authors = sbAuthors.toString();
 
+            if (authors != null) firstAuthor = authors.split(" ")[0];
+
         } catch (Throwable e) {
             addErrorMessage("Problem auto-completing publication", e.getMessage());
             e.printStackTrace();
@@ -209,6 +220,34 @@ public class PublicationController extends JpaAwareController {
             }
         }
 
+    }
+
+    @Transactional
+    public void doSave(ActionEvent evt) {
+        if (publication == null) {
+            addErrorMessage("No publication to save", "How did I get here?");
+            return;
+        }
+        
+        if (publication.getAc() == null) {
+            getDaoFactory().getPublicationDao().persist(publication);
+        } else {
+            getDaoFactory().getPublicationDao().merge(publication);
+        }
+        lastSaved = new Date();
+
+        addInfoMessage("Publication saved", "AC: "+publication.getAc());
+    }
+
+    public void doClose(ActionEvent evt) {
+        publication = null;
+        ac = null;
+    }
+
+    public void doSaveAndClose(ActionEvent evt) {
+        System.out.println("SAVE AND CLOSE");
+        doSave(evt);
+        doClose(evt);
     }
 
     public String getAc() {
@@ -260,5 +299,13 @@ public class PublicationController extends JpaAwareController {
 
     public void setAuthors(String authors) {
         this.authors = authors;
+    }
+
+    public String getFirstAuthor() {
+        return firstAuthor;
+    }
+
+    public Date getLastSaved() {
+        return lastSaved;
     }
 }

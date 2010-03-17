@@ -14,8 +14,18 @@
     </ui:define>
 
     <ui:define name="top">
+
         <h:panelGroup rendered="#{publicationController != null}">
-            <h:link outcome="/curate/publication" value="#{publicationController.publication.shortLabel}"/>
+            <div style="float: right">
+            <h:commandButton value="Save" actionListener="#{publicationController.doSave}"/>
+            <h:outputText value=" Last Saved: #{publicationController.lastSaved}" rendered="#{publicationController.lastSaved != null}" />
+        </div>
+
+            <h:link outcome="/curate/publication" value="#{publicationController.firstAuthor} et al (#{publicationController.year})" rendered="#{publicationController.firstAuthor != null}"/>
+
+            <h:panelGroup rendered="#{publicationController.publication.shortLabel != null}">
+                (&#160;<h:outputText value="#{publicationController.publication.shortLabel}"/> )
+            </h:panelGroup>
         </h:panelGroup>
     </ui:define>
 
@@ -26,6 +36,13 @@
                     <p:submenu label="Publication">
                         <p:submenu label="New" onclick="newPublicationDlg.show()"/>
                         <p:submenu label="Open by PMID" onclick="openByAcDlg.show()"/>
+                        <p:submenu label="Save" url="#" rendered="#{publicationController.publication != null}">
+                            <p:commandLink value="Save" actionListener="#{publicationController.doSave}" ajax="false"/>
+                        </p:submenu>
+                        <p:submenu label="Save &amp; Close" url="#" rendered="#{publicationController.publication != null}">
+                            <p:commandLink value="Save &amp; Close" actionListener="#{publicationController.doSaveAndClose}"
+                                    action="/curate/curate" ajax="false"/>
+                        </p:submenu>
                     </p:submenu>
                     <p:submenu label="Experiments" rendered="#{publicationController.publication != null}"/>
                     <p:submenu label="Interactions" rendered="#{publicationController.publication != null}"/>

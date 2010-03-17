@@ -27,13 +27,16 @@
 
                     <div id="topSection" style="width:100%;">
                         <table>
-                            <tr style="vertical-align:top">
-                                <td style="width:1%">
+                            <tr style="vertical-align:middle">
+                                <td style="width:1%; padding-right: 15px">
                                     <h:graphicImage url="#{editorConfig.logoUrl}"
                                                     rendered="#{editorConfig.logoUrl != null}"/>
                                 </td>
                                 <td>
                                     <ui:insert name="top"/>
+                                </td>
+                                <td style="width:1%; padding-left: 15px">
+                                    <ui:insert name="topRight"/>
                                 </td>
                             </tr>
                         </table>
