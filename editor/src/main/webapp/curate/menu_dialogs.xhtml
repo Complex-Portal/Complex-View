@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+
+    <!-- New publication -->
+    <p:dialog header="New publication" width="345px" widgetVar="newPublicationDlg" visible="false" draggable="false"
+              modal="true" fixedCenter="true">
+
+        <h:panelGrid columns="2" style="margin-bottom:10px">
+            <h:form>
+                <h:panelGroup rendered="#{not publicationController.citexploreOnline}">
+                    <div style="background-color:#F5A9A9; padding: 5px">
+                        Citexplore is down at the moment. <br/>
+                        Auto-complete disabled temporarely.
+                    </div>
+                    <br/>
+                </h:panelGroup>
+
+                <h:outputLabel for="pmid" value="PMID:"/>
+                <h:inputText id="pmid" value="#{publicationController.identifier}" required="true"
+                             requiredMessage="A PMID is required">
+                    <p:tooltip value="Type a PMID and click on auto-complete" showDelay="2000"
+                               showEvent="focus" hideEvent="blur" position="topRight"/>
+                </h:inputText>
+
+                <h:commandButton value="Auto-complete" actionListener="#{publicationController.newAutocomplete}"
+                                 action="/curate/publication" disabled="#{not publicationController.citexploreOnline}"/>
+                <br/>
+
+                <div style="width:100%; text-align:right">
+                    <h:commandLink value="Create empty" actionListener="#{publicationController.newEmpty}"
+                                   action="/curate/publication">
+                     </h:commandLink>
+                </div>
+            </h:form>
+        </h:panelGrid>
+
+    </p:dialog>
+
+    <!-- Open by PMID -->
+    <p:dialog header="Open by PMID" width="300px" widgetVar="openByAcDlg" visible="false" draggable="false"
+              modal="true" fixedCenter="true">
+
+        <h:panelGrid columns="2" style="margin-bottom:10px">
+            <h:form>
+                <h:outputLabel for="pmid" value="PMID:"/>
+                <h:inputText id="pmid" value="#{publicationController.identifier}"/>
+
+                <h:commandButton value="Open" actionListener="#{publicationController.openByPmid}"
+                                 action="/curate/publication"/>
+            </h:form>
+        </h:panelGrid>
+
+    </p:dialog>
+
+</ui:composition>

@@ -18,10 +18,14 @@ package uk.ac.ebi.intact.editor.controller.publication;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.cdb.webservice.Citation;
+import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.model.Annotation;
+import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -38,7 +42,9 @@ public class PublicationController extends JpaAwareController {
     private Publication publication;
     private String ac;
 
-    private String openQuery;
+    private String identifier;
+    private String journal;
+    private short year;
 
     public PublicationController() {
     }
@@ -51,20 +57,136 @@ public class PublicationController extends JpaAwareController {
         if (ac != null) {
             if (publication == null || !ac.equals(publication.getAc())) {
                 publication = getDaoFactory().getPublicationDao().getByAc(ac);
+
+                loadExtraFields();
+
             }
         } else if (publication != null) {
             ac = publication.getAc();
         }
     }
 
+    private void loadExtraFields() {
+        if (publication.getFullName() == null && !publication.getExperiments().isEmpty()) {
+            publication.setFullName(publication.getExperiments().iterator().next().getFullName());
+        }
+
+        if (journal == null) journal = findAnnotationText(CvTopic.JOURNAL_MI_REF);
+
+        if (year == 0) {
+            String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
+            if (strYear != null) year = Short.parseShort(strYear.trim());
+        }
+    }
+
+    private String findAnnotationText(String topicId) {
+        Annotation pubAnnot = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(publication, topicId);
+
+        if (pubAnnot != null) {
+            return pubAnnot.getAnnotationText();
+        }
+
+        if (!publication.getExperiments().isEmpty()) {
+            Annotation expAnnot = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(publication.getExperiments().iterator().next(), topicId);
+
+            if (expAnnot != null) {
+                return expAnnot.getAnnotationText();
+            }
+        }
+
+        return null;
+
+    }
+
+    public boolean isCitexploreOnline() {
+         try {
+            CitexploreClient citexploreClient = new CitexploreClient();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void newAutocomplete(ActionEvent evt) {
+        if (identifier == null) {
+            addErrorMessage("Cannot auto-complete", "ID is empty");
+            return;
+        }
+
+        // check if already exists
+        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId(identifier);
+
+        if (existingPublication != null) {
+            publication = existingPublication;
+            addWarningMessage("Publication already exists", "Loaded from the database");
+            return;
+        }
+
+        publication = new Publication(IntactContext.getCurrentInstance().getInstitution(), identifier);
+        autocomplete(publication, identifier);
+
+        identifier = null;
+    }
+
+    public void doFormAutocomplete(ActionEvent evt) {
+        if (publication.getShortLabel() != null) {
+            autocomplete(publication, publication.getShortLabel());
+        }
+    }
+
+    private void autocomplete(Publication publication, String id) {
+        CitexploreClient citexploreClient = null;
+
+        try {
+            citexploreClient = new CitexploreClient();
+        } catch (Exception e) {
+            addErrorMessage("Cannot auto-complete", "Citexplore service is down at the moment");
+            return;
+        }
+
+        try {
+            final Citation citation = citexploreClient.getCitationById(id);
+
+            if (citation == null) {
+                addErrorMessage("No citation was found", "PMID: "+id);
+                return;
+            }
+
+            publication.setFullName(citation.getTitle());
+            journal = citation.getJournalIssue().getJournal().getISOAbbreviation()+" ("+
+                    citation.getJournalIssue().getJournal().getISSN()+")";
+            year = citation.getJournalIssue().getYearOfPublication();
+        } catch (Throwable e) {
+            addErrorMessage("Problem auto-completing publication", e.getMessage());
+            e.printStackTrace();
+        }
+
+        addInfoMessage("Auto-complete successful", "Fetched details for: "+id);
+    }
+
+    public void newEmpty(ActionEvent evt) {
+        // check if already exists
+        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId(identifier);
+
+        if (existingPublication != null) {
+            publication = existingPublication;
+            addInfoMessage("Publication already exists", "Loaded from the database");
+            return;
+        }
+        
+        publication = new Publication(IntactContext.getCurrentInstance().getInstitution(), identifier);
+        ac = null;
+    }
+
     public void openByPmid(ActionEvent evt) {
-        if (openQuery == null || openQuery.trim().length() == 0) {
+        if (identifier == null || identifier.trim().length() == 0) {
             addErrorMessage("PMID is empty", "No PMID was supplied");
         } else {
-            Publication publicationToOpen = getDaoFactory().getPublicationDao().getByPubmedId(openQuery);
+            Publication publicationToOpen = getDaoFactory().getPublicationDao().getByPubmedId(identifier);
 
             if (publicationToOpen == null) {
-                addErrorMessage("PMID not found", "There is no publication with PMID '"+openQuery+"'");
+                addErrorMessage("PMID not found", "There is no publication with PMID '"+ identifier +"'");
             } else {
                 publication = publicationToOpen;
                 ac = publication.getAc();
@@ -92,11 +214,27 @@ public class PublicationController extends JpaAwareController {
         this.publication = publication;
     }
 
-    public String getOpenQuery() {
-        return openQuery;
+    public String getJournal() {
+        return journal;
     }
 
-    public void setOpenQuery(String openQuery) {
-        this.openQuery = openQuery;
+    public void setJournal(String journal) {
+        this.journal = journal;
+    }
+
+    public short getYear() {
+        return year;
+    }
+
+    public void setYear(short year) {
+        this.year = year;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 }

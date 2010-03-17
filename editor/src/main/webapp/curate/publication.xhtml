@@ -22,12 +22,35 @@
 
         <h:panelGroup rendered="#{publicationController.publication != null}">
 
-            <h2>Publication</h2>
+            <h2>Publication Details</h2>
 
-           Publication: #{publicationController.publication.shortLabel} <br/>
-           Creator: #{publicationController.publication.creator}<br/>
-           AC: #{publicationController.ac}
+            <p:outputPanel id="basicInfoPanel">
+            <h:panelGrid columns="2">
+                <h:outputLabel value="AC: " for="acTxt"/>
+                <h:inputText id="acTxt" value="#{publicationController.publication.ac}"
+                             size="10" disabled="true"/>
 
+                <h:outputLabel value="Identifier: " for="idTxt"/>
+                <h:panelGroup>
+                    <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
+                                 size="10" required="true"/>
+                    <h:commandButton value="Auto-complete" actionListener="#{publicationController.doFormAutocomplete}"/>
+                </h:panelGroup>
+
+                <h:outputLabel value="Title: " for="titleTxt"/>
+                <h:inputText id="titleTxt" value="#{publicationController.publication.fullName}" size="80"/>
+
+                <h:outputLabel value="Journal: " for="journalTxt"/>
+                <h:inputText id="journalTxt" value="#{publicationController.journal}" size="25"/>
+
+                <h:outputLabel value="Year: " for="yearTxt"/>
+                <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4">
+                    <f:convertNumber pattern="#"/>
+                </h:inputText>
+            </h:panelGrid>
+
+            </p:outputPanel>
+          
             <h3>Experiments (#{fn:length(publicationController.publication.experiments)})</h3>
 
             <ia:experimentsTable value="#{publicationController.publication.experiments}"/>

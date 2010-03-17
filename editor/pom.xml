@@ -172,6 +172,13 @@
             <artifactId>intact-solr</artifactId>
             <version>2.1.1</version>
         </dependency>
+
+        <!-- Bridges -->
+        <dependency>
+            <groupId>uk.ac.ebi.intact.bridges</groupId>
+            <artifactId>intact-citexplore</artifactId>
+            <version>2.0.12</version>
+        </dependency>
         
         <!-- PSIMI -->
         <dependency>

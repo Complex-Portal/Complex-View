@@ -22,10 +22,9 @@
     <ui:define name="content">
         <div id="menuSection" style="width:98%; position:fixed; margin-top: -10px; margin-left:-10px">
             <ui:insert name="menubar">
-
                 <p:menubar>
                     <p:submenu label="Publication">
-                        <p:submenu label="New    >" style="color:gray"/>
+                        <p:submenu label="New" onclick="newPublicationDlg.show()"/>
                         <p:submenu label="Open by PMID" onclick="openByAcDlg.show()"/>
                     </p:submenu>
                     <p:submenu label="Experiments" rendered="#{publicationController.publication != null}"/>
@@ -43,19 +42,7 @@
     </ui:define>
 
     <ui:define name="dialogs">
-           <p:dialog header="Open by PMID" width="300px" widgetVar="openByAcDlg" visible="false" draggable="false"
-                   modal="true" fixedCenter="true">
-
-            <h:panelGrid columns="2" style="margin-bottom:10px">
-                <h:form>
-                <h:outputLabel for="pmid" value="PMID:"/>
-                <h:inputText id="pmid" value="#{publicationController.openQuery}"/>
-
-                <h:commandButton value="Open" actionListener="#{publicationController.openByPmid}" action="/curate/publication"/>
-                </h:form>
-            </h:panelGrid>
-
-        </p:dialog>
+        <ui:include src="menu_dialogs.xhtml"/>
     </ui:define>
 
 </ui:composition>
