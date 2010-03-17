@@ -42,7 +42,7 @@ public class ApplicationInitializer implements InitializingBean {
         User admin = usersDaoFactory.getUserDao().getByLogin( "admin" );
         if( admin == null ) {
             admin = new User( "admin", "N/A", "N/A", "intact-admin@ebi.ac.uk" );
-            admin.setPassword( "admin" );
+            admin.setPassword( "d033e22ae348aeb5660fc2140aec35850c4da997" );
             usersDaoFactory.getUserDao().persist( admin );
 
             final Role adminRole = usersDaoFactory.getRoleDao().getRoleByName( "ADMIN" );
