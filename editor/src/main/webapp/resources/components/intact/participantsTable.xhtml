@@ -19,19 +19,19 @@
                 paginator="true" rows="10" lazy="true" dynamic="true">
                 <p:column>
                 <f:facet name="header">
-                    AC
+                    <h:outputText value="AC"/>
                 </f:facet>
                 <h:outputText value="#{participant.ac}"/>
             </p:column>
                 <p:column>
                 <f:facet name="header">
-                    Shorlabel
+                    <h:outputText value="Shortlabel"/>
                 </f:facet>
                     <h:outputText value="#{participant.shortLabel}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    Type
+                    <h:outputText value="Type"/>
                 </f:facet>
                 <h:outputText value="#{participant.interactor.cvInteractorType.shortLabel}"/>
             </p:column>

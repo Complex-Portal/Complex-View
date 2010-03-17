@@ -19,7 +19,7 @@
                      paginator="true" rows="10" lazy="true" dynamic="true">
             <p:column>
                 <f:facet name="header">
-                    AC
+                    <h:outputText value="AC"/>
                 </f:facet>
                 <h:link outcome="/curate/interaction" value="#{interaction.ac}" includeViewParams="true">
                     <f:param name="ac" value="#{interaction.ac}"/>
@@ -27,19 +27,19 @@
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    Shorlabel
+                    <h:outputText value="Shortlabel"/>
                 </f:facet>
                 <h:outputText value="#{interaction.shortLabel}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    Type
+                    <h:outputText value="Type"/>
                 </f:facet>
                 <h:outputText value="#{interaction.cvInteractionType.shortLabel}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    # Participants
+                    <h:outputText value="# Participants"/>
                 </f:facet>
                 <h:outputText value="#{interactionController.countParticipantsByInteractionAc(interaction.ac)}"/>
             </p:column>

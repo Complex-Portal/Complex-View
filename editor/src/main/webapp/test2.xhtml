@@ -11,31 +11,32 @@
 </h:head>
 <h:body>
 
-   <p:dataTable var="publication" value="#{dashboardController.allPublications}"
-                paginator="true" rows="10">
-            <p:column>
-                <f:facet name="header">
-                    Shortlabel
-                </f:facet>
-                <h:outputText value="#{publication.shortLabel} "/>
-            </p:column>
+    <h:form>
 
+   <p:dataTable id="pubTable" var="publication" value="#{dashboardController.allPublications}"
+                paginator="true" rows="10" dynamic="true" lazy="true">
             <p:column>
                 <f:facet name="header">
-                    Full name
+                    <h:outputText value="Creator"/>
                 </f:facet>
-                <h:outputText value="#{publication.fullName} "/>
+                <h:outputText value="#{publication.creator}"/>
             </p:column>
-
             <p:column>
                 <f:facet name="header">
-                    Updated
+                    <h:outputText value="Created"/>
                 </f:facet>
-                <h:outputText value="#{publication.updated} "/>
+                <h:outputText value="#{publication.created}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="updated"/>
+                </f:facet>
+                <h:outputText value="#{publication.updated}"/>
             </p:column>
         </p:dataTable>
 
     <br/>
+    </h:form>
 </h:body>
 
 </f:view>

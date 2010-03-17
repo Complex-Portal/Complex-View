@@ -25,11 +25,11 @@
 
         <h3>All the publications (#{dashboardController.allPublications.rowCount})</h3>
 
-        <p:dataTable var="publication" value="#{dashboardController.allPublications}"
+        <p:dataTable id="pubTable" var="publication" value="#{dashboardController.allPublications}"
                 paginator="true" rows="10" dynamic="true" lazy="true">
             <p:column>
                 <f:facet name="header">
-                    Publication ID
+                    <h:outputText value="Publication ID"/>
                 </f:facet>
                 <ot:separateConversationContext>
                     <h:link outcome="/curate/publication" value="#{publication.shortLabel}" includeViewParams="true">
@@ -39,19 +39,19 @@
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    Creator
+                    <h:outputText value="Creator"/>
                 </f:facet>
                 <h:outputText value="#{publication.creator}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    Created
+                    <h:outputText value="Created"/>
                 </f:facet>
                 <h:outputText value="#{publication.created}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    Updated
+                    <h:outputText value="updated"/>
                 </f:facet>
                 <h:outputText value="#{publication.updated}"/>
             </p:column>
