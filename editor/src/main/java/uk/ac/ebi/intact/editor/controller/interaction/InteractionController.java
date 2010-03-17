@@ -60,15 +60,13 @@ public class InteractionController extends JpaAwareController {
         if (ac != null) {
             if (interaction == null || !ac.equals(interaction.getAc())) {
                 interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc(ac);
+
+                participantDataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+                    "select c from Component c where c.interaction.ac = '"+ac+"'",
+                    "select count(c) from Component c where c.interaction.ac = '"+ac+"'");
             }
         } else {
             ac = interaction.getAc();
-        }
-
-        if (participantDataModel == null) {
-            participantDataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
-                    "select c from Component c where c.interaction.ac = '"+ac+"'",
-                    "select count(c) from Component c where c.interaction.ac = '"+ac+"'");
         }
 
         // check if the publication or experiment are null in their controlles (this happens when the interaction

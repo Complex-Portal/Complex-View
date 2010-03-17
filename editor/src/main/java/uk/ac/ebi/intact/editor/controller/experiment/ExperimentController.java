@@ -54,15 +54,13 @@ public class ExperimentController extends JpaAwareController {
         if (ac != null) {
             if (experiment == null || !ac.equals(experiment.getAc())) {
                 experiment = IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao().getByAc(ac);
+
+                interactionDataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+                    "select i from InteractionImpl i join i.experiments as exp where exp.ac = '"+ac+"'",
+                    "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '"+ac+"'");
             }
         } else {
             ac = experiment.getAc();
-        }
-
-        if (interactionDataModel == null) {
-            interactionDataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
-                    "select i from InteractionImpl i join i.experiments as exp where exp.ac = '"+ac+"'",
-                    "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '"+ac+"'");
         }
 
         if (publicationController.getPublication() == null) {

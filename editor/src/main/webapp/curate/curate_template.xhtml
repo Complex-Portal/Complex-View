@@ -25,8 +25,8 @@
 
                 <p:menubar>
                     <p:submenu label="Publication">
-                        <p:submenu label="New    >"/>
-                        <p:submenu label="Open by AC" onclick="openByAcDlg.show()"/>
+                        <p:submenu label="New    >" style="color:gray"/>
+                        <p:submenu label="Open by PMID" onclick="openByAcDlg.show()"/>
                     </p:submenu>
                     <p:submenu label="Experiments" rendered="#{publicationController.publication != null}"/>
                     <p:submenu label="Interactions" rendered="#{publicationController.publication != null}"/>
