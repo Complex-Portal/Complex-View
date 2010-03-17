@@ -36,7 +36,15 @@
             </ui:insert>
         </div>
 
-        <p:dialog header="Open by PMID" width="300px" widgetVar="openByAcDlg" visible="false">
+        <div style="width:100%; padding-top:30px">
+            <ui:insert name="curateContent"/>
+        </div>
+
+    </ui:define>
+
+    <ui:define name="dialogs">
+           <p:dialog header="Open by PMID" width="300px" widgetVar="openByAcDlg" visible="false" draggable="false"
+                   modal="true" fixedCenter="true">
 
             <h:panelGrid columns="2" style="margin-bottom:10px">
                 <h:form>
@@ -48,11 +56,6 @@
             </h:panelGrid>
 
         </p:dialog>
-
-        <div style="width:100%; padding-top:30px">
-            <ui:insert name="curateContent"/>
-        </div>
-
     </ui:define>
 
 </ui:composition>
