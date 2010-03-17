@@ -58,6 +58,10 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException( "Unknown user or incorrect password." );
         }
 
+        if( user.isDisabled() ) {
+            throw new DisabledException( "User " + user.getLogin() + " has been disabled, please contact the IntAct team." );
+        }
+
         UserSessionController userSessionController = (UserSessionController) applicationContext.getBean("userSessionController");
 
         if (log.isInfoEnabled()) log.info("Authentication successful for user: "+authentication.getPrincipal());
