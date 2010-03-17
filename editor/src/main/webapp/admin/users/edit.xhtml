@@ -2,7 +2,6 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
 
                 template="/admin/admin_template.xhtml">
@@ -18,9 +17,10 @@
 
         <h:panelGrid columns="2">
             <h:outputLabel value="Login:"/>
-            <h:inputText value="#{userAdminController.user.login}" required="true" />
+            <h:inputText value="#{userAdminController.user.login}" required="true" requiredMessage="You must enter a login" />
 
             <h:outputLabel value="Password:"/>
+
             <h:inputText value="#{userAdminController.user.password}" />
 
             <h:outputLabel value="Disabled:"/>
@@ -33,7 +33,7 @@
             <h:inputText value="#{userAdminController.user.lastName}"/>
 
             <h:outputLabel value="Email:"/>
-            <h:inputText value="#{userAdminController.user.email}" required="true" />
+            <h:inputText value="#{userAdminController.user.email}" required="true" requiredMessage="You must enter an email address" />
 
             <h:outputLabel value="Role(s):"/>
             <p:pickList value="#{userAdminController.roles}" var="role"
