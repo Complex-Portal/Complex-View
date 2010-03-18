@@ -25,6 +25,7 @@
             <h2>Publication Details</h2>
 
             <p:outputPanel id="basicInfoPanel">
+
             <h:panelGrid columns="2">
                 <h:outputLabel value="AC: " for="acTxt"/>
                 <h:inputText id="acTxt" value="#{publicationController.publication.ac}"
@@ -33,8 +34,19 @@
                 <h:outputLabel value="Identifier: " for="idTxt"/>
                 <h:panelGroup>
                     <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
-                                 size="10" required="true"/>
-                    <h:commandButton value="Auto-complete" actionListener="#{publicationController.doFormAutocomplete}"/>
+                                 size="10" required="true" onkeyup="enableAutocomplete()"/>
+
+                    <p:remoteCommand name="enableAutocomplete" update="autocompleteBtn" async="true">
+                        <f:setPropertyActionListener value="#{true}" target="#{requestScope.autocompleteEnabled}" />
+                    </p:remoteCommand>
+                    
+                    <p:commandButton id="autocompleteBtn" value="Auto-complete" disabled="#{not requestScope.autocompleteEnabled}"
+                                     actionListener="#{publicationController.doFormAutocomplete}" async="true"
+                                     update="basicInfoPanel,northUnit,growl">
+                        <p:confirmDialog yesLabel="Auto-complete" noLabel="Not now" width="300px" draggable="false" 
+                                message="Auto-completing an existing publication will update its cross references and annotations. Are you sure?"
+                                header="Auto-complete confirmation" severity="warn"/>
+                    </p:commandButton>
                 </h:panelGroup>
 
                 <h:outputLabel value="Title: " for="titleTxt"/>

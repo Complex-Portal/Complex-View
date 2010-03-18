@@ -13,12 +13,13 @@
 
     <h:body bgcolor="white">
         <h:form id="editorForm" prependId="false">
-
-            <p:growl showDetail="true"/>
+            
+            <p:growl id="growl" showDetail="true"/>
 
             <p:layout fullPage="true">
 
-                <p:layoutUnit position="north" resizable="false" minSize="100" maxSize="100">
+                <p:layoutUnit id="northUnit" position="north" resizable="false" minSize="100" maxSize="100">
+
                     <div id="topNavigation">
                         <ui:insert name="topNavigation">
                             <ui:include src="/shared/top_navigation_bar.xhtml"/>
@@ -45,7 +46,7 @@
 
                 </p:layoutUnit>
 
-                <p:layoutUnit position="center">
+                <p:layoutUnit id="centralUnit" position="center">
                     <div id="contentSection" style="width:100%">
                         <ui:insert name="content"/>
                     </div>
@@ -55,7 +56,8 @@
                     </div>
                 </p:layoutUnit>
 
-                <p:layoutUnit position="south" rendered="#{facesContext.application.projectStage == 'Development'}"
+                <p:layoutUnit id="southUnit" position="south"
+                              rendered="#{facesContext.application.projectStage == 'Development'}"
                               minSize="30" closable="false"
                               style="background-color:#FFFACD">
                      <b>DEVELOPMENT MODE</b>

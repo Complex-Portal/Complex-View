@@ -62,6 +62,7 @@ public class PublicationController extends JpaAwareController {
     }
 
     private void loadByAc() {
+
         if (ac != null) {
             if (publication == null || !ac.equals(publication.getAc())) {
                 publication = getDaoFactory().getPublicationDao().getByAc(ac);
