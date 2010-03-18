@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/admin/admin_template.xhtml">
+
+    <ui:define name="adminContent">
+
+         <h2>Compatibility Tools</h2>
+
+        <h:inputText value="#{compatibilityController.jobId}"/>
+        <p:commandButton value="Publication Sync" actionListener="#{compatibilityController.launchPublicationSync}" update="growl"/>
+
+    </ui:define>
+
+    <ui:define name="dialogs">
+
+
+
+    </ui:define>
+
+</ui:composition>

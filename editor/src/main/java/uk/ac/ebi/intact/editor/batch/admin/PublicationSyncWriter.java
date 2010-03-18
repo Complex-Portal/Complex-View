@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.controller;
+package uk.ac.ebi.intact.editor.batch.admin;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
+import org.springframework.batch.item.ItemWriter;
+import uk.ac.ebi.intact.model.Publication;
+
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller
-@Scope("singleton")
-public class AppController extends BaseController {
+public class PublicationSyncWriter implements ItemWriter<Publication> {
 
-    private String database;
+    @Override
+    public void write(List<? extends Publication> items) throws Exception {
+        for (Publication pub : items) {
+            System.out.println("PUBLICATION: "+pub.getShortLabel());
 
-    public AppController() {
-    }
-
-    public String getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(String database) {
-        this.database = database;
+            Thread.sleep(200);
+        }
     }
 }

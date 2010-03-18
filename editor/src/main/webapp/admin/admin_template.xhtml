@@ -22,6 +22,11 @@
             <ui:insert name="menubar">
 
                 <p:menubar effect="SLIDE" effectDuration="0">
+                     <p:submenu label="Admin">
+                         <p:menuitem label="">
+                            <h:link value="Job summary" outcome="/admin/jobSummary"/>
+                        </p:menuitem>
+                     </p:submenu>
                     <p:submenu label="Users">
                         <p:menuitem label="New">
                             <h:link value="New" outcome="/admin/users/edit" />
@@ -31,11 +36,13 @@
                         </p:menuitem>
                     </p:submenu>
                     <p:submenu label="DB Update">
-                        <p:menuitem label="CV Update"/>
-                        <p:menuitem label="UniProt Update"/>
-                        <p:menuitem label="ChEBI Update"/>
+                        <p:menuitem label="">
+                            <h:link value="Compatibility Tools" outcome="/admin/dbupdate/compatibility"/>
+                        </p:menuitem>
+                        <p:menuitem label="CV Update" style="color:#CDCDCD"/>
+                        <p:menuitem label="UniProt Update" style="color:#CDCDCD"/>
+                        <p:menuitem label="ChEBI Update" style="color:#CDCDCD"/>
                     </p:submenu>
-                    <p:submenu label="..."/>
                 </p:menubar>
 
             </ui:insert>

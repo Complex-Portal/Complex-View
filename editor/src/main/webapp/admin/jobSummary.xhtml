@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/admin/admin_template.xhtml">
+
+    <ui:define name="adminContent">
+
+        <h2>Job summary</h2>
+
+        <ui:repeat value="#{adminJobController.jobNames}" var="jobName">
+            <b>#{jobName}</b><br/>
+            <p:dataTable value="#{adminJobController.getRunningJobExecutions(jobName)}" var="jobExecution" >
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="ID"/>
+                    </f:facet>
+                    <h:outputText value="#{jobExecution.id}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Start time"/>
+                    </f:facet>
+                    <h:outputText value="#{jobExecution.startTime}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="End time"/>
+                    </f:facet>
+                    <h:outputText value="#{jobExecution.endTime}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Last updated"/>
+                    </f:facet>
+                    <h:outputText value="#{jobExecution.lastUpdated}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Status"/>
+                    </f:facet>
+                    <h:outputText value="#{jobExecution.status}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Exit code"/>
+                    </f:facet>
+                    <h:outputText value="#{jobExecution.exitStatus.exitCode}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Parameters"/>
+                    </f:facet>
+                    <h:outputText value="#{jobExecution.jobInstance.jobParameters}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Action"/>
+                    </f:facet>
+                    <h:commandLink value="Restart" actionListener="#{adminJobController.restart}">
+                        <f:param name="executionId" value="#{jobExecution.id}"/>
+                    </h:commandLink>
+                    &#160;
+                    <h:commandLink value="Stop" actionListener="#{adminJobController.stop}">
+                        <f:param name="executionId" value="#{jobExecution.id}"/>
+                    </h:commandLink>
+                </p:column>
+
+            </p:dataTable>
+
+        </ui:repeat>
+
+    </ui:define>
+
+</ui:composition>
