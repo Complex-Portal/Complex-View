@@ -76,21 +76,15 @@ public class PublicationController extends JpaAwareController {
     }
 
     private void loadExtraFields() {
-        if (publication.getFullName() == null && !publication.getExperiments().isEmpty()) {
-            publication.setFullName(publication.getExperiments().iterator().next().getFullName());
-        }
-
-        if (journal == null) journal = findAnnotationText(CvTopic.JOURNAL_MI_REF);
-        if (authors == null) authors = findAnnotationText(CvTopic.AUTHOR_LIST_MI_REF);
+        journal = findAnnotationText(CvTopic.JOURNAL_MI_REF);
+        authors = findAnnotationText(CvTopic.AUTHOR_LIST_MI_REF);
 
         if (authors != null) {
             firstAuthor = authors.split(" ")[0];
         }
 
-        if (year == 0) {
-            String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
-            if (strYear != null) year = Short.parseShort(strYear.trim());
-        }
+        String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
+        if (strYear != null) year = Short.parseShort(strYear.trim());
     }
 
     private String findAnnotationText(String topicId) {
@@ -98,14 +92,6 @@ public class PublicationController extends JpaAwareController {
 
         if (pubAnnot != null) {
             return pubAnnot.getAnnotationText();
-        }
-
-        if (!publication.getExperiments().isEmpty()) {
-            Annotation expAnnot = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(publication.getExperiments().iterator().next(), topicId);
-
-            if (expAnnot != null) {
-                return expAnnot.getAnnotationText();
-            }
         }
 
         return null;

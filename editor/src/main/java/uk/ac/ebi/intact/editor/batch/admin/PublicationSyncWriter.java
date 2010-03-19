@@ -15,9 +15,14 @@
  */
 package uk.ac.ebi.intact.editor.batch.admin;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ItemWriter;
-import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.model.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
@@ -26,12 +31,37 @@ import java.util.List;
  */
 public class PublicationSyncWriter implements ItemWriter<Publication> {
 
+    private static final Log log = LogFactory.getLog( PublicationSyncWriter.class );
+
+    @PersistenceContext(unitName = "intact-core-default")
+    private EntityManager entityManager;
+
     @Override
     public void write(List<? extends Publication> items) throws Exception {
         for (Publication pub : items) {
-            System.out.println("PUBLICATION: "+pub.getShortLabel());
 
-            Thread.sleep(200);
+            // copy xrefs
+            if (!pub.getExperiments().isEmpty() && pub.getXrefs().isEmpty()) {
+                if (log.isDebugEnabled()) log.debug("Updating publication: "+pub.getShortLabel());
+                Experiment exp = pub.getExperiments().iterator().next();
+
+                pub.setFullName(exp.getFullName());
+
+                for (ExperimentXref expXref : exp.getXrefs()) {
+                    PublicationXref pubXref = new PublicationXref(IntactContext.getCurrentInstance().getInstitution(),
+                            expXref.getCvDatabase(), expXref.getPrimaryId(), expXref.getSecondaryId(),
+                            expXref.getDbRelease(), expXref.getCvXrefQualifier());
+                    pub.addXref(pubXref);
+                    entityManager.merge(pubXref);
+                }
+
+                for (Annotation expAnnot : exp.getAnnotations()) {
+                    Annotation pubAnnot = new Annotation(IntactContext.getCurrentInstance().getInstitution(),
+                            expAnnot.getCvTopic(), expAnnot.getAnnotationText());
+                    pub.addAnnotation(pubAnnot);
+                    entityManager.merge(pubAnnot);
+                }
+            }
         }
     }
 }

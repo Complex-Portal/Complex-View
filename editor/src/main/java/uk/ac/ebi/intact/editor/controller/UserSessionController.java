@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.editor.controller;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.core.users.model.User;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -26,16 +27,16 @@ import org.springframework.stereotype.Controller;
 @Scope("session")
 public class UserSessionController extends BaseController {
 
-    private String currentUser;
+    private User currentUser;
 
     public UserSessionController() {
     }
 
-    public String getCurrentUser() {
+    public User getCurrentUser() {
         return currentUser;
     }
 
-    public void setCurrentUser(String currentUser) {
+    public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
     }
 }

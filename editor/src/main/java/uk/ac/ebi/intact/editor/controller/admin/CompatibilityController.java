@@ -43,13 +43,13 @@ public class CompatibilityController extends BaseController {
     @Resource(name = "editorJobLauncher")
     private JobLauncher jobLauncher;
 
-    private String jobId;
-
     public CompatibilityController() {
     }
 
     public void launchPublicationSync(ActionEvent evt) {
         Job job = getJob("publicationSyncJob");
+
+        String jobId = String.valueOf(System.currentTimeMillis());
         
         Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
         jobParameterMap.put("jobId", new JobParameter(jobId));
@@ -75,13 +75,5 @@ public class CompatibilityController extends BaseController {
 
     private Job getJob(String jobName) {
         return (Job) getSpringContext().getBean(jobName);
-    }
-
-    public String getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
     }
 }

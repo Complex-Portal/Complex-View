@@ -24,6 +24,7 @@ import org.springframework.security.*;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.context.UserContext;
 import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
@@ -45,6 +46,9 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private UserContext userContext;
+
     @Transactional( value="users", readOnly = true )
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if (log.isDebugEnabled()) {
@@ -55,6 +59,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
         final User user = usersDaoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );
 
         if( user == null || ! user.getPassword().equals( authentication.getCredentials() ) ) {
+            if (log.isDebugEnabled()) log.debug("Bad credentials for user: "+authentication.getPrincipal());
             throw new BadCredentialsException( "Unknown user or incorrect password." );
         }
 
@@ -66,7 +71,8 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
 
         if (log.isInfoEnabled()) log.info("Authentication successful for user: "+authentication.getPrincipal());
 
-        userSessionController.setCurrentUser(authentication.getPrincipal().toString());
+        userSessionController.setCurrentUser(user);
+        userContext.setUserId(user.getLogin().toUpperCase());
 
         Collection<GrantedAuthority> authorities = Lists.newArrayList();
         log.info( user.getLogin() + " roles: " + user.getRoles() );

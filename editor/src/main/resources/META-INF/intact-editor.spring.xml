@@ -18,22 +18,28 @@
         <property name="skipSchemaCheck" value="true"/>
     </bean>
 
-    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext" scope="session">
+    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext" scope="hybridSession">
         <property name="userId" value="EDITOR_USER"/>
-        <aop:scoped-proxy/>
+        <!--<aop:scoped-proxy/>-->
     </bean>
 
     <!-- Spring scopes -->
 
-    <!-- JSF 2.0 view scope -->
+
     <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
         <property name="scopes">
             <map>
+                <!-- JSF 2.0 view scope -->
                 <entry key="view">
                     <bean class="uk.ac.ebi.intact.editor.util.ViewScope"/>
                 </entry>
                 <entry key="flash">
                     <bean class="uk.ac.ebi.intact.editor.util.FlashScope"/>
+                </entry>
+
+                <!-- Custom scopes -->
+                <entry key="hybridSession">
+                    <bean class="uk.ac.ebi.intact.editor.util.HybridSessionThreadScope"/>
                 </entry>
             </map>
         </property>

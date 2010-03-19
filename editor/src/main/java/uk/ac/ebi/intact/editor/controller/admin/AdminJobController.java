@@ -16,7 +16,9 @@
 package uk.ac.ebi.intact.editor.controller.admin;
 
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobExecutionNotRunningException;
 import org.springframework.batch.core.launch.JobOperator;
@@ -57,6 +59,22 @@ public class AdminJobController extends BaseController{
 
     public List<JobExecution> getRunningJobExecutions(String jobName) {
         return new ArrayList<JobExecution>(jobExplorer.findRunningJobExecutions(jobName));
+    }
+
+    public List<JobInstance> getJobInstances(String jobName) {
+        return jobExplorer.getJobInstances(jobName, 0, 50);
+    }
+
+    public List<JobExecution> getJobExecutions(Long jobInstanceId) {
+        if (jobInstanceId > 0) {
+            JobInstance jobInstance = jobExplorer.getJobInstance(jobInstanceId);
+            return jobExplorer.getJobExecutions(jobInstance);
+        }
+        return new ArrayList<JobExecution>();
+    }
+
+    public List<StepExecution> getStepExecutions(JobExecution jobExecution) {
+        return new ArrayList<StepExecution>(jobExecution.getStepExecutions());
     }
 
     public void restart(ActionEvent evt) {

@@ -21,7 +21,7 @@
                      paginator="true" rows="10" dynamic="true" lazy="true">
             <p:column>
                 <f:facet name="header">
-                    Login
+                    <h:outputText value="Login"/>
                 </f:facet>
                 <ot:separateConversationContext>
                     <h:link outcome="/admin/users/edit" value="#{user.login}" includeViewParams="true">
@@ -31,25 +31,25 @@
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    First Name
+                    <h:outputText value="First Name"/>
                 </f:facet>
                 <h:outputText value="#{user.firstName}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    Last Name
+                    <h:outputText value="Last Name"/>
                 </f:facet>
                 <h:outputText value="#{user.lastName}"/>
             </p:column>
             <!--<p:column>-->
                 <!--<f:facet name="header">-->
-                    <!--Password-->
+                    <!--<h:outputText value="Password"/>-->
                 <!--</f:facet>-->
                 <!--<h:outputText value="#{user.password}"/>-->
             <!--</p:column>-->
             <p:column>
                 <f:facet name="header">
-                    Roles
+                    <h:outputText value="Roles"/>
                 </f:facet>
                 <ui:repeat value="#{userAdminController.createRoleList( user )}" var="role" varStatus="status">
                       <h:outputText value="#{role.name}"/>

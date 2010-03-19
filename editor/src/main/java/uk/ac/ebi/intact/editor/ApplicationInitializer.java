@@ -41,7 +41,7 @@ public class ApplicationInitializer implements InitializingBean {
     private void createDefaultUsers() {
         User admin = usersDaoFactory.getUserDao().getByLogin( "admin" );
         if( admin == null ) {
-            admin = new User( "admin", "N/A", "N/A", "intact-admin@ebi.ac.uk" );
+            admin = new User( "admin", "Admin", "N/A", "intact-admin@ebi.ac.uk" );
             admin.setPassword( "d033e22ae348aeb5660fc2140aec35850c4da997" );
             usersDaoFactory.getUserDao().persist( admin );
 
