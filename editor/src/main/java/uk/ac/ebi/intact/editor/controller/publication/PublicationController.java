@@ -84,7 +84,7 @@ public class PublicationController extends JpaAwareController {
         }
 
         String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
-        if (strYear != null) year = Short.parseShort(strYear.trim());
+        year = Short.parseShort(strYear.trim());
     }
 
     private String findAnnotationText(String topicId) {

@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+  <composite:interface>
+    <composite:attribute name="value"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <p:dataTable var="xref" value="#{cc.attrs.value}">
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Primary ID"/>
+                </f:facet>
+                <h:outputText value="#{xref.primaryId}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Database"/>
+                </f:facet>
+                <h:outputText value="#{xref.cvDatabase.shortLabel}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Qualifier"/>
+                </f:facet>
+                <h:outputText value="#{xref.cvXrefQualifier.shortLabel}" rendered="#{xref.cvXrefQualifier != null}"/>
+            </p:column>
+        </p:dataTable>
+
+    </composite:implementation>
+
+
+
+
+</ui:composition>

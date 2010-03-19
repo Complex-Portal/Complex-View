@@ -32,6 +32,17 @@
            Creator: #{experimentController.experiment.creator}<br/>
            AC: #{experimentController.ac}
 
+            <h3>Publication properties</h3>
+
+            <h4>Xrefs</h4>
+            <ia:xrefsTable value="#{publicationController.publication.xrefs}"/>
+
+            <h4>Annotations</h4>
+            <ia:annotationsTable value="#{publicationController.publication.annotations}"/>
+
+            <h4>Aliases</h4>
+            <ia:aliasTable value="#{publicationController.publication.aliases}"/>
+
             <h3>Interactions (#{experimentController.countInteractionsByExperimentAc(experimentController.ac)})</h3>
 
             <ia:interactionsTable value="#{experimentController.interactionDataModel}"/>

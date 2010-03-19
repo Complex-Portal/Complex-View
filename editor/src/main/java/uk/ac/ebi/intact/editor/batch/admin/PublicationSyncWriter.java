@@ -41,27 +41,49 @@ public class PublicationSyncWriter implements ItemWriter<Publication> {
         for (Publication pub : items) {
 
             // copy xrefs
-            if (!pub.getExperiments().isEmpty() && pub.getXrefs().isEmpty()) {
+            if (!pub.getExperiments().isEmpty()) {
                 if (log.isDebugEnabled()) log.debug("Updating publication: "+pub.getShortLabel());
                 Experiment exp = pub.getExperiments().iterator().next();
 
                 pub.setFullName(exp.getFullName());
 
                 for (ExperimentXref expXref : exp.getXrefs()) {
-                    PublicationXref pubXref = new PublicationXref(IntactContext.getCurrentInstance().getInstitution(),
-                            expXref.getCvDatabase(), expXref.getPrimaryId(), expXref.getSecondaryId(),
-                            expXref.getDbRelease(), expXref.getCvXrefQualifier());
-                    pub.addXref(pubXref);
-                    entityManager.merge(pubXref);
+                    if (!hasXrefWithPrimaryId(expXref.getPrimaryId(),pub)) {
+                        PublicationXref pubXref = new PublicationXref(IntactContext.getCurrentInstance().getInstitution(),
+                                expXref.getCvDatabase(), expXref.getPrimaryId(), expXref.getSecondaryId(),
+                                expXref.getDbRelease(), expXref.getCvXrefQualifier());
+                        pub.addXref(pubXref);
+                        entityManager.merge(pubXref);
+                    }
                 }
 
                 for (Annotation expAnnot : exp.getAnnotations()) {
-                    Annotation pubAnnot = new Annotation(IntactContext.getCurrentInstance().getInstitution(),
-                            expAnnot.getCvTopic(), expAnnot.getAnnotationText());
-                    pub.addAnnotation(pubAnnot);
-                    entityManager.merge(pubAnnot);
+                    if (!hasAnnotWithTopicId(expAnnot.getCvTopic().getIdentifier(), pub)) {
+                        Annotation pubAnnot = new Annotation(IntactContext.getCurrentInstance().getInstitution(),
+                                expAnnot.getCvTopic(), expAnnot.getAnnotationText());
+                        pub.addAnnotation(pubAnnot);
+                        entityManager.merge(pubAnnot);
+                    }
                 }
             }
         }
+    }
+
+    private boolean hasXrefWithPrimaryId(String primaryId, Publication pub) {
+        for (Xref xref : pub.getXrefs()) {
+            if (primaryId.equals(xref.getPrimaryId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasAnnotWithTopicId(String topicId, Publication pub) {
+        for (Annotation annot : pub.getAnnotations()) {
+            if (topicId.equals(annot.getCvTopic().getIdentifier())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
