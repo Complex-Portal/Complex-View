@@ -40,7 +40,6 @@
 
     </properties>
 
-
     <build>
         <finalName>${artifactId}-${version}</finalName>
 
@@ -52,8 +51,6 @@
         </resources>
 
         <plugins>
-          
-            
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
@@ -127,12 +124,12 @@
         <profile>
             <id>h2</id>
             <properties>
-                <db.url>jdbc:h2:/tmp/laladb</db.url>
+                <db.url>jdbc:h2:editordb;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.url>
                 <db.driver>org.h2.Driver</db.driver>
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <db.user>sa</db.user>
                 <db.password></db.password>
-                <db.hbm2ddl>create-drop</db.hbm2ddl>
+                <db.hbm2ddl>update</db.hbm2ddl>
             </properties>
             <dependencies>
                 <dependency>
