@@ -9,12 +9,12 @@
 
     <!-- INTERFACE -->
   <composite:interface>
-    <composite:attribute name="value"/>
+    <composite:attribute name="value" required="true"/>
+    <composite:attribute name="render"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
     <composite:implementation>
-
         <p:dataTable var="annotation" value="#{cc.attrs.value}">
             <p:column>
                 <f:facet name="header">
@@ -26,7 +26,12 @@
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                <h:outputText value="#{annotation.annotationText}" style="#{annotation.ac == null? 'color: green' : ''}"/>
+                <p:inplace effectSpeed="fast">
+                    <h:inputText value="#{annotation.annotationText}" size="50"
+                                 style="#{annotation.ac == null? 'color: green' : ''}">
+                        <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
+                    </h:inputText>
+                </p:inplace>
             </p:column>
         </p:dataTable>
 

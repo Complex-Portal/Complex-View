@@ -36,8 +36,6 @@
     </ui:define>
 
     <ui:define name="content">
-        <p:hotkey bind="alt+s" actionListener="#{publicationController.doSave}"
-                  update="centralUnit,northUnit,growl"/>
         <p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>
         <p:hotkey bind="alt+o" oncomplete="openByPmidDlg.show()"/>
 

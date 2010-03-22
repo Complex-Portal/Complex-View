@@ -11,6 +11,9 @@
 
 
     <ui:define name="curateContent">
+        <p:hotkey bind="alt+s" actionListener="#{publicationController.doSave}"
+                  update="publicationDetails,northUnit,growl"/>
+
         <f:metadata>
             <f:viewParam name="ac" value="#{publicationController.ac}"/>
             <f:event type="preRenderView" listener="#{publicationController.loadData}"/>
@@ -24,111 +27,123 @@
 
             <h2>Publication Details</h2>
 
+            <p:outputPanel id="publicationDetails">
+
+                <p:outputPanel id="basic">
+
             <p:outputPanel id="acceptedPanel" rendered="#{not empty publicationController.acceptedMessage}">
                 <ia:panelMessage level="info">
-                        This publication is <b>accepted</b>. #{publicationController.acceptedMessage}
+                    This publication is <b>accepted</b>. #{publicationController.acceptedMessage}
                 </ia:panelMessage>
             </p:outputPanel>
 
             <p:outputPanel id="onHoldWarningPanel" rendered="#{not empty publicationController.onHold}">
                 <ia:panelMessage level="warn">
-                        This publication is <b>on-hold</b>. Reason: #{publicationController.onHold}
-                        &#160;&#160;&#160;
-                        <p:commandButton value="Clear" onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
-                                update="onHoldWarningPanel,annotationsPanel"/>
+                    This publication is <b>on-hold</b>. Reason: #{publicationController.onHold}
+                    &#160;&#160;&#160;
+                    <p:commandButton value="Clear"
+                                     onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
+                                     update="onHoldWarningPanel,annotationsPanel"/>
                 </ia:panelMessage>
             </p:outputPanel>
 
-            <p:outputPanel id="publicationDetails" >
+                    <ia:panelFormLayout id="basicInfoPanel" columns="1">
+                        <h:outputLabel value="AC: " for="acTxt"/>
+                        <h:inputText id="acTxt" value="#{publicationController.publication.ac}"
+                                     size="10" disabled="true"/>
 
-            <ia:panelFormLayout id="basicInfoPanel" columns="1">
-                <h:outputLabel value="AC: " for="acTxt"/>
-                <h:inputText id="acTxt" value="#{publicationController.publication.ac}"
-                             size="10" disabled="true"/>
+                        <h:outputLabel value="Identifier: " for="idTxt"/>
+                        <h:panelGroup>
+                            <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
+                                         size="10" required="true" onkeyup="enableAutocomplete()"/>
 
-                <h:outputLabel value="Identifier: " for="idTxt"/>
-                <h:panelGroup>
-                    <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
-                                 size="10" required="true" onkeyup="enableAutocomplete()"/>
+                            <p:remoteCommand name="enableAutocomplete" update="autocompleteBtn" async="true">
+                                <f:setPropertyActionListener value="#{true}"
+                                                             target="#{requestScope.autocompleteEnabled}"/>
+                            </p:remoteCommand>
 
-                    <p:remoteCommand name="enableAutocomplete" update="autocompleteBtn" async="true">
-                        <f:setPropertyActionListener value="#{true}" target="#{requestScope.autocompleteEnabled}" />
-                    </p:remoteCommand>
-                    
-                    <p:commandButton id="autocompleteBtn" value="Auto-complete" disabled="#{not requestScope.autocompleteEnabled}"
-                                     actionListener="#{publicationController.doFormAutocomplete}" async="true"
-                                     update="publicationDetails,northUnit,growl">
-                        <p:confirmDialog yesLabel="Auto-complete" noLabel="Not now" width="300px" draggable="false" 
-                                message="Auto-completing an existing publication will update its cross references and annotations. Are you sure?"
-                                header="Auto-complete confirmation" severity="warn"/>
-                    </p:commandButton>
-                </h:panelGroup>
+                            <p:commandButton id="autocompleteBtn" value="Auto-complete"
+                                             disabled="#{not requestScope.autocompleteEnabled}"
+                                             actionListener="#{publicationController.doFormAutocomplete}" async="true"
+                                             update="publicationDetails,northUnit,growl">
+                                <p:confirmDialog yesLabel="Auto-complete" noLabel="Not now" width="300px"
+                                                 draggable="false"
+                                                 message="Auto-completing an existing publication will update its cross references and annotations. Are you sure?"
+                                                 header="Auto-complete confirmation" severity="warn"/>
+                            </p:commandButton>
+                        </h:panelGroup>
 
-                <h:outputLabel value="Title: " for="titleTxt"/>
-                <h:inputText id="titleTxt" value="#{publicationController.publication.fullName}" size="80"/>
+                        <h:outputLabel value="Title: " for="titleTxt"/>
+                        <h:inputText id="titleTxt" value="#{publicationController.publication.fullName}" size="80"/>
 
-                <h:outputLabel value="Authors: " for="authorsTxt"/>
-                <h:inputText id="authorsTxt" value="#{publicationController.authors}" size="80">
-                    <f:ajax event="valueChange" render=":editorForm:annotationsPanel"/>
-                </h:inputText>
+                        <h:outputLabel value="Authors: " for="authorsTxt"/>
+                        <h:inputText id="authorsTxt" value="#{publicationController.authors}" size="80">
+                            <f:ajax event="valueChange" render=":editorForm:annotationsPanel"/>
+                        </h:inputText>
 
-                <h:outputLabel value="Journal: " for="journalTxt"/>
-                <h:inputText id="journalTxt" value="#{publicationController.journal}" size="50">
-                    <f:ajax event="valueChange" render=":editorForm:annotationsPanel"/>
-                </h:inputText>
+                        <h:outputLabel value="Journal: " for="journalTxt"/>
+                        <h:inputText id="journalTxt" value="#{publicationController.journal}" size="50">
+                            <f:ajax event="valueChange" render=":editorForm:annotationsPanel"/>
+                        </h:inputText>
 
-                <h:outputLabel value="Year: " for="yearTxt"/>
-                <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4">
-                    <f:convertNumber pattern="#"/>
-                    <f:ajax event="valueChange" render=":editorForm:annotationsPanel"/>
-                </h:inputText>
+                        <h:outputLabel value="Year: " for="yearTxt"/>
+                        <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4">
+                            <f:convertNumber pattern="#"/>
+                            <f:ajax event="valueChange" render=":editorForm:annotationsPanel"/>
+                        </h:inputText>
 
-                <h:outputLabel value="Dataset(s): " for="datasetsMenu"/>
-                <h:panelGroup>
-                    <ui:param name="datasetHeight" value="#{18 * fn:length(publicationController.datasetsSelectItems)}"/>
-                    <h:selectManyMenu id="datasetsMenu" value="#{publicationController.datasetsToRemove}"
-                                      rendered="#{not empty publicationController.datasetsSelectItems}"
-                                      style="height:#{datasetHeight != 0? datasetHeight : 18}px">
-                        <f:selectItems value="#{publicationController.datasetsSelectItems}"/>
-                    </h:selectManyMenu>
+                        <h:outputLabel value="Dataset(s): " for="datasetsMenu"/>
+                        <h:panelGroup>
+                            <ui:param name="datasetHeight"
+                                      value="#{18 * fn:length(publicationController.datasetsSelectItems)}"/>
+                            <h:selectManyMenu id="datasetsMenu" value="#{publicationController.datasetsToRemove}"
+                                              rendered="#{not empty publicationController.datasetsSelectItems}"
+                                              style="height:#{datasetHeight != 0? datasetHeight : 18}px">
+                                <f:selectItems value="#{publicationController.datasetsSelectItems}"/>
+                            </h:selectManyMenu>
 
-                    <p:commandButton value="Remove"  actionListener="#{publicationController.removeDatasets}"
-                                     update="datasetsMenu,annotationsPanel" rendered="#{not empty publicationController.datasetsSelectItems}"/>
-                    <h:selectOneMenu value="#{publicationController.datasetToAdd}">
-                        <f:selectItems value="#{datasetPopulator.allDatasetSelectItems}"/>
-                    </h:selectOneMenu>
-                    <p:commandButton value="Add" actionListener="#{publicationController.addDataset}" 
-                                     update="datasetsMenu,annotationsPanel"/>
-                </h:panelGroup>
+                            <p:commandButton value="Remove" actionListener="#{publicationController.removeDatasets}"
+                                             update="datasetsMenu,annotationsPanel"
+                                             rendered="#{not empty publicationController.datasetsSelectItems}"/>
+                            <h:selectOneMenu value="#{publicationController.datasetToAdd}">
+                                <f:selectItems value="#{datasetPopulator.allDatasetSelectItems}"/>
+                            </h:selectOneMenu>
+                            <p:commandButton value="Add" actionListener="#{publicationController.addDataset}"
+                                             update="datasetsMenu,annotationsPanel"/>
+                        </h:panelGroup>
 
-                <h:outputLabel value="On hold: " for="onHoldTxt"/>
-                <h:panelGroup>
-                    <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="50">
-                        <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:onHoldWarningPanel"/>
-                    </h:inputText>
-                    <p:commandButton value="Clear" onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
-                                update="onHoldWarningPanel,annotationsPanel"/>
-                </h:panelGroup>
-            </ia:panelFormLayout>
+                        <h:outputLabel value="On hold: " for="onHoldTxt"/>
+                        <h:panelGroup>
+                            <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="50">
+                                <f:ajax event="valueChange"
+                                        render=":editorForm:annotationsPanel :editorForm:onHoldWarningPanel"/>
+                            </h:inputText>
+                            <p:commandButton value="Clear"
+                                             onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
+                                             update="onHoldWarningPanel,annotationsPanel"/>
+                        </h:panelGroup>
+                    </ia:panelFormLayout>
 
-            <h3>Publication properties</h3>
+                </p:outputPanel>
 
-            <h4>Xrefs</h4>
-            <ia:xrefsTable value="#{publicationController.publication.xrefs}"/>
+                <h3>Publication properties</h3>
 
-            <h4>Annotations</h4>
-            <p:outputPanel id="annotationsPanel">
-                <ia:annotationsTable value="#{publicationController.publication.annotations}"/>
+                <h4>Xrefs</h4>
+                <ia:xrefsTable value="#{publicationController.publication.xrefs}"/>
+
+                <h4>Annotations</h4>
+                <p:outputPanel id="annotationsPanel">
+                    <ia:annotationsTable value="#{publicationController.publication.annotations}"
+                                         render=":editorForm:basic"/>
+                </p:outputPanel>
+
+                <h3>Experiments (#{fn:length(publicationController.publication.experiments)})</h3>
+
+                <ia:experimentsTable value="#{publicationController.publication.experiments}"/>
+
             </p:outputPanel>
 
-            <h3>Experiments (#{fn:length(publicationController.publication.experiments)})</h3>
-
-            <ia:experimentsTable value="#{publicationController.publication.experiments}"/>
-
-            </p:outputPanel>
-
-         </h:panelGroup>
-
+        </h:panelGroup>
 
 
     </ui:define>
