@@ -23,6 +23,7 @@ import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectPopulator;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvTopic;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import java.util.Iterator;
 
@@ -40,8 +41,8 @@ public class AnnotatedObjectHelper extends JpaAwareController {
     public AnnotatedObjectHelper() {
     }
 
-    public void addAnnotation(AnnotatedObject parent, String topicId, String text) {
-        CvTopic dataset = cvObjectPopulator.findCvObject(CvTopic.class, topicId);
+    public void addAnnotation(AnnotatedObject parent, String topicIdOrLabel, String text) {
+        CvTopic dataset = cvObjectPopulator.findCvObject(CvTopic.class, topicIdOrLabel);
 
         Annotation annotation = new Annotation(getIntactContext().getInstitution(), dataset);
         annotation.setAnnotationText(text);
@@ -49,14 +50,66 @@ public class AnnotatedObjectHelper extends JpaAwareController {
         parent.addAnnotation(annotation);
     }
 
-    public void removeAnnotation(AnnotatedObject parent, String topicId, String text) {
+    public void replaceOrCreateAnnotation(AnnotatedObject parent, String topicOrShortLabel, String text) {
+        // modify if exists
+        boolean exists = false;
+
+        for (Annotation annotation : parent.getAnnotations()) {
+            if (topicOrShortLabel.equals(annotation.getCvTopic().getIdentifier())
+                    || topicOrShortLabel.equals(annotation.getCvTopic().getShortLabel())) {
+                if (!text.equals(annotation.getAnnotationText())) {
+                    annotation.setAnnotationText(text);
+                }
+                exists = true;
+            }
+        }
+
+        // create if not exists
+        if (!exists) {
+            addAnnotation(parent, topicOrShortLabel, text);
+        }
+    }
+
+    public void removeAnnotation(AnnotatedObject parent, String topicIdOrLabel) {
         Iterator<Annotation> iterator = parent.getAnnotations().iterator();
 
         while (iterator.hasNext()) {
             Annotation annotation = iterator.next();
-            if (topicId.equals(annotation.getCvTopic().getIdentifier()) && text.equals(annotation.getAnnotationText())) {
+            if (topicIdOrLabel.equals(annotation.getCvTopic().getIdentifier()) ||
+                    topicIdOrLabel.equals(annotation.getCvTopic().getShortLabel())) {
                 iterator.remove();
             }
         }
+    }
+
+    public void removeAnnotation(AnnotatedObject parent, String topicIdOrLabel, String text) {
+        Iterator<Annotation> iterator = parent.getAnnotations().iterator();
+
+        while (iterator.hasNext()) {
+            Annotation annotation = iterator.next();
+            if ((topicIdOrLabel.equals(annotation.getCvTopic().getIdentifier()) || topicIdOrLabel.equals(annotation.getCvTopic().getShortLabel()))
+                    && text.equals(annotation.getAnnotationText())) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public void setAnnotation(AnnotatedObject parent, String topicIdOrLabel, Object value) {
+        if (value != null && !value.toString().isEmpty())  {
+            replaceOrCreateAnnotation(parent, topicIdOrLabel, value.toString());
+        } else {
+            removeAnnotation(parent, topicIdOrLabel);
+        }
+    }
+
+    public String findAnnotationText(AnnotatedObject parent, String topicId) {
+        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(parent, topicId);
+
+        if (annotation != null) {
+            return annotation.getAnnotationText();
+        }
+
+        return null;
+
     }
 }

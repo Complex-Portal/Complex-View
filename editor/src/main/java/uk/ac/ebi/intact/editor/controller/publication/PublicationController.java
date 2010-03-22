@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.controller.publication;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -29,7 +31,6 @@ import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Publication;
-import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -48,16 +49,14 @@ import java.util.List;
 @ConversationName("general")
 public class PublicationController extends JpaAwareController {
 
+    private static final Log log = LogFactory.getLog( PublicationController.class );
+
     private Publication publication;
     private String ac;
 
     private Date lastSaved;
 
     private String identifier;
-    private String authors;
-    private String firstAuthor;
-    private String journal;
-    private short year;
 
     private String datasetToAdd;
     private String[] datasetsToRemove;
@@ -84,7 +83,9 @@ public class PublicationController extends JpaAwareController {
             if (publication == null || !ac.equals(publication.getAc())) {
                 publication = getDaoFactory().getPublicationDao().getByAc(ac);
 
-                loadExtraFields();
+                if (publication != null) {
+                    loadFormFields();
+                }
 
             }
         } else if (publication != null) {
@@ -92,36 +93,15 @@ public class PublicationController extends JpaAwareController {
         }
     }
 
-    private void loadExtraFields() {
-        journal = findAnnotationText(CvTopic.JOURNAL_MI_REF);
-        authors = findAnnotationText(CvTopic.AUTHOR_LIST_MI_REF);
-
-        if (authors != null) {
-            firstAuthor = authors.split(" ")[0];
-        }
-
-        String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
-        year = Short.parseShort(strYear.trim());
-        
+    private void loadFormFields() {
         for (Annotation annotation : publication.getAnnotations()) {
             if (CvTopic.DATASET_MI_REF.equals(annotation.getCvTopic().getIdentifier())) {
                 String datasetText = annotation.getAnnotationText();
-                
+
                 SelectItem datasetSelectItem = datasetPopulator.createSelectItem(datasetText);
                 datasetsSelectItems.add(datasetSelectItem);
             }
         }
-    }
-
-    private String findAnnotationText(String topicId) {
-        Annotation pubAnnot = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(publication, topicId);
-
-        if (pubAnnot != null) {
-            return pubAnnot.getAnnotationText();
-        }
-
-        return null;
-
     }
 
     public boolean isCitexploreOnline() {
@@ -180,9 +160,9 @@ public class PublicationController extends JpaAwareController {
             }
 
             publication.setFullName(citation.getTitle());
-            journal = citation.getJournalIssue().getJournal().getISOAbbreviation()+" ("+
-                    citation.getJournalIssue().getJournal().getISSN()+")";
-            year = citation.getJournalIssue().getYearOfPublication();
+            setJournal(citation.getJournalIssue().getJournal().getISOAbbreviation()+" ("+
+                    citation.getJournalIssue().getJournal().getISSN()+")");
+            setYear(citation.getJournalIssue().getYearOfPublication());
 
             StringBuilder sbAuthors = new StringBuilder(64);
 
@@ -193,9 +173,7 @@ public class PublicationController extends JpaAwareController {
                 if (authorIterator.hasNext()) sbAuthors.append(", ");
             }
 
-            authors = sbAuthors.toString();
-
-            if (authors != null) firstAuthor = authors.split(" ")[0];
+            setAuthors(sbAuthors.toString());
 
         } catch (Throwable e) {
             addErrorMessage("Problem auto-completing publication", e.getMessage());
@@ -237,12 +215,12 @@ public class PublicationController extends JpaAwareController {
 
     @Transactional
     public void doSave(ActionEvent evt) {
+        if (log.isDebugEnabled()) log.debug("Saving publication: "+publication);
+        
         if (publication == null) {
             addErrorMessage("No publication to save", "How did I get here?");
             return;
         }
-
-        
         
         if (publication.getAc() == null) {
             getDaoFactory().getPublicationDao().persist(publication);
@@ -293,7 +271,6 @@ public class PublicationController extends JpaAwareController {
             }
         }
     }
-
     
 
     public String getAc() {
@@ -316,19 +293,25 @@ public class PublicationController extends JpaAwareController {
     }
 
     public String getJournal() {
-        return journal;
+        return annotatedObjectHelper.findAnnotationText(publication, CvTopic.JOURNAL_MI_REF);
     }
 
     public void setJournal(String journal) {
-        this.journal = journal;
+        annotatedObjectHelper.setAnnotation(publication, CvTopic.JOURNAL_MI_REF, journal);
     }
 
-    public short getYear() {
-        return year;
+    public Short getYear() {
+        String strYear = annotatedObjectHelper.findAnnotationText(publication, CvTopic.PUBLICATION_YEAR_MI_REF);
+
+        if (strYear != null) {
+            return Short.valueOf(strYear);
+        }
+
+        return null;
     }
 
-    public void setYear(short year) {
-        this.year = year;
+    public void setYear(Short year) {
+        annotatedObjectHelper.setAnnotation(publication, CvTopic.PUBLICATION_YEAR_MI_REF, year);
     }
 
     public String getIdentifier() {
@@ -340,15 +323,38 @@ public class PublicationController extends JpaAwareController {
     }
 
     public String getAuthors() {
-        return authors;
+        return annotatedObjectHelper.findAnnotationText(publication, CvTopic.AUTHOR_LIST_MI_REF);
     }
 
     public void setAuthors(String authors) {
-        this.authors = authors;
+        annotatedObjectHelper.setAnnotation(publication, CvTopic.AUTHOR_LIST_MI_REF, authors);
     }
 
+    public String getOnHold() {
+        return annotatedObjectHelper.findAnnotationText(publication, CvTopic.ON_HOLD);
+    }
+
+    public void setOnHold(String reason) {
+        annotatedObjectHelper.setAnnotation(publication, CvTopic.ON_HOLD, reason);
+    }
+
+    public String getAcceptedMessage() {
+        return annotatedObjectHelper.findAnnotationText(publication, CvTopic.ACCEPTED);
+    }
+
+    public void setAcceptedMessage(String message) {
+        annotatedObjectHelper.setAnnotation(publication, CvTopic.ACCEPTED, message);
+    }
+
+
     public String getFirstAuthor() {
-        return firstAuthor;
+        final String authors = getAuthors();
+
+        if (authors != null) {
+            return authors.split(" ")[0];
+        }
+
+        return null;
     }
 
     public Date getLastSaved() {

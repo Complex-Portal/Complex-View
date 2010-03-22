@@ -9,8 +9,7 @@
 
     <!-- INTERFACE -->
   <composite:interface>
-    <composite:attribute name="id" default="#{cc.id}"/>
-    <composite:attribute name="columns" default="1"/>
+    <composite:attribute name="level" default="info"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
@@ -18,9 +17,14 @@
 
         <h:outputStylesheet name="intact.css" library="css" target="body"/>
 
-        <h:panelGrid id="#{cc.attrs.id}" columns="#{2 * cc.attrs.columns}" rowClasses="verticalTop">
-            <composite:insertChildren/> 
-        </h:panelGrid>
+        <h:panelGroup>
+            <ui:param name="levelColor" value="#{cc.attrs.level == 'info'? 'intact-infoPanel' : cc.attrs.level == 'warn'? 'intact-warnPanel' : cc.attrs.level == 'error'? 'intact-errorPanel' : ''}"/>
+
+            <div class="#{levelColor}" style="padding: 5px">
+                <composite:insertChildren/>
+            </div>
+            <br/>
+        </h:panelGroup>
 
     </composite:implementation>
 

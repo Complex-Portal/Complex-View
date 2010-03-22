@@ -1,3 +1,15 @@
 .verticalTop {
     vertical-align: top;
 }
+
+.intact-infoPanel {
+   background-color:#a7cf9b;
+}
+
+.intact-warnPanel {
+    background-color:#ffd98f;
+}
+
+.intact-errorPanel {
+    background-color:#f4b6b6;
+}

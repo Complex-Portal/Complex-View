@@ -62,18 +62,23 @@ public class CvObjectPopulatorImpl extends JpaAwareController implements CvObjec
 
         for (CvObject cvObject : allCvObjects) {
             if (cvObject.getIdentifier() != null) {
-                CvKey key = new CvKey(cvObject.getIdentifier(), cvObject.getClass());
-                allCvObjectMap.put(key, cvObject);
+                CvKey keyId = new CvKey(cvObject.getIdentifier(), cvObject.getClass());
+                CvKey keyLabel = new CvKey(cvObject.getShortLabel(), cvObject.getClass());
+                allCvObjectMap.put(keyId, cvObject);
+                allCvObjectMap.put(keyLabel, cvObject);
             }
         }
     }
 
     @Override
     public <T extends CvObject> T findCvObject(Class<T> clazz, String identifier) {
-        CvKey key = new CvKey(identifier, clazz);
+        CvKey keyId = new CvKey(identifier, clazz);
+        CvKey keyLabel = new CvKey(identifier, clazz);
 
-        if (allCvObjectMap.containsKey(key)) {
-            return (T) allCvObjectMap.get(key);
+        if (allCvObjectMap.containsKey(keyId)) {
+            return (T) allCvObjectMap.get(keyId);
+        } else if (allCvObjectMap.containsKey(keyLabel)) {
+            return (T) allCvObjectMap.get(keyLabel);
         }
 
         return null;
