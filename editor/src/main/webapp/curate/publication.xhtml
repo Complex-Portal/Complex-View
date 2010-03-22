@@ -70,6 +70,7 @@
                                       style="height:#{datasetHeight != 0? datasetHeight : 18}px">
                         <f:selectItems value="#{publicationController.datasetsSelectItems}"/>
                     </h:selectManyMenu>
+
                     <p:commandButton value="Remove"  actionListener="#{publicationController.removeDatasets}"
                                      update="datasetsMenu,annotationsPanel"/>
                     <h:selectOneMenu value="#{publicationController.datasetToAdd}">
