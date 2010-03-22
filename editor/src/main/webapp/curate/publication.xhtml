@@ -26,7 +26,7 @@
 
             <p:outputPanel id="basicInfoPanel">
 
-            <h:panelGrid columns="2">
+            <ia:panelFormLayout columns="1">
                 <h:outputLabel value="AC: " for="acTxt"/>
                 <h:inputText id="acTxt" value="#{publicationController.publication.ac}"
                              size="10" disabled="true"/>
@@ -56,13 +56,29 @@
                 <h:inputText id="authorsTxt" value="#{publicationController.authors}" size="80"/>
 
                 <h:outputLabel value="Journal: " for="journalTxt"/>
-                <h:inputText id="journalTxt" value="#{publicationController.journal}" size="25"/>
+                <h:inputText id="journalTxt" value="#{publicationController.journal}" size="50"/>
 
                 <h:outputLabel value="Year: " for="yearTxt"/>
                 <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4">
                     <f:convertNumber pattern="#"/>
                 </h:inputText>
-            </h:panelGrid>
+
+                <h:outputLabel value="Dataset(s): " for="datasetsMenu"/>
+                <h:panelGroup>
+                    <ui:param name="datasetHeight" value="#{18 * fn:length(publicationController.datasetsSelectItems)}"/>
+                    <h:selectManyMenu id="datasetsMenu" value="#{publicationController.datasetsToRemove}"
+                                      style="height:#{datasetHeight != 0? datasetHeight : 18}px">
+                        <f:selectItems value="#{publicationController.datasetsSelectItems}"/>
+                    </h:selectManyMenu>
+                    <p:commandButton value="Remove"  actionListener="#{publicationController.removeDatasets}"
+                                     update="datasetsMenu,annotationsPanel"/>
+                    <h:selectOneMenu value="#{publicationController.datasetToAdd}">
+                        <f:selectItems value="#{datasetPopulator.allDatasetSelectItems}"/>
+                    </h:selectOneMenu>
+                    <p:commandButton value="Add" actionListener="#{publicationController.addDataset}" 
+                                     update="datasetsMenu,annotationsPanel"/>
+                </h:panelGroup>
+            </ia:panelFormLayout>
 
             </p:outputPanel>
 
@@ -72,10 +88,9 @@
             <ia:xrefsTable value="#{publicationController.publication.xrefs}"/>
 
             <h4>Annotations</h4>
-            <ia:annotationsTable value="#{publicationController.publication.annotations}"/>
-
-            <h4>Aliases</h4>
-            <ia:aliasTable value="#{publicationController.publication.aliases}"/>
+            <p:outputPanel id="annotationsPanel">
+                <ia:annotationsTable value="#{publicationController.publication.annotations}"/>
+            </p:outputPanel>
 
             <h3>Experiments (#{fn:length(publicationController.publication.experiments)})</h3>
 

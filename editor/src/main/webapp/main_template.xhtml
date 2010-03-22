@@ -46,14 +46,16 @@
 
                 </p:layoutUnit>
 
-                <p:layoutUnit id="centralUnit" position="center">
-                    <div id="contentSection" style="width:100%">
-                        <ui:insert name="content"/>
-                    </div>
+                <p:layoutUnit position="center">
+                    <p:outputPanel id="centralUnit">
+                        <div id="contentSection" style="width:100%">
+                            <ui:insert name="content"/>
+                        </div>
 
-                    <div id="footerSection" style="width:100%">
-                        <ui:insert name="footer"/>
-                    </div>
+                        <div id="footerSection" style="width:100%">
+                            <ui:insert name="footer"/>
+                        </div>
+                    </p:outputPanel>
                 </p:layoutUnit>
 
                 <p:layoutUnit id="southUnit" position="south"

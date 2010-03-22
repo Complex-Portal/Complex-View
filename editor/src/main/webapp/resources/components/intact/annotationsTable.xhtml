@@ -20,13 +20,13 @@
                 <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
-                <h:outputText value="#{annotation.cvTopic.shortLabel}"/>
+                <h:outputText value="#{annotation.cvTopic.shortLabel}" style="#{annotation.ac == null? 'color: green' : ''}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Test"/>
                 </f:facet>
-                <h:outputText value="#{annotation.annotationText}"/>
+                <h:outputText value="#{annotation.annotationText}" style="#{annotation.ac == null? 'color: green' : ''}"/>
             </p:column>
         </p:dataTable>
 

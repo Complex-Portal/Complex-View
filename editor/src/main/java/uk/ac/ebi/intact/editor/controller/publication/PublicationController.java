@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.editor.controller.publication;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Publication;
@@ -31,8 +33,11 @@ import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.model.SelectItem;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -54,10 +59,22 @@ public class PublicationController extends JpaAwareController {
     private String journal;
     private short year;
 
+    private String datasetToAdd;
+    private String[] datasetsToRemove;
+    private List<SelectItem> datasetsSelectItems;
+
+    @Autowired
+    private DatasetPopulator datasetPopulator;
+
+    @Autowired
+    private AnnotatedObjectHelper annotatedObjectHelper;
+
     public PublicationController() {
     }
 
     public void loadData(ComponentSystemEvent event) {
+        datasetsSelectItems = new ArrayList<SelectItem>();
+        
         loadByAc();
     }
 
@@ -85,6 +102,15 @@ public class PublicationController extends JpaAwareController {
 
         String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
         year = Short.parseShort(strYear.trim());
+        
+        for (Annotation annotation : publication.getAnnotations()) {
+            if (CvTopic.DATASET_MI_REF.equals(annotation.getCvTopic().getIdentifier())) {
+                String datasetText = annotation.getAnnotationText();
+                
+                SelectItem datasetSelectItem = datasetPopulator.createSelectItem(datasetText);
+                datasetsSelectItems.add(datasetSelectItem);
+            }
+        }
     }
 
     private String findAnnotationText(String topicId) {
@@ -215,10 +241,17 @@ public class PublicationController extends JpaAwareController {
             addErrorMessage("No publication to save", "How did I get here?");
             return;
         }
+
+        
         
         if (publication.getAc() == null) {
             getDaoFactory().getPublicationDao().persist(publication);
         } else {
+            for (Annotation annotation : publication.getAnnotations()) {
+                if (annotation.getAc() == null) {
+                    getDaoFactory().getAnnotationDao().persist(annotation);
+                }
+            }
             getDaoFactory().getPublicationDao().merge(publication);
         }
         lastSaved = new Date();
@@ -232,10 +265,36 @@ public class PublicationController extends JpaAwareController {
     }
 
     public void doSaveAndClose(ActionEvent evt) {
-        System.out.println("SAVE AND CLOSE");
         doSave(evt);
         doClose(evt);
     }
+
+    public void addDataset(ActionEvent evt) {
+        if (datasetToAdd != null) {
+            datasetsSelectItems.add(datasetPopulator.createSelectItem(datasetToAdd));
+
+            annotatedObjectHelper.addAnnotation(publication, CvTopic.DATASET_MI_REF, datasetToAdd);
+        }
+    }
+
+    public void removeDatasets(ActionEvent evt) {
+        if (datasetsToRemove != null) {
+            for (String datasetToRemove : datasetsToRemove) {
+                Iterator<SelectItem> iterator = datasetsSelectItems.iterator();
+
+                while (iterator.hasNext()) {
+                    SelectItem selectItem = iterator.next();
+                    if (datasetToRemove.equals(selectItem.getValue())) {
+                        iterator.remove();
+                    }
+                }
+
+                annotatedObjectHelper.removeAnnotation(publication, CvTopic.DATASET_MI_REF, datasetToRemove);
+            }
+        }
+    }
+
+    
 
     public String getAc() {
         if (ac == null && publication != null) {
@@ -294,5 +353,25 @@ public class PublicationController extends JpaAwareController {
 
     public Date getLastSaved() {
         return lastSaved;
+    }
+
+    public List<SelectItem> getDatasetsSelectItems() {
+        return datasetsSelectItems;
+    }
+
+    public String getDatasetToAdd() {
+        return datasetToAdd;
+    }
+
+    public void setDatasetToAdd(String datasetToAdd) {
+        this.datasetToAdd = datasetToAdd;
+    }
+
+    public String[] getDatasetsToRemove() {
+        return datasetsToRemove;
+    }
+
+    public void setDatasetsToRemove(String[] datasetsToRemove) {
+        this.datasetsToRemove = datasetsToRemove;
     }
 }

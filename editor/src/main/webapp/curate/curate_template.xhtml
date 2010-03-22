@@ -37,7 +37,7 @@
 
     <ui:define name="content">
         <p:hotkey bind="alt+s" actionListener="#{publicationController.doSave}"
-                  update="basicInfoPanel,northUnit,growl"/>
+                  update="centralUnit,northUnit,growl"/>
         <p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>
         <p:hotkey bind="alt+o" oncomplete="openByPmidDlg.show()"/>
 
@@ -57,7 +57,6 @@
                     </p:submenu>
                     <p:submenu label="Experiments" rendered="#{publicationController.publication != null}"/>
                     <p:submenu label="Interactions" rendered="#{publicationController.publication != null}"/>
-                    <p:submenu label="..."/>
                 </p:menubar>
 
             </ui:insert>
