@@ -229,6 +229,8 @@ public class PublicationController extends AnnotatedObjectController {
         lastSaved = new Date();
 
         addInfoMessage("Publication saved", "AC: "+publication.getAc());
+
+        setUnsavedChanges(false);
     }
 
     public void doClose(ActionEvent evt) {

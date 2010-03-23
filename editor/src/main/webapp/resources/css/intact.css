@@ -13,3 +13,17 @@
 .intact-errorPanel {
     background-color:#f4b6b6;
 }
+
+.intact-notSavedPanel {
+    display: block;
+    opacity: 0.8;
+    position: fixed;
+    top:auto;
+    background-color:#FFFFCC;
+    bottom: 0;
+    z-index: 2000;
+    border:3px solid darkorange;
+    font-weight: bold;
+    text-align: center;
+    width:98%
+}

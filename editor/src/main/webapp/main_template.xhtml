@@ -12,6 +12,9 @@
     </h:head>
 
     <h:body bgcolor="white">
+
+        <h:outputStylesheet name="intact.css" library="css" target="body"/>
+
         <h:form id="editorForm" prependId="false">
 
             <p:growl id="growl" showDetail="true"/>
@@ -58,12 +61,12 @@
                     </p:outputPanel>
                 </p:layoutUnit>
 
-                <p:layoutUnit id="southUnit" position="south"
-                              rendered="#{facesContext.application.projectStage == 'Development'}"
-                              minSize="30" closable="false"
-                              style="background-color:#FFFACD">
-                     <b>DEVELOPMENT MODE</b>
-                </p:layoutUnit>
+                <!--<p:layoutUnit id="southUnit" position="south"-->
+                              <!--rendered="#{facesContext.application.projectStage == 'Development'}"-->
+                              <!--minSize="30" closable="false"-->
+                              <!--style="background-color:#FFFACD">-->
+                     <!--<b>DEVELOPMENT MODE</b>-->
+                <!--</p:layoutUnit>-->
 
             </p:layout>
 

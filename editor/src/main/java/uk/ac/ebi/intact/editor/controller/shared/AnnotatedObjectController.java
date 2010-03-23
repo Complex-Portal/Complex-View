@@ -33,7 +33,7 @@ import java.util.*;
  */
 public abstract class AnnotatedObjectController extends JpaAwareController {
 
-
+    private boolean unsavedChanges;
 
      @Autowired
     private CvObjectService cvObjectService;
@@ -133,5 +133,17 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         return annotations;
     }
 
+    public void changed(javax.faces.event.AjaxBehaviorEvent event)
+                throws javax.faces.event.AbortProcessingException {
+        System.out.println("FORM CHANGED");
+        unsavedChanges = true;
+    }
 
+    public void setUnsavedChanges(boolean unsavedChanges) {
+        this.unsavedChanges = unsavedChanges;
+    }
+
+    public boolean isUnsavedChanges() {
+        return unsavedChanges;
+    }
 }
