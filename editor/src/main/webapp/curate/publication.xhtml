@@ -31,21 +31,21 @@
 
                 <p:outputPanel id="basic">
 
-            <p:outputPanel id="acceptedPanel" rendered="#{not empty publicationController.acceptedMessage}">
-                <ia:panelMessage level="info">
-                    This publication is <b>accepted</b>. #{publicationController.acceptedMessage}
-                </ia:panelMessage>
-            </p:outputPanel>
+                    <p:outputPanel id="acceptedPanel" rendered="#{not empty publicationController.acceptedMessage}">
+                        <ia:panelMessage level="info">
+                            This publication is <b>accepted</b>. #{publicationController.acceptedMessage}
+                        </ia:panelMessage>
+                    </p:outputPanel>
 
-            <p:outputPanel id="onHoldWarningPanel" rendered="#{not empty publicationController.onHold}">
-                <ia:panelMessage level="warn">
-                    This publication is <b>on-hold</b>. Reason: #{publicationController.onHold}
-                    &#160;&#160;&#160;
-                    <p:commandButton value="Clear"
-                                     onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
-                                     update="onHoldWarningPanel,annotationsPanel"/>
-                </ia:panelMessage>
-            </p:outputPanel>
+                    <p:outputPanel id="onHoldWarningPanel" rendered="#{not empty publicationController.onHold}">
+                        <ia:panelMessage level="warn">
+                            This publication is <b>on-hold</b>. Reason: #{publicationController.onHold}
+                            &#160;&#160;&#160;
+                            <p:commandButton value="Clear"
+                                             onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
+                                             update="onHoldWarningPanel,annotationsPanel"/>
+                        </ia:panelMessage>
+                    </p:outputPanel>
 
                     <ia:panelFormLayout id="basicInfoPanel" columns="1">
                         <h:outputLabel value="AC: " for="acTxt"/>
@@ -131,7 +131,7 @@
                 <h4>Xrefs</h4>
                 <ia:xrefsTable value="#{publicationController.publication.xrefs}"/>
 
-                <h4>Annotations</h4>                
+                <h4>Annotations</h4>
                 <p:outputPanel id="annotationsPanel">
                     <ia:annotationsTable annotatedObjectController="#{publicationController}"
                                          topicSelectItems="#{cvObjectService.publicationTopicSelectItems}"

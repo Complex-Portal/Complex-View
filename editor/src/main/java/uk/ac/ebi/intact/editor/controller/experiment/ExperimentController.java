@@ -20,11 +20,11 @@ import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.publication.PublicationController;
+import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.Interaction;
 
@@ -37,7 +37,7 @@ import javax.faces.event.ComponentSystemEvent;
 @Controller
 @Scope("conversation.access")
 @ConversationName("general")
-public class ExperimentController extends JpaAwareController {
+public class ExperimentController extends AnnotatedObjectController {
 
     private Experiment experiment;
     private String ac;
@@ -49,7 +49,11 @@ public class ExperimentController extends JpaAwareController {
     public ExperimentController() {
     }
 
-    @Transactional
+    @Override
+    public AnnotatedObject getAnnotatedObject() {
+        return getExperiment();
+    }
+
     public void loadData(ComponentSystemEvent event) {
         if (ac != null) {
             if (experiment == null || !ac.equals(experiment.getAc())) {
@@ -68,7 +72,6 @@ public class ExperimentController extends JpaAwareController {
         }
     }
 
-    @Transactional
     public int countInteractionsByExperimentAc(String ac) {
         return getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc(ac);
     }

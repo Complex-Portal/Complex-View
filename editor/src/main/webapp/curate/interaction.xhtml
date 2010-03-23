@@ -30,9 +30,11 @@
 
             <h2>Interaction</h2>
 
-           Interaction: #{interactionController.interaction.shortLabel}<br/>
-           Creator: #{interactionController.interaction.creator}<br/>
-           AC: #{interactionController.ac}
+            <p:outputPanel id="basic">
+                Interaction: #{interactionController.interaction.shortLabel}<br/>
+                Creator: #{interactionController.interaction.creator}<br/>
+                AC: #{interactionController.ac}
+            </p:outputPanel>
 
             <h3>Publication properties</h3>
 
@@ -40,7 +42,12 @@
             <ia:xrefsTable value="#{publicationController.publication.xrefs}"/>
 
             <h4>Annotations</h4>
-            <ia:annotationsTable value="#{publicationController.publication.annotations}"/>
+            <p:outputPanel id="annotationsPanel">
+                <ia:annotationsTable annotatedObjectController="#{interactionController}"
+                                     topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
+                                     update="annotationsPanel"
+                                     render=":editorForm:basic"/>
+            </p:outputPanel>
 
             <h4>Aliases</h4>
             <ia:aliasTable value="#{publicationController.publication.aliases}"/>

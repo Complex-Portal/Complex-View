@@ -25,10 +25,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.model.Annotation;
-import uk.ac.ebi.intact.model.CvObject;
-import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.annotation.PostConstruct;
@@ -50,7 +47,11 @@ public class CvObjectService extends JpaAwareController {
     private Map<CvKey,CvObject> allCvObjectMap;
 
     private Collection<CvTopic> publicationTopics;
+    private Collection<CvTopic> experimentTopics;
+    private Collection<CvTopic> interactionTopics;
     private List<SelectItem> publicationTopicSelectItems;
+    private List<SelectItem> experimentTopicSelectItems;
+    private List<SelectItem> interactionTopicSelectItems;
 
     public CvObjectService() {
     }
@@ -86,10 +87,6 @@ public class CvObjectService extends JpaAwareController {
             if (cvObject instanceof CvTopic) {
                 String[] usedInClasses = findUsedInClass(cvObject);
 
-                if (cvObject.getShortLabel().equals("comment")) {
-                    System.out.println("COMMENT: "+ Arrays.asList(usedInClasses));
-                }
-
                 for (String usedInClass : usedInClasses) {
                     cvObjectsByUsedInClass.put(usedInClass, (CvTopic) cvObject);
                 }
@@ -101,8 +98,12 @@ public class CvObjectService extends JpaAwareController {
         }
 
         publicationTopics = cvObjectsByUsedInClass.get(Experiment.class.getName());
-        
+        experimentTopics = cvObjectsByUsedInClass.get(Experiment.class.getName());
+        interactionTopics = cvObjectsByUsedInClass.get(Interaction.class.getName());
+
         publicationTopicSelectItems = createSelectItems(publicationTopics, "-- Select topic --");
+        experimentTopicSelectItems = createSelectItems(experimentTopics, "-- Select topic --");
+        interactionTopicSelectItems = createSelectItems(interactionTopics, "-- Select topic --");
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
     }
@@ -198,5 +199,13 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getPublicationTopicSelectItems() {
         return publicationTopicSelectItems;
+    }
+
+    public List<SelectItem> getExperimentTopicSelectItems() {
+        return experimentTopicSelectItems;
+    }
+
+    public List<SelectItem> getInteractionTopicSelectItems() {
+        return interactionTopicSelectItems;
     }
 }

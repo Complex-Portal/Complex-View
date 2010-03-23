@@ -33,9 +33,7 @@
                 <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
-                <!--<h:outputText value="#{annotation.cvTopic.shortLabel}" style="#{annotation.ac == null? 'color: green' : ''}"-->
-                        <!--rendered="#{annotation.cvTopic != null}"/>-->
-                <h:selectOneMenu value="#{annotation.cvTopic.identifier}">
+                <h:selectOneMenu value="#{annotation.cvTopic.identifier}" required="true" requiredMessage="Topic is required">                  
                     <f:selectItems value="#{cvObjectService.publicationTopicSelectItems}"/>
                 </h:selectOneMenu>
             </p:column>

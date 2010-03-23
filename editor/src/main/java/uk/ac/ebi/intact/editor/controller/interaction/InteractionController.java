@@ -20,16 +20,12 @@ import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.publication.PublicationController;
+import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
-import uk.ac.ebi.intact.model.Component;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ComponentSystemEvent;
 
@@ -40,14 +36,11 @@ import javax.faces.event.ComponentSystemEvent;
 @Controller
 @Scope("conversation.access")
 @ConversationName("general")
-public class InteractionController extends JpaAwareController {
+public class InteractionController extends AnnotatedObjectController {
 
     private Interaction interaction;
     private String ac;
     private LazyDataModel<Component> participantDataModel;
-
-    public InteractionController() {
-    }
 
     @Autowired
     private PublicationController publicationController;
@@ -55,7 +48,14 @@ public class InteractionController extends JpaAwareController {
     @Autowired
     private ExperimentController experimentController;
 
-    @Transactional
+    public InteractionController() {
+    }
+
+    @Override
+    public AnnotatedObject getAnnotatedObject() {
+        return getInteraction();
+    }
+
     public void loadData(ComponentSystemEvent event) {
         if (ac != null) {
             if (interaction == null || !ac.equals(interaction.getAc())) {
@@ -88,7 +88,6 @@ public class InteractionController extends JpaAwareController {
         return ac;
     }
 
-    @Transactional
     public int countParticipantsByInteractionAc(String ac) {
         return getDaoFactory().getInteractionDao().countInteractorsByInteractionAc(ac);
     }
