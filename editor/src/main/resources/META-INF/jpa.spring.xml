@@ -58,7 +58,7 @@
     <!-- TODO: This should live in the production database once we pass the test phase -->
     <bean id="intactUsersDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
     <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:mem:intactusers;DB_CLOSE_DELAY=-1;LOCK_MODE=0"/>
+        <property name="url" value="jdbc:h2:editorusers;DB_CLOSE_DELAY=-1;LOCK_MODE=0"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
     </bean>
@@ -71,7 +71,7 @@
             <props>
                 <prop key="hibernate.generate_statistics">true</prop>
                 <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
             </props>
         </property>
 
