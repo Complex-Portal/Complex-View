@@ -88,7 +88,7 @@
     http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/transaction.html#tx-multiple-tx-mgrs-with-attransactional
     -->
 
-    <tx:annotation-driven/>
+    <tx:annotation-driven proxy-target-class="true"/>
 
     <bean id="usersTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="usersEntityManagerFactory"/>

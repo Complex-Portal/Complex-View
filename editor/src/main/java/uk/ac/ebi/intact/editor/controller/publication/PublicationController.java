@@ -27,6 +27,7 @@ import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectPopulator;
 import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvTopic;
@@ -67,6 +68,9 @@ public class PublicationController extends JpaAwareController {
 
     @Autowired
     private AnnotatedObjectHelper annotatedObjectHelper;
+
+    @Autowired
+    private CvObjectPopulator cvObjectPopulator;
 
     public PublicationController() {
     }
@@ -270,6 +274,11 @@ public class PublicationController extends JpaAwareController {
                 annotatedObjectHelper.removeAnnotation(publication, CvTopic.DATASET_MI_REF, datasetToRemove);
             }
         }
+    }
+
+    public void newAnnotation(ActionEvent evt) {
+        CvTopic comment = cvObjectPopulator.findCvObject(CvTopic.class, CvTopic.COMMENT_MI_REF);
+        publication.addAnnotation(new Annotation(getIntactContext().getInstitution(), comment));
     }
     
 
