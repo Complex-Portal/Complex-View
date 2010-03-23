@@ -9,31 +9,50 @@
 
     <!-- INTERFACE -->
   <composite:interface>
-    <composite:attribute name="value" required="true"/>
     <composite:attribute name="render"/>
+    <composite:attribute name="annotatedObjectController" type="uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController"
+            required="true"/>
+    <composite:attribute name="update" />
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
     <composite:implementation>
-        <p:dataTable var="annotation" value="#{cc.attrs.value}">
+        <table>
+            <tr>
+                <td>
+                    <h:panelGroup>
+                <div style="text-align: right">
+                Actions:&#160;
+                <p:commandLink value="New" update="#{cc.attrs.update}" actionListener="#{cc.attrs.annotatedObjectController.newAnnotation}"/>
+                </div>
+            </h:panelGroup>
+
+        <p:dataTable var="annotation" value="#{cc.attrs.annotatedObjectController.annotations}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
-                <h:outputText value="#{annotation.cvTopic.shortLabel}" style="#{annotation.ac == null? 'color: green' : ''}"/>
+                <h:outputText value="#{annotation.cvTopic.shortLabel}" style="#{annotation.ac == null? 'color: green' : ''}"
+                        rendered="#{annotation.cvTopic != null}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                <p:inplace effectSpeed="fast">
-                    <h:inputText value="#{annotation.annotationText}" size="50"
-                                 style="#{annotation.ac == null? 'color: green' : ''}">
+                <p:inplace effectSpeed="fast" rendered="#{annotation.annotationText != null}">
+                     <h:inputText value="#{annotation.annotationText}" size="50">
                         <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
                     </h:inputText>
                 </p:inplace>
+                <h:inputText value="#{annotation.annotationText}" size="50" rendered="#{annotation.annotationText == null}"
+                        required="true" requiredMessage="Annotation texts are required">
+                        <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
+                </h:inputText>
             </p:column>
         </p:dataTable>
+                </td>
+            </tr>
+        </table>
 
     </composite:implementation>
 

@@ -133,7 +133,8 @@
 
                 <h4>Annotations</h4>
                 <p:outputPanel id="annotationsPanel">
-                    <ia:annotationsTable value="#{publicationController.publication.annotations}"
+                    <ia:annotationsTable annotatedObjectController="#{publicationController}"
+                                         update="annotationsPanel"
                                          render=":editorForm:basic"/>
                 </p:outputPanel>
 

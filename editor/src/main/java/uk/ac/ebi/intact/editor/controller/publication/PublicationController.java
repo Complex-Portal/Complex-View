@@ -26,9 +26,8 @@ import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectPopulator;
-import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectHelper;
+import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController;
+import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Publication;
@@ -48,7 +47,7 @@ import java.util.List;
 @Controller
 @Scope("conversation.access")
 @ConversationName("general")
-public class PublicationController extends JpaAwareController {
+public class PublicationController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( PublicationController.class );
 
@@ -66,13 +65,12 @@ public class PublicationController extends JpaAwareController {
     @Autowired
     private DatasetPopulator datasetPopulator;
 
-    @Autowired
-    private AnnotatedObjectHelper annotatedObjectHelper;
-
-    @Autowired
-    private CvObjectPopulator cvObjectPopulator;
-
     public PublicationController() {
+    }
+    
+    @Override
+    public AnnotatedObject getAnnotatedObject() {
+        return getPublication();
     }
 
     public void loadData(ComponentSystemEvent event) {
@@ -255,7 +253,7 @@ public class PublicationController extends JpaAwareController {
         if (datasetToAdd != null) {
             datasetsSelectItems.add(datasetPopulator.createSelectItem(datasetToAdd));
 
-            annotatedObjectHelper.addAnnotation(publication, CvTopic.DATASET_MI_REF, datasetToAdd);
+            addAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
         }
     }
 
@@ -271,16 +269,10 @@ public class PublicationController extends JpaAwareController {
                     }
                 }
 
-                annotatedObjectHelper.removeAnnotation(publication, CvTopic.DATASET_MI_REF, datasetToRemove);
+                removeAnnotation(CvTopic.DATASET_MI_REF, datasetToRemove);
             }
         }
-    }
-
-    public void newAnnotation(ActionEvent evt) {
-        CvTopic comment = cvObjectPopulator.findCvObject(CvTopic.class, CvTopic.COMMENT_MI_REF);
-        publication.addAnnotation(new Annotation(getIntactContext().getInstitution(), comment));
-    }
-    
+    }    
 
     public String getAc() {
         if (ac == null && publication != null) {
@@ -302,15 +294,15 @@ public class PublicationController extends JpaAwareController {
     }
 
     public String getJournal() {
-        return annotatedObjectHelper.findAnnotationText(publication, CvTopic.JOURNAL_MI_REF);
+        return findAnnotationText(publication, CvTopic.JOURNAL_MI_REF);
     }
 
     public void setJournal(String journal) {
-        annotatedObjectHelper.setAnnotation(publication, CvTopic.JOURNAL_MI_REF, journal);
+        setAnnotation(CvTopic.JOURNAL_MI_REF, journal);
     }
 
     public Short getYear() {
-        String strYear = annotatedObjectHelper.findAnnotationText(publication, CvTopic.PUBLICATION_YEAR_MI_REF);
+        String strYear = findAnnotationText(publication, CvTopic.PUBLICATION_YEAR_MI_REF);
 
         if (strYear != null) {
             return Short.valueOf(strYear);
@@ -320,7 +312,7 @@ public class PublicationController extends JpaAwareController {
     }
 
     public void setYear(Short year) {
-        annotatedObjectHelper.setAnnotation(publication, CvTopic.PUBLICATION_YEAR_MI_REF, year);
+        setAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, year);
     }
 
     public String getIdentifier() {
@@ -332,27 +324,27 @@ public class PublicationController extends JpaAwareController {
     }
 
     public String getAuthors() {
-        return annotatedObjectHelper.findAnnotationText(publication, CvTopic.AUTHOR_LIST_MI_REF);
+        return findAnnotationText(publication, CvTopic.AUTHOR_LIST_MI_REF);
     }
 
     public void setAuthors(String authors) {
-        annotatedObjectHelper.setAnnotation(publication, CvTopic.AUTHOR_LIST_MI_REF, authors);
+        setAnnotation(CvTopic.AUTHOR_LIST_MI_REF, authors);
     }
 
     public String getOnHold() {
-        return annotatedObjectHelper.findAnnotationText(publication, CvTopic.ON_HOLD);
+        return findAnnotationText(publication, CvTopic.ON_HOLD);
     }
 
     public void setOnHold(String reason) {
-        annotatedObjectHelper.setAnnotation(publication, CvTopic.ON_HOLD, reason);
+        setAnnotation(CvTopic.ON_HOLD, reason);
     }
 
     public String getAcceptedMessage() {
-        return annotatedObjectHelper.findAnnotationText(publication, CvTopic.ACCEPTED);
+        return findAnnotationText(publication, CvTopic.ACCEPTED);
     }
 
     public void setAcceptedMessage(String message) {
-        annotatedObjectHelper.setAnnotation(publication, CvTopic.ACCEPTED, message);
+        setAnnotation(CvTopic.ACCEPTED, message);
     }
 
 
@@ -388,5 +380,5 @@ public class PublicationController extends JpaAwareController {
 
     public void setDatasetsToRemove(String[] datasetsToRemove) {
         this.datasetsToRemove = datasetsToRemove;
-    }
+    }   
 }

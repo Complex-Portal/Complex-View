@@ -16,43 +16,50 @@
 package uk.ac.ebi.intact.editor.controller.shared;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectPopulator;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvTopic;
+import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import javax.faces.event.ActionEvent;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller
-@Lazy
-public class AnnotatedObjectHelper extends JpaAwareController {
+public abstract class AnnotatedObjectController extends JpaAwareController {
 
-    @Autowired
+
+
+     @Autowired
     private CvObjectPopulator cvObjectPopulator;
 
-    public AnnotatedObjectHelper() {
+    public AnnotatedObjectController() {
     }
 
-    public void addAnnotation(AnnotatedObject parent, String topicIdOrLabel, String text) {
+    public abstract AnnotatedObject getAnnotatedObject();
+
+    public void newAnnotation(ActionEvent evt) {
+        CvTopic comment = cvObjectPopulator.findCvObject(CvTopic.class, CvTopic.COMMENT_MI_REF);
+        getAnnotatedObject().addAnnotation(new Annotation(getIntactContext().getInstitution(), comment));
+    }
+
+    public void addAnnotation(String topicIdOrLabel, String text) {
         CvTopic dataset = cvObjectPopulator.findCvObject(CvTopic.class, topicIdOrLabel);
 
         Annotation annotation = new Annotation(getIntactContext().getInstitution(), dataset);
         annotation.setAnnotationText(text);
 
-        parent.addAnnotation(annotation);
+        getAnnotatedObject().addAnnotation(annotation);
     }
 
-    public void replaceOrCreateAnnotation(AnnotatedObject parent, String topicOrShortLabel, String text) {
+    public void replaceOrCreateAnnotation(String topicOrShortLabel, String text) {
+        AnnotatedObject parent = getAnnotatedObject();
+
         // modify if exists
         boolean exists = false;
 
@@ -68,12 +75,12 @@ public class AnnotatedObjectHelper extends JpaAwareController {
 
         // create if not exists
         if (!exists) {
-            addAnnotation(parent, topicOrShortLabel, text);
+            addAnnotation(topicOrShortLabel, text);
         }
     }
 
-    public void removeAnnotation(AnnotatedObject parent, String topicIdOrLabel) {
-        Iterator<Annotation> iterator = parent.getAnnotations().iterator();
+    public void removeAnnotation(String topicIdOrLabel) {
+        Iterator<Annotation> iterator = getAnnotatedObject().getAnnotations().iterator();
 
         while (iterator.hasNext()) {
             Annotation annotation = iterator.next();
@@ -84,8 +91,8 @@ public class AnnotatedObjectHelper extends JpaAwareController {
         }
     }
 
-    public void removeAnnotation(AnnotatedObject parent, String topicIdOrLabel, String text) {
-        Iterator<Annotation> iterator = parent.getAnnotations().iterator();
+    public void removeAnnotation(String topicIdOrLabel, String text) {
+        Iterator<Annotation> iterator = getAnnotatedObject().getAnnotations().iterator();
 
         while (iterator.hasNext()) {
             Annotation annotation = iterator.next();
@@ -96,11 +103,11 @@ public class AnnotatedObjectHelper extends JpaAwareController {
         }
     }
 
-    public void setAnnotation(AnnotatedObject parent, String topicIdOrLabel, Object value) {
+    public void setAnnotation(String topicIdOrLabel, Object value) {
         if (value != null && !value.toString().isEmpty())  {
-            replaceOrCreateAnnotation(parent, topicIdOrLabel, value.toString());
+            replaceOrCreateAnnotation(topicIdOrLabel, value.toString());
         } else {
-            removeAnnotation(parent, topicIdOrLabel);
+            removeAnnotation(topicIdOrLabel);
         }
     }
 
@@ -115,7 +122,17 @@ public class AnnotatedObjectHelper extends JpaAwareController {
 
     }
 
-    public List<Annotation> getAnnotations(AnnotatedObject annotatedObject) {
-        return new ArrayList<Annotation>(annotatedObject.getAnnotations());
+    public List<Annotation> getAnnotations() {
+        final ArrayList<Annotation> annotations = new ArrayList<Annotation>(getAnnotatedObject().getAnnotations());
+        Collections.sort(annotations, new Comparator<IntactObject>() {
+            @Override
+            public int compare(IntactObject o1, IntactObject o2) {
+                if (o1.getAc() != null) return 1;
+                return 0;
+            }
+        });
+        return annotations;
     }
+
+
 }
