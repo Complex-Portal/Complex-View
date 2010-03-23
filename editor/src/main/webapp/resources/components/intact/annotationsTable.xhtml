@@ -33,7 +33,7 @@
                 <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
-                <h:selectOneMenu value="#{annotation.cvTopic.identifier}" required="true" requiredMessage="Topic is required">                  
+                <h:selectOneMenu value="#{annotation.cvTopic}" required="true" requiredMessage="Topic is required">                  
                     <f:selectItems value="#{cvObjectService.publicationTopicSelectItems}"/>
                 </h:selectOneMenu>
             </p:column>
@@ -51,6 +51,15 @@
                         <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
                 </h:inputText>
             </p:column>
+            <!--<p:column>-->
+                <!--<f:facet name="header">-->
+                     <!--<h:outputText value="Actions"/>-->
+                <!--</f:facet>-->
+                <!--<h:commandLink>-->
+                    <!--<f:ajax onevent="click" listener="" -->
+                    <!--<ui:param name="annotationAc" value="#{annotation.ac}"/>-->
+                <!--</h:commandLink>-->
+            <!--</p:column>-->
         </p:dataTable>
                 </td>
             </tr>

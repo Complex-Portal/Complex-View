@@ -223,17 +223,9 @@ public class PublicationController extends AnnotatedObjectController {
             addErrorMessage("No publication to save", "How did I get here?");
             return;
         }
-        
-        if (publication.getAc() == null) {
-            getDaoFactory().getPublicationDao().persist(publication);
-        } else {
-            for (Annotation annotation : publication.getAnnotations()) {
-                if (annotation.getAc() == null) {
-                    getDaoFactory().getAnnotationDao().persist(annotation);
-                }
-            }
-            getDaoFactory().getPublicationDao().merge(publication);
-        }
+
+        getIntactContext().getCorePersister().saveOrUpdate(publication);
+
         lastSaved = new Date();
 
         addInfoMessage("Publication saved", "AC: "+publication.getAc());

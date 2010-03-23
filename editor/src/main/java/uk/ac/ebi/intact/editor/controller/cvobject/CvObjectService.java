@@ -45,6 +45,7 @@ public class CvObjectService extends JpaAwareController {
 
     private List<CvObject> allCvObjects;
     private Map<CvKey,CvObject> allCvObjectMap;
+    private Map<String,CvObject> acCvObjectMap;
 
     private Collection<CvTopic> publicationTopics;
     private Collection<CvTopic> experimentTopics;
@@ -72,11 +73,14 @@ public class CvObjectService extends JpaAwareController {
 
         allCvObjects = getDaoFactory().getCvObjectDao().getAll();
 
-        allCvObjectMap = new HashMap<CvKey, CvObject>(allCvObjects.size());
+        allCvObjectMap = new HashMap<CvKey, CvObject>(allCvObjects.size() * 2);
+        acCvObjectMap = new HashMap<String, CvObject>(allCvObjects.size());
 
         Multimap<String, CvTopic> cvObjectsByUsedInClass = new HashMultimap<String, CvTopic>();
 
         for (CvObject cvObject : allCvObjects) {
+            acCvObjectMap.put(cvObject.getAc(), cvObject);
+
             if (cvObject.getIdentifier() != null) {
                 CvKey keyId = new CvKey(cvObject.getIdentifier(), cvObject.getClass());
                 CvKey keyLabel = new CvKey(cvObject.getShortLabel(), cvObject.getClass());
@@ -136,7 +140,11 @@ public class CvObjectService extends JpaAwareController {
 
     private SelectItem createSelectItem(CvObject cv) {
         boolean obsolete = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(cv, CvTopic.OBSOLETE_MI_REF) != null;
-        return new SelectItem(cv.getIdentifier(), cv.getShortLabel(), cv.getFullName(), obsolete);
+        return new SelectItem(cv, cv.getShortLabel(), cv.getFullName(), obsolete);
+    }
+
+    public CvObject findCvObjectByAc(String ac) {
+        return acCvObjectMap.get(ac);
     }
 
     public <T extends CvObject> T findCvObject(Class<T> clazz, String idOrLabel) {
