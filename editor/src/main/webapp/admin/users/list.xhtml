@@ -11,7 +11,7 @@
     <ui:define name="adminContent">
 
         <f:metadata>
-          <f:event type="preRenderView" listener="#{userAdminController.loadData}"/>
+          <f:event type="preRenderComponent" listener="#{userAdminController.loadData}"/>
         </f:metadata>
 
         <h3>Users (#{userAdminController.allUsers.rowCount})</h3>

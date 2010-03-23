@@ -40,9 +40,6 @@ public class UserAdminController extends JpaAwareController {
 
     private String loginParam;
 
-    private String passwordHash;
-    private String password;
-
     private DualListModel<String> roles;
 
     private User user;
@@ -68,22 +65,6 @@ public class UserAdminController extends JpaAwareController {
         this.loginParam = loginParam;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash( String passwordHash ) {
-        this.passwordHash = passwordHash;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword( String password ) {
-        this.password = password;
-    }
-
     ///////////////
     // Actions
 
@@ -91,10 +72,7 @@ public class UserAdminController extends JpaAwareController {
     public String saveUser() {
         final UserDao userDao = daoFactory.getUserDao();
 
-        // set hashed password to the user
-        if( ! StringUtils.isEmpty(password) ) {
-            user.setPassword( passwordHash );
-        }
+        log.debug( "user.getPassword(): " + user.getPassword() );
 
         boolean created = false;
         if( ! userDao.isManaged( user ) && ! userDao.isDetached( user ) ) {
@@ -171,10 +149,14 @@ public class UserAdminController extends JpaAwareController {
 
         if( loginParam != null ) {
             // load user and prepare for update
-            System.out.println( "Loading user by login '" + loginParam + "'..." );
+            log.debug( "Loading user by login '" + loginParam + "'..." );
             user = getUsersDaoFactory().getUserDao().getByLogin( loginParam );
+
+
             if (user == null ) {
                 addWarningMessage( "Could not find user by login: " + loginParam, "Please try again." );
+            } else {
+                log.debug( "User password hash: " + user.getPassword() );
             }
         } else {
             // prepare for the creation of the new user
