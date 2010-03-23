@@ -6,12 +6,14 @@
 
     <http session-fixation-protection="migrateSession">
         <intercept-url pattern="/login.jsf" filters="none"/>
-        <intercept-url pattern="/javax.faces.resource/scripts/security/**" filters="none"/>
-        <intercept-url pattern="/test*.jsf" filters="none"/>
+        <intercept-url pattern="/javax.faces.resource/**" filters="none"/>
         <intercept-url pattern="/primefaces_resource/**" filters="none" />
+
+        <!-- Role-based restrictions -->
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
         <intercept-url pattern="/**" access="ROLE_CURATOR, ROLE_ADMIN"/>
 
+        <!-- Login/Logout navigation -->
         <form-login login-page="/login.jsf" default-target-url="/dashboard/dashboard.jsf" authentication-failure-url="/"/>
         <logout logout-url="/logout" invalidate-session="true"/>
 
@@ -21,6 +23,5 @@
     <beans:bean class="uk.ac.ebi.intact.editor.security.EditorAuthenticationProvider">
         <custom-authentication-provider/>
     </beans:bean>
-
 
 </beans:beans>
