@@ -13,6 +13,7 @@
     <composite:attribute name="annotatedObjectController" type="uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController"
             required="true"/>
     <composite:attribute name="update" />
+    <composite:attribute name="topicSelectItems" />
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
@@ -32,8 +33,11 @@
                 <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
-                <h:outputText value="#{annotation.cvTopic.shortLabel}" style="#{annotation.ac == null? 'color: green' : ''}"
-                        rendered="#{annotation.cvTopic != null}"/>
+                <!--<h:outputText value="#{annotation.cvTopic.shortLabel}" style="#{annotation.ac == null? 'color: green' : ''}"-->
+                        <!--rendered="#{annotation.cvTopic != null}"/>-->
+                <h:selectOneMenu value="#{annotation.cvTopic.identifier}">
+                    <f:selectItems value="#{cvObjectService.publicationTopicSelectItems}"/>
+                </h:selectOneMenu>
             </p:column>
             <p:column>
                 <f:facet name="header">

@@ -15,34 +15,44 @@
  */
 package uk.ac.ebi.intact.editor.controller.cvobject;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvObject;
+import uk.ac.ebi.intact.model.CvTopic;
+import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.faces.model.SelectItem;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller("cvObjectPopulator")
+@Controller
 @Lazy
-public class CvObjectPopulator extends JpaAwareController {
+public class CvObjectService extends JpaAwareController {
 
-    private static final Log log = LogFactory.getLog( CvObjectPopulator.class );
+    private static final Log log = LogFactory.getLog( CvObjectService.class );
 
     private List<CvObject> allCvObjects;
     private Map<CvKey,CvObject> allCvObjectMap;
 
-    public CvObjectPopulator() {
+    private Collection<CvTopic> publicationTopics;
+    private List<SelectItem> publicationTopicSelectItems;
+
+    public CvObjectService() {
     }
 
 
@@ -55,9 +65,15 @@ public class CvObjectPopulator extends JpaAwareController {
     public void refresh(ActionEvent evt) {
         if (log.isDebugEnabled()) log.debug("Loading Controlled Vocabularies");
 
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+        publicationTopicSelectItems = new ArrayList<SelectItem>();
+
         allCvObjects = getDaoFactory().getCvObjectDao().getAll();
 
         allCvObjectMap = new HashMap<CvKey, CvObject>(allCvObjects.size());
+
+        Multimap<String, CvTopic> cvObjectsByUsedInClass = new HashMultimap<String, CvTopic>();
 
         for (CvObject cvObject : allCvObjects) {
             if (cvObject.getIdentifier() != null) {
@@ -66,7 +82,60 @@ public class CvObjectPopulator extends JpaAwareController {
                 allCvObjectMap.put(keyId, cvObject);
                 allCvObjectMap.put(keyLabel, cvObject);
             }
+
+            if (cvObject instanceof CvTopic) {
+                String[] usedInClasses = findUsedInClass(cvObject);
+
+                if (cvObject.getShortLabel().equals("comment")) {
+                    System.out.println("COMMENT: "+ Arrays.asList(usedInClasses));
+                }
+
+                for (String usedInClass : usedInClasses) {
+                    cvObjectsByUsedInClass.put(usedInClass, (CvTopic) cvObject);
+                }
+
+                if (usedInClasses.length == 0) {
+                    cvObjectsByUsedInClass.put("no_class", (CvTopic) cvObject);
+                }
+            }
         }
+
+        publicationTopics = cvObjectsByUsedInClass.get(Experiment.class.getName());
+        
+        publicationTopicSelectItems = createSelectItems(publicationTopics, "-- Select topic --");
+
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+    }
+
+    private String[] findUsedInClass(CvObject cvObject) {
+        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(cvObject, CvTopic.USED_IN_CLASS);
+
+        if (annotation != null) {
+            String annotText = annotation.getAnnotationText();
+            annotText = annotText.replaceAll(" ", "");
+            return annotText.split(",");
+        } else {
+            return new String[0];
+        }
+    }
+
+    private List<SelectItem> createSelectItems(Collection<? extends CvObject> cvObjects, String noSelectionText) {
+        List<SelectItem> selectItems = new ArrayList<SelectItem>(cvObjects.size());
+
+        if (noSelectionText != null) {
+            selectItems.add(new SelectItem(null, noSelectionText, noSelectionText, false, false, true));
+        }
+
+        for (CvObject cvObject: cvObjects) {
+            selectItems.add(createSelectItem(cvObject));
+        }
+
+        return selectItems;
+    }
+
+    private SelectItem createSelectItem(CvObject cv) {
+        boolean obsolete = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(cv, CvTopic.OBSOLETE_MI_REF) != null;
+        return new SelectItem(cv.getIdentifier(), cv.getShortLabel(), cv.getFullName(), obsolete);
     }
 
     public <T extends CvObject> T findCvObject(Class<T> clazz, String idOrLabel) {
@@ -125,5 +194,9 @@ public class CvObjectPopulator extends JpaAwareController {
             result = 31 * result + (className != null ? className.hashCode() : 0);
             return result;
         }
+    }
+
+    public List<SelectItem> getPublicationTopicSelectItems() {
+        return publicationTopicSelectItems;
     }
 }

@@ -17,7 +17,7 @@ package uk.ac.ebi.intact.editor.controller.shared;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectPopulator;
+import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvTopic;
@@ -36,7 +36,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
 
 
      @Autowired
-    private CvObjectPopulator cvObjectPopulator;
+    private CvObjectService cvObjectService;
 
     public AnnotatedObjectController() {
     }
@@ -44,12 +44,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     public abstract AnnotatedObject getAnnotatedObject();
 
     public void newAnnotation(ActionEvent evt) {
-        CvTopic comment = cvObjectPopulator.findCvObject(CvTopic.class, CvTopic.COMMENT_MI_REF);
-        getAnnotatedObject().addAnnotation(new Annotation(getIntactContext().getInstitution(), comment));
+        CvTopic comment = cvObjectService.findCvObject(CvTopic.class, CvTopic.COMMENT_MI_REF);
+        getAnnotatedObject().addAnnotation(new Annotation(getIntactContext().getInstitution(), null));
     }
 
     public void addAnnotation(String topicIdOrLabel, String text) {
-        CvTopic dataset = cvObjectPopulator.findCvObject(CvTopic.class, topicIdOrLabel);
+        CvTopic dataset = cvObjectService.findCvObject(CvTopic.class, topicIdOrLabel);
 
         Annotation annotation = new Annotation(getIntactContext().getInstitution(), dataset);
         annotation.setAnnotationText(text);
