@@ -51,15 +51,13 @@
                         <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
                 </h:inputText>
             </p:column>
-            <!--<p:column>-->
-                <!--<f:facet name="header">-->
-                     <!--<h:outputText value="Actions"/>-->
-                <!--</f:facet>-->
-                <!--<h:commandLink>-->
-                    <!--<f:ajax onevent="click" listener="" -->
-                    <!--<ui:param name="annotationAc" value="#{annotation.ac}"/>-->
-                <!--</h:commandLink>-->
-            <!--</p:column>-->
+            <p:column>
+                <f:facet name="header">
+                     <h:outputText value="Actions"/>
+                </f:facet>
+                <p:commandLink value="Delete" update="#{cc.attrs.update}"
+                               actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"/>
+            </p:column>
         </p:dataTable>
                 </td>
             </tr>

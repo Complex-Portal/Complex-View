@@ -44,8 +44,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     public abstract AnnotatedObject getAnnotatedObject();
 
     public void newAnnotation(ActionEvent evt) {
-        CvTopic comment = cvObjectService.findCvObject(CvTopic.class, CvTopic.COMMENT_MI_REF);
-        getAnnotatedObject().addAnnotation(new Annotation(getIntactContext().getInstitution(), new CvTopic()));
+        getAnnotatedObject().addAnnotation(new Annotation(getIntactContext().getInstitution(), null));
     }
 
     public void addAnnotation(String topicIdOrLabel, String text) {
