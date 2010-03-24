@@ -22,13 +22,6 @@
 
     <navigation-rule>
         <navigation-case>
-            <from-outcome>admin.users.create</from-outcome>
-            <to-view-id>/admin/users/create.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
-
-    <navigation-rule>
-        <navigation-case>
             <from-outcome>admin.users.edit</from-outcome>
             <to-view-id>/admin/users/edit.xhtml</to-view-id>
         </navigation-case>
@@ -40,6 +33,5 @@
             <to-view-id>/admin/users/list.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-
 
 </faces-config>

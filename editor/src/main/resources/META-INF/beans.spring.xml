@@ -15,6 +15,7 @@
     
     <bean name="editorConfig" class="uk.ac.ebi.intact.editor.config.EditorConfig">
         <property name="instanceName" value="${intact.instance.name}"/>
+        <property name="databaseAlias" value="${db.alias}"/>
         <property name="logoUrl" value="${webapp.logo.url}"/>
     </bean>
    

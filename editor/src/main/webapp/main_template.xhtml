@@ -21,31 +21,83 @@
 
             <p:layout fullPage="true">
 
-                <p:layoutUnit id="northUnit" position="north" resizable="false" minSize="100" maxSize="100">
+                <p:layoutUnit id="northUnit" position="north" resizable="false" minSize="80" maxSize="80">
 
-                    <div id="topNavigation">
-                        <ui:insert name="topNavigation">
-                            <ui:include src="/shared/top_navigation_bar.xhtml"/>
-                        </ui:insert>
+
+
+                    <div id="topImage" style="float: left; padding-right: 30px">
+                        <h:graphicImage url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>
                     </div>
 
-                    <div id="topSection" style="width:100%;">
+                    <div id="topNavigation" style="float:left;">
                         <table>
-                            <tr style="vertical-align:middle">
-                                <td style="width:1%; padding-right: 15px">
-                                    <h:graphicImage url="#{editorConfig.logoUrl}"
-                                                    rendered="#{editorConfig.logoUrl != null}"/>
+                            <tr>
+                                <td valign="top">
+                                    <ui:insert name="topNavigation">
+                                        <ui:include src="/shared/top_navigation_bar.xhtml"/>
+                                    </ui:insert>
                                 </td>
-                                <td>
+                            </tr>
+                            <tr>
+                                <td valign="top">
+                                    <ui:insert name="topTitle" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="userInfo" style="float: right;">
+                        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                            <tr>
+                                <td valign="top" style="padding-bottom: 10px;">
+                                    <h:graphicImage url="/resources/images/user.jpg" alt="User: "/>
+                                    <h:outputText value="#{userSessionController.currentUser.login}"/>
+                                </td>
+                                <td valign="top" style="padding-left: 20px;">
+                                    <h:graphicImage url="/resources/images/users.png" alt="Curators: "/>
+                                    <h:outputText value="#{appController.loggedInUserCount}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top">
+                                    <h:graphicImage url="/resources/images/database.png" alt="Database: "/>
+                                    <h:outputText value="#{editorConfig.instanceName}" title="Database: #{appController.database}"/>
+                                </td>
+                                <td valign="top" style="padding-left: 20px;">
+                                    <h:outputLink value="/editor/logout" title="Logout">
+                                        <h:graphicImage border="0" url="/resources/images/logout.jpg" alt="Logout"/>
+                                    </h:outputLink>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="topSection" style="float: right; padding-right: 100px">
+                        <table>
+                            <tr style="vertical-align: middle;">
+
+                                <td valign="top">
+                                    <h:panelGrid columns="3">
+                                        <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
+                                        <h:inputText value="#{searchController.query}">
+                                            <p:watermark value="search query"/>
+                                        </h:inputText>
+                                        <h:commandButton value="Search" actionListener="#{searchController.doSearch}" />
+                                    </h:panelGrid>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:1%; padding-left: 15px">
                                     <ui:insert name="top"/>
                                 </td>
+                            </tr>
+                            <tr>
                                 <td style="width:1%; padding-left: 15px">
                                     <ui:insert name="topRight"/>
                                 </td>
                             </tr>
                         </table>
                     </div>
-
 
                 </p:layoutUnit>
 

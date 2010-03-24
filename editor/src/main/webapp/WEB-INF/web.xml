@@ -48,6 +48,10 @@
 		<param-value>com.sun.el.ExpressionFactoryImpl</param-value>
 	</context-param>
 
+    <listener>
+        <listener-class>uk.ac.ebi.intact.editor.security.AppSessionListener</listener-class> 
+    </listener>
+
     <!-- Spring resources -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -73,6 +77,22 @@
       <listener-class>org.springframework.security.ui.session.HttpSessionEventPublisher</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+
+    <!-- Spring security -->
+    <filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+
     <!-- Orchestra -->
     <listener>
         <listener-class>org.apache.myfaces.orchestra.conversation.servlet.ConversationManagerSessionListener
@@ -90,28 +110,7 @@
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
 
-
-    <!-- Primefaces fileupload filter -->
-    <filter>
-		<filter-name>PrimeFaces FileUpload Filter</filter-name>
-		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>PrimeFaces FileUpload Filter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
-
-    <!-- Spring security -->
-    <filter>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
+    <!-- JSF -->
 
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
@@ -122,6 +121,16 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
     </servlet-mapping>
+
+    <!-- Primefaces fileupload filter -->
+    <filter>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>    
 
     <!--<servlet>-->
         <!--<servlet-name>Comet Servlet</servlet-name>-->

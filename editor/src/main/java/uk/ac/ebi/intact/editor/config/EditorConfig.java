@@ -15,13 +15,18 @@
  */
 package uk.ac.ebi.intact.editor.config;
 
+import org.springframework.stereotype.Controller;
+
 /**
+ * Holds the configuration of the application.
+ *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
 public class EditorConfig {
 
     private String instanceName;
+    private String databaseAlias;
     private String logoUrl;
 
     public EditorConfig() {
@@ -33,6 +38,14 @@ public class EditorConfig {
 
     public void setInstanceName(String instanceName) {
         this.instanceName = instanceName;
+    }
+
+    public String getDatabaseAlias() {
+        return databaseAlias;
+    }
+
+    public void setDatabaseAlias( String databaseAlias ) {
+        this.databaseAlias = databaseAlias;
     }
 
     public String getLogoUrl() {

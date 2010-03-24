@@ -28,6 +28,7 @@ import uk.ac.ebi.intact.core.context.UserContext;
 import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
+import uk.ac.ebi.intact.editor.controller.AppController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 
 import java.util.Collection;
@@ -49,11 +50,14 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private UserContext userContext;
 
+    @Autowired
+    private AppController appController;
+
     @Transactional( value="users", readOnly = true )
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if (log.isDebugEnabled()) {
             log.debug("Authenticating user: "+authentication.getPrincipal());
-            log.debug("Credentials: "+authentication.getCredentials());
+            log.debug("Credentials: '"+authentication.getCredentials() + "'");
         }
 
         final User user = usersDaoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );
@@ -71,8 +75,14 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
 
         if (log.isInfoEnabled()) log.info("Authentication successful for user: "+authentication.getPrincipal());
 
+        // Roles are not loaded by default, even so the @ManyToMany annotation is set to fetch = FetchType.EAGER
+        // TODO set fetch more eager in intact-users
+        user.getRoles();
+        
         userSessionController.setCurrentUser(user);
         userContext.setUserId(user.getLogin().toUpperCase());
+
+        appController.getLoggedInUsers().add( user );
 
         Collection<GrantedAuthority> authorities = Lists.newArrayList();
         log.info( user.getLogin() + " roles: " + user.getRoles() );
