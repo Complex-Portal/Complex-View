@@ -36,7 +36,7 @@ body {
 .intact-userPanel {
     float: right;
     padding: 5px;
-    border: 1px solid black;
+    border: 1px solid #a7cf9b;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     background-color: #deebeb;
