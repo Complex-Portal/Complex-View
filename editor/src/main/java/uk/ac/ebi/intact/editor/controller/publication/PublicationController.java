@@ -248,6 +248,8 @@ public class PublicationController extends AnnotatedObjectController {
             datasetsSelectItems.add(datasetPopulator.createSelectItem(datasetToAdd));
 
             addAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
+
+            setUnsavedChanges(true);
         }
     }
 
@@ -265,6 +267,7 @@ public class PublicationController extends AnnotatedObjectController {
 
                 removeAnnotation(CvTopic.DATASET_MI_REF, datasetToRemove);
             }
+            setUnsavedChanges(true);
         }
     }    
 

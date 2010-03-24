@@ -112,13 +112,13 @@
                             </h:selectManyMenu>
 
                             <p:commandButton value="Remove" actionListener="#{publicationController.removeDatasets}"
-                                             update="datasetsMenu,annotationsPanel"
+                                             update="datasetsMenu,annotationsPanel,changesPanel"
                                              rendered="#{not empty publicationController.datasetsSelectItems}"/>
                             <h:selectOneMenu value="#{publicationController.datasetToAdd}">
                                 <f:selectItems value="#{datasetPopulator.allDatasetSelectItems}"/>
                             </h:selectOneMenu>
                             <p:commandButton value="Add" actionListener="#{publicationController.addDataset}"
-                                             update="datasetsMenu,annotationsPanel"/>
+                                             update="datasetsMenu,annotationsPanel,changesPanel"/>
                         </h:panelGroup>
 
                         <h:outputLabel value="On hold: " for="onHoldTxt"/>
