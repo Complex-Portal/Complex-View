@@ -42,6 +42,8 @@ public class CvObjectConverter implements Converter {
 
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object o) throws ConverterException {
+        if (o == null) return null;
+        
         if (o instanceof CvObject) {
             CvObject cvObject = (CvObject) o;
             return cvObject.getAc();
