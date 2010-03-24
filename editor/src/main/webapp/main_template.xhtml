@@ -46,24 +46,24 @@
                         </table>
                     </div>
 
-                    <div id="userInfo" style="float: right;">
+                    <div id="userInfo" class="intact-userPanel">
                         <table border="0" cellspacing="0" cellpadding="0" width="100%">
                             <tr>
-                                <td valign="top" style="padding-bottom: 10px;">
+                                <td class="verticalTop" style="padding-bottom: 10px; vertical-align:top">
                                     <h:graphicImage url="/resources/images/user.jpg" alt="User: "/>
                                     <h:outputText value="#{userSessionController.currentUser.login}"/>
                                 </td>
-                                <td valign="top" style="padding-left: 20px;">
+                                <td class="verticalTop" style="padding-left: 20px;">
                                     <h:graphicImage url="/resources/images/users.png" alt="Curators: "/>
                                     <h:outputText value="#{appController.loggedInUserCount}"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td valign="top">
+                                <td class="verticalTop">
                                     <h:graphicImage url="/resources/images/database.png" alt="Database: "/>
                                     <h:outputText value="#{editorConfig.instanceName}" title="Database: #{appController.database}"/>
                                 </td>
-                                <td valign="top" style="padding-left: 20px;">
+                                <td class="verticalTop" style="padding-left: 20px;">
                                     <h:outputLink value="/editor/logout" title="Logout">
                                         <h:graphicImage border="0" url="/resources/images/logout.jpg" alt="Logout"/>
                                     </h:outputLink>
@@ -72,11 +72,11 @@
                         </table>
                     </div>
 
-                    <div id="topSection" style="float: right; padding-right: 100px">
+                    <div id="topSection" style="float: right; margin-right: 100px; ">
                         <table>
                             <tr style="vertical-align: middle;">
 
-                                <td valign="top">
+                                <td class="verticalTop">
                                     <h:panelGrid columns="3">
                                         <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
                                         <h:inputText value="#{searchController.query}">
@@ -87,17 +87,19 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:1%; padding-left: 15px">
+                                <td style="padding-left: 15px">
                                     <ui:insert name="top"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:1%; padding-left: 15px">
+                                <td style="padding-left: 15px">
                                     <ui:insert name="topRight"/>
                                 </td>
                             </tr>
                         </table>
                     </div>
+
+
 
                 </p:layoutUnit>
 

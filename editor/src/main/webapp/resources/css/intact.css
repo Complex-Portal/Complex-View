@@ -32,3 +32,12 @@ body {
     text-align: center;
     width:98%
 }
+
+.intact-userPanel {
+    float: right;
+    padding: 5px;
+    border: 1px solid black;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: #deebeb;
+}

@@ -122,6 +122,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     }
 
     public List<Annotation> getAnnotations() {
+        if (getAnnotatedObject() == null) { return Collections.EMPTY_LIST; }
+
         final ArrayList<Annotation> annotations = new ArrayList<Annotation>(getAnnotatedObject().getAnnotations());
         Collections.sort(annotations, new Comparator<IntactObject>() {
             @Override
@@ -135,7 +137,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
 
     public void changed(javax.faces.event.AjaxBehaviorEvent event)
                 throws javax.faces.event.AbortProcessingException {
-        System.out.println("FORM CHANGED");
         unsavedChanges = true;
     }
 
