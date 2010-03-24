@@ -35,29 +35,28 @@
                 </f:facet>
                 <h:selectOneMenu value="#{annotation.cvTopic}" required="true" requiredMessage="Topic is required">
                     <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
-                    <f:selectItems value="#{cvObjectService.publicationTopicSelectItems}"/>
+                    <f:selectItems value="#{cc.attrs.topicSelectItems}"/>
                 </h:selectOneMenu>
             </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                <!--<p:inplace effectSpeed="fast" rendered="#{annotation.annotationText != null}">-->
+                <p:inplace effectSpeed="fast" rendered="#{annotation.annotationText != null}">
                      <h:inputText value="#{annotation.annotationText}" size="50" rendered="#{annotation.annotationText != null}">
                         <f:ajax event="valueChange" render="#{cc.attrs.render}" />
                     </h:inputText>
-                <!--</p:inplace>-->
+                </p:inplace>
                 <h:inputText value="#{annotation.annotationText}" size="50" rendered="#{annotation.annotationText == null}"
                         required="true" requiredMessage="Annotation texts are required">
                         <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
-                    <p:focus/>
                 </h:inputText>
             </p:column>
             <p:column>
                 <f:facet name="header">
                      <h:outputText value="Actions"/>
                 </f:facet>
-                <h:commandLink value="Delete" immediate="true" 
+                <h:commandLink value="Delete" immediate="true"
                                actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"/>
             </p:column>
         </p:dataTable>

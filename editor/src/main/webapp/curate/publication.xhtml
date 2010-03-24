@@ -42,9 +42,8 @@
                         <ia:panelMessage level="warn">
                             This publication is <b>on-hold</b>. Reason: #{publicationController.onHold}
                             &#160;&#160;&#160;
-                            <p:commandButton value="Clear"
-                                             onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
-                                             update="infoPanels,annotationsPanel"/>
+                            <h:commandButton value="Clear" type="button" onclick="document.getElementById('basicInfoPanel:clearOnHoldBtn_submit').click();return false;" />
+
                         </ia:panelMessage>
                         </h:panelGroup>
                     </p:outputPanel>
@@ -58,7 +57,7 @@
                         <h:panelGroup>
                             <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
                                          size="10" required="true" onkeyup="enableAutocomplete()">
-                                <f:ajax event="valueChange" render=":editorForm:changesPanel"
+                                <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:xrefsPanel"
                                         listener="#{publicationController.changed}"/>
                             </h:inputText>
 
@@ -129,9 +128,9 @@
                                 <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:infoPanels :editorForm:changesPanel"
                                     listener="#{publicationController.changed}"/>
                             </h:inputText>
-                            <p:commandButton value="Clear"
+                            <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{publicationController.setUnsavedChanges(true)}"
                                              onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
-                                             update="infoPanels,annotationsPanel"/>
+                                             update="infoPanels,annotationsPanel,changesPanel"/>
                         </h:panelGroup>
                     </ia:panelFormLayout>
 
@@ -140,7 +139,13 @@
                 <h3>Publication properties</h3>
 
                 <h4>Xrefs</h4>
-                <ia:xrefsTable value="#{publicationController.publication.xrefs}"/>
+                <p:outputPanel id="xrefsPanel">
+                    <ia:xrefsTable annotatedObjectController="#{publicationController}"
+                                   databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                   qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                   update="xrefsPanel"
+                                   render=":editorForm:basic"/>
+                </p:outputPanel>
 
                 <h4>Annotations</h4>
                 <p:outputPanel id="annotationsPanel">
@@ -157,6 +162,8 @@
             </p:outputPanel>
 
         </h:panelGroup>
+
+        <p>&#160;</p>
 
         <p:outputPanel id="changesPanel">
             <h:panelGroup rendered="#{publicationController.unsavedChanges}">

@@ -8,37 +8,80 @@
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
-  <composite:interface>
-    <composite:attribute name="value"/>
-  </composite:interface>
+    <composite:interface>
+        <composite:attribute name="render"/>
+        <composite:attribute name="annotatedObjectController"
+                             type="uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController"
+                             required="true"/>
+        <composite:attribute name="update" />
+        <composite:attribute name="databaseSelectItems"/>
+        <composite:attribute name="qualifierSelectItems"/>
+    </composite:interface>
 
-  <!-- IMPLEMENTATION -->
+    <!-- IMPLEMENTATION -->
     <composite:implementation>
+        <table>
+            <tr>
+                <td>
+                    <h:panelGroup>
+                        <div style="text-align: right">
+                            Actions:&#160;
+                            <p:commandLink value="New" update="#{cc.attrs.update}"
+                                           actionListener="#{cc.attrs.annotatedObjectController.newXref}"/>
+                        </div>
+                    </h:panelGroup>
 
-        <p:dataTable var="xref" value="#{cc.attrs.value}">
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Primary ID"/>
-                </f:facet>
-                <h:outputText value="#{xref.primaryId}"/>
-            </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Database"/>
-                </f:facet>
-                <h:outputText value="#{xref.cvDatabase.shortLabel}"/>
-            </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Qualifier"/>
-                </f:facet>
-                <h:outputText value="#{xref.cvXrefQualifier.shortLabel}" rendered="#{xref.cvXrefQualifier != null}"/>
-            </p:column>
-        </p:dataTable>
+                    <p:dataTable var="xref" value="#{cc.attrs.annotatedObjectController.xrefs}">
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Database"/>
+                            </f:facet>
+                            <h:selectOneMenu value="#{xref.cvDatabase}" required="true"
+                                             requiredMessage="Database for xref is required">
+                                <f:selectItems value="#{cc.attrs.databaseSelectItems}"/>
+                            </h:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Identifier"/>
+                            </f:facet>
+                            <h:inputText value="#{xref.primaryId}" size="15"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Secondary"/>
+                            </f:facet>
+                            <h:inputText value="#{xref.secondaryId}" size="15"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Qualifier"/>
+                            </f:facet>
+                            <h:selectOneMenu value="#{xref.cvXrefQualifier}">
+                                <f:selectItems value="#{cc.attrs.qualifierSelectItems}"/>
+                            </h:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Version"/>
+                            </f:facet>
+                            <h:inputText value="#{xref.secondaryId}" size="5"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Actions"/>
+                            </f:facet>
+                            <h:commandLink value="Delete" immediate="true"
+                                           actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeXref(xref)}"/>
+                        </p:column>
+                    </p:dataTable>
+
+                </td>
+            </tr>
+        </table>
+
 
     </composite:implementation>
-
-
 
 
 </ui:composition>

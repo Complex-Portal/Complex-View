@@ -47,12 +47,21 @@ public class CvObjectService extends JpaAwareController {
     private Map<CvKey,CvObject> allCvObjectMap;
     private Map<String,CvObject> acCvObjectMap;
 
-    private Collection<CvTopic> publicationTopics;
-    private Collection<CvTopic> experimentTopics;
-    private Collection<CvTopic> interactionTopics;
+    private List<CvTopic> publicationTopics;
+    private List<CvTopic> experimentTopics;
+    private List<CvTopic> interactionTopics;
     private List<SelectItem> publicationTopicSelectItems;
     private List<SelectItem> experimentTopicSelectItems;
     private List<SelectItem> interactionTopicSelectItems;
+
+    private List<CvObject> databases;
+    private List<SelectItem> databaseSelectItems;
+
+    private List<CvObject> qualifiers;
+    private List<SelectItem> qualifierSelectItems;
+
+    private List<CvObject> aliasTypes;
+    private List<SelectItem> aliasTypeSelectItems;
 
     public CvObjectService() {
     }
@@ -77,9 +86,11 @@ public class CvObjectService extends JpaAwareController {
         acCvObjectMap = new HashMap<String, CvObject>(allCvObjects.size());
 
         Multimap<String, CvTopic> cvObjectsByUsedInClass = new HashMultimap<String, CvTopic>();
+        Multimap<Class, CvObject> cvObjectsByClass = new HashMultimap<Class, CvObject>();
 
         for (CvObject cvObject : allCvObjects) {
             acCvObjectMap.put(cvObject.getAc(), cvObject);
+            cvObjectsByClass.put(cvObject.getClass(), cvObject);
 
             if (cvObject.getIdentifier() != null) {
                 CvKey keyId = new CvKey(cvObject.getIdentifier(), cvObject.getClass());
@@ -101,15 +112,44 @@ public class CvObjectService extends JpaAwareController {
             }
         }
 
-        publicationTopics = cvObjectsByUsedInClass.get(Experiment.class.getName());
-        experimentTopics = cvObjectsByUsedInClass.get(Experiment.class.getName());
-        interactionTopics = cvObjectsByUsedInClass.get(Interaction.class.getName());
+        publicationTopics = getSortedTopicList(Experiment.class.getName(), cvObjectsByUsedInClass);
+        experimentTopics = getSortedTopicList(Experiment.class.getName(), cvObjectsByUsedInClass);
+        interactionTopics = getSortedTopicList(Interaction.class.getName(), cvObjectsByUsedInClass);
 
         publicationTopicSelectItems = createSelectItems(publicationTopics, "-- Select topic --");
         experimentTopicSelectItems = createSelectItems(experimentTopics, "-- Select topic --");
         interactionTopicSelectItems = createSelectItems(interactionTopics, "-- Select topic --");
 
+        databases = getSortedList(CvDatabase.class, cvObjectsByClass);
+        databaseSelectItems = createSelectItems(databases, "-- Select database --");
+
+        qualifiers = getSortedList(CvXrefQualifier.class, cvObjectsByClass);
+        qualifierSelectItems = createSelectItems(qualifiers, "-- Select qualifier --");
+
+        aliasTypes = getSortedList(CvAliasType.class, cvObjectsByClass);
+        aliasTypeSelectItems = createSelectItems(aliasTypes, "-- Select type --");
+
         IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+    }
+
+    public List<CvTopic> getSortedTopicList(String key, Multimap<String, CvTopic> topicMultimap) {
+        if (topicMultimap.containsKey(key)) {
+            List<CvTopic> list = new ArrayList<CvTopic>(topicMultimap.get(key));
+            Collections.sort(list, new CvObjectComparator());
+            return list;
+        } else {
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    public List<CvObject> getSortedList(Class key, Multimap<Class, CvObject> classMultimap) {
+        if (classMultimap.containsKey(key)) {
+            List<CvObject> list = new ArrayList<CvObject>(classMultimap.get(key));
+            Collections.sort(list, new CvObjectComparator());
+            return list;
+        } else {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     private String[] findUsedInClass(CvObject cvObject) {
@@ -215,5 +255,32 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getInteractionTopicSelectItems() {
         return interactionTopicSelectItems;
+    }
+
+    public List<SelectItem> getDatabaseSelectItems() {
+        return databaseSelectItems;
+    }
+
+    public List<SelectItem> getQualifierSelectItems() {
+        return qualifierSelectItems;
+    }
+
+    public List<SelectItem> getAliasTypeSelectItems() {
+        return aliasTypeSelectItems;
+    }
+
+    private class CvObjectComparator implements Comparator<CvObject> {
+        @Override
+        public int compare(CvObject o1, CvObject o2) {
+            if (o1 == null || o1.getShortLabel() == null) {
+                return 1;
+            }
+
+            if (o2 == null || o2.getShortLabel() == null) {
+                return -1;
+            }
+
+            return o1.getShortLabel().compareTo(o2.getShortLabel());
+        }
     }
 }

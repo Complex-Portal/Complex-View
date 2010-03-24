@@ -27,13 +27,13 @@ import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Annotation;
-import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.model.*;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.model.SelectItem;
 import java.util.ArrayList;
 import java.util.Date;
@@ -161,6 +161,8 @@ public class PublicationController extends AnnotatedObjectController {
                 return;
             }
 
+            setPrimaryReference(id);
+
             publication.setFullName(citation.getTitle());
             setJournal(citation.getJournalIssue().getJournal().getISOAbbreviation()+" ("+
                     citation.getJournalIssue().getJournal().getISSN()+")");
@@ -224,13 +226,21 @@ public class PublicationController extends AnnotatedObjectController {
             return;
         }
 
-        getIntactContext().getCorePersister().saveOrUpdate(publication);
+        try {
+            getIntactContext().getCorePersister().saveOrUpdate(publication);
 
-        lastSaved = new Date();
+            lastSaved = new Date();
 
-        addInfoMessage("Publication saved", "AC: "+publication.getAc());
+            addInfoMessage("Publication saved", "AC: "+publication.getAc());
 
-        setUnsavedChanges(false);
+            setUnsavedChanges(false);
+
+        } catch (Exception e) {
+            addErrorMessage("Problem persisting publication", "AC: "+publication.getAc());
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext(ctx, e);
+            ctx.getApplication().publishEvent(ctx, ExceptionQueuedEvent.class, eventContext);
+        }
     }
 
     public void doClose(ActionEvent evt) {
@@ -291,7 +301,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public String getJournal() {
-        final String annot = findAnnotationText(publication, CvTopic.JOURNAL_MI_REF);
+        final String annot = findAnnotationText(CvTopic.JOURNAL_MI_REF);
         return annot;
     }
 
@@ -300,7 +310,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public Short getYear() {
-        String strYear = findAnnotationText(publication, CvTopic.PUBLICATION_YEAR_MI_REF);
+        String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
 
         if (strYear != null) {
             return Short.valueOf(strYear);
@@ -314,15 +324,33 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public String getIdentifier() {
+        if (publication != null) {
+            String id = getPrimaryReference();
+
+            if (id != null) {
+                identifier = id;
+            }
+        }
+        
         return identifier;
     }
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+
+        setPrimaryReference(identifier);
+    }
+
+    public String getPrimaryReference() {
+        return findXrefPrimaryId(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF);
+    }
+
+    public void setPrimaryReference(String id) {
+        setXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id);
     }
 
     public String getAuthors() {
-        return findAnnotationText(publication, CvTopic.AUTHOR_LIST_MI_REF);
+        return findAnnotationText(CvTopic.AUTHOR_LIST_MI_REF);
     }
 
     public void setAuthors(String authors) {
@@ -330,7 +358,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public String getOnHold() {
-        return findAnnotationText(publication, CvTopic.ON_HOLD);
+        return findAnnotationText(CvTopic.ON_HOLD);
     }
 
     public void setOnHold(String reason) {
@@ -338,7 +366,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public String getAcceptedMessage() {
-        return findAnnotationText(publication, CvTopic.ACCEPTED);
+        return findAnnotationText(CvTopic.ACCEPTED);
     }
 
     public void setAcceptedMessage(String message) {

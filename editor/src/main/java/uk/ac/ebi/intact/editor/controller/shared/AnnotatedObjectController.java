@@ -18,13 +18,11 @@ package uk.ac.ebi.intact.editor.controller.shared;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectService;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Annotation;
-import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.model.IntactObject;
+import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
-import javax.faces.event.ActionEvent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.*;
 import java.util.*;
 
 /**
@@ -42,6 +40,134 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     }
 
     public abstract AnnotatedObject getAnnotatedObject();
+
+    // XREFS
+    ///////////////////////////////////////////////
+
+    public void newXref(ActionEvent evt) {
+        Xref xref = newXrefInstance();
+        getAnnotatedObject().addXref(xref);
+    }
+
+    private Xref newXrefInstance() {
+        Class<? extends Xref> xrefClass = AnnotatedObjectUtils.getXrefClassType(getAnnotatedObject().getClass());
+
+        Xref xref = null;
+        try {
+            xref = xrefClass.newInstance();
+        } catch (Throwable e) {
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext(ctx, e);
+            ctx.getApplication().publishEvent(ctx, ExceptionQueuedEvent.class, eventContext);
+        }
+
+        xref.setOwner(getIntactContext().getInstitution());
+        return xref;
+    }
+
+    public List<Xref> getXrefs() {
+        if (getAnnotatedObject() == null) { return Collections.EMPTY_LIST; }
+
+        final ArrayList<Xref> xrefs = new ArrayList<Xref>(getAnnotatedObject().getXrefs());
+        Collections.sort(xrefs, new Comparator<IntactObject>() {
+            @Override
+            public int compare(IntactObject o1, IntactObject o2) {
+                if (o1.getAc() != null) return 1;
+                return 0;
+            }
+        });
+        return xrefs;
+    }
+
+    public void setXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
+        if (primaryId != null && !primaryId.isEmpty())  {
+            replaceOrCreateXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
+        } else {
+            removeXref(databaseIdOrLabel, qualifierIdOrLabel);
+        }
+    }
+
+    public void replaceOrCreateXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
+        AnnotatedObject parent = getAnnotatedObject();
+
+        // modify if exists
+        boolean exists = false;
+
+        for (Object objXref : getAnnotatedObject().getXrefs()) {
+            Xref xref = (Xref) objXref;
+
+            if (xref.getCvDatabase() != null) {
+                if (databaseIdOrLabel.equals(xref.getCvDatabase().getIdentifier())
+                        || databaseIdOrLabel.equals(xref.getCvDatabase().getShortLabel())) {
+                    if (xref.getCvXrefQualifier() == null || qualifierIdOrLabel == null) {
+                        if (!primaryId.equals(xref.getPrimaryId())) {
+                            xref.setPrimaryId(primaryId);
+                        }
+                    } else if (qualifierIdOrLabel.equals(xref.getCvXrefQualifier().getIdentifier())
+                            || qualifierIdOrLabel.equals(xref.getCvXrefQualifier().getShortLabel())){
+                        if (!primaryId.equals(xref.getPrimaryId())) {
+                            xref.setPrimaryId(primaryId);
+                        }
+                    }
+
+                    exists = true;
+                }
+            }
+        }
+
+        // create if not exists
+        if (!exists) {
+            addXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
+        }
+    }
+
+    public void removeXref(String databaseIdOrLabel, String qualifierIdOrLabel) {
+        Iterator<Xref> iterator = getAnnotatedObject().getXrefs().iterator();
+
+        while (iterator.hasNext()) {
+            Xref xref = iterator.next();
+            if (databaseIdOrLabel.equals(xref.getCvDatabase().getIdentifier()) || databaseIdOrLabel.equals(xref.getCvDatabase().getShortLabel())) {
+                if (qualifierIdOrLabel == null || xref.getCvXrefQualifier() == null) {
+                    iterator.remove();
+                } else if (qualifierIdOrLabel.equals(xref.getCvXrefQualifier().getIdentifier()) || qualifierIdOrLabel.equals(xref.getCvXrefQualifier().getShortLabel())){
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    public void removeXref(Xref xref) {
+        getAnnotatedObject().removeXref(xref);
+        setUnsavedChanges(true);
+    }
+
+    public void addXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
+        CvDatabase db = cvObjectService.findCvObject(CvDatabase.class, databaseIdOrLabel);
+        CvXrefQualifier qual = cvObjectService.findCvObject(CvXrefQualifier.class, qualifierIdOrLabel);
+
+        Xref xref = newXrefInstance();
+        xref.setCvDatabase(db);
+        xref.setCvXrefQualifier(qual);
+        xref.setPrimaryId(primaryId);
+
+        getAnnotatedObject().addXref(xref);
+    }
+
+    public String findXrefPrimaryId(String databaseId, String qualifierId ) {
+        final AnnotatedObject ao = getAnnotatedObject();
+
+        Collection<Xref> xrefs = AnnotatedObjectUtils.searchXrefs(ao, databaseId, qualifierId);
+
+        if (!xrefs.isEmpty()) {
+            return xrefs.iterator().next().getPrimaryId();
+        }
+
+        return null;
+
+    }
+
+    // ANNOTATIONS
+    ///////////////////////////////////////////////
 
     public void newAnnotation(ActionEvent evt) {
         Annotation annotationWithNullTopic = new Annotation() {
@@ -112,6 +238,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         }
     }
 
+    public void removeAnnotation(Annotation annotation) {
+        getAnnotatedObject().removeAnnotation(annotation);
+        setUnsavedChanges(true);
+    }
+
     public void setAnnotation(String topicIdOrLabel, Object value) {
         if (value != null && !value.toString().isEmpty())  {
             replaceOrCreateAnnotation(topicIdOrLabel, value.toString());
@@ -120,8 +251,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         }
     }
 
-    public String findAnnotationText(AnnotatedObject parent, String topicId) {
-        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(parent, topicId);
+    public String findAnnotationText(String topicId) {
+        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(getAnnotatedObject(), topicId);
 
         if (annotation != null) {
             return annotation.getAnnotationText();
@@ -145,8 +276,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         return annotations;
     }
 
-    public void changed(javax.faces.event.AjaxBehaviorEvent event)
-                throws javax.faces.event.AbortProcessingException {
+
+    // OTHER
+    ////////////////////////////////////////////////////
+    
+    public void changed(AjaxBehaviorEvent event) throws AbortProcessingException {
         unsavedChanges = true;
     }
 

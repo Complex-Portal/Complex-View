@@ -26,6 +26,12 @@ input {
     background-color:#f4b6b6;
 }
 
+.intact-infoPanel, .intact-warnPanel, .intact-errorPanel {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: 1px solid gray;
+}
+
 .intact-notSavedPanel {
     display: block;
     opacity: 0.8;
