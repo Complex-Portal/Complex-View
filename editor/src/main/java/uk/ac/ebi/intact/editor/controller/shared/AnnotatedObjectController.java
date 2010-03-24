@@ -44,7 +44,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     public abstract AnnotatedObject getAnnotatedObject();
 
     public void newAnnotation(ActionEvent evt) {
-        getAnnotatedObject().addAnnotation(new Annotation(getIntactContext().getInstitution(), null));
+        Annotation annotationWithNullTopic = new Annotation() {
+            @Override
+            public void setCvTopic(CvTopic cvTopic) {
+                if (cvTopic != null) {
+                    super.setCvTopic(cvTopic);
+                }
+            }
+        };
+        getAnnotatedObject().addAnnotation(annotationWithNullTopic) ;
     }
 
     public void addAnnotation(String topicIdOrLabel, String text) {
@@ -63,12 +71,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         boolean exists = false;
 
         for (Annotation annotation : parent.getAnnotations()) {
-            if (topicOrShortLabel.equals(annotation.getCvTopic().getIdentifier())
-                    || topicOrShortLabel.equals(annotation.getCvTopic().getShortLabel())) {
-                if (!text.equals(annotation.getAnnotationText())) {
-                    annotation.setAnnotationText(text);
+            if (annotation.getCvTopic() != null) {
+                if (topicOrShortLabel.equals(annotation.getCvTopic().getIdentifier())
+                        || topicOrShortLabel.equals(annotation.getCvTopic().getShortLabel())) {
+                    if (!text.equals(annotation.getAnnotationText())) {
+                        annotation.setAnnotationText(text);
+                    }
+                    exists = true;
                 }
-                exists = true;
             }
         }
 

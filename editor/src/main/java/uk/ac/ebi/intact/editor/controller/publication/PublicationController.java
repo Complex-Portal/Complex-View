@@ -291,7 +291,8 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public String getJournal() {
-        return findAnnotationText(publication, CvTopic.JOURNAL_MI_REF);
+        final String annot = findAnnotationText(publication, CvTopic.JOURNAL_MI_REF);
+        return annot;
     }
 
     public void setJournal(String journal) {

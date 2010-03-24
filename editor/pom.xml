@@ -296,11 +296,58 @@
             <version>1.0</version>
         </dependency>
 
+        <!-- MyFaces Ext-scripting -->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.myfaces.extension-scripting</groupId>-->
+            <!--<artifactId>extscript-myfaces20-bundle</artifactId>-->
+            <!--<version>1.0-beta-1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.codehaus.groovy</groupId>-->
+            <!--<artifactId>groovy-all</artifactId>-->
+            <!--<version>1.5.6</version>-->
+        <!--</dependency>-->
+
+        
+
+        <!-- MyFaces ExtVal (validation) -->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.myfaces.extensions.validator.validation-modules</groupId>-->
+            <!--<artifactId>myfaces-extval-bean-validation</artifactId>-->
+            <!--<version>2.0.3</version>-->
+        <!--</dependency>-->
+
+        <!-- MyFaces ExtVal - Optional PrimeFaces Support -->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.myfaces.extensions.validator.component-support-modules</groupId>-->
+            <!--<artifactId>myfaces-extval-primefaces-support</artifactId>-->
+            <!--<version>1.2.2-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
+        <!-- JSR 303 -->
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-validator</artifactId>-->
+            <!--<version>4.0.0.GA</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-api</artifactId>-->
+            <!--<version>1.4.2</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-log4j12</artifactId>-->
+            <!--<version>1.4.2</version>-->
+        <!--</dependency>-->
+
         <!-- Primefaces -->
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>2.0.0</version>
+            <version>2.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -505,6 +552,16 @@
         <repository>
             <id>lua</id>
             <url>http://people.apache.org/~lu4242/myfaces200beta3</url>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+        <repository>
+            <id>lua-ext</id>
+            <url>http://people.apache.org/~lu4242/extscript10beta1</url>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+        <repository>
+            <id>gpetracek</id>
+            <url>http://people.apache.org/~gpetracek/myfaces/extval/release_candidate/2_0_3/maven_repository</url>
             <snapshots><enabled>false</enabled></snapshots>
         </repository>
 

@@ -1,7 +1,14 @@
 body {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: Small;
+    font-family:helvetica,"trebuchet MS",arial,sans-serif;
+    font-size:10pt;
 }
+
+input {
+    font-family:helvetica,"trebuchet MS",arial,sans-serif;
+    font-size:10pt;
+}
+
+/** Custom classes **/
 
 .verticalTop {
     vertical-align: top;
@@ -24,10 +31,10 @@ body {
     opacity: 0.8;
     position: fixed;
     top:auto;
-    background-color:#FFFFCC;
+    background-color: #ffd98f;
     bottom: 0;
     z-index: 2000;
-    border:3px solid darkorange;
+    border:3px solid #feba12;
     font-weight: bold;
     text-align: center;
     width:98%
@@ -40,4 +47,52 @@ body {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     background-color: #deebeb;
+}
+
+
+/** Tables **/
+.yui-skin-sam .yui-dt table {
+    border-color: #99FF00;
+    border-collapse: collapse;
+}
+
+.yui-skin-sam .yui-dt th {
+   background-color:#5E9E9E;
+    border:1px solid #ADADAF;
+    color:#FFFFFF;
+    font-size:9pt;
+    padding:3px;
+    vertical-align:top;
+}
+
+.yui-skin-sam tr.yui-dt-odd {
+
+    background: #FFFFCC;
+}
+
+.yui-skin-sam tr.yui-dt-even {
+    background: #FFFFFF;
+}
+
+.yui-skin-sam .yui-dt td {
+    font-size:9pt;
+    border:1px solid #ADADAF;
+    padding:3px;
+    text-align:left;
+    vertical-align:top;
+}
+
+.yui-skin-sam .yui-dt-paginator a.yui-pg-last,
+.yui-skin-sam .yui-dt-paginator a.yui-pg-first,
+.yui-skin-sam .yui-dt-paginator a.yui-pg-next,
+.yui-skin-sam .yui-dt-paginator a.yui-pg-previous {
+    color: #33CC00;
+}
+
+.yui-skin-sam a.yui-pg-page:link,
+.yui-skin-sam a.yui-pg-page:hover,
+.yui-skin-sam a.yui-pg-page:visited {
+    background: #FFFFFF;
+    color: #ADADAF;
+    font-size:9pt;
 }

@@ -13,7 +13,7 @@
 
     <h:body bgcolor="white">
 
-        <h:outputStylesheet name="intact.css" library="css" target="body"/>
+        <h:outputStylesheet name="intact.css" library="css" target="head"/>
 
         <h:form id="editorForm" prependId="false">
 
@@ -22,8 +22,6 @@
             <p:layout fullPage="true">
 
                 <p:layoutUnit id="northUnit" position="north" resizable="false" minSize="80" maxSize="80">
-
-
 
                     <div id="topImage" style="float: left; padding-right: 30px">
                         <h:graphicImage url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>

@@ -32,21 +32,65 @@
         <param-value>uk.ac.ebi.intact.editor</param-value>
     </context-param>
 
-    <!-- When using Mojarra -->
     <context-param>
-        <param-name>com.sun.faces.resourceUpdateCheckPeriod</param-name>
-        <param-value>-1</param-value>
-    </context-param>
-    
-    <context-param>
-        <param-name>com.sun.faces.allowTextChildren</param-name>
+        <description>
+            If true, a javascript function will be rendered that is able
+            to restore the former vertical scroll on every request.
+            Convenient feature if you have pages with long lists and you
+            do not want the browser page to always jump to the top if
+            you trigger a link or button action that stays on the same
+            page. Default: "false"
+        </description>
+        <param-name>org.apache.myfaces.AUTO_SCROLL</param-name>
         <param-value>true</param-value>
     </context-param>
 
     <context-param>
-		<param-name>com.sun.faces.expressionFactory</param-name>
-		<param-value>com.sun.el.ExpressionFactoryImpl</param-value>
-	</context-param>
+        <description>
+            Validate managed beans, navigation rules and ensure that
+            forms are not nested.
+        </description>
+        <param-name>org.apache.myfaces.VALIDATE</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- MyFaces Ext-scripting -->
+    <!--<context-param>-->
+        <!--<description>-->
+            <!--Enables our scripting engine support plugins-->
+        <!--</description>-->
+        <!--<param-name>org.apache.myfaces.FACES_INIT_PLUGINS</param-name>-->
+        <!--<param-value>-->
+            <!--org.apache.myfaces.scripting.servlet.StartupServletContextPluginChainLoader-->
+        <!--</param-value>-->
+    <!--</context-param>-->
+
+    <!--<context-param>-->
+        <!--<description>-->
+            <!--Enables our scripting engine support plugins-->
+        <!--</description>-->
+        <!--<param-name>org.apache.myfaces.FACES_INIT_PLUGINS</param-name>-->
+        <!--<param-value>org.apache.myfaces.scripting.servlet.StartupServletContextPluginChainLoader</param-value>-->
+    <!--</context-param>-->
+
+    <!--<context-param>-->
+        <!--<description>Additional comma separated loader paths to allow direct editing on the sources directory instead-->
+            <!--of the deployment dir-->
+        <!--</description>-->
+        <!--<param-name>org.apache.myfaces.scripting.groovy.LOADER_PATHS</param-name>-->
+        <!--<param-value>-->
+           <!--src/main/webapp/WEB-INF/groovy-->
+        <!--</param-value>-->
+    <!--</context-param>-->
+    <!--<context-param>-->
+        <!--<description>Additional comma separated loader paths to allow direct editing on the sources directory instead-->
+            <!--of the deployment dir-->
+        <!--</description>-->
+        <!--<param-name>org.apache.myfaces.scripting.java.LOADER_PATHS</param-name>-->
+        <!--<param-value>-->
+            <!--src/main/webapp/WEB-INF/java-->
+        <!--</param-value>-->
+    <!--</context-param>-->
 
     <listener>
         <listener-class>uk.ac.ebi.intact.editor.security.AppSessionListener</listener-class> 
