@@ -186,6 +186,22 @@
         <!--<url-pattern>/primefaces_comet/*</url-pattern>-->
     <!--</servlet-mapping>-->
 
+    <!-- MyFaces scripting -->
+    <!--<filter>-->
+        <!--<filter-name>scriptingFilter</filter-name>-->
+        <!--<filter-class>org.apache.myfaces.scripting.servlet.ScriptingServletFilter</filter-class>-->
+
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>scriptingFilter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+        <!--<dispatcher>REQUEST</dispatcher>-->
+
+        <!--<dispatcher>FORWARD</dispatcher>-->
+        <!--<dispatcher>INCLUDE</dispatcher>-->
+        <!--<dispatcher>ERROR</dispatcher>-->
+    <!--</filter-mapping>-->
+
 	<servlet>
 		<servlet-name>Resource Servlet</servlet-name>
 		<servlet-class>org.primefaces.resource.ResourceServlet</servlet-class>
