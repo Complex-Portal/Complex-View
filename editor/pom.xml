@@ -297,16 +297,16 @@
         </dependency>
 
         <!-- MyFaces Ext-scripting -->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.extension-scripting</groupId>-->
-            <!--<artifactId>extscript-myfaces20-bundle</artifactId>-->
-            <!--<version>1.0-beta-1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.codehaus.groovy</groupId>-->
-            <!--<artifactId>groovy-all</artifactId>-->
-            <!--<version>1.5.6</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.apache.myfaces.extension-scripting</groupId>
+            <artifactId>extscript-myfaces20-bundle</artifactId>
+            <version>1.0-beta-1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.5.6</version>
+        </dependency>
 
         
 
@@ -548,7 +548,7 @@
             <url>http://repository.prime.com.tr/</url>
             <layout>default</layout>
         </repository>
-
+<!--
         <repository>
             <id>lua</id>
             <url>http://people.apache.org/~lu4242/myfaces200beta3</url>
@@ -564,7 +564,7 @@
             <url>http://people.apache.org/~gpetracek/myfaces/extval/release_candidate/2_0_3/maven_repository</url>
             <snapshots><enabled>false</enabled></snapshots>
         </repository>
-
+-->
         <!-- Mojarra... -->
         <repository>
             <id>java.net 2</id>
