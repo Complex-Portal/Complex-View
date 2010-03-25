@@ -2,19 +2,21 @@ package uk.ac.ebi.intact.editor.controller.cv;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.CvDagObject;
 
-import javax.faces.event.ActionEvent;
 import java.util.List;
 
 @Controller
+@Scope("conversation.access")
+@ConversationName("general")
 public class CvController extends BaseController {
 
     private static final Log log = LogFactory.getLog( CvController.class );
@@ -42,9 +44,13 @@ public class CvController extends BaseController {
 		this.root = root;
 	}
 
-    @Transactional(readOnly = true)
 	public void loadData()
 	{
+
+        if (cvClass == null) {
+            throw new IllegalStateException("cvClass should not be null");
+        }
+
 		Class clazz;
         log.debug("Loading cvClass: " + cvClass);
 		try 
@@ -61,10 +67,9 @@ public class CvController extends BaseController {
 		}		
 	}
 
-    @Transactional(readOnly = true)
-    public void load(ActionEvent evt)
+    public void load(String cvClazz)
     {
-        log.debug("LOAD cvClass " + cvClass);
+        this.cvClass = cvClazz;
         loadData();
     }
 
