@@ -66,7 +66,8 @@
         <br />
 
 
-        <p:commandLink onclick="cvDlg.show();" value="CvDatabase" actionListener="#{cvController.load('uk.ac.ebi.intact.model.CvDatabase')}">              
+        <p:commandLink onclick="cvDlg.show();" value="CvDatabase" actionListener="#{cvController.load}">
+            <f:setPropertyActionListener value="uk.ac.ebi.intact.model.CvDatabase" target="#{cvController.cvClass}"/>
         </p:commandLink>
 
         <!--<h:link onclick="cvDlg.show();" value="CvInteraction" includeViewParams="true">

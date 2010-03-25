@@ -1,13 +1,10 @@
 package uk.ac.ebi.intact.editor.controller.cv;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
@@ -15,6 +12,7 @@ import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.CvDagObject;
 
 import javax.faces.event.ActionEvent;
+import java.util.List;
 
 @Controller
 public class CvController extends BaseController {
@@ -64,10 +62,9 @@ public class CvController extends BaseController {
 	}
 
     @Transactional(readOnly = true)
-    public void load(String cvClass)
+    public void load(ActionEvent evt)
     {
-        this.cvClass = cvClass;
-        log.debug("Load cvClass " + cvClass);
+        log.debug("LOAD cvClass " + cvClass);
         loadData();
     }
 
