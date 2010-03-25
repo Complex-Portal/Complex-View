@@ -66,17 +66,12 @@
         <br />
 
 
-        <p:commandButton onclick="cvDlg.show();" value="CvDatabase" actionListener="#{cvController.load('uk.ac.ebi.intact.model.CvDatabase')}"
+        <p:commandButton onclick="cvDlg.show();" value="CvDatabase" actionListener="#{cvController.load('uk.ac.ebi.intact.model.CvDatabase', 'MI:0444')}"
                update="cvObjectBrowserDialog"/>
 
         <!--<h:link onclick="cvDlg.show();" value="CvInteraction" includeViewParams="true">
            <f:param name="cvClass" value="uk.ac.ebi.intact.model.CvInteraction"/>
         </h:link>-->
-
-
-        <ui:include src="cv_browser.xhtml"/>
-
-        <br />
 
         <div style="width:100%; padding-top:30px">
             <ui:insert name="curateContent"/>

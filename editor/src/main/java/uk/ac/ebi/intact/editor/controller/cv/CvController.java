@@ -3,6 +3,7 @@ package uk.ac.ebi.intact.editor.controller.cv;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -21,56 +22,38 @@ public class CvController extends BaseController {
 
     private static final Log log = LogFactory.getLog( CvController.class );
 
-	private String cvClass;
-
     @Autowired
     private DaoFactory daoFactory;	
-	
+
 	private TreeNode root;
-
-    public String getCvClass() {
-		return cvClass;
-	}
-
-    public void setCvClass(String cvClass) {
-		this.cvClass = cvClass;
-	}
 
     public TreeNode getRoot() {
 		return root;
 	}
 
-    public void setRoot(TreeNode root) {
-		this.root = root;
-	}
-
-	public void loadData()
-	{
-
-        if (cvClass == null) {
-            throw new IllegalStateException("cvClass should not be null");
-        }
-
+    public void load(String cvClass, String id)
+    {
 		Class clazz;
         log.debug("Loading cvClass: " + cvClass);
-		try 
+		try
 		{
 			clazz = Class.forName(cvClass);
-			CvObjectDao<CvDagObject> cvDAO = daoFactory.getCvObjectDao(clazz);
-			List<CvDagObject> cvs = cvDAO.getAll();
-			CvDagObject rootCv = getRoot( cvs );
-			root = buildTreeNode(rootCv, null);			
-		} 
-		catch (ClassNotFoundException e) 
-		{
-			addErrorMessage("Could not load data for class " + cvClass, e.getMessage());			
-		}		
-	}
 
-    public void load(String cvClazz)
-    {
-        this.cvClass = cvClazz;
-        loadData();
+			CvObjectDao<CvDagObject> cvDAO = daoFactory.getCvObjectDao(clazz);
+			CvDagObject rootCv = cvDAO.getByPsiMiRef(id);
+
+            if (rootCv == null) {
+                throw new IllegalArgumentException("Root does not exist: "+cvClass+" ID: "+id);
+            }
+
+			root = buildTreeNode(rootCv, null);
+
+            log.debug("\tLoading completed.");
+		}
+		catch (ClassNotFoundException e)
+		{
+			addErrorMessage("Could not load data for class " + cvClass, e.getMessage());
+		}
     }
 
 	private CvDagObject getRoot(List<CvDagObject> cvs)
@@ -82,15 +65,21 @@ public class CvController extends BaseController {
 		return cv;
 	}
 	
-	private TreeNode buildTreeNode(CvDagObject cv, TreeNode node)
-	{
-		TreeNode childNode = new TreeNode(cv.getShortLabel(), node);
+	private TreeNode buildTreeNode(CvDagObject cv, TreeNode node) {
+		TreeNode childNode = new TreeNode(cv, node);
 		
-		for(CvDagObject child:cv.getChildren())
+		for(CvDagObject child : cv.getChildren())
 		{
-			buildTreeNode(child, childNode);
+            if (cv != null) {
+			    buildTreeNode(child, childNode);
+            }
 		}
 		
 		return childNode;
 	}
+
+    public void onNodeSelect(NodeSelectEvent event) {
+//        selectedDocument = event.getTreeNode();
+        System.out.println("Selected:" + event.getTreeNode().getData());  
+    }
 }

@@ -32,7 +32,14 @@
             <p:outputPanel id="basic">
                 Experiment: #{experimentController.experiment.shortLabel} <br/>
                 Creator: #{experimentController.experiment.creator}<br/>
-                AC: #{experimentController.ac}
+                AC: #{experimentController.ac} <br/>
+
+                <h:outputLabel value="Interaction detection method: " for="detMethodTxt"/>
+                <ia:inputCvObject id="detMethodTxt" value="#{experimentController.experiment.cvInteraction}"
+                        cvIdentifier="MI:0001"/>
+
+                
+
             </p:outputPanel>
 
             <h3>Publication properties</h3>

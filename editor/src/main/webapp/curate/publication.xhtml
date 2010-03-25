@@ -33,18 +33,18 @@
 
                     <p:outputPanel id="infoPanels">
                         <h:panelGroup rendered="#{not empty publicationController.acceptedMessage}">
-                        <ia:panelMessage level="info">
-                            This publication is <b>accepted</b>. #{publicationController.acceptedMessage}
-                        </ia:panelMessage>
+                            <ia:panelMessage level="info">
+                                This publication is <b>accepted</b>. #{publicationController.acceptedMessage}
+                            </ia:panelMessage>
                         </h:panelGroup>
 
                         <h:panelGroup rendered="#{not empty publicationController.onHold}">
-                        <ia:panelMessage level="warn">
-                            This publication is <b>on-hold</b>. Reason: #{publicationController.onHold}
-                            &#160;&#160;&#160;
-                            <h:commandButton value="Clear" type="button" onclick="document.getElementById('basicInfoPanel:clearOnHoldBtn_submit').click();return false;" />
+                            <ia:panelMessage level="warn">
+                                This publication is <b>on-hold</b>. Reason: #{publicationController.onHold}
+                                &#160;&#160;&#160;
+                                <h:commandButton value="Clear" type="button" onclick="document.getElementById('basicInfoPanel:clearOnHoldBtn_submit').click();return false;" />
 
-                        </ia:panelMessage>
+                            </ia:panelMessage>
                         </h:panelGroup>
                     </p:outputPanel>
 

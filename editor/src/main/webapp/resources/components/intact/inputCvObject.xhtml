@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+  <composite:interface>
+    <composite:attribute name="value" type="uk.ac.ebi.intact.model.CvObject" required="true"/>
+    <composite:attribute name="cvIdentifier" required="true" shortDescription="Identifier of the CvObject"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <h:inputText id="#{cc.id}" value="#{cc.attrs.value}">
+            <f:converter converterId="cvObjectConverter"/>
+        </h:inputText>
+        
+        <p:commandButton onclick="cvDlg.show();" value="Select" actionListener="#{cvController.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
+                                 update="cvObjectBrowserDialog,growl"/>
+
+        <p:dialog header="CvObject selection" resizable="true" widgetVar="cvDlg">
+
+            <p:outputPanel id="cvObjectBrowserDialog">
+            <h:panelGrid columns="1">
+                <h:panelGroup>
+                    <h:inputText />
+                    <h:commandButton type="button" value="Search" />
+                    <h:commandButton type="button" value="New..." />
+                </h:panelGroup>
+
+                <p:tree value="#{cvController.root}" var="cvObject" rendered="#{cvController.root != null}"
+                        dynamic="true" cache="false"
+                        nodeSelectListener="#{cvController.onNodeSelect}"
+                        onselectComplete="cvDlg.hide();"
+                        update="#{cc.id}">
+                    <p:treeNode>
+                        <h:outputText value="#{cvObject.shortLabel}"/>
+                    </p:treeNode>
+                </p:tree>
+            </h:panelGrid>
+        </p:outputPanel>
+    </p:dialog>
+
+    </composite:implementation>
+
+
+
+
+</ui:composition>
