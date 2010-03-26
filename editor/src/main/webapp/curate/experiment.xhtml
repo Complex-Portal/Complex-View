@@ -34,12 +34,16 @@
                 Creator: #{experimentController.experiment.creator}<br/>
                 AC: #{experimentController.ac} <br/>
 
+                <ia:panelFormLayout id="basicInfoPanel" columns="1">
                 <h:outputLabel value="Interaction detection method: " for="detMethodTxt"/>
                 <ia:inputCvObject id="detMethodTxt" value="#{experimentController.experiment.cvInteraction}"
                         cvIdentifier="MI:0001"/>
 
-                
+                <h:outputLabel value="Participant detection method: " for="partDetMethodTxt"/>
+                <ia:inputCvObject id="partDetMethodTxt" value="#{experimentController.experiment.cvIdentification}"
+                        cvIdentifier="MI:0002"/>
 
+                </ia:panelFormLayout>
             </p:outputPanel>
 
             <h3>Publication properties</h3>

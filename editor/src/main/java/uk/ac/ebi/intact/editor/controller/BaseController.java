@@ -34,7 +34,7 @@ import java.io.Serializable;
 public abstract class BaseController implements Serializable {
 
     @Autowired
-    private ApplicationContext applicationContext;
+    private transient ApplicationContext applicationContext;
 
     protected void addMessage(String message, String detail) {
         FacesContext context = FacesContext.getCurrentInstance();

@@ -8,16 +8,17 @@ import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.CvDagObject;
 
+import javax.faces.event.ComponentSystemEvent;
 import java.util.List;
 
 @Controller
 @Scope("conversation.access")
-@ConversationName("general")
 public class CvController extends BaseController {
 
     private static final Log log = LogFactory.getLog( CvController.class );
@@ -27,10 +28,13 @@ public class CvController extends BaseController {
 
 	private TreeNode root;
 
+    private TreeNode selectedCvObject;
+
     public TreeNode getRoot() {
 		return root;
 	}
 
+    @Transactional(readOnly = true)
     public void load(String cvClass, String id)
     {
 		Class clazz;
@@ -55,15 +59,6 @@ public class CvController extends BaseController {
 			addErrorMessage("Could not load data for class " + cvClass, e.getMessage());
 		}
     }
-
-	private CvDagObject getRoot(List<CvDagObject> cvs)
-	{
-		CvDagObject cv = cvs.get(0);
-		while( ! cv.getParents().isEmpty() ) {
-			cv = cv.getParents().iterator().next();
-		}
-		return cv;
-	}
 	
 	private TreeNode buildTreeNode(CvDagObject cv, TreeNode node) {
 		TreeNode childNode = new TreeNode(cv, node);
@@ -79,7 +74,10 @@ public class CvController extends BaseController {
 	}
 
     public void onNodeSelect(NodeSelectEvent event) {
-//        selectedDocument = event.getTreeNode();
-        System.out.println("Selected:" + event.getTreeNode().getData());  
+        selectedCvObject = event.getTreeNode(); 
+    }
+
+    public TreeNode getSelectedCvObject() {
+        return selectedCvObject;
     }
 }

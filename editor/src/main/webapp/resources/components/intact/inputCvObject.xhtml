@@ -13,17 +13,32 @@
     <composite:attribute name="cvIdentifier" required="true" shortDescription="Identifier of the CvObject"/>
   </composite:interface>
 
-  <!-- IMPLEMENTATION -->
+    <!-- IMPLEMENTATION -->
     <composite:implementation>
-
-        <h:inputText id="#{cc.id}" value="#{cc.attrs.value}">
-            <f:converter converterId="cvObjectConverter"/>
-        </h:inputText>
         
-        <p:commandButton onclick="cvDlg.show();" value="Select" actionListener="#{cvController.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
+        <h:inputText id="cvObjectVisible" readonly="true"/>
+
+        <h:inputHidden id="cvObject" value="#{cc.attrs.value}" >
+            <f:converter converterId="cvObjectConverter"/>
+        </h:inputHidden>
+
+        <p:outputPanel id="javascriptPanel">
+            <h:outputScript>
+                 document.getElementById('#{cc.clientId}:cvObjectVisible').value = '#{cc.attrs.value.shortLabel}';
+            </h:outputScript>
+
+            <h:outputScript rendered="#{cvController.selectedCvObject != null and cvController.selectedCvObject.data.class == cc.attrs.value.class}">
+                document.getElementById('#{cc.clientId}:cvObject').value = '#{cvController.selectedCvObject.data.ac}';
+                document.getElementById('#{cc.clientId}:cvObjectVisible').value = '#{cvController.selectedCvObject.data.shortLabel}';
+            </h:outputScript>
+
+
+        </p:outputPanel>
+        
+        <p:commandButton onclick="#{cc.clientId}_cvDlg.show();" value="Select" actionListener="#{cvController.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
                                  update="cvObjectBrowserDialog,growl"/>
 
-        <p:dialog header="CvObject selection" resizable="true" widgetVar="cvDlg">
+        <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true" widgetVar="#{cc.clientId}_cvDlg">
 
             <p:outputPanel id="cvObjectBrowserDialog">
             <h:panelGrid columns="1">
@@ -36,8 +51,9 @@
                 <p:tree value="#{cvController.root}" var="cvObject" rendered="#{cvController.root != null}"
                         dynamic="true" cache="false"
                         nodeSelectListener="#{cvController.onNodeSelect}"
-                        onselectComplete="cvDlg.hide();"
-                        update="#{cc.id}">
+
+                        onselectComplete="#{cc.clientId}_cvDlg.hide(); "
+                        update="cvObject,javascriptPanel">
                     <p:treeNode>
                         <h:outputText value="#{cvObject.shortLabel}"/>
                     </p:treeNode>

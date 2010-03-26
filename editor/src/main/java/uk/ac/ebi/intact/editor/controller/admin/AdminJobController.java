@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.admin;
 
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -27,6 +28,7 @@ import org.springframework.batch.core.launch.NoSuchJobExecutionException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 
@@ -41,6 +43,8 @@ import java.util.List;
  * @version $Id$
  */
 @Controller
+@Scope( "conversation.access" )
+@ConversationName("admin")
 @Lazy
 public class AdminJobController extends BaseController{
 

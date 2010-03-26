@@ -46,15 +46,12 @@
             <ui:insert name="menubar">
                 <p:menubar>
                     <p:submenu label="Publication">
-                        <p:submenu label="New" onclick="newPublicationDlg.show()" />
-                        <p:submenu label="Open by PMID" onclick="openByPmidDlg.show()"/>
-                        <p:menuitem label="Save" url="#" rendered="#{publicationController.publication != null}">
-                            <p:commandLink value="Save" actionListener="#{publicationController.doSave}" ajax="false"/>
-                        </p:menuitem>
-                        <p:menuitem label="Save &amp; Close" url="#" rendered="#{publicationController.publication != null}">
-                            <p:commandLink value="Save &amp; Close" actionListener="#{publicationController.doSaveAndClose}"
-                                    action="/curate/curate" ajax="false"/>
-                        </p:menuitem>
+                        <p:menuitem label="New" onclick="newPublicationDlg.show()" />
+                        <p:menuitem label="Open by PMID" onclick="openByPmidDlg.show()"/>
+                        <p:menuitem label="Save" actionListener="#{publicationController.doSave}" ajax="false"
+                                    rendered="#{publicationController.publication != null}"/>
+                        <p:menuitem label="Save &amp; Close" actionListener="#{publicationController.doSaveAndClose}" ajax="false"
+                                    rendered="#{publicationController.publication != null}"/>
                     </p:submenu>
                     <p:submenu label="Experiments" rendered="#{publicationController.publication != null}"/>
                     <p:submenu label="Interactions" rendered="#{publicationController.publication != null}"/>
@@ -64,14 +61,6 @@
         </div>
 
         <br />
-
-
-        <p:commandButton onclick="cvDlg.show();" value="CvDatabase" actionListener="#{cvController.load('uk.ac.ebi.intact.model.CvDatabase', 'MI:0444')}"
-               update="cvObjectBrowserDialog"/>
-
-        <!--<h:link onclick="cvDlg.show();" value="CvInteraction" includeViewParams="true">
-           <f:param name="cvClass" value="uk.ac.ebi.intact.model.CvInteraction"/>
-        </h:link>-->
 
         <div style="width:100%; padding-top:30px">
             <ui:insert name="curateContent"/>

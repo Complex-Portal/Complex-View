@@ -3,6 +3,7 @@ package uk.ac.ebi.intact.editor.controller.admin;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import java.util.List;
  */
 @Controller
 @Scope( "conversation.access" )
+@ConversationName("admin")
 public class UserAdminController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( UserAdminController.class );
