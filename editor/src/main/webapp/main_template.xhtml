@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -23,11 +24,11 @@
 
                 <p:layoutUnit id="northUnit" position="north" resizable="false" minSize="80" maxSize="80">
 
-                    <div id="topImage" style="float: left; padding-right: 30px">
+                    <div id="topImage" style="float: left; padding-right: 30px;">
                         <h:graphicImage url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>
                     </div>
 
-                    <div id="topNavigation" style="float:left;">
+                    <div id="topNavigation" style="float: left;">
                         <table>
                             <tr>
                                 <td valign="top">
@@ -47,24 +48,33 @@
                     <div id="userInfo" class="intact-userPanel">
                         <table border="0" cellspacing="0" cellpadding="0" width="100%">
                             <tr>
-                                <td class="verticalTop" style="padding-bottom: 10px; vertical-align:top">
-                                    <h:graphicImage url="/resources/images/user.jpg" alt="User: "/>
+                                <td class="verticalTop" style="padding-bottom: 10px;">
+                                    <h:graphicImage url="/resources/images/user.jpg" alt="User:"/>
+                                </td>
+                                <td class="verticalTop" style="padding-bottom: 10px; padding-left: 5px;">
                                     <h:outputText value="#{userSessionController.currentUser.login}"/>
                                 </td>
                                 <td class="verticalTop" style="padding-left: 20px;">
-                                    <h:graphicImage url="/resources/images/users.png" alt="Curators: "/>
+                                    <h:graphicImage url="/resources/images/users.png" alt="Curators:"/>
+                                </td>
+                                <td class="verticalTop" style="padding-left: 5px;">
                                     <h:outputText value="#{appController.loggedInUserCount}"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="verticalTop">
                                     <h:graphicImage url="/resources/images/database.png" alt="Database: "/>
-                                    <h:outputText value="#{editorConfig.instanceName}" title="Database: #{appController.database}"/>
+                                </td>
+                                <td class="verticalTop" style="padding-left: 5px;">
+                                    <h:outputText value="#{editorConfig.instanceName}" title="Database: #{editorConfig.databaseUrl}"/>
                                 </td>
                                 <td class="verticalTop" style="padding-left: 20px;">
                                     <h:outputLink value="/editor/logout" title="Logout">
                                         <h:graphicImage border="0" url="/resources/images/logout.jpg" alt="Logout"/>
                                     </h:outputLink>
+                                </td>
+                                <td class="verticalTop" style="padding-left: 5px;">
+                                    <h:outputText value="logout"/>
                                 </td>
                             </tr>
                         </table>
@@ -80,7 +90,7 @@
                                         <h:inputText value="#{searchController.query}">
                                             <p:watermark value="search query"/>
                                         </h:inputText>
-                                        <h:commandButton value="Search" actionListener="#{searchController.doSearch}" />
+                                        <h:commandButton value="Search" action="#{searchController.doSearch}" />
                                     </h:panelGrid>
                                 </td>
                             </tr>
@@ -96,8 +106,6 @@
                             </tr>
                         </table>
                     </div>
-
-
 
                 </p:layoutUnit>
 
