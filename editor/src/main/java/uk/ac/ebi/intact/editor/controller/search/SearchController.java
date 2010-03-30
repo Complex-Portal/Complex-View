@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.Publication;
 
 import java.util.HashMap;
@@ -32,6 +33,8 @@ public class SearchController extends JpaAwareController {
     private DaoFactory daoFactory;
 
     private LazyDataModel<Publication> publications;
+
+    private LazyDataModel<Experiment> experiments;
 
     //////////////////
     // Constructors
@@ -58,6 +61,14 @@ public class SearchController extends JpaAwareController {
         this.publications = publications;
     }
 
+    public LazyDataModel<Experiment> getExperiments() {
+        return experiments;
+    }
+
+    public void setExperiments( LazyDataModel<Experiment> experiments ) {
+        this.experiments = experiments;
+    }
+
     ///////////////
     // Actions
 
@@ -68,8 +79,38 @@ public class SearchController extends JpaAwareController {
         // TODO implement simple prefix for the search query so that one can aim at an AC, shortlabel, PMID...
 
         loadPublication( query );
+        loadExperiments( query );
 
         return "search.results";
+    }
+
+    private void loadExperiments( String query ) {
+
+        log.info( "Searching for experiments matching '"+ query +"'..." );
+
+        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        params.put( "query", query );
+
+        experiments = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+
+                                                                "select distinct e " +
+                                                                "from Experiment e inner join e.xrefs as x " +
+                                                                "where    e.ac = :query " +
+                                                                "      or e.shortLabel like :query " +
+                                                                "      or x.primaryId like :query " +
+                                                                "order by e.updated desc",
+
+                                                                "select count(distinct e) " +
+                                                                "from Experiment e inner join e.xrefs as x " +
+                                                                "where    e.ac = :query " +
+                                                                "      or e.shortLabel like :query " +
+                                                                "      or x.primaryId like :query ",
+
+                                                                params );
+
+        log.info( "Experiment found: " + experiments.getRowCount() );
+
+
     }
 
     private void loadPublication( String query ) {

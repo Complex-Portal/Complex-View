@@ -54,6 +54,53 @@
             </p:dataTable>
         </p:outputPanel>
 
+        <h3>Experiments (#{searchController.experiments.rowCount})</h3>
+
+        <p:outputPanel rendered="#{searchController.experiments.rowCount > 0}">
+
+            <p:dataTable id="searchExperimentTable" var="experiment" value="#{searchController.experiments}"
+                         paginator="#{searchController.experiments.rowCount > 10}"
+                         rows="10" dynamic="false" lazy="true">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Experiment"/>
+                    </f:facet>
+                    <ot:separateConversationContext>
+                        <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true">
+                            <f:param name="ac" value="#{experiment.ac}"/>
+                        </h:link>
+                    </ot:separateConversationContext>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Publication ID"/>
+                    </f:facet>
+                    <ot:separateConversationContext>
+                        <h:link outcome="/curate/publication" value="#{experiment.publication.shortLabel}" includeViewParams="true">
+                            <f:param name="ac" value="#{experiment.publication.ac}"/>
+                        </h:link>
+                    </ot:separateConversationContext>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Host organism"/>
+                    </f:facet>
+                    <h:outputText value="#{experiment.bioSource.fullName}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Interaction detection method"/>
+                    </f:facet>
+                    <h:outputText value="#{experiment.cvInteraction.shortLabel}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Participant detection method"/>
+                    </f:facet>
+                    <h:outputText value="#{experiment.cvIdentification.shortLabel}"/>
+                </p:column>
+            </p:dataTable>
+        </p:outputPanel>
 
     </ui:define>
 
