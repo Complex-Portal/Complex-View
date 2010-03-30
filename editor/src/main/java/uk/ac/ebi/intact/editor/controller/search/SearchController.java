@@ -6,15 +6,12 @@ import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
-import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Publication;
 
-import javax.faces.event.ActionEvent;
-import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -33,7 +30,6 @@ public class SearchController extends JpaAwareController {
 
     @Autowired
     private DaoFactory daoFactory;
-
 
     private LazyDataModel<Publication> publications;
 
@@ -54,42 +50,52 @@ public class SearchController extends JpaAwareController {
         this.query = query;
     }
 
+    public LazyDataModel<Publication> getPublications() {
+        return publications;
+    }
+
+    public void setPublications( LazyDataModel<Publication> publications ) {
+        this.publications = publications;
+    }
+
     ///////////////
     // Actions
 
-    public void doSearch( ActionEvent evt) {
+    @Transactional(readOnly = true)
+    public String doSearch() {
         log.info( "Searching for '"+ query +"'..." );
 
         // TODO implement simple prefix for the search query so that one can aim at an AC, shortlabel, PMID...
 
-        final AnnotatedObjectDao<AnnotatedObject> aodao = daoFactory.getAnnotatedObjectDao( AnnotatedObject.class );
-        final AnnotatedObject ao = aodao.getByAc( query );
+        loadPublication( query );
 
-        final Collection<AnnotatedObject> aos = aodao.getByShortLabelLike( query, true );
-
-        final Publication publication = daoFactory.getPublicationDao().getByPubmedId( query );
-
-
+        return "search.results";
     }
 
+    private void loadPublication( String query ) {
+        log.info( "Searching for publications matching '"+ query +"'..." );
 
-    private void publicationSearch( String query ) {
-//        final HashMap<String,String> params = Maps.<String, String>newHashMap();
-//        params.put(  )
-//        publications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
-//
-//                                                                "select p " +
-//                                                                "from Publication " +
-//                                                                "where    p.ac = :query " +
-//                                                                "      or p.shortlabel like :query " +
-//                                                                "order by p.updated desc",
-//
-//                                                                "select count(p) from Publication p",
-//
-//                                                                params );
+        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        params.put( "query", query );
 
+        // TODO add: publication title, author
+        publications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
 
+                                                                "select distinct p " +
+                                                                "from Publication p inner join p.xrefs as x " +
+                                                                "where    p.ac = :query " +
+                                                                "      or p.shortLabel like :query " +
+                                                                "      or x.primaryId like :query " +
+                                                                "order by p.updated desc",
 
+                                                                "select count(distinct p) " +
+                                                                "from Publication p inner join p.xrefs as x " +
+                                                                "where    p.ac = :query " +
+                                                                "      or p.shortLabel like :query " +
+                                                                "      or x.primaryId like :query ",
+
+                                                                params );
+
+        log.info( "Publications found: " + publications.getRowCount() );
     }
-
 }

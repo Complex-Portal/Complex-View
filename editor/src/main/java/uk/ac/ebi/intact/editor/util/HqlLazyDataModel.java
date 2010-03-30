@@ -15,11 +15,14 @@
  */
 package uk.ac.ebi.intact.editor.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -27,18 +30,32 @@ import java.util.List;
  */
 public class HqlLazyDataModel<T> extends LazyDataModel<T>{
 
+    private static final Log log = LogFactory.getLog( HqlLazyDataModel.class );
+
     private EntityManager entityManager;
     private String hqlQuery;
+    private Map<String, String> queryParameters;
 
-    public HqlLazyDataModel(EntityManager entityManager, String hqlQuery, int totalNumRows) {
+    public HqlLazyDataModel(EntityManager entityManager, String hqlQuery, int totalNumRows, Map<String, String> params) {
         super(totalNumRows);
         this.entityManager = entityManager;
         this.hqlQuery = hqlQuery;
+        this.queryParameters = params;
     }
 
     @Override
     public List<T> fetchLazyData(int firstResult, int maxResults) {
+        log.debug( "HqlLazyDataModel.fetchLazyData" );
         Query query = entityManager.createQuery(hqlQuery);
+        log.debug( "HQL: " + hqlQuery );
+
+        if( queryParameters != null ) {
+            for ( Map.Entry<String, String> entry : queryParameters.entrySet() ) {
+                log.debug( "HQL param: " + entry.getKey() +" -> "+ entry.getValue());
+                query.setParameter( entry.getKey(), entry.getValue() );
+            }
+        }
+
         query.setFirstResult(firstResult);
         query.setMaxResults(maxResults);
 

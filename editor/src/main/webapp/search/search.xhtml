@@ -4,12 +4,57 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
 
                 template="/search/search_template.xhtml">
 
     <ui:define name="content">
-       Nothing to search!
-    </ui:define>
 
+        <h3>Publications (#{searchController.publications.rowCount})</h3>
+
+        <p:outputPanel rendered="#{searchController.publications.rowCount > 0}">
+
+            <p:dataTable id="searchPublicationTable" var="publication" value="#{searchController.publications}"
+                         paginator="#{searchController.publications.rowCount > 10}" 
+                         rows="10" dynamic="false" lazy="true">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Publication ID"/>
+                    </f:facet>
+                    <ot:separateConversationContext>
+                        <h:link outcome="/curate/publication" value="#{publication.shortLabel}" includeViewParams="true">
+                            <f:param name="ac" value="#{publication.ac}"/>
+                        </h:link>
+                    </ot:separateConversationContext>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Title"/>
+                    </f:facet>
+                    <h:outputText value="#{publication.fullName}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Creator"/>
+                    </f:facet>
+                    <h:outputText value="#{publication.creator}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Created"/>
+                    </f:facet>
+                    <h:outputText value="#{publication.created}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="updated"/>
+                    </f:facet>
+                    <h:outputText value="#{publication.updated}"/>
+                </p:column>
+            </p:dataTable>
+        </p:outputPanel>
+
+
+    </ui:define>
 
 </ui:composition>

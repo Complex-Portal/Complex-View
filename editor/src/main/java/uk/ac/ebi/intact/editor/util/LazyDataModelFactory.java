@@ -15,10 +15,14 @@
  */
 package uk.ac.ebi.intact.editor.util;
 
+import com.google.common.collect.Maps;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.Map;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -26,24 +30,41 @@ import javax.persistence.Query;
  */
 public class LazyDataModelFactory {
 
+    private static final Log log = LogFactory.getLog( LazyDataModelFactory.class );
+
     private LazyDataModelFactory() {
 
     }
 
     public static LazyDataModel createLazyDataModel(EntityManager entityManager, String query, String countQuery) {
-//        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext()
-//                .beginTransaction(TransactionDefinition.PROPAGATION_MANDATORY);
-
-            Query q = entityManager.createQuery(countQuery);
-            int totalNumRows = ((Long) q.getSingleResult()).intValue();
-
-           // IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
-
-        return createLazyDataModel(entityManager, query, totalNumRows);
+        return createLazyDataModel( entityManager, query, countQuery, Maps.<String, String>newHashMap() );
     }
 
-    public static LazyDataModel createLazyDataModel(EntityManager entityManager, String query, int totalNumRows) {
-        return new HqlLazyDataModel(entityManager, query, totalNumRows);
+    public static LazyDataModel createLazyDataModel(EntityManager entityManager,
+                                                    String query,
+                                                    String countQuery,
+                                                    Map<String, String> params) {
+
+        log.debug( "HQL Count: " + countQuery );
+
+        Query q = entityManager.createQuery(countQuery);
+
+        if( params != null ) {
+            for ( Map.Entry<String, String> entry : params.entrySet() ) {
+                log.debug( "HQL Count param: " + entry.getKey() +" -> "+ entry.getValue());
+                q.setParameter( entry.getKey(), entry.getValue() );
+            }
+        }
+
+        int totalNumRows = ((Long) q.getSingleResult()).intValue();
+
+        return createLazyDataModel(entityManager, query, totalNumRows, params);
     }
 
+    public static LazyDataModel createLazyDataModel(EntityManager entityManager,
+                                                    String query,
+                                                    int totalNumRows,
+                                                    Map<String, String> params) {
+        return new HqlLazyDataModel(entityManager, query, totalNumRows, params);
+    }
 }
