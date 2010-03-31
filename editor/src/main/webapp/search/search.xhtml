@@ -10,13 +10,21 @@
 
     <ui:define name="content">
 
+        <f:metadata>
+            <f:viewParam name="query" value="#{searchController.query}"/>
+        </f:metadata>
+
+        Result for query: '#{searchController.query}'
+
+        <hr/>
+
         <h3>Publications (#{searchController.publications.rowCount})</h3>
 
         <p:outputPanel rendered="#{searchController.publications.rowCount > 0}">
 
             <p:dataTable id="searchPublicationTable" var="publication" value="#{searchController.publications}"
                          paginator="#{searchController.publications.rowCount > 10}" 
-                         rows="10" dynamic="false" lazy="true">
+                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="Publication ID"/>
@@ -35,21 +43,15 @@
                 </p:column>
                 <p:column>
                     <f:facet name="header">
-                        <h:outputText value="Creator"/>
+                        <h:outputText value="#Experiments"/>
                     </f:facet>
-                    <h:outputText value="#{publication.creator}"/>
+                    <h:outputText value="#{searchController.countExperimentsForPublication(publication)}"/>
                 </p:column>
                 <p:column>
                     <f:facet name="header">
-                        <h:outputText value="Created"/>
+                        <h:outputText value="#Interactions"/>
                     </f:facet>
-                    <h:outputText value="#{publication.created}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="updated"/>
-                    </f:facet>
-                    <h:outputText value="#{publication.updated}"/>
+                    <h:outputText value="#{searchController.countInteractionsForPublication(publication)}"/>
                 </p:column>
             </p:dataTable>
         </p:outputPanel>
@@ -60,7 +62,7 @@
 
             <p:dataTable id="searchExperimentTable" var="experiment" value="#{searchController.experiments}"
                          paginator="#{searchController.experiments.rowCount > 10}"
-                         rows="10" dynamic="false" lazy="true">
+                         rows="10" dynamic="true" lazy="true"  paginatorPosition="bottom">
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="Experiment"/>
@@ -98,6 +100,128 @@
                         <h:outputText value="Participant detection method"/>
                     </f:facet>
                     <h:outputText value="#{experiment.cvIdentification.shortLabel}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="#Interactions"/>
+                    </f:facet>
+                    <h:outputText value="#{experimentController.countInteractionsByExperimentAc(experiment.ac)}"/>
+                </p:column>
+            </p:dataTable>
+        </p:outputPanel>
+
+        <h3>Interactions (#{searchController.interactions.rowCount})</h3>
+
+        <p:outputPanel rendered="#{searchController.interactions.rowCount > 0}">
+            
+            <p:dataTable id="searchInteractionTable" var="interaction" value="#{searchController.interactions}"
+                         paginator="#{searchController.interactions.rowCount > 10}"
+                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Experiment"/>
+                    </f:facet>
+                    <ot:separateConversationContext>
+                        <h:link outcome="/curate/experiment" value="#{searchController.getFirstExperiment(interaction).shortLabel}" includeViewParams="true">
+                            <f:param name="ac" value="#{searchController.getFirstExperiment(interaction).ac}"/>
+                        </h:link>
+                    </ot:separateConversationContext>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Publication ID"/>
+                    </f:facet>
+                    <ot:separateConversationContext>
+                        <h:link outcome="/curate/publication" value="#{searchController.getFirstExperiment(interaction).publication.shortLabel}" includeViewParams="true">
+                            <f:param name="ac" value="#{searchController.getFirstExperiment(interaction).publication.ac}"/>
+                        </h:link>
+                    </ot:separateConversationContext>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Type"/>
+                    </f:facet>
+                    <h:outputText value="#{interaction.cvInteractionType.shortLabel}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="#Participants"/>
+                    </f:facet>
+                    <h:outputText value="#{interactionController.countParticipantsByInteractionAc(interaction.ac)}"/>
+                </p:column>
+            </p:dataTable>
+        </p:outputPanel>
+
+        <h3>Molecules (#{searchController.molecules.rowCount})</h3>
+
+        <p:outputPanel rendered="#{searchController.molecules.rowCount > 0}">
+
+            <p:dataTable id="searchMoleculeTable" var="molecule" value="#{searchController.molecules}"
+                         paginator="#{searchController.molecules.rowCount > 10}"
+                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="AC"/>
+                    </f:facet>
+                    <h:outputText value="#{molecule.ac}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Type"/>
+                    </f:facet>
+                    <h:outputText value="#{molecule.cvInteractorType.shortLabel}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Name"/>
+                    </f:facet>
+                    <h:outputText value="#{molecule.shortLabel}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Identity"/>
+                    </f:facet>
+                    <h:outputText value="#{searchController.getIdentityXref( molecule )}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="#Interactions"/>
+                    </f:facet>
+                    <h:outputText value="#{searchController.countInteractionsByMoleculeAc( molecule )}"/>
+                </p:column>
+            </p:dataTable>
+        </p:outputPanel>
+
+        <h3>Controlled Vocabularies (#{searchController.cvobjects.rowCount})</h3>
+
+        <p:outputPanel rendered="#{searchController.cvobjects.rowCount > 0}">
+
+            <p:dataTable id="searchCvObjectTable" var="cvobject" value="#{searchController.cvobjects}"
+                         paginator="#{searchController.cvobjects.rowCount > 10}"
+                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="AC"/>
+                    </f:facet>
+                    <h:outputText value="#{cvobject.ac}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Type"/>
+                    </f:facet>
+                    <h:outputText value="#{cvobject.class.simpleName}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Name"/>
+                    </f:facet>
+                    <h:outputText value="#{cvobject.shortLabel}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Identity"/>
+                    </f:facet>
+                    <h:outputText value="#{cvobject.identifier}"/>
                 </p:column>
             </p:dataTable>
         </p:outputPanel>

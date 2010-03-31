@@ -30,6 +30,9 @@
                         <p:menuitem label="List" action="/admin/users/list"  ajax="false" />
                     </p:submenu>
                     <p:submenu label="DB Update">
+                        <p:menuitem label="">
+                            <h:link value="Import PSI-MI XML" outcome="/admin/dbupdate/xmlImport"/>
+                        </p:menuitem>                        
                         <p:menuitem label="Compatibility Tools" action="/admin/dbupdate/compatibility"  ajax="false"/>
                         <p:menuitem label="CV Management" action="/admin/dbupdate/cvManagement"  ajax="false"/>
                         <p:menuitem label="UniProt Update" style="color:#CDCDCD"/>

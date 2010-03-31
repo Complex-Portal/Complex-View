@@ -5,14 +5,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -23,6 +25,7 @@ import java.util.HashMap;
  * @since 2.0
  */
 @Controller
+@Scope( "session" )
 public class SearchController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( SearchController.class );
@@ -35,6 +38,12 @@ public class SearchController extends JpaAwareController {
     private LazyDataModel<Publication> publications;
 
     private LazyDataModel<Experiment> experiments;
+
+    private LazyDataModel<Interaction> interactions;
+
+    private LazyDataModel<Interactor> molecules;
+
+    private LazyDataModel<CvObject> cvobjects;
 
     //////////////////
     // Constructors
@@ -57,16 +66,20 @@ public class SearchController extends JpaAwareController {
         return publications;
     }
 
-    public void setPublications( LazyDataModel<Publication> publications ) {
-        this.publications = publications;
-    }
-
     public LazyDataModel<Experiment> getExperiments() {
         return experiments;
     }
 
-    public void setExperiments( LazyDataModel<Experiment> experiments ) {
-        this.experiments = experiments;
+    public LazyDataModel<Interaction> getInteractions() {
+        return interactions;
+    }
+
+    public LazyDataModel<Interactor> getMolecules() {
+        return molecules;
+    }
+
+    public LazyDataModel<CvObject> getCvobjects() {
+        return cvobjects;
     }
 
     ///////////////
@@ -74,14 +87,132 @@ public class SearchController extends JpaAwareController {
 
     @Transactional(readOnly = true)
     public String doSearch() {
+
+        if( query != null ) {
+            query = query.toLowerCase().trim();
+        }
+
         log.info( "Searching for '"+ query +"'..." );
 
         // TODO implement simple prefix for the search query so that one can aim at an AC, shortlabel, PMID...
 
+        // Note: the search is NOT case sensitive !!!
+
         loadPublication( query );
         loadExperiments( query );
+        loadInteractions( query );
+        loadMolecules( query );
+        loadCvObjects( query );
 
         return "search.results";
+    }
+
+    private void loadCvObjects( String query ) {
+
+        log.info( "Searching for CvObject matching '"+ query +"'..." );
+
+        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        params.put( "query", query );
+
+        // all cvobjects
+        cvobjects = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+
+                                                                "select distinct i " +
+                                                                "from CvObject i inner join fetch i.xrefs as x " +
+                                                                "where    ( i.ac = :query " +
+                                                                "      or lower(i.shortLabel) like :query " +
+                                                                "      or lower(i.fullName) like :query " +
+                                                                "      or lower(i.identifier) like :query " +
+                                                                "      or lower(x.primaryId) like :query ) " +
+                                                                "order by i.updated desc",
+
+                                                                "select count(distinct i) " +
+                                                                "from CvObject i inner join i.xrefs as x " +
+                                                                "where   (i.ac = :query " +
+                                                                "      or lower(i.identifier) like :query " +
+                                                                "      or lower(i.shortLabel) like :query " +
+                                                                "      or lower(i.fullName) like :query " +
+                                                                "      or lower(x.primaryId) like :query )",
+
+                                                                params );
+
+        log.info( "CvObject found: " + cvobjects.getRowCount() );
+    }
+
+    private void loadMolecules( String query ) {
+
+        log.info( "Searching for Molecules matching '"+ query +"'..." );
+
+        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        params.put( "query", query );
+
+        // all molecules but interactions
+        molecules = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+
+                                                                "select distinct i " +
+                                                                "from InteractorImpl i inner join fetch i.xrefs as x " +
+                                                                "where    ( i.ac = :query " +
+                                                                "      or lower(i.shortLabel) like :query " +
+                                                                "      or lower(x.primaryId) like :query ) " +
+                                                                "      and i.cvInteractorType.identifier <> 'MI:0317' " +
+                                                                "order by i.updated desc",
+
+                                                                "select count(distinct i) " +
+                                                                "from InteractorImpl i inner join i.xrefs as x " +
+                                                                "where   (i.ac = :query " +
+                                                                "      or lower(i.shortLabel) like :query " +
+                                                                "      or lower(x.primaryId) like :query )" +
+                                                                "     and i.cvInteractorType.identifier <> 'MI:0317'",
+
+                                                                params );
+
+        log.info( "Molecules found: " + molecules.getRowCount() );
+    }
+
+    public int countInteractionsByMoleculeAc(Interactor molecule ) {
+        return getDaoFactory().getInteractorDao().countInteractionsForInteractorWithAc( molecule.getAc() );
+    }
+
+    public String getIdentityXref( Interactor molecule ) {
+        // TODO handle multiple identities (return xref and iterate to display them all)
+        final Collection<InteractorXref> xrefs = AnnotatedObjectUtils.searchXrefsByQualifier( molecule, CvXrefQualifier.IDENTITY_MI_REF );
+        if( xrefs.isEmpty() ) {
+            return "-";
+        }
+        return xrefs.iterator().next().getPrimaryId();
+    }
+
+    private void loadInteractions( String query ) {
+
+        log.info( "Searching for Interactions matching '"+ query +"'..." );
+
+        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        params.put( "query", query );
+
+        // Load experiment eagerly to avoid LazyInitializationException when redering the view
+        interactions = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+
+                                                                "select distinct i " +
+                                                                "from InteractionImpl i inner join i.xrefs as x " +
+                                                                "                       inner join fetch i.experiments as e " +
+                                                                "where    i.ac = :query " +
+                                                                "      or lower(i.shortLabel) like :query " +
+                                                                "      or lower(x.primaryId) like :query " +
+                                                                "order by i.updated desc",
+
+                                                                "select count(distinct i) " +
+                                                                "from InteractionImpl i inner join i.xrefs as x " +
+                                                                "where    i.ac = :query " +
+                                                                "      or lower(i.shortLabel) like :query " +
+                                                                "      or lower(x.primaryId) like :query ",
+
+                                                                params );
+
+        log.info( "Interactions found: " + interactions.getRowCount() );
+    }
+
+    public Experiment getFirstExperiment( Interaction interaction ) {
+        return interaction.getExperiments().iterator().next();
     }
 
     private void loadExperiments( String query ) {
@@ -96,21 +227,19 @@ public class SearchController extends JpaAwareController {
                                                                 "select distinct e " +
                                                                 "from Experiment e inner join e.xrefs as x " +
                                                                 "where    e.ac = :query " +
-                                                                "      or e.shortLabel like :query " +
-                                                                "      or x.primaryId like :query " +
+                                                                "      or lower(e.shortLabel) like :query " +
+                                                                "      or lower(x.primaryId) like :query " +
                                                                 "order by e.updated desc",
 
                                                                 "select count(distinct e) " +
                                                                 "from Experiment e inner join e.xrefs as x " +
                                                                 "where    e.ac = :query " +
-                                                                "      or e.shortLabel like :query " +
-                                                                "      or x.primaryId like :query ",
+                                                                "      or lower(e.shortLabel) like :query " +
+                                                                "      or lower(x.primaryId) like :query ",
 
                                                                 params );
 
         log.info( "Experiment found: " + experiments.getRowCount() );
-
-
     }
 
     private void loadPublication( String query ) {
@@ -119,24 +248,34 @@ public class SearchController extends JpaAwareController {
         final HashMap<String,String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
 
-        // TODO add: publication title, author
+        // TODO add: author
         publications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
 
                                                                 "select distinct p " +
                                                                 "from Publication p inner join p.xrefs as x " +
                                                                 "where    p.ac = :query " +
-                                                                "      or p.shortLabel like :query " +
-                                                                "      or x.primaryId like :query " +
+                                                                "      or lower(p.shortLabel) like :query " +
+                                                                "      or lower(p.fullName) like :query " +
+                                                                "      or lower(x.primaryId) like :query " +
                                                                 "order by p.updated desc",
 
                                                                 "select count(distinct p) " +
                                                                 "from Publication p inner join p.xrefs as x " +
                                                                 "where    p.ac = :query " +
-                                                                "      or p.shortLabel like :query " +
-                                                                "      or x.primaryId like :query ",
+                                                                "      or lower(p.shortLabel) like :query " +
+                                                                "      or lower(p.fullName) like :query " +
+                                                                "      or lower(x.primaryId) like :query ",
 
                                                                 params );
 
         log.info( "Publications found: " + publications.getRowCount() );
+    }
+
+    public int countExperimentsForPublication( Publication publication ) {
+        return getDaoFactory().getPublicationDao().countExperimentsForPublicationAc( publication.getAc() );
+    }
+
+    public int countInteractionsForPublication( Publication publication ) {
+        return getDaoFactory().getPublicationDao().countInteractionsForPublicationAc( publication.getAc() );
     }
 }
