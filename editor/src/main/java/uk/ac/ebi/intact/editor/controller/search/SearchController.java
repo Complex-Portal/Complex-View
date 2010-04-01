@@ -1,6 +1,7 @@
 package uk.ac.ebi.intact.editor.controller.search;
 
 import com.google.common.collect.Maps;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
@@ -82,122 +83,150 @@ public class SearchController extends JpaAwareController {
         return cvobjects;
     }
 
-
-
     ///////////////
     // Actions
 
-    @Transactional(readOnly = true)
+    @Transactional( readOnly = true )
     public String doSearch() {
-        if( query != null ) {
+
+        log.info( "Searching for '" + query + "'..." );
+
+        if ( ! StringUtils.isEmpty(query) ) {
             query = query.toLowerCase().trim();
+
+            String q = query;
+            q = q.replaceAll( "\\*", "%" );
+            q = q.replaceAll( "\\?", "%" );
+            if ( !query.startsWith( "%" ) ) {
+                q = "%" + q;
+            }
+            if ( !query.endsWith( "%" ) ) {
+                q = q + "%";
+            }
+
+            if ( !query.equals( q ) ) {
+                log.info( "Updated query: '" + q +"'" );
+            }
+
+            // TODO implement simple prefix for the search query so that one can aim at an AC, shortlabel, PMID...
+
+            // Note: the search is NOT case sensitive !!!
+            // Note: the search includes wildcards automatically
+
+            loadPublication( q );
+            loadExperiments( q );
+            loadInteractions( q );
+            loadMolecules( q );
+            loadCvObjects( q );
+        } else {
+            resetSearchResults();
         }
-
-        log.info( "Searching for '"+ query +"'..." );
-
-        // TODO implement simple prefix for the search query so that one can aim at an AC, shortlabel, PMID...
-
-        // Note: the search is NOT case sensitive !!!
-
-        loadPublication( query );
-        loadExperiments( query );
-        loadInteractions( query );
-        loadMolecules( query );
-        loadCvObjects( query );
 
         return "search.results";
     }
 
+    private void resetSearchResults() {
+        publications = null;
+        experiments = null;
+        interactions = null;
+        molecules = null;
+        cvobjects = null;
+    }
+
+    public boolean isEmptyQuery() {
+       return StringUtils.isEmpty(query);
+    }
+
     public boolean hasNoResults() {
-        return ( publications != null && publications.getRowCount() == 0)
-               && (experiments!= null && experiments.getRowCount() == 0)
-               && (interactions != null && interactions.getRowCount() == 0)
-               && (molecules != null && molecules.getRowCount() == 0)
-               && (cvobjects != null && cvobjects.getRowCount() == 0);
+        return ( publications != null && publications.getRowCount() == 0 )
+               && ( experiments != null && experiments.getRowCount() == 0 )
+               && ( interactions != null && interactions.getRowCount() == 0 )
+               && ( molecules != null && molecules.getRowCount() == 0 )
+               && ( cvobjects != null && cvobjects.getRowCount() == 0 );
     }
 
     public boolean matchesSingleType() {
         int matches = 0;
 
-        if( publications != null && publications.getRowCount() > 0 ) matches++;
-        if( experiments != null && experiments.getRowCount() > 0 ) matches++;
-        if( interactions != null && interactions.getRowCount() > 0 ) matches++;
-        if( molecules != null && molecules.getRowCount() > 0 ) matches++;
-        if( cvobjects != null && cvobjects.getRowCount() > 0 ) matches++;
-        
+        if ( publications != null && publications.getRowCount() > 0 ) matches++;
+        if ( experiments != null && experiments.getRowCount() > 0 ) matches++;
+        if ( interactions != null && interactions.getRowCount() > 0 ) matches++;
+        if ( molecules != null && molecules.getRowCount() > 0 ) matches++;
+        if ( cvobjects != null && cvobjects.getRowCount() > 0 ) matches++;
+
         return matches == 1;
     }
 
     private void loadCvObjects( String query ) {
 
-        log.info( "Searching for CvObject matching '"+ query +"'..." );
+        log.info( "Searching for CvObject matching '" + query + "'..." );
 
-        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
 
         // all cvobjects
-        cvobjects = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+        cvobjects = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
-                                                                "select distinct i " +
-                                                                "from CvObject i inner join fetch i.xrefs as x " +
-                                                                "where    ( i.ac = :query " +
-                                                                "      or lower(i.shortLabel) like :query " +
-                                                                "      or lower(i.fullName) like :query " +
-                                                                "      or lower(i.identifier) like :query " +
-                                                                "      or lower(x.primaryId) like :query ) " +
-                                                                "order by i.updated desc",
+                                                              "select distinct i " +
+                                                              "from CvObject i inner join fetch i.xrefs as x " +
+                                                              "where    ( i.ac = :query " +
+                                                              "      or lower(i.shortLabel) like :query " +
+                                                              "      or lower(i.fullName) like :query " +
+                                                              "      or lower(i.identifier) like :query " +
+                                                              "      or lower(x.primaryId) like :query ) " +
+                                                              "order by i.updated desc",
 
-                                                                "select count(distinct i) " +
-                                                                "from CvObject i inner join i.xrefs as x " +
-                                                                "where   (i.ac = :query " +
-                                                                "      or lower(i.identifier) like :query " +
-                                                                "      or lower(i.shortLabel) like :query " +
-                                                                "      or lower(i.fullName) like :query " +
-                                                                "      or lower(x.primaryId) like :query )",
+                                                              "select count(distinct i) " +
+                                                              "from CvObject i inner join i.xrefs as x " +
+                                                              "where   (i.ac = :query " +
+                                                              "      or lower(i.identifier) like :query " +
+                                                              "      or lower(i.shortLabel) like :query " +
+                                                              "      or lower(i.fullName) like :query " +
+                                                              "      or lower(x.primaryId) like :query )",
 
-                                                                params );
+                                                              params );
 
         log.info( "CvObject found: " + cvobjects.getRowCount() );
     }
 
     private void loadMolecules( String query ) {
 
-        log.info( "Searching for Molecules matching '"+ query +"'..." );
+        log.info( "Searching for Molecules matching '" + query + "'..." );
 
-        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
 
         // all molecules but interactions
-        molecules = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+        molecules = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
-                                                                "select distinct i " +
-                                                                "from InteractorImpl i inner join fetch i.xrefs as x " +
-                                                                "where    ( i.ac = :query " +
-                                                                "      or lower(i.shortLabel) like :query " +
-                                                                "      or lower(x.primaryId) like :query ) " +
-                                                                "      and i.cvInteractorType.identifier <> 'MI:0317' " +
-                                                                "order by i.updated desc",
+                                                              "select distinct i " +
+                                                              "from InteractorImpl i inner join fetch i.xrefs as x " +
+                                                              "where    ( i.ac = :query " +
+                                                              "      or lower(i.shortLabel) like :query " +
+                                                              "      or lower(x.primaryId) like :query ) " +
+                                                              "      and i.cvInteractorType.identifier <> 'MI:0317' " +
+                                                              "order by i.updated desc",
 
-                                                                "select count(distinct i) " +
-                                                                "from InteractorImpl i inner join i.xrefs as x " +
-                                                                "where   (i.ac = :query " +
-                                                                "      or lower(i.shortLabel) like :query " +
-                                                                "      or lower(x.primaryId) like :query )" +
-                                                                "     and i.cvInteractorType.identifier <> 'MI:0317'",
+                                                              "select count(distinct i) " +
+                                                              "from InteractorImpl i inner join i.xrefs as x " +
+                                                              "where   (i.ac = :query " +
+                                                              "      or lower(i.shortLabel) like :query " +
+                                                              "      or lower(x.primaryId) like :query )" +
+                                                              "     and i.cvInteractorType.identifier <> 'MI:0317'",
 
-                                                                params );
+                                                              params );
 
         log.info( "Molecules found: " + molecules.getRowCount() );
     }
 
-    public int countInteractionsByMoleculeAc(Interactor molecule ) {
+    public int countInteractionsByMoleculeAc( Interactor molecule ) {
         return getDaoFactory().getInteractorDao().countInteractionsForInteractorWithAc( molecule.getAc() );
     }
 
     public String getIdentityXref( Interactor molecule ) {
         // TODO handle multiple identities (return xref and iterate to display them all)
         final Collection<InteractorXref> xrefs = AnnotatedObjectUtils.searchXrefsByQualifier( molecule, CvXrefQualifier.IDENTITY_MI_REF );
-        if( xrefs.isEmpty() ) {
+        if ( xrefs.isEmpty() ) {
             return "-";
         }
         return xrefs.iterator().next().getPrimaryId();
@@ -205,29 +234,29 @@ public class SearchController extends JpaAwareController {
 
     private void loadInteractions( String query ) {
 
-        log.info( "Searching for Interactions matching '"+ query +"'..." );
+        log.info( "Searching for Interactions matching '" + query + "'..." );
 
-        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
 
         // Load experiment eagerly to avoid LazyInitializationException when redering the view
-        interactions = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+        interactions = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
-                                                                "select distinct i " +
-                                                                "from InteractionImpl i inner join i.xrefs as x " +
-                                                                "                       inner join fetch i.experiments as e " +
-                                                                "where    i.ac = :query " +
-                                                                "      or lower(i.shortLabel) like :query " +
-                                                                "      or lower(x.primaryId) like :query " +
-                                                                "order by i.updated desc",
+                                                                 "select distinct i " +
+                                                                 "from InteractionImpl i inner join i.xrefs as x " +
+                                                                 "                       inner join fetch i.experiments as e " +
+                                                                 "where    i.ac = :query " +
+                                                                 "      or lower(i.shortLabel) like :query " +
+                                                                 "      or lower(x.primaryId) like :query " +
+                                                                 "order by i.updated desc",
 
-                                                                "select count(distinct i) " +
-                                                                "from InteractionImpl i inner join i.xrefs as x " +
-                                                                "where    i.ac = :query " +
-                                                                "      or lower(i.shortLabel) like :query " +
-                                                                "      or lower(x.primaryId) like :query ",
+                                                                 "select count(distinct i) " +
+                                                                 "from InteractionImpl i inner join i.xrefs as x " +
+                                                                 "where    i.ac = :query " +
+                                                                 "      or lower(i.shortLabel) like :query " +
+                                                                 "      or lower(x.primaryId) like :query ",
 
-                                                                params );
+                                                                 params );
 
         log.info( "Interactions found: " + interactions.getRowCount() );
     }
@@ -238,12 +267,12 @@ public class SearchController extends JpaAwareController {
 
     private void loadExperiments( String query ) {
 
-        log.info( "Searching for experiments matching '"+ query +"'..." );
+        log.info( "Searching for experiments matching '" + query + "'..." );
 
-        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
 
-        experiments = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+        experiments = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                 "select distinct e " +
                                                                 "from Experiment e inner join e.xrefs as x " +
@@ -264,30 +293,30 @@ public class SearchController extends JpaAwareController {
     }
 
     private void loadPublication( String query ) {
-        log.info( "Searching for publications matching '"+ query +"'..." );
+        log.info( "Searching for publications matching '" + query + "'..." );
 
-        final HashMap<String,String> params = Maps.<String, String>newHashMap();
+        final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
 
         // TODO add: author
-        publications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+        publications = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
-                                                                "select distinct p " +
-                                                                "from Publication p inner join p.xrefs as x " +
-                                                                "where    p.ac = :query " +
-                                                                "      or lower(p.shortLabel) like :query " +
-                                                                "      or lower(p.fullName) like :query " +
-                                                                "      or lower(x.primaryId) like :query " +
-                                                                "order by p.updated desc",
+                                                                 "select distinct p " +
+                                                                 "from Publication p inner join p.xrefs as x " +
+                                                                 "where    p.ac = :query " +
+                                                                 "      or lower(p.shortLabel) like :query " +
+                                                                 "      or lower(p.fullName) like :query " +
+                                                                 "      or lower(x.primaryId) like :query " +
+                                                                 "order by p.updated desc",
 
-                                                                "select count(distinct p) " +
-                                                                "from Publication p inner join p.xrefs as x " +
-                                                                "where    p.ac = :query " +
-                                                                "      or lower(p.shortLabel) like :query " +
-                                                                "      or lower(p.fullName) like :query " +
-                                                                "      or lower(x.primaryId) like :query ",
+                                                                 "select count(distinct p) " +
+                                                                 "from Publication p inner join p.xrefs as x " +
+                                                                 "where    p.ac = :query " +
+                                                                 "      or lower(p.shortLabel) like :query " +
+                                                                 "      or lower(p.fullName) like :query " +
+                                                                 "      or lower(x.primaryId) like :query ",
 
-                                                                params );
+                                                                 params );
 
         log.info( "Publications found: " + publications.getRowCount() );
     }

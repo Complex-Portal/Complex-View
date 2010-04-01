@@ -15,48 +15,55 @@
             <f:viewParam name="query" value="#{searchController.query}"/>
         </f:metadata>
 
+        <p:outputPanel rendered="#{searchController.hasNoResults() and not searchController.isEmptyQuery()}">
+            Your query (<b>#{searchController.query}</b>) didn't return any results.
+            <br/>
+            <br/>
+        </p:outputPanel>
+
         <p:outputPanel rendered="#{searchController.hasNoResults()}">
-            <p:outputPanel rendered="#{searchController.query != null}">
-                Your query (<b>'#{searchController.query}'</b>) didn't return any results.
-            </p:outputPanel>
 
-            <span id="searchDocumentation">
+            When searching for a keyword, the following objects and their respective attributes are being search on:
+            <br/>
+            <blockquote>
+                <table cellspacing="10" >
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;">Publication</td>
+                        <td>PMID, title, Xref.primaryId</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;">Experiment</td>
+                        <td>AC, shortLabel, Xref.primaryId</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;">Interaction</td>
+                        <td>AC, shortLabel, Xref.primaryId</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;">Molecules</td>
+                        <td>AC, shortLabel, fullName, Xref.primaryId</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;">Controlled vocabularies</td>
+                        <td>AC, shortlabel, fullName, Identifier, Xref.primaryId</td>
+                    </tr>
+                </table>
+            </blockquote>
 
-                When searching for a keyword, the following objects and their respective attributes are being search on:
-                <br/>
-                <blockquote>
-                    <table >
-                        <tr>
-                            <td style="text-align: right; font-style: bold;">Publication</td>
-                            <td>PMID, title, Xref.primaryId</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;">Experiment</td>
-                            <td>shortLabel, Xref.primaryId</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;">Interaction</td>
-                            <td>AC, shortLabel, Xref.primaryId</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;">Molecules</td>
-                            <td>AC, shortLabel, fullName, Xref.primaryId</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;">Controlled vocabularies</td>
-                            <td>AC, shortlabel, fullName, Identifier, Xref.primaryId</td>
-                        </tr>
-                    </table>
-                </blockquote>
-
-            </span>
+            <table>
+                <tr><td>
+                    <h:graphicImage url="/resources/images/info.jpeg"/>&#160;Queries are not case-sensitive
+                </td></tr>
+                <tr><td>
+                    <h:graphicImage url="/resources/images/info.jpeg"/>&#160;Leading and trailing blank characters in your query are automatically removed.
+                </td></tr>
+            </table>
         </p:outputPanel>
 
-        <p:outputPanel rendered="#{searchController.query != null and ! searchController.hasNoResults()}">
-            Result for query: <b>'#{searchController.query}'</b>
+        <p:outputPanel rendered="#{not searchController.isEmptyQuery() and not searchController.hasNoResults()}">
+            Result for query: <b>#{searchController.query}</b>
+            <hr/>
         </p:outputPanel>
-
-        <hr/>
 
         <ia:collapsiblePanel id="publicationPanel" open="#{searchController.matchesSingleType()}"
                              display="#{searchController.publications.rowCount > 0}"

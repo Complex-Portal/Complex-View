@@ -24,9 +24,11 @@
             <table>
                 <tr>
                     <td>
-                        <h:graphicImage id="#{cc.attrs.id}_close" style="display: #{cc.attrs.open ? 'none' : 'block'};" url="/resources/images/unfold.png"
+                        <h:graphicImage id="#{cc.attrs.id}_close" url="/resources/images/unfold.png" alt="[+]"
+                                        style="display: #{cc.attrs.open ? 'none' : 'block'};"
                                         onclick="toggle_visibility('#{cc.attrs.id}:#{cc.attrs.id}','#{cc.attrs.id}:#{cc.attrs.id}_close','#{cc.attrs.id}:#{cc.attrs.id}_open')"/>
-                        <h:graphicImage id="#{cc.attrs.id}_open" style="display: #{cc.attrs.open ? 'block' : 'none'};" url="/resources/images/fold.png"
+                        <h:graphicImage id="#{cc.attrs.id}_open" url="/resources/images/fold.png" alt="[-]"
+                                        style="display: #{cc.attrs.open ? 'block' : 'none'};"
                                         onclick="toggle_visibility('#{cc.attrs.id}:#{cc.attrs.id}','#{cc.attrs.id}:#{cc.attrs.id}_close','#{cc.attrs.id}:#{cc.attrs.id}_open')"/>
                     </td>
                     <td><h:outputText style="#{cc.attrs.titleStyle}" value="#{cc.attrs.title}"/></td>
