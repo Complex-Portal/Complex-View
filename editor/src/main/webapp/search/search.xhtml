@@ -5,6 +5,7 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ot="http://myfaces.apache.org/orchestra"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
 
                 template="/search/search_template.xhtml">
 
@@ -14,16 +15,55 @@
             <f:viewParam name="query" value="#{searchController.query}"/>
         </f:metadata>
 
-        Result for query: '#{searchController.query}'
+        <p:outputPanel rendered="#{searchController.hasNoResults()}">
+            <p:outputPanel rendered="#{searchController.query != null}">
+                Your query (<b>'#{searchController.query}'</b>) didn't return any results.
+            </p:outputPanel>
+
+            <span id="searchDocumentation">
+
+                When searching for a keyword, the following objects and their respective attributes are being search on:
+                <br/>
+                <blockquote>
+                    <table >
+                        <tr>
+                            <td style="text-align: right; font-style: bold;">Publication</td>
+                            <td>PMID, title, Xref.primaryId</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Experiment</td>
+                            <td>shortLabel, Xref.primaryId</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Interaction</td>
+                            <td>AC, shortLabel, Xref.primaryId</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Molecules</td>
+                            <td>AC, shortLabel, fullName, Xref.primaryId</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Controlled vocabularies</td>
+                            <td>AC, shortlabel, fullName, Identifier, Xref.primaryId</td>
+                        </tr>
+                    </table>
+                </blockquote>
+
+            </span>
+        </p:outputPanel>
+
+        <p:outputPanel rendered="#{searchController.query != null and ! searchController.hasNoResults()}">
+            Result for query: <b>'#{searchController.query}'</b>
+        </p:outputPanel>
 
         <hr/>
 
-        <h3>Publications (#{searchController.publications.rowCount})</h3>
-
-        <p:outputPanel rendered="#{searchController.publications.rowCount > 0}">
+        <ia:collapsiblePanel id="publicationPanel" open="#{searchController.matchesSingleType()}"
+                             display="#{searchController.publications.rowCount > 0}"
+                             title="Publications (#{searchController.publications.rowCount})">
 
             <p:dataTable id="searchPublicationTable" var="publication" value="#{searchController.publications}"
-                         paginator="#{searchController.publications.rowCount > 10}" 
+                         paginator="#{searchController.publications.rowCount > 10}"
                          rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
                 <p:column>
                     <f:facet name="header">
@@ -54,11 +94,12 @@
                     <h:outputText value="#{searchController.countInteractionsForPublication(publication)}"/>
                 </p:column>
             </p:dataTable>
-        </p:outputPanel>
 
-        <h3>Experiments (#{searchController.experiments.rowCount})</h3>
+        </ia:collapsiblePanel>
 
-        <p:outputPanel rendered="#{searchController.experiments.rowCount > 0}">
+        <ia:collapsiblePanel id="experimentPanel" open="#{searchController.matchesSingleType()}"
+                             display="#{searchController.experiments.rowCount > 0}"
+                             title="Experiments (#{searchController.experiments.rowCount})">
 
             <p:dataTable id="searchExperimentTable" var="experiment" value="#{searchController.experiments}"
                          paginator="#{searchController.experiments.rowCount > 10}"
@@ -108,12 +149,13 @@
                     <h:outputText value="#{experimentController.countInteractionsByExperimentAc(experiment.ac)}"/>
                 </p:column>
             </p:dataTable>
-        </p:outputPanel>
 
-        <h3>Interactions (#{searchController.interactions.rowCount})</h3>
+        </ia:collapsiblePanel>
 
-        <p:outputPanel rendered="#{searchController.interactions.rowCount > 0}">
-            
+        <ia:collapsiblePanel id="interactionPanel" open="#{searchController.matchesSingleType()}"
+                             display="#{searchController.interactions.rowCount > 0}"
+                             title="Interactions (#{searchController.interactions.rowCount})">
+
             <p:dataTable id="searchInteractionTable" var="interaction" value="#{searchController.interactions}"
                          paginator="#{searchController.interactions.rowCount > 10}"
                          rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
@@ -139,6 +181,12 @@
                 </p:column>
                 <p:column>
                     <f:facet name="header">
+                        <h:outputText value="shortLabel"/>
+                    </f:facet>
+                    <h:outputText value="#{interaction.shortLabel}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
                         <h:outputText value="Type"/>
                     </f:facet>
                     <h:outputText value="#{interaction.cvInteractionType.shortLabel}"/>
@@ -150,11 +198,12 @@
                     <h:outputText value="#{interactionController.countParticipantsByInteractionAc(interaction.ac)}"/>
                 </p:column>
             </p:dataTable>
-        </p:outputPanel>
 
-        <h3>Molecules (#{searchController.molecules.rowCount})</h3>
+        </ia:collapsiblePanel>
 
-        <p:outputPanel rendered="#{searchController.molecules.rowCount > 0}">
+        <ia:collapsiblePanel id="moleculePanel" open="#{searchController.matchesSingleType()}"
+                             display="#{searchController.molecules.rowCount > 0}"
+                             title="Molecules (#{searchController.molecules.rowCount})">
 
             <p:dataTable id="searchMoleculeTable" var="molecule" value="#{searchController.molecules}"
                          paginator="#{searchController.molecules.rowCount > 10}"
@@ -190,13 +239,14 @@
                     <h:outputText value="#{searchController.countInteractionsByMoleculeAc( molecule )}"/>
                 </p:column>
             </p:dataTable>
-        </p:outputPanel>
 
-        <h3>Controlled Vocabularies (#{searchController.cvobjects.rowCount})</h3>
+        </ia:collapsiblePanel>
 
-        <p:outputPanel rendered="#{searchController.cvobjects.rowCount > 0}">
+        <ia:collapsiblePanel id="cvPanel" open="#{searchController.matchesSingleType()}"
+                             display="#{searchController.cvobjects.rowCount > 0}"
+                             title="Controlled Vocabularies (#{searchController.cvobjects.rowCount})">
 
-            <p:dataTable id="searchCvObjectTable" var="cvobject" value="#{searchController.cvobjects}"
+              <p:dataTable id="searchCvObjectTable" var="cvobject" value="#{searchController.cvobjects}"
                          paginator="#{searchController.cvobjects.rowCount > 10}"
                          rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
                 <p:column>
@@ -224,7 +274,8 @@
                     <h:outputText value="#{cvobject.identifier}"/>
                 </p:column>
             </p:dataTable>
-        </p:outputPanel>
+
+        </ia:collapsiblePanel>
 
     </ui:define>
 

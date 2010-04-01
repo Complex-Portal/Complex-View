@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+    <composite:interface>
+        <composite:attribute name="id" required="true"/>
+        <composite:attribute name="title"/>
+        <composite:attribute name="titleStyle"/>
+        <composite:attribute name="display" type="java.lang.Boolean" default="true"/>
+        <composite:attribute name="open" type="java.lang.Boolean" default="true"/>
+    </composite:interface>
+
+    <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <p:outputPanel rendered="#{cc.attrs.display}">
+
+            <table>
+                <tr>
+                    <td>
+                        <h:graphicImage id="#{cc.attrs.id}_close" style="display: #{cc.attrs.open ? 'none' : 'block'};" url="/resources/images/unfold.png"
+                                        onclick="toggle_visibility('#{cc.attrs.id}:#{cc.attrs.id}','#{cc.attrs.id}:#{cc.attrs.id}_close','#{cc.attrs.id}:#{cc.attrs.id}_open')"/>
+                        <h:graphicImage id="#{cc.attrs.id}_open" style="display: #{cc.attrs.open ? 'block' : 'none'};" url="/resources/images/fold.png"
+                                        onclick="toggle_visibility('#{cc.attrs.id}:#{cc.attrs.id}','#{cc.attrs.id}:#{cc.attrs.id}_close','#{cc.attrs.id}:#{cc.attrs.id}_open')"/>
+                    </td>
+                    <td><h:outputText style="#{cc.attrs.titleStyle}" value="#{cc.attrs.title}"/></td>
+                </tr>
+            </table>
+
+            <p:outputPanel id="#{cc.attrs.id}" style="display: #{cc.attrs.open ? 'block' : 'none'};">
+
+                <composite:insertChildren/>
+
+            </p:outputPanel>
+        </p:outputPanel>
+
+
+    </composite:implementation>
+
+</ui:composition>

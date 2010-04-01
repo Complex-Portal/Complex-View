@@ -82,12 +82,13 @@ public class SearchController extends JpaAwareController {
         return cvobjects;
     }
 
+
+
     ///////////////
     // Actions
 
     @Transactional(readOnly = true)
     public String doSearch() {
-
         if( query != null ) {
             query = query.toLowerCase().trim();
         }
@@ -105,6 +106,26 @@ public class SearchController extends JpaAwareController {
         loadCvObjects( query );
 
         return "search.results";
+    }
+
+    public boolean hasNoResults() {
+        return ( publications != null && publications.getRowCount() == 0)
+               && (experiments!= null && experiments.getRowCount() == 0)
+               && (interactions != null && interactions.getRowCount() == 0)
+               && (molecules != null && molecules.getRowCount() == 0)
+               && (cvobjects != null && cvobjects.getRowCount() == 0);
+    }
+
+    public boolean matchesSingleType() {
+        int matches = 0;
+
+        if( publications != null && publications.getRowCount() > 0 ) matches++;
+        if( experiments != null && experiments.getRowCount() > 0 ) matches++;
+        if( interactions != null && interactions.getRowCount() > 0 ) matches++;
+        if( molecules != null && molecules.getRowCount() > 0 ) matches++;
+        if( cvobjects != null && cvobjects.getRowCount() > 0 ) matches++;
+        
+        return matches == 1;
     }
 
     private void loadCvObjects( String query ) {
