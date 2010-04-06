@@ -22,6 +22,11 @@
     </context-param>
 
     <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>javax.faces.FACELETS_VIEW_MAPPINGS</param-name>
         <param-value>*.xhtml;*.jspx;*.jsff</param-value>
     </context-param>
