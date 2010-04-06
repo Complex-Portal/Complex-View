@@ -138,23 +138,21 @@
 
                 <h3>Publication properties</h3>
 
-                <h4>Xrefs</h4>
-                <p:outputPanel id="xrefsPanel">
+                <ia:collapsiblePanel id="xrefsPanel" open="true" title="Xrefs (#{publicationController.publication.xrefs.size()})">
                     <ia:xrefsTable annotatedObjectController="#{publicationController}"
                                    databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                    qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
                                    update="xrefsPanel"
                                    render=":editorForm:basic"/>
-                </p:outputPanel>
+                </ia:collapsiblePanel>
 
-                <h4>Annotations</h4>
-                <p:outputPanel id="annotationsPanel">
+                <ia:collapsiblePanel id="annotationsPanel" open="true" title="Annotations (#{publicationController.publication.annotations.size()})">
                     <ia:annotationsTable annotatedObjectController="#{publicationController}"
                                          topicSelectItems="#{cvObjectService.publicationTopicSelectItems}"
                                          update="basic,annotationsPanel"
                                          render=":editorForm:basic"/>
-                </p:outputPanel>
-
+                </ia:collapsiblePanel>
+                
                 <h3>Experiments (#{fn:length(publicationController.publication.experiments)})</h3>
 
                 <ia:experimentsTable value="#{publicationController.publication.experiments}"/>
@@ -176,8 +174,6 @@
             </h:panelGroup>
         </p:outputPanel>
 
-
     </ui:define>
-
 
 </ui:composition>
