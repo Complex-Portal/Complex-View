@@ -9,7 +9,6 @@
 
     <!-- INTERFACE -->
     <composite:interface>
-        <composite:attribute name="id" required="true"/>
         <composite:attribute name="title"/>
         <composite:attribute name="titleStyle"/>
         <composite:attribute name="display" type="java.lang.Boolean" default="true"/>
@@ -24,18 +23,18 @@
             <table>
                 <tr>
                     <td>
-                        <h:graphicImage id="#{cc.attrs.id}_close" url="/resources/images/unfold.png" alt="[+]"
+                        <h:graphicImage id="#{cc.clientId}_close" url="/resources/images/unfold.png" alt="[+]"
                                         style="display: #{cc.attrs.open ? 'none' : 'block'};"
-                                        onclick="toggle_visibility('#{cc.attrs.id}:#{cc.attrs.id}','#{cc.attrs.id}:#{cc.attrs.id}_close','#{cc.attrs.id}:#{cc.attrs.id}_open')"/>
-                        <h:graphicImage id="#{cc.attrs.id}_open" url="/resources/images/fold.png" alt="[-]"
+                                        onclick="toggle_visibility('#{cc.clientId}:#{cc.clientId}','#{cc.clientId}:#{cc.clientId}_close','#{cc.clientId}:#{cc.clientId}_open')"/>
+                        <h:graphicImage id="#{cc.clientId}_open" url="/resources/images/fold.png" alt="[-]"
                                         style="display: #{cc.attrs.open ? 'block' : 'none'};"
-                                        onclick="toggle_visibility('#{cc.attrs.id}:#{cc.attrs.id}','#{cc.attrs.id}:#{cc.attrs.id}_close','#{cc.attrs.id}:#{cc.attrs.id}_open')"/>
+                                        onclick="toggle_visibility('#{cc.clientId}:#{cc.clientId}','#{cc.clientId}:#{cc.clientId}_close','#{cc.clientId}:#{cc.clientId}_open')"/>
                     </td>
                     <td><h:outputText style="#{cc.attrs.titleStyle}" value="#{cc.attrs.title}"/></td>
                 </tr>
             </table>
 
-            <p:outputPanel id="#{cc.attrs.id}" style="display: #{cc.attrs.open ? 'block' : 'none'};">
+            <p:outputPanel id="#{cc.clientId}" style="display: #{cc.attrs.open ? 'block' : 'none'};">
 
                 <composite:insertChildren/>
 
