@@ -48,25 +48,24 @@
 
             <h3>Publication properties</h3>
 
-            <h4>Xrefs</h4>
-            <p:outputPanel id="xrefsPanel">
+            <ia:collapsiblePanel id="xrefsPanel" open="true" title="Xrefs (#{experimentController.experiment.xrefs.size()})">
                 <ia:xrefsTable annotatedObjectController="#{experimentController}"
                                databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
                                update="xrefsPanel"
                                render=":editorForm:basic"/>
-            </p:outputPanel>
+            </ia:collapsiblePanel>
 
-            <h4>Annotations</h4>
-            <p:outputPanel id="annotationsPanel">
+            <ia:collapsiblePanel id="annotationsPanel" open="true" title="Annotations (#{experimentController.experiment.annotations.size()})">
                 <ia:annotationsTable annotatedObjectController="#{experimentController}"
                                      topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
                                      update="annotationsPanel"
                                      render=":editorForm:basic"/>
-            </p:outputPanel>
+            </ia:collapsiblePanel>
 
-            <h4>Aliases</h4>
-            <ia:aliasTable value="#{publicationController.publication.aliases}"/>
+            <ia:collapsiblePanel id="aliasesPanel" open="true" title="Aliases (#{experimentController.experiment.aliases.size()})">
+                <ia:aliasTable value="#{experimentController.experiment.aliases}"/>
+            </ia:collapsiblePanel>
 
             <h3>Interactions (#{experimentController.countInteractionsByExperimentAc(experimentController.ac)})</h3>
 
