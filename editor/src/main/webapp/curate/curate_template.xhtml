@@ -46,8 +46,8 @@
             <ui:insert name="menubar">
                 <p:menubar>
                     <p:submenu label="Publication">
-                        <p:menuitem label="New" onclick="newPublicationDlg.show()" />
-                        <p:menuitem label="Open by PMID" onclick="openByPmidDlg.show()"/>
+                        <p:menuitem label="New" onclick="newPublicationDlg.show(); return false;"/>
+                        <p:menuitem label="Open by PMID" onclick="openByPmidDlg.show(); return false;"/>
                         <p:menuitem label="Save" actionListener="#{publicationController.doSave}" ajax="false"
                                     rendered="#{publicationController.publication != null}"/>
                         <p:menuitem label="Save &amp; Close" actionListener="#{publicationController.doSaveAndClose}" ajax="false"
