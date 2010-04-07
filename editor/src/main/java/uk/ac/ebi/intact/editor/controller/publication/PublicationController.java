@@ -334,7 +334,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
 
-        if (identifier != null) {
+        if (identifier != null && getAnnotatedObject() != null) {
             setPrimaryReference(identifier);
         }
     }

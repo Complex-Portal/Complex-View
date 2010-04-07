@@ -13,14 +13,12 @@
         <f:metadata>
             <f:viewParam name="login" value="#{userAdminController.loginParam}"/>
 
-            <f:event type="preRenderComponent" listener="#{userAdminController.loadUserToUpdate}"/>
-            <f:event type="preRenderComponent" listener="#{userAdminController.loadRoles}"/>
+            <f:event type="preRenderView" listener="#{userAdminController.loadUserToUpdate}"/>
+            <f:event type="preRenderView" listener="#{userAdminController.loadRoles}"/>
         </f:metadata>
 
         <!-- Field in which the hashed password gets stored -->
         <h:inputHidden id="editUser_passwordHash" value="#{userAdminController.user.password}" />
-
-        [#{userAdminController.roles}]
 
         <h:panelGrid columns="2">
             <h:outputLabel value="Login:"/>
@@ -42,10 +40,10 @@
             <h:outputLabel value="Email:"/>
             <h:inputText value="#{userAdminController.user.email}" required="true" requiredMessage="You must enter an email address" />
 
-            <!--<h:outputLabel value="Role(s):"/>-->
-            <!--<p:pickList value="#{userAdminController.roles}" var="role"-->
-                        <!--itemLabel="#{role}" itemValue="#{role}">-->
-            <!--</p:pickList>-->
+            <h:outputLabel value="Role(s):"/>
+            <p:pickList value="#{userAdminController.roles}" var="role"
+                        itemLabel="#{role}" itemValue="#{role}">
+            </p:pickList>
 
             <h:commandButton action="#{userAdminController.saveUser}" value="Save"/>
             <!--onclick="document.getElementById('editUser_passwordHash').value = hex_sha1( document.getElementById('editUser_password').value )"-->
