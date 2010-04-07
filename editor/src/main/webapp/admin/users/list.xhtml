@@ -41,6 +41,13 @@
                 </f:facet>
                 <h:outputText value="#{user.lastName}"/>
             </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Status"/>
+                </f:facet>
+                <h:graphicImage url="/resources/images/green-ball.png" width="12" alt="Active" title="Active" rendered="#{not user.disabled}"/>
+                <h:graphicImage url="/resources/images/red-ball.png" width="12" alt="Disabled" title="Disabled" rendered="#{user.disabled}" />
+            </p:column>
             <!--<p:column>-->
                 <!--<f:facet name="header">-->
                     <!--<h:outputText value="Password"/>-->
