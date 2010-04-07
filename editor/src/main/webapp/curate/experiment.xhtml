@@ -70,8 +70,11 @@
             </p:outputPanel>
 
             <p:outputPanel id="aliasesPanel">
-                <ia:collapsiblePanel open="false" title="Aliases (#{experimentController.experiment.aliases.size()})">
-                    <ia:aliasTable value="#{experimentController.experiment.aliases}"/>
+                <ia:collapsiblePanel open="true" title="Aliases (#{experimentController.experiment.aliases.size()})">
+                    <ia:aliasTable annotatedObjectController="#{experimentController}"
+                                   aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                                   update="aliasesPanel"
+                                   style="margin-top: -20px;"/>
                 </ia:collapsiblePanel>
             </p:outputPanel>
 

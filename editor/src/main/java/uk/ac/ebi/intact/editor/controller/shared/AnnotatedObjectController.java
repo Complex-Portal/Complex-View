@@ -69,13 +69,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         if (getAnnotatedObject() == null) { return Collections.EMPTY_LIST; }
 
         final ArrayList<Xref> xrefs = new ArrayList<Xref>(getAnnotatedObject().getXrefs());
-        Collections.sort(xrefs, new Comparator<IntactObject>() {
-            @Override
-            public int compare(IntactObject o1, IntactObject o2) {
-                if (o1.getAc() != null) return 1;
-                return 0;
-            }
-        });
+        Collections.sort(xrefs, new IntactObjectComparator());
         return xrefs;
     }
 
@@ -266,22 +260,78 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         if (getAnnotatedObject() == null) { return Collections.EMPTY_LIST; }
 
         final ArrayList<Annotation> annotations = new ArrayList<Annotation>(getAnnotatedObject().getAnnotations());
-        Collections.sort(annotations, new Comparator<IntactObject>() {
-            @Override
-            public int compare(IntactObject o1, IntactObject o2) {
-                if (o1.getAc() != null) return 1;
-                return 0;
-            }
-        });
+        Collections.sort(annotations, new IntactObjectComparator());
         return annotations;
     }
 
+    // ALIASES
+    ///////////////////////////////////////////////
+
+    public void newAlias(ActionEvent evt) {
+        Alias alias = newAliasInstance();
+        getAnnotatedObject().addAlias(alias);
+    }
+
+    private Alias newAliasInstance() {
+        Class<? extends Alias> aliasClass = AnnotatedObjectUtils.getAliasClassType(getAnnotatedObject().getClass());
+
+        Alias alias = null;
+        try {
+            alias = aliasClass.newInstance();
+        } catch (Throwable e) {
+            FacesContext ctx = FacesContext.getCurrentInstance();
+            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext(ctx, e);
+            ctx.getApplication().publishEvent(ctx, ExceptionQueuedEvent.class, eventContext);
+        }
+
+        alias.setOwner(getIntactContext().getInstitution());
+        return alias;
+    }
+
+    public void setAlias(String aliasTypeIdOrLabel, Object value) {
+        if (value != null && !value.toString().isEmpty())  {
+            replaceOrCreateAlias(aliasTypeIdOrLabel, value.toString());
+        } else {
+            removeAlias(aliasTypeIdOrLabel);
+        }
+    }
+
+     public void replaceOrCreateAlias(String aliasTypeIdOrLabel, String text) {
+        Iterator<Alias> iterator = getAnnotatedObject().getAliases().iterator();
+
+        while (iterator.hasNext()) {
+            Alias alias = iterator.next();
+            if ((aliasTypeIdOrLabel.equals(alias.getCvAliasType().getIdentifier()) || aliasTypeIdOrLabel.equals(alias.getCvAliasType().getShortLabel()))
+                    && text.equals(alias.getName())) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public void removeAlias(String aliasTypeIdOrLabel) {
+        Iterator<Alias> iterator = getAnnotatedObject().getAliases().iterator();
+
+        while (iterator.hasNext()) {
+            Alias alias = iterator.next();
+            if (aliasTypeIdOrLabel.equals(alias.getCvAliasType().getIdentifier()) ||
+                    aliasTypeIdOrLabel.equals(alias.getCvAliasType().getShortLabel())) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public List<Alias> getAliases() {
+        if (getAnnotatedObject() == null) { return Collections.EMPTY_LIST; }
+
+        final ArrayList<Alias> aliases = new ArrayList<Alias>(getAnnotatedObject().getAliases());
+        Collections.sort(aliases, new IntactObjectComparator());
+        return aliases;
+    }
 
     // OTHER
     ////////////////////////////////////////////////////
     
     public void changed(AjaxBehaviorEvent event) throws AbortProcessingException {
-        System.out.println("CHANGED!");
         unsavedChanges = true;
     }
 
@@ -291,5 +341,13 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
 
     public boolean isUnsavedChanges() {
         return unsavedChanges;
+    }
+
+    private class IntactObjectComparator implements Comparator<IntactObject> {
+        @Override
+        public int compare(IntactObject o1, IntactObject o2) {
+            if (o1.getAc() != null) return 1;
+            return 0;
+        }
     }
 }

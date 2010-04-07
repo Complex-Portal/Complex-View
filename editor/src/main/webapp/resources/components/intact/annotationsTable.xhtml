@@ -43,11 +43,11 @@
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                <!--<p:inplace effectSpeed="fast" rendered="#{annotation.annotationText != null}">-->
+                <p:inplace effectSpeed="fast" rendered="#{annotation.annotationText != null}">
                      <h:inputText value="#{annotation.annotationText}" size="50" rendered="#{annotation.annotationText != null}">
                         <f:ajax event="valueChange" render="#{cc.attrs.render}" />
                     </h:inputText>
-                <!--</p:inplace>-->
+                </p:inplace>
                 <h:inputText value="#{annotation.annotationText}" size="50" rendered="#{annotation.annotationText == null}"
                         required="true" requiredMessage="Annotation texts are required">
                         <f:ajax event="valueChange" render="#{cc.attrs.render}"/>

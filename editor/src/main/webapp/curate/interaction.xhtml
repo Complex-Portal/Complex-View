@@ -63,8 +63,11 @@
 
             <h4>Aliases</h4>
             <p:outputPanel id="aliasesPanel">
-                <ia:collapsiblePanel open="false" title="Aliases (#{interactionController.interaction.aliases.size()})">
-                    <ia:aliasTable value="#{interactionController.interaction.aliases}"/>
+                <ia:collapsiblePanel open="true" title="Aliases (#{interactionController.interaction.aliases.size()})">
+                    <ia:aliasTable annotatedObjectController="#{interactionController}"
+                                   aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                                   update="aliasesPanel"
+                                   style="margin-top: -20px;"/>
                 </ia:collapsiblePanel>
             </p:outputPanel>
 

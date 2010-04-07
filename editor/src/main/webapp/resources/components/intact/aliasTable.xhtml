@@ -9,26 +9,69 @@
 
     <!-- INTERFACE -->
   <composite:interface>
-    <composite:attribute name="value"/>
+      <composite:attribute name="value"/>
+      <composite:attribute name="render"/>
+      <composite:attribute name="annotatedObjectController"
+                           type="uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController"
+                           required="true"/>
+      <composite:attribute name="update"/>
+      <composite:attribute name="aliasTypeSelectItems"/>
+      <composite:attribute name="style" default=""/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
     <composite:implementation>
+        <table style="#{cc.attrs.style}">
+            <tr>
+                <td>
+                    <h:panelGroup>
+                        <div style="text-align: right; margin-bottom: 5px">
+                            Actions:&#160;
+                            <p:commandLink value="New" update="#{cc.attrs.update}"
+                                           actionListener="#{cc.attrs.annotatedObjectController.newAlias}"/>
+                        </div>
+                    </h:panelGroup>
 
-        <p:dataTable var="alias" value="#{cc.attrs.value}">
+        <p:dataTable var="alias" value="#{cc.attrs.annotatedObjectController.aliases}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Type"/>
                 </f:facet>
-                <h:outputText value="#{alias.cvAliasType.shortLabel}" rendered="#{alias.cvAliasType != null}"/>
+                <h:selectOneMenu value="#{alias.cvAliasType}" rendered="#{cc.attrs.aliasTypeSelectItems != null}"
+                                 required="true" requiredMessage="Alias type is required">
+                    <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
+                    <f:selectItems value="#{cc.attrs.aliasTypeSelectItems}"/>
+                </h:selectOneMenu>
+                <h:outputText value="#{alias.cvAliasType.shortLabel}" rendered="#{cc.attrs.aliasTypeSelectItems == null}"/>
             </p:column>
-            <p:column>
+           <p:column>
                 <f:facet name="header">
                     <h:outputText value="Name"/>
                 </f:facet>
-                <h:outputText value="#{alias.name}"/>
+                <p:inplace effectSpeed="fast" rendered="#{alias.name != null}">
+                     <h:inputText value="#{alias.name}" size="50" rendered="#{alias.name != null}">
+                        <f:ajax event="valueChange" render="#{cc.attrs.render}" />
+                    </h:inputText>
+                </p:inplace>
+                <h:inputText value="#{alias.name}" size="50" rendered="#{alias.name == null}"
+                        required="true" requiredMessage="Alias names are required">
+                        <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
+                </h:inputText>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                     <h:outputText value="Actions"/>
+                </f:facet>
+                <h:commandLink immediate="true"
+                               actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeAlias(alias)}">
+                    <p:graphicImage alt="Delete" url="/resources/images/bin.png" style="border: 0px;"/>
+                </h:commandLink>
             </p:column>
         </p:dataTable>
+
+        </td>
+            </tr>
+        </table>
 
     </composite:implementation>
 
