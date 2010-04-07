@@ -48,20 +48,26 @@
 
             <h3>Publication properties</h3>
 
-            <ia:collapsiblePanel id="xrefsPanel" open="true" title="Xrefs (#{experimentController.experiment.xrefs.size()})">
-                <ia:xrefsTable annotatedObjectController="#{experimentController}"
-                               databaseSelectItems="#{cvObjectService.databaseSelectItems}"
-                               qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                               update="xrefsPanel"
-                               render=":editorForm:basic"/>
-            </ia:collapsiblePanel>
+            <p:outputPanel id="xrefsPanel">
+                <ia:collapsiblePanel  open="true" title="Xrefs (#{experimentController.experiment.xrefs.size()})">
+                    <ia:xrefsTable annotatedObjectController="#{experimentController}"
+                                   databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                   qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                   update="xrefsPanel"
+                                   render=":editorForm:basic"
+                                   style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
 
-            <ia:collapsiblePanel id="annotationsPanel" open="true" title="Annotations (#{experimentController.experiment.annotations.size()})">
-                <ia:annotationsTable annotatedObjectController="#{experimentController}"
-                                     topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
-                                     update="annotationsPanel"
-                                     render=":editorForm:basic"/>
-            </ia:collapsiblePanel>
+            <p:outputPanel id="annotationsPanel">
+                <ia:collapsiblePanel open="true" title="Annotations (#{experimentController.experiment.annotations.size()})">
+                    <ia:annotationsTable annotatedObjectController="#{experimentController}"
+                                         topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
+                                         update="annotationsPanel"
+                                         render=":editorForm:basic"
+                                         style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
 
             <ia:collapsiblePanel id="aliasesPanel" open="true" title="Aliases (#{experimentController.experiment.aliases.size()})">
                 <ia:aliasTable value="#{experimentController.experiment.aliases}"/>

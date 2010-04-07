@@ -40,19 +40,25 @@
 
             <h4>Xrefs</h4>
             <p:outputPanel id="xrefsPanel">
-                <ia:xrefsTable annotatedObjectController="#{interactionController}"
-                               databaseSelectItems="#{cvObjectService.databaseSelectItems}"
-                               qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                               update="xrefsPanel"
-                               render=":editorForm:basic"/>
+                <ia:collapsiblePanel  open="true" title="Xrefs (#{interactionController.interaction.xrefs.size()})">
+                    <ia:xrefsTable annotatedObjectController="#{interactionController}"
+                                   databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                   qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                   update="xrefsPanel"
+                                   render=":editorForm:basic"
+                                   style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
             </p:outputPanel>
 
             <h4>Annotations</h4>
             <p:outputPanel id="annotationsPanel">
-                <ia:annotationsTable annotatedObjectController="#{interactionController}"
-                                     topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
-                                     update="annotationsPanel"
-                                     render=":editorForm:basic"/>
+                <ia:collapsiblePanel open="true" title="Annotations (#{interactionController.interaction.annotations.size()})">
+                    <ia:annotationsTable annotatedObjectController="#{interactionController}"
+                                         topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
+                                         update="annotationsPanel"
+                                         render=":editorForm:basic"
+                                         style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
             </p:outputPanel>
 
             <h4>Aliases</h4>

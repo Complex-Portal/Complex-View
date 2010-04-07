@@ -16,15 +16,16 @@
         <composite:attribute name="update" />
         <composite:attribute name="databaseSelectItems"/>
         <composite:attribute name="qualifierSelectItems"/>
+        <composite:attribute name="style" default=""/>
     </composite:interface>
 
     <!-- IMPLEMENTATION -->
     <composite:implementation>
-        <table>
+        <table style="#{cc.attrs.style}">
             <tr>
                 <td>
                     <h:panelGroup>
-                        <div style="text-align: right; margin-top: -15px; margin-bottom: 5px">
+                        <div style="text-align: right; margin-bottom: 5px">
                             Actions:&#160;
                             <p:commandLink value="New" update="#{cc.attrs.update}"
                                            actionListener="#{cc.attrs.annotatedObjectController.newXref}"/>

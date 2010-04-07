@@ -281,6 +281,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     ////////////////////////////////////////////////////
     
     public void changed(AjaxBehaviorEvent event) throws AbortProcessingException {
+        System.out.println("CHANGED!");
         unsavedChanges = true;
     }
 

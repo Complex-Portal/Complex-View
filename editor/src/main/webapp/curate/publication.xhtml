@@ -138,20 +138,26 @@
 
                 <h3>Publication properties</h3>
 
-                <ia:collapsiblePanel id="xrefsPanel" open="true" title="Xrefs (#{publicationController.publication.xrefs.size()})">
-                    <ia:xrefsTable annotatedObjectController="#{publicationController}"
-                                   databaseSelectItems="#{cvObjectService.databaseSelectItems}"
-                                   qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                   update="xrefsPanel"
-                                   render=":editorForm:basic"/>
-                </ia:collapsiblePanel>
+                <p:outputPanel id="xrefsPanel">
+                    <ia:collapsiblePanel open="true" title="Xrefs (#{publicationController.publication.xrefs.size()})">
+                        <ia:xrefsTable annotatedObjectController="#{publicationController}"
+                                       databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                       qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                       update="xrefsPanel"
+                                       render=":editorForm:basic"
+                                       style="margin-top: -20px;"/>
+                    </ia:collapsiblePanel>
+                </p:outputPanel>
 
-                <ia:collapsiblePanel id="annotationsPanel" open="true" title="Annotations (#{publicationController.publication.annotations.size()})">
-                    <ia:annotationsTable annotatedObjectController="#{publicationController}"
-                                         topicSelectItems="#{cvObjectService.publicationTopicSelectItems}"
-                                         update="basic,annotationsPanel"
-                                         render=":editorForm:basic"/>
-                </ia:collapsiblePanel>
+                <p:outputPanel id="annotationsPanel">
+                    <ia:collapsiblePanel open="true" title="Annotations (#{publicationController.publication.annotations.size()})">
+                        <ia:annotationsTable annotatedObjectController="#{publicationController}"
+                                             topicSelectItems="#{cvObjectService.publicationTopicSelectItems}"
+                                             update="basic,annotationsPanel"
+                                             render=":editorForm:basic"
+                                             style="margin-top: -20px;"/>
+                    </ia:collapsiblePanel>
+                 </p:outputPanel>
                 
                 <h3>Experiments (#{fn:length(publicationController.publication.experiments)})</h3>
 

@@ -18,13 +18,15 @@
         <h:outputStylesheet name="intact.css" library="css" target="head"/>
         <h:outputScript name="intact.js" library="javascript" target="head"/>
 
-        <h:form id="editorForm" prependId="false">
+
 
             <p:growl id="growl" showDetail="true"/>
 
             <p:layout fullPage="true">
 
                 <p:layoutUnit position="top" resizable="false" height="80" style="position: fixed; width: 99%">
+
+                    <h:form id="topForm" prependId="false">
 
                     <div id="topImage" style="float: left; padding-right: 30px;">
                         <h:graphicImage url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>
@@ -108,9 +110,12 @@
                         </table>
                     </div>
 
+                    </h:form>
+
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center" scrollable="true">
+                    <h:form id="editorForm" prependId="false">
                     <p:outputPanel id="centralUnit">
                         <div id="contentSection" style="width:100%">
                             <ui:insert name="content"/>
@@ -120,6 +125,7 @@
                             <ui:insert name="footer"/>
                         </div>
                     </p:outputPanel>
+                    </h:form>
                 </p:layoutUnit>
 
                 <!--<p:layoutUnit id="southUnit" position="bottom"-->
@@ -131,7 +137,7 @@
 
             </p:layout>
 
-        </h:form>
+
 
         <ui:insert name="dialogs"/>
 

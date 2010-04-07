@@ -14,15 +14,16 @@
             required="true"/>
     <composite:attribute name="update" />
     <composite:attribute name="topicSelectItems" />
+    <composite:attribute name="style" default=""/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
     <composite:implementation>
-        <table>
+        <table style="#{cc.attrs.style}">
             <tr>
                 <td>
                     <h:panelGroup>
-                <div style="text-align: right; margin-top: -15px; margin-bottom: 5px">
+                <div style="text-align: right; margin-bottom: 5px">
                 Actions:&#160;
                 <p:commandLink value="New" update="#{cc.attrs.update}" actionListener="#{cc.attrs.annotatedObjectController.newAnnotation}"/>
                 </div>
@@ -42,11 +43,11 @@
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                <p:inplace effectSpeed="fast" rendered="#{annotation.annotationText != null}">
+                <!--<p:inplace effectSpeed="fast" rendered="#{annotation.annotationText != null}">-->
                      <h:inputText value="#{annotation.annotationText}" size="50" rendered="#{annotation.annotationText != null}">
                         <f:ajax event="valueChange" render="#{cc.attrs.render}" />
                     </h:inputText>
-                </p:inplace>
+                <!--</p:inplace>-->
                 <h:inputText value="#{annotation.annotationText}" size="50" rendered="#{annotation.annotationText == null}"
                         required="true" requiredMessage="Annotation texts are required">
                         <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
