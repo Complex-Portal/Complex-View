@@ -53,13 +53,15 @@
                                     <h:graphicImage url="/resources/images/user.jpg" alt="User:"/>
                                 </td>
                                 <td class="verticalTop" style="padding-bottom: 10px; padding-left: 5px;">
-                                    <h:outputText value="#{userSessionController.currentUser.login}"/>
+                                    <h:outputText value="#{userSessionController.currentUser.firstName == null ? userSessionController.currentUser.login : userSessionController.currentUser.firstName}"/>
                                 </td>
                                 <td class="verticalTop" style="padding-left: 20px;">
                                     <h:graphicImage url="/resources/images/users.png" alt="Curators:"/>
                                 </td>
                                 <td class="verticalTop" style="padding-left: 5px;">
-                                    <h:outputText value="#{appController.loggedInUserCount}"/>
+                                    <h:outputLink onclick="loggedUsersDlg.show(); return false;" >
+                                        <h:outputText value="#{appController.loggedInUserCount}"/>
+                                    </h:outputLink>
                                 </td>
                             </tr>
                             <tr>
@@ -75,7 +77,9 @@
                                     </h:outputLink>
                                 </td>
                                 <td class="verticalTop" style="padding-left: 5px;">
-                                    <h:outputText value="logout"/>
+                                    <h:outputLink value="/editor/j_spring_security_logout" title="Logout">
+                                        <h:outputText value="logout"/>
+                                    </h:outputLink>
                                 </td>
                             </tr>
                         </table>
@@ -112,8 +116,8 @@
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center" scrollable="true">
-                    <h:form id="editorForm" prependId="false">
 
+                    <h:form id="editorForm" prependId="false">
                     <p:outputPanel id="centralUnit">
                         <div id="contentSection" style="width:100%">
                             <ui:insert name="content"/>
@@ -123,7 +127,9 @@
                             <ui:insert name="footer"/>
                         </div>
                     </p:outputPanel>
+
                     </h:form>
+
                 </p:layoutUnit>
 
                 <!--<p:layoutUnit id="southUnit" position="bottom"-->
@@ -138,6 +144,8 @@
 
 
         <ui:insert name="dialogs"/>
+
+        <ui:include src="main_dialogs.xhtml"/>
 
     </h:body>
 
