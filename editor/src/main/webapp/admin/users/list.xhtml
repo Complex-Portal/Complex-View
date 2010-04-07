@@ -11,14 +11,14 @@
     <ui:define name="adminContent">
 
         <f:metadata>
-          <f:event type="preRenderComponent" listener="#{userAdminController.loadData}"/>
+          <f:event type="preRenderView" listener="#{userAdminController.loadData}"/>
         </f:metadata>
 
         <h3>Users (#{userAdminController.allUsers.rowCount})</h3>
 
         <!-- TODO: if the user is disabled, show the line red. -->
-        <p:dataTable var="user" value="#{userAdminController.allUsers}"
-                     paginator="true" rows="10" dynamic="true" lazy="true">
+        <p:dataTable id="usersTable" var="user" value="#{userAdminController.allUsers}"
+                     paginator="#{userAdminController.allUsers.rowCount > 10}" rows="10" dynamic="true" lazy="true">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Login"/>
