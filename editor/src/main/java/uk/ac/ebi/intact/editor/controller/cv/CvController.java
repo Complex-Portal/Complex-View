@@ -2,7 +2,6 @@ package uk.ac.ebi.intact.editor.controller.cv;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,10 @@ import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.CvDagObject;
+import uk.ac.ebi.intact.model.CvObject;
 
-import javax.faces.event.ComponentSystemEvent;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @Scope("conversation.access")
@@ -28,7 +28,11 @@ public class CvController extends BaseController {
 
 	private TreeNode root;
 
-    private TreeNode selectedCvObject;
+    private Map<String, CvObject> cvObjectsByClientId;
+
+    public CvController() {
+        cvObjectsByClientId = new HashMap<String, CvObject>();
+    }
 
     public TreeNode getRoot() {
 		return root;
@@ -39,8 +43,8 @@ public class CvController extends BaseController {
     {
 		Class clazz;
         log.debug("Loading cvClass: " + cvClass);
-		try
-		{
+
+        try {
 			clazz = Class.forName(cvClass);
 
 			CvObjectDao<CvDagObject> cvDAO = daoFactory.getCvObjectDao(clazz);
@@ -53,9 +57,7 @@ public class CvController extends BaseController {
 			root = buildTreeNode(rootCv, null);
 
             log.debug("\tLoading completed.");
-		}
-		catch (ClassNotFoundException e)
-		{
+		} catch (ClassNotFoundException e) {
 			addErrorMessage("Could not load data for class " + cvClass, e.getMessage());
 		}
     }
@@ -74,10 +76,15 @@ public class CvController extends BaseController {
 	}
 
     public void onNodeSelect(NodeSelectEvent event) {
-        selectedCvObject = event.getTreeNode(); 
+        TreeNode selectedNode = event.getTreeNode();
+
+        String treeComponentId = event.getComponent().getId();
+        String clientId = treeComponentId.replaceAll("__tree", "");
+        
+        cvObjectsByClientId.put(clientId, (CvObject) selectedNode.getData());
     }
 
-    public TreeNode getSelectedCvObject() {
-        return selectedCvObject;
+    public CvObject getSelectedCvObject(String clientId) {
+        return cvObjectsByClientId.get(clientId);
     }
 }

@@ -27,9 +27,9 @@
                  document.getElementById('#{cc.clientId}:cvObjectVisible').value = '#{cc.attrs.value.shortLabel}';
             </h:outputScript>
 
-            <h:outputScript rendered="#{cvController.selectedCvObject != null and cvController.selectedCvObject.data.class == cc.attrs.value.class}">
-                document.getElementById('#{cc.clientId}:cvObject').value = '#{cvController.selectedCvObject.data.ac}';
-                document.getElementById('#{cc.clientId}:cvObjectVisible').value = '#{cvController.selectedCvObject.data.shortLabel}';
+            <h:outputScript rendered="#{cvController.getSelectedCvObject(cc.clientId) != null}">
+                document.getElementById('#{cc.clientId}:cvObject').value = '#{cvController.getSelectedCvObject(cc.clientId).ac}';
+                document.getElementById('#{cc.clientId}:cvObjectVisible').value = '#{cvController.getSelectedCvObject(cc.clientId).shortLabel}';
             </h:outputScript>
 
 
@@ -48,10 +48,13 @@
                     <h:commandButton type="button" value="New..." />
                 </h:panelGroup>
 
-                <p:tree value="#{cvController.root}" var="cvObject" rendered="#{cvController.root != null}"
+
+                <div id="#{cc.clientId}__div"/>
+                <p:ajaxStatus onstart="document.getElementById('#{cc.clientId}__div').innerHTML = 'Loading tree...'" oncomplete="document.getElementById('#{cc.clientId}__div').innerHTML = ''" />
+
+                <p:tree id="#{cc.clientId}__tree" value="#{cvController.root}" var="cvObject" rendered="#{cvController.root != null}"
                         dynamic="true" cache="false"
                         nodeSelectListener="#{cvController.onNodeSelect}"
-
                         onselectComplete="#{cc.clientId}_cvDlg.hide(); "
                         update="cvObject,javascriptPanel">
                     <p:treeNode>
