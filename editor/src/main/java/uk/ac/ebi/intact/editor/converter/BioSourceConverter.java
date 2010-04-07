@@ -29,26 +29,26 @@ import javax.faces.convert.FacesConverter;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@FacesConverter(value = "bioSourceConverter", forClass = BioSource.class)
+@FacesConverter( value = "bioSourceConverter", forClass = BioSource.class )
 public class BioSourceConverter implements Converter {
 
     @Override
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String ac) throws ConverterException {
-        if (ac == null) return null;
+    public Object getAsObject( FacesContext facesContext, UIComponent uiComponent, String ac ) throws ConverterException {
+        if ( ac == null ) return null;
 
-        BioSourceService service = (BioSourceService) IntactContext.getCurrentInstance().getSpringContext().getBean("bioSourceService");
-        return service.findBioSourceByAc(ac);
+        BioSourceService service = ( BioSourceService ) IntactContext.getCurrentInstance().getSpringContext().getBean( "bioSourceService" );
+        return service.findBioSourceByAc( ac );
     }
 
     @Override
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object o) throws ConverterException {
-        if (o == null) return null;
+    public String getAsString( FacesContext facesContext, UIComponent uiComponent, Object o ) throws ConverterException {
+        if ( o == null ) return null;
 
-        if (o instanceof BioSource) {
-            BioSource bioSource = (BioSource) o;
+        if ( o instanceof BioSource ) {
+            BioSource bioSource = ( BioSource ) o;
             return bioSource.getAc();
         } else {
-            throw new IllegalArgumentException("Argument must be a BioSource: "+o+" ("+o.getClass()+")");
+            throw new IllegalArgumentException( "Argument must be a BioSource: " + o + " (" + o.getClass() + ")" );
         }
     }
 }

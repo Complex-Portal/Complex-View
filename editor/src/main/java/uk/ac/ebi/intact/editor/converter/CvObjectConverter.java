@@ -29,26 +29,26 @@ import javax.faces.convert.FacesConverter;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@FacesConverter(value = "cvObjectConverter", forClass = CvObject.class)
+@FacesConverter( value = "cvObjectConverter", forClass = CvObject.class )
 public class CvObjectConverter implements Converter {
 
     @Override
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String ac) throws ConverterException {
-        if (ac == null) return null;
+    public Object getAsObject( FacesContext facesContext, UIComponent uiComponent, String ac ) throws ConverterException {
+        if ( ac == null ) return null;
 
-        CvObjectService service = (CvObjectService) IntactContext.getCurrentInstance().getSpringContext().getBean("cvObjectService");
-        return service.findCvObjectByAc(ac);
+        CvObjectService service = ( CvObjectService ) IntactContext.getCurrentInstance().getSpringContext().getBean( "cvObjectService" );
+        return service.findCvObjectByAc( ac );
     }
 
     @Override
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object o) throws ConverterException {
-        if (o == null) return null;
-        
-        if (o instanceof CvObject) {
-            CvObject cvObject = (CvObject) o;
+    public String getAsString( FacesContext facesContext, UIComponent uiComponent, Object o ) throws ConverterException {
+        if ( o == null ) return null;
+
+        if ( o instanceof CvObject ) {
+            CvObject cvObject = ( CvObject ) o;
             return cvObject.getAc();
         } else {
-            throw new IllegalArgumentException("Argument must be a CvObject: "+o+" ("+o.getClass()+")");
+            throw new IllegalArgumentException( "Argument must be a CvObject: " + o + " (" + o.getClass() + ")" );
         }
     }
 }

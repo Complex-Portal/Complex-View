@@ -33,7 +33,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
 
     private boolean unsavedChanges;
 
-     @Autowired
+    @Autowired
     private CvObjectService cvObjectService;
 
     public AnnotatedObjectController() {
@@ -44,63 +44,65 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     // XREFS
     ///////////////////////////////////////////////
 
-    public void newXref(ActionEvent evt) {
+    public void newXref( ActionEvent evt ) {
         Xref xref = newXrefInstance();
-        getAnnotatedObject().addXref(xref);
+        getAnnotatedObject().addXref( xref );
     }
 
     private Xref newXrefInstance() {
-        Class<? extends Xref> xrefClass = AnnotatedObjectUtils.getXrefClassType(getAnnotatedObject().getClass());
+        Class<? extends Xref> xrefClass = AnnotatedObjectUtils.getXrefClassType( getAnnotatedObject().getClass() );
 
         Xref xref = null;
         try {
             xref = xrefClass.newInstance();
-        } catch (Throwable e) {
+        } catch ( Throwable e ) {
             FacesContext ctx = FacesContext.getCurrentInstance();
-            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext(ctx, e);
-            ctx.getApplication().publishEvent(ctx, ExceptionQueuedEvent.class, eventContext);
+            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
+            ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
         }
 
-        xref.setOwner(getIntactContext().getInstitution());
+        xref.setOwner( getIntactContext().getInstitution() );
         return xref;
     }
 
     public List<Xref> getXrefs() {
-        if (getAnnotatedObject() == null) { return Collections.EMPTY_LIST; }
+        if ( getAnnotatedObject() == null ) {
+            return Collections.EMPTY_LIST;
+        }
 
-        final ArrayList<Xref> xrefs = new ArrayList<Xref>(getAnnotatedObject().getXrefs());
-        Collections.sort(xrefs, new IntactObjectComparator());
+        final ArrayList<Xref> xrefs = new ArrayList<Xref>( getAnnotatedObject().getXrefs() );
+        Collections.sort( xrefs, new IntactObjectComparator() );
         return xrefs;
     }
 
-    public void setXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
-        if (primaryId != null && !primaryId.isEmpty())  {
-            replaceOrCreateXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
+    public void setXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
+        if ( primaryId != null && !primaryId.isEmpty() ) {
+            replaceOrCreateXref( databaseIdOrLabel, qualifierIdOrLabel, primaryId );
         } else {
-            removeXref(databaseIdOrLabel, qualifierIdOrLabel);
+            removeXref( databaseIdOrLabel, qualifierIdOrLabel );
         }
     }
 
-    public void replaceOrCreateXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
+    public void replaceOrCreateXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
         AnnotatedObject parent = getAnnotatedObject();
 
         // modify if exists
         boolean exists = false;
 
-        for (Object objXref : parent.getXrefs()) {
-            Xref xref = (Xref) objXref;
+        for ( Object objXref : parent.getXrefs() ) {
+            Xref xref = ( Xref ) objXref;
 
-            if (xref.getCvDatabase() != null) {
-                if (databaseIdOrLabel.equals(xref.getCvDatabase().getIdentifier())
-                        || databaseIdOrLabel.equals(xref.getCvDatabase().getShortLabel())) {
-                    if (xref.getCvXrefQualifier() == null || qualifierIdOrLabel == null) {
-                        if (!primaryId.equals(xref.getPrimaryId())) {
-                            xref.setPrimaryId(primaryId);
+            if ( xref.getCvDatabase() != null ) {
+                if ( databaseIdOrLabel.equals( xref.getCvDatabase().getIdentifier() )
+                     || databaseIdOrLabel.equals( xref.getCvDatabase().getShortLabel() ) ) {
+                    if ( xref.getCvXrefQualifier() == null || qualifierIdOrLabel == null ) {
+                        if ( !primaryId.equals( xref.getPrimaryId() ) ) {
+                            xref.setPrimaryId( primaryId );
                         }
-                    } else if (qualifierIdOrLabel.equals(xref.getCvXrefQualifier().getIdentifier())
-                            || qualifierIdOrLabel.equals(xref.getCvXrefQualifier().getShortLabel())){
-                        if (!primaryId.equals(xref.getPrimaryId())) {
-                            xref.setPrimaryId(primaryId);
+                    } else if ( qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getIdentifier() )
+                                || qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getShortLabel() ) ) {
+                        if ( !primaryId.equals( xref.getPrimaryId() ) ) {
+                            xref.setPrimaryId( primaryId );
                         }
                     }
 
@@ -110,49 +112,49 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         }
 
         // create if not exists
-        if (!exists) {
-            addXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
+        if ( !exists ) {
+            addXref( databaseIdOrLabel, qualifierIdOrLabel, primaryId );
         }
     }
 
-    public void removeXref(String databaseIdOrLabel, String qualifierIdOrLabel) {
+    public void removeXref( String databaseIdOrLabel, String qualifierIdOrLabel ) {
         Iterator<Xref> iterator = getAnnotatedObject().getXrefs().iterator();
 
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             Xref xref = iterator.next();
-            if (databaseIdOrLabel.equals(xref.getCvDatabase().getIdentifier()) || databaseIdOrLabel.equals(xref.getCvDatabase().getShortLabel())) {
-                if (qualifierIdOrLabel == null || xref.getCvXrefQualifier() == null) {
+            if ( databaseIdOrLabel.equals( xref.getCvDatabase().getIdentifier() ) || databaseIdOrLabel.equals( xref.getCvDatabase().getShortLabel() ) ) {
+                if ( qualifierIdOrLabel == null || xref.getCvXrefQualifier() == null ) {
                     iterator.remove();
-                } else if (qualifierIdOrLabel.equals(xref.getCvXrefQualifier().getIdentifier()) || qualifierIdOrLabel.equals(xref.getCvXrefQualifier().getShortLabel())){
+                } else if ( qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getIdentifier() ) || qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getShortLabel() ) ) {
                     iterator.remove();
                 }
             }
         }
     }
 
-    public void removeXref(Xref xref) {
-        getAnnotatedObject().removeXref(xref);
-        setUnsavedChanges(true);
+    public void removeXref( Xref xref ) {
+        getAnnotatedObject().removeXref( xref );
+        setUnsavedChanges( true );
     }
 
-    public void addXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
-        CvDatabase db = cvObjectService.findCvObject(CvDatabase.class, databaseIdOrLabel);
-        CvXrefQualifier qual = cvObjectService.findCvObject(CvXrefQualifier.class, qualifierIdOrLabel);
+    public void addXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
+        CvDatabase db = cvObjectService.findCvObject( CvDatabase.class, databaseIdOrLabel );
+        CvXrefQualifier qual = cvObjectService.findCvObject( CvXrefQualifier.class, qualifierIdOrLabel );
 
         Xref xref = newXrefInstance();
-        xref.setCvDatabase(db);
-        xref.setCvXrefQualifier(qual);
-        xref.setPrimaryId(primaryId);
+        xref.setCvDatabase( db );
+        xref.setCvXrefQualifier( qual );
+        xref.setPrimaryId( primaryId );
 
-        getAnnotatedObject().addXref(xref);
+        getAnnotatedObject().addXref( xref );
     }
 
-    public String findXrefPrimaryId(String databaseId, String qualifierId ) {
+    public String findXrefPrimaryId( String databaseId, String qualifierId ) {
         final AnnotatedObject ao = getAnnotatedObject();
 
-        Collection<Xref> xrefs = AnnotatedObjectUtils.searchXrefs(ao, databaseId, qualifierId);
+        Collection<Xref> xrefs = AnnotatedObjectUtils.searchXrefs( ao, databaseId, qualifierId );
 
-        if (!xrefs.isEmpty()) {
+        if ( !xrefs.isEmpty() ) {
             return xrefs.iterator().next().getPrimaryId();
         }
 
@@ -163,39 +165,39 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     // ANNOTATIONS
     ///////////////////////////////////////////////
 
-    public void newAnnotation(ActionEvent evt) {
+    public void newAnnotation( ActionEvent evt ) {
         Annotation annotationWithNullTopic = new Annotation() {
             @Override
-            public void setCvTopic(CvTopic cvTopic) {
-                if (cvTopic != null) {
-                    super.setCvTopic(cvTopic);
+            public void setCvTopic( CvTopic cvTopic ) {
+                if ( cvTopic != null ) {
+                    super.setCvTopic( cvTopic );
                 }
             }
         };
-        getAnnotatedObject().addAnnotation(annotationWithNullTopic) ;
+        getAnnotatedObject().addAnnotation( annotationWithNullTopic );
     }
 
-    public void addAnnotation(String topicIdOrLabel, String text) {
-        CvTopic dataset = cvObjectService.findCvObject(CvTopic.class, topicIdOrLabel);
+    public void addAnnotation( String topicIdOrLabel, String text ) {
+        CvTopic dataset = cvObjectService.findCvObject( CvTopic.class, topicIdOrLabel );
 
-        Annotation annotation = new Annotation(getIntactContext().getInstitution(), dataset);
-        annotation.setAnnotationText(text);
+        Annotation annotation = new Annotation( getIntactContext().getInstitution(), dataset );
+        annotation.setAnnotationText( text );
 
-        getAnnotatedObject().addAnnotation(annotation);
+        getAnnotatedObject().addAnnotation( annotation );
     }
 
-    public void replaceOrCreateAnnotation(String topicOrShortLabel, String text) {
+    public void replaceOrCreateAnnotation( String topicOrShortLabel, String text ) {
         AnnotatedObject parent = getAnnotatedObject();
 
         // modify if exists
         boolean exists = false;
 
-        for (Annotation annotation : parent.getAnnotations()) {
-            if (annotation.getCvTopic() != null) {
-                if (topicOrShortLabel.equals(annotation.getCvTopic().getIdentifier())
-                        || topicOrShortLabel.equals(annotation.getCvTopic().getShortLabel())) {
-                    if (!text.equals(annotation.getAnnotationText())) {
-                        annotation.setAnnotationText(text);
+        for ( Annotation annotation : parent.getAnnotations() ) {
+            if ( annotation.getCvTopic() != null ) {
+                if ( topicOrShortLabel.equals( annotation.getCvTopic().getIdentifier() )
+                     || topicOrShortLabel.equals( annotation.getCvTopic().getShortLabel() ) ) {
+                    if ( !text.equals( annotation.getAnnotationText() ) ) {
+                        annotation.setAnnotationText( text );
                     }
                     exists = true;
                 }
@@ -203,52 +205,52 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         }
 
         // create if not exists
-        if (!exists) {
-            addAnnotation(topicOrShortLabel, text);
+        if ( !exists ) {
+            addAnnotation( topicOrShortLabel, text );
         }
     }
 
-    public void removeAnnotation(String topicIdOrLabel) {
+    public void removeAnnotation( String topicIdOrLabel ) {
         Iterator<Annotation> iterator = getAnnotatedObject().getAnnotations().iterator();
 
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             Annotation annotation = iterator.next();
-            if (topicIdOrLabel.equals(annotation.getCvTopic().getIdentifier()) ||
-                    topicIdOrLabel.equals(annotation.getCvTopic().getShortLabel())) {
+            if ( topicIdOrLabel.equals( annotation.getCvTopic().getIdentifier() ) ||
+                 topicIdOrLabel.equals( annotation.getCvTopic().getShortLabel() ) ) {
                 iterator.remove();
             }
         }
     }
 
-    public void removeAnnotation(String topicIdOrLabel, String text) {
+    public void removeAnnotation( String topicIdOrLabel, String text ) {
         Iterator<Annotation> iterator = getAnnotatedObject().getAnnotations().iterator();
 
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             Annotation annotation = iterator.next();
-            if ((topicIdOrLabel.equals(annotation.getCvTopic().getIdentifier()) || topicIdOrLabel.equals(annotation.getCvTopic().getShortLabel()))
-                    && text.equals(annotation.getAnnotationText())) {
+            if ( ( topicIdOrLabel.equals( annotation.getCvTopic().getIdentifier() ) || topicIdOrLabel.equals( annotation.getCvTopic().getShortLabel() ) )
+                 && text.equals( annotation.getAnnotationText() ) ) {
                 iterator.remove();
             }
         }
     }
 
-    public void removeAnnotation(Annotation annotation) {
-        getAnnotatedObject().removeAnnotation(annotation);
-        setUnsavedChanges(true);
+    public void removeAnnotation( Annotation annotation ) {
+        getAnnotatedObject().removeAnnotation( annotation );
+        setUnsavedChanges( true );
     }
 
-    public void setAnnotation(String topicIdOrLabel, Object value) {
-        if (value != null && !value.toString().isEmpty())  {
-            replaceOrCreateAnnotation(topicIdOrLabel, value.toString());
+    public void setAnnotation( String topicIdOrLabel, Object value ) {
+        if ( value != null && !value.toString().isEmpty() ) {
+            replaceOrCreateAnnotation( topicIdOrLabel, value.toString() );
         } else {
-            removeAnnotation(topicIdOrLabel);
+            removeAnnotation( topicIdOrLabel );
         }
     }
 
-    public String findAnnotationText(String topicId) {
-        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(getAnnotatedObject(), topicId);
+    public String findAnnotationText( String topicId ) {
+        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( getAnnotatedObject(), topicId );
 
-        if (annotation != null) {
+        if ( annotation != null ) {
             return annotation.getAnnotationText();
         }
 
@@ -257,85 +259,89 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     }
 
     public List<Annotation> getAnnotations() {
-        if (getAnnotatedObject() == null) { return Collections.EMPTY_LIST; }
+        if ( getAnnotatedObject() == null ) {
+            return Collections.EMPTY_LIST;
+        }
 
-        final ArrayList<Annotation> annotations = new ArrayList<Annotation>(getAnnotatedObject().getAnnotations());
-        Collections.sort(annotations, new IntactObjectComparator());
+        final ArrayList<Annotation> annotations = new ArrayList<Annotation>( getAnnotatedObject().getAnnotations() );
+        Collections.sort( annotations, new IntactObjectComparator() );
         return annotations;
     }
 
     // ALIASES
     ///////////////////////////////////////////////
 
-    public void newAlias(ActionEvent evt) {
+    public void newAlias( ActionEvent evt ) {
         Alias alias = newAliasInstance();
-        getAnnotatedObject().addAlias(alias);
+        getAnnotatedObject().addAlias( alias );
     }
 
     private Alias newAliasInstance() {
-        Class<? extends Alias> aliasClass = AnnotatedObjectUtils.getAliasClassType(getAnnotatedObject().getClass());
+        Class<? extends Alias> aliasClass = AnnotatedObjectUtils.getAliasClassType( getAnnotatedObject().getClass() );
 
         Alias alias = null;
         try {
             alias = aliasClass.newInstance();
-        } catch (Throwable e) {
+        } catch ( Throwable e ) {
             FacesContext ctx = FacesContext.getCurrentInstance();
-            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext(ctx, e);
-            ctx.getApplication().publishEvent(ctx, ExceptionQueuedEvent.class, eventContext);
+            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
+            ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
         }
 
-        alias.setOwner(getIntactContext().getInstitution());
+        alias.setOwner( getIntactContext().getInstitution() );
         return alias;
     }
 
-    public void setAlias(String aliasTypeIdOrLabel, Object value) {
-        if (value != null && !value.toString().isEmpty())  {
-            replaceOrCreateAlias(aliasTypeIdOrLabel, value.toString());
+    public void setAlias( String aliasTypeIdOrLabel, Object value ) {
+        if ( value != null && !value.toString().isEmpty() ) {
+            replaceOrCreateAlias( aliasTypeIdOrLabel, value.toString() );
         } else {
-            removeAlias(aliasTypeIdOrLabel);
+            removeAlias( aliasTypeIdOrLabel );
         }
     }
 
-     public void replaceOrCreateAlias(String aliasTypeIdOrLabel, String text) {
+    public void replaceOrCreateAlias( String aliasTypeIdOrLabel, String text ) {
         Iterator<Alias> iterator = getAnnotatedObject().getAliases().iterator();
 
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             Alias alias = iterator.next();
-            if ((aliasTypeIdOrLabel.equals(alias.getCvAliasType().getIdentifier()) || aliasTypeIdOrLabel.equals(alias.getCvAliasType().getShortLabel()))
-                    && text.equals(alias.getName())) {
+            if ( ( aliasTypeIdOrLabel.equals( alias.getCvAliasType().getIdentifier() ) || aliasTypeIdOrLabel.equals( alias.getCvAliasType().getShortLabel() ) )
+                 && text.equals( alias.getName() ) ) {
                 iterator.remove();
             }
         }
     }
 
-    public void removeAlias(String aliasTypeIdOrLabel) {
+    public void removeAlias( String aliasTypeIdOrLabel ) {
         Iterator<Alias> iterator = getAnnotatedObject().getAliases().iterator();
 
-        while (iterator.hasNext()) {
+        while ( iterator.hasNext() ) {
             Alias alias = iterator.next();
-            if (aliasTypeIdOrLabel.equals(alias.getCvAliasType().getIdentifier()) ||
-                    aliasTypeIdOrLabel.equals(alias.getCvAliasType().getShortLabel())) {
+            if ( aliasTypeIdOrLabel.equals( alias.getCvAliasType().getIdentifier() ) ||
+                 aliasTypeIdOrLabel.equals( alias.getCvAliasType().getShortLabel() ) ) {
                 iterator.remove();
             }
         }
     }
 
     public List<Alias> getAliases() {
-        if (getAnnotatedObject() == null) { return Collections.EMPTY_LIST; }
+        if ( getAnnotatedObject() == null ) {
+            return Collections.EMPTY_LIST;
+        }
 
-        final ArrayList<Alias> aliases = new ArrayList<Alias>(getAnnotatedObject().getAliases());
-        Collections.sort(aliases, new IntactObjectComparator());
+        final ArrayList<Alias> aliases = new ArrayList<Alias>( getAnnotatedObject().getAliases() );
+        Collections.sort( aliases, new IntactObjectComparator() );
         return aliases;
     }
 
     // OTHER
     ////////////////////////////////////////////////////
-    
-    public void changed(AjaxBehaviorEvent event) throws AbortProcessingException {
+
+    public void changed( AjaxBehaviorEvent event ) throws AbortProcessingException {
         unsavedChanges = true;
     }
 
-    public void setUnsavedChanges(boolean unsavedChanges) {
+    public void setUnsavedChanges( boolean unsavedChanges ) {
         this.unsavedChanges = unsavedChanges;
     }
 
@@ -345,8 +351,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
 
     private class IntactObjectComparator implements Comparator<IntactObject> {
         @Override
-        public int compare(IntactObject o1, IntactObject o2) {
-            if (o1.getAc() != null) return 1;
+        public int compare( IntactObject o1, IntactObject o2 ) {
+            if ( o1.getAc() != null ) return 1;
             return 0;
         }
     }

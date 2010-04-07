@@ -27,62 +27,62 @@ import org.springframework.web.context.request.RequestContextHolder;
 public class HybridSessionThreadScope extends SimpleThreadScope {
 
     @Override
-    public Object get(String name, ObjectFactory objectFactory) {
+    public Object get( String name, ObjectFactory objectFactory ) {
         Object scopedObject;
 
-        if (RequestContextHolder.getRequestAttributes() != null) {
+        if ( RequestContextHolder.getRequestAttributes() != null ) {
             Object mutex = RequestContextHolder.currentRequestAttributes().getSessionMutex();
 
-            synchronized (mutex) {
+            synchronized ( mutex ) {
                 RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-                scopedObject = attributes.getAttribute(name, RequestAttributes.SCOPE_SESSION);
+                scopedObject = attributes.getAttribute( name, RequestAttributes.SCOPE_SESSION );
 
-                if (scopedObject == null) {
-                    scopedObject = super.get(name, objectFactory);
-                    attributes.setAttribute(name, scopedObject, RequestAttributes.SCOPE_SESSION);
+                if ( scopedObject == null ) {
+                    scopedObject = super.get( name, objectFactory );
+                    attributes.setAttribute( name, scopedObject, RequestAttributes.SCOPE_SESSION );
                 }
             }
         } else {
-            scopedObject = super.get(name, objectFactory);
+            scopedObject = super.get( name, objectFactory );
         }
 
         return scopedObject;
     }
 
     public String getConversationId() {
-        if (RequestContextHolder.getRequestAttributes() != null) {
-		    return RequestContextHolder.currentRequestAttributes().getSessionId();
+        if ( RequestContextHolder.getRequestAttributes() != null ) {
+            return RequestContextHolder.currentRequestAttributes().getSessionId();
         }
 
         return super.getConversationId();
-	}
+    }
 
-	@Override
-	public Object remove(String name) {
-        if (RequestContextHolder.getRequestAttributes() != null) {
+    @Override
+    public Object remove( String name ) {
+        if ( RequestContextHolder.getRequestAttributes() != null ) {
             Object mutex = RequestContextHolder.currentRequestAttributes().getSessionMutex();
-            synchronized (mutex) {
-                return super.remove(name);
+            synchronized ( mutex ) {
+                return super.remove( name );
             }
         }
-        return super.remove(name);
-	}
+        return super.remove( name );
+    }
 
-    public void registerDestructionCallback(String name, Runnable callback) {
-        if (RequestContextHolder.getRequestAttributes() != null) {
+    public void registerDestructionCallback( String name, Runnable callback ) {
+        if ( RequestContextHolder.getRequestAttributes() != null ) {
             RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-            attributes.registerDestructionCallback(name, callback, RequestAttributes.SCOPE_SESSION);
+            attributes.registerDestructionCallback( name, callback, RequestAttributes.SCOPE_SESSION );
         }
-	}
+    }
 
-	public Object resolveContextualObject(String key) {
-        if (RequestContextHolder.getRequestAttributes() != null) {
+    public Object resolveContextualObject( String key ) {
+        if ( RequestContextHolder.getRequestAttributes() != null ) {
             RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-            return attributes.resolveReference(key);
+            return attributes.resolveReference( key );
         }
 
         return null;
-	}
+    }
 
 
 }

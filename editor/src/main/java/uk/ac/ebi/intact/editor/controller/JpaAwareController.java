@@ -34,10 +34,10 @@ import javax.persistence.PersistenceContext;
  */
 public abstract class JpaAwareController extends BaseController {
 
-    @PersistenceContext(unitName = "intact-core-default")
+    @PersistenceContext( unitName = "intact-core-default" )
     private EntityManager coreEntityManager;
 
-    @PersistenceContext(unitName = "intact-users-default")
+    @PersistenceContext( unitName = "intact-users-default" )
     private EntityManager usersEntityManager;
 
     @Autowired

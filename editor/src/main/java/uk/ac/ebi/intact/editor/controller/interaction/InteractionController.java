@@ -34,8 +34,8 @@ import javax.faces.event.ComponentSystemEvent;
  * @version $Id$
  */
 @Controller
-@Scope("conversation.access")
-@ConversationName("general")
+@Scope( "conversation.access" )
+@ConversationName( "general" )
 public class InteractionController extends AnnotatedObjectController {
 
     private Interaction interaction;
@@ -56,14 +56,14 @@ public class InteractionController extends AnnotatedObjectController {
         return getInteraction();
     }
 
-    public void loadData(ComponentSystemEvent event) {
-        if (ac != null) {
-            if (interaction == null || !ac.equals(interaction.getAc())) {
-                interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc(ac);
+    public void loadData( ComponentSystemEvent event ) {
+        if ( ac != null ) {
+            if ( interaction == null || !ac.equals( interaction.getAc() ) ) {
+                interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
 
-                participantDataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
-                    "select c from Component c where c.interaction.ac = '"+ac+"'",
-                    "select count(c) from Component c where c.interaction.ac = '"+ac+"'");
+                participantDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+                                                                                 "select c from Component c where c.interaction.ac = '" + ac + "'",
+                                                                                 "select count(c) from Component c where c.interaction.ac = '" + ac + "'" );
             }
         } else {
             ac = interaction.getAc();
@@ -71,32 +71,32 @@ public class InteractionController extends AnnotatedObjectController {
 
         // check if the publication or experiment are null in their controlles (this happens when the interaction
         // page is loaded directly using a URL)
-        if (publicationController.getPublication() == null) {
+        if ( publicationController.getPublication() == null ) {
             Publication publication = interaction.getExperiments().iterator().next().getPublication();
-            publicationController.setPublication(publication);
+            publicationController.setPublication( publication );
         }
 
-        if (experimentController.getExperiment() == null) {
-            experimentController.setExperiment(interaction.getExperiments().iterator().next());
+        if ( experimentController.getExperiment() == null ) {
+            experimentController.setExperiment( interaction.getExperiments().iterator().next() );
         }
     }
 
     public String getAc() {
-        if (ac == null && interaction != null) {
+        if ( ac == null && interaction != null ) {
             return interaction.getAc();
         }
         return ac;
     }
 
-    public int countParticipantsByInteractionAc(String ac) {
-        return getDaoFactory().getInteractionDao().countInteractorsByInteractionAc(ac);
+    public int countParticipantsByInteractionAc( String ac ) {
+        return getDaoFactory().getInteractionDao().countInteractorsByInteractionAc( ac );
     }
 
-    public Experiment getFirstExperiment(Interaction interaction) {
+    public Experiment getFirstExperiment( Interaction interaction ) {
         return interaction.getExperiments().iterator().next();
     }
 
-    public void setAc(String ac) {
+    public void setAc( String ac ) {
         this.ac = ac;
     }
 
@@ -104,7 +104,7 @@ public class InteractionController extends AnnotatedObjectController {
         return interaction;
     }
 
-    public void setInteraction(Interaction interaction) {
+    public void setInteraction( Interaction interaction ) {
         this.interaction = interaction;
     }
 

@@ -28,7 +28,7 @@ import java.util.Map;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class HqlLazyDataModel<T> extends LazyDataModel<T>{
+public class HqlLazyDataModel<T> extends LazyDataModel<T> {
 
     private static final Log log = LogFactory.getLog( HqlLazyDataModel.class );
 
@@ -36,28 +36,28 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T>{
     private String hqlQuery;
     private Map<String, String> queryParameters;
 
-    public HqlLazyDataModel(EntityManager entityManager, String hqlQuery, int totalNumRows, Map<String, String> params) {
-        super(totalNumRows);
+    public HqlLazyDataModel( EntityManager entityManager, String hqlQuery, int totalNumRows, Map<String, String> params ) {
+        super( totalNumRows );
         this.entityManager = entityManager;
         this.hqlQuery = hqlQuery;
         this.queryParameters = params;
     }
 
     @Override
-    public List<T> fetchLazyData(int firstResult, int maxResults) {
+    public List<T> fetchLazyData( int firstResult, int maxResults ) {
         log.debug( "HqlLazyDataModel.fetchLazyData" );
-        Query query = entityManager.createQuery(hqlQuery);
+        Query query = entityManager.createQuery( hqlQuery );
         log.debug( "HQL: " + hqlQuery );
 
-        if( queryParameters != null ) {
+        if ( queryParameters != null ) {
             for ( Map.Entry<String, String> entry : queryParameters.entrySet() ) {
-                log.debug( "HQL param: " + entry.getKey() +" -> "+ entry.getValue());
+                log.debug( "HQL param: " + entry.getKey() + " -> " + entry.getValue() );
                 query.setParameter( entry.getKey(), entry.getValue() );
             }
         }
 
-        query.setFirstResult(firstResult);
-        query.setMaxResults(maxResults);
+        query.setFirstResult( firstResult );
+        query.setMaxResults( maxResults );
 
         List<T> results = query.getResultList();
 

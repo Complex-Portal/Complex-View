@@ -33,54 +33,54 @@ public class PublicationSyncWriter implements ItemWriter<Publication> {
 
     private static final Log log = LogFactory.getLog( PublicationSyncWriter.class );
 
-    @PersistenceContext(unitName = "intact-core-default")
+    @PersistenceContext( unitName = "intact-core-default" )
     private EntityManager entityManager;
 
     @Override
-    public void write(List<? extends Publication> items) throws Exception {
-        for (Publication pub : items) {
+    public void write( List<? extends Publication> items ) throws Exception {
+        for ( Publication pub : items ) {
 
             // copy xrefs
-            if (!pub.getExperiments().isEmpty()) {
-                if (log.isDebugEnabled()) log.debug("Updating publication: "+pub.getShortLabel());
+            if ( !pub.getExperiments().isEmpty() ) {
+                if ( log.isDebugEnabled() ) log.debug( "Updating publication: " + pub.getShortLabel() );
                 Experiment exp = pub.getExperiments().iterator().next();
 
-                pub.setFullName(exp.getFullName());
+                pub.setFullName( exp.getFullName() );
 
-                for (ExperimentXref expXref : exp.getXrefs()) {
-                    if (!hasXrefWithPrimaryId(expXref.getPrimaryId(),pub)) {
-                        PublicationXref pubXref = new PublicationXref(IntactContext.getCurrentInstance().getInstitution(),
-                                expXref.getCvDatabase(), expXref.getPrimaryId(), expXref.getSecondaryId(),
-                                expXref.getDbRelease(), expXref.getCvXrefQualifier());
-                        pub.addXref(pubXref);
-                        entityManager.merge(pubXref);
+                for ( ExperimentXref expXref : exp.getXrefs() ) {
+                    if ( !hasXrefWithPrimaryId( expXref.getPrimaryId(), pub ) ) {
+                        PublicationXref pubXref = new PublicationXref( IntactContext.getCurrentInstance().getInstitution(),
+                                                                       expXref.getCvDatabase(), expXref.getPrimaryId(), expXref.getSecondaryId(),
+                                                                       expXref.getDbRelease(), expXref.getCvXrefQualifier() );
+                        pub.addXref( pubXref );
+                        entityManager.merge( pubXref );
                     }
                 }
 
-                for (Annotation expAnnot : exp.getAnnotations()) {
-                    if (!hasAnnotWithTopicId(expAnnot.getCvTopic().getIdentifier(), pub)) {
-                        Annotation pubAnnot = new Annotation(IntactContext.getCurrentInstance().getInstitution(),
-                                expAnnot.getCvTopic(), expAnnot.getAnnotationText());
-                        pub.addAnnotation(pubAnnot);
-                        entityManager.merge(pubAnnot);
+                for ( Annotation expAnnot : exp.getAnnotations() ) {
+                    if ( !hasAnnotWithTopicId( expAnnot.getCvTopic().getIdentifier(), pub ) ) {
+                        Annotation pubAnnot = new Annotation( IntactContext.getCurrentInstance().getInstitution(),
+                                                              expAnnot.getCvTopic(), expAnnot.getAnnotationText() );
+                        pub.addAnnotation( pubAnnot );
+                        entityManager.merge( pubAnnot );
                     }
                 }
             }
         }
     }
 
-    private boolean hasXrefWithPrimaryId(String primaryId, Publication pub) {
-        for (Xref xref : pub.getXrefs()) {
-            if (primaryId.equals(xref.getPrimaryId())) {
+    private boolean hasXrefWithPrimaryId( String primaryId, Publication pub ) {
+        for ( Xref xref : pub.getXrefs() ) {
+            if ( primaryId.equals( xref.getPrimaryId() ) ) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean hasAnnotWithTopicId(String topicId, Publication pub) {
-        for (Annotation annot : pub.getAnnotations()) {
-            if (topicId.equals(annot.getCvTopic().getIdentifier())) {
+    private boolean hasAnnotWithTopicId( String topicId, Publication pub ) {
+        for ( Annotation annot : pub.getAnnotations() ) {
+            if ( topicId.equals( annot.getCvTopic().getIdentifier() ) ) {
                 return true;
             }
         }

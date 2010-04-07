@@ -30,7 +30,7 @@ public class BioSourceService {
     @Autowired
     private BioSourceDao bioSourceDao;
 
-    public BioSource findBioSourceByAc(String ac) {
-        return bioSourceDao.getByAc(ac);
+    public BioSource findBioSourceByAc( String ac ) {
+        return bioSourceDao.getByAc( ac );
     }
 }

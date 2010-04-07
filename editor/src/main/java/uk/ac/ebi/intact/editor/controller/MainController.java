@@ -24,8 +24,8 @@ import org.springframework.stereotype.Controller;
  * @version $Id$
  */
 @Controller
-@Scope("conversation.access")
-@ConversationName("general")
+@Scope( "conversation.access" )
+@ConversationName( "general" )
 public class MainController extends BaseController {
 
     public MainController() {

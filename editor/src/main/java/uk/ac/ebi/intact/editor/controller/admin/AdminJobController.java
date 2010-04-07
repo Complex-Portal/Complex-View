@@ -44,14 +44,14 @@ import java.util.List;
  */
 @Controller
 @Scope( "conversation.access" )
-@ConversationName("admin")
+@ConversationName( "admin" )
 @Lazy
-public class AdminJobController extends BaseController{
+public class AdminJobController extends BaseController {
 
-    @Resource(name = "editorJobOperator")
+    @Resource( name = "editorJobOperator" )
     private JobOperator jobOperator;
 
-    @Resource(name = "intactJobExplorer")
+    @Resource( name = "intactJobExplorer" )
     private JobExplorer jobExplorer;
 
     public AdminJobController() {
@@ -61,65 +61,65 @@ public class AdminJobController extends BaseController{
         return jobExplorer.getJobNames();
     }
 
-    public List<JobExecution> getRunningJobExecutions(String jobName) {
-        return new ArrayList<JobExecution>(jobExplorer.findRunningJobExecutions(jobName));
+    public List<JobExecution> getRunningJobExecutions( String jobName ) {
+        return new ArrayList<JobExecution>( jobExplorer.findRunningJobExecutions( jobName ) );
     }
 
-    public List<JobInstance> getJobInstances(String jobName) {
-        return jobExplorer.getJobInstances(jobName, 0, 50);
+    public List<JobInstance> getJobInstances( String jobName ) {
+        return jobExplorer.getJobInstances( jobName, 0, 50 );
     }
 
-    public List<JobExecution> getJobExecutions(Long jobInstanceId) {
-        if (jobInstanceId > 0) {
-            JobInstance jobInstance = jobExplorer.getJobInstance(jobInstanceId);
-            return jobExplorer.getJobExecutions(jobInstance);
+    public List<JobExecution> getJobExecutions( Long jobInstanceId ) {
+        if ( jobInstanceId > 0 ) {
+            JobInstance jobInstance = jobExplorer.getJobInstance( jobInstanceId );
+            return jobExplorer.getJobExecutions( jobInstance );
         }
         return new ArrayList<JobExecution>();
     }
 
-    public List<StepExecution> getStepExecutions(JobExecution jobExecution) {
-        return new ArrayList<StepExecution>(jobExecution.getStepExecutions());
+    public List<StepExecution> getStepExecutions( JobExecution jobExecution ) {
+        return new ArrayList<StepExecution>( jobExecution.getStepExecutions() );
     }
 
-    public void restart(ActionEvent evt) {
-        UIParameter param = (UIParameter) evt.getComponent().getChildren().iterator().next();
-        long executionId = (Long)param.getValue();
+    public void restart( ActionEvent evt ) {
+        UIParameter param = ( UIParameter ) evt.getComponent().getChildren().iterator().next();
+        long executionId = ( Long ) param.getValue();
 
         try {
-            jobOperator.restart(executionId);
+            jobOperator.restart( executionId );
 
-            addInfoMessage("Job restarted", "Execution ID: "+executionId);
-        } catch (JobInstanceAlreadyCompleteException e) {
-            addErrorMessage("Job is already complete", "Execution ID: "+executionId);
+            addInfoMessage( "Job restarted", "Execution ID: " + executionId );
+        } catch ( JobInstanceAlreadyCompleteException e ) {
+            addErrorMessage( "Job is already complete", "Execution ID: " + executionId );
             e.printStackTrace();
-        } catch (NoSuchJobExecutionException e) {
-            addErrorMessage("Job execution does not exist", "Execution ID: "+executionId);
+        } catch ( NoSuchJobExecutionException e ) {
+            addErrorMessage( "Job execution does not exist", "Execution ID: " + executionId );
             e.printStackTrace();
-        } catch (NoSuchJobException e) {
-            addErrorMessage("Job does not exist", "Execution ID: "+executionId);
+        } catch ( NoSuchJobException e ) {
+            addErrorMessage( "Job does not exist", "Execution ID: " + executionId );
             e.printStackTrace();
-        } catch (JobRestartException e) {
-            addErrorMessage("Problem restarting job", "Execution ID: "+executionId);
+        } catch ( JobRestartException e ) {
+            addErrorMessage( "Problem restarting job", "Execution ID: " + executionId );
             e.printStackTrace();
-        } catch (JobParametersInvalidException e) {
-            addErrorMessage("Job parameters are invalid", "Execution ID: "+executionId);
+        } catch ( JobParametersInvalidException e ) {
+            addErrorMessage( "Job parameters are invalid", "Execution ID: " + executionId );
             e.printStackTrace();
         }
     }
 
-    public void stop(ActionEvent evt) {
-        UIParameter param = (UIParameter) evt.getComponent().getChildren().iterator().next();
-        long executionId =(Long)param.getValue();
-        
-        try {
-            jobOperator.stop(executionId);
+    public void stop( ActionEvent evt ) {
+        UIParameter param = ( UIParameter ) evt.getComponent().getChildren().iterator().next();
+        long executionId = ( Long ) param.getValue();
 
-            addInfoMessage("Job stopped", "Execution ID: "+executionId);
-        } catch (NoSuchJobExecutionException e) {
-            addErrorMessage("Job does not exist", "Execution ID: "+executionId);
+        try {
+            jobOperator.stop( executionId );
+
+            addInfoMessage( "Job stopped", "Execution ID: " + executionId );
+        } catch ( NoSuchJobExecutionException e ) {
+            addErrorMessage( "Job does not exist", "Execution ID: " + executionId );
             e.printStackTrace();
-        } catch (JobExecutionNotRunningException e) {
-            addErrorMessage("Job is not running anymore", "Execution ID: "+executionId);
+        } catch ( JobExecutionNotRunningException e ) {
+            addErrorMessage( "Job is not running anymore", "Execution ID: " + executionId );
             e.printStackTrace();
         }
     }

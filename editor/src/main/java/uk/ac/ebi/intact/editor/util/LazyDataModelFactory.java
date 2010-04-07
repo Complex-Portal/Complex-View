@@ -36,35 +36,35 @@ public class LazyDataModelFactory {
 
     }
 
-    public static LazyDataModel createLazyDataModel(EntityManager entityManager, String query, String countQuery) {
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, String countQuery ) {
         return createLazyDataModel( entityManager, query, countQuery, Maps.<String, String>newHashMap() );
     }
 
-    public static LazyDataModel createLazyDataModel(EntityManager entityManager,
-                                                    String query,
-                                                    String countQuery,
-                                                    Map<String, String> params) {
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager,
+                                                     String query,
+                                                     String countQuery,
+                                                     Map<String, String> params ) {
 
         log.debug( "HQL Count: " + countQuery );
 
-        Query q = entityManager.createQuery(countQuery);
+        Query q = entityManager.createQuery( countQuery );
 
-        if( params != null ) {
+        if ( params != null ) {
             for ( Map.Entry<String, String> entry : params.entrySet() ) {
-                log.debug( "HQL Count param: " + entry.getKey() +" -> "+ entry.getValue());
+                log.debug( "HQL Count param: " + entry.getKey() + " -> " + entry.getValue() );
                 q.setParameter( entry.getKey(), entry.getValue() );
             }
         }
 
-        int totalNumRows = ((Long) q.getSingleResult()).intValue();
+        int totalNumRows = ( ( Long ) q.getSingleResult() ).intValue();
 
-        return createLazyDataModel(entityManager, query, totalNumRows, params);
+        return createLazyDataModel( entityManager, query, totalNumRows, params );
     }
 
-    public static LazyDataModel createLazyDataModel(EntityManager entityManager,
-                                                    String query,
-                                                    int totalNumRows,
-                                                    Map<String, String> params) {
-        return new HqlLazyDataModel(entityManager, query, totalNumRows, params);
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager,
+                                                     String query,
+                                                     int totalNumRows,
+                                                     Map<String, String> params ) {
+        return new HqlLazyDataModel( entityManager, query, totalNumRows, params );
     }
 }

@@ -24,25 +24,25 @@ import java.util.Map;
 
 public class ViewScope implements Scope {
 
-    public Object get(String name, ObjectFactory objectFactory) {
+    public Object get( String name, ObjectFactory objectFactory ) {
 
         Map<String, Object> viewMap = FacesContext.getCurrentInstance().getViewRoot().getViewMap();
 
         Object obj;
 
-        if (viewMap.containsKey(name)) {
-            obj = viewMap.get(name);
+        if ( viewMap.containsKey( name ) ) {
+            obj = viewMap.get( name );
         } else {
             obj = objectFactory.getObject();
-            viewMap.put(name, obj);
+            viewMap.put( name, obj );
         }
 
         return obj;
     }
 
 
-    public Object remove(String name) {
-        return FacesContext.getCurrentInstance().getViewRoot().getViewMap().remove(name);
+    public Object remove( String name ) {
+        return FacesContext.getCurrentInstance().getViewRoot().getViewMap().remove( name );
     }
 
 
@@ -51,12 +51,12 @@ public class ViewScope implements Scope {
     }
 
 
-    public void registerDestructionCallback(String name, Runnable callback) {
+    public void registerDestructionCallback( String name, Runnable callback ) {
         //Not supported
     }
 
 
-    public Object resolveContextualObject(String key) {
+    public Object resolveContextualObject( String key ) {
         return null;
     }
 

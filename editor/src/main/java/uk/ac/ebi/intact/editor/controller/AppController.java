@@ -27,7 +27,7 @@ import java.util.Collection;
  * @version $Id$
  */
 @Controller
-@Scope("singleton")
+@Scope( "singleton" )
 public class AppController extends BaseController {
 
     private Collection<User> loggedInUsers;
@@ -35,14 +35,14 @@ public class AppController extends BaseController {
     private String database;
 
     public AppController() {
-        loggedInUsers = new ArrayList<User>( );
+        loggedInUsers = new ArrayList<User>();
     }
 
     public String getDatabase() {
         return database;
     }
 
-    public void setDatabase(String database) {
+    public void setDatabase( String database ) {
         this.database = database;
     }
 

@@ -44,8 +44,8 @@ import java.util.List;
  * @version $Id$
  */
 @Controller
-@Scope("conversation.access")
-@ConversationName("general")
+@Scope( "conversation.access" )
+@ConversationName( "general" )
 public class PublicationController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( PublicationController.class );
@@ -63,148 +63,148 @@ public class PublicationController extends AnnotatedObjectController {
 
     public PublicationController() {
     }
-    
+
     @Override
     public AnnotatedObject getAnnotatedObject() {
         return getPublication();
     }
 
-    public void loadData(ComponentSystemEvent event) {
+    public void loadData( ComponentSystemEvent event ) {
         datasetsSelectItems = new ArrayList<SelectItem>();
-        
+
         loadByAc();
     }
 
     private void loadByAc() {
 
-        if (ac != null) {
-            if (publication == null || !ac.equals(publication.getAc())) {
-                publication = getDaoFactory().getPublicationDao().getByAc(ac);
+        if ( ac != null ) {
+            if ( publication == null || !ac.equals( publication.getAc() ) ) {
+                publication = getDaoFactory().getPublicationDao().getByAc( ac );
 
-                if (publication != null) {
+                if ( publication != null ) {
                     loadFormFields();
                 }
 
             }
-        } else if (publication != null) {
+        } else if ( publication != null ) {
             ac = publication.getAc();
         }
     }
 
     private void loadFormFields() {
-        for (Annotation annotation : publication.getAnnotations()) {
-            if (CvTopic.DATASET_MI_REF.equals(annotation.getCvTopic().getIdentifier())) {
+        for ( Annotation annotation : publication.getAnnotations() ) {
+            if ( CvTopic.DATASET_MI_REF.equals( annotation.getCvTopic().getIdentifier() ) ) {
                 String datasetText = annotation.getAnnotationText();
 
-                SelectItem datasetSelectItem = getDatasetPopulator().createSelectItem(datasetText);
-                datasetsSelectItems.add(datasetSelectItem);
+                SelectItem datasetSelectItem = getDatasetPopulator().createSelectItem( datasetText );
+                datasetsSelectItems.add( datasetSelectItem );
             }
         }
     }
 
     public boolean isCitexploreOnline() {
-         try {
+        try {
             CitexploreClient citexploreClient = new CitexploreClient();
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             return false;
         }
 
         return true;
     }
 
-    public void newAutocomplete(ActionEvent evt) {
-        if (identifier == null) {
-            addErrorMessage("Cannot auto-complete", "ID is empty");
+    public void newAutocomplete( ActionEvent evt ) {
+        if ( identifier == null ) {
+            addErrorMessage( "Cannot auto-complete", "ID is empty" );
             return;
         }
 
         // check if already exists
-        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId(identifier);
+        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
 
-        if (existingPublication != null) {
+        if ( existingPublication != null ) {
             publication = existingPublication;
-            addWarningMessage("Publication already exists", "Loaded from the database");
+            addWarningMessage( "Publication already exists", "Loaded from the database" );
             return;
         }
 
-        publication = new Publication(IntactContext.getCurrentInstance().getInstitution(), identifier);
-        autocomplete(publication, identifier);
+        publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
+        autocomplete( publication, identifier );
 
         identifier = null;
     }
 
-    public void doFormAutocomplete(ActionEvent evt) {
-        if (publication.getShortLabel() != null) {
-            autocomplete(publication, publication.getShortLabel());
+    public void doFormAutocomplete( ActionEvent evt ) {
+        if ( publication.getShortLabel() != null ) {
+            autocomplete( publication, publication.getShortLabel() );
         }
     }
 
-    private void autocomplete(Publication publication, String id) {
+    private void autocomplete( Publication publication, String id ) {
         CitexploreClient citexploreClient = null;
 
         try {
             citexploreClient = new CitexploreClient();
-        } catch (Exception e) {
-            addErrorMessage("Cannot auto-complete", "Citexplore service is down at the moment");
+        } catch ( Exception e ) {
+            addErrorMessage( "Cannot auto-complete", "Citexplore service is down at the moment" );
             return;
         }
 
         try {
-            final Citation citation = citexploreClient.getCitationById(id);
+            final Citation citation = citexploreClient.getCitationById( id );
 
-            if (citation == null) {
-                addErrorMessage("No citation was found", "PMID: "+id);
+            if ( citation == null ) {
+                addErrorMessage( "No citation was found", "PMID: " + id );
                 return;
             }
 
-            setPrimaryReference(id);
+            setPrimaryReference( id );
 
-            publication.setFullName(citation.getTitle());
-            setJournal(citation.getJournalIssue().getJournal().getISOAbbreviation()+" ("+
-                    citation.getJournalIssue().getJournal().getISSN()+")");
-            setYear(citation.getJournalIssue().getYearOfPublication());
+            publication.setFullName( citation.getTitle() );
+            setJournal( citation.getJournalIssue().getJournal().getISOAbbreviation() + " (" +
+                        citation.getJournalIssue().getJournal().getISSN() + ")" );
+            setYear( citation.getJournalIssue().getYearOfPublication() );
 
-            StringBuilder sbAuthors = new StringBuilder(64);
+            StringBuilder sbAuthors = new StringBuilder( 64 );
 
             Iterator<Author> authorIterator = citation.getAuthorCollection().iterator();
-            while (authorIterator.hasNext()) {
-                Author author =  authorIterator.next();
-                sbAuthors.append(author.getLastName()).append(" ").append(author.getInitials()).append(".");
-                if (authorIterator.hasNext()) sbAuthors.append(", ");
+            while ( authorIterator.hasNext() ) {
+                Author author = authorIterator.next();
+                sbAuthors.append( author.getLastName() ).append( " " ).append( author.getInitials() ).append( "." );
+                if ( authorIterator.hasNext() ) sbAuthors.append( ", " );
             }
 
-            setAuthors(sbAuthors.toString());
+            setAuthors( sbAuthors.toString() );
 
-        } catch (Throwable e) {
-            addErrorMessage("Problem auto-completing publication", e.getMessage());
+        } catch ( Throwable e ) {
+            addErrorMessage( "Problem auto-completing publication", e.getMessage() );
             e.printStackTrace();
         }
 
-        addInfoMessage("Auto-complete successful", "Fetched details for: "+id);
+        addInfoMessage( "Auto-complete successful", "Fetched details for: " + id );
     }
 
-    public void newEmpty(ActionEvent evt) {
+    public void newEmpty( ActionEvent evt ) {
         // check if already exists
-        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId(identifier);
+        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
 
-        if (existingPublication != null) {
+        if ( existingPublication != null ) {
             publication = existingPublication;
-            addInfoMessage("Publication already exists", "Loaded from the database");
+            addInfoMessage( "Publication already exists", "Loaded from the database" );
             return;
         }
-        
-        publication = new Publication(IntactContext.getCurrentInstance().getInstitution(), identifier);
+
+        publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
         ac = null;
     }
 
-    public void openByPmid(ActionEvent evt) {
-        if (identifier == null || identifier.trim().length() == 0) {
-            addErrorMessage("PMID is empty", "No PMID was supplied");
+    public void openByPmid( ActionEvent evt ) {
+        if ( identifier == null || identifier.trim().length() == 0 ) {
+            addErrorMessage( "PMID is empty", "No PMID was supplied" );
         } else {
-            Publication publicationToOpen = getDaoFactory().getPublicationDao().getByPubmedId(identifier);
+            Publication publicationToOpen = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
 
-            if (publicationToOpen == null) {
-                addErrorMessage("PMID not found", "There is no publication with PMID '"+ identifier +"'");
+            if ( publicationToOpen == null ) {
+                addErrorMessage( "PMID not found", "There is no publication with PMID '" + identifier + "'" );
             } else {
                 publication = publicationToOpen;
                 ac = publication.getAc();
@@ -214,77 +214,77 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     @Transactional
-    public void doSave(ActionEvent evt) {
-        if (log.isDebugEnabled()) log.debug("Saving publication: "+publication);
-        
-        if (publication == null) {
-            addErrorMessage("No publication to save", "How did I get here?");
+    public void doSave( ActionEvent evt ) {
+        if ( log.isDebugEnabled() ) log.debug( "Saving publication: " + publication );
+
+        if ( publication == null ) {
+            addErrorMessage( "No publication to save", "How did I get here?" );
             return;
         }
 
         try {
-            getIntactContext().getCorePersister().saveOrUpdate(publication);
+            getIntactContext().getCorePersister().saveOrUpdate( publication );
 
             lastSaved = new Date();
 
-            addInfoMessage("Publication saved", "AC: "+publication.getAc());
+            addInfoMessage( "Publication saved", "AC: " + publication.getAc() );
 
-            setUnsavedChanges(false);
+            setUnsavedChanges( false );
 
-        } catch (Exception e) {
-            addErrorMessage("Problem persisting publication", "AC: "+publication.getAc());
+        } catch ( Exception e ) {
+            addErrorMessage( "Problem persisting publication", "AC: " + publication.getAc() );
             FacesContext ctx = FacesContext.getCurrentInstance();
-            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext(ctx, e);
-            ctx.getApplication().publishEvent(ctx, ExceptionQueuedEvent.class, eventContext);
+            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
+            ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
         }
     }
 
-    public void doClose(ActionEvent evt) {
+    public void doClose( ActionEvent evt ) {
         publication = null;
         ac = null;
     }
 
-    public void doSaveAndClose(ActionEvent evt) {
-        doSave(evt);
-        doClose(evt);
+    public void doSaveAndClose( ActionEvent evt ) {
+        doSave( evt );
+        doClose( evt );
     }
 
-    public void addDataset(ActionEvent evt) {
-        if (datasetToAdd != null) {
-            datasetsSelectItems.add(getDatasetPopulator().createSelectItem(datasetToAdd));
+    public void addDataset( ActionEvent evt ) {
+        if ( datasetToAdd != null ) {
+            datasetsSelectItems.add( getDatasetPopulator().createSelectItem( datasetToAdd ) );
 
-            addAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
+            addAnnotation( CvTopic.DATASET_MI_REF, datasetToAdd );
 
-            setUnsavedChanges(true);
+            setUnsavedChanges( true );
         }
     }
 
-    public void removeDatasets(ActionEvent evt) {
-        if (datasetsToRemove != null) {
-            for (String datasetToRemove : datasetsToRemove) {
+    public void removeDatasets( ActionEvent evt ) {
+        if ( datasetsToRemove != null ) {
+            for ( String datasetToRemove : datasetsToRemove ) {
                 Iterator<SelectItem> iterator = datasetsSelectItems.iterator();
 
-                while (iterator.hasNext()) {
+                while ( iterator.hasNext() ) {
                     SelectItem selectItem = iterator.next();
-                    if (datasetToRemove.equals(selectItem.getValue())) {
+                    if ( datasetToRemove.equals( selectItem.getValue() ) ) {
                         iterator.remove();
                     }
                 }
 
-                removeAnnotation(CvTopic.DATASET_MI_REF, datasetToRemove);
+                removeAnnotation( CvTopic.DATASET_MI_REF, datasetToRemove );
             }
-            setUnsavedChanges(true);
+            setUnsavedChanges( true );
         }
-    }    
+    }
 
     public String getAc() {
-        if (ac == null && publication != null) {
+        if ( ac == null && publication != null ) {
             return publication.getAc();
         }
         return ac;
     }
 
-    public void setAc(String ac) {
+    public void setAc( String ac ) {
         this.ac = ac;
     }
 
@@ -292,91 +292,91 @@ public class PublicationController extends AnnotatedObjectController {
         return publication;
     }
 
-    public void setPublication(Publication publication) {
+    public void setPublication( Publication publication ) {
         this.publication = publication;
     }
 
     public String getJournal() {
-        final String annot = findAnnotationText(CvTopic.JOURNAL_MI_REF);
+        final String annot = findAnnotationText( CvTopic.JOURNAL_MI_REF );
         return annot;
     }
 
-    public void setJournal(String journal) {
-        setAnnotation(CvTopic.JOURNAL_MI_REF, journal);
+    public void setJournal( String journal ) {
+        setAnnotation( CvTopic.JOURNAL_MI_REF, journal );
     }
 
     public Short getYear() {
-        String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
+        String strYear = findAnnotationText( CvTopic.PUBLICATION_YEAR_MI_REF );
 
-        if (strYear != null) {
-            return Short.valueOf(strYear);
+        if ( strYear != null ) {
+            return Short.valueOf( strYear );
         }
 
         return null;
     }
 
-    public void setYear(Short year) {
-        setAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, year);
+    public void setYear( Short year ) {
+        setAnnotation( CvTopic.PUBLICATION_YEAR_MI_REF, year );
     }
 
     public String getIdentifier() {
-        if (publication != null) {
+        if ( publication != null ) {
             String id = getPrimaryReference();
 
-            if (id != null) {
+            if ( id != null ) {
                 identifier = id;
             }
         }
-        
+
         return identifier;
     }
 
-    public void setIdentifier(String identifier) {
+    public void setIdentifier( String identifier ) {
         this.identifier = identifier;
 
-        if (identifier != null && getAnnotatedObject() != null) {
-            setPrimaryReference(identifier);
+        if ( identifier != null && getAnnotatedObject() != null ) {
+            setPrimaryReference( identifier );
         }
     }
 
     public String getPrimaryReference() {
-        return findXrefPrimaryId(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF);
+        return findXrefPrimaryId( CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF );
     }
 
-    public void setPrimaryReference(String id) {
-        setXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id);
+    public void setPrimaryReference( String id ) {
+        setXref( CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id );
     }
 
     public String getAuthors() {
-        return findAnnotationText(CvTopic.AUTHOR_LIST_MI_REF);
+        return findAnnotationText( CvTopic.AUTHOR_LIST_MI_REF );
     }
 
-    public void setAuthors(String authors) {
-        setAnnotation(CvTopic.AUTHOR_LIST_MI_REF, authors);
+    public void setAuthors( String authors ) {
+        setAnnotation( CvTopic.AUTHOR_LIST_MI_REF, authors );
     }
 
     public String getOnHold() {
-        return findAnnotationText(CvTopic.ON_HOLD);
+        return findAnnotationText( CvTopic.ON_HOLD );
     }
 
-    public void setOnHold(String reason) {
-        setAnnotation(CvTopic.ON_HOLD, reason);
+    public void setOnHold( String reason ) {
+        setAnnotation( CvTopic.ON_HOLD, reason );
     }
 
     public String getAcceptedMessage() {
-        return findAnnotationText(CvTopic.ACCEPTED);
+        return findAnnotationText( CvTopic.ACCEPTED );
     }
 
-    public void setAcceptedMessage(String message) {
-        setAnnotation(CvTopic.ACCEPTED, message);
+    public void setAcceptedMessage( String message ) {
+        setAnnotation( CvTopic.ACCEPTED, message );
     }
 
 
     public String getFirstAuthor() {
         final String authors = getAuthors();
 
-        if (authors != null) {
-            return authors.split(" ")[0];
+        if ( authors != null ) {
+            return authors.split( " " )[0];
         }
 
         return null;
@@ -394,7 +394,7 @@ public class PublicationController extends AnnotatedObjectController {
         return datasetToAdd;
     }
 
-    public void setDatasetToAdd(String datasetToAdd) {
+    public void setDatasetToAdd( String datasetToAdd ) {
         this.datasetToAdd = datasetToAdd;
     }
 
@@ -402,11 +402,11 @@ public class PublicationController extends AnnotatedObjectController {
         return datasetsToRemove;
     }
 
-    public void setDatasetsToRemove(String[] datasetsToRemove) {
+    public void setDatasetsToRemove( String[] datasetsToRemove ) {
         this.datasetsToRemove = datasetsToRemove;
     }
 
     public DatasetPopulator getDatasetPopulator() {
-        return (DatasetPopulator) IntactContext.getCurrentInstance().getSpringContext().getBean("datasetPopulator");
+        return ( DatasetPopulator ) IntactContext.getCurrentInstance().getSpringContext().getBean( "datasetPopulator" );
     }
 }

@@ -34,7 +34,7 @@ public class EditorConfig {
         return instanceName;
     }
 
-    public void setInstanceName(String instanceName) {
+    public void setInstanceName( String instanceName ) {
         this.instanceName = instanceName;
     }
 
@@ -50,7 +50,7 @@ public class EditorConfig {
         return logoUrl;
     }
 
-    public void setLogoUrl(String logoUrl) {
+    public void setLogoUrl( String logoUrl ) {
         this.logoUrl = logoUrl;
     }
 }

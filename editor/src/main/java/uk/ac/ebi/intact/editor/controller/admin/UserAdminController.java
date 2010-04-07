@@ -1,6 +1,5 @@
 package uk.ac.ebi.intact.editor.controller.admin;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -17,7 +16,6 @@ import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 
-import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +30,7 @@ import java.util.List;
  */
 @Controller
 @Scope( "conversation.access" )
-@ConversationName("admin")
+@ConversationName( "admin" )
 public class UserAdminController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( UserAdminController.class );
@@ -77,7 +75,7 @@ public class UserAdminController extends JpaAwareController {
         log.debug( "user.getPassword(): " + user.getPassword() );
 
         boolean created = false;
-        if( ! userDao.isManaged( user ) && ! userDao.isDetached( user ) ) {
+        if ( !userDao.isManaged( user ) && !userDao.isDetached( user ) ) {
             userDao.persist( user );
             created = true;
         }
@@ -85,7 +83,7 @@ public class UserAdminController extends JpaAwareController {
         // handle roles
         final List<String> includedRoles = roles.getTarget();
         for ( String roleName : includedRoles ) {
-            if( ! user.hasRole( roleName ) ) {
+            if ( !user.hasRole( roleName ) ) {
                 final Role r = getUsersDaoFactory().getRoleDao().getRoleByName( roleName );
                 user.addRole( r );
                 log.info( "Added role " + roleName + "to user " + user.getLogin() );
@@ -94,7 +92,7 @@ public class UserAdminController extends JpaAwareController {
 
         final List<String> excludedRoles = roles.getSource();
         for ( String roleName : excludedRoles ) {
-            if( user.hasRole( roleName ) ) {
+            if ( user.hasRole( roleName ) ) {
                 final Role r = getUsersDaoFactory().getRoleDao().getRoleByName( roleName );
                 user.removeRole( r );
                 log.info( "Removed role " + roleName + "to user " + user.getLogin() );
@@ -103,7 +101,7 @@ public class UserAdminController extends JpaAwareController {
 
         userDao.saveOrUpdate( user );
 
-        addInfoMessage( "User " + user.getLogin() + " was "+ (created ? "created" : "updated" ) +" successfully", "" );
+        addInfoMessage( "User " + user.getLogin() + " was " + ( created ? "created" : "updated" ) + " successfully", "" );
 
         // reset user before redirecting to the user list.
         user = null;
@@ -117,16 +115,16 @@ public class UserAdminController extends JpaAwareController {
 
         List<String> source = new ArrayList<String>();
         List<String> target = new ArrayList<String>();
-        
+
         Collection<Role> allRoles = getUsersDaoFactory().getRoleDao().getAll();
         log.info( "Found " + allRoles.size() + " role(s) in the database." );
-        if( user == null ) {
+        if ( user == null ) {
             for ( Role role : allRoles ) {
                 source.add( role.getName() );
             }
         } else {
             for ( Role role : allRoles ) {
-                if( user.getRoles().contains( role )) {
+                if ( user.getRoles().contains( role ) ) {
                     target.add( role.getName() );
                 } else {
                     source.add( role.getName() );
@@ -137,8 +135,8 @@ public class UserAdminController extends JpaAwareController {
         roles = new DualListModel<String>( source, target );
     }
 
-    public List<Role> createRoleList( User user) {
-        if( user != null ) {
+    public List<Role> createRoleList( User user ) {
+        if ( user != null ) {
             return new ArrayList<Role>( user.getRoles() );
         }
         return null;
@@ -156,13 +154,13 @@ public class UserAdminController extends JpaAwareController {
 
         log.info( "UserAdminController.loadUserToUpdate" );
 
-        if( loginParam != null ) {
+        if ( loginParam != null ) {
             // load user and prepare for update
             log.debug( "Loading user by login '" + loginParam + "'..." );
             user = getUsersDaoFactory().getUserDao().getByLogin( loginParam );
 
 
-            if (user == null ) {
+            if ( user == null ) {
                 addWarningMessage( "Could not find user by login: " + loginParam, "Please try again." );
             } else {
                 log.debug( "User password hash: " + user.getPassword() );

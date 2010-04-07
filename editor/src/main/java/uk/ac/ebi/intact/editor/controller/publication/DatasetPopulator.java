@@ -34,9 +34,9 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller("datasetPopulator")
+@Controller( "datasetPopulator" )
 @Lazy
-public class DatasetPopulator extends JpaAwareController  {
+public class DatasetPopulator extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( DatasetPopulator.class );
 
@@ -49,24 +49,24 @@ public class DatasetPopulator extends JpaAwareController  {
 
     @PostConstruct
     public void loadData() {
-        refresh(null);
+        refresh( null );
     }
 
     @Transactional
-    public void refresh(ActionEvent evt) {
-        if (log.isInfoEnabled()) log.info("Loading datasets");
-        
+    public void refresh( ActionEvent evt ) {
+        if ( log.isInfoEnabled() ) log.info( "Loading datasets" );
+
         final Query query = getCoreEntityManager()
-                .createQuery("select distinct(a.annotationText) from Annotation a where a.cvTopic.identifier = :datasetTopicId order by a.annotationText asc");
-        query.setParameter("datasetTopicId", CvTopic.DATASET_MI_REF);
+                .createQuery( "select distinct(a.annotationText) from Annotation a where a.cvTopic.identifier = :datasetTopicId order by a.annotationText asc" );
+        query.setParameter( "datasetTopicId", CvTopic.DATASET_MI_REF );
 
         allDatasets = query.getResultList();
 
-        allDatasetSelectItems = new ArrayList<SelectItem>(allDatasets.size()+1);
-        allDatasetSelectItems.add(new SelectItem(null, "-- Select Dataset --"));
+        allDatasetSelectItems = new ArrayList<SelectItem>( allDatasets.size() + 1 );
+        allDatasetSelectItems.add( new SelectItem( null, "-- Select Dataset --" ) );
 
-        for (String dataset : allDatasets) {
-           allDatasetSelectItems.add(createSelectItem(dataset));
+        for ( String dataset : allDatasets ) {
+            allDatasetSelectItems.add( createSelectItem( dataset ) );
         }
     }
 
@@ -78,15 +78,15 @@ public class DatasetPopulator extends JpaAwareController  {
         return allDatasetSelectItems;
     }
 
-    public SelectItem createSelectItem(String dataset) {
+    public SelectItem createSelectItem( String dataset ) {
         SelectItem selectItem = null;
 
-        if (dataset != null) {
-            if (dataset.contains("-")) {
-            String[] tokens = dataset.split("-");
-                selectItem = new SelectItem(dataset, tokens[0].trim());
+        if ( dataset != null ) {
+            if ( dataset.contains( "-" ) ) {
+                String[] tokens = dataset.split( "-" );
+                selectItem = new SelectItem( dataset, tokens[0].trim() );
             } else {
-                selectItem = new SelectItem(dataset);
+                selectItem = new SelectItem( dataset );
             }
         }
 

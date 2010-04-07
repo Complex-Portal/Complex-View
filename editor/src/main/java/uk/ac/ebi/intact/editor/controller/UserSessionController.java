@@ -27,7 +27,7 @@ import uk.ac.ebi.intact.core.users.model.User;
  * @version $Id$
  */
 @Controller
-@Scope("session")
+@Scope( "session" )
 public class UserSessionController extends BaseController implements DisposableBean {
 
     private static final Log log = LogFactory.getLog( UserSessionController.class );
@@ -41,12 +41,12 @@ public class UserSessionController extends BaseController implements DisposableB
         return currentUser;
     }
 
-    public void setCurrentUser(User currentUser) {
+    public void setCurrentUser( User currentUser ) {
         this.currentUser = currentUser;
     }
 
     @Override
     public void destroy() throws Exception {
-        log.info( "UserSessionController for user '"+ currentUser.getLogin() +"' destroyed" );
+        log.info( "UserSessionController for user '" + currentUser.getLogin() + "' destroyed" );
     }
 }

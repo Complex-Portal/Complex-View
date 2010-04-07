@@ -23,6 +23,6 @@ import org.springframework.stereotype.Controller;
  * @version $Id$
  */
 @Controller
-@Scope("singleton")
+@Scope( "singleton" )
 public class UserManagerController {
 }

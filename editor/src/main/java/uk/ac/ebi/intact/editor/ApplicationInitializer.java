@@ -40,7 +40,7 @@ public class ApplicationInitializer implements InitializingBean {
 
     private void createDefaultUsers() {
         User admin = usersDaoFactory.getUserDao().getByLogin( "admin" );
-        if( admin == null ) {
+        if ( admin == null ) {
             admin = new User( "admin", "Admin", "N/A", "intact-admin@ebi.ac.uk" );
             admin.setPassword( "d033e22ae348aeb5660fc2140aec35850c4da997" );
             usersDaoFactory.getUserDao().persist( admin );
@@ -63,12 +63,12 @@ public class ApplicationInitializer implements InitializingBean {
     private void addMissingRole( List<Role> allRoles, String roleName ) {
         boolean found = false;
         for ( Role role : allRoles ) {
-            if( role.getName().equals( roleName ) ) {
-                 found = true;
+            if ( role.getName().equals( roleName ) ) {
+                found = true;
             }
         }
 
-        if( !found ) {
+        if ( !found ) {
             Role role = new Role( roleName );
             usersDaoFactory.getRoleDao().persist( role );
             if ( log.isInfoEnabled() ) {

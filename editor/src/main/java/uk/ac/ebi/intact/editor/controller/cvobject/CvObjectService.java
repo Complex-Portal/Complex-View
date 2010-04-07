@@ -44,8 +44,8 @@ public class CvObjectService extends JpaAwareController {
     private static final Log log = LogFactory.getLog( CvObjectService.class );
 
     private List<CvObject> allCvObjects;
-    private Map<CvKey,CvObject> allCvObjectMap;
-    private Map<String,CvObject> acCvObjectMap;
+    private Map<CvKey, CvObject> allCvObjectMap;
+    private Map<String, CvObject> acCvObjectMap;
 
     private List<CvTopic> publicationTopics;
     private List<CvTopic> experimentTopics;
@@ -69,12 +69,12 @@ public class CvObjectService extends JpaAwareController {
 
     @PostConstruct
     public void loadData() {
-        refresh(null);
+        refresh( null );
     }
 
     @Transactional
-    public void refresh(ActionEvent evt) {
-        if (log.isDebugEnabled()) log.debug("Loading Controlled Vocabularies");
+    public void refresh( ActionEvent evt ) {
+        if ( log.isDebugEnabled() ) log.debug( "Loading Controlled Vocabularies" );
 
         final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
@@ -82,119 +82,119 @@ public class CvObjectService extends JpaAwareController {
 
         allCvObjects = getDaoFactory().getCvObjectDao().getAll();
 
-        allCvObjectMap = new HashMap<CvKey, CvObject>(allCvObjects.size() * 2);
-        acCvObjectMap = new HashMap<String, CvObject>(allCvObjects.size());
+        allCvObjectMap = new HashMap<CvKey, CvObject>( allCvObjects.size() * 2 );
+        acCvObjectMap = new HashMap<String, CvObject>( allCvObjects.size() );
 
         Multimap<String, CvTopic> cvObjectsByUsedInClass = new HashMultimap<String, CvTopic>();
         Multimap<Class, CvObject> cvObjectsByClass = new HashMultimap<Class, CvObject>();
 
-        for (CvObject cvObject : allCvObjects) {
-            acCvObjectMap.put(cvObject.getAc(), cvObject);
-            cvObjectsByClass.put(cvObject.getClass(), cvObject);
+        for ( CvObject cvObject : allCvObjects ) {
+            acCvObjectMap.put( cvObject.getAc(), cvObject );
+            cvObjectsByClass.put( cvObject.getClass(), cvObject );
 
-            if (cvObject.getIdentifier() != null) {
-                CvKey keyId = new CvKey(cvObject.getIdentifier(), cvObject.getClass());
-                CvKey keyLabel = new CvKey(cvObject.getShortLabel(), cvObject.getClass());
-                allCvObjectMap.put(keyId, cvObject);
-                allCvObjectMap.put(keyLabel, cvObject);
+            if ( cvObject.getIdentifier() != null ) {
+                CvKey keyId = new CvKey( cvObject.getIdentifier(), cvObject.getClass() );
+                CvKey keyLabel = new CvKey( cvObject.getShortLabel(), cvObject.getClass() );
+                allCvObjectMap.put( keyId, cvObject );
+                allCvObjectMap.put( keyLabel, cvObject );
             }
 
-            if (cvObject instanceof CvTopic) {
-                String[] usedInClasses = findUsedInClass(cvObject);
+            if ( cvObject instanceof CvTopic ) {
+                String[] usedInClasses = findUsedInClass( cvObject );
 
-                for (String usedInClass : usedInClasses) {
-                    cvObjectsByUsedInClass.put(usedInClass, (CvTopic) cvObject);
+                for ( String usedInClass : usedInClasses ) {
+                    cvObjectsByUsedInClass.put( usedInClass, ( CvTopic ) cvObject );
                 }
 
-                if (usedInClasses.length == 0) {
-                    cvObjectsByUsedInClass.put("no_class", (CvTopic) cvObject);
+                if ( usedInClasses.length == 0 ) {
+                    cvObjectsByUsedInClass.put( "no_class", ( CvTopic ) cvObject );
                 }
             }
         }
 
-        publicationTopics = getSortedTopicList(Experiment.class.getName(), cvObjectsByUsedInClass);
-        experimentTopics = getSortedTopicList(Experiment.class.getName(), cvObjectsByUsedInClass);
-        interactionTopics = getSortedTopicList(Interaction.class.getName(), cvObjectsByUsedInClass);
+        publicationTopics = getSortedTopicList( Experiment.class.getName(), cvObjectsByUsedInClass );
+        experimentTopics = getSortedTopicList( Experiment.class.getName(), cvObjectsByUsedInClass );
+        interactionTopics = getSortedTopicList( Interaction.class.getName(), cvObjectsByUsedInClass );
 
-        publicationTopicSelectItems = createSelectItems(publicationTopics, "-- Select topic --");
-        experimentTopicSelectItems = createSelectItems(experimentTopics, "-- Select topic --");
-        interactionTopicSelectItems = createSelectItems(interactionTopics, "-- Select topic --");
+        publicationTopicSelectItems = createSelectItems( publicationTopics, "-- Select topic --" );
+        experimentTopicSelectItems = createSelectItems( experimentTopics, "-- Select topic --" );
+        interactionTopicSelectItems = createSelectItems( interactionTopics, "-- Select topic --" );
 
-        databases = getSortedList(CvDatabase.class, cvObjectsByClass);
-        databaseSelectItems = createSelectItems(databases, "-- Select database --");
+        databases = getSortedList( CvDatabase.class, cvObjectsByClass );
+        databaseSelectItems = createSelectItems( databases, "-- Select database --" );
 
-        qualifiers = getSortedList(CvXrefQualifier.class, cvObjectsByClass);
-        qualifierSelectItems = createSelectItems(qualifiers, "-- Select qualifier --");
+        qualifiers = getSortedList( CvXrefQualifier.class, cvObjectsByClass );
+        qualifierSelectItems = createSelectItems( qualifiers, "-- Select qualifier --" );
 
-        aliasTypes = getSortedList(CvAliasType.class, cvObjectsByClass);
-        aliasTypeSelectItems = createSelectItems(aliasTypes, "-- Select type --");
+        aliasTypes = getSortedList( CvAliasType.class, cvObjectsByClass );
+        aliasTypeSelectItems = createSelectItems( aliasTypes, "-- Select type --" );
 
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
     }
 
-    public List<CvTopic> getSortedTopicList(String key, Multimap<String, CvTopic> topicMultimap) {
-        if (topicMultimap.containsKey(key)) {
-            List<CvTopic> list = new ArrayList<CvTopic>(topicMultimap.get(key));
-            Collections.sort(list, new CvObjectComparator());
+    public List<CvTopic> getSortedTopicList( String key, Multimap<String, CvTopic> topicMultimap ) {
+        if ( topicMultimap.containsKey( key ) ) {
+            List<CvTopic> list = new ArrayList<CvTopic>( topicMultimap.get( key ) );
+            Collections.sort( list, new CvObjectComparator() );
             return list;
         } else {
             return Collections.EMPTY_LIST;
         }
     }
 
-    public List<CvObject> getSortedList(Class key, Multimap<Class, CvObject> classMultimap) {
-        if (classMultimap.containsKey(key)) {
-            List<CvObject> list = new ArrayList<CvObject>(classMultimap.get(key));
-            Collections.sort(list, new CvObjectComparator());
+    public List<CvObject> getSortedList( Class key, Multimap<Class, CvObject> classMultimap ) {
+        if ( classMultimap.containsKey( key ) ) {
+            List<CvObject> list = new ArrayList<CvObject>( classMultimap.get( key ) );
+            Collections.sort( list, new CvObjectComparator() );
             return list;
         } else {
             return Collections.EMPTY_LIST;
         }
     }
 
-    private String[] findUsedInClass(CvObject cvObject) {
-        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(cvObject, CvTopic.USED_IN_CLASS);
+    private String[] findUsedInClass( CvObject cvObject ) {
+        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( cvObject, CvTopic.USED_IN_CLASS );
 
-        if (annotation != null) {
+        if ( annotation != null ) {
             String annotText = annotation.getAnnotationText();
-            annotText = annotText.replaceAll(" ", "");
-            return annotText.split(",");
+            annotText = annotText.replaceAll( " ", "" );
+            return annotText.split( "," );
         } else {
             return new String[0];
         }
     }
 
-    private List<SelectItem> createSelectItems(Collection<? extends CvObject> cvObjects, String noSelectionText) {
-        List<SelectItem> selectItems = new ArrayList<SelectItem>(cvObjects.size());
+    private List<SelectItem> createSelectItems( Collection<? extends CvObject> cvObjects, String noSelectionText ) {
+        List<SelectItem> selectItems = new ArrayList<SelectItem>( cvObjects.size() );
 
-        if (noSelectionText != null) {
-            selectItems.add(new SelectItem(null, noSelectionText, noSelectionText, false, false, true));
+        if ( noSelectionText != null ) {
+            selectItems.add( new SelectItem( null, noSelectionText, noSelectionText, false, false, true ) );
         }
 
-        for (CvObject cvObject: cvObjects) {
-            selectItems.add(createSelectItem(cvObject));
+        for ( CvObject cvObject : cvObjects ) {
+            selectItems.add( createSelectItem( cvObject ) );
         }
 
         return selectItems;
     }
 
-    private SelectItem createSelectItem(CvObject cv) {
-        boolean obsolete = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(cv, CvTopic.OBSOLETE_MI_REF) != null;
-        return new SelectItem(cv, cv.getShortLabel(), cv.getFullName(), obsolete);
+    private SelectItem createSelectItem( CvObject cv ) {
+        boolean obsolete = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( cv, CvTopic.OBSOLETE_MI_REF ) != null;
+        return new SelectItem( cv, cv.getShortLabel(), cv.getFullName(), obsolete );
     }
 
-    public CvObject findCvObjectByAc(String ac) {
-        return acCvObjectMap.get(ac);
+    public CvObject findCvObjectByAc( String ac ) {
+        return acCvObjectMap.get( ac );
     }
 
-    public <T extends CvObject> T findCvObject(Class<T> clazz, String idOrLabel) {
-        CvKey keyId = new CvKey(idOrLabel, clazz);
-        CvKey keyLabel = new CvKey(idOrLabel, clazz);
+    public <T extends CvObject> T findCvObject( Class<T> clazz, String idOrLabel ) {
+        CvKey keyId = new CvKey( idOrLabel, clazz );
+        CvKey keyLabel = new CvKey( idOrLabel, clazz );
 
-        if (allCvObjectMap.containsKey(keyId)) {
-            return (T) allCvObjectMap.get(keyId);
-        } else if (allCvObjectMap.containsKey(keyLabel)) {
-            return (T) allCvObjectMap.get(keyLabel);
+        if ( allCvObjectMap.containsKey( keyId ) ) {
+            return ( T ) allCvObjectMap.get( keyId );
+        } else if ( allCvObjectMap.containsKey( keyLabel ) ) {
+            return ( T ) allCvObjectMap.get( keyLabel );
         }
 
         return null;
@@ -206,7 +206,7 @@ public class CvObjectService extends JpaAwareController {
         private String className;
         private String classSimpleName;
 
-        private CvKey(String id, Class clazz) {
+        private CvKey( String id, Class clazz ) {
             this.id = id;
             this.className = clazz.getName();
             this.classSimpleName = clazz.getSimpleName();
@@ -225,14 +225,14 @@ public class CvObjectService extends JpaAwareController {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
 
-            CvKey cvKey = (CvKey) o;
+            CvKey cvKey = ( CvKey ) o;
 
-            if (className != null ? !className.equals(cvKey.className) : cvKey.className != null) return false;
-            if (id != null ? !id.equals(cvKey.id) : cvKey.id != null) return false;
+            if ( className != null ? !className.equals( cvKey.className ) : cvKey.className != null ) return false;
+            if ( id != null ? !id.equals( cvKey.id ) : cvKey.id != null ) return false;
 
             return true;
         }
@@ -240,7 +240,7 @@ public class CvObjectService extends JpaAwareController {
         @Override
         public int hashCode() {
             int result = id != null ? id.hashCode() : 0;
-            result = 31 * result + (className != null ? className.hashCode() : 0);
+            result = 31 * result + ( className != null ? className.hashCode() : 0 );
             return result;
         }
     }
@@ -271,16 +271,16 @@ public class CvObjectService extends JpaAwareController {
 
     private class CvObjectComparator implements Comparator<CvObject> {
         @Override
-        public int compare(CvObject o1, CvObject o2) {
-            if (o1 == null || o1.getShortLabel() == null) {
+        public int compare( CvObject o1, CvObject o2 ) {
+            if ( o1 == null || o1.getShortLabel() == null ) {
                 return 1;
             }
 
-            if (o2 == null || o2.getShortLabel() == null) {
+            if ( o2 == null || o2.getShortLabel() == null ) {
                 return -1;
             }
 
-            return o1.getShortLabel().compareTo(o2.getShortLabel());
+            return o1.getShortLabel().compareTo( o2.getShortLabel() );
         }
     }
 }

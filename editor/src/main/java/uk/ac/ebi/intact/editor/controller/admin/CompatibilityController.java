@@ -24,7 +24,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.BaseController;
@@ -40,43 +39,43 @@ import java.util.Map;
  */
 @Controller
 @Scope( "conversation.access" )
-@ConversationName("admin")
+@ConversationName( "admin" )
 public class CompatibilityController extends BaseController {
 
-    @Resource(name = "editorJobLauncher")
+    @Resource( name = "editorJobLauncher" )
     private JobLauncher jobLauncher;
 
     public CompatibilityController() {
     }
 
-    public void launchPublicationSync(ActionEvent evt) {
-        Job job = getJob("publicationSyncJob");
+    public void launchPublicationSync( ActionEvent evt ) {
+        Job job = getJob( "publicationSyncJob" );
 
-        String jobId = String.valueOf(System.currentTimeMillis());
-        
+        String jobId = String.valueOf( System.currentTimeMillis() );
+
         Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
-        jobParameterMap.put("jobId", new JobParameter(jobId));
+        jobParameterMap.put( "jobId", new JobParameter( jobId ) );
 
         try {
-            jobLauncher.run(job, new JobParameters(jobParameterMap));
-            
-            addInfoMessage("Job started", "Job ID: "+jobId);
-        } catch (JobExecutionAlreadyRunningException e) {
-            addErrorMessage("Job is already running", "Job ID: "+jobId);
+            jobLauncher.run( job, new JobParameters( jobParameterMap ) );
+
+            addInfoMessage( "Job started", "Job ID: " + jobId );
+        } catch ( JobExecutionAlreadyRunningException e ) {
+            addErrorMessage( "Job is already running", "Job ID: " + jobId );
             e.printStackTrace();
-        } catch (JobRestartException e) {
-            addErrorMessage("Cannot restart job", "Job ID: "+jobId);
+        } catch ( JobRestartException e ) {
+            addErrorMessage( "Cannot restart job", "Job ID: " + jobId );
             e.printStackTrace();
-        } catch (JobInstanceAlreadyCompleteException e) {
-            addErrorMessage("Job already complete", "Job ID: "+jobId);
+        } catch ( JobInstanceAlreadyCompleteException e ) {
+            addErrorMessage( "Job already complete", "Job ID: " + jobId );
             e.printStackTrace();
-        } catch (JobParametersInvalidException e) {
-            addErrorMessage("Invalid job parameters", "Job ID: "+jobId);
+        } catch ( JobParametersInvalidException e ) {
+            addErrorMessage( "Invalid job parameters", "Job ID: " + jobId );
             e.printStackTrace();
         }
     }
 
-    private Job getJob(String jobName) {
-        return (Job) getSpringContext().getBean(jobName);
+    private Job getJob( String jobName ) {
+        return ( Job ) getSpringContext().getBean( jobName );
     }
 }

@@ -24,26 +24,26 @@ import javax.faces.context.Flash;
 
 public class FlashScope implements Scope {
 
-    public Object get(String name, ObjectFactory objectFactory) {
+    public Object get( String name, ObjectFactory objectFactory ) {
 
         Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
 
         Object obj;
 
-        if (flash.containsKey(name)) {
-            obj = flash.get(name);
+        if ( flash.containsKey( name ) ) {
+            obj = flash.get( name );
         } else {
             obj = objectFactory.getObject();
-            flash.put(name, obj);
+            flash.put( name, obj );
         }
 
         return obj;
     }
 
 
-    public Object remove(String name) {
+    public Object remove( String name ) {
         Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
-        return flash.remove(name);
+        return flash.remove( name );
     }
 
 
@@ -52,12 +52,12 @@ public class FlashScope implements Scope {
     }
 
 
-    public void registerDestructionCallback(String name, Runnable callback) {
+    public void registerDestructionCallback( String name, Runnable callback ) {
         //Not supported
     }
 
 
-    public Object resolveContextualObject(String key) {
+    public Object resolveContextualObject( String key ) {
         return null;
     }
 

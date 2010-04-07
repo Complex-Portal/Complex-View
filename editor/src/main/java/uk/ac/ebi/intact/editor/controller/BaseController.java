@@ -16,8 +16,6 @@
 package uk.ac.ebi.intact.editor.controller;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -36,28 +34,28 @@ public abstract class BaseController implements Serializable {
     @Autowired
     private transient ApplicationContext applicationContext;
 
-    protected void addMessage(String message, String detail) {
+    protected void addMessage( String message, String detail ) {
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage facesMessage = new FacesMessage(message, detail);
-        context.addMessage(null, facesMessage);
+        FacesMessage facesMessage = new FacesMessage( message, detail );
+        context.addMessage( null, facesMessage );
     }
 
-    protected void addInfoMessage(String message, String detail) {
+    protected void addInfoMessage( String message, String detail ) {
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, message, detail);
-        context.addMessage(null, facesMessage);
+        FacesMessage facesMessage = new FacesMessage( FacesMessage.SEVERITY_INFO, message, detail );
+        context.addMessage( null, facesMessage );
     }
 
-    protected void addWarningMessage(String message, String detail) {
+    protected void addWarningMessage( String message, String detail ) {
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_WARN, message, detail);
-        context.addMessage(null, facesMessage);
+        FacesMessage facesMessage = new FacesMessage( FacesMessage.SEVERITY_WARN, message, detail );
+        context.addMessage( null, facesMessage );
     }
 
-    protected void addErrorMessage(String message, String detail) {
+    protected void addErrorMessage( String message, String detail ) {
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, message, detail);
-        context.addMessage(null, facesMessage);
+        FacesMessage facesMessage = new FacesMessage( FacesMessage.SEVERITY_ERROR, message, detail );
+        context.addMessage( null, facesMessage );
     }
 
     protected ApplicationContext getSpringContext() {

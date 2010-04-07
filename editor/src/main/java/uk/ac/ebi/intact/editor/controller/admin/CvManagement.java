@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 @Controller
 @Scope( "conversation.access" )
-@ConversationName("admin")
+@ConversationName( "admin" )
 public class CvManagement extends BaseController {
 
     private static final Log log = LogFactory.getLog( CvManagement.class );
@@ -31,16 +31,16 @@ public class CvManagement extends BaseController {
     private CvUpdaterStatistics cvUpdaterStatistics;
 
     public void updateCvs() {
-        if (log.isInfoEnabled()) log.info("Updating CVs");
+        if ( log.isInfoEnabled() ) log.info( "Updating CVs" );
 
         try {
             cvUpdaterStatistics = cvUpdater.executeUpdateWithLatestCVs();
 
-        } catch (IOException e) {
-            addErrorMessage("Problem updating CVs", e.getMessage());
+        } catch ( IOException e ) {
+            addErrorMessage( "Problem updating CVs", e.getMessage() );
         }
 
-        if (log.isInfoEnabled()) log.info("Finished CV Update");
+        if ( log.isInfoEnabled() ) log.info( "Finished CV Update" );
     }
 
     public CvUpdaterStatistics getCvUpdaterStatistics() {

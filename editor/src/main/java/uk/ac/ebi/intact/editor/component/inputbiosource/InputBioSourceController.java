@@ -35,10 +35,10 @@ import java.util.List;
  * @version $Id$
  */
 @Controller
-@Scope("conversation.access")
+@Scope( "conversation.access" )
 public class InputBioSourceController {
 
-    @PersistenceContext(unitName = "intact-core-default")
+    @PersistenceContext( unitName = "intact-core-default" )
     private EntityManager entityManager;
 
     private LazyDataModel<BioSource> bioSources;
@@ -49,31 +49,31 @@ public class InputBioSourceController {
     public InputBioSourceController() {
     }
 
-    public List<BioSource> autocomplete(String queryStr) {
-        Query query = entityManager.createQuery("select b from BioSource b where b.shortLabel like :query order by b.shortLabel asc");
-        query.setParameter("query", queryStr+"%");
+    public List<BioSource> autocomplete( String queryStr ) {
+        Query query = entityManager.createQuery( "select b from BioSource b where b.shortLabel like :query order by b.shortLabel asc" );
+        query.setParameter( "query", queryStr + "%" );
         return query.getResultList();
     }
 
-    public void loadBioSources(ActionEvent evt) {
-        bioSources = LazyDataModelFactory.createLazyDataModel(entityManager, "select b from BioSource b order by b.shortLabel",
-                                                                                  "select count(b) from BioSource b");
+    public void loadBioSources( ActionEvent evt ) {
+        bioSources = LazyDataModelFactory.createLazyDataModel( entityManager, "select b from BioSource b order by b.shortLabel",
+                                                               "select count(b) from BioSource b" );
 
         bioSources2 = new ArrayList<BioSource>();
-        for (int i=0; i<100; i++) {
-            bioSources2.add(new IntactMockBuilder(IntactContext.getCurrentInstance().getInstitution()).createBioSourceRandom());
+        for ( int i = 0; i < 100; i++ ) {
+            bioSources2.add( new IntactMockBuilder( IntactContext.getCurrentInstance().getInstitution() ).createBioSourceRandom() );
         }
     }
 
-    public void selectBioSource(BioSource bioSource) {
-        setSelectedBioSource(bioSource);
+    public void selectBioSource( BioSource bioSource ) {
+        setSelectedBioSource( bioSource );
     }
 
     public LazyDataModel<BioSource> getBioSources() {
         return bioSources;
     }
 
-    public void setBioSources(LazyDataModel<BioSource> bioSources) {
+    public void setBioSources( LazyDataModel<BioSource> bioSources ) {
         this.bioSources = bioSources;
     }
 
@@ -81,17 +81,16 @@ public class InputBioSourceController {
         return selectedBioSource;
     }
 
-    public void setSelectedBioSource(BioSource selectedBioSource) {
+    public void setSelectedBioSource( BioSource selectedBioSource ) {
         this.selectedBioSource = selectedBioSource;
     }
-
 
 
     public List<BioSource> getBioSources2() {
         return bioSources2;
     }
 
-    public void setBioSources2(List<BioSource> bioSources2) {
+    public void setBioSources2( List<BioSource> bioSources2 ) {
         this.bioSources2 = bioSources2;
     }
 }

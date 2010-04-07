@@ -91,7 +91,7 @@ public class SearchController extends JpaAwareController {
 
         log.info( "Searching for '" + query + "'..." );
 
-        if ( ! StringUtils.isEmpty(query) ) {
+        if ( !StringUtils.isEmpty( query ) ) {
             query = query.toLowerCase().trim();
 
             String q = query;
@@ -105,7 +105,7 @@ public class SearchController extends JpaAwareController {
             }
 
             if ( !query.equals( q ) ) {
-                log.info( "Updated query: '" + q +"'" );
+                log.info( "Updated query: '" + q + "'" );
             }
 
             // TODO implement simple prefix for the search query so that one can aim at an AC, shortlabel, PMID...
@@ -134,7 +134,7 @@ public class SearchController extends JpaAwareController {
     }
 
     public boolean isEmptyQuery() {
-       return StringUtils.isEmpty(query);
+        return StringUtils.isEmpty( query );
     }
 
     public boolean hasNoResults() {

@@ -35,8 +35,8 @@ import javax.faces.event.ComponentSystemEvent;
  * @version $Id$
  */
 @Controller
-@Scope("conversation.access")
-@ConversationName("general")
+@Scope( "conversation.access" )
+@ConversationName( "general" )
 public class ExperimentController extends AnnotatedObjectController {
 
     private Experiment experiment;
@@ -54,36 +54,36 @@ public class ExperimentController extends AnnotatedObjectController {
         return getExperiment();
     }
 
-    public void loadData(ComponentSystemEvent event) {
-        if (ac != null) {
-            if (experiment == null || !ac.equals(experiment.getAc())) {
-                experiment = IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao().getByAc(ac);
+    public void loadData( ComponentSystemEvent event ) {
+        if ( ac != null ) {
+            if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
+                experiment = IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao().getByAc( ac );
 
-                interactionDataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
-                    "select i from InteractionImpl i join i.experiments as exp where exp.ac = '"+ac+"'",
-                    "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '"+ac+"'");
+                interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+                                                                                 "select i from InteractionImpl i join i.experiments as exp where exp.ac = '" + ac + "'",
+                                                                                 "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '" + ac + "'" );
             }
-        } else if (experiment != null) {
+        } else if ( experiment != null ) {
             ac = experiment.getAc();
         }
 
-        if (experiment != null && publicationController.getPublication() == null) {
-            publicationController.setPublication(experiment.getPublication());
+        if ( experiment != null && publicationController.getPublication() == null ) {
+            publicationController.setPublication( experiment.getPublication() );
         }
     }
 
-    public int countInteractionsByExperimentAc(String ac) {
-        return getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc(ac);
+    public int countInteractionsByExperimentAc( String ac ) {
+        return getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc( ac );
     }
 
     public String getAc() {
-        if (ac == null && experiment != null) {
+        if ( ac == null && experiment != null ) {
             return experiment.getAc();
         }
         return ac;
     }
 
-    public void setAc(String ac) {
+    public void setAc( String ac ) {
         this.ac = ac;
     }
 
@@ -91,7 +91,7 @@ public class ExperimentController extends AnnotatedObjectController {
         return experiment;
     }
 
-    public void setExperiment(Experiment experiment) {
+    public void setExperiment( Experiment experiment ) {
         this.experiment = experiment;
     }
 

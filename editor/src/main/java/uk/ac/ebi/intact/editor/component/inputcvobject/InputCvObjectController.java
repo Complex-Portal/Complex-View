@@ -18,15 +18,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@Scope("conversation.access")
+@Scope( "conversation.access" )
 public class InputCvObjectController extends BaseController {
 
     private static final Log log = LogFactory.getLog( InputCvObjectController.class );
 
     @Autowired
-    private DaoFactory daoFactory;	
+    private DaoFactory daoFactory;
 
-	private TreeNode root;
+    private TreeNode root;
 
     private Map<String, CvObject> cvObjectsByClientId;
 
@@ -35,56 +35,54 @@ public class InputCvObjectController extends BaseController {
     }
 
     public TreeNode getRoot() {
-		return root;
-	}
+        return root;
+    }
 
-    @Transactional(readOnly = true)
-    public void load(String cvClass, String id)
-    {
-		Class clazz;
-        log.debug("Loading cvClass: " + cvClass);
+    @Transactional( readOnly = true )
+    public void load( String cvClass, String id ) {
+        Class clazz;
+        log.debug( "Loading cvClass: " + cvClass );
 
         try {
-			clazz = Class.forName(cvClass);
+            clazz = Class.forName( cvClass );
 
-			CvObjectDao<CvDagObject> cvDAO = daoFactory.getCvObjectDao(clazz);
-			CvDagObject rootCv = cvDAO.getByPsiMiRef(id);
+            CvObjectDao<CvDagObject> cvDAO = daoFactory.getCvObjectDao( clazz );
+            CvDagObject rootCv = cvDAO.getByPsiMiRef( id );
 
-            if (rootCv == null) {
-                throw new IllegalArgumentException("Root does not exist: "+cvClass+" ID: "+id);
+            if ( rootCv == null ) {
+                throw new IllegalArgumentException( "Root does not exist: " + cvClass + " ID: " + id );
             }
 
-			root = buildTreeNode(rootCv, null);
+            root = buildTreeNode( rootCv, null );
 
-            log.debug("\tLoading completed.");
-		} catch (ClassNotFoundException e) {
-			addErrorMessage("Could not load data for class " + cvClass, e.getMessage());
-		}
+            log.debug( "\tLoading completed." );
+        } catch ( ClassNotFoundException e ) {
+            addErrorMessage( "Could not load data for class " + cvClass, e.getMessage() );
+        }
     }
-	
-	private TreeNode buildTreeNode(CvDagObject cv, TreeNode node) {
-		TreeNode childNode = new TreeNode(cv, node);
-		
-		for(CvDagObject child : cv.getChildren())
-		{
-            if (cv != null) {
-			    buildTreeNode(child, childNode);
-            }
-		}
-		
-		return childNode;
-	}
 
-    public void onNodeSelect(NodeSelectEvent event) {
+    private TreeNode buildTreeNode( CvDagObject cv, TreeNode node ) {
+        TreeNode childNode = new TreeNode( cv, node );
+
+        for ( CvDagObject child : cv.getChildren() ) {
+            if ( cv != null ) {
+                buildTreeNode( child, childNode );
+            }
+        }
+
+        return childNode;
+    }
+
+    public void onNodeSelect( NodeSelectEvent event ) {
         TreeNode selectedNode = event.getTreeNode();
 
         String treeComponentId = event.getComponent().getId();
-        String clientId = treeComponentId.replaceAll("__tree", "");
-        
-        cvObjectsByClientId.put(clientId, (CvObject) selectedNode.getData());
+        String clientId = treeComponentId.replaceAll( "__tree", "" );
+
+        cvObjectsByClientId.put( clientId, ( CvObject ) selectedNode.getData() );
     }
 
-    public CvObject getSelectedCvObject(String clientId) {
-        return cvObjectsByClientId.get(clientId);
+    public CvObject getSelectedCvObject( String clientId ) {
+        return cvObjectsByClientId.get( clientId );
     }
 }
