@@ -31,14 +31,27 @@
             <h2>Interaction</h2>
 
             <p:outputPanel id="basic">
-                Interaction: #{interactionController.interaction.shortLabel}<br/>
-                Creator: #{interactionController.interaction.creator}<br/>
-                AC: #{interactionController.ac}
+                <ia:panelFormLayout id="basicInfoPanel" columns="1">
+
+                    <h:outputLabel value="AC: " for="acTxt"/>
+                    <h:inputText id="acTxt" value="#{interactionController.interaction.ac}"
+                                 size="10" disabled="true"/>
+
+                    <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+                    <h:inputText id="shortlabelTxt" value="#{interactionController.interaction.shortLabel}" size="30"/>
+
+                    <h:outputLabel value="Creator: " for="creatorTxt"/>
+                    <h:inputText id="creatorTxt" value="#{interactionController.interaction.creator}"
+                                 size="10" disabled="true"/>
+
+                    <h:outputLabel value="Interaction type: " for="interactionTypeTxt"/>
+                    <ia:inputCvObject id="interactionTypeTxt" value="#{interactionController.interaction.cvInteractionType}"
+                                      cvIdentifier="MI:0190"/>
+                </ia:panelFormLayout>
             </p:outputPanel>
 
-            <h3>Publication properties</h3>
+            <h3>Interaction properties</h3>
 
-            <h4>Xrefs</h4>
             <p:outputPanel id="xrefsPanel">
                 <ia:collapsiblePanel  open="true" title="Xrefs (#{interactionController.interaction.xrefs.size()})">
                     <ia:xrefsTable annotatedObjectController="#{interactionController}"
@@ -50,7 +63,6 @@
                 </ia:collapsiblePanel>
             </p:outputPanel>
 
-            <h4>Annotations</h4>
             <p:outputPanel id="annotationsPanel">
                 <ia:collapsiblePanel open="true" title="Annotations (#{interactionController.interaction.annotations.size()})">
                     <ia:annotationsTable annotatedObjectController="#{interactionController}"
@@ -61,7 +73,6 @@
                 </ia:collapsiblePanel>
             </p:outputPanel>
 
-            <h4>Aliases</h4>
             <p:outputPanel id="aliasesPanel">
                 <ia:collapsiblePanel open="true" title="Aliases (#{interactionController.interaction.aliases.size()})">
                     <ia:aliasTable annotatedObjectController="#{interactionController}"
@@ -78,6 +89,5 @@
         </h:panelGroup>
 
     </ui:define>
-
 
 </ui:composition>
