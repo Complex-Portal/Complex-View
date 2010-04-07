@@ -105,10 +105,15 @@ public class UserAdminController extends JpaAwareController {
 
         addInfoMessage( "User " + user.getLogin() + " was "+ (created ? "created" : "updated" ) +" successfully", "" );
 
+        // reset user before redirecting to the user list.
+        user = null;
+
         return "admin.users.list";
     }
 
-    public void loadRoles() {
+    public void loadRoles( ComponentSystemEvent event ) {
+
+        log.info( "UserAdminController.loadRoles" );
 
         List<String> source = new ArrayList<String>();
         List<String> target = new ArrayList<String>();
@@ -147,7 +152,9 @@ public class UserAdminController extends JpaAwareController {
         return roles;
     }
 
-    public void loadUserToUpdate() {
+    public void loadUserToUpdate( ComponentSystemEvent event ) {
+
+        log.info( "UserAdminController.loadUserToUpdate" );
 
         if( loginParam != null ) {
             // load user and prepare for update
@@ -166,13 +173,15 @@ public class UserAdminController extends JpaAwareController {
         }
     }
 
-    public void loadData( ComponentSystemEvent event ) {
+    public void loadData() {
+        log.info( "UserAdminController.loadData" );
         allUsers = LazyDataModelFactory.createLazyDataModel( getUsersEntityManager(),
                                                              "select u from User u order by u.login asc",
                                                              "select count(u) from User u" );
     }
 
     public LazyDataModel<User> getAllUsers() {
+        log.info( "getAllUsers(): " + allUsers.getRowCount() );
         return allUsers;
     }
 }
