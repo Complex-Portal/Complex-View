@@ -16,7 +16,7 @@
     <!-- IMPLEMENTATION -->
     <composite:implementation>
         
-        <h:inputText id="cvObjectVisible" readonly="true"/>
+        <h:inputText id="cvObjectVisible" readonly="true" onclick="document.getElementById('#{cc.clientId}:selectBtn_submit').click()"/>
 
         <h:inputHidden id="cvObject" value="#{cc.attrs.value}" >
             <f:converter converterId="cvObjectConverter"/>
@@ -35,8 +35,10 @@
 
         </p:outputPanel>
         
-        <p:commandButton onclick="#{cc.clientId}_cvDlg.show();" value="Select" actionListener="#{cvController.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
-                                 update="cvObjectBrowserDialog,growl"/>
+        <p:commandButton id="selectBtn"
+                         onclick="#{cc.clientId}_cvDlg.show();"
+                         value="Select" actionListener="#{cvController.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
+                         update="cvObjectBrowserDialog,growl"/>
 
         <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true" widgetVar="#{cc.clientId}_cvDlg">
 

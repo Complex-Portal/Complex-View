@@ -30,19 +30,27 @@
             <h2>Experiment Details</h2>
 
             <p:outputPanel id="basic">
-                Experiment: #{experimentController.experiment.shortLabel} <br/>
-                Creator: #{experimentController.experiment.creator}<br/>
-                AC: #{experimentController.ac} <br/>
-
                 <ia:panelFormLayout id="basicInfoPanel" columns="1">
-                <h:outputLabel value="Interaction detection method: " for="detMethodTxt"/>
-                <ia:inputCvObject id="detMethodTxt" value="#{experimentController.experiment.cvInteraction}"
-                        cvIdentifier="MI:0001"/>
+                    <h:outputLabel value="AC: " for="acTxt"/>
+                    <h:inputText id="acTxt" value="#{experimentController.experiment.ac}"
+                                 size="10" disabled="true"/>
 
-                <h:outputLabel value="Participant detection method: " for="partDetMethodTxt"/>
-                <ia:inputCvObject id="partDetMethodTxt" value="#{experimentController.experiment.cvIdentification}"
-                        cvIdentifier="MI:0002"/>
+                    <h:outputLabel value="Shortlabel: " for="shortLabelTxt"/>
+                    <h:inputText id="shortLabelTxt" value="#{experimentController.experiment.shortLabel}" size="40">
+                        <f:ajax event="valueChange" render=":editorForm:changesPanel"
+                                listener="#{experimentController.changed}"/>
+                    </h:inputText>
 
+                    <h:outputLabel value="Host organism: " for="hostOrganismTxt"/>
+                    <h:outputText id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"/>
+
+                    <h:outputLabel value="Interaction detection method: " for="detMethodTxt"/>
+                    <ia:inputCvObject id="detMethodTxt" value="#{experimentController.experiment.cvInteraction}"
+                                      cvIdentifier="MI:0001"/>
+
+                    <h:outputLabel value="Participant detection method: " for="partDetMethodTxt"/>
+                    <ia:inputCvObject id="partDetMethodTxt" value="#{experimentController.experiment.cvIdentification}"
+                                      cvIdentifier="MI:0002"/>
                 </ia:panelFormLayout>
             </p:outputPanel>
 
@@ -83,6 +91,17 @@
             <ia:interactionsTable value="#{experimentController.interactionDataModel}"/>
 
         </h:panelGroup>
+
+         <p:outputPanel id="changesPanel">
+            <h:panelGroup rendered="#{publicationController.unsavedChanges}">
+
+            <div class="intact-notSavedPanel">
+                    Changes not yet saved &#160;
+                <p:commandButton value="Save" actionListener="#{publicationController.doSave}" ajax="false"/>
+            </div>
+
+            </h:panelGroup>
+        </p:outputPanel>
 
     </ui:define>
 

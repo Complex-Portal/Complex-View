@@ -63,11 +63,11 @@ public class ExperimentController extends AnnotatedObjectController {
                     "select i from InteractionImpl i join i.experiments as exp where exp.ac = '"+ac+"'",
                     "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '"+ac+"'");
             }
-        } else {
+        } else if (experiment != null) {
             ac = experiment.getAc();
         }
 
-        if (publicationController.getPublication() == null) {
+        if (experiment != null && publicationController.getPublication() == null) {
             publicationController.setPublication(experiment.getPublication());
         }
     }
