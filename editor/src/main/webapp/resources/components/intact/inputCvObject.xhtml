@@ -31,8 +31,6 @@
                 document.getElementById('#{cc.clientId}:cvObject').value = '#{inputCvObjectController.getSelectedCvObject(cc.clientId).ac}';
                 document.getElementById('#{cc.clientId}:cvObjectVisible').value = '#{inputCvObjectController.getSelectedCvObject(cc.clientId).shortLabel}';
             </h:outputScript>
-
-
         </p:outputPanel>
         
         <p:commandButton id="selectBtn"
@@ -41,7 +39,6 @@
                          update="cvObjectBrowserDialog,growl"/>
 
         <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true" widgetVar="#{cc.clientId}_cvDlg">
-
             <p:outputPanel id="cvObjectBrowserDialog">
             <h:panelGrid columns="1">
                 <h:panelGroup>
@@ -49,7 +46,6 @@
                     <h:commandButton type="button" value="Search" />
                     <h:commandButton type="button" value="New..." />
                 </h:panelGroup>
-
 
                 <div id="#{cc.clientId}__div"/>
                 <p:ajaxStatus onstart="document.getElementById('#{cc.clientId}__div').innerHTML = 'Loading tree...'" oncomplete="document.getElementById('#{cc.clientId}__div').innerHTML = ''" />
@@ -68,8 +64,5 @@
     </p:dialog>
 
     </composite:implementation>
-
-
-
 
 </ui:composition>
