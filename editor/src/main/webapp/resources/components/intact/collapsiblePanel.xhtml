@@ -20,15 +20,17 @@
 
         <p:outputPanel rendered="#{cc.attrs.display}">
 
+            <h:outputScript name="intact.js" library="javascript" target="head"/>
+
             <table width="98%">
                 <tr>
                     <td width="1%" style="vertical-align:bottom;">
                         <h:graphicImage id="#{cc.clientId}_close" url="/resources/images/unfold.png" alt="[+]"
                                         style="display: #{cc.attrs.open ? 'none' : 'block'};"
-                                        onclick="toggle_visibility('#{cc.clientId}:#{cc.clientId}','#{cc.clientId}:#{cc.clientId}_close','#{cc.clientId}:#{cc.clientId}_open')"/>
+                                        onclick="ia_toggle_visibility('#{cc.clientId}:#{cc.clientId}','#{cc.clientId}:#{cc.clientId}_close','#{cc.clientId}:#{cc.clientId}_open')"/>
                         <h:graphicImage id="#{cc.clientId}_open" url="/resources/images/fold.png" alt="[-]"
                                         style="display: #{cc.attrs.open ? 'block' : 'none'};"
-                                        onclick="toggle_visibility('#{cc.clientId}:#{cc.clientId}','#{cc.clientId}:#{cc.clientId}_close','#{cc.clientId}:#{cc.clientId}_open')"/>
+                                        onclick="ia_toggle_visibility('#{cc.clientId}:#{cc.clientId}','#{cc.clientId}:#{cc.clientId}_close','#{cc.clientId}:#{cc.clientId}_open')"/>
                     </td>
                     <td width="5%" style="vertical-align:bottom; white-space:nowrap;">
                         <h:outputText style="#{cc.attrs.titleStyle}" value="#{cc.attrs.title}" styleClass=""/>

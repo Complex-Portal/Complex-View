@@ -1,0 +1,142 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+    <composite:interface>
+        <composite:attribute name="value" type="uk.ac.ebi.intact.model.BioSource" required="true"/>
+        <composite:attribute name="size" default="30"/>
+    </composite:interface>
+
+    <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <h:outputScript name="intact.js" library="javascript" target="head"/>
+
+        <h:outputStylesheet>
+			.yui-skin-sam .yui-ac {
+				width:200px;
+			}
+
+            .yui-ac-input {
+               margin-top: -12px;
+            margin-left: -2px;
+            }
+        </h:outputStylesheet>
+
+        <h:panelGrid columns="3" id="inputPanel">
+
+            <h:panelGroup id="readonlyPanel" style="display: block">
+                <h:inputText id="bioSourceVisible" readonly="true"
+                             size="#{cc.attrs.size}"
+                             onclick="ia_toggleDisplayById('#{cc.clientId}:autocompletePanel'); ia_toggleDisplayById('#{cc.clientId}:readonlyPanel'); ia_focusById('#{cc.clientId}:autocomplete_input');"/>
+
+                <h:inputHidden id="bioSource" value="#{cc.attrs.value}">
+                    <f:converter converterId="bioSourceConverter"/>
+                </h:inputHidden>
+            </h:panelGroup>
+
+            <h:panelGroup id="autocompletePanel" style="display: none">
+                <p:autoComplete id="autocomplete" value="#{cc.attrs.value}"
+                                completeMethod="#{inputBioSourceController.autocomplete}"
+                                var="bioSource" itemLabel="#{bioSource.shortLabel}" itemValue="#{bioSource}"
+                                converter="bioSourceConverter" forceSelection="true"
+                                minQueryLength="2" typeAhead="true" maxResults="20"/>
+            </h:panelGroup>
+
+                <p:commandButton id="selectBtn" value="Select"
+                        onclick="ia_hideById('#{cc.clientId}:autocompletePanel'); ia_showById('#{cc.clientId}:readonlyPanel'); #{cc.clientId}_bioSourceDlg.show();"
+                        actionListener="#{inputBioSourceController.loadBioSources}"
+                        update="bioSourceBrowserDialog,growl"/>
+        </h:panelGrid>
+
+        <p:outputPanel id="javascriptPanel">
+            <h:outputScript>
+
+                var inputVisible = document.getElementById('#{cc.clientId}:bioSourceVisible');
+
+                if (inputVisible != null) {
+                    inputVisible.value = '#{cc.attrs.value.shortLabel}';
+                }
+            </h:outputScript>
+
+
+        </p:outputPanel>
+
+        <p:dialog header="Organism selection" resizable="true" widgetVar="#{cc.clientId}_bioSourceDlg">
+
+            <p:outputPanel id="bioSourceBrowserDialog">
+                <h:panelGrid columns="1">
+                    <h:panelGroup>
+                        
+                        <h:commandButton type="button" value="Search" onclick="alert('Not implemented')"/>
+                        <h:commandButton type="button" value="New..." onclick="alert('Not implemented')"/>
+                    </h:panelGroup>
+
+                    <h:outputScript>
+                        function ia_update(bioSourceAc, bioSourceLabel) {
+                            #{cc.clientId}_bioSourceDlg.hide();
+                            document.getElementById('#{cc.clientId}:bioSource').value = bioSourceAc;
+                            document.getElementById('#{cc.clientId}:bioSourceVisible').value = bioSourceLabel;
+                            document.getElementById('#{cc.clientId}:autocomplete_input').value = bioSourceAc;
+                        }
+                    </h:outputScript>
+
+                    <p:dataTable var="bioSource" value="#{inputBioSourceController.bioSources}"
+                                 paginator="true" rows="10" lazy="true" dynamic="true"
+                                 paginatorPosition="top">
+                        <p:column>
+                            <p:commandLink value="Select"
+                                           onclick="ia_update('#{bioSource.ac}', '#{bioSource.shortLabel}')"
+                                           actionListener="#{inputBioSourceController.selectBioSource(bioSource)}">
+                            </p:commandLink>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Tax ID"/>
+                            </f:facet>
+                            <h:outputText value="#{bioSource.taxId}"/>
+                        </p:column>
+                        <p:column filterBy="#{bioSource.shortLabel}">
+                            <f:facet name="header" >
+                                <h:outputText value="Shortlabel"/>
+                            </f:facet>
+                            <h:outputText value="#{bioSource.shortLabel}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Full name"/>
+                            </f:facet>
+                            <h:outputText value="#{bioSource.fullName}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Tissue"/>
+                            </f:facet>
+                            <h:outputText value="#{bioSource.cvTissue.shortLabel}" rendered="#{bioSource.cvTissue != null}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Cell type"/>
+                            </f:facet>
+                            <h:outputText value="#{bioSource.cvCellType.shortLabel}" rendered="#{bioSource.cvCellType != null}"/>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:panelGrid>
+
+                <hr/>
+
+            </p:outputPanel>
+        </p:dialog>
+
+
+    </composite:implementation>
+
+
+</ui:composition>

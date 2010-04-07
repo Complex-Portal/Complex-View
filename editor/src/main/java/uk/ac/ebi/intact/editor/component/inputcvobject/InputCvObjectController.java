@@ -1,4 +1,4 @@
-package uk.ac.ebi.intact.editor.controller.cv;
+package uk.ac.ebi.intact.editor.component.inputcvobject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,9 +19,9 @@ import java.util.Map;
 
 @Controller
 @Scope("conversation.access")
-public class CvController extends BaseController {
+public class InputCvObjectController extends BaseController {
 
-    private static final Log log = LogFactory.getLog( CvController.class );
+    private static final Log log = LogFactory.getLog( InputCvObjectController.class );
 
     @Autowired
     private DaoFactory daoFactory;	
@@ -30,7 +30,7 @@ public class CvController extends BaseController {
 
     private Map<String, CvObject> cvObjectsByClientId;
 
-    public CvController() {
+    public InputCvObjectController() {
         cvObjectsByClientId = new HashMap<String, CvObject>();
     }
 

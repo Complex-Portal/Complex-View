@@ -7,10 +7,10 @@
  * @param second
  * @param third
  */
-function toggle_visibility(first, second, third) {
-   toggleById(first);
-   toggleById(second);
-   toggleById(third);
+function ia_toggle_visibility(first, second, third) {
+   ia_toggleDisplayById(first);
+   ia_toggleDisplayById(second);
+   ia_toggleDisplayById(third);
 }
 
 /**
@@ -18,10 +18,46 @@ function toggle_visibility(first, second, third) {
  * 
  * @param id the id of the component to show/hide.
  */
-function toggleById(id) {
+function ia_toggleDisplayById(id) {
    var e = document.getElementById(id);
+   ia_toggleDisplay(e);
+}
+
+function ia_toggleDisplay(e) {
    if(e.style.display == 'block')
-      e.style.display = 'none';
+      ia_hide(e);
    else
-      e.style.display = 'block';
+      ia_show(e);
+}
+
+function ia_hideById(id) {
+   var e = document.getElementById(id);
+   ia_hide(e);
+}
+
+function ia_hide(e) {
+   e.style.display = 'none';
+}
+
+function ia_showById(id) {
+   var e = document.getElementById(id);
+   ia_show(e);
+}
+
+function ia_show(e) {
+   e.style.display = 'block';
+}
+
+/**
+ * Focus a component.
+ *
+ * @param id the id of the component to show/hide.
+ */
+function ia_focusById(id) {
+    var e = document.getElementById(id);
+    ia_focus(e);
+}
+
+function ia_focus(e) {
+   e.focus();
 }

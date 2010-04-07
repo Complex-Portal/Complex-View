@@ -42,7 +42,7 @@
                     </h:inputText>
 
                     <h:outputLabel value="Host organism: " for="hostOrganismTxt"/>
-                    <h:outputText id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"/>
+                    <ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"/>
 
                     <h:outputLabel value="Interaction detection method: " for="detMethodTxt"/>
                     <ia:inputCvObject id="detMethodTxt" value="#{experimentController.experiment.cvInteraction}"
