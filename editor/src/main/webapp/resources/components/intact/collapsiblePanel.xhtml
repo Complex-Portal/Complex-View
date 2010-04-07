@@ -20,9 +20,9 @@
 
         <p:outputPanel rendered="#{cc.attrs.display}">
 
-            <table>
+            <table width="98%">
                 <tr>
-                    <td>
+                    <td width="1%" style="vertical-align:bottom;">
                         <h:graphicImage id="#{cc.clientId}_close" url="/resources/images/unfold.png" alt="[+]"
                                         style="display: #{cc.attrs.open ? 'none' : 'block'};"
                                         onclick="toggle_visibility('#{cc.clientId}:#{cc.clientId}','#{cc.clientId}:#{cc.clientId}_close','#{cc.clientId}:#{cc.clientId}_open')"/>
@@ -30,7 +30,11 @@
                                         style="display: #{cc.attrs.open ? 'block' : 'none'};"
                                         onclick="toggle_visibility('#{cc.clientId}:#{cc.clientId}','#{cc.clientId}:#{cc.clientId}_close','#{cc.clientId}:#{cc.clientId}_open')"/>
                     </td>
-                    <td><h:outputText style="#{cc.attrs.titleStyle}" value="#{cc.attrs.title}"/></td>
+                    <td width="5%" style="vertical-align:bottom; white-space:nowrap;">
+                        <h:outputText style="#{cc.attrs.titleStyle}" value="#{cc.attrs.title}" styleClass=""/>
+                    </td>
+                    <td style="vertical-align:bottom; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color:#a9a9a9;">
+                    </td>
                 </tr>
             </table>
 
