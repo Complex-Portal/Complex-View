@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.editor.controller.publication;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,9 +61,6 @@ public class PublicationController extends AnnotatedObjectController {
     private String[] datasetsToRemove;
     private List<SelectItem> datasetsSelectItems;
 
-    @Autowired
-    private DatasetPopulator datasetPopulator;
-
     public PublicationController() {
     }
     
@@ -100,7 +96,7 @@ public class PublicationController extends AnnotatedObjectController {
             if (CvTopic.DATASET_MI_REF.equals(annotation.getCvTopic().getIdentifier())) {
                 String datasetText = annotation.getAnnotationText();
 
-                SelectItem datasetSelectItem = datasetPopulator.createSelectItem(datasetText);
+                SelectItem datasetSelectItem = getDatasetPopulator().createSelectItem(datasetText);
                 datasetsSelectItems.add(datasetSelectItem);
             }
         }
@@ -255,7 +251,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void addDataset(ActionEvent evt) {
         if (datasetToAdd != null) {
-            datasetsSelectItems.add(datasetPopulator.createSelectItem(datasetToAdd));
+            datasetsSelectItems.add(getDatasetPopulator().createSelectItem(datasetToAdd));
 
             addAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
 
@@ -338,7 +334,9 @@ public class PublicationController extends AnnotatedObjectController {
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
 
-        setPrimaryReference(identifier);
+        if (identifier != null) {
+            setPrimaryReference(identifier);
+        }
     }
 
     public String getPrimaryReference() {
@@ -406,5 +404,9 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setDatasetsToRemove(String[] datasetsToRemove) {
         this.datasetsToRemove = datasetsToRemove;
-    }   
+    }
+
+    public DatasetPopulator getDatasetPopulator() {
+        return (DatasetPopulator) IntactContext.getCurrentInstance().getSpringContext().getBean("datasetPopulator");
+    }
 }

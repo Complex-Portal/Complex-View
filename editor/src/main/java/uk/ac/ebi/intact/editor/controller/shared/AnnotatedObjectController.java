@@ -93,7 +93,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         // modify if exists
         boolean exists = false;
 
-        for (Object objXref : getAnnotatedObject().getXrefs()) {
+        for (Object objXref : parent.getXrefs()) {
             Xref xref = (Xref) objXref;
 
             if (xref.getCvDatabase() != null) {

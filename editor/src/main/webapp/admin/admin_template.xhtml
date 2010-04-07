@@ -23,30 +23,20 @@
 
                 <p:menubar effect="SLIDE" effectDuration="0">
                      <p:submenu label="Admin">
-                         <p:menuitem label="">
-                            <h:link value="Job summary" outcome="/admin/jobSummary"/>
-                        </p:menuitem>
+                         <p:menuitem label="Job summary" action="/admin/jobSummary" ajax="false"/>
                      </p:submenu>
                     <p:submenu label="Users">
-                        <p:menuitem label="New">
-                            <h:link value="New" outcome="/admin/users/edit" />
-                        </p:menuitem>
-                        <p:menuitem label="List">
-                            <h:link value="List all" outcome="/admin/users/list" />
-                        </p:menuitem>
+                        <p:menuitem label="New" action="/admin/users/edit"  ajax="false"/>
+                        <p:menuitem label="List" action="/admin/users/list"  ajax="false" />
                     </p:submenu>
                     <p:submenu label="DB Update">
-                        <p:menuitem label="">
-                            <h:link value="Compatibility Tools" outcome="/admin/dbupdate/compatibility"/>
-                        </p:menuitem>
-                        <p:menuitem label="CV Update">
-                            <h:link value="CV Update" outcome="/admin/dbupdate/cvManagement" />
-                        </p:menuitem>
+                        <p:menuitem label="Import PSI-MI XML" style="color:#CDCDCD"/>             
+                        <p:menuitem label="Compatibility Tools" action="/admin/dbupdate/compatibility"  ajax="false"/>
+                        <p:menuitem label="CV Management" action="/admin/dbupdate/cvManagement"  ajax="false"/>
                         <p:menuitem label="UniProt Update" style="color:#CDCDCD"/>
                         <p:menuitem label="ChEBI Update" style="color:#CDCDCD"/>
                     </p:submenu>
                 </p:menubar>
-
 
             </ui:insert>
         </div>
