@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.controller.dashboard;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -38,8 +40,9 @@ public class DashboardController extends JpaAwareController {
     }
 
     public void loadData(ComponentSystemEvent event) {
-        allPublications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(), "select p from Publication p order by p.updated desc",
-                                                                                  "select count(p) from Publication p");
+        allPublications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+                                                                   "select p from Publication p order by p.updated desc",
+                                                                   "select count(p) from Publication p");
     }
 
     public LazyDataModel<Publication> getAllPublications() {
