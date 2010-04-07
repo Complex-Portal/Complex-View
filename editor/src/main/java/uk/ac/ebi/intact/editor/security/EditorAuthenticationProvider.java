@@ -24,6 +24,7 @@ import org.springframework.security.*;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.context.UserContext;
 import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
@@ -48,14 +49,15 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
     private ApplicationContext applicationContext;
 
     @Autowired
-    private UserContext userContext;
-
-    @Autowired
     private AppController appController;
 
     @Transactional( value="users", readOnly = true )
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+        log.debug( "======================= AUTHENTICATE ======================" );
+
         if (log.isDebugEnabled()) {
+            log.debug( "Currently, there are " + appController.getLoggedInUsers().size() + " users connected." );
             log.debug("Authenticating user: "+authentication.getPrincipal());
             log.debug("Credentials: '"+authentication.getCredentials() + "'");
         }
@@ -75,14 +77,20 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
 
         if (log.isInfoEnabled()) log.info("Authentication successful for user: "+authentication.getPrincipal());
 
-        // Roles are not loaded by default, even so the @ManyToMany annotation is set to fetch = FetchType.EAGER
-        // TODO set fetch more eager in intact-users
+        // BUG Roles are not loaded by default, even so the @ManyToMany annotation is set to fetch = FetchType.EAGER
         user.getRoles();
-        
-        userSessionController.setCurrentUser(user);
-        userContext.setUserId(user.getLogin().toUpperCase());
 
-        appController.getLoggedInUsers().add( user );
+        // register the user as logged-in
+        userSessionController.setCurrentUser(user);
+
+        // set the user to be used when writing into the database
+        IntactContext.getCurrentInstance().getUserContext().setUserId( user.getLogin().toUpperCase() );
+
+        if( ! appController.getLoggedInUsers().contains( user ) ) {
+            appController.getLoggedInUsers().add( user );
+        } else {
+            log.warn( "User '"+ user.getLogin() +"' was already registered in the list of logged in user. Something's fishy !!" );
+        }
 
         Collection<GrantedAuthority> authorities = Lists.newArrayList();
         log.info( user.getLogin() + " roles: " + user.getRoles() );

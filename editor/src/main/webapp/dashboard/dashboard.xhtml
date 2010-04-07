@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
@@ -20,13 +20,17 @@
           <f:event type="preRenderView" listener="#{dashboardController.loadData}"/>
         </f:metadata>
 
-
         <p>Hello #{userSessionController.currentUser.firstName}</p>
+
+        <h3>Logged in users</h3>
+
+        <ia:loggedUsers />
 
         <h3>All the publications (#{dashboardController.allPublications.rowCount})</h3>
 
         <p:dataTable id="pubTable" var="publication" value="#{dashboardController.allPublications}"
-                paginator="true" rows="10" dynamic="true" lazy="true">
+                     paginator="#{dashboardController.allPublications.rowCount > 10}"
+                     rows="10" dynamic="true" lazy="true">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Publication ID"/>
@@ -36,6 +40,12 @@
                         <f:param name="ac" value="#{publication.ac}"/>
                     </h:link>
                 </ot:separateConversationContext>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Title"/>
+                </f:facet>
+                <h:outputText value="#{publication.fullName}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
@@ -58,6 +68,5 @@
         </p:dataTable>
 
     </ui:define>
-
 
 </ui:composition>

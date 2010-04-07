@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.intact.editor.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.users.model.User;
@@ -25,7 +28,9 @@ import uk.ac.ebi.intact.core.users.model.User;
  */
 @Controller
 @Scope("session")
-public class UserSessionController extends BaseController {
+public class UserSessionController extends BaseController implements DisposableBean {
+
+    private static final Log log = LogFactory.getLog( UserSessionController.class );
 
     private User currentUser;
 
@@ -38,5 +43,10 @@ public class UserSessionController extends BaseController {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        log.info( "UserSessionController for user '"+ currentUser.getLogin() +"' destroyed" );
     }
 }

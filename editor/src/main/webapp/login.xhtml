@@ -51,9 +51,27 @@
                             document.getElementById('j_password_clear').value = 'admin';
                             document.getElementById('login').click();
                         }
+                        function loginAsSam() {
+                            document.getElementById('j_username').value = 'skerrien';
+                            document.getElementById('j_password_clear').value = '240178';
+                            document.getElementById('login').click();
+                        }
+                        function loginAsBruno() {
+                            document.getElementById('j_username').value = 'baranda';
+                            document.getElementById('j_password_clear').value = 'baranda';
+                            document.getElementById('login').click();
+                        }
+                        function loginAsSandra() {
+                            document.getElementById('j_username').value = 'orchard';
+                            document.getElementById('j_password_clear').value = 'orchard';
+                            document.getElementById('login').click();
+                        }
                     </script>
 
                     <h:commandButton value="Login as ADMIN" onclick="loginAsAdmin()"/>
+                    <h:commandButton value="Login as Sam" onclick="loginAsSam()"/>
+                    <h:commandButton value="Login as Bruno" onclick="loginAsBruno()"/>
+                    <h:commandButton value="Login as Sandra" onclick="loginAsSandra()"/>
 
                 </h:panelGroup>
 
