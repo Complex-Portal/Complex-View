@@ -62,7 +62,11 @@
             </p:outputPanel>
 
             <h4>Aliases</h4>
-            <ia:aliasTable value="#{publicationController.publication.aliases}"/>
+            <p:outputPanel id="aliasesPanel">
+                <ia:collapsiblePanel open="false" title="Aliases (#{interactionController.interaction.aliases.size()})">
+                    <ia:aliasTable value="#{interactionController.interaction.aliases}"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
 
             <h3>Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})</h3>
 

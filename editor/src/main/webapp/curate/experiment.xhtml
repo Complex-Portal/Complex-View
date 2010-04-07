@@ -69,9 +69,11 @@
                 </ia:collapsiblePanel>
             </p:outputPanel>
 
-            <ia:collapsiblePanel id="aliasesPanel" open="true" title="Aliases (#{experimentController.experiment.aliases.size()})">
-                <ia:aliasTable value="#{experimentController.experiment.aliases}"/>
-            </ia:collapsiblePanel>
+            <p:outputPanel id="aliasesPanel">
+                <ia:collapsiblePanel open="false" title="Aliases (#{experimentController.experiment.aliases.size()})">
+                    <ia:aliasTable value="#{experimentController.experiment.aliases}"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
 
             <h3>Interactions (#{experimentController.countInteractionsByExperimentAc(experimentController.ac)})</h3>
 
