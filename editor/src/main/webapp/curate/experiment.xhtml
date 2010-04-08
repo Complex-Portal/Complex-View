@@ -20,6 +20,12 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{experimentController.experiment != null}">
+            <div id="auditInfo" class="intact-auditPanel">
+                <ia:creatorUpdator annotatedObject="#{experimentController.experiment}" />
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{experimentController.experiment != null}">
 
             <h:link outcome="/curate/publication"
                     value="#{publicationController.publication.shortLabel}" 

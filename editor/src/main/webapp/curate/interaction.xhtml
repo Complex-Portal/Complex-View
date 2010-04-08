@@ -21,8 +21,17 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{interactionController.interaction != null}">
+            <div id="auditInfo" class="intact-auditPanel">
+                <ia:creatorUpdator annotatedObject="#{interactionController.interaction}" />
+            </div>
+        </h:panelGroup>
 
-            <h:link outcome="/curate/publication" value="#{publicationController.publication.shortLabel}" includeViewParams="true"/>
+        <h:panelGroup rendered="#{interactionController.interaction != null}">
+
+            <h:link outcome="/curate/publication"
+                    value="#{publicationController.publication.shortLabel}"
+                    title="#{publicationController.publication.fullName}"
+                    includeViewParams="true"/>
             &#160;>&#160;
             <h:link outcome="/curate/experiment" value="#{experimentController.experiment.shortLabel}" includeViewParams="true"/>
             &#160;>&#160;
@@ -31,23 +40,45 @@
             <h2>Interaction</h2>
 
             <p:outputPanel id="basic">
-                <ia:panelFormLayout id="basicInfoPanel" columns="1">
+                <!--<ia:panelFormLayout id="basicInfoPanel" columns="1">-->
 
-                    <h:outputLabel value="AC: " for="acTxt"/>
-                    <h:inputText id="acTxt" value="#{interactionController.interaction.ac}"
-                                 size="10" disabled="true"/>
+                <table>
+                    <tr>
+                        <td>
+                            <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+                            <h:inputText id="shortlabelTxt" value="#{interactionController.interaction.shortLabel}" size="30"/>
+                        </td>
+                        <td style="padding-left: 50px;">
+                            <h:outputLabel value="AC: " for="acTxt"/>
+                            <h:inputText id="acTxt" value="#{interactionController.interaction.ac}"
+                                         size="10" disabled="true"/>
+                        </td>
+                        <td style="padding-left: 50px;">
+                             <h:outputLabel value="Publication IMEx ID: " for="imexIdTxt"/>
+                                <h:inputText id="imexIdTxt" value="IM-X"
+                                             size="10" disabled="true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <h:outputLabel value="Interaction type: " for="interactionTypeTxt"/>
+                            <ia:inputCvObject id="interactionTypeTxt" value="#{interactionController.interaction.cvInteractionType}"
+                                              cvIdentifier="MI:0190"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
 
-                    <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
-                    <h:inputText id="shortlabelTxt" value="#{interactionController.interaction.shortLabel}" size="30"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
 
-                    <h:outputLabel value="Creator: " for="creatorTxt"/>
-                    <h:inputText id="creatorTxt" value="#{interactionController.interaction.creator}"
-                                 size="10" disabled="true"/>
+                        </td>
+                    </tr>
+                </table>
 
-                    <h:outputLabel value="Interaction type: " for="interactionTypeTxt"/>
-                    <ia:inputCvObject id="interactionTypeTxt" value="#{interactionController.interaction.cvInteractionType}"
-                                      cvIdentifier="MI:0190"/>
-                </ia:panelFormLayout>
+                <!--</ia:panelFormLayout>-->
             </p:outputPanel>
 
             <h3>Interaction properties</h3>
