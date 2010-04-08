@@ -19,11 +19,11 @@ public class AppSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated( HttpSessionEvent se ) {
-        log.debug( "========================== SESSION CREATED [" + se.getSession().getId() + "] ==========================" );
+        log.debug( "Session created [" + se.getSession().getId() + "]" );
     }
 
     @Override
     public void sessionDestroyed( HttpSessionEvent se ) {
-        log.debug( "========================== SESSION DESTROYED [" + se.getSession().getId() + "] ==========================" );
+        log.debug( "Session destroyed [" + se.getSession().getId() + "]" );
     }
 }

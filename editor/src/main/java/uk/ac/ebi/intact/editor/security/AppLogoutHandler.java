@@ -34,7 +34,7 @@ public class AppLogoutHandler implements LogoutHandler {
     @Override
     public void logout( HttpServletRequest request, HttpServletResponse response, Authentication authentication ) {
 
-        log.debug( "========================== LOGOUT [" + authentication.getPrincipal() + "] ==========================" );
+        log.debug( "Logout [" + authentication.getPrincipal() + "]" );
 
         final HttpSession session = request.getSession();
 
