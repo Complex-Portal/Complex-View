@@ -20,6 +20,9 @@ function ia_toggle_visibility(first, second, third) {
  */
 function ia_toggleDisplayById(id) {
    var e = document.getElementById(id);
+
+    if (e == null) alert('No component found with id: '+id);
+
    ia_toggleDisplay(e);
 }
 
@@ -32,6 +35,9 @@ function ia_toggleDisplay(e) {
 
 function ia_hideById(id) {
    var e = document.getElementById(id);
+
+    if (e == null) alert('No component found with id: '+id);
+
    ia_hide(e);
 }
 
@@ -41,6 +47,9 @@ function ia_hide(e) {
 
 function ia_showById(id) {
    var e = document.getElementById(id);
+
+    if (e == null) alert('No component found with id: '+id);
+
    ia_show(e);
 }
 
