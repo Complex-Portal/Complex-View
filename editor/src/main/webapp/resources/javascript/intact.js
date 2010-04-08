@@ -61,3 +61,22 @@ function ia_focusById(id) {
 function ia_focus(e) {
    e.focus();
 }
+
+function ia_focusAndSelectById(id) {
+    var e = document.getElementById(id);
+    ia_focusAndSelect(e);
+}
+
+function ia_focusAndSelect(e) {
+   ia_focus(e);
+   ia_select(e);
+}
+
+function ia_selectById(id) {
+    var e = document.getElementById(id);
+    ia_select(e);
+}
+
+function ia_select(e) {
+   e.select();
+}

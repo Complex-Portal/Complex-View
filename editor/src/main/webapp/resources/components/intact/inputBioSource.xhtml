@@ -31,10 +31,12 @@
 
         <h:panelGrid columns="3" id="inputPanel">
 
+            <ui:param name="autocompleteWidgetVar" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}__autocompleteWidget"/>
+
             <h:panelGroup id="readonlyPanel" style="display: block">
                 <h:inputText id="bioSourceVisible" readonly="true"
                              size="#{cc.attrs.size}"
-                             onclick="ia_toggleDisplayById('#{cc.clientId}:autocompletePanel'); ia_toggleDisplayById('#{cc.clientId}:readonlyPanel'); ia_focusById('#{cc.clientId}:autocomplete_input');"/>
+                             onclick="ia_toggleDisplayById('#{cc.clientId}:autocompletePanel'); ia_toggleDisplayById('#{cc.clientId}:readonlyPanel'); ia_focusAndSelect(#{autocompleteWidgetVar}.getInputEl());"/>
 
                 <h:inputHidden id="bioSource" value="#{cc.attrs.value}">
                     <f:converter converterId="bioSourceConverter"/>
@@ -42,7 +44,7 @@
             </h:panelGroup>
 
             <h:panelGroup id="autocompletePanel" style="display: none">
-                <p:autoComplete id="autocomplete" value="#{cc.attrs.value}"
+                <p:autoComplete id="autocomplete" value="#{cc.attrs.value}" widgetVar="#{autocompleteWidgetVar}"
                                 completeMethod="#{inputBioSourceController.autocomplete}"
                                 var="bioSource" itemLabel="#{bioSource.shortLabel}" itemValue="#{bioSource}"
                                 converter="bioSourceConverter" forceSelection="true"
