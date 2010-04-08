@@ -46,32 +46,17 @@
 
                 <h:panelGroup rendered="#{facesContext.application.projectStage == 'Development'}">
                     <script type="text/javascript">
-                        function loginAsAdmin() {
-                            document.getElementById('j_username').value = 'admin';
-                            document.getElementById('j_password_clear').value = 'admin';
-                            document.getElementById('login').click();
-                        }
-                        function loginAsSam() {
-                            document.getElementById('j_username').value = 'skerrien';
-                            document.getElementById('j_password_clear').value = '240178';
-                            document.getElementById('login').click();
-                        }
-                        function loginAsBruno() {
-                            document.getElementById('j_username').value = 'baranda';
-                            document.getElementById('j_password_clear').value = 'baranda';
-                            document.getElementById('login').click();
-                        }
-                        function loginAsSandra() {
-                            document.getElementById('j_username').value = 'orchard';
-                            document.getElementById('j_password_clear').value = 'orchard';
+                        function login(user, password) {
+                            document.getElementById('j_username').value = user;
+                            document.getElementById('j_password_clear').value = password;
                             document.getElementById('login').click();
                         }
                     </script>
 
-                    <h:commandButton value="Login as ADMIN" onclick="loginAsAdmin()"/>
-                    <h:commandButton value="Login as Sam" onclick="loginAsSam()"/>
-                    <h:commandButton value="Login as Bruno" onclick="loginAsBruno()"/>
-                    <h:commandButton value="Login as Sandra" onclick="loginAsSandra()"/>
+                    <h:commandButton value="Login as ADMIN" onclick="login('admin', 'admin')"/>
+                    <h:commandButton value="Login as Sam" onclick="login('skerrien', '240178')"/>
+                    <h:commandButton value="Login as Bruno" onclick="login('baranda', 'baranda')"/>
+                    <h:commandButton value="Login as Sandra" onclick="login('orchard', 'orchard')"/>
                     <h:commandButton type="button" value="Have a coffee instead" onclick="alert('What?? Oh come on! just login!')"/>
 
                 </h:panelGroup>
