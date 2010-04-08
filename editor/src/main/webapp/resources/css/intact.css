@@ -8,6 +8,14 @@ input {
     font-size:10pt;
 }
 
+a:hover {
+    color:red;
+}
+
+a:visited {
+    color:black;
+}
+
 /** Custom classes **/
 
 .verticalTop {
