@@ -8,12 +8,16 @@ input {
     font-size:10pt;
 }
 
-a:hover {
-    color:red;
+a:visited {
+    color:blue;
 }
 
-a:visited {
-    color:black;
+a:link {
+    color:blue;
+}
+
+a:hover {
+    color:red;
 }
 
 /** Custom classes **/
@@ -71,6 +75,12 @@ a:visited {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     background-color: #f8f8ff;
+}
+
+.intact-feedback {
+    /*position: fixed;*/
+    float: right;
+    padding-top: 180px;
 }
 
 /** Tables **/
