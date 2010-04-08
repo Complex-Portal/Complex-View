@@ -5,6 +5,7 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
@@ -17,6 +18,8 @@
     <composite:implementation>
 
         <h:outputScript name="intact.js" library="javascript" target="head"/>
+
+        <ia:yahooLogging/>
 
         <h:outputStylesheet>
 			.yui-skin-sam .yui-ac {
@@ -44,11 +47,11 @@
             </h:panelGroup>
 
             <h:panelGroup id="autocompletePanel" style="display: none">
-                <p:autoComplete id="autocomplete" value="#{cc.attrs.value}" widgetVar="#{autocompleteWidgetVar}"
+                <p:autoComplete id="autocomplete" widgetVar="#{autocompleteWidgetVar}"
                                 completeMethod="#{inputBioSourceController.autocomplete}"
                                 var="bioSource" itemLabel="#{bioSource.shortLabel}" itemValue="#{bioSource}"
                                 converter="bioSourceConverter" forceSelection="true"
-                                minQueryLength="2" typeAhead="true" maxResults="20"/>
+                                minQueryLength="2" typeAhead="true" maxResults="20" />
             </h:panelGroup>
 
                 <p:commandButton id="selectBtn" value="Select"
@@ -56,6 +59,26 @@
                         actionListener="#{inputBioSourceController.loadBioSources}"
                         update="bioSourceBrowserDialog,growl"/>
         </h:panelGrid>
+
+         <script type="text/javascript">
+                var #{autocompleteWidgetVar}__itemSelected = function( oSelf , elItem , oData ) {
+                    var labelAndAc = elItem[2];
+                    YAHOO.log('Selected: '+labelAndAc, null, '#{cc.clientId}');
+
+                    var label = labelAndAc[0];
+                    var ac = labelAndAc[1];
+
+                    document.getElementById('#{cc.clientId}:bioSource').value = ac;
+                    document.getElementById('#{cc.clientId}:bioSourceVisible').value = label;
+
+                    ia_hideById('#{cc.clientId}:autocompletePanel'); ia_showById('#{cc.clientId}:readonlyPanel');
+                };
+
+                #{autocompleteWidgetVar}.itemSelectEvent.subscribe(#{autocompleteWidgetVar}__itemSelected);
+
+             #{autocompleteWidgetVar}.getInputEl().value = '#{cc.attrs.value.shortLabel}';
+
+            </script>
 
         <p:outputPanel id="javascriptPanel">
             <h:outputScript>
@@ -85,9 +108,11 @@
                             #{cc.clientId}_bioSourceDlg.hide();
                             document.getElementById('#{cc.clientId}:bioSource').value = bioSourceAc;
                             document.getElementById('#{cc.clientId}:bioSourceVisible').value = bioSourceLabel;
-                            document.getElementById('#{cc.clientId}:autocomplete_input').value = bioSourceAc;
+                            #{autocompleteWidgetVar}.getInputEl().value = bioSourceLabel;
                         }
                     </h:outputScript>
+
+
 
                     <p:dataTable var="bioSource" value="#{inputBioSourceController.bioSources}"
                                  paginator="true" rows="10" lazy="true" dynamic="true"
