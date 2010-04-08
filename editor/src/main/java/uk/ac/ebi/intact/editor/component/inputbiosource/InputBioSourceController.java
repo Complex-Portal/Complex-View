@@ -18,8 +18,6 @@ package uk.ac.ebi.intact.editor.component.inputbiosource;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.BioSource;
 
@@ -27,8 +25,9 @@ import javax.faces.event.ActionEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -42,9 +41,10 @@ public class InputBioSourceController {
     private EntityManager entityManager;
 
     private LazyDataModel<BioSource> bioSources;
-    private List<BioSource> bioSources2;
 
     private BioSource selectedBioSource;
+
+    private String query;
 
     public InputBioSourceController() {
     }
@@ -56,13 +56,28 @@ public class InputBioSourceController {
     }
 
     public void loadBioSources( ActionEvent evt ) {
+        query = null;
         bioSources = LazyDataModelFactory.createLazyDataModel( entityManager, "select b from BioSource b order by b.shortLabel",
                                                                "select count(b) from BioSource b" );
+    }
 
-        bioSources2 = new ArrayList<BioSource>();
-        for ( int i = 0; i < 100; i++ ) {
-            bioSources2.add( new IntactMockBuilder( IntactContext.getCurrentInstance().getInstitution() ).createBioSourceRandom() );
+    public void search(ActionEvent evt) {
+        if (query == null) {
+            return;
         }
+        
+        Map<String,String> params = new HashMap<String,String>();
+        params.put("shortLabel", query+"%");
+        params.put("fullName", query+"%");
+        params.put("taxId", query);
+
+        String whereClause = "where lower(b.shortLabel) like lower(:shortLabel) or " +
+                "lower(b.fullName) like lower(:fullName) or " +
+                "b.taxId = :taxId";
+
+        bioSources = LazyDataModelFactory.createLazyDataModel( entityManager, "select b from BioSource b " + whereClause +
+                " order by b.shortLabel",
+                "select count(b) from BioSource b " + whereClause, params );
     }
 
     public void selectBioSource( BioSource bioSource ) {
@@ -85,12 +100,11 @@ public class InputBioSourceController {
         this.selectedBioSource = selectedBioSource;
     }
 
-
-    public List<BioSource> getBioSources2() {
-        return bioSources2;
+    public String getQuery() {
+        return query;
     }
 
-    public void setBioSources2( List<BioSource> bioSources2 ) {
-        this.bioSources2 = bioSources2;
+    public void setQuery(String query) {
+        this.query = query;
     }
 }

@@ -19,8 +19,6 @@
 
         <h:outputScript name="intact.js" library="javascript" target="head"/>
 
-        <ia:yahooLogging/>
-
         <h:outputStylesheet>
 			.yui-skin-sam .yui-ac {
 				width:200px;
@@ -98,8 +96,8 @@
 
                 <h:panelGrid columns="1">
                     <h:panelGroup>
-                        
-                        <h:commandButton type="button" value="Search" onclick="alert('Not implemented')"/>
+                        <h:inputText value="#{inputBioSourceController.query}"/>
+                        <p:commandButton value="Search" actionListener="#{inputBioSourceController.search}" update="bioSourceTable"/>
                         <h:commandButton type="button" value="New..." onclick="alert('Not implemented')"/>
                     </h:panelGroup>
 
@@ -114,8 +112,9 @@
 
 
 
-                    <p:dataTable var="bioSource" value="#{inputBioSourceController.bioSources}"
-                                 paginator="true" rows="10" lazy="true" dynamic="true"
+                    <p:dataTable id="bioSourceTable"
+                                 var="bioSource" value="#{inputBioSourceController.bioSources}"
+                                 paginator="#{inputBioSourceController.bioSources.rowCount gt 10}" rows="10" lazy="true" dynamic="true"
                                  paginatorPosition="top">
                         <p:column>
                             <p:commandLink value="Select"
