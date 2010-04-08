@@ -9,14 +9,14 @@
 
     <!-- INTERFACE -->
   <composite:interface>
-    <composite:attribute name="value"/>
+    <composite:attribute name="value" type="org.primefaces.model.LazyDataModel"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
         <p:dataTable var="interaction" value="#{cc.attrs.value}"
-                     paginator="true" rows="10" lazy="true" dynamic="true">
+                     paginator="#{cc.attrs.value.rowCount > 10}" rows="10" lazy="true" dynamic="true">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="AC"/>
@@ -46,8 +46,5 @@
         </p:dataTable>
 
     </composite:implementation>
-
-
-
 
 </ui:composition>
