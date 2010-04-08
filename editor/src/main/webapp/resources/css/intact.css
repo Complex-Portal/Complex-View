@@ -68,13 +68,18 @@ a:hover {
 }
 
 .intact-auditPanel {
+    font-size:6pt;
     float: right;
     padding: 5px;
-    margin-right: 30px;
+    margin-right: 5px;
     border: 1px solid #feba12;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     background-color: #f8f8ff;
+}
+
+.intact-auditPanel td.title {
+    font-weight:bold;
 }
 
 .intact-feedback {
