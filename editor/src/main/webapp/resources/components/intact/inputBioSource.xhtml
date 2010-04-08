@@ -100,7 +100,7 @@
                     <h:panelGroup>
                         <h:inputText value="#{inputBioSourceController.query}"/>
                         <p:commandButton value="Search" actionListener="#{inputBioSourceController.search}" update="bioSourceTable"/>
-                        <h:commandButton type="button" value="New..." onclick="alert('Not implemented')"/>
+                        <h:commandButton value="New..." title="Not yet implemented" disabled="true"/>
                     </h:panelGroup>
 
                     <h:outputScript>
@@ -111,8 +111,6 @@
                             #{autocompleteWidgetVar}.getInputEl().value = bioSourceLabel;
                         }
                     </h:outputScript>
-
-
 
                     <p:dataTable id="bioSourceTable"
                                  var="bioSource" value="#{inputBioSourceController.bioSources}"
@@ -157,8 +155,6 @@
                     </p:dataTable>
 
                 </h:panelGrid>
-
-                <hr/>
 
             </p:outputPanel>
         </p:dialog>
