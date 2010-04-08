@@ -78,7 +78,7 @@
 
              #{autocompleteWidgetVar}.getInputEl().value = '#{cc.attrs.value.shortLabel}';
 
-            </script>
+        </script>
 
         <p:outputPanel id="javascriptPanel">
             <h:outputScript>
@@ -93,9 +93,9 @@
 
         </p:outputPanel>
 
-        <p:dialog header="Organism selection" resizable="true" widgetVar="#{cc.clientId}_bioSourceDlg">
+        <p:dialog header="Organism selection" widgetVar="#{cc.clientId}_bioSourceDlg">
+           <p:outputPanel id="bioSourceBrowserDialog">
 
-            <p:outputPanel id="bioSourceBrowserDialog">
                 <h:panelGrid columns="1">
                     <h:panelGroup>
                         
@@ -129,7 +129,7 @@
                             </f:facet>
                             <h:outputText value="#{bioSource.taxId}"/>
                         </p:column>
-                        <p:column filterBy="#{bioSource.shortLabel}">
+                        <p:column>
                             <f:facet name="header" >
                                 <h:outputText value="Shortlabel"/>
                             </f:facet>
