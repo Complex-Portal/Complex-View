@@ -38,9 +38,9 @@
 
             <p:outputPanel id="basic">
                 <!--<ia:panelFormLayout id="basicInfoPanel" columns="1">-->
-                    <table>
+                    <table class="intact-tableBasicForm">
                         <tr>
-                            <td style="text-align:right;">
+                            <td class="firstCell">
                                 <h:outputLabel value="Shortlabel: " for="shortLabelTxt"/>
                             </td>
                             <td>
@@ -50,17 +50,17 @@
                                 </h:inputText>
                             </td>
                             <td style="padding-left: 50px;">
-                                <h:outputLabel value="AC: " for="acTxt" style="color:#999999;"/>
+                                <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
                                 <h:inputText id="acTxt" value="#{experimentController.experiment.ac}"
-                                             size="10" disabled="true" style="color:#999999;"/>
+                                             size="10" disabled="true" class="intact-disabled"/>
                             </td>
                             <td style="padding-left: 50px;">
-                                <h:outputLabel value="Publication IMEx ID: " for="imexIdTxt" style="color:#999999;"/>
-                                <h:inputText id="imexIdTxt" value="IM-X" size="10" disabled="true" style="color:#999999;"/>
+                                <h:outputLabel value="Publication IMEx ID: " for="imexIdTxt" class="intact-disabled"/>
+                                <h:inputText id="imexIdTxt" value="IM-X" size="10" disabled="true" class="intact-disabled"/>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="1" style="text-align:right;">
+                            <td colspan="1" class="firstCell">
                                 <h:outputLabel value="Host organism: " for="hostOrganismTxt"/>
                             </td>
                             <td colspan="3">
@@ -68,7 +68,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="1" style="text-align:right;">
+                            <td colspan="1" class="firstCell">
                                 <h:outputLabel value="Interaction detection method: " for="detMethodTxt"/>
                             </td>
                             <td colspan="3">

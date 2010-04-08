@@ -58,6 +58,15 @@ a:hover {
     width:98%
 }
 
+.intact-disabled {
+    color: #999999;
+}
+
+.intact-tableBasicForm td.firstCell {
+    vertical-align: top;
+    text-align: right;
+}
+
 .intact-userPanel {
     float: right;
     padding: 5px;

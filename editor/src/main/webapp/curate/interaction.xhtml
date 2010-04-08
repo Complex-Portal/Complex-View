@@ -42,38 +42,41 @@
             <p:outputPanel id="basic">
                 <!--<ia:panelFormLayout id="basicInfoPanel" columns="1">-->
 
-                <table>
+                <table class="intact-tableBasicForm">
                     <tr>
-                        <td>
+                        <td class="firstCell">
                             <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+                        </td>
+                        <td>
                             <h:inputText id="shortlabelTxt" value="#{interactionController.interaction.shortLabel}" size="30"/>
                         </td>
                         <td style="padding-left: 50px;">
-                            <h:outputLabel value="AC: " for="acTxt"/>
+                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
                             <h:inputText id="acTxt" value="#{interactionController.interaction.ac}"
-                                         size="10" disabled="true"/>
+                                         size="10" disabled="true" class="intact-disabled"/>
                         </td>
                         <td style="padding-left: 50px;">
-                             <h:outputLabel value="Publication IMEx ID: " for="imexIdTxt"/>
-                                <h:inputText id="imexIdTxt" value="IM-X"
-                                             size="10" disabled="true"/>
+                             <h:outputLabel value="IMEx ID: " for="imexIdTxt" class="intact-disabled"/>
+                                <h:inputText id="imexIdTxt" value="IM-X" size="10" disabled="true" class="intact-disabled"/>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3">
+                        <td colspan="1" class="firstCell">
                             <h:outputLabel value="Interaction type: " for="interactionTypeTxt"/>
-                            <ia:inputCvObject id="interactionTypeTxt" value="#{interactionController.interaction.cvInteractionType}"
-                                              cvIdentifier="MI:0190"/>
+                        </td>
+                        <td colspan="3">
+                            <ia:inputCvObject id="interactionTypeTxt" cvIdentifier="MI:0190"
+                                              value="#{interactionController.interaction.cvInteractionType}" />
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3">
-
+                        <td colspan="1" class="firstCell">
+                            <h:outputLabel value="Experiment: " for="experimentLists"/>
                         </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">
-
+                        <td colspan="3" >
+                            <p:pickList id="experimentLists"
+                                        value="#{interactionController.experimentLists}"
+                                        var="exp" itemLabel="#{exp}" itemValue="#{exp}" />
                         </td>
                     </tr>
                 </table>
@@ -84,7 +87,7 @@
             <h3>Interaction properties</h3>
 
             <p:outputPanel id="xrefsPanel">
-                <ia:collapsiblePanel  open="true" title="Xrefs (#{interactionController.interaction.xrefs.size()})">
+                <ia:collapsiblePanel  open="false   " title="Xrefs (#{interactionController.interaction.xrefs.size()})">
                     <ia:xrefsTable annotatedObjectController="#{interactionController}"
                                    databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                    qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
@@ -95,7 +98,7 @@
             </p:outputPanel>
 
             <p:outputPanel id="annotationsPanel">
-                <ia:collapsiblePanel open="true" title="Annotations (#{interactionController.interaction.annotations.size()})">
+                <ia:collapsiblePanel open="false" title="Annotations (#{interactionController.interaction.annotations.size()})">
                     <ia:annotationsTable annotatedObjectController="#{interactionController}"
                                          topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
                                          update="annotationsPanel"
@@ -105,7 +108,7 @@
             </p:outputPanel>
 
             <p:outputPanel id="aliasesPanel">
-                <ia:collapsiblePanel open="true" title="Aliases (#{interactionController.interaction.aliases.size()})">
+                <ia:collapsiblePanel open="false" title="Aliases (#{interactionController.interaction.aliases.size()})">
                     <ia:aliasTable annotatedObjectController="#{interactionController}"
                                    aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
                                    update="aliasesPanel"

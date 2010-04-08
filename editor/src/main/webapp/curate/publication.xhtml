@@ -56,9 +56,9 @@
 
                     <!--<ia:panelFormLayout id="basicInfoPanel" columns="1">-->
 
-                        <table>
+                        <table class="intact-tableBasicForm">
                             <tr>
-                                <td style="text-align:right;">
+                                <td class="firstCell">
                                     <h:outputLabel value="Identifier: " for="idTxt"/>
                                 </td>
                                 <td>
@@ -84,17 +84,17 @@
                                     </p:commandButton>
                                 </td>
                                 <td style="padding-left: 45px;">
-                                    <h:outputLabel value="AC: " for="acTxt" style="color:#999999;"/>
+                                    <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
                                     <h:inputText id="acTxt" value="#{publicationController.publication.ac}"
-                                                 size="10" disabled="true" style="color:#999999;"/>
+                                                 size="10" disabled="true" class="intact-disabled"/>
                                 </td>
-                                <td style="padding-left: 40px;">
-                                    <h:outputLabel value="IMEx Id: " for="imexIdTxt" style="color:#999999;"/>
-                                    <h:inputText id="imexIdTxt" value="IM-X" size="10" disabled="true" style="color:#999999;"/>
+                                <td style="text-align:right;">
+                                    <h:outputLabel value="IMEx Id: " for="imexIdTxt" class="intact-disabled"/>
+                                    <h:inputText id="imexIdTxt" value="IM-X" size="10" disabled="true" class="intact-disabled"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align:right;">
+                                <td class="firstCell">
                                     <h:outputLabel value="Title: " for="titleTxt"/>
                                 </td>
                                 <td colspan="3">
@@ -105,7 +105,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align:right;">
+                                <td class="firstCell">
                                     <h:outputLabel value="Authors: " for="authorsTxt"/>
                                 </td>
                                 <td colspan="3">
@@ -116,7 +116,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="1" style="text-align:right;">
+                                <td colspan="1" class="firstCell">
                                     <h:outputLabel value="Journal: " for="journalTxt"/>
                                 </td>
                                 <td colspan="2">
@@ -125,7 +125,7 @@
                                                 listener="#{publicationController.changed}"/>
                                     </h:inputText>
                                 </td>
-                                <td colspan="1" style="padding-left: 100px;">
+                                <td colspan="1" style="text-align: right;">
                                     <h:outputLabel value="Year: " for="yearTxt"/>
                                     <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4">
                                         <f:convertNumber pattern="#"/>
@@ -135,7 +135,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align:right;">
+                                <td class="firstCell">
                                     <h:outputLabel value="Dataset(s): " for="datasetsMenu"/>
                                 </td>
                                 <td colspan="3">
@@ -160,12 +160,12 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align:right;">
+                                <td class="firstCell">
                                     <h:outputLabel value="On hold: " for="onHoldTxt"/>
                                 </td>
                                 <td colspan="3">
                                     <h:panelGroup>
-                                        <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="50">
+                                        <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70">
                                             <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:infoPanels :editorForm:changesPanel"
                                                     listener="#{publicationController.changed}"/>
                                         </h:inputText>
