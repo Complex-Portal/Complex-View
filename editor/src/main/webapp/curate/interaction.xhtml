@@ -26,7 +26,7 @@
             </div>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{interactionController.interaction != null}">
+        <h:panelGroup id="info" rendered="#{interactionController.interaction != null}">
 
             <h:link outcome="/curate/publication"
                     value="#{publicationController.publication.shortLabel}"
@@ -118,7 +118,7 @@
 
             <h3>Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})</h3>
 
-            <ia:participantsTable value="#{interactionController.participantDataModel}"/>
+            <ia:participantsTable id="participantTable" value="#{interactionController.interaction.components}"/>
 
         </h:panelGroup>
 

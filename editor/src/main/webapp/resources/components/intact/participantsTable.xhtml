@@ -5,41 +5,74 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
-                xmlns:composite="http://java.sun.com/jsf/composite">
+                xmlns:composite="http://java.sun.com/jsf/composite"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
     <!-- INTERFACE -->
   <composite:interface>
-    <composite:attribute name="value"/>
+    <composite:attribute name="value" type="java.util.Collection"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-         <p:dataTable var="participant" value="#{cc.attrs.value}"
-                paginator="true" rows="10" lazy="true" dynamic="true">
-                <p:column>
-                <f:facet name="header">
-                    <h:outputText value="AC"/>
-                </f:facet>
-                <h:outputText value="#{participant.ac}"/>
-            </p:column>
-                <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Shortlabel"/>
-                </f:facet>
-                    <h:outputText value="#{participant.shortLabel}"/>
-            </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Type"/>
-                </f:facet>
-                <h:outputText value="#{participant.interactor.cvInteractorType.shortLabel}"/>
-            </p:column>
-         </p:dataTable>
+        <ui:repeat value="#{cc.attrs.value}" var="participant" varStatus="status">
+
+            <ia:collapsiblePanel open="false"
+                                 title="#{participant.interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
+                                 titleRight="#{participant.interactor.cvInteractorType.shortLabel} | #{participant.interactor.bioSource.shortLabel} | #{participant.interactor.fullName}"
+                                 titleRightStyle="color:#CDCDCD;">
+
+                <div style="width: 98%; #{(status.index % 2) == 0 ? 'background-color: #f8f8ff;' : ''}};">
+                    <table class="tableBasicForm" style="padding-left: 50px;">
+                        <tr>
+                            <td class="firstCell">
+                                <h:outputLabel value="Experimental role(s): " for="expRoleTxt"/>
+                            </td>
+                            <td >
+                                <!-- TODO handle the multiple experimental role -->
+                                <h:inputText id="expRoleTxt" value="TODO" size="10" />
+                                <!--<ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
+                                value="#{interactionController.getExperimentalRole(participant)}"/>-->
+                            </td>
+                            <td style="padding-left: 150px;">
+                                <h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>
+                                <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" stepFactor="1"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="firstCell">
+                                <h:outputLabel value="Biological role: " for="bioRoleTxt"/>
+                            </td>
+                            <td colspan="2">
+                                <!-- TODO handle the multiple experimental role -->
+                                <ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"
+                                                  value="#{participant.cvBiologicalRole}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="firstCell">
+                                <!--<h:outputLabel value="Expressed in: " for="expressedInTxt"/>-->
+                                <h:outputLabel value="Expressed in: "/>
+                            </td>
+                            <td>
+                                <!--<ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"/>-->
+                            </td>
+                            <td style="padding-left: 150px;">
+                                <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
+                                <!-- TODO handle author given name ...  -->
+                                <h:inputText id="authorGivenNameTxt" value="#{interactionController.getAuthorGivenName(participant)}" size="10">
+                                    <f:ajax event="valueChange" listener="#{interactionController.changed}"/>
+                                </h:inputText>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </ia:collapsiblePanel>
+
+        </ui:repeat>
 
     </composite:implementation>
-
-
-
 
 </ui:composition>
