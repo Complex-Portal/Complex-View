@@ -29,31 +29,33 @@ import uk.ac.ebi.intact.view.webapp.controller.news.utils.FaqUtil;
 @Controller("faqBean")
 @Scope("request")
 public class FaqBean implements Serializable{
-	
+
+    private static final Log log = LogFactory.getLog( FaqBean.class );
+
 	@Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
-    private static final Log log = LogFactory.getLog( FaqBean.class );
-    
     private Faq faqObject;
-    private List<Topic> topics;    
+
+    private List<Topic> topics;
+
     public FaqBean() {
     }
     
-    private void test(){
-    	Topic testTopic = new Topic();
-    	
-    	testTopic.getTopicInformation().getName();
-    
-    	testTopic.getTopicInformation().getDescription();
-    	
-    	List<Item> items = testTopic.getItems();
-    	
-    	Item item = items.get(0);
-    	item.getId();
-    	item.getAnswer();
-    	item.getQuestion();
-    }
+//    private void test(){
+//    	Topic testTopic = new Topic();
+//
+//    	testTopic.getTopicInformation().getName();
+//
+//    	testTopic.getTopicInformation().getDescription();
+//
+//    	List<Item> items = testTopic.getItems();
+//
+//    	Item item = items.get(0);
+//    	item.getId();
+//    	item.getAnswer();
+//    	item.getQuestion();
+//    }
 
     @PostConstruct
     public void setup() {
@@ -62,19 +64,12 @@ public class FaqBean implements Serializable{
         try {
             faqObject = FaqUtil.readFaq( faqXml );
             topics = faqObject.getTopics();
-
-
         } catch (Throwable e) {
-            e.printStackTrace();
+            log.error( "Failure while initiaizing the FAQ from: " + faqXml, e );
         }
     }
     
     public List<Topic> getTopics(){
     	return topics;
     }
-    
-    public String getFaqUrl(){
-    	return "FAQ URL: "+intactViewConfiguration.getFaqUrl();
-    }
-
 }

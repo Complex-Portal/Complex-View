@@ -34,7 +34,7 @@ public class FaqUtil {
             URL datasetsUrl = new URL(faqXml);
             objFaq = (Faq) readFaqXml(datasetsUrl.openStream());
         } catch (Throwable e) {
-            log.error(e);
+            log.error("Error while loading FAQ from: " + faqXml, e);
             objFaq = new Faq();
         }
 
@@ -46,5 +46,4 @@ public class FaqUtil {
         Unmarshaller unmarshaller = jc.createUnmarshaller();
         return unmarshaller.unmarshal(is);
     }
-    
 }

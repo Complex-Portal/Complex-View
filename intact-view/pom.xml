@@ -43,7 +43,7 @@
         <intact.news.url>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</intact.news.url>
         <intact.dotm.url>http://www.ebi.ac.uk/~intact/site/dotm/dotm-1.1.xml</intact.dotm.url>
         <intact.ftp.url>ftp://ftp.ebi.ac.uk/pub/databases/intact/current</intact.ftp.url>
-        <intact.faq.url>http://www.ebi.ac.uk/~epfeif/faq_sample.xml</intact.faq.url>
+        <intact.faq.url>http://www.ebi.ac.uk/~intact/site/faq/faq-latest.xml</intact.faq.url>
 
         <intact.webapp.name>IntAct</intact.webapp.name>
         <intact.webapp.logo.url>http://www.ebi.ac.uk/intact/site/images/logo_intact_small.gif</intact.webapp.logo.url>
