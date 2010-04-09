@@ -348,13 +348,13 @@ function configuration()
         /**
 		* STYLESHEET
 		*/
-			stylesheet_url[0] = ['uniprot', proxy_url + '?t=' + timeout + '&m=stylesheet&s=http://www.ebi.ac.uk/das-srv/uniprot/das/aristotle/'];
+			stylesheet_url[0] = ['uniprot', proxy_url + '?t=' + timeout + '&m=stylesheet&s=http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/'];
 			//stylesheet_url[0] = ['uniprot', 'files/stylesheet.xml']; // LOCAL STYLESHEET
 
 		/**
 		* REFERENCE SERVER
 		*/
-			sequence_url[0] = ['uniprot', proxy_url + '?t=' + timeout + '&m=sequence&q=' + query_id + '&s=http://www.ebi.ac.uk/das-srv/uniprot/das/aristotle/']; // UNIPROT REFERENCE SERVER
+			sequence_url[0] = ['uniprot', proxy_url + '?t=' + timeout + '&m=sequence&q=' + query_id + '&s=http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/']; // UNIPROT REFERENCE SERVER
 			//sequence_url[0] = ['uniprot', 'files/seq_A4_Human_uniprot02.xml']; // LOCAL SEQUENCE (just for testing purposes)
 			//if(dasty_mainpage_name.indexOf("interactor") != -1)
 			//	{
@@ -387,7 +387,7 @@ function configuration()
 					* SPECIFIC DAS ANNOTATION SERVERS
 					*/
 						feature_url_prefix = proxy_url + '?m=features&q=' + query_id + '&t=' + timeout + '&s=';
-                    feature_url[0] = {id : 'uniprot', url : feature_url_prefix + 'http://www.ebi.ac.uk/das-srv/uniprot/das/aristotle/'};
+                    feature_url[0] = {id : 'uniprot', url : feature_url_prefix + 'http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/'};
                     feature_url[1] = {id : 'interpro', url : feature_url_prefix + 'http://das.ensembl.org/das/interpro/'};
                     feature_url[2] = {id : 'intact', url : feature_url_prefix + '${das.annotationserver.intact.url}'};
                     //feature_url[3] = {id : 'chebi', url : feature_url_prefix + '${das.annotationserver.chebi.url}'};
