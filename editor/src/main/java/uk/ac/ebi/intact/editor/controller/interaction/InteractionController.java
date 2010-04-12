@@ -31,6 +31,7 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -51,9 +52,7 @@ public class InteractionController extends AnnotatedObjectController {
     private String ac;
     private DualListModel<String> experimentLists;
     private LazyDataModel<Component> participantDataModel;
-
-    @Autowired
-    private EntityManager entityManager;
+    private String participantQuery;
 
     @Autowired
     private PublicationController publicationController;
@@ -72,21 +71,6 @@ public class InteractionController extends AnnotatedObjectController {
     public DualListModel<String> getExperimentLists() {
         return experimentLists;
     }
-
-//    public Collection<Component> getComponent( int firstResult, int maxResults ) {
-//
-//        log.debug( "HqlLazyDataModel.fetchLazyData" );
-//        final String hqlQuery = "select count(c) from Component c where c.interaction.ac = '" + ac + "'";
-//        Query query = entityManager.createQuery( hqlQuery );
-//        log.debug( "HQL: " + hqlQuery );
-//
-//        query.setFirstResult( firstResult );
-//        query.setMaxResults( maxResults );
-//
-//        List<Component> results = (List<Component>) query.getResultList();
-//
-//        return results;
-//    }
 
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
@@ -173,11 +157,11 @@ public class InteractionController extends AnnotatedObjectController {
         this.interaction = interaction;
     }
 
-    public LazyDataModel<Component> getParticipantDataModel() {
-        return participantDataModel;
+    public String getParticipantQuery() {
+        return participantQuery;
     }
 
-    //////////////////////////////////
+//////////////////////////////////
     // Participant related methods
 
     public String getInteractorIdentity(Interactor interactor) {
@@ -197,5 +181,11 @@ public class InteractionController extends AnnotatedObjectController {
     public String getAuthorGivenName( Component component ) {
         AnnotatedObjectUtils.getAliasByType( component, CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
         return null;
+    }
+
+    public void searchAndAddParticipant( ActionEvent evt ) {
+
+        log.info( "searchAndAddParticipant("+ participantQuery +"): not yet implemented" );
+
     }
 }

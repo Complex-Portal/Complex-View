@@ -1,0 +1,155 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+
+                template="/curate/curate_template.xhtml">
+
+
+    <ui:define name="curateContent">
+        <f:metadata>
+            <f:viewParam name="ac" value="#{participantController.ac}"/>
+            <f:event type="preRenderView" listener="#{participantController.loadData}"/>
+        </f:metadata>
+
+        <h:panelGroup rendered="#{participantController.participant == null}">
+            No participant loaded!
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{participantController.participant != null}">
+            <div id="auditInfo" class="intact-auditPanel">
+                <ia:creatorUpdator annotatedObject="#{participantController.participant}" />
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup id="info" rendered="#{participantController.participant != null}">
+
+            <h:link outcome="/curate/publication"
+                    value="#{publicationController.publication.shortLabel}"
+                    title="#{publicationController.publication.fullName}"
+                    includeViewParams="true"/>
+            &#160;>&#160;
+            <h:link outcome="/curate/experiment" value="#{experimentController.experiment.shortLabel}" includeViewParams="true"/>
+            &#160;>&#160;
+            <h:link outcome="/curate/interaction" value="#{interactionController.interaction.shortLabel}" includeViewParams="true"/>
+            &#160;>&#160;
+            #{participantController.participant.interactor.shortLabel}
+
+            <h2>Participant</h2>
+
+            <p:outputPanel id="basic">
+
+                <table class="intact-tableBasicForm">
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+                        </td>
+                        <td>
+                            <h:inputText id="shortlabelTxt" value="#{participantController.participant.shortLabel}" size="30"/>
+                        </td>
+                        <td style="padding-left: 50px;">
+                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
+                            <h:inputText id="acTxt" value="#{participantController.participant.ac}"
+                                         size="10" disabled="true" class="intact-disabled"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="#{participantController.participant.interactor.cvInteractorType.shortLabel}: " for="interactorTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="interactorTxt" value="#{participantController.participant.interactor.shortLabel}"
+                                    disabled="true"/>
+                            <h:commandButton value="Change" action="TODO"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="authorGivenNameTxt" value="#{interactionController.getAuthorGivenName(participantController.participant)}" size="10" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Expressed in: " for="expressedInTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <ia:inputBioSource id="expressedInTxt" value="#{participantController.participant.expressedIn}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Biological role: " for="bioRoleTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="bioRoleTxt" value="#{participantController.participant.cvBiologicalRole.shortLabel}"   />
+                        </td>
+                    </tr>
+                 <tr>
+                     <td class="firstCell">
+                         <h:outputLabel value="Experimental role(s): " for="expRoleTxt"/>
+                     </td>
+                     <td >
+                         <!-- TODO handle the multiple experimental role -->
+                         <!--<ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
+                         value="#{interactionController.getExperimentalRole(participant)}"/>-->
+                         <h:inputText id="expRoleTxt" value="#{participantController.participant.cvExperimentalRole.shortLabel}"   />
+                     </td>
+                     <td style="padding-left: 150px;">
+                         <h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>
+                         <p:spinner id="stoichiometryTxt" value="#{participantController.participant.stoichiometry}" stepFactor="1"/>
+                     </td>
+                 </tr>
+
+                </table>
+
+            </p:outputPanel>
+
+            <h3>Participant properties</h3>
+
+            <p:outputPanel id="xrefsPanel">
+                <ia:collapsiblePanel  open="false" title="Xrefs (#{participantController.participant.xrefs.size()})">
+                    <ia:xrefsTable annotatedObjectController="#{participantController}"
+                                   databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                   qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                   update="xrefsPanel"
+                                   render=":editorForm:basic"
+                                   style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
+
+            <p:outputPanel id="annotationsPanel">
+                <ia:collapsiblePanel open="false" title="Annotations (#{participantController.participant.annotations.size()})">
+                    <ia:annotationsTable annotatedObjectController="#{participantController}"
+                                         topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
+                                         update="annotationsPanel"
+                                         render=":editorForm:basic"
+                                         style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
+
+            <p:outputPanel id="aliasesPanel">
+                <ia:collapsiblePanel open="false" title="Aliases (#{participantController.participant.aliases.size()})">
+                    <ia:aliasTable annotatedObjectController="#{participantController}"
+                                   aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                                   update="aliasesPanel"
+                                   style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
+
+            <h3>Features (#{participantController.participant.bindingDomains.size()})</h3>
+
+            <ia:featureTable value="#{participantController.participant.bindingDomains}"
+                             render="#{not participantController.participant.bindingDomains.isEmpty()}" />
+            
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>

@@ -18,22 +18,40 @@
 
         <ui:repeat value="#{cc.attrs.value}" var="participant" varStatus="status">
 
-            <ia:collapsiblePanel open="false"
-                                 title="#{participant.interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
-                                 titleRight="#{participant.interactor.cvInteractorType.shortLabel} | #{participant.interactor.bioSource.shortLabel} | #{participant.interactor.fullName}"
-                                 titleRightStyle="color:#CDCDCD;">
+            <div style="width: 960px; #{(status.index % 2) == 0 ? 'background-color: #f8f8ff;' : ''}};">
 
-                <div style="width: 98%; #{(status.index % 2) == 0 ? 'background-color: #f8f8ff;' : ''}};">
-                    <table class="tableBasicForm" style="padding-left: 50px;">
+                <ia:collapsiblePanel open="false"
+                                    title="#{participant.interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
+                                    titleRight="#{participant.interactor.cvInteractorType.shortLabel} | #{participant.interactor.bioSource.shortLabel} | #{participant.interactor.fullName}"
+                                    titleRightStyle="color:#CDCDCD;">
+
+                    <table class="tableBasicForm" width="900px" style="padding-left: 50px;">
+                        <tr>
+                            <td class="firstCell">
+                                <p:graphicImage url="/resources/images/shallow-star.png" onclick="alert('Favorite not implemented yet!');" />
+                                &#160;&#160;&#160;
+                                <h:link outcome="/curate/participant" value="Edit" includeViewParams="true">
+                                    <f:param name="ac" value="#{participant.ac}"/>
+                                </h:link>
+                            </td>
+                            <td >
+                                <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
+                                <h:inputText id="acTxt" value="#{participant.ac}"
+                                             size="10" disabled="true" class="intact-disabled"/>
+                            </td>
+                            <td style="text-align: right;">
+
+                            </td>
+                        </tr>
                         <tr>
                             <td class="firstCell">
                                 <h:outputLabel value="Experimental role(s): " for="expRoleTxt"/>
                             </td>
                             <td >
                                 <!-- TODO handle the multiple experimental role -->
-                                <h:inputText id="expRoleTxt" value="TODO" size="10" />
                                 <!--<ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
                                 value="#{interactionController.getExperimentalRole(participant)}"/>-->
+                                <h:inputText id="expRoleTxt" value="#{participant.cvExperimentalRole.shortLabel}"   />
                             </td>
                             <td style="padding-left: 150px;">
                                 <h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>
@@ -45,18 +63,18 @@
                                 <h:outputLabel value="Biological role: " for="bioRoleTxt"/>
                             </td>
                             <td colspan="2">
-                                <!-- TODO handle the multiple experimental role -->
-                                <ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"
-                                                  value="#{participant.cvBiologicalRole}" />
+                                <!--<ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"-->
+                                                  <!--value="#{participant.cvBiologicalRole}" />-->
+                                <h:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />
                             </td>
                         </tr>
                         <tr>
                             <td class="firstCell">
-                                <!--<h:outputLabel value="Expressed in: " for="expressedInTxt"/>-->
-                                <h:outputLabel value="Expressed in: "/>
+                                <h:outputLabel value="Expressed in: " for="expressedInTxt"/>
+                                <!--<h:outputLabel value="Expressed in: "/>-->
                             </td>
                             <td>
-                                <!--<ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"/>-->
+                                <ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"/>
                             </td>
                             <td style="padding-left: 150px;">
                                 <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
@@ -66,10 +84,20 @@
                                 </h:inputText>
                             </td>
                         </tr>
-                    </table>
-                </div>
+                        <tr>
+                            <td colspan="3">
 
-            </ia:collapsiblePanel>
+                                <h4>Features (#{participant.bindingDomains.size()})</h4>
+
+                                <ia:featureTable value="#{participant.bindingDomains}"
+                                                 render="#{not participant.bindingDomains.isEmpty()}"/>
+                            </td>
+                        </tr>
+                    </table>
+
+               </ia:collapsiblePanel>
+                
+            </div>
 
         </ui:repeat>
 
