@@ -13,6 +13,8 @@
     <!-- INTERFACE -->
   <composite:interface>
       <composite:attribute name="label" required="true"/>
+      <composite:attribute name="labelStyle"/>
+
       <composite:facet name="help"/>
       <composite:facet name="end"/>
   </composite:interface>
@@ -20,25 +22,29 @@
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <table>
-            <tr style="vertical-align:top">
-                <td>
-                    <h:outputText value="#{cc.attrs.label}"/>
-                </td>
-                <td>
-                    <composite:insertChildren/>
-                </td>
-                <td>
-                    <composite:insertFacet name="end"/>
-                </td>
-            </tr>
-            <tr>
-                <td>&#160;</td>
-                <td colspan="2">
-                    <composite:insertFacet name="help"/>
-                </td>
-            </tr>
-        </table>
+        <p:outputPanel rendered="#{cc.attrs.render}">
+
+            <table>
+                <tr style="vertical-align:top">
+                    <td>
+                        <h:outputText value="#{cc.attrs.label}" style="#{cc.attr.labelStyle}}"/>
+                    </td>
+                    <td>
+                        <composite:insertChildren/>
+                    </td>
+                    <td>
+                        <composite:insertFacet name="end"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&#160;</td>
+                    <td colspan="2">
+                        <composite:insertFacet name="help"/>
+                    </td>
+                </tr>
+            </table>
+
+        </p:outputPanel>
 
     </composite:implementation>
 
