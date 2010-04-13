@@ -1,3 +1,23 @@
 a img {
     border: 0;
 }
+
+.yui-skin-sam .yui-navset .yui-nav {
+}
+
+.yui-skin-sam .yui-navset .yui-nav a {
+}
+
+.yui-skin-sam .yui-navset .yui-nav a:hover {
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected a,
+.yui-skin-sam .yui-navset .yui-nav .selected a:focus,
+.yui-skin-sam .yui-navset .yui-nav .selected a:hover {
+    background: #FFFFFF;
+}
+
+.yui-skin-sam .yui-navset .yui-content {
+    background: #FFFFFF !important;
+    border-color: #33CC00;
+}
