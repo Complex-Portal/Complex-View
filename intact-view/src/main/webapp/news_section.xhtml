@@ -5,8 +5,6 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site">
 
-        <c:set var="newsItems" scope="request" value="#{newsBean.news}"/>
-
         <ui:param name="max" value="#{intactViewConfiguration.maxNewsInBox}"/>
 
         <script>
@@ -31,16 +29,14 @@
             <a href="#" onclick="ebifaces_news_toggleVisibility('newsBox1')">News</a>
             <h:outputText value="  "/>
 
-            <c:if test="#{newsFeedUrl != null}">
-                <h:outputLink value="#{newsFeedUrl}">
-                    <h:graphicImage alt="RSS" url="http://www.ebi.ac.uk/intact/site/images/xml_rss2.gif"
+                <h:outputLink value="#{newsFeedUrl}" rendered="#{newsFeedUrl != null}">
+                    <h:graphicImage alt="RSS" url="images/feed.gif"
                                     style="border:0"/>
                 </h:outputLink>
-            </c:if>
         </div>
         <div id="newsBox1" class="iconboxcontents" style="display:block; #{sf:isBrowserExplorer()? 'width:143px;' : ''}">
 
-            <c:forEach var="newsItem" items="#{newsItems}" end="#{max-1}">
+            <ui:repeat var="newsItem" value="#{newsBean.news}" size="#{max-1}">
                 <strong>
                     <h:outputText value="#{sf:convertToDate(newsItem.date,'yyyyMMdd')}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
@@ -53,20 +49,20 @@
 
                     <h:outputText value="#{newsItem.description.value}" escape="#{newsItem.description.escape}"/>
 
-                    <c:if test="#{newsItem.moreLink != null}">
+                    <h:panelGroup rendered="#{newsItem.moreLink != null}">
                         <h:outputText value=" "/>
                         <h:outputLink value="#{newsItem.moreLink}">
                             <h:outputText value="[more]"/>
                         </h:outputLink>
-                    </c:if>
+                    </h:panelGroup>
 
                 </p>
                 <br/>
-            </c:forEach>
+            </ui:repeat>
 
-            <h:outputText value="No news found" rendered="#{empty newsItems}"/>
+            <h:outputText value="No news found" rendered="#{empty newsBean.news}"/>
 
-            <h:outputText value="More news in the " rendered="#{not empty newsItems}"/>
+            <h:outputText value="More news in the " rendered="#{not empty newsBean.news}"/>
             <h:commandLink value="Archive" action="news.archive"/>
 
         </div>

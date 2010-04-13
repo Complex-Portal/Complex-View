@@ -3,19 +3,13 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
-                xmlns:iav="http://intact.ebi.ac.uk/view"
 
                 template="template-ebi.xhtml">
 
     <ui:define name="breadcrumbs">
 
-        <tr:group rendered="#{intactView['webapp.name'] == 'IntAct'}">
+        <h:panelGroup rendered="#{intactView['webapp.name'] == 'IntAct'}">
             <div class="breadcrumbs">
                 <a class="firstbreadcrumb" href="http://www.ebi.ac.uk/">EBI</a>
                 <a href="http://www.ebi.ac.uk/Databases">Databases</a>
@@ -23,17 +17,17 @@
                 <a href="http://www.ebi.ac.uk/intact">IntAct</a>
                 <a href="#{ebisf:absoluteContextPath()}">View</a>
             </div>
-        </tr:group>
+        </h:panelGroup>
     </ui:define>
 
     <ui:define name="sidebar">
 
-        <tr:panelHorizontalLayout halign="center">
+        <h:panelGroup style="text-align:center">
             <h:graphicImage alt="#{intactView['webapp.name']} Logo"
                             url="#{intactView['webapp.logo.url']}"
                             rendered="#{intactView['webapp.logo.url'] != ''}"
                             style="border:0"/>
-        </tr:panelHorizontalLayout>
+        </h:panelGroup>
 
         <ui:include src="/left_main_menu.xhtml"/>
 

@@ -1,25 +1,34 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:jsp="http://java.sun.com/JSP/Page"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:iaf="http://intact.ebi.ac.uk/functions">
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:composite="http://java.sun.com/jsf/composite">
 
-    <table cellspacing="1" cellpadding="0" style="text-align:left; border-width:0px">
+    <!-- INTERFACE -->
+  <composite:interface>
+      <composite:attribute name="interactor" type="psidev.psi.mi.tab.model.Interactor" required="true"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+         <table cellspacing="1" cellpadding="0" style="text-align:left; border-width:0px">
         <tr>
-                <ui:param name="cvtype" value="#{iaf:getCvObjectFromIdentifier(facesContext,interactor.interactorType.identifier,'uk.ac.ebi.intact.model.CvInteractorType')}"/>
+                <ui:param name="cvtype" value="#{iaf:getCvObjectFromIdentifier(facesContext,cc.attrs.interactor.interactorType.identifier,'uk.ac.ebi.intact.model.CvInteractorType')}"/>
             <td style="text-align:center; width:15px; background: background:#{iconGeneratorImpl.typeColourMap[interactor.interactorType.identifier].colourHex};color:#555555;font-size:7pt; border:#ADADAD dotted 1px">
                     <h:outputText value="#{iconGeneratorImpl.typeColourMap[cvtype.identifier].initials}" shortDesc="#{cvtype.shortLabel}"/>
             </td>
 
-            <ui:repeat var="cvXref" value="#{interactor.experimentalRoles}">
+            <ui:repeat var="cvXref" value="#{cc.attrs.interactor.experimentalRoles}">
                 <ui:param name="cvobject"
                        value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'uk.ac.ebi.intact.model.CvExperimentalRole')}"/>
                 <td style="text-align:center; width:15px; background: background:#{iconGeneratorImpl.typeColourMap[cvXref.identifier].colourHex};color:#555555;font-size:7pt; border:#ADADAD solid 1px">
                     <h:outputText value="#{iconGeneratorImpl.expRoleColourMap[cvobject.identifier].initials}" shortDesc="#{cvobject.shortLabel}"/>
                 </td>
             </ui:repeat>
-            <ui:repeat var="cvXref" value="#{interactor.biologicalRoles}">
+            <ui:repeat var="cvXref" value="#{cc.attrs.interactor.biologicalRoles}">
                 <ui:param name="cvobject"
                        value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'uk.ac.ebi.intact.model.CvBiologicalRole')}"/>
                 <td style="text-align:center; width:15px; background: background:#{iconGeneratorImpl.typeColourMap[cvXref.text].colourHex};color:#555555;font-size:7pt; border:#ADADAD dashed">
@@ -28,4 +37,7 @@
             </ui:repeat>
         </tr>
     </table>
+
+    </composite:implementation>
+
 </ui:composition>
