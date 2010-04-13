@@ -3,65 +3,63 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
-                xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions" >
 
-                xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                xmlns:iaf="http://intact.ebi.ac.uk/functions"
-                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions">
+    <h2>"Network visualisation"</h2>
 
-    <tr:panelHeader text="Network visualisation" >
+    SKDFAOJGA
 
-        <trh:tableLayout width="100%">
-            <trh:rowLayout>
-                <trh:cellFormat width="80%">
+    <table width="100%">
+        <tr>
+            <td width="80%">
+                <h:graphicImage alt="hvImage" url="#{userQuery.hierarchViewImageUrl}&amp;h=700&amp;w=700"/>
 
-                    <tr:image source="#{userQuery.hierarchViewImageUrl}&amp;h=700&amp;w=700" inlineStyle="border-width:0"/>
+            </td>
 
-                </trh:cellFormat>
+            <td width="20%" style="text-align:right; vertical-align:top">
 
-                <trh:cellFormat width="20%" halign="right" valign="top">
+                <p:panel header="Open in Cytoscape" style="width:280px;">
+                    <ot:separateConversationContext>
 
-                    <tr:panelBox text="Open in Cytoscape" inlineStyle="width:280px;">
+                    <div style="text-align:center">
+                        <h:outputLink value="/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
+                            <h:graphicImage alt="cytoscapeIcon" url="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
+                        </h:outputLink>
+                    </div>
 
-                        <tr:panelHorizontalLayout halign="center">
-                            <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
-                                <tr:image source="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
-                            </tr:goLink>
-                        </tr:panelHorizontalLayout>
+                    <br/>
 
-                        <br/>
+                    <h:outputText value="Click "/>
+                    <h:outputLink url="/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
+                        &#160;here&#160;
+                    </h:outputLink>
+                    <h:outputText value=" or on the icon above to start Cytoscape."/>
 
-                        <tr:outputText value="Click " />
-                        <tr:goLink destination="/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
-                            &#160;here&#160;
-                        </tr:goLink>
-                        <tr:outputText value=" or on the icon above to start Cytoscape." />
+                    <br/>
+                    <br/>
 
-                        <br/>
-                        <br/>
+                    <h:outputText value="This is going to open current search in a WebStart"/>
 
-                        <tr:outputText value="This is going to open current search in a WebStart" />
+                    <h:outputLink value="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp"
+                               target="_blank">
+                        <h:graphicImage alt="helpIcon" url="/images/help.png" style="vertical-align: baseline"/>
+                    </h:outputLink>
 
-                        <tr:goLink destination="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" targetFrame="_blank">
-                            <tr:image source="/images/help.png" style="vertical-align: baseline;"/>
-                        </tr:goLink>
+                    <h:outputText value=" version of Cytoscape 2.6.3"/>
 
-                        <tr:outputText value=" version of Cytoscape 2.6.3" />
+                    <h:outputLink value="http://www.cytoscape.org/" target="_blank">
+                        <h:graphicImage alt="helpIcon" url="/images/help.png"
+                                        style="vertical-align: baseline"/>
+                    </h:outputLink>
 
-                        <tr:goLink destination="http://www.cytoscape.org/" targetFrame="_blank">
-                            <tr:image source="/images/help.png" style="vertical-align: baseline;"/>
-                        </tr:goLink>
+                    </ot:separateConversationContext>
 
-                    </tr:panelBox>
+                </p:panel>
 
-                </trh:cellFormat>
-            </trh:rowLayout>
-        </trh:tableLayout>
-
-    </tr:panelHeader>
+            </td>
+        </tr>
+    </table>
 
 </ui:composition>

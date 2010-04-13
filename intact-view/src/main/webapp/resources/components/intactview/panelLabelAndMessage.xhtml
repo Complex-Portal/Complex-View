@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+  <composite:interface>
+      <composite:attribute name="label" required="true"/>
+      <composite:facet name="help"/>
+      <composite:facet name="end"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <table>
+            <tr>
+                <td>
+                    <h:outputText value="#{cc.attrs.label}"/>
+                </td>
+                <td>
+                    <composite:insertChildren/>
+                </td>
+                <td>
+                    <composite:insertFacet name="end"/>
+                </td>
+            </tr>
+            <tr>
+                <td>&#160;</td>
+                <td colspan="2">
+                    <composite:insertFacet name="help"/>
+                </td>
+            </tr>
+        </table>
+
+    </composite:implementation>
+
+</ui:composition>

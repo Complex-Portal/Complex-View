@@ -11,14 +11,14 @@
         xsi:schemaLocation="http://www.ebi.ac.uk/psi/mitab /WEB-INF/psimitab.taglib.xml">
 
     <ui:component rendered="#{rendered == null? true : sf:convertToBoolean(rendered)}">
-        <c:set var="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, xref)}"/>
-        <c:set var="onlyText" value="#{onlyText == null? false : sf:convertToBoolean(onlyText)}"/>
-        <c:set var="itemPerLine" value="#{itemPerLine == null? false : sf:convertToBoolean(itemPerLine)}"/>
-        <c:set var="itemDisabled" value="#{itemPerLine == null? false : sf:convertToBoolean(disableLinks)}"/>
+        <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, xref)}"/>
+        <ui:param name="onlyText" value="#{onlyText == null? false : sf:convertToBoolean(onlyText)}"/>
+        <ui:param name="itemPerLine" value="#{itemPerLine == null? false : sf:convertToBoolean(itemPerLine)}"/>
+        <ui:param name="itemDisabled" value="#{itemPerLine == null? false : sf:convertToBoolean(disableLinks)}"/>
 
         <tr:iterator var="xref" value="#{value}" varStatus="rowStatus" rows="0">
 
-            <c:set var="text" value="#{onlyText? xref.text : xref.identifier}"/>
+            <ui:param name="text" value="#{onlyText? xref.text : xref.identifier}"/>
 
             <ui:param name="itemDisabled" value="#{itemDisabled? itemDisabled : fn:startsWith(xref.identifier, '-')}"/>
 

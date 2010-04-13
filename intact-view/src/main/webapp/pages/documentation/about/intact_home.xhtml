@@ -3,9 +3,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
-                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
 
@@ -13,11 +11,11 @@
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
-                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions">
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions" >
 
 <div style="float:right; padding-left: 20px; padding-top: 20px; background-color: white">
 
-    <tr:panelBox text="Basic Statistics">
+    <p:panel header="Basic Statistics">
         The Database contains:
         <ul>
             <li>
@@ -45,7 +43,7 @@
                 <h:outputText value=" controlled vocabulary terms."/>
             </li>
         </ul>
-    </tr:panelBox>
+    </p:panel>
 
 </div>
 
@@ -61,67 +59,68 @@
                 To perform a search in the #{intactView['webapp.name']} database use the search box in the top left corner.
             </p>
 
-            <f:facet name="separator">
-                <tr:spacer width="10" height="1"/>
-            </f:facet>
+            <h:panelGroup>
 
-            <tr:panelGroupLayout>
-
-                <!--<tr:panelBox text="Quick search" background="dark" inlineStyle="width:100%">-->
-
-                    <tr:panelLabelAndMessage label="Examples:">
-                        <br/>
-                       <!-- <tr:inputText columns="30" value="#{userQuery.searchQuery}"
-                                      onfocus="this.select()"
-                                      onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>-->
-
-                            <tr:group>
-                                <tr:panelList>
-                                    <tr:group>
-                                        Gene name: e.g.<tr:spacer width="5"/>
-                                        <tr:commandLink text="BRCA2" action="#{searchBean.doBinarySearchAction}">
-                                            <f:setPropertyActionListener value="BRCA2"
-                                                                         target="#{userQuery.searchQuery}"/>
-                                        </tr:commandLink>
-                                    </tr:group>
-                                    <tr:group>
-                                        UniProtKB Ac: e.g.<tr:spacer width="5"/>
-                                        <tr:commandLink text="Q06609" action="#{searchBean.doBinarySearchAction}">
-                                            <f:setPropertyActionListener value="Q06609"
-                                                                         target="#{userQuery.searchQuery}"/>
-                                        </tr:commandLink>
-                                    </tr:group>
-                                    <tr:group>
-                                        UniProtKB Id: e.g.<tr:spacer width="5"/>
-                                        <tr:commandLink text="dmc1" action="#{searchBean.doBinarySearchAction}">
-                                            <f:setPropertyActionListener value="dmc1"
-                                                                         target="#{userQuery.searchQuery}"/>
-                                        </tr:commandLink>
-                                    </tr:group>
-                                    <tr:group>
-                                        Pubmed Id: e.g.<tr:spacer width="5"/>
-                                        <tr:commandLink text="10831611" action="#{searchBean.doBinarySearchAction}">
-                                            <f:setPropertyActionListener value="10831611"
-                                                                         target="#{userQuery.searchQuery}"/>
-                                        </tr:commandLink>
-                                    </tr:group>
-                                </tr:panelList>
-                            </tr:group>
-                      
-                    </tr:panelLabelAndMessage>
+                <table>
+                    <tr>
+                        <td>
+                           Examples:
+                        </td>
+                        <td>
+                            <ul>
+                            <li>
+                            <h:panelGroup>
+                                Gene name: e.g.
+                                <h:commandLink text="BRCA2" action="#{searchBean.doBinarySearchAction}">
+                                    <f:setPropertyActionListener value="BRCA2"
+                                                                 target="#{userQuery.searchQuery}"/>
+                                </h:commandLink>
+                            </h:panelGroup>
+                            </li>
+                            <li>
+                            <h:panelGroup>
+                                UniProtKB Ac: e.g.
+                                <h:commandLink text="Q06609" action="#{searchBean.doBinarySearchAction}">
+                                    <f:setPropertyActionListener value="Q06609"
+                                                                 target="#{userQuery.searchQuery}"/>
+                                </h:commandLink>
+                            </h:panelGroup>
+                            </li>
+                            <li>
+                            <h:panelGroup>
+                                UniProtKB Id: e.g.
+                                <h:commandLink text="dmc1" action="#{searchBean.doBinarySearchAction}">
+                                    <f:setPropertyActionListener value="dmc1"
+                                                                 target="#{userQuery.searchQuery}"/>
+                                </h:commandLink>
+                            </h:panelGroup>
+                            </li>
+                            <li>
+                            <h:panelGroup>
+                                Pubmed Id: e.g.
+                                <h:commandLink text="10831611" action="#{searchBean.doBinarySearchAction}">
+                                    <f:setPropertyActionListener value="10831611"
+                                                                 target="#{userQuery.searchQuery}"/>
+                                </h:commandLink>
+                            </h:panelGroup>
+                            </li>
+                        </ul>
+                        </td>
+                    </tr>
+                </table>
 
                 <!-- </tr:panelBox>-->
-            </tr:panelGroupLayout>
+            </h:panelGroup>
 
             <p/>
-            <tr:panelBox  background="transparent">
-                <tr:panelGroupLayout>
-                    <tr:image source="/images/info-bubble-icon.png" />
-                    <tr:outputText value="Please supply your feedback to "/>
-                    <tr:goLink destination="http://www.ebi.ac.uk/support/index.php?query=intact" text="helpdesk."/>
-                    <tr:outputText value=" We thank you for your help in further developing IntAct."/>
-                </tr:panelGroupLayout>
-            </tr:panelBox>
+            <p:panel>
+                <h:panelGroup>
+                    <h:graphicImage alt="infoIcon" url="/images/info-bubble-icon.png"/>
+                    <h:outputText value="Please supply your feedback to "/>
+                    <h:outputLink value="http://www.ebi.ac.uk/support/index.php?query=intact">helpdesk.</h:outputLink>
+                    <h:outputText value=" We thank you for your help in further developing IntAct."/>
+                </h:panelGroup>
+            </p:panel>
 
             <h2>Introduction</h2>
 
@@ -137,7 +136,7 @@
 </table>
 
 
-<c:if test="#{dataSetsBean.dataSetOfTheMonth != null}">
+<h:panelGroup rendered="#{dataSetsBean.dataSetOfTheMonth != null}">
 
     <h2>Dataset of the month: #{dataSetsBean.dataSetOfTheMonth.month}</h2>
 
@@ -151,13 +150,13 @@
     <h:outputText value="Go to "/>
     <h:commandLink value="Archive" action="dotm_archive"/>.
 
-</c:if>
+</h:panelGroup>
 
-<c:if test="#{dataSetsBean.dataSetOfTheMonth == null}">
+<h:panelGroup rendered="#{dataSetsBean.dataSetOfTheMonth == null}">
 
     Dataset of the month is null
 
-</c:if>
+</h:panelGroup>
 
 <h2>License</h2>
 
@@ -187,7 +186,8 @@
 </ul>
 
 <p>
-    Previous publications about #{intactView['webapp.name']} can be found&#160;<tr:commandLink text="here" action="documentation.publications"/>.
+    Previous publications about #{intactView['webapp.name']} can be found&#160;<h:commandLink text="here"
+                                                                                               action="documentation.publications"/>.
 </p>
 
 <h2>Acknowledgements</h2>
@@ -201,8 +201,9 @@
                      border="0"/></a>
         </td>
         <td align="left">
-            IntAct is funded by the European Commission under SLING, grant agreement number 226073 (Integrating Activity) within Research Infrastructures of the FP7, under PSIMEx, contract number FP7-HEALTH-2007-223411 and under APO-SYS, contract number FP7-HEALTH-2007-200767. <br/>
-Formerly IntAct was funded by EC Capacities Specific Programme, under FELICS, contract number 021902 (RII3) within the Research Infrastructure Action of the FP6 "Structuring the European Research Area" Programme.
+            IntAct is funded by the European Commission under SLING, grant agreement number 226073 (Integrating Activity) within Research Infrastructures of the FP7, under PSIMEx, contract number FP7-HEALTH-2007-223411 and under APO-SYS, contract number FP7-HEALTH-2007-200767.
+            <br/>
+            Formerly IntAct was funded by EC Capacities Specific Programme, under FELICS, contract number 021902 (RII3) within the Research Infrastructure Action of the FP6 "Structuring the European Research Area" Programme.
         </td>
     </tr>
     <tr>

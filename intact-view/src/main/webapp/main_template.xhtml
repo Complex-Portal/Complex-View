@@ -3,8 +3,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
 
                 xmlns:iav="http://intact.ebi.ac.uk/view"
@@ -20,81 +19,78 @@
 
     <ui:define name="content">
 
-        <tr:panelGroupLayout>
+        <h:panelGroup>
 
             <!--<tr:poll id="warningPoll" interval="120000"/>-->
 
-            <tr:panelGroupLayout>
-                <tr:panelBox text="Important notice" background="transparent"
+            <h:panelGroup>
+                <p:panel header="Important notice" background="transparent"
                              icon="/images/warning.gif"
                              rendered="#{not empty intactViewConfiguration.warningMessage}">
-                    <tr:outputText value="#{intactViewConfiguration.warningMessage}"/>
-                </tr:panelBox>
-                <tr:spacer height="10"/>
-            </tr:panelGroupLayout>
+                    <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
+                </p:panel>
+            </h:panelGroup>
 
-        </tr:panelGroupLayout>
+        </h:panelGroup>
 
         <ui:include src="pages/search/search_panel.xhtml"/>
 
 
-        <tr:panelTabbed position="above" id="mainPanels">
-
-            <tr:showDetailItem text="Home"
+        <p:tabView id="mainPanels" cache="false">
+            
+            <p:tab title="Home" 
                                disclosed="#{disclosedTabName == 'about'}">
-                <tr:messages/>
+                <p:messages/>
                 <ui:insert name="aboutTabContent"/>
-            </tr:showDetailItem>
+            </p:tab>
 
-            <tr:showDetailItem text="Search"
+            <p:tab title="Search"
                                disclosed="#{disclosedTabName == 'search'}">
-                <tr:messages/>
+                <p:messages/>
                 <ui:insert name="searchTabContent"/>
-            </tr:showDetailItem>
+            </p:tab>
 
-            <tr:showDetailItem text="Interactions (#{searchBean.totalResults})"
+            <p:tab title="Interactions (#{searchBean.totalResults})"
                                disabled="#{searchBean.totalResults == 0}"
                                disclosed="#{disclosedTabName == 'interactions'}">
-                <tr:messages/>
+                <p:messages/>
                 <ui:insert name="interactionsTabContent"/>
-            </tr:showDetailItem>
+            </p:tab>
 
-            <tr:showDetailItem text="Browse"
+            <p:tab title="Browse"
                                disabled="#{searchBean.totalResults == 0}"
-                               disclosed="#{disclosedTabName == 'browse'}"
-                               disclosureListener="#{browseBean.createListofIdentifiers}">
-                <tr:messages/>
+                               disclosed="#{disclosedTabName == 'browse'}">
+                <p:messages/>
                 <ui:insert name="browseTabContent"/>
-            </tr:showDetailItem>
+            </p:tab>
 
-            <tr:showDetailItem text="Lists"
+            <p:tab title="Lists"
                                disabled="#{searchBean.totalResults == 0}"
-                               disclosed="#{disclosedTabName == 'list'}"
-                               disclosureListener="#{searchBean.onListDisclosureChanged}">
-                <tr:messages/>
+                               disclosed="#{disclosedTabName == 'list'}">
+                <p:messages/>
                 <ui:insert name="listTabContent"/>
-            </tr:showDetailItem>
+            </p:tab>
 
-            <tr:showDetailItem text="Interaction Details" disabled="#{detailsBean.interaction == null}"
+            <p:tab title="Interaction Details" disabled="#{detailsBean.interaction == null}"
                                disclosed="#{disclosedTabName == 'details'}">
-                <tr:messages/>
+                <p:messages/>
                 <ui:insert name="detailsTabContent"/>
-            </tr:showDetailItem>
+            </p:tab>
 
-            <tr:showDetailItem text="Molecule View" disabled="#{moleculeViewBean.interactor == null}"
+            <p:tab title="Molecule View" disabled="#{moleculeViewBean.interactor == null}"
                                disclosed="#{disclosedTabName == 'molecule'}">
-                <tr:messages/>
+                <p:messages/>
                 <ui:insert name="moleculeTabContent"/>
-            </tr:showDetailItem>
+            </p:tab>
 
-            <tr:showDetailItem text="Graph"
+            <p:tab title="Graph"
                                shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
                                disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount }">
-                <tr:messages/>
+                <p:messages/>
                 <ui:insert name="graphTabContent"/>
-            </tr:showDetailItem>
+            </p:tab>
 
-        </tr:panelTabbed>
+        </p:tabView>
 
     </ui:define>
 

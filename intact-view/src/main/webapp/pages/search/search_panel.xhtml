@@ -2,119 +2,113 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
-                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-    <tr:panelBox inlineStyle="width:100%" partialTriggers="addFieldBtn cancelFieldBtn">
+    <p:panel style="width:100%">
         
         <div style="float:right">
-            <tr:commandLink action="dialog:help.miql"
-                            partialSubmit="true" useWindow="true"
-                            windowWidth="600" windowHeight="600"
-                            immediate="true">
+            <p:commandLink onclick="miqlHelpDialog.show()">
                 MIQL syntax reference
-                <tr:image source="/images/help.png" inlineStyle="vertical-align: baseline"/>
-            </tr:commandLink>
+                <h:graphicImage alt="helpIcon" url="/images/help.png" inlineStyle="vertical-align: baseline"/>
+            </p:commandLink>
         </div>
-        
-        <tr:panelHorizontalLayout valign="top">
-            <f:facet name="separator">
-                &#160;
-            </f:facet>
 
-            <trh:script>
+        <p:dialog header="MIQL Syntax Reference" widgetVar="miqlHelpDialog" fixedCenter="true"
+                  constrainToViewport="true"
+                  modal="true" width="600" height="600">
+            <ui:include src="help_miql.xhtml"/>
+        </p:dialog>
+        
+        <h:panelGroup id="searchPanel" style="vertical-align:top">
+            <h:outputScript>
                 dojo.addOnLoad(function () {
                    document.getElementById('queryTxt').focus();
                 });
-            </trh:script>
+            </h:outputScript>
 
-            <tr:inputText label="Search: " id="queryTxt"
+            <h:inputText label="Search: " id="queryTxt"
                           columns="60" value="#{userQuery.searchQuery}"
                           rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"
                           onkeypress="return submitEnter('quickSearchBtn',event)"
                           disabled="#{userQuery.showNewFieldPanel}"/>
-            <tr:commandButton id="quickSearchBtn"
+            &#160;
+            <h:commandButton id="quickSearchBtn"
                               text="Search"
                               action="#{searchBean.doNewBinarySearch}"
                               disabled="#{userQuery.showNewFieldPanel}"/>
-
-            <tr:panelGroupLayout rendered="#{userQuery.showNewFieldPanel}">
-                <input type="button" id="clearSearchBtn" value="Clear"
+            &#160;
+            <h:commandButton type="button" id="clearSearchBtn" value="Clear"
                        onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
-                       disabled="true"/>
-            </tr:panelGroupLayout>
-            <tr:panelGroupLayout rendered="#{not userQuery.showNewFieldPanel}">
-                <input type="button" id="clearSearchBtn" value="Clear"
-                       onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"/>
-            </tr:panelGroupLayout>
-
-            <tr:commandLink id="addFieldBtn" text="Show Advanced Fields »"
-                            inlineStyle="font-weight:bold"
+                       disabled="#{userQuery.showNewFieldPanel}"/>
+            &#160;
+            <p:commandLink id="addFieldBtn" value="Show Advanced Fields »"
+                            style="font-weight:bold"
                     actionListener="#{userQuery.doShowAddFieldPanel}"
                     disabled="#{userQuery.showNewFieldPanel}"
-                    partialSubmit="true"/>
+                    update="searchPanelDetails,searchPanel"/>
 
-        </tr:panelHorizontalLayout>
+        </h:panelGroup>
 
-         </tr:panelBox>
+         </p:panel>
 
 
 
-    <tr:panelGroupLayout partialTriggers="addFieldBtn cancelFieldBtn">
-        <tr:panelBox inlineStyle="width:100%" rendered="#{userQuery.showNewFieldPanel}">
+    <h:panelGroup id="searchPanelDetails" partialTriggers="addFieldBtn cancelFieldBtn">
+        <p:panel style="width:100%" rendered="#{userQuery.showNewFieldPanel}">
 
-                <tr:panelHorizontalLayout>
-                    <f:facet name="separator">
-                        &#160;
-                    </f:facet>
+                <h:panelGroup>
 
-                    <tr:selectOneChoice value="#{userQuery.newQueryToken.operandStr}"
+                    <h:selectOneListbox value="#{userQuery.newQueryToken.operandStr}"
                             disabled="#{userQuery.wildcardQuery}">
                         <f:selectItem itemValue="AND" itemLabel="AND"/>
                         <f:selectItem itemValue="OR" itemLabel="OR" itemDisabled="#{empty userQuery.searchQuery or
                                                                                     userQuery.searchQuery eq '*:*'}"/>
-                    </tr:selectOneChoice>
+                    </h:selectOneListbox>
+                    &#160;
 
-                    <tr:selectBooleanCheckbox text="NOT" value="#{userQuery.newQueryToken.notQuery}"/>
+                    <h:selectBooleanCheckbox text="NOT" value="#{userQuery.newQueryToken.notQuery}"/>
+                    &#160;
 
-                    <tr:selectOneChoice id="newQueryField" label="Field: " value="#{userQuery.newQueryToken.field}"
-                                        autoSubmit="true" immediate="true">
+                    <h:selectOneListbox id="newQueryField" label="Field: " value="#{userQuery.newQueryToken.field}"
+                                        immediate="true">
+                        <!-- TODO update with ajax the newQueryPanel autosubmitting-->
                         <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
-                    </tr:selectOneChoice>
+                    </h:selectOneListbox>
+                    &#160;
 
-                    <tr:panelGroupLayout partialTriggers="newQueryField">
-                        <tr:inputText value="#{userQuery.newQueryToken.query}" columns="50"
+                    <h:panelGroup id="newQueryPanel">
+                        <h:inputText value="#{userQuery.newQueryToken.query}" columns="50"
                                       rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list and
                                                   not userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"/>
 
-                        <tr:selectOneChoice value="#{userQuery.newQueryToken.query}" unselectedLabel="-- Select one --"
+                        <h:selectOneListbox value="#{userQuery.newQueryToken.query}"
                                 rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}">
                             <f:selectItems value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].selectItems}"/>
-                        </tr:selectOneChoice>
+                        </h:selectOneListbox>
 
-                    <tr:inputListOfValues value="#{userQuery.newQueryToken.query}" columns="50"
-                                          rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"
-                                          icon="/images/magnify.png" windowHeight="500" windowWidth="400"
-                                          action="dialog:search.browse" 
-                                          searchDesc="Click to get a value">
-                        <f:setPropertyActionListener target="#{searchBrowseDialogController.beanName}" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browserControllerName}"/>
-                    </tr:inputListOfValues>
+                    <!--<tr:inputListOfValues value="#{userQuery.newQueryToken.query}" columns="50"-->
+                                          <!--rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"-->
+                                          <!--icon="/images/magnify.png" windowHeight="500" windowWidth="400"-->
+                                          <!--action="dialog:search.browse" -->
+                                          <!--searchDesc="Click to get a value">-->
+                        <!--<f:setPropertyActionListener target="#{searchBrowseDialogController.beanName}" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browserControllerName}"/>-->
+                    <!--</tr:inputListOfValues>-->
 
-                    </tr:panelGroupLayout>
+                    </h:panelGroup>
+                    &#160;
 
-                    <tr:commandButton text="Add &amp; Search"
+                    <h:commandButton text="Add &amp; Search"
                                       actionListener="#{userQuery.doAddFieldToQuery}"
                                       action="#{searchBean.doNewBinarySearch}"/>
+                    &#160;
+                    <p:commandButton id="cancelFieldBtn" value="Cancel"
+                                      actionListener="#{userQuery.doCancelAddField}" update="searchPanelDetails"/>
 
-                    <tr:commandButton id="cancelFieldBtn" text="Cancel"
-                                      actionListener="#{userQuery.doCancelAddField}" partialSubmit="true"/>
+                </h:panelGroup>
+        </p:panel>
+    </h:panelGroup>
 
-                </tr:panelHorizontalLayout>
-        </tr:panelBox>
-    </tr:panelGroupLayout>
-
-    <tr:separator/>
+    <hr/>
 
 </ui:composition>

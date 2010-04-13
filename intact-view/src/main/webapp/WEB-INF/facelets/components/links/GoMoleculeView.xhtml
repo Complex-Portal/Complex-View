@@ -1,25 +1,22 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:t="http://myfaces.apache.org/tomahawk"
                 xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
-    <c:set var="showLogoOnly" value="#{onlyLogo != null? ebisf:convertToBoolean(onlyLogo) : false}"/>
+    <ui:param name="showLogoOnly" value="#{onlyLogo != null? ebisf:convertToBoolean(onlyLogo) : false}"/>
 
-        <tr:commandLink action="molecule"
+        <h:commandLink action="molecule"
                  disabled="#{disabled != null? ebisf:convertToBoolean(disabled) : false}">
             <f:setPropertyActionListener value="#{query}" target="#{moleculeViewBean.interactorAc}"/>
 
-            <tr:image source="/images/logos/dasty2_logo_50.png" inlineStyle="border-width:0"
-                          rendered="#{showLogoOnly}"></tr:image>
-            <tr:outputText value="#{(text != null)? text : query}" rendered="#{!showLogoOnly}"/>
+            <h:graphicImage alt="dastyLogo" url="/images/logos/dasty2_logo_50.png" style="border-width:0"
+                          rendered="#{showLogoOnly}"/>
+            <h:outputText value="#{(text != null)? text : query}" rendered="#{!showLogoOnly}"/>
 
-        </tr:commandLink>
+        </h:commandLink>
 
 </ui:composition>

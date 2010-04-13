@@ -26,8 +26,8 @@
             <tr:commandLink text="Back to Interaction Details" action="details"/>
         </tr:panelHorizontalLayout>
 
-        <c:set var="matrix" value="#{detailsBean.similarInteractionMatrix}"/>
-        <c:set var="interaction" value="#{detailsBean.interaction}"/>
+        <ui:param name="matrix" value="#{detailsBean.similarInteractionMatrix}"/>
+        <ui:param name="interaction" value="#{detailsBean.interaction}"/>
 
         <tr:panelHeader text="Similarity search for complex interaction">
 
@@ -98,11 +98,11 @@
 
                         <tr:iterator value="#{matrix.members}" var="member" rows="0" varStatus="index">
 
-                            <c:set var="style" value="#{(index.count eq fn:length(matrix.members) ? 'border-left: solid 1px #cdcdcd; border-right: solid 1px #cdcdcd;' : 'border-left: solid 1px #cdcdcd;')}" />
+                            <ui:param name="style" value="#{(index.count eq fn:length(matrix.members) ? 'border-left: solid 1px #cdcdcd; border-right: solid 1px #cdcdcd;' : 'border-left: solid 1px #cdcdcd;')}" />
 
                             <td align="center" width="30" style="#{style}">
 
-                                <c:set var="display" value="#{iam:isMemberPresent( si, member )}" />
+                                <ui:param name="display" value="#{iam:isMemberPresent( si, member )}" />
 
                                 <tr:outputText value=" " rendered="#{!display}" />
 

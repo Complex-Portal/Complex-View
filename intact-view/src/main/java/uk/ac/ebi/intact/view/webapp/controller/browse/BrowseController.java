@@ -26,7 +26,6 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.params.FacetParams;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
@@ -53,12 +52,6 @@ import java.util.List;
 public class BrowseController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog( BrowseController.class );
-
-    @Autowired
-    private IntactViewConfiguration intactViewConfig;
-
-    @Autowired
-    private ExternalDbLinker dbLinker;
 
     private int maxSize = 200;
 
@@ -115,6 +108,7 @@ public class BrowseController extends JpaBaseController {
         query.addFacetField(uniprotFieldName);
         query.addFacetField(geneNameFieldName);
 
+        IntactViewConfiguration intactViewConfig = (IntactViewConfiguration) getBean("intactViewConfiguration");
         final SolrServer solrServer = intactViewConfig.getInteractionSolrServer();
         QueryResponse queryResponse;
 
@@ -204,7 +198,8 @@ public class BrowseController extends JpaBaseController {
     public void goReactome( ActionEvent evt ) {
         String[] selected = reactomeIdentifierList;
         //the carriage return has to be escaped as it is used in the JavaScript
-        dbLinker.reactomeLinker( dbLinker.REACTOMEURL, "\\r", selected, "/view/pages/browse/browse.xhtml" );
+        ExternalDbLinker dbLinker = (ExternalDbLinker) getBean("externalDbLinker");
+        dbLinker.reactomeLinker( ExternalDbLinker.REACTOMEURL, "\\r", selected, "/view/pages/browse/browse.xhtml" );
     }
 
     public int getMaxSize() {

@@ -2,12 +2,10 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+                xmlns:h="http://java.sun.com/jsf/html">
 
 
-    <trh:script>
+    <h:outputScript>
         function ebifaces__toggleState(li)
         {
             var className = li.className;
@@ -46,40 +44,40 @@
             }
         }
 
-    </trh:script>
+    </h:outputScript>
 
 
     <ul id="menu" class="sidemenu">
 
         <li class="leftmenudivider"></li>
 
-        <li><tr:commandLink text="Home" action="main"/></li>
-        <li><tr:commandLink text="Advanced Search" action="search"/></li>
-        <li><tr:commandLink text="Tools" action="documentation.tools"/></li>
-        <li><tr:commandLink text="Data Submission" action="documentation.data_submission"/></li>
-        <li><tr:commandLink text="Downloads" action="documentation.downloads"/></li>
+        <li><h:commandLink value="Home" action="main"/></li>
+        <li><h:commandLink value="Advanced Search" action="search"/></li>
+        <li><h:commandLink value="Tools" action="documentation.tools"/></li>
+        <li><h:commandLink value="Data Submission" action="documentation.data_submission"/></li>
+        <li><h:commandLink value="Downloads" action="documentation.downloads"/></li>
         
 
         <li class="clickme" onclick="ebifaces__toggleState(this)">
             <a href="left_main_menu.xhtml#"></a>Documentation
             <ul style="margin: 0; display:'none';">
 
-                <li><tr:commandLink text="Data and Curation" action="documentation.data_curation"/></li>
-                <li><tr:goLink text="Developer Resources" destination="http://www.ebi.ac.uk/~intact/devsite"
-                               targetFrame="_blank"/></li>
-                <li><tr:commandLink text="Publications" action="documentation.publications"/></li>
-                <li><tr:goLink text="Statistics" destination="http://www.ebi.ac.uk/intact/statisticView"
-                               targetFrame="_blank"/></li>
-                <li><tr:commandLink text="FAQ" action="documentation.faq"/></li>
+                <li><h:commandLink value="Data and Curation" action="documentation.data_curation"/></li>
+                <li><h:outputLink value="http://www.ebi.ac.uk/~intact/devsite"
+                               target="_blank">Developer Resources</h:outputLink></li>
+                <li><h:commandLink value="Publications" action="documentation.publications"/></li>
+                <li><h:outputLink value="http://www.ebi.ac.uk/intact/statisticView"
+                               target="_blank">Statistics</h:outputLink></li>
+                <li><h:commandLink value="FAQ" action="documentation.faq"/></li>
 
             </ul>
         </li>
 
-        <li><tr:commandLink text="Contact Us" action="documentation.contactus"/></li>
+        <li><h:commandLink value="Contact Us" action="documentation.contactus"/></li>
 
         <li class="leftmenudivider"></li>
 
-        <li><tr:commandLink text="Printer Friendly View" action="documentation.printerfriendly"/></li>
+        <li><h:commandLink value="Printer Friendly View" action="documentation.printerfriendly"/></li>
 
         <li class="leftmenudivider"></li>
 

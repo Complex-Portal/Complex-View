@@ -207,7 +207,7 @@
 <tr:column>
     <tr:outputText value="#{status.index + 1}"/>
 
-    <c:set var="interactionAc" value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactionAcs)}" />
+    <ui:param name="interactionAc" value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactionAcs)}" />
 
     <tr:commandLink action="details" shortDesc="Display details for this interaction">
         <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
@@ -536,7 +536,7 @@
                              disclosed="#{searchBean.showProperties}"
                              value="#{binaryInteraction.propertiesA}"
                              maxShown="5">
-        <c:set var="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
+        <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
         <tr:goLink text="#{item.identifier}"
                    shortDesc="#{item.text}"
                    targetFrame="_blank"
@@ -554,7 +554,7 @@
                              disclosed="#{searchBean.showProperties}"
                              value="#{binaryInteraction.propertiesB}"
                              maxShown="5">
-        <c:set var="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
+        <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
         <tr:goLink text="#{item.identifier}"
                    shortDesc="#{item.text}"
                    targetFrame="_blank"

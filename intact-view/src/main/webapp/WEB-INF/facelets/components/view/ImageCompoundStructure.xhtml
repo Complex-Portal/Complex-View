@@ -12,7 +12,7 @@
 
 
     <!-- http://www.ebi.ac.uk/thornton-srv/databases/drugport/drugs/07/DB00507/DB00507.gif -->
-    <c:set var="id" value="#{id}"/>
+    <ui:param name="id" value="#{id}"/>
     
     <tr:image source="http://www.ebi.ac.uk/thornton-srv/databases/drugport/drugs/#{fn:substring(id, 5, 7)}/#{id}/#{id}.gif"
             inlineStyle=""/>

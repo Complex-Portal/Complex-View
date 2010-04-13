@@ -13,7 +13,7 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
-    <c:set var="displayWarning" value="#{browseBean.maxSize lt searchBean.interactorTotalResults}" />
+    <ui:param name="displayWarning" value="#{browseBean.maxSize lt searchBean.interactorTotalResults}" />
 
     <div style="float:right; margin-top: -10px">
         <tr:commandLink action="dialog:faq.whatis.browser"

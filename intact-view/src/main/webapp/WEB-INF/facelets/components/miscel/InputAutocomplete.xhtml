@@ -9,28 +9,28 @@
     xmlns:c="http://java.sun.com/jstl/core"
     xmlns:iam="http://intact.ebi.ac.uk/miscel">
 
-    <c:set var="jsIdPrefix" value=""/>
+    <ui:param name="jsIdPrefix" value=""/>
     <c:if test="#{not empty parentId}">
-        <c:set var="jsIdPrefix" value="#{parentId}:"/>
+        <ui:param name="jsIdPrefix" value="#{parentId}:"/>
     </c:if>
-    <c:set var="autocompleteSubformId" value="_#{id}_subformAutocomplete"/>
-    <c:set var="editId" value="edit"/>
-    <c:set var="jsEditId" value="#{jsIdPrefix}#{autocompleteSubformId}:#{editId}"/>
-    <c:set var="jsActionId" value="#{jsIdPrefix}#{autocompleteSubformId}:action"/>
-    <c:set var="jsTableId" value="#{jsIdPrefix}#{autocompleteSubformId}:table"/>
-    <c:set var="jsHiddenId" value="#{jsIdPrefix}#{id}"/>
-    <c:set var="timeoutVar" value="_#{parentId}_#{id}_timeout_"/>
-    <c:set var="lineArrayVar" value="_#{parentId}_#{id}_lineArray_"/>
-    <c:set var="selectedLineVar" value="_#{parentId}_#{id}_selectedLine_"/>
-    <c:set var="orgValue" value="_#{parentId}_#{id}_orgValue_"/>
-    <c:set var="orgEditValue" value="_#{parentId}_#{id}_orgEditValue_"/>
-    <c:set var="showResultTableFunc" value="_#{parentId}_#{id}_showResultTableFunc"/>
-    <c:set var="setValuesFromTableFunc" value="_#{parentId}_#{id}_setValuesFromTableFunc"/>
-    <c:set var="hideResultTableFunc" value="_#{parentId}_#{id}_hideResultTableFunc"/>
-    <c:set var="editKeydownFunc" value="_#{parentId}_#{id}_editKeydownFunc"/>
-    <c:set var="pprMonitorFunc" value="_#{parentId}_#{id}_pprMonitorFunc"/>
-    <c:set var="addPPRListenerFunc" value="_#{parentId}_#{id}_addPPRListenerFunc"/>
-    <c:set var="checkEmptyEditFunc" value="_#{parentId}_#{id}_checkEmptyEditFunc"/>
+    <ui:param name="autocompleteSubformId" value="_#{id}_subformAutocomplete"/>
+    <ui:param name="editId" value="edit"/>
+    <ui:param name="jsEditId" value="#{jsIdPrefix}#{autocompleteSubformId}:#{editId}"/>
+    <ui:param name="jsActionId" value="#{jsIdPrefix}#{autocompleteSubformId}:action"/>
+    <ui:param name="jsTableId" value="#{jsIdPrefix}#{autocompleteSubformId}:table"/>
+    <ui:param name="jsHiddenId" value="#{jsIdPrefix}#{id}"/>
+    <ui:param name="timeoutVar" value="_#{parentId}_#{id}_timeout_"/>
+    <ui:param name="lineArrayVar" value="_#{parentId}_#{id}_lineArray_"/>
+    <ui:param name="selectedLineVar" value="_#{parentId}_#{id}_selectedLine_"/>
+    <ui:param name="orgValue" value="_#{parentId}_#{id}_orgValue_"/>
+    <ui:param name="orgEditValue" value="_#{parentId}_#{id}_orgEditValue_"/>
+    <ui:param name="showResultTableFunc" value="_#{parentId}_#{id}_showResultTableFunc"/>
+    <ui:param name="setValuesFromTableFunc" value="_#{parentId}_#{id}_setValuesFromTableFunc"/>
+    <ui:param name="hideResultTableFunc" value="_#{parentId}_#{id}_hideResultTableFunc"/>
+    <ui:param name="editKeydownFunc" value="_#{parentId}_#{id}_editKeydownFunc"/>
+    <ui:param name="pprMonitorFunc" value="_#{parentId}_#{id}_pprMonitorFunc"/>
+    <ui:param name="addPPRListenerFunc" value="_#{parentId}_#{id}_addPPRListenerFunc"/>
+    <ui:param name="checkEmptyEditFunc" value="_#{parentId}_#{id}_checkEmptyEditFunc"/>
 
     <tr:inputHidden id="#{id}" value="#{value}" />
     <f:subview id="#{autocompleteSubformId}">
@@ -188,7 +188,7 @@
                 <!--<div id="#{jsTableId}#{status.index}" class="autocomplete-line" onmouseover="this.className='autocomplete-selected-line';"-->
                     <!--onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}');  return false; " >-->
 
-                    <!--<c:set var="#{var}" value="#{row}"/>-->
+                    <!--<ui:param name="#{var}" value="#{row}"/>-->
 
                     <!--<ui:insert>-->
                         <!--<h:outputText value="#{row[locateVisibleFieldName]}" rendered="#{not empty locateVisibleFieldName}" />-->
@@ -206,7 +206,7 @@
                 <div id="#{jsTableId}#{status.index}" class="autocomplete-line" onmouseover="this.className='autocomplete-selected-line';"
                                     onmouseout="this.className = 'autocomplete-line';" onclick="#{setValuesFromTableFunc}('#{row[locateValueFieldName]}','#{row[locateVisibleFieldName]}'); return false; ">
 
-                    <c:set var="#{var}" value="#{row}"/>
+                    <ui:param name="#{var}" value="#{row}"/>
 
                        <ui:insert>
                         <h:outputText value="#{row[locateVisibleFieldName]}" rendered="#{not empty locateVisibleFieldName}"/>

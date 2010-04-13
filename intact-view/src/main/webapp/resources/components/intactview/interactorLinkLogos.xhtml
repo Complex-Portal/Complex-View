@@ -1,0 +1,45 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+  <composite:interface>
+      <composite:attribute name="interactor" type="psidev.psi.mi.tab.model.Interactor" required="true"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+       <ui:repeat var="xref" value="#{cc.attrs.interactor.identifiers}" varStatus="rowStatus">
+            <h:panelGroup rendered="#{xref.database == 'uniprotkb'}">
+                <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
+                <br/>
+                <h:commandLink action="molecule">
+                    <f:setPropertyActionListener value="#{iamf:getIntactIdentifierFromCrossReferences(cc.attrs.interactor.identifiers)}"
+                                                 target="#{moleculeViewBean.interactorAc}"/>
+                    <h:graphicImage alt="dastyLogo" url="/images/logos/dasty2_logo_50.png" style="border-width:0"/>
+                </h:commandLink>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{xref.database == 'chebi'}">
+                <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
+                <br/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{xref.database == 'drugbank'}">
+                <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
+                <br/>
+                <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(cc.attrs.interactor))}"/>
+                <br/>
+            </h:panelGroup>
+        </ui:repeat>
+
+    </composite:implementation>
+
+</ui:composition>

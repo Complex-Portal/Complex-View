@@ -19,7 +19,7 @@
                 </ui:decorate>
             </tr:column>
 
-            <c:set var="isUrl" value="#{sf:convertToBoolean(annot.cvTopic.identifier == 'MI:0614')}" />
+            <ui:param name="isUrl" value="#{sf:convertToBoolean(annot.cvTopic.identifier == 'MI:0614')}" />
             <tr:column >
                 <!--headerText="Text"-->
                 <tr:outputText value="#{(annot.annotationText == null ? '-' : annot.annotationText )}" rendered="#{!isUrl}"/>
