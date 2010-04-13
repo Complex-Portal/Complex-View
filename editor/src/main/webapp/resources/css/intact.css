@@ -20,6 +20,10 @@ a:hover {
     color:red;
 }
 
+a img {
+    border: 0;
+}
+
 /** Custom classes **/
 
 .verticalTop {
