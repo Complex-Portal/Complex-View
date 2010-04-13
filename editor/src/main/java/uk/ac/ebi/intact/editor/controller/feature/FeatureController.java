@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.controller.participant;
+package uk.ac.ebi.intact.editor.controller.feature;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,30 +24,33 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.interaction.InteractionController;
+import uk.ac.ebi.intact.editor.controller.participant.ParticipantController;
 import uk.ac.ebi.intact.editor.controller.publication.PublicationController;
 import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Component;
+import uk.ac.ebi.intact.model.Feature;
+import uk.ac.ebi.intact.model.Interaction;
+import uk.ac.ebi.intact.model.Publication;
 
 import javax.faces.event.ComponentSystemEvent;
 
 /**
- * Participant controller.
+ * Feature controller.
  *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
- * @version $Id$
+ * @version $Id: ParticipantController.java 14281 2010-04-12 21:48:43Z samuel.kerrien $
  */
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class ParticipantController extends AnnotatedObjectController {
+public class FeatureController extends AnnotatedObjectController {
 
-    private static final Log log = LogFactory.getLog( ParticipantController.class );
+    private static final Log log = LogFactory.getLog( FeatureController.class );
 
-    private Component participant;
+    private Feature feature;
 
     /**
-     * The AC of the participant to be loaded.
+     * The AC of the feature to be loaded.
      */
     private String ac;
 
@@ -60,27 +63,44 @@ public class ParticipantController extends AnnotatedObjectController {
     @Autowired
     private InteractionController interactionController;
 
-    public ParticipantController() {
+    @Autowired
+    private ParticipantController participantController;
+
+    public FeatureController() {
     }
 
     @Override
     public AnnotatedObject getAnnotatedObject() {
-        return getParticipant();
+        return getFeature();
     }
 
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
-            if ( participant == null || !ac.equals( participant.getAc() ) ) {
-                participant = IntactContext.getCurrentInstance().getDaoFactory().getComponentDao().getByAc( ac );
+            if ( feature == null || !ac.equals( feature.getAc() ) ) {
+                feature = IntactContext.getCurrentInstance().getDaoFactory().getFeatureDao().getByAc( ac );
             }
         } else {
-            if ( participant != null ) ac = participant.getAc();
+            if ( feature != null ) ac = feature.getAc();
+        }
+
+        if( interactionController.getInteraction() == null ) {
+            final Interaction interaction = feature.getComponent().getInteraction();
+            interactionController.setInteraction( interaction );
+        }
+
+        if ( publicationController.getPublication() == null ) {
+            Publication publication = feature.getComponent().getInteraction().getExperiments().iterator().next().getPublication();
+            publicationController.setPublication( publication );
+        }
+
+        if ( experimentController.getExperiment() == null ) {
+            experimentController.setExperiment( feature.getComponent().getInteraction().getExperiments().iterator().next() );
         }
     }
 
     public String getAc() {
-        if ( ac == null && participant != null ) {
-            return participant.getAc();
+        if ( ac == null && feature != null ) {
+            return feature.getAc();
         }
         return ac;
     }
@@ -89,11 +109,11 @@ public class ParticipantController extends AnnotatedObjectController {
         this.ac = ac;
     }
 
-    public Component getParticipant() {
-        return participant;
+    public Feature getFeature() {
+        return feature;
     }
 
-    public void setParticipant( Component participant ) {
-        this.participant = participant;
+    public void setFeature( Feature feature ) {
+        this.feature = feature;
     }
 }

@@ -9,42 +9,46 @@
 
                 template="/curate/curate_template.xhtml">
 
-
+    <ui:param name="feature" value="#{featureController.feature}" />
+    <ui:param name="participant" value="#{participantController.participant}" />
     <ui:param name="interaction" value="#{interactionController.interaction}" />
     <ui:param name="experiment" value="#{experimentController.experiment}" />
     <ui:param name="publication" value="#{publicationController.publication}" />
 
     <ui:define name="curateContent">
         <f:metadata>
-            <f:viewParam name="ac" value="#{interactionController.ac}"/>
-            <f:event type="preRenderView" listener="#{interactionController.loadData}"/>
+            <f:viewParam name="ac" value="#{featureController.ac}"/>
+            <f:event type="preRenderView" listener="#{featureController.loadData}"/>
         </f:metadata>
 
-        <h:panelGroup rendered="#{interaction == null}">
-            No interaction loaded!
+        <h:panelGroup rendered="#{feature == null}">
+            No feature loaded!
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{interaction != null}">
+        <h:panelGroup rendered="#{participant != null}">
             <div id="auditInfo" class="intact-auditPanel">
-                <ia:creatorUpdator annotatedObject="#{interaction}" />
+                <ia:creatorUpdator annotatedObject="#{feature}" />
             </div>
         </h:panelGroup>
 
-        <h:panelGroup id="info" rendered="#{interaction != null}">
+        <h:panelGroup id="info" rendered="#{feature != null}">
 
             <h:link outcome="/curate/publication"
-                    value="#{publication.shortLabel}"
-                    title="#{publication.fullName}"
+                    value="#{publicationController.publication.shortLabel}"
+                    title="#{publicationController.publication.fullName}"
                     includeViewParams="true"/>
             &#160;>&#160;
             <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true"/>
             &#160;>&#160;
-            #{interaction.shortLabel}
+            <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true"/>
+            &#160;>&#160;
+            #{participant.interactor.shortLabel}
+            &#160;>&#160;
+            #{feature.shortLabel}
 
-            <h2>Interaction</h2>
+            <h2>Feature</h2>
 
             <p:outputPanel id="basic">
-                <!--<ia:panelFormLayout id="basicInfoPanel" columns="1">-->
 
                 <table class="intact-tableBasicForm">
                     <tr>
@@ -52,47 +56,41 @@
                             <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                         </td>
                         <td>
-                            <h:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"/>
+                            <h:inputText id="shortlabelTxt" value="#{feature.shortLabel}" size="30"/>
                         </td>
                         <td style="padding-left: 50px;">
                             <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                            <h:inputText id="acTxt" value="#{interaction.ac}"
+                            <h:inputText id="acTxt" value="#{feature.ac}"
                                          size="10" disabled="true" class="intact-disabled"/>
                         </td>
-                        <td style="padding-left: 50px;">
-                             <h:outputLabel value="IMEx ID: " for="imexIdTxt" class="intact-disabled"/>
-                                <h:inputText id="imexIdTxt" value="IM-X" size="10" disabled="true" class="intact-disabled"/>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Feature type: " for="featureTypeTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <!--<ia:inputCvObject id="featureTypeTxt" cvIdentifier="MI:0116" value="#{feature.cvFeatureType}}"/>-->
+                            <h:inputText id="featureTypeTxt" value="#{feature.cvFeatureType.shortLabel}"   />
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="1" class="firstCell">
-                            <h:outputLabel value="Interaction type: " for="interactionTypeTxt"/>
+                        <td class="firstCell">
+                            <h:outputLabel value="Detection method: " for="featureDetectionTxt"/>
                         </td>
-                        <td colspan="3">
-                            <ia:inputCvObject id="interactionTypeTxt" cvIdentifier="MI:0190"
-                                              value="#{interaction.cvInteractionType}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="1" class="firstCell">
-                            <h:outputLabel value="Experiment: " for="experimentLists"/>
-                        </td>
-                        <td colspan="3" >
-                            <p:pickList id="experimentLists"
-                                        value="#{interactionController.experimentLists}"
-                                        var="exp" itemLabel="#{exp}" itemValue="#{exp}" />
+                        <td colspan="2">
+                            <!--<ia:inputCvObject id="featureDetectionTxt" cvIdentifier="MI:0003" value="#{feature.cvFeatureIdentification}}"/>-->
+                            <h:inputText id="featureDetectionTxt" value="#{feature.cvFeatureIdentification.shortLabel}"   />
                         </td>
                     </tr>
                 </table>
 
-                <!--</ia:panelFormLayout>-->
             </p:outputPanel>
 
-            <h3>Interaction properties</h3>
+            <h3>Feature properties</h3>
 
             <p:outputPanel id="xrefsPanel">
-                <ia:collapsiblePanel  open="false" title="Xrefs (#{interaction.xrefs.size()})">
-                    <ia:xrefsTable annotatedObjectController="#{interactionController}"
+                <ia:collapsiblePanel  open="false" title="Xrefs (#{feature.xrefs.size()})">
+                    <ia:xrefsTable annotatedObjectController="#{featureController}"
                                    databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                    qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
                                    update="xrefsPanel"
@@ -102,8 +100,8 @@
             </p:outputPanel>
 
             <p:outputPanel id="annotationsPanel">
-                <ia:collapsiblePanel open="false" title="Annotations (#{interaction.annotations.size()})">
-                    <ia:annotationsTable annotatedObjectController="#{interactionController}"
+                <ia:collapsiblePanel open="false" title="Annotations (#{feature.annotations.size()})">
+                    <ia:annotationsTable annotatedObjectController="#{featureController}"
                                          topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
                                          update="annotationsPanel"
                                          render=":editorForm:basic"
@@ -112,23 +110,17 @@
             </p:outputPanel>
 
             <p:outputPanel id="aliasesPanel">
-                <ia:collapsiblePanel open="false" title="Aliases (#{interaction.aliases.size()})">
-                    <ia:aliasTable annotatedObjectController="#{interactionController}"
+                <ia:collapsiblePanel open="false" title="Aliases (#{feature.aliases.size()})">
+                    <ia:aliasTable annotatedObjectController="#{featureController}"
                                    aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
                                    update="aliasesPanel"
                                    style="margin-top: -20px;"/>
                 </ia:collapsiblePanel>
             </p:outputPanel>
 
-            <h3>Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})</h3>
+            <h3>Ranges (#{feature.ranges.size()})</h3>
 
-            <h:inputText id="searchParticipantTxt" value="#{interactionController.participantQuery}" size="15"/>
-            <p:commandButton value="Search &amp; Add" actionListener="#{interactionController.searchAndAddParticipant}" 
-                             update="growl,participantTable"/>
-
-            <br/>
-
-            <ia:participantsTable id="participantTable" value="#{interaction.components}"/>
+            <ia:rangeTable value="#{feature.ranges}" render="#{not empty feature.ranges}" />
 
         </h:panelGroup>
 

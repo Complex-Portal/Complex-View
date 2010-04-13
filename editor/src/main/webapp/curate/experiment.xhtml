@@ -64,7 +64,8 @@
                                 <h:outputLabel value="Host organism: " for="hostOrganismTxt"/>
                             </td>
                             <td colspan="3">
-                                <ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"/>
+                                <h:inputText id="hostOrganismTxt" value="#{experimentController.experiment.bioSource.shortLabel}" />
+                                <!--<ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"/>-->
                             </td>
                         </tr>
                         <tr>

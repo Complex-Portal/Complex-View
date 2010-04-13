@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+    <composite:interface>
+        <composite:attribute name="value" type="java.util.Collection" required="true"/>
+        <composite:attribute name="render" type="java.util.Boolean" default="true"/>
+    </composite:interface>
+
+    <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <p:outputPanel rendered="#{cc.attrs.render}">
+
+            <p:dataTable var="range" value="#{cc.attrs.value}"
+                         paginator="#{cc.attrs.value.size() > 10}" rows="10" lazy="true" dynamic="true">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="AC"/>
+                    </f:facet>
+                    <h:outputText value="#{range.ac}" />
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="From type"/>
+                    </f:facet>
+                    <h:outputText value="#{range.fromCvFuzzyType.shortLabel}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="From"/>
+                    </f:facet>
+                    <h:outputText value="#{range.fromIntervalStart}-#{range.fromIntervalEnd}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="To type"/>
+                    </f:facet>
+                    <h:outputText value="#{range.toCvFuzzyType.shortLabel}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="To"/>
+                    </f:facet>
+                    <h:outputText value="#{range.toIntervalStart}-#{range.toIntervalEnd}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Undetermined ?"/>
+                    </f:facet>
+                    <h:outputText value="#{range.undetermined}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Linked ?"/>
+                    </f:facet>
+                    <h:outputText value="#{feature.linked}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Actions"/>
+                    </f:facet>
+                    <h:link onclick="alert('Not implemented yet.'); return false;">
+                        <p:graphicImage alt="Delete" url="/resources/images/bin.png" style="border: 0px;"/>
+                    </h:link>
+                </p:column>
+            </p:dataTable>
+
+        </p:outputPanel>
+
+    </composite:implementation>
+
+</ui:composition>

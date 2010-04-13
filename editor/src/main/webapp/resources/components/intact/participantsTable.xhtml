@@ -33,6 +33,9 @@
                                 <h:link outcome="/curate/participant" value="Edit" includeViewParams="true">
                                     <f:param name="ac" value="#{participant.ac}"/>
                                 </h:link>
+                                <!--<h:commandButton value="Edit" action="/curate/participant">-->
+                                    <!--<f:setPropertyActionListener value="#{participant.ac}" target="#{participantController.ac}" />-->
+                                <!--</h:commandButton>-->
                             </td>
                             <td >
                                 <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
