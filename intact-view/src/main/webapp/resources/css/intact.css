@@ -19,6 +19,13 @@ a img {
     /*background: #FFFFFF;*/
 }
 
+.yui-skin-sam .yui-navset .yui-nav .disabled a,  
+.yui-skin-sam .yui-navset .yui-nav .disabled a:focus,
+.yui-skin-sam .yui-navset .yui-nav .disabled a:hover{
+    background: #EEEEEE;
+    color: #999999;
+}
+
 .yui-skin-sam .yui-navset .yui-content {
     background: #FFFFFF;
     border-color: #FFFFFF;
