@@ -7,6 +7,8 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
 
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
+
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
@@ -59,58 +61,38 @@
                 To perform a search in the #{intactView['webapp.name']} database use the search box in the top left corner.
             </p>
 
-            <h:panelGroup>
-
-                <table>
-                    <tr>
-                        <td>
-                           Examples:
-                        </td>
-                        <td>
+                <iv:panelLabelAndMessage label="Examples:">
                             <ul>
                             <li>
-                            <h:panelGroup>
-                                Gene name: e.g.
-                                <h:commandLink text="BRCA2" action="#{searchBean.doBinarySearchAction}">
+                                <h:outputText value="Gene name: e.g. "/>
+                                <h:commandLink value="BRCA2" action="#{searchBean.doBinarySearchAction}">
                                     <f:setPropertyActionListener value="BRCA2"
                                                                  target="#{userQuery.searchQuery}"/>
                                 </h:commandLink>
-                            </h:panelGroup>
                             </li>
                             <li>
-                            <h:panelGroup>
-                                UniProtKB Ac: e.g.
-                                <h:commandLink text="Q06609" action="#{searchBean.doBinarySearchAction}">
+                                <h:outputText value="UniProtKB Ac: e.g. "/>
+                                <h:commandLink value="Q06609" action="#{searchBean.doBinarySearchAction}">
                                     <f:setPropertyActionListener value="Q06609"
                                                                  target="#{userQuery.searchQuery}"/>
                                 </h:commandLink>
-                            </h:panelGroup>
                             </li>
                             <li>
-                            <h:panelGroup>
-                                UniProtKB Id: e.g.
-                                <h:commandLink text="dmc1" action="#{searchBean.doBinarySearchAction}">
+                                <h:outputText value="UniProtKB Id: e.g. "/>
+                                <h:commandLink value="dmc1" action="#{searchBean.doBinarySearchAction}">
                                     <f:setPropertyActionListener value="dmc1"
                                                                  target="#{userQuery.searchQuery}"/>
                                 </h:commandLink>
-                            </h:panelGroup>
                             </li>
                             <li>
-                            <h:panelGroup>
-                                Pubmed Id: e.g.
-                                <h:commandLink text="10831611" action="#{searchBean.doBinarySearchAction}">
+                                <h:outputText value=" Pubmed Id: e.g. "/>
+                                <h:commandLink value="10831611" action="#{searchBean.doBinarySearchAction}">
                                     <f:setPropertyActionListener value="10831611"
                                                                  target="#{userQuery.searchQuery}"/>
                                 </h:commandLink>
-                            </h:panelGroup>
                             </li>
                         </ul>
-                        </td>
-                    </tr>
-                </table>
-
-                <!-- </tr:panelBox>-->
-            </h:panelGroup>
+                </iv:panelLabelAndMessage>
 
             <p/>
             <p:panel>
