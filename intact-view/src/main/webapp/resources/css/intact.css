@@ -2,6 +2,8 @@ a img {
     border: 0;
 }
 
+/** p:tabViewer **/
+
 .yui-skin-sam .yui-navset .yui-nav {
 }
 
@@ -14,10 +16,38 @@ a img {
 .yui-skin-sam .yui-navset .yui-nav .selected a,
 .yui-skin-sam .yui-navset .yui-nav .selected a:focus,
 .yui-skin-sam .yui-navset .yui-nav .selected a:hover {
-    background: #FFFFFF;
+    /*background: #FFFFFF;*/
 }
 
 .yui-skin-sam .yui-navset .yui-content {
-    background: #FFFFFF !important;
-    border-color: #33CC00;
+    background: #FFFFFF;
+    border-color: #FFFFFF;
+}
+
+
+.yui-skin-sam .yui-panel .bd{
+    background: #FFFFFF;
+    border-color: #000000;
+    height: 150px;
+    /*color:#CCCCCC;*/
+}
+
+.yui-skin-sam .yui-panel .hd {
+    /*background: url(../images/dialoghd.gif);*/
+    /*border-color : #000000;*/
+    /*color: #FFFFFF;*/
+}
+
+.yui-skin-sam .yui-panel-container.shadow .underlay {
+    background-color: #333333;
+    bottom:-7px;
+    left: 7px;
+    opacity:0.5;
+    position:absolute;
+    right:-7px;
+    top:7px;
+}
+
+.yui-skin-sam .container-close {
+    /*background: url(../images/dialogclose.png) no-repeat;*/
 }

@@ -3,26 +3,19 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
 
-                xmlns:iav="http://intact.ebi.ac.uk/view">
 
-    <!-- Include this hack to avoid using the "general" conversation -->
-    <ui:include src="/pages/inc/dialogConversationHack.xhtml"/>
+<h1>Help: Searches in #{intactView['webapp.name']}</h1>
 
-<tr:document>
+<h:panelGroup>
+    <h:outputText value="To do a search you can use the Molecular Interaction Query Language (MIQL), which is based on "/>
 
-<tr:panelHeader text="Help: Searches in #{intactView['webapp.name']}">
-
-<tr:group>
-    <tr:outputText value="To do a search you can use the Molecular Interaction Query Language (MIQL), which is based on "/>
-
-    <tr:goLink text="Lucene's syntax."
-               destination="http://lucene.apache.org/java/2_3_2/queryparsersyntax.html#Terms"
-               targetFrame="_blank"/>
-</tr:group>
+    <h:outputLink value="http://lucene.apache.org/java/2_3_2/queryparsersyntax.html#Terms"
+               target="_blank">Lucene's syntax.</h:outputLink>
+</h:panelGroup>
 
 <ul>
     <li>Use OR or space ' ' to search for ANY of the terms in a field</li>
@@ -43,141 +36,137 @@
     </li>
 </ul>
 
-<tr:separator/>
+<hr/>
 
-<h:panelGrid columns="3" styleClass="contenttable" headerClass="contenttable">
+<h:panelGrid columns="3" headerClass="contenttable">
 
-    <tr:outputText value="Field Name" inlineStyle="font-weight: bold"/>
-    <tr:outputText value="Searches on" inlineStyle="font-weight: bold"/>
-    <tr:outputText value="Example" inlineStyle="font-weight: bold"/>
+    <h:outputText value="Field Name" style="font-weight: bold"/>
+    <h:outputText value="Searches on" style="font-weight: bold"/>
+    <h:outputText value="Example" style="font-weight: bold"/>
 
-    <tr:outputText value="idA"/>
-    <tr:outputText value="IdentifierA"/>
-    <iav:queryLink value="idA:P74565"/>
+    <h:outputText value="idA"/>
+    <h:outputText value="IdentifierA"/>
+    <iv:queryLink value="idA:P74565"/>
 
-    <tr:outputText value="id"/>
-    <tr:outputText value="Identifiers (A or B)"/>
-    <iav:queryLink value="id:P74565"/>
+    <h:outputText value="id"/>
+    <h:outputText value="Identifiers (A or B)"/>
+    <iv:queryLink value="id:P74565"/>
 
-    <tr:outputText value="alias"/>
-    <tr:outputText value="Aliases (A or B)"/>
-    <iav:queryLink value="alias:(KHDRBS1 OR HCK)"/>
+    <h:outputText value="alias"/>
+    <h:outputText value="Aliases (A or B)"/>
+    <iv:queryLink value="alias:(KHDRBS1 OR HCK)"/>
 
-    <tr:outputText value="identifiers"/>
-    <tr:outputText value="Identifiers and Aliases undistinctively"/>
-    <iav:queryLink value="identifier:P74565"/>
+    <h:outputText value="identifiers"/>
+    <h:outputText value="Identifiers and Aliases undistinctively"/>
+    <iv:queryLink value="identifier:P74565"/>
 
-    <tr:outputText value="pubauth"/>
-    <tr:outputText value="Publication 1st author(s)"/>
-    <iav:queryLink value="pubauth:scott"/>
+    <h:outputText value="pubauth"/>
+    <h:outputText value="Publication 1st author(s)"/>
+    <iv:queryLink value="pubauth:scott"/>
 
-    <tr:outputText value="pubid"/>
-    <tr:outputText value="Publication Identifier(s) OR"/>
-    <iav:queryLink value="pubid:(10837477 OR 12029088)"/>
+    <h:outputText value="pubid"/>
+    <h:outputText value="Publication Identifier(s) OR"/>
+    <iv:queryLink value="pubid:(10837477 OR 12029088)"/>
 
-    <tr:outputText value="taxidA"/>
-    <tr:outputText value="Tax ID interactor A:  be it the tax ID or the species name"/>
-    <iav:queryLink value="taxidA:mouse"/>
+    <h:outputText value="taxidA"/>
+    <h:outputText value="Tax ID interactor A:  be it the tax ID or the species name"/>
+    <iv:queryLink value="taxidA:mouse"/>
 
-    <tr:outputText value="taxidB"/>
-    <tr:outputText value="Tax ID interactor B: be it the tax ID or species name"/>
-    <iav:queryLink value="taxidB:9606"/>
+    <h:outputText value="taxidB"/>
+    <h:outputText value="Tax ID interactor B: be it the tax ID or species name"/>
+    <iv:queryLink value="taxidB:9606"/>
 
-    <tr:outputText value="species"/>
-    <tr:outputText value="Species. Tax ID A and Tax ID B"/>
-    <iav:queryLink value="species:human"/>
+    <h:outputText value="species"/>
+    <h:outputText value="Species. Tax ID A and Tax ID B"/>
+    <iv:queryLink value="species:human"/>
 
-    <tr:outputText value="type"/>
-    <tr:outputText value="Interaction type(s)"/>
-    <iav:queryLink value="type:&quot;physical interaction&quot;" escape="false"/>
+    <h:outputText value="type"/>
+    <h:outputText value="Interaction type(s)"/>
+    <iv:queryLink value="type:&quot;physical interaction&quot;" escape="false"/>
 
-    <tr:outputText value="detmethod"/>
-    <tr:outputText value="Interaction Detection method(s)"/>
-    <iav:queryLink value="detmethod:&quot;two hybrid*&quot;" escape="false"/>
+    <h:outputText value="detmethod"/>
+    <h:outputText value="Interaction Detection method(s)"/>
+    <iv:queryLink value="detmethod:&quot;two hybrid*&quot;" escape="false"/>
 
     <!--
-    <tr:outputText value="source"/>
-    <tr:outputText value="Source database(s)"/>
-    <tr:outputText value="source:intact"/>
+    <h:outputText value="source"/>
+    <h:outputText value="Source database(s)"/>
+    <h:outputText value="source:intact"/>
     -->
 
-    <tr:outputText value="interaction_id"/>
-    <tr:outputText value="Interaction identifier(s)"/>
-    <iav:queryLink value="interaction_id:EBI-761050"/>
+    <h:outputText value="interaction_id"/>
+    <h:outputText value="Interaction identifier(s)"/>
+    <iv:queryLink value="interaction_id:EBI-761050"/>
 
     <!--
-    <tr:outputText value="confidence"/>
-    <tr:outputText value="Confidence score (not available yet)"/>
-    <tr:outputText value="confidence:"/>
+    <h:outputText value="confidence"/>
+    <h:outputText value="Confidence score (not available yet)"/>
+    <h:outputText value="confidence:"/>
      -->
-   <!-- <tr:outputText value="annotationA"/>
-    <tr:outputText value="Annotations Interactor A"/>
-    <iav:queryLink value="annotationA:approved"/>
+   <!-- <h:outputText value="annotationA"/>
+    <h:outputText value="Annotations Interactor A"/>
+    <iv:queryLink value="annotationA:approved"/>
 
-    <tr:outputText value="annotationB"/>
-    <tr:outputText value="Annotations Interactor B"/>
-    <iav:queryLink value="annotationB:experimental"/>-->
+    <h:outputText value="annotationB"/>
+    <h:outputText value="Annotations Interactor B"/>
+    <iv:queryLink value="annotationB:experimental"/>-->
 
-    <tr:outputText value="annotation"/>
-    <tr:outputText value="Annotations Interactor A or B"/>
-    <iav:queryLink value="annotation:experimental"/>
+    <h:outputText value="annotation"/>
+    <h:outputText value="Annotations Interactor A or B"/>
+    <iv:queryLink value="annotation:experimental"/>
 
-   <!-- <tr:outputText value="propertiesA"/>
-    <tr:outputText value="Properties of Interactor A"/>
-    <iav:queryLink value="properties:&quot;GO:0005794&quot;"/>
+   <!-- <h:outputText value="propertiesA"/>
+    <h:outputText value="Properties of Interactor A"/>
+    <iv:queryLink value="properties:&quot;GO:0005794&quot;"/>
 
-    <tr:outputText value="propertiesB"/>
-    <tr:outputText value="Properties of Interactor B"/>
-    <iav:queryLink value="properties:&quot;IPR011527&quot;"/>
+    <h:outputText value="propertiesB"/>
+    <h:outputText value="Properties of Interactor B"/>
+    <iv:queryLink value="properties:&quot;IPR011527&quot;"/>
 -->
-    <tr:outputText value="properties"/>
-    <tr:outputText value="Properties of Interactor A or B (note that this field also contains parent terms of ontology terms of GO, InterPro and PSI-MI)"/>
-    <iav:queryLink value="properties:&quot;1GQ5&quot;"/>
+    <h:outputText value="properties"/>
+    <h:outputText value="Properties of Interactor A or B"/>
+    <iv:queryLink value="properties:&quot;1GQ5&quot;"/>
 
-    <tr:outputText value="expansion"/>
-    <tr:outputText value="Expansion method(s)"/>
-    <iav:queryLink value="expansion:spoke"/>
+    <h:outputText value="expansion"/>
+    <h:outputText value="Expansion method(s)"/>
+    <iv:queryLink value="expansion:spoke"/>
 
-    <tr:outputText value="dataset"/>
-    <tr:outputText value="Dataset name(s)"/>
-    <iav:queryLink value="dataset:Apoptosis"/>
+    <h:outputText value="dataset"/>
+    <h:outputText value="Dataset name(s)"/>
+    <iv:queryLink value="dataset:Apoptosis"/>
 
-    <tr:outputText value="experimentalRole"/>
-    <tr:outputText value="Experimental role(s) interactor A or interactor B"/>
-    <iav:queryLink value="experimentalRole:prey"/>
+    <h:outputText value="experimentalRole"/>
+    <h:outputText value="Experimental role(s) interactor A or interactor B"/>
+    <iv:queryLink value="experimentalRole:prey"/>
 
-    <tr:outputText value="biologicalRole"/>
-    <tr:outputText value="Biological role(s) interactor A or interactor B"/>
-    <iav:queryLink value="biologicalRole:enzyme"/>
+    <h:outputText value="biologicalRole"/>
+    <h:outputText value="Biological role(s) interactor A or interactor B"/>
+    <iv:queryLink value="biologicalRole:enzyme"/>
 
-    <tr:outputText value="hostOrganism"/>
-    <tr:outputText value="Host organism in which the interaction was detected"/>
-    <iav:queryLink value="hostOrganism:human"/>
+    <h:outputText value="hostOrganism"/>
+    <h:outputText value="Host organism in which the interaction was detected"/>
+    <iv:queryLink value="hostOrganism:human"/>
 
-    <!--<tr:outputText value="parameterA"/>-->
-    <!--<tr:outputText value="Parameter(s) interactor A"/>-->
-    <!--<iav:queryLink value="parameterA:xxxxx"/>-->
+    <!--<h:outputText value="parameterA"/>-->
+    <!--<h:outputText value="Parameter(s) interactor A"/>-->
+    <!--<iv:queryLink value="parameterA:xxxxx"/>-->
 
-    <!--<tr:outputText value="parameterB"/>-->
-    <!--<tr:outputText value="Parameter(s) interactor B"/>-->
-    <!--<iav:queryLink value="parameterB:xxxxx"/>-->
+    <!--<h:outputText value="parameterB"/>-->
+    <!--<h:outputText value="Parameter(s) interactor B"/>-->
+    <!--<iv:queryLink value="parameterB:xxxxx"/>-->
 
-    <!--<tr:outputText value="parameterInteraction"/>-->
-    <!--<tr:outputText value="Parameter(s) interaction"/>-->
-    <!--<iav:queryLink value="parameterInteraction:xxxxx"/>-->
+    <!--<h:outputText value="parameterInteraction"/>-->
+    <!--<h:outputText value="Parameter(s) interaction"/>-->
+    <!--<iv:queryLink value="parameterInteraction:xxxxx"/>-->
 
 </h:panelGrid>
 
-<tr:separator/>
+<hr/>
 
 <p>(*) Implicit fields are used when no field is specified (simple search). For instance, if you put
     <i>'P12345'</i> in the simple query box,
     this will mean the same as <i>  identifier:P12345 OR pubid:P12345 OR pubauth:P12345 OR species:P12345
     OR type_exact:P12345 OR type:P12345 OR detmethod_exact:P12345 OR detmethod:P12345 OR interaction_id:P12345
     OR properties:P12345 OR hostOrganism:P12345 OR expansion:P12345 OR dataset:P12345</i></p>
-
-</tr:panelHeader>
-
-</tr:document>
 
 </ui:composition>

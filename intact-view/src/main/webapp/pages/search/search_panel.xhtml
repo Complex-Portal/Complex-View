@@ -15,9 +15,10 @@
         </div>
 
         <p:dialog header="MIQL Syntax Reference" widgetVar="miqlHelpDialog" fixedCenter="true"
-                  constrainToViewport="true"
-                  modal="true" width="600" height="600">
-            <ui:include src="help_miql.xhtml"/>
+                  modal="true" width="600px" height="600px">
+            <div style="width:590px; height:590px; overflow:auto;">
+                <ui:include src="help_miql.xhtml"/>
+            </div>
         </p:dialog>
         
         <h:panelGroup id="searchPanel" style="vertical-align:top">
@@ -59,22 +60,22 @@
 
                 <h:panelGroup>
 
-                    <h:selectOneListbox value="#{userQuery.newQueryToken.operandStr}"
+                    <h:selectOneMenu value="#{userQuery.newQueryToken.operandStr}"
                             disabled="#{userQuery.wildcardQuery}">
                         <f:selectItem itemValue="AND" itemLabel="AND"/>
                         <f:selectItem itemValue="OR" itemLabel="OR" itemDisabled="#{empty userQuery.searchQuery or
                                                                                     userQuery.searchQuery eq '*:*'}"/>
-                    </h:selectOneListbox>
+                    </h:selectOneMenu>
                     &#160;
 
                     <h:selectBooleanCheckbox text="NOT" value="#{userQuery.newQueryToken.notQuery}"/>
                     &#160;
 
-                    <h:selectOneListbox id="newQueryField" label="Field: " value="#{userQuery.newQueryToken.field}"
+                    <h:selectOneMenu id="newQueryField" label="Field: " value="#{userQuery.newQueryToken.field}"
                                         immediate="true">
                         <!-- TODO update with ajax the newQueryPanel autosubmitting-->
                         <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
-                    </h:selectOneListbox>
+                    </h:selectOneMenu>
                     &#160;
 
                     <h:panelGroup id="newQueryPanel">
@@ -82,10 +83,10 @@
                                       rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list and
                                                   not userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"/>
 
-                        <h:selectOneListbox value="#{userQuery.newQueryToken.query}"
+                        <h:selectOneMenu value="#{userQuery.newQueryToken.query}"
                                 rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}">
                             <f:selectItems value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].selectItems}"/>
-                        </h:selectOneListbox>
+                        </h:selectOneMenu>
 
                     <!--<tr:inputListOfValues value="#{userQuery.newQueryToken.query}" columns="50"-->
                                           <!--rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"-->
