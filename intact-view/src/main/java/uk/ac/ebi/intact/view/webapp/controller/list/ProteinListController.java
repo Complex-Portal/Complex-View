@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.view.webapp.controller.list;
 
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.trinidad.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -25,7 +24,6 @@ import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.InteractorXref;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 import uk.ac.ebi.intact.view.webapp.util.ExternalDbLinker;
 
@@ -53,8 +51,11 @@ public class ProteinListController extends BaseController {
     }
 
     private String[] getSelectedUniprotIds() {
+        // TODO handle selection
+        if (true) throw new UnsupportedOperationException("Not implemented in the migration to JSF 2");
 
-        final List<InteractorWrapper> interactorWrappers = getSelected( SearchController.PROTEINS_TABLE_ID );
+        final List<InteractorWrapper> interactorWrappers = null;
+        //final List<InteractorWrapper> interactorWrappers = getSelected( SearchController.PROTEINS_TABLE_ID );
 
         Set<String> uniprotIds = new HashSet<String>();
 
@@ -72,8 +73,11 @@ public class ProteinListController extends BaseController {
     }
 
     private String[] getSelectedGeneNames() {
+        // TODO handle selection
+        if (true) throw new UnsupportedOperationException("Not implemented in the migration to JSF 2");
 
-        final List<InteractorWrapper> interactorWrappers = getSelected( SearchController.PROTEINS_TABLE_ID );
+        final List<InteractorWrapper> interactorWrappers = null;
+        //final List<InteractorWrapper> interactorWrappers = getSelected( SearchController.PROTEINS_TABLE_ID );
 
         Set<String> geneNames = new HashSet<String>();
 
@@ -109,10 +113,5 @@ public class ProteinListController extends BaseController {
         String[] selected = getSelectedUniprotIds();
         //the carriage return has to be escaped as it is used in the JavaScript
         dbLinker.reactomeLinker( dbLinker.REACTOMEURL, "\\r", selected, "/view/pages/list/protein_list.xhtml" );
-    }
-
-    public void rerender(ActionEvent evt) {
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        requestContext.addPartialTarget(getComponentFromView("buttonBar"));
     }
 }

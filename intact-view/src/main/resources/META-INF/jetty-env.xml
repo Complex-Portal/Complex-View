@@ -22,4 +22,12 @@
         <Arg>jsf/ProjectStage</Arg>
         <Arg type="java.lang.String">Development</Arg>
     </New>
+    <Call name="setAttribute">
+        <Arg>org.mortbay.jetty.Request.maxFormContentSize</Arg>
+        <Arg>
+            <New class="java.lang.Integer">
+                <Arg>500000</Arg>
+            </New>
+        </Arg>
+    </Call>
 </Configure>

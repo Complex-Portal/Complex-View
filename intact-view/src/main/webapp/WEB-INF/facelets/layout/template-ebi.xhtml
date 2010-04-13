@@ -46,8 +46,6 @@
              </h:panelGroup>
         </f:facet>
 
-         <h:form id="intactForm" prependId="false">
-
             <!-- EBI header -->
             <div class="headerdiv" id="headerdiv"
                  style="position:absolute; z-index: 1;">
@@ -74,7 +72,9 @@
                                 <!-- InstanceBeginEditable name="leftnav" -->
 
                                 <!-- start left menu here  -->
-                                <ui:insert name="sidebar"/>
+                                <h:form id="sidebarForm" prependId="false">
+                                    <ui:insert name="sidebar"/>
+                                </h:form>
 
                             </div>
                         </td>
@@ -137,9 +137,10 @@
         </div>
 
              <!-- To avoid expired sessions, poll every 25 mins -->
-        <p:poll interval="#{25*60*1000}"/>
 
-    </h:form>
+        <h:form>
+            <p:poll interval="#{25*60*1000}"/>
+        </h:form>
 
         <!-- Google Analytics -->
         <ui:param name="googleTracker" value="#{intactViewConfiguration.googleAnalyticsTracker}"/>

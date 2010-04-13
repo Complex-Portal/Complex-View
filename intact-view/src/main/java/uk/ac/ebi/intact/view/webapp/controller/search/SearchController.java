@@ -11,7 +11,6 @@ import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.event.PollEvent;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
-import org.apache.myfaces.trinidad.event.ReturnEvent;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.hupo.psi.mi.psicquic.registry.ServiceType;
@@ -197,7 +196,6 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doBinarySearch(ActionEvent evt) {
-        refreshComponent("mainPanels");
         doBinarySearchAction();
     }
 
@@ -474,8 +472,6 @@ public class SearchController extends JpaBaseController {
         UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(INTERACTIONS_TABLE_ID);
         table.setFirst(evt.getNewStart());
         table.setRows(evt.getNewEnd() - evt.getNewStart());
-
-        refreshTable(INTERACTIONS_TABLE_ID, results);
     }
 
     public void doSearchInteractionsFromCompoundListSelection(ActionEvent evt) {
@@ -495,7 +491,11 @@ public class SearchController extends JpaBaseController {
     }
 
     private void doSearchInteractionsFromListSelection(String tableName ) {
-        final List<InteractorWrapper> selected = getSelected(tableName);
+        // TODO handle selection
+        if (true) throw new UnsupportedOperationException("Not implemented in the migration to JSF 2");
+        
+        final List<InteractorWrapper> selected = null;
+        //final List<InteractorWrapper> selected = getSelected(tableName);
 
         if (selected.size() == 0) {
             return;
@@ -524,8 +524,6 @@ public class SearchController extends JpaBaseController {
         SolrQuery solrQuery = userQuery.createSolrQuery();
 
         doBinarySearch(solrQuery);
-
-        resetSelection(tableName);
     }
 
     public String resetSearch() {
@@ -572,10 +570,6 @@ public class SearchController extends JpaBaseController {
             doBinarySearch( solrQuery );
         }
 
-    }
-
-    public void refreshWhenClosingDialog( ReturnEvent event ) {
-        refreshComponent("mainPanels");
     }
 
     public void doBinarySearchAndCloseDialog( ActionEvent event ) {

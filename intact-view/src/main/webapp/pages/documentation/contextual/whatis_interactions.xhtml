@@ -2,18 +2,9 @@
 <ui:composition
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:tr="http://myfaces.apache.org/trinidad"
-        xmlns:trh="http://myfaces.apache.org/trinidad/html"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:c="http://java.sun.com/jstl/core"
-        >
+        xmlns:h="http://java.sun.com/jsf/html">
 
-    <!-- Include this hack to avoid using the "general" conversation -->
-    <ui:include src="/pages/inc/dialogConversationHack.xhtml"/>
-
-    <tr:document title="What is this view?">
-
-        <tr:panelHeader text="Binary interactions" inlineStyle="margin-left: 10px; margin-right:10px">
+        <h1>Binary interactions</h1>
 
             <p>
             In this tab, we display the list of interaction that you have selected using one of our
@@ -25,17 +16,17 @@
             model (connects bait to all preys):
             </p>
 
-            <tr:panelHorizontalLayout halign="center">
-                    <tr:image source="/images/documentation/matrix-spoke.png"
-                              shortDesc="Spoke and Matrix Expansion Algorithm"/>
-            </tr:panelHorizontalLayout>
+            <h:panelGroup style="text-align: center">
+                    <h:graphicImage alt="sourceExp" url="/images/documentation/matrix-spoke.png"
+                              title="Spoke and Matrix Expansion Algorithm"/>
+            </h:panelGroup>
 
             <p>
             At any moment you can choose to display the expansion column in this view in order to see
             which interaction are spoke expanded and which are not.
             </p>
 
-            <tr:panelHeader text="Description of what has changed">
+            <h2>Description of what has changed</h2>
                 <ul>
                     <li>We have added some icons in the first two column to indicate the roles of the
                         molecule in the interactions.
@@ -48,28 +39,21 @@
                         using more standard formats such as PSI-MI XML and PSIMITAB.
                     </li>
                 </ul>
-            </tr:panelHeader>
 
-            <tr:panelHeader text="Configuring the view to your need">
+            <h2>Configuring the view to your need"</h2>
                 In the header of the interaction table you will find a button: ‘Change Column Display’
                 that will show you all the columns available and allow you to update the current
                 selected set.
-            </tr:panelHeader>
 
-            <tr:panelHeader text="Downloading the data into Standard formats">
+            <h2>Downloading the data into Standard formats"</h2>
                 In the header of the interaction table you will find a drop down list that contains
                 all the formats currently supported when downloading the interaction data. Select
                 one of them and click the export button next to the list. Please note that PSI-MI XML
                 is only available when the interaction set is no bigger than 1000 interactions.
-            </tr:panelHeader>
 
-            <tr:panelHeader text="Opening the interaction details">
+            <h2>Opening the interaction details"</h2>
                 Clicking on the magnifying glass in the first column of the interaction table
                 will open the details of the corresponding interaction in the Interaction Details tab,
                 giving you access to more details of the manually curated record.
-            </tr:panelHeader>
-        </tr:panelHeader>
-
-    </tr:document>
 
 </ui:composition>

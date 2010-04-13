@@ -3,9 +3,8 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
-                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
 
@@ -13,616 +12,130 @@
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
-                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
-
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://intact.ebi.ac.uk/miscel /WEB-INF/intact-miscel.tld">
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions">
 
 <!-- Info section on top of the results -->
 
 <div style="float:right">
-    <tr:commandLink action="dialog:faq.whatis.interactions"
-                    partialSubmit="true" useWindow="true"
-                    windowWidth="700" windowHeight="500"
-                    immediate="true">
+    <p:commandLink onclick="whatIsInteractionsDialog.show()">
         What is this view
-        <tr:image source="/images/help.png"/>
-    </tr:commandLink>
+        <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+    </p:commandLink>
 </div>
 
-<tr:panelHorizontalLayout inlineStyle="margin-left: 10px; margin-top:5px" rendered="#{searchBean.totalResults gt 0}">
-    <f:facet name="separator">
-            &#160;
-        </f:facet>
+<p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog" fixedCenter="true"
+          width="700px" height="500px">
+    <div style="width:690px; height:490px; overflow:auto;">
+        <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
+    </div>
+</p:dialog>
 
-    <tr:image source="/images/browse.png"/>
-    Browse by
-    <tr:panelHorizontalLayout >
-        <f:facet name="separator">
-            ,&#160;
-        </f:facet>
-        <tr:commandLink text="taxonomy" action="browse.taxonomybrowser"/>
-        <tr:commandLink text="gene ontology" action="browse.gobrowser"/>
-        <tr:commandLink text="ChEBI ontology" action="browse.chebibrowser"
+<h:panelGroup style="margin-left: 10px; margin-top:5px" rendered="#{searchBean.totalResults gt 0}">
+
+    <h:graphicImage alt="browseImg" url="/images/browse.png"/>
+    <h:outputText value="Browse by "/>
+    <h:panelGroup>
+        <h:commandLink value="taxonomy" action="browse.taxonomybrowser"/>,&#160;
+        <h:commandLink value="gene ontology" action="browse.gobrowser"/>,&#160;
+        <h:commandLink value="ChEBI ontology" action="browse.chebibrowser"
                 rendered="#{facetController.interactorTypeCount.smallMoleculeCount > 0}"/>
-    </tr:panelHorizontalLayout>
-</tr:panelHorizontalLayout>
+    </h:panelGroup>
+</h:panelGroup>
 
-<tr:separator/>
+<hr/>
 
-    > <strong><tr:outputText value="#{searchBean.totalResults}">
-            <tr:convertNumber pattern="#,###"/>
-        </tr:outputText></strong> binary interaction#{searchBean.totalResults != 1? 's were' : ' was'} found in #{intactViewConfiguration.webappName}.
+    > <strong><h:outputText value="#{searchBean.totalResults}">
+            <f:convertNumber pattern="#,###"/>
+        </h:outputText></strong> binary interaction#{searchBean.totalResults != 1? 's were' : ' was'} found in #{intactViewConfiguration.webappName}.
 
-<tr:panelGroupLayout rendered="#{facetController.expansionCount.spokeCount > 0}"
+<h:panelGroup rendered="#{facetController.expansionCount.spokeCount > 0}"
                      inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
-    <strong><tr:outputText value="#{facetController.expansionCount.spokeCount}">
-            <tr:convertNumber pattern="#,###"/>
-        </tr:outputText>
+    <strong><h:outputText value="#{facetController.expansionCount.spokeCount}">
+            <f:convertNumber pattern="#,###"/>
+        </h:outputText>
     </strong> of them are originated
     from&#160;
-    <tr:commandLink action="dialog:faq.expansion"
-                    partialSubmit="true"
-                    windowWidth="700" windowHeight="500"
-                    immediate="true" useWindow="true">spoke expanded co-complexes
-        <tr:image source="/images/help.png"/>
-    </tr:commandLink> and you may want to&#160;
-    <tr:commandLink text="filter" action="#{searchBean.doBinarySearchAction}" actionListener="#{userQuery.doAddTermToQuery}">
+    <p:commandLink onclick="complexExpansionDialog.show()">spoke expanded co-complexes
+        <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+    </p:commandLink> and you may want to&#160;
+    <h:commandLink value="filter" action="#{searchBean.doBinarySearchAction}" actionListener="#{userQuery.doAddTermToQuery}">
         <f:param name="token_operand" value="AND"/>
         <f:param name="token_not" value="not"/>
         <f:param name="token_query" value="spoke"/>
         <f:param name="token_field" value="expansion"/>
-    </tr:commandLink>
+    </h:commandLink>
     &#160;them.
 
-</tr:panelGroupLayout>
+    <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog" fixedCenter="true"
+              width="700px" height="500px">
+        <div style="width:690px; height:490px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
+        </div>
+    </p:dialog>
 
-<tr:panelGroupLayout inlineStyle="display:#{searchBean.countInOtherDatabases == -1? 'inline' : 'none'}" partialTriggers=":psicquicPoll">
-    <br/>
-    <span style="color:gray">
-    > [Counting results in other databases...]
-    </span>
-</tr:panelGroupLayout>
+</h:panelGroup>
 
-<tr:panelGroupLayout partialTriggers="psicquicPoll"
-                     inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px; display:#{(searchBean.countInOtherDatabases gt 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}"
-                     >
-    <br/>
-    <tr:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
-    <tr:goLink destination="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">
-        <tr:outputText value="#{searchBean.countInOtherDatabases}" inlineStyle="font-weight:bold">
-            <tr:convertNumber pattern="#,###"/>
-        </tr:outputText>
-    </tr:goLink>
+<!--<tr:panelGroupLayout inlineStyle="display:#{searchBean.countInOtherDatabases == -1? 'inline' : 'none'}" partialTriggers=":psicquicPoll">-->
+    <!--<br/>-->
+    <!--<span style="color:gray">-->
+    <!--> [Counting results in other databases...]-->
+    <!--</span>-->
+<!--</tr:panelGroupLayout>-->
 
-    interaction evidences from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.
-    <tr:commandLink action="dialog:faq.psicquic"
-                    partialSubmit="true"
-                    windowWidth="700" windowHeight="500"
-                    immediate="true" useWindow="true">
-        <tr:image source="/images/help.png"/>
-    </tr:commandLink>
+<!--<tr:panelGroupLayout partialTriggers="psicquicPoll"-->
+                     <!--inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px; display:#{(searchBean.countInOtherDatabases gt 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}"-->
+                     <!-->-->
+    <!--<br/>-->
+    <!--<h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>-->
+    <!--<tr:goLink destination="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">-->
+        <!--<h:outputText value="#{searchBean.countInOtherDatabases}" inlineStyle="font-weight:bold">-->
+            <!--<tr:convertNumber pattern="#,###"/>-->
+        <!--</h:outputText>-->
+    <!--</tr:goLink>-->
 
-    <tr:panelGroupLayout rendered="#{searchBean.countInOtherImexDatabases gt 0}">
-        <br/>
-        <tr:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
-        <tr:goLink destination="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">
-            <tr:outputText value="#{searchBean.countInOtherImexDatabases}" inlineStyle="font-weight:bold">
-                <tr:convertNumber pattern="#,###"/>
-            </tr:outputText>
-        </tr:goLink>
+    <!--interaction evidences from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.-->
+    <!--<tr:commandLink action="dialog:faq.psicquic"-->
+                    <!--partialSubmit="true"-->
+                    <!--windowWidth="700" windowHeight="500"-->
+                    <!--immediate="true" useWindow="true">-->
+        <!--<tr:image source="/images/help.png"/>-->
+    <!--</tr:commandLink>-->
 
-        interaction evidences from <b>#{searchBean.otherImexDatabasesWithResults}</b> other IMEx databases.
-        <tr:commandLink action="dialog:faq.psicquic.imex"
-                        partialSubmit="true"
-                        windowWidth="700" windowHeight="500"
-                        immediate="true" useWindow="true">
-            <tr:image source="/images/help.png"/>
-        </tr:commandLink>
-     </tr:panelGroupLayout>
-</tr:panelGroupLayout>
+    <!--<tr:panelGroupLayout rendered="#{searchBean.countInOtherImexDatabases gt 0}">-->
+        <!--<br/>-->
+        <!--<h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>-->
+        <!--<tr:goLink destination="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">-->
+            <!--<h:outputText value="#{searchBean.countInOtherImexDatabases}" inlineStyle="font-weight:bold">-->
+                <!--<tr:convertNumber pattern="#,###"/>-->
+            <!--</h:outputText>-->
+        <!--</tr:goLink>-->
 
-<tr:panelGroupLayout inlineStyle="display:#{(searchBean.countInOtherDatabases == 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}" partialTriggers="psicquicPoll">
+        <!--interaction evidences from <b>#{searchBean.otherImexDatabasesWithResults}</b> other IMEx databases.-->
+        <!--<tr:commandLink action="dialog:faq.psicquic.imex"-->
+                        <!--partialSubmit="true"-->
+                        <!--windowWidth="700" windowHeight="500"-->
+                        <!--immediate="true" useWindow="true">-->
+            <!--<tr:image source="/images/help.png"/>-->
+        <!--</tr:commandLink>-->
+     <!--</tr:panelGroupLayout>-->
+<!--</tr:panelGroupLayout>-->
 
-    <br/>
-    > No results in other databases.
-    <tr:commandLink action="dialog:faq.psicquic"
-                    partialSubmit="true"
-                    windowWidth="700" windowHeight="500"
-                    immediate="true" useWindow="true">
-        <tr:image source="/images/help.png"/>
-    </tr:commandLink>
-</tr:panelGroupLayout>
+<!--<tr:panelGroupLayout inlineStyle="display:#{(searchBean.countInOtherDatabases == 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}" partialTriggers="psicquicPoll">-->
 
-<tr:separator/>
+    <!--<br/>-->
+    <!--> No results in other databases.-->
+    <!--<tr:commandLink action="dialog:faq.psicquic"-->
+                    <!--partialSubmit="true"-->
+                    <!--windowWidth="700" windowHeight="500"-->
+                    <!--immediate="true" useWindow="true">-->
+        <!--<tr:image source="/images/help.png"/>-->
+    <!--</tr:commandLink>-->
+<!--</tr:panelGroupLayout>-->
+
+<hr/>
 
 <!-- RESULTS TABLE -->
 
-<tr:table id="interactionResults" value="#{searchBean.results}" var="binaryInteraction" varStatus="status"
-          summary="Binary Interactions" horizontalGridVisible="false" rendered="#{searchBean.totalResults > 0}"
-          emptyText="No interactions found matching the query."
-          rows="#{userQuery.pageSize}" rowBandingInterval="1" rangeChangeListener="#{searchBean.rangeChanged}"
-          partialTriggers=":interactionResults:btnToogleProps :interactionResults:selPageRangeChoice :interactionResults:btnConfigureColumn">
-
-<f:facet name="actions">
-    <tr:panelHorizontalLayout>
-        <f:facet name="separator">
-            <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
-        </f:facet>
-
-        <tr:selectRangeChoiceBar var="range" id="selPageRangeChoice"
-                                 value="#{searchBean.results}" first="#{searchBean.firstResultIndex}"
-                                 rows="30" rangeChangeListener="#{searchBean.rangeChanged}"
-                                 rendered="#{searchBean.results.rowCount gt userQuery.pageSize}"/>
-
-        <tr:commandLink id="btnToogleProps" immediate="true" rendered="#{searchBean.expandedView}"
-                        text="#{searchBean.showProperties? 'Hide all properties' : 'Show all properties'}"
-                        partialSubmit="true" inlineStyle="white-space:nowrap;">
-            <f:setPropertyActionListener value="#{searchBean.showProperties? false : true}"
-                                         target="#{searchBean.showProperties}"/>
-        </tr:commandLink>
-
-        <tr:panelGroupLayout layout="horizontal">
-
-            <tr:selectOneChoice id="exportFormatSelect"
-                                label="Export to:" unselectedLabel="Select format..."
-                                onchange="document.getElementById('interactionResults:exportBtn').disabled=true"
-                                value="#{searchBean.exportFormat}" autoSubmit="true">
-                <tr:selectItem label="MI-TAB" value="mitab"/>
-                <tr:selectItem label="MI-TAB (Expanded)" value="mitab_intact"/>
-                <tr:selectItem label="MI-XML 2.5.3" value="xml_2_53" disabled="#{searchBean.results.rowCount ge 500}"/>
-                <tr:selectItem label="MI-XML 2.5.4" value="xml_2_54" disabled="#{searchBean.results.rowCount ge 500}"/>
-                <tr:selectItem label="MI-XML 2.5(HTML view)" value="xml_html"
-                               disabled="#{searchBean.results.rowCount ge 500}"/>
-            </tr:selectOneChoice>
-
-            <tr:goButton id="exportBtn" text="Export" partialTriggers="exportFormatSelect"
-                         disabled="#{searchBean.exportFormat == null}"
-                         targetFrame="_blank"
-                         destination="/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}"/>
-
-            <tr:commandButton id="btnConfigureColumn"
-                              text="Change Columns Displayed" action="dialog:configure.columns"
-                              partialSubmit="true" returnListener="#{configureColumn.handleColumnDialogReturn}"
-                              windowWidth="600" windowHeight="600" immediate="true" useWindow="true" />
-
-            <!--<tr:selectOneChoice id="listSortableColumns" label="Sort Rows By: " value="#{searchBean.userSortColumn}" autoSubmit="true" valueChangeListener="#{searchBean.userSort}">-->
-                <!--<tr:selectItem label="Relevance Score" value="relevancescore_s"/>-->
-                <!--<tr:selectItem label="Name molecule A" value="nameA_s"/>-->
-                <!--<tr:selectItem label="Name molecule B" value="nameB_s"/>-->
-                <!--<tr:selectItem label="Interacting molecules" value="rigid"/>-->
-            <!--</tr:selectOneChoice>-->
-
-            <!--<tr:selectOneChoice id="listSortableColumnsOrder" label="Order By: " value="#{searchBean.ascending}" autoSubmit="true" valueChangeListener="#{searchBean.userSortOrder}">-->
-                <!--<tr:selectItem label="Ascending" value="true"/>-->
-                <!--<tr:selectItem label="Descending" value="false"/>-->
-            <!--</tr:selectOneChoice>-->
-
-        </tr:panelGroupLayout>
-
-    </tr:panelHorizontalLayout>
-
-</f:facet>
-
-<tr:column>
-    <tr:outputText value="#{status.index + 1}"/>
-
-    <ui:param name="interactionAc" value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactionAcs)}" />
-
-    <tr:commandLink action="details" shortDesc="Display details for this interaction">
-        <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
-        <tr:image source="/images/magnify.png"/>
-    </tr:commandLink>
-
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeA.name']}" styleClass="cellTextCompound"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.name')}">
-
-    <h:panelGrid width="100%" columns="1" cellpadding="0" cellspacing="1"
-                 rendered="#{not searchBean.results.sameThanPrevious}">
-
-       <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
-
-        <!--For MoleculeType, Role Initials -->
-
-    </h:panelGrid>
-
-    <ui:include src="interactor_icons.xhtml">
-            <ui:param name="interactor" value="#{binaryInteraction.interactorA}"/>
-    </ui:include>
-
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeA.links']}" styleClass="cellTextCompound"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.links')}">
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-    <!--add  links -->
-    <tr:iterator var="xref" value="#{binaryInteraction.interactorA.identifiers}" varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.database}">
-            <f:facet name="uniprotkb">
-                <h:panelGroup>
-                    <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                    <c:set value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorA.identifiers)}"
-                           var="intactXrefA"/>
-                    <tr:commandLink action="molecule">
-                        <f:setPropertyActionListener value="#{intactXrefA}" target="#{moleculeViewBean.interactorAc}"/>
-                        <tr:image source="/images/logos/dasty2_logo_50.png" inlineStyle="border-width:0"/>
-                    </tr:commandLink>
-                </h:panelGroup>
-            </f:facet>
-            <f:facet name="chebi">
-                <h:panelGroup>
-                    <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-            <f:facet name="drugbank">
-                <h:panelGroup>
-                    <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                    <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(binaryInteraction.interactorA))}"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-        </tr:switcher>
-        </tr:iterator>
-    </h:panelGroup>
-
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeB.name']}" styleClass="cellTextTarget"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.name')}">
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-
-    <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorB)}"/>
-
-    </h:panelGroup>
-
-    <!--For MoleculeType, Role Initials -->
-    <ui:include src="interactor_icons.xhtml">
-        <ui:param name="interactor" value="#{binaryInteraction.interactorB}"/>
-    </ui:include>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeB.links']}" styleClass="cellTextTarget"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.links')}">
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-
-    <!--add target links -->
-    <tr:iterator var="xref" value="#{binaryInteraction.interactorB.identifiers}"
-                 varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.database}">
-            <f:facet name="uniprotkb">
-                <h:panelGroup>
-                    <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                    <c:set value="#{iamf:getIntactIdentifierFromCrossReferences(binaryInteraction.interactorB.identifiers)}"
-                           var="intactXrefB"/>
-                    <tr:commandLink action="molecule">
-                        <f:setPropertyActionListener value="#{intactXrefB}" target="#{moleculeViewBean.interactorAc}"/>
-                        <tr:image source="/images/logos/dasty2_logo_50.png" inlineStyle="border-width:0"/>
-                    </tr:commandLink>
-                </h:panelGroup>
-            </f:facet>
-            <f:facet name="chebi">
-                <h:panelGroup>
-                    <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-           <f:facet name="drugbank">
-                <h:panelGroup>
-                    <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-        </tr:switcher>
-    </tr:iterator>
-
-    </h:panelGroup>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeA.aliases']}" styleClass="cellTextCompound"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.aliases')}">
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-
-    <iam:collapsibleIterator id="csd_altIdA_#{status.index}"
-                             disclosed="#{searchBean.showAlternativeIds}"
-                             value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorA.alternativeIdentifiers,null,'rogid')}"
-                             maxShown="3">
-
-        <tr:outputText value="#{item.identifier}"/>
-
-    </iam:collapsibleIterator>
-    </h:panelGroup>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeB.aliases']}" styleClass="cellTextTarget"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.aliases')}">
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-    <iam:collapsibleIterator id="csd_altIdB_#{status.index}"
-                             disclosed="#{searchBean.showAlternativeIds}"
-                             value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorB.alternativeIdentifiers,null,'rogid')}"
-                             maxShown="3">
-
-        <tr:outputText value="#{item.identifier}"/>
-
-    </iam:collapsibleIterator>
-    </h:panelGroup>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeA.species']}" styleClass="cellTextCompound"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.species')}">
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-    <tr:switcher facetName="#{binaryInteraction.interactorA.interactorType.identifier}" defaultFacet="OtherType">
-        <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
-            <tr:outputText value="  "/>
-        </f:facet>
-        <f:facet name="OtherType">
-            <ui:decorate template="/pages/interactions/organism.xhtml">
-                <ui:param name="organism" value="#{binaryInteraction.interactorA.organism}"/>
-            </ui:decorate>
-        </f:facet>
-    </tr:switcher>
-    </h:panelGroup>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeB.species']}" sortProperty="taxidB_s" styleClass="cellTextTarget"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.species')}">
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-
-    <tr:switcher facetName="#{binaryInteraction.interactorB.interactorType.identifier}" defaultFacet="OtherType">
-        <f:facet name="MI:0328"><!-- Smallmolecule MI identifier-->
-            <tr:outputText value="&#160;"/>
-        </f:facet>
-        <f:facet name="OtherType">
-            <ui:decorate template="/pages/interactions/organism.xhtml">
-                <ui:param name="organism" value="#{binaryInteraction.interactorB.organism}"/>
-            </ui:decorate>
-        </f:facet>
-    </tr:switcher>
-    </h:panelGroup>
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.firstauthor']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.firstauthor')}" sortProperty="pubauth_s" styleClass="cellTextInteraction"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
-    <tr:iterator var="author" value="#{binaryInteraction.authors}" rows="0">
-            <span style="display:block">
-                <nobr>
-                    <tr:outputText value="#{author.name}"/>
-                </nobr>
-            </span>
-
-    </tr:iterator>
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.pubmedid']}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.pubmedid')}"  sortProperty="pubid_s" styleClass="cellTextInteraction"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
-    <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.interactiontype']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.interactiontype')}" sortProperty="type_s" styleClass="cellTextInteraction"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
-    <iav:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.detectionmethod']}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.detectionmethod')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextInteraction">
-    <!--<iav:xrefDataList value="#{binaryInteraction.detectionMethods}" onlyText="true" itemPerLine="true"/>-->
-    <!--<ui:repeat var="xref" value="#{binaryInteraction.detectionMethods}">-->
-    <ui:include src="xrefCvPopupDialog.xhtml">
-        <ui:param name="xref" value="${binaryInteraction.detectionMethods[0]}"/>
-    </ui:include>
-        <!--<br/>-->
-    <!--</ui:repeat>-->
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.sourcedb']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.sourcedb')}" styleClass="cellTextInteraction"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
-    <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.ac']}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.ac')}" styleClass="cellTextInteraction"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
-    <!--<iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true" disableLinks="true"/>-->
-    <tr:iterator var="xref" value="#{binaryInteraction.interactionAcs}"
-                 varStatus="rowStatus" rows="0">
-        <tr:switcher facetName="#{xref.database}" defaultFacet="otherDBs">
-            <f:facet name="intact">
-                <h:panelGroup>
-                    <tr:commandLink action="details" text="#{interactionAc}">
-                        <f:setPropertyActionListener value="#{interactionAc}" target="#{detailsBean.interactionAc}"/>
-                    </tr:commandLink>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-            <f:facet name="irefindex">
-                <h:panelGroup>
-                    <!-- Don't show it -->
-                </h:panelGroup>
-            </f:facet>
-            <f:facet name="otherDBs">
-                <h:panelGroup>
-                    <tr:outputText value="#{iav:xrefToString(xref, true, true, false)}" inlineStyle="white-space: pre;"/>
-                    <br/>
-                </h:panelGroup>
-            </f:facet>
-        </tr:switcher>
-    </tr:iterator>
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.confidencevalue']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.confidencevalue')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextInteraction">
-    <tr:iterator var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
-            <span style="display:block">
-                <nobr>
-                    <tr:outputText value="#{confidence.type}:#{confidence.value}"/>
-                </nobr>
-            </span>
-    </tr:iterator>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeA.exprole']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.exprole')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextCompound">
-    <!--<iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorA}" onlyText="true" itemPerLine="true"/>-->
-    <ui:include src="xrefCvPopupDialog.xhtml">
-        <ui:param name="type" value="uk.ac.ebi.intact.model.CvExperimentalRole"/>
-        <ui:param name="xref" value="${binaryInteraction.experimentalRolesInteractorA[0]}"/>
-    </ui:include>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeB.exprole']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.exprole')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextTarget">
-    <!--<iav:xrefDataList value="#{binaryInteraction.experimentalRolesInteractorB}" onlyText="true" itemPerLine="true"/>-->
-    <ui:include src="xrefCvPopupDialog.xhtml">
-        <ui:param name="type" value="uk.ac.ebi.intact.model.CvExperimentalRole"/>
-        <ui:param name="xref" value="${binaryInteraction.experimentalRolesInteractorB[0]}"/>
-    </ui:include>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeA.biorole']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.biorole')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextCompound">
-    <!--<iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorA}" onlyText="true" itemPerLine="true"/>-->
-    <ui:include src="xrefCvPopupDialog.xhtml">
-        <ui:param name="type" value="uk.ac.ebi.intact.model.CvBiologicalRole"/>
-        <ui:param name="xref" value="${binaryInteraction.biologicalRolesInteractorA[0]}"/>
-    </ui:include>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeB.biorole']}"
-           rendered="#{searchBean.expandedView  or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.biorole')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextTarget">
-    <!--<iav:xrefDataList value="#{binaryInteraction.biologicalRolesInteractorB}" onlyText="true" itemPerLine="true"/>-->
-    <ui:include src="xrefCvPopupDialog.xhtml">
-        <ui:param name="type" value="uk.ac.ebi.intact.model.CvBiologicalRole"/>
-        <ui:param name="xref" value="${binaryInteraction.biologicalRolesInteractorB[0]}"/>
-    </ui:include>
-</tr:column>
-
-<tr:column inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.properties')}" styleClass="cellTextCompound">
-    <f:facet name="header">
-        <tr:panelGroupLayout layout="vertical">
-            <tr:outputText value="#{messages['moleculeA.properties']}"/>
-        </tr:panelGroupLayout>
-    </f:facet>
-    <iam:collapsibleIterator id="csd_propsA_#{status.index}"
-                             disclosed="#{searchBean.showProperties}"
-                             value="#{binaryInteraction.propertiesA}"
-                             maxShown="5">
-        <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
-        <tr:goLink text="#{item.identifier}"
-                   shortDesc="#{item.text}"
-                   targetFrame="_blank"
-                   destination="#{xrefUrl}"
-                   disabled="#{xrefUrl == null or xrefUrl == '#'}"/>
-    </iam:collapsibleIterator>
-
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeB.properties']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.properties')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextTarget">
-    <iam:collapsibleIterator id="csd_propsB_#{status.index}"
-                             disclosed="#{searchBean.showProperties}"
-                             value="#{binaryInteraction.propertiesB}"
-                             maxShown="5">
-        <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
-        <tr:goLink text="#{item.identifier}"
-                   shortDesc="#{item.text}"
-                   targetFrame="_blank"
-                   destination="#{xrefUrl}"
-                   disabled="#{xrefUrl == null or xrefUrl == '#'}"/>
-    </iam:collapsibleIterator>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeA.interactortype']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.interactortype')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextCompound">
-    <!--<iav:xrefDataList value="#{binaryInteraction.interactorTypeA}" onlyText="true"/>-->
-    <ui:include src="xrefCvPopupDialog.xhtml">
-        <ui:param name="xref" value="${binaryInteraction.interactorTypeA[0]}"/>
-    </ui:include>
-</tr:column>
-
-<tr:column headerText="#{messages['moleculeB.interactortype']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.interactortype')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextTarget">
-    <ui:include src="xrefCvPopupDialog.xhtml">
-        <ui:param name="xref" value="${binaryInteraction.interactorTypeB[0]}"/>
-    </ui:include>
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.hostorganism']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.hostorganism')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextInteraction">
-    <ui:decorate template="/pages/interactions/organismXrefs.xhtml">
-        <ui:param name="xrefs" value="#{binaryInteraction.hostOrganism}"/>
-    </ui:decorate>
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.expansionmethod']}"
-           rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.expansionmethod')}"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}"
-           styleClass="cellTextInteraction">
-    <tr:commandLink action="dialog:faq.expansion"
-                    partialSubmit="true"
-                    windowWidth="700" windowHeight="500"
-                    immediate="true" useWindow="true">
-        <tr:outputText value="#{binaryInteraction.expansionMethod}"/>
-    </tr:commandLink>
-</tr:column>
-
-<tr:column headerText="#{messages['interaction.dataset']}"
-           rendered="#{searchBean.expandedView or iamf:getSelectedFromMap(configureColumn.columnMap,'interaction.dataset')}" styleClass="cellTextInteraction"
-           inlineStyle="#{not searchBean.results.sameThanPrevious? 'border-top: 1px solid #CDCDCD' : ''}">
-    <tr:iterator var="dataset" value="#{binaryInteraction.dataset}" rows="0">
-                        <span style="display:block">
-                            <nobr>
-                                <tr:outputText value="#{dataset}"/>
-                            </nobr>
-                        </span>
-    </tr:iterator>
-</tr:column>
-
-</tr:table>
-
-<!--<trh:script>-->
-    <!--dojo.addOnLoad(document.getElementById('pollPanel').style.display = 'inline');-->
-<!--</trh:script>-->
-
-<!--<div id="pollPanel" style="display:none;">-->
-    <tr:poll id="psicquicPoll" interval="10" pollListener="#{searchBean.doPsicquicQuery}"/>
-<!--</div>-->
+<ui:include src="interactionTable.xhtml"/>
 
 </ui:composition>

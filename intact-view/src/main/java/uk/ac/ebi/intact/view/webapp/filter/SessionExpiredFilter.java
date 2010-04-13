@@ -15,13 +15,10 @@
  */
 package uk.ac.ebi.intact.view.webapp.filter;
 
-import org.apache.myfaces.trinidadinternal.renderkit.core.ppr.XmlResponseWriter;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -56,23 +53,24 @@ public class SessionExpiredFilter implements Filter {
                     String timeoutUrl = httpServletRequest.getContextPath()
                             + "/" + getTimeoutPage()+"?status=exp";
 
-                    final boolean isPartialRequest = "true".equals(httpServletRequest.getHeader("Tr-XHR-Message"));
-
-                    if (isPartialRequest) {
-                        final PrintWriter writer = httpServletResponse.getWriter();
-                        final XmlResponseWriter rw = new XmlResponseWriter(writer, "UTF-8");
-
-                        rw.startDocument();
-                        rw.write("<?Tr-XHR-Response-Type ?>\n");
-                        rw.startElement("redirect", null);
-                        rw.writeText(timeoutUrl, null);
-                        rw.endElement("redirect");
-                        rw.endDocument();
-                        rw.close();
-
-                        return;
-
-                    }                     
+                    // TODO handle session expiration in partial request
+//                    final boolean isPartialRequest = "true".equals(httpServletRequest.getHeader("Tr-XHR-Message"));
+//
+//                    if (isPartialRequest) {
+//                        final PrintWriter writer = httpServletResponse.getWriter();
+//                        final XmlResponseWriter rw = new XmlResponseWriter(writer, "UTF-8");
+//
+//                        rw.startDocument();
+//                        rw.write("<?Tr-XHR-Response-Type ?>\n");
+//                        rw.startElement("redirect", null);
+//                        rw.writeText(timeoutUrl, null);
+//                        rw.endElement("redirect");
+//                        rw.endDocument();
+//                        rw.close();
+//
+//                        return;
+//
+//                    }
                 }
 
             }

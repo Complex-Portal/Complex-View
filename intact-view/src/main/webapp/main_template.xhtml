@@ -19,9 +19,9 @@
 
     <ui:define name="content">
 
-        <h:panelGroup>
+        <h:form id="topForm" prependId="false">
 
-            <!--<tr:poll id="warningPoll" interval="120000"/>-->
+        <h:panelGroup>
 
             <h:panelGroup>
                 <p:panel header="Important notice" background="transparent"
@@ -35,6 +35,9 @@
 
         <ui:include src="pages/search/search_panel.xhtml"/>
 
+        </h:form>
+
+         <h:form id="intactForm" prependId="false">
 
         <p:tabView id="mainPanels" cache="false">
             
@@ -91,6 +94,8 @@
             </p:tab>
 
         </p:tabView>
+
+        </h:form>
 
     </ui:define>
 

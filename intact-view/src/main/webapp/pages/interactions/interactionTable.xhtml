@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
+
+    <p:dataTable id="resultsTable" var="binaryInteraction" value="#{testController.results}"
+                     rows="#{userQuery.pageSize}"
+                     dynamic="true" lazy="true"
+                     paginator="#{testController.results.rowCount gt userQuery.pageSize}">
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="#{messages['moleculeA.name']}"/>
+                </f:facet>
+                <h:panelGroup rendered="#{not testController.results.sameThanPrevious}">
+                    <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
+                </h:panelGroup>
+
+                    <iv:moleculeBoxes interactor="#{binaryInteraction.interactorA}"/>
+            </p:column>
+            <p:column styleClass="cellTextCompound"
+                      rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.links')}">
+                <f:facet name="header">
+                    <h:outputText value="#{messages['moleculeA.links']}"/>
+                </f:facet>
+                <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorA}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="#{messages['moleculeB.name']}"/>
+                </f:facet>
+                <h:panelGroup rendered="#{not testController.results.sameThanPrevious}">
+
+                    <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorB)}"/>
+
+                    <!--For MoleculeType, Role Initials -->
+
+                </h:panelGroup>
+
+                <iv:moleculeBoxes interactor="#{binaryInteraction.interactorB}"/>
+            </p:column>
+            <p:column styleClass="cellTextCompound"
+                      rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.links')}">
+                <f:facet name="header">
+                    <h:outputText value="#{messages['moleculeB.links']}"/>
+                </f:facet>
+                <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorB}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Interaction IDs"/>
+                </f:facet>
+
+                <ui:repeat var="xref" value="#{binaryInteraction.interactionAcs}"
+                           varStatus="rowStatus" rows="0">
+                    <h:panelGroup rendered="#{xref.database == 'intact'}">
+                        <h:panelGroup>
+                            <h:commandLink action="details" value="#{xref.identifier}">
+                                <f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>
+                            </h:commandLink>
+                            <br/>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{xref.database != 'intact' and xref.database != 'irefindex'}">
+                        <h:outputText value="#{iav:xrefToString(xref, true, true, false)}" style="white-space: pre;"/>
+                        <br/>
+                    </h:panelGroup>
+                </ui:repeat>
+            </p:column>
+
+        </p:dataTable>
+
+</ui:composition>
