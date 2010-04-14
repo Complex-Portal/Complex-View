@@ -31,13 +31,14 @@
             <h:inputText label="Search: " id="queryTxt"
                           columns="60" value="#{userQuery.searchQuery}"
                           rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"
-                          onkeypress="return submitEnter('quickSearchBtn',event)"
+                          onkeyup="return submitEnter('quickSearchBtn',event)"
                           disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
-            <h:commandButton id="quickSearchBtn"
-                              text="Search"
-                              action="#{searchBean.doNewBinarySearch}"
-                              disabled="#{userQuery.showNewFieldPanel}"/>
+            <p:commandButton id="quickSearchBtn"
+                              value="Search"
+                              disabled="#{userQuery.showNewFieldPanel}"
+                              actionListener="#{searchBean.doBinarySearch}"
+                    update="mainPanels,lala"/>
             &#160;
             <h:commandButton type="button" id="clearSearchBtn" value="Clear"
                        onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
@@ -50,6 +51,10 @@
                     update="searchPanelDetails,searchPanel"/>
 
         </h:panelGroup>
+
+        <p:outputPanel id="lala">
+            <h:outputText value="[#{userQuery.searchQuery}  ]"/>
+        </p:outputPanel>
 
          </p:panel>
 

@@ -15,7 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
-import org.apache.myfaces.trinidad.model.TreeModel;
+import org.primefaces.model.TreeNode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
@@ -50,12 +50,13 @@ public class TaxonomyBrowserController extends OntologyBrowserController {
     }
 
     @Override
-    protected TreeModel createTreeModel(OntologyTermWrapper otwRoot) {
-        if (skipIntermediateTaxons) {
-            return new AutoExpandedTreeModel( otwRoot, "children");
-        } else {
-            return super.createTreeModel(otwRoot);
-        }
+    protected TreeNode createTreeModel(OntologyTermWrapper otwRoot) {
+        throw new UnsupportedOperationException("Not yet implemented");
+//        if (skipIntermediateTaxons) {
+//            return new AutoExpandedTreeModel( otwRoot, "children");
+//        } else {
+//            return super.createTreeModel(otwRoot);
+//        }
     }
 
     @Override

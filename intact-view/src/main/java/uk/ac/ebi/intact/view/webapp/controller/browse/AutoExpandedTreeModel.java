@@ -16,7 +16,7 @@
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.myfaces.trinidad.model.ChildPropertyTreeModel;
+import org.primefaces.model.TreeNode;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -26,49 +26,53 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class AutoExpandedTreeModel extends ChildPropertyTreeModel {
+public class AutoExpandedTreeModel extends TreeNode {
 
-    public AutoExpandedTreeModel(Object o, String property) {
-        super(o, property);
+//    public AutoExpandedTreeModel(Object o, String property) {
+//        super(o, property);
+//    }
+
+
+    public AutoExpandedTreeModel(Object data, TreeNode parent) {
+        super(data, parent);
     }
 
-    @Override
-    protected Object getChildData(Object o) {
-        List children = invokeMethodToGetChildren(o);
-
-        if (children.size() == 1) {
-            Object childObj = getChildData(children.iterator().next());
-
-            Collection grandchildren;
-
-            if (childObj instanceof Collection) {
-                 grandchildren = (Collection)childObj;
-            } else {
-                 grandchildren = invokeMethodToGetChildren(childObj);
-            }
-
-            if (grandchildren.isEmpty()) {
-                return o;
-            }
-
-            return grandchildren;
-        } else if (children.isEmpty()) {
-            //return o;
-        }
-
-        return super.getChildData(o);
-    }
-
-    private List invokeMethodToGetChildren(Object o) {
-        List children;
-        Method method = null;
-        String methodName = "get"+ StringUtils.capitalize(getChildProperty());
-        try {
-            method = o.getClass().getMethod(methodName, new Class[0]);
-            children = (List) method.invoke(o);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Problem executing method: "+method, e);
-        }
-        return children;
-    }
+//    protected Object getChildData(Object o) {
+//        List children = invokeMethodToGetChildren(o);
+//
+//        if (children.size() == 1) {
+//            Object childObj = getChildData(children.iterator().next());
+//
+//            Collection grandchildren;
+//
+//            if (childObj instanceof Collection) {
+//                 grandchildren = (Collection)childObj;
+//            } else {
+//                 grandchildren = invokeMethodToGetChildren(childObj);
+//            }
+//
+//            if (grandchildren.isEmpty()) {
+//                return o;
+//            }
+//
+//            return grandchildren;
+//        } else if (children.isEmpty()) {
+//            //return o;
+//        }
+//
+//        return super.getChildData(o);
+//    }
+//
+//    private List invokeMethodToGetChildren(Object o) {
+//        List children;
+//        Method method = null;
+//        String methodName = "get"+ StringUtils.capitalize(getChildProperty());
+//        try {
+//            method = o.getClass().getMethod(methodName, new Class[0]);
+//            children = (List) method.invoke(o);
+//        } catch (Exception e) {
+//            throw new IllegalArgumentException("Problem executing method: "+method, e);
+//        }
+//        return children;
+//    }
 }

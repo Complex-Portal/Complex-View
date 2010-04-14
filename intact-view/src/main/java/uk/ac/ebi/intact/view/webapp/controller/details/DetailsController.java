@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -236,14 +235,6 @@ public class DetailsController extends JpaBaseController {
 
     ///////////////////
     // Complex View
-
-    public void rangeChanged( RangeChangeEvent evt) {
-        final int newStart = evt.getNewStart();
-//        UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent("tableid");
-//        table.setFirst(evt.getNewStart());
-
-//        refreshTable(INTERACTIONS_TABLE_ID, results);
-    }
 
     private SimilarInteractionsMatrix matrix;
 

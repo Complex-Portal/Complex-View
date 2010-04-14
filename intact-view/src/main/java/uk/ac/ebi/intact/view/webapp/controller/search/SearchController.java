@@ -3,12 +3,6 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.trinidad.component.UIXTable;
-import org.apache.myfaces.trinidad.component.core.CorePoll;
-import org.apache.myfaces.trinidad.context.RequestContext;
-import org.apache.myfaces.trinidad.event.DisclosureEvent;
-import org.apache.myfaces.trinidad.event.PollEvent;
-import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.hupo.psi.mi.psicquic.registry.ServiceType;
@@ -49,8 +43,6 @@ public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
 
-    public static final String QUERY_PARAM = "query";
-    public static final String ONTOLOGY_QUERY_PARAM = "ontologyQuery";
     public static final String TERMID_QUERY_PARAM = "termId";
 
     // table IDs
@@ -110,40 +102,10 @@ public class SearchController extends JpaBaseController {
     public SearchController() {
     }
 
-    public void loadView(ComponentSystemEvent evt) {
-        System.out.println("\nLOADING searchBean VIEW!!!\n");
+    public void searchOnLoad(ComponentSystemEvent evt) {
         FacesContext context = FacesContext.getCurrentInstance();
 
-        String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
-        String ontologyQueryParam = context.getExternalContext().getRequestParameterMap().get(ONTOLOGY_QUERY_PARAM);
-
         UserQuery userQuery = getUserQuery();
-
-        if (queryParam != null && queryParam.length()>0) {
-            if (log.isDebugEnabled()) log.debug("Searching using query parameter: "+queryParam);
-
-            //for sorting and ordering
-            this.setUserSortColumn(DEFAULT_SORT_COLUMN);
-            this.setAscending( DEFAULT_SORT_ORDER );
-
-            userQuery.reset();
-            userQuery.setSearchQuery( queryParam );
-
-            SolrQuery solrQuery = userQuery.createSolrQuery();
-
-            doBinarySearch( solrQuery );
-        }
-
-        if ( ontologyQueryParam != null && ontologyQueryParam.length()>0) {
-            if (log.isDebugEnabled()) log.debug("Searching using ontology query parameter: "+queryParam);
-
-            userQuery.reset();
-            userQuery.setOntologySearchQuery(ontologyQueryParam);
-
-            SolrQuery solrQuery = userQuery.createSolrQuery();
-
-            doBinarySearch( solrQuery );
-        }
 
         String statusParam = context.getExternalContext().getRequestParameterMap().get("status");
 
@@ -151,20 +113,8 @@ public class SearchController extends JpaBaseController {
             addWarningMessage("Session expired", "The user session was expired due to intactivity or the server being restarted");
         }
 
-        if(userQuery != null && userQuery.getSearchQuery() == null && userQuery.getOntologySearchQuery() == null){
-          if (log.isDebugEnabled()) log.debug("Searching using query parameter when searchQuery is : *:*");
-
-            //for sorting and ordering
-            this.setUserSortColumn(DEFAULT_SORT_COLUMN);
-            this.setAscending( DEFAULT_SORT_ORDER );
-
-            userQuery.reset();
-            userQuery.setSearchQuery( "*" );
-
-            SolrQuery solrQuery = userQuery.createSolrQuery();
-
-            doBinarySearch( solrQuery );
-        }
+        SolrQuery solrQuery = userQuery.createSolrQuery();
+        doBinarySearch( solrQuery );
     }
 
     public String doBinarySearchAction() {
@@ -173,6 +123,7 @@ public class SearchController extends JpaBaseController {
 
         doBinarySearch( solrQuery );
 
+        //return "pages/interactions/interactions.xhtml?faces-redirect=true&includeViewParams=true";
         return "interactions";
     }
 
@@ -257,7 +208,7 @@ public class SearchController extends JpaBaseController {
 
     }
 
-    public void doPsicquicQuery(PollEvent pollEvent) {
+    public void doPsicquicQuery() {
         if (psicquicQueryRunning) {
             return;
         }
@@ -272,8 +223,8 @@ public class SearchController extends JpaBaseController {
 
         psicquicQueryRunning = false;
 
-        CorePoll poll = (CorePoll) pollEvent.getComponent();
-        poll.setRendered(false);
+        //CorePoll poll = (CorePoll) pollEvent.getComponent();
+        //poll.setRendered(false);
     }
 
     private void countResultsInOtherDatabases() throws PsicquicRegistryClientException {
@@ -387,12 +338,6 @@ public class SearchController extends JpaBaseController {
         return new LazySearchResultDataModel(solrServer, query);
     }
 
-    public void onListDisclosureChanged(DisclosureEvent evt) {
-        if (evt.isExpanded()) {
-             doInteractorsSearch();
-        }
-    }
-
     public void doInteractorsSearch() {
         doProteinsSearch();
         doSmallMoleculeSearch();
@@ -454,14 +399,6 @@ public class SearchController extends JpaBaseController {
 
         final LazySearchResultDataModel tempResults = createInteractionDataModel( solrQuery );
         return tempResults.getRowCount();
-    }
-
-    public void rangeChanged(RangeChangeEvent evt) {
-        results.setRowIndex(evt.getNewStart());
-
-        UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(INTERACTIONS_TABLE_ID);
-        table.setFirst(evt.getNewStart());
-        table.setRows(evt.getNewEnd() - evt.getNewStart());
     }
 
     public void doSearchInteractionsFromCompoundListSelection(ActionEvent evt) {
@@ -560,11 +497,6 @@ public class SearchController extends JpaBaseController {
             doBinarySearch( solrQuery );
         }
 
-    }
-
-    public void doBinarySearchAndCloseDialog( ActionEvent event ) {
-        doBinarySearch(event);
-        RequestContext.getCurrentInstance().returnFromDialog( null, null );
     }
 
 
@@ -689,11 +621,6 @@ public class SearchController extends JpaBaseController {
 
     private UserQuery getUserQuery() {
         return (UserQuery) getBean("userQuery");
-    }
-
-    public String getFirstResultIndex() {
-        UIXTable table = (UIXTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(INTERACTIONS_TABLE_ID);
-        return String.valueOf(table.getFirst());
     }
 
     public int getCountInOtherDatabases() {

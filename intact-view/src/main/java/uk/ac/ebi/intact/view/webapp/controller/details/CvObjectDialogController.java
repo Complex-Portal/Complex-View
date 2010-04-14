@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.view.webapp.controller.details;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.trinidad.context.RequestContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,15 +43,6 @@ public class CvObjectDialogController extends JpaBaseController {
     private CvObject cvObject;
 
     public CvObjectDialogController() {
-    }
-
-    public String launchCvDialogIfNecessary() {
-        try {
-            RequestContext.getCurrentInstance().returnFromDialog(null, null);
-        } catch (Exception e) {
-            // nothing
-        }
-        return "dialog:cv.view";
     }
 
     public CvObject getCvObject() {

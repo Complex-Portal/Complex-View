@@ -18,8 +18,6 @@ package uk.ac.ebi.intact.view.webapp.util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.trinidad.render.ExtendedRenderKitService;
-import org.apache.myfaces.trinidad.util.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
@@ -64,29 +62,31 @@ public class ExternalDbLinker {
     }
 
     public void goExternalLink( String baseUrl, String urlSuffix, String seperator, String[] selected ) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExtendedRenderKitService service = Service.getRenderKitService( facesContext, ExtendedRenderKitService.class );
-
-        if ( selected.length > 0 ) {
-            String url = baseUrl + StringUtils.join( selected, seperator ) + urlSuffix;
-            service.addScript( facesContext, "window.open('" + url + "');" );
-        } else {
-            service.addScript( facesContext, "alert('Selection is empty');" );
-        }
+        throw new UnsupportedOperationException("Not yet implemented");
+//        FacesContext facesContext = FacesContext.getCurrentInstance();
+//        ExtendedRenderKitService service = Service.getRenderKitService( facesContext, ExtendedRenderKitService.class );
+//
+//        if ( selected.length > 0 ) {
+//            String url = baseUrl + StringUtils.join( selected, seperator ) + urlSuffix;
+//            service.addScript( facesContext, "window.open('" + url + "');" );
+//        } else {
+//            service.addScript( facesContext, "alert('Selection is empty');" );
+//        }
     }
 
     //linking to reactome needs a form submit
     public void reactomeLinker( String baseUrl, String separator, String[] selected, String forwardPage ) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExtendedRenderKitService service = Service.getRenderKitService( facesContext, ExtendedRenderKitService.class );
-
-        if ( selected.length > 0 ) {
-            service.addScript( facesContext, getReactomeForm( baseUrl,
-                                                              StringUtils.join( selected, separator ),
-                                                              forwardPage ) );
-        } else {
-            service.addScript( facesContext, "alert('Selection is empty');" );
-        }
+        throw new UnsupportedOperationException("Not yet implemented");
+//        FacesContext facesContext = FacesContext.getCurrentInstance();
+//        ExtendedRenderKitService service = Service.getRenderKitService( facesContext, ExtendedRenderKitService.class );
+//
+//        if ( selected.length > 0 ) {
+//            service.addScript( facesContext, getReactomeForm( baseUrl,
+//                                                              StringUtils.join( selected, separator ),
+//                                                              forwardPage ) );
+//        } else {
+//            service.addScript( facesContext, "alert('Selection is empty');" );
+//        }
     }
 
     private String getReactomeForm( String baseUrl, String selectedIds, String forwardPage ) {

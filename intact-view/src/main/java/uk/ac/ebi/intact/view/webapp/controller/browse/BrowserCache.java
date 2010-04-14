@@ -16,7 +16,6 @@
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.myfaces.trinidad.model.TreeModel;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.stereotype.Controller;
 
@@ -31,28 +30,28 @@ import java.util.Map;
 @Controller("browserCache")
 public class BrowserCache {
 
-    private Map<String, TreeModel> termCountsCache;
+//    private Map<String, TreeModel> termCountsCache;
 
-    public BrowserCache() {
-        this.termCountsCache = new LRUMap(10);
-    }
+//    public BrowserCache() {
+//        this.termCountsCache = new LRUMap(10);
+//    }
 
-    public TreeModel get(String fieldName, SolrQuery query) {
-        String key = createKey(fieldName, query);
-        return termCountsCache.get(key);
-    }
-
-    public boolean containsKey(String fieldName, SolrQuery query) {
-        String key = createKey(fieldName, query);
-        return termCountsCache.containsKey(key);
-    }
-
-    public TreeModel put(String fieldName, SolrQuery query, TreeModel counts) {
-        String key = createKey(fieldName, query);
-        return termCountsCache.put(key, counts);
-    }
-
-    protected String createKey(String fieldName, SolrQuery query) {
-        return fieldName+"_"+query;
-    }
+//    public TreeModel get(String fieldName, SolrQuery query) {
+//        String key = createKey(fieldName, query);
+//        return termCountsCache.get(key);
+//    }
+//
+//    public boolean containsKey(String fieldName, SolrQuery query) {
+//        String key = createKey(fieldName, query);
+//        return termCountsCache.containsKey(key);
+//    }
+//
+//    public TreeModel put(String fieldName, SolrQuery query, TreeModel counts) {
+//        String key = createKey(fieldName, query);
+//        return termCountsCache.put(key, counts);
+//    }
+//
+//    protected String createKey(String fieldName, SolrQuery query) {
+//        return fieldName+"_"+query;
+//    }
 }

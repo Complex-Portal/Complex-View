@@ -17,13 +17,12 @@ package uk.ac.ebi.intact.view.webapp.controller.browse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.trinidad.model.ChildPropertyTreeModel;
-import org.apache.myfaces.trinidad.model.TreeModel;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.params.FacetParams;
+import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
@@ -56,7 +55,7 @@ public abstract class OntologyBrowserController extends BaseController {
     @Autowired
     private BrowserCache browserCache;
 
-    private TreeModel ontologyTreeModel;
+    private TreeNode ontologyTreeModel;
 
     public OntologyBrowserController() {
     }
@@ -71,13 +70,13 @@ public abstract class OntologyBrowserController extends BaseController {
         ontologyTreeModel = createOntologyTreeModel(createRootTerm(ontologySearcher));
     }
 
-    protected TreeModel createOntologyTreeModel(OntologyTerm rootTerm) {
+    protected TreeNode createOntologyTreeModel(OntologyTerm rootTerm) {
         final SolrQuery query = userQuery.createSolrQuery();
         final String facetField = getFieldName();
 
-        if (browserCache.containsKey(facetField, query)) {
-            return browserCache.get(facetField, query);
-        }
+//        if (browserCache.containsKey(facetField, query)) {
+//            return browserCache.get(facetField, query);
+//        }
 
         SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
 
@@ -115,18 +114,19 @@ public abstract class OntologyBrowserController extends BaseController {
 
         OntologyTermWrapper otwRoot = new OntologyTermWrapper(rootTerm, termsCountMap, false);
 
-        TreeModel treeModel = createTreeModel(otwRoot);
+        TreeNode treeModel = createTreeModel(otwRoot);
 
-        browserCache.put(facetField, query, treeModel);
+        //browserCache.put(facetField, query, treeModel);
 
         return treeModel;
     }
 
-    protected TreeModel createTreeModel(OntologyTermWrapper otwRoot) {
-        return new ChildPropertyTreeModel( otwRoot, "children");
+    protected TreeNode createTreeModel(OntologyTermWrapper otwRoot) {
+        throw new UnsupportedOperationException("Not implemented for primefaces yet");
+        //return new ChildPropertyTreeModel( otwRoot, "children");
     }
 
-    public TreeModel getOntologyTreeModel() {
+    public TreeNode getOntologyTreeModel() {
         return ontologyTreeModel;
     }
 }

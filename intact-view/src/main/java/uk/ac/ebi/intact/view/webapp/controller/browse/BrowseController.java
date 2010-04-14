@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -73,11 +72,11 @@ public class BrowseController extends JpaBaseController {
      *
      * @param evt DisclosureEvent
      */
-    public void createListofIdentifiers( DisclosureEvent evt ) {
-         SearchController searchController = (SearchController) getBean("searchBean");
-         searchController.onListDisclosureChanged(evt);
-         buildListOfIdentifiers();
-    }
+//    public void createListofIdentifiers( DisclosureEvent evt ) {
+//         SearchController searchController = (SearchController) getBean("searchBean");
+//         //searchController.onListDisclosureChanged(evt);
+//         buildListOfIdentifiers();
+//    }
 
     public void createListofIdentifiers( ActionEvent evt ) {
         buildListOfIdentifiers();

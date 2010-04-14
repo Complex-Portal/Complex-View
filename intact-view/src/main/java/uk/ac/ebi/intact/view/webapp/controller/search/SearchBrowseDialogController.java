@@ -16,8 +16,6 @@
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.trinidad.context.RequestContext;
-import org.apache.myfaces.trinidad.model.TreeModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
@@ -36,25 +34,25 @@ public class SearchBrowseDialogController extends BaseController {
 
     private OntologyBrowserController ontologyBrowserController;
 
-    public void doSelect(ActionEvent e) {
-        Object returnValue = getParameterValue("termId");
-
-        if (returnValue != null) {
-            RequestContext.getCurrentInstance().returnFromDialog(returnValue, null);
-        }
-    }
-
-    public void setBeanName(String beanName) {
-        ontologyBrowserController = (OntologyBrowserController) getBean(beanName);
-    }
-
-    public TreeModel getTreeModel() {
-        return ontologyBrowserController.getOntologyTreeModel();
-    }
-
-    public OntologyBrowserController getOntologyBrowserController() {
-        return ontologyBrowserController;
-    }
+//    public void doSelect(ActionEvent e) {
+//        Object returnValue = getParameterValue("termId");
+//
+//        if (returnValue != null) {
+//            RequestContext.getCurrentInstance().returnFromDialog(returnValue, null);
+//        }
+//    }
+//
+//    public void setBeanName(String beanName) {
+//        ontologyBrowserController = (OntologyBrowserController) getBean(beanName);
+//    }
+//
+//    public TreeModel getTreeModel() {
+//        return ontologyBrowserController.getOntologyTreeModel();
+//    }
+//
+//    public OntologyBrowserController getOntologyBrowserController() {
+//        return ontologyBrowserController;
+//    }
 
 
 }

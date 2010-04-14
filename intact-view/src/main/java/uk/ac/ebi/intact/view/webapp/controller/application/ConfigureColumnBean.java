@@ -19,8 +19,6 @@ import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.trinidad.context.RequestContext;
-import org.apache.myfaces.trinidad.event.ReturnEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -242,7 +240,7 @@ public class ConfigureColumnBean {
     public String updateColumn() {
         searchBean.setExpandedView( false );
         Object returnedValue = columns;
-        RequestContext.getCurrentInstance().returnFromDialog( returnedValue, null );
+        //RequestContext.getCurrentInstance().returnFromDialog( returnedValue, null );
         return null;
     }
 
@@ -293,32 +291,32 @@ public class ConfigureColumnBean {
      *
      * @param event ReturnEvent
      */
-    public void handleColumnDialogReturn( ReturnEvent event ) {
-        Object returnedValue = event.getReturnValue();
-
-        if (returnedValue == null) {
-            return;
-        }
-
-        List<String> selectedColumns = ( List<String> ) returnedValue;
-        List<String> allColumns = new ArrayList( columnMap.keySet() );
-        List<String> unselectedColumns = ListUtils.subtract( allColumns, selectedColumns );
-
-
-        for ( String column : selectedColumns ) {
-            //get the keys and set the value to false...
-            if ( columnMap.containsKey( column ) ) {
-                columnMap.put( column, true );
-            }
-        }
-
-        for ( String unselectedColumn : unselectedColumns ) {
-            if ( columnMap.containsKey( unselectedColumn ) ) {
-                columnMap.put( unselectedColumn, false );
-            }
-        }
-
-    }
+//    public void handleColumnDialogReturn( ReturnEvent event ) {
+//        Object returnedValue = event.getReturnValue();
+//
+//        if (returnedValue == null) {
+//            return;
+//        }
+//
+//        List<String> selectedColumns = ( List<String> ) returnedValue;
+//        List<String> allColumns = new ArrayList( columnMap.keySet() );
+//        List<String> unselectedColumns = ListUtils.subtract( allColumns, selectedColumns );
+//
+//
+//        for ( String column : selectedColumns ) {
+//            //get the keys and set the value to false...
+//            if ( columnMap.containsKey( column ) ) {
+//                columnMap.put( column, true );
+//            }
+//        }
+//
+//        for ( String unselectedColumn : unselectedColumns ) {
+//            if ( columnMap.containsKey( unselectedColumn ) ) {
+//                columnMap.put( unselectedColumn, false );
+//            }
+//        }
+//
+//    }
 
     //getters & setters
 

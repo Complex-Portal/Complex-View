@@ -18,9 +18,9 @@ package uk.ac.ebi.intact.view.webapp.model;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.trinidad.model.SortableModel;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.primefaces.model.LazyDataModel;
 import org.springframework.transaction.TransactionStatus;
 import psidev.psi.mi.search.engine.SearchEngineException;
 import uk.ac.ebi.intact.core.context.DataContext;
@@ -42,9 +42,9 @@ import java.util.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class InteractorSearchResultDataModel extends SortableModel implements Serializable {
+public class InteractorSearchResultDataModel extends LazyDataModel {
 
-    private static final Log log = LogFactory.getLog(SolrSearchResultDataModel.class);
+    private static final Log log = LogFactory.getLog(InteractorSearchResultDataModel.class);
 
     private static String DEFAULT_SORT_COLUMN = "relevancescore";
 
@@ -81,6 +81,11 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
         fetchResults();
 
         setWrappedData(idCounts);
+    }
+
+    @Override
+    public List fetchLazyData(int i, int i1) {
+        throw new UnsupportedOperationException("Not implemented!");
     }
 
     protected void fetchResults() throws SearchEngineException {
@@ -179,14 +184,12 @@ public class InteractorSearchResultDataModel extends SortableModel implements Se
         }
     }
 
-    @Override
     public Object getRowKey() {
         return isRowAvailable()
                ? getRowIndex()
                : null;
     }
 
-    @Override
     public void setRowKey(Object key) {
         if (key == null) {
             setRowIndex(-1);
