@@ -68,6 +68,7 @@
                                 <h:commandLink value="BRCA2" action="#{searchBean.doBinarySearchAction}">
                                     <f:setPropertyActionListener value="BRCA2"
                                                                  target="#{userQuery.searchQuery}"/>
+                                    <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
                                 </h:commandLink>
                             </li>
                             <li>
@@ -75,6 +76,7 @@
                                 <h:commandLink value="Q06609" action="#{searchBean.doBinarySearchAction}">
                                     <f:setPropertyActionListener value="Q06609"
                                                                  target="#{userQuery.searchQuery}"/>
+                                    <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
                                 </h:commandLink>
                             </li>
                             <li>
@@ -82,6 +84,7 @@
                                 <h:commandLink value="dmc1" action="#{searchBean.doBinarySearchAction}">
                                     <f:setPropertyActionListener value="dmc1"
                                                                  target="#{userQuery.searchQuery}"/>
+                                    <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
                                 </h:commandLink>
                             </li>
                             <li>
@@ -89,6 +92,7 @@
                                 <h:commandLink value="10831611" action="#{searchBean.doBinarySearchAction}">
                                     <f:setPropertyActionListener value="10831611"
                                                                  target="#{userQuery.searchQuery}"/>
+                                    <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
                                 </h:commandLink>
                             </li>
                         </ul>

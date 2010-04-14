@@ -17,13 +17,13 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.ColourPalette;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ import java.util.Map;
  * @version $Id$
  */
 @Controller
-public class IconGeneratorImpl extends JpaBaseController implements IconGenerator {
+public class IconGeneratorImpl extends JpaBaseController implements IconGenerator, InitializingBean {
 
     private static final Log log = LogFactory.getLog( IconGeneratorImpl.class );
 
@@ -57,7 +57,11 @@ public class IconGeneratorImpl extends JpaBaseController implements IconGenerato
         bioRoleColourMap = new HashMap<String,ColouredCv>(24);
     }
 
-    @PostConstruct
+
+    public void afterPropertiesSet() throws Exception {
+        prepareColours();
+    }
+
     @Transactional(readOnly = true)
     public void prepareColours() {
         if (log.isInfoEnabled()) log.info("Preparing simple icons for CVs");

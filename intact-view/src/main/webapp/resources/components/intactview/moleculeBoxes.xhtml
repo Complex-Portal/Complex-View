@@ -31,7 +31,7 @@
             <ui:repeat var="cvXref" value="#{cc.attrs.interactor.biologicalRoles}">
                 <ui:param name="cvobject"
                        value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'uk.ac.ebi.intact.model.CvBiologicalRole')}"/>
-                <td style="text-align:center; width:15px; background: background:#{iconGeneratorImpl.typeColourMap[cvXref.text].colourHex};color:#555555;font-size:7pt; border:#ADADAD dashed">
+                <td style="text-align:center; width:15px; background: background:#{iconGeneratorImpl.typeColourMap[cvXref.text].colourHex};color:#555555;font-size:7pt; border:#ADADAD dashed 1px">
                     <h:outputText value="#{iconGeneratorImpl.bioRoleColourMap[cvobject.identifier].initials}" shortDesc="#{cvobject.shortLabel}"/>
                 </td>
             </ui:repeat>

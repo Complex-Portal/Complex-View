@@ -2,6 +2,17 @@ a img {
     border: 0;
 }
 
+/** status **/
+.busyStatus {
+    right: 0px; top: 0px;
+    background-color: red;
+    color: white;
+    margin: 5px; padding: 3px;
+    z-index: 50;
+
+    position: fixed;
+}
+
 /** p:tabViewer **/
 
 .yui-skin-sam .yui-navset .yui-nav {

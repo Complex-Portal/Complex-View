@@ -14,6 +14,7 @@
   <composite:interface>
       <composite:attribute name="label" required="true"/>
       <composite:attribute name="labelStyle"/>
+      <composite:attribute name="render" default="true"/>
 
       <composite:facet name="help"/>
       <composite:facet name="end"/>
@@ -27,7 +28,7 @@
             <table>
                 <tr style="vertical-align:top">
                     <td>
-                        <h:outputText value="#{cc.attrs.label}" style="#{cc.attr.labelStyle}}"/>
+                        <h:outputText value="#{cc.attrs.label}" style="#{cc.attrs.labelStyle}}"/>
                     </td>
                     <td>
                         <composite:insertChildren/>

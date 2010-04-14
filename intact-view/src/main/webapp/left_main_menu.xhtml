@@ -2,7 +2,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html">
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ot="http://myfaces.apache.org/orchestra">
 
 
     <h:outputScript>
@@ -51,36 +52,39 @@
 
         <li class="leftmenudivider"></li>
 
-        <li><h:commandLink value="Home" action="main"/></li>
-        <li><h:commandLink value="Advanced Search" action="search"/></li>
-        <li><h:commandLink value="Tools" action="documentation.tools"/></li>
-        <li><h:commandLink value="Data Submission" action="documentation.data_submission"/></li>
-        <li><h:commandLink value="Downloads" action="documentation.downloads"/></li>
+        <ot:separateConversationContext>
+        <li><h:link value="Home" outcome="main"/></li>
+        <li><h:link value="Advanced Search" outcome="search"/></li>
+        <li><h:link value="Tools" outcome="documentation.tools"/></li>
+        <li><h:link value="Data Submission" outcome="documentation.data_submission"/></li>
+        <li><h:link value="Downloads" outcome="documentation.downloads"/></li>
         
 
         <li class="clickme" onclick="ebifaces__toggleState(this)">
             <a href="left_main_menu.xhtml#"></a>Documentation
             <ul style="margin: 0; display:'none';">
 
-                <li><h:commandLink value="Data and Curation" action="documentation.data_curation"/></li>
-                <li><h:outputLink value="http://www.ebi.ac.uk/~intact/devsite"
+                <li><h:link value="Data and Curation" outcome="documentation.data_curation"/></li>
+                <li><h:outputLink value="http://intact.googlecode.com/"
                                target="_blank">Developer Resources</h:outputLink></li>
-                <li><h:commandLink value="Publications" action="documentation.publications"/></li>
+                <li><h:link value="Publications" outcome="documentation.publications"/></li>
                 <li><h:outputLink value="http://www.ebi.ac.uk/intact/statisticView"
                                target="_blank">Statistics</h:outputLink></li>
-                <li><h:commandLink value="FAQ" action="documentation.faq"/></li>
+                <li><h:link value="FAQ" outcome="documentation.faq"/></li>
 
             </ul>
         </li>
 
-        <li><h:commandLink value="Contact Us" action="documentation.contactus"/></li>
+        <li><h:link value="Contact Us" outcome="documentation.contactus"/></li>
 
         <li class="leftmenudivider"></li>
 
-        <li><h:commandLink value="Printer Friendly View" action="documentation.printerfriendly"/></li>
+        <li><h:link value="Printer Friendly View" action="documentation.printerfriendly"/></li>
+        </ot:separateConversationContext>
 
         <li class="leftmenudivider"></li>
 
     </ul>
-      
+
+
 </ui:composition>

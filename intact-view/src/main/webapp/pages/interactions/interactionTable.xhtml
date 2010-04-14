@@ -18,7 +18,7 @@
                 <f:facet name="header">
                     <h:outputText value="#{messages['moleculeA.name']}"/>
                 </f:facet>
-                <h:panelGroup rendered="#{not testController.results.sameThanPrevious}">
+                <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
                     <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
                 </h:panelGroup>
 
@@ -35,7 +35,7 @@
                 <f:facet name="header">
                     <h:outputText value="#{messages['moleculeB.name']}"/>
                 </f:facet>
-                <h:panelGroup rendered="#{not testController.results.sameThanPrevious}">
+                <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
 
                     <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorB)}"/>
 

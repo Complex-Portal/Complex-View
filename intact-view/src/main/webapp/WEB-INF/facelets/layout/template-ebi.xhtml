@@ -99,6 +99,21 @@
                             <!--</f:facet>-->
                         <!--</tr:statusIndicator>-->
 
+                        <p:ajaxStatus>
+                            <f:facet name="start">
+                                <div class="busyStatus">
+                                    <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
+                                                    style="vertical-align:middle;"/>
+                                    &#160;
+                                    <h:outputText value="Loading..."/>
+                                </div>
+                            </f:facet>
+
+                            <f:facet name="complete">
+                                <h:outputText value="" />
+                            </f:facet>
+                        </p:ajaxStatus>
+
                         <table style="width:100%">
                             <tr>
                                 <td>

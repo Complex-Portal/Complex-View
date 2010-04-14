@@ -15,7 +15,7 @@
         </div>
 
         <p:dialog header="MIQL Syntax Reference" widgetVar="miqlHelpDialog" fixedCenter="true"
-                  modal="true" width="600px" height="600px">
+                  width="600px" height="600px">
             <div style="width:590px; height:590px; overflow:auto;">
                 <ui:include src="help_miql.xhtml"/>
             </div>
@@ -29,7 +29,7 @@
             </h:outputScript>
 
             <h:inputText label="Search: " id="queryTxt"
-                          columns="60" value="#{userQuery.searchQuery}"
+                          size="60" value="#{userQuery.searchQuery}"
                           rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"
                           onkeyup="return submitEnter('quickSearchBtn',event)"
                           disabled="#{userQuery.showNewFieldPanel}"/>
@@ -58,7 +58,7 @@
 
 
 
-    <h:panelGroup id="searchPanelDetails" partialTriggers="addFieldBtn cancelFieldBtn">
+    <h:panelGroup id="searchPanelDetails">
         <p:panel style="width:100%" rendered="#{userQuery.showNewFieldPanel}">
 
                 <h:panelGroup>
@@ -76,7 +76,7 @@
 
                     <h:selectOneMenu id="newQueryField" label="Field: " value="#{userQuery.newQueryToken.field}"
                                         immediate="true">
-                        <!-- TODO update with ajax the newQueryPanel autosubmitting-->
+                        <p:ajax event="change" update="newQueryPanel"/>
                         <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
                     </h:selectOneMenu>
                     &#160;
@@ -102,12 +102,14 @@
                     </h:panelGroup>
                     &#160;
 
-                    <h:commandButton text="Add &amp; Search"
-                                      actionListener="#{userQuery.doAddFieldToQuery}"
-                                      action="#{searchBean.doNewBinarySearch}"/>
+                    <h:commandButton value="Add &amp; Search"
+                              actionListener="#{userQuery.doAddFieldToQuery}"
+                              action="#{searchBean.doNewBinarySearch}">
+                <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
+            </h:commandButton>
                     &#160;
                     <p:commandButton id="cancelFieldBtn" value="Cancel"
-                                      actionListener="#{userQuery.doCancelAddField}" update="searchPanelDetails"/>
+                                      actionListener="#{userQuery.doCancelAddField}" update="searchPanel,searchPanelDetails"/>
 
                 </h:panelGroup>
         </p:panel>
