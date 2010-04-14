@@ -237,7 +237,7 @@
 
         <repository>
             <id>lua</id>
-            <url>http://people.apache.org/~lu4242/myfaces200beta3</url>
+            <url>http://people.apache.org/~lu4242/myfaces200</url>
             <snapshots><enabled>false</enabled></snapshots>
         </repository>
 
@@ -248,6 +248,7 @@
             <url>http://repository.prime.com.tr/</url>
             <layout>default</layout>
         </repository>
+        
     </repositories>
 
     <!-- Project dependencies -->
@@ -411,12 +412,12 @@
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <version>2.0.0-beta-3</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-impl</artifactId>
-            <version>2.0.0-beta-3</version>
+            <version>2.0.0</version>
         </dependency>
 
         <!-- JSP 2.2 support (methods etc). May not be needed in recent J2EE 6 app containers -->

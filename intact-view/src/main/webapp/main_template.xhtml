@@ -39,49 +39,42 @@
 
          <h:form id="intactForm" prependId="false">
 
-        <p:tabView id="mainPanels" cache="false">
+        <p:tabView id="mainPanels" cache="false" activeIndex="#{activeTabIndex != null? activeTabIndex : 0}">
             
-            <p:tab title="Home" 
-                               disclosed="#{disclosedTabName == 'about'}">
+            <p:tab title="Home">
                 <p:messages/>
                 <ui:insert name="aboutTabContent"/>
             </p:tab>
 
-            <p:tab title="Search"
-                               disclosed="#{disclosedTabName == 'search'}">
+            <p:tab title="Search">
                 <p:messages/>
                 <ui:insert name="searchTabContent"/>
             </p:tab>
 
             <p:tab title="Interactions (#{searchBean.totalResults})"
-                               disabled="#{searchBean.totalResults == 0}"
-                               disclosed="#{disclosedTabName == 'interactions'}">
+                               disabled="#{searchBean.totalResults == 0}">
                 <p:messages/>
                 <ui:insert name="interactionsTabContent"/>
             </p:tab>
 
             <p:tab title="Browse"
-                               disabled="#{searchBean.totalResults == 0}"
-                               disclosed="#{disclosedTabName == 'browse'}">
+                               disabled="#{searchBean.totalResults == 0}">
                 <p:messages/>
                 <ui:insert name="browseTabContent"/>
             </p:tab>
 
             <p:tab title="Lists"
-                               disabled="#{searchBean.totalResults == 0}"
-                               disclosed="#{disclosedTabName == 'list'}">
+                               disabled="#{searchBean.totalResults == 0}">
                 <p:messages/>
                 <ui:insert name="listTabContent"/>
             </p:tab>
 
-            <p:tab title="Interaction Details" disabled="#{detailsBean.interaction == null}"
-                               disclosed="#{disclosedTabName == 'details'}">
+            <p:tab title="Interaction Details" disabled="#{detailsBean.interaction == null}">
                 <p:messages/>
                 <ui:insert name="detailsTabContent"/>
             </p:tab>
 
-            <p:tab title="Molecule View" disabled="#{moleculeViewBean.interactor == null}"
-                               disclosed="#{disclosedTabName == 'molecule'}">
+            <p:tab title="Molecule View" disabled="#{moleculeViewBean.interactor == null}">
                 <p:messages/>
                 <ui:insert name="moleculeTabContent"/>
             </p:tab>
