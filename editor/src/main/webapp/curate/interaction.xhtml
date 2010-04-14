@@ -122,11 +122,13 @@
 
             <h3>Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})</h3>
 
-            <h:inputText id="searchParticipantTxt" value="#{interactionController.participantQuery}" size="15"/>
-            <p:commandButton value="Search &amp; Add" actionListener="#{interactionController.searchAndAddParticipant}" 
-                             update="growl,participantTable"/>
-
+            <h:panelGroup style="padding-left: 25px;">
+                <h:inputText id="searchParticipantTxt" value="#{interactionController.participantQuery}" size="15"/>
+                <p:commandButton value="Search &amp; Add" actionListener="#{interactionController.searchAndAddParticipant}"
+                                 update="growl,participantTable"/>
+            </h:panelGroup>
             <br/>
+            <ia:spacer height="10" />
 
             <ia:participantsTable id="participantTable" value="#{interaction.components}"/>
 
