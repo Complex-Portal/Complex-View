@@ -10,10 +10,10 @@
 
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
 
-    <p:dataTable id="resultsTable" var="binaryInteraction" value="#{testController.results}"
+    <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
                      rows="#{userQuery.pageSize}"
                      dynamic="true" lazy="true"
-                     paginator="#{testController.results.rowCount gt userQuery.pageSize}">
+                     paginator="#{searchBean.results.rowCount gt userQuery.pageSize}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="#{messages['moleculeA.name']}"/>

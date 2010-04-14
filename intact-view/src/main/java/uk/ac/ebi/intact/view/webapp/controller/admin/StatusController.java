@@ -3,7 +3,6 @@ package uk.ac.ebi.intact.view.webapp.controller.admin;
 import org.apache.myfaces.orchestra.conversation.Conversation;
 import org.apache.myfaces.orchestra.conversation.ConversationManager;
 import org.apache.myfaces.orchestra.viewController.annotations.InitView;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 import org.hibernate.stat.QueryStatistics;
 import org.hibernate.stat.Statistics;
@@ -25,7 +24,6 @@ import java.util.List;
  */
 @Component("statusBean")
 @Scope(value = "request")
-@ViewController(viewIds = "/pages/admin/status.xhtml")
 public class StatusController extends JpaBaseController {
 
     private Statistics statistics;

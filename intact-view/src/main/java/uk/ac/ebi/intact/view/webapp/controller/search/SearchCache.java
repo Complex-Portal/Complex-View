@@ -19,7 +19,7 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.model.InteractorSearchResultDataModel;
-import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
+import uk.ac.ebi.intact.view.webapp.model.LazySearchResultDataModel;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -33,7 +33,7 @@ import java.util.Map;
 @Controller("searchCache")
 public class SearchCache {
 
-    private Map<String, SolrSearchResultDataModel> interactionCache;
+    private Map<String, LazySearchResultDataModel> interactionCache;
     private Map<String, InteractorSearchResultDataModel> interactorCache;
 
     public SearchCache() {
@@ -41,7 +41,7 @@ public class SearchCache {
         this.interactorCache = new LRUMap(30);
     }
 
-    public SolrSearchResultDataModel getInteractionModel(SolrQuery query) {
+    public LazySearchResultDataModel getInteractionModel(SolrQuery query) {
         String key = createKey(query, null);
         return interactionCache.get(key);
     }
@@ -51,7 +51,7 @@ public class SearchCache {
         return interactionCache.containsKey(key);
     }
 
-    public SolrSearchResultDataModel putInteraction(SolrQuery query, SolrSearchResultDataModel dataModel) {
+    public LazySearchResultDataModel putInteraction(SolrQuery query, LazySearchResultDataModel dataModel) {
         String key = createKey(query, null);
         return interactionCache.put(key, dataModel);
     }

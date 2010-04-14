@@ -3,8 +3,6 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.UIXTable;
 import org.apache.myfaces.trinidad.component.core.CorePoll;
 import org.apache.myfaces.trinidad.context.RequestContext;
@@ -30,10 +28,11 @@ import uk.ac.ebi.intact.view.webapp.controller.details.DetailsController;
 import uk.ac.ebi.intact.view.webapp.controller.moleculeview.MoleculeViewController;
 import uk.ac.ebi.intact.view.webapp.model.InteractorSearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
-import uk.ac.ebi.intact.view.webapp.model.SolrSearchResultDataModel;
+import uk.ac.ebi.intact.view.webapp.model.LazySearchResultDataModel;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ValueChangeEvent;
 import java.util.*;
 
@@ -46,15 +45,6 @@ import java.util.*;
 @Controller("searchBean")
 @Scope("conversation.access")
 @ConversationName("general")
-@ViewController(viewIds = {"/main.xhtml",
-                           "/pages/search/search.xhtml",
-                           "/pages/interactions/interactions.xhtml",
-                           "/pages/list/protein_list.xhtml",
-                           "/pages/list/compound_list.xhtml",
-                           "/pages/graph/graph.xhtml",
-                           "/pages/browse/browse.xhtml",
-                           "/pages/browse/gobrowser.xhtml",
-                           "/pages/browse/chebibrowser.xhtml"})
 public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
@@ -91,7 +81,7 @@ public class SearchController extends JpaBaseController {
     private boolean expandedView;
 
     // results
-    private SolrSearchResultDataModel results;
+    private LazySearchResultDataModel results;
     private InteractorSearchResultDataModel proteinResults;
     private InteractorSearchResultDataModel smallMoleculeResults;
     private InteractorSearchResultDataModel nucleicAcidResults;
@@ -120,8 +110,8 @@ public class SearchController extends JpaBaseController {
     public SearchController() {
     }
 
-    @PreRenderView
-    public void initialParams() {
+    public void loadView(ComponentSystemEvent evt) {
+        System.out.println("\nLOADING searchBean VIEW!!!\n");
         FacesContext context = FacesContext.getCurrentInstance();
 
         String queryParam = context.getExternalContext().getRequestParameterMap().get(QUERY_PARAM);
@@ -388,13 +378,13 @@ public class SearchController extends JpaBaseController {
         return client;
     }
 
-    private SolrSearchResultDataModel createInteractionDataModel(SolrQuery query) {
+    private LazySearchResultDataModel createInteractionDataModel(SolrQuery query) {
         if (searchCache.containsInteractionKey(query)) {
             return searchCache.getInteractionModel(query);
         }
 
         SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
-        return new SolrSearchResultDataModel(solrServer, query);
+        return new LazySearchResultDataModel(solrServer, query);
     }
 
     public void onListDisclosureChanged(DisclosureEvent evt) {
@@ -462,7 +452,7 @@ public class SearchController extends JpaBaseController {
             log.debug( "getCountUnfilteredInteractions: '"+ solrQuery.toString() +"'" );
         }
 
-        final SolrSearchResultDataModel tempResults = createInteractionDataModel( solrQuery );
+        final LazySearchResultDataModel tempResults = createInteractionDataModel( solrQuery );
         return tempResults.getRowCount();
     }
 
@@ -581,11 +571,11 @@ public class SearchController extends JpaBaseController {
     // Getters & Setters
     /////////////////////
 
-    public SolrSearchResultDataModel getResults() {
+    public LazySearchResultDataModel getResults() {
         return results;
     }
 
-    public void setResults( SolrSearchResultDataModel results ) {
+    public void setResults( LazySearchResultDataModel results ) {
         this.results = results;
     }
 

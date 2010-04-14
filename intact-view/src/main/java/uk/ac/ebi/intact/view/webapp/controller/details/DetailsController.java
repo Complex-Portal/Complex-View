@@ -22,8 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.event.RangeChangeEvent;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +54,6 @@ import java.util.*;
 @Controller( "detailsBean" )
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-@ViewController( viewIds = {"/pages/details/details.xhtml",
-                            "/pages/details/complex/complex.xhtml"} )
 public class DetailsController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog( DetailsController.class );
@@ -70,7 +66,6 @@ public class DetailsController extends JpaBaseController {
 
     private Experiment experiment;
 
-    @PreRenderView
     @Transactional(readOnly = true)
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();

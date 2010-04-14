@@ -18,8 +18,6 @@ package uk.ac.ebi.intact.view.webapp.controller.moleculeview;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -40,7 +38,6 @@ import javax.faces.context.FacesContext;
 @Controller("moleculeViewBean")
 @Scope("conversation.access")
 @ConversationName("general")
-@ViewController( viewIds = {"/pages/molecule/molecule.xhtml"} )
 public class MoleculeViewController extends JpaBaseController{
 
     private static final Log log = LogFactory.getLog( MoleculeViewController.class );
@@ -53,7 +50,6 @@ public class MoleculeViewController extends JpaBaseController{
 
     }
 
-    @PreRenderView
     public void initialParams() {
         FacesContext context = FacesContext.getCurrentInstance();
         final String interactorAc = context.getExternalContext().getRequestParameterMap().get(INTERACTOR_AC_PARAM);

@@ -74,6 +74,10 @@ public class LazySearchResultDataModel extends LazyDataModel<IntactBinaryInterac
             .addFacetField(FieldNames.EXPANSION)
             .addFacetField("interactorType_id");
 
+        if (solrQuery.getSortField() == null) {
+            solrQuery.setSortField(DEFAULT_SORT_COLUMN, SolrQuery.ORDER.asc);
+        }
+
         if (log.isDebugEnabled()) {
             try {
                 log.debug("Fetching results: "+ URLDecoder.decode(solrQuery.toString(), "UTF-8"));
@@ -96,6 +100,9 @@ public class LazySearchResultDataModel extends LazyDataModel<IntactBinaryInterac
     }
 
     public int getRowCount() {
+        if (result == null) {
+            fetchLazyData(0,0);
+        }
         return Long.valueOf(result.getTotalCount()).intValue();
     }
 
@@ -185,5 +192,9 @@ public class LazySearchResultDataModel extends LazyDataModel<IntactBinaryInterac
 
         final IntactBinaryInteraction binaryInteraction = interactions.get(rowIndex);
         return binaryInteraction;
+    }
+
+    public SolrSearchResult getResult() {
+        return result;
     }
 }

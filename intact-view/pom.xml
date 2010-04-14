@@ -26,6 +26,9 @@
     </scm>
 
     <properties>
+        <core.version>2.2.1-SNAPSHOT</core.version>
+        <spring.version>3.0.1.RELEASE</spring.version>
+        
         <debug>false</debug>
 
         <jetty.port>9095</jetty.port>
@@ -258,7 +261,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-core</artifactId>
-            <version>2.0.1</version>
+            <version>${core.version}</version>
         </dependency>
 
         <dependency>
@@ -370,43 +373,110 @@
             <version>1.3.4</version>
         </dependency>
 
+        <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>2.5.6</version>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>2.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-openid</artifactId>
-            <version>2.0.3</version>
-            <exclusions>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-context</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-support</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-core</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-beans</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-aop</artifactId>
-            	</exclusion>
-                <exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-web</artifactId>
-            	</exclusion>
-            </exclusions>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.6.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.6.8</version>
+        </dependency>
+
+         <!--<dependency>-->
+            <!--<groupId>org.springframework.security</groupId>-->
+            <!--<artifactId>spring-security-taglibs</artifactId>-->
+            <!--<version>2.0.5.RELEASE</version>-->
+            <!--<exclusions>-->
+            	<!--<exclusion>-->
+            		<!--<groupId>org.springframework</groupId>-->
+            		<!--<artifactId>spring-context</artifactId>-->
+            	<!--</exclusion>-->
+            	<!--<exclusion>-->
+            		<!--<groupId>org.springframework</groupId>-->
+            		<!--<artifactId>spring-support</artifactId>-->
+            	<!--</exclusion>-->
+            	<!--<exclusion>-->
+            		<!--<groupId>org.springframework</groupId>-->
+            		<!--<artifactId>spring-core</artifactId>-->
+            	<!--</exclusion>-->
+            	<!--<exclusion>-->
+            		<!--<groupId>org.springframework</groupId>-->
+            		<!--<artifactId>spring-beans</artifactId>-->
+            	<!--</exclusion>-->
+            	<!--<exclusion>-->
+            		<!--<groupId>org.springframework</groupId>-->
+            		<!--<artifactId>spring-aop</artifactId>-->
+            	<!--</exclusion>-->
+                <!--<exclusion>-->
+            		<!--<groupId>org.springframework</groupId>-->
+            		<!--<artifactId>spring-web</artifactId>-->
+            	<!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
 
         <!-- JSF (MyFaces) -->
         <dependency>
@@ -419,6 +489,18 @@
             <artifactId>myfaces-impl</artifactId>
             <version>2.0.0</version>
         </dependency>
+
+        <!-- JSF (Mojarra) -->
+        <!--<dependency>-->
+            <!--<groupId>javax.faces</groupId>-->
+            <!--<artifactId>jsf-api</artifactId>-->
+            <!--<version>2.0.2-FCS</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>javax.faces</groupId>-->
+            <!--<artifactId>jsf-impl</artifactId>-->
+            <!--<version>2.0.2-FCS</version>-->
+        <!--</dependency>-->
 
         <!-- JSP 2.2 support (methods etc). May not be needed in recent J2EE 6 app containers -->
         <dependency>
@@ -479,7 +561,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>2.0.1-SNAPSHOT</version>
+            <version>2.0.1-intact-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
