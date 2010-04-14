@@ -85,7 +85,7 @@ public class UserQuery extends BaseController {
     private String userSortColumn = DEFAULT_SORT_COLUMN;
     private boolean userSortOrder = DEFAULT_SORT_ORDER;
 
-    private int pageSize = 30;
+    private int pageSize = 20;
 
     private boolean showNewFieldPanel;
     private QueryToken newQueryToken;
