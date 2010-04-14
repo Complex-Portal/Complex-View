@@ -39,7 +39,7 @@
 
          <h:form id="intactForm" prependId="false">
 
-        <p:tabView id="mainPanels" cache="false" activeIndex="#{activeTabIndex != null? activeTabIndex : 0}">
+        <p:tabView id="mainPanels" cache="false" activeIndex="#{contextController.activeTabIndex}">
             
             <p:tab title="Home">
                 <p:messages/>

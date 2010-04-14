@@ -6,7 +6,10 @@
 
                 template="/main.xhtml">
 
-    <ui:param name="disclosedTabName" value="list"/>
+     <f:metadata>
+        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(4)}"/>
+    </f:metadata>
+    
     <ui:param name="disclosedListTabName" value="compoundList"/>
 
 </ui:composition>

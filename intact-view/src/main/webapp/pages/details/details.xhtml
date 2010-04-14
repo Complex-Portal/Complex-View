@@ -8,4 +8,8 @@
 
     <ui:param name="disclosedTabName" value="details"/>
 
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(5)}"/>
+    </f:metadata>
+
 </ui:composition>

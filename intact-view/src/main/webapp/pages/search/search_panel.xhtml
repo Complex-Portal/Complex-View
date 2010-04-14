@@ -38,7 +38,9 @@
                               value="Search"
                               disabled="#{userQuery.showNewFieldPanel}"
                               actionListener="#{searchBean.doBinarySearch}"
-                    update="mainPanels,lala"/>
+                              update="mainPanels">
+                <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
+            </p:commandButton>
             &#160;
             <h:commandButton type="button" id="clearSearchBtn" value="Clear"
                        onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
@@ -51,10 +53,6 @@
                     update="searchPanelDetails,searchPanel"/>
 
         </h:panelGroup>
-
-        <p:outputPanel id="lala">
-            <h:outputText value="[#{userQuery.searchQuery}  ]"/>
-        </p:outputPanel>
 
          </p:panel>
 

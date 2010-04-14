@@ -6,6 +6,8 @@
 
                 template="/main.xhtml">
 
-    <ui:param name="activeTabIndex" value="6"/>
+     <f:metadata>
+        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(6)}"/>
+    </f:metadata>
 
 </ui:composition>

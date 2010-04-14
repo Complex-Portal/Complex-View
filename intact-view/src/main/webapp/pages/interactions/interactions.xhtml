@@ -6,7 +6,9 @@
 
                 template="/main.xhtml">
 
-    <ui:param name="activeTabIndex" value="2"/>
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(2)}"/>
+    </f:metadata>
 
     <f:metadata>
             <f:viewParam name="query" value="#{userQuery.searchQuery}"/>
