@@ -6,11 +6,7 @@
 <facelet-taglib>
     <namespace>http://intact.ebi.ac.uk/miscel</namespace>
 
-    <tag>
-        <tag-name>collapsibleIterator</tag-name>
-        <source>facelets/components/miscel/CollapsibleIterator.xhtml</source>
-    </tag>
-    <tag>
+     <tag>
         <tag-name>customShowDetail</tag-name>
         <source>facelets/components/miscel/CustomShowDetail.xhtml</source>
     </tag>
@@ -60,6 +56,12 @@
         <function-name>surroundByQuotesIfMissing</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.JsfUtils</function-class>
         <function-signature>java.lang.String surroundByQuotesIfMissing(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <function-name>min</function-name>
+        <function-class>java.lang.Math</function-class>
+        <function-signature>int min(int,int)</function-signature>
     </function>
 
 </facelet-taglib>

@@ -8,13 +8,35 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
 
+                xmlns:iam="http://java.sun.com/jsf/composite/components/miscel"
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
+
+
+    <p:panel>
+        <p:commandButton value="Change Columns Displayed" onclick="columnsDialog.show()"/>
+    </p:panel>
+
+    <p:dialog header="Columns displayed" fixedCenter="true" widgetVar="columnsDialog">
+        Select:
+        <p:commandLink value="Minium" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection"/>
+        &#160;|&#160;
+        <p:commandLink value="Standard" actionListener="#{columnContext.selectStandardColumns()}" update="columnSelection"/>
+        &#160;|&#160;
+        <p:commandLink value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}" update="columnSelection"/>
+        <hr/>
+
+        <h:selectManyCheckbox id="columnSelection" value="#{columnContext.selectedColumns}" layout="pageDirection">
+            <f:selectItems value="#{columnContext.columnsSelectItems}"/>
+        </h:selectManyCheckbox>
+        <hr/>
+        <p:commandButton value="Update" onclick="columnsDialog.hide()" update="resultsTable"/>
+    </p:dialog>
 
     <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
                      rows="#{userQuery.pageSize}"
                      dynamic="true" lazy="true"
                      paginator="#{searchBean.results.rowCount gt userQuery.pageSize}">
-            <p:column>
+            <p:column rendered="#{columnContext.isColumnVisible('moleculeA.name')}">
                 <f:facet name="header">
                     <h:outputText value="#{messages['moleculeA.name']}"/>
                 </f:facet>
@@ -24,14 +46,16 @@
 
                     <iv:moleculeBoxes interactor="#{binaryInteraction.interactorA}"/>
             </p:column>
-            <p:column styleClass="cellTextCompound"
-                      rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeA.links')}">
+
+            <p:column rendered="#{columnContext.isColumnVisible('moleculeA.links')}">
                 <f:facet name="header">
                     <h:outputText value="#{messages['moleculeA.links']}"/>
                 </f:facet>
-                <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorA}"/>
+                <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorA}"
+                        display="#{not searchBean.results.sameThanPrevious}"/>
             </p:column>
-            <p:column>
+
+            <p:column rendered="#{columnContext.isColumnVisible('moleculeB.name')}">
                 <f:facet name="header">
                     <h:outputText value="#{messages['moleculeB.name']}"/>
                 </f:facet>
@@ -45,16 +69,46 @@
 
                 <iv:moleculeBoxes interactor="#{binaryInteraction.interactorB}"/>
             </p:column>
+
             <p:column styleClass="cellTextCompound"
-                      rendered="#{iamf:getSelectedFromMap(configureColumn.columnMap,'moleculeB.links')}">
+                      rendered="#{columnContext.isColumnVisible('moleculeB.links')}">
                 <f:facet name="header">
                     <h:outputText value="#{messages['moleculeB.links']}"/>
                 </f:facet>
-                <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorB}"/>
+                <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorB}"
+                        display="#{not searchBean.results.sameThanPrevious}"/>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Interaction IDs"/>
+
+        <p:column styleClass="cellTextCompound"
+                  rendered="#{columnContext.isColumnVisible('moleculeA.aliases')}">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeA.aliases']}"/></f:facet>
+
+            <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+                <iam:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
+                                         value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorA.alternativeIdentifiers,null,'rogid')}"
+                                         maxShown="3">
+                    <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
+                </iam:collapsibleIterator>
+            </h:panelGroup>
+        </p:column>
+
+        <p:column styleClass="cellTextCompound"
+                  rendered="#{columnContext.isColumnVisible('moleculeB.aliases')}">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeB.aliases']}"/></f:facet>
+
+            <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+                <iam:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
+                                         value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorB.alternativeIdentifiers,null,'rogid')}"
+                                         maxShown="3">
+                    <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
+                </iam:collapsibleIterator>
+            </h:panelGroup>
+        </p:column>
+
+
+        <p:column rendered="#{columnContext.isColumnVisible('interaction.ac')}">
+            <f:facet name="header">
+                    <h:outputText value="#{messages['interaction.ac']}"/>
                 </f:facet>
 
                 <ui:repeat var="xref" value="#{binaryInteraction.interactionAcs}"

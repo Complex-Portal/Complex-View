@@ -13,6 +13,11 @@ a img {
     position: fixed;
 }
 
+/** interactions table **/
+td.notSameThanPrevious {
+    border-top: 1px solid #CDCDCD !important;
+}
+
 /** p:tabViewer **/
 
 .yui-skin-sam .yui-navset .yui-nav {

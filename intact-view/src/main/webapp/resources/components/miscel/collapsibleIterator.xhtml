@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+
+                xmlns:imisc="http://intact.ebi.ac.uk/miscel"
+                xmlns:composite="http://java.sun.com/jsf/composite" >
+
+    <!-- INTERFACE -->
+    <composite:interface>
+        <composite:attribute name="value" required="true"/>
+        <composite:attribute name="maxShown" type="java.lang.Integer" default="100"/>
+        <composite:attribute name="disclosed" type="java.lang.Boolean" default="false"/>
+    </composite:interface>
+
+    <!-- IMPLEMENTATION -->
+    <composite:implementation>
+        <p:outputPanel id="collapsibleContent">
+
+        <h:panelGroup>
+            <ui:repeat var="item" value="#{cc.attrs.value}" varStatus="rowStatus"
+                       size="#{cc.attrs.disclosed or requestScope.disclosed? fn:length(cc.attrs.value) : imisc:min(cc.attrs.maxShown, fn:length(cc.attrs.value))-1}">
+                <composite:insertChildren/>
+                <h:outputText value="; " rendered="#{rowStatus.index lt fn:length(cc.attrs.value)-1}"/>
+            </ui:repeat>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{cc.attrs.maxShown lt fn:length(cc.attrs.value)}">
+            <p:commandLink value="[-]" update="collapsibleContent"
+                    rendered="#{cc.attrs.disclosed or requestScope.disclosed}">
+                <f:setPropertyActionListener value="#{false}" target="#{requestScope.disclosed}"/>
+            </p:commandLink>
+            <p:commandLink value="[+#{fn:length(cc.attrs.value) - cc.attrs.maxShown}]" update="collapsibleContent"
+                    rendered="#{not cc.attrs.disclosed and not requestScope.disclosed}">
+                <f:setPropertyActionListener value="#{true}" target="#{requestScope.disclosed}"/>
+            </p:commandLink>
+        </h:panelGroup>
+
+        </p:outputPanel>
+
+    </composite:implementation>
+
+</ui:composition>
