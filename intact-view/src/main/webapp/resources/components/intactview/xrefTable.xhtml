@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+  <composite:interface>
+      <composite:attribute name="xrefs" type="java.util.Collection" required="true"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+    <p:dataTable var="xref" value="#{cc.attrs.xrefs}" paginator="false" dynamic="false" lazy="false">
+
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Database"/>
+            </f:facet>
+            <h:outputText value="#{xref.cvDatabase.shortLabel}" />
+            <!-- TODO nested use of cvPopup isn't working -->
+            <!--<iv:cvPopup cv="#{xref.cvDatabase}" />-->
+        </p:column>
+
+        <p:column >
+            <f:facet name="header">
+                <h:outputText value="Identifier"/>
+            </f:facet>
+            <!--TODO add orchestra to separate from conversation-->
+            <h:outputLink text="#{xref.primaryId}" value="#{function.calculateXrefUrl(xref.cvDatabase, xref.primaryId)}"
+                          target="_blank">
+                <h:outputText value="#{xref.primaryId}" />
+            </h:outputLink>
+        </p:column>
+
+        <p:column >
+            <f:facet name="header">
+                <h:outputText value="Secondary identifier"/>
+            </f:facet>
+            <h:outputText value="#{(xref.secondaryId == null ? '-' : xref.secondaryId )}"/>
+        </p:column>
+
+        <p:column >
+            <f:facet name="header">
+                <h:outputText value="Qualifier"/>
+            </f:facet>
+            <!-- TODO nested use of cvPopup isn't working -->
+            <!--<iv:cvPopup cv="#{xref.cvXrefQualifier}" />-->
+            <h:outputText value="#{xref.cvXrefQualifier.shortLabel}" />
+        </p:column>
+
+    </p:dataTable>
+
+    </composite:implementation>
+
+</ui:composition>

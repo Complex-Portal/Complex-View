@@ -2,16 +2,14 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+                xmlns:h="http://java.sun.com/jsf/html">
 
     <!--<tr:commandLink action="dialog:cv.view"-->
                     <!--partialSubmit="true"-->
                     <!--windowWidth="700" windowHeight="400"-->
                     <!--immediate="true" useWindow="true">-->
 
-        <tr:outputText value="#{iconGenerator.colourMap[cv.identifier].initials}" shortDesc="#{cv.shortLabel}" inlineStyle="#{linkStyle}"/>
+        <h:outputText value="#{iconGenerator.colourMap[cv.identifier].initials}" shortDesc="#{cv.shortLabel}" inlineStyle="#{linkStyle}"/>
         <!--<f:setPropertyActionListener value="#{cv}" target="#{cvBean.cvObject}"/>-->
 
     <!--</tr:commandLink>-->

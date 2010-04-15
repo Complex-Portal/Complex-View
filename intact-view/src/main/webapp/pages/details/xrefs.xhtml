@@ -3,39 +3,37 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
-    <tr:spacer height="5"/>
-    
-    <tr:table var="xref" value="#{xrefs}">
+    <!--<tr:spacer height="5"/>-->
 
-        <tr:column>
-            <!--headerText="Database"-->
-            <ui:decorate template="/pages/details/cvPopup.xhtml">
-                <ui:param name="cv" value="#{xref.cvDatabase}"/>
-            </ui:decorate>
-        </tr:column>
+    <!--<tr:table var="xref" value="#{xrefs}">-->
 
-        <tr:column >
-            <!--headerText="Identifier"-->
-            <tr:goLink text="#{xref.primaryId}" destination="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}"
-                       targetFrame="_blank"/>
-        </tr:column>
+        <!--<tr:column>-->
+            <!--&lt;!&ndash;headerText="Database"&ndash;&gt;-->
+            <!--<ui:decorate template="/pages/details/cvPopup.xhtml">-->
+                <!--<ui:param name="cv" value="#{xref.cvDatabase}"/>-->
+            <!--</ui:decorate>-->
+        <!--</tr:column>-->
 
-        <tr:column >
-            <!--headerText="Secondary Identifier"-->
-            <tr:inputText readOnly="true" value="#{(xref.secondaryId == null ? '-' : xref.secondaryId )}"/>
-        </tr:column>
+        <!--<tr:column >-->
+            <!--&lt;!&ndash;headerText="Identifier"&ndash;&gt;-->
+            <!--<tr:goLink text="#{xref.primaryId}" destination="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}"-->
+                       <!--targetFrame="_blank"/>-->
+        <!--</tr:column>-->
 
-        <tr:column >
-            <!--headerText="Qualifier"-->
-            <ui:decorate template="/pages/details/cvPopup.xhtml">
-                <ui:param name="cv" value="#{xref.cvXrefQualifier}"/>
-            </ui:decorate>
-        </tr:column>
+        <!--<tr:column >-->
+            <!--&lt;!&ndash;headerText="Secondary Identifier"&ndash;&gt;-->
+            <!--<tr:inputText readOnly="true" value="#{(xref.secondaryId == null ? '-' : xref.secondaryId )}"/>-->
+        <!--</tr:column>-->
 
-    </tr:table>
+        <!--<tr:column >-->
+            <!--&lt;!&ndash;headerText="Qualifier"&ndash;&gt;-->
+            <!--<ui:decorate template="/pages/details/cvPopup.xhtml">-->
+                <!--<ui:param name="cv" value="#{xref.cvXrefQualifier}"/>-->
+            <!--</ui:decorate>-->
+        <!--</tr:column>-->
+
+    <!--</tr:table>-->
 
 </ui:composition>

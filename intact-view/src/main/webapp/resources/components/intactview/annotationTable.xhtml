@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+  <composite:interface>
+      <composite:attribute name="annotations" type="java.util.Collection" required="true"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <p:dataTable dynamic="false" lazy="false" var="annot" value="#{cc.attrs.annotations}">
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Topic"/>
+                </f:facet>
+                <h:outputText value="#{annot.cvTopic.shortLabel}" />
+                <!--<iv:cvPopup cv="#{annot.cvTopic}" />-->
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Text"/>
+                </f:facet>
+                <ui:param name="isUrl" value="#{annot.cvTopic.identifier == 'MI:0614'}" />
+                <h:outputText value="#{(annot.annotationText == null ? '-' : annot.annotationText )}" rendered="#{not isUrl}"/>
+                <h:outputLink text="#{annot.annotationText}" destination="#{annot.annotationText}" targetFrame="_blank" rendered="#{isUrl}"/>
+            </p:column>
+        </p:dataTable>
+
+    </composite:implementation>
+
+</ui:composition>

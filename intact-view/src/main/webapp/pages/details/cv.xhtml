@@ -3,65 +3,62 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 
-                xmlns:iav="http://intact.ebi.ac.uk/view" xmlns:trh="http://myfaces.apache.org/trinidad/html">
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
 
-    <tr:document title="#{cvBean.className}: #{cvBean.cvObject.shortLabel}">
-        <tr:form>
+                xmlns:iav="http://intact.ebi.ac.uk/view" xmlns:p="http://primefaces.prime.com.tr/ui">
 
-        <tr:panelHeader text="#{cvBean.className}">
+    swap me for iv:cvPopup !!!
 
-            <tr:panelFormLayout inlineStyle="width:550px;" >
-                <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                    <tr:inputText readOnly="true" value="#{cvBean.cvObject.ac}"/>
-                </tr:panelLabelAndMessage>
+    <!--<tr:document title="#{cvBean.className}: #{cvBean.cvObject.shortLabel}">-->
+    <!--<tr:form>-->
 
-                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                    <tr:inputText readOnly="true" value="#{cvBean.cvObject.shortLabel}"/>
-                </tr:panelLabelAndMessage>
+    <!--<h3>#{cvBean.className}</h3>-->
 
-                <tr:panelLabelAndMessage label="Description:" rendered="#{cvBean.cvObject.shortLabel != cvBean.cvObject.fullName}"
-                                         labelStyle="font-weight:bold;">
-                    <tr:inputText readOnly="true"
-                                  value="#{(cvBean.cvObject.fullName == null ? '-' : cvBean.cvObject.fullName )}"/>
-                </tr:panelLabelAndMessage>
+    <!--<p:panel style="width:550px;">-->
+        <!--<iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">-->
+            <!--<h:outputText value="#{cvBean.cvObject.ac}"/>-->
+        <!--</iv:panelLabelAndMessage>-->
 
-            </tr:panelFormLayout>
+        <!--<iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">-->
+            <!--<h:outputText value="#{cvBean.cvObject.shortLabel}"/>-->
+        <!--</iv:panelLabelAndMessage>-->
 
-            <trh:tableLayout width="690" cellPadding="3" cellSpacing="0">
-                <trh:rowLayout rendered="#{not empty cvBean.cvObject.xrefs}">
-                    <trh:cellFormat valign="top">
-                        <tr:spacer height="10"/>
-                        <tr:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:spacer height="10"/>
-                        <ui:include src="/pages/details/xrefs.xhtml">
-                            <ui:param name="xrefs" value="#{cvBean.cvObject.xrefs}"/>
-                        </ui:include>
-                    </trh:cellFormat>
-                </trh:rowLayout>
-                <trh:rowLayout rendered="#{not empty cvBean.cvObject.annotations}">
-                    <trh:cellFormat valign="top">
-                        <tr:spacer height="10"/>
-                        <tr:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:spacer height="10"/>
-                        <ui:decorate template="/pages/details/annotations.xhtml">
-                            <ui:param name="annotations" value="#{cvBean.cvObject.annotations}"/>
-                        </ui:decorate>
-                    </trh:cellFormat>
-                </trh:rowLayout>
-            </trh:tableLayout>
+        <!--<iv:panelLabelAndMessage label="Description:"-->
+                                 <!--visible="#{cvBean.cvObject.shortLabel != cvBean.cvObject.fullName}"-->
+                                 <!--labelStyle="font-weight:bold;">-->
+            <!--<h:outputText value="#{(cvBean.cvObject.fullName == null ? '-' : cvBean.cvObject.fullName )}"/>-->
+        <!--</iv:panelLabelAndMessage>-->
 
-        </tr:panelHeader>
+    <!--</p:panel>-->
 
-        </tr:form>
-
-    </tr:document>
+    <!--<table width="690" cellPadding="3" cellSpacing="0">-->
+        <!--<h:panelGroup rendered="#{not empty cvBean.cvObject.xrefs}">-->
+            <!--<tr>-->
+                <!--<td valign="top">-->
+                    <!--<h:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<ui:include src="/pages/details/xrefs.xhtml">-->
+                        <!--<ui:param name="xrefs" value="#{cvBean.cvObject.xrefs}"/>-->
+                    <!--</ui:include>-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</h:panelGroup>-->
+        <!--<h:panelGroup rendered="#{not empty cvBean.cvObject.annotations}">-->
+            <!--<tr>-->
+                <!--<td valign="top">-->
+                    <!--<h:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<ui:decorate template="/pages/details/annotations.xhtml">-->
+                        <!--<ui:param name="annotations" value="#{cvBean.cvObject.annotations}"/>-->
+                    <!--</ui:decorate>-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</h:panelGroup>-->
+    <!--</table>-->
 
 </ui:composition>

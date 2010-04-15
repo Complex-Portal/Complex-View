@@ -3,66 +3,61 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 
-                xmlns:iav="http://intact.ebi.ac.uk/view" xmlns:trh="http://myfaces.apache.org/trinidad/html">
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
 
-    <tr:document>
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
 
-        <tr:form>
+    swap me for iv:biosourcePopup !!!
+    
+    <!--<h3>Organism</h3>-->
 
-        <tr:panelHeader text="Organism">
+    <!--<p:panel>-->
+        <!--<iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">-->
+            <!--<h:inputText readOnly="true" value="#{biosourceBean.bioSource.ac}"/>-->
+        <!--</iv:panelLabelAndMessage>-->
 
-            <tr:panelFormLayout>
-                <tr:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                    <tr:inputText readOnly="true" value="#{biosourceBean.bioSource.ac}"/>
-                </tr:panelLabelAndMessage>
+        <!--<iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">-->
+            <!--<h:inputText readOnly="true" value="#{biosourceBean.bioSource.shortLabel}"/>-->
+        <!--</iv:panelLabelAndMessage>-->
 
-                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                    <tr:inputText readOnly="true" value="#{biosourceBean.bioSource.shortLabel}"/>
-                </tr:panelLabelAndMessage>
+        <!--<iv:panelLabelAndMessage label="Description:"-->
+                                 <!--rendered="#{biosourceBean.bioSource.shortLabel != biosourceBean.bioSource.fullName}"-->
+                                 <!--labelStyle="font-weight:bold;">-->
+            <!--<h:inputText readOnly="true"-->
+                         <!--value="#{(biosourceBean.bioSource.fullName == null ? '-' : biosourceBean.bioSource.fullName )}"/>-->
+        <!--</iv:panelLabelAndMessage>-->
 
-                <tr:panelLabelAndMessage label="Description:" rendered="#{biosourceBean.bioSource.shortLabel != biosourceBean.bioSource.fullName}" 
-                                         labelStyle="font-weight:bold;">
-                    <tr:inputText readOnly="true"
-                                  value="#{(biosourceBean.bioSource.fullName == null ? '-' : biosourceBean.bioSource.fullName )}"/>
-                </tr:panelLabelAndMessage>
+    <!--</p:panel>-->
 
-            </tr:panelFormLayout>
-
-            <trh:tableLayout width="690" cellPadding="3" cellSpacing="0">
-                <trh:rowLayout rendered="#{not empty biosourceBean.bioSource.xrefs}">
-                    <trh:cellFormat valign="top">
-                        <tr:spacer height="10"/>
-                        <tr:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:spacer height="10"/>
-                        <ui:decorate template="/pages/details/xrefs.xhtml">
-                            <ui:param name="xrefs" value="#{biosourceBean.bioSource.xrefs}"/>
-                        </ui:decorate>
-                    </trh:cellFormat>
-                </trh:rowLayout>
-                <trh:rowLayout rendered="#{not empty biosourceBean.bioSource.annotations}">
-                    <trh:cellFormat valign="top">
-                        <tr:spacer height="10"/>
-                        <tr:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:spacer height="10"/>
-                        <ui:decorate template="/pages/details/annotations.xhtml">
-                            <ui:param name="annotations" value="#{biosourceBean.bioSource.annotations}"/>
-                        </ui:decorate>
-                    </trh:cellFormat>
-                </trh:rowLayout>
-            </trh:tableLayout>
-
-        </tr:panelHeader>
-
-        </tr:form>
-
-    </tr:document>
+    <!--<table width="690" cellPadding="3" cellSpacing="0">-->
+        <!--<h:panelGroup rendered="#{not empty biosourceBean.bioSource.xrefs}">-->
+            <!--<tr>-->
+                <!--<td valign="top">-->
+                    <!--<h:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<ui:decorate template="/pages/details/xrefs.xhtml">-->
+                        <!--<ui:param name="xrefs" value="#{biosourceBean.bioSource.xrefs}"/>-->
+                    <!--</ui:decorate>-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</h:panelGroup>-->
+        <!--<h:panelGroup rendered="#{not empty biosourceBean.bioSource.annotations}">-->
+            <!--<tr>-->
+                <!--<td valign="top">-->
+                    <!--<h:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<ui:decorate template="/pages/details/annotations.xhtml">-->
+                        <!--<ui:param name="annotations" value="#{biosourceBean.bioSource.annotations}"/>-->
+                    <!--</ui:decorate>-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</h:panelGroup>-->
+    <!--</table>-->
 
 </ui:composition>

@@ -14,7 +14,7 @@
   <composite:interface>
       <composite:attribute name="label" required="true"/>
       <composite:attribute name="labelStyle"/>
-      <composite:attribute name="render" default="true"/>
+      <composite:attribute name="visible" type="java.util.Boolean" default="true"/>
 
       <composite:facet name="help"/>
       <composite:facet name="end"/>
@@ -23,7 +23,7 @@
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <p:outputPanel rendered="#{cc.attrs.render}">
+        <p:outputPanel rendered="#{cc.attrs.visible}">
 
             <table>
                 <tr style="vertical-align:top">

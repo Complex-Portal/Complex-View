@@ -3,17 +3,26 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+                xmlns:p="http://primefaces.prime.com.tr/ui">
 
-    <tr:commandLink action="#{cvBean.launchCvDialogIfNecessary}"
-                    partialSubmit="true"
-                    windowWidth="700" windowHeight="400"
-                    immediate="true" useWindow="true">
+    <!--<p:commandLink action="#{cvBean.launchCvDialogIfNecessary}"-->
+                   <!--partialSubmit="true"-->
+                   <!--windowWidth="700" windowHeight="400"-->
+                   <!--immediate="true" useWindow="true">-->
 
-        <tr:outputText value="#{cv.shortLabel}" inlineStyle="#{linkStyle}" />
-        <f:setPropertyActionListener value="#{cv.ac}" target="#{cvBean.objectAc}"/>
+        <!--<h:outputText value="#{cv.shortLabel}" inlineStyle="#{linkStyle}"/>-->
+        <!--<f:setPropertyActionListener value="#{cv.ac}" target="#{cvBean.objectAc}"/>-->
 
-    </tr:commandLink>
+    <!--</p:commandLink>-->
+
+    <!--<p:commandLink id="cvLink" type="button" onclick="cvDlg.show();" value="#{cv.shortLabel}" >-->
+        <!--<f:setPropertyActionListener value="#{cv.ac}" target="#{cvBean.cvObjectAc}"/>-->
+    <!--</p:commandLink>-->
+
+    <!--<p:dialog header="#{cv.shortLabel}"-->
+              <!--widgetVar="cvDlg" height="500" width="600" fixedCenter="true"-->
+              <!--constrainToViewport="true" modal="true">-->
+        <!--<ui:include src="cv.xhtml" />-->
+    <!--</p:dialog>-->
 
 </ui:composition>

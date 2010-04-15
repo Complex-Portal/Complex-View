@@ -61,16 +61,18 @@ public class DetailsController extends JpaBaseController {
     private static final String EXPERIMENT_AC_PARAM = "experimentAc";
     private static final String BINARY_PARAM = "binary";
 
+    private String interactionAc;
+    private String experimentAc;
+    private String binary;
+
     private Interaction interaction;
 
     private Experiment experiment;
 
     @Transactional(readOnly = true)
-    public void initialParams() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        final String interactionAc = context.getExternalContext().getRequestParameterMap().get( INTERACTION_AC_PARAM );
-        final String experimentAc = context.getExternalContext().getRequestParameterMap().get( EXPERIMENT_AC_PARAM );
-        final String binary = context.getExternalContext().getRequestParameterMap().get( BINARY_PARAM );
+    public void loadData() {
+
+        log.info( "DetailsController.loadData" );
 
         UserQuery userQuery = (UserQuery) getBean("userQuery");
         SearchController searchController = (SearchController) getBean("searchBean");
@@ -98,9 +100,6 @@ public class DetailsController extends JpaBaseController {
 
             // TODO Update interaction search when experiment ACs are integrated in the Solr index
             userQuery.reset();
-//            userQuery.setSearchQuery( "interaction_id:" + interactionAc );
-//            SolrQuery solrQuery = userQuery.createSolrQuery();
-//            searchController.doBinarySearch( solrQuery );
         }
 
         if (binary != null) {
@@ -130,6 +129,91 @@ public class DetailsController extends JpaBaseController {
                 return;
             }
         }
+    }
+
+//    @PreRenderView
+//    @Transactional(readOnly = true)
+//    public void initialParams() {
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        final String interactionAc = context.getExternalContext().getRequestParameterMap().get( INTERACTION_AC_PARAM );
+//        final String experimentAc = context.getExternalContext().getRequestParameterMap().get( EXPERIMENT_AC_PARAM );
+//        final String binary = context.getExternalContext().getRequestParameterMap().get( BINARY_PARAM );
+//
+//        UserQuery userQuery = (UserQuery) getBean("userQuery");
+//        SearchController searchController = (SearchController) getBean("searchBean");
+//
+//        if( interactionAc != null && experimentAc != null ) {
+//            addErrorMessage( "Please either request an interaction or an experiment accession number.",
+//                             "Both were specified." );
+//            return;
+//        }
+//
+//        if ( interactionAc != null ) {
+//            if ( log.isDebugEnabled() ) log.debug( "Parameter " + INTERACTION_AC_PARAM + " was specified" );
+//            setInteractionAc( interactionAc );
+//
+//            // Update interaction search
+//            userQuery.reset();
+//            userQuery.setSearchQuery( "interaction_id:" + interactionAc );
+//            SolrQuery solrQuery = userQuery.createSolrQuery();
+//            searchController.doBinarySearch( solrQuery );
+//
+//        } else if ( experimentAc != null ) {
+//
+//            if ( log.isDebugEnabled() ) log.debug( "Parameter " + EXPERIMENT_AC_PARAM + " was specified" );
+//            setExperimentAc( experimentAc );
+//
+//            // TODO Update interaction search when experiment ACs are integrated in the Solr index
+//            userQuery.reset();
+////            userQuery.setSearchQuery( "interaction_id:" + interactionAc );
+////            SolrQuery solrQuery = userQuery.createSolrQuery();
+////            searchController.doBinarySearch( solrQuery );
+//        }
+//
+//        if (binary != null) {
+//            String[] interactorAcs = binary.split(",");
+//
+//            if (interactorAcs.length != 2) {
+//                addErrorMessage("When the binary parameter is specified, two comma-separated interactor ACs are expected",
+//                        "Found: "+interactorAcs.length);
+//                return;
+//            }
+//
+//            List<Interaction> interactions = getDaoFactory().getInteractionDao()
+//                    .getInteractionsForProtPairAc(interactorAcs[0], interactorAcs[1]);
+//
+//            if (interactions.size() > 0) {
+//                Interaction binaryInteraction = interactions.get(0);
+//                setInteraction(binaryInteraction);
+//
+//                // Update interaction search
+//                userQuery.reset();
+//                userQuery.setSearchQuery( interactorAcs[0] + " AND " + interactorAcs[1] );
+//                SolrQuery solrQuery = userQuery.createSolrQuery();
+//                searchController.doBinarySearch( solrQuery );
+//
+//            } else {
+//                addErrorMessage("No interactions were found", "");
+//                return;
+//            }
+//        }
+//    }
+
+
+    public String getInteractionAc() {
+        return interactionAc;
+    }
+
+    public String getExperimentAc() {
+        return experimentAc;
+    }
+
+    public String getBinary() {
+        return binary;
+    }
+
+    public void setBinary( String binary ) {
+        this.binary = binary;
     }
 
     @Transactional(readOnly = true)

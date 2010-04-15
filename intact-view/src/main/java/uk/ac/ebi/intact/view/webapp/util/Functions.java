@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.view.webapp.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.model.*;
@@ -35,6 +37,7 @@ import java.util.Map;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller
 public final class Functions {
 
     private static final Log log = LogFactory.getLog( Functions.class );

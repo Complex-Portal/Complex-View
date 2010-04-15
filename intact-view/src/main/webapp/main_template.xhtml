@@ -51,20 +51,17 @@
                 <ui:insert name="searchTabContent"/>
             </p:tab>
 
-            <p:tab title="Interactions (#{searchBean.totalResults})"
-                               disabled="#{searchBean.totalResults == 0}">
+            <p:tab title="Interactions (#{searchBean.totalResults})" disabled="#{searchBean.totalResults == 0}">
                 <p:messages/>
                 <ui:insert name="interactionsTabContent"/>
             </p:tab>
 
-            <p:tab title="Browse"
-                               disabled="#{searchBean.totalResults == 0}">
+            <p:tab title="Browse" disabled="#{searchBean.totalResults == 0}">
                 <p:messages/>
                 <ui:insert name="browseTabContent"/>
             </p:tab>
 
-            <p:tab title="Lists"
-                               disabled="#{searchBean.totalResults == 0}">
+            <p:tab title="Lists" disabled="#{searchBean.totalResults == 0}">
                 <p:messages/>
                 <ui:insert name="listTabContent"/>
             </p:tab>
