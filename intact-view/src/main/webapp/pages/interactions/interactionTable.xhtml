@@ -105,6 +105,38 @@
             </h:panelGroup>
         </p:column>
 
+        <p:column styleClass="cellTextCompound"
+                  rendered="#{columnContext.isColumnVisible('moleculeA.species')}">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeA.species']}"/></f:facet>
+
+            <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+                <h:panelGroup rendered="#{binaryInteraction.interactorA.interactorType.identifier != 'MI:0328'}">
+                    <ui:include src="/pages/interactions/organism.xhtml">
+                        <ui:param name="organism" value="#{binaryInteraction.interactorA.organism}"/>
+                    </ui:include>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{binaryInteraction.interactorA.interactorType.identifier == 'MI:0328'}">
+                    N/A
+                </h:panelGroup>
+            </h:panelGroup>
+        </p:column>
+
+        <p:column styleClass="cellTextCompound"
+                  rendered="#{columnContext.isColumnVisible('moleculeB.species')}">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeB.species']}"/></f:facet>
+
+            <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+                <h:panelGroup rendered="#{binaryInteraction.interactorB.interactorType.identifier != 'MI:0328'}">
+                    <ui:include src="/pages/interactions/organism.xhtml">
+                        <ui:param name="organism" value="#{binaryInteraction.interactorB.organism}"/>
+                    </ui:include>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{binaryInteraction.interactorB.interactorType.identifier == 'MI:0328'}">
+                    N/A
+                </h:panelGroup>
+            </h:panelGroup>
+        </p:column>
+
 
         <p:column rendered="#{columnContext.isColumnVisible('interaction.ac')}">
             <f:facet name="header">
@@ -127,6 +159,8 @@
                     </h:panelGroup>
                 </ui:repeat>
             </p:column>
+
+
 
         </p:dataTable>
 

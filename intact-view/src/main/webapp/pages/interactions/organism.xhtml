@@ -1,26 +1,14 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:jsp="http://java.sun.com/JSP/Page"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:h="http://java.sun.com/jsf/html">
 
-                xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+        <ui:repeat var="organism" value="#{organism}" rows="0">
 
-    <tr:document>
-
-        <tr:iterator var="organism" value="#{organism}" rows="0">
-
-            <ui:decorate template="/pages/interactions/organismXrefs.xhtml">
+            <ui:include src="/pages/interactions/organismXrefs.xhtml">
                 <ui:param name="xrefs" value="#{organism.identifiers}"/>
-            </ui:decorate>
+            </ui:include>
 
-        </tr:iterator>
-
-    </tr:document>
+        </ui:repeat>
 
 </ui:composition>
