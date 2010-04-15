@@ -8,17 +8,35 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
 
+                xmlns:iam="http://java.sun.com/jsf/composite/components/miscel"
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
+
+
+    <p:panel>
+        <p:commandButton value="Change Columns Displayed" onclick="columnsDialog.show()"/>
+    </p:panel>
+
+    <p:dialog header="Columns displayed" fixedCenter="true" widgetVar="columnsDialog">
+        Select:
+        <p:commandLink value="Minium" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection"/>
+        &#160;|&#160;
+        <p:commandLink value="Standard" actionListener="#{columnContext.selectStandardColumns()}" update="columnSelection"/>
+        &#160;|&#160;
+        <p:commandLink value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}" update="columnSelection"/>
+        <hr/>
+
+        <h:selectManyCheckbox id="columnSelection" value="#{columnContext.selectedColumns}" layout="pageDirection">
+            <f:selectItems value="#{columnContext.columnsSelectItems}"/>
+        </h:selectManyCheckbox>
+        <hr/>
+        <p:commandButton value="Update" onclick="columnsDialog.hide()" update="resultsTable"/>
+    </p:dialog>
 
     <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
                      rows="#{userQuery.pageSize}"
                      dynamic="true" lazy="true"
                      paginator="#{searchBean.results.rowCount gt userQuery.pageSize}">
-
         <p:column>
-                <f:facet name="header">
-                    <h:outputText value=""/>
-                </f:facet>
                 <h:panelGroup rendered="#{not testController.results.sameThanPrevious}">
                     <h:commandLink action="details">
                         <f:setPropertyActionListener value="#{testController.getIntactAc(binaryInteraction)}"
@@ -27,7 +45,8 @@
                     </h:commandLink>
                 </h:panelGroup>
             </p:column>
-            <p:column>
+
+            <p:column rendered="#{columnContext.isColumnVisible('moleculeA.name')}">
                 <f:facet name="header">
                     <h:outputText value="#{messages['moleculeA.name']}"/>
                 </f:facet>
@@ -128,6 +147,43 @@
             </h:panelGroup>
         </p:column>
 
+        <p:column rendered="#{columnContext.isColumnVisible('interaction.firstauthor')}"
+                  styleClass="cellTextInteraction">
+            <f:facet name="header"><h:outputText value="#{messages['interaction.firstauthor']}"/></f:facet>
+
+            <ui:repeat var="author" value="#{binaryInteraction.authors}">
+            <span style="display:block">
+                    <h:outputText value="#{author.name}" style="white-space:nowrap;"/>
+            </span>
+            </ui:repeat>
+        </p:column>
+
+        <p:column  rendered="#{columnContext.isColumnVisible('interaction.pubmedid')}"
+                   styleClass="cellTextInteraction">
+            <f:facet name="header"><h:outputText value="#{messages['interaction.pubmedid']}"/></f:facet>
+            <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
+        </p:column>
+
+        <p:column rendered="#{columnContext.isColumnVisible('interaction.interactiontype')}"
+                  styleClass="cellTextInteraction">
+            <f:facet name="header"><h:outputText value="#{messages['interaction.interactiontype']}"/></f:facet>
+            <iav:xrefDataList value="#{binaryInteraction.interactionTypes}" onlyText="true" itemPerLine="true"/>
+        </p:column>
+
+        <p:column rendered="#{columnContext.isColumnVisible('interaction.detectionmethod')}"
+                  styleClass="cellTextInteraction">
+            <f:facet name="header"><h:outputText value="#{messages['interaction.detectionmethod']}"/></f:facet>
+            [Not Implemented]
+            <!--<ui:include src="xrefCvPopupDialog.xhtml">-->
+                <!--<ui:param name="xref" value="${binaryInteraction.detectionMethods[0]}"/>-->
+            <!--</ui:include>-->
+        </p:column>
+
+        <p:column rendered="#{columnContext.isColumnVisible('interaction.sourcedb')}"
+                  styleClass="cellTextInteraction">
+            <f:facet name="header"><h:outputText value="#{messages['interaction.sourcedb']}"/></f:facet>
+            <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
+        </p:column>
 
         <p:column rendered="#{columnContext.isColumnVisible('interaction.ac')}">
             <f:facet name="header">
@@ -150,6 +206,8 @@
                     </h:panelGroup>
                 </ui:repeat>
             </p:column>
+
+
 
         </p:dataTable>
 
