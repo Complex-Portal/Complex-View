@@ -69,4 +69,9 @@ public class RequestConfigBean implements Serializable {
             throw new RuntimeException( "Could not encode callback URL", e );
         }
     }
+
+    public String toFriendlyJavascriptVar(String str) {
+        str = str.replaceAll(":", "_");
+        return str;
+    }
 }

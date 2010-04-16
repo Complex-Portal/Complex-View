@@ -13,55 +13,70 @@
 
     <!-- INTERFACE -->
   <composite:interface>
-      <composite:attribute name="cv" type="uk.ac.ebi.intact.model.CvObject"/>
+      <composite:attribute name="text" type="java.lang.String" required="true"/>
+      <composite:attribute name="cvIdentifier" type="java.lang.String" required="true"/>
+      <composite:attribute name="cvClassName" type="java.lang.String" required="true"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <p:commandLink id="cvLink" type="button" onclick="cvDlg.show();" value="#{cc.attrs.cv.shortLabel}" />
+        <ui:param name="dialogVar" value="#{requestConfigBean.toFriendlyJavascriptVar(cc.clientId)}_cvDlg"/>
 
-        <p:dialog widgetVar="cvDlg" header="#{cc.attrs.cv.class.simpleName}: #{cc.attrs.cv.shortLabel}"
-                  height="700" width="600" fixedCenter="true" constrainToViewport="true" modal="false">
+        <p:commandLink id="cvLink" onclick="#{dialogVar}.show();" value="#{cc.attrs.text}"
+                       update="cvDetailsPanel" global="true">
+            <f:setPropertyActionListener value="#{true}" target="#{cvLazyPopupController.dialogRendered}"/>
+        </p:commandLink>
+
+        <p:dialog widgetVar="#{dialogVar}" header="#{cc.attrs.text}" draggable="true" fixedCenter="true"
+                  style="width:700px; height:500px; background:white">
+
+            <h:panelGroup id="cvDetailsPanel">
+                <h:panelGroup rendered="#{cvLazyPopupController.dialogRendered}">
+
+            <ui:param name="cv" value="#{cvLazyPopupController.fetch(cc.attrs.cvClassName, cc.attrs.cvIdentifier)}"/>
 
             <p:panel style="width:550px;">
                 <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                    <h:outputText value="#{cc.attrs.cv.ac}"/>
+                    <h:outputText value="#{cv.ac}"/>
                 </iv:panelLabelAndMessage>
 
                 <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                    <h:outputText value="#{cc.attrs.cv.shortLabel}"/>
+                    <h:outputText value="#{cv.shortLabel}"/>
                 </iv:panelLabelAndMessage>
 
                 <iv:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;"
-                                         visible="#{cc.attrs.cv.shortLabel != cc.attrs.cv.fullName}">
-                    <h:outputText value="#{(cc.attrs.cv.fullName == null ? '-' : cc.attrs.cv.fullName )}"/>
+                                         visible="#{cv.shortLabel != cv.fullName}">
+                    <h:outputText value="#{(cv.fullName == null ? '-' : cv.fullName )}"/>
                 </iv:panelLabelAndMessage>
 
             </p:panel>
 
             <table width="690" cellPadding="3" cellSpacing="0">
-                <h:panelGroup rendered="#{not empty cc.attrs.cv.xrefs}">
+                <h:panelGroup rendered="#{not empty cv.xrefs}">
                     <tr>
                         <td valign="top">
                             <h:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
                         </td>
                         <td>
-                            <iv:xrefTable xrefs="#{cc.attrs.cv.xrefs}" />
+                            <iv:xrefTable xrefs="#{cv.xrefs}" />
                         </td>
                     </tr>
                 </h:panelGroup>
-                <h:panelGroup rendered="#{not empty cc.attrs.cv.annotations}">
+                <h:panelGroup rendered="#{not empty cv.annotations}">
                     <tr>
                         <td valign="top">
                             <h:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
                         </td>
                         <td>
-                            <iv:annotationTable annotations="#{cc.attrs.cv.annotations}" />
+                            <iv:annotationTable annotations="#{cv.annotations}" />
                         </td>
                     </tr>
                 </h:panelGroup>
             </table>
+
+                    </h:panelGroup>
+            </h:panelGroup>
 
         </p:dialog>
 

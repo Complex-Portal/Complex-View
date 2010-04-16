@@ -173,10 +173,9 @@
         <p:column rendered="#{columnContext.isColumnVisible('interaction.detectionmethod')}"
                   styleClass="cellTextInteraction">
             <f:facet name="header"><h:outputText value="#{messages['interaction.detectionmethod']}"/></f:facet>
-            [Not Implemented]
-            <!--<ui:include src="xrefCvPopupDialog.xhtml">-->
-                <!--<ui:param name="xref" value="${binaryInteraction.detectionMethods[0]}"/>-->
-            <!--</ui:include>-->
+            <iv:cvLazyPopup text="#{binaryInteraction.detectionMethods[0].text}"
+                            cvClassName="uk.ac.ebi.intact.model.CvInteraction"
+                            cvIdentifier="#{binaryInteraction.detectionMethods[0].identifier}"/>
         </p:column>
 
         <p:column rendered="#{columnContext.isColumnVisible('interaction.sourcedb')}"
