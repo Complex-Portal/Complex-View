@@ -28,10 +28,6 @@ import uk.ac.ebi.intact.view.webapp.IntactViewException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,18 +64,6 @@ public class CvLazyPopupController {
     @PreDestroy
     public void endTransaction() {
         dataContext.rollbackTransaction(transactionStatus);
-    }
-
-    public void fetchCvObject(ActionEvent evt) {
-        System.out.println("REQ PARAM MAP"+ FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().keySet());
-        System.out.println("REQ MAP"+ FacesContext.getCurrentInstance().getExternalContext().getRequestMap().keySet());
-        System.out.println(evt.getComponent().getId());
-        for (UIComponent comp : evt.getComponent().getChildren()) {
-            if (comp instanceof UIParameter) {
-                UIParameter param = (UIParameter) comp;
-                System.out.println("PAram: "+param.getName()+"="+param.getValue());
-            }
-        }
     }
 
     public CvObject fetch(String className, String identifier) {
