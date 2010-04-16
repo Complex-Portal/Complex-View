@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.component.cvlazypopup;
 
+import org.primefaces.event.CloseEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,10 @@ import uk.ac.ebi.intact.view.webapp.IntactViewException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIParameter;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +44,7 @@ import java.util.Map;
 public class CvLazyPopupController {
 
     private Map<String, CvObject> cvObjectMap;
+    private CvObject cvObject;
     private boolean dialogRendered;
 
     private TransactionStatus transactionStatus;
@@ -64,9 +70,19 @@ public class CvLazyPopupController {
         dataContext.rollbackTransaction(transactionStatus);
     }
 
-    public CvObject fetch(String className, String identifier) {
-        CvObject cvObject;
+    public void fetchCvObject(ActionEvent evt) {
+        System.out.println("REQ PARAM MAP"+ FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().keySet());
+        System.out.println("REQ MAP"+ FacesContext.getCurrentInstance().getExternalContext().getRequestMap().keySet());
+        System.out.println(evt.getComponent().getId());
+        for (UIComponent comp : evt.getComponent().getChildren()) {
+            if (comp instanceof UIParameter) {
+                UIParameter param = (UIParameter) comp;
+                System.out.println("PAram: "+param.getName()+"="+param.getValue());
+            }
+        }
+    }
 
+    public CvObject fetch(String className, String identifier) {
         final Class cvClass;
         try {
             cvClass = Thread.currentThread().getContextClassLoader().loadClass(className);
@@ -77,11 +93,16 @@ public class CvLazyPopupController {
         if (cvObjectMap.containsKey(cvClass+"::"+identifier)) {
             cvObject = cvObjectMap.get(cvClass+"::"+identifier);
         } else {
+            System.out.println("CvLazyPopupController, fetching "+className+" - "+identifier);
             cvObject = daoFactory.getCvObjectDao(cvClass).getByPsiMiRef(identifier);
             cvObjectMap.put(cvClass+"::"+identifier, cvObject);
         }
 
         return cvObject;
+    }
+
+    public void closeDialog(CloseEvent evt) {
+        dialogRendered = false;
     }
 
     public boolean isDialogRendered() {
@@ -90,5 +111,13 @@ public class CvLazyPopupController {
 
     public void setDialogRendered(boolean dialogRendered) {
         this.dialogRendered = dialogRendered;
+    }
+
+    public CvObject getCvObject() {
+        return cvObject;
+    }
+
+    public void setCvObject(CvObject cvObject) {
+        this.cvObject = cvObject;
     }
 }

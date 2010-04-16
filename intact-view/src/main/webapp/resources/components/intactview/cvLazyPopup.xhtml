@@ -24,17 +24,24 @@
         <ui:param name="dialogVar" value="#{requestConfigBean.toFriendlyJavascriptVar(cc.clientId)}_cvDlg"/>
 
         <p:commandLink id="cvLink" onclick="#{dialogVar}.show();" value="#{cc.attrs.text}"
-                       update="cvDetailsPanel" global="true">
+                       update="cvDetailsPanel lala" global="true">
             <f:setPropertyActionListener value="#{true}" target="#{cvLazyPopupController.dialogRendered}"/>
         </p:commandLink>
 
+        <h:panelGroup id="lala">
+            <h:panelGroup rendered="#{cvLazyPopupController.dialogRendered}">
+                [RENDERED]
+
+            </h:panelGroup>
+        </h:panelGroup>
+
         <p:dialog widgetVar="#{dialogVar}" header="#{cc.attrs.text}" draggable="true" fixedCenter="true"
-                  style="width:700px; height:500px; background:white">
+                  style="width:700px; height:500px; background:white" closeListener="#{cvLazyPopupController.closeDialog}" onCloseUpdate="cvDetailsPanel lala">
 
             <h:panelGroup id="cvDetailsPanel">
                 <h:panelGroup rendered="#{cvLazyPopupController.dialogRendered}">
 
-            <ui:param name="cv" value="#{cvLazyPopupController.fetch(cc.attrs.cvClassName, cc.attrs.cvIdentifier)}"/>
+                <ui:param name="cv" value="#{cvLazyPopupController.fetch(cc.attrs.cvClassName, cc.attrs.cvIdentifier)}"/>
 
             <p:panel style="width:550px;">
                 <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
