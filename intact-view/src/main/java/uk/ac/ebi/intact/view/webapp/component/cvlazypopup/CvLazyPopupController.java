@@ -22,9 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.DataContext;
-import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.model.CvObject;
-import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.controller.application.CvObjectService;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -40,7 +39,6 @@ import java.util.Map;
 public class CvLazyPopupController {
 
     private Map<String, CvObject> cvObjectMap;
-    private CvObject cvObject;
     private boolean dialogRendered;
 
     private TransactionStatus transactionStatus;
@@ -50,7 +48,7 @@ public class CvLazyPopupController {
     private DataContext dataContext;
 
     @Autowired
-    private DaoFactory daoFactory;
+    private CvObjectService cvObjectService;
 
     public CvLazyPopupController() {
         this.cvObjectMap = new HashMap<String, CvObject>();
@@ -67,22 +65,7 @@ public class CvLazyPopupController {
     }
 
     public CvObject fetch(String className, String identifier) {
-        final Class cvClass;
-        try {
-            cvClass = Thread.currentThread().getContextClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new IntactViewException("Class not found: "+className, e);
-        }
-
-        if (cvObjectMap.containsKey(cvClass+"::"+identifier)) {
-            cvObject = cvObjectMap.get(cvClass+"::"+identifier);
-        } else {
-            System.out.println("CvLazyPopupController, fetching "+className+" - "+identifier);
-            cvObject = daoFactory.getCvObjectDao(cvClass).getByPsiMiRef(identifier);
-            cvObjectMap.put(cvClass+"::"+identifier, cvObject);
-        }
-
-        return cvObject;
+       return cvObjectService.loadByIdentifier(className, identifier);
     }
 
     public void closeDialog(CloseEvent evt) {
@@ -95,13 +78,5 @@ public class CvLazyPopupController {
 
     public void setDialogRendered(boolean dialogRendered) {
         this.dialogRendered = dialogRendered;
-    }
-
-    public CvObject getCvObject() {
-        return cvObject;
-    }
-
-    public void setCvObject(CvObject cvObject) {
-        this.cvObject = cvObject;
     }
 }

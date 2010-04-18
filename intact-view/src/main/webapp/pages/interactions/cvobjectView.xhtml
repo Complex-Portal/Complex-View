@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
+
+    <f:view>
+        <h:head>
+            
+        </h:head>
+        <h:body>
+            <f:metadata>
+                <f:viewParam name="identifier" value="#{requestScope.identifier}"/>
+                <f:viewParam name="className" value="#{requestScope.className}"/>
+                <f:viewParam name="visible" value="#{requestScope.visible}"/>
+            </f:metadata>
+
+            <ui:param name="cv" value="#{cvLazyPopupController.fetch(requestScope.className, requestScope.identifier)}"/>
+
+        <iv:cvDetails cv="#{cv}"/>
+
+        </h:body>
+    </f:view>
+
+</ui:composition>

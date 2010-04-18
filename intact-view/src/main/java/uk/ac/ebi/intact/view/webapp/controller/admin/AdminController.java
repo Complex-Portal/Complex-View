@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
+import uk.ac.ebi.intact.view.webapp.controller.application.CvObjectService;
 import uk.ac.ebi.intact.view.webapp.controller.application.StatisticsController;
 import uk.ac.ebi.intact.view.webapp.controller.search.FilterPopulatorController;
 
@@ -45,6 +46,9 @@ public class AdminController {
     @Autowired
     private StatisticsController statisticsController;
 
+    @Autowired
+    private CvObjectService cvObjectService;
+
     public AdminController() {
 
     }
@@ -57,6 +61,7 @@ public class AdminController {
         appConfigBean.setup();
         filterPopulatorController.loadFilters();
         statisticsController.calculateStats();
+        cvObjectService.clear();
     }
 
 }
