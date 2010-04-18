@@ -34,13 +34,12 @@
                           onkeyup="return submitEnter('quickSearchBtn',event)"
                           disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
-            <p:commandButton id="quickSearchBtn"
+            <h:commandButton id="quickSearchBtn"
                               value="Search"
                               disabled="#{userQuery.showNewFieldPanel}"
-                              actionListener="#{searchBean.doBinarySearch}"
-                              update="mainPanels">
+                              actionListener="#{searchBean.doBinarySearch}">
                 <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-            </p:commandButton>
+            </h:commandButton>
             &#160;
             <h:commandButton type="button" id="clearSearchBtn" value="Clear"
                        onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
