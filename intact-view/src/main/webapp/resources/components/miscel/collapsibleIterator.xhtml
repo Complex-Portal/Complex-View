@@ -30,6 +30,7 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{cc.attrs.maxShown lt fn:length(cc.attrs.value)}">
+            <h:outputText value="; " rendered="#{cc.attrs.disclosed or requestScope.disclosed}"/>
             <p:commandLink value="[-]" update="collapsibleContent"
                     rendered="#{cc.attrs.disclosed or requestScope.disclosed}">
                 <f:setPropertyActionListener value="#{false}" target="#{requestScope.disclosed}"/>

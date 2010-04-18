@@ -154,9 +154,9 @@
             <f:facet name="header"><h:outputText value="#{messages['interaction.firstauthor']}"/></f:facet>
 
             <ui:repeat var="author" value="#{binaryInteraction.authors}">
-            <span style="display:block">
-                    <h:outputText value="#{author.name}" style="white-space:nowrap;"/>
-            </span>
+                <span style="display:block">
+                        <h:outputText value="#{author.name}" style="white-space:nowrap;"/>
+                </span>
             </ui:repeat>
         </p:column>
 
@@ -210,11 +210,11 @@
 
            <p:column rendered="#{columnContext.isColumnVisible('interaction.confidencevalue')}"
                      styleClass="cellTextInteraction">
-               <f:facet name="header"><h:outputText value="#{messages['interaction.ac']}"/></f:facet>
+               <f:facet name="header"><h:outputText value="#{messages['interaction.confidencevalue']}"/></f:facet>
                <ui:repeat var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
-            <span style="display:block">
-                    <h:outputText value="#{confidence.type}:#{confidence.value}" style="white-space:nowrap"/>
-            </span>
+                    <span style="display:block">
+                            <h:outputText value="#{confidence.type}:#{confidence.value}" style="white-space:nowrap"/>
+                    </span>
                </ui:repeat>
            </p:column>
 
@@ -222,21 +222,102 @@
                   styleClass="cellTextCompound">
             <f:facet name="header"><h:outputText value="#{messages['moleculeA.exprole']}"/></f:facet>
 
-            <iv:cvLazyPopup text="#{binaryInteraction.experimentalRolesInteractorA[0].text}"
+            <iv:cvLazyPopup text="#{binaryInteraction.interactorA.experimentalRoles[0].text}"
                             cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"
-                            cvIdentifier="#{binaryInteraction.experimentalRolesInteractorA[0].identifier}"/>
+                            cvIdentifier="#{binaryInteraction.interactorA.experimentalRoles[0].identifier}"/>
         </p:column>
         <p:column rendered="#{columnContext.isColumnVisible('moleculeB.exprole')}"
                   styleClass="cellTextCompound">
             <f:facet name="header"><h:outputText value="#{messages['moleculeB.exprole']}"/></f:facet>
 
-            <ui:repeat value="#{binaryInteraction.experimentalRolesInteractorB}" var="cvXref">
-               <iv:cvLazyPopup text="#{binaryInteraction.experimentalRolesInteractorB[0].text}"
-                            cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"
-                            cvIdentifier="#{binaryInteraction.experimentalRolesInteractorB[0].identifier}"/>
-            </ui:repeat>
+           <iv:cvLazyPopup text="#{binaryInteraction.interactorB.experimentalRoles[0].text}"
+                        cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"
+                        cvIdentifier="#{binaryInteraction.interactorB.experimentalRoles[0].identifier}"/>
         </p:column>
 
-        </p:dataTable>
+        <p:column rendered="#{columnContext.isColumnVisible('moleculeA.biorole')}"
+                  styleClass="cellTextCompound">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeA.biorole']}"/></f:facet>
+
+            <iv:cvLazyPopup text="#{binaryInteraction.interactorA.biologicalRoles[0].text}"
+                            cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
+                            cvIdentifier="#{binaryInteraction.interactorA.biologicalRoles[0].identifier}"/>
+        </p:column>
+        <p:column rendered="#{columnContext.isColumnVisible('moleculeB.biorole')}"
+                  styleClass="cellTextCompound">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeB.biorole']}"/></f:facet>
+
+           <iv:cvLazyPopup text="#{binaryInteraction.interactorB.biologicalRoles[0].text}"
+                        cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
+                        cvIdentifier="#{binaryInteraction.interactorB.biologicalRoles[0].identifier}"/>
+        </p:column>
+
+        <p:column rendered="#{columnContext.isColumnVisible('moleculeA.properties')}"
+                  styleClass="cellTextCompound">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeA.properties']}"/></f:facet>
+            <iam:collapsibleIterator  disclosed="#{searchBean.showProperties}"
+                                     value="#{binaryInteraction.interactorA.properties}"
+                                     maxShown="5">
+                <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
+                <h:outputLink value="#{xrefUrl}" title="#{item.text}"
+                              target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
+            </iam:collapsibleIterator>
+        </p:column>
+
+    <p:column rendered="#{columnContext.isColumnVisible('moleculeB.properties')}"
+                  styleClass="cellTextCompound">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeB.properties']}"/></f:facet>
+            <iam:collapsibleIterator disclosed="#{searchBean.showProperties}"
+                                     value="#{binaryInteraction.interactorB.properties}"
+                                     maxShown="5">
+                <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
+                <h:outputLink value="#{xrefUrl}" title="#{item.text}"
+                              target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
+            </iam:collapsibleIterator>
+        </p:column>
+
+     <p:column rendered="#{columnContext.isColumnVisible('moleculeA.interactortype')}"
+                  styleClass="cellTextCompound">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeA.interactortype']}"/></f:facet>
+
+            <iv:cvLazyPopup text="#{binaryInteraction.interactorA.interactorType.text}"
+                            cvClassName="uk.ac.ebi.intact.model.CvInteractorType"
+                            cvIdentifier="#{binaryInteraction.interactorA.interactorType.identifier}"/>
+        </p:column>
+        <p:column rendered="#{columnContext.isColumnVisible('moleculeB.interactortype')}"
+                  styleClass="cellTextCompound">
+            <f:facet name="header"><h:outputText value="#{messages['moleculeB.interactortype']}"/></f:facet>
+
+           <iv:cvLazyPopup text="#{binaryInteraction.interactorB.interactorType.text}"
+                        cvClassName="uk.ac.ebi.intact.model.CvInteractorType"
+                        cvIdentifier="#{binaryInteraction.interactorB.interactorType.identifier}"/>
+        </p:column>
+
+        <p:column styleClass="cellTextCompound"
+                  rendered="#{columnContext.isColumnVisible('interaction.hostorganism')}">
+            <f:facet name="header"><h:outputText value="#{messages['interaction.hostorganism']}"/></f:facet>
+
+            <ui:include src="/pages/interactions/organism.xhtml">
+                <ui:param name="organism" value="#{binaryInteraction.interactorA.organism}"/>
+            </ui:include>
+        </p:column>
+
+        <p:column rendered="#{columnContext.isColumnVisible('interaction.expansionmethod')}"
+                  styleClass="cellTextInteraction">
+            <f:facet name="header"><h:outputText value="#{messages['interaction.expansionmethod']}"/></f:facet>
+            <p:commandLink type="button" onclick="complexExpansionDialog.show()" value="#{binaryInteraction.expansionMethod}"/>
+        </p:column>
+
+        <p:column rendered="#{columnContext.isColumnVisible('interaction.dataset')}"
+                     styleClass="cellTextInteraction">
+               <f:facet name="header"><h:outputText value="#{messages['interaction.dataset']}"/></f:facet>
+               <ui:repeat var="dataset" value="#{binaryInteraction.dataset}" rows="0">
+                    <span style="display:block">
+                            <h:outputText value="#{dataset}" style="white-space:nowrap"/>
+                    </span>
+               </ui:repeat>
+           </p:column>
+
+    </p:dataTable>
 
 </ui:composition>
