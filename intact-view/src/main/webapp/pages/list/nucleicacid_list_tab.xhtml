@@ -3,81 +3,69 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:sf="http://www.ebi.ac.uk/faces/site"
-
-                xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iaf="http://intact.ebi.ac.uk/functions"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html">
-
-    <tr:spacer height="2"/>
-
-        <!-- RESULTS TABLE -->
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks" >
 
 
-        <tr:table id="nucleicAcidListResults" value="#{searchBean.nucleicAcidResults}" var="interactorWrapper"
-                  varStatus="status"
-                  summary="Nucleic Acids" emptyText="No nucleic acids found matching the query."
-                  rows="#{userQuery.pageSize}" rowBandingInterval="1"
-                  rowSelection="multiple">
+         <p:panel style="width:100%">
 
-            <f:facet name="actions">
-                <tr:panelHorizontalLayout inlineStyle="width:100%">
-                    <f:facet name="separator">
-                        <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
-                    </f:facet>
+             <strong>
+                 <h:outputText value="Selection actions: " style="white-space: nowrap"/>
+             </strong>
+             &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
+             <h:commandButton value="Search Interactions"
+                              actionListener="#{searchBean.doSearchInteractionsFromDnaListSelection}"
+                              action="interactions"/>
+         </p:panel>
 
-                    <tr:panelButtonBar id="buttonBar">
-                        <strong>
-                            <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
-                        </strong>
-                        <tr:commandButton text="Search Interactions"
-                                          actionListener="#{searchBean.doSearchInteractionsFromDnaListSelection}"
-                                          action="interactions"/>
 
-                    </tr:panelButtonBar>
+    <p:dataTable id="nucleicAcidListResults" value="#{searchBean.nucleicAcidResults}" var="interactorWrapper"
+                 rowIndexVar="status"
+                 lazy="true" dynamic="true" emptyMessage="No nucleic acids found matching the query."
+                 rows="#{userQuery.pageSize}" loadingMessage="Loading nucleic acids..."
+                 selection="true" selectionMode="multiple">
 
-                </tr:panelHorizontalLayout>
-            </f:facet>
+            <p:column>
+                <h:outputText value="#{status.index + 1}"/>
+            </p:column>
 
-            <tr:column>
-                <tr:outputText value="#{status.index + 1}"/>
-            </tr:column>
+            <p:column>
+                <f:facet name="header"><h:outputText value="#{messages['list.names']}"/></f:facet>
+                <h:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
+            </p:column>
 
-            <tr:column headerText="#{messages['list.names']}">
-                <tr:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
-            </tr:column>
+            <p:column>
+                <f:facet name="header"><h:outputText value="Type"/></f:facet>
+                <h:outputText value="#{interactorWrapper.interactor.cvInteractorType.shortLabel}"/>
+            </p:column>
 
-            <tr:column headerText="Type">
-                <tr:outputText value="#{interactorWrapper.interactor.cvInteractorType.shortLabel}"/>
-            </tr:column>
-
-            <tr:column headerText="Interactions">
-                <tr:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
+            <p:column>
+                <f:facet name="header"><h:outputText value="Interactions"/></f:facet>
+                <h:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
                     <f:setPropertyActionListener value="+(#{userQuery.searchQuery}) +#{interactorWrapper.interactor.ac}" target="#{userQuery.searchQuery}"/>
-            </tr:commandLink>
-            </tr:column>
+            </h:commandLink>
+            </p:column>
 
-            <tr:column headerText="#{messages['list.species']}">
+            <p:column>
+                <f:facet name="header"><h:outputText value="#{messages['list.species']}"/></f:facet>
                 <iax:goOls query="#{interactorWrapper.interactor.bioSource.taxId}"
                            termName="#{interactorWrapper.interactor.bioSource.shortLabel}"/>
-            </tr:column>
+            </p:column>
 
-            <tr:column headerText="#{messages['list.accessionnumber']}">
-                <tr:outputText value="#{interactorWrapper.interactor.ac}"/>
-            </tr:column>
+            <p:column>
+                <f:facet name="header"><h:outputText value="#{messages['list.accessionnumber']}"/></f:facet>
+                <h:outputText value="#{interactorWrapper.interactor.ac}"/>
+            </p:column>
 
-            <tr:column headerText="#{messages['list.description']}">
+            <p:column>
+                <f:facet name="header"><h:outputText value="#{messages['list.description']}"/></f:facet>
                 <ui:param name="intactIdentifier"
                           value="#{interactorWrapper.interactor.ac}"/>
                 <ui:param name="interactor" value="#{interactorWrapper.interactor}"/>
-                <tr:outputText value="#{interactorWrapper.interactor.fullName}"/>
-            </tr:column>
+                <h:outputText value="#{interactorWrapper.interactor.fullName}"/>
+            </p:column>
 
-        </tr:table>
+        </p:dataTable>
 
 </ui:composition>

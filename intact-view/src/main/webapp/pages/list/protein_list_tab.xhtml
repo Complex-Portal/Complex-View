@@ -18,26 +18,23 @@
         <strong>
             <h:outputText value="Selection actions: " style="white-space: nowrap"/>
         </strong>
+        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
+        
         <h:commandButton value="Search Interactions"
                          actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
                          action="interactions"/>
-        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
 
         <h:commandButton value="Domains" partialSubmit="true"
                          actionListener="#{proteinListController.goDomains}"/>
-        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
 
         <p:commandButton value="Pathways [not fixed]"
                          actionListener="#{proteinListController.goReactome}"/>
-        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
 
         <p:commandButton value="Chromosome Location [not fixed]"
                          actionListener="#{proteinListController.goChromosomalLocation}"/>
-        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
 
         <h:commandButton value="mRNA Expression" partialSubmit="true"
                          actionListener="#{proteinListController.goExpression}"/>
-        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
 
     </p:panel>
 

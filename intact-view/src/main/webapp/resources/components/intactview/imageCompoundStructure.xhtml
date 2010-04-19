@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:composite="http://java.sun.com/jsf/composite" >
+
+    <!-- INTERFACE -->
+    <composite:interface>
+        <composite:attribute name="id" type="java.lang.String" required="true"/>
+    </composite:interface>
+
+    <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <h:graphicImage alt="compoundImg" source="http://www.ebi.ac.uk/thornton-srv/databases/drugport/drugs/#{fn:substring(cc.attrs.id, 5, 7)}/#{cc.attrs.id}/#{cc.attrs.id}.gif"/>
+
+    </composite:implementation>
+
+</ui:composition>

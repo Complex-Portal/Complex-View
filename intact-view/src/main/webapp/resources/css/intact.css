@@ -18,6 +18,13 @@ td.notSameThanPrevious {
     border-top: 1px solid #CDCDCD !important;
 }
 
+/** interactor table **/
+td.compoundStructure {
+    background-color:white;
+    vertical-align:middle;
+    text-align: center;
+}
+
 /** p:tabViewer **/
 
 .yui-skin-sam .yui-navset .yui-nav {
