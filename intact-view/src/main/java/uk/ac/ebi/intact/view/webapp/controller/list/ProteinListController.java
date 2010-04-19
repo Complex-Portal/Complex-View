@@ -23,11 +23,11 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.InteractorXref;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
-import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 import uk.ac.ebi.intact.view.webapp.util.ExternalDbLinker;
 
 import javax.faces.event.ActionEvent;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +42,7 @@ import java.util.Set;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class ProteinListController extends BaseController {
+public class ProteinListController extends InteractorListController {
 
     @Autowired
     private ExternalDbLinker dbLinker;
@@ -51,11 +51,7 @@ public class ProteinListController extends BaseController {
     }
 
     private String[] getSelectedUniprotIds() {
-        // TODO handle selection
-        if (true) throw new UnsupportedOperationException("Not implemented in the migration to JSF 2");
-
-        final List<InteractorWrapper> interactorWrappers = null;
-        //final List<InteractorWrapper> interactorWrappers = getSelected( SearchController.PROTEINS_TABLE_ID );
+        final List<InteractorWrapper> interactorWrappers = Arrays.asList(getSelected());
 
         Set<String> uniprotIds = new HashSet<String>();
 
@@ -73,10 +69,7 @@ public class ProteinListController extends BaseController {
     }
 
     private String[] getSelectedGeneNames() {
-        // TODO handle selection
-        if (true) throw new UnsupportedOperationException("Not implemented in the migration to JSF 2");
-
-        final List<InteractorWrapper> interactorWrappers = null;
+        final List<InteractorWrapper> interactorWrappers = Arrays.asList(getSelected());
         //final List<InteractorWrapper> interactorWrappers = getSelected( SearchController.PROTEINS_TABLE_ID );
 
         Set<String> geneNames = new HashSet<String>();

@@ -102,7 +102,7 @@
         </p:dialog>
     </h:panelGroup>
 
-    <h:panelGroup rendered="#{searchBean.countInOtherImexDatabases gt 0 and not searchBean.psicquicQueryRunning}">
+    <h:panelGroup rendered="#{searchBean.countInOtherDatabases gt 0 and searchBean.countInOtherImexDatabases gt 0 and not searchBean.psicquicQueryRunning}">
         <br/>
         <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
         <h:outputLink value="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
@@ -124,7 +124,7 @@
     </p:dialog>
     </h:panelGroup>
 
-    <h:panelGroup rendered="#{searchBean.countInOtherDatabases == 0 and not searchBean.psicquicQueryRunning}">
+    <h:panelGroup rendered="#{searchBean.countInOtherDatabases == 0 and searchBean.countInOtherImexDatabases == 0 and not searchBean.psicquicQueryRunning}">
 
         <br/>
         > No results in other databases.

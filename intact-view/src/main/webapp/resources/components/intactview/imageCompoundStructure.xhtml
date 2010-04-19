@@ -8,13 +8,13 @@
 
     <!-- INTERFACE -->
     <composite:interface>
-        <composite:attribute name="id" type="java.lang.String" required="true"/>
+        <composite:attribute name="primaryId" type="java.lang.String" required="true"/>
     </composite:interface>
 
     <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <h:graphicImage alt="compoundImg" source="http://www.ebi.ac.uk/thornton-srv/databases/drugport/drugs/#{fn:substring(cc.attrs.id, 5, 7)}/#{cc.attrs.id}/#{cc.attrs.id}.gif"/>
+        <h:graphicImage alt="compoundImg" source="http://www.ebi.ac.uk/thornton-srv/databases/drugport/drugs/#{fn:substring(cc.attrs.primaryId, 5, 7)}/#{cc.attrs.primaryId}/#{cc.attrs.primaryId}.gif"/>
 
     </composite:implementation>
 

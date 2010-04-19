@@ -19,6 +19,7 @@ import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.details.DetailsController;
+import uk.ac.ebi.intact.view.webapp.controller.list.InteractorListController;
 import uk.ac.ebi.intact.view.webapp.controller.moleculeview.MoleculeViewController;
 import uk.ac.ebi.intact.view.webapp.model.InteractorSearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
@@ -398,27 +399,21 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doSearchInteractionsFromCompoundListSelection(ActionEvent evt) {
-        doSearchInteractionsFromListSelection( COMPOUNDS_TABLE_ID );
+        doSearchInteractionsFromListSelection((InteractorListController) getBean("compoundListController"));
     }
 
     public void doSearchInteractionsFromProteinListSelection(ActionEvent evt) {
-        try {
-            doSearchInteractionsFromListSelection( PROTEINS_TABLE_ID );
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+        doSearchInteractionsFromListSelection((InteractorListController) getBean("proteinListController"));
     }
 
     public void doSearchInteractionsFromDnaListSelection( ActionEvent evt ) {
-        doSearchInteractionsFromListSelection(NUCLEIC_ACID_TABLE_ID);
+        doSearchInteractionsFromListSelection((InteractorListController) getBean("nucleicAcidListController"));
     }
 
-    private void doSearchInteractionsFromListSelection(String tableName ) {
-        // TODO handle selection
-        if (true) throw new UnsupportedOperationException("Not implemented in the migration to JSF 2");
-        
-        final List<InteractorWrapper> selected = null;
-        //final List<InteractorWrapper> selected = getSelected(tableName);
+    private void doSearchInteractionsFromListSelection(InteractorListController interactorListController) {
+        final List<InteractorWrapper> selected = Arrays.asList(interactorListController.getSelected());
+
+        System.out.println("SELECTED: "+selected.size());
 
         if (selected.size() == 0) {
             return;

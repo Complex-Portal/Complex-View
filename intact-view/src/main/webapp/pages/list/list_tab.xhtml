@@ -4,23 +4,23 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.prime.com.tr/ui">
-    
 
-     <p:tabView id="listPanels" cache="false" activeIndex="#{contextController.interactorActiveTabIndex}">
-            <p:tab title="Proteins (#{searchBean.proteinTotalResults})"  disabled="#{searchBean.proteinTotalResults == 0}">
-                <ui:include src="whatis_link.xhtml"/>
-                <ui:include src="protein_list_tab.xhtml"/>
-            </p:tab>
 
-         <p:tab title="Compounds (#{searchBean.smallMoleculeTotalResults})" disabled="#{searchBean.smallMoleculeTotalResults == 0}">
-                <ui:include src="whatis_link.xhtml"/>
-                <ui:include src="compound_list_tab.xhtml"/>
-            </p:tab>
+    <p:tabView id="listPanels" cache="false" activeIndex="#{contextController.interactorActiveTabIndex}">
+        <p:tab title="Proteins (#{searchBean.proteinTotalResults})"  disabled="#{searchBean.proteinTotalResults == 0}">
+            <ui:include src="whatis_link.xhtml"/>
+            <ui:include src="protein_list_tab.xhtml"/>
+        </p:tab>
 
-         <p:tab title="Nucleic Acids (#{searchBean.nucleicAcidTotalResults})" disabled="#{searchBean.nucleicAcidTotalResults == 0}">
-                <ui:include src="whatis_link.xhtml"/>
-                <ui:include src="nucleicacid_list_tab.xhtml"/>
-            </p:tab>
+        <p:tab title="Compounds (#{searchBean.smallMoleculeTotalResults})" disabled="#{searchBean.smallMoleculeTotalResults == 0}">
+            <ui:include src="whatis_link.xhtml"/>
+            <ui:include src="compound_list_tab.xhtml"/>
+        </p:tab>
+
+        <p:tab title="Nucleic Acids (#{searchBean.nucleicAcidTotalResults})" disabled="#{searchBean.nucleicAcidTotalResults == 0}">
+            <ui:include src="whatis_link.xhtml"/>
+            <ui:include src="nucleicacid_list_tab.xhtml"/>
+        </p:tab>
 
     </p:tabView>
 

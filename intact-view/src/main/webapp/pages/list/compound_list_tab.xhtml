@@ -14,10 +14,10 @@
         <strong>
             <h:outputText value="Selection actions: " style="white-space: nowrap"/>
         </strong>
-        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
+        &#160;&#160;
         <h:commandButton value="Search Interactions"
                          actionListener="#{searchBean.doSearchInteractionsFromCompoundListSelection}"
-                         action="interactions"/>
+                         action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
     </p:panel>
 
 
@@ -25,10 +25,10 @@
                  rowIndexVar="status"
                  lazy="true" dynamic="true" emptyMessage="No compounds found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading compounds..."
-                 selection="true" selectionMode="multiple">
+                 selection="#{compoundListController.selected}" selectionMode="multiple">
 
         <p:column>
-            <h:outputText value="#{status.index + 1}"/>
+            <h:outputText value="#{status + 1}"/>
         </p:column>
 
         <p:column>
@@ -39,7 +39,7 @@
         <p:column>
             <f:facet name="header"><h:outputText value="Interactions"/></f:facet>
             <h:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
-                <f:setPropertyActionListener value="+(#{userQuery.searchQuery}) +#{interactorWrapper.interactor.ac}"
+                <f:setPropertyActionListener value="(#{userQuery.searchQuery}) AND #{interactorWrapper.interactor.ac}"
                                              target="#{userQuery.searchQuery}"/>
             </h:commandLink>
             <!--<tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}" varStatus="rowStatus" rows="0">-->
@@ -51,7 +51,7 @@
             <f:facet name="header"><h:outputText value="#{messages['list.structure']}"/></f:facet>
             <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(interactorWrapper.interactor)}" varStatus="rowStatus">
                 <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'drugbank'}">
-                    <iv:imageCompoundStructure id="#{xref.primaryId}"/>
+                    <iv:imageCompoundStructure primaryId="#{xref.primaryId}"/>
                     <br/>
                 </h:panelGroup>
                 <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'chebi'}">

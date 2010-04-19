@@ -18,35 +18,36 @@
         <strong>
             <h:outputText value="Selection actions: " style="white-space: nowrap"/>
         </strong>
-        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
+        &#160;&#160;
         
         <h:commandButton value="Search Interactions"
                          actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
-                         action="interactions"/>
-
-        <h:commandButton value="Domains" partialSubmit="true"
+                         action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
+        &#160;
+        <p:commandButton value="Domains"
                          actionListener="#{proteinListController.goDomains}"/>
-
+        &#160;
         <p:commandButton value="Pathways [not fixed]"
                          actionListener="#{proteinListController.goReactome}"/>
-
+        &#160;
         <p:commandButton value="Chromosome Location [not fixed]"
                          actionListener="#{proteinListController.goChromosomalLocation}"/>
-
-        <h:commandButton value="mRNA Expression" partialSubmit="true"
+        &#160;
+        <p:commandButton value="mRNA Expression"
                          actionListener="#{proteinListController.goExpression}"/>
-
     </p:panel>
+
+    <br/>
 
 
     <p:dataTable id="proteinListResults" value="#{searchBean.proteinResults}" var="interactorWrapper"
                  rowIndexVar="status"
                  lazy="true" dynamic="true" emptyMessage="No proteins found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading proteins..."
-                 selection="true" selectionMode="multiple">
+                 selection="#{proteinListController.selected}" selectionMode="multiple">
 
         <p:column>
-            <h:outputText value="#{status.index + 1}"/>
+            <h:outputText value="#{status + 1}"/>
         </p:column>
 
         <p:column>
@@ -57,7 +58,7 @@
         <p:column>
             <f:facet name="header"><h:outputText value="Interactions"/></f:facet>
             <h:commandLink action="#{searchBean.doBinarySearchAction}" value="#{interactorWrapper.count}">
-                <f:setPropertyActionListener value="+(#{userQuery.searchQuery}) +#{interactorWrapper.interactor.ac}"
+                <f:setPropertyActionListener value="(#{userQuery.searchQuery}) AND #{interactorWrapper.interactor.ac}"
                                              target="#{userQuery.searchQuery}"/>
             </h:commandLink>
         </p:column>
