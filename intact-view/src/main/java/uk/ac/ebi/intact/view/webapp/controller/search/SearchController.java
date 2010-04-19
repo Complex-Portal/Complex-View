@@ -205,10 +205,9 @@ public class SearchController extends JpaBaseController {
         }
 
         countInOtherDatabases = -1;
-
     }
 
-    public void doPsicquicQuery() {
+    public void doPsicquicQuery(ActionEvent evt) {
         if (psicquicQueryRunning) {
             return;
         }
@@ -222,9 +221,6 @@ public class SearchController extends JpaBaseController {
         }
 
         psicquicQueryRunning = false;
-
-        //CorePoll poll = (CorePoll) pollEvent.getComponent();
-        //poll.setRendered(false);
     }
 
     private void countResultsInOtherDatabases() throws PsicquicRegistryClientException {

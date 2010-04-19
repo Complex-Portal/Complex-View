@@ -73,51 +73,62 @@
     </p:dialog>
 
 </h:panelGroup>
+    
+<h:panelGroup id="countingPsicquic" style="display:#{searchBean.countInOtherDatabases == -1? 'inline' : 'none'}">
+    <p:poll interval="2" async="true"  global="false" widgetVar="psicquicPoll" oncomplete="psicquicPoll.stop()"
+            actionListener="#{searchBean.doPsicquicQuery}"
+            update="countedPsicquic countingPsicquic" />
 
-<!--<tr:panelGroupLayout inlineStyle="display:#{searchBean.countInOtherDatabases == -1? 'inline' : 'none'}" partialTriggers=":psicquicPoll">-->
-    <!--<br/>-->
-    <!--<span style="color:gray">-->
-    <!--> [Counting results in other databases...]-->
-    <!--</span>-->
-<!--</tr:panelGroupLayout>-->
+    <br/>
+    <span style="color:gray">
+    > [Counting results in other databases...]
+    </span>
+</h:panelGroup>
 
-<!--<tr:panelGroupLayout partialTriggers="psicquicPoll"-->
-                     <!--inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px; display:#{(searchBean.countInOtherDatabases gt 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}"-->
-                     <!-->-->
-    <!--<br/>-->
-    <!--<h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>-->
-    <!--<tr:goLink destination="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">-->
-        <!--<h:outputText value="#{searchBean.countInOtherDatabases}" inlineStyle="font-weight:bold">-->
-            <!--<tr:convertNumber pattern="#,###"/>-->
-        <!--</h:outputText>-->
-    <!--</tr:goLink>-->
+<h:panelGroup id="countedPsicquic"
+         style="margin-top:-10px; margin-left: 10px; margin-bottom:30px; display:#{(searchBean.countInOtherDatabases gt 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}">
+    <br/>
+    <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
+    <h:outputLink value="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
+        <h:outputText value="#{searchBean.countInOtherDatabases}" style="font-weight:bold">
+            <f:convertNumber pattern="#,###"/>
+        </h:outputText>
+    </h:outputLink>
 
-    <!--interaction evidences from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.-->
-    <!--<tr:commandLink action="dialog:faq.psicquic"-->
-                    <!--partialSubmit="true"-->
-                    <!--windowWidth="700" windowHeight="500"-->
-                    <!--immediate="true" useWindow="true">-->
-        <!--<tr:image source="/images/help.png"/>-->
-    <!--</tr:commandLink>-->
+    interaction evidences from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.
+    <p:commandLink type="button" onclick="psicquicDialog.show()">
+        <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+    </p:commandLink>
 
-    <!--<tr:panelGroupLayout rendered="#{searchBean.countInOtherImexDatabases gt 0}">-->
-        <!--<br/>-->
-        <!--<h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>-->
-        <!--<tr:goLink destination="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" targetFrame="_blank">-->
-            <!--<h:outputText value="#{searchBean.countInOtherImexDatabases}" inlineStyle="font-weight:bold">-->
-                <!--<tr:convertNumber pattern="#,###"/>-->
-            <!--</h:outputText>-->
-        <!--</tr:goLink>-->
+    <p:dialog header="PSICQUIC" widgetVar="psicquicDialog" fixedCenter="true"
+              width="700px" height="500px">
+        <div style="width:690px; height:490px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
+        </div>
+    </p:dialog>
 
-        <!--interaction evidences from <b>#{searchBean.otherImexDatabasesWithResults}</b> other IMEx databases.-->
-        <!--<tr:commandLink action="dialog:faq.psicquic.imex"-->
-                        <!--partialSubmit="true"-->
-                        <!--windowWidth="700" windowHeight="500"-->
-                        <!--immediate="true" useWindow="true">-->
-            <!--<tr:image source="/images/help.png"/>-->
-        <!--</tr:commandLink>-->
-     <!--</tr:panelGroupLayout>-->
-<!--</tr:panelGroupLayout>-->
+    <h:panelGroup rendered="#{searchBean.countInOtherImexDatabases gt 0}">
+        <br/>
+        <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
+        <h:outputLink value="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
+            <h:outputText value="#{searchBean.countInOtherImexDatabases}" style="font-weight:bold">
+                <f:convertNumber pattern="#,###"/>
+            </h:outputText>
+        </h:outputLink>
+
+        interaction evidences from <b>#{searchBean.otherImexDatabasesWithResults}</b> other IMEx databases.
+        <p:commandLink type="button" onclick="psicquicImexDialog.show()">
+            <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+        </p:commandLink>
+
+        <p:dialog header="IMEx" widgetVar="psicquicImexDialog" fixedCenter="true"
+              width="700px" height="500px">
+        <div style="width:690px; height:490px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
+        </div>
+    </p:dialog>
+     </h:panelGroup>
+</h:panelGroup>
 
 <!--<tr:panelGroupLayout inlineStyle="display:#{(searchBean.countInOtherDatabases == 0 and not searchBean.psicquicQueryRunning)? 'inline' : 'none'}" partialTriggers="psicquicPoll">-->
 

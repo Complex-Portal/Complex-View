@@ -112,6 +112,24 @@
                             <f:facet name="complete">
                                 <h:outputText value="" />
                             </f:facet>
+
+                            <f:facet name="onsuccess">
+                                 <div class="busyStatus">
+                                    <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
+                                                    style="vertical-align:middle;"/>
+                                    &#160;
+                                    <h:outputText value="Success!!"/>
+                                </div>
+                            </f:facet>
+
+                            <f:facet name="onerror">
+                                 <div class="busyStatus">
+                                    <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
+                                                    style="vertical-align:middle;"/>
+                                    &#160;
+                                    <h:outputText value="Error :("/>
+                                </div>
+                            </f:facet>
                         </p:ajaxStatus>
 
                         <table style="width:100%">
