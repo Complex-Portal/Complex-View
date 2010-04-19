@@ -3,16 +3,9 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:sf="http://www.ebi.ac.uk/faces/site"
-
-                xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iaf="http://intact.ebi.ac.uk/functions"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html">
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks" >
 
     <!-- RESULT SUMMARY -->
 
@@ -20,109 +13,108 @@
 
     <br/>
 
-    <!-- RESULTS TABLE -->
+    <p:panel style="width:100%">
+
+        <strong>
+            <h:outputText value="Selection actions: " style="white-space: nowrap"/>
+        </strong>
+        <h:commandButton value="Search Interactions"
+                         actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
+                         action="interactions"/>
+        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
+
+        <h:commandButton value="Domains" partialSubmit="true"
+                         actionListener="#{proteinListController.goDomains}"/>
+        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
+
+        <p:commandButton value="Pathways [not fixed]"
+                         actionListener="#{proteinListController.goReactome}"/>
+        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
+
+        <p:commandButton value="Chromosome Location [not fixed]"
+                         actionListener="#{proteinListController.goChromosomalLocation}"/>
+        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
+
+        <h:commandButton value="mRNA Expression" partialSubmit="true"
+                         actionListener="#{proteinListController.goExpression}"/>
+        &#160;&#160;&lt;b>|&lt;/b>&#160;&#160;
+
+    </p:panel>
 
 
-    <tr:table id="proteinListResults" value="#{searchBean.proteinResults}" var="interactorWrapper" varStatus="status"
-              summary="Proteins" emptyText="No proteins found matching the query."
-              rows="#{userQuery.pageSize}" rowBandingInterval="1"
-              rowSelection="multiple">
+    <p:dataTable id="proteinListResults" value="#{searchBean.proteinResults}" var="interactorWrapper"
+                 rowIndexVar="status"
+                 lazy="true" dynamic="true" emptyMessage="No proteins found matching the query."
+                 rows="#{userQuery.pageSize}" loadingMessage="Loading proteins..."
+                 selection="true" selectionMode="multiple">
 
-        <f:facet name="actions">
-            <tr:panelHorizontalLayout inlineStyle="width:100%">
-                <f:facet name="separator">
-                    <tr:outputFormatted value="&#160;&#160;&lt;b>|&lt;/b>&#160;&#160;"/>
-                </f:facet>
+        <p:column>
+            <h:outputText value="#{status.index + 1}"/>
+        </p:column>
 
-                <tr:panelButtonBar id="buttonBar">
-                    <strong>
-                        <tr:outputText value="Selection actions: " inlineStyle="white-space: nowrap"/>
-                    </strong>
-                    <tr:commandButton text="Search Interactions"
-                                      actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
-                                      action="interactions"/>
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.names']}"/></f:facet>
+            <h:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
+        </p:column>
 
-                    <tr:commandButton text="Domains" partialSubmit="true"
-                                      actionListener="#{proteinListController.goDomains}"/>
+        <p:column>
+            <f:facet name="header"><h:outputText value="Interactions"/></f:facet>
+            <h:commandLink action="#{searchBean.doBinarySearchAction}" value="#{interactorWrapper.count}">
+                <f:setPropertyActionListener value="+(#{userQuery.searchQuery}) +#{interactorWrapper.interactor.ac}"
+                                             target="#{userQuery.searchQuery}"/>
+            </h:commandLink>
+        </p:column>
 
-                    <tr:commandButton text="Pathways" partialSubmit="true"
-                                      actionListener="#{proteinListController.goReactome}"/>
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.links']"/></f:facet>
 
-                    <tr:commandButton text="Chromosome Location" partialSubmit="true"
-                                      icon="/images/logos/ensembl_12.png"
-                                      actionListener="#{proteinListController.goChromosomalLocation}"/>
+            <ui:repeat var="xref" value="#{interactorWrapper.interactor.xrefs}"
+                       varStatus="rowStatus">
+                <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'uniprotkb'}">
+                    <h:panelGroup rendered="#{xref.cvXrefQualifier.identifier == 'MI:0356'}">
+                        <iax:goUniprot query="#{xref.primaryId}" onlyLogo="true"/>
+                        <br/>
+                        <!--<iax:goDrugPortProteinView query="#{xref.primaryId}" onlyLogo="true"/>-->
+                        <!--<br/>-->
+                    </h:panelGroup>
+                </h:panelGroup>
 
-                    <tr:commandButton text="mRNA Expression" partialSubmit="true"
-                                      actionListener="#{proteinListController.goExpression}"/>
+                <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'chebi'}">
+                    <iax:goChebi query="#{xref.primaryId}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
 
-                </tr:panelButtonBar>
+                <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'drugbank'}">
+                    <iax:goDrugbank query="#{xref.primaryId}" onlyLogo="true"/>
+                    <br/>
+                </h:panelGroup>
+            </ui:repeat>
 
-            </tr:panelHorizontalLayout>
-        </f:facet>
-
-        <tr:column>
-            <tr:outputText value="#{status.index + 1}"/>
-        </tr:column>
-
-        <tr:column headerText="#{messages['list.names']}">
-            <tr:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
-        </tr:column>
-
-        <tr:column headerText="Interactions">
-            <tr:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
-                <f:setPropertyActionListener value="+(#{userQuery.searchQuery}) +#{interactorWrapper.interactor.ac}" target="#{userQuery.searchQuery}"/>
-            </tr:commandLink>
-        </tr:column>
-
-        <tr:column headerText="#{messages['list.links']}">
-
-            <tr:iterator var="xref" value="#{interactorWrapper.interactor.xrefs}"
-                         varStatus="rowStatus" rows="0">
-                <tr:switcher facetName="#{xref.cvDatabase.shortLabel}">
-                    <f:facet name="uniprotkb">
-                        <h:panelGroup rendered="#{xref.cvXrefQualifier.identifier == 'MI:0356'}">
-                            <iax:goUniprot query="#{xref.primaryId}" onlyLogo="true"/>
-                            <br/>
-                            <!--<iax:goDrugPortProteinView query="#{xref.primaryId}" onlyLogo="true"/>-->
-                            <!--<br/>-->
-                        </h:panelGroup>
-                    </f:facet>
-                    <f:facet name="chebi">
-                        <h:panelGroup>
-                            <iax:goChebi query="#{xref.primaryId}" onlyLogo="true"/>
-                            <br/>
-                        </h:panelGroup>
-                    </f:facet>
-                    <f:facet name="drugbank">
-                        <h:panelGroup>
-                            <iax:goDrugbank query="#{xref.primaryId}" onlyLogo="true"/>
-                            <br/>
-                        </h:panelGroup>
-                    </f:facet>
-                </tr:switcher>
-            </tr:iterator>
             <h:panelGroup>
                 <iax:goMoleculeView query="#{interactorWrapper.interactor.ac}" onlyLogo="true"/>
                 <br/>
             </h:panelGroup>
-        </tr:column>
+        </p:column>
 
-        <tr:column headerText="#{messages['list.species']}">
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.species']}"/></f:facet>
             <iax:goOls query="#{interactorWrapper.interactor.bioSource.taxId}"
                        termName="#{interactorWrapper.interactor.bioSource.shortLabel}"/>
-        </tr:column>
+        </p:column>
 
-        <tr:column headerText="#{messages['list.accessionnumber']}">
-            <tr:outputText value="#{interactorWrapper.interactor.ac}"/>
-        </tr:column>
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.accessionnumber']}"/></f:facet>
+            <h:outputText value="#{interactorWrapper.interactor.ac}"/>
+        </p:column>
 
-        <tr:column headerText="#{messages['list.description']}">
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.description']}"/></f:facet>
             <ui:param name="intactIdentifier"
                       value="#{interactorWrapper.interactor.ac}"/>
             <ui:param name="interactor" value="#{interactorWrapper.interactor}"/>
-            <tr:outputText value="#{interactorWrapper.interactor.fullName}"/>
-        </tr:column>
+            <h:outputText value="#{interactorWrapper.interactor.fullName}"/>
+        </p:column>
 
-    </tr:table>
+    </p:dataTable>
 
 </ui:composition>

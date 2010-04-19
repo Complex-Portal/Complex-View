@@ -3,30 +3,25 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad">
+                xmlns:p="http://primefaces.prime.com.tr/ui">
     
-    <tr:spacer height="2"/>
 
-    <tr:panelTabbed position="above">
+     <p:tabView id="listPanels" cache="false" activeIndex="#{contextController.interactorActiveTabIndex}">
+            <p:tab title="Proteins (#{searchBean.proteinTotalResults})"  disabled="#{searchBean.proteinTotalResults == 0}">
+                <ui:include src="whatis_link.xhtml"/>
+                <ui:include src="protein_list_tab.xhtml"/>
+            </p:tab>
 
-        <tr:showDetailItem text="Proteins (#{searchBean.proteinTotalResults})"
-                           disabled="#{searchBean.proteinTotalResults == 0}">
-            <ui:include src="whatis_link.xhtml"/>
-            <ui:include src="protein_list_tab.xhtml"/>
-        </tr:showDetailItem>
+         <p:tab title="Compounds (#{searchBean.smallMoleculeTotalResults})" disabled="#{searchBean.smallMoleculeTotalResults == 0}">
+                <ui:include src="whatis_link.xhtml"/>
+                <ui:include src="compound_list_tab.xhtml"/>
+            </p:tab>
 
-        <tr:showDetailItem text="Compounds (#{searchBean.smallMoleculeTotalResults})"
-                           disabled="#{searchBean.smallMoleculeTotalResults == 0}">
-            <ui:include src="whatis_link.xhtml"/>
-            <ui:include src="compound_list_tab.xhtml"/>
-        </tr:showDetailItem>
+         <p:tab title="Nucleic Acids (#{searchBean.nucleicAcidTotalResults})" disabled="#{searchBean.nucleicAcidTotalResults == 0}">
+                <ui:include src="whatis_link.xhtml"/>
+                <ui:include src="nucleicacid_list_tab.xhtml"/>
+            </p:tab>
 
-        <tr:showDetailItem text="Nucleic Acids (#{searchBean.nucleicAcidTotalResults})"
-                           disabled="#{searchBean.nucleicAcidTotalResults == 0}">
-            <ui:include src="whatis_link.xhtml"/>
-            <ui:include src="nucleicacid_list_tab.xhtml"/>
-        </tr:showDetailItem>
-
-    </tr:panelTabbed>
+    </p:tabView>
 
 </ui:composition>

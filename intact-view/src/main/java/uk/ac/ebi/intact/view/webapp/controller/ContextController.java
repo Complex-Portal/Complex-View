@@ -29,6 +29,7 @@ import org.springframework.stereotype.Controller;
 public class ContextController {
 
     private int activeTabIndex;
+    private int interactorActiveTabIndex;
 
     public int getActiveTabIndex() {
         return activeTabIndex;
@@ -36,5 +37,13 @@ public class ContextController {
 
     public void setActiveTabIndex(int activeTabIndex) {
         this.activeTabIndex = activeTabIndex;
+    }
+
+    public int getInteractorActiveTabIndex() {
+        return interactorActiveTabIndex;
+    }
+
+    public void setInteractorActiveTabIndex(int interactorActiveTabIndex) {
+        this.interactorActiveTabIndex = interactorActiveTabIndex;
     }
 }
