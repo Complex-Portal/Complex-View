@@ -413,8 +413,6 @@ public class SearchController extends JpaBaseController {
     private void doSearchInteractionsFromListSelection(InteractorListController interactorListController) {
         final List<InteractorWrapper> selected = Arrays.asList(interactorListController.getSelected());
 
-        System.out.println("SELECTED: "+selected.size());
-
         if (selected.size() == 0) {
             return;
         }
