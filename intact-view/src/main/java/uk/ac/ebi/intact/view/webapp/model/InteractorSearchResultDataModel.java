@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.model;
 
+import com.google.common.collect.Multimap;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +23,6 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.transaction.TransactionStatus;
-import psidev.psi.mi.search.engine.SearchEngineException;
 import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
@@ -30,10 +30,7 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.InteractorIdCount;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.InteractorXref;
 
-import javax.faces.model.DataModelEvent;
-import javax.faces.model.DataModelListener;
 import javax.persistence.Query;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -76,19 +73,10 @@ public class InteractorSearchResultDataModel extends LazyDataModel {
         this.solrServer = solrServer;
         this.solrQuery = solrQuery.getCopy();
         this.interactorTypeMis = interactorTypeMis;
-
-        setRowIndex(0);
-        fetchResults();
-
-        setWrappedData(idCounts);
     }
 
     @Override
     public List fetchLazyData(int i, int i1) {
-        throw new UnsupportedOperationException("Not implemented!");
-    }
-
-    protected void fetchResults() throws SearchEngineException {
         if (solrQuery == null) {
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
@@ -103,13 +91,19 @@ public class InteractorSearchResultDataModel extends LazyDataModel {
             if (log.isDebugEnabled()) log.debug("Fetching interactors for query: "+solrQuery);
 
             IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
-            idCounts = new ArrayList<InteractorIdCount>(searcher.searchInteractors(solrQuery, interactorTypeMis).values());
+            final Multimap<String,InteractorIdCount> idCountMultimap = searcher.searchInteractors(solrQuery, interactorTypeMis);
+            idCounts = new ArrayList<InteractorIdCount>(idCountMultimap.values());
 
             cache.put(cacheKey, idCounts);
         }
+
+        return idCounts;
     }
 
     public int getRowCount() {
+        if (idCounts == null) {
+            fetchLazyData(0,0);
+        }
         return idCounts.size();
     }
 
@@ -152,51 +146,47 @@ public class InteractorSearchResultDataModel extends LazyDataModel {
         return wrapper;
     }
 
-    public int getRowIndex() {
-        return rowIndex;
-    }
-
     public Object getWrappedData() {
         return idCounts;
     }
 
-    public boolean isRowAvailable() {
-        if (idCounts == null) {
-            return false;
-        }
-
-        return rowIndex >= 0 && rowIndex < getRowCount();
-    }
-
-    public void setRowIndex(int rowIndex) {
-        if (rowIndex < -1) {
-            throw new IllegalArgumentException("illegal rowIndex " + rowIndex);
-        }
-        int oldRowIndex = rowIndex;
-        this.rowIndex = rowIndex;
-        if (idCounts != null && oldRowIndex != this.rowIndex) {
-            Object data = isRowAvailable() ? getRowData() : null;
-            DataModelEvent event = new DataModelEvent(this, this.rowIndex, data);
-            DataModelListener[] listeners = getDataModelListeners();
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].rowSelected(event);
-            }
-        }
-    }
-
-    public Object getRowKey() {
-        return isRowAvailable()
-               ? getRowIndex()
-               : null;
-    }
-
-    public void setRowKey(Object key) {
-        if (key == null) {
-            setRowIndex(-1);
-        } else {
-            setRowIndex((Integer) key);
-        }
-    }
+//    public boolean isRowAvailable() {
+//        if (idCounts == null) {
+//            return false;
+//        }
+//
+//        return rowIndex >= 0 && rowIndex < getRowCount();
+//    }
+//
+//    public void setRowIndex(int rowIndex) {
+//        if (rowIndex < -1) {
+//            throw new IllegalArgumentException("illegal rowIndex " + rowIndex);
+//        }
+//        int oldRowIndex = rowIndex;
+//        this.rowIndex = rowIndex;
+//        if (idCounts != null && oldRowIndex != this.rowIndex) {
+//            Object data = isRowAvailable() ? getRowData() : null;
+//            DataModelEvent event = new DataModelEvent(this, this.rowIndex, data);
+//            DataModelListener[] listeners = getDataModelListeners();
+//            for (int i = 0; i < listeners.length; i++) {
+//                listeners[i].rowSelected(event);
+//            }
+//        }
+//    }
+//
+//    public Object getRowKey() {
+//        return isRowAvailable()
+//               ? getRowIndex()
+//               : null;
+//    }
+//
+//    public void setRowKey(Object key) {
+//        if (key == null) {
+//            setRowIndex(-1);
+//        } else {
+//            setRowIndex((Integer) key);
+//        }
+//    }
 
 
     public List<InteractorIdCount> getInteractorIdCounts() {

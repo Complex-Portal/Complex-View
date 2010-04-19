@@ -49,7 +49,6 @@ public class LazySearchResultDataModel extends LazyDataModel<IntactBinaryInterac
 
     private SolrQuery solrQuery;
     private SolrServer solrServer;
-    private String searchQuery;
 
     private SolrSearchResult result;
 

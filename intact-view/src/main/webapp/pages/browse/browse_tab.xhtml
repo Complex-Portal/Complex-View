@@ -3,178 +3,161 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
-                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
 
-                xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iaf="http://intact.ebi.ac.uk/functions"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
-
-    <ui:param name="displayWarning" value="#{browseBean.maxSize lt searchBean.interactorTotalResults}" />
-
-    <div style="float:right; margin-top: -10px">
-        <tr:commandLink action="dialog:faq.whatis.browser"
-                        partialSubmit="true" useWindow="true"
-                        windowWidth="700" windowHeight="500"
-                        immediate="true">
-            What is this view
-            <tr:image source="/images/help.png"/>
-        </tr:commandLink>
-    </div>
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
     
-    <tr:panelHeader text="Proteins (#{searchBean.proteinTotalResults})">
+    <ui:param name="displayWarning" value="#{browseBean.maxSize lt searchBean.interactorTotalResults}"/>
 
-        <tr:panelHorizontalLayout halign="left" valign="top">
+    <div style="float:right">
+        <p:commandLink onclick="whatIsBrowseDialog.show()">
+            What is this view
+            <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+        </p:commandLink>
+    </div>
 
-            <trh:tableLayout borderWidth="0"
-                             cellSpacing="5"
-                             cellPadding="0"
-                             halign="left"
-                             width="300">
+    <p:dialog header="What is this view?" widgetVar="whatIsBrowseDialog" fixedCenter="true"
+              width="700px" height="500px">
+        <div style="width:690px; height:490px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
+        </div>
+    </p:dialog>
 
-                <trh:rowLayout>
-                    <trh:cellFormat halign="center" width="15">
-                        
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:commandLink text="List All" action="list.proteins"/>
-                    </trh:cellFormat>
-                </trh:rowLayout>
+    <h2>Proteins (#{searchBean.proteinTotalResults})</h2>
 
-                <trh:rowLayout>
-                    <trh:cellFormat halign="center" width="15">
+    <h:panelGroup style="text-align:left; vertical-align:top">
 
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:commandLink text="By UniProt Taxonomy" action="browse.taxonomybrowser"/>
-                    </trh:cellFormat>
-                </trh:rowLayout>
+        <table style="text-align:left" border="0" cellSpacing="5" cellPadding="0" width="300">
 
-                <trh:rowLayout>
-                    <trh:cellFormat halign="center" width="15">
+            <tr>
+                <td style="text-align: center" width="15">
 
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:commandLink text="By Gene Ontology (GO)" action="browse.gobrowser"/>
-                    </trh:cellFormat>
-                </trh:rowLayout>
+                </td>
+                <td>
+                    <h:commandLink value="List All" action="list.proteins"/>
+                </td>
+            </tr>
 
-                <trh:rowLayout>
-                    <trh:cellFormat halign="center" width="15">
-                        <tr:image source="/images/warning_icon.png" rendered="#{displayWarning}"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:goLink text="By Interpro Domain" targetFrame="_blank"
-                                   destination="http://www.ebi.ac.uk/interpro/ISpy?ac=#{browseBean.interproIdentifierList}&amp;mode=protein&amp;sort=ac"/>
-                    </trh:cellFormat>
-                </trh:rowLayout>
+            <tr>
+                <td style="text-align: center" width="15">
 
-                <trh:rowLayout>
-                    <trh:cellFormat halign="center" width="15">
-                        <tr:image source="/images/warning_icon.png" rendered="#{displayWarning}"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
+                </td>
+                <td>
+                    <h:commandLink value="By UniProt Taxonomy" action="browse.taxonomybrowser"/>
+                </td>
+            </tr>
 
-                        <tr:commandLink actionListener="#{browseBean.goReactome}" partialSubmit="true">
-                            <tr:outputText value="By Reactome Pathway"/>
-                        </tr:commandLink>
+            <tr>
+                <td style="text-align: center" width="15">
 
-                    </trh:cellFormat>
-                </trh:rowLayout>
+                </td>
+                <td>
+                    <h:commandLink value="By Gene Ontology (GO)" action="browse.gobrowser"/>
+                </td>
+            </tr>
 
-                <trh:rowLayout>
-                    <trh:cellFormat halign="center" width="15">
-                        <tr:image source="/images/warning_icon.png" rendered="#{displayWarning}"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:goLink text="By Chromosomal Location" targetFrame="_blank"
-                                   destination="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{browseBean.chromosomalLocationIdentifierList}"/>
-                    </trh:cellFormat>
-                </trh:rowLayout>
+            <tr>
+                <td style="text-align: center" width="15">
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png" rendered="#{displayWarning}"/>
+                </td>
+                <td>
+                    <h:outputLink target="_blank"
+                                  url="http://www.ebi.ac.uk/interpro/ISpy?ac=#{browseBean.interproIdentifierList}&amp;mode=protein&amp;sort=ac">By Interpro Domain</h:outputLink>
+                </td>
+            </tr>
 
-                <trh:rowLayout>
-                    <trh:cellFormat halign="center" width="15">
-                        <tr:image source="/images/warning_icon.png" rendered="#{displayWarning}"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:goLink text="By mRNA expression" targetFrame="_blank"
-                                   destination="http://www.ebi.ac.uk/microarray-as/atlas/qrs?gprop_0=&amp;gval_0=#{browseBean.MRNAExpressionIdentifierList}&amp;fexp_0=UP_DOWN&amp;fact_0=&amp;specie_0=&amp;fval_0=(all+conditions)&amp;view=hm"/>
-                    </trh:cellFormat>
-                </trh:rowLayout>
+            <tr>
+                <td style="text-align: center" width="15">
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png" rendered="#{displayWarning}"/>
+                </td>
+                <td>
 
-            </trh:tableLayout>
+                    <p:commandLink actionListener="#{browseBean.goReactome}"
+                                   value="By Reactome Pathway [NOT IMPLEMENTED]"/>
 
-            <tr:panelBox text="Numerous interactors available" background="dark"
-                         rendered="#{displayWarning}">
-                <tr:outputText value="Please be aware that due to the number of interaction currently available in
+                </td>
+            </tr>
+
+            <tr>
+                <td style="text-align: center" width="15">
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png" rendered="#{displayWarning}"/>
+                </td>
+                <td>
+                    <h:outputLink target="_blank"
+                                  url="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{browseBean.chromosomalLocationIdentifierList}">By Chromosomal Location</h:outputLink>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="text-align: center" width="15">
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png" rendered="#{displayWarning}"/>
+                </td>
+                <td>
+                    <h:outputLink target="_blank"
+                                  url="http://www.ebi.ac.uk/microarray-as/atlas/qrs?gprop_0=&amp;gval_0=#{browseBean.MRNAExpressionIdentifierList}&amp;fexp_0=UP_DOWN&amp;fact_0=&amp;specie_0=&amp;fval_0=(all+conditions)&amp;view=hm">By mRNA expression</h:outputLink>
+                </td>
+            </tr>
+
+        </table>
+
+        <p:panel header="Numerous interactors available"
+                 rendered="#{displayWarning}">
+            <h:outputText value="Please be aware that due to the number of interaction currently available in
                                       your dataset, only the first #{browseBean.maxSize} interactor identifiers will be passed on to
                                       third party resources. In order to make this clear, we will display the icon"/>
-                <tr:spacer width="3" />
-                <tr:image source="/images/warning_icon.png"/>
-                <tr:spacer width="3" />
-                <tr:outputText value="whenever this restriction applies."/>
-            </tr:panelBox>
+            &#160;
+            <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"/>
+            &#160;
+            <h:outputText value="whenever this restriction applies."/>
+        </p:panel>
 
-        </tr:panelHorizontalLayout>
+    </h:panelGroup>
 
-    </tr:panelHeader>
+    <h2>Chemicals (#{searchBean.smallMoleculeTotalResults})</h2>
 
-    <tr:panelHeader text="Chemicals (#{searchBean.smallMoleculeTotalResults})">
+    <table border="0" cellSpacing="5" cellPadding="0" style="text-align:left" width="300">
 
-        <trh:tableLayout borderWidth="0"
-                         cellSpacing="5"
-                         cellPadding="0"
-                         halign="left"
-                         width="300">
+        <tr>
+            <td style="text-align: center" width="15">
 
-            <trh:rowLayout>
-                <trh:cellFormat halign="center" width="15" >
+            </td>
+            <td>
+                <h:commandLink value="List All" action="list.compounds"
+                               disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
+            </td>
+        </tr>
 
-                </trh:cellFormat>
-                <trh:cellFormat>
-                    <tr:commandLink text="List All" action="list.compounds"
-                            disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
-                </trh:cellFormat>
-            </trh:rowLayout>
+        <tr>
+            <td style="text-align: center" width="15">
 
-            <trh:rowLayout>
-                <trh:cellFormat halign="center" width="15">
+            </td>
+            <td>
+                <h:commandLink value="By ChEBI Ontology (CHEBI)" action="browse.chebibrowser"
+                               disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
+            </td>
+        </tr>
 
-                </trh:cellFormat>
-                <trh:cellFormat>
-                   <tr:commandLink text="By ChEBI Ontology (CHEBI)" action="browse.chebibrowser"
-                           disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
-                </trh:cellFormat>
-            </trh:rowLayout>
-
-        </trh:tableLayout>
-
-    </tr:panelHeader>
+    </table>
 
     <br/><br/><br/>
-    <tr:panelHeader text="Nucleic Acids (#{searchBean.nucleicAcidTotalResults})">
 
-            <trh:tableLayout borderWidth="0"
-                             cellSpacing="5"
-                             cellPadding="0"
-                             halign="left"
-                             width="300">
+    <h2>Nucleic Acids (#{searchBean.nucleicAcidTotalResults})</h2>
 
-                <trh:rowLayout>
-                    <trh:cellFormat halign="center" width="15">
+    <table border="0" cellSpacing="5" cellPadding="0" style="text-align:left" width="300">
 
-                    </trh:cellFormat>
-                    <trh:cellFormat>
-                        <tr:commandLink text="List All" action="list.nucleicacids"
-                                disabled="#{searchBean.nucleicAcidTotalResults == 0}"/>
-                    </trh:cellFormat>
-                  </trh:rowLayout>
+        <tr>
+            <td style="text-align: center" width="15">
 
-            </trh:tableLayout>
-     
-    </tr:panelHeader>
+            </td>
+            <td>
+                <h:commandLink value="List All" action="list.nucleicacids"
+                               disabled="#{searchBean.nucleicAcidTotalResults == 0}"/>
+            </td>
+        </tr>
+
+    </table>
 
 </ui:composition>
