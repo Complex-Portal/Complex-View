@@ -206,6 +206,7 @@ public class SearchController extends JpaBaseController {
         }
 
         countInOtherDatabases = -1;
+        countInOtherImexDatabases = -1;
     }
 
     public void doPsicquicQuery(ActionEvent evt) {
@@ -238,7 +239,7 @@ public class SearchController extends JpaBaseController {
 
         countInOtherDatabases = 0;
         otherDatabasesWithResults = 0;
-        countInOtherDatabases = 0;
+        countInOtherImexDatabases = 0;
         otherImexDatabasesWithResults = 0;
 
         imexServices = new ArrayList<ServiceType>(services.size());
