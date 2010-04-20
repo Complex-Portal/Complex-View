@@ -6,22 +6,48 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui">
 
 
-    <p:tabView id="listPanels" cache="false" activeIndex="#{contextController.interactorActiveTabIndex}">
+    <p:tabView id="listPanels" cache="false" dynamic="true"
+               activeIndex="#{contextController.interactorActiveTabIndex}">
         <p:tab title="Proteins (#{searchBean.proteinTotalResults})"  disabled="#{searchBean.proteinTotalResults == 0}">
-            <ui:include src="whatis_link.xhtml"/>
+            <div style="float:right; margin-top: -5px">
+                <p:commandLink type="button" onclick="whatIsListDialog.show()">
+                    What is this view
+                    <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+                </p:commandLink>
+            </div>
+
             <ui:include src="protein_list_tab.xhtml"/>
         </p:tab>
 
         <p:tab title="Compounds (#{searchBean.smallMoleculeTotalResults})" disabled="#{searchBean.smallMoleculeTotalResults == 0}">
-            <ui:include src="whatis_link.xhtml"/>
+            <div style="float:right; margin-top: -5px">
+                <p:commandLink type="button" onclick="whatIsListDialog.show()">
+                    What is this view
+                    <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+                </p:commandLink>
+            </div>
+
             <ui:include src="compound_list_tab.xhtml"/>
         </p:tab>
 
         <p:tab title="Nucleic Acids (#{searchBean.nucleicAcidTotalResults})" disabled="#{searchBean.nucleicAcidTotalResults == 0}">
-            <ui:include src="whatis_link.xhtml"/>
+            <div style="float:right; margin-top: -5px">
+                <p:commandLink type="button" onclick="whatIsListDialog.show()">
+                    What is this view
+                    <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+                </p:commandLink>
+            </div>
+            
             <ui:include src="nucleicacid_list_tab.xhtml"/>
         </p:tab>
 
     </p:tabView>
+
+    <p:dialog header="What is this view?" widgetVar="whatIsListDialog" fixedCenter="true"
+              width="700px" height="500px">
+        <div style="width:690px; height:490px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_lists.xhtml"/>
+        </div>
+    </p:dialog>
 
 </ui:composition>

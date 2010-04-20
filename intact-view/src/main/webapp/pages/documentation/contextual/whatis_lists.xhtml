@@ -2,38 +2,27 @@
 <ui:composition
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:tr="http://myfaces.apache.org/trinidad"
-        xmlns:trh="http://myfaces.apache.org/trinidad/html"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:c="http://java.sun.com/jstl/core"
-        >
+        xmlns:h="http://java.sun.com/jsf/html">
 
-    <!-- Include this hack to avoid using the "general" conversation -->
-    <ui:include src="/pages/inc/dialogConversationHack.xhtml"/>
+    <h2>Using molecule Lists (List tab)"</h2>
+    This tab will show the list of molecules involved in the currently selected
+    set of interaction by interactor type. Further operations are available from
+    each sub-type’s tables. However, should you need to display the whole list at
+    once, you can do so by selecting the corresponding option in the drop down list
+    placed at the top right hand side of the table.
 
-    <tr:document title="What is this view?">
+    <br/>
 
-        <tr:panelHeader text="Using molecule Lists (List tab)" inlineStyle="margin-left: 10px; margin-right:10px">
-            This tab will show the list of molecules involved in the currently selected
-            set of interaction by interactor type. Further operations are available from
-            each sub-type’s tables. However, should you need to display the whole list at
-            once, you can do so by selecting the corresponding option in the drop down list
-            placed at the top right hand side of the table.
+    <h3>Linking a selected set of molecule to third party resources</h3>
+    You can select a subset of the currently displayed molecules by using
+    the tick boxed and then click one of the buttons placed in the table
+    header to open third party resources (similarly to the ones already
+    showed in the Browse tab).
 
-            <tr:panelHeader
-                    text="Linking a selected set of molecule to third party resources">
-                You can select a subset of the currently displayed molecules by using
-                the tick boxed and then click one of the buttons placed in the table
-                header to open third party resources (similarly to the ones already
-                showed in the Browse tab).
-            </tr:panelHeader>
+    <br/>
 
-            <tr:panelHeader text="Building a new interaction set based on a selection of molecules">
-                Furthermore, you can also search all interactions involving your selected
-                molecule by clicking the ‘Search interactions’ button.
-            </tr:panelHeader>
-        </tr:panelHeader>
-
-    </tr:document>
+    <h3>Building a new interaction set based on a selection of molecules</h3>
+    Furthermore, you can also search all interactions involving your selected
+    molecule by clicking the ‘Search interactions’ button.
 
 </ui:composition>
