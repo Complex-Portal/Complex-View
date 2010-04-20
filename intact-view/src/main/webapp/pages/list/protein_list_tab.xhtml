@@ -5,7 +5,8 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks" >
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
     <!-- RESULT SUMMARY -->
 
@@ -13,28 +14,62 @@
 
     <br/>
 
-    <p:panel style="width:100%">
+    <p:panel id="selectionButtons" style="width:100%">
 
         <strong>
             <h:outputText value="Selection actions: " style="white-space: nowrap"/>
         </strong>
         &#160;&#160;
-        
-        <h:commandButton value="Search Interactions"
-                         actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
-                         action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
-        &#160;
-        <p:commandButton value="Domains"
-                         actionListener="#{proteinListController.goDomains}"/>
-        &#160;
-        <p:commandButton value="Pathways [not fixed]"
-                         actionListener="#{proteinListController.goReactome}"/>
-        &#160;
-        <p:commandButton value="Chromosome Location [not fixed]"
-                         actionListener="#{proteinListController.goChromosomalLocation}"/>
-        &#160;
-        <p:commandButton value="mRNA Expression"
-                         actionListener="#{proteinListController.goExpression}"/>
+
+        <h:outputText value="Select molecules by clicking on the row. Select more than one molecule by holding the Control key"
+                rendered="#{empty proteinListController.selected}"/>
+
+        <h:panelGroup rendered="#{not empty proteinListController.selected}">
+            <h:commandLink value="Search Interactions"
+                             actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
+                             action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
+            &#160;|&#160;
+            <h:outputLink target="_blank"
+                          value="http://www.ebi.ac.uk/interpro/ISpy?ac=#{fn:join(proteinListController.selectedUniprotIds,',')}">Domains</h:outputLink>
+            &#160;|&#160;
+            <a href="javascript:void(0)" onclick="submitToReactome('#{fn:join(proteinListController.selectedUniprotIds,',')}')">Pathways</a>
+
+            <h:outputScript target="head">
+                function submitToReactome(selectedIds) {
+                    var reactomeForm = document.createElement('form');
+                    reactomeForm.method='post';
+                    reactomeForm.action='http://www.reactome.org/cgi-bin/skypainter2';
+                    reactomeForm.enctype='multipart/form-data';
+                    reactomeForm.name='skypainter';
+                    reactomeForm.target='_blank';
+
+                    var inputQuery = createHiddenInput('QUERY', selectedIds);
+                    var inputDb = createHiddenInput('DB', 'gk_current');
+                    var inputSubmit = createHiddenInput('SUBMIT', '1');
+                    reactomeForm.appendChild(inputQuery);
+                    reactomeForm.appendChild(inputDb);
+                    reactomeForm.appendChild(inputSubmit);
+                
+                    document.getElementById('intactForm').parentNode.appendChild(reactomeForm);
+                    reactomeForm.submit();
+                }
+
+                function createHiddenInput(name,value) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = name;
+                    input.value = value;
+                    return input;
+                }
+            </h:outputScript>
+
+            &#160;|&#160;
+            <h:outputLink target="_blank"
+                          value="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{fn:join(proteinListController.selectedUniprotIds,';id=')}">Chromosome Location</h:outputLink>
+            &#160;|&#160;
+            <h:outputLink target="_blank"
+                          value="http://www.ebi.ac.uk/microarray-as/atlas/qrs?gprop_0=&amp;fexp_0=UP_DOWN&amp;fact_0=&amp;specie_0=&amp;fval_0=(all+conditions)&amp;view=hm&amp;gval_0=#{fn:join(proteinListController.selectedUniprotIds,'+')}">mRNA Expression</h:outputLink>
+        </h:panelGroup>
     </p:panel>
 
     <br/>
@@ -44,7 +79,7 @@
                  rowIndexVar="status"
                  lazy="true" dynamic="true" emptyMessage="No proteins found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading proteins..."
-                 selection="#{proteinListController.selected}" selectionMode="multiple">
+                 selection="#{proteinListController.selected}" selectionMode="multiple" update="selectionButtons">
 
         <p:column>
             <h:outputText value="#{status + 1}"/>

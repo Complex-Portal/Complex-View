@@ -8,23 +8,31 @@
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks" >
 
 
-         <p:panel style="width:100%">
+    <p:panel id="nucleicAcidSelectionButtons" style="width:100%">
 
-             <strong>
-                 <h:outputText value="Selection actions: " style="white-space: nowrap"/>
-             </strong>
-             &#160;&#160;
-             <h:commandButton value="Search Interactions"
-                         actionListener="#{searchBean.doSearchInteractionsFromDnaListSelection}"
-                         action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
-         </p:panel>
+        <strong>
+            <h:outputText value="Selection actions: " style="white-space: nowrap"/>
+        </strong>
+        &#160;&#160;
+
+        <h:outputText value="Select molecules by clicking on the row. Select more than one molecule by holding the Control key"
+                rendered="#{empty nucleicAcidListController.selected}"/>
+
+        <h:panelGroup rendered="#{not empty nucleicAcidListController.selected}">
+            <h:commandButton value="Search Interactions"
+                             actionListener="#{searchBean.doSearchInteractionsFromCompoundListSelection}"
+                             action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
+        </h:panelGroup>
+    </p:panel>
+
 
 
     <p:dataTable id="nucleicAcidListResults" value="#{searchBean.nucleicAcidResults}" var="interactorWrapper"
                  rowIndexVar="status"
                  lazy="true" dynamic="true" emptyMessage="No nucleic acids found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading nucleic acids..."
-                 selection="#{nucleicAcidListController.selected}" selectionMode="multiple">
+                 selection="#{nucleicAcidListController.selected}" selectionMode="multiple"
+                update="nucleicAcidSelectionButtons">
 
             <p:column>
                 <h:outputText value="#{status + 1}"/>

@@ -3,10 +3,11 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+                xmlns:ot="http://myfaces.apache.org/orchestra"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions" >
 
     <p:panel style="width:100%">
-        
+
         <div style="float:right">
             <p:commandLink onclick="miqlHelpDialog.show()">
                 MIQL syntax reference
@@ -20,97 +21,97 @@
                 <ui:include src="help_miql.xhtml"/>
             </div>
         </p:dialog>
-        
+
         <h:panelGroup id="searchPanel" style="vertical-align:top">
             <h:outputScript>
                 dojo.addOnLoad(function () {
-                   document.getElementById('queryTxt').focus();
+                document.getElementById('queryTxt').focus();
                 });
             </h:outputScript>
 
             <h:inputText label="Search: " id="queryTxt"
-                          size="60" value="#{userQuery.searchQuery}"
-                          rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"
-                          onkeyup="return submitEnter('quickSearchBtn',event)"
-                          disabled="#{userQuery.showNewFieldPanel}"/>
+                         size="60" value="#{userQuery.searchQuery}"
+                         rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"
+                         onkeyup="return submitEnter('quickSearchBtn',event)"
+                         disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
             <h:commandButton id="quickSearchBtn"
-                              value="Search"
-                              disabled="#{userQuery.showNewFieldPanel}"
-                              actionListener="#{searchBean.doBinarySearch}">
+                             value="Search"
+                             disabled="#{userQuery.showNewFieldPanel}"
+                             action="#{searchBean.doBinarySearchAction}">
                 <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
             </h:commandButton>
             &#160;
             <h:commandButton type="button" id="clearSearchBtn" value="Clear"
-                       onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
-                       disabled="#{userQuery.showNewFieldPanel}"/>
+                             onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
+                             disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
             <p:commandLink id="addFieldBtn" value="Show Advanced Fields »"
-                            style="font-weight:bold"
-                    actionListener="#{userQuery.doShowAddFieldPanel}"
-                    disabled="#{userQuery.showNewFieldPanel}"
-                    update="searchPanelDetails,searchPanel"/>
+                           style="font-weight:bold"
+                           actionListener="#{userQuery.doShowAddFieldPanel}"
+                           disabled="#{userQuery.showNewFieldPanel}"
+                           update="searchPanelDetails,searchPanel"/>
 
         </h:panelGroup>
 
-         </p:panel>
-
+    </p:panel>
 
 
     <h:panelGroup id="searchPanelDetails">
         <p:panel style="width:100%" rendered="#{userQuery.showNewFieldPanel}">
 
-                <h:panelGroup>
+            <h:panelGroup>
 
-                    <h:selectOneMenu value="#{userQuery.newQueryToken.operandStr}"
-                            disabled="#{userQuery.wildcardQuery}">
-                        <f:selectItem itemValue="AND" itemLabel="AND"/>
-                        <f:selectItem itemValue="OR" itemLabel="OR" itemDisabled="#{empty userQuery.searchQuery or
+                <h:selectOneMenu value="#{userQuery.newQueryToken.operandStr}"
+                                 disabled="#{userQuery.wildcardQuery}">
+                    <f:selectItem itemValue="AND" itemLabel="AND"/>
+                    <f:selectItem itemValue="OR" itemLabel="OR" itemDisabled="#{empty userQuery.searchQuery or
                                                                                     userQuery.searchQuery eq '*:*'}"/>
-                    </h:selectOneMenu>
-                    &#160;
+                </h:selectOneMenu>
+                &#160;
 
-                    <h:selectBooleanCheckbox label="NOT" value="#{userQuery.newQueryToken.notQuery}"/>
-                    &#160;
+                <h:selectBooleanCheckbox label="NOT" value="#{userQuery.newQueryToken.notQuery}"/>
+                &#160;
 
-                    <h:selectOneMenu id="newQueryField" label="Field: " value="#{userQuery.newQueryToken.field}"
-                                        immediate="true">
-                        <p:ajax event="change" update="newQueryPanel"/>
-                        <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
-                    </h:selectOneMenu>
-                    &#160;
+                <h:selectOneMenu id="newQueryField" label="Field: " value="#{userQuery.newQueryToken.field}"
+                                 immediate="true">
+                    <p:ajax event="change" update="newQueryPanel"/>
+                    <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
+                </h:selectOneMenu>
+                &#160;
 
-                    <h:panelGroup id="newQueryPanel">
-                        <h:inputText value="#{userQuery.newQueryToken.query}" columns="50"
-                                      rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list and
+                <h:panelGroup id="newQueryPanel">
+                    <h:inputText value="#{userQuery.newQueryToken.query}" columns="50"
+                                 rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list and
                                                   not userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"/>
 
-                        <h:selectOneMenu value="#{userQuery.newQueryToken.query}"
-                                rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}">
-                            <f:selectItems value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].selectItems}"/>
-                        </h:selectOneMenu>
+                    <h:selectOneMenu value="#{userQuery.newQueryToken.query}"
+                                     rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}">
+                        <f:selectItems value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].selectItems}"/>
+                    </h:selectOneMenu>
 
                     <!--<tr:inputListOfValues value="#{userQuery.newQueryToken.query}" columns="50"-->
-                                          <!--rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"-->
-                                          <!--icon="/images/magnify.png" windowHeight="500" windowWidth="400"-->
-                                          <!--action="dialog:search.browse" -->
-                                          <!--searchDesc="Click to get a value">-->
-                        <!--<f:setPropertyActionListener target="#{searchBrowseDialogController.beanName}" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browserControllerName}"/>-->
+                    <!--rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"-->
+                    <!--icon="/images/magnify.png" windowHeight="500" windowWidth="400"-->
+                    <!--action="dialog:search.browse" -->
+                    <!--searchDesc="Click to get a value">-->
+                    <!--<f:setPropertyActionListener target="#{searchBrowseDialogController.beanName}" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browserControllerName}"/>-->
                     <!--</tr:inputListOfValues>-->
 
-                    </h:panelGroup>
-                    &#160;
-
-                    <h:commandButton value="Add &amp; Search"
-                              actionListener="#{userQuery.doAddFieldToQuery}"
-                              action="#{searchBean.doNewBinarySearch}">
-                <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-            </h:commandButton>
-                    &#160;
-                    <p:commandButton id="cancelFieldBtn" value="Cancel"
-                                      actionListener="#{userQuery.doCancelAddField}" update="searchPanel,searchPanelDetails"/>
-
                 </h:panelGroup>
+                &#160;
+
+                <h:commandButton value="Add &amp; Search"
+                                 actionListener="#{userQuery.doAddFieldToQuery}"
+                                 action="#{searchBean.doNewBinarySearch}">
+                    <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
+                </h:commandButton>
+                &#160;
+                <p:commandButton id="cancelFieldBtn" value="Cancel"
+                                 actionListener="#{userQuery.doCancelAddField}"
+                                 update="searchPanel,searchPanelDetails"/>
+
+            </h:panelGroup>
         </p:panel>
     </h:panelGroup>
 

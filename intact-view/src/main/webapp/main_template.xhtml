@@ -37,52 +37,140 @@
 
         </h:form>
 
-         <h:form id="intactForm" prependId="false">
+        <h:form id="intactForm" prependId="false">
 
-        <p:tabView id="mainPanels" cache="false" activeIndex="#{contextController.activeTabIndex}">
+        <p:tabView id="mainPanels" cache="false" activeIndex="#{contextController.activeTabIndex}" widgetVar="mainTabsWidget">
             <p:tab title="Home">
-                <p:messages/>
-                <ui:insert name="aboutTabContent"/>
+                <h:panelGroup id="content_0">
+                    <p:commandButton id="activate_0" update="content_0" style="display:none" disabled="#{contextController.isTabLoaded(0)}">
+                        <f:setPropertyActionListener value="0" target="#{contextController.activeTabIndex}"/>
+                        <f:setPropertyActionListener value="0" target="#{contextController.tabLoaded}"/>
+                    </p:commandButton>
+
+                    <h:panelGroup rendered="#{contextController.activeTabIndex == 0}">
+                        <p:messages/>
+                        <ui:insert name="aboutTabContent"/>
+                    </h:panelGroup>
+
+                </h:panelGroup>
             </p:tab>
 
             <p:tab title="Search">
-                <p:messages/>
-                <ui:insert name="searchTabContent"/>
+                <h:panelGroup id="content_1">
+                    <p:commandButton id="activate_1" update="content_1" style="display:none" disabled="#{contextController.isTabLoaded(1)}">
+                        <f:setPropertyActionListener value="1" target="#{contextController.activeTabIndex}"/>
+                        <f:setPropertyActionListener value="1" target="#{contextController.tabLoaded}"/>
+                    </p:commandButton>
+
+                    <h:panelGroup rendered="#{contextController.activeTabIndex == 1}">
+                        <p:messages/>
+                        <ui:insert name="searchTabContent"/>
+                    </h:panelGroup>
+
+                </h:panelGroup>
             </p:tab>
 
             <p:tab title="Interactions (#{searchBean.totalResults})" disabled="#{searchBean.totalResults == 0}">
-                <p:messages/>
-                <ui:insert name="interactionsTabContent"/>
+                <h:panelGroup id="content_2">
+                    <p:commandButton id="activate_2" ajax="false"
+                                     action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true" style="display:none"
+                                     disabled="#{contextController.isTabLoaded(2)}">
+                        <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
+                        <f:setPropertyActionListener value="2" target="#{contextController.tabLoaded}"/>
+                    </p:commandButton>
+
+                    <h:panelGroup rendered="#{contextController.activeTabIndex == 2}">
+                        <p:messages/>
+                        <ui:insert name="interactionsTabContent"/>
+                    </h:panelGroup>
+                </h:panelGroup>
             </p:tab>
 
             <p:tab title="Browse" disabled="#{searchBean.totalResults == 0}">
-                <p:messages/>
-                <ui:insert name="browseTabContent"/>
+                <h:panelGroup id="content_3">
+                    <p:commandButton id="activate_3" update="content_3" style="display:none" disabled="#{contextController.isTabLoaded(3)}">
+                        <f:setPropertyActionListener value="3" target="#{contextController.activeTabIndex}"/>
+                        <f:setPropertyActionListener value="3" target="#{contextController.tabLoaded}"/>
+                    </p:commandButton>
+
+                    <h:panelGroup rendered="#{contextController.activeTabIndex == 3}">
+                        <p:messages/>
+                        <ui:insert name="browseTabContent"/>
+                    </h:panelGroup>
+                </h:panelGroup>
             </p:tab>
 
             <p:tab title="Lists" disabled="#{searchBean.totalResults == 0}">
-                <p:messages/>
-                <ui:insert name="listTabContent"/>
+                <h:panelGroup id="content_4">
+                    <p:commandButton id="activate_4"
+                                     actionListener="#{searchBean.doInteractorsSearch()}"
+                                     update="content_4" style="display:none" disabled="#{contextController.isTabLoaded(4)}">
+                        <f:setPropertyActionListener value="4" target="#{contextController.activeTabIndex}"/>
+                        <f:setPropertyActionListener value="4" target="#{contextController.tabLoaded}"/>
+                    </p:commandButton>
+
+                    <h:panelGroup rendered="#{contextController.activeTabIndex == 4}">
+                        <p:messages/>
+                        <ui:insert name="listTabContent"/>
+                    </h:panelGroup>
+                </h:panelGroup>
             </p:tab>
 
             <p:tab title="Interaction Details" disabled="#{detailsBean.interaction == null}">
-                <p:messages/>
-                <ui:insert name="detailsTabContent"/>
+                <h:panelGroup id="content_5">
+                    <p:commandButton id="activate_5" update="content_5" style="display:none" disabled="#{contextController.isTabLoaded(5)}">
+                        <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
+                        <f:setPropertyActionListener value="5" target="#{contextController.tabLoaded}"/>
+                    </p:commandButton>
+
+                    <h:panelGroup rendered="#{contextController.activeTabIndex == 5}">
+                        <p:messages/>
+                        <ui:insert name="detailsTabContent"/>
+                    </h:panelGroup>
+                </h:panelGroup>
             </p:tab>
 
             <p:tab title="Molecule View" disabled="#{moleculeViewBean.interactor == null}">
-                <p:messages/>
-                <ui:insert name="moleculeTabContent"/>
+                <h:panelGroup id="content_6">
+                    <p:commandButton id="activate_6" update="content_6" style="display:none" disabled="#{contextController.isTabLoaded(6)}">
+                        <f:setPropertyActionListener value="6" target="#{contextController.activeTabIndex}"/>
+                        <f:setPropertyActionListener value="6" target="#{contextController.tabLoaded}"/>
+                    </p:commandButton>
+
+                    <h:panelGroup rendered="#{contextController.activeTabIndex == 6}">
+                        <p:messages/>
+                        <ui:insert name="moleculeTabContent"/>
+                    </h:panelGroup>
+                </h:panelGroup>
             </p:tab>
 
             <p:tab title="Graph"
                                shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
                                disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount }">
-                <p:messages/>
-                <ui:insert name="graphTabContent"/>
+                 <h:panelGroup id="content_7">
+                    <p:commandButton id="activate_7" update="content_7" style="display:none" disabled="#{contextController.isTabLoaded(7)}">
+                        <f:setPropertyActionListener value="7" target="#{contextController.activeTabIndex}"/>
+                        <f:setPropertyActionListener value="7" target="#{contextController.tabLoaded}"/>
+                    </p:commandButton>
+
+                    <h:panelGroup rendered="#{contextController.activeTabIndex == 7}">
+                        <p:messages/>
+                        <ui:insert name="graphTabContent"/>
+                    </h:panelGroup>
+                </h:panelGroup>
             </p:tab>
 
         </p:tabView>
+
+
+            <script type="text/javascript">
+                mainTabsWidget.addListener('click', handleTabClick);
+
+                function handleTabClick(e) {
+                    var activeTabIndex = mainTabsWidget.get('activeIndex');
+                    document.getElementById('activate_'+activeTabIndex+"_submit").click();
+                 }
+        </script>
 
         </h:form>
 

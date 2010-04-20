@@ -50,8 +50,14 @@ public class ProteinListController extends InteractorListController {
     public ProteinListController() {
     }
 
-    private String[] getSelectedUniprotIds() {
-        final List<InteractorWrapper> interactorWrappers = Arrays.asList(getSelected());
+    public String[] getSelectedUniprotIds() {
+        final InteractorWrapper[] selected = getSelected();
+
+        if (selected == null) {
+            return new String[0];
+        }
+
+        final List<InteractorWrapper> interactorWrappers = Arrays.asList(selected);
 
         Set<String> uniprotIds = new HashSet<String>();
 
@@ -66,40 +72,6 @@ public class ProteinListController extends InteractorListController {
         }
 
         return uniprotIds.toArray( new String[uniprotIds.size()] );
-    }
-
-    private String[] getSelectedGeneNames() {
-        final List<InteractorWrapper> interactorWrappers = Arrays.asList(getSelected());
-        //final List<InteractorWrapper> interactorWrappers = getSelected( SearchController.PROTEINS_TABLE_ID );
-
-        Set<String> geneNames = new HashSet<String>();
-
-        for (InteractorWrapper interactorWrapper : interactorWrappers) {
-            Interactor interactor = interactorWrapper.getInteractor();
-
-            final String geneName = ProteinUtils.getGeneName(interactor);
-
-            if (geneName != null) {
-                geneNames.add(geneName);
-            }
-        }
-
-        return geneNames.toArray( new String[geneNames.size()] );
-    }
-
-    public void goDomains( ActionEvent evt ) {
-        String[] selectedUniprotIds = getSelectedUniprotIds();
-        dbLinker.goExternalLink( dbLinker.INTERPROURL, dbLinker.INTERPRO_SEPERATOR, selectedUniprotIds );
-    }
-
-    public void goExpression( ActionEvent evt ) {
-        String[] selectedUniprotIds = getSelectedUniprotIds();
-        dbLinker.goExternalLink( dbLinker.EXPRESSIONURL_PREFIX, dbLinker.EXPRESSIONURL_SUFFIX, dbLinker.EXPRESSION_SEPERATOR, selectedUniprotIds );
-    }
-
-    public void goChromosomalLocation( ActionEvent evt ) {
-        String[] selectedUniprotIds = getSelectedUniprotIds();
-        dbLinker.goExternalLink( dbLinker.CHROMOSOMEURL, dbLinker.CHROMOSOME_SEPERATOR, selectedUniprotIds );
     }
 
     public void goReactome( ActionEvent evt ) {

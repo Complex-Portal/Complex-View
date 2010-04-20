@@ -6,6 +6,10 @@
 
                 template="main_template.xhtml">
 
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(0)}"/>
+    </f:metadata>
+
     <ui:define name="aboutTabContent">
         <ui:include src="/pages/documentation/about/intact_home.xhtml"/>
     </ui:define>

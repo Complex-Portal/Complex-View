@@ -19,6 +19,9 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -31,12 +34,23 @@ public class ContextController {
     private int activeTabIndex;
     private int interactorActiveTabIndex;
 
+    private Map<Integer,Boolean> loadedTabStatus;
+
+    public ContextController() {
+        clearLoadedTabs();
+    }
+
+    public void clearLoadedTabs() {
+        loadedTabStatus = new HashMap<Integer, Boolean>();
+    }
+
     public int getActiveTabIndex() {
         return activeTabIndex;
     }
 
     public void setActiveTabIndex(int activeTabIndex) {
         this.activeTabIndex = activeTabIndex;
+        setTabLoaded(activeTabIndex);
     }
 
     public int getInteractorActiveTabIndex() {
@@ -45,5 +59,18 @@ public class ContextController {
 
     public void setInteractorActiveTabIndex(int interactorActiveTabIndex) {
         this.interactorActiveTabIndex = interactorActiveTabIndex;
+    }
+
+    public boolean isTabLoaded(int i) {
+        if (loadedTabStatus.containsKey(i)) {
+            return loadedTabStatus.get(i);
+        } else {
+            loadedTabStatus.put(i, false);
+            return false;
+        }
+    }
+
+    public void setTabLoaded(int i) {
+        loadedTabStatus.put(i, true);
     }
 }

@@ -9,15 +9,21 @@
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
 
-    <p:panel style="width:100%">
+    <p:panel id="compoundSelectionButtons" style="width:100%">
 
         <strong>
             <h:outputText value="Selection actions: " style="white-space: nowrap"/>
         </strong>
         &#160;&#160;
-        <h:commandButton value="Search Interactions"
-                         actionListener="#{searchBean.doSearchInteractionsFromCompoundListSelection}"
-                         action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
+
+        <h:outputText value="Select molecules by clicking on the row. Select more than one molecule by holding the Control key"
+                rendered="#{empty compoundListController.selected}"/>
+
+        <h:panelGroup rendered="#{not empty compoundListController.selected}">
+            <h:commandButton value="Search Interactions"
+                             actionListener="#{searchBean.doSearchInteractionsFromCompoundListSelection}"
+                             action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
+        </h:panelGroup>
     </p:panel>
 
 
@@ -25,7 +31,8 @@
                  rowIndexVar="status"
                  lazy="true" dynamic="true" emptyMessage="No compounds found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading compounds..."
-                 selection="#{compoundListController.selected}" selectionMode="multiple">
+                 selection="#{compoundListController.selected}" selectionMode="multiple"
+                update="compoundSelectionButtons">
 
         <p:column>
             <h:outputText value="#{status + 1}"/>

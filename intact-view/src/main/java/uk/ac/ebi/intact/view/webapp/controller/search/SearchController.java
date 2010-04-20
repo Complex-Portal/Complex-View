@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import uk.ac.ebi.intact.model.CvInteractorType;
+import uk.ac.ebi.intact.view.webapp.controller.ContextController;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.details.DetailsController;
@@ -57,6 +58,9 @@ public class SearchController extends JpaBaseController {
 
     @Autowired
     private SearchCache searchCache;
+
+    @Autowired
+    private ContextController contextController;
 
     private int totalResults;
     private int interactorTotalResults;
@@ -124,8 +128,7 @@ public class SearchController extends JpaBaseController {
 
         doBinarySearch( solrQuery );
 
-        //return "pages/interactions/interactions.xhtml?faces-redirect=true&includeViewParams=true";
-        return "interactions";
+        return "pages/interactions/interactions.xhtml?faces-redirect=true&includeViewParams=true";
     }
 
     public String doNewBinarySearch() {
