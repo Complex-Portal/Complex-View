@@ -3,25 +3,21 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:sf="http://www.ebi.ac.uk/faces/site"
-
-                xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+				xmlns:p="http://primefaces.prime.com.tr/ui"
 
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
 
     <ui:define name="content">
 
-        <tr:panelBox text="Error">
+        <p:panel text="Error">
             500 Internal Server Error. Sorry!
-        </tr:panelBox>
+        </p:panel>
 
-        <tr:commandLink text="Go to the main page" action="main"
+        <h:commandLink text="Go to the main page" action="main"
                 immediate="true"/>
 
     </ui:define>
 
 </ui:composition>
+
