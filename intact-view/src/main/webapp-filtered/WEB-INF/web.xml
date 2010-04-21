@@ -356,7 +356,6 @@
     <servlet>
 		<servlet-name>Resource Servlet</servlet-name>
 		<servlet-class>org.primefaces.resource.ResourceServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
