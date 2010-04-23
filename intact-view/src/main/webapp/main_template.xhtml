@@ -24,9 +24,8 @@
         <h:panelGroup>
 
             <h:panelGroup>
-                <p:panel header="Important notice" background="transparent"
-                             icon="/images/warning.gif"
-                             rendered="#{not empty intactViewConfiguration.warningMessage}">
+                <p:panel header="Important notice"
+                         rendered="#{not empty intactViewConfiguration.warningMessage}">
                     <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
                 </p:panel>
             </h:panelGroup>
@@ -164,6 +163,7 @@
 
 
             <script type="text/javascript">
+                mainTabsWidget.set('activeIndex', #{contextController.activeTabIndex});
                 mainTabsWidget.addListener('click', handleTabClick);
 
                 function handleTabClick(e) {
