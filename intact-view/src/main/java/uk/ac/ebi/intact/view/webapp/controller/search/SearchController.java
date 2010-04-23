@@ -1,5 +1,6 @@
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -9,12 +10,9 @@ import org.hupo.psi.mi.psicquic.registry.ServiceType;
 import org.hupo.psi.mi.psicquic.registry.client.PsicquicRegistryClientException;
 import org.hupo.psi.mi.psicquic.registry.client.registry.DefaultPsicquicRegistryClient;
 import org.hupo.psi.mi.psicquic.registry.client.registry.PsicquicRegistryClient;
-import org.hupo.psi.mi.psicquic.wsclient.UniversalPsicquicClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.search.SearchResult;
-import psidev.psi.mi.tab.model.BinaryInteraction;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.view.webapp.controller.ContextController;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
@@ -29,8 +27,13 @@ import uk.ac.ebi.intact.view.webapp.model.LazySearchResultDataModel;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ValueChangeEvent;
-import java.util.*;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Search controller.
@@ -44,14 +47,6 @@ import java.util.*;
 public class SearchController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog(SearchController.class);
-
-    public static final String TERMID_QUERY_PARAM = "termId";
-
-    // table IDs
-    public static final String INTERACTIONS_TABLE_ID = "interactionResults";
-    public static final String PROTEINS_TABLE_ID = "proteinListResults";
-    public static final String COMPOUNDS_TABLE_ID = "compoundListResults";
-    public static final String NUCLEIC_ACID_TABLE_ID = "nucleicAcidListResults";
 
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
@@ -93,8 +88,9 @@ public class SearchController extends JpaBaseController {
     private int countInOtherImexDatabases;
     private int otherDatabasesWithResults;
     private int otherImexDatabasesWithResults;
-    private Map<String,UniversalPsicquicClient> psicquicClientCache;
+
     private boolean psicquicQueryRunning;
+    private String lastPsicquicSearch;
 
     //sorting
     private static final String DEFAULT_SORT_COLUMN = "rigid";
@@ -220,7 +216,18 @@ public class SearchController extends JpaBaseController {
         psicquicQueryRunning = true;
 
         try {
-            countResultsInOtherDatabases();
+
+                String query = getUserQuery().getSearchQuery();
+
+                if (query == null || query.length() == 0) {
+                    query = "*";
+                }
+
+            if (!query.equals(lastPsicquicSearch)) {
+                countResultsInOtherDatabases(query);
+                lastPsicquicSearch = query;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -228,7 +235,7 @@ public class SearchController extends JpaBaseController {
         psicquicQueryRunning = false;
     }
 
-    private void countResultsInOtherDatabases() throws PsicquicRegistryClientException {
+    private void countResultsInOtherDatabases(String query) throws PsicquicRegistryClientException {
         final String psicquicRegistryUrl = intactViewConfiguration.getPsicquicRegistryUrl();
 
         if (psicquicRegistryUrl == null || psicquicRegistryUrl.length() == 0) {
@@ -265,24 +272,15 @@ public class SearchController extends JpaBaseController {
 
             List<String> lines = null;
             try {
-                String query = getUserQuery().getSearchQuery();
 
-                if (query == null || query.length() == 0) {
-                    query = "*";
-                }
-
-                int psicquicCount;
+                int psicquicCount = 0;
                 int imexCount = 0;
 
-                UniversalPsicquicClient client = getPsicquicClientFromCache(service);
-                SearchResult<BinaryInteraction> psicquicResult = client.getByQuery(query, 0, 0);
-                psicquicCount = psicquicResult.getTotalCount();
-
+                psicquicCount = countInPsicquicService(service, query);
 
                 if (isImexService) {
                     final String imexQuery = createImexQuery(query);
-                    SearchResult<BinaryInteraction> imexResult = client.getByQuery(imexQuery, 0, 0);
-                    imexCount = imexResult.getTotalCount();
+                    imexCount = countInPsicquicService(service, imexQuery);
                 }
 
                 countInOtherDatabases += psicquicCount;
@@ -303,6 +301,23 @@ public class SearchController extends JpaBaseController {
         }
     }
 
+    private int countInPsicquicService(ServiceType service, String query) {
+        int psicquicCount = 0;
+
+        try {
+            String encoded = URLEncoder.encode(query, "UTF-8");
+            encoded = encoded.replaceAll("\\+", "%20");
+
+            String url = service.getRestUrl()+"query/"+ encoded +"?format=count";
+            String strCount = IOUtils.toString(new URL(url).openStream());
+            psicquicCount = Integer.parseInt(strCount);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return psicquicCount;
+    }
+
     private String createImexQuery(String query) {
         String filter = "interaction_id:imex";
 
@@ -311,23 +326,6 @@ public class SearchController extends JpaBaseController {
         } else {
             return filter;
         }
-    }
-
-    private UniversalPsicquicClient getPsicquicClientFromCache(ServiceType service) {
-        if (psicquicClientCache == null) {
-            psicquicClientCache = new HashMap<String, UniversalPsicquicClient>();
-        }
-        
-        UniversalPsicquicClient client;
-
-        if (psicquicClientCache.containsKey(service.getName())) {
-            client = psicquicClientCache.get(service.getName());
-        } else {
-            client = new UniversalPsicquicClient(service.getSoapUrl());
-            psicquicClientCache.put(service.getName(), client);
-        }
-
-        return client;
     }
 
     private LazySearchResultDataModel createInteractionDataModel(SolrQuery query) {
@@ -444,52 +442,6 @@ public class SearchController extends JpaBaseController {
         SolrQuery solrQuery = userQuery.createSolrQuery();
 
         doBinarySearch(solrQuery);
-    }
-
-    public String resetSearch() {
-        UserQuery userQuery = getUserQuery();
-        userQuery.reset();
-        userQuery.setSearchQuery( "*:*" );
-        return doNewBinarySearch();
-    }
-
-    public void userSort( ValueChangeEvent event ) {
-        String sortableColumn = (String)event.getNewValue();
-
-        if ( sortableColumn == null ) {
-            sortableColumn = DEFAULT_SORT_COLUMN;
-        }
-
-        UserQuery userQuery = getUserQuery();
-
-        userQuery.setUserSortColumn( sortableColumn );
-        this.setUserSortColumn( sortableColumn );
-        userQuery.setUserSortOrder(DEFAULT_SORT_ORDER);
-        this.setAscending( DEFAULT_SORT_ORDER );
-
-        SolrQuery solrQuery = userQuery.createSolrQuery();
-
-        doBinarySearch( solrQuery );
-
-    }
-
-    public void userSortOrder( ValueChangeEvent event ) {
-        Boolean sortOrder =  (Boolean) event.getNewValue();
-
-        UserQuery userQuery = getUserQuery();
-
-        if ( sortOrder == null ) {
-            userQuery.setUserSortOrder( DEFAULT_SORT_ORDER );
-        } else {
-            userQuery.setUserSortColumn( this.getUserSortColumn());
-            userQuery.setUserSortOrder( sortOrder );
-            this.setAscending(sortOrder);
-
-            SolrQuery solrQuery = userQuery.createSolrQuery();
-
-            doBinarySearch( solrQuery );
-        }
-
     }
 
 

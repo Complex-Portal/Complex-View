@@ -20,7 +20,7 @@
 
         <h:panelGroup rendered="#{not empty nucleicAcidListController.selected}">
             <h:commandButton value="Search Interactions"
-                             actionListener="#{searchBean.doSearchInteractionsFromCompoundListSelection}"
+                             actionListener="#{searchBean.doSearchInteractionsFromDnaListSelection}"
                              action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
         </h:panelGroup>
     </p:panel>
