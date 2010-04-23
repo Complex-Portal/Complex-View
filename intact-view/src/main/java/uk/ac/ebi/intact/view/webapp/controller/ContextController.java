@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller;
 
-import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -27,8 +26,7 @@ import java.util.Map;
  * @version $Id$
  */
 @Controller
-@Scope("conversation.access")
-@ConversationName("general")
+@Scope("currentSearch")
 public class ContextController {
 
     private int activeTabIndex;
