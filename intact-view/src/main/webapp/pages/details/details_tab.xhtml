@@ -44,145 +44,128 @@
                 <iv:cvPopup cv="#{experiment.cvIdentification}" />
             </iv:panelLabelAndMessage>
 
+            <iv:panelLabelAndMessage label="Cross References:" labelStyle="font-weight:bold;" visible="#{not empty experiment.xrefs}">
+                <iv:xrefTable xrefs="#{experiment.xrefs}" />
+            </iv:panelLabelAndMessage>
 
-            <!--<iv:panelLabelAndMessage label="Cross References:" labelStyle="font-weight:bold;" visible="#{not empty experiment.xrefs}">-->
-                <!--<iv:xrefTable xrefs="#{experiment.xrefs}" />-->
-                <!--&lt;!&ndash;<ui:include src="/pages/details/xrefs.xhtml">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<ui:param name="xrefs" value="#{experiment.xrefs}"/>&ndash;&gt;-->
-                <!--&lt;!&ndash;</ui:include>&ndash;&gt;-->
-            <!--</iv:panelLabelAndMessage>-->
-            <!--&lt;!&ndash;<ui:param name="experimentAnnotations" value="#{detailsBean.experimentAnnotations}"/>&ndash;&gt;-->
-            <!--<iv:panelLabelAndMessage label="Annotations:" labelStyle="font-weight:bold;" visible="#{not empty experiment.annotations}">-->
-                <!--<iv:annotationTable annotations="#{experiment.annotations}" />-->
-                <!--&lt;!&ndash;<ui:include src="/pages/details/annotations.xhtml">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<ui:param name="annotations" value="#{experiment.annotations}"/>&ndash;&gt;-->
-                <!--&lt;!&ndash;</ui:include>&ndash;&gt;-->
-            <!--</iv:panelLabelAndMessage>-->
+        <iv:panelLabelAndMessage label="Annotations:" labelStyle="font-weight:bold;" visible="#{not empty experiment.annotations}">
+                <iv:annotationTable annotations="#{experiment.annotations}" />
+            </iv:panelLabelAndMessage>
 
     </h:panelGroup>
 
 
-    <!--<ui:param name="publication" value="#{experiment.publication}"/>-->
-    <!--<ui:param name="pmid" value="#{iaf:getPubmedId(experiment)}"/>-->
+    <ui:param name="publication" value="#{experiment.publication}"/>
+    <ui:param name="pmid" value="#{iaf:getPubmedId(experiment)}"/>
 
-    <!--<h3>Publication</h3>-->
+    <h3>Publication</h3>
 
-    <!--<table id="publicationTable" width="100%">-->
-        <!--<tr>-->
-            <!--<td width="80%">-->
-                <!--&lt;!&ndash;<tr:panelFormLayout>&ndash;&gt;-->
+    <table id="publicationTable" width="100%">
+        <tr>
+            <td width="80%">
+                <!--<tr:panelFormLayout>-->
 
-                    <!--<iv:panelLabelAndMessage label="Author List:">-->
-                        <!--<h:outputText value="#{detailsBean.authorList}"/>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="Author List:" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{detailsBean.authorList}"/>
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="Title:">-->
-                        <!--<h:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="Title:" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="Journal:">-->
-                        <!--<h:outputText value="#{detailsBean.journal}"/>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="Journal:" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{detailsBean.journal}"/>
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="Year of Publication:">-->
-                        <!--<h:outputText value="#{detailsBean.publicationYear}"/>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="Year of Publication:" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{detailsBean.publicationYear}"/>
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="PubMed Id:" visible="#{pmid != null}"-->
-                            <!-->-->
-                        <!--<h:outputText value="#{pmid}"/>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="PubMed Id:" visible="#{pmid != null}" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{pmid}"/>
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="Cross References:" visible="#{not empty publication.xrefs}">-->
-                        <!--<ui:include src="/pages/details/xrefs.xhtml">-->
-                            <!--<ui:param name="xrefs" value="#{publication.xrefs}"/>-->
-                        <!--</ui:include>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty publication.xrefs}" labelStyle="font-weight:bold;">
+                        <iv:xrefTable xrefs="#{publication.xrefs}" />
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="Annotations:" visible="#{not empty publication.annotations}">-->
-                        <!--<ui:include src="/pages/details/annotations.xhtml">-->
-                            <!--<ui:param name="annotations" value="#{publication.annotations}"/>-->
-                        <!--</ui:include>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty publication.annotations}" labelStyle="font-weight:bold;">
+                        <iv:annotationTable annotations="#{publication.annotations}" />
+                    </iv:panelLabelAndMessage>
 
-                <!--&lt;!&ndash;</tr:panelFormLayout>&ndash;&gt;-->
+                <!--</tr:panelFormLayout>-->
 
-            <!--</td>-->
+            </td>
 
-            <!--<td width="20%" style="text-align: right; vertical-align: top;">-->
+            <td width="20%" style="text-align: right; vertical-align: top;">
 
-                <!--<p:panel id="publicationLinks" header="Links">-->
-                    <!--<h:commandLink text="Show all interactions" action="#{searchBean.doBinarySearchAction}">-->
-                        <!--<f:setPropertyActionListener value="#{pmid}" target="#{userQuery.searchQuery}"/>-->
-                    <!--</h:commandLink>-->
-                <!--</p:panel>-->
+                <p:panel id="publicationLinks" header="Links">
+                    <h:commandLink value="Show all interactions" action="#{searchBean.doBinarySearchAction}">
+                        <f:setPropertyActionListener value="#{pmid}" target="#{userQuery.searchQuery}"/>
+                        <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
+                    </h:commandLink>
+                </p:panel>
 
-            <!--</td>-->
-        <!--</tr>-->
-    <!--</table>-->
+            </td>
+        </tr>
+    </table>
 
 
-    <!--<ui:param name="interaction" value="#{detailsBean.interaction}"/>-->
+    <ui:param name="interaction" value="#{detailsBean.interaction}"/>
 
-    <!--<h:panelGroup id="interactionPanel" rendered="#{interaction != null}">-->
-        <!--<h3>Interaction</h3>-->
+    <h:panelGroup id="interactionPanel" rendered="#{interaction != null}">
+        <h3>Interaction</h3>
 
-        <!--<table width="100%">-->
-        <!--<tr>-->
-            <!--<td width="80%">-->
-                    <!--<iv:panelLabelAndMessage label="Accession:">-->
-                        <!--<h:outputText value="#{interaction.ac}"/>-->
-                    <!--</iv:panelLabelAndMessage>-->
+        <table width="100%">
+        <tr>
+            <td width="80%">
+                    <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{interaction.ac}"/>
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="Name:">-->
-                        <!--<h:outputText value="#{interaction.shortLabel}"/>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{interaction.shortLabel}"/>
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="Description:">-->
-                        <!--<h:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
+                    </iv:panelLabelAndMessage>
 
-                    <!--&lt;!&ndash;<iv:panelLabelAndMessage label="Type:">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<ui:include src="/pages/details/cvPopup.xhtml">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<ui:param name="cv" value="#{interaction.cvInteractionType}"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</ui:include>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</iv:panelLabelAndMessage>&ndash;&gt;-->
+                    <iv:panelLabelAndMessage label="Type:">
+                        <iv:cvPopup cv="#{interaction.cvInteractionType}" />
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="Cross References:" visible="#{not empty interaction.xrefs}">-->
-                        <!--<ui:include src="/pages/details/xrefs.xhtml">-->
-                            <!--<ui:param name="xrefs" value="#{interaction.xrefs}"/>-->
-                        <!--</ui:include>-->
-                    <!--</iv:panelLabelAndMessage>-->
+                    <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty interaction.xrefs}" labelStyle="font-weight:bold;">
+                        <iv:xrefTable xrefs="#{interaction.xrefs}" />
+                    </iv:panelLabelAndMessage>
 
-                    <!--<iv:panelLabelAndMessage label="Annotations:" visible="#{not empty interaction.annotations}">-->
-                        <!--<ui:include src="/pages/details/annotations.xhtml">-->
-                            <!--<ui:param name="annotations" value="#{interaction.annotations}"/>-->
-                        <!--</ui:include>-->
-                    <!--</iv:panelLabelAndMessage>-->
-            <!--</td>-->
+                    <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty interaction.annotations}" labelStyle="font-weight:bold;">
+                        <iv:annotationTable annotations="#{interaction.annotations}" />
+                    </iv:panelLabelAndMessage>
+            </td>
 
-            <!--<td style="text-align: right; vertical-align: top;" width="20%">-->
+            <td style="text-align: right; vertical-align: top;" width="20%">
 
-                <!--<p:panel id="interactionLinks" header="Links">-->
+                <p:panel id="interactionLinks" header="Links">
 
-                    <!--<h:commandLink text="Find similar interactions" action="browse.complex"-->
-                                    <!--onclick="document.getElementById('progress_image').style.display = 'block'; document.getElementById('progress_text').style.display = 'block';"/>-->
+                    <h:commandLink value="Find similar interactions" action="browse.complex"
+                                   onclick="document.getElementById('progress_image').style.display = 'block'; document.getElementById('progress_text').style.display = 'block';"/>
 
-                    <!--<br/>-->
+                    <br/>
 
-                    <!--<p:panel>-->
-                        <!--<h:graphicImage id="progress_image" alt="progress" style="display:none;"-->
-                                        <!--url="/images/wait_red_indicator.gif"/>-->
-                        <!--<h:outputText id="progress_text" style="display:none;"-->
-                                      <!--value="This search may take up to a few minutes when the number of participant is high. Please be patient."/>-->
-                    <!--</p:panel>-->
-                <!--</p:panel>-->
+                    <p:panel>
+                        <h:graphicImage id="progress_image" alt="progress" style="display:none;"
+                                        url="/images/wait_red_indicator.gif"/>
+                        <h:outputText id="progress_text" style="display:none;"
+                                      value="This search may take up to a few minutes when the number of participant is high. Please be patient."/>
+                    </p:panel>
+                </p:panel>
 
-            <!--</td>-->
-        <!--</tr>-->
-    <!--</table>-->
+            </td>
+        </tr>
+    </table>
 
-    <!--</h:panelGroup>-->
+    </h:panelGroup>
 
 
 
