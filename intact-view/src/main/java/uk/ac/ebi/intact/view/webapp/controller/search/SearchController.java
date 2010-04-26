@@ -209,9 +209,9 @@ public class SearchController extends JpaBaseController {
     }
 
     public void doPsicquicQuery(ActionEvent evt) {
-        if (psicquicQueryRunning) {
-            return;
-        }
+//        if (psicquicQueryRunning) {
+//            return;
+//        }
 
         psicquicQueryRunning = true;
 
@@ -224,15 +224,17 @@ public class SearchController extends JpaBaseController {
                 }
 
             if (!query.equals(lastPsicquicSearch)) {
+                System.out.println("PSICQUIC");
                 countResultsInOtherDatabases(query);
                 lastPsicquicSearch = query;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            psicquicQueryRunning = false;
         }
 
-        psicquicQueryRunning = false;
     }
 
     private void countResultsInOtherDatabases(String query) throws PsicquicRegistryClientException {

@@ -32,7 +32,6 @@
             <h:inputText label="Search: " id="queryTxt"
                          size="60" value="#{userQuery.searchQuery}"
                          rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"
-                         onkeyup="return submitEnter('quickSearchBtn',event)"
                          disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
             <h:commandButton id="quickSearchBtn"
