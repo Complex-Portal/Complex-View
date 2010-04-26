@@ -23,12 +23,6 @@
         </p:dialog>
 
         <h:panelGroup id="searchPanel" style="vertical-align:top">
-            <h:outputScript>
-                dojo.addOnLoad(function () {
-                document.getElementById('queryTxt').focus();
-                });
-            </h:outputScript>
-
             <h:inputText label="Search: " id="queryTxt"
                          size="60" value="#{userQuery.searchQuery}"
                          rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"

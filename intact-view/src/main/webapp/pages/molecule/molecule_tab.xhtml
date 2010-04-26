@@ -3,38 +3,28 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
-                xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions" >
 
-    <tr:panelHeader text="Molecule info">
+    <h2>Molecule info</h2>
 
-        <tr:panelFormLayout>
-            <!--<ui:param name="uniprotAc" value="#{iaf:getIdentityXref(moleculeViewBean.interactor, 'MI:0486').primaryId}"/>-->
-            <ui:param name="uniprotAc" value="#{iaf:getIdentifierForDasty(moleculeViewBean.interactor)}"/>
+    <ui:param name="uniprotAc" value="#{iaf:getIdentifierForDasty(moleculeViewBean.interactor)}"/>
 
-            <tr:inputText label="#{intactView['webapp.name']} AC: " value="#{moleculeViewBean.interactor.ac}"
-                          readOnly="true"/>
-            <tr:inputText label="Short label: " value="#{moleculeViewBean.interactor.shortLabel}"
-                          readOnly="true"/>
-            <tr:inputText label="Uniprot AC: " value="#{uniprotAc}"
-                          readOnly="true"/>
-        </tr:panelFormLayout>
+    <h:inputText label="#{intactView['webapp.name']} AC: " value="#{moleculeViewBean.interactor.ac}"
+                 readOnly="true"/>
+    <h:inputText label="Short label: " value="#{moleculeViewBean.interactor.shortLabel}"
+                 readOnly="true"/>
+    <h:inputText label="Uniprot AC: " value="#{uniprotAc}"
+                 readOnly="true"/>
 
-    </tr:panelHeader>
-
-    <tr:panelHeader text="Dasty2 visualization">
+    <h2>Dasty2 visualization</h2>
 
          <iframe frameborder="0" width="100%" height="1200"
             src="#{requestConfigBean.absoluteContextPath}/dasty/client/interactorview.html?q=#{uniprotAc}&amp;label=any&amp;t=3&amp;path=#{sf:urlEncode(requestConfigBean.absoluteContextPath)}#{sf:urlEncode('/dasty')}">
             Loading Dasty visualization...
         </iframe>
-
-    </tr:panelHeader>
 
 </ui:composition>

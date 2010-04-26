@@ -11,8 +11,6 @@
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
 
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
-                xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:o="http://myfaces.apache.org/orchestra" >
 
 <div style="float:right;">
@@ -21,7 +19,7 @@
                    windowWidth="700" windowHeight="500"
                    immediate="true">
         What is this view
-        <h:graphicImage alt="helpIcon" src="/images/help.png"/>
+        <h:graphicImage alt="helpIcon" url="/images/help.png"/>
     </h:commandLink>
 </div>
 
@@ -34,16 +32,13 @@
                 <h2>Quick search</h2>
 
                     <iv:panelLabelAndMessage label="Search query:">
-                        <h:inputText columns="30" value="#{userQuery.searchQuery}"
-                                      onfocus="this.select()"
-                                      onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
                         <f:facet name="help">
                             <h:panelGroup>
                                 <ul>
                                     <li>
                                     <h:panelGroup>
                                         Protein accession number: e.g.&#160;
-                                        <h:commandLink text="P20053" action="#{searchBean.doNewBinarySearch}">
+                                        <h:commandLink value="P20053" action="#{searchBean.doNewBinarySearch}">
                                             <f:setPropertyActionListener value="P20053"
                                                                          target="#{userQuery.searchQuery}"/>
                                         </h:commandLink>
@@ -51,7 +46,7 @@
                                         </li><li>
                                     <h:panelGroup>
                                         Drug name: e.g.&#160;
-                                        <h:commandLink text="imatinib" action="#{searchBean.doNewBinarySearch}">
+                                        <h:commandLink value="imatinib" action="#{searchBean.doNewBinarySearch}">
                                             <f:setPropertyActionListener value="imatinib"
                                                                          target="#{userQuery.searchQuery}"/>
                                         </h:commandLink>
@@ -59,160 +54,158 @@
                                      </li><li>
                                     <h:panelGroup>
                                         Gene name: e.g.&#160;
-                                        <h:commandLink text="DDR1" action="#{searchBean.doNewBinarySearch}">
+                                        <h:commandLink value="DDR1" action="#{searchBean.doNewBinarySearch}">
                                             <f:setPropertyActionListener value="DDR1"
                                                                          target="#{userQuery.searchQuery}"/>
                                         </h:commandLink>
                                     </h:panelGroup>
                                      </li><li>
-                                    <h:panelGroup>
-                                        Phrases (surrounded by quotes): e.g.
-                                        <h:commandLink action="#{searchBean.doNewBinarySearch}">
-                                            <f:setPropertyActionListener
-                                                    value="#{iam:surroundByQuotesIfMissing('NADH dehydrogenase')}"
-                                                    target="#{userQuery.searchQuery}"/>
-                                            "NADH dehydrogenase"
-                                        </h:commandLink>
+                                    <!--<h:panelGroup>-->
+                                        <!--Phrases (surrounded by quotes): e.g.-->
+                                        <!--<h:commandLink action="#{searchBean.doNewBinarySearch}">-->
+                                            <!--<f:setPropertyActionListener-->
+                                                    <!--value="#{iam:surroundByQuotesIfMissing('NADH dehydrogenase')}"-->
+                                                    <!--target="#{userQuery.searchQuery}"/>-->
+                                            <!--"NADH dehydrogenase"-->
+                                        <!--</h:commandLink>-->
 
-                                    </h:panelGroup>
+                                    <!--</h:panelGroup>-->
                                 </li>
                                 </ul>
                             </h:panelGroup>
                         </f:facet>
+
                         <f:facet name="end">
                             <h:commandButton id="searchBtn"
-                                              text="Search"
-                                              action="#{searchBean.doNewBinarySearch}"
-                                              styleClass="submit_button"/>
+                                              value="Search"
+                                              action="#{searchBean.doNewBinarySearch}"/>
                         </f:facet>
+
+                        <h:inputText columns="30" value="#{userQuery.searchQuery}"
+                                      onfocus="this.select()"
+                                      onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
                     </iv:panelLabelAndMessage>
 
                     <p:panel>
                         You can do more powerful queries by using the&#160;
-
-                        <!-- TODO implement dialog -->
-                        [DIALOG HERE]
-                        <!--<tr:commandLink action="dialog:help.miql"-->
-                                        <!--partialSubmit="true" useWindow="true"-->
-                                        <!--windowWidth="600" windowHeight="600"-->
-                                        <!--immediate="true">-->
-                            <!--Molecular Interaction Query Language-->
-                            <!--<tr:image source="/images/help.png" inlineStyle="vertical-align: baseline"/>-->
-                        <!--</tr:commandLink>-->
+                        <p:commandLink type="button" onclick="miqlHelpDialog.show()">
+                            Molecular Interaction Query Language
+                            <h:graphicImage alt="help" url="/images/help.png" style="vertical-align: baseline"/>
+                        </p:commandLink>
                     </p:panel>
 
 
-                <p:panel header="Ontology Search" style="width:100%">
+                <!--<p:panel header="Ontology Search" style="width:100%">-->
 
-                    <h:outputText
-                            value="Start typing an ontology term, possible completions of the term will be shown:"/>
-                    <br/><br/>
+                    <!--<h:outputText-->
+                            <!--value="Start typing an ontology term, possible completions of the term will be shown:"/>-->
+                    <!--<br/><br/>-->
 
 
-                    <iv:panelLabelAndMessage label="Ontology query:">
-                        <iam:inputAutocomplete id="ontologySearchQuery"
-                                               value="#{userQuery.ontologySearchQuery}"
-                                               columns="30"
-                                               readOnly="false"
-                                               locateBackingBean="#{ontologyBean}"
-                                               locateActionListenerName="fillAutocomplete"
-                                               locateValueFieldName="identifier"
-                                               locateVisibleFieldName="identifier"
-                                               maxSuggestions="#{intactViewConfiguration.maxOntologySuggestions}"
-                                               var="ontologyTerm">
+                    <!--<iv:panelLabelAndMessage label="Ontology query:">-->
+                        <!--<iam:inputAutocomplete id="ontologySearchQuery"-->
+                                               <!--value="#{userQuery.ontologySearchQuery}"-->
+                                               <!--columns="30"-->
+                                               <!--readOnly="false"-->
+                                               <!--locateBackingBean="#{ontologyBean}"-->
+                                               <!--locateActionListenerName="fillAutocomplete"-->
+                                               <!--locateValueFieldName="identifier"-->
+                                               <!--locateVisibleFieldName="identifier"-->
+                                               <!--maxSuggestions="#{intactViewConfiguration.maxOntologySuggestions}"-->
+                                               <!--var="ontologyTerm">-->
 
-                            <span style="font-weight:bold; color: #e65555; display:inline;">#{ontologyTerm.identifier}</span>
-                            <span style="display:inline;">
-                            <h:outputFormat value="#{ontologyTerm.label}"/></span>
-                            <span style="font-weight:bold; color: #00cc99; display:inline;">(#{ontologyTerm.count})</span>
+                            <!--<span style="font-weight:bold; color: #e65555; display:inline;">#{ontologyTerm.identifier}</span>-->
+                            <!--<span style="display:inline;">-->
+                            <!--<h:outputFormat value="#{ontologyTerm.label}"/></span>-->
+                            <!--<span style="font-weight:bold; color: #00cc99; display:inline;">(#{ontologyTerm.count})</span>-->
 
-                        </iam:inputAutocomplete>
+                        <!--</iam:inputAutocomplete>-->
 
-                        <f:facet name="help">
-                            <h:panelGroup>
-                                <ul><li>
-                                    <h:panelGroup>
-                                        <h:outputText value="Term name: "/>
-                                        <h:commandLink text="mammalia"
-                                                        actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
-                                                        action="#{searchBean.doBinarySearchAction}">
-                                            <f:param name="term" value="mammalia"/>
-                                        </h:commandLink>
-                                    </h:panelGroup>
-                                    </li><li>
-                                    <h:panelGroup>
-                                        <h:outputText value="Term name: "/>
-                                        <h:commandLink text="two hybrid"
-                                                        actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
-                                                        action="#{searchBean.doBinarySearchAction}">
-                                            <f:param name="term" value="two hybrid"/>
-                                        </h:commandLink>
-                                    </h:panelGroup>
-                                    </li><li>
-                                    <h:panelGroup>
-                                        <h:outputText value="Term identifier: "/>
-                                        <h:commandLink text="MI:0019"
-                                                        actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
-                                                        action="#{searchBean.doBinarySearchAction}">
-                                            <f:param name="term" value="MI:0019"/>
-                                        </h:commandLink>
-                                        &#160;
-                                        <h:outputText value="(coimmunoprecipitation)"/>
-                                    </h:panelGroup>
-                                </li></ul>
-                            </h:panelGroup>
-                        </f:facet>
-                        <f:facet name="end">
-                            <h:commandButton id="ontologySearchBtn"
-                                              text="Search"
-                                              actionListener="#{userQuery.prepareFromOntologySearch}"
-                                              action="#{searchBean.doBinarySearchAction}"
-                                              styleClass="submit_button"/>
-                        </f:facet>
-                    </iv:panelLabelAndMessage>
+                        <!--<f:facet name="help">-->
+                            <!--<h:panelGroup>-->
+                                <!--<ul><li>-->
+                                    <!--<h:panelGroup>-->
+                                        <!--<h:outputText value="Term name: "/>-->
+                                        <!--<h:commandLink text="mammalia"-->
+                                                        <!--actionListener="#{userQuery.doAddParamOntologyTermToQuery}"-->
+                                                        <!--action="#{searchBean.doBinarySearchAction}">-->
+                                            <!--<f:param name="term" value="mammalia"/>-->
+                                        <!--</h:commandLink>-->
+                                    <!--</h:panelGroup>-->
+                                    <!--</li><li>-->
+                                    <!--<h:panelGroup>-->
+                                        <!--<h:outputText value="Term name: "/>-->
+                                        <!--<h:commandLink text="two hybrid"-->
+                                                        <!--actionListener="#{userQuery.doAddParamOntologyTermToQuery}"-->
+                                                        <!--action="#{searchBean.doBinarySearchAction}">-->
+                                            <!--<f:param name="term" value="two hybrid"/>-->
+                                        <!--</h:commandLink>-->
+                                    <!--</h:panelGroup>-->
+                                    <!--</li><li>-->
+                                    <!--<h:panelGroup>-->
+                                        <!--<h:outputText value="Term identifier: "/>-->
+                                        <!--<h:commandLink text="MI:0019"-->
+                                                        <!--actionListener="#{userQuery.doAddParamOntologyTermToQuery}"-->
+                                                        <!--action="#{searchBean.doBinarySearchAction}">-->
+                                            <!--<f:param name="term" value="MI:0019"/>-->
+                                        <!--</h:commandLink>-->
+                                        <!--&#160;-->
+                                        <!--<h:outputText value="(coimmunoprecipitation)"/>-->
+                                    <!--</h:panelGroup>-->
+                                <!--</li></ul>-->
+                            <!--</h:panelGroup>-->
+                        <!--</f:facet>-->
+                        <!--<f:facet name="end">-->
+                            <!--<h:commandButton id="ontologySearchBtn"-->
+                                              <!--text="Search"-->
+                                              <!--actionListener="#{userQuery.prepareFromOntologySearch}"-->
+                                              <!--action="#{searchBean.doBinarySearchAction}"-->
+                                              <!--styleClass="submit_button"/>-->
+                        <!--</f:facet>-->
+                    <!--</iv:panelLabelAndMessage>-->
 
-                    <iv:panelLabelAndMessage label="Note: ">
-                        <h:outputText value="Currently the following ontologies are supported : "/>
-                        <h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=GO"
-                                 target="_blank">Gene Ontology</h:outputLink>
-                        <h:outputText value=", "/>
-                        <h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI"
-                                 target="_blank">PSI-MI</h:outputLink>
-                        <h:outputText value=", "/>
-                        <h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=CHEBI"
-                                 target="_blank">ChEBI</h:outputLink>
-                        <h:outputText value=", "/>
-                        <h:outputLink value="http://www.uniprot.org/taxonomy"
-                                 target="_blank">niProt Taxonomy</h:outputLink>
-                        <h:outputText value=", "/>
-                        <h:outputText value=" and "/>
-                        <h:outputLink value="http://www.ebi.ac.uk/interpro/"
-                                 target="_blank">InterPro</h:outputLink>
-                        <h:outputText value=", "/>
+                    <!--<iv:panelLabelAndMessage label="Note: ">-->
+                        <!--<h:outputText value="Currently the following ontologies are supported : "/>-->
+                        <!--<h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=GO"-->
+                                 <!--target="_blank">Gene Ontology</h:outputLink>-->
+                        <!--<h:outputText value=", "/>-->
+                        <!--<h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI"-->
+                                 <!--target="_blank">PSI-MI</h:outputLink>-->
+                        <!--<h:outputText value=", "/>-->
+                        <!--<h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=CHEBI"-->
+                                 <!--target="_blank">ChEBI</h:outputLink>-->
+                        <!--<h:outputText value=", "/>-->
+                        <!--<h:outputLink value="http://www.uniprot.org/taxonomy"-->
+                                 <!--target="_blank">niProt Taxonomy</h:outputLink>-->
+                        <!--<h:outputText value=", "/>-->
+                        <!--<h:outputText value=" and "/>-->
+                        <!--<h:outputLink value="http://www.ebi.ac.uk/interpro/"-->
+                                 <!--target="_blank">InterPro</h:outputLink>-->
+                        <!--<h:outputText value=", "/>-->
 
-                    </iv:panelLabelAndMessage>
+                    <!--</iv:panelLabelAndMessage>-->
 
-                    <br/>
+                    <!--<br/>-->
 
-                    <p:panel header="Why do I find more interactions using the Ontology Search ?"
-                             toggleable="true" collapsed="true" closable="true">
-                            <br/>
-                            The ontology search is designed to provide search facilities on a given set of ontologies.
-                            Furthermore, whenever you search for a given ontology term, it also includes the interactions of
-                            all children that may have been used to annotate participants of these interactions.
-                            <br/>
-                            <br/>
-                            <u>Example</u>: Let's look at a GO term like synapse (GO:0045202), when searching for synapse in the
-                            Ontology Search, we actually search for that term but also all of its children as depicted below:
+                    <!--<p:panel header="Why do I find more interactions using the Ontology Search ?"-->
+                             <!--toggleable="true" collapsed="true" closable="true">-->
+                            <!--<br/>-->
+                            <!--The ontology search is designed to provide search facilities on a given set of ontologies.-->
+                            <!--Furthermore, whenever you search for a given ontology term, it also includes the interactions of-->
+                            <!--all children that may have been used to annotate participants of these interactions.-->
+                            <!--<br/>-->
+                            <!--<br/>-->
+                            <!--<u>Example</u>: Let's look at a GO term like synapse (GO:0045202), when searching for synapse in the-->
+                            <!--Ontology Search, we actually search for that term but also all of its children as depicted below:-->
 
-                            <blockquote>
-                                <h:graphicImage alt="goSynapse" source="/images/documentation/go_synapse.png"/></blockquote>
+                            <!--<blockquote>-->
+                                <!--<h:graphicImage alt="goSynapse" source="/images/documentation/go_synapse.png"/></blockquote>-->
 
-                            However, when searching for that same term in Quick Search, we will only present you with the
-                            interactions for which this and only this term was found.
-                    </p:panel>
+                            <!--However, when searching for that same term in Quick Search, we will only present you with the-->
+                            <!--interactions for which this and only this term was found.-->
+                    <!--</p:panel>-->
 
-                </p:panel>
+                <!--</p:panel>-->
             </h:panelGroup>
 
         </td>
