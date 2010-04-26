@@ -11,11 +11,15 @@
 
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
-    <!--<ui:define name="additionalHeader">-->
-        <!--<h:panelGroup rendered="#{disclosedTabName == 'molecule'}">-->
-            <!--<iav:dastyHeader/>-->
-        <!--</h:panelGroup>-->
-    <!--</ui:define>-->
+    <ui:define name="dialogs">
+        <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
+                  draggable="false" close="false" zindex="200" height="30px" fixedCenter="true">
+                <h:graphicImage alt="loading" url="/images/wait_white_indicator.gif"
+                                style="vertical-align:middle;"/>
+                &#160;
+                <h:outputText value="Loading content..."/>
+        </p:dialog>
+    </ui:define>
 
     <ui:define name="content">
 
@@ -38,10 +42,15 @@
 
         <h:form id="intactForm" prependId="false">
 
+             <!--<p:ajaxStatus onstart="statusDialog.show();" oncomplete="statusDialog.hide();"  />  -->
+
+ 
+
         <p:tabView id="mainPanels" cache="false" activeIndex="#{contextController.activeTabIndex}" widgetVar="mainTabsWidget">
             <p:tab title="Home">
                 <h:panelGroup id="content_0">
-                    <p:commandButton id="activate_0" update="content_0" style="display:none" disabled="#{contextController.isTabLoaded(0)}">
+                    <p:commandButton id="activate_0" update="content_0" style="display:none" disabled="#{contextController.isTabLoaded(0)}"
+                            onstart="statusDialog.show();" oncomplete="statusDialog.hide();">
                         <f:setPropertyActionListener value="0" target="#{contextController.activeTabIndex}"/>
                         <f:setPropertyActionListener value="0" target="#{contextController.tabLoaded}"/>
                     </p:commandButton>
@@ -56,7 +65,8 @@
 
             <p:tab title="Search">
                 <h:panelGroup id="content_1">
-                    <p:commandButton id="activate_1" update="content_1" style="display:none" disabled="#{contextController.isTabLoaded(1)}">
+                    <p:commandButton id="activate_1" update="content_1" style="display:none" disabled="#{contextController.isTabLoaded(1)}"
+                            onstart="statusDialog.show();" oncomplete="statusDialog.hide();">
                         <f:setPropertyActionListener value="1" target="#{contextController.activeTabIndex}"/>
                         <f:setPropertyActionListener value="1" target="#{contextController.tabLoaded}"/>
                     </p:commandButton>
@@ -73,7 +83,8 @@
                 <h:panelGroup id="content_2">
                     <p:commandButton id="activate_2" ajax="false"
                                      action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true" style="display:none"
-                                     disabled="#{contextController.isTabLoaded(2)}">
+                                     disabled="#{contextController.isTabLoaded(2)}"
+                                     onstart="statusDialog.show();" oncomplete="statusDialog.hide();">
                         <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
                         <f:setPropertyActionListener value="2" target="#{contextController.tabLoaded}"/>
                     </p:commandButton>
@@ -87,7 +98,8 @@
 
             <p:tab title="Browse" disabled="#{searchBean.totalResults == 0}">
                 <h:panelGroup id="content_3">
-                    <p:commandButton id="activate_3" update="content_3" style="display:none" disabled="#{contextController.isTabLoaded(3)}">
+                    <p:commandButton id="activate_3" update="content_3" style="display:none" disabled="#{contextController.isTabLoaded(3)}"
+                            onstart="statusDialog.show();" oncomplete="statusDialog.hide();">
                         <f:setPropertyActionListener value="3" target="#{contextController.activeTabIndex}"/>
                         <f:setPropertyActionListener value="3" target="#{contextController.tabLoaded}"/>
                     </p:commandButton>
@@ -103,7 +115,8 @@
                 <h:panelGroup id="content_4">
                     <p:commandButton id="activate_4"
                                      actionListener="#{searchBean.doInteractorsSearch()}"
-                                     update="content_4" style="display:none" disabled="#{contextController.isTabLoaded(4)}">
+                                     update="content_4" style="display:none" disabled="#{contextController.isTabLoaded(4)}"
+                            onstart="statusDialog.show();" oncomplete="statusDialog.hide();">
                         <f:setPropertyActionListener value="4" target="#{contextController.activeTabIndex}"/>
                         <f:setPropertyActionListener value="4" target="#{contextController.tabLoaded}"/>
                     </p:commandButton>
@@ -117,7 +130,8 @@
 
             <p:tab title="Interaction Details" disabled="#{detailsBean.interaction == null}">
                 <h:panelGroup id="content_5">
-                    <p:commandButton id="activate_5" update="content_5" style="display:none" disabled="#{contextController.isTabLoaded(5)}">
+                    <p:commandButton id="activate_5" update="content_5" style="display:none" disabled="#{contextController.isTabLoaded(5)}"
+                            onstart="statusDialog.show();" oncomplete="statusDialog.hide();">
                         <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
                         <f:setPropertyActionListener value="5" target="#{contextController.tabLoaded}"/>
                     </p:commandButton>
@@ -131,7 +145,8 @@
 
             <p:tab title="Molecule View" disabled="#{moleculeViewBean.interactor == null}">
                 <h:panelGroup id="content_6">
-                    <p:commandButton id="activate_6" update="content_6" style="display:none" disabled="#{contextController.isTabLoaded(6)}">
+                    <p:commandButton id="activate_6" update="content_6" style="display:none" disabled="#{contextController.isTabLoaded(6)}"
+                            onstart="statusDialog.show();" oncomplete="statusDialog.hide();">
                         <f:setPropertyActionListener value="6" target="#{contextController.activeTabIndex}"/>
                         <f:setPropertyActionListener value="6" target="#{contextController.tabLoaded}"/>
                     </p:commandButton>
@@ -147,7 +162,8 @@
                                shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
                                disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount }">
                  <h:panelGroup id="content_7">
-                    <p:commandButton id="activate_7" update="content_7" style="display:none" disabled="#{contextController.isTabLoaded(7)}">
+                    <p:commandButton id="activate_7" update="content_7" style="display:none" disabled="#{contextController.isTabLoaded(7)}"
+                            onstart="statusDialog.show();" oncomplete="statusDialog.hide();">
                         <f:setPropertyActionListener value="7" target="#{contextController.activeTabIndex}"/>
                         <f:setPropertyActionListener value="7" target="#{contextController.tabLoaded}"/>
                     </p:commandButton>
