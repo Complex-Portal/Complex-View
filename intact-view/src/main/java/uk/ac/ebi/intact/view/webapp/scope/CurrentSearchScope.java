@@ -16,55 +16,46 @@
 package uk.ac.ebi.intact.view.webapp.scope;
 
 import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.beans.factory.config.Scope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.web.context.request.SessionScope;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class CurrentSearchScope implements Scope, ApplicationContextAware {
+public class CurrentSearchScope extends SessionScope implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
-
-    private Object current;
-    private String currentQuery;
 
     public CurrentSearchScope() {
     }
 
     public Object get(String name, ObjectFactory objectFactory) {
+        String searchQuery = getSearchQuery();
+        return super.get(name+"::"+searchQuery, objectFactory);
+    }
+
+    public Object remove(String name) {
+        String searchQuery = getSearchQuery();
+        return super.remove(name+"::"+searchQuery);
+    }
+
+    private String getSearchQuery() {
         String searchQuery = getUserQuery().getSearchQuery();
 
         if (searchQuery == null) {
             searchQuery = "*";
         }
-
-        if (current == null || !searchQuery.equals(currentQuery)) {
-            current = objectFactory.getObject();
-            currentQuery = searchQuery;
-        }
-
-        return current;
-    }
-
-    public Object remove(String name) {
-        Object obj = current;
-        current = null;
-        currentQuery = null;
-
-        return obj;
-    }
-
-    public void registerDestructionCallback(String name, Runnable callback) {
-         // nothing
+        return searchQuery;
     }
 
     public String getConversationId() {
-        if (currentQuery != null) {
-            return currentQuery;
+        String searchQuery = getUserQuery().getSearchQuery();
+
+        if (searchQuery != null) {
+            return super.getConversationId()+"::"+searchQuery;
         }
         return null;
     }

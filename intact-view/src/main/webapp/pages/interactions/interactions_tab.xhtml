@@ -67,9 +67,9 @@
 
 </h:panelGroup>
     
-<h:panelGroup id="countingPsicquic" style="display:#{searchBean.countInOtherDatabases == -1? 'inline' : 'none'}">
+<h:panelGroup id="countingPsicquic" style="display:#{psicquicController.countInOtherDatabases == -1? 'inline' : 'none'}">
     <p:poll interval="2" async="true"  global="false" widgetVar="psicquicPoll" oncomplete="psicquicPoll.stop()"
-            actionListener="#{searchBean.doPsicquicQuery}"
+            actionListener="#{psicquicController.doPsicquicQuery}"
             update="countedPsicquic countingPsicquic" />
 
     <br/>
@@ -80,16 +80,16 @@
 
 <h:panelGroup id="countedPsicquic"
               style="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
-    <h:panelGroup rendered="#{searchBean.countInOtherDatabases gt 0 and not searchBean.psicquicQueryRunning}">
+    <h:panelGroup rendered="#{psicquicController.countInOtherDatabases gt 0 and not psicquicController.psicquicQueryRunning}">
         <br/>
         <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
         <h:outputLink value="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
-            <h:outputText value="#{searchBean.countInOtherDatabases}" style="font-weight:bold">
+            <h:outputText value="#{psicquicController.countInOtherDatabases}" style="font-weight:bold">
                 <f:convertNumber pattern="#,###"/>
             </h:outputText>
         </h:outputLink>
 
-        interaction evidences from <b>#{searchBean.otherDatabasesWithResults}</b> other databases.
+        interaction evidences from <strong>#{psicquicController.otherDatabasesWithResults}</strong> other databases.
         <p:commandLink type="button" onclick="psicquicDialog.show()">
             <h:graphicImage alt="helpIcon" url="/images/help.png"/>
         </p:commandLink>
@@ -102,16 +102,16 @@
         </p:dialog>
     </h:panelGroup>
 
-    <h:panelGroup rendered="#{searchBean.countInOtherDatabases gt 0 and searchBean.countInOtherImexDatabases gt 0 and not searchBean.psicquicQueryRunning}">
+    <h:panelGroup rendered="#{psicquicController.countInOtherDatabases gt 0 and psicquicController.countInOtherImexDatabases gt 0 and not psicquicController.psicquicQueryRunning}">
         <br/>
         <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
         <h:outputLink value="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
-            <h:outputText value="#{searchBean.countInOtherImexDatabases}" style="font-weight:bold">
+            <h:outputText value="#{psicquicController.countInOtherImexDatabases}" style="font-weight:bold">
                 <f:convertNumber pattern="#,###"/>
             </h:outputText>
         </h:outputLink>
 
-        interaction evidences from <b>#{searchBean.otherImexDatabasesWithResults}</b> other IMEx databases.
+        interaction evidences from <strong>#{psicquicController.otherImexDatabasesWithResults}</strong> other IMEx databases.
         <p:commandLink type="button" onclick="psicquicImexDialog.show()">
             <h:graphicImage alt="helpIcon" url="/images/help.png"/>
         </p:commandLink>
@@ -124,7 +124,7 @@
     </p:dialog>
     </h:panelGroup>
 
-    <h:panelGroup rendered="#{searchBean.countInOtherDatabases == 0 and searchBean.countInOtherImexDatabases == 0 and not searchBean.psicquicQueryRunning}">
+    <h:panelGroup rendered="#{psicquicController.countInOtherDatabases == 0 and psicquicController.countInOtherImexDatabases == 0 and not psicquicController.psicquicQueryRunning}">
 
         <br/>
         > No results in other databases.
