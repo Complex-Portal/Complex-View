@@ -64,6 +64,7 @@
                     <h:commandLink action="details">
                         <f:setPropertyActionListener value="#{testController.getIntactAc(binaryInteraction)}"
                                                      target="#{detailsBean.interactionAc}"/>
+                        <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
                         <h:graphicImage url="/images/magnify.png" alt="details" />
                     </h:commandLink>
                 </h:panelGroup>
@@ -221,6 +222,7 @@
                         <h:panelGroup>
                             <h:commandLink action="details" value="#{xref.identifier}">
                                 <f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>
+                                <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
                             </h:commandLink>
                             <br/>
                         </h:panelGroup>
