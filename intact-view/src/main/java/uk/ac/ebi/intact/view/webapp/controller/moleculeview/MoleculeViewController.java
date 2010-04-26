@@ -21,7 +21,6 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
@@ -44,15 +43,15 @@ public class MoleculeViewController extends JpaBaseController{
 
     private static final String INTERACTOR_AC_PARAM = "interactorAc";
 
+    private String interactorAc;
     private Interactor interactor;
 
     public MoleculeViewController() {
 
     }
 
-    public void initialParams() {
+    public void loadInteractor() {
         FacesContext context = FacesContext.getCurrentInstance();
-        final String interactorAc = context.getExternalContext().getRequestParameterMap().get(INTERACTOR_AC_PARAM);
 
         if ( interactorAc != null ) {
             log.debug( "Parameter " + INTERACTOR_AC_PARAM + " was specified" );
@@ -71,9 +70,12 @@ public class MoleculeViewController extends JpaBaseController{
 
     }
 
-    @Transactional(readOnly = true)
-    public void setInteractorAc(String ac) {
-        interactor = getDaoFactory().getInteractorDao().getByAc(ac);
+    public String getInteractorAc() {
+        return interactorAc;
+    }
+
+    public void setInteractorAc(String interactorAc) {
+        this.interactorAc = interactorAc;
     }
 
     public Interactor getInteractor() {

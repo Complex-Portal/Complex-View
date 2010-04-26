@@ -9,7 +9,8 @@
      <f:metadata>
          <f:event type="preRenderView" listener="#{contextController.clearLoadedTabs()}"/>
         <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(1)}"/>
-        <f:viewParam name="query" value="#{userQuery.searchQuery}"/>
+
+         <f:viewParam name="query" value="#{userQuery.searchQuery}"/>
         <f:viewParam name="ontologyQuery" value="#{userQuery.ontologySearchQuery}"/>
         <f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>
     </f:metadata>

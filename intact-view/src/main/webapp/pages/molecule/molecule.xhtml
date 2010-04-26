@@ -8,6 +8,8 @@
 
      <f:metadata>
         <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(6)}"/>
+         <f:viewParam name="interactorAc" value="#{moleculeViewBean.interactorAc}"/>
+        <f:event type="preRenderView" listener="#{moleculeViewBean.loadInteractor}"/>
     </f:metadata>
 
 </ui:composition>
