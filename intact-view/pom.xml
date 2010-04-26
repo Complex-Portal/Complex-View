@@ -203,6 +203,7 @@
     </build>
 
     <repositories>
+    <!--
         <repository>
             <releases>
                 <enabled>true</enabled>
@@ -213,7 +214,7 @@
             <id>apache-maven-snapshots</id>
             <url>http://people.apache.org/repo/m2-snapshot-repository</url>
         </repository>
-
+-->
         <!-- EBI Repos -->
         <repository>
             <id>ebi-repo</id>
@@ -236,12 +237,6 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
-
-        <repository>
-            <id>lua</id>
-            <url>http://people.apache.org/~lu4242/myfaces200</url>
-            <snapshots><enabled>false</enabled></snapshots>
         </repository>
 
         <!-- Primefaces -->

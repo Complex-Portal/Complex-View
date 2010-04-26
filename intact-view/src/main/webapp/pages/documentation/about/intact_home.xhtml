@@ -4,6 +4,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
 
@@ -60,9 +61,9 @@
             <p>
                 To perform a search in the #{intactView['webapp.name']} database use the search box in the top left corner.
             </p>
-
-                <iv:panelLabelAndMessage label="Examples:">
-                            <ul style="margin-top:0px">
+                <ot:separateConversationContext>
+                    <iv:panelLabelAndMessage label="Examples:">
+                        <ul style="margin-top:0px">
                             <li>
                                 <h:outputText value="Gene name: e.g. "/>
                                 <h:commandLink value="BRCA2" action="#{searchBean.doBinarySearchAction}">
@@ -96,7 +97,8 @@
                                 </h:commandLink>
                             </li>
                         </ul>
-                </iv:panelLabelAndMessage>
+                    </iv:panelLabelAndMessage>
+                </ot:separateConversationContext>
 
             <p/>
             <p:panel>

@@ -64,10 +64,13 @@
                     <h:commandLink action="details">
                         <f:setPropertyActionListener value="#{testController.getIntactAc(binaryInteraction)}"
                                                      target="#{detailsBean.interactionAc}"/>
-                        <h:graphicImage url="/images/magnify.png" alt="" />
+                        <h:graphicImage url="/images/magnify.png" alt="details" />
                     </h:commandLink>
                 </h:panelGroup>
             </p:column>
+        <p:column>
+              <h:outputText value="#{row + 1}"/>
+        </p:column>
 
             <p:column rendered="#{columnContext.isColumnVisible('moleculeA.name')}">
                 <f:facet name="header">
