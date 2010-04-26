@@ -69,6 +69,7 @@
     
 <h:panelGroup id="countingPsicquic" style="display:#{searchBean.countInOtherDatabases == -1? 'inline' : 'none'}">
     <p:poll interval="2" async="true"  global="false" widgetVar="psicquicPoll" oncomplete="psicquicPoll.stop()"
+            onstart="if(!psicquicPoll.isActive()) return false"
             actionListener="#{searchBean.doPsicquicQuery}"
             update="countedPsicquic countingPsicquic" />
 
