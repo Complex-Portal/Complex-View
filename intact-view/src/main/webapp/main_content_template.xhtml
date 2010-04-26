@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+
+                template="main_template.xhtml">
+
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{contextController.clearLoadedTabs()}"/>
+    </f:metadata>
+
+    <ui:define name="aboutTabContent">
+        <ui:include src="/pages/documentation/about/intact_home.xhtml"/>
+    </ui:define>
+
+    <!--<ui:define name="searchTabContent">-->
+        <!--<ui:include src="/pages/search/search_tab.xhtml"/>-->
+    <!--</ui:define>-->
+
+    <ui:define name="interactionsTabContent">
+        <ui:include src="/pages/interactions/interactions_tab.xhtml"/>
+    </ui:define>
+
+    <ui:define name="browseTabContent">
+        <ui:include src="/pages/browse/browse_tab.xhtml"/>
+    </ui:define>
+
+    <ui:define name="listTabContent">
+        <ui:include src="/pages/list/list_tab.xhtml"/>
+    </ui:define>
+
+    <!--<ui:define name="moleculeTabContent">-->
+        <!--<ui:include src="/pages/molecule/molecule_tab.xhtml"/>-->
+    <!--</ui:define>-->
+
+    <ui:define name="detailsTabContent">
+        <ui:include src="/pages/details/details_tab.xhtml"/>
+    </ui:define>
+
+    <ui:define name="graphTabContent">
+        <ui:include src="/pages/graph/graph_tab.xhtml"/>
+    </ui:define>
+
+</ui:composition>

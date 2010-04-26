@@ -142,9 +142,6 @@
 
         <p:column>
             <f:facet name="header"><h:outputText value="#{messages['list.description']}"/></f:facet>
-            <ui:param name="intactIdentifier"
-                      value="#{interactorWrapper.interactor.ac}"/>
-            <ui:param name="interactor" value="#{interactorWrapper.interactor}"/>
             <h:outputText value="#{interactorWrapper.interactor.fullName}"/>
         </p:column>
 
