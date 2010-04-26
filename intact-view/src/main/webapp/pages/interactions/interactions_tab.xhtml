@@ -68,7 +68,8 @@
 </h:panelGroup>
     
 <h:panelGroup id="countingPsicquic" style="display:#{psicquicController.countInOtherDatabases == -1? 'inline' : 'none'}">
-    <p:poll interval="2" async="true"  global="false" widgetVar="psicquicPoll" oncomplete="psicquicPoll.stop()"
+    <p:poll interval="4" async="true"  global="false" widgetVar="psicquicPoll" oncomplete="if (psicquicPoll.isActive()) psicquicPoll.stop()"
+            process="@this"
             actionListener="#{psicquicController.doPsicquicQuery}"
             update="countedPsicquic countingPsicquic" />
 
