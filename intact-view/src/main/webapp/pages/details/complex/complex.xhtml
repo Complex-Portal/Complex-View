@@ -23,7 +23,9 @@
 
         <h:panelGroup valign="middle">
             <h:graphicImage url="/images/back_arrow.gif"/>
-            <h:commandLink text="Back to Interaction Details" action="details"/>
+            <h:commandLink action="details">
+                <h:outputText value="Back to Interaction Details" />
+            </h:commandLink>
         </h:panelGroup>
 
         <ui:param name="matrix" value="#{detailsBean.similarInteractionMatrix}"/>
