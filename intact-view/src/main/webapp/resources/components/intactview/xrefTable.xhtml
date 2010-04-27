@@ -5,6 +5,9 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui"
 
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
+
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
@@ -31,11 +34,13 @@
             <f:facet name="header">
                 <h:outputText value="Identifier"/>
             </f:facet>
-            <!--TODO add orchestra to separate from conversation-->
-            <h:outputLink text="#{xref.primaryId}" value="#{function.calculateXrefUrl(xref.cvDatabase, xref.primaryId)}"
-                          target="_blank">
-                <h:outputText value="#{xref.primaryId}" />
-            </h:outputLink>
+            
+            <ot:separateConversationContext>
+                <h:outputLink text="#{xref.primaryId}" value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}"
+                              target="_blank">
+                    <h:outputText value="#{xref.primaryId}" />
+                </h:outputLink>
+            </ot:separateConversationContext>
         </p:column>
 
         <p:column >
