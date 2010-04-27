@@ -60,16 +60,17 @@
                                         </h:commandLink>
                                     </h:panelGroup>
                                      </li><li>
-                                    <!--<h:panelGroup>-->
-                                        <!--Phrases (surrounded by quotes): e.g.-->
-                                        <!--<h:commandLink action="#{searchBean.doNewBinarySearch}">-->
-                                            <!--<f:setPropertyActionListener-->
-                                                    <!--value="#{iam:surroundByQuotesIfMissing('NADH dehydrogenase')}"-->
-                                                    <!--target="#{userQuery.searchQuery}"/>-->
-                                            <!--"NADH dehydrogenase"-->
-                                        <!--</h:commandLink>-->
+                                    <h:panelGroup>
+                                        Phrases (surrounded by quotes): e.g.
+                                        <ui:param name="expr" value="#{iam:surroundByQuotesIfMissing('NADH dehydrogenase')}"/>
+                                        <h:commandLink action="#{searchBean.doNewBinarySearch}">
+                                            <f:setPropertyActionListener
+                                                    value="#{expr}"
+                                                    target="#{userQuery.searchQuery}"/>
+                                            "NADH dehydrogenase"
+                                        </h:commandLink>
 
-                                    <!--</h:panelGroup>-->
+                                    </h:panelGroup>
                                 </li>
                                 </ul>
                             </h:panelGroup>
@@ -81,7 +82,7 @@
                                               action="#{searchBean.doNewBinarySearch}"/>
                         </f:facet>
 
-                        <h:inputText columns="30" value="#{userQuery.searchQuery}"
+                        <h:inputText size="30" value="#{userQuery.searchQuery}"
                                       onfocus="this.select()"
                                       onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
                     </iv:panelLabelAndMessage>
