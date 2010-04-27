@@ -14,6 +14,7 @@
   <composite:interface>
       <composite:attribute name="label" required="true"/>
       <composite:attribute name="labelStyle" default="white-space:nowrap;"/>
+      <composite:attribute name="labelStyleClass"/>
       <composite:attribute name="visible" type="java.util.Boolean" default="true"/>
       <composite:attribute name="width" default="100%"/>
 
@@ -29,7 +30,8 @@
             <table width="#{cc.attrs.width}">
                 <tr style="vertical-align:top">
                     <td>
-                        <h:outputText value="#{cc.attrs.label}" style="#{cc.attrs.labelStyle}}"/>
+                        <h:outputText value="#{cc.attrs.label}" style="#{cc.attrs.labelStyle}"
+                                      class="#{cc.attrs.labelStyleClass}"/>
                     </td>
                     <td width="100%">
                         <composite:insertChildren/>

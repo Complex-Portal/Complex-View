@@ -25,23 +25,23 @@
 
     <h:panelGroup>
 
-        <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+        <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
             <h:outputText value="#{experiment.ac}"/>
         </iv:panelLabelAndMessage>
 
-        <iv:panelLabelAndMessage label="Name:"  labelStyle="font-weight:bold;">
+        <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
             <h:outputText value="#{experiment.shortLabel}"/>
         </iv:panelLabelAndMessage>
 
-        <iv:panelLabelAndMessage label="Host organism:"  labelStyle="font-weight:bold;">
+        <iv:panelLabelAndMessage label="Host organism:" labelStyleClass="textLabel">
             <iv:biosourcePopup bioSource="#{experiment.bioSource}" />
         </iv:panelLabelAndMessage>
 
-        <iv:panelLabelAndMessage label="Interaction Detection Method:"  labelStyle="font-weight:bold;">
+        <iv:panelLabelAndMessage label="Interaction Detection Method:" labelStyleClass="textLabel">
             <iv:cvPopup cv="#{experiment.cvInteraction}" />
         </iv:panelLabelAndMessage>
 
-        <iv:panelLabelAndMessage label="Participant Identification Method:"  labelStyle="font-weight:bold;">
+        <iv:panelLabelAndMessage label="Participant Identification Method:" labelStyleClass="textLabel">
             <iv:cvPopup cv="#{experiment.cvIdentification}" />
         </iv:panelLabelAndMessage>
 
@@ -69,31 +69,31 @@
         <tr>
             <td width="80%">
 
-                <iv:panelLabelAndMessage label="Author List:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Author List:" labelStyleClass="textLabel">
                     <h:outputText value="#{detailsBean.authorList}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Title:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Title:" labelStyleClass="textLabel">
                     <h:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Journal:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Journal:" labelStyleClass="textLabel">
                     <h:outputText value="#{detailsBean.journal}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Year of Publication:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Year of Publication:" labelStyleClass="textLabel">
                     <h:outputText value="#{detailsBean.publicationYear}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="PubMed Id:" visible="#{pmid != null}" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="PubMed Id:" visible="#{pmid != null}" labelStyleClass="textLabel">
                     <h:outputText value="#{pmid}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty publication.xrefs}" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty publication.xrefs}" labelStyleClass="textLabel">
                     <iv:xrefTable xrefs="#{publication.xrefs}" />
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty publication.annotations}" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty publication.annotations}" labelStyleClass="textLabel">
                     <iv:annotationTable annotations="#{publication.annotations}" />
                 </iv:panelLabelAndMessage>
 
@@ -121,19 +121,19 @@
         <table width="100%">
         <tr>
             <td width="80%">
-                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
                     <h:outputText value="#{interaction.ac}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
                     <h:outputText value="#{interaction.shortLabel}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Description:" labelStyleClass="textLabel">
                     <h:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Type:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Type:" labelStyleClass="textLabel">
                     <iv:cvPopup cv="#{interaction.cvInteractionType}" />
                 </iv:panelLabelAndMessage>
 
