@@ -104,7 +104,7 @@ public class SearchController extends JpaBaseController {
 
         doBinarySearch( solrQuery );
 
-        return "pages/interactions/interactions.xhtml?faces-redirect=true&includeViewParams=true";
+        return "/pages/interactions/interactions.xhtml?faces-redirect=true&includeViewParams=true";
     }
 
     public String doNewBinarySearch() {

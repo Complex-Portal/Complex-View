@@ -13,8 +13,9 @@
     <!-- INTERFACE -->
   <composite:interface>
       <composite:attribute name="label" required="true"/>
-      <composite:attribute name="labelStyle"/>
+      <composite:attribute name="labelStyle" default="white-space:nowrap;"/>
       <composite:attribute name="visible" type="java.util.Boolean" default="true"/>
+      <composite:attribute name="width" default="100%"/>
 
       <composite:facet name="help"/>
       <composite:facet name="end"/>
@@ -25,12 +26,12 @@
 
         <p:outputPanel rendered="#{cc.attrs.visible}">
 
-            <table>
+            <table width="#{cc.attrs.width}">
                 <tr style="vertical-align:top">
                     <td>
                         <h:outputText value="#{cc.attrs.label}" style="#{cc.attrs.labelStyle}}"/>
                     </td>
-                    <td>
+                    <td width="100%">
                         <composite:insertChildren/>
                     </td>
                     <td>

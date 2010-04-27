@@ -29,6 +29,7 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
+import uk.ac.ebi.intact.view.webapp.util.OntologyTerm;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -66,6 +67,8 @@ public class UserQuery extends BaseController {
 
     private String searchQuery = STAR_QUERY;
     private String ontologySearchQuery;
+
+    private OntologyTerm ontologyTerm;
 
     private List<QueryToken> queryTokenList;
 
@@ -217,7 +220,12 @@ public class UserQuery extends BaseController {
     }
 
     public void prepareFromOntologySearch(ActionEvent evt) {
-        setSearchQuery(buildSolrOntologyQuery(ontologySearchQuery));
+        if (ontologyTerm != null) {
+            String query = ontologyTerm.getFieldName()+":\""+ontologyTerm.getIdentifier()+"\"";
+            setSearchQuery(query);
+        } else {
+            setSearchQuery(buildSolrOntologyQuery(ontologySearchQuery));
+        }
     }
 
     public String getDisplayQuery() {
@@ -635,5 +643,13 @@ public class UserQuery extends BaseController {
 
     public void setSearchBrowseName(String searchBrowseName) {
         this.searchBrowseName = searchBrowseName;
+    }
+
+    public OntologyTerm getOntologyTerm() {
+        return ontologyTerm;
+    }
+
+    public void setOntologyTerm(OntologyTerm ontologyTerm) {
+        this.ontologyTerm = ontologyTerm;
     }
 }

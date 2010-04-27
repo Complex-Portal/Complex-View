@@ -27,6 +27,7 @@ public class OntologyTerm {
     private String label;
     private String databaseLabel;
     private int count;
+    private String fieldName;
 
     public OntologyTerm(String identifier, String label, String databaseLabel) {
         this.identifier = identifier;
@@ -34,9 +35,10 @@ public class OntologyTerm {
         this.databaseLabel = databaseLabel;
     }
 
-    public OntologyTerm(String identifier, String label, String databaseLabel, int count) {
+    public OntologyTerm(String identifier, String label, String databaseLabel, int count, String fieldName) {
         this(identifier, label, databaseLabel);
         this.count = count;
+        this.fieldName = fieldName;
     }
 
     public String getIdentifier() {
@@ -57,6 +59,10 @@ public class OntologyTerm {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 
     @Override

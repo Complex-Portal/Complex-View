@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.application;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,20 +29,13 @@ import org.springframework.context.ApplicationContext;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
-import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
-import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 import uk.ac.ebi.intact.view.webapp.util.OntologiesIndexSearcher;
 import uk.ac.ebi.intact.view.webapp.util.OntologiesIndexWriter;
 import uk.ac.ebi.intact.view.webapp.util.OntologyTerm;
 
-import javax.el.ValueExpression;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 /**
  * Backing bean for Ontology Search and Autocomplete feature
  *
@@ -70,11 +62,11 @@ public class OntologyBean extends BaseController {
 
         try {
             FileUtils.forceDeleteOnExit(dir);
-            this.ontologyIndexDirectory = FSDirectory.getDirectory(dir);
+            this.ontologyIndexDirectory = FSDirectory.getDirectory(dir, true);
         } catch (IOException e) {
             throw new SearchWebappException("Problem creating ontology lucene directory", e);
         }
-        this.ontologiesIndexSearcher = new OntologiesIndexSearcher(ontologyIndexDirectory);
+        this.ontologiesIndexSearcher = new OntologiesIndexSearcher(ontologyIndexDirectory, false);
     }
 
     public void loadOntologies() throws IOException {
@@ -94,11 +86,21 @@ public class OntologyBean extends BaseController {
 
     }
 
+    public OntologyTerm findByIdentifier(String id) {
+        final OntologyTerm term;
+        try {
+            term = ontologiesIndexSearcher.findById(id);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Problem loading term: "+id);
+        }
+        return term;
+    }
+
     private int countDocsInIndex(Directory ontologyIndexDirectory) {
         int count = -1;
 
         try {
-            IndexSearcher searcher = new IndexSearcher(ontologyIndexDirectory);
+            IndexSearcher searcher = new IndexSearcher(ontologyIndexDirectory, true);
             count = searcher.getIndexReader().maxDoc();
             searcher.close();
         } catch (IOException e) {
@@ -118,26 +120,17 @@ public class OntologyBean extends BaseController {
 
     //for Autocomplete box
 
-    @SuppressWarnings( "unchecked" )
-    public void fillAutocomplete( ActionEvent event ) {
-
-        final FacesContext facesContext = FacesContext.getCurrentInstance();
-
-        final Map parameters = facesContext.getExternalContext().getRequestParameterMap();
-        final Object fieldValue = parameters.get(JsfUtils.getParameterValue( "searchFieldRequestParamName", event ) );
-
-        String strFieldValue = fieldValue == null || fieldValue.toString().trim().length() == 0 ? "" : fieldValue.toString().trim().toLowerCase();
-
-        String formattedQuery = prepareOntologyQueryForLucene( strFieldValue, true );
+    public List<OntologyTerm> fillAutocomplete( String query ) {
+        String formattedQuery = prepareOntologyQueryForLucene( query, true );
 
         if ( log.isDebugEnabled() ) {
-            log.debug( "Original Query  " + strFieldValue );
+            log.debug( "Original Query  " + query );
             log.debug( "Query formatted for Lucene  " + formattedQuery );
         }
 
         try {
             List<OntologyTerm> result = search( formattedQuery );
-            List<OntologyTerm> otherResult = Lists.newArrayList();
+            List<OntologyTerm> otherResult;
 
             if (result.size() > intactViewConfiguration.getMaxOntologySuggestions()) {
                 final int furtherTermCount = result.size() - intactViewConfiguration.getMaxOntologySuggestions();
@@ -146,32 +139,25 @@ public class OntologyBean extends BaseController {
 
                 int otherCount =0;
                 for ( OntologyTerm ontologyTerm : otherResult ) {
-                   otherCount = otherCount + ontologyTerm.getCount();
+                    otherCount = otherCount + ontologyTerm.getCount();
                 }
                 //result.add(new OntologyTerm("*", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na"));
-                result.add(new OntologyTerm("", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na", otherCount ));
+                result.add(new OntologyTerm("", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na", otherCount, "na" ));
             }
 
-            //clear the term map otherwise it keeps growing
-            //this termmap is used for display query of Go term with id:name, Ref: getDisplayQuery() in UserQuery.java
-            UserQuery userQuery = (UserQuery) applicationContext.getBean("userQuery");
-            userQuery.getTermMap().clear();
-
-            for ( OntologyTerm ontologyTerm : result ) {
-               userQuery.getTermMap().put( ontologyTerm.getIdentifier(), ontologyTerm.getLabel() );
-            }
-            final ValueExpression ve = facesContext.getApplication().getExpressionFactory().createValueExpression(facesContext.getELContext(), "#{autocompleteResult}", Collection.class);
-            ve.setValue(facesContext.getELContext(), result);
+            return result;
         } catch (Exception e) {
-            addErrorMessage("Problem finding terms for query", "Internal problem, there's nothing you can do");
+            throw new IllegalStateException("Problem populating ontology terms with query: "+query, e);
         }
+
     }
 
     public static String prepareOntologyQueryForLucene( String strFieldValue, boolean addWildcard ) {
-
         if ( strFieldValue == null ) {
             return "*";
         }
+
+        strFieldValue = strFieldValue.trim();
 
         //some terms may contains hyphen eg: S-adenosyl-L-methionine,
         // and searching for adenosyl-* will not return any result as - is a Lucene Keyword
@@ -194,10 +180,6 @@ public class OntologyBean extends BaseController {
         strFieldValue = "identifier:" + strFieldValue + " label:" + strFieldValue;
 
         return strFieldValue;
-    }
-
-    public OntologiesIndexSearcher getOntologiesIndexSearcher() {
-        return ontologiesIndexSearcher;
     }
 
 }

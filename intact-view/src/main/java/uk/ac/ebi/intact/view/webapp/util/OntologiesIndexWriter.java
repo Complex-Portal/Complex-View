@@ -24,6 +24,7 @@ import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.Version;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -64,17 +65,17 @@ public class OntologiesIndexWriter {
         Collection<FieldCount> taxonomyFields = null;
 
         try {
-            detMethodFields = loadAllTermsForField(solrServer, "detmethod_expanded_ms");
-            typeFields = loadAllTermsForField(solrServer, "type_expanded_ms");
-            goFields = loadAllTermsForField(solrServer, "go_expanded_ms");
-            inteproFields = loadAllTermsForField(solrServer, "interpro_expanded_ms");
-            chebiFields = loadAllTermsForField(solrServer, "chebi_expanded_ms");
-            taxonomyFields = loadAllTermsForField(solrServer, "taxid_expanded_ms");
+            detMethodFields = loadAllTermsForField(solrServer, "detmethod_expanded_ms", "detmethod");
+            typeFields = loadAllTermsForField(solrServer, "type_expanded_ms", "type");
+            goFields = loadAllTermsForField(solrServer, "go_expanded_ms", "go");
+            inteproFields = loadAllTermsForField(solrServer, "interpro_expanded_ms", "interpro");
+            chebiFields = loadAllTermsForField(solrServer, "chebi_expanded_ms", "chebi");
+            taxonomyFields = loadAllTermsForField(solrServer, "taxid_expanded_ms", "species");
         } catch (SolrServerException e) {
             throw new IntactViewException("Problem loading terms from SolrServer: "+solrServer, e);
         }
 
-        final IndexWriter termIndexWriter = new IndexWriter(newDirectory, new StandardAnalyzer(), true);
+        final IndexWriter termIndexWriter = new IndexWriter(newDirectory, new StandardAnalyzer(Version.LUCENE_CURRENT), true);
 
         addDocsToIndex(termIndexWriter, createDocuments(detMethodFields));
         addDocsToIndex(termIndexWriter, createDocuments(typeFields));
@@ -129,10 +130,12 @@ public class OntologiesIndexWriter {
 
         document.add(new Field("count", String.valueOf(fieldCount.getCount()), Store.YES, Index.NOT_ANALYZED));
 
+        document.add(new Field("fieldName", fieldCount.getSearchFieldName(), Store.YES, Index.NOT_ANALYZED));
+
         return document;
     }
 
-    private List<FieldCount> loadAllTermsForField(SolrServer solrServer, String fieldName) throws SolrServerException {
+    private List<FieldCount> loadAllTermsForField(SolrServer solrServer, String fieldName, String searchFieldName) throws SolrServerException {
         SolrQuery query = new SolrQuery("*:*")
                 .setRows(0)
                 .setFields(fieldName)
@@ -152,7 +155,7 @@ public class OntologiesIndexWriter {
         if (facetField != null && facetField.getValues() != null) {
             for (FacetField.Count c : facetField.getValues()) {
                 psidev.psi.mi.tab.model.builder.Field field = fieldBuilder.createField(c.getName());
-                FieldCount fc = new FieldCount(field, c.getCount());
+                FieldCount fc = new FieldCount(field, c.getCount(), searchFieldName);
                 fields.add(fc);
             }
         }
@@ -165,11 +168,13 @@ public class OntologiesIndexWriter {
     private static class FieldCount {
 
         private psidev.psi.mi.tab.model.builder.Field field;
+        private String searchFieldName;
         private long count;
 
-        private FieldCount(psidev.psi.mi.tab.model.builder.Field field, long count) {
+        private FieldCount(psidev.psi.mi.tab.model.builder.Field field, long count, String searchFieldName) {
             this.field = field;
             this.count = count;
+            this.searchFieldName = searchFieldName;
         }
 
         public psidev.psi.mi.tab.model.builder.Field getField() {
@@ -178,6 +183,10 @@ public class OntologiesIndexWriter {
 
         public long getCount() {
             return count;
+        }
+
+        public String getSearchFieldName() {
+            return searchFieldName;
         }
     }
 }

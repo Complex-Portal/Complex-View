@@ -15,7 +15,9 @@
  */
 package uk.ac.ebi.intact.view.webapp.util;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -43,9 +45,15 @@ import java.util.List;
 public class OntologiesIndexSearcher {
 
     private Directory indexDirectory;
+    private boolean highlight;
 
     public OntologiesIndexSearcher(Directory indexDirectory) {
         this.indexDirectory = indexDirectory;
+    }
+
+    public OntologiesIndexSearcher(Directory indexDirectory, boolean highlight) {
+        this.indexDirectory = indexDirectory;
+        this.highlight = highlight;
     }
 
     public OntologyTerm findById(String value) throws IOException, ParseException {
@@ -57,7 +65,7 @@ public class OntologiesIndexSearcher {
 
         OntologyTerm term = null;
 
-        Collection<OntologyTerm> terms = search(value);
+        Collection<OntologyTerm> terms = search(value, new WhitespaceAnalyzer());
 
         if (!terms.isEmpty()) {
             term = terms.iterator().next();
@@ -67,7 +75,11 @@ public class OntologiesIndexSearcher {
     }
 
     public List<OntologyTerm> search(String strQuery) throws IOException, ParseException {
-        QueryParser queryParser = new QueryParser("identifier", new StandardAnalyzer(Version.LUCENE_CURRENT));
+        return search(strQuery, new StandardAnalyzer(Version.LUCENE_CURRENT));
+    }
+
+    public List<OntologyTerm> search(String strQuery, Analyzer analyzer) throws IOException, ParseException {
+        QueryParser queryParser = new QueryParser("identifier", analyzer);
         return search(queryParser.parse(strQuery), new Sort(new SortField("count", SortField.INT, true)));
     }
 
@@ -107,12 +119,15 @@ public class OntologiesIndexSearcher {
         String identifier = document.getField("identifier").stringValue();
         String label = document.getField("label").stringValue();
         String databaseLabel = document.getField("databaseLabel").stringValue();
+        String fieldName = document.getField("fieldName").stringValue();
 
         int count = Integer.parseInt(document.getField("count").stringValue());
 
-        label = highlightText("label", label, highlighter);
+        if (isHighlight()) {
+            label = highlightText("label", label, highlighter);
+        }
 
-        return new OntologyTerm(identifier, label, databaseLabel, count);
+        return new OntologyTerm(identifier, label, databaseLabel, count, fieldName);
     }
 
     private String highlightText(String fieldName, String text, Highlighter highlighter) throws IOException {
@@ -123,5 +138,13 @@ public class OntologiesIndexSearcher {
         } catch (Throwable e) {
             throw new IOException( e.getMessage() );
         }
+    }
+
+    public boolean isHighlight() {
+        return highlight;
+    }
+
+    public void setHighlight(boolean highlight) {
+        this.highlight = highlight;
     }
 }
