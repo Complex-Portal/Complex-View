@@ -19,16 +19,8 @@ import org.primefaces.event.CloseEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.view.webapp.controller.application.CvObjectService;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -38,30 +30,13 @@ import java.util.Map;
 @Scope("request")
 public class CvLazyPopupController {
 
-    private Map<String, CvObject> cvObjectMap;
     private boolean dialogRendered;
-
-    private TransactionStatus transactionStatus;
-
-
-    @Autowired
-    private DataContext dataContext;
 
     @Autowired
     private CvObjectService cvObjectService;
 
     public CvLazyPopupController() {
-        this.cvObjectMap = new HashMap<String, CvObject>();
-    }
-
-    @PostConstruct
-    public void initTransaction() {
-        transactionStatus = dataContext.beginTransaction(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-    }
-
-    @PreDestroy
-    public void endTransaction() {
-        dataContext.rollbackTransaction(transactionStatus);
+       // this.cvObjectMap = new HashMap<String, CvObject>();
     }
 
     public CvObject fetch(String className, String identifier) {

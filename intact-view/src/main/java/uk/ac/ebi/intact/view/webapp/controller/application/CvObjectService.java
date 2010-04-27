@@ -15,7 +15,9 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.application;
 
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.model.CvObject;
@@ -29,6 +31,8 @@ import java.util.Map;
  * @version $Id$
  */
 @Controller
+@Scope("conversation.access")
+@ConversationName("general")
 public class CvObjectService {
 
     @Autowired
