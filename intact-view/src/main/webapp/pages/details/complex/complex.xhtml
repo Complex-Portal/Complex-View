@@ -11,6 +11,8 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iam2="http://java.sun.com/jsf/composite/components/miscel"
+
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
 
                 template="/main_content_template.xhtml">
@@ -22,7 +24,7 @@
         <!--<iv:spacer height="5"/>-->
 
         <h:panelGroup valign="middle">
-            <h:graphicImage url="/images/back_arrow.gif"/>
+            <h:graphicImage alt="back" url="/images/back_arrow.gif"/>
             <h:commandLink action="details">
                 <h:outputText value="Back to Interaction Details" />
             </h:commandLink>
@@ -40,7 +42,7 @@
                     <br/>
                     <p:accordionPanel>
                         <p:tab title="What does that table mean ?">
-                            <h:graphicImage url="/images/documentation/complex-table-doc.png" width="500"/>
+                            <h:graphicImage url="/images/documentation/complex-table-doc.png" alt="help" width="500"/>
                         </p:tab>
                     </p:accordionPanel>
                 </p:panel>
@@ -76,7 +78,7 @@
 
                     <td colspan="#{fn:length( matrix.members ) + 1}" style="border-bottom: solid 1px #cdcdcd;">
                         <!--TODO try color management later (eg. &amp;tc=&#35;000000")-->
-                        <h:graphicImage url="/tableHeader?time=#{iam:currentTimeMillis()}&amp;s=31&amp;fs=12&amp;h=100&amp;st=true&amp;lc=%23cdcdcd" />
+                        <h:graphicImage url="/tableHeader?time=#{iam:currentTimeMillis()}&amp;s=31&amp;fs=12&amp;h=100&amp;st=true&amp;lc=%23cdcdcd" alt="header" />
                     </td>
 
                     <td valign="bottom" style="font-weight:bold; border-bottom: solid 1px #cdcdcd;">Other participants</td>
@@ -104,7 +106,7 @@
 
                                 <h:outputText value=" " rendered="#{!display}" />
 
-                                <h:graphicImage url="/images/ok.gif" rendered="#{display}"
+                                <h:graphicImage url="/images/ok.gif" rendered="#{display}" alt="x"
                                           shortDesc="#{member.shortLabel} is present in this interaction"/>
 
                             </td>
@@ -126,17 +128,17 @@
                         </td>
 
                         <td>
-                            <!--<iam:collapsibleIterator id="mtx_participant_#{status.index}"-->
-                                                     <!--disclosed="false"-->
-                                                     <!--value="#{si.others}"-->
-                                                     <!--maxShown="3">-->
+                            <iam2:collapsibleIterator id="mtx_participant_#{status.index}"
+                                                     disclosed="false"
+                                                     value="#{si.others}"
+                                                     maxShown="3">
 
-                                <!--<h:commandLink action="molecule">-->
-                                    <!--<f:setPropertyActionListener value="#{item.ac}" target="#{moleculeViewBean.interactorAc}"/>-->
-                                    <!--<h:outputText value="#{item.shortLabel}" />-->
-                                <!--</h:commandLink>-->
+                                <h:commandLink action="molecule">
+                                    <f:setPropertyActionListener value="#{item.ac}" target="#{moleculeViewBean.interactorAc}"/>
+                                    <h:outputText value="#{item.shortLabel}" />
+                                </h:commandLink>
 
-                            <!--</iam:collapsibleIterator>-->
+                            </iam2:collapsibleIterator>
                         </td>
 
                     </tr>

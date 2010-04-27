@@ -8,66 +8,73 @@
                 xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                
+
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
-  <composite:interface>
-      <composite:attribute name="bioSource" type="uk.ac.ebi.intact.model.BioSource" required="true"/>
-  </composite:interface>
+    <composite:interface>
+        <composite:attribute name="bioSource" type="uk.ac.ebi.intact.model.BioSource" required="true"/>
+        <composite:attribute name="visible" type="java.util.Boolean" default="true"/>
+    </composite:interface>
 
-  <!-- IMPLEMENTATION -->
+    <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <p:commandLink id="biosourceLink" type="button" onclick="biosourceDlg.show();" value="#{cc.attrs.bioSource.fullName}" />
+        <h:panelGroup rendered="#{cc.attrs.visible}">
 
-        <p:dialog header="Organism: #{cc.attrs.bioSource.fullName}"
-                  widgetVar="biosourceDlg" height="700" width="600" fixedCenter="true"
-                  constrainToViewport="true" modal="false" >
+            <p:commandLink id="biosourceLink" type="button" onclick="biosourceDlg.show();">
+                <h:outputText value="#{cc.attrs.bioSource.fullName}" />    
+            </p:commandLink>
 
-            <h3>Organism</h3>
-        
-            <p:panel>
-                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                    <h:outputText value="#{cc.attrs.bioSource.ac}"/>
-                </iv:panelLabelAndMessage>
-        
-                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                    <h:outputText value="#{cc.attrs.bioSource.shortLabel}"/>
-                </iv:panelLabelAndMessage>
-        
-                <iv:panelLabelAndMessage label="Description:"
-                                         visible="#{cc.attrs.bioSource.shortLabel != cc.attrs.bioSource.fullName}"
-                                         labelStyle="font-weight:bold;">
-                    <h:outputText value="#{(cc.attrs.bioSource.fullName == null ? '-' : cc.attrs.bioSource.fullName )}"/>
-                </iv:panelLabelAndMessage>
-        
-            </p:panel>
-        
-            <table width="690" cellPadding="3" cellSpacing="0">
-                <h:panelGroup rendered="#{not empty cc.attrs.bioSource.xrefs}">
-                    <tr>
-                        <td valign="top">
-                            <h:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
-                        </td>
-                        <td>
-                            <iv:xrefTable xrefs="#{cc.attrs.bioSource.xrefs}" />
-                        </td>
-                    </tr>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{not empty cc.attrs.bioSource.annotations}">
-                    <tr>
-                        <td valign="top">
-                            <h:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
-                        </td>
-                        <td>
-                            <iv:annotationTable annotations="#{cc.attrs.bioSource.annotations}" />
-                        </td>
-                    </tr>
-                </h:panelGroup>
-            </table>
+            <p:dialog header="Organism: #{cc.attrs.bioSource.fullName}"
+                      widgetVar="biosourceDlg" height="700" width="600" fixedCenter="true"
+                      constrainToViewport="true" modal="false">
 
-        </p:dialog>
+                <h3>Organism</h3>
+
+                <p:panel>
+                    <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{cc.attrs.bioSource.ac}"/>
+                    </iv:panelLabelAndMessage>
+
+                    <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                        <h:outputText value="#{cc.attrs.bioSource.shortLabel}"/>
+                    </iv:panelLabelAndMessage>
+
+                    <iv:panelLabelAndMessage label="Description:"
+                                             visible="#{cc.attrs.bioSource.shortLabel != cc.attrs.bioSource.fullName}"
+                                             labelStyle="font-weight:bold;">
+                        <h:outputText
+                                value="#{(cc.attrs.bioSource.fullName == null ? '-' : cc.attrs.bioSource.fullName )}"/>
+                    </iv:panelLabelAndMessage>
+
+                </p:panel>
+
+                <table width="690" cellPadding="3" cellSpacing="0">
+                    <h:panelGroup rendered="#{not empty cc.attrs.bioSource.xrefs}">
+                        <tr>
+                            <td valign="top">
+                                <h:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
+                            </td>
+                            <td>
+                                <iv:xrefTable xrefs="#{cc.attrs.bioSource.xrefs}"/>
+                            </td>
+                        </tr>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{not empty cc.attrs.bioSource.annotations}">
+                        <tr>
+                            <td valign="top">
+                                <h:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
+                            </td>
+                            <td>
+                                <iv:annotationTable annotations="#{cc.attrs.bioSource.annotations}"/>
+                            </td>
+                        </tr>
+                    </h:panelGroup>
+                </table>
+
+            </p:dialog>
+        </h:panelGroup>
 
     </composite:implementation>
 

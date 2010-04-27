@@ -9,9 +9,10 @@
 
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
+                xmlns:iam="http://java.sun.com/jsf/composite/components/miscel"
+                
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
-                xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
 <h:panelGroup id="experimentPanel" rendered="#{detailsBean.experiment != null}">
@@ -24,36 +25,37 @@
 
     <h:panelGroup>
 
-            <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                <h:outputText value="#{experiment.ac}"/>
-            </iv:panelLabelAndMessage>
+        <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+            <h:outputText value="#{experiment.ac}"/>
+        </iv:panelLabelAndMessage>
 
-            <iv:panelLabelAndMessage label="Name:"  labelStyle="font-weight:bold;">
-                <h:outputText value="#{experiment.shortLabel}"/>
-            </iv:panelLabelAndMessage>
+        <iv:panelLabelAndMessage label="Name:"  labelStyle="font-weight:bold;">
+            <h:outputText value="#{experiment.shortLabel}"/>
+        </iv:panelLabelAndMessage>
 
-            <iv:panelLabelAndMessage label="Host organism:"  labelStyle="font-weight:bold;">
-                <iv:biosourcePopup bioSource="#{experiment.bioSource}" />
-            </iv:panelLabelAndMessage>
+        <iv:panelLabelAndMessage label="Host organism:"  labelStyle="font-weight:bold;">
+            <iv:biosourcePopup bioSource="#{experiment.bioSource}" />
+        </iv:panelLabelAndMessage>
 
-            <iv:panelLabelAndMessage label="Interaction Detection Method:"  labelStyle="font-weight:bold;">
-                <iv:cvPopup cv="#{experiment.cvInteraction}" />
-            </iv:panelLabelAndMessage>
+        <iv:panelLabelAndMessage label="Interaction Detection Method:"  labelStyle="font-weight:bold;">
+            <iv:cvPopup cv="#{experiment.cvInteraction}" />
+        </iv:panelLabelAndMessage>
 
-            <iv:panelLabelAndMessage label="Participant Identification Method:"  labelStyle="font-weight:bold;">
-                <iv:cvPopup cv="#{experiment.cvIdentification}" />
-            </iv:panelLabelAndMessage>
+        <iv:panelLabelAndMessage label="Participant Identification Method:"  labelStyle="font-weight:bold;">
+            <iv:cvPopup cv="#{experiment.cvIdentification}" />
+        </iv:panelLabelAndMessage>
 
-            <iv:panelLabelAndMessage label="Cross References:" labelStyle="font-weight:bold;" visible="#{not empty experiment.xrefs}">
-                <iv:xrefTable xrefs="#{experiment.xrefs}" />
-            </iv:panelLabelAndMessage>
+        <iv:panelLabelAndMessage label="Cross References:" labelStyle="font-weight:bold;" visible="#{not empty experiment.xrefs}">
+            <iv:xrefTable xrefs="#{experiment.xrefs}" />
+        </iv:panelLabelAndMessage>
 
         <iv:panelLabelAndMessage label="Annotations:" labelStyle="font-weight:bold;" visible="#{not empty experiment.annotations}">
-                <iv:annotationTable annotations="#{experiment.annotations}" />
-            </iv:panelLabelAndMessage>
+            <iv:annotationTable annotations="#{experiment.annotations}" />
+        </iv:panelLabelAndMessage>
 
     </h:panelGroup>
 
+</h:panelGroup>
 
     <ui:param name="publication" value="#{experiment.publication}"/>
     <ui:param name="pmid" value="#{iaf:getPubmedId(experiment)}"/>
@@ -63,37 +65,34 @@
     <table id="publicationTable" width="100%">
         <tr>
             <td width="80%">
-                <!--<tr:panelFormLayout>-->
 
-                    <iv:panelLabelAndMessage label="Author List:" labelStyle="font-weight:bold;">
-                        <h:outputText value="#{detailsBean.authorList}"/>
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Author List:" labelStyle="font-weight:bold;">
+                    <h:outputText value="#{detailsBean.authorList}"/>
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Title:" labelStyle="font-weight:bold;">
-                        <h:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Title:" labelStyle="font-weight:bold;">
+                    <h:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Journal:" labelStyle="font-weight:bold;">
-                        <h:outputText value="#{detailsBean.journal}"/>
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Journal:" labelStyle="font-weight:bold;">
+                    <h:outputText value="#{detailsBean.journal}"/>
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Year of Publication:" labelStyle="font-weight:bold;">
-                        <h:outputText value="#{detailsBean.publicationYear}"/>
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Year of Publication:" labelStyle="font-weight:bold;">
+                    <h:outputText value="#{detailsBean.publicationYear}"/>
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="PubMed Id:" visible="#{pmid != null}" labelStyle="font-weight:bold;">
-                        <h:outputText value="#{pmid}"/>
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="PubMed Id:" visible="#{pmid != null}" labelStyle="font-weight:bold;">
+                    <h:outputText value="#{pmid}"/>
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty publication.xrefs}" labelStyle="font-weight:bold;">
-                        <iv:xrefTable xrefs="#{publication.xrefs}" />
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty publication.xrefs}" labelStyle="font-weight:bold;">
+                    <iv:xrefTable xrefs="#{publication.xrefs}" />
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty publication.annotations}" labelStyle="font-weight:bold;">
-                        <iv:annotationTable annotations="#{publication.annotations}" />
-                    </iv:panelLabelAndMessage>
-
-                <!--</tr:panelFormLayout>-->
+                <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty publication.annotations}" labelStyle="font-weight:bold;">
+                    <iv:annotationTable annotations="#{publication.annotations}" />
+                </iv:panelLabelAndMessage>
 
             </td>
 
@@ -119,29 +118,29 @@
         <table width="100%">
         <tr>
             <td width="80%">
-                    <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                        <h:outputText value="#{interaction.ac}"/>
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                    <h:outputText value="#{interaction.ac}"/>
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                        <h:outputText value="#{interaction.shortLabel}"/>
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                    <h:outputText value="#{interaction.shortLabel}"/>
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;">
-                        <h:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;">
+                    <h:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Type:">
-                        <iv:cvPopup cv="#{interaction.cvInteractionType}" />
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Type:" labelStyle="font-weight:bold;">
+                    <iv:cvPopup cv="#{interaction.cvInteractionType}" />
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty interaction.xrefs}" labelStyle="font-weight:bold;">
-                        <iv:xrefTable xrefs="#{interaction.xrefs}" />
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty interaction.xrefs}" labelStyle="font-weight:bold;">
+                    <iv:xrefTable xrefs="#{interaction.xrefs}" />
+                </iv:panelLabelAndMessage>
 
-                    <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty interaction.annotations}" labelStyle="font-weight:bold;">
-                        <iv:annotationTable annotations="#{interaction.annotations}" />
-                    </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty interaction.annotations}" labelStyle="font-weight:bold;">
+                    <iv:annotationTable annotations="#{interaction.annotations}" />
+                </iv:panelLabelAndMessage>
             </td>
 
             <td style="text-align: right; vertical-align: top;" width="20%">
@@ -168,232 +167,206 @@
     </h:panelGroup>
 
 
+    <ui:param name="participantCount" value="#{fn:length(interaction.components)}"/>
+    <ui:param name="text" value="s (#{participantCount})"/>
 
+    <h:panelGroup rendered="#{interaction != null}">
 
+    <h3>Participant#{(participantCount > 1 ? text : '')}</h3>
 
-<!--<ui:param name="participantCount" value="#{fn:length(interaction.components)}"/>-->
-<!--<ui:param name="text" value="s (#{participantCount})"/>-->
+    <p:dataTable var="participant" value="#{interaction.components}" paginator="false" dynamic="false" lazy="false">
 
-    <!--<h:panelGroup rendered="#{interaction != null}">-->
+        <ui:param name="interactor" value="#{participant.interactor}"/>
 
-        <!--<h3>Participant#{(participantCount > 1 ? text : '')}</h3>-->
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Name"/>
+            </f:facet>
+            <h:outputText value="#{interactor.shortLabel}" />
+        </p:column>        
+        
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Links"/>
+            </f:facet>
+            <iv:dbInteractorLinkLogos interactor="#{interactor}" />
+        </p:column>
 
-        <!--&lt;!&ndash;<tr:table var="participant" value="#{interaction.components}" rows="30" width="80%">&ndash;&gt;-->
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Primary Identifier"/>
+            </f:facet>
+            <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(interactor)}" varStatus="rowStatus">
+                <h:outputLink value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank">
+                    <h:outputText value="#{xref.primaryId}" />
+                </h:outputLink>
+            </ui:repeat>
+        </p:column>
 
-    <!--&lt;!&ndash;<ui:param name="interactor" value="#{participant.interactor}"/>&ndash;&gt;-->
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Aliases"/>
+            </f:facet>
+            <iam:collapsibleIterator id="csd_aliases_#{status.index}"
+                                     disclosed="false"
+                                     value="#{interactor.aliases}"
+                                     maxShown="5">
+                <h:outputText value="#{item.name}" shortDesc="#{item.cvAliasType.shortLabel}"/>
+            </iam:collapsibleIterator>
+        </p:column>
 
-    <!--&lt;!&ndash;<tr:column headerText="Name" sortable="true" sortProperty="interactor.shortLabel">&ndash;&gt;-->
-        <!--&lt;!&ndash;<tr:outputText value="#{interactor.shortLabel}"/>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Description"/>
+            </f:facet>
+            <h:outputText value="#{interactor.fullName}"/>
+        </p:column>
 
-    <!--&lt;!&ndash;<tr:column headerText="Links">&ndash;&gt;-->
-        <!--&lt;!&ndash;<tr:iterator var="xref" value="#{iaf:getIdentityXrefs(interactor)}" varStatus="rowStatus" rows="0">&ndash;&gt;-->
-            <!--&lt;!&ndash;<tr:switcher facetName="#{xref.cvDatabase.shortLabel}">&ndash;&gt;-->
-                <!--&lt;!&ndash;<f:facet name="uniprotkb">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<h:panelGroup>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<iax:goUniprot query="#{xref.primaryId}" onlyLogo="true"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<iax:goMoleculeView query="#{interactor.ac}" onlyLogo="true"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</h:panelGroup>&ndash;&gt;-->
-                <!--&lt;!&ndash;</f:facet>&ndash;&gt;-->
-                <!--&lt;!&ndash;<f:facet name="chebi">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<h:panelGroup>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<iax:goChebi query="#{xref.primaryId}" onlyLogo="true"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</h:panelGroup>&ndash;&gt;-->
-                <!--&lt;!&ndash;</f:facet>&ndash;&gt;-->
-                <!--&lt;!&ndash;<f:facet name="intact">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<h:panelGroup>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<iax:goMoleculeView query="#{xref.primaryId}" onlyLogo="true"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<br/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</h:panelGroup>&ndash;&gt;-->
-                <!--&lt;!&ndash;</f:facet>&ndash;&gt;-->
-            <!--&lt;!&ndash;</tr:switcher>&ndash;&gt;-->
-        <!--&lt;!&ndash;</tr:iterator>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Species"/>
+            </f:facet>
+            <iv:biosourcePopup bioSource="#{interactor.bioSource}" visible="#{interactor.bioSource != null}" />
+            <h:outputText value="-" rendered="#{interactor.bioSource == null}"/>
+        </p:column>
 
-    <!--&lt;!&ndash;<tr:column headerText="Primary Identifier">&ndash;&gt;-->
-        <!--&lt;!&ndash;<tr:iterator var="xref" value="#{iaf:getIdentityXrefs(interactor)}"&ndash;&gt;-->
-                     <!--&lt;!&ndash;varStatus="rowStatus" rows="0">&ndash;&gt;-->
-            <!--&lt;!&ndash;<tr:goLink text="#{xref.primaryId}"&ndash;&gt;-->
-                       <!--&lt;!&ndash;destination="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}"&ndash;&gt;-->
-                       <!--&lt;!&ndash;targetFrame="_blank"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;</tr:iterator>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Expression system"/>
+        </f:facet>
+        <iv:biosourcePopup bioSource="#{participant.expressedIn}" visible="#{participant.expressedIn != null}" />
+        <h:outputText value="-" rendered="#{participant.expressedIn == null}"/>
+    </p:column>
 
-    <!--&lt;!&ndash;<tr:column headerText="Aliases">&ndash;&gt;-->
-        <!--&lt;!&ndash;<iam:collapsibleIterator id="csd_aliases_#{status.index}"&ndash;&gt;-->
-                                 <!--&lt;!&ndash;disclosed="false"&ndash;&gt;-->
-                                 <!--&lt;!&ndash;value="#{interactor.aliases}"&ndash;&gt;-->
-                                 <!--&lt;!&ndash;maxShown="5">&ndash;&gt;-->
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Experimental role"/>
+        </f:facet>
+        <iv:cvLazyPopup cvIdentifier="#{participant.cvExperimentalRole.identifier}"
+                        text="#{participant.cvExperimentalRole.shortLabel}"
+                        cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"/>
+    </p:column>
 
-            <!--&lt;!&ndash;<tr:outputText value="#{item.name}" shortDesc="#{item.cvAliasType.shortLabel}"/>&ndash;&gt;-->
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Biological role"/>
+        </f:facet>
+        <iv:cvLazyPopup cvIdentifier="#{participant.cvBiologicalRole.identifier}"
+                        text="#{participant.cvBiologicalRole.shortLabel}"
+                        cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"/>
+    </p:column>
 
-        <!--&lt;!&ndash;</iam:collapsibleIterator>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Interactor type"/>
+        </f:facet>
+        <iv:cvLazyPopup cvIdentifier="#{interactor.cvInteractorType.identifier}"
+                        text="#{interactor.cvInteractorType.shortLabel}"
+                        cvClassName="uk.ac.ebi.intact.model.CvInteractorType"/>
+    </p:column>
 
-    <!--&lt;!&ndash;<tr:column headerText="Description">&ndash;&gt;-->
-        <!--&lt;!&ndash;<tr:outputText value="#{interactor.fullName}"/>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+    <p:column>
 
-    <!--&lt;!&ndash;<tr:column headerText="Species">&ndash;&gt;-->
-        <!--&lt;!&ndash;<tr:group rendered="#{interactor.bioSource != null}">&ndash;&gt;-->
-            <!--&lt;!&ndash;<ui:include src="/pages/details/biosourcePopup.xhtml">&ndash;&gt;-->
-                <!--&lt;!&ndash;<ui:param name="biosource" value="#{interactor.bioSource}"/>&ndash;&gt;-->
-            <!--&lt;!&ndash;</ui:include>&ndash;&gt;-->
-        <!--&lt;!&ndash;</tr:group>&ndash;&gt;-->
-        <!--&lt;!&ndash;<tr:outputText value="-" rendered="#{interactor.bioSource == null}"/>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+        <f:facet name="header">
+            <h:outputText value="More..."/>
+        </f:facet>
 
-    <!--&lt;!&ndash;<tr:column headerText="Expression system">&ndash;&gt;-->
-        <!--&lt;!&ndash;<tr:group rendered="#{participant.expressedIn != null}">&ndash;&gt;-->
-            <!--&lt;!&ndash;<ui:include src="/pages/details/biosourcePopup.xhtml">&ndash;&gt;-->
-                <!--&lt;!&ndash;<ui:param name="biosource" value="#{participant.expressedIn}"/>&ndash;&gt;-->
-            <!--&lt;!&ndash;</ui:include>&ndash;&gt;-->
-        <!--&lt;!&ndash;</tr:group>&ndash;&gt;-->
-        <!--&lt;!&ndash;<tr:outputText value="-" rendered="#{participant.expressedIn == null}"/>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+        <ui:param name="annotationCount"
+                  value="#{fn:length(participant.xrefs) + fn:length(participant.annotations) + fn:length(participant.aliases)}"/>
+        <ui:param name="parameterCount" value="#{fn:length(participant.parameters)}"/>
+        <ui:param name="domainCount" value="#{fn:length(participant.bindingDomains)}"/>
 
-    <!--&lt;!&ndash;<tr:column headerText="Experimental role" sortable="true" sortProperty="cvExperimentalRole.shortLabel">&ndash;&gt;-->
-        <!--&lt;!&ndash;<ui:include src="/pages/details/cvPopup.xhtml">&ndash;&gt;-->
-            <!--&lt;!&ndash;<ui:param name="cv" value="#{participant.cvExperimentalRole}"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;</ui:include>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+        <table width="30" cellSpacing="2" cellPadding="2" border="0">
+            <tr>
+                <td style="background-color:#{annotationCount>0 ? '#a7cf9b' : 'lightgray'};" width="10"> <!-- green cell -->
 
-    <!--&lt;!&ndash;<tr:column headerText="Biological role" sortable="true" sortProperty="cvBiologicalRole.shortLabel">&ndash;&gt;-->
-        <!--&lt;!&ndash;<ui:include src="/pages/details/cvPopup.xhtml">&ndash;&gt;-->
-            <!--&lt;!&ndash;<ui:param name="cv" value="#{participant.cvBiologicalRole}"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;</ui:include>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+                    <iv:participantPopup participant="#{participant}" text="A" style="font-weight:bold; color:white;"
+                                         visible="#{annotationCount>0}" />
 
-    <!--&lt;!&ndash;<tr:column headerText="Interactor type" sortable="true" sortProperty="interactor.cvInteractorType.shortLabel">&ndash;&gt;-->
-        <!--&lt;!&ndash;<ui:include src="/pages/details/cvPopup.xhtml">&ndash;&gt;-->
-            <!--&lt;!&ndash;<ui:param name="cv" value="#{interactor.cvInteractorType}"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;</ui:include>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
+                    <h:outputText value="A" shortDesc="#{annotationCount} Annotation" rendered="#{annotationCount == 0}"
+                                  style="font-weight:bold; color:white;"/>
+                </td>
+                <td style="background-color:#{parameterCount>0 ? '#a1c7c7' : 'lightgray'};" width="10"> <!-- blue cell -->
 
-    <!--&lt;!&ndash;<tr:column headerText="More...">&ndash;&gt;-->
+                    <iv:participantPopup participant="#{participant}" text="P" style="font-weight:bold; color:white;"
+                                         visible="#{parameterCount>0}" />
 
-        <!--&lt;!&ndash;<ui:param name="annotationCount"&ndash;&gt;-->
-                  <!--&lt;!&ndash;value="#{fn:length(participant.xrefs) + fn:length(participant.annotations) + fn:length(participant.aliases)}"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;<ui:param name="parameterCount" value="#{fn:length(participant.parameters)}"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;<ui:param name="domainCount" value="#{fn:length(participant.bindingDomains)}"/>&ndash;&gt;-->
+                    <h:outputText value="P" shortDesc="#{parameterCount} Parameter" rendered="#{parameterCount == 0}"
+                                   style="font-weight:bold;color:white;"/>
+                </td>
+                <td style="background-color:#{participant.stoichiometry > 0 ? '#9e9e9e' : 'lightgray'};" width="10"> <!-- gray cell -->
 
-        <!--&lt;!&ndash;<table width="30" cellSpacing="2" cellPadding="2">&ndash;&gt;-->
-            <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td inlineStyle="background-color:#{annotationCount>0 ? '#a7cf9b' : 'lightgray'};"&ndash;&gt;-->
-                    <!--&lt;!&ndash;width="10"> &lt;!&ndash; green cell &ndash;&gt;&ndash;&gt;-->
+                    <iv:participantPopup participant="#{participant}" text="S" style="font-weight:bold; color:white;"
+                                         visible="#{participant.stoichiometry gt 0}" />
 
-                    <!--&lt;!&ndash;<tr:commandLink action="dialog:participant.view" rendered="#{annotationCount>0}"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;partialSubmit="true" immediate="true"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;useWindow="true" windowWidth="700" windowHeight="400">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<f:setPropertyActionListener value="#{participant}" target="#{participantBean.participant}"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<tr:outputText value="A" shortDesc="#{annotationCount} Annotations"&ndash;&gt;-->
-                                       <!--&lt;!&ndash;inlineStyle="font-weight:bold;color:white;"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</tr:commandLink>&ndash;&gt;-->
+                    <h:outputText value="S" shortDesc="Stoichiometry: none" rendered="#{participant.stoichiometry eq 0}"
+                                  style="font-weight:bold;color:white;"/>
+                </td>
+                <td style="background-color:#{domainCount>0 ? '#ed8585' : 'lightgray'};" width="10">  <!-- red cell -->
 
-                    <!--&lt;!&ndash;<tr:outputText value="A" shortDesc="#{annotationCount} Annotation"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;rendered="#{annotationCount == 0}"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;inlineStyle="font-weight:bold;color:white;"/>&ndash;&gt;-->
+                    <iv:participantPopup participant="#{participant}" text="F" style="font-weight:bold; color:white;"
+                                         visible="#{domainCount>0}" />
 
-                <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td inlineStyle="background-color:#{parameterCount>0 ? '#a1c7c7' : 'lightgray'};"&ndash;&gt;-->
-                    <!--&lt;!&ndash;width="10"> &lt;!&ndash; blue cell &ndash;&gt;&ndash;&gt;-->
+                    <h:outputText value="F" shortDesc="#{domainCount} feature" rendered="#{domainCount == 0}"
+                                   style="font-weight:bold; color:white;"/>
+                </td>
+            </tr>
+        </table>
 
-                    <!--&lt;!&ndash;<tr:commandLink action="dialog:participant.view" rendered="#{parameterCount>0}"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;partialSubmit="true" immediate="true"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;useWindow="true" windowWidth="700" windowHeight="400">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<f:setPropertyActionListener value="#{participant}" target="#{participantBean.participant}"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<tr:outputText value="P" shortDesc="#{parameterCount} Parameters"&ndash;&gt;-->
-                                       <!--&lt;!&ndash;inlineStyle="font-weight:bold;color:white;"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</tr:commandLink>&ndash;&gt;-->
+    </p:column>
 
-                    <!--&lt;!&ndash;<tr:outputText value="P" shortDesc="#{parameterCount} Parameter" rendered="#{parameterCount == 0}"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;inlineStyle="font-weight:bold;color:white;"/>&ndash;&gt;-->
+    </p:dataTable>
 
-                <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td inlineStyle="background-color:#{participant.stoichiometry > 0 ? '#9e9e9e' : 'lightgray'};"&ndash;&gt;-->
-                    <!--&lt;!&ndash;width="10"> &lt;!&ndash; gray cell &ndash;&gt;&ndash;&gt;-->
+    <br/>
 
-                    <!--&lt;!&ndash;<tr:commandLink action="dialog:participant.view" rendered="#{participant.stoichiometry gt 0}"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;partialSubmit="true" immediate="true"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;useWindow="true" windowWidth="700" windowHeight="400">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<f:setPropertyActionListener value="#{participant}" target="#{participantBean.participant}"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<tr:outputText value="S" shortDesc="Stoichiometry: #{participant.stoichiometry}"&ndash;&gt;-->
-                                       <!--&lt;!&ndash;inlineStyle="font-weight:bold;color:white;"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</tr:commandLink>&ndash;&gt;-->
+    <table width="100%">
+        <tr>
+            <td style="width:75%;"></td>
+            <td style="vertical-align:top; text-align:right;">
 
-                    <!--&lt;!&ndash;<tr:outputText value="S" shortDesc="Stoichiometry: none"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;rendered="#{participant.stoichiometry eq 0}"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;inlineStyle="font-weight:bold;color:white;"/>&ndash;&gt;-->
+                <p:panel style="vertical-align:top; text-align:right;">
 
-                <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td inlineStyle="background-color:#{domainCount>0 ? '#ed8585' : 'lightgray'};"&ndash;&gt;-->
-                    <!--&lt;!&ndash;width="10">  &lt;!&ndash; red cell &ndash;&gt;&ndash;&gt;-->
+                    <h:outputText value="Legend: " style="font-weight:bold;"/>
 
-                    <!--&lt;!&ndash;<tr:commandLink action="dialog:participant.view" rendered="#{domainCount>0}"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;partialSubmit="true" immediate="true"&ndash;&gt;-->
-                                    <!--&lt;!&ndash;useWindow="true" windowWidth="700" windowHeight="400">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<f:setPropertyActionListener value="#{participant}" target="#{participantBean.participant}"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<tr:outputText value="F" shortDesc="#{domainCount} features"&ndash;&gt;-->
-                                       <!--&lt;!&ndash;inlineStyle="font-weight:bold;color:white;"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</tr:commandLink>&ndash;&gt;-->
+                    <table cellSpacing="2" cellPadding="2">
+                        <tr>
+                            <td style="background-color:#a7cf9b;" width="10"> <!-- green cell -->
+                                <h:outputText value="A" style="font-weight:bold;color:white;"/>
+                            </td>
+                            <td style="text-align:left;">
+                                <h:outputText value="Participant annotation available"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#a1c7c7;" width="10"> <!-- blue cell -->
+                                <h:outputText value="P" style="font-weight:bold;color:white;"/>
+                            </td>
+                            <td style="text-align:left;">
+                                <h:outputText value="Participant experimental parameter available"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#9e9e9e;" width="10"> <!-- gray cell -->
+                                <h:outputText value="S" style="font-weight:bold;color:white;"/>
+                            </td>
+                            <td style="text-align:left;">
+                                <h:outputText value="Participant stoichiometry available"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="background-color:#ed8585;" width="10">  <!-- red cell -->
+                                <h:outputText value="F" style="font-weight:bold;color:white;"/>
+                            </td>
+                            <td style="text-align:left;">
+                                <h:outputText value="Experimental feature information available"/>
+                            </td>
+                        </tr>
+                    </table>
+                </p:panel>
 
-                    <!--&lt;!&ndash;<tr:outputText value="F" shortDesc="#{domainCount} feature" rendered="#{domainCount == 0}"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;inlineStyle="font-weight:bold;color:white;"/>&ndash;&gt;-->
-
-                <!--&lt;!&ndash;</td>&ndash;&gt;-->
-            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-
-        <!--&lt;!&ndash;</table>&ndash;&gt;-->
-
-    <!--&lt;!&ndash;</tr:column>&ndash;&gt;-->
-
-<!--&lt;!&ndash;</tr:table>&ndash;&gt;-->
-
-<!--<br/>-->
-
-<!--<p:panel style="width:80%; vertical-align:top; text-align: right;">-->
-    <!--<h:outputText value="Legend: " inlineStyle="font-weight:bold;"/>-->
-
-    <!--<table width="350" cellSpacing="2" cellPadding="2">-->
-        <!--<tr>-->
-            <!--<td style="background-color:#a7cf9b;" width="10"> &lt;!&ndash; green cell &ndash;&gt;-->
-                <!--<h:outputText value="A" inlineStyle="font-weight:bold;color:white;"/>-->
-            <!--</td>-->
-            <!--<td>-->
-                <!--<h:outputText value="Participant annotation available"/>-->
-            <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-            <!--<td style="background-color:#a1c7c7;" width="10"> &lt;!&ndash; blue cell &ndash;&gt;-->
-                <!--<h:outputText value="P" inlineStyle="font-weight:bold;color:white;"/>-->
-            <!--</td>-->
-            <!--<td>-->
-                <!--<h:outputText value="Participant experimental parameter available"/>-->
-            <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-            <!--<td style="background-color:#9e9e9e;" width="10"> &lt;!&ndash; gray cell &ndash;&gt;-->
-                <!--<h:outputText value="S" inlineStyle="font-weight:bold;color:white;"/>-->
-            <!--</td>-->
-            <!--<td>-->
-                <!--<h:outputText value="Participant stoichiometry available"/>-->
-            <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-            <!--<td style="background-color:#ed8585;" width="10">  &lt;!&ndash; red cell &ndash;&gt;-->
-                <!--<h:outputText value="F" inlineStyle="font-weight:bold;color:white;"/>-->
-            <!--</td>-->
-            <!--<td>-->
-                <!--<h:outputText value="Experimental feature information available"/>-->
-            <!--</td>-->
-        <!--</tr>-->
-    <!--</table>-->
-<!--</p:panel>-->
-
-    <!--</h:panelGroup>-->
+            </td>
+        </tr>
+    </table>
 
 </h:panelGroup>
 

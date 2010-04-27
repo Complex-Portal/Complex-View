@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+  <composite:interface>
+      <composite:attribute name="interactor" type="uk.ac.ebi.intact.model.Interactor" required="true"/>
+      <composite:attribute name="display" type="java.lang.Boolean" default="true"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <h:panelGroup rendered="#{cc.attrs.display}">
+
+       <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(cc.attrs.interactor)}" varStatus="rowStatus">
+            <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'uniprotkb'}">
+                <iax:goUniprot query="#{xref.primaryId}" onlyLogo="true"/>
+                <br/>
+                <h:commandLink action="molecule">
+                    <f:setPropertyActionListener value="#{cc.attrs.interactor.ac}" target="#{moleculeViewBean.interactorAc}"/>
+                    <h:graphicImage alt="dastyLogo" url="/images/logos/dasty2_logo_50.png" style="border-width:0"/>
+                </h:commandLink>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'chebi'}">
+                <iax:goChebi query="#{xref.primaryId}" onlyLogo="true"/>
+                <br/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'drugbank'}">
+                <iax:goDrugbank query="#{xref.primaryId}" onlyLogo="true"/>
+                <br/>
+                <iax:goDrugPortChemicalView query="#{xref.primaryId}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(cc.attrs.interactor))}"/>
+                <br/>
+            </h:panelGroup>
+        </ui:repeat>
+
+        </h:panelGroup>
+
+    </composite:implementation>
+
+</ui:composition>
