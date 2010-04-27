@@ -21,7 +21,7 @@
     <!-- TODO Following statement would be harsh on the database if the experiment has a large amount of interactions !! -->
     <ui:param name="interactionCount" value="#{fn:length(experiment.interactions)}"/>
 
-    <h3>Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})</h3>
+    <h2>Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})</h2>
 
     <h:panelGroup>
 
@@ -45,13 +45,16 @@
             <iv:cvPopup cv="#{experiment.cvIdentification}" />
         </iv:panelLabelAndMessage>
 
-        <iv:panelLabelAndMessage label="Cross References:" labelStyle="font-weight:bold;" visible="#{not empty experiment.xrefs}">
-            <iv:xrefTable xrefs="#{experiment.xrefs}" />
-        </iv:panelLabelAndMessage>
-
-        <iv:panelLabelAndMessage label="Annotations:" labelStyle="font-weight:bold;" visible="#{not empty experiment.annotations}">
-            <iv:annotationTable annotations="#{experiment.annotations}" />
-        </iv:panelLabelAndMessage>
+        <table border="0">
+            <tr>
+                <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
+                <td><iv:xrefTable xrefs="#{experiment.xrefs}" /></td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
+                <td><iv:annotationTable annotations="#{experiment.annotations}" /></td>
+            </tr>
+        </table>
 
     </h:panelGroup>
 
@@ -60,7 +63,7 @@
     <ui:param name="publication" value="#{experiment.publication}"/>
     <ui:param name="pmid" value="#{iaf:getPubmedId(experiment)}"/>
 
-    <h3>Publication</h3>
+    <h2>Publication</h2>
 
     <table id="publicationTable" width="100%">
         <tr>
@@ -113,7 +116,7 @@
     <ui:param name="interaction" value="#{detailsBean.interaction}"/>
 
     <h:panelGroup id="interactionPanel" rendered="#{interaction != null}">
-        <h3>Interaction</h3>
+        <h1>Interaction</h1>
 
         <table width="100%">
         <tr>
@@ -134,13 +137,16 @@
                     <iv:cvPopup cv="#{interaction.cvInteractionType}" />
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty interaction.xrefs}" labelStyle="font-weight:bold;">
-                    <iv:xrefTable xrefs="#{interaction.xrefs}" />
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty interaction.annotations}" labelStyle="font-weight:bold;">
-                    <iv:annotationTable annotations="#{interaction.annotations}" />
-                </iv:panelLabelAndMessage>
+                <table border="0">
+                    <tr>
+                        <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
+                        <td><iv:xrefTable xrefs="#{interaction.xrefs}" /></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
+                        <td><iv:annotationTable annotations="#{interaction.annotations}" /></td>
+                    </tr>
+                </table>
             </td>
 
             <td style="text-align: right; vertical-align: top;" width="20%">
@@ -172,7 +178,7 @@
 
     <h:panelGroup rendered="#{interaction != null}">
 
-    <h3>Participant#{(participantCount > 1 ? text : '')}</h3>
+    <h2>Participant#{(participantCount > 1 ? text : '')}</h2>
 
     <p:dataTable var="participant" value="#{interaction.components}" paginator="false" dynamic="false" lazy="false">
 
