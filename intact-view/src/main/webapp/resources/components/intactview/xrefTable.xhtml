@@ -34,10 +34,12 @@
             <f:facet name="header">
                 <h:outputText value="Identifier"/>
             </f:facet>
-            
+
+            <ui:param name="isPsimiTaxid" value="#{xref.cvDatabase.shortLabel == 'newt' and xref.primaryId lt 0}" />
+            <h:outputText value="#{xref.primaryId}" rendered="#{isPsimiTaxid}" />
             <ot:separateConversationContext>
                 <h:outputLink text="#{xref.primaryId}" value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}"
-                              target="_blank">
+                              target="_blank" rendered="#{not isPsimiTaxid}">
                     <h:outputText value="#{xref.primaryId}" />
                 </h:outputLink>
             </ot:separateConversationContext>
