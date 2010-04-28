@@ -37,6 +37,7 @@ public class OntologyTermWrapper {
     private OntologyTermWrapper parent;
 
     private List<OntologyTermWrapper> children;
+    private boolean isLeaf;
 
     public OntologyTermWrapper(OntologyTerm term, Map<String, Long> termsCountMap, boolean showIfEmpty) {
         this.term = term;
@@ -55,8 +56,18 @@ public class OntologyTermWrapper {
     }
 
     public List<OntologyTermWrapper> getChildren() {
-        if (children != null) {
-            return children;
+        initChildren();
+        return children;
+    }
+
+    public boolean isLeaf() {
+        initChildren();
+        return isLeaf;
+    }
+
+    private void initChildren() {
+        if (children != null || isLeaf) {
+            return;
         }
 
         children = new ArrayList<OntologyTermWrapper>();
@@ -67,12 +78,12 @@ public class OntologyTermWrapper {
             if (showIfEmpty || otwChild.getInteractionCount() > 0 || (term instanceof RootTerm)) {
                 children.add(otwChild);
                 otwChild.setParent(this);
-            } 
+            }
         }
 
         Collections.sort(children, new OntologyTermWrapperComparator());
 
-        return children;
+        if (children.isEmpty()) isLeaf = true;
     }
 
     public OntologyTermWrapper getParent() {
@@ -91,9 +102,12 @@ public class OntologyTermWrapper {
         this.interactionCount = interactionCount;
     }
 
+
+
     private class OntologyTermWrapperComparator implements Comparator<OntologyTermWrapper> {
 
         public int compare(OntologyTermWrapper o1, OntologyTermWrapper o2) {
+            
             if (o1.getInteractionCount() > o2.getInteractionCount()) {
                 return -1;
             } else {

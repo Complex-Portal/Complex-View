@@ -21,8 +21,6 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyBrowserController;
 
-import javax.faces.event.ActionEvent;
-
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -47,7 +45,7 @@ public class SearchBrowseDialogController extends BaseController {
 //    }
 //
 //    public TreeModel getTreeModel() {
-//        return ontologyBrowserController.getOntologyTreeModel();
+//        return ontologyBrowserController.getOntologyTreeNode();
 //    }
 //
 //    public OntologyBrowserController getOntologyBrowserController() {

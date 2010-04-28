@@ -55,7 +55,7 @@ public abstract class OntologyBrowserController extends BaseController {
     @Autowired
     private BrowserCache browserCache;
 
-    private TreeNode ontologyTreeModel;
+    private TreeNode ontologyTreeNode;
 
     public OntologyBrowserController() {
     }
@@ -67,7 +67,7 @@ public abstract class OntologyBrowserController extends BaseController {
     @PostConstruct
     public void init() {
         OntologySearcher ontologySearcher = new OntologySearcher(intactViewConfiguration.getOntologySolrServer());
-        ontologyTreeModel = createOntologyTreeModel(createRootTerm(ontologySearcher));
+        ontologyTreeNode = createOntologyTreeModel(createRootTerm(ontologySearcher));
     }
 
     protected TreeNode createOntologyTreeModel(OntologyTerm rootTerm) {
@@ -114,19 +114,18 @@ public abstract class OntologyBrowserController extends BaseController {
 
         OntologyTermWrapper otwRoot = new OntologyTermWrapper(rootTerm, termsCountMap, false);
 
-        TreeNode treeModel = createTreeModel(otwRoot);
+        TreeNode treeNode = createRootTreeNode(otwRoot);
 
         //browserCache.put(facetField, query, treeModel);
 
-        return treeModel;
+        return treeNode;
     }
 
-    protected TreeNode createTreeModel(OntologyTermWrapper otwRoot) {
-        throw new UnsupportedOperationException("Not implemented for primefaces yet");
-        //return new ChildPropertyTreeModel( otwRoot, "children");
+    protected TreeNode createRootTreeNode(OntologyTermWrapper otwRoot) {
+        return new OntologyTermNode(otwRoot, null);
     }
 
-    public TreeNode getOntologyTreeModel() {
-        return ontologyTreeModel;
+    public TreeNode getOntologyTreeNode() {
+        return ontologyTreeNode;
     }
 }
