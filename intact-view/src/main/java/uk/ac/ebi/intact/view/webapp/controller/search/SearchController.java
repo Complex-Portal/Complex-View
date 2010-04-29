@@ -8,6 +8,7 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import psidev.psi.mi.tab.model.BinaryInteraction;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.view.webapp.controller.ContextController;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
@@ -18,6 +19,7 @@ import uk.ac.ebi.intact.view.webapp.controller.moleculeview.MoleculeViewControll
 import uk.ac.ebi.intact.view.webapp.model.InteractorSearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 import uk.ac.ebi.intact.view.webapp.model.LazySearchResultDataModel;
+import uk.ac.ebi.intact.view.webapp.util.MitabFunctions;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -183,6 +185,8 @@ public class SearchController extends JpaBaseController {
                                  "Please do reformat your query." );
             }
         }
+
+        contextController.clearLoadedTabs();
     }
 
 
@@ -303,6 +307,10 @@ public class SearchController extends JpaBaseController {
         SolrQuery solrQuery = userQuery.createSolrQuery();
 
         doBinarySearch(solrQuery);
+    }
+
+    public String getIntactAc(BinaryInteraction binaryInteraction) {
+        return MitabFunctions.getIntactIdentifierFromCrossReferences(binaryInteraction.getInteractionAcs());
     }
 
 

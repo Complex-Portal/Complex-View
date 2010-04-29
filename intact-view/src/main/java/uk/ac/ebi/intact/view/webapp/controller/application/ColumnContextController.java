@@ -18,11 +18,8 @@ package uk.ac.ebi.intact.view.webapp.controller.application;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 
 import javax.annotation.PostConstruct;
 import javax.faces.model.SelectItem;
@@ -38,14 +35,10 @@ import java.util.ResourceBundle;
  */
 
 @Controller( "columnContext" )
-@Scope( "conversation.access" )
-@ConversationName( "general" )
+@Scope( "session" )
 public class ColumnContextController {
 
     private static final Log log = LogFactory.getLog( ColumnContextController.class );
-
-    @Autowired
-    private SearchController searchBean;
 
     private String[] selectedColumns;
     private List<SelectItem> columnsSelectItems;
@@ -77,7 +70,6 @@ public class ColumnContextController {
     private static String DATASET = "interaction.dataset";
 
     public ColumnContextController() {
-
     }
 
     @PostConstruct
@@ -104,10 +96,6 @@ public class ColumnContextController {
         });
     }
 
-    public boolean isColumnVisible(String columnKey) {
-        return ArrayUtils.contains(selectedColumns, columnKey);
-    }
-
     private String[] getMinimumColumns() {
         return new String[] { MOLECULE_A_NAME, MOLECULE_B_NAME, INTERACTION_AC};
     }
@@ -124,6 +112,9 @@ public class ColumnContextController {
         this.selectedColumns = getMinimumColumns();
     }
 
+    public boolean isColumnVisible(String columnKey) {
+        return ArrayUtils.contains(selectedColumns, columnKey);
+    }
 
     private List<SelectItem> createSelectItems() {
         ResourceBundle rb = ResourceBundle.getBundle( "uk.ac.ebi.intact.Messages" );
@@ -142,7 +133,9 @@ public class ColumnContextController {
     }
 
     public void setSelectedColumns(String[] selectedColumns) {
-        this.selectedColumns = selectedColumns;
+        if (selectedColumns != null && selectedColumns.length > 0) {
+            this.selectedColumns = selectedColumns;
+        }
     }
 
     public List<SelectItem> getColumnsSelectItems() {

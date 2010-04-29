@@ -34,7 +34,8 @@
 
         &#160;|&#160;
 
-        <p:commandButton value="Add / remove table columns" onclick="columnsDialog.show()"/>
+        <p:commandButton type="button" value="Add / remove table columns"
+                         onclick="columnsDialog.show()" />
     </p:panel>
 
     <p:dialog header="Columns displayed" fixedCenter="true" widgetVar="columnsDialog" width="300px" height="400px">
@@ -60,9 +61,9 @@
                      dynamic="true" lazy="true" rowIndexVar="row"
                      paginator="#{searchBean.results.rowCount gt userQuery.pageSize}">
         <p:column>
-                <h:panelGroup rendered="#{not testController.results.sameThanPrevious}">
+                <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
                     <h:commandLink action="details">
-                        <f:setPropertyActionListener value="#{testController.getIntactAc(binaryInteraction)}"
+                        <f:setPropertyActionListener value="#{searchBean.getIntactAc(binaryInteraction)}"
                                                      target="#{detailsBean.interactionAc}"/>
                         <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
                         <h:graphicImage url="/images/magnify.png" alt="details" />

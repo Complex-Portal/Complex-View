@@ -7,15 +7,17 @@
 
                 template="/main_content_template.xhtml">
 
-    <f:metadata>
-        <f:event type="preRenderView" listener="#{contextController.clearLoadedTabs()}"/>
-        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(2)}"/>
-        <f:viewParam name="query" value="#{userQuery.searchQuery}"/>
-        <f:viewParam name="ontologyQuery" value="#{userQuery.ontologySearchQuery}"/>
-        <f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>
-    </f:metadata>
+    
 
     <ui:define name="dialogs">
+        <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
+                  draggable="false" close="false" zindex="200" height="30px" fixedCenter="true">
+                <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
+                                style="vertical-align:middle;"/>
+                &#160;
+                <h:outputText value="Loading content..."/>
+        </p:dialog>
+        
         <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog" fixedCenter="true"
                   width="700px" height="500px" modal="true">
             <div style="width:690px; height:490px; overflow:auto;">

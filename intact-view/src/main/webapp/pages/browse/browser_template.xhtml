@@ -3,16 +3,9 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
-                xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
 
-                xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iaf="http://intact.ebi.ac.uk/functions"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                xmlns:iam="http://intact.ebi.ac.uk/mitabfunctions"
 
                 template="/main_content_template.xhtml">
     
@@ -20,71 +13,59 @@
 
     <ui:define name="browseTabContent">
 
-        <tr:spacer height="5"/>
+        <h:panelGroup>
+            <h:graphicImage alt="Back" url="/images/back_arrow.gif" />
+            <h:commandLink value="Back to Browse options" action="#{browseBean.createListofIdentifiersAndBrowse}"/>
+        </h:panelGroup>
 
-        <tr:panelHorizontalLayout valign="middle">
-            <tr:image source="/images/back_arrow.gif" />
-            <tr:commandLink text="Back to Browse options" action="#{browseBean.createListofIdentifiersAndBrowse}"/>
-        </tr:panelHorizontalLayout>
+        <br/>
 
-        <tr:spacer height="5"/>
+        <h2>#{title}</h2>
 
-        <tr:panelHeader text="#{title}">
+        <p:tree var="otw" value="#{browserController.ontologyTreeNode}"
+                dynamic="true" cache="true">
+            <p:treeNode>
+                <h:outputText value="#{otw.term.name} - #{otw.interactionCount}"/>
+            </p:treeNode>
+        </p:tree>
 
-            <tr:panelGroupLayout>
-                <f:facet name="separator">
-                    <tr:spacer height="5"/>
-                </f:facet>
+                <!--<tr:treeTable id="browsertTree" var="otw" value="#{browserController.ontologyTreeModel}" rootNodeRendered="false"-->
+                        <!--expandAllEnabled="false">-->
 
-            <tr:panelHorizontalLayout>
-                <f:facet name="separator">
-                    <tr:spacer width="50px"/>
-                </f:facet>
+                    <!--<f:facet name="nodeStamp">-->
+                        <!--<tr:column>-->
+                            <!--<f:facet name="header">-->
+                                <!--<tr:outputText value="Name"/>-->
+                            <!--</f:facet>-->
+                            <!--<tr:outputText value="#{otw.term.name}"/>-->
+                        <!--</tr:column>-->
 
-                <tr:treeTable id="browsertTree" var="otw" value="#{browserController.ontologyTreeModel}" rootNodeRendered="false"
-                        expandAllEnabled="false">
+                    <!--</f:facet>-->
+                    <!--<tr:column>-->
+                        <!--<f:facet name="header">-->
+                            <!--<tr:outputText value="ID"/>-->
+                        <!--</f:facet>-->
+                        <!--<tr:outputText value="#{otw.term.id}"/>-->
+                    <!--</tr:column>-->
 
-                    <f:facet name="nodeStamp">
-                        <tr:column>
-                            <f:facet name="header">
-                                <tr:outputText value="Name"/>
-                            </f:facet>
-                            <tr:outputText value="#{otw.term.name}"/>
-                        </tr:column>
+                    <!--<tr:column inlineStyle="text-align:center;">-->
+                        <!--<f:facet name="header">-->
+                            <!--<tr:outputText value="# Interactions"/>-->
+                        <!--</f:facet>-->
+                        <!--<tr:group>-->
+                             <!--<tr:commandLink text="#{otw.interactionCount}" rendered="#{otw.interactionCount > 0}"-->
+                                             <!--actionListener="#{userQuery.doAddParamTermToQuery}"-->
+                                             <!--action="#{searchBean.doBinarySearchAction}">-->
+                                 <!--<f:param name="operand" value="AND"/>-->
+                                 <!--<f:param name="field" value="#{browserController.fieldName}"/>-->
+                                 <!--<f:param name="queryValue" value="#{otw.term.id}" />-->
+                            <!--</tr:commandLink>-->
 
-                    </f:facet>
-                    <tr:column>
-                        <f:facet name="header">
-                            <tr:outputText value="ID"/>
-                        </f:facet>
-                        <tr:outputText value="#{otw.term.id}"/>
-                    </tr:column>
-
-                    <tr:column inlineStyle="text-align:center;">
-                        <f:facet name="header">
-                            <tr:outputText value="# Interactions"/>
-                        </f:facet>
-                        <tr:group>
-                             <tr:commandLink text="#{otw.interactionCount}" rendered="#{otw.interactionCount > 0}"
-                                             actionListener="#{userQuery.doAddParamTermToQuery}"
-                                             action="#{searchBean.doBinarySearchAction}">
-                                 <f:param name="operand" value="AND"/>
-                                 <f:param name="field" value="#{browserController.fieldName}"/>
-                                 <f:param name="queryValue" value="#{otw.term.id}" />
-                            </tr:commandLink>
-
-                            <tr:outputText value="0" rendered="#{otw.interactionCount == 0}"/>
-                        </tr:group>
-                    </tr:column>
+                            <!--<tr:outputText value="0" rendered="#{otw.interactionCount == 0}"/>-->
+                        <!--</tr:group>-->
+                    <!--</tr:column>-->
       
-                </tr:treeTable>
-
-            </tr:panelHorizontalLayout>
-
-            </tr:panelGroupLayout>
-
-        </tr:panelHeader>
-
+                <!--</tr:treeTable>-->
     </ui:define>
 
 </ui:composition>
