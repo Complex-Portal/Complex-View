@@ -39,7 +39,6 @@ public class ContextController {
     }
 
     public void clearLoadedTabs() {
-        System.out.println("CLEARING LOADED TABS");
         loadedTabStatus = new HashMap<Integer, Boolean>();
     }
 
@@ -48,7 +47,6 @@ public class ContextController {
     }
 
     public void setActiveTabIndex(int activeTabIndex) {
-        System.out.println("ACTIVE INDEX SET TO: "+activeTabIndex);
         this.activeTabIndex = activeTabIndex;
         setTabLoaded(activeTabIndex);
     }
