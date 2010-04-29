@@ -7,14 +7,6 @@
 
         xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
 
-    <f:metadata>
-        <!--<f:event type="preRenderView" listener="#{contextController.clearLoadedTabs()}"/>-->
-        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(2)}"/>
-        <f:viewParam name="query" value="#{userQuery.searchQuery}"/>
-        <f:viewParam name="ontologyQuery" value="#{userQuery.ontologySearchQuery}"/>
-        <!--<f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>-->
-    </f:metadata>
-
 <!-- Info section on top of the results -->
 <div style="float:right">
     <p:commandLink onclick="whatIsInteractionsDialog.show()">
