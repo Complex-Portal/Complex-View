@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.hupo.psi.mi.psicquic.registry.client.PsicquicRegistryClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -184,6 +185,14 @@ public class SearchController extends JpaBaseController {
                                  "However, wildcard characters can be used anywhere else in one's query (eg. g?vin or gav* for gavin). " +
                                  "Please do reformat your query." );
             }
+        }
+
+        PsicquicController psicquicController = (PsicquicController) getBean("psicquicController");
+        try {
+            psicquicController.countResultsInOtherDatabases();
+        } catch (PsicquicRegistryClientException e) {
+            addErrorMessage("Problem counting results in other databases", "Registry not available");
+            e.printStackTrace();
         }
 
         contextController.clearLoadedTabs();

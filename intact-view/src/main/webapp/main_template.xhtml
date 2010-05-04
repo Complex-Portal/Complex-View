@@ -40,7 +40,8 @@
 
         <h:form id="intactForm" prependId="false"> 
 
-        <p:tabView id="mainPanels" cache="false" dynamic="true" activeIndex="#{contextController.activeTabIndex}" widgetVar="mainTabsWidget">
+        <p:tabView id="mainPanels" cache="false" dynamic="true" activeIndex="#{contextController.activeTabIndex}"
+                   widgetVar="mainTabsWidget" ontabchange="if (mainTabsWiget.get('activeTab') == 4) { document.getElementById('activate_4_submit').click() }">
             <p:tab title="Home">
                         <p:messages/>
                         <ui:insert name="aboutTabContent"/>

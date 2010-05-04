@@ -26,12 +26,14 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
-import javax.faces.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -52,41 +54,10 @@ public class PsicquicController extends BaseController {
     private int otherDatabasesWithResults;
     private int otherImexDatabasesWithResults;
 
-    private boolean psicquicQueryRunning;
-    private String lastPsicquicSearch;
-
     public PsicquicController() {
     }
 
-    public void doPsicquicQuery(ActionEvent evt) {
-        if (psicquicQueryRunning) {
-            return;
-        }
-
-        psicquicQueryRunning = true;
-
-        try {
-
-                String query = getUserQuery().getSearchQuery();
-
-                if (query == null || query.length() == 0) {
-                    query = "*";
-                }
-
-            if (!query.equals(lastPsicquicSearch)) {
-                countResultsInOtherDatabases(query);
-                lastPsicquicSearch = query;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            psicquicQueryRunning = false;
-        }
-
-    }
-
-    private void countResultsInOtherDatabases(String query) throws PsicquicRegistryClientException {
+     public void countResultsInOtherDatabases() throws PsicquicRegistryClientException {
         final String psicquicRegistryUrl = intactViewConfiguration.getPsicquicRegistryUrl();
 
         if (psicquicRegistryUrl == null || psicquicRegistryUrl.length() == 0) {
@@ -100,55 +71,81 @@ public class PsicquicController extends BaseController {
 
         countInOtherDatabases = 0;
         otherDatabasesWithResults = 0;
-        countInOtherImexDatabases = 0;
+        countInOtherDatabases = 0;
         otherImexDatabasesWithResults = 0;
+        countInOtherImexDatabases = 0;
 
         imexServices = new ArrayList<ServiceType>(services.size());
 
+        String query = getUserQuery().getSearchQuery();
 
-        for (ServiceType service : services) {
-            boolean isImexService = false;
+        if (query == null || query.length() == 0) {
+            query = "*";
+        }
+
+        final String psicquicQuery = query;
+
+        final ExecutorService executorService = Executors.newCachedThreadPool();
+
+        for (final ServiceType service : services) {
+            boolean imexTagFound = false;
 
             for (String tag : service.getTags()) {
                 if ("MI:0959".equals(tag)) {
                     imexServices.add(service);
-                    isImexService = true;
+                    imexTagFound = true;
                     break;
                 }
             }
+
+            final boolean isImexService = imexTagFound;
 
             if (intactViewConfiguration.getWebappName().contains(service.getName())) {
                 continue;
             }
 
-            List<String> lines = null;
-            try {
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    try {
 
-                int psicquicCount = 0;
-                int imexCount = 0;
+                        int psicquicCount = countInPsicquicService(service, psicquicQuery);
 
-                psicquicCount = countInPsicquicService(service, query);
+                        int imexCount = 0;
 
-                if (isImexService) {
-                    final String imexQuery = createImexQuery(query);
-                    imexCount = countInPsicquicService(service, imexQuery);
+
+                        if (isImexService) {
+                            final String imexQuery = createImexQuery(psicquicQuery);
+                            imexCount = countInPsicquicService(service, imexQuery);
+                        }
+
+                        countInOtherDatabases += psicquicCount;
+                        countInOtherImexDatabases += imexCount;
+
+                        if (psicquicCount > 0) {
+                            otherDatabasesWithResults++;
+                        }
+
+                        if (imexCount > 0) {
+                            otherImexDatabasesWithResults++;
+                        }
+
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
                 }
+            };
 
-                countInOtherDatabases += psicquicCount;
-                countInOtherImexDatabases += imexCount;
+            executorService.submit(runnable);
 
-                if (psicquicCount > 0) {
-                    otherDatabasesWithResults++;
-                }
 
-                if (imexCount > 0) {
-                    otherImexDatabasesWithResults++;
-                }
+        }
 
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
+        executorService.shutdown();
 
+        try {
+            executorService.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -193,10 +190,6 @@ public class PsicquicController extends BaseController {
 
     public int getOtherDatabasesWithResults() {
         return otherDatabasesWithResults;
-    }
-
-    public boolean isPsicquicQueryRunning() {
-        return psicquicQueryRunning;
     }
 
     public int getCountInOtherImexDatabases() {

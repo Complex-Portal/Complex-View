@@ -52,22 +52,10 @@
     &#160;them.
 
 </h:panelGroup>
-    
-<h:panelGroup id="countingPsicquic" style="display:#{psicquicController.countInOtherDatabases == -1? 'inline' : 'none'}">
-    <p:poll interval="4" async="true"  global="false" widgetVar="psicquicPoll" oncomplete="if (psicquicPoll.isActive()) psicquicPoll.stop()"
-            process="@this"
-            actionListener="#{psicquicController.doPsicquicQuery}"
-            update="countedPsicquic countingPsicquic" />
-
-    <br/>
-    <span style="color:gray">
-    > [Counting results in other databases...]
-    </span>
-</h:panelGroup>
 
 <h:panelGroup id="countedPsicquic"
               style="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
-    <h:panelGroup rendered="#{psicquicController.countInOtherDatabases gt 0 and not psicquicController.psicquicQueryRunning}">
+    <h:panelGroup rendered="#{psicquicController.countInOtherDatabases gt 0}">
         <br/>
         <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
         <h:outputLink value="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
@@ -82,7 +70,7 @@
         </p:commandLink>
     </h:panelGroup>
 
-    <h:panelGroup rendered="#{psicquicController.countInOtherDatabases gt 0 and psicquicController.countInOtherImexDatabases gt 0 and not psicquicController.psicquicQueryRunning}">
+    <h:panelGroup rendered="#{psicquicController.countInOtherDatabases gt 0 and psicquicController.countInOtherImexDatabases gt 0}">
         <br/>
         <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
         <h:outputLink value="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
