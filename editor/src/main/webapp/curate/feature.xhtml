@@ -69,8 +69,8 @@
                             <h:outputLabel value="Feature type: " for="featureTypeTxt"/>
                         </td>
                         <td colspan="2">
-                            <!--<ia:inputCvObject id="featureTypeTxt" cvIdentifier="MI:0116" value="#{feature.cvFeatureType}}"/>-->
-                            <h:inputText id="featureTypeTxt" value="#{feature.cvFeatureType.shortLabel}"   />
+                            <ia:inputCvObject id="featureTypeTxt" cvIdentifier="MI:0116" value="#{feature.cvFeatureType}"
+                                    selectItems="#{cvObjectService.featureTypeSelectItems}"/>
                         </td>
                     </tr>
                     <tr>
@@ -78,8 +78,8 @@
                             <h:outputLabel value="Detection method: " for="featureDetectionTxt"/>
                         </td>
                         <td colspan="2">
-                            <!--<ia:inputCvObject id="featureDetectionTxt" cvIdentifier="MI:0003" value="#{feature.cvFeatureIdentification}}"/>-->
-                            <h:inputText id="featureDetectionTxt" value="#{feature.cvFeatureIdentification.shortLabel}"   />
+                            <ia:inputCvObject id="featureDetectionTxt" cvIdentifier="MI:0003" value="#{feature.cvFeatureIdentification}}"
+                                    selectItems="#{cvObjectService.featureDetectionMethodSelectItems}"/>
                         </td>
                     </tr>
                 </table>

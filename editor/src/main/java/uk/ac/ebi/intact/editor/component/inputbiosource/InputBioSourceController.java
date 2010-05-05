@@ -24,9 +24,7 @@ import uk.ac.ebi.intact.model.BioSource;
 import javax.faces.event.ActionEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,12 +45,6 @@ public class InputBioSourceController {
     private String query;
 
     public InputBioSourceController() {
-    }
-
-    public List<BioSource> autocomplete( String queryStr ) {
-        Query query = entityManager.createQuery( "select b from BioSource b where b.shortLabel like :query order by b.shortLabel asc" );
-        query.setParameter( "query", queryStr + "%" );
-        return query.getResultList();
     }
 
     public void loadBioSources( ActionEvent evt ) {

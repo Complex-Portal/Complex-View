@@ -2,6 +2,7 @@ package uk.ac.ebi.intact.editor.component.inputcvobject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,22 @@ import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.CvDagObject;
 import uk.ac.ebi.intact.model.CvObject;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
 @Scope( "conversation.access" )
+@ConversationName( "general" )
 public class InputCvObjectController extends BaseController {
 
     private static final Log log = LogFactory.getLog( InputCvObjectController.class );
+
+    @PersistenceContext( unitName = "intact-core-default" )
+    private EntityManager entityManager;
 
     @Autowired
     private DaoFactory daoFactory;
@@ -32,6 +41,13 @@ public class InputCvObjectController extends BaseController {
 
     public InputCvObjectController() {
         cvObjectsByClientId = new HashMap<String, CvObject>();
+    }
+
+    public List<CvObject> autocomplete( String queryStr ) {
+        Query query = entityManager.createQuery( "select cv from CvObject cv where cv.shortLabel like :query order by cv.shortLabel asc" );
+        query.setParameter( "query", queryStr + "%" );
+
+        return query.getResultList();
     }
 
     public TreeNode getRoot() {
@@ -85,4 +101,9 @@ public class InputCvObjectController extends BaseController {
     public CvObject getSelectedCvObject( String clientId ) {
         return cvObjectsByClientId.get( clientId );
     }
+
+    public String getCvObjectClassName() {
+        return "CvObject";
+    }
+
 }

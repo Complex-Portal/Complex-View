@@ -51,10 +51,9 @@
                                 <h:outputLabel value="Experimental role(s): " for="expRoleTxt"/>
                             </td>
                             <td >
-                                <!-- TODO handle the multiple experimental role -->
-                                <!--<ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
-                                value="#{interactionController.getExperimentalRole(participant)}"/>-->
-                                <h:inputText id="expRoleTxt" value="#{participant.cvExperimentalRole.shortLabel}"   />
+                                <ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
+                                        value="#{interactionController.getExperimentalRole(participant)}"
+                                        selectItems="#{cvObjectService.experimentalRoleSelectItems}"/>
                             </td>
                             <td style="padding-left: 150px;">
                                 <h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>
@@ -66,9 +65,9 @@
                                 <h:outputLabel value="Biological role: " for="bioRoleTxt"/>
                             </td>
                             <td colspan="2">
-                                <!--<ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"-->
-                                                  <!--value="#{participant.cvBiologicalRole}" />-->
-                                <h:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />
+                                <ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"
+                                                  value="#{participant.cvBiologicalRole}"
+                                                  selectItems="#{cvObjectService.biologicalRoleSelectItems}"/>
                             </td>
                         </tr>
                         <tr>
@@ -77,7 +76,8 @@
                                 <!--<h:outputLabel value="Expressed in: "/>-->
                             </td>
                             <td>
-                                <ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"/>
+                                <ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"
+                                        selectItems="#{bioSourceService.bioSourceSelectItems}"/>
                             </td>
                             <td style="padding-left: 150px;">
                                 <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>

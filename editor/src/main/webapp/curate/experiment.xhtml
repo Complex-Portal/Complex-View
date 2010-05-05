@@ -64,8 +64,8 @@
                                 <h:outputLabel value="Host organism: " for="hostOrganismTxt"/>
                             </td>
                             <td colspan="3">
-                                <h:inputText id="hostOrganismTxt" value="#{experimentController.experiment.bioSource.shortLabel}" />
-                                <!--<ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"/>-->
+                                <ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"
+                                        selectItems="#{bioSourceService.bioSourceSelectItems}"/>
                             </td>
                         </tr>
                         <tr>
@@ -74,6 +74,7 @@
                             </td>
                             <td colspan="3">
                                 <ia:inputCvObject id="detMethodTxt" value="#{experimentController.experiment.cvInteraction}"
+                                                  selectItems="#{cvObjectService.interactionDetectionMethodSelectItems}"
                                                   cvIdentifier="MI:0001"/>
                             </td>
                         </tr>
@@ -81,6 +82,7 @@
                             <td colspan="1"><h:outputLabel value="Participant detection method: " for="partDetMethodTxt"/></td>
                             <td colspan="3">
                                 <ia:inputCvObject id="partDetMethodTxt" value="#{experimentController.experiment.cvIdentification}"
+                                                  selectItems="#{cvObjectService.participantDetectionMethodSelectItems}"
                                                   cvIdentifier="MI:0002"/>
                             </td>
                         </tr>

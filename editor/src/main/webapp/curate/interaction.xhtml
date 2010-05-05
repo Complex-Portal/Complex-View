@@ -70,7 +70,8 @@
                         </td>
                         <td colspan="3">
                             <ia:inputCvObject id="interactionTypeTxt" cvIdentifier="MI:0190"
-                                              value="#{interaction.cvInteractionType}" />
+                                              value="#{interaction.cvInteractionType}"
+                                    selectItems="#{cvObjectService.interactionTypeSelectItems}"/>
                         </td>
                     </tr>
                     <tr>

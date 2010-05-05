@@ -54,14 +54,35 @@ public class CvObjectService extends JpaAwareController {
     private List<SelectItem> experimentTopicSelectItems;
     private List<SelectItem> interactionTopicSelectItems;
 
-    private List<CvObject> databases;
+    private List<CvDatabase> databases;
     private List<SelectItem> databaseSelectItems;
 
-    private List<CvObject> qualifiers;
+    private List<CvXrefQualifier> qualifiers;
     private List<SelectItem> qualifierSelectItems;
 
-    private List<CvObject> aliasTypes;
+    private List<CvAliasType> aliasTypes;
     private List<SelectItem> aliasTypeSelectItems;
+
+    private List<CvInteraction> interactionDetectionMethods;
+    private List<SelectItem> interactionDetectionMethodSelectItems;
+
+    private List<CvIdentification> participantDetectionMethods;
+    private List<SelectItem> participantDetectionMethodSelectItems;
+
+    private List<CvInteractionType> interactionTypes;
+    private List<SelectItem> interactionTypeSelectItems;
+
+    private List<CvExperimentalRole> experimentalRoles;
+    private List<SelectItem> experimentalRoleSelectItems;
+
+    private List<CvBiologicalRole> biologicalRoles;
+    private List<SelectItem> biologicalRoleSelectItems;
+
+    private List<CvFeatureIdentification> featureDetectionMethods;
+    private List<SelectItem> featureDetectionMethodSelectItems;
+
+    private List<CvFeatureType> featureTypes;
+    private List<SelectItem> featureTypeSelectItems;
 
     public CvObjectService() {
     }
@@ -129,6 +150,27 @@ public class CvObjectService extends JpaAwareController {
         aliasTypes = getSortedList( CvAliasType.class, cvObjectsByClass );
         aliasTypeSelectItems = createSelectItems( aliasTypes, "-- Select type --" );
 
+        interactionDetectionMethods = getSortedList( CvInteraction.class, cvObjectsByClass );
+        interactionDetectionMethodSelectItems = createSelectItems( interactionDetectionMethods, "-- Select method --" );
+
+        participantDetectionMethods = getSortedList( CvIdentification.class, cvObjectsByClass );
+        participantDetectionMethodSelectItems = createSelectItems( participantDetectionMethods, "-- Select method --" );
+
+        interactionTypes = getSortedList( CvInteractionType.class, cvObjectsByClass );
+        interactionTypeSelectItems = createSelectItems( interactionTypes, "-- Select type --" );
+
+        experimentalRoles = getSortedList( CvExperimentalRole.class, cvObjectsByClass );
+        experimentalRoleSelectItems = createSelectItems( experimentalRoles, "-- Select role --" );
+
+        biologicalRoles = getSortedList( CvBiologicalRole.class, cvObjectsByClass );
+        biologicalRoleSelectItems = createSelectItems( biologicalRoles, "-- Select role --" );
+
+        featureDetectionMethods = getSortedList( CvFeatureIdentification.class, cvObjectsByClass );
+        featureDetectionMethodSelectItems = createSelectItems( featureDetectionMethods, "-- Select method --" );
+
+        featureTypes = getSortedList( CvFeatureType.class, cvObjectsByClass );
+        featureTypeSelectItems = createSelectItems( featureTypes, "-- Select type --" );
+
         IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
     }
 
@@ -142,11 +184,11 @@ public class CvObjectService extends JpaAwareController {
         }
     }
 
-    public List<CvObject> getSortedList( Class key, Multimap<Class, CvObject> classMultimap ) {
+    public <T extends CvObject> List<T> getSortedList( Class<T> key, Multimap<Class, CvObject> classMultimap ) {
         if ( classMultimap.containsKey( key ) ) {
             List<CvObject> list = new ArrayList<CvObject>( classMultimap.get( key ) );
             Collections.sort( list, new CvObjectComparator() );
-            return list;
+            return (List<T>) list;
         } else {
             return Collections.EMPTY_LIST;
         }
@@ -267,6 +309,34 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getAliasTypeSelectItems() {
         return aliasTypeSelectItems;
+    }
+
+    public List<SelectItem> getInteractionDetectionMethodSelectItems() {
+        return interactionDetectionMethodSelectItems;
+    }
+
+    public List<SelectItem> getParticipantDetectionMethodSelectItems() {
+        return participantDetectionMethodSelectItems;
+    }
+
+    public List<SelectItem> getInteractionTypeSelectItems() {
+        return interactionTypeSelectItems;
+    }
+
+    public List<SelectItem> getFeatureDetectionMethodSelectItems() {
+        return featureDetectionMethodSelectItems;
+    }
+
+    public List<SelectItem> getFeatureTypeSelectItems() {
+        return featureTypeSelectItems;
+    }
+
+    public List<SelectItem> getBiologicalRoleSelectItems() {
+        return biologicalRoleSelectItems;
+    }
+
+    public List<SelectItem> getExperimentalRoleSelectItems() {
+        return experimentalRoleSelectItems;
     }
 
     private class CvObjectComparator implements Comparator<CvObject> {

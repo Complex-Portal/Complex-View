@@ -12,6 +12,7 @@
     <composite:interface>
         <composite:attribute name="value" type="uk.ac.ebi.intact.model.BioSource" required="true"/>
         <composite:attribute name="size" default="30"/>
+        <composite:attribute name="selectItems" required="true"/>
     </composite:interface>
 
     <!-- IMPLEMENTATION -->
@@ -32,63 +33,16 @@
             }
         </h:outputStylesheet>
 
-        <h:panelGrid columns="3" id="inputPanel">
+        <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="bioSourceConverter">
+            <f:selectItems value="#{cc.attrs.selectItems}"/>
+        </h:selectOneMenu>
 
-            <ui:param name="autocompleteWidgetVar" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}__autocompleteWidget"/>
-
-            <h:panelGroup id="readonlyPanel" style="display: block">
-                <h:inputText id="bioSourceVisible" readonly="true"
-                             size="#{cc.attrs.size}"
-                             onclick="ia_toggleDisplayById('#{cc.clientId}:autocompletePanel'); ia_toggleDisplayById('#{cc.clientId}:readonlyPanel'); ia_focusAndSelect(#{autocompleteWidgetVar}.getInputEl());"/>
-
-                <h:inputHidden id="bioSource" value="#{cc.attrs.value}">
-                    <f:converter converterId="bioSourceConverter"/>
-                </h:inputHidden>
-            </h:panelGroup>
-
-            <h:panelGroup id="autocompletePanel" style="display: none">
-                <p:autoComplete id="autocomplete" widgetVar="#{autocompleteWidgetVar}"
-                                completeMethod="#{inputBioSourceController.autocomplete}"
-                                var="bioSource" itemLabel="#{bioSource.shortLabel}" itemValue="#{bioSource}"
-                                converter="bioSourceConverter" forceSelection="true"
-                                minQueryLength="2" typeAhead="true" maxResults="20" />
-            </h:panelGroup>
-
-                <p:commandButton id="selectBtn" value="Select"
-                        onclick="ia_hideById('#{cc.clientId}:autocompletePanel'); ia_showById('#{cc.clientId}:readonlyPanel'); #{cc.clientId}_bioSourceDlg.show();"
+        <p:commandButton id="selectBtn" value="Select"
+                        onclick="#{cc.clientId}_bioSourceDlg.show();"
                         actionListener="#{inputBioSourceController.loadBioSources}"
                         update="bioSourceBrowserDialog,growl"/>
-        </h:panelGrid>
-
-         <script type="text/javascript">
-                var #{autocompleteWidgetVar}__itemSelected = function( oSelf , elItem , oData ) {
-                    var labelAndAc = elItem[2];
-                    YAHOO.log('Selected: '+labelAndAc, null, '#{cc.clientId}');
-
-                    var label = labelAndAc[0];
-                    var ac = labelAndAc[1];
-
-                    document.getElementById('#{cc.clientId}:bioSource').value = ac;
-                    document.getElementById('#{cc.clientId}:bioSourceVisible').value = label;
-
-                    ia_hideById('#{cc.clientId}:autocompletePanel'); ia_showById('#{cc.clientId}:readonlyPanel');
-                };
-
-                #{autocompleteWidgetVar}.itemSelectEvent.subscribe(#{autocompleteWidgetVar}__itemSelected);
-
-             #{autocompleteWidgetVar}.getInputEl().value = '#{cc.attrs.value.shortLabel}';
-
-        </script>
 
         <p:outputPanel id="javascriptPanel">
-            <h:outputScript>
-
-                var inputVisible = document.getElementById('#{cc.clientId}:bioSourceVisible');
-
-                if (inputVisible != null) {
-                    inputVisible.value = '#{cc.attrs.value.shortLabel}';
-                }
-            </h:outputScript>
 
 
         </p:outputPanel>
@@ -105,10 +59,7 @@
 
                     <h:outputScript>
                         function ia_update(bioSourceAc, bioSourceLabel) {
-                            #{cc.clientId}_bioSourceDlg.hide();
-                            document.getElementById('#{cc.clientId}:bioSource').value = bioSourceAc;
-                            document.getElementById('#{cc.clientId}:bioSourceVisible').value = bioSourceLabel;
-                            #{autocompleteWidgetVar}.getInputEl().value = bioSourceLabel;
+                            document.getElementById('#{cc.clientId}:selectObject').value = bioSourceAc;
                         }
                     </h:outputScript>
 

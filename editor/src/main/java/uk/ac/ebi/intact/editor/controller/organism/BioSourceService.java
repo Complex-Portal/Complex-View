@@ -15,22 +15,72 @@
  */
 package uk.ac.ebi.intact.editor.controller.organism;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.context.DataContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.BioSourceDao;
+import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.BioSource;
+
+import javax.annotation.PostConstruct;
+import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
 @Controller
-public class BioSourceService {
+@Lazy
+public class BioSourceService extends JpaAwareController {
+
+    private static final Log log = LogFactory.getLog( BioSourceService.class );
+
+    private List<SelectItem> bioSourceSelectItems;
 
     @Autowired
     private BioSourceDao bioSourceDao;
 
+    @PostConstruct
+    public void loadData() {
+        refresh( null );
+    }
+
+    @Transactional
+    public void refresh( ActionEvent evt ) {
+        if ( log.isDebugEnabled() ) log.debug( "Loading BioSources" );
+
+        final DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
+
+        final TransactionStatus transactionStatus = dataContext.beginTransaction();
+
+        List<BioSource> bioSources = bioSourceDao.getAllSorted(0,Integer.MAX_VALUE, "shortLabel", true);
+
+        bioSourceSelectItems = new ArrayList<SelectItem>(bioSources.size());
+
+        bioSourceSelectItems.add( new SelectItem( null, "-- Select BioSource --", "-- Select BioSource --", false, false, true ) );
+
+        for (BioSource bioSource : bioSources) {
+            bioSourceSelectItems.add(new SelectItem(bioSource, bioSource.getShortLabel(), bioSource.getFullName()));
+        }
+
+        dataContext.commitTransaction(transactionStatus);
+    }
+
+
     public BioSource findBioSourceByAc( String ac ) {
         return bioSourceDao.getByAc( ac );
+    }
+
+    public List<SelectItem> getBioSourceSelectItems() {
+        return bioSourceSelectItems;
     }
 }
