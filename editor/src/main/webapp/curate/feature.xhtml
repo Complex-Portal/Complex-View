@@ -9,6 +9,8 @@
 
                 template="/curate/curate_template.xhtml">
 
+    <ui:param name="annotatedObjectController" value="#{featureController}"/>
+
     <ui:param name="feature" value="#{featureController.feature}" />
     <ui:param name="participant" value="#{participantController.participant}" />
     <ui:param name="interaction" value="#{interactionController.interaction}" />

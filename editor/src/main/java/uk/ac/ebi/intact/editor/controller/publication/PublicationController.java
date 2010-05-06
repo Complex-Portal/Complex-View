@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
@@ -28,14 +27,10 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.*;
 
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
 import javax.faces.model.SelectItem;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,8 +47,6 @@ public class PublicationController extends AnnotatedObjectController {
 
     private Publication publication;
     private String ac;
-
-    private Date lastSaved;
 
     private String identifier;
 
@@ -213,32 +206,6 @@ public class PublicationController extends AnnotatedObjectController {
 
     }
 
-    @Transactional
-    public void doSave( ActionEvent evt ) {
-        if ( log.isDebugEnabled() ) log.debug( "Saving publication: " + publication );
-
-        if ( publication == null ) {
-            addErrorMessage( "No publication to save", "How did I get here?" );
-            return;
-        }
-
-        try {
-            getIntactContext().getCorePersister().saveOrUpdate( publication );
-
-            lastSaved = new Date();
-
-            addInfoMessage( "Publication saved", "AC: " + publication.getAc() );
-
-            setUnsavedChanges( false );
-
-        } catch ( Exception e ) {
-            addErrorMessage( "Problem persisting publication", "AC: " + publication.getAc() );
-            FacesContext ctx = FacesContext.getCurrentInstance();
-            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
-            ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
-        }
-    }
-
     public void doClose( ActionEvent evt ) {
         publication = null;
         ac = null;
@@ -380,10 +347,6 @@ public class PublicationController extends AnnotatedObjectController {
         }
 
         return null;
-    }
-
-    public Date getLastSaved() {
-        return lastSaved;
     }
 
     public List<SelectItem> getDatasetsSelectItems() {

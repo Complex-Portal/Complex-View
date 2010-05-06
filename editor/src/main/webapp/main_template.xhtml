@@ -14,17 +14,19 @@
         <!--<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css"></link>-->
     </h:head>
 
-    <h:body>
+    <h:body style="margin: 0 0 0 0;">
+
+        <h:form id="editorForm" prependId="false">
 
         <h:outputStylesheet name="intact.css" library="css" target="head"/>
 
             <p:growl id="growl" showDetail="true"/>
 
-            <p:layout fullPage="true">
+            <!--<p:layout fullPage="true">-->
 
-                <p:layoutUnit position="top" resizable="false" height="80" style="position: fixed; width: 99%;">
+                <!--<p:layoutUnit position="top" resizable="false" height="80" style="position: fixed; width: 99%;">-->
 
-                    <h:form id="topForm" prependId="false">
+            <div style="width:100%; position:fixed; background: white; -moz-box-shadow: 0px 5px 5px #999; height:95px; background-image: url('#{facesContext.externalContext.request.contextPath}/resources/images/top_background.jpg'); background-repeat: repeat-x">
 
                     <div id="topImage" style="float: left; padding-right: 30px;">
                         <h:graphicImage alt="logoImg" url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>
@@ -112,11 +114,15 @@
                         </table>
                     </div>
 
-                    </h:form>
+                <div id="menuSection" style="width:100%; position:fixed; margin-top: 70px;">
+                    <ui:insert name="menuBar"/>
+                    </div>
+            </div>
 
-                </p:layoutUnit>
+                <!--</p:layoutUnit>-->
 
-                <p:layoutUnit position="center" scrollable="true">
+                <!--<p:layoutUnit position="center" scrollable="true">-->
+            <div style="width:100%; padding-top:60px; margin-left:5px; margin-right:5px">
 
                     <div id="feedback" class="intact-feedback">
                         <a href="http://code.google.com/p/intact/issues/entry?template=Editor%20mockup%20feedback"
@@ -125,7 +131,6 @@
                         </a>
                     </div>
 
-                    <h:form id="editorForm" prependId="false">
                     <p:outputPanel id="centralUnit">
                         <div id="contentSection" style="width:100%">
                             <ui:insert name="content"/>
@@ -136,9 +141,9 @@
                         </div>
                     </p:outputPanel>
 
-                    </h:form>
+            </div>
 
-                </p:layoutUnit>
+                <!--</p:layoutUnit>-->
 
                 <!--<p:layoutUnit id="southUnit" position="bottom"-->
                               <!--rendered="#{facesContext.application.projectStage == 'Development'}"-->
@@ -147,9 +152,9 @@
                      <!--<b>DEVELOPMENT MODE</b>-->
                 <!--</p:layoutUnit>-->
 
-            </p:layout>
+            <!--</p:layout>-->
 
-
+        </h:form>
 
         <ui:insert name="dialogs"/>
 

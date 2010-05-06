@@ -37,7 +37,7 @@
         <db.hbm2ddl>none</db.hbm2ddl>
 
         <!-- other property defaults -->
-        <webapp.logo.url>http://www.ebi.ac.uk/intact/images/intact-logo.gif</webapp.logo.url>
+        <webapp.logo.url>http://www.ebi.ac.uk/~intact/images/intact_logo.png</webapp.logo.url>
         <intact.instance.name>Not Set</intact.instance.name>
 
     </properties>

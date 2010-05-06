@@ -24,13 +24,14 @@
     </ui:define>
 
     <ui:define name="top">
-        <h:panelGroup rendered="#{publicationController.publication != null}">
+        <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
             <div style="float: right">
-                <p:commandButton value="Save" actionListener="#{publicationController.doSave}" ajax="false"/>
+                <p:commandButton id="lalaSave" value="Save" actionListener="#{annotatedObjectController.doSave}"
+                        update="editorForm" onstart="var input = document.getElementById('lalaSave_submit'); input.disabled = true; input.value = 'Saving...'"/>
 
-                <h:panelGroup rendered="#{publicationController.lastSaved != null}" style="color: #AAAAAA">
+                <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
                     <h:outputText value=" Last Saved: " />
-                    <h:outputText value="#{publicationController.lastSaved}">
+                    <h:outputText value="#{annotatedObjectController.lastSaved}">
                         <f:convertDateTime pattern="HH:mm (z)"/>
                     </h:outputText>
                 </h:panelGroup>
@@ -38,28 +39,26 @@
         </h:panelGroup>
     </ui:define>
 
+    <ui:define name="menuBar">
+        <p:menubar>
+            <p:submenu label="Publication">
+                <p:menuitem label="New" onclick="newPublicationDlg.show(); "/>
+                <p:menuitem label="Open by PMID" onclick="openByPmidDlg.show(); "/>
+                <p:menuitem label="Save" actionListener="#{publicationController.doSave}" ajax="false"
+                            rendered="#{publicationController.publication != null}"/>
+                <p:menuitem label="Save &amp; Close" actionListener="#{publicationController.doSaveAndClose}" ajax="false"
+                            rendered="#{publicationController.publication != null}"/>
+            </p:submenu>
+            <p:submenu label="Experiments" rendered="#{publicationController.publication != null}"/>
+            <p:submenu label="Interactions" rendered="#{publicationController.publication != null}"/>
+        </p:menubar>
+    </ui:define>
+
     <ui:define name="content">
         <p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>
         <p:hotkey bind="alt+o" oncomplete="openByPmidDlg.show()"/>
 
-        <div id="menuSection" style="width:98%; position:fixed; margin-top: -10px; margin-left:-10px">
-            <ui:insert name="menubar">
-                <p:menubar>
-                    <p:submenu label="Publication">
-                        <p:menuitem label="New" onclick="newPublicationDlg.show(); "/>
-                        <p:menuitem label="Open by PMID" onclick="openByPmidDlg.show(); "/>
-                        <p:menuitem label="Save" actionListener="#{publicationController.doSave}" ajax="false"
-                                    rendered="#{publicationController.publication != null}"/>
-                        <p:menuitem label="Save &amp; Close" actionListener="#{publicationController.doSaveAndClose}" ajax="false"
-                                    rendered="#{publicationController.publication != null}"/>
-                    </p:submenu>
-                    <p:submenu label="Experiments" rendered="#{publicationController.publication != null}"/>
-                    <p:submenu label="Interactions" rendered="#{publicationController.publication != null}"/>
-                </p:menubar>
-
-            </ui:insert>
-        </div>
-
+        
         <br />
 
         <div style="width:100%; padding-top:30px">

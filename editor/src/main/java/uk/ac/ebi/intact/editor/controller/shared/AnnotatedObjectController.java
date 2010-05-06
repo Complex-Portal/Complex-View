@@ -15,14 +15,21 @@
  */
 package uk.ac.ebi.intact.editor.controller.shared;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.*;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 import java.util.*;
 
 /**
@@ -31,7 +38,10 @@ import java.util.*;
  */
 public abstract class AnnotatedObjectController extends JpaAwareController {
 
+    private static final Log log = LogFactory.getLog( AnnotatedObjectController.class );
+
     private boolean unsavedChanges;
+    private Date lastSaved;
 
     @Autowired
     private CvObjectService cvObjectService;
@@ -40,6 +50,26 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     }
 
     public abstract AnnotatedObject getAnnotatedObject();
+
+    public void doSave( ActionEvent evt ) {
+        log.debug("Saving: "+getAnnotatedObject());
+        
+        PersistenceController persistenceController = getPersistenceController();
+        boolean saved = persistenceController.doSave(getAnnotatedObject());
+
+        if (saved) {
+            lastSaved = new Date();
+            unsavedChanges = false;
+        }
+    }
+
+    public void changed(AjaxBehaviorEvent evt) {
+        unsavedChanges = true;
+    }
+
+    public void doPrintInConsole(ActionEvent evt) {
+        DebugUtil.printIntactObject(getAnnotatedObject(), System.out);
+    }
 
     // XREFS
     ///////////////////////////////////////////////
@@ -337,16 +367,24 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
     // OTHER
     ////////////////////////////////////////////////////
 
-    public void changed( AjaxBehaviorEvent event ) throws AbortProcessingException {
-        unsavedChanges = true;
-    }
-
-    public void setUnsavedChanges( boolean unsavedChanges ) {
-        this.unsavedChanges = unsavedChanges;
+    protected PersistenceController getPersistenceController() {
+        return (PersistenceController)getSpringContext().getBean("persistenceController");
     }
 
     public boolean isUnsavedChanges() {
         return unsavedChanges;
+    }
+
+    public void setUnsavedChanges(boolean unsavedChanges) {
+        this.unsavedChanges = unsavedChanges;
+    }
+
+    public Date getLastSaved() {
+        return lastSaved;
+    }
+
+    public void setLastSaved(Date lastSaved) {
+        this.lastSaved = lastSaved;
     }
 
     private class IntactObjectComparator implements Comparator<IntactObject> {

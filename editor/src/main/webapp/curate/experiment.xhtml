@@ -9,6 +9,8 @@
 
                 template="/curate/curate_template.xhtml">
 
+    <ui:param name="annotatedObjectController" value="#{experimentController}"/>
+
     <ui:define name="curateContent">
         <f:metadata>
             <f:viewParam name="ac" value="#{experimentController.ac}"/>
@@ -65,7 +67,10 @@
                             </td>
                             <td colspan="3">
                                 <ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"
-                                        selectItems="#{bioSourceService.bioSourceSelectItems}"/>
+                                selectItems="#{bioSourceService.bioSourceSelectItems}"/>
+                                <!--<h:selectOneMenu id="selectObject" value="#{experimentController.experiment.bioSource}" converter="bioSourceConverter">-->
+                                    <!--<f:selectItems value="#{bioSourceService.bioSourceSelectItems}"/>-->
+                                <!--</h:selectOneMenu>-->
                             </td>
                         </tr>
                         <tr>
@@ -130,11 +135,11 @@
         </h:panelGroup>
 
          <p:outputPanel id="changesPanel">
-            <h:panelGroup rendered="#{publicationController.unsavedChanges}">
+            <h:panelGroup rendered="#{experimentController.unsavedChanges}">
 
             <div class="intact-notSavedPanel">
                     Changes not yet saved &#160;
-                <p:commandButton value="Save" actionListener="#{publicationController.doSave}" ajax="false"/>
+                <p:commandButton value="Save" actionListener="#{experimentController.doSave}" ajax="false"/>
             </div>
 
             </h:panelGroup>

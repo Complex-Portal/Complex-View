@@ -9,7 +9,7 @@
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
-    <composite:interface>
+    <composite:interface componentType="uk.ac.ebi.intact.editor.InputBioSource">
         <composite:attribute name="value" type="uk.ac.ebi.intact.model.BioSource" required="true"/>
         <composite:attribute name="size" default="30"/>
         <composite:attribute name="selectItems" required="true"/>
@@ -37,7 +37,7 @@
             <f:selectItems value="#{cc.attrs.selectItems}"/>
         </h:selectOneMenu>
 
-        <p:commandButton id="selectBtn" value="Select"
+        <p:commandButton id="selectBtn" value="Select" immediate="true"
                         onclick="#{cc.clientId}_bioSourceDlg.show();"
                         actionListener="#{inputBioSourceController.loadBioSources}"
                         update="bioSourceBrowserDialog,growl"/>
@@ -47,7 +47,7 @@
 
         </p:outputPanel>
 
-        <p:dialog header="Organism selection" widgetVar="#{cc.clientId}_bioSourceDlg">
+        <p:dialog header="Organism selection" widgetVar="#{cc.clientId}_bioSourceDlg" modal="true">
            <p:outputPanel id="bioSourceBrowserDialog">
 
                 <h:panelGrid columns="1">
@@ -60,6 +60,7 @@
                     <h:outputScript>
                         function ia_update(bioSourceAc, bioSourceLabel) {
                             document.getElementById('#{cc.clientId}:selectObject').value = bioSourceAc;
+                            #{cc.clientId}_bioSourceDlg.hide();
                         }
                     </h:outputScript>
 

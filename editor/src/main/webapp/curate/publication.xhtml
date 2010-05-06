@@ -10,6 +10,8 @@
                 template="/curate/curate_template.xhtml">
 
 
+    <ui:param name="annotatedObjectController" value="#{publicationController}"/>
+
     <ui:define name="curateContent">
         <p:hotkey bind="alt+s" actionListener="#{publicationController.doSave}"
                   update="publicationDetails,northUnit,growl,changesPanel"/>
@@ -24,7 +26,7 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{publicationController.publication != null}">
-            <div id="auditInfo" class="intact-auditPanel">
+            <div id="auditInfo" class="intact-auditPanel" >
                 <ia:creatorUpdator annotatedObject="#{publicationController.publication}" />
             </div>
         </h:panelGroup>
@@ -65,7 +67,7 @@
                                     <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
                                                  size="10" required="true" onkeyup="enableAutocomplete()">
                                         <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:xrefsPanel"
-                                                listener="#{publicationController.changed}"/>
+                                                execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
 
                                     <p:remoteCommand name="enableAutocomplete" update="autocompleteBtn" async="true">
@@ -100,7 +102,7 @@
                                 <td colspan="3">
                                     <h:inputText id="titleTxt" value="#{publicationController.publication.fullName}" size="80">
                                         <f:ajax event="valueChange" render=":editorForm:changesPanel"
-                                                listener="#{publicationController.changed}"/>
+                                                execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
                                 </td>
                             </tr>
@@ -111,7 +113,7 @@
                                 <td colspan="3">
                                     <h:inputText id="authorsTxt" value="#{publicationController.authors}" size="80">
                                         <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
-                                                listener="#{publicationController.changed}"/>
+                                                execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
                                 </td>
                             </tr>
@@ -122,7 +124,7 @@
                                 <td colspan="2">
                                     <h:inputText id="journalTxt" value="#{publicationController.journal}" size="50">
                                         <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
-                                                listener="#{publicationController.changed}"/>
+                                                execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
                                 </td>
                                 <td colspan="1" style="text-align: right;">
@@ -130,7 +132,7 @@
                                     <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4">
                                         <f:convertNumber pattern="#"/>
                                         <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
-                                                listener="#{publicationController.changed}" />
+                                                execute="@this" listener="#{publicationController.changed}" />
                                     </h:inputText>
                                 </td>
                             </tr>
@@ -167,7 +169,7 @@
                                     <h:panelGroup>
                                         <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70">
                                             <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:infoPanels :editorForm:changesPanel"
-                                                    listener="#{publicationController.changed}"/>
+                                                    execute="@this" listener="#{publicationController.changed}"/>
                                         </h:inputText>
                                         <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{publicationController.setUnsavedChanges(true)}"
                                                          onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
