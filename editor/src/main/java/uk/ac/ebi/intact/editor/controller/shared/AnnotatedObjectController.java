@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.editor.controller.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -36,7 +35,7 @@ import java.util.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public abstract class AnnotatedObjectController extends JpaAwareController {
+public abstract class AnnotatedObjectController extends JpaAwareController implements ValueChangeAware {
 
     private static final Log log = LogFactory.getLog( AnnotatedObjectController.class );
 
@@ -63,6 +62,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController {
         }
     }
 
+    @Override
     public void changed(AjaxBehaviorEvent evt) {
         unsavedChanges = true;
     }

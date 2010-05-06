@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.controller;
+package uk.ac.ebi.intact.editor.controller.shared;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,6 +21,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 
 import javax.faces.context.FacesContext;
@@ -35,7 +36,7 @@ import javax.faces.event.ExceptionQueuedEventContext;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class PersistenceController extends JpaAwareController{
+public class PersistenceController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( PersistenceController.class );
     

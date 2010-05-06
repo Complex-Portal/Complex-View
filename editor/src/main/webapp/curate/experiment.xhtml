@@ -67,10 +67,9 @@
                             </td>
                             <td colspan="3">
                                 <ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"
-                                selectItems="#{bioSourceService.bioSourceSelectItems}"/>
-                                <!--<h:selectOneMenu id="selectObject" value="#{experimentController.experiment.bioSource}" converter="bioSourceConverter">-->
-                                    <!--<f:selectItems value="#{bioSourceService.bioSourceSelectItems}"/>-->
-                                <!--</h:selectOneMenu>-->
+                                    selectItems="#{bioSourceService.bioSourceSelectItems}"
+                                    valueChangeRender=":editorForm:changesPanel"
+                                    valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
                         <tr>
@@ -80,7 +79,9 @@
                             <td colspan="3">
                                 <ia:inputCvObject id="detMethodTxt" value="#{experimentController.experiment.cvInteraction}"
                                                   selectItems="#{cvObjectService.interactionDetectionMethodSelectItems}"
-                                                  cvIdentifier="MI:0001"/>
+                                                  cvIdentifier="MI:0001"
+                                                  valueChangeRender=":editorForm:changesPanel"
+                                                  valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
                         <tr>
@@ -88,7 +89,9 @@
                             <td colspan="3">
                                 <ia:inputCvObject id="partDetMethodTxt" value="#{experimentController.experiment.cvIdentification}"
                                                   selectItems="#{cvObjectService.participantDetectionMethodSelectItems}"
-                                                  cvIdentifier="MI:0002"/>
+                                                  cvIdentifier="MI:0002"
+                                                  valueChangeRender=":editorForm:changesPanel"
+                                                  valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
                     </table>
