@@ -26,8 +26,7 @@
     <ui:define name="top">
         <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
             <div style="float: right">
-                <p:commandButton id="lalaSave" value="Save" actionListener="#{annotatedObjectController.doSave}"
-                        update="editorForm" onstart="var input = document.getElementById('lalaSave_submit'); input.disabled = true; input.value = 'Saving...'"/>
+                <p:commandButton type="button" id="topSaveButton" value="Save" onclick="save(); return false"/>
 
                 <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
                     <h:outputText value=" Last Saved: " />
@@ -63,12 +62,35 @@
 
         <div style="width:100%; padding-top:30px">
             <ui:insert name="curateContent"/>
+
+             <p>&#160;</p>
+
+            <p:outputPanel id="changesPanel">
+            <h:panelGroup rendered="#{annotatedObjectController.unsavedChanges}">
+
+            <div class="intact-notSavedPanel">
+                    Changes not yet saved &#160;
+                <p:commandButton type="button" id="unsavedSaveButton" value="Save" onclick="save(); return false"/>
+            </div>
+
+            </h:panelGroup>
+        </p:outputPanel>
         </div>
+
+        <p:remoteCommand name="save" actionListener="#{annotatedObjectController.doSave}"
+                        update="editorForm" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton_submit'); input.disabled = true; input.value = 'Saving...'"
+                        oncomplete="saveDialog.hide()"/>
 
     </ui:define>
 
     <ui:define name="dialogs">
         <ui:include src="menu_dialogs.xhtml"/>
+
+        <p:dialog header="Please wait" width="200px" widgetVar="saveDialog" visible="false" draggable="false"
+              modal="true" fixedCenter="true" close="false">
+            <h:graphicImage alt="loading" library="images" name="wait_black_indicator.gif"/>
+            Saving #{annotatedObjectController.annotatedObject.class.simpleName}...
+        </p:dialog>
     </ui:define>
 
 </ui:composition>

@@ -214,19 +214,6 @@
 
         </h:panelGroup>
 
-        <p>&#160;</p>
-
-        <p:outputPanel id="changesPanel">
-            <h:panelGroup rendered="#{publicationController.unsavedChanges}">
-
-            <div class="intact-notSavedPanel">
-                    Changes not yet saved &#160;
-                <p:commandButton value="Save" actionListener="#{publicationController.doSave}" ajax="false"/>
-            </div>
-
-            </h:panelGroup>
-        </p:outputPanel>
-
     </ui:define>
 
 </ui:composition>
