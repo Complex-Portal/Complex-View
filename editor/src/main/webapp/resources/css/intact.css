@@ -1,28 +1,30 @@
-body {
-    font-family:helvetica,"trebuchet MS",arial,sans-serif;
-    font-size:10pt;
-}
-
-input {
-    font-family:helvetica,"trebuchet MS",arial,sans-serif;
-    font-size:10pt;
+body,
+input,
+select,
+a,
+span {
+   font-family:helvetica,"trebuchet MS",arial,sans-serif;
+    font-size:9pt;
 }
 
 a:visited {
-    color:blue;
+    color: #006666;
 }
 
 a:link {
-    color:blue;
+    color: #006666;
 }
 
 a:hover {
-    color:red;
+    color:#e33e3e;
+    text-decoration:none;
 }
 
 a img {
     border: 0;
 }
+
+
 
 /** Custom classes **/
 
@@ -105,22 +107,23 @@ a img {
 
 /** Tables **/
 .yui-skin-sam .yui-dt table {
-    border-color: #99FF00;
+    /*border-color: #99FF00;*/
     border-collapse: collapse;
 }
 
 .yui-skin-sam .yui-dt th {
-   background-color:#5E9E9E;
+    background: #5E9E9E;
     border:1px solid #ADADAF;
-    color:#FFFFFF;
+    color:white;
     font-size:9pt;
+    font-weight:bold;
     padding:3px;
     vertical-align:top;
 }
 
 .yui-skin-sam tr.yui-dt-odd {
 
-    background: #FFFFCC;
+    background: #F6FAF4;
 }
 
 .yui-skin-sam tr.yui-dt-even {
@@ -129,7 +132,7 @@ a img {
 
 .yui-skin-sam .yui-dt td {
     font-size:9pt;
-    border:1px solid #ADADAF;
+    border:1px solid #999999;
     padding:3px;
     text-align:left;
     vertical-align:top;
@@ -139,7 +142,7 @@ a img {
 .yui-skin-sam .yui-dt-paginator a.yui-pg-first,
 .yui-skin-sam .yui-dt-paginator a.yui-pg-next,
 .yui-skin-sam .yui-dt-paginator a.yui-pg-previous {
-    color: #33CC00;
+    color: #006666;
 }
 
 .yui-skin-sam a.yui-pg-page:link,
