@@ -108,7 +108,9 @@
                                    qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
                                    update="xrefsPanel"
                                    render=":editorForm:basic"
-                                   style="margin-top: -20px;"/>
+                                   style="margin-top: -20px;"
+                                   valueChangeRender=":editorForm:changesPanel"
+                                   valueChangeAwareObject="#{experimentController}"/>
                 </ia:collapsiblePanel>
             </p:outputPanel>
 
