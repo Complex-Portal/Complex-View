@@ -24,7 +24,9 @@
          <h:outputScript name="intact.js" library="javascript" target="head"/>
 
         <ia:yahooLogging/>
-         <h:panelGrid columns="2" id="inputPanel">
+
+         <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'visible'"
+                 onmouseout="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'hidden'">
 
                 <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="cvObjectConverter">
                     <f:selectItems value="#{cc.attrs.selectItems}"/>
@@ -33,7 +35,7 @@
                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </h:selectOneMenu>
 
-                <p:commandButton value="Browse" immediate="true"
+                <p:commandButton id="selectBtn" value="Browse" immediate="true" style="visibility: hidden"
                         onclick="#{cc.clientId}_cvDlg.show();"
                         actionListener="#{inputCvObjectController.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
                         update="cvObjectBrowserDialog,growl"/>
