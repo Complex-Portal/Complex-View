@@ -190,8 +190,9 @@
                         <ia:xrefsTable annotatedObjectController="#{publicationController}"
                                        databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                        qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                       update="xrefsPanel"
-                                       render=":editorForm:basic"
+                                       update="xrefsPanel changesPanel"
+                                       valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                                       valueChangeAwareObject="#{annotatedObjectController}"
                                        style="margin-top: -20px;"/>
                     </ia:collapsiblePanel>
                 </p:outputPanel>
@@ -200,8 +201,9 @@
                     <ia:collapsiblePanel open="true" title="Annotations (#{publicationController.publication.annotations.size()})">
                         <ia:annotationsTable annotatedObjectController="#{publicationController}"
                                              topicSelectItems="#{cvObjectService.publicationTopicSelectItems}"
-                                             update="basic,annotationsPanel"
-                                             render=":editorForm:basic"
+                                             update="annotationsPanel changesPanel"
+                                             valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                                             valueChangeAwareObject="#{annotatedObjectController}"
                                              style="margin-top: -20px;"/>
                     </ia:collapsiblePanel>
                  </p:outputPanel>

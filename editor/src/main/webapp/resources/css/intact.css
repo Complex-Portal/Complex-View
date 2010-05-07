@@ -149,3 +149,17 @@ a img {
     color: #ADADAF;
     font-size:9pt;
 }
+
+/** picklist **/
+.pf-picklist-source, .pf-picklist-target {
+    width: 150px;
+    height: 100px;
+}
+
+.pf-picklist-control {
+    /**cursor: pointer;**/
+}
+
+.col1, .col2 {
+    vertical-align: top;
+}

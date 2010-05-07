@@ -95,8 +95,9 @@
                     <ia:xrefsTable annotatedObjectController="#{featureController}"
                                    databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                    qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                   update="xrefsPanel"
-                                   render=":editorForm:basic"
+                                   update="xrefsPanel changesPanel"
+                                   valueChangeRender=":editorForm:changesPanel"
+                                   valueChangeAwareObject="#{annotatedObjectController}"
                                    style="margin-top: -20px;"/>
                 </ia:collapsiblePanel>
             </p:outputPanel>
@@ -105,8 +106,9 @@
                 <ia:collapsiblePanel open="false" title="Annotations (#{feature.annotations.size()})">
                     <ia:annotationsTable annotatedObjectController="#{featureController}"
                                          topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
-                                         update="annotationsPanel"
-                                         render=":editorForm:basic"
+                                         update="annotationsPanel changesPanel"
+                                         valueChangeRender=":editorForm:changesPanel"
+                                         valueChangeAwareObject="#{annotatedObjectController}"
                                          style="margin-top: -20px;"/>
                 </ia:collapsiblePanel>
             </p:outputPanel>
@@ -115,7 +117,9 @@
                 <ia:collapsiblePanel open="false" title="Aliases (#{feature.aliases.size()})">
                     <ia:aliasTable annotatedObjectController="#{featureController}"
                                    aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
-                                   update="aliasesPanel"
+                                   update="aliasesPanel changesPanel"
+                                   valueChangeRender=":editorForm:changesPanel"
+                                   valueChangeAwareObject="#{annotatedObjectController}"
                                    style="margin-top: -20px;"/>
                 </ia:collapsiblePanel>
             </p:outputPanel>

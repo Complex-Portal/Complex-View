@@ -11,14 +11,12 @@
 
     <h:head>
         <title>Editor: #{generalAppController.database}</title>
-        <!--<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css"></link>-->
+        <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact.css"></link>
     </h:head>
 
     <h:body style="margin: 0 0 0 0;">
 
         <h:form id="editorForm" prependId="false">
-
-        <h:outputStylesheet name="intact.css" library="css" target="head"/>
 
             <p:growl id="growl" showDetail="true"/>
 

@@ -9,7 +9,6 @@
 
     <!-- INTERFACE -->
     <composite:interface>
-        <composite:attribute name="render"/>
         <composite:attribute name="annotatedObjectController"
                              type="uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController"
                              required="true"/>
@@ -17,7 +16,7 @@
         <composite:attribute name="databaseSelectItems"/>
         <composite:attribute name="qualifierSelectItems"/>
         <composite:attribute name="style" default=""/>
-        <composite:attribute name="valueChangeRender"/>
+        <composite:attribute name="valueChangeRender" default="@form"/>
         <composite:attribute name="valueChangeAwareObject" type="uk.ac.ebi.intact.editor.controller.shared.ValueChangeAware"/>
     </composite:interface>
 

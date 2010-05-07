@@ -9,12 +9,13 @@
 
     <!-- INTERFACE -->
   <composite:interface>
-    <composite:attribute name="render"/>
     <composite:attribute name="annotatedObjectController" type="uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController"
             required="true"/>
     <composite:attribute name="update" />
     <composite:attribute name="topicSelectItems" />
     <composite:attribute name="style" default=""/>
+    <composite:attribute name="valueChangeRender" default="@none"/>
+    <composite:attribute name="valueChangeAwareObject" type="uk.ac.ebi.intact.editor.controller.shared.ValueChangeAware"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
@@ -35,23 +36,22 @@
                     <h:outputText value="Topic"/>
                 </f:facet>
                 <h:selectOneMenu value="#{annotation.cvTopic}" required="true" requiredMessage="Topic is required">
-                    <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
                     <f:selectItems value="#{cc.attrs.topicSelectItems}"/>
+                    <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
+                                        disabled="#{cc.attrs.valueChangeAwareObject == null}"
+                                        listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </h:selectOneMenu>
             </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                <p:inplace effectSpeed="fast" rendered="#{annotation.annotationText != null}">
-                     <h:inputText value="#{annotation.annotationText}" size="50" rendered="#{annotation.annotationText != null}">
-                        <f:ajax event="valueChange" render="#{cc.attrs.render}" />
-                    </h:inputText>
-                </p:inplace>
-                <h:inputText value="#{annotation.annotationText}" size="50" rendered="#{annotation.annotationText == null}"
-                        required="true" requiredMessage="Annotation texts are required">
-                        <f:ajax event="valueChange" render="#{cc.attrs.render}"/>
-                </h:inputText>
+                     <h:inputTextarea value="#{annotation.annotationText}" cols="50" rendered="#{annotation.annotationText != null}"
+                             rows="#{(fn:length(annotation.annotationText) / 50)+1}">
+                         <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender} @this" execute="@this"
+                                        disabled="#{cc.attrs.valueChangeAwareObject == null}"
+                                        listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
+                    </h:inputTextarea>
             </p:column>
             <p:column>
                 <f:facet name="header">

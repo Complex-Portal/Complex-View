@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.editor.controller.shared;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.*;
@@ -50,9 +49,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public abstract AnnotatedObject getAnnotatedObject();
 
-    public void doSave( ActionEvent evt ) {
-        log.debug("Saving: "+getAnnotatedObject());
-        
+    public void doSave( ActionEvent evt ) {        
         PersistenceController persistenceController = getPersistenceController();
         boolean saved = persistenceController.doSave(getAnnotatedObject());
 
@@ -67,16 +64,13 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         unsavedChanges = true;
     }
 
-    public void doPrintInConsole(ActionEvent evt) {
-        DebugUtil.printIntactObject(getAnnotatedObject(), System.out);
-    }
-
     // XREFS
     ///////////////////////////////////////////////
 
     public void newXref( ActionEvent evt ) {
         Xref xref = newXrefInstance();
         getAnnotatedObject().addXref( xref );
+        setUnsavedChanges( true );
     }
 
     private Xref newXrefInstance() {
@@ -205,6 +199,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             }
         };
         getAnnotatedObject().addAnnotation( annotationWithNullTopic );
+        setUnsavedChanges( true );
     }
 
     public void addAnnotation( String topicIdOrLabel, String text ) {
@@ -304,6 +299,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public void newAlias( ActionEvent evt ) {
         Alias alias = newAliasInstance();
         getAnnotatedObject().addAlias( alias );
+        setUnsavedChanges( true );
     }
 
     private Alias newAliasInstance() {
