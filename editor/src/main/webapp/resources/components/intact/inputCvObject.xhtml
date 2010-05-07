@@ -62,8 +62,8 @@
 
                 <ui:param name="treeElementId" value="#{cc.clientId}:#{cc.clientId}__tree"/>
 
-                <p:ajaxStatus onstart="document.getElementById('#{cc.clientId}__div').innerHTML = 'Loading tree...'; document.getElementById('#{treeElementId}').style.display = 'none'"
-                              oncomplete="document.getElementById('#{cc.clientId}__div').innerHTML = ''; document.getElementById('#{treeElementId}').style.display = 'block'" />
+                <p:ajaxStatus onstart="document.getElementById('#{cc.clientId}__div').innerHTML = 'Loading tree...'; var treeEl = document.getElementById('#{treeElementId}'); if (treeEl != null) treeEl.style.display = 'none'"
+                              oncomplete="document.getElementById('#{cc.clientId}__div').innerHTML = ''; var treeEl = document.getElementById('#{treeElementId}'); if (treeEl != null) treeEl.style.display = 'block'" />
 
                 <p:tree id="#{cc.clientId}__tree" value="#{inputCvObjectController.root}" var="cvObject" rendered="#{inputCvObjectController.root != null}"
                         widgetVar="#{cc.clientId}__tree"
