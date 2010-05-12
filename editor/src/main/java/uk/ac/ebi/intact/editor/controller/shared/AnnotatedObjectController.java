@@ -318,15 +318,24 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return alias;
     }
 
+    public void addAlias( String aliasTypeIdOrLabel, String text ) {
+        CvAliasType type = cvObjectService.findCvObject( CvAliasType.class, aliasTypeIdOrLabel );
+        final Alias alias = newAliasInstance();
+        alias.setCvAliasType( type );
+        alias.setName( text );
+
+        getAnnotatedObject().addAlias( alias );
+    }
+
     public void setAlias( String aliasTypeIdOrLabel, Object value ) {
         if ( value != null && !value.toString().isEmpty() ) {
-            replaceOrCreateAlias( aliasTypeIdOrLabel, value.toString() );
+            removeAlias( aliasTypeIdOrLabel, value.toString() );
         } else {
             removeAlias( aliasTypeIdOrLabel );
         }
     }
 
-    public void replaceOrCreateAlias( String aliasTypeIdOrLabel, String text ) {
+    public void removeAlias( String aliasTypeIdOrLabel, String text ) {
         Iterator<Alias> iterator = getAnnotatedObject().getAliases().iterator();
 
         while ( iterator.hasNext() ) {
@@ -358,6 +367,40 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         final ArrayList<Alias> aliases = new ArrayList<Alias>( getAnnotatedObject().getAliases() );
         Collections.sort( aliases, new IntactObjectComparator() );
         return aliases;
+    }
+    
+    public String findAliasName( String aliasTypeId ) {
+        Collection<Alias> aliases = AnnotatedObjectUtils.getAliasByType( getAnnotatedObject(), aliasTypeId );
+        if( aliases != null && aliases.size() > 0 ) {
+            return aliases.iterator().next().getName();
+        }
+        return null;
+    }
+
+    /**
+     * This method is to be used if only one instance of an aliasType is expected to be stored in a given annotatedObject.
+     * @param aliasTypeIdOrLabel
+     * @param text
+     */
+    public void addOrReplace( String aliasTypeIdOrLabel, String text ) {
+        Iterator<Alias> iterator = getAnnotatedObject().getAliases().iterator();
+
+        boolean found = false;
+        while ( iterator.hasNext() && !found ) {
+            Alias alias = iterator.next();
+            if ( aliasTypeIdOrLabel.equals( alias.getCvAliasType().getIdentifier() ) ||
+                 aliasTypeIdOrLabel.equals( alias.getCvAliasType().getShortLabel() ) ) {
+                // replace
+                alias.setName( text );
+            }
+        }
+
+        if( !found ) {
+            // create new
+            final Alias alias = newAliasInstance();
+            alias.setName( text );
+        }
+
     }
 
     // OTHER

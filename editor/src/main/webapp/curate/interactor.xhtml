@@ -1,0 +1,141 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+
+                template="/curate/curate_template.xhtml">
+
+
+    <ui:param name="interactor" value="#{interactorController.interactor}" />
+    <ui:param name="participant" value="#{participantController.participant}" />
+    <ui:param name="interaction" value="#{interactionController.interaction}" />
+    <ui:param name="experiment" value="#{experimentController.experiment}" />
+    <ui:param name="publication" value="#{publicationController.publication}" />
+
+    <ui:define name="curateContent">
+        <f:metadata>
+            <f:viewParam name="ac" value="#{interactorController.ac}"/>
+            <f:event type="preRenderView" listener="#{interactorController.loadData}"/>
+        </f:metadata>
+
+        <h:panelGroup rendered="#{participant == null}">
+            No participant loaded!
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{interactor != null}">
+            <div id="auditInfo" class="intact-auditPanel">
+                <ia:creatorUpdator annotatedObject="#{interactor}" />
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup id="info" rendered="#{interactor != null}">
+
+            <h:link outcome="/curate/publication"
+                    value="#{publicationController.publication.shortLabel}"
+                    title="#{publicationController.publication.fullName}"
+                    includeViewParams="true"/>
+            &#160;>&#160;
+            <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true"/>
+            &#160;>&#160;
+            <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true"/>
+            &#160;>&#160;
+            #{participant.interactor.shortLabel}
+
+            <h2>#{interactorController.moleculeType}}</h2>
+
+            <p:outputPanel id="basic">
+
+                <table class="intact-tableBasicForm">
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+                        </td>
+                        <td>
+                            <h:inputText id="shortlabelTxt" value="#{interactor.shortLabel}" size="30"/>
+                        </td>
+                        <td style="padding-left: 50px;">
+                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
+                            <h:inputText id="acTxt" value="#{interactor.ac}"
+                                         size="10" disabled="true" class="intact-disabled"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Fullname: " for="fullnameTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <ia:inputBioSource id="fullnameTxt" value="#{interactor.fullName}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="#{interactor.cvInteractorType.shortLabel}: " for="interactorTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="interactorTxt" value="#{interactor.shortLabel}"
+                                    disabled="true"/>
+                            <h:commandButton value="Change" action="TODO"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1" class="firstCell">
+                            <h:outputLabel value="Organism: " for="organismTxt"/>
+                        </td>
+                        <td colspan="3">
+                            <h:inputText id="organismTxt" value="#{interactor.bioSource.shortLabel}" />
+                            <!--<ia:inputBioSource id="hostOrganismTxt" value="#{interactor.bioSource}"/>-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Sequence: " for="sequenceTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="sequenceTxt" value="#{interactor.sequence}"   />
+                        </td>
+                    </tr>
+                </table>
+
+            </p:outputPanel>
+
+            <h3>Properties</h3>
+
+            <p:outputPanel id="xrefsPanel">
+                <ia:collapsiblePanel  open="false" title="Xrefs (#{interactor.xrefs.size()})">
+                    <ia:xrefsTable annotatedObjectController="#{interactorController}"
+                                   databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                   qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                   update="xrefsPanel"
+                                   render=":editorForm:basic"
+                                   style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
+
+            <p:outputPanel id="annotationsPanel">
+                <ia:collapsiblePanel open="false" title="Annotations (#{interactor.annotations.size()})">
+                    <ia:annotationsTable annotatedObjectController="#{interactorController}"
+                                         topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
+                                         update="annotationsPanel"
+                                         render=":editorForm:basic"
+                                         style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
+
+            <p:outputPanel id="aliasesPanel">
+                <ia:collapsiblePanel open="false" title="Aliases (#{interactor.aliases.size()})">
+                    <ia:aliasTable annotatedObjectController="#{interactorController}"
+                                   aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                                   update="aliasesPanel"
+                                   style="margin-top: -20px;"/>
+                </ia:collapsiblePanel>
+            </p:outputPanel>
+            
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>

@@ -26,7 +26,7 @@
         <spring.version>3.0.1.RELEASE</spring.version>
 
         <!-- configurable bits -->
-        <jetty.port>9192</jetty.port>
+        <jetty.port>9197</jetty.port>
 
         <!-- database defaults -->
         <db.jndi>jdbc/IntactEditorDS</db.jndi>
@@ -647,22 +647,6 @@
             <name>Prime Technology Maven Repository</name>
             <url>http://repository.prime.com.tr/</url>
             <layout>default</layout>
-        </repository>
-
-        <repository>
-            <id>lua</id>
-            <url>http://people.apache.org/~lu4242/myfaces200</url>
-            <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>lua-ext</id>
-            <url>http://people.apache.org/~lu4242/extscript10beta1</url>
-            <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>gpetracek</id>
-            <url>http://people.apache.org/~gpetracek/myfaces/extval/release_candidate/2_0_3/maven_repository</url>
-            <snapshots><enabled>false</enabled></snapshots>
         </repository>
 
         <!-- Mojarra... -->

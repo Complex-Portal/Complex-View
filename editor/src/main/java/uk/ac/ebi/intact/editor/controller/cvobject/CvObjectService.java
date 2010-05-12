@@ -69,6 +69,9 @@ public class CvObjectService extends JpaAwareController {
     private List<CvIdentification> participantDetectionMethods;
     private List<SelectItem> participantDetectionMethodSelectItems;
 
+    private List<CvExperimentalPreparation> participantExperimentalPreparations;
+    private List<SelectItem> participantExperimentalPreparationsSelectItems;
+
     private List<CvInteractionType> interactionTypes;
     private List<SelectItem> interactionTypeSelectItems;
 
@@ -156,6 +159,9 @@ public class CvObjectService extends JpaAwareController {
         participantDetectionMethods = getSortedList( CvIdentification.class, cvObjectsByClass );
         participantDetectionMethodSelectItems = createSelectItems( participantDetectionMethods, "-- Select method --" );
 
+        participantExperimentalPreparations = getSortedList( CvExperimentalPreparation.class, cvObjectsByClass );
+        participantExperimentalPreparationsSelectItems = createSelectItems( participantExperimentalPreparations, "-- Select experimental preparation --" );
+        
         interactionTypes = getSortedList( CvInteractionType.class, cvObjectsByClass );
         interactionTypeSelectItems = createSelectItems( interactionTypes, "-- Select type --" );
 
@@ -317,6 +323,10 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getParticipantDetectionMethodSelectItems() {
         return participantDetectionMethodSelectItems;
+    }
+
+    public List<SelectItem> getParticipantExperimentalPreparationsSelectItems() {
+        return participantExperimentalPreparationsSelectItems;
     }
 
     public List<SelectItem> getInteractionTypeSelectItems() {

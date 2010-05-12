@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.participant;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -24,12 +25,14 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.interaction.InteractionController;
+import uk.ac.ebi.intact.editor.controller.interaction.ParticipantWrapper;
 import uk.ac.ebi.intact.editor.controller.publication.PublicationController;
 import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Component;
+import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ComponentSystemEvent;
+import java.util.Collection;
 
 /**
  * Participant controller.
@@ -76,6 +79,28 @@ public class ParticipantController extends AnnotatedObjectController {
         } else {
             if ( participant != null ) ac = participant.getAc();
         }
+
+        // check if the publication, experiment and interaction are null in their controllers (this happens when the
+        // participant page is loaded directly using a URL)
+
+        if( participant.getInteraction().getExperiments().isEmpty()) {
+            addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
+                               "Abort experiment loading." );
+            return;
+        }
+
+        if ( publicationController.getPublication() == null ) {
+            Publication publication = participant.getInteraction().getExperiments().iterator().next().getPublication();
+            publicationController.setPublication( publication );
+        }
+
+        if ( experimentController.getExperiment() == null ) {
+            experimentController.setExperiment( participant.getInteraction().getExperiments().iterator().next() );
+        }
+
+        if( interactionController.getInteraction() == null ) {
+            interactionController.setInteraction( participant.getInteraction() );
+        }
     }
 
     public String getAc() {
@@ -93,7 +118,33 @@ public class ParticipantController extends AnnotatedObjectController {
         return participant;
     }
 
+    public ParticipantWrapper getParticipantWrapper() {
+        return new ParticipantWrapper( participant, this );
+    }
+
     public void setParticipant( Component participant ) {
         this.participant = participant;
+    }
+
+    public String getAuthorGivenName() {
+        System.out.println( "ParticipantController.getAuthorGivenName" );
+        return findAliasName( CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
+    }
+
+    public void setAuthorGivenName( String name ) {
+        System.out.println( "ParticipantController.setAuthorGivenName(" + name + ")" );
+        System.out.println( "alias count: " + getParticipant().getAliases().size() );
+        addOrReplace(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
+        System.out.println( "alias count after : " + getParticipant().getAliases().size() );
+    }
+
+    public CvExperimentalPreparation getFirstExperimentalPreparation( Component participant ) {
+        if( participant.getInteractor() != null ) {
+            if( ! participant.getExperimentalPreparations().isEmpty() ) {
+                return participant.getExperimentalPreparations().iterator().next();
+            }
+        }
+
+        return null;
     }
 }

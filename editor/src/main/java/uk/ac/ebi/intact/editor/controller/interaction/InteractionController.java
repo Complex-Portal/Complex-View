@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.interaction;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -70,6 +71,10 @@ public class InteractionController extends AnnotatedObjectController {
 
     public DualListModel<String> getExperimentLists() {
         return experimentLists;
+    }
+
+    public void setExperimentLists( DualListModel<String> experimentLists ) {
+        this.experimentLists = experimentLists;
     }
 
     public void loadData( ComponentSystemEvent event ) {
@@ -161,7 +166,16 @@ public class InteractionController extends AnnotatedObjectController {
         return participantQuery;
     }
 
-//////////////////////////////////
+    public Collection<ParticipantWrapper> getParticipants() {
+        final Collection<Component> participants = interaction.getComponents();
+        Collection<ParticipantWrapper> wrappers = new ArrayList<ParticipantWrapper>( participants.size() );
+        for ( Component participant : participants ) {
+            wrappers.add( new ParticipantWrapper( participant, this ) );
+        }
+        return wrappers;
+    }
+
+    //////////////////////////////////
     // Participant related methods
 
     public String getInteractorIdentity(Interactor interactor) {
@@ -178,9 +192,19 @@ public class InteractionController extends AnnotatedObjectController {
         return sb.toString();
     }
 
-    public String getAuthorGivenName( Component component ) {
-        AnnotatedObjectUtils.getAliasByType( component, CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
+    // TODO provide the list of participant as wrapped objects with a added getter/setter to handle authorGivenName
+
+    public String getAuthorGivenName( Component participant ) {
+        final Collection<Alias> aliases = AnnotatedObjectUtils.getAliasByType( participant, CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
+        if( ! aliases.isEmpty() ) {
+            return aliases.iterator().next().getName();
+        }
         return null;
+    }
+
+    public void setAuthorGivenName( String name ) {
+        // TODO how can I update the correct participant from here ?
+        System.out.println( "Updating author-given-name ("+ name +") !!" );
     }
 
     public void searchAndAddParticipant( ActionEvent evt ) {

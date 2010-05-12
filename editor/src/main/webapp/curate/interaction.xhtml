@@ -72,7 +72,7 @@
                         <td colspan="3">
                             <ia:inputCvObject id="interactionTypeTxt" cvIdentifier="MI:0190"
                                               value="#{interaction.cvInteractionType}"
-                                    selectItems="#{cvObjectService.interactionTypeSelectItems}"/>
+                                              selectItems="#{cvObjectService.interactionTypeSelectItems}"/>
                         </td>
                     </tr>
                     <tr>
@@ -136,7 +136,7 @@
             <br/>
             <ia:spacer height="10" />
 
-            <ia:participantsTable id="participantTable" value="#{interaction.components}"/>
+            <ia:participantsTable id="participantTable" value="#{interactionController.participants}"/>
 
         </h:panelGroup>
 

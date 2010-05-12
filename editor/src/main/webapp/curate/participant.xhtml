@@ -37,10 +37,11 @@
             <h:link outcome="/curate/publication"
                     value="#{publicationController.publication.shortLabel}"
                     title="#{publicationController.publication.fullName}"
-                    includeViewParams="true"/>
-            &#160;>&#160;
-            <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true"/>
-            &#160;>&#160;
+                    includeViewParams="true" rendered="#{publicationController.publication != null}"/>
+            <h:outputText value="&#160;>&#160;" rendered="#{publicationController.publication != null}"/>
+            <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true"
+                    rendered="#{experimentController.experiment != null}"/>
+            <h:outputText value="&#160;>&#160;" rendered="#{experimentController.experiment != null}"/>
             <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true"/>
             &#160;>&#160;
             #{participant.interactor.shortLabel}
@@ -70,7 +71,8 @@
                         <td colspan="2">
                             <h:inputText id="interactorTxt" value="#{participant.interactor.shortLabel}"
                                     disabled="true"/>
-                            <h:commandButton value="Change" action="TODO"/>
+                            <ia:inputInteractor value="#{participant.interactor}" />
+                            <!--<h:commandButton value="Change" action="TODO"/> -->
                         </td>
                     </tr>
                     <tr>
@@ -78,7 +80,7 @@
                             <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="authorGivenNameTxt" value="#{interactionController.getAuthorGivenName(participant)}" size="10" />
+                            <h:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" />
                         </td>
                     </tr>
                     <tr>
@@ -86,7 +88,8 @@
                             <h:outputLabel value="Expressed in: " for="expressedInTxt"/>
                         </td>
                         <td colspan="2">
-                            <ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"/>
+                            <ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"
+                                               selectItems="#{bioSourceService.bioSourceSelectItems}"/>
                         </td>
                     </tr>
                     <tr>
@@ -94,7 +97,10 @@
                             <h:outputLabel value="Biological role: " for="bioRoleTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />
+                            <ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"
+                                              value="#{participant.cvBiologicalRole}"
+                                              selectItems="#{cvObjectService.biologicalRoleSelectItems}" />
+                            <!--<h:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />-->
                         </td>
                     </tr>
                  <tr>
@@ -103,13 +109,26 @@
                      </td>
                      <td >
                          <!-- TODO handle the multiple experimental role -->
-                         <!--<ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
-                         value="#{interactionController.getExperimentalRole(participant)}"/>-->
-                         <h:inputText id="expRoleTxt" value="#{participant.cvExperimentalRole.shortLabel}"   />
+                         <ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
+                                           value="#{participantController.participantWrapper.firstExperimentalRole}"
+                                           selectItems="#{cvObjectService.experimentalRoleSelectItems}"/>
                      </td>
                      <td style="padding-left: 150px;">
                          <h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>
-                         <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" stepFactor="1"/>
+                         <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" stepFactor="1" maxlength="3"/>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="firstCell">
+                         <h:outputLabel value="Delivery method(s): " for="deliveryTxt"/>
+                     </td>
+                     <td colspan="2">
+                         <!-- TODO handle the multiple delivery methods -->
+                         <ia:inputCvObject id="deliveryTxt" cvIdentifier="MI:0346"
+                                           selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"
+                                           value="#{participantController.participantWrapper.firstExperimentalPreparation}" />
+                         <h:outputText value="#{fn:length(participant.experimentalPreparations) - 1} more..."
+                                       rendered="#{fn:length(participant.experimentalPreparations) > 1}" />
                      </td>
                  </tr>
 
