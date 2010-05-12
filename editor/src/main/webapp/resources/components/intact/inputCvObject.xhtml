@@ -25,6 +25,8 @@
 
         <ia:yahooLogging/>
 
+        <ui:param name="dialogWidgetId" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}_cvDlg"/>
+
          <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'visible'"
                  onmouseout="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'hidden'">
 
@@ -36,7 +38,7 @@
                 </h:selectOneMenu>
 
                 <p:commandButton id="selectBtn" value="Browse" immediate="true" style="visibility: hidden"
-                        onclick="#{cc.clientId}_cvDlg.show();"
+                        onclick="#{dialogWidgetId}.show();" process="#{cc.clientId}"
                         actionListener="#{inputCvObjectController.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
                         update="cvObjectBrowserDialog,growl"/>
         </h:panelGrid>
@@ -49,7 +51,7 @@
         </p:outputPanel>
         
         <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true"
-                  widgetVar="#{cc.clientId}_cvDlg" modal="true">
+                  widgetVar="#{dialogWidgetId}" modal="true">
             <p:outputPanel id="cvObjectBrowserDialog">
             <h:panelGrid columns="1">
                 <h:panelGroup>
@@ -70,7 +72,7 @@
                         style="display: none"
                         dynamic="true" cache="true"
                         nodeSelectListener="#{inputCvObjectController.onNodeSelect}"
-                        onselectComplete="#{cc.clientId}_cvDlg.hide(); "
+                        onselectComplete="#{dialogWidgetId}.hide(); "
                         update="cvObject,javascriptPanel">
                     <p:treeNode>
                         <h:outputText value="#{cvObject.shortLabel}"/>
