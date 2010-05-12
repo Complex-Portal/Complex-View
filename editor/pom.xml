@@ -26,7 +26,7 @@
         <spring.version>3.0.1.RELEASE</spring.version>
 
         <!-- configurable bits -->
-        <jetty.port>9197</jetty.port>
+        <jetty.port>9192</jetty.port>
 
         <!-- database defaults -->
         <db.jndi>jdbc/IntactEditorDS</db.jndi>
