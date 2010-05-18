@@ -46,7 +46,7 @@
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                     <h:inputTextarea value="#{annotation.annotationText}" cols="50" rendered="#{annotation.annotationText != null}"
+                     <h:inputTextarea value="#{annotation.annotationText}" cols="50"
                              rows="#{(fn:length(annotation.annotationText) / 50)+1}">
                          <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender} @this" execute="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"

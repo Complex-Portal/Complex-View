@@ -25,8 +25,8 @@
 
     <ui:define name="top">
         <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
-            <div style="float: right">
-                <p:commandButton type="button" id="topSaveButton" value="Save" onclick="save(); return false"/>
+            <h:panelGroup id="topSavePanel" style="float: right">
+                <p:commandButton type="button" id="topSaveButton" value="Save" onclick="save(); return false" />
 
                 <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
                     <h:outputText value=" Last Saved: " />
@@ -34,7 +34,7 @@
                         <f:convertDateTime pattern="HH:mm (z)"/>
                     </h:outputText>
                 </h:panelGroup>
-            </div>
+            </h:panelGroup>
         </h:panelGroup>
     </ui:define>
 
@@ -81,7 +81,7 @@
 
         <p:remoteCommand name="save" actionListener="#{annotatedObjectController.doSave}"
                         update="editorForm" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton_submit'); input.disabled = true; input.value = 'Saving...'"
-                        oncomplete="saveDialog.hide()"/>
+                        oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton_submit'); input.disabled = false; input.value = 'Save'"/>
 
     </ui:define>
 
