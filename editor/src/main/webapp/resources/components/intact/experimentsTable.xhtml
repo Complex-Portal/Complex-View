@@ -5,7 +5,8 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
-                xmlns:composite="http://java.sun.com/jsf/composite">
+                xmlns:composite="http://java.sun.com/jsf/composite"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
     <!-- INTERFACE -->
   <composite:interface>
@@ -26,7 +27,7 @@
             <f:facet name="header">
                 <h:outputText value="Shortlabel"/>
             </f:facet>
-            <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true">
+            <h:link onclick="load_exp.show()" outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true">
                 <f:param name="ac" value="#{experiment.ac}"/>
             </h:link>
         </p:column>
@@ -57,6 +58,8 @@
             <h:outputText value="#{experimentController.countInteractionsByExperimentAc(experiment.ac)}"/>
         </p:column>
     </p:dataTable>
+
+        <ia:loadingDialog widgetVar="load_exp" message="Loading experiment..."/>
         
   </composite:implementation>
 

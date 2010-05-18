@@ -20,6 +20,8 @@
           <f:event type="preRenderView" listener="#{dashboardController.loadData}"/>
         </f:metadata>
 
+        <p>&#160;</p>
+
         <p>Hello #{userSessionController.currentUser.firstName}</p>
 
         <h3>All the publications (#{dashboardController.allPublications.rowCount})</h3>
@@ -63,12 +65,14 @@
             </p:column>
         </p:dataTable>
 
-        <h4>Interactions with features</h4>
-        <h:outputLink value="/editor/curate/interaction.jsf?ac=EBI-5558">1</h:outputLink>
-        &#160;-&#160;
-        <h:outputLink value="/editor/curate/interaction.jsf?ac=EBI-8783">2</h:outputLink>
-        &#160;-&#160;
-        <h:outputLink value="/editor/curate/interaction.jsf?ac=EBI-9816">3</h:outputLink>
+        <h:panelGroup rendered="#{facesContext.application.projectStage == 'Development'}">
+            <h4>Interactions with features</h4>
+            <h:outputLink value="/editor/curate/interaction.jsf?ac=EBI-5558">1</h:outputLink>
+            &#160;-&#160;
+            <h:outputLink value="/editor/curate/interaction.jsf?ac=EBI-8783">2</h:outputLink>
+            &#160;-&#160;
+            <h:outputLink value="/editor/curate/interaction.jsf?ac=EBI-9816">3</h:outputLink>
+        </h:panelGroup>
 
     </ui:define>
 

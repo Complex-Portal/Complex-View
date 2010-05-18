@@ -92,6 +92,7 @@ a img {
     -webkit-border-radius: 5px;
     -moz-box-shadow: 0px 5px 5px #999;
     background-color: #f8f8ff;
+    z-index:200;
 }
 
 .intact-auditPanel td.title {
@@ -171,3 +172,61 @@ a img {
 .col1, .col2 {
     vertical-align: top;
 }
+
+/** Tabs **/
+.yui-skin-sam .yui-navset .yui-nav a, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav a {
+    -moz-background-clip:border;
+    -moz-background-inline-policy:continuous;
+    -moz-background-origin:padding;
+    background:#fff8dc url(../../../../assets/skins/sam/sprite.png) repeat-x scroll 0 0;
+    border-color:#A3A3A3;
+    border-style:solid;
+    border-width:0 1px;
+    color:#000000;
+    position:relative;
+    text-decoration:none;
+    font-size:93%;
+}
+.yui-skin-sam .yui-navset .yui-nav a em, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav a em {
+    border-color:#A3A3A3;
+    border-style:solid;
+    border-width:1px 0 0;
+    bottom:0;
+    left:0;
+    padding:0.25em 0.75em;
+    position:relative;
+    right:0;
+    top:-1px;
+}
+.yui-skin-sam .yui-navset .yui-nav .selected a, .yui-skin-sam .yui-navset .yui-nav .selected a:focus, .yui-skin-sam .yui-navset .yui-nav .selected a:hover {
+    -moz-background-clip:border;
+    -moz-background-inline-policy:continuous;
+    -moz-background-origin:padding;
+    background:#9da4b5 url(../../../../assets/skins/sam/sprite.png) repeat-x scroll left -1400px;
+    color:#FFFFFF;
+    font-weight:bold;
+    font-size:93%;
+}
+.yui-skin-sam .yui-navset .yui-nav a:hover, .yui-skin-sam .yui-navset .yui-nav a:focus {
+    -moz-background-clip:border;
+    -moz-background-inline-policy:continuous;
+    -moz-background-origin:padding;
+    background:#FEBA12 url(../../../../assets/skins/sam/sprite.png) repeat-x scroll left -1300px;
+    outline-color:-moz-use-text-color;
+    outline-style:none;
+    outline-width:0;
+}
+
+.yui-skin-sam .yui-navset .yui-nav, .yui-skin-sam .yui-navset .yui-navset-top .yui-nav {
+    border-color:#9da4b5;
+    border-style:solid;
+    border-width:0 0 2px;
+}
+
+.yui-skin-sam .yui-navset .yui-content, .yui-skin-sam .yui-navset .yui-navset-top .yui-content {
+    border-color:#9da4b5;
+    /*border-style:solid;*/
+    /*border-width:1px;*/
+    padding:0.25em 0.5em;
+}
+

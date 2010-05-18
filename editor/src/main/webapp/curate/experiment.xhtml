@@ -22,23 +22,27 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{experimentController.experiment != null}">
-            <div id="auditInfo" class="intact-auditPanel">
-                <ia:creatorUpdator annotatedObject="#{experimentController.experiment}" />
-            </div>
-        </h:panelGroup>
-
-        <h:panelGroup rendered="#{experimentController.experiment != null}">
 
             <h:link outcome="/curate/publication"
+                    onclick="loadDialog.show()"
                     value="#{publicationController.publication.shortLabel}" 
                     title="#{publicationController.publication.fullName}"
                     includeViewParams="true"/>
             &#160;>&#160;
             #{experimentController.experiment.shortLabel}
 
-            <h3>Experiment Details</h3>
+            <ia:loadingDialog widgetVar="loadDialog"/>
 
-            <p:outputPanel id="basic">
+            <br/><br/>
+
+            <p:panel id="basic" header="Experiment Details">
+
+                <h:panelGroup rendered="#{experimentController.experiment != null}">
+                    <div id="auditInfo" class="intact-auditPanel">
+                        <ia:creatorUpdator annotatedObject="#{experimentController.experiment}" />
+                    </div>
+                </h:panelGroup>
+
                 <!--<ia:panelFormLayout id="basicInfoPanel" columns="1">-->
                     <table class="intact-tableBasicForm">
                         <tr>
@@ -97,47 +101,55 @@
                     </table>
 
                 <!--</ia:panelFormLayout>-->
-            </p:outputPanel>
+            </p:panel>
 
-            <h3>Experiment properties</h3>
+            <br/>
 
-            <p:outputPanel id="xrefsPanel">
-                <ia:collapsiblePanel open="true" title="Xrefs (#{experimentController.experiment.xrefs.size()})">
-                    <ia:xrefsTable annotatedObjectController="#{experimentController}"
-                                   databaseSelectItems="#{cvObjectService.databaseSelectItems}"
-                                   qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                   update="xrefsPanel changesPanel"
-                                   style="margin-top: -20px;"
-                                   valueChangeRender=":editorForm:changesPanel"
-                                   valueChangeAwareObject="#{annotatedObjectController}"/>
-                </ia:collapsiblePanel>
-            </p:outputPanel>
+            <p:tabView id="publicationTabs" dynamic="true">
 
-            <p:outputPanel id="annotationsPanel">
-                <ia:collapsiblePanel open="true" title="Annotations (#{experimentController.experiment.annotations.size()})">
-                    <ia:annotationsTable annotatedObjectController="#{experimentController}"
-                                         topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
-                                         update="annotationsPanel changesPanel"
-                                         style="margin-top: -20px;"
-                                         valueChangeRender=":editorForm:changesPanel"
-                                         valueChangeAwareObject="#{annotatedObjectController}"/>
-                </ia:collapsiblePanel>
-            </p:outputPanel>
+                <p:tab title="Interactions (#{experimentController.countInteractionsByExperimentAc(experimentController.ac)})">
+                    <ia:interactionsTable value="#{experimentController.interactionDataModel}"/>
+                </p:tab>
 
-            <p:outputPanel id="aliasesPanel">
-                <ia:collapsiblePanel open="true" title="Aliases (#{experimentController.experiment.aliases.size()})">
-                    <ia:aliasTable annotatedObjectController="#{experimentController}"
-                                   aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
-                                   update="aliasesPanel changesPanel"
-                                   style="margin-top: -20px;"
-                                   valueChangeRender=":editorForm:changesPanel"
-                                   valueChangeAwareObject="#{annotatedObjectController}"/>
-                </ia:collapsiblePanel>
-            </p:outputPanel>
+                <p:tab title="Properties">
 
-            <h3>Interactions (#{experimentController.countInteractionsByExperimentAc(experimentController.ac)})</h3>
+                    <p:outputPanel id="xrefsPanel">
+                        <ia:collapsiblePanel open="true" title="Xrefs (#{experimentController.experiment.xrefs.size()})">
+                            <ia:xrefsTable annotatedObjectController="#{experimentController}"
+                                           databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                           qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                           update="xrefsPanel changesPanel"
+                                           style="margin-top: -20px;"
+                                           valueChangeRender=":editorForm:changesPanel"
+                                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                        </ia:collapsiblePanel>
+                    </p:outputPanel>
 
-            <ia:interactionsTable value="#{experimentController.interactionDataModel}"/>
+                    <p:outputPanel id="annotationsPanel">
+                        <ia:collapsiblePanel open="true" title="Annotations (#{experimentController.experiment.annotations.size()})">
+                            <ia:annotationsTable annotatedObjectController="#{experimentController}"
+                                                 topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
+                                                 update="annotationsPanel changesPanel"
+                                                 style="margin-top: -20px;"
+                                                 valueChangeRender=":editorForm:changesPanel"
+                                                 valueChangeAwareObject="#{annotatedObjectController}"/>
+                        </ia:collapsiblePanel>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="aliasesPanel">
+                        <ia:collapsiblePanel open="true" title="Aliases (#{experimentController.experiment.aliases.size()})">
+                            <ia:aliasTable annotatedObjectController="#{experimentController}"
+                                           aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                                           update="aliasesPanel changesPanel"
+                                           style="margin-top: -20px;"
+                                           valueChangeRender=":editorForm:changesPanel"
+                                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                        </ia:collapsiblePanel>
+                    </p:outputPanel>
+
+                </p:tab>
+            </p:tabView>
+
 
         </h:panelGroup>
 

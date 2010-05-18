@@ -26,7 +26,7 @@
 
                 <!--<p:layoutUnit position="top" resizable="false" height="80" style="position: fixed; width: 99%;">-->
 
-            <div style="width:100%; position:fixed; background: white; -moz-box-shadow: 0px 5px 5px #999; height:95px; background-image: url('#{facesContext.externalContext.request.contextPath}/resources/images/top_background.jpg'); background-repeat: repeat-x">
+            <div style="z-index:9; width:100%; position:fixed; background: white; -moz-box-shadow: 0px 5px 5px #999; height:95px; background-image: url('#{facesContext.externalContext.request.contextPath}/resources/images/top_background.jpg'); background-repeat: repeat-x">
 
                     <div id="topImage" style="float: left; padding-right: 30px;">
                         <h:graphicImage alt="logoImg" url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"/>

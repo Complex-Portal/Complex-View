@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:composite="http://java.sun.com/jsf/composite" >
+
+    <!-- INTERFACE -->
+    <composite:interface>
+        <composite:attribute name="widgetVar" required="true"/>
+        <composite:attribute name="message" default="Loading..."/>
+        <composite:attribute name="header" default="Please wait"/>
+    </composite:interface>
+
+    <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <p:dialog header="#{cc.attrs.header}" widgetVar="#{cc.attrs.widgetVar}" modal="true" fixedCenter="true" close="false">
+            <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
+            #{cc.attrs.message}
+        </p:dialog>
+
+    </composite:implementation>
+
+
+</ui:composition>

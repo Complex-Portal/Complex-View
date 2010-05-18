@@ -65,35 +65,16 @@
             <!--Enables our scripting engine support plugins-->
         <!--</description>-->
         <!--<param-name>org.apache.myfaces.FACES_INIT_PLUGINS</param-name>-->
-        <!--<param-value>-->
-            <!--org.apache.myfaces.scripting.servlet.StartupServletContextPluginChainLoader-->
-        <!--</param-value>-->
-    <!--</context-param>-->
-
-    <!--<context-param>-->
-        <!--<description>-->
-            <!--Enables our scripting engine support plugins-->
-        <!--</description>-->
-        <!--<param-name>org.apache.myfaces.FACES_INIT_PLUGINS</param-name>-->
-        <!--<param-value>org.apache.myfaces.scripting.servlet.StartupServletContextPluginChainLoader</param-value>-->
+        <!--<param-value>org.apache.myfaces.extensions.scripting.servlet.StartupServletContextPluginChainLoader</param-value>-->
     <!--</context-param>-->
 
     <!--<context-param>-->
         <!--<description>Additional comma separated loader paths to allow direct editing on the sources directory instead-->
             <!--of the deployment dir-->
         <!--</description>-->
-        <!--<param-name>org.apache.myfaces.scripting.groovy.LOADER_PATHS</param-name>-->
+        <!--<param-name>org.apache.myfaces.extensions.scripting.java.LOADER_PATHS</param-name>-->
         <!--<param-value>-->
-           <!--src/main/webapp/WEB-INF/groovy-->
-        <!--</param-value>-->
-    <!--</context-param>-->
-    <!--<context-param>-->
-        <!--<description>Additional comma separated loader paths to allow direct editing on the sources directory instead-->
-            <!--of the deployment dir-->
-        <!--</description>-->
-        <!--<param-name>org.apache.myfaces.scripting.java.LOADER_PATHS</param-name>-->
-        <!--<param-value>-->
-            <!--src/main/webapp/WEB-INF/java-->
+            <!--/homes/baranda/projects/intact-current/service/editor/src/main/java-->
         <!--</param-value>-->
     <!--</context-param>-->
 
@@ -197,14 +178,15 @@
         <!--<filter-class>org.apache.myfaces.scripting.servlet.ScriptingServletFilter</filter-class>-->
 
     <!--</filter>-->
-    <!--<filter-mapping>-->
-        <!--<filter-name>scriptingFilter</filter-name>-->
-        <!--<url-pattern>/*</url-pattern>-->
-        <!--<dispatcher>REQUEST</dispatcher>-->
 
-        <!--<dispatcher>FORWARD</dispatcher>-->
-        <!--<dispatcher>INCLUDE</dispatcher>-->
-        <!--<dispatcher>ERROR</dispatcher>-->
+    <!-- MyFaces Ext-Scripting filter -->
+    <!--<filter>-->
+       <!--<filter-name>scriptingFilter</filter-name>-->
+       <!--<filter-class>org.apache.myfaces.extensions.scripting.servlet.ScriptingServletFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+       <!--<filter-name>scriptingFilter</filter-name>-->
+       <!--<servlet-name>Faces Servlet</servlet-name>-->
     <!--</filter-mapping>-->
 
 	<servlet>

@@ -25,27 +25,31 @@
             No interaction loaded!
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{interaction != null}">
-            <div id="auditInfo" class="intact-auditPanel">
-                <ia:creatorUpdator annotatedObject="#{interaction}" />
-            </div>
-        </h:panelGroup>
-
         <h:panelGroup id="info" rendered="#{interaction != null}">
 
             <h:link outcome="/curate/publication"
+                    onclick="loadDialog.show()"
                     value="#{publication.shortLabel}"
                     title="#{publication.fullName}"
                     includeViewParams="true"/>
             &#160;>&#160;
-            <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true"/>
+            <h:link outcome="/curate/experiment"
+                    onclick="loadDialog.show()"
+                    value="#{experiment.shortLabel}"
+                    includeViewParams="true"/>
             &#160;>&#160;
             #{interaction.shortLabel}
 
-            <h2>Interaction</h2>
+            <br/><br/>
 
-            <p:outputPanel id="basic">
-                <!--<ia:panelFormLayout id="basicInfoPanel" columns="1">-->
+            <ia:loadingDialog widgetVar="loadDialog"/>
+
+            <p:panel id="basic" header="Interaction Details">
+                <h:panelGroup rendered="#{interaction != null}">
+                    <div id="auditInfo" class="intact-auditPanel">
+                        <ia:creatorUpdator annotatedObject="#{interaction}" />
+                    </div>
+                </h:panelGroup>
 
                 <table class="intact-tableBasicForm">
                     <tr>
@@ -88,7 +92,9 @@
                 </table>
 
                 <!--</ia:panelFormLayout>-->
-            </p:outputPanel>
+            </p:panel>
+
+            <br/>
 
             <p:tabView id="interactionTabs">
                 <p:tab title="Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})">

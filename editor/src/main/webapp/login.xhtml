@@ -3,7 +3,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.prime.com.tr/ui">
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+     xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
 <f:view contentType="text/html">
 
@@ -105,11 +106,8 @@
                 </p:panel>
                     </div>
             </div>
-
-            <p:dialog header="Please wait" widgetVar="login_load" modal="true" fixedCenter="true" close="false">
-                <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
-                Logging in...
-            </p:dialog>
+            
+            <ia:loadingDialog widgetVar="login_load" message="Logging in..."/>
 
         </h:form>
 

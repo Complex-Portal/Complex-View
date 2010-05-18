@@ -25,19 +25,19 @@
             No publication loaded!
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{publicationController.publication != null}">
-            <div id="auditInfo" class="intact-auditPanel" >
-                <ia:creatorUpdator annotatedObject="#{publicationController.publication}" />
-            </div>
-        </h:panelGroup>
+
 
         <h:panelGroup rendered="#{publicationController.publication != null}">
-
-            <h2>Publication Details</h2>
 
             <p:outputPanel id="publicationDetails">
 
-                <p:outputPanel id="basic">
+                <p:panel id="basic" header="Publication Details">
+
+                    <h:panelGroup rendered="#{publicationController.publication != null}">
+                        <div id="auditInfo" class="intact-auditPanel" >
+                            <ia:creatorUpdator annotatedObject="#{publicationController.publication}" />
+                        </div>
+                    </h:panelGroup>
 
                     <p:outputPanel id="infoPanels">
                         <h:panelGroup rendered="#{not empty publicationController.acceptedMessage}">
@@ -181,36 +181,44 @@
 
                     <!--</ia:panelFormLayout>-->
 
-                </p:outputPanel>
+                </p:panel>
 
-                <h3>Publication properties</h3>
+                <br/>
 
-                <p:outputPanel id="xrefsPanel">
-                    <ia:collapsiblePanel open="true" title="Xrefs (#{publicationController.publication.xrefs.size()})">
-                        <ia:xrefsTable annotatedObjectController="#{publicationController}"
-                                       databaseSelectItems="#{cvObjectService.databaseSelectItems}"
-                                       qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                       update="xrefsPanel changesPanel"
-                                       valueChangeRender=":editorForm:basic :editorForm:changesPanel"
-                                       valueChangeAwareObject="#{annotatedObjectController}"
-                                       style="margin-top: -20px;"/>
-                    </ia:collapsiblePanel>
-                </p:outputPanel>
+                <p:tabView id="publicationTabs" dynamic="true">
 
-                <p:outputPanel id="annotationsPanel">
-                    <ia:collapsiblePanel open="true" title="Annotations (#{publicationController.publication.annotations.size()})">
-                        <ia:annotationsTable annotatedObjectController="#{publicationController}"
-                                             topicSelectItems="#{cvObjectService.publicationTopicSelectItems}"
-                                             update="annotationsPanel changesPanel"
-                                             valueChangeRender=":editorForm:basic :editorForm:changesPanel"
-                                             valueChangeAwareObject="#{annotatedObjectController}"
-                                             style="margin-top: -20px;"/>
-                    </ia:collapsiblePanel>
-                 </p:outputPanel>
-                
-                <h3>Experiments (#{fn:length(publicationController.publication.experiments)})</h3>
+                    <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
+                        <ia:experimentsTable value="#{publicationController.publication.experiments}"/>
+                    </p:tab>
 
-                <ia:experimentsTable value="#{publicationController.publication.experiments}"/>
+
+                    <p:tab title="Properties">
+
+                        <p:outputPanel id="xrefsPanel">
+                            <ia:collapsiblePanel open="true" title="Xrefs (#{publicationController.publication.xrefs.size()})">
+                                <ia:xrefsTable annotatedObjectController="#{publicationController}"
+                                               databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                               qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                               update="xrefsPanel changesPanel"
+                                               valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                                               valueChangeAwareObject="#{annotatedObjectController}"
+                                               style="margin-top: -20px;"/>
+                            </ia:collapsiblePanel>
+                        </p:outputPanel>
+
+                        <p:outputPanel id="annotationsPanel">
+                            <ia:collapsiblePanel open="true" title="Annotations (#{publicationController.publication.annotations.size()})">
+                                <ia:annotationsTable annotatedObjectController="#{publicationController}"
+                                                     topicSelectItems="#{cvObjectService.publicationTopicSelectItems}"
+                                                     update="annotationsPanel changesPanel"
+                                                     valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                                                     valueChangeAwareObject="#{annotatedObjectController}"
+                                                     style="margin-top: -20px;"/>
+                            </ia:collapsiblePanel>
+                        </p:outputPanel>
+
+                    </p:tab>
+                </p:tabView>
 
             </p:outputPanel>
 

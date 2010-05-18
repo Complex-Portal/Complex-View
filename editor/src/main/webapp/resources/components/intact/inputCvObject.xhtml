@@ -41,11 +41,11 @@
                         actionListener="#{cc.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
                         update="cvObjectBrowserDialog,growl"/>
 
-       <h:commandButton id="selectBtn" value="Browse" onclick="#{dialogWidgetId}.show();">
-            <f:ajax event="click"
-                    actionListener="#{cc.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
-                    execute="@this" render="#{cc.clientId}:cvObjectBrowserDialog"/>
-        </h:commandButton>
+       <!--<h:commandButton id="selectBtn" value="Browse" onclick="#{dialogWidgetId}.show();">-->
+            <!--<f:ajax event="click"-->
+                    <!--actionListener="#{cc.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"-->
+                    <!--execute="@this" render="#{cc.clientId}:cvObjectBrowserDialog"/>-->
+        <!--</h:commandButton>-->
         </h:panelGrid>
 
         <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="true" fixedCenter="true">
