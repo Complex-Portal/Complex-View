@@ -23,8 +23,6 @@
 
          <h:outputScript name="intact.js" library="javascript" target="head"/>
 
-        <ia:yahooLogging/>
-
         <ui:param name="dialogWidgetId" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}_cvDlg"/>
 
          <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'visible'"
@@ -37,20 +35,32 @@
                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </h:selectOneMenu>
 
-                <p:commandButton id="selectBtn" value="Browse" immediate="true" style="visibility: hidden"
-                        onclick="#{dialogWidgetId}.show();" process="#{cc.clientId}"
-                        actionListener="#{inputCvObjectController.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
+                <p:commandButton id="selectBtn" value="Browse" style="visibility: hidden" immediate="true"
+                                 onclick="#{dialogWidgetId}_load.show()"
+                        oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();" process="#{cc.clientId}"
+                        actionListener="#{cc.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
                         update="cvObjectBrowserDialog,growl"/>
+
+       <h:commandButton id="selectBtn" value="Browse" onclick="#{dialogWidgetId}.show();">
+            <f:ajax event="click"
+                    actionListener="#{cc.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
+                    execute="@this" render="#{cc.clientId}:cvObjectBrowserDialog"/>
+        </h:commandButton>
         </h:panelGrid>
+
+        <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="true" fixedCenter="true">
+            <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
+            Loading controlled vocabulary...
+        </p:dialog>
 
         <p:outputPanel id="javascriptPanel">
 
-            <h:outputScript rendered="#{inputCvObjectController.getSelectedCvObject(cc.clientId) != null}">
-                document.getElementById('#{cc.clientId}:selectObject').value = '#{inputCvObjectController.getSelectedCvObject(cc.clientId).ac}';
+            <h:outputScript rendered="#{cc.selected != null}">
+                document.getElementById('#{cc.clientId}:selectObject').value = '#{cc.selected.ac}';
             </h:outputScript>
         </p:outputPanel>
         
-        <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true"
+        <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true" fixedCenter="true"
                   widgetVar="#{dialogWidgetId}" modal="true">
             <p:outputPanel id="cvObjectBrowserDialog">
             <h:panelGrid columns="1">
@@ -59,19 +69,11 @@
                     <h:commandButton type="button" value="Search" disabled="true"/>
                     <h:commandButton type="button" value="New..." disabled="true"/>
                 </h:panelGroup>
-
-                <div id="#{cc.clientId}__div"/>
-
-                <ui:param name="treeElementId" value="#{cc.clientId}:#{cc.clientId}__tree"/>
-
-                <p:ajaxStatus onstart="document.getElementById('#{cc.clientId}__div').innerHTML = 'Loading tree...'; var treeEl = document.getElementById('#{treeElementId}'); if (treeEl != null) treeEl.style.display = 'none'"
-                              oncomplete="document.getElementById('#{cc.clientId}__div').innerHTML = ''; var treeEl = document.getElementById('#{treeElementId}'); if (treeEl != null) treeEl.style.display = 'block'" />
-
-                <p:tree id="#{cc.clientId}__tree" value="#{inputCvObjectController.root}" var="cvObject" rendered="#{inputCvObjectController.root != null}"
+                
+                <p:tree id="tree" var="cvObject" 
                         widgetVar="#{cc.clientId}__tree"
-                        style="display: none"
                         dynamic="true" cache="true"
-                        nodeSelectListener="#{inputCvObjectController.onNodeSelect}"
+                        nodeSelectListener="#{cc.onNodeSelect}"
                         onselectComplete="#{dialogWidgetId}.hide(); "
                         update="cvObject,javascriptPanel">
                     <p:treeNode>

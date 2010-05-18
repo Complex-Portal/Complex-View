@@ -101,10 +101,15 @@
                             id="login"
                             action="#{loginController.doLogin}"
                             value="Login"
-                            onclick="document.getElementById('j_password').value = hex_sha1(document.getElementById('j_password_clear').value);"/>
+                            onclick="login_load.show(); document.getElementById('j_password').value = hex_sha1(document.getElementById('j_password_clear').value);"/>
                 </p:panel>
                     </div>
             </div>
+
+            <p:dialog header="Please wait" widgetVar="login_load" modal="true" fixedCenter="true" close="false">
+                <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
+                Logging in...
+            </p:dialog>
 
         </h:form>
 

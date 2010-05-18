@@ -2,12 +2,9 @@ package uk.ac.ebi.intact.editor.component.inputcvobject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
@@ -22,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
-@Scope( "conversation.access" )
-@ConversationName( "general" )
+//@Controller
+//@Scope( "conversation.access" )
+//@ConversationName( "general" )
 public class InputCvObjectController extends BaseController {
 
     private static final Log log = LogFactory.getLog( InputCvObjectController.class );

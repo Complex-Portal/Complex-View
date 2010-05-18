@@ -33,7 +33,6 @@ public class ParticipantWrapper {
     }
 
     public String getAuthorGivenName() {
-        System.out.println( "ParticipantWrapper.getAuthorGivenName" );
         return controller.findAliasName( CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
     }
 

@@ -18,6 +18,8 @@
 
         <h:form id="editorForm" prependId="false">
 
+            <ui:debug rendered="#{facesContext.application.projectStage == 'Development'}"/>
+
             <p:growl id="growl" showDetail="true"/>
 
             <!--<p:layout fullPage="true">-->

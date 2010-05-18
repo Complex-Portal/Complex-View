@@ -90,53 +90,57 @@
                 <!--</ia:panelFormLayout>-->
             </p:outputPanel>
 
-            <h3>Interaction properties</h3>
+            <p:tabView id="interactionTabs">
+                <p:tab title="Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})">
+                    <h:panelGroup style="padding-left: 25px;">
+                        <h:inputText id="searchParticipantTxt" value="#{interactionController.participantQuery}" size="15"/>
+                        <p:commandButton value="Search &amp; Add" actionListener="#{interactionController.searchAndAddParticipant}"
+                                         update="growl,participantTable"/>
+                    </h:panelGroup>
+                    <br/>
+                    <ia:spacer height="10" />
 
-            <p:outputPanel id="xrefsPanel">
-                <ia:collapsiblePanel  open="false" title="Xrefs (#{interaction.xrefs.size()})">
-                    <ia:xrefsTable annotatedObjectController="#{interactionController}"
-                                   databaseSelectItems="#{cvObjectService.databaseSelectItems}"
-                                   qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                   update="xrefsPanel changesPanel"
-                                   valueChangeRender=":editorForm:basic :editorForm:changesPanel"
-                                   valueChangeAwareObject="#{annotatedObjectController}"
-                                   style="margin-top: -20px;"/>
-                </ia:collapsiblePanel>
-            </p:outputPanel>
+                    <ia:participantsTable id="participantTable" value="#{interactionController.participants}"/>
+                </p:tab>
 
-            <p:outputPanel id="annotationsPanel">
-                <ia:collapsiblePanel open="false" title="Annotations (#{interaction.annotations.size()})">
-                    <ia:annotationsTable annotatedObjectController="#{interactionController}"
-                                         topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
-                                         update="annotationsPanel changesPanel"
-                                         valueChangeRender=":editorForm:basic :editorForm:changesPanel"
-                                         valueChangeAwareObject="#{annotatedObjectController}"
-                                         style="margin-top: -20px;"/>
-                </ia:collapsiblePanel>
-            </p:outputPanel>
 
-            <p:outputPanel id="aliasesPanel">
-                <ia:collapsiblePanel open="false" title="Aliases (#{interaction.aliases.size()})">
-                    <ia:aliasTable annotatedObjectController="#{interactionController}"
-                                   aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
-                                   update="aliasesPanel changesPanel"
-                                   valueChangeRender=":editorForm:changesPanel"
-                                   valueChangeAwareObject="#{annotatedObjectController}"
-                                   style="margin-top: -20px;"/>
-                </ia:collapsiblePanel>
-            </p:outputPanel>
+                <p:tab title="Interaction properties">
 
-            <h3>Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})</h3>
+                    <p:outputPanel id="xrefsPanel">
+                        <ia:collapsiblePanel  open="true" title="Xrefs (#{interaction.xrefs.size()})">
+                            <ia:xrefsTable annotatedObjectController="#{interactionController}"
+                                           databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                           qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                           update="xrefsPanel changesPanel"
+                                           valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                                           valueChangeAwareObject="#{annotatedObjectController}"
+                                           style="margin-top: -20px;"/>
+                        </ia:collapsiblePanel>
+                    </p:outputPanel>
 
-            <h:panelGroup style="padding-left: 25px;">
-                <h:inputText id="searchParticipantTxt" value="#{interactionController.participantQuery}" size="15"/>
-                <p:commandButton value="Search &amp; Add" actionListener="#{interactionController.searchAndAddParticipant}"
-                                 update="growl,participantTable"/>
-            </h:panelGroup>
-            <br/>
-            <ia:spacer height="10" />
+                    <p:outputPanel id="annotationsPanel">
+                        <ia:collapsiblePanel open="true" title="Annotations (#{interaction.annotations.size()})">
+                            <ia:annotationsTable annotatedObjectController="#{interactionController}"
+                                                 topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
+                                                 update="annotationsPanel changesPanel"
+                                                 valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                                                 valueChangeAwareObject="#{annotatedObjectController}"
+                                                 style="margin-top: -20px;"/>
+                        </ia:collapsiblePanel>
+                    </p:outputPanel>
 
-            <ia:participantsTable id="participantTable" value="#{interactionController.participants}"/>
+                    <p:outputPanel id="aliasesPanel">
+                        <ia:collapsiblePanel open="true" title="Aliases (#{interaction.aliases.size()})">
+                            <ia:aliasTable annotatedObjectController="#{interactionController}"
+                                           aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                                           update="aliasesPanel changesPanel"
+                                           valueChangeRender=":editorForm:changesPanel"
+                                           valueChangeAwareObject="#{annotatedObjectController}"
+                                           style="margin-top: -20px;"/>
+                        </ia:collapsiblePanel>
+                    </p:outputPanel>
+                </p:tab>
+            </p:tabView>
 
         </h:panelGroup>
 

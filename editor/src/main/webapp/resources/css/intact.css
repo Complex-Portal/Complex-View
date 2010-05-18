@@ -103,6 +103,7 @@ a img {
     float: right;
     padding-top: 180px;
     margin-left:97%;
+    z-index: 2001;
 }
 
 /** Tables **/
@@ -162,6 +163,10 @@ a img {
 .pf-picklist-control {
     /**cursor: pointer;**/
 }
+/** other **/
+.yui-content{  
+     background: #FFFFFF !important;
+ }
 
 .col1, .col2 {
     vertical-align: top;

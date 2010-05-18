@@ -22,8 +22,6 @@
 
         <h:outputScript name="intact.js" library="javascript" target="head"/>
 
-        <ia:yahooLogging/>
-
         <h:outputStylesheet>
 			.yui-skin-sam .yui-ac {
 				width:200px;
@@ -40,18 +38,20 @@
         <h:panelGroup onmouseover="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'visible'"
                  onmouseout="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'hidden'">
 
-        <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="bioSourceConverter">
-            <f:selectItems value="#{cc.attrs.selectItems}"/>
-            <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
-                    disabled="#{cc.attrs.valueChangeAwareObject == null}"
-                    listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
-        </h:selectOneMenu>
+        <!--<h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="bioSourceConverter">-->
+            <!--<f:selectItems value="#{cc.attrs.selectItems}"/>-->
+            <!--<f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"-->
+                    <!--disabled="#{cc.attrs.valueChangeAwareObject == null}"-->
+                    <!--listener="#{cc.attrs.valueChangeAwareObject.changed}"/>-->
+        <!--</h:selectOneMenu>-->
+            [[#{cc.attrs.value}]]
 
-        <p:commandButton id="selectBtn" value="Browse" immediate="true" style="visibility: hidden"
-                        onclick="#{dialogWidgetId}.show();"
-                        actionListener="#{inputBioSourceController.loadBioSources}"
-                        process="#{cc.clientId}"
-                        update="bioSourceBrowserDialog,growl"/>
+        <p:commandButton id="selectBtn" type="button" value="Browse" style="visibility: hidden" onclick="#{dialogWidgetId}_load.show()">
+            <p:ajax event="click" oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"
+                    actionListener="#{cc.loadBioSources}"
+                    process="#{cc.clientId}"
+                    update="bioSourceBrowserDialog"/>
+        </p:commandButton>
 
         </h:panelGroup>
 
@@ -60,13 +60,18 @@
 
         </p:outputPanel>
 
-        <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="true">
+        <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="true" fixedCenter="true">
+            <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
+            Loading organisms...
+        </p:dialog>
+
+        <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="true" fixedCenter="true">
            <p:outputPanel id="bioSourceBrowserDialog">
 
                 <h:panelGrid columns="1">
                     <h:panelGroup>
-                        <h:inputText value="#{inputBioSourceController.query}"/>
-                        <p:commandButton value="Search" actionListener="#{inputBioSourceController.search}" update="bioSourceTable"/>
+                        <h:inputText value="#{cc.query}"/>
+                        <p:commandButton value="Search" actionListener="#{cc.search}" update="bioSourceTable"/>
                         <h:commandButton value="New..." title="Not yet implemented" disabled="true"/>
                     </h:panelGroup>
 
@@ -78,13 +83,13 @@
                     </h:outputScript>
 
                     <p:dataTable id="bioSourceTable"
-                                 var="bioSource" value="#{inputBioSourceController.bioSources}"
-                                 paginator="#{inputBioSourceController.bioSources.rowCount gt 10}" rows="10" lazy="true" dynamic="true"
+                                 var="bioSource" value="#{cc.bioSources}"
+                                 paginator="#{cc.bioSources.rowCount gt 10}" rows="10" lazy="true" dynamic="true"
                                  paginatorPosition="top">
                         <p:column>
                             <p:commandLink value="Select" process="#{cc.clientId}"
                                            onclick="ia_update('#{bioSource.ac}', '#{bioSource.shortLabel}')"
-                                           actionListener="#{inputBioSourceController.selectBioSource(bioSource)}">
+                                           actionListener="#{cc.selectBioSource(bioSource)}">
                             </p:commandLink>
                         </p:column>
                         <p:column>

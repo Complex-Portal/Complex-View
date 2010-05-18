@@ -10,23 +10,25 @@
 
     <!-- INTERFACE -->
   <composite:interface>
-    <composite:attribute name="value" type="java.util.Collection"/>
+    <composite:attribute name="value" type="java.util.Collection" required="true"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <ui:repeat value="#{cc.attrs.value}" var="wrapper" varStatus="status">
+        <ui:repeat id="partRepeat" value="#{cc.attrs.value}" var="wrapper" varStatus="status">
 
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
             
             <div style="width: 960px; #{(status.index % 2) == 0 ? 'background-color: #f8f8ff;' : ''}};">
 
-                <ia:collapsiblePanel open="false"
+                <ia:collapsiblePanel id="participantPanel" open="false"
                                     title="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
                                     titleRight="#{interactor.cvInteractorType.shortLabel} | #{interactor.bioSource.shortLabel} | #{interactor.fullName}"
                                     titleRightStyle="color:#CDCDCD;">
+
+
 
                     <table class="tableBasicForm" width="900px" style="padding-left: 50px;">
                         <tr>
@@ -54,7 +56,9 @@
                                 <h:outputLabel value="Experimental role(s): " for="expRoleTxt"/>
                             </td>
                             <td >
-
+                                <ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
+                                                  value="#{participant.cvExperimentalRole}"
+                                                  selectItems="#{cvObjectService.experimentalRoleSelectItems}" />
                             </td>
                             <td style="padding-left: 150px;">
                                 <h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>

@@ -13,6 +13,20 @@
         </locale-config>
     </application>
 
+    <lifecycle>
+        <phase-listener>uk.ac.ebi.intact.editor.application.TempPhaseListener</phase-listener>
+    </lifecycle>
+
+    <!--<component>-->
+        <!--<component-type>uk.ac.ebi.intact.editor.InputBioSource</component-type>-->
+        <!--<component-class>uk.ac.ebi.intact.editor.component.inputbiosource.InputBioSource</component-class>-->
+    <!--</component>-->
+    <!--<component>-->
+        <!--<component-type>uk.ac.ebi.intact.editor.InputCvObject</component-type>-->
+        <!--<component-class>uk.ac.ebi.intact.editor.component.inputcvobject.InputCvObject</component-class>-->
+    <!--</component>-->
+
+
     <navigation-rule>
         <navigation-case>
             <from-outcome>admin.dashboard</from-outcome>
