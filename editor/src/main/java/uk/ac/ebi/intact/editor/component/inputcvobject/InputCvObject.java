@@ -46,7 +46,7 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
     private TreeNode root;
 
     public InputCvObject() {
-        log.debug("New instance");
+        log.trace("New instance");
     }
 
     @Override
@@ -56,42 +56,42 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
 
     @Override
     public void decode(FacesContext context) {
-        log.debug("decode");
+        log.trace("decode");
         super.decode(context);
     }
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-        log.debug("encodeBegin");
+        log.trace("encodeBegin");
         super.encodeBegin(context);
     }
 
     @Override
     public void encodeEnd(FacesContext context) throws IOException {
-        log.debug("encodeEnd");
+        log.trace("encodeEnd");
         super.encodeEnd(context);
     }
 
     @Override
     public void encodePartially(FacesContext facesContext) throws IOException {
-        log.debug("encodePartially");
+        log.trace("encodePartially");
         super.encodePartially(facesContext);
     }
 
     @Override
     public Object saveState(FacesContext context) {
-        log.debug("saveState");
+        log.trace("saveState");
         return super.saveState(context);
     }
 
     @Override
     public void restoreState(FacesContext context, Object state) {
-        log.debug("restoreState");
+        log.trace("restoreState");
         super.restoreState(context, state);
     }
 
     public void load( String cvClass, String id ) {
-        log.debug( "Loading CvObject with class '" + cvClass+"' and id '"+id+"'" );
+        log.trace( "Loading CvObject with class '" + cvClass+"' and id '"+id+"'" );
 
         if (cvClass == null) {
             throw new NullPointerException("cvClass is null");
@@ -130,7 +130,7 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
-        log.debug( "\tLoading completed. Root: "+root+ "(children="+root.getChildCount()+")" );
+        log.trace( "\tLoading completed. Root: "+root+ "(children="+root.getChildCount()+")" );
 
     }
 

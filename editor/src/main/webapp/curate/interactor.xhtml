@@ -68,7 +68,8 @@
                             <h:outputLabel value="Fullname: " for="fullnameTxt"/>
                         </td>
                         <td colspan="2">
-                            <ia:inputBioSource id="fullnameTxt" value="#{interactor.fullName}"/>
+                            <ia:inputBioSource id="fullnameTxt" value="#{interactor.fullName}"
+                                    selectItems="#{bioSourceService.bioSourceSelectItems}"/>
                         </td>
                     </tr>
                     <tr>
@@ -110,7 +111,6 @@
                                    databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                    qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
                                    update="xrefsPanel"
-                                   render=":editorForm:basic"
                                    style="margin-top: -20px;"/>
                 </ia:collapsiblePanel>
             </p:outputPanel>
@@ -120,7 +120,6 @@
                     <ia:annotationsTable annotatedObjectController="#{interactorController}"
                                          topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
                                          update="annotationsPanel"
-                                         render=":editorForm:basic"
                                          style="margin-top: -20px;"/>
                 </ia:collapsiblePanel>
             </p:outputPanel>

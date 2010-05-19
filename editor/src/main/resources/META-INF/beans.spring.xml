@@ -18,5 +18,8 @@
         <property name="databaseUrl" value="${db.url}"/>
         <property name="logoUrl" value="${webapp.logo.url}"/>
     </bean>
+
+    <!-- Uniprot -->
+    <bean name="uniprotService" class="uk.ac.ebi.intact.uniprot.service.UniprotRemoteService"/>
    
 </beans>

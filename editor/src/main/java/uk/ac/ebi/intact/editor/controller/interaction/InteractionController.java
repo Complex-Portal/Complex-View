@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.editor.controller.interaction;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -28,14 +27,13 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.publication.PublicationController;
 import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController;
-import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
+import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.*;
 
 /**
@@ -49,11 +47,15 @@ public class InteractionController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( InteractionController.class );
 
+    @Autowired
+    private UniprotRemoteService uniprotRemoteService;
+
     private Interaction interaction;
     private String ac;
     private DualListModel<String> experimentLists;
     private LazyDataModel<Component> participantDataModel;
-    private String participantQuery;
+
+    private String participantToImport;
 
     @Autowired
     private PublicationController publicationController;
@@ -135,6 +137,17 @@ public class InteractionController extends AnnotatedObjectController {
         experimentLists = new DualListModel<String>( source, target);
     }
 
+    public void importParticipant( ActionEvent evt ) {
+
+        log.debug( "Importing participant: "+ participantToImport );
+
+        final Collection<UniprotProtein> candidates = uniprotRemoteService.retrieve(participantToImport);
+
+        System.out.println("Candidates in uniprot: "+candidates.size());
+
+
+    }
+
     public String getAc() {
         if ( ac == null && interaction != null ) {
             return interaction.getAc();
@@ -162,8 +175,12 @@ public class InteractionController extends AnnotatedObjectController {
         this.interaction = interaction;
     }
 
-    public String getParticipantQuery() {
-        return participantQuery;
+    public String getParticipantToImport() {
+        return participantToImport;
+    }
+
+    public void setParticipantToImport(String participantToImport) {
+        this.participantToImport = participantToImport;
     }
 
     public Collection<ParticipantWrapper> getParticipants() {
@@ -207,9 +224,4 @@ public class InteractionController extends AnnotatedObjectController {
         System.out.println( "Updating author-given-name ("+ name +") !!" );
     }
 
-    public void searchAndAddParticipant( ActionEvent evt ) {
-
-        log.info( "searchAndAddParticipant("+ participantQuery +"): not yet implemented" );
-
-    }
 }

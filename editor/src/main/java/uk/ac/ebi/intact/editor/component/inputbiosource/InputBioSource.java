@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.component.inputbiosource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.model.LazyDataModel;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -39,8 +41,10 @@ import java.util.Map;
 @FacesComponent("uk.ac.ebi.intact.editor.InputBioSource")
 public class InputBioSource extends UIInput implements NamingContainer {
 
+    private static final Log log = LogFactory.getLog(InputBioSource.class);
+    
     public InputBioSource() {
-        System.out.println("InputBioSource.InputBioSource");
+        if (log.isTraceEnabled()) log.trace("InputBioSource.InputBioSource");
     }
 
     @Override
@@ -50,26 +54,26 @@ public class InputBioSource extends UIInput implements NamingContainer {
 
     @Override
     public void decode(FacesContext context) {
-        System.out.println("InputBioSource.decode");
+        if (log.isTraceEnabled()) log.trace("InputBioSource.decode");
         super.decode(context);
     }
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-        System.out.println("InputBioSource.encodeBegin");
+        if (log.isTraceEnabled()) log.trace("InputBioSource.encodeBegin");
         super.encodeBegin(context);
     }
 
     @Override
     public void encodeEnd(FacesContext context) throws IOException {
-        System.out.println("InputBioSource.encodeEnd");
+        if (log.isTraceEnabled()) log.trace("InputBioSource.encodeEnd");
         super.encodeEnd(context);
     }
 
 
 
     public void loadBioSources( ActionEvent evt ) {
-        System.out.println("LOAD BIOSOURCES");
+        if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES");
         setQuery(null);
         LazyDataModel<BioSource> bioSources = LazyDataModelFactory.createLazyDataModel( getEntityManager(), "select b from BioSource b order by b.shortLabel",
                                                                "select count(b) from BioSource b" );
@@ -80,7 +84,7 @@ public class InputBioSource extends UIInput implements NamingContainer {
     public void search(ActionEvent evt) {
         String query = getQuery();
 
-        System.out.println("QUERY: "+query);
+        if (log.isTraceEnabled()) log.trace("QUERY: "+query);
 
         if (query == null) {
             return;
@@ -110,11 +114,11 @@ public class InputBioSource extends UIInput implements NamingContainer {
     }
 
     public LazyDataModel<BioSource> getBioSources() {
-        System.out.println("InputBioSource.getBioSources ["+hashCode()+"]");
+        if (log.isTraceEnabled()) log.trace("InputBioSource.getBioSources ["+hashCode()+"]");
 
         final LazyDataModel<BioSource> bioSources = (LazyDataModel<BioSource>) getStateHelper().eval("biosources");
 
-        System.out.println("\tBIOSOURCES: "+((bioSources == null)? null : bioSources.getRowCount()));
+        if (log.isTraceEnabled()) log.trace("\tBIOSOURCES: "+((bioSources == null)? null : bioSources.getRowCount()));
         refreshTable(bioSources);
 
         return bioSources;
@@ -126,7 +130,7 @@ public class InputBioSource extends UIInput implements NamingContainer {
 
             if (dt != null) {
                 int rowIndex = dt.getRowIndex();
-                System.out.println("\tIndex: "+rowIndex);
+                if (log.isTraceEnabled()) log.trace("\tIndex: "+rowIndex);
                 bioSources.setRowIndex(rowIndex);
                 dt.setValue(bioSources);
             }
@@ -134,7 +138,7 @@ public class InputBioSource extends UIInput implements NamingContainer {
     }
 
     public void setBioSources( LazyDataModel<BioSource> bioSources ) {
-        System.out.println("InputBioSource.setBioSources: "+((bioSources == null)? null : bioSources.getRowCount()));
+        if (log.isTraceEnabled()) log.trace("InputBioSource.setBioSources: "+((bioSources == null)? null : bioSources.getRowCount()));
 
         if (bioSources != null) {
             getStateHelper().put("biosources", bioSources);
