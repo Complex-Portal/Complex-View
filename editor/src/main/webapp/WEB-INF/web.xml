@@ -129,16 +129,7 @@
         </listener-class>
     </listener>
 
-    <!-- Orchestra Filter -->
-    <filter>
-        <filter-name>orchestraFilter</filter-name>
-        <filter-class>org.apache.myfaces.orchestra.conversation.jsf.filter.OrchestraServletFilter</filter-class>
-    </filter>
 
-    <filter-mapping>
-        <filter-name>orchestraFilter</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
-    </filter-mapping>
 
     <!-- JSF -->
 
@@ -160,7 +151,18 @@
 	<filter-mapping>
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>
 		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>    
+	</filter-mapping>
+
+    <!-- Orchestra Filter -->
+    <filter>
+        <filter-name>orchestraFilter</filter-name>
+        <filter-class>org.apache.myfaces.orchestra.conversation.jsf.filter.OrchestraServletFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>orchestraFilter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
 
     <!--<servlet>-->
         <!--<servlet-name>Comet Servlet</servlet-name>-->

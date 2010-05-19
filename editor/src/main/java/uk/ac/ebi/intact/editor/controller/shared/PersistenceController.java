@@ -54,6 +54,8 @@ public class PersistenceController extends JpaAwareController {
         try {
             getIntactContext().getCorePersister().saveOrUpdate( annotatedObject );
 
+            if ( log.isDebugEnabled() ) log.debug( "Saved: " + annotatedObject );
+
             addInfoMessage( simpleName +" saved", "AC: " + annotatedObject.getAc() );
 
             return true;
