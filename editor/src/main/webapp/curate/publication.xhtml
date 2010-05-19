@@ -33,12 +33,6 @@
 
                 <p:panel id="basic" header="Publication Details">
 
-                    <h:panelGroup rendered="#{publicationController.publication != null}">
-                        <div id="auditInfo" class="intact-auditPanel" >
-                            <ia:creatorUpdator annotatedObject="#{publicationController.publication}" />
-                        </div>
-                    </h:panelGroup>
-
                     <p:outputPanel id="infoPanels">
                         <h:panelGroup rendered="#{not empty publicationController.acceptedMessage}">
                             <ia:panelMessage level="info">
@@ -51,10 +45,26 @@
                                 This publication is <b>on-hold</b>. Reason: #{publicationController.onHold}
                                 &#160;&#160;&#160;
                                 <h:commandButton value="Clear" type="button" onclick="document.getElementById('basicInfoPanel:clearOnHoldBtn_submit').click();return false;" />
+                            </ia:panelMessage>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{publicationController.publication.shortLabel != null and publicationController.publication.fullName == null}">
+                            <ia:panelMessage level="error">
+                                This publication does not contain some essential data (e.g. title).
+                                <p:commandButton value="Try to fix" actionListener="#{publicationController.doFormAutocomplete}"
+                                                 update="basic,publicationTabs,changesPanel">
+                                    <f:setPropertyActionListener value="#{true}" target="#{publicationController.unsavedChanges}"/>
+                                </p:commandButton>
 
                             </ia:panelMessage>
                         </h:panelGroup>
                     </p:outputPanel>
+
+                    <h:panelGroup rendered="#{publicationController.publication != null}">
+                        <div id="auditInfo" class="intact-auditPanel" >
+                            <ia:creatorUpdator annotatedObject="#{publicationController.publication}" />
+                        </div>
+                    </h:panelGroup>
 
                     <!--<ia:panelFormLayout id="basicInfoPanel" columns="1">-->
 
