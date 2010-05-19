@@ -110,10 +110,10 @@
                                     <h:outputLabel value="Title: " for="titleTxt"/>
                                 </td>
                                 <td colspan="3">
-                                    <h:inputText id="titleTxt" value="#{publicationController.publication.fullName}" size="80">
+                                    <h:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1">
                                         <f:ajax event="valueChange" render=":editorForm:changesPanel"
                                                 execute="@this" listener="#{publicationController.changed}"/>
-                                    </h:inputText>
+                                    </h:inputTextarea>
                                 </td>
                             </tr>
                             <tr>
