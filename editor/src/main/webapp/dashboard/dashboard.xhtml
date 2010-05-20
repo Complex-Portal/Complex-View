@@ -24,6 +24,15 @@
 
         <p>Hello #{userSessionController.currentUser.firstName}</p>
 
+        <h:panelGroup rendered="#{dashboardController.allPublications.rowCount == 0}"> 
+            <p:commandButton value="Create sample data" onclick="sampleLoad.show()"
+                             actionListener="#{importController.createSampleData}" ajax="false"/>
+
+            <ia:loadingDialog widgetVar="sampleLoad" message="Creating sample data"/>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{dashboardController.allPublications.rowCount gt 0}"> 
+
         <h3>All the publications (#{dashboardController.allPublications.rowCount})</h3>
 
         <p:dataTable id="pubTable" var="publication" value="#{dashboardController.allPublications}"
@@ -72,6 +81,8 @@
             <h:outputLink value="/editor/curate/interaction.jsf?ac=EBI-8783">2</h:outputLink>
             &#160;-&#160;
             <h:outputLink value="/editor/curate/interaction.jsf?ac=EBI-9816">3</h:outputLink>
+        </h:panelGroup>
+
         </h:panelGroup>
 
     </ui:define>
