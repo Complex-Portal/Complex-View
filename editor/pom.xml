@@ -184,6 +184,18 @@
             <!--<version>2.1.1</version>-->
         <!--</dependency>-->
         <dependency>
+            <groupId>uk.ac.ebi.intact.bridges</groupId>
+            <artifactId>intact-uniprot</artifactId>
+            <version>2.1.2-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
             <version>2.1.2-SNAPSHOT</version>
@@ -286,16 +298,16 @@
         </dependency>
 
         <!-- PSICQUIC -->
-        <dependency>
-            <groupId>org.hupo.psi.mi.psicquic</groupId>
-            <artifactId>psicquic-client</artifactId>
-            <version>1.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hupo.psi.mi.psicquic</groupId>
-            <artifactId>psicquic-registry-client</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.hupo.psi.mi.psicquic</groupId>-->
+            <!--<artifactId>psicquic-client</artifactId>-->
+            <!--<version>1.3-SNAPSHOT</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.hupo.psi.mi.psicquic</groupId>-->
+            <!--<artifactId>psicquic-registry-client</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
         <!-- other -->
         <dependency>
