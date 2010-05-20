@@ -38,6 +38,8 @@ public class ArrayConverter implements Converter {
     public Object getAsObject( FacesContext facesContext, UIComponent uiComponent, String arrStr ) throws ConverterException {
         if ( arrStr == null || arrStr.trim().isEmpty()) return new String[0];
 
+        arrStr = arrStr.replaceAll(" ", "");
+
         String[] lines = arrStr.split("\n");
         List<String> items = new ArrayList<String>();
 

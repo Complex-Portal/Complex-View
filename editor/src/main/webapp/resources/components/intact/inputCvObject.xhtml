@@ -13,6 +13,7 @@
       <composite:attribute name="value" type="uk.ac.ebi.intact.model.CvObject" required="true" />
       <composite:attribute name="cvIdentifier" required="true" shortDescription="Identifier of the CvObject"/>
       <composite:attribute name="size" default="30"/>
+      <composite:attribute name="required" default="false"/>
       <composite:attribute name="selectItems" required="true"/>
       <composite:attribute name="valueChangeRender"/>
       <composite:attribute name="valueChangeAwareObject" type="uk.ac.ebi.intact.editor.controller.curate.ValueChangeAware"/>
@@ -28,7 +29,7 @@
          <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'visible'"
                  onmouseout="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'hidden'">
 
-                <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="cvObjectConverter">
+                <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="cvObjectConverter" required="#{cc.attrs.required}">
                     <f:selectItems value="#{cc.attrs.selectItems}"/>
                     <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
                         disabled="#{cc.attrs.valueChangeAwareObject == null}"

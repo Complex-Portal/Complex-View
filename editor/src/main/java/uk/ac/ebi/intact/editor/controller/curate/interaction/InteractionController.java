@@ -29,10 +29,8 @@ import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
-import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -138,17 +136,6 @@ public class InteractionController extends AnnotatedObjectController {
         }
 
         experimentLists = new DualListModel<String>( source, target);
-    }
-
-    public void importParticipant( ActionEvent evt ) {
-
-        log.debug( "Importing participant: "+ participantToImport );
-
-        final Collection<UniprotProtein> candidates = uniprotRemoteService.retrieve(participantToImport);
-
-        System.out.println("Candidates in uniprot: "+candidates.size());
-
-
     }
 
     public String getAc() {

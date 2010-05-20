@@ -2,23 +2,125 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:p="http://primefaces.prime.com.tr/ui">
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
-    <p:dialog id="ipDialog" widgetVar="importParticipantDialog" header="Import participants" modal="true" fixedCenter="true"
+    <p:dialog id="ipDialog" widgetVar="importParticipantDialog" header="Import participants" modal="true"
+              fixedCenter="true"
               width="500px">
 
-        <p>
-            Import participants by UniprotKB accession, interactor accession or  short label:<br/>
-            (comma or line separated)
-        </p>
+        <ia:panelDialogLayout>
+            <f:facet name="buttonBar">
+                <p:commandButton value="Search" actionListener="#{participantImportController.importParticipants}"
+                                 update="growl,candidatesContent"
+                                 onstart="searching_load.show()"
+                                 oncomplete="searching_load.hide(); candidatesDialog.show()"
+                                 process="ipDialog"/>
+            </f:facet>
 
-        <h:inputTextarea id="searchParticipantTxt" value="#{participantImportController.participantsToImport}"
-                         converter="arrayConverter"
-                         cols="15"/>
+            <h:panelGrid columns="2">
+                <p>
+                    Import participants by UniprotKB accession, interactor accession or short label:<br/>
+                    (comma or line separated)
+                </p>
 
-        <hr/>
-        <p:commandButton value="Search &amp; Add" actionListener="#{participantImportController.importParticipants}"
-                         update="growl,participantTable" process="ipDialog"/>
+                <h:inputTextarea id="searchParticipantTxt" value="#{participantImportController.participantsToImport}"
+                                 converter="arrayConverter"
+                                 cols="15"/>
+            </h:panelGrid>
+        </ia:panelDialogLayout>
+    </p:dialog>
+
+    <ia:loadingDialog widgetVar="searching_load" message="Searching interactors..."/>
+    <ia:loadingDialog widgetVar="adding_load" message="Adding participants..."/>
+
+    <p:dialog id="candidatesDialog" widgetVar="candidatesDialog" header="Import participants" modal="true"
+              fixedCenter="true"
+              width="800px">
+        <p:outputPanel id="candidatesContent">
+            <ia:panelDialogLayout>
+                <f:facet name="buttonBar">
+                    <h:panelGroup>
+                    <p:commandButton value="Import selected" rendered="#{not empty participantImportController.importCandidates}"
+                                     actionListener="#{participantImportController.addSelectedToInteraction}"
+                                     onstart="adding_load.show()" onerror="adding_load.hide()"
+                                     oncomplete="adding_load.hide(); candidatesDialog.hide(); importParticipantDialog.hide()"
+                                     update="growl,editorForm" process="candidatesDialog"/>
+                    <p:commandButton type="button" value="Back" rendered="#{empty participantImportController.importCandidates}"
+                                     onclick="candidatesDialog.hide()"/>
+                    </h:panelGroup>
+                </f:facet>
+
+                <p:dataTable id="candidatesTable" var="candidate" rendered="#{not empty participantImportController.importCandidates}"
+                             value="#{participantImportController.importCandidates}">
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Select"/></f:facet>
+                        <h:selectBooleanCheckbox value="#{candidate.selected}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Query"/></f:facet>
+                        <h:outputText value="#{candidate.query}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Source"/></f:facet>
+                        <h:outputText value="#{candidate.source}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Primary AC"/></f:facet>
+                        <h:outputText value="#{candidate.primaryAc}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Secondary ACs"/></f:facet>
+                        <ui:repeat value="#{candidate.secondaryAcs}" var="ac">
+                            <h:outputText value="#{ac}"/>
+                            <br/>
+                        </ui:repeat>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Organism"/></f:facet>
+                        <h:outputText value="#{candidate.organism}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="IntAct AC"/></f:facet>
+                        <h:outputText value="#{candidate.interactor.ac}" rendered="#{candidate.interactor != null}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="IntAct label"/></f:facet>
+                        <h:outputText value="#{candidate.interactor.shortLabel}" rendered="#{candidate.interactor != null}"/>
+                    </p:column>
+                </p:dataTable>
+
+                <br/>
+                <h:panelGroup rendered="#{not empty participantImportController.queriesNoResults}">
+                    <ia:panelMessage level="warn">
+                        <h:outputText value="Not found: " style="font-weight:bold"/>
+                        <ul>
+                            <ui:repeat value="#{participantImportController.queriesNoResults}" var="query">
+                                <li>#{query}</li>
+                            </ui:repeat>
+                        </ul>
+                    </ia:panelMessage>
+                </h:panelGroup>
+
+                <br/>
+
+                <p:panel header="Global attributes" rendered="#{not empty participantImportController.importCandidates}">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel value="Experimental role: " for="expRoleDialogTxt"/>
+                        <ia:inputCvObject id="expRoleDialogTxt" cvIdentifier="MI:0495" required="true"
+                                          value="#{participantImportController.cvExperimentalRole}"
+                                          selectItems="#{cvObjectService.experimentalRoleSelectItems}" />
+
+                        <h:outputLabel value="Biological role: " for="bioRoleDialogTxt"/>
+                        <ia:inputCvObject id="bioRoleDialogTxt" cvIdentifier="MI:0500" required="true"
+                                                  value="#{participantImportController.cvBiologicalRole}"
+                                                  selectItems="#{cvObjectService.biologicalRoleSelectItems}" />
+                    </h:panelGrid>
+                </p:panel>
+
+            </ia:panelDialogLayout>
+
+        </p:outputPanel>
     </p:dialog>
 
 </ui:composition>
