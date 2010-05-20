@@ -99,22 +99,10 @@
             <p:tabView id="interactionTabs">
                 <p:tab title="Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})">
 
-                    <p:commandButton value="Import participant" type="button" onclick="importParticipantDialog.show()"/>
+                    <p:commandButton value="Import participants" type="button" onclick="importParticipantDialog.show()"/>
                     <ia:spacer height="10" />
 
-                    <p:dialog id="ipDialog" widgetVar="importParticipantDialog" header="Import participant" modal="true" fixedCenter="true"
-                            width="500px">
-
-                        <p>
-                        Import participant by UniprotKB accession, interactor accession or  short label, or participant accession:
-                        </p>
-
-                        <h:inputText id="searchParticipantTxt" value="#{interactionController.participantToImport}" size="15"/>
-
-                        <hr/>
-                        <p:commandButton value="Search &amp; Add" actionListener="#{interactionController.importParticipant}"
-                                         update="growl,participantTable" process="ipDialog"/>
-                    </p:dialog>
+                    <ui:include src="dialog_import_participant.xhtml"/>
 
                     <ia:participantsTable id="participantTable" value="#{interactionController.participants}"/>
                 </p:tab>

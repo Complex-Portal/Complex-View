@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+
+    <p:dialog id="ipDialog" widgetVar="importParticipantDialog" header="Import participants" modal="true" fixedCenter="true"
+              width="500px">
+
+        <p>
+            Import participants by UniprotKB accession, interactor accession or  short label:<br/>
+            (comma or line separated)
+        </p>
+
+        <h:inputTextarea id="searchParticipantTxt" value="#{participantImportController.participantsToImport}"
+                         converter="arrayConverter"
+                         cols="15"/>
+
+        <hr/>
+        <p:commandButton value="Search &amp; Add" actionListener="#{participantImportController.importParticipants}"
+                         update="growl,participantTable" process="ipDialog"/>
+    </p:dialog>
+
+</ui:composition>

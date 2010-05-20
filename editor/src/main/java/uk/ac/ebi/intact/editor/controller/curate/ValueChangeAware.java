@@ -1,4 +1,4 @@
-package uk.ac.ebi.intact.editor.controller.shared;
+package uk.ac.ebi.intact.editor.controller.curate;
 
 import javax.faces.event.AjaxBehaviorEvent;
 

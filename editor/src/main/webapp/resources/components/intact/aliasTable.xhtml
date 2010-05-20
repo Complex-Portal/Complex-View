@@ -11,13 +11,13 @@
   <composite:interface>
       <composite:attribute name="value"/>
       <composite:attribute name="annotatedObjectController"
-                           type="uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController"
+                           type="uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController"
                            required="true"/>
       <composite:attribute name="update"/>
       <composite:attribute name="aliasTypeSelectItems"/>
       <composite:attribute name="style" default=""/>
       <composite:attribute name="valueChangeRender" default="@none"/>
-     <composite:attribute name="valueChangeAwareObject" type="uk.ac.ebi.intact.editor.controller.shared.ValueChangeAware"/>
+     <composite:attribute name="valueChangeAwareObject" type="uk.ac.ebi.intact.editor.controller.curate.ValueChangeAware"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->

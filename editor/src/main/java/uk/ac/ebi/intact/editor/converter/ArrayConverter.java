@@ -15,40 +15,49 @@
  */
 package uk.ac.ebi.intact.editor.converter;
 
-import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceService;
-import uk.ac.ebi.intact.model.BioSource;
+import org.apache.commons.lang.StringUtils;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@FacesConverter( value = "bioSourceConverter", forClass = BioSource.class )
-public class BioSourceConverter implements Converter {
+@FacesConverter( value = "arrayConverter", forClass = URL[].class )
+public class ArrayConverter implements Converter {
 
     @Override
-    public Object getAsObject( FacesContext facesContext, UIComponent uiComponent, String ac ) throws ConverterException {
-        if ( ac == null ) return null;
+    public Object getAsObject( FacesContext facesContext, UIComponent uiComponent, String arrStr ) throws ConverterException {
+        if ( arrStr == null || arrStr.trim().isEmpty()) return new String[0];
 
-        BioSourceService service = ( BioSourceService ) IntactContext.getCurrentInstance().getSpringContext().getBean( "bioSourceService" );
-        return service.findBioSourceByAc( ac );
+        String[] lines = arrStr.split("\n");
+        List<String> items = new ArrayList<String>();
+
+        for (String line : lines) {
+            String[] tokens = line.split(",");
+            items.addAll(Arrays.asList(tokens));
+        }
+
+        return items.toArray(new String[items.size()]);
     }
 
     @Override
     public String getAsString( FacesContext facesContext, UIComponent uiComponent, Object o ) throws ConverterException {
-        if ( o == null ) return null;
+        if ( o == null ) return "";
 
-        if ( o instanceof BioSource ) {
-            BioSource bioSource = ( BioSource ) o;
-            return bioSource.getAc();
+        if ( o instanceof String[] ) {
+            String[] arr = ( String[] ) o;
+            return StringUtils.join(arr, System.getProperty("line.separator"));
         } else {
-            throw new IllegalArgumentException( "Argument must be a BioSource: " + o + " (" + o.getClass() + ")" );
+            throw new IllegalArgumentException( "Argument must be an array of Strings: " + o + " (" + o.getClass() + ")" );
         }
     }
 }

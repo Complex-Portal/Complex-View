@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.controller.cvobject;
+package uk.ac.ebi.intact.editor.controller.curate.cvobject;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;

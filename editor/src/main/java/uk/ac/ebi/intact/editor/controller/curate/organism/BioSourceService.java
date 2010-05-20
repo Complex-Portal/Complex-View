@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.controller.organism;
+package uk.ac.ebi.intact.editor.controller.curate.organism;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

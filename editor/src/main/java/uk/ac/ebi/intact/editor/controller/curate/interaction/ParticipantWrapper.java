@@ -1,6 +1,6 @@
-package uk.ac.ebi.intact.editor.controller.interaction;
+package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
-import uk.ac.ebi.intact.editor.controller.shared.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.Component;
 import uk.ac.ebi.intact.model.CvAliasType;
 import uk.ac.ebi.intact.model.CvExperimentalPreparation;

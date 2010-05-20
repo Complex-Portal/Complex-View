@@ -16,7 +16,7 @@
 package uk.ac.ebi.intact.editor.converter;
 
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.editor.controller.cvobject.CvObjectService;
+import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.CvObject;
 
 import javax.faces.component.UIComponent;
