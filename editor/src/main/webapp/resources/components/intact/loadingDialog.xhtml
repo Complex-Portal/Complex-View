@@ -12,12 +12,13 @@
         <composite:attribute name="widgetVar" required="true"/>
         <composite:attribute name="message" default="Loading..."/>
         <composite:attribute name="header" default="Please wait"/>
+        <composite:attribute name="modal" default="true"/>
     </composite:interface>
 
     <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <p:dialog header="#{cc.attrs.header}" widgetVar="#{cc.attrs.widgetVar}" modal="true" fixedCenter="true" close="false">
+        <p:dialog header="#{cc.attrs.header}" widgetVar="#{cc.attrs.widgetVar}" modal="#{cc.attrs.modal}" fixedCenter="true" close="false">
             <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
             #{cc.attrs.message}
         </p:dialog>

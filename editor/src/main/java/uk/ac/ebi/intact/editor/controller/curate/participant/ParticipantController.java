@@ -116,7 +116,7 @@ public class ParticipantController extends AnnotatedObjectController {
     }
 
     public ParticipantWrapper getParticipantWrapper() {
-        return new ParticipantWrapper( participant, this );
+        return new ParticipantWrapper( participant );
     }
 
     public void setParticipant( Component participant ) {

@@ -194,11 +194,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
-            <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
-            <artifactId>intact-psixml-exchange</artifactId>
-            <version>2.1.2-SNAPSHOT</version>
+            <groupId>uk.ac.ebi.intact.dbupdate</groupId>
+            <artifactId>intact-proteins-update</artifactId>
+            <version>2.1.1-SNAPSHOT</version>
         </dependency>
 
         <!-- Bridges -->

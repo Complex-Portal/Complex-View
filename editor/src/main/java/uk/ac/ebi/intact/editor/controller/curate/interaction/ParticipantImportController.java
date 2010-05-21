@@ -26,9 +26,7 @@ import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.core.persistence.dao.ProteinDao;
-import uk.ac.ebi.intact.dataexchange.enricher.standard.InteractorEnricher;
 import uk.ac.ebi.intact.editor.controller.BaseController;
-import uk.ac.ebi.intact.editor.controller.curate.EnricherService;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
@@ -37,6 +35,7 @@ import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 import javax.faces.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,8 +55,8 @@ public class ParticipantImportController extends BaseController {
     @Autowired
     private InteractionController interactionController;
 
-    @Autowired
-    private EnricherService enricherService;
+    //@Autowired
+    //private EnricherService enricherService;
 
     private List<ImportCandidate> importCandidates;
     private List<String> queriesNoResults;
@@ -65,6 +64,9 @@ public class ParticipantImportController extends BaseController {
 
     private CvExperimentalRole cvExperimentalRole;
     private CvBiologicalRole cvBiologicalRole;
+    private BioSource expressedIn;
+    private CvExperimentalPreparation cvExperimentalPreparation;
+    private float stoichiometry = 1;
 
     public void importParticipants( ActionEvent evt ) {
         importCandidates = new ArrayList<ImportCandidate>();
@@ -90,10 +92,9 @@ public class ParticipantImportController extends BaseController {
             if (candidate.isSelected()) {
                 final Interaction interaction = interactionController.getInteraction();
                 Component participant = toParticipant(candidate, interaction);
+                interactionController.addParticipant(participant);
 
-                if (log.isDebugEnabled()) log.debug("Adding to the interaction: "+participant);
-
-                interaction.addComponent(participant);
+                interactionController.setUnsavedChanges(true);
             }
         }
     }
@@ -203,6 +204,13 @@ public class ParticipantImportController extends BaseController {
 
         Component component = new Component(IntactContext.getCurrentInstance().getInstitution(),
                 interaction, interactor, cvExperimentalRole, cvBiologicalRole );
+        component.setExpressedIn(expressedIn);
+        component.setStoichiometry(stoichiometry);
+
+        if (cvExperimentalPreparation != null) {
+            component.setExperimentalPreparations(Collections.singleton(cvExperimentalPreparation));
+        }
+
         return component;
     }
 
@@ -210,14 +218,19 @@ public class ParticipantImportController extends BaseController {
         final Institution owner = IntactContext.getCurrentInstance().getInstitution();
         final UniprotProtein uniprotProtein = candidate.getUniprotProtein();
 
-        CvInteractorType type = IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(CvInteractorType.class)
-                .getByPsiMiRef(CvInteractorType.PROTEIN_MI_REF);
+        final DaoFactory daoFactory = IntactContext.getCurrentInstance().getDaoFactory();
+        CvInteractorType type = daoFactory.getCvObjectDao(CvInteractorType.class).getByPsiMiRef(CvInteractorType.PROTEIN_MI_REF);
+        CvDatabase uniprotkb = daoFactory.getCvObjectDao(CvDatabase.class).getByPsiMiRef(CvDatabase.UNIPROT_MI_REF);
+        CvXrefQualifier identity = daoFactory.getCvObjectDao(CvXrefQualifier.class).getByPsiMiRef(CvXrefQualifier.IDENTITY_MI_REF);
 
         BioSource organism = new BioSource(owner, uniprotProtein.getOrganism().getName(), String.valueOf(uniprotProtein.getOrganism().getTaxid()));
         Protein protein = new ProteinImpl(owner, organism, uniprotProtein.getId().toLowerCase(), type);
 
-        InteractorEnricher interactorEnricher = enricherService.getInteractorEnricher();
-        interactorEnricher.enrich(protein);
+        InteractorXref xref = new InteractorXref(owner, uniprotkb, candidate.getPrimaryAc(), identity);
+        protein.addXref(xref);
+
+//        InteractorEnricher interactorEnricher = enricherService.getInteractorEnricher();
+//        interactorEnricher.enrich(protein);
 
         return protein;
     }
@@ -260,5 +273,37 @@ public class ParticipantImportController extends BaseController {
 
     public void setQueriesNoResults(List<String> queriesNoResults) {
         this.queriesNoResults = queriesNoResults;
+    }
+
+    public InteractionController getInteractionController() {
+        return interactionController;
+    }
+
+    public void setInteractionController(InteractionController interactionController) {
+        this.interactionController = interactionController;
+    }
+
+    public BioSource getExpressedIn() {
+        return expressedIn;
+    }
+
+    public void setExpressedIn(BioSource expressedIn) {
+        this.expressedIn = expressedIn;
+    }
+
+    public CvExperimentalPreparation getCvExperimentalPreparation() {
+        return cvExperimentalPreparation;
+    }
+
+    public void setCvExperimentalPreparation(CvExperimentalPreparation cvExperimentalPreparation) {
+        this.cvExperimentalPreparation = cvExperimentalPreparation;
+    }
+
+    public float getStoichiometry() {
+        return stoichiometry;
+    }
+
+    public void setStoichiometry(float stoichiometry) {
+        this.stoichiometry = stoichiometry;
     }
 }

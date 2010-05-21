@@ -14,7 +14,7 @@
                 <p:commandButton value="Search" actionListener="#{participantImportController.importParticipants}"
                                  update="growl,candidatesContent"
                                  onstart="searching_load.show()"
-                                 oncomplete="searching_load.hide(); candidatesDialog.show()"
+                                 oncomplete="searching_load.hide(); importParticipantDialog.hide(); candidatesDialog.show()"
                                  process="ipDialog"/>
             </f:facet>
 
@@ -32,7 +32,7 @@
     </p:dialog>
 
     <ia:loadingDialog widgetVar="searching_load" message="Searching interactors..."/>
-    <ia:loadingDialog widgetVar="adding_load" message="Adding participants..."/>
+    <ia:loadingDialog widgetVar="adding_load" message="Adding participants..." modal="false"/>
 
     <p:dialog id="candidatesDialog" widgetVar="candidatesDialog" header="Import participants" modal="true"
               fixedCenter="true"
@@ -43,11 +43,11 @@
                     <h:panelGroup>
                     <p:commandButton value="Import selected" rendered="#{not empty participantImportController.importCandidates}"
                                      actionListener="#{participantImportController.addSelectedToInteraction}"
-                                     onstart="adding_load.show()" onerror="adding_load.hide()"
-                                     oncomplete="adding_load.hide(); candidatesDialog.hide(); importParticipantDialog.hide()"
-                                     update="growl,editorForm" process="candidatesDialog"/>
+                                     onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); candidatesDialog.show();"
+                                     oncomplete="adding_load.hide();  "
+                                     update="growl,interactionTabs,changesPanel" process="candidatesDialog"/>
                     <p:commandButton type="button" value="Back" rendered="#{empty participantImportController.importCandidates}"
-                                     onclick="candidatesDialog.hide()"/>
+                                     onclick="candidatesDialog.hide(); importParticipantDialog.show()"/>
                     </h:panelGroup>
                 </f:facet>
 
@@ -105,7 +105,7 @@
                 <br/>
 
                 <p:panel header="Global attributes" rendered="#{not empty participantImportController.importCandidates}">
-                    <h:panelGrid columns="2">
+                    <h:panelGrid columns="4">
                         <h:outputLabel value="Experimental role: " for="expRoleDialogTxt"/>
                         <ia:inputCvObject id="expRoleDialogTxt" cvIdentifier="MI:0495" required="true"
                                           value="#{participantImportController.cvExperimentalRole}"
@@ -115,6 +115,21 @@
                         <ia:inputCvObject id="bioRoleDialogTxt" cvIdentifier="MI:0500" required="true"
                                                   value="#{participantImportController.cvBiologicalRole}"
                                                   selectItems="#{cvObjectService.biologicalRoleSelectItems}" />
+
+                        <h:outputLabel value="Expressed in: " for="expressedInDialogTxt"/>
+                        <ia:inputBioSource id="expressedInDialogTxt" value="#{participantImportController.expressedIn}"
+                                                   selectItems="#{bioSourceService.bioSourceSelectItems}"/>
+
+                        <h:outputLabel value="Delivery method: " for="deliveryInDialogTxt"/>
+                        <ia:inputCvObject id="deliveryInDialogTxt" cvIdentifier="MI:0346"
+                                                  selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"
+                                                  value="#{participantImportController.cvExperimentalPreparation}" />
+
+                        <h:outputLabel value="Stoichiometry: " for="stoichiometryDialogTxt"/>
+                        <p:spinner id="stoichiometryDialogTxt" value="#{participantImportController.stoichiometry}" stepFactor="1"/>
+
+                        <h:outputText value=" "/>
+                        <h:outputText value=" "/>
                     </h:panelGrid>
                 </p:panel>
 

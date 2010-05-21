@@ -25,6 +25,7 @@
 
                 <ia:collapsiblePanel id="participantPanel" open="false"
                                     title="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
+                                    titleStyle="#{participant.ac == null? 'color:blue' :''}"
                                     titleRight="#{interactor.cvInteractorType.shortLabel} | #{interactor.bioSource.shortLabel} | #{interactor.fullName}"
                                     titleRightStyle="color:#CDCDCD;">
 
@@ -32,7 +33,7 @@
                         <p:menuButton value="Options">
                             <p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>
                             <p:menuitem value="Duplicate" onclick="alert('Not implemented')"/>
-                            <p:menuitem value="Delete" onclick="alert('Not implemented')"/>
+                            <p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(participant)}" update="#{cc.clientId}"/>
                         </p:menuButton>
                     </f:facet>
 

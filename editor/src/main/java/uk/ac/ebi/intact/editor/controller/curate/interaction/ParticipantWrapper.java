@@ -1,6 +1,6 @@
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
-import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.model.Component;
 import uk.ac.ebi.intact.model.CvAliasType;
 import uk.ac.ebi.intact.model.CvExperimentalPreparation;
@@ -16,12 +16,11 @@ import uk.ac.ebi.intact.model.CvExperimentalRole;
 public class ParticipantWrapper {
 
     private Component participant;
-
-    private AnnotatedObjectController controller;
-
-    public ParticipantWrapper( Component participant, AnnotatedObjectController controller ) {
+    private AnnotatedObjectHelper annotatedObjectHelper;
+    
+    public ParticipantWrapper( Component participant) {
         this.participant = participant;
-        this.controller = controller;
+        this.annotatedObjectHelper = new AnnotatedObjectHelper(participant);
     }
 
     public Component getParticipant() {
@@ -33,12 +32,11 @@ public class ParticipantWrapper {
     }
 
     public String getAuthorGivenName() {
-        return controller.findAliasName( CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
+        return annotatedObjectHelper.findAliasName( CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
     }
 
     public void setAuthorGivenName( String name ) {
-        System.out.println( "ParticipantWrapper.setAuthorGivenName" );
-        controller.addOrReplace(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
+        annotatedObjectHelper.addOrReplace(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
     }
 
     public CvExperimentalRole getFirstExperimentalRole() {

@@ -21,14 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -49,6 +47,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public abstract AnnotatedObject getAnnotatedObject();
 
+    public AnnotatedObjectHelper getAnnotatedObjectHelper() {
+        return new AnnotatedObjectHelper(getAnnotatedObject());
+    }
+
     public void doSave( ActionEvent evt ) {        
         PersistenceController persistenceController = getPersistenceController();
         boolean saved = persistenceController.doSave(getAnnotatedObject());
@@ -68,313 +70,110 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     ///////////////////////////////////////////////
 
     public void newXref( ActionEvent evt ) {
-        Xref xref = newXrefInstance();
-        getAnnotatedObject().addXref( xref );
+        getAnnotatedObjectHelper().newXref();
         setUnsavedChanges( true );
     }
 
-    private Xref newXrefInstance() {
-        Class<? extends Xref> xrefClass = AnnotatedObjectUtils.getXrefClassType( getAnnotatedObject().getClass() );
-
-        Xref xref = null;
-        try {
-            xref = xrefClass.newInstance();
-        } catch ( Throwable e ) {
-            FacesContext ctx = FacesContext.getCurrentInstance();
-            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
-            ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
-        }
-
-        xref.setOwner( getIntactContext().getInstitution() );
-        return xref;
-    }
-
     public List<Xref> getXrefs() {
-        if ( getAnnotatedObject() == null ) {
-            return Collections.EMPTY_LIST;
-        }
-
-        final ArrayList<Xref> xrefs = new ArrayList<Xref>( getAnnotatedObject().getXrefs() );
-        Collections.sort( xrefs, new IntactObjectComparator() );
-        return xrefs;
+        return getAnnotatedObjectHelper().getXrefs();
     }
 
     public void setXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
-        if ( primaryId != null && !primaryId.isEmpty() ) {
-            replaceOrCreateXref( databaseIdOrLabel, qualifierIdOrLabel, primaryId );
-        } else {
-            removeXref( databaseIdOrLabel, qualifierIdOrLabel );
-        }
+        getAnnotatedObjectHelper().setXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
     }
 
     public void replaceOrCreateXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
-        AnnotatedObject parent = getAnnotatedObject();
-
-        // modify if exists
-        boolean exists = false;
-
-        for ( Object objXref : parent.getXrefs() ) {
-            Xref xref = ( Xref ) objXref;
-
-            if ( xref.getCvDatabase() != null ) {
-                if ( databaseIdOrLabel.equals( xref.getCvDatabase().getIdentifier() )
-                     || databaseIdOrLabel.equals( xref.getCvDatabase().getShortLabel() ) ) {
-                    if ( xref.getCvXrefQualifier() == null || qualifierIdOrLabel == null ) {
-                        if ( !primaryId.equals( xref.getPrimaryId() ) ) {
-                            xref.setPrimaryId( primaryId );
-                        }
-                    } else if ( qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getIdentifier() )
-                                || qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getShortLabel() ) ) {
-                        if ( !primaryId.equals( xref.getPrimaryId() ) ) {
-                            xref.setPrimaryId( primaryId );
-                        }
-                    }
-
-                    exists = true;
-                }
-            }
-        }
-
-        // create if not exists
-        if ( !exists ) {
-            addXref( databaseIdOrLabel, qualifierIdOrLabel, primaryId );
-        }
+        getAnnotatedObjectHelper().replaceOrCreateXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
     }
 
     public void removeXref( String databaseIdOrLabel, String qualifierIdOrLabel ) {
-        Iterator<Xref> iterator = getAnnotatedObject().getXrefs().iterator();
-
-        while ( iterator.hasNext() ) {
-            Xref xref = iterator.next();
-            if ( databaseIdOrLabel.equals( xref.getCvDatabase().getIdentifier() ) || databaseIdOrLabel.equals( xref.getCvDatabase().getShortLabel() ) ) {
-                if ( qualifierIdOrLabel == null || xref.getCvXrefQualifier() == null ) {
-                    iterator.remove();
-                } else if ( qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getIdentifier() ) || qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getShortLabel() ) ) {
-                    iterator.remove();
-                }
-            }
-        }
+        getAnnotatedObjectHelper().removeXref(databaseIdOrLabel, qualifierIdOrLabel);
     }
 
     public void removeXref( Xref xref ) {
-        getAnnotatedObject().removeXref( xref );
+        getAnnotatedObjectHelper().removeXref( xref );
         setUnsavedChanges( true );
     }
 
     public void addXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
-        CvDatabase db = cvObjectService.findCvObject( CvDatabase.class, databaseIdOrLabel );
-        CvXrefQualifier qual = cvObjectService.findCvObject( CvXrefQualifier.class, qualifierIdOrLabel );
-
-        Xref xref = newXrefInstance();
-        xref.setCvDatabase( db );
-        xref.setCvXrefQualifier( qual );
-        xref.setPrimaryId( primaryId );
-
-        getAnnotatedObject().addXref( xref );
+        getAnnotatedObjectHelper().addXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
     }
 
     public String findXrefPrimaryId( String databaseId, String qualifierId ) {
-        final AnnotatedObject ao = getAnnotatedObject();
-
-        Collection<Xref> xrefs = AnnotatedObjectUtils.searchXrefs( ao, databaseId, qualifierId );
-
-        if ( !xrefs.isEmpty() ) {
-            return xrefs.iterator().next().getPrimaryId();
-        }
-
-        return null;
-
+        return getAnnotatedObjectHelper().findXrefPrimaryId(databaseId, qualifierId);
     }
 
     // ANNOTATIONS
     ///////////////////////////////////////////////
 
     public void newAnnotation( ActionEvent evt ) {
-        Annotation annotationWithNullTopic = new Annotation() {
-            @Override
-            public void setCvTopic( CvTopic cvTopic ) {
-                if ( cvTopic != null ) {
-                    super.setCvTopic( cvTopic );
-                }
-            }
-        };
-        getAnnotatedObject().addAnnotation( annotationWithNullTopic );
+        getAnnotatedObjectHelper().newAnnotation();
         setUnsavedChanges( true );
     }
 
     public void addAnnotation( String topicIdOrLabel, String text ) {
-        CvTopic dataset = cvObjectService.findCvObject( CvTopic.class, topicIdOrLabel );
-
-        Annotation annotation = new Annotation( getIntactContext().getInstitution(), dataset );
-        annotation.setAnnotationText( text );
-
-        getAnnotatedObject().addAnnotation( annotation );
+        getAnnotatedObjectHelper().addAnnotation(topicIdOrLabel, text);
     }
 
     public void replaceOrCreateAnnotation( String topicOrShortLabel, String text ) {
-        AnnotatedObject parent = getAnnotatedObject();
-
-        // modify if exists
-        boolean exists = false;
-
-        for ( Annotation annotation : parent.getAnnotations() ) {
-            if ( annotation.getCvTopic() != null ) {
-                if ( topicOrShortLabel.equals( annotation.getCvTopic().getIdentifier() )
-                     || topicOrShortLabel.equals( annotation.getCvTopic().getShortLabel() ) ) {
-                    if ( !text.equals( annotation.getAnnotationText() ) ) {
-                        annotation.setAnnotationText( text );
-                    }
-                    exists = true;
-                }
-            }
-        }
-
-        // create if not exists
-        if ( !exists ) {
-            addAnnotation( topicOrShortLabel, text );
-        }
+        getAnnotatedObjectHelper().replaceOrCreateAnnotation(topicOrShortLabel, text);
     }
 
     public void removeAnnotation( String topicIdOrLabel ) {
-        Iterator<Annotation> iterator = getAnnotatedObject().getAnnotations().iterator();
-
-        while ( iterator.hasNext() ) {
-            Annotation annotation = iterator.next();
-            if ( topicIdOrLabel.equals( annotation.getCvTopic().getIdentifier() ) ||
-                 topicIdOrLabel.equals( annotation.getCvTopic().getShortLabel() ) ) {
-                iterator.remove();
-            }
-        }
+        getAnnotatedObjectHelper().removeAnnotation(topicIdOrLabel);
     }
 
     public void removeAnnotation( String topicIdOrLabel, String text ) {
-        Iterator<Annotation> iterator = getAnnotatedObject().getAnnotations().iterator();
-
-        while ( iterator.hasNext() ) {
-            Annotation annotation = iterator.next();
-            if ( ( topicIdOrLabel.equals( annotation.getCvTopic().getIdentifier() ) || topicIdOrLabel.equals( annotation.getCvTopic().getShortLabel() ) )
-                 && text.equals( annotation.getAnnotationText() ) ) {
-                iterator.remove();
-            }
-        }
+        getAnnotatedObjectHelper().removeAnnotation(topicIdOrLabel, text);
     }
 
     public void removeAnnotation( Annotation annotation ) {
-        getAnnotatedObject().removeAnnotation( annotation );
+        getAnnotatedObjectHelper().removeAnnotation( annotation );
         setUnsavedChanges( true );
     }
 
     public void setAnnotation( String topicIdOrLabel, Object value ) {
-        if ( value != null && !value.toString().isEmpty() ) {
-            replaceOrCreateAnnotation( topicIdOrLabel, value.toString() );
-        } else {
-            removeAnnotation( topicIdOrLabel );
-        }
+        getAnnotatedObjectHelper().setAnnotation(topicIdOrLabel, value);
     }
 
     public String findAnnotationText( String topicId ) {
-        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( getAnnotatedObject(), topicId );
-
-        if ( annotation != null ) {
-            return annotation.getAnnotationText();
-        }
-
-        return null;
-
+        return getAnnotatedObjectHelper().findAnnotationText(topicId);
     }
 
     public List<Annotation> getAnnotations() {
-        if ( getAnnotatedObject() == null ) {
-            return Collections.EMPTY_LIST;
-        }
-
-        final ArrayList<Annotation> annotations = new ArrayList<Annotation>( getAnnotatedObject().getAnnotations() );
-        Collections.sort( annotations, new IntactObjectComparator() );
-        return annotations;
+        return getAnnotatedObjectHelper().getAnnotations();
     }
 
     // ALIASES
     ///////////////////////////////////////////////
 
     public void newAlias( ActionEvent evt ) {
-        Alias alias = newAliasInstance();
-        getAnnotatedObject().addAlias( alias );
+        getAnnotatedObjectHelper().newAlias();
         setUnsavedChanges( true );
     }
 
-    private Alias newAliasInstance() {
-        Class<? extends Alias> aliasClass = AnnotatedObjectUtils.getAliasClassType( getAnnotatedObject().getClass() );
-
-        Alias alias = null;
-        try {
-            alias = aliasClass.newInstance();
-        } catch ( Throwable e ) {
-            FacesContext ctx = FacesContext.getCurrentInstance();
-            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
-            ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
-        }
-
-        alias.setOwner( getIntactContext().getInstitution() );
-        return alias;
-    }
-
     public void addAlias( String aliasTypeIdOrLabel, String text ) {
-        CvAliasType type = cvObjectService.findCvObject( CvAliasType.class, aliasTypeIdOrLabel );
-        final Alias alias = newAliasInstance();
-        alias.setCvAliasType( type );
-        alias.setName( text );
-
-        getAnnotatedObject().addAlias( alias );
+        getAnnotatedObjectHelper().addAlias(aliasTypeIdOrLabel, text);
     }
 
     public void setAlias( String aliasTypeIdOrLabel, Object value ) {
-        if ( value != null && !value.toString().isEmpty() ) {
-            removeAlias( aliasTypeIdOrLabel, value.toString() );
-        } else {
-            removeAlias( aliasTypeIdOrLabel );
-        }
+        getAnnotatedObjectHelper().setAlias(aliasTypeIdOrLabel, value);
     }
 
     public void removeAlias( String aliasTypeIdOrLabel, String text ) {
-        Iterator<Alias> iterator = getAnnotatedObject().getAliases().iterator();
-
-        while ( iterator.hasNext() ) {
-            Alias alias = iterator.next();
-            if ( ( aliasTypeIdOrLabel.equals( alias.getCvAliasType().getIdentifier() ) || aliasTypeIdOrLabel.equals( alias.getCvAliasType().getShortLabel() ) )
-                 && text.equals( alias.getName() ) ) {
-                iterator.remove();
-            }
-        }
+        getAnnotatedObjectHelper().removeAlias(aliasTypeIdOrLabel, text);
     }
 
     public void removeAlias( String aliasTypeIdOrLabel ) {
-        Iterator<Alias> iterator = getAnnotatedObject().getAliases().iterator();
-
-        while ( iterator.hasNext() ) {
-            Alias alias = iterator.next();
-            if ( aliasTypeIdOrLabel.equals( alias.getCvAliasType().getIdentifier() ) ||
-                 aliasTypeIdOrLabel.equals( alias.getCvAliasType().getShortLabel() ) ) {
-                iterator.remove();
-            }
-        }
+        getAnnotatedObjectHelper().removeAlias(aliasTypeIdOrLabel);
     }
 
     public List<Alias> getAliases() {
-        if ( getAnnotatedObject() == null ) {
-            return Collections.EMPTY_LIST;
-        }
-
-        final ArrayList<Alias> aliases = new ArrayList<Alias>( getAnnotatedObject().getAliases() );
-        Collections.sort( aliases, new IntactObjectComparator() );
-        return aliases;
+        return getAnnotatedObjectHelper().getAliases();
     }
     
     public String findAliasName( String aliasTypeId ) {
-        Collection<Alias> aliases = AnnotatedObjectUtils.getAliasByType( getAnnotatedObject(), aliasTypeId );
-        if( aliases != null && aliases.size() > 0 ) {
-            return aliases.iterator().next().getName();
-        }
-        return null;
+       return getAnnotatedObjectHelper().findAliasName(aliasTypeId);
     }
 
     /**
@@ -383,23 +182,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
      * @param text
      */
     public void addOrReplace( String aliasTypeIdOrLabel, String text ) {
-        Iterator<Alias> iterator = getAnnotatedObject().getAliases().iterator();
-
-        boolean found = false;
-        while ( iterator.hasNext() && !found ) {
-            Alias alias = iterator.next();
-            if ( aliasTypeIdOrLabel.equals( alias.getCvAliasType().getIdentifier() ) ||
-                 aliasTypeIdOrLabel.equals( alias.getCvAliasType().getShortLabel() ) ) {
-                // replace
-                alias.setName( text );
-            }
-        }
-
-        if( !found ) {
-            // create new
-            final Alias alias = newAliasInstance();
-            alias.setName( text );
-        }
+        getAnnotatedObjectHelper().addOrReplace(aliasTypeIdOrLabel, text);
 
     }
 

@@ -178,4 +178,8 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
         getStateHelper().put("selectedCv", selected);
     }
 
+    public String getFriendlyWidgetId() {
+        return getClientId().replaceAll(":", "__")+"__dlg";
+    }
+
 }

@@ -27,6 +27,7 @@
         <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
             <h:panelGroup id="topSavePanel" style="float: right">
                 <p:commandButton type="button" id="topSaveButton" value="Save" onclick="save(); return false" />
+                <p:commandButton value="save 2" actionListener="#{annotatedObjectController.doSave}" ajax="false" />
 
                 <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
                     <h:outputText value=" Last Saved: " />
@@ -61,7 +62,7 @@
         
         <br />
 
-        <p:messages />
+        <p:messages id="messagesComponent" />
 
         <div style="width:100%; padding-top:30px">
             <ui:insert name="curateContent"/>
@@ -74,6 +75,7 @@
             <div class="intact-notSavedPanel">
                     Changes not yet saved &#160;
                 <p:commandButton type="button" id="unsavedSaveButton" value="Save" onclick="save(); return false"/>
+
             </div>
 
             </h:panelGroup>
@@ -81,8 +83,10 @@
         </div>
 
         <p:remoteCommand name="save" actionListener="#{annotatedObjectController.doSave}"
-                        update="editorForm" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton_submit'); input.disabled = true; input.value = 'Saving...'"
+                        update="editorForm,growl,messagesComponent" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton_submit'); input.disabled = true; input.value = 'Saving...'"
+                        onerror="alert('Problem saving')"
                         oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton_submit'); input.disabled = false; input.value = 'Save'"/>
+        
 
     </ui:define>
 

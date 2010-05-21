@@ -19,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.model.DualListModel;
-import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -54,7 +53,8 @@ public class InteractionController extends AnnotatedObjectController {
     private Interaction interaction;
     private String ac;
     private DualListModel<String> experimentLists;
-    private LazyDataModel<Component> participantDataModel;
+
+    private List<ParticipantWrapper> participantWrappers;
 
     private String participantToImport;
 
@@ -81,6 +81,7 @@ public class InteractionController extends AnnotatedObjectController {
     }
 
     public void loadData( ComponentSystemEvent event ) {
+        System.out.println("\nLOAD DATA\n");
         if ( ac != null ) {
             if ( interaction == null || !ac.equals( interaction.getAc() ) ) {
                 interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
@@ -136,6 +137,24 @@ public class InteractionController extends AnnotatedObjectController {
         }
 
         experimentLists = new DualListModel<String>( source, target);
+
+        if (interaction != null) {
+            refreshParticipants();
+        }
+    }
+
+    public void refreshParticipants() {
+        final Collection<Component> components = interaction.getComponents();
+        participantWrappers = new ArrayList<ParticipantWrapper>( components.size() );
+
+        for ( Component component : components ) {
+            participantWrappers.add( new ParticipantWrapper( component ) );
+        }
+    }
+
+    public void addParticipant(Component component) {
+        interaction.addComponent(component);
+        participantWrappers.add(new ParticipantWrapper( component ));
     }
 
     public String getAc() {
@@ -151,6 +170,10 @@ public class InteractionController extends AnnotatedObjectController {
 
     public Experiment getFirstExperiment( Interaction interaction ) {
         return interaction.getExperiments().iterator().next();
+    }
+
+    public void deleteParticipant(Component participant) {
+        System.out.println("DELETE!! "+participant);
     }
 
     public void setAc( String ac ) {
@@ -174,12 +197,7 @@ public class InteractionController extends AnnotatedObjectController {
     }
 
     public Collection<ParticipantWrapper> getParticipants() {
-        final Collection<Component> participants = interaction.getComponents();
-        Collection<ParticipantWrapper> wrappers = new ArrayList<ParticipantWrapper>( participants.size() );
-        for ( Component participant : participants ) {
-            wrappers.add( new ParticipantWrapper( participant, this ) );
-        }
-        return wrappers;
+        return participantWrappers;
     }
 
     //////////////////////////////////
@@ -197,21 +215,6 @@ public class InteractionController extends AnnotatedObjectController {
             }
         }
         return sb.toString();
-    }
-
-    // TODO provide the list of participant as wrapped objects with a added getter/setter to handle authorGivenName
-
-    public String getAuthorGivenName( Component participant ) {
-        final Collection<Alias> aliases = AnnotatedObjectUtils.getAliasByType( participant, CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
-        if( ! aliases.isEmpty() ) {
-            return aliases.iterator().next().getName();
-        }
-        return null;
-    }
-
-    public void setAuthorGivenName( String name ) {
-        // TODO how can I update the correct participant from here ?
-        System.out.println( "Updating author-given-name ("+ name +") !!" );
     }
 
 }
