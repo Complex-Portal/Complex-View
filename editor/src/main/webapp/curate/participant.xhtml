@@ -26,12 +26,6 @@
             No participant loaded!
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{participant != null}">
-            <div id="auditInfo" class="intact-auditPanel">
-                <ia:creatorUpdator annotatedObject="#{participant}" />
-            </div>
-        </h:panelGroup>
-
         <h:panelGroup id="info" rendered="#{participant != null}">
 
             <h:link outcome="/curate/publication"
@@ -46,9 +40,17 @@
             &#160;>&#160;
             #{participant.interactor.shortLabel}
 
-            <h2>Participant</h2>
+            <ia:loadingDialog widgetVar="loadDialog"/>
 
-            <p:outputPanel id="basic">
+            <br/><br/>
+
+            <p:panel id="basic" header="Experiment Details">
+
+                <h:panelGroup rendered="#{participant != null}">
+                    <div id="auditInfo" class="intact-auditPanel">
+                        <ia:creatorUpdator annotatedObject="#{participant}" />
+                    </div>
+                </h:panelGroup>
 
                 <table class="intact-tableBasicForm">
                     <tr>
@@ -71,8 +73,8 @@
                         <td colspan="2">
                             <h:inputText id="interactorTxt" value="#{participant.interactor.shortLabel}"
                                     disabled="true"/>
-                            <ia:inputInteractor value="#{participant.interactor}" />
-                            <!--<h:commandButton value="Change" action="TODO"/> -->
+                            <!--<ia:inputInteractor value="#{participant.interactor}" />-->
+                            <h:commandButton value="Change" action="TODO"/>
                         </td>
                     </tr>
                     <tr>
@@ -134,12 +136,21 @@
 
                 </table>
 
-            </p:outputPanel>
+            </p:panel>
 
-            <h3>Participant properties</h3>
+            <br/>
+
+            <p:tabView id="publicationTabs">
+
+                <p:tab title="Features (#{participant.bindingDomains.size()})">
+                    <ia:featureTable value="#{participant.bindingDomains}"
+                             render="#{not participant.bindingDomains.isEmpty()}" />
+                </p:tab>
+
+                <p:tab title="Properties">
 
             <p:outputPanel id="xrefsPanel">
-                <ia:collapsiblePanel  open="false" title="Xrefs (#{participant.xrefs.size()})">
+                <ia:collapsiblePanel title="Xrefs (#{participant.xrefs.size()})">
                     <ia:xrefsTable annotatedObjectController="#{participantController}"
                                    databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                    qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
@@ -151,7 +162,7 @@
             </p:outputPanel>
 
             <p:outputPanel id="annotationsPanel">
-                <ia:collapsiblePanel open="false" title="Annotations (#{participant.annotations.size()})">
+                <ia:collapsiblePanel title="Annotations (#{participant.annotations.size()})">
                     <ia:annotationsTable annotatedObjectController="#{participantController}"
                                          topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
                                          update="annotationsPanel changesPanel"
@@ -162,7 +173,7 @@
             </p:outputPanel>
 
             <p:outputPanel id="aliasesPanel">
-                <ia:collapsiblePanel open="false" title="Aliases (#{participant.aliases.size()})">
+                <ia:collapsiblePanel title="Aliases (#{participant.aliases.size()})">
                     <ia:aliasTable annotatedObjectController="#{participantController}"
                                    aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
                                    update="aliasesPanel changesPanel"
@@ -172,10 +183,8 @@
                 </ia:collapsiblePanel>
             </p:outputPanel>
 
-            <h3>Features (#{participant.bindingDomains.size()})</h3>
-
-            <ia:featureTable value="#{participant.bindingDomains}"
-                             render="#{not participant.bindingDomains.isEmpty()}" />
+            </p:tab>
+            </p:tabView>
             
         </h:panelGroup>
 
