@@ -40,17 +40,13 @@
             &#160;>&#160;
             #{participant.interactor.shortLabel}
 
-            <ia:loadingDialog widgetVar="loadDialog"/>
-
             <br/><br/>
 
-            <p:panel id="basic" header="Experiment Details">
+            <p:panel id="basic" header="Participant Details">
 
-                <h:panelGroup rendered="#{participant != null}">
-                    <div id="auditInfo" class="intact-auditPanel">
-                        <ia:creatorUpdator annotatedObject="#{participant}" />
-                    </div>
-                </h:panelGroup>
+                <div id="auditInfo" class="intact-auditPanel">
+                    <ia:creatorUpdator annotatedObject="#{participant}" />
+                </div>
 
                 <table class="intact-tableBasicForm">
                     <tr>
@@ -140,11 +136,11 @@
 
             <br/>
 
-            <p:tabView id="publicationTabs">
+            <p:tabView id="participantTabs">
 
                 <p:tab title="Features (#{participant.bindingDomains.size()})">
                     <ia:featureTable value="#{participant.bindingDomains}"
-                             render="#{not participant.bindingDomains.isEmpty()}" />
+                             render="#{not empty participant.bindingDomains}" />
                 </p:tab>
 
                 <p:tab title="Properties">

@@ -27,12 +27,6 @@
             No feature loaded!
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{participant != null}">
-            <div id="auditInfo" class="intact-auditPanel">
-                <ia:creatorUpdator annotatedObject="#{feature}" />
-            </div>
-        </h:panelGroup>
-
         <h:panelGroup id="info" rendered="#{feature != null}">
 
             <h:link outcome="/curate/publication"
@@ -48,9 +42,13 @@
             &#160;>&#160;
             #{feature.shortLabel}
 
-            <h2>Feature</h2>
+            <br/><br/>
 
-            <p:outputPanel id="basic">
+            <p:panel id="basic" header="Participant Details">
+
+                <div id="auditInfo" class="intact-auditPanel">
+                    <ia:creatorUpdator annotatedObject="#{feature}" />
+                </div>
 
                 <table class="intact-tableBasicForm">
                     <tr>
@@ -80,18 +78,26 @@
                             <h:outputLabel value="Detection method: " for="featureDetectionTxt"/>
                         </td>
                         <td colspan="2">
-                            <ia:inputCvObject id="featureDetectionTxt" cvIdentifier="MI:0003" value="#{feature.cvFeatureIdentification}}"
+                            <ia:inputCvObject id="featureDetectionTxt" cvIdentifier="MI:0003" value="#{feature.cvFeatureIdentification}"
                                     selectItems="#{cvObjectService.featureDetectionMethodSelectItems}"/>
                         </td>
                     </tr>
                 </table>
 
-            </p:outputPanel>
+            </p:panel>
 
-            <h3>Feature properties</h3>
+            <br/>
+
+             <p:tabView id="featureTabs">
+
+                <p:tab title="Ranges (#{feature.ranges.size()})">
+                    <ia:rangeTable value="#{feature.ranges}" render="#{not empty feature.ranges}" />
+                </p:tab>
+
+                <p:tab title="Properties">
 
             <p:outputPanel id="xrefsPanel">
-                <ia:collapsiblePanel  open="false" title="Xrefs (#{feature.xrefs.size()})">
+                <ia:collapsiblePanel title="Xrefs (#{feature.xrefs.size()})">
                     <ia:xrefsTable annotatedObjectController="#{featureController}"
                                    databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                    qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
@@ -103,7 +109,7 @@
             </p:outputPanel>
 
             <p:outputPanel id="annotationsPanel">
-                <ia:collapsiblePanel open="false" title="Annotations (#{feature.annotations.size()})">
+                <ia:collapsiblePanel title="Annotations (#{feature.annotations.size()})">
                     <ia:annotationsTable annotatedObjectController="#{featureController}"
                                          topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
                                          update="annotationsPanel changesPanel"
@@ -114,7 +120,7 @@
             </p:outputPanel>
 
             <p:outputPanel id="aliasesPanel">
-                <ia:collapsiblePanel open="false" title="Aliases (#{feature.aliases.size()})">
+                <ia:collapsiblePanel title="Aliases (#{feature.aliases.size()})">
                     <ia:aliasTable annotatedObjectController="#{featureController}"
                                    aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
                                    update="aliasesPanel changesPanel"
@@ -124,9 +130,8 @@
                 </ia:collapsiblePanel>
             </p:outputPanel>
 
-            <h3>Ranges (#{feature.ranges.size()})</h3>
-
-            <ia:rangeTable value="#{feature.ranges}" render="#{not empty feature.ranges}" />
+            </p:tab>
+            </p:tabView>
 
         </h:panelGroup>
 
