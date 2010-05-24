@@ -22,16 +22,16 @@
                 <f:facet name="header">
                     <h:outputText value="AC"/>
                 </f:facet>
-                <h:link outcome="/curate/interaction" value="#{interaction.ac}" includeViewParams="true"
-                        onclick="load_int.show()">
-                    <f:param name="ac" value="#{interaction.ac}"/>
-                </h:link>
+                    <h:outputText value="#{interaction.ac}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Shortlabel"/>
                 </f:facet>
-                <h:outputText value="#{interaction.shortLabel}"/>
+                <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true"
+                        onclick="load_int.show()">
+                    <f:param name="ac" value="#{interaction.ac}"/>
+                </h:link>
             </p:column>
             <p:column>
                 <f:facet name="header">
