@@ -81,7 +81,7 @@ public class InteractionController extends AnnotatedObjectController {
     }
 
     public void loadData( ComponentSystemEvent event ) {
-        System.out.println("\nLOAD DATA\n");
+        System.out.println("\nLOAD DATA: Interaction null? "+(interaction == null)+"\n");
         if ( ac != null ) {
             if ( interaction == null || !ac.equals( interaction.getAc() ) ) {
                 interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
@@ -144,10 +144,12 @@ public class InteractionController extends AnnotatedObjectController {
     }
 
     public void refreshParticipants() {
+        System.out.println("\nRefreshing participants\n");
         final Collection<Component> components = interaction.getComponents();
         participantWrappers = new ArrayList<ParticipantWrapper>( components.size() );
 
         for ( Component component : components ) {
+            System.out.println("\tAdding component: "+component.getAc());
             participantWrappers.add( new ParticipantWrapper( component ) );
         }
     }
@@ -186,14 +188,6 @@ public class InteractionController extends AnnotatedObjectController {
 
     public void setInteraction( Interaction interaction ) {
         this.interaction = interaction;
-    }
-
-    public String getParticipantToImport() {
-        return participantToImport;
-    }
-
-    public void setParticipantToImport(String participantToImport) {
-        this.participantToImport = participantToImport;
     }
 
     public Collection<ParticipantWrapper> getParticipants() {

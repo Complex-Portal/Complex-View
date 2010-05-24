@@ -2,7 +2,8 @@ package uk.ac.ebi.intact.editor.controller.admin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.apache.myfaces.orchestra.conversation.ConversationBindingEvent;
+import org.apache.myfaces.orchestra.conversation.ConversationBindingListener;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,9 @@ import java.util.List;
  * @since 2.0
  */
 @Controller
-@Scope( "conversation.access" )
-@ConversationName( "admin" )
-public class UserAdminController extends JpaAwareController {
+@Scope( "session" )
+//@ConversationName( "admin" )
+public class UserAdminController extends JpaAwareController implements ConversationBindingListener{
 
     private static final Log log = LogFactory.getLog( UserAdminController.class );
 
@@ -179,7 +180,21 @@ public class UserAdminController extends JpaAwareController {
     }
 
     public LazyDataModel<User> getAllUsers() {
+        if (allUsers == null) {
+            loadData();
+        }
+        
         log.info( "getAllUsers(): " + allUsers.getRowCount() );
         return allUsers;
+    }
+
+    @Override
+    public void valueBound(ConversationBindingEvent event) {
+        System.out.println("VALUE BOUND: "+event.getName()+" ("+event.getConversation()+")");
+    }
+
+    @Override
+    public void valueUnbound(ConversationBindingEvent event) {
+        System.out.println("VALUE UNBOUND: "+event.getName()+" ("+event.getConversation()+")");
     }
 }

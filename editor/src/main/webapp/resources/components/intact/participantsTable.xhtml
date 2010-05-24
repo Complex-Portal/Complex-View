@@ -16,11 +16,11 @@
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <c:forEach items="#{cc.attrs.value}" var="wrapper" varStatus="status">
+        <ui:repeat value="#{cc.attrs.value}" var="wrapper" varStatus="status">
 
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
-            
+
             <div style="width: 960px; #{(status.index % 2) == 0 ? 'background-color: #f8f8ff;' : ''}};">
 
                 <ia:collapsiblePanel open="false"
@@ -123,10 +123,10 @@
                     </table>
 
                </ia:collapsiblePanel>
-                
+
             </div>
 
-        </c:forEach>
+        </ui:repeat>
 
     </composite:implementation>
 
