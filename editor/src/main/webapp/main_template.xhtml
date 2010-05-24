@@ -15,10 +15,11 @@
     </h:head>
 
     <h:body style="margin: 0 0 0 0;">
+        
+    <ui:debug rendered="#{facesContext.application.projectStage == 'Development'}"/>
 
         <h:form id="editorForm" prependId="false" enctype="multipart/form-data">
 
-            <ui:debug rendered="#{facesContext.application.projectStage == 'Development'}"/>
 
             <p:growl id="growl" showDetail="true"/>
 

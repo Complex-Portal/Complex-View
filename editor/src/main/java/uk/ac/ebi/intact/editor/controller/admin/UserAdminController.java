@@ -2,8 +2,6 @@ package uk.ac.ebi.intact.editor.controller.admin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.conversation.ConversationBindingEvent;
-import org.apache.myfaces.orchestra.conversation.ConversationBindingListener;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,7 @@ import java.util.List;
 @Controller
 @Scope( "session" )
 //@ConversationName( "admin" )
-public class UserAdminController extends JpaAwareController implements ConversationBindingListener{
+public class UserAdminController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( UserAdminController.class );
 
@@ -188,13 +186,4 @@ public class UserAdminController extends JpaAwareController implements Conversat
         return allUsers;
     }
 
-    @Override
-    public void valueBound(ConversationBindingEvent event) {
-        System.out.println("VALUE BOUND: "+event.getName()+" ("+event.getConversation()+")");
-    }
-
-    @Override
-    public void valueUnbound(ConversationBindingEvent event) {
-        System.out.println("VALUE UNBOUND: "+event.getName()+" ("+event.getConversation()+")");
-    }
 }
