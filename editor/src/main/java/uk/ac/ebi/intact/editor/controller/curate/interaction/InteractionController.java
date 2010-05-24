@@ -30,6 +30,7 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,7 +82,6 @@ public class InteractionController extends AnnotatedObjectController {
     }
 
     public void loadData( ComponentSystemEvent event ) {
-        System.out.println("\nLOAD DATA: Interaction null? "+(interaction == null)+"\n");
         if ( ac != null ) {
             if ( interaction == null || !ac.equals( interaction.getAc() ) ) {
                 interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
@@ -143,13 +143,22 @@ public class InteractionController extends AnnotatedObjectController {
         }
     }
 
+    @Override
+    public void doSave(ActionEvent evt) {
+        super.doSave(evt);
+
+        for (Component component : interaction.getComponents()) {
+            if (component.getAc() == null) {
+                IntactContext.getCurrentInstance().getCorePersister().saveOrUpdate(component);
+            }
+        }
+    }
+
     public void refreshParticipants() {
-        System.out.println("\nRefreshing participants\n");
         final Collection<Component> components = interaction.getComponents();
         participantWrappers = new ArrayList<ParticipantWrapper>( components.size() );
 
         for ( Component component : components ) {
-            System.out.println("\tAdding component: "+component.getAc());
             participantWrappers.add( new ParticipantWrapper( component ) );
         }
     }
