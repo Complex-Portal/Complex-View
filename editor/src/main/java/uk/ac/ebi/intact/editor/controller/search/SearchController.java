@@ -17,6 +17,9 @@ import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Search controller.
@@ -112,12 +115,58 @@ public class SearchController extends JpaAwareController {
 
             // Note: the search is NOT case sensitive !!!
             // Note: the search includes wildcards automatically
+            final String finalQuery = q;
 
-            loadPublication( q );
-            loadExperiments( q );
-            loadInteractions( q );
-            loadMolecules( q );
-            loadCvObjects( q );
+            ExecutorService executorService = Executors.newCachedThreadPool();
+
+            Runnable runnablePub = new Runnable() {
+                @Override
+                public void run() {
+                   loadPublication( finalQuery );
+                }
+            };
+
+            Runnable runnableExp = new Runnable() {
+                @Override
+                public void run() {
+                   loadExperiments( finalQuery );
+                }
+            };
+
+            Runnable runnableInt = new Runnable() {
+                @Override
+                public void run() {
+                   loadInteractions( finalQuery );
+                }
+            };
+
+            Runnable runnableMol = new Runnable() {
+                @Override
+                public void run() {
+                   loadMolecules( finalQuery );
+                }
+            };
+
+            Runnable runnableCvs = new Runnable() {
+                @Override
+                public void run() {
+                   loadCvObjects( finalQuery );
+                }
+            };
+
+            executorService.submit(runnablePub);
+            executorService.submit(runnableExp);
+            executorService.submit(runnableInt);
+            executorService.submit(runnableMol);
+            executorService.submit(runnableCvs);
+
+            executorService.shutdown();
+
+            try {
+                executorService.awaitTermination(1, TimeUnit.MINUTES);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else {
             resetSearchResults();
         }
