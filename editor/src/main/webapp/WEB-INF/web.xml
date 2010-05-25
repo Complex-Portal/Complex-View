@@ -67,15 +67,21 @@
         <!--<param-name>org.apache.myfaces.FACES_INIT_PLUGINS</param-name>-->
         <!--<param-value>org.apache.myfaces.extensions.scripting.servlet.StartupServletContextPluginChainLoader</param-value>-->
     <!--</context-param>-->
-
     <!--<context-param>-->
         <!--<description>Additional comma separated loader paths to allow direct editing on the sources directory instead-->
             <!--of the deployment dir-->
         <!--</description>-->
         <!--<param-name>org.apache.myfaces.extensions.scripting.java.LOADER_PATHS</param-name>-->
         <!--<param-value>-->
-            <!--/homes/baranda/projects/intact-current/service/editor/src/main/java-->
+            <!--d:/projects/intact-current/service/editor/src/main/java-->
         <!--</param-value>-->
+    <!--</context-param>-->
+    <!--<context-param>-->
+        <!--<description>a comma separated whitelist of root packages which are compiled those and nothing else-->
+            <!--will be compiled during all compile stages, all other files stay permanently as they are-->
+        <!--</description>-->
+        <!--<param-name>org.apache.myfaces.extensions.scripting.PGK_WHITELIST</param-name>-->
+        <!--<param-value>uk.ac.ebi.intact.editor.component</param-value>-->
     <!--</context-param>-->
 
     <listener>
@@ -174,14 +180,7 @@
         <!--<url-pattern>/primefaces_comet/*</url-pattern>-->
     <!--</servlet-mapping>-->
 
-    <!-- MyFaces scripting -->
-    <!--<filter>-->
-        <!--<filter-name>scriptingFilter</filter-name>-->
-        <!--<filter-class>org.apache.myfaces.scripting.servlet.ScriptingServletFilter</filter-class>-->
-
-    <!--</filter>-->
-
-    <!-- MyFaces Ext-Scripting filter -->
+     <!--MyFaces Ext-Scripting filter -->
     <!--<filter>-->
        <!--<filter-name>scriptingFilter</filter-name>-->
        <!--<filter-class>org.apache.myfaces.extensions.scripting.servlet.ScriptingServletFilter</filter-class>-->
