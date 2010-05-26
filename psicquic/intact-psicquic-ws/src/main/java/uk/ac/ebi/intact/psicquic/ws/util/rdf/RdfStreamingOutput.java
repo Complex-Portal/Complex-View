@@ -46,13 +46,6 @@ public class RdfStreamingOutput implements StreamingOutput {
         final RdfBuilder rdfBuilder = new RdfBuilder();
         final Model model = rdfBuilder.createModel(entrySet, "http://www.ebi.ac.uk/intact/");
 
-        Writer writer = new StringWriter();
         model.write(outputStream, rdfFormat);
-        String lala = writer.toString();
-        System.out.println(lala.length());
-
-        PrintStream ps = new PrintStream(outputStream);
-        ps.print(lala+"\n\n\n\n\n============\n\n\n\n\n");
-        ps.print(lala);
     }
 }

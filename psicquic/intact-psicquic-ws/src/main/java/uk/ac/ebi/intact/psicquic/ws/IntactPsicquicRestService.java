@@ -86,7 +86,8 @@ public class IntactPsicquicRestService implements PsicquicRestService {
 
         try {
             if (strippedMime(IntactPsicquicService.RETURN_TYPE_XML25).equalsIgnoreCase(format)) {
-                return getByQueryXml(query, firstResult, maxResults);
+                final EntrySet entrySet = getByQueryXml(query, firstResult, maxResults);
+                return Response.status(200).type(MediaType.APPLICATION_XML_TYPE).entity(entrySet).build();
             } else if (format.toLowerCase().startsWith("rdf")) {
                 String rdfFormat = getRdfFormatName(format);
                 String mediaType = format.contains("xml")? MediaType.APPLICATION_XML : MediaType.TEXT_PLAIN;
@@ -139,11 +140,6 @@ public class IntactPsicquicRestService implements PsicquicRestService {
         }
 
         return rdfFormat;
-    }
-
-    private RdfStreamingOutput createRdfStreamingOutput(String query, String rdfFormat, int firstResult, int maxResults) throws ConverterException, PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
-        psidev.psi.mi.xml.model.EntrySet entrySet = createEntrySet(query, firstResult, maxResults);
-        return new RdfStreamingOutput(psicquicService, entrySet, rdfFormat);
     }
 
     private psidev.psi.mi.xml.model.EntrySet createEntrySet(String query, int firstResult, int maxResults) throws ConverterException, PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException {
