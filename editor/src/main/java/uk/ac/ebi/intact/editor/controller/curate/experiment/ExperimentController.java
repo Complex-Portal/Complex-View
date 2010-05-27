@@ -58,11 +58,10 @@ public class ExperimentController extends AnnotatedObjectController {
         if ( ac != null ) {
             if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
                 experiment = IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao().getByAc( ac );
-
-                interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+            }
+            interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                                  "select i from InteractionImpl i join i.experiments as exp where exp.ac = '" + ac + "'",
                                                                                  "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '" + ac + "'" );
-            }
         } else if ( experiment != null ) {
             ac = experiment.getAc();
         }
@@ -97,5 +96,9 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public LazyDataModel<Interaction> getInteractionDataModel() {
         return interactionDataModel;
+    }
+
+    public void setInteractionDataModel(LazyDataModel<Interaction> interactionDataModel) {
+        this.interactionDataModel = interactionDataModel;
     }
 }

@@ -82,9 +82,9 @@
         </div>
 
         <p:remoteCommand name="save" actionListener="#{annotatedObjectController.doSave}"
-                        update="editorForm,growl,messagesComponent" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton_submit'); input.disabled = true; input.value = 'Saving...'"
+                        update="editorForm,growl,messagesComponent" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton'); input.disabled = true; input.value = 'Saving...'"
                         onerror="alert('Error: '+error+' '+status)"
-                        oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton_submit'); input.disabled = false; input.value = 'Save'"/>
+                        oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton'); input.disabled = false; input.value = 'Save'"/>
         
 
     </ui:define>

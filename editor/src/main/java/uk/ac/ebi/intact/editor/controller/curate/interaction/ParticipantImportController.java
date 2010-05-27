@@ -225,6 +225,7 @@ public class ParticipantImportController extends BaseController {
 
         BioSource organism = new BioSource(owner, uniprotProtein.getOrganism().getName(), String.valueOf(uniprotProtein.getOrganism().getTaxid()));
         Protein protein = new ProteinImpl(owner, organism, uniprotProtein.getId().toLowerCase(), type);
+        protein.setFullName(uniprotProtein.getDescription());
 
         InteractorXref xref = new InteractorXref(owner, uniprotkb, candidate.getPrimaryAc(), identity);
         protein.addXref(xref);

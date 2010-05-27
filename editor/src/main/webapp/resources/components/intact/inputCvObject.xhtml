@@ -26,8 +26,8 @@
 
         <ui:param name="dialogWidgetId" value="#{cc.friendlyWidgetId}"/>
 
-         <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'visible'"
-                 onmouseout="document.getElementById('#{cc.clientId}:selectBtn_submit').style.visibility = 'hidden'">
+         <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'visible'"
+                 onmouseout="document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'hidden'">
 
                 <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="cvObjectConverter" required="#{cc.attrs.required}">
                     <f:selectItems value="#{cc.attrs.selectItems}"/>

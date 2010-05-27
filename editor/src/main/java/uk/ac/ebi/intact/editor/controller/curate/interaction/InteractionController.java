@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.editor.controller.curate.interaction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.hibernate.LazyInitializationException;
 import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -148,14 +147,10 @@ public class InteractionController extends AnnotatedObjectController {
     public void doSave(ActionEvent evt) {
         super.doSave(evt);
 
-        try {
-            for (Component component : interaction.getComponents()) {
-                if (component.getAc() == null) {
-                    IntactContext.getCurrentInstance().getCorePersister().saveOrUpdate(component);
-                }
+        for (Component component : interaction.getComponents()) {
+            if (component.getAc() == null) {
+                IntactContext.getCurrentInstance().getCorePersister().saveOrUpdate(component);
             }
-        } catch (LazyInitializationException e) {
-            System.out.println("LAZY B****");
         }
     }
 

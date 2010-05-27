@@ -22,7 +22,7 @@
     </scm>
 
     <properties>
-        <core.version>2.2.1-SNAPSHOT</core.version>
+        <core.version>2.3.0-SNAPSHOT</core.version>
         <spring.version>3.0.2.RELEASE</spring.version>
 
         <!-- configurable bits -->
@@ -149,34 +149,16 @@
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-core</artifactId>
             <version>${core.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-users</artifactId>
             <version>${core.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-batch</artifactId>
             <version>${core.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>-->
@@ -186,13 +168,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.bridges</groupId>
             <artifactId>intact-uniprot</artifactId>
-            <version>2.1.2-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.1.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -481,79 +457,6 @@
             <artifactId>jsp-api</artifactId>
             <version>2.2</version>
             <scope>provided</scope>
-        </dependency>
-
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aspects</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib-nodep</artifactId>
-            <version>2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>antlr</groupId>
-            <artifactId>antlr</artifactId>
-            <version>2.7.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.6.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.6.8</version>
         </dependency>
 
         <!-- Spring -->
