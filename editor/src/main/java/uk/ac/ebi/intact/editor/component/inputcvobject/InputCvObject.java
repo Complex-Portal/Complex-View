@@ -17,16 +17,19 @@ package uk.ac.ebi.intact.editor.component.inputcvobject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.primefaces.component.tree.Tree;
-import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvDagObject;
 import uk.ac.ebi.intact.model.CvObject;
+import uk.ac.ebi.intact.model.CvTopic;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.component.FacesComponent;
 import javax.faces.component.NamingContainer;
@@ -120,14 +123,8 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
             throw new IllegalArgumentException("Root does not exist: " + cvClass + " ID: " + id);
         }
 
-        TreeNode root = buildTreeNode(rootCv, null);
+        root = buildTreeNode(rootCv, null);
 //        setRoot(new TreeModel(root));
-
-        final Tree tree = (Tree) findComponent(getClientId() + ":tree");
-
-        if (tree != null) {
-            tree.setValue(root);
-        }
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
@@ -136,6 +133,8 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
     }
 
     private TreeNode buildTreeNode( CvDagObject cv, TreeNode node ) {
+        Hibernate.initialize(cv.getAnnotations());
+        
         TreeNode childNode = new DefaultTreeNode(cv, node);
 
         for ( CvDagObject child : cv.getChildren() ) {
@@ -145,17 +144,21 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
         return childNode;
     }
 
-    public void onNodeSelect( NodeSelectEvent event ) {
-        TreeNode selectedNode = event.getTreeNode();
+    public String getDescription(CvObject cvObject) {
+        Annotation annot = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(cvObject, CvTopic.DEFINITION);
 
-//        String treeComponentId = event.getComponent().getId();
-//        String clientId = treeComponentId.replaceAll( "__tree", "" );
-//
-//        cvObjectsByClientId.put( clientId, (CvObject) selectedNode.getData() );
-          setSelected((CvObject) selectedNode.getData());
+        if (annot != null) {
+            return annot.getAnnotationText();
+        }
+
+        return null;
     }
 
-//    public TreeModel getRoot() {
+    public TreeNode getRoot() {
+        return root;
+    }
+
+    //    public TreeModel getRoot() {
 ////        return root;
 //        return (TreeModel) getStateHelper().eval("treeModel");
 ////

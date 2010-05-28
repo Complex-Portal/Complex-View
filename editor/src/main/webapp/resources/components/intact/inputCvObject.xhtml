@@ -53,35 +53,37 @@
             <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
             Loading controlled vocabulary...
         </p:dialog>
-
-        <p:outputPanel id="javascriptPanel">
-
-            <h:outputScript rendered="#{cc.selected != null}">
-                document.getElementById('#{cc.clientId}:selectObject').value = '#{cc.selected.ac}';
-            </h:outputScript>
-        </p:outputPanel>
         
         <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true" fixedCenter="true"
                   widgetVar="#{dialogWidgetId}" modal="true">
             <p:outputPanel id="cvObjectBrowserDialog">
-            <h:panelGrid columns="1">
-                <h:panelGroup>
-                    <h:inputText value="Not implemented" disabled="true"/>
-                    <h:commandButton type="button" value="Search" disabled="true"/>
-                    <h:commandButton type="button" value="New..." disabled="true"/>
-                </h:panelGroup>
-                
-                <p:tree id="tree" var="cvObject" 
-                        widgetVar="#{cc.friendlyWidgetId}__tree"
-                        dynamic="true" cache="true"
-                        nodeSelectListener="#{cc.onNodeSelect}"
-                        onselectComplete="#{dialogWidgetId}.hide(); "
-                        update="cvObject,javascriptPanel">
-                    <p:treeNode>
-                        <h:outputText value="#{cvObject.shortLabel}"/>
-                    </p:treeNode>
-                </p:tree>
-            </h:panelGrid>
+            <div style="height: 500px; overflow-x: auto;">
+                <!--<h:panelGroup>-->
+                    <!--<h:inputText value="Not implemented" disabled="true"/>-->
+                    <!--<h:commandButton type="button" value="Search" disabled="true"/>-->
+                    <!--<h:commandButton type="button" value="New..." disabled="true"/>-->
+                <!--</h:panelGroup>-->
+
+                <div style="overflow-x: auto;">
+                    <p:treeTable id="tree" var="cvObject"
+                            widgetVar="#{cc.friendlyWidgetId}__tree"
+                            value="#{cc.root}">
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Label"/></f:facet>
+                            <a href="#" onclick="#{dialogWidgetId}.hide(); document.getElementById('#{cc.clientId}:selectObject').value = '#{cvObject.ac}';"
+                                    title="#{cc.getDescription(cvObject)}">#{cvObject.shortLabel}</a>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Identifier"/></f:facet>
+                            <h:outputText value="#{cvObject.identifier}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Full name"/></f:facet>
+                            <h:outputText value="#{cvObject.fullName}" />
+                        </p:column>
+                    </p:treeTable>
+                </div>
+            </div>
         </p:outputPanel>
     </p:dialog>
 
