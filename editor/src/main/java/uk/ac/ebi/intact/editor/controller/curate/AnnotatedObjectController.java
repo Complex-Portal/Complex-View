@@ -63,6 +63,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Override
     public void changed(AjaxBehaviorEvent evt) {
+        System.out.println("CHANGED!!!!");
         unsavedChanges = true;
     }
 

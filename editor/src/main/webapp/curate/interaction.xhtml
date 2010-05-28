@@ -59,7 +59,10 @@
                             <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                         </td>
                         <td>
-                            <h:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"/>
+                            <h:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30">
+                                <f:ajax event="valueChange" execute="@this"
+                                            listener="#{annotatedObjectController.changed}"/>
+                            </h:inputText>
                         </td>
                         <td style="padding-left: 50px;">
                             <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
@@ -78,7 +81,9 @@
                         <td colspan="3">
                             <ia:inputCvObject id="interactionTypeTxt" cvIdentifier="MI:0190"
                                               value="#{interaction.cvInteractionType}"
-                                              selectItems="#{cvObjectService.interactionTypeSelectItems}"/>
+                                              selectItems="#{cvObjectService.interactionTypeSelectItems}"
+                                              valueChangeRender=":editorForm:changesPanel"
+                                              valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
                     </tr>
                     <tr>
