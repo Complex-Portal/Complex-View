@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.component.tree.Tree;
 import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -135,7 +136,7 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
     }
 
     private TreeNode buildTreeNode( CvDagObject cv, TreeNode node ) {
-        TreeNode childNode = new TreeNode(cv, node);
+        TreeNode childNode = new DefaultTreeNode(cv, node);
 
         for ( CvDagObject child : cv.getChildren() ) {
             buildTreeNode( child, childNode );
