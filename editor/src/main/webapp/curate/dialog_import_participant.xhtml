@@ -108,22 +108,26 @@
                     <h:panelGrid columns="4">
                         <h:outputLabel value="Experimental role: " for="expRoleDialogTxt"/>
                         <ia:inputCvObject id="expRoleDialogTxt" cvIdentifier="MI:0495" required="true"
+                                          modal="false"
                                           value="#{participantImportController.cvExperimentalRole}"
                                           selectItems="#{cvObjectService.experimentalRoleSelectItems}" />
 
                         <h:outputLabel value="Biological role: " for="bioRoleDialogTxt"/>
                         <ia:inputCvObject id="bioRoleDialogTxt" cvIdentifier="MI:0500" required="true"
-                                                  value="#{participantImportController.cvBiologicalRole}"
-                                                  selectItems="#{cvObjectService.biologicalRoleSelectItems}" />
+                                          modal="false"
+                                          value="#{participantImportController.cvBiologicalRole}"
+                                          selectItems="#{cvObjectService.biologicalRoleSelectItems}" />
 
                         <h:outputLabel value="Expressed in: " for="expressedInDialogTxt"/>
                         <ia:inputBioSource id="expressedInDialogTxt" value="#{participantImportController.expressedIn}"
-                                                   selectItems="#{bioSourceService.bioSourceSelectItems}"/>
+                                          modal="false"
+                                          selectItems="#{bioSourceService.bioSourceSelectItems}"/>
 
                         <h:outputLabel value="Delivery method: " for="deliveryInDialogTxt"/>
                         <ia:inputCvObject id="deliveryInDialogTxt" cvIdentifier="MI:0346"
-                                                  selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"
-                                                  value="#{participantImportController.cvExperimentalPreparation}" />
+                                          modal="false"
+                                          selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"
+                                          value="#{participantImportController.cvExperimentalPreparation}" />
 
                         <h:outputLabel value="Stoichiometry: " for="stoichiometryDialogTxt"/>
                         <p:spinner id="stoichiometryDialogTxt" value="#{participantImportController.stoichiometry}" stepFactor="1" size="3" maxlength="2"/>

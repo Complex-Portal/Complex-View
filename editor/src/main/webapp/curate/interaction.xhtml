@@ -15,6 +15,8 @@
     <ui:param name="experiment" value="#{experimentController.experiment}" />
     <ui:param name="publication" value="#{publicationController.publication}" />
 
+
+
     <ui:define name="curateContent">
         <f:metadata>
             <f:viewParam name="ac" value="#{interactionController.ac}"/>
@@ -97,7 +99,7 @@
             <br/>
 
             <p:tabView id="interactionTabs">
-                <p:tab title="Participants (#{interactionController.countParticipantsByInteractionAc(interactionController.ac)})">
+                <p:tab title="Participants (#{interactionController.participants.size()})">
 
                     <p:commandButton value="Import participants" type="button" onclick="importParticipantDialog.show()"/>
                     <ia:spacer height="10" />
@@ -105,6 +107,7 @@
                     <ui:include src="dialog_import_participant.xhtml"/>
 
                     <!--<ia:participantsTable id="participantTable" value="#{interactionController.participants}"/>-->
+
                     <ui:include src="participants_table.xhtml">
                         <ui:param name="value" value="#{interactionController.participants}"/>
                     </ui:include>

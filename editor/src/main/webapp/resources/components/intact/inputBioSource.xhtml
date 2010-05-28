@@ -15,6 +15,7 @@
         <composite:attribute name="selectItems" required="true"/>
         <composite:attribute name="valueChangeRender"/>
         <composite:attribute name="valueChangeAwareObject" type="uk.ac.ebi.intact.editor.controller.curate.ValueChangeAware"/>
+        <composite:attribute name="modal" type="java.lang.Boolean" default="true"/>
     </composite:interface>
 
     <!-- IMPLEMENTATION -->
@@ -59,12 +60,12 @@
 
         </p:outputPanel>
 
-        <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="true" fixedCenter="true">
+        <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="#{cc.attrs.modal}" fixedCenter="true">
             <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
             Loading organisms...
         </p:dialog>
 
-        <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="true" fixedCenter="true">
+        <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" fixedCenter="true">
            <p:outputPanel id="bioSourceBrowserDialog">
 
                 <h:panelGrid columns="1">

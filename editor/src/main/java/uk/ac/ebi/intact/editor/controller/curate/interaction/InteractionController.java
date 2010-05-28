@@ -57,8 +57,6 @@ public class InteractionController extends AnnotatedObjectController {
 
     private List<ParticipantWrapper> participantWrappers;
 
-    private String participantToImport;
-
     @Autowired
     private PublicationController publicationController;
 
@@ -85,19 +83,9 @@ public class InteractionController extends AnnotatedObjectController {
         if ( ac != null ) {
             if ( interaction == null || !ac.equals( interaction.getAc() ) ) {
                 interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
-
-//                participantDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-//                                                                                 "select c from Component c where c.interaction.ac = '" + ac + "'",
-//                                                                                 "select count(c) from Component c where c.interaction.ac = '" + ac + "'" );
             }
         } else {
             ac = interaction.getAc();
-
-//            if( participantDataModel == null ) {
-//                participantDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-//                                                                                 "select c from Component c where c.interaction.ac = '" + ac + "'",
-//                                                                                 "select count(c) from Component c where c.interaction.ac = '" + ac + "'" );
-//            }
         }
 
         if( interaction.getExperiments().isEmpty() ) {
@@ -147,11 +135,19 @@ public class InteractionController extends AnnotatedObjectController {
     public void doSave(ActionEvent evt) {
         super.doSave(evt);
 
-        for (Component component : interaction.getComponents()) {
+        for (ParticipantWrapper pw : participantWrappers) {
+            Component component = pw.getParticipant();
+
+            if (pw.isDeleted() && component.getAc() != null) {
+                interaction.removeComponent(component);
+                IntactContext.getCurrentInstance().getDaoFactory().getComponentDao().delete(component);
+            }
             if (component.getAc() == null) {
                 IntactContext.getCurrentInstance().getCorePersister().saveOrUpdate(component);
             }
         }
+
+        refreshParticipants();
     }
 
     public void refreshParticipants() {
@@ -183,8 +179,26 @@ public class InteractionController extends AnnotatedObjectController {
         return interaction.getExperiments().iterator().next();
     }
 
-    public void deleteParticipant(Component participant) {
-        System.out.println("DELETE!! "+participant);
+    public void deleteParticipant(ParticipantWrapper participantWrapper) {
+        participantWrapper.setDeleted(true);
+
+        Component participant = participantWrapper.getParticipant();
+        //interaction.removeComponent(participant);
+        //refreshParticipants();
+        setUnsavedChanges(true);
+
+        StringBuilder participantInfo = new StringBuilder();
+
+        if (participant.getInteractor() != null) {
+            participantInfo.append(participant.getInteractor().getShortLabel());
+            participantInfo.append(" ");
+        }
+
+        if (participant.getAc() != null) {
+            participantInfo.append("(").append(participant.getAc()+")");
+        }
+
+        addInfoMessage("Removed participant", participantInfo.toString());
     }
 
     public void setAc( String ac ) {
@@ -200,6 +214,9 @@ public class InteractionController extends AnnotatedObjectController {
     }
 
     public Collection<ParticipantWrapper> getParticipants() {
+        if (participantWrappers == null && ac != null) {
+            loadData(null);
+        }
         return participantWrappers;
     }
 
@@ -207,6 +224,8 @@ public class InteractionController extends AnnotatedObjectController {
     // Participant related methods
 
     public String getInteractorIdentity(Interactor interactor) {
+        if (interactor == null) return null;
+        
         final Collection<InteractorXref> identities =
                 AnnotatedObjectUtils.searchXrefsByQualifier( interactor, CvXrefQualifier.IDENTITY_MI_REF );
         StringBuilder sb = new StringBuilder(64);

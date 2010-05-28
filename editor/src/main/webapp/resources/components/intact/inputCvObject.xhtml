@@ -17,11 +17,11 @@
       <composite:attribute name="selectItems" required="true"/>
       <composite:attribute name="valueChangeRender"/>
       <composite:attribute name="valueChangeAwareObject" type="uk.ac.ebi.intact.editor.controller.curate.ValueChangeAware"/>
+      <composite:attribute name="modal" type="java.lang.Boolean" default="true"/>
   </composite:interface>
 
     <!-- IMPLEMENTATION -->
     <composite:implementation>
-
          <h:outputScript name="intact.js" library="javascript" target="head"/>
 
         <ui:param name="dialogWidgetId" value="#{cc.friendlyWidgetId}"/>
@@ -49,13 +49,13 @@
         <!--</h:commandButton>-->
         </h:panelGrid>
 
-        <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="true" fixedCenter="true">
+        <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="#{cc.attrs.modal}" fixedCenter="true">
             <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
             Loading controlled vocabulary...
         </p:dialog>
         
         <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true" fixedCenter="true"
-                  widgetVar="#{dialogWidgetId}" modal="true">
+                  widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}">
             <p:outputPanel id="cvObjectBrowserDialog">
             <div style="height: 500px; overflow-x: auto;">
                 <!--<h:panelGroup>-->

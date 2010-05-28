@@ -7,6 +7,8 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
+    <h:panelGroup id="participantsTable">
+
 <c:forEach items="#{value}" var="wrapper" varStatus="status">
 
             <ui:param name="participant" value="#{wrapper.participant}" />
@@ -16,7 +18,7 @@
 
                 <ia:collapsiblePanel open="false"
                                     title="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
-                                    titleStyle="#{participant.ac == null? 'color:blue' :''}"
+                                    titleStyle="#{wrapper.deleted? 'color:red; text-decoration:line-through' : participant.ac == null? 'color:blue' :''}"
                                     titleRight="#{interactor.cvInteractorType.shortLabel} | #{interactor.bioSource.shortLabel} | #{interactor.fullName}"
                                     titleRightStyle="color:#999999;">
 
@@ -24,7 +26,7 @@
                         <p:menuButton value="Options">
                             <p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>
                             <p:menuitem value="Duplicate" onclick="alert('Not implemented')"/>
-                            <p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(participant)}" update="#{cc.clientId}"/>
+                            <p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(wrapper)}" update="participantsTable,growl,changesPanel,messagesComponent"/>
                         </p:menuButton>
                     </f:facet>
 
@@ -118,4 +120,7 @@
             </div>
 
         </c:forEach>
+
+    </h:panelGroup>
+
     </ui:composition>

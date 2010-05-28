@@ -17,6 +17,8 @@ public class ParticipantWrapper {
 
     private Component participant;
     private AnnotatedObjectHelper annotatedObjectHelper;
+
+    private boolean deleted;
     
     public ParticipantWrapper( Component participant) {
         this.participant = participant;
@@ -66,5 +68,13 @@ public class ParticipantWrapper {
             if( ! participant.getExperimentalPreparations().contains( prep ) ) {
                 participant.getExperimentalPreparations().add( prep );
             }
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
