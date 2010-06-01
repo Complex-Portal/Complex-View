@@ -20,6 +20,7 @@ import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
@@ -73,13 +74,13 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional
     public boolean doSaveDetails() {
         InteractionDao interactionDao = getDaoFactory().getInteractionDao();
 
         boolean saved = false;
 
         for (String deletedInteractionAc : getUnsavedChangeManager().getDeletedAcs(Interaction.class)) {
-            System.out.println("DELETING: "+deletedInteractionAc);
             interactionDao.deleteByAc(deletedInteractionAc);
             saved = true;
         }
