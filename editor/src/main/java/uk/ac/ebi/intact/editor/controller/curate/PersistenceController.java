@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 
@@ -47,19 +48,17 @@ public class PersistenceController extends JpaAwareController {
 
         final String simpleName = annotatedObject.getClass().getSimpleName();
 
-        if ( log.isDebugEnabled() ) log.debug( "Saving annotated object: " + annotatedObject );
+        if ( log.isDebugEnabled() ) log.debug( "Saving annotated object: " + DebugUtil.annotatedObjectToString(annotatedObject, false));
 
         try {
             getIntactContext().getCorePersister().saveOrUpdate( annotatedObject );
-
-            if ( log.isDebugEnabled() ) log.debug( "Saved: " + annotatedObject );
 
             addInfoMessage( simpleName +" saved", "AC: " + annotatedObject.getAc() );
 
             return true;
 
         } catch ( Exception e ) {
-            addErrorMessage( "Problem persisting "+annotatedObject, "AC: " + annotatedObject.getAc() );
+            addErrorMessage( "Problem persisting object", "AC: " + annotatedObject.getAc() );
             FacesContext ctx = FacesContext.getCurrentInstance();
             ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
             ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
