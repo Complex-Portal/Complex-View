@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
@@ -69,6 +70,20 @@ public class ExperimentController extends AnnotatedObjectController {
         if ( experiment != null && publicationController.getPublication() == null ) {
             publicationController.setPublication( experiment.getPublication() );
         }
+    }
+
+    @Override
+    public boolean doSaveDetails() {
+        InteractionDao interactionDao = getDaoFactory().getInteractionDao();
+
+        boolean saved = false;
+
+        for (String deletedInteractionAc : getUnsavedChangeManager().getDeletedAcs(Interaction.class)) {
+            interactionDao.deleteByAc(deletedInteractionAc);
+            saved = true;
+        }
+
+        return saved;
     }
 
     public int countInteractionsByExperimentAc( String ac ) {

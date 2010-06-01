@@ -36,13 +36,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     private static final Log log = LogFactory.getLog( AnnotatedObjectController.class );
 
-    private boolean unsavedChanges;
     private Date lastSaved;
 
     @Autowired
     private CvObjectService cvObjectService;
 
+    private UnsavedChangeManager unsavedChangeManager;
+
     public AnnotatedObjectController() {
+        unsavedChangeManager = new UnsavedChangeManager();
     }
 
     public abstract AnnotatedObject getAnnotatedObject();
@@ -51,20 +53,30 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return new AnnotatedObjectHelper(getAnnotatedObject());
     }
 
-    public void doSave( ActionEvent evt ) {        
+    public final void doSave( ActionEvent evt ) {
         PersistenceController persistenceController = getPersistenceController();
         boolean saved = persistenceController.doSave(getAnnotatedObject());
 
+        boolean detailsSaved = doSaveDetails();
+
+        if (detailsSaved) saved = true;
+
         if (saved) {
             lastSaved = new Date();
-            unsavedChanges = false;
+            setUnsavedChanges(false);
         }
+
+        unsavedChangeManager.clearChanges();
+    }
+
+    public boolean doSaveDetails() {
+        return false;
     }
 
     @Override
     public void changed(AjaxBehaviorEvent evt) {
         System.out.println("CHANGED!!!!");
-        unsavedChanges = true;
+        setUnsavedChanges(true);
     }
 
     // XREFS
@@ -195,11 +207,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public boolean isUnsavedChanges() {
-        return unsavedChanges;
+        return getUnsavedChangeManager().isUnsavedChanges();
     }
 
     public void setUnsavedChanges(boolean unsavedChanges) {
-        this.unsavedChanges = unsavedChanges;
+        getUnsavedChangeManager().setUnsavedChanges(unsavedChanges);
     }
 
     public Date getLastSaved() {
@@ -208,6 +220,13 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void setLastSaved(Date lastSaved) {
         this.lastSaved = lastSaved;
+    }
+
+    public UnsavedChangeManager getUnsavedChangeManager() {
+        if (unsavedChangeManager == null) {
+            unsavedChangeManager = new UnsavedChangeManager();
+        }
+        return unsavedChangeManager;
     }
 
     private class IntactObjectComparator implements Comparator<IntactObject> {

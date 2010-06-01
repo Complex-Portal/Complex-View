@@ -108,6 +108,15 @@ a img {
     z-index: 2001;
 }
 
+.intact-new {
+    color:blue;
+}
+
+.intact-deleted {
+    color:red;
+    text-decoration:line-through
+}
+
 /** Tables **/
 .yui-skin-sam .yui-dt table {
     /*border-color: #99FF00;*/

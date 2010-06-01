@@ -30,7 +30,6 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -132,8 +131,8 @@ public class InteractionController extends AnnotatedObjectController {
     }
 
     @Override
-    public void doSave(ActionEvent evt) {
-        super.doSave(evt);
+    public boolean doSaveDetails() {
+        boolean saved = false;
 
         for (ParticipantWrapper pw : participantWrappers) {
             Component component = pw.getParticipant();
@@ -145,9 +144,13 @@ public class InteractionController extends AnnotatedObjectController {
             if (component.getAc() == null) {
                 IntactContext.getCurrentInstance().getCorePersister().saveOrUpdate(component);
             }
+
+            saved = true;
         }
 
         refreshParticipants();
+
+        return saved;
     }
 
     public void refreshParticipants() {
@@ -155,13 +158,13 @@ public class InteractionController extends AnnotatedObjectController {
         participantWrappers = new ArrayList<ParticipantWrapper>( components.size() );
 
         for ( Component component : components ) {
-            participantWrappers.add( new ParticipantWrapper( component ) );
+            participantWrappers.add( new ParticipantWrapper( component, getUnsavedChangeManager() ) );
         }
     }
 
     public void addParticipant(Component component) {
         interaction.addComponent(component);
-        participantWrappers.add(new ParticipantWrapper( component ));
+        participantWrappers.add(new ParticipantWrapper( component, getUnsavedChangeManager() ));
     }
 
     public String getAc() {

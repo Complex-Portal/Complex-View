@@ -5,33 +5,40 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
-                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
-                xmlns:composite="http://java.sun.com/jsf/composite">
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
-    <!-- INTERFACE -->
-  <composite:interface>
-    <composite:attribute name="value" type="org.primefaces.model.LazyDataModel"/>
-  </composite:interface>
 
-  <!-- IMPLEMENTATION -->
-    <composite:implementation>        
+        <h:panelGroup id="interactionTable">
 
-        <p:dataTable var="interaction" value="#{cc.attrs.value}"
-                     paginator="#{cc.attrs.value.rowCount > 10}" rows="10" lazy="true" dynamic="true">
+            <ui:param name="toDeleteCount" value="#{unsavedChangeManager.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Interaction').size()}"/>
+
+            <h:panelGroup rendered="#{toDeleteCount gt 0}">
+                <ia:panelMessage level="info">
+                    <h:outputText value="#{toDeleteCount} interactions will be deleted on save."/>
+                </ia:panelMessage>
+            </h:panelGroup>
+
+        <p:dataTable var="interaction" value="#{value}"
+                     paginator="#{value.rowCount > 10}" rows="10" lazy="true" dynamic="true">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="AC"/>
                 </f:facet>
-                    <h:outputText value="#{interaction.ac}"/>
+                    <h:outputText value="#{interaction.ac}" styleClass="#{unsavedChangeManager.isDeletedAc(interaction.ac)? 'intact-deleted' : ''}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Shortlabel"/>
                 </f:facet>
+                <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(interaction.ac)}">
                 <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true"
                         onclick="load_int.show()">
                     <f:param name="ac" value="#{interaction.ac}"/>
                 </h:link>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(interaction.ac)}">
+                     <h:outputText value="#{interaction.shortLabel}"/>
+                </h:panelGroup>
             </p:column>                                                     
             <p:column>
                 <f:facet name="header">
@@ -49,14 +56,15 @@
                 <f:facet name="header">
                     <h:outputText value="Actions"/>
                 </f:facet>
-                <h:link onclick="alert('Not implemented yet.'); return false;" >
+                <p:commandLink title="Mark to be deleted" actionListener="#{unsavedChangeManager.markToDelete(interaction)}"
+                        update="interactionTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(interaction.ac)}">
                     <p:graphicImage alt="Delete" url="/resources/images/bin.png" style="border: 0px;"/>
-                </h:link>
+                </p:commandLink>
             </p:column>
         </p:dataTable>
 
-        <ia:loadingDialog widgetVar="load_int" message="Loading interaction..."/>
+        </h:panelGroup>
 
-    </composite:implementation>
+        <ia:loadingDialog widgetVar="load_int" message="Loading interaction..."/>
 
 </ui:composition>
