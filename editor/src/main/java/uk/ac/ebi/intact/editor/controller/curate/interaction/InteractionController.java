@@ -87,6 +87,11 @@ public class InteractionController extends AnnotatedObjectController {
             ac = interaction.getAc();
         }
 
+        if (interaction == null) {
+            addErrorMessage("No interaction with this AC", ac);
+            return;
+        }
+
         if( interaction.getExperiments().isEmpty() ) {
             addWarningMessage( "This interaction isn't attached to an experiment", "Abort experiment loading." );
             return;
@@ -218,6 +223,8 @@ public class InteractionController extends AnnotatedObjectController {
 
     public Collection<ParticipantWrapper> getParticipants() {
         if (participantWrappers == null && ac != null) {
+            loadData(null);
+        } else if (interaction == null || (ac != null && !ac.equals(interaction.getAc()))) {
             loadData(null);
         }
         return participantWrappers;
