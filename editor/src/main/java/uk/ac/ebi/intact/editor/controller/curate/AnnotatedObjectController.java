@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.*;
@@ -37,22 +38,25 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     private static final Log log = LogFactory.getLog( AnnotatedObjectController.class );
 
     private Date lastSaved;
+    private AnnotatedObjectWrapper wrapper;
 
     @Autowired
     private CvObjectService cvObjectService;
 
-    private UnsavedChangeManager unsavedChangeManager;
-
     public AnnotatedObjectController() {
-        unsavedChangeManager = new UnsavedChangeManager();
     }
 
     public abstract AnnotatedObject getAnnotatedObject();
+
+    public AnnotatedObjectWrapper getAnnotatedObjectWrapper() {
+        return new AnnotatedObjectWrapper(getAnnotatedObject());
+    }
 
     public AnnotatedObjectHelper getAnnotatedObjectHelper() {
         return new AnnotatedObjectHelper(getAnnotatedObject());
     }
 
+    @Transactional
     public final void doSave( ActionEvent evt ) {
         PersistenceController persistenceController = getPersistenceController();
         boolean saved = persistenceController.doSave(getAnnotatedObject());
@@ -66,7 +70,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             setUnsavedChanges(false);
         }
 
-        unsavedChangeManager.clearChanges();
+        getUnsavedChangeManager().clearChanges();
     }
 
     public boolean doSaveDetails() {
@@ -223,10 +227,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public UnsavedChangeManager getUnsavedChangeManager() {
-        if (unsavedChangeManager == null) {
-            unsavedChangeManager = new UnsavedChangeManager();
-        }
-        return unsavedChangeManager;
+        return getAnnotatedObjectWrapper().getUnsavedChangeManager();
     }
 
     private class IntactObjectComparator implements Comparator<IntactObject> {

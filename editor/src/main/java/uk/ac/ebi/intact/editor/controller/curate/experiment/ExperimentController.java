@@ -79,6 +79,7 @@ public class ExperimentController extends AnnotatedObjectController {
         boolean saved = false;
 
         for (String deletedInteractionAc : getUnsavedChangeManager().getDeletedAcs(Interaction.class)) {
+            System.out.println("DELETING: "+deletedInteractionAc);
             interactionDao.deleteByAc(deletedInteractionAc);
             saved = true;
         }
