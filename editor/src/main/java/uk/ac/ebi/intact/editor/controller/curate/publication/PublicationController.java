@@ -168,12 +168,12 @@ public class PublicationController extends AnnotatedObjectController {
 
             setAuthors( sbAuthors.toString() );
 
+            addInfoMessage( "Auto-complete successful", "Fetched details for: " + id );
+
         } catch ( Throwable e ) {
             addErrorMessage( "Problem auto-completing publication", e.getMessage() );
             e.printStackTrace();
         }
-
-        addInfoMessage( "Auto-complete successful", "Fetched details for: " + id );
     }
 
     public void newEmpty( ActionEvent evt ) {

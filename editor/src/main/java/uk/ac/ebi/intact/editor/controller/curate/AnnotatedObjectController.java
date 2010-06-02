@@ -81,7 +81,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             setUnsavedChanges(false);
         }
 
-        getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
+        if (getAnnotatedObject().getAc() != null) {
+            getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
+        }
+        
         getUnsavedChangeManager().clearChanges();
     }
 
