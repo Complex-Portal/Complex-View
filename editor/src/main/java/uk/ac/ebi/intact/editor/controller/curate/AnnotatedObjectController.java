@@ -47,7 +47,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public abstract AnnotatedObject getAnnotatedObject();
-    public abstract void setAnnotatedObject(AnnotatedObject annotatedObject);
 
     public AnnotatedObjectWrapper getAnnotatedObjectWrapper() {
         return new AnnotatedObjectWrapper(getAnnotatedObject());
@@ -82,7 +81,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             setUnsavedChanges(false);
         }
 
-        getUnsavedChangeManager().clearChanges();
+        getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
     }
 
     public boolean doSaveDetails() {

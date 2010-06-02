@@ -62,11 +62,6 @@ public class PublicationController extends AnnotatedObjectController {
         return getPublication();
     }
 
-    @Override
-    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setPublication((Publication) annotatedObject);
-    }
-
     public void loadData( ComponentSystemEvent event ) {
         datasetsSelectItems = new ArrayList<SelectItem>();
 

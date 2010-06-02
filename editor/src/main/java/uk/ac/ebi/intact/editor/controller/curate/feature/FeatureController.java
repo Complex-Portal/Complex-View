@@ -74,11 +74,6 @@ public class FeatureController extends AnnotatedObjectController {
         return getFeature();
     }
 
-    @Override
-    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setFeature((Feature) annotatedObject);
-    }
-
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( feature == null || !ac.equals( feature.getAc() ) ) {

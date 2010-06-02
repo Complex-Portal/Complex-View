@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.IllegalTransactionStateException;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
@@ -57,6 +58,10 @@ public class PersistenceController extends JpaAwareController {
 
             return true;
 
+        } catch (IllegalTransactionStateException itse) {
+            if (log.isWarnEnabled()) log.warn("IllegalTransactionStateException happened when saving. It seems to be harmless " +
+                    "but we should keep an eye on this: "+ itse.getMessage());
+            return true;
         } catch ( Exception e ) {
             addErrorMessage( "Problem persisting object", "AC: " + annotatedObject.getAc() );
             FacesContext ctx = FacesContext.getCurrentInstance();
