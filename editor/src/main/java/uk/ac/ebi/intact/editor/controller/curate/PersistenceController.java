@@ -21,6 +21,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.IllegalTransactionStateException;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
@@ -40,7 +41,8 @@ import javax.faces.event.ExceptionQueuedEventContext;
 public class PersistenceController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( PersistenceController.class );
-    
+
+    @Transactional("core")
     public boolean doSave( AnnotatedObject<?,?> annotatedObject ) {
         if ( annotatedObject == null ) {
             addErrorMessage( "No annotated object to save", "How did I get here?" );
