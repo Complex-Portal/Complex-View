@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.component.inputcvobject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
 import org.primefaces.component.tree.Tree;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -25,18 +24,18 @@ import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.model.Annotation;
 import uk.ac.ebi.intact.model.CvDagObject;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.component.FacesComponent;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
+import javax.persistence.Query;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -50,7 +49,6 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
     private TreeNode root;
 
     public InputCvObject() {
-        log.trace("New instance");
     }
 
     @Override
@@ -60,38 +58,22 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
 
     @Override
     public void decode(FacesContext context) {
-        log.trace("decode");
         super.decode(context);
     }
 
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
-        log.trace("encodeBegin");
         super.encodeBegin(context);
     }
 
     @Override
     public void encodeEnd(FacesContext context) throws IOException {
-        log.trace("encodeEnd");
         super.encodeEnd(context);
     }
 
     @Override
     public void encodePartially(FacesContext facesContext) throws IOException {
-        log.trace("encodePartially");
         super.encodePartially(facesContext);
-    }
-
-    @Override
-    public Object saveState(FacesContext context) {
-        log.trace("saveState");
-        return super.saveState(context);
-    }
-
-    @Override
-    public void restoreState(FacesContext context, Object state) {
-        log.trace("restoreState");
-        super.restoreState(context, state);
     }
 
     public void load( String cvClass, String id ) {
@@ -124,7 +106,6 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
         }
 
         root = buildTreeNode(rootCv, null);
-//        setRoot(new TreeModel(root));
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
@@ -133,9 +114,7 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
     }
 
     private TreeNode buildTreeNode( CvDagObject cv, TreeNode node ) {
-        Hibernate.initialize(cv.getAnnotations());
-        
-        TreeNode childNode = new DefaultTreeNode(cv, node);
+       TreeNode childNode = new DefaultTreeNode(cv, node);
 
         for ( CvDagObject child : cv.getChildren() ) {
             buildTreeNode( child, childNode );
@@ -145,13 +124,24 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
     }
 
     public String getDescription(CvObject cvObject) {
-        Annotation annot = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(cvObject, CvTopic.DEFINITION);
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        Query query = IntactContext.getCurrentInstance().getDaoFactory().getEntityManager()
+                .createQuery("select a.annotationText from CvObject cv join cv.annotations as a where cv.ac = :cvAc and " +
+                        "a.cvTopic.shortLabel = :cvTopicLabel");
+        query.setParameter("cvAc", cvObject.getAc());
+        query.setParameter("cvTopicLabel", CvTopic.DEFINITION);
 
-        if (annot != null) {
-            return annot.getAnnotationText();
+        List<String> results = query.getResultList();
+
+        String annot = null;
+
+        if (!results.isEmpty()) {
+            annot = results.iterator().next();
         }
 
-        return null;
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+
+        return annot;
     }
 
     public TreeNode getRoot() {
