@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.*;
@@ -38,7 +39,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     private static final Log log = LogFactory.getLog( AnnotatedObjectController.class );
 
     private Date lastSaved;
-    private AnnotatedObjectWrapper wrapper;
 
     @Autowired
     private CvObjectService cvObjectService;
@@ -47,6 +47,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public abstract AnnotatedObject getAnnotatedObject();
+    public abstract void setAnnotatedObject(AnnotatedObject annotatedObject);
 
     public AnnotatedObjectWrapper getAnnotatedObjectWrapper() {
         return new AnnotatedObjectWrapper(getAnnotatedObject());
@@ -56,14 +57,25 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return new AnnotatedObjectHelper(getAnnotatedObject());
     }
 
-    @Transactional
-    public final void doSave( ActionEvent evt ) {
+    @Transactional("core")
+    public void doSave( ActionEvent evt ) {
         PersistenceController persistenceController = getPersistenceController();
         boolean saved = persistenceController.doSave(getAnnotatedObject());
 
         boolean detailsSaved = doSaveDetails();
 
         if (detailsSaved) saved = true;
+
+        // delete from the unsaved manager
+        final List<IntactObject> deletedObjects = getAnnotatedObjectWrapper().getUnsavedChangeManager().getAllDeleted();
+
+        for (IntactObject intactObject : deletedObjects) {
+            if (intactObject.getAc() != null) {
+                if (log.isDebugEnabled()) log.debug("Deleting: "+ DebugUtil.intactObjectToString(intactObject, false));
+
+                getDaoFactory().getIntactObjectDao().deleteByAc(intactObject.getAc());
+            }
+        }
 
         if (saved) {
             lastSaved = new Date();

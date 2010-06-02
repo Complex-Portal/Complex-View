@@ -63,4 +63,9 @@ public class InteractorController extends AnnotatedObjectController {
     public AnnotatedObject getAnnotatedObject() {
         return getInteractor();
     }
+
+    @Override
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
+        setInteractor((Interactor) annotatedObject);
+    }
 }

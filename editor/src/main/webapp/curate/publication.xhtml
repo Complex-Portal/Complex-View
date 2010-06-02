@@ -198,7 +198,11 @@
                 <p:tabView id="publicationTabs">
 
                     <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
-                        <ia:experimentsTable value="#{publicationController.publication.experiments}"/>
+                        <!--<ia:experimentsTable value="#{publicationController.publication.experiments}"/>-->
+                        <ui:include src="experiments_table.xhtml">
+                            <ui:param name="value" value="#{publicationController.publication.experiments}"/>
+                            <ui:param name="unsavedChangeManager" value="#{publicationController.unsavedChangeManager}"/>
+                        </ui:include>
                     </p:tab>
 
 

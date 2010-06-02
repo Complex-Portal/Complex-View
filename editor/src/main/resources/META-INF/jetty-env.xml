@@ -18,6 +18,23 @@
              </New>
          </Arg>
     </New>
+    <New id="IntactEditorUsersDS" class="org.eclipse.jetty.plus.jndi.Resource">
+         <Arg>${db.users.jndi}</Arg>
+         <Arg>
+              <New class="org.apache.commons.dbcp.BasicDataSource">
+                    <Set name="Url">${db.users.url}</Set>
+                    <Set name="DriverClassName">${db.users.driver}</Set>
+                    <Set name="Username">${db.users.user}</Set>
+                    <Set name="Password">${db.users.password}</Set>
+                    <Set name="MaxActive">30</Set>
+                    <Set name="MaxIdle">10</Set>
+                    <Set name="MinIdle">2</Set>
+                    <Set name="MaxWait">5000</Set>
+                    <Set name="MinEvictableIdleTimeMillis">25000</Set>
+                    <Set name="TimeBetweenEvictionRunsMillis">30000</Set>
+             </New>
+         </Arg>
+    </New>
     <New class="org.eclipse.jetty.plus.jndi.EnvEntry">
         <Arg>jsf/ProjectStage</Arg>
         <Arg type="java.lang.String">Development</Arg>

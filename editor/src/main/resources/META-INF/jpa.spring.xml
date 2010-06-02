@@ -55,12 +55,8 @@
 
     <!-- intact-users -->
 
-    <!-- TODO: This should live in the production database once we pass the test phase -->
-    <bean id="intactUsersDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-    <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:editorusers;DB_CLOSE_DELAY=-1;LOCK_MODE=0"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
+    <bean id="intactUsersDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+         <property name="jndiName" value="${db.users.jndi}"/>
     </bean>
 
     <bean id="usersEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -77,7 +73,7 @@
 
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
+                <property name="databasePlatform" value="${db.users.driver}"/>
                 <property name="showSql" value="false"/>
                 <property name="generateDdl" value="false"/>
             </bean>

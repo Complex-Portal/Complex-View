@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
+import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.model.IntactObject;
 
 import java.util.ArrayList;
@@ -44,20 +45,7 @@ public class UnsavedChangeManager {
     }
 
     public List<String> getDeletedAcs(Class type) {
-        List<String> acs = new ArrayList<String>();
-
-        for (UnsavedChange change : changes) {
-            if (UnsavedChange.DELETED.equals(change.getAction()) &&
-                    type.isAssignableFrom(change.getUnsavedObject().getClass())) {
-                IntactObject intactObject = change.getUnsavedObject();
-
-                if (intactObject.getAc() != null) {
-                    acs.add(intactObject.getAc());
-                }
-            }
-        }
-
-        return acs;
+        return DebugUtil.acList(getDeleted(type));
     }
 
     public List<String> getDeletedAcsByClassName(String className) {
@@ -67,6 +55,33 @@ public class UnsavedChangeManager {
             e.printStackTrace();
         }
         return Collections.EMPTY_LIST;
+    }
+
+    public List<IntactObject> getDeleted(Class type) {
+        List<IntactObject> ios = new ArrayList<IntactObject>();
+
+        for (UnsavedChange change : changes) {
+            if (UnsavedChange.DELETED.equals(change.getAction()) &&
+                    type.isAssignableFrom(change.getUnsavedObject().getClass())) {
+                IntactObject intactObject = change.getUnsavedObject();
+                ios.add(intactObject);
+            }
+        }
+
+        return ios;
+    }
+
+    public List<IntactObject> getAllDeleted() {
+        List<IntactObject> ios = new ArrayList<IntactObject>();
+
+        for (UnsavedChange change : changes) {
+            if (UnsavedChange.DELETED.equals(change.getAction())) {
+                IntactObject intactObject = change.getUnsavedObject();
+                ios.add(intactObject);
+            }
+        }
+
+        return ios;
     }
 
     public List<UnsavedChange> getChanges() {

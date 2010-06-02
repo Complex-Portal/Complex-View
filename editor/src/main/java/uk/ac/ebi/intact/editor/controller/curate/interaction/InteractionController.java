@@ -70,6 +70,11 @@ public class InteractionController extends AnnotatedObjectController {
         return getInteraction();
     }
 
+    @Override
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
+        setInteraction((Interaction) annotatedObject);
+    }
+
     public DualListModel<String> getExperimentLists() {
         return experimentLists;
     }

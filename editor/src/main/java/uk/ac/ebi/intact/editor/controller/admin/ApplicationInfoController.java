@@ -2,14 +2,17 @@ package uk.ac.ebi.intact.editor.controller.admin;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.PlatformTransactionManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DbInfoDao;
 import uk.ac.ebi.intact.model.meta.DbInfo;
 import uk.ac.ebi.kraken.uuw.services.remoting.UniProtJAPI;
 
 import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -47,6 +50,20 @@ public class ApplicationInfoController {
             value = "<unknown>";
         }
         return value;
+    }
+
+    public List<Map.Entry<String,DataSource>> getDataSources() {
+        return new ArrayList<Map.Entry<String,DataSource>>(
+                IntactContext.getCurrentInstance().getSpringContext().getBeansOfType(DataSource.class).entrySet());
+    }
+
+    public List<Map.Entry<String,PlatformTransactionManager>> getTransactionManagers() {
+        return new ArrayList<Map.Entry<String,PlatformTransactionManager>>(
+                IntactContext.getCurrentInstance().getSpringContext().getBeansOfType(PlatformTransactionManager.class).entrySet());
+    }
+
+    public String[] getBeanNames() {
+        return IntactContext.getCurrentInstance().getSpringContext().getBeanDefinitionNames();
     }
 
     public String getUniprotJapiVersion() {

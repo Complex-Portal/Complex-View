@@ -33,8 +33,17 @@
         
         <!--<db.url>jdbc:h2:editordb;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.url>-->
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
-
         <db.hbm2ddl>none</db.hbm2ddl>
+
+
+        <!-- Users DB -->
+        <db.users.jndi>jdbc/IntactEditorUsersDS</db.users.jndi>
+
+        <!-- Users DB defaults -->
+        <db.users.url>jdbc:h2:editorusers;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.users.url>
+        <db.users.user>sa</db.users.user>
+        <db.users.password></db.users.password>
+        <db.users.driver>org.hibernate.dialect.H2Dialect</db.users.driver>
 
         <!-- other property defaults -->
         <webapp.logo.url>http://www.ebi.ac.uk/~intact/images/intact_logo.png</webapp.logo.url>

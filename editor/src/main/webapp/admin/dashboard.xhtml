@@ -23,6 +23,34 @@
                 <h:outputText value="Last CV update:" style="font-weight:bold"/>
                 <h:outputText value="#{applicationInfo.lastCvUpdate}"/>
             </h:panelGrid>
+
+            <p>Datasources:</p>
+
+            <table>
+                <ui:repeat value="#{applicationInfo.dataSources}" var="entry">
+                    <tr>
+                        <td>
+                            <h:outputText value="#{entry.key}:" style="font-weight:bold"/>
+                        </td><td>
+                        <h:outputText value="#{entry.value}"/>
+                    </td>
+                    </tr>
+                </ui:repeat>
+            </table>
+
+            <p>Transaction managers:</p>
+
+             <table>
+                <ui:repeat value="#{applicationInfo.transactionManagers}" var="entry">
+                    <tr>
+                        <td>
+                            <h:outputText value="#{entry.key}:" style="font-weight:bold"/>
+                        </td><td>
+                        <h:outputText value="#{entry.value}"/>
+                    </td>
+                    </tr>
+                </ui:repeat>
+            </table>
         </p:panel>
 
         <br/>
@@ -76,6 +104,25 @@
                 </ui:repeat>
             </table>
         </p:panel>
+
+        <br/>
+
+        <p:panel header="Spring Beans">
+            <table>
+                <ui:repeat value="#{applicationInfo.beanNames}" var="beanName">
+                    <tr>
+                        <td>
+                            <h:outputText value="#{beanName}"/>
+                        </td>
+                        <!--<td>-->
+
+                    <!--</td>-->
+                    </tr>
+                </ui:repeat>
+            </table>
+        </p:panel>
+
+        <br/>
 
     </ui:define>
 
