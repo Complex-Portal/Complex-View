@@ -70,7 +70,11 @@
             </f:facet>
             <p:commandLink title="Mark to be deleted" actionListener="#{unsavedChangeManager.markToDelete(experiment)}"
                            update="experimentsTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(experiment.ac)}">
-                <p:graphicImage alt="Delete" url="/resources/images/bin.png" style="border: 0px;"/>
+                <h:graphicImage library="images" name="bin.png" alt="Delete" style="border: 0px;"/>
+            </p:commandLink>
+            <p:commandLink title="Revert" actionListener="#{unsavedChangeManager.revert(experiment)}"
+                           update="experimentsTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(experiment.ac)}">
+                <h:graphicImage library="images" name="undo.png" alt="Revert" style="border: 0px;"/>
             </p:commandLink>
         </p:column>
     </p:dataTable>

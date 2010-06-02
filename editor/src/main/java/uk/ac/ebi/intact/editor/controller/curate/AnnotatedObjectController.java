@@ -82,10 +82,19 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
+        getUnsavedChangeManager().clearChanges();
     }
 
     public boolean doSaveDetails() {
         return false;
+    }
+
+    @Transactional("core")
+    public void doRevertChanges( ActionEvent evt ) {
+        getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
+        getUnsavedChangeManager().clearChanges();
+
+        addInfoMessage("Changes reverted", "");
     }
 
     @Override

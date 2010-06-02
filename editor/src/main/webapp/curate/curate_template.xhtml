@@ -4,6 +4,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
 
                 template="/main_template.xhtml">
 
@@ -71,10 +72,16 @@
             <p:outputPanel id="changesPanel">
             <h:panelGroup rendered="#{annotatedObjectController.unsavedChanges}">
 
+            <p>&#160;</p>
+
             <div class="intact-notSavedPanel">
                     Changes not yet saved &#160;
                 <p:commandButton type="button" id="unsavedSaveButton" value="Save" onclick="save(); return false"/>
-
+                &#160;-&#160;
+                <p:commandLink id="unsavedRevertLink" value="Revert"
+                               actionListener="#{annotatedObjectController.doRevertChanges}"
+                               update="editorForm,growl,messagesComponent"
+                               onclick="revertDialog.show()" oncomplete="revertDialog.hide()"/>
             </div>
 
             </h:panelGroup>
@@ -92,11 +99,8 @@
     <ui:define name="dialogs">
         <ui:include src="menu_dialogs.xhtml"/>
 
-        <p:dialog header="Please wait" width="200px" widgetVar="saveDialog" visible="false" draggable="false"
-              modal="true" fixedCenter="true" close="false">
-            <h:graphicImage alt="loading" library="images" name="wait_black_indicator.gif"/>
-            Saving #{annotatedObjectController.annotatedObject.class.simpleName}...
-        </p:dialog>
+        <ia:loadingDialog widgetVar="saveDialog" message="Saving #{annotatedObjectController.annotatedObject.class.simpleName}..."/>
+        <ia:loadingDialog widgetVar="revertDialog" message="Reverting changes..."/>
     </ui:define>
 
 </ui:composition>

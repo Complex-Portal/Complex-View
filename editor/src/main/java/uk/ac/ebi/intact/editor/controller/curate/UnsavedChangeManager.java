@@ -20,6 +20,7 @@ import uk.ac.ebi.intact.model.IntactObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,6 +39,17 @@ public class UnsavedChangeManager {
     public void markToDelete(IntactObject object) {
         unsavedChanges = true;
         changes.add(new UnsavedChange(object, UnsavedChange.DELETED));
+    }
+
+    public void revert(IntactObject object) {
+        Iterator<UnsavedChange> iterator = changes.iterator();
+
+        while (iterator.hasNext()) {
+            UnsavedChange unsavedChange = iterator.next();
+            if (object.getAc() != null && object.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+                iterator.remove();
+            }
+        }
     }
 
     public boolean isDeletedAc(String ac) {
