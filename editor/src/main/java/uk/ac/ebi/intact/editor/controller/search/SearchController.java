@@ -49,6 +49,8 @@ public class SearchController extends JpaAwareController {
 
     private LazyDataModel<CvObject> cvobjects;
 
+    private LazyDataModel<Feature> features;
+
     //////////////////
     // Constructors
 
@@ -86,6 +88,10 @@ public class SearchController extends JpaAwareController {
         return cvobjects;
     }
 
+     public LazyDataModel<Feature> getFeatures() {
+        return features;
+    }
+
     ///////////////
     // Actions
 
@@ -95,9 +101,11 @@ public class SearchController extends JpaAwareController {
         log.info( "Searching for '" + query + "'..." );
 
         if ( !StringUtils.isEmpty( query ) ) {
+            final String originalQuery = query;
             query = query.toLowerCase().trim();
 
             String q = query;
+
             q = q.replaceAll( "\\*", "%" );
             q = q.replaceAll( "\\?", "%" );
             if ( !query.startsWith( "%" ) ) {
@@ -122,35 +130,42 @@ public class SearchController extends JpaAwareController {
             Runnable runnablePub = new Runnable() {
                 @Override
                 public void run() {
-                   loadPublication( finalQuery );
+                   loadPublication( finalQuery, originalQuery );
                 }
             };
 
             Runnable runnableExp = new Runnable() {
                 @Override
                 public void run() {
-                   loadExperiments( finalQuery );
+                   loadExperiments( finalQuery, originalQuery );
                 }
             };
 
             Runnable runnableInt = new Runnable() {
                 @Override
                 public void run() {
-                   loadInteractions( finalQuery );
+                   loadInteractions( finalQuery, originalQuery );
                 }
             };
 
             Runnable runnableMol = new Runnable() {
                 @Override
                 public void run() {
-                   loadMolecules( finalQuery );
+                   loadMolecules( finalQuery, originalQuery );
                 }
             };
 
             Runnable runnableCvs = new Runnable() {
                 @Override
                 public void run() {
-                   loadCvObjects( finalQuery );
+                   loadCvObjects( finalQuery, originalQuery );
+                }
+            };
+
+            Runnable runnableFeatures = new Runnable() {
+                @Override
+                public void run() {
+                   loadFeatures( finalQuery, originalQuery );
                 }
             };
 
@@ -159,6 +174,7 @@ public class SearchController extends JpaAwareController {
             executorService.submit(runnableInt);
             executorService.submit(runnableMol);
             executorService.submit(runnableCvs);
+            executorService.submit(runnableFeatures);
 
             executorService.shutdown();
 
@@ -191,7 +207,8 @@ public class SearchController extends JpaAwareController {
                && ( experiments != null && experiments.getRowCount() == 0 )
                && ( interactions != null && interactions.getRowCount() == 0 )
                && ( molecules != null && molecules.getRowCount() == 0 )
-               && ( cvobjects != null && cvobjects.getRowCount() == 0 );
+               && ( cvobjects != null && cvobjects.getRowCount() == 0 )
+               && ( features != null && features.getRowCount() == 0 );
     }
 
     public boolean matchesSingleType() {
@@ -202,23 +219,25 @@ public class SearchController extends JpaAwareController {
         if ( interactions != null && interactions.getRowCount() > 0 ) matches++;
         if ( molecules != null && molecules.getRowCount() > 0 ) matches++;
         if ( cvobjects != null && cvobjects.getRowCount() > 0 ) matches++;
+        if ( features != null && features.getRowCount() > 0 ) matches++;
 
         return matches == 1;
     }
 
-    private void loadCvObjects( String query ) {
+    private void loadCvObjects( String query, String originalQuery ) {
 
         log.info( "Searching for CvObject matching '" + query + "'..." );
 
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
+        params.put( "ac", originalQuery );
 
         // all cvobjects
         cvobjects = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                               "select distinct i " +
                                                               "from CvObject i inner join fetch i.xrefs as x " +
-                                                              "where    ( i.ac = :query " +
+                                                              "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
                                                               "      or lower(i.identifier) like :query " +
@@ -227,7 +246,7 @@ public class SearchController extends JpaAwareController {
 
                                                               "select count(distinct i) " +
                                                               "from CvObject i inner join i.xrefs as x " +
-                                                              "where   (i.ac = :query " +
+                                                              "where   (i.ac = :ac " +
                                                               "      or lower(i.identifier) like :query " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
@@ -238,19 +257,20 @@ public class SearchController extends JpaAwareController {
         log.info( "CvObject found: " + cvobjects.getRowCount() );
     }
 
-    private void loadMolecules( String query ) {
+    private void loadMolecules( String query, String originalQuery ) {
 
         log.info( "Searching for Molecules matching '" + query + "'..." );
 
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
+        params.put( "ac", originalQuery );
 
         // all molecules but interactions
         molecules = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                               "select distinct i " +
                                                               "from InteractorImpl i inner join fetch i.xrefs as x " +
-                                                              "where    ( i.ac = :query " +
+                                                              "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(x.primaryId) like :query ) " +
                                                               "      and i.cvInteractorType.identifier <> 'MI:0317' " +
@@ -258,7 +278,7 @@ public class SearchController extends JpaAwareController {
 
                                                               "select count(distinct i) " +
                                                               "from InteractorImpl i inner join i.xrefs as x " +
-                                                              "where   (i.ac = :query " +
+                                                              "where   (i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(x.primaryId) like :query )" +
                                                               "     and i.cvInteractorType.identifier <> 'MI:0317'",
@@ -281,12 +301,13 @@ public class SearchController extends JpaAwareController {
         return xrefs.iterator().next().getPrimaryId();
     }
 
-    private void loadInteractions( String query ) {
+    private void loadInteractions( String query, String originalQuery ) {
 
         log.info( "Searching for Interactions matching '" + query + "'..." );
 
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
+        params.put( "ac", originalQuery );
 
         // Load experiment eagerly to avoid LazyInitializationException when redering the view
         interactions = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
@@ -294,14 +315,14 @@ public class SearchController extends JpaAwareController {
                                                                  "select distinct i " +
                                                                  "from InteractionImpl i inner join i.xrefs as x " +
                                                                  "                       inner join fetch i.experiments as e " +
-                                                                 "where    i.ac = :query " +
+                                                                 "where    i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
                                                                  "      or lower(x.primaryId) like :query " +
                                                                  "order by i.updated desc",
 
                                                                  "select count(distinct i) " +
                                                                  "from InteractionImpl i inner join i.xrefs as x " +
-                                                                 "where    i.ac = :query " +
+                                                                 "where    i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
                                                                  "      or lower(x.primaryId) like :query ",
 
@@ -314,25 +335,26 @@ public class SearchController extends JpaAwareController {
         return interaction.getExperiments().iterator().next();
     }
 
-    private void loadExperiments( String query ) {
+    private void loadExperiments( String query, String originalQuery ) {
 
         log.info( "Searching for experiments matching '" + query + "'..." );
 
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
+        params.put( "ac", originalQuery );
 
         experiments = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                 "select distinct e " +
                                                                 "from Experiment e inner join e.xrefs as x " +
-                                                                "where    e.ac = :query " +
+                                                                "where    e.ac = :ac " +
                                                                 "      or lower(e.shortLabel) like :query " +
                                                                 "      or lower(x.primaryId) like :query " +
                                                                 "order by e.updated desc",
 
                                                                 "select count(distinct e) " +
                                                                 "from Experiment e inner join e.xrefs as x " +
-                                                                "where    e.ac = :query " +
+                                                                "where    e.ac = :ac " +
                                                                 "      or lower(e.shortLabel) like :query " +
                                                                 "      or lower(x.primaryId) like :query ",
 
@@ -341,18 +363,19 @@ public class SearchController extends JpaAwareController {
         log.info( "Experiment found: " + experiments.getRowCount() );
     }
 
-    private void loadPublication( String query ) {
+    private void loadPublication( String query, String originalQuery ) {
         log.info( "Searching for publications matching '" + query + "'..." );
 
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
+        params.put( "ac", originalQuery );
 
         // TODO add: author
         publications = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                  "select distinct p " +
                                                                  "from Publication p inner join p.xrefs as x " +
-                                                                 "where    p.ac = :query " +
+                                                                 "where    p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
                                                                  "      or lower(x.primaryId) like :query " +
@@ -360,7 +383,7 @@ public class SearchController extends JpaAwareController {
 
                                                                  "select count(distinct p) " +
                                                                  "from Publication p inner join p.xrefs as x " +
-                                                                 "where    p.ac = :query " +
+                                                                 "where    p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
                                                                  "      or lower(x.primaryId) like :query ",
@@ -368,6 +391,35 @@ public class SearchController extends JpaAwareController {
                                                                  params );
 
         log.info( "Publications found: " + publications.getRowCount() );
+    }
+
+    private void loadFeatures( String query, String originalQuery ) {
+        log.info( "Searching for features matching '" + query + "' or AC '"+originalQuery+"'..." );
+
+        final HashMap<String, String> params = Maps.<String, String>newHashMap();
+        params.put( "query", query );
+        params.put( "ac", originalQuery );
+
+        features = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+
+                                                                 "select distinct p " +
+                                                                 "from Feature p inner join p.xrefs as x " +
+                                                                 "where    p.ac = :ac " +
+                                                                 "      or lower(p.shortLabel) like :query " +
+                                                                 "      or lower(p.fullName) like :query " +
+                                                                 "      or lower(x.primaryId) like :query " +
+                                                                 "order by p.updated desc",
+
+                                                                 "select count(distinct p) " +
+                                                                 "from Feature p inner join p.xrefs as x " +
+                                                                 "where    p.ac = :ac " +
+                                                                 "      or lower(p.shortLabel) like :query " +
+                                                                 "      or lower(p.fullName) like :query " +
+                                                                 "      or lower(x.primaryId) like :query ",
+
+                                                                 params );
+
+        log.info( "Features found: " + features.getRowCount() );
     }
 
     public int countExperimentsForPublication( Publication publication ) {

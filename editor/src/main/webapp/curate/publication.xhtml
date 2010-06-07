@@ -58,7 +58,7 @@
                             </ia:panelMessage>
                         </h:panelGroup>
 
-                        <h:panelGroup rendered="#{publicationController.publication.shortLabel != null and publicationController.publication.fullName == null}">
+                        <h:panelGroup rendered="#{publicationController.publication.shortLabel != null and empty publicationController.publication.fullName}">
                             <ia:panelMessage level="error">
                                 This publication does not contain some essential data (e.g. title).
                                 <p:commandButton value="Try to fix" actionListener="#{publicationController.doFormAutocomplete}"

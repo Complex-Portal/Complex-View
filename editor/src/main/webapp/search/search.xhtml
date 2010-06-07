@@ -49,6 +49,10 @@
                         <td style="text-align: right; font-weight: bold;">Controlled vocabularies</td>
                         <td>AC, shortlabel, fullName, Identifier, Xref.primaryId</td>
                     </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;">Features</td>
+                        <td>AC, shortlabel</td>
+                    </tr>
                 </table>
             </blockquote>
 
@@ -285,6 +289,34 @@
             </p:dataTable>
 
         </ia:collapsiblePanel>
+
+     <ia:collapsiblePanel id="featuresPanel" open="#{searchController.matchesSingleType()}"
+                             display="#{searchController.features.rowCount > 0}"
+                             title="Controlled Vocabularies (#{searchController.features.rowCount})">
+
+              <p:dataTable id="searchFeaturesTable" var="feature" value="#{searchController.features}"
+                         paginator="#{searchController.features.rowCount > 10}"
+                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="AC"/>
+                    </f:facet>
+                    <ot:separateConversationContext>
+                        <h:link outcome="/curate/feature" value="#{feature.shortLabel}" includeViewParams="true">
+                            <f:param name="ac" value="#{feature.ac}"/>
+                        </h:link>
+                    </ot:separateConversationContext>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Name"/>
+                    </f:facet>
+                    <h:outputText value="#{feature.shortLabel}"/>
+                </p:column>
+            </p:dataTable>
+
+        </ia:collapsiblePanel>
+
 
     </ui:define>
 

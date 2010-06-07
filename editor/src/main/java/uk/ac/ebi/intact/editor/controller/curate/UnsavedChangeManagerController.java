@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Keeps the changes for each annotated object by AC.
+ * 
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */

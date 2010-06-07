@@ -29,7 +29,6 @@ import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -65,6 +64,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         PersistenceController persistenceController = getPersistenceController();
         boolean saved = persistenceController.doSave(getAnnotatedObject());
 
+        // saves specific elements for each annotated object (e.g. components in interactions)
         boolean detailsSaved = doSaveDetails();
 
         if (detailsSaved) saved = true;
@@ -98,7 +98,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return false;
     }
 
-    @Transactional("core")
     public void doRevertChanges( ActionEvent evt ) {
         getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
         getUnsavedChangeManager().clearChanges();

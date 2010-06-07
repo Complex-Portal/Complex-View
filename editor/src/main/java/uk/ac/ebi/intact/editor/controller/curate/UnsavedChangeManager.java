@@ -44,6 +44,7 @@ public class UnsavedChangeManager {
     public void revert(IntactObject object) {
         Iterator<UnsavedChange> iterator = changes.iterator();
 
+        // removed the passed object from the list of unsaved changes
         while (iterator.hasNext()) {
             UnsavedChange unsavedChange = iterator.next();
             if (object.getAc() != null && object.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
