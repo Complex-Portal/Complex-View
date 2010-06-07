@@ -22,7 +22,17 @@
         </f:metadata>
 
         <h:panelGroup rendered="#{publicationController.publication == null}">
-            No publication loaded!
+            <ia:panelMessage level="warn">
+                No publication loaded!
+            </ia:panelMessage>
+
+            <p>
+                You may want to&#160;
+                <p:commandLink value="create" onclick="newPublicationDlg.show();"/>
+                a new one or&#160;
+                <p:commandLink value="load" onclick="openByPmidDlg.show();"/>
+                an existing one.
+            </p>
         </h:panelGroup>
 
 
@@ -199,6 +209,10 @@
 
                     <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
                         <!--<ia:experimentsTable value="#{publicationController.publication.experiments}"/>-->
+                        <div class="dialogButtonBar">
+                            <p:commandButton value="New" onclick="alert('Testing and not implemented')"/>
+                        </div>
+
                         <ui:include src="experiments_table.xhtml">
                             <ui:param name="value" value="#{publicationController.publication.experiments}"/>
                             <ui:param name="unsavedChangeManager" value="#{publicationController.unsavedChangeManager}"/>

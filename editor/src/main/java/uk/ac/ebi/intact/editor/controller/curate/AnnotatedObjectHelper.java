@@ -245,6 +245,8 @@ public class AnnotatedObjectHelper {
     }
 
     public String findAnnotationText( String topicId ) {
+        if (getAnnotatedObject() == null) return null;
+        
         Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( getAnnotatedObject(), topicId );
 
         if ( annotation != null ) {

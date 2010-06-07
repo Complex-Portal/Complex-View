@@ -43,7 +43,7 @@
     <ui:define name="menuBar">
         <p:menubar>
             <p:submenu label="Publication">
-                <p:menuitem label="New" onclick="newPublicationDlg.show(); "/>
+                <p:menuitem label="New" onclick="newPublicationDlg.show();"/>
                 <p:menuitem label="Open by PMID" onclick="openByPmidDlg.show(); "/>
                 <p:menuitem label="Save" actionListener="#{publicationController.doSave}" ajax="false"
                             rendered="#{publicationController.publication != null}"/>

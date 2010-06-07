@@ -29,6 +29,7 @@ import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
