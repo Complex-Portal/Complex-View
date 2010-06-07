@@ -117,6 +117,22 @@ a img {
     text-decoration:line-through
 }
 
+.intact-buttonBar {
+    width:100%;
+    background-color:#fff8dc;
+    padding: 2px;
+    text-align:left;
+}
+
+/** dialogs **/
+.dialogButtonBar {
+    width:100%;
+    background-color:#fff8dc;
+    padding: 2px;
+    text-align:right;
+    border-top: 1px solid #9da4b5
+}
+
 /** Tables **/
 .yui-skin-sam .yui-dt table {
     /*border-color: #99FF00;*/
@@ -241,12 +257,5 @@ a img {
 }
 
 
-/** dialogs **/
-.dialogButtonBar {
-    width:100%;
-    background-color:#fff8dc;
-    padding: 2px;
-    text-align:right;
-    border-top: 1px solid #9da4b5
-}
+
 

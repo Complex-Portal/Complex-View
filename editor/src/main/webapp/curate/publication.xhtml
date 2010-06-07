@@ -209,10 +209,6 @@
 
                     <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
                         <!--<ia:experimentsTable value="#{publicationController.publication.experiments}"/>-->
-                        <div class="dialogButtonBar">
-                            <p:commandButton value="New" onclick="alert('Testing and not implemented')"/>
-                        </div>
-
                         <ui:include src="experiments_table.xhtml">
                             <ui:param name="value" value="#{publicationController.publication.experiments}"/>
                             <ui:param name="unsavedChangeManager" value="#{publicationController.unsavedChangeManager}"/>

@@ -55,4 +55,11 @@
         </navigation-case>
     </navigation-rule>
 
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>curate.experiment</from-outcome>
+            <to-view-id>/curate/experiment.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
 </faces-config>

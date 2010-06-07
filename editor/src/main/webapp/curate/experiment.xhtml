@@ -110,6 +110,10 @@
                 <p:tab title="Interactions (#{experimentController.countInteractionsByExperimentAc(experimentController.ac)})">
                     <!--<ia:interactionsTable value="#{experimentController.interactionDataModel}"-->
                                           <!--unsavedChangeManager="#{experimentController.unsavedChangeManager}"/>-->
+                    <div class="intact-buttonBar">
+                            <h:commandButton value="New" actionListener="#{experimentController.newExperiment}" action="curate.experiment"/>
+                        </div>
+
                     <ui:include src="interactions_table.xhtml">
                         <ui:param name="value" value="#{experimentController.interactionDataModel}"/>
                         <ui:param name="unsavedChangeManager" value="#{experimentController.unsavedChangeManager}"/>
