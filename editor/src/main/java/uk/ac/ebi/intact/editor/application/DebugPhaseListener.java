@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.intact.editor.application;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
@@ -23,15 +26,18 @@ import javax.faces.event.PhaseListener;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class TempPhaseListener implements PhaseListener {
+public class DebugPhaseListener implements PhaseListener {
+
+    private static final Log log = LogFactory.getLog( DebugPhaseListener.class );
+
     @Override
     public void afterPhase(PhaseEvent event) {
-        System.out.println("After phase: "+event.getPhaseId());
+        if (log.isDebugEnabled()) log.debug("After phase: "+event.getPhaseId());
     }
 
     @Override
     public void beforePhase(PhaseEvent event) {
-        System.out.println("Before phase: "+event.getPhaseId());
+        if (log.isDebugEnabled()) log.debug("Before phase: "+event.getPhaseId());
 
     }
 

@@ -14,7 +14,7 @@
     </application>
 
     <lifecycle>
-        <phase-listener>uk.ac.ebi.intact.editor.application.TempPhaseListener</phase-listener>
+        <phase-listener>uk.ac.ebi.intact.editor.application.DebugPhaseListener</phase-listener>
     </lifecycle>
 
     <!--<component>-->
