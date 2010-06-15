@@ -238,6 +238,13 @@
 		</navigation-case>
 	</navigation-rule>
 
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>documentation.dataset</from-outcome>
+            <to-view-id>/pages/documentation/dataset.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>documentation.publications</from-outcome>

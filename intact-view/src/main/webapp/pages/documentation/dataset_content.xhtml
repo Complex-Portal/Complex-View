@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+
+    <h1>Curated Datasets</h1>
+
+    Curated datasets are publications tagged, either computationally or manually by a curator, which are relevant to a specific area of biology.
+    These are actively maintained and grow with every release.
+    <br/>
+    New datasets can be requested, if relevant to your work, by mailing intact-help@ebi.ac.uk.
+
+    <h2>Manually selected datasets</h2>
+
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>Cancer</strong> - Interactions investigated in the context of cancer
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:cancer">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/Cancer.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>AFCS</strong> - Interactions from the Alliance for Cell Signaling database
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:afcs">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/AFCS.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>BioCreative</strong> - Critical Assessment of Information Extraction systems in Biology
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:biocreative">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/BioCreative.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+        <h:outputText value="Publications based on this dataset: PMID:18834496, 18834487, 19208158"/>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>Alzheimers Interaction</strong> - dataset based on proteins with an association to Alzheimer disease
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:alzheimers">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/Alzheimers.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+        <h:outputText value="Publications based on this dataset: PMID: 20391539"/>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>Complexes</strong> - Interaction dataset based on curated protein complexes.
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:complexes">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/Complexes.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>Chromatin</strong> - Epigenetic interactions resulting in chromatin modulation
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:chromatin">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/Chromatin.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+    </h:panelGrid>
+
+    <h2>Computationally maintained datasets</h2>
+
+    These datasets are computationally maintained but additional papers may be manually added to this set by a curator during the curation process.
+    When datasets are computationally added to a publication, the large scale papers (more than 100 interactions per experiment) are excluded.
+
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>Archaea</strong> - Interaction dataset based on Archaea proteins
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:archaea">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/Archaea.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>NDPK</strong> - Interactions involving proteins containing InterPro domain IPR001564, Nucleoside diphosphate kinase, core.
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:ndpk">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/NDPK.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+        <h:outputText value="Publications based on this dataset: PMID: 19415463"/>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>MSD Data</strong> - obtained from The Macromolecular Structure Database
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:msd">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/MSD.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>Cyanobacteria</strong> - Interaction dataset based on Cyanobacteria proteins and related species
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:cyanobacteria">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/Cyanobacteria.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+        <h:outputText value="Publications based on this dataset: PMID: 18508856"/>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>Synapse</strong> - Interactions of proteins with an established role in the presynapse.
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:synapse">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/Synapse.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+    </h:panelGrid>
+    <h:panelGrid columns="3" cellpadding="0" cellspacing="15">
+        <strong>Apoptosis</strong> - Interactions involving proteins with a function related to apoptosis
+        <h:outputLink
+                value="http://www.ebi.ac.uk/intact/pages/interactions/interactions.xhtml?query=dataset:apoptosis">
+            <h:graphicImage alt="webappLogo" value="#{intactView['webapp.logo.url']}"
+                            style="width:40px"/>
+        </h:outputLink>
+        <h:outputLink
+                value="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/psi25/datasets/Apoptosis.zip">
+            <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
+                            style="border:0"/>
+        </h:outputLink>
+    </h:panelGrid>
+</ui:composition>
