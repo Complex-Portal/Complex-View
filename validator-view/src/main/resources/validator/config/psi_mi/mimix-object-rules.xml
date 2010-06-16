@@ -3,7 +3,8 @@
                 xsi:noNamespaceSchemaLocation="http://www.psidev.info/files/validator/object-rule.xsd">
 
     <!-- (!) Keep these rule by alphabetical order, that's easier to maintain. -->
-
+    <name>MIMIx</name>
+    
     <rule class="psidev.psi.mi.validator.extension.rules.ConfidenceScoreRule"/>
     <rule class="psidev.psi.mi.validator.extension.rules.ExperimentBibRefRule"/>
     <rule class="psidev.psi.mi.validator.extension.rules.ExperimentHostOrganismRule"/>

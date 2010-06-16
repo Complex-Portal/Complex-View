@@ -3,7 +3,8 @@
                 xsi:noNamespaceSchemaLocation="http://www.psidev.info/files/validator/object-rule.xsd">
 
     <!-- (!) Keep these rule by alphabetical order, that's easier to maintain. -->
-
+   <name>ImeX</name>
+    
     <!-- IMEx rules-->
     <rule class="psidev.psi.mi.validator.extension.rules.imex.InteractionSourceIdentityXrefRule"/>
     <rule class="psidev.psi.mi.validator.extension.rules.imex.ProteinIdentityRule"/>

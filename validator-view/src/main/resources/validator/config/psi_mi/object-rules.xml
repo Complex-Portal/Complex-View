@@ -2,6 +2,8 @@
 <objectRuleList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:noNamespaceSchemaLocation="http://www.psidev.info/files/validator/object-rule.xsd">
 
+    <name>Object rules</name>
+
     <rule class="psidev.psi.mi.validator.extension.rules.ExperimentBibRefRule"/>
     <rule class="psidev.psi.mi.validator.extension.rules.ExperimentHostOrganismRule"/>
     <rule class="psidev.psi.mi.validator.extension.rules.InteractorOrganismRule"/>
