@@ -281,10 +281,13 @@ public class PsiValidatorBean extends BaseController {
         // we have the data on disk, clear memory
         psiFile.dispose();
 
+        final long start = System.currentTimeMillis();
         PsiReportBuilder builder = new PsiReportBuilder( psiFile.getFilename(), f, model, validationScope, progressModel );
+        final long stop = System.currentTimeMillis();
+        log.trace( "Time to load the validator: " + (stop - start) + "ms" );
 
         // we execute the method of the builder that actually creates the report
-        log.warn( "About to start building the PSI report" );
+        log.info( "About to start building the PSI report" );
 
         this.currentPsiReport = builder.createPsiReport();
         if ( log.isWarnEnabled() ) {
@@ -471,5 +474,13 @@ public class PsiValidatorBean extends BaseController {
 
     public void setCurrentPsiReport( PsiReport currentPsiReport ) {
         this.currentPsiReport = currentPsiReport;
+    }
+
+    public ValidationScope getValidationScope() {
+        return validationScope;
+    }
+
+    public void setValidationScope(ValidationScope validationScope) {
+        this.validationScope = validationScope;
     }
 }

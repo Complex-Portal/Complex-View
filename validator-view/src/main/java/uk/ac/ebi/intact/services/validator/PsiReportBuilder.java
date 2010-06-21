@@ -185,7 +185,7 @@ public class PsiReportBuilder {
 
         try {
             // We read the configuration file, included inside the jar
-            InputStream ontologyCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/ontologies.xml" );
+            InputStream ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/ontologies.xml" );
             InputStream cvMappingCfg = null;
             InputStream ruleCfg = null;
 
@@ -205,17 +205,17 @@ public class PsiReportBuilder {
                     break;
 
                 case CV_ONLY:
-                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/cv-mapping.xml" );
+                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/cv-mapping.xml" );
                     break;
 
                 case MIMIX:
-                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/cv-mapping.xml" );
-                    ruleCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/mimix-object-rules.xml" );
+                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/cv-mapping.xml" );
+                    ruleCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/mimix-rules.xml" );
                     break;
 
                 case IMEX:
-                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/cv-mapping.xml" );
-                    ruleCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_mi/imex-object-rules.xml" );
+                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/cv-mapping.xml" );
+                    ruleCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/imex-rules.xml" );
                     break;
 
                 default:
@@ -225,7 +225,10 @@ public class PsiReportBuilder {
             log.info( "Is the Cv mapping file null: " + ( cvMappingCfg == null ) );
 
             // run validation
+            final long start = System.currentTimeMillis();
             validatePsiFile( report, file, ontologyCfg, cvMappingCfg, ruleCfg );
+            final long stop = System.currentTimeMillis();
+            log.trace( "Time to validate using scope '"+validationScope+"': " + (stop - start) + "ms" );
 
         } catch (Throwable t) {
 
@@ -247,7 +250,7 @@ public class PsiReportBuilder {
 
         try {
             // We read the configuration file, included inside the jar
-            InputStream ontologyCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_par/ontologies.xml" );
+            InputStream ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_par/ontologies.xml" );
             InputStream cvMappingCfg = null;
             InputStream ruleCfg = null;
 
@@ -267,7 +270,7 @@ public class PsiReportBuilder {
                     break;
 
                 case CV_ONLY:
-                    cvMappingCfg = PsiReportBuilder.class.getResourceAsStream( "/validator/config/psi_par/cv-mapping.xml" );
+                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_par/cv-mapping.xml" );
                     break;
 
                 default:
@@ -304,7 +307,7 @@ public class PsiReportBuilder {
                                  InputStream ruleCfg) {
 
         // Printwriter to get the stacktrace messages
-        StringWriter sw = new StringWriter(1024);
+        StringWriter sw = new StringWriter( 1024 );
 
         progressModel.setValue( 1L );
 
@@ -335,7 +338,7 @@ public class PsiReportBuilder {
 
             // finally, we set the messages obtained (if any) to the report
             if (validatorReport.hasSyntaxMessages()) {
-                report.setXmlSyntaxStatus("XML syntax validation failed.");
+                report.setXmlSyntaxStatus("XML syntax validation failed ("+validatorReport.getSyntaxMessages().size()+" messages)");
                 report.setXmlSyntaxStatus(PsiReport.INVALID);
                 report.setXmlSyntaxReport(new ArrayList<ValidatorMessage>(validatorReport.getSyntaxMessages()));
             } else {
@@ -358,18 +361,19 @@ public class PsiReportBuilder {
                 String status = null;
 
                 if( report.getValidatorMessages() != null ) {
+
                     for (ValidatorMessage message : report.getValidatorMessages()) {
                         // if we find a warning, set the status to warning and continue looping
                         if (message.getLevel() == MessageLevel.WARN) {
                             status = PsiReport.WARNINGS;
-                            report.setSemanticsReport("Validated with warnings");
+                            report.setSemanticsReport("Validated with warnings ("+ report.getValidatorMessages().size() +" messages)");
                         }
 
                         // if a message with a level higher than warning is found, set the status to
                         // error and stop the loop
                         if (message.getLevel().isHigher(MessageLevel.WARN)) {
                             status = PsiReport.INVALID;
-                            report.setSemanticsReport("Validation failed");
+                            report.setSemanticsReport("Validation failed  ("+ report.getValidatorMessages().size() +" messages)");
                             break;
                         }
                     }

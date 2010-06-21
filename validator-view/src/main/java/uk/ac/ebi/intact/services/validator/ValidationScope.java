@@ -39,6 +39,14 @@ public enum ValidationScope {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public static ValidationScope forName( String scope ) {
         if ( SYNTAX.name.equalsIgnoreCase( scope ) ) {
             return SYNTAX;

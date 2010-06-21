@@ -201,14 +201,28 @@
             </tr:group>
         </tr:group>
 
-        <tr:panelHorizontalLayout>
+        <!--<tr:panelHorizontalLayout>-->
 
-            <tr:commandButton id="submit_button" text="Validate" actionListener="#{psiValidatorBean.validate}"
-                              onclick="document.getElementById('progress_image').style.display = 'block'; document.getElementById('submit_button').disabled=true"/>
+        <table>
+            <tr>
+                <td>
+                    <tr:commandButton id="submit_button" text="Validate" actionListener="#{psiValidatorBean.validate}"
+                              onclick="document.getElementById('progress_image').style.display = 'block';
+                                       document.getElementById('submit_button').disabled=true"/>
+                </td>
+                <!--document.getElementById('progress_text').style.display = 'block';-->
+                <td>
+                    <tr:image id="progress_image" inlineStyle="display:none;" source="/images/wait_red_indicator.gif"/>
+                </td>
+                <!--<td>
+                    <tr:outputText id='progress_text' value="Be aware that IMEx validation may take up to 30 seconds to complete. Please be patient..."
+                           inlineStyle="display:none;" rendered="#{psiValidatorBean.validationScope.name == 'imex'}" />
+                </td>-->
+            </tr>
 
-            <tr:spacer width="20"/>
+        </table>
 
-            <tr:image id="progress_image" inlineStyle="display:none;" source="/images/wait_red_indicator.gif"/>
+            <!--<tr:spacer width="20"/>-->
 
             <!--<tr:poll interval="2000" id="pollid" /> --><!-- pollListener="#{psiValidatorBean.onPoll}" -->
             <!--<tr:panelGroupLayout layout="horizontal">-->
@@ -229,7 +243,7 @@
             <!--</tr:panelGroupLayout>-->
             <!--</tr:panelGroupLayout>-->
 
-        </tr:panelHorizontalLayout>
+        <!--</tr:panelHorizontalLayout>-->
 
     </tr:panelGroupLayout>
 
