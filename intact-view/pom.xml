@@ -49,7 +49,7 @@
         <intact.faq.url>http://www.ebi.ac.uk/~intact/site/faq/faq-latest.xml</intact.faq.url>
 
         <intact.webapp.name>IntAct</intact.webapp.name>
-        <intact.webapp.logo.url>http://www.ebi.ac.uk/intact/site/images/logo_intact_small.gif</intact.webapp.logo.url>
+        <intact.webapp.logo.url>http://www.ebi.ac.uk/~intact/site/images/logo_intact_small.gif</intact.webapp.logo.url>
 
         <google.analytics.tracker></google.analytics.tracker>
 
