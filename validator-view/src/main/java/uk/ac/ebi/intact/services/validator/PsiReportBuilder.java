@@ -7,7 +7,6 @@ package uk.ac.ebi.intact.services.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.trinidad.model.DefaultBoundedRangeModel;
-import org.apache.myfaces.trinidad.model.BoundedRangeModel;
 import psidev.psi.mi.validator.ValidatorReport;
 import psidev.psi.mi.validator.extension.Mi25Validator;
 import psidev.psi.tools.validator.MessageLevel;
@@ -82,7 +81,7 @@ public class PsiReportBuilder {
         this.validationScope = validationScope;
         this.model = model;
         this.progressModel = progressModel;
-        
+
         this.currentSourceType = SourceType.URL;
     }
 
@@ -121,22 +120,32 @@ public class PsiReportBuilder {
                 log.debug( "The model in use is: " + model );
             }
 
-            if( model.equals( DataModel.PSI_MI ) ) {
-                 validatePsiMiFile(report, file);
+            ValidatorFactory factory = new ValidatorFactory();
+
+            if (validationScope == null){
+                validationScope = factory.getDefaultValidationScope(model);
+            }
+
+            Mi25Validator validator =  factory.getValidator(validationScope, model);
+
+            validateFile(report, file, validator);
+
+            /*if( model.equals( DataModel.PSI_MI ) ) {
+                validatePsiMiFile(report, file);
             } else if( model.equals( DataModel.PSI_PAR ) ) {
-                 validatePsiParFile(report, file);
+                validatePsiParFile(report, file);
             } else {
                 throw new IllegalStateException( "Unknown data model: " + model );
-            }
+            }*/
 
         } catch (Throwable t) {
             log.error("Unexpected error thrown", t);
 
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                                         "Sorry, an unexpected error occur, please contact the " +
-                                                         "administrator of this web site if the issue persist.",
-                                                         t.getMessage());
+                    "Sorry, an unexpected error occur, please contact the " +
+                            "administrator of this web site if the issue persist.",
+                    t.getMessage());
             context.addMessage(null, facesMessage);
 
             return report;
@@ -219,16 +228,13 @@ public class PsiReportBuilder {
                     break;
 
                 default:
-                    throw new IllegalStateException( "Unsupported validation scope: '"+ validationScope +"', the application is not correctly configured." );
+                    throw new IllegalArgumentException( "Unsupported validation scope: '"+ validationScope +"', the application is not correctly configured." );
             }
 
             log.info( "Is the Cv mapping file null: " + ( cvMappingCfg == null ) );
 
             // run validation
-            final long start = System.currentTimeMillis();
             validatePsiFile( report, file, ontologyCfg, cvMappingCfg, ruleCfg );
-            final long stop = System.currentTimeMillis();
-            log.trace( "Time to validate using scope '"+validationScope+"': " + (stop - start) + "ms" );
 
         } catch (Throwable t) {
 
@@ -292,6 +298,115 @@ public class PsiReportBuilder {
         }
     }
 
+    private void validateFile(PsiReport report, File file, Mi25Validator validator){
+        // Printwriter to get the stacktrace messages
+        StringWriter sw = new StringWriter( 1024 );
+
+        progressModel.setValue( 1L );
+
+        try{
+            log.debug("Validation starting");
+            progressModel.setValue( 4L );
+
+            final long start = System.currentTimeMillis();
+            final ValidatorReport validatorReport = validator.validate( file );
+            final long stop = System.currentTimeMillis();
+            log.trace( "Time to validate using scope '"+validationScope+"': " + (stop - start) + "ms" );
+
+            progressModel.setValue( 5L );
+
+            if ( log.isInfoEnabled() ) {
+                log.info( "Validator reported " + validatorReport.getSyntaxMessages().size() + " syntax messages" );
+                log.info( "Validator reported " + validatorReport.getSemanticMessages().size() + " semantic messages" );
+            }
+
+            report.setInteractionCount( validatorReport.getInteractionCount() );
+
+            // finally, we set the messages obtained (if any) to the report
+            if (validatorReport.hasSyntaxMessages()) {
+                report.setXmlSyntaxStatus("XML syntax validation failed ("+validatorReport.getSyntaxMessages().size()+" messages)");
+                report.setXmlSyntaxStatus(PsiReport.INVALID);
+                report.setXmlSyntaxReport(new ArrayList<ValidatorMessage>(validatorReport.getSyntaxMessages()));
+            } else {
+                report.setXmlSyntaxStatus(PsiReport.VALID);
+            }
+
+            if( ! validationScope.involveSemanticValidation() ) {
+                // there is no semantic involved so set message accoringly
+                report.setSemanticsStatus(PsiReport.NOT_RUN);
+                report.setSemanticsReport("Semantic validation was not requested");
+
+            } else if ( validatorReport.hasSemanticMessages()) {
+
+                report.setValidatorMessages(new ArrayList<ValidatorMessage>(validatorReport.getSemanticMessages()));
+
+                // we need to determine the status of the semantics validation.
+                // If there are no validatorMessages, the status is "valid" (already set).
+                // If there are messages, but all of them are warnings, the status will be "warnings".
+                // If there are error or fatal messages, the status, the status will be failed
+                String status = null;
+
+                if( report.getValidatorMessages() != null ) {
+
+                    for (ValidatorMessage message : report.getValidatorMessages()) {
+                        // if we find a warning, set the status to warning and continue looping
+                        if (message.getLevel() == MessageLevel.WARN) {
+                            status = PsiReport.WARNINGS;
+                            report.setSemanticsReport("Validated with warnings ("+ report.getValidatorMessages().size() +" messages)");
+                        }
+
+                        // if a message with a level higher than warning is found, set the status to
+                        // error and stop the loop
+                        if (message.getLevel().isHigher(MessageLevel.WARN)) {
+                            status = PsiReport.INVALID;
+                            report.setSemanticsReport("Validation failed  ("+ report.getValidatorMessages().size() +" messages)");
+                            break;
+                        }
+                    }
+
+                    report.setSemanticsStatus( status );
+                }
+
+                // set the status to the report
+                report.setSemanticsStatus(status);
+
+            } else {
+
+                report.setSemanticsStatus(PsiReport.VALID);
+                report.setSemanticsReport("Document is valid");
+            }
+
+        } catch (Throwable t) {
+
+            StringBuilder sb = new StringBuilder( 512 );
+            sb.append( "An error occured while validating your data model" );
+
+            Throwable cause = t.getCause();
+            while( cause != null ) {
+                sb.append( " > " ).append( cause.getMessage() );
+                cause = cause.getCause();
+            }
+
+            String msg = sb.toString();
+            log.error( msg, t );
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( msg );
+            context.addMessage( null, message );
+
+            return;
+        }
+
+        String output = sw.getBuffer().toString();
+
+        // if the output has content, an exception has been thrown, so the validation has failed
+        if (output.length() > 0) {
+            report.setSemanticsStatus(PsiReport.INVALID);
+            report.setSemanticsReport(output);
+            return;
+        }
+    }
+
     /**
      * Runs the validation with a given set of configuration files.
      *
@@ -325,7 +440,10 @@ public class PsiReportBuilder {
             log.debug("Validation starting");
             progressModel.setValue( 4L );
 
+            final long start = System.currentTimeMillis();
             final ValidatorReport validatorReport = validator.validate( file );
+            final long stop = System.currentTimeMillis();
+            log.trace( "Time to validate using scope '"+validationScope+"': " + (stop - start) + "ms" );
 
             progressModel.setValue( 5L );
 

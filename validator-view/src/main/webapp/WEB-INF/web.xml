@@ -256,6 +256,12 @@ to use the fullqualified class name. -->
         <servlet-name>faces</servlet-name>
     </filter-mapping>
 
+
+    <!-- Initialization of the web application -->
+    <listener>
+        <listener-class>uk.ac.ebi.intact.services.validator.ApplicationInitializer</listener-class>
+    </listener>
+
     <!-- Spring Framework 2.5 -->
     <listener>
         <listener-class>
