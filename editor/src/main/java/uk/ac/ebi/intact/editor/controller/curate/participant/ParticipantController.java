@@ -68,6 +68,11 @@ public class ParticipantController extends AnnotatedObjectController {
         return getParticipant();
     }
 
+    @Override
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
+        setParticipant((Component)annotatedObject);
+    }
+
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( participant == null || !ac.equals( participant.getAc() ) ) {

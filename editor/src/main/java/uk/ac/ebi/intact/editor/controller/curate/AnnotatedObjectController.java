@@ -50,6 +50,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public abstract AnnotatedObject getAnnotatedObject();
+    public abstract void setAnnotatedObject(AnnotatedObject annotatedObject);
 
     public AnnotatedObjectWrapper getAnnotatedObjectWrapper() {
         return new AnnotatedObjectWrapper(getAnnotatedObject());
@@ -99,7 +100,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void doRevertChanges( ActionEvent evt ) {
-        getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
+        getCoreEntityManager().clear();
+//        getCoreEntityManager().refresh(getAnnotatedObject());
+        if (getAnnotatedObject().getAc() != null) {
+            setAnnotatedObject(getDaoFactory().getAnnotatedObjectDao(getAnnotatedObject().getClass()).getByAc(getAnnotatedObject().getAc()));
+        } else {
+            setAnnotatedObject(null);
+        }
+
         getUnsavedChangeManager().clearChanges();
 
         addInfoMessage("Changes reverted", "");
@@ -107,7 +115,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Override
     public void changed(AjaxBehaviorEvent evt) {
-        System.out.println("CHANGED!!!!");
         setUnsavedChanges(true);
     }
 

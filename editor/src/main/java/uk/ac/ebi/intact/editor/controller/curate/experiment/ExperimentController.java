@@ -57,6 +57,11 @@ public class ExperimentController extends AnnotatedObjectController {
         return getExperiment();
     }
 
+    @Override
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
+        setExperiment((Experiment)annotatedObject);
+    }
+
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( experiment == null || !ac.equals( experiment.getAc() ) ) {

@@ -91,6 +91,12 @@
 
         <br/>
 
+        <p:panel header="Database Counts">
+            <h:outputText value="#{applicationInfo.databaseCounts}" escape="false"/>
+        </p:panel>
+
+        <br/>
+
         <p:panel header="System">
             <table>
                 <ui:repeat value="#{applicationInfo.systemPropertyNames}" var="propName">

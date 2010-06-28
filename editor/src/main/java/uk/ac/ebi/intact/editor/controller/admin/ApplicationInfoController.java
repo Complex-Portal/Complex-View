@@ -5,11 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DbInfoDao;
+import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.model.meta.DbInfo;
 import uk.ac.ebi.kraken.uuw.services.remoting.UniProtJAPI;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,7 @@ public class ApplicationInfoController {
     private String schemaVersion;
     private String lastUniprotUpdate;
     private String lastCvUpdate;
+    private String databaseCounts;
 
     public ApplicationInfoController() {
     }
@@ -39,6 +43,12 @@ public class ApplicationInfoController {
         schemaVersion = getDbInfoValue(infoDao, DbInfo.SCHEMA_VERSION);
         lastUniprotUpdate = getDbInfoValue(infoDao, DbInfo.LAST_PROTEIN_UPDATE);
         lastCvUpdate = getDbInfoValue(infoDao, DbInfo.LAST_CV_UPDATE_PSIMI);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(256);
+        PrintStream ps = new PrintStream(baos);
+        DebugUtil.printDatabaseCounts(ps);
+
+        databaseCounts = baos.toString().replaceAll("\n","<br/>");
     }
 
     private String getDbInfoValue(DbInfoDao infoDao, String key) {
@@ -100,5 +110,13 @@ public class ApplicationInfoController {
 
     public void setLastCvUpdate(String lastCvUpdate) {
         this.lastCvUpdate = lastCvUpdate;
+    }
+
+    public String getDatabaseCounts() {
+        return databaseCounts;
+    }
+
+    public void setDatabaseCounts(String databaseCounts) {
+        this.databaseCounts = databaseCounts;
     }
 }
