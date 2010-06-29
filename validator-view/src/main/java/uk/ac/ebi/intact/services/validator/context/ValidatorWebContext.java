@@ -19,7 +19,7 @@ public class ValidatorWebContext {
         return ourInstance;
     }
 
-    private ValidatorWebContext() {
+    private ValidatorWebContext(){
         this.validatorWebContent = new ValidatorWebContent();
     }
 

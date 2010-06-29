@@ -166,7 +166,7 @@ public class ValidatorFactory {
             ValidatorWebContent validatorContent = ValidatorWebContext.getInstance().getValidatorWebContent();
 
             // We get the pre-instantiated ontologyManager and object rules
-            OntologyManager ontologymanager = validatorContent.getPsiParOntologymanager();
+            OntologyManager ontologymanager = validatorContent.getPsiParOntologyManager();
             CvRuleManager cvRuleManager = null;
             Set<ObjectRule> objectRules = new HashSet<ObjectRule>();
 
@@ -207,7 +207,7 @@ public class ValidatorFactory {
             ValidatorWebContent validatorContent = ValidatorWebContext.getInstance().getValidatorWebContent();
 
             // We get the pre-instantiated ontologyManager and object rules
-            OntologyManager ontologymanager = validatorContent.getPsiMiOntologymanager();
+            OntologyManager ontologymanager = validatorContent.getPsiMiOntologyManager();
             CvRuleManager cvRuleManager = null;
             Set<ObjectRule> objectRules = new HashSet<ObjectRule>();
 

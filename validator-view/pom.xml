@@ -29,8 +29,8 @@
 
         <plugins>
             <plugin>
-               <groupId>org.codehaus.mojo</groupId>
-               <artifactId>maven-buildnumber-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>maven-buildnumber-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
@@ -175,21 +175,30 @@
 
         <!-- Logging -->
         <dependency>
-           <groupId>commons-logging</groupId>
-           <artifactId>commons-logging</artifactId>
-           <version>1.1.1</version>
-       </dependency>
-       <dependency>
-           <groupId>log4j</groupId>
-           <artifactId>log4j</artifactId>
-           <version>1.2.15</version>
-           <exclusions>
-               <exclusion>
-                   <groupId>javax.jms</groupId>
-                   <artifactId>jms</artifactId>
-               </exclusion>
-           </exclusions>
-       </dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.15</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.jms</groupId>
+                    <artifactId>jms</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--
+              Quartz framework and dependencies
+            -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>1.8.3</version>
+        </dependency>
 
     </dependencies>
 
