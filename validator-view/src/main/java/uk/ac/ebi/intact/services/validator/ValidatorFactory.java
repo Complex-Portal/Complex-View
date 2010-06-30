@@ -3,10 +3,10 @@ package uk.ac.ebi.intact.services.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.validator.extension.Mi25Validator;
+import psidev.psi.tools.cvrReader.mapping.jaxb.CvMapping;
 import psidev.psi.tools.ontology_manager.OntologyManager;
 import psidev.psi.tools.validator.preferences.UserPreferences;
 import psidev.psi.tools.validator.rules.codedrule.ObjectRule;
-import psidev.psi.tools.validator.rules.cvmapping.CvRuleManager;
 import uk.ac.ebi.intact.services.validator.context.ValidatorWebContent;
 import uk.ac.ebi.intact.services.validator.context.ValidatorWebContext;
 
@@ -31,7 +31,6 @@ public class ValidatorFactory {
      * Logging, logging!
      */
     private static final Log log = LogFactory.getLog(ValidatorFactory.class);
-
     private static final String psiParOntology = "config/psi_par/ontologies.xml";
     private static final String psiMiOntology = "config/psi_mi/ontologies.xml";
     private static final String psiMiCvMapping = "config/psi_mi/cv-mapping.xml";
@@ -167,7 +166,7 @@ public class ValidatorFactory {
 
             // We get the pre-instantiated ontologyManager and object rules
             OntologyManager ontologymanager = validatorContent.getPsiParOntologyManager();
-            CvRuleManager cvRuleManager = null;
+            CvMapping cvMapping = null;
             Set<ObjectRule> objectRules = new HashSet<ObjectRule>();
 
             switch( scope ) {
@@ -175,7 +174,7 @@ public class ValidatorFactory {
                     break;
 
                 case CV_ONLY:
-                    cvRuleManager = validatorContent.getPsiParRuleManager();
+                    cvMapping = validatorContent.getPsiParCvMapping();
                     break;
 
                 default:
@@ -183,7 +182,7 @@ public class ValidatorFactory {
             }
 
             // we instantiate the MI25 validator
-            Mi25Validator validator = new Mi25Validator(ontologymanager, cvRuleManager, objectRules);
+            Mi25Validator validator = new Mi25Validator(ontologymanager, cvMapping, objectRules);
 
             setUpUserPreferences(validator);
 
@@ -208,7 +207,7 @@ public class ValidatorFactory {
 
             // We get the pre-instantiated ontologyManager and object rules
             OntologyManager ontologymanager = validatorContent.getPsiMiOntologyManager();
-            CvRuleManager cvRuleManager = null;
+            CvMapping cvMapping = null;
             Set<ObjectRule> objectRules = new HashSet<ObjectRule>();
 
             switch( scope ) {
@@ -216,16 +215,16 @@ public class ValidatorFactory {
                     break;
 
                 case CV_ONLY:
-                    cvRuleManager = validatorContent.getPsiMiRuleManager();
+                    cvMapping = validatorContent.getPsiMiCvMapping();
                     break;
 
                 case MIMIX:
-                    cvRuleManager = validatorContent.getPsiMiRuleManager();
+                    cvMapping = validatorContent.getPsiMiCvMapping();
                     objectRules = validatorContent.getPsiMiObjectRules().get(scope);
                     break;
 
                 case IMEX:
-                    cvRuleManager = validatorContent.getPsiMiRuleManager();
+                    cvMapping = validatorContent.getPsiMiCvMapping();
                     objectRules = validatorContent.getPsiMiObjectRules().get(scope);
                     break;
 
@@ -234,7 +233,7 @@ public class ValidatorFactory {
             }
 
             // we instantiate the MI25 validator
-            Mi25Validator validator = new Mi25Validator(ontologymanager, cvRuleManager, objectRules);
+            Mi25Validator validator = new Mi25Validator(ontologymanager, cvMapping, objectRules);
 
             setUpUserPreferences(validator);
 
@@ -344,5 +343,29 @@ public class ValidatorFactory {
             throw new IllegalStateException( "Unknown data model: " + dataModel );
 
         }
+    }
+
+    public static String getPsiParOntology() {
+        return psiParOntology;
+    }
+
+    public static String getPsiMiOntology() {
+        return psiMiOntology;
+    }
+
+    public static String getPsiMiCvMapping() {
+        return psiMiCvMapping;
+    }
+
+    public static String getPsiParCvMapping() {
+        return psiParCvMapping;
+    }
+
+    public static String getMimixRules() {
+        return mimixRules;
+    }
+
+    public static String getImexRules() {
+        return imexRules;
     }
 }

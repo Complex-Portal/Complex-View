@@ -28,6 +28,8 @@ public class ApplicationInitializer implements ServletContextListener {
         System.out.println("Prepare ontology and validator rules");
 
         ValidatorWebContext.getInstance();
+
+        
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {

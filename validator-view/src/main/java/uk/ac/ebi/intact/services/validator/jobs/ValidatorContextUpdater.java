@@ -34,16 +34,16 @@ public class ValidatorContextUpdater implements Job {
         ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
 
         try {
-            boolean isPsiMiUpToDate = checkOntology(validatorContent, validatorContent.getPsiMiOntologyManager());
-            boolean isPsiParUpToDate = checkOntology(validatorContent, validatorContent.getPsiParOntologyManager());
+            boolean isPsiMiUpToDate = checkOntology(validatorContext, validatorContent.getPsiMiOntologyManager());
+            boolean isPsiParUpToDate = checkOntology(validatorContext, validatorContent.getPsiParOntologyManager());
 
             ValidatorWebContent newWebContent = null;
 
             if (isPsiMiUpToDate && !isPsiParUpToDate){
-                newWebContent = new ValidatorWebContent(validatorContent.getPsiMiOntologyManager(), validatorContent.getPsiMiRuleManager(), validatorContent.getPsiMiObjectRules());
+                newWebContent = new ValidatorWebContent(validatorContent.getPsiMiOntologyManager(), validatorContent.getPsiMiCvMapping(), validatorContent.getPsiMiObjectRules());
             }
             else if (!isPsiMiUpToDate && isPsiParUpToDate){
-                newWebContent = new ValidatorWebContent(validatorContent.getPsiParOntologyManager(), validatorContent.getPsiParRuleManager());
+                newWebContent = new ValidatorWebContent(validatorContent.getPsiParOntologyManager(), validatorContent.getPsiParCvMapping());
             }
             else if (!isPsiMiUpToDate && !isPsiParUpToDate){
                 newWebContent = new ValidatorWebContent();
@@ -55,7 +55,7 @@ public class ValidatorContextUpdater implements Job {
                             "when re-uploading the PSI-MI ontology." +
                             " As the new ontology manager is null, we will keep the previous one and will not be able to use the new ontology. \n";
                     NullPointerException e = new NullPointerException(body);
-                    validatorContent.sendEmail("Update of the psi-mi ontology failed", ExceptionUtils.getFullStackTrace(e));
+                    validatorContext.sendEmail("Update of the psi-mi ontology failed", ExceptionUtils.getFullStackTrace(e));
                     throw e;
                 }
                 else if (newWebContent.getPsiParOntologyManager() == null){
@@ -63,11 +63,15 @@ public class ValidatorContextUpdater implements Job {
                             "when re-uploading the PSI-PAR ontology." +
                             " As the new ontology manager is null, we will keep the previous one and will not be able to use the new ontology. \n";
                     NullPointerException e = new NullPointerException(body);
-                    validatorContent.sendEmail("Update of the psi-par ontology failed", ExceptionUtils.getFullStackTrace(e));
+                    validatorContext.sendEmail("Update of the psi-par ontology failed", ExceptionUtils.getFullStackTrace(e));
                     throw e;
                 }
                 else {
                     validatorContext.setValidatorWebContent(newWebContent);
+
+                    String body = "A new update of the ontology has been done recently and the validatorWebContext successfully refreshed its webContent" +
+                            "(validator rules, CvMapping and OntologyManager).";
+                    validatorContext.sendEmail("Update of the ontology and validator rules", body);
                 }
             }
 
@@ -76,18 +80,18 @@ public class ValidatorContextUpdater implements Job {
                     "recently, we will not be able to load the new ontology terms. \n \n" +
                     ExceptionUtils.getFullStackTrace(e);
             log.warn(body);
-            validatorContent.sendEmail("Date of last ontology update not available", body);
+            validatorContext.sendEmail("Date of last ontology update not available", body);
         }
     }
 
-    private boolean checkOntology(ValidatorWebContent validatorContent, OntologyManager ontologyManager) throws OntologyLoaderException {
+    private boolean checkOntology(ValidatorWebContext validatorContext, OntologyManager ontologyManager) throws OntologyLoaderException {
 
         if (ontologyManager == null){
             String body = "A problem occurred when uploading the ontology and " +
                     "consequently the ontology manager is null. \n" +
                     "The validator will not be able to work properly.";
             NullPointerException e = new NullPointerException(body);
-            validatorContent.sendEmail("Ontology Manager is null", ExceptionUtils.getFullStackTrace(e));
+            validatorContext.sendEmail("Ontology Manager is null", ExceptionUtils.getFullStackTrace(e));
             throw e;
         }
         else {

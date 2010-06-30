@@ -110,6 +110,10 @@ public class PsiReport {
         this.xmlSyntaxReport = xmlSyntaxReport;
     }
 
+    public boolean hasSemanticStatus() {
+        return semanticsStatus != null;
+    }
+
     public boolean isXmlSemanticValid() {
         return VALID.equals(semanticsStatus);
     }
