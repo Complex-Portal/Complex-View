@@ -10,7 +10,36 @@
 
     <tr:document title="Help">
 
-        <tr:panelHeader text="PSI-MI Validation Scopes">
+        <tr:panelHeader text="PSI-MI and PSI-PAR validation">
+
+            The validator can use two different data models to validate the files :
+
+            <tr:panelHeader text="Moleacular interactions (PSI-MI ontology)">
+
+                The validator will execute a set of rules based on the PSI-MI ontology to check the file. It can use 4 possible scopes
+                for validating the files :
+                <ul>
+                    <li>XML syntax</li>
+                    <li>Usage of controlled-vocabulary defined in the PSI-MI ontology</li>
+                    <li>MIMIx</li>
+                    <li>IMEx</li>
+                </ul>
+            </tr:panelHeader>
+            <tr:panelHeader text="Protein Affinity Reagents (PSI-PAR ontology)">
+
+                The validator will execute a set of rules based on the PSI-PAR ontology to check the file. It can use 2 possible scopes
+                for validating the files :
+                <ul>
+                    <li>XML syntax</li>
+                    <li>Usage of controlled-vocabulary defined in the PSI-PAR ontology</li>
+                </ul>
+            </tr:panelHeader>
+            <br/>
+            The scope 'XML syntax' is not specific to the chosen data-model because both data models are using the same XML schema : PSI-XML 2.5.
+        </tr:panelHeader>
+        <br/>
+
+        <tr:panelHeader text="Validation Scopes">
 
             The validation scopes described below define the the stringency of the validation rules applied to a dataset.
             As the image below illustrates, the currently supported scopes are built on top of one another. Increasing
@@ -18,11 +47,27 @@
 
             <br/>
             <br/>
+            <strong>WARNING: </strong> The taxId '-5' for 'in sillico' is a valid taxId for MIMIx but not for IMEx.
+
+            <br/>
+            <br/>
 
             <trh:tableLayout width="100%">
                 <trh:rowLayout>
                     <trh:cellFormat halign="center">
-                        <tr:image source="images/mi_scopes.PNG"/>
+                        <tr:panelHeader text="PSI-MI Validation Scopes">
+                            <tr:image source="images/mi_scopes.PNG"/>
+                        </tr:panelHeader>
+                    </trh:cellFormat>
+                </trh:rowLayout>
+            </trh:tableLayout>
+
+            <trh:tableLayout width="100%">
+                <trh:rowLayout>
+                    <trh:cellFormat halign="center">
+                        <tr:panelHeader text="PSI-PAR Validation Scopes">
+                            <tr:image source="images/par_scopes.PNG"/>
+                        </tr:panelHeader>
                     </trh:cellFormat>
                 </trh:rowLayout>
             </trh:tableLayout>
@@ -49,36 +94,66 @@
 
                 This scope makes sure that the use of controlled vocabularies is correct. That is, for each controlled
                 vocabulary place-holder, it checks that one uses the appropriate set of terms as defined in the
-                <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI" targetFrame="_blank"> PSI-MI ontology</tr:goLink>.
+                <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI" targetFrame="_blank"> PSI-MI ontology</tr:goLink> or in the
+                <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI" targetFrame="_blank"> PSI-PAR ontology</tr:goLink> depending on which data-model
+                you first choose.
 
                 The rule is currently looking at:
-                <ul>
-                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0001&amp;termName=interaction%20detection%20method" targetFrame="_blank">Interaction detection methods</tr:goLink></li>
-                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0190&amp;termName=interaction%20type" targetFrame="_blank">Interaction types</tr:goLink></li>
-                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0002&amp;termName=participant%20identification%20method" targetFrame="_blank">Participant identification methods</tr:goLink></li>
-                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0495&amp;termName=experimental%20role" targetFrame="_blank">Participant's experimental roles</tr:goLink></li>
-                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0500&amp;termName=biological%20role" targetFrame="_blank">Participant's biological roles</tr:goLink></li>
-                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0003&amp;termName=feature%20detection%20dethod" targetFrame="_blank">Participant's Feature detection method</tr:goLink></li>
-                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0003&amp;termName=feature%20detection%20dethod" targetFrame="_blank">Experiment's feature detection method</tr:goLink></li>
-                    <li>Participant's feature type (in
-                        <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0116&amp;termName=feature%20type" targetFrame="_blank"> PSI-MI </tr:goLink>
-                        or
-                        <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MOD&amp;termId=MOD%3A00000&amp;termName=protein%20modification" targetFrame="_blank"> PSI-MOD</tr:goLink>
-                        )
-                    </li>
-                    <li>Experiment's bibliographical references (
-                        <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0446&amp;termName=pubmed" targetFrame="_blank">pubmed </tr:goLink>
-                        or
-                        <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0574&amp;termName=DOI" targetFrame="_blank"> DOI</tr:goLink>
-                        )
-                    </li>
-                </ul>
+                <table cellspacing="15px">
+                    <tr>
+                        <td><strong><em>Interaction detection method</em></strong></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0001&amp;termName=interaction%20detection%20method" targetFrame="_blank">PSI-MI</tr:goLink></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0001&amp;termName=interaction%20detection%20method" targetFrame="_blank">PSI-PAR</tr:goLink></td>
+                    </tr>
+                    <tr>
+                        <td><strong><em>Interaction types</em></strong></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0190&amp;termName=interaction%20type" targetFrame="_blank">PSI-MI</tr:goLink></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0190&amp;termName=interaction%20type" targetFrame="_blank">PSI-PAR</tr:goLink></td>
+                    </tr>
+                    <tr>
+                        <td><strong><em>Participant identification methods</em></strong></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0002&amp;termName=participant%20identification%20method" targetFrame="_blank">PSI-MI</tr:goLink></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0002&amp;termName=participant%20detection" targetFrame="_blank">PSI-PAR</tr:goLink></td>
+                    </tr>
+                    <tr>
+                        <td><strong><em>Participant's experimental roles</em></strong></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0495&amp;termName=experimental%20role" targetFrame="_blank">PSI-MI</tr:goLink></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0495&amp;termName=experimental%20role" targetFrame="_blank">PSI-PAR</tr:goLink></td>
+                    </tr>
+                    <tr>
+                        <td><strong><em>Participant's biological roles</em></strong></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0500&amp;termName=biological%20role" targetFrame="_blank">PSI-MI</tr:goLink></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0500&amp;termName=biological%20role" targetFrame="_blank">PSI-PAR</tr:goLink></td>
+                    </tr>
+                    <tr>
+                        <td><strong><em>Participant's Feature detection method</em></strong></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0003&amp;termName=feature%20detection%20dethod" targetFrame="_blank">PSI-MI</tr:goLink></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0003&amp;termName=feature%20detection" targetFrame="_blank">PSI-PAR</tr:goLink></td>
+                    </tr>
+                    <tr>
+                        <td><strong><em>Experiment's feature detection method</em></strong></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0003&amp;termName=feature%20detection%20dethod" targetFrame="_blank">PSI-MI</tr:goLink></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0003&amp;termName=feature%20detection" targetFrame="_blank">PSI-PAR</tr:goLink></td>
+                    </tr>
+                    <tr>
+                        <td><strong><em>Participant's feature type</em></strong></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0116&amp;termName=feature%20type" targetFrame="_blank"> PSI-MI </tr:goLink>
+                            or
+                            <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MOD&amp;termId=MOD%3A00000&amp;termName=protein%20modification" targetFrame="_blank"> PSI-MOD</tr:goLink></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0116&amp;termName=feature%20type" targetFrame="_blank">PSI-PAR</tr:goLink></td>
+                    </tr>
+                    <tr>
+                        <td><strong><em>Experiment's bibliographical references</em></strong></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI&amp;termId=MI%3A0445&amp;termName=literature%20database" targetFrame="_blank">PSI-MI </tr:goLink></td>
+                        <td><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0445&amp;termName=literature%20database" targetFrame="_blank">PSI-PAR</tr:goLink></td>
+                    </tr>
+                </table>
 
             </tr:panelHeader>
 
             <tr:panelHeader text="MIMIx guidelines">
 
-                This scopes checks that the Minimum Information required for reporting a Molecular Interaction eXperiment (<tr:goLink destination="http://www.ncbi.nlm.nih.gov/pubmed/17687370" targetFrame="_blank">MIMIx</tr:goLink>) are respected.
+                This scopes checks that the Minimum Information required for reporting a Molecular Interaction eXperiment (<tr:goLink destination="http://www.psidev.info/index.php?q=node/278" targetFrame="_blank">MIMIx</tr:goLink>) are respected.
 
             </tr:panelHeader>
 

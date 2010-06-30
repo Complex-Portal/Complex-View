@@ -66,6 +66,11 @@
             <tr:panelBox text="Documentation">
                 <ul>
                     <li>
+                        <tr:goLink destination="http://www3.interscience.wiley.com/journal/122651438/abstract?CRETRY=1&amp;SRETRY=0" targetFrame="_blank">
+                            <tr:outputText value="Publication"/>
+                        </tr:goLink>
+                    </li>
+                    <li>
                         <tr:commandLink text="Local installation" action="documentation.local_installation"/>
                     </li>
                     <li>
@@ -97,6 +102,13 @@
             <tr:outputText value="PSI-PAR"/>
         </tr:goLink>
         <tr:outputText value=" format."/>
+        <br/>
+        <br/>
+        <tr:commandLink action="dialog:miDocumentation" partialSubmit="true"
+                                        useWindow="true" windowHeight="600" windowWidth="700">
+                            <tr:outputText value="Here"/>
+       </tr:commandLink>
+        <tr:outputText value=" is a quick user's guide to help you validating your file(s)."/>
     </tr:group>
 
 </tr:panelHeader>
@@ -207,7 +219,7 @@
             <tr>
                 <td>
                     <tr:commandButton id="submit_button" text="Validate" actionListener="#{psiValidatorBean.validate}"
-                              onclick="document.getElementById('progress_image').style.display = 'block';
+                                      onclick="document.getElementById('progress_image').style.display = 'block';
                                        document.getElementById('submit_button').disabled=true"/>
                 </td>
                 <!--document.getElementById('progress_text').style.display = 'block';-->
@@ -222,26 +234,26 @@
 
         </table>
 
-            <!--<tr:spacer width="20"/>-->
+        <!--<tr:spacer width="20"/>-->
 
-            <!--<tr:poll interval="2000" id="pollid" /> --><!-- pollListener="#{psiValidatorBean.onPoll}" -->
-            <!--<tr:panelGroupLayout layout="horizontal">-->
-            <!--<tr:spacer width="30"/>-->
-            <!--<tr:panelGroupLayout layout="vertical" partialTriggers="pollid" id="pg2">-->
-            <!--<c:forEach var="progressStep"-->
-            <!--varStatus="vs"-->
-            <!--begin="0"-->
-            <!--end="#{psiValidatorBean.progressModel.maximum}"-->
-            <!--items="#{psiValidatorBean.progressSteps}">-->
+        <!--<tr:poll interval="2000" id="pollid" /> --><!-- pollListener="#{psiValidatorBean.onPoll}" -->
+        <!--<tr:panelGroupLayout layout="horizontal">-->
+        <!--<tr:spacer width="30"/>-->
+        <!--<tr:panelGroupLayout layout="vertical" partialTriggers="pollid" id="pg2">-->
+        <!--<c:forEach var="progressStep"-->
+        <!--varStatus="vs"-->
+        <!--begin="0"-->
+        <!--end="#{psiValidatorBean.progressModel.maximum}"-->
+        <!--items="#{psiValidatorBean.progressSteps}">-->
 
-            <!--<tr:panelGroupLayout layout="horizontal">-->
-            <!--<tr:outputText value="#{progressStep}"-->
-            <!--styleClass="AFFieldText"-->
-            <!--rendered="#{psiValidatorBean.progressModel.value >= vs.index}"/>-->
-            <!--</tr:panelGroupLayout>-->
-            <!--</c:forEach>-->
-            <!--</tr:panelGroupLayout>-->
-            <!--</tr:panelGroupLayout>-->
+        <!--<tr:panelGroupLayout layout="horizontal">-->
+        <!--<tr:outputText value="#{progressStep}"-->
+        <!--styleClass="AFFieldText"-->
+        <!--rendered="#{psiValidatorBean.progressModel.value >= vs.index}"/>-->
+        <!--</tr:panelGroupLayout>-->
+        <!--</c:forEach>-->
+        <!--</tr:panelGroupLayout>-->
+        <!--</tr:panelGroupLayout>-->
 
         <!--</tr:panelHorizontalLayout>-->
 
