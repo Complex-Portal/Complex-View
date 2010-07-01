@@ -36,6 +36,10 @@
             <from-outcome>dialog:parDocumentation</from-outcome>
             <to-view-id>/par_help.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>dialog:documentation</from-outcome>
+            <to-view-id>/help.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
 
     <navigation-rule>

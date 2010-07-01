@@ -7,6 +7,8 @@ import psidev.psi.tools.cvrReader.CvRuleReaderException;
 import psidev.psi.tools.cvrReader.mapping.jaxb.CvMapping;
 import psidev.psi.tools.ontology_manager.OntologyManager;
 import psidev.psi.tools.validator.rules.codedrule.ObjectRule;
+import psidev.psi.tools.validator.rules.cvmapping.CvRule;
+import psidev.psi.tools.validator.rules.cvmapping.CvRuleManager;
 import uk.ac.ebi.intact.services.validator.DataModel;
 import uk.ac.ebi.intact.services.validator.ValidationScope;
 import uk.ac.ebi.intact.services.validator.ValidatorFactory;
@@ -265,5 +267,17 @@ public class ValidatorWebContent {
     private void setUpPsiParScopes(){
         this.psiMiScopes.add(ValidationScope.SYNTAX);
         this.psiMiScopes.add(ValidationScope.CV_ONLY);
+    }
+
+    public Collection<CvRule> getPsiMiCvRules(){
+        CvRuleManager ruleManager = new CvRuleManager(this.psiMiOntologyManager, this.psiMiCvMapping);
+
+        return ruleManager.getCvRules();
+    }
+
+    public Collection<CvRule> getPsiParCvRules(){
+        CvRuleManager ruleManager = new CvRuleManager(this.psiParOntologyManager, this.psiParCvMapping);
+
+        return ruleManager.getCvRules();
     }
 }
