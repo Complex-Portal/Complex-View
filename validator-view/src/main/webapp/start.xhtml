@@ -104,10 +104,7 @@
         <tr:outputText value=" format."/>
         <br/>
         <br/>
-        <tr:commandLink action="dialog:documentation" partialSubmit="true"
-                                        useWindow="true" windowHeight="600" windowWidth="700">
-                            <tr:outputText value="Here"/>
-       </tr:commandLink>
+        <tr:commandLink text="Here" action="documentation.help"/>
         <tr:outputText value=" is a quick user's guide to help you validating your file(s)."/>
     </tr:group>
 
@@ -133,7 +130,7 @@
                     <!-- source -->
                     <tr:selectOneRadio id="sourceSelector" value="local"
                                        label="Source:"
-                                       valueChangeListener="#{psiValidatorBean.uploadTypeChanged}"
+                                       valueChangeListener="#{psiValidatorController.uploadTypeChanged}"
                                        onclick="submit()">
                         <tr:selectItem label="From local file" value="local"/>
                         <tr:selectItem label="From URL" value="url"/>
@@ -147,7 +144,7 @@
                     <!-- model & scope -->
                     <tr:panelTabbed position="above">
                         <tr:showDetailItem text="Molecular Interactions"
-                                           disclosureListener="#{psiValidatorBean.validationModelChangedMI}">
+                                           disclosureListener="#{psiValidatorController.validationModelChangedMI}">
 
                             <tr:panelHorizontalLayout valign="top">
                                 <tr:outputText value="Validation scope " />
@@ -158,7 +155,7 @@
                                 </tr:commandLink>
 
                                 <tr:selectOneRadio id="scopeSelector" value="mimix"
-                                                   valueChangeListener="#{psiValidatorBean.validationScopeChangedMI}"
+                                                   valueChangeListener="#{psiValidatorController.validationScopeChangedMI}"
                                                    onclick="submit()">
                                     <tr:selectItem label="XML Syntax Only" value="syntax"/>
                                     <tr:selectItem label="Controlled Vocabulary Usage" value="cv-only"/>
@@ -170,7 +167,7 @@
                         </tr:showDetailItem>
 
                         <tr:showDetailItem text="Protein Affinity Reagents (beta)"
-                                           disclosureListener="#{psiValidatorBean.validationModelChangedPAR}" >
+                                           disclosureListener="#{psiValidatorController.validationModelChangedPAR}" >
 
                             <tr:panelHorizontalLayout valign="top">
                                 <tr:outputText value="Validation scope " />
@@ -181,7 +178,7 @@
                                 </tr:commandLink>
 
                                 <tr:selectOneRadio id="scopeSelector" value="cv-only"
-                                                   valueChangeListener="#{psiValidatorBean.validationScopeChangedPAR}"
+                                                   valueChangeListener="#{psiValidatorController.validationScopeChangedPAR}"
                                                    onclick="submit()">
                                     <tr:selectItem label="XML Syntax Only" value="syntax"/>
                                     <tr:selectItem label="Controlled Vocabulary Usage" value="cv-only"/>
@@ -199,16 +196,16 @@
 
         <!-- File/URL input -->
         <tr:group>
-            <tr:group rendered="#{psiValidatorBean.uploadLocalFile}">
+            <tr:group rendered="#{psiValidatorController.uploadLocalFile}">
                 <tr:inputFile id="my_input_file" columns="60" label="File:"
-                              valueChangeListener="#{psiValidatorBean.onPsiFileUpload}" />
+                              valueChangeListener="#{psiValidatorController.onPsiFileUpload}" />
             </tr:group>
 
-            <tr:group rendered="#{!psiValidatorBean.uploadLocalFile}">
+            <tr:group rendered="#{!psiValidatorController.uploadLocalFile}">
                 <tr:inputText id="inputUrl" label="URL:"
-                              columns="70" value="#{psiValidatorBean.psiUrl}"
+                              columns="70" value="#{psiValidatorController.psiUrl}"
                         />
-                <!-- validator="#{psiValidatorBean.validateUrlFormat}" -->
+                <!-- validator="#{psiValidatorController.validateUrlFormat}" -->
                 <tr:message for="inputUrl" styleClass="error-message" />
             </tr:group>
         </tr:group>
@@ -218,7 +215,7 @@
         <table>
             <tr>
                 <td>
-                    <tr:commandButton id="submit_button" text="Validate" actionListener="#{psiValidatorBean.validate}"
+                    <tr:commandButton id="submit_button" text="Validate" actionListener="#{psiValidatorController.validate}"
                                       onclick="document.getElementById('progress_image').style.display = 'block';
                                        document.getElementById('submit_button').disabled=true"/>
                 </td>
@@ -228,7 +225,7 @@
                 </td>
                 <!--<td>
                     <tr:outputText id='progress_text' value="Be aware that IMEx validation may take up to 30 seconds to complete. Please be patient..."
-                           inlineStyle="display:none;" rendered="#{psiValidatorBean.validationScope.name == 'imex'}" />
+                           inlineStyle="display:none;" rendered="#{psiValidatorController.validationScope.name == 'imex'}" />
                 </td>-->
             </tr>
 
@@ -236,20 +233,20 @@
 
         <!--<tr:spacer width="20"/>-->
 
-        <!--<tr:poll interval="2000" id="pollid" /> --><!-- pollListener="#{psiValidatorBean.onPoll}" -->
+        <!--<tr:poll interval="2000" id="pollid" /> --><!-- pollListener="#{psiValidatorController.onPoll}" -->
         <!--<tr:panelGroupLayout layout="horizontal">-->
         <!--<tr:spacer width="30"/>-->
         <!--<tr:panelGroupLayout layout="vertical" partialTriggers="pollid" id="pg2">-->
         <!--<c:forEach var="progressStep"-->
         <!--varStatus="vs"-->
         <!--begin="0"-->
-        <!--end="#{psiValidatorBean.progressModel.maximum}"-->
-        <!--items="#{psiValidatorBean.progressSteps}">-->
+        <!--end="#{psiValidatorController.progressModel.maximum}"-->
+        <!--items="#{psiValidatorController.progressSteps}">-->
 
         <!--<tr:panelGroupLayout layout="horizontal">-->
         <!--<tr:outputText value="#{progressStep}"-->
         <!--styleClass="AFFieldText"-->
-        <!--rendered="#{psiValidatorBean.progressModel.value >= vs.index}"/>-->
+        <!--rendered="#{psiValidatorController.progressModel.value >= vs.index}"/>-->
         <!--</tr:panelGroupLayout>-->
         <!--</c:forEach>-->
         <!--</tr:panelGroupLayout>-->
@@ -269,7 +266,7 @@
 <!-- Uploaded file report table -->
 
 <tr:panelHeader text="Validation summary"
-                rendered="#{psiValidatorBean.currentPsiReport != null}">
+                rendered="#{psiValidatorController.currentPsiReport != null}">
 
     <trh:tableLayout>
         <trh:rowLayout>
@@ -282,12 +279,12 @@
                                  cellPadding="0"
                                  halign="left"
                                  width="600"
-                                 rendered="#{psiValidatorBean.currentPsiReport != null}">
+                                 rendered="#{psiValidatorController.currentPsiReport != null}">
                     <trh:rowLayout>
                         <trh:cellFormat/>
                         <trh:cellFormat>Filename: </trh:cellFormat>
                         <trh:cellFormat>
-                            <tr:outputText value="#{psiValidatorBean.currentPsiReport.name}"/>
+                            <tr:outputText value="#{psiValidatorController.currentPsiReport.name}"/>
                         </trh:cellFormat>
                         <trh:cellFormat/>
                     </trh:rowLayout>
@@ -295,22 +292,22 @@
                     <trh:rowLayout>
                         <trh:cellFormat>
                             <tr:image source="images/icon_success_sml.gif"
-                                      rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxValid}"/>
+                                      rendered="#{psiValidatorController.currentPsiReport.xmlSyntaxValid}"/>
                             <tr:image source="images/icon_error_sml.gif"
-                                      rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}"/>
+                                      rendered="#{psiValidatorController.currentPsiReport.xmlSyntaxInvalid}"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
                             <tr:outputText value="XML Syntax"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
-                            <tr:outputText value="#{psiValidatorBean.currentPsiReport.xmlSyntaxStatus}"/>
+                            <tr:outputText value="#{psiValidatorController.currentPsiReport.xmlSyntaxStatus}"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
-                            <tr:panelHorizontalLayout rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}">
+                            <tr:panelHorizontalLayout rendered="#{psiValidatorController.currentPsiReport.xmlSyntaxInvalid}">
                                 <tr:goLink destination="#xml_report">
                                     <tr:outputText value="Report"/>
                                 </tr:goLink>
-                                <tr:goLink destination="#html_view" rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxValid}">
+                                <tr:goLink destination="#html_view" rendered="#{psiValidatorController.currentPsiReport.xmlSyntaxValid}">
                                     <tr:outputText value="HTML View"/>
                                 </tr:goLink>
                             </tr:panelHorizontalLayout>
@@ -322,23 +319,23 @@
                          and aggregate the errors into the same report.
                     -->
 
-                    <trh:rowLayout rendered="#{psiValidatorBean.currentPsiReport.semanticsStatus != null}">
+                    <trh:rowLayout rendered="#{psiValidatorController.currentPsiReport.semanticsStatus != null}">
                         <trh:cellFormat>
                             <tr:image source="images/icon_success_sml.gif"
-                                      rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticValid}"/>
+                                      rendered="#{psiValidatorController.currentPsiReport.xmlSemanticValid}"/>
                             <tr:image source="images/icon_warning_sml.gif"
-                                      rendered="#{psiValidatorBean.currentPsiReport.semanticsStatus == 'warnings'}"/>
+                                      rendered="#{psiValidatorController.currentPsiReport.semanticsStatus == 'warnings'}"/>
                             <tr:image source="images/icon_error_sml.gif"
-                                      rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticInvalid}"/>
+                                      rendered="#{psiValidatorController.currentPsiReport.xmlSemanticInvalid}"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
                             <tr:outputText value="XML Semantics"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
-                            <tr:outputText value="#{psiValidatorBean.currentPsiReport.semanticsStatus}"/>
+                            <tr:outputText value="#{psiValidatorController.currentPsiReport.semanticsStatus}"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
-                            <tr:goLink destination="#semantics_report" rendered="#{psiValidatorBean.currentPsiReport.xmlSemanticInvalid}">
+                            <tr:goLink destination="#semantics_report" rendered="#{psiValidatorController.currentPsiReport.xmlSemanticInvalid}">
                                 <tr:outputText value="Report"/>
                             </tr:goLink>
                         </trh:cellFormat>
@@ -358,9 +355,9 @@
 <!-- XML Syntax Validation Report -->
 
 <a name="xml_report"/>
-<tr:panelHeader text="XML Syntax Validation Report" rendered="#{psiValidatorBean.currentPsiReport.xmlSyntaxInvalid}">
+<tr:panelHeader text="XML Syntax Validation Report" rendered="#{psiValidatorController.currentPsiReport.xmlSyntaxInvalid}">
 
-    <tr:table width="800" var="msg" value="#{psiValidatorBean.currentPsiReport.xmlSyntaxReport}">
+    <tr:table width="800" var="msg" value="#{psiValidatorController.currentPsiReport.xmlSyntaxReport}">
         <tr:column >
             <tr:image source="images/icon_warning_sml.gif" rendered="#{msg.level == 'WARN'}" shortDesc="#{msg.level}"/>
             <tr:image source="images/icon_error_sml.gif" rendered="#{msg.level == 'ERROR'}" shortDesc="#{msg.level}"/>
@@ -384,12 +381,12 @@
 <!-- XML Semantic Validation Report (if any messages) -->
 
 <a name="semantics_report"/>
-<tr:panelHeader text="PSI MI 2.5 Semantic Validation Report" rendered="#{psiValidatorBean.currentPsiReport.semanticReportAvailable}">
+<tr:panelHeader text="PSI MI 2.5 Semantic Validation Report" rendered="#{psiValidatorController.currentPsiReport.semanticReportAvailable}">
 
     <!-- TODO Display the count of interaction validated -->
-    <!--<tr:outputText value="#{psiValidatorBean.currentPsiReport.interactionCount} interaction#{psiValidatorBean.currentPsiReport.messageCount >1 ? 's' : ''} validated." />-->
+    <!--<tr:outputText value="#{psiValidatorController.currentPsiReport.interactionCount} interaction#{psiValidatorController.currentPsiReport.messageCount >1 ? 's' : ''} validated." />-->
 
-    <tr:table width="90%" var="msg" value="#{psiValidatorBean.currentPsiReport.validatorMessages}">
+    <tr:table width="90%" var="msg" value="#{psiValidatorController.currentPsiReport.validatorMessages}">
 
         <f:facet name="detailStamp">
 
@@ -478,10 +475,10 @@
 <!-- HTML View -->
 <a name="html_view"/>
 <tr:panelHeader text="HTML View"
-                rendered="#{psiValidatorBean.currentPsiReport != null and psiValidatorBean.currentPsiReport.xmlSyntaxValid}">
+                rendered="#{psiValidatorController.currentPsiReport != null and psiValidatorController.currentPsiReport.xmlSyntaxValid}">
 
     <div>
-        <tr:outputText value="#{psiValidatorBean.currentPsiReport.htmlView}" escape="false"/>
+        <tr:outputText value="#{psiValidatorController.currentPsiReport.htmlView}" escape="false"/>
     </div>
 
 </tr:panelHeader>

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO comment this
+ * The HelpController will list all the Imex rules and MIMIx rules in the user's guide
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
@@ -30,6 +30,11 @@ public class HelpController extends BaseController {
 
     private static final Log log = LogFactory.getLog(HelpController.class);
 
+    /**
+     *
+     * @return the list of ObjectRules executed during an 'IMEx' validation with this order :
+     * IMEx rules first, MIMIx rules and then PSI-MI rules
+     */
     public List<ObjectRule> getImexRules(){
         ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
 
@@ -44,6 +49,11 @@ public class HelpController extends BaseController {
         return imexRules;
     }
 
+    /**
+     *
+     * @return the list of ObjectRules executed during a 'MIMIx' validation with this order :
+     * MIMIx rules first and then PSI-MI rules
+     */
     public List<ObjectRule> getMimixRules(){
         ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
 
@@ -57,6 +67,10 @@ public class HelpController extends BaseController {
         return mimixRules;
     }
 
+    /**
+     *
+     * @return the list of CVRules executed during a 'PSI-MI' validation.
+     */
     public List<CvRule> getPsiMiCvRules(){
         ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
 
@@ -65,6 +79,10 @@ public class HelpController extends BaseController {
         return getCvRules(validatorContent.getPsiMiCvRules());
     }
 
+    /**
+     *
+     * @return the list of CVRules executed during a 'PSI-PAR' validation.
+     */
     public List<CvRule> getPsiParCvRules(){
         ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
 
@@ -73,6 +91,11 @@ public class HelpController extends BaseController {
         return getCvRules(validatorContent.getPsiParCvRules());
     }
 
+    /**
+     * Convert the collection of rules into a list
+     * @param rules : the collection of rules
+     * @return
+     */
     public List<CvRule> getCvRules(Collection<CvRule> rules){
         ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
 
@@ -86,6 +109,11 @@ public class HelpController extends BaseController {
         return cvRules;
     }
 
+    /**
+     * Extract a list of rules with the scope 'IMEx' from the set of rules
+     * @param rules : the set of rules to sort
+     * @return
+     */
     private List<ObjectRule> extractImexRulesFrom(Set<ObjectRule> rules){
         List<ObjectRule> imexRules = new ArrayList<ObjectRule>();
 
@@ -98,6 +126,11 @@ public class HelpController extends BaseController {
         return imexRules;
     }
 
+    /**
+     * Extract a list of rules with the scope 'MIMIx' from the set of rules
+     * @param rules : the set of rules to sort
+     * @return
+     */
     private List<ObjectRule> extractMimixRulesFrom(Set<ObjectRule> rules){
         List<ObjectRule> mimixRules = new ArrayList<ObjectRule>();
 
@@ -110,6 +143,11 @@ public class HelpController extends BaseController {
         return mimixRules;
     }
 
+    /**
+     * Extract a list of rules without neither the scope 'IMEx' nor the scope 'MIMIx' from the set of rules
+     * @param rules : the set of rules to sort
+     * @return
+     */
     private List<ObjectRule> extractObjectRulesFrom(Set<ObjectRule> rules){
         List<ObjectRule> simpleRules = new ArrayList<ObjectRule>();
 

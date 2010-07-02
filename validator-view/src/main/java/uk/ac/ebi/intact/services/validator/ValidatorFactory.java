@@ -9,9 +9,8 @@ import psidev.psi.tools.validator.preferences.UserPreferences;
 import psidev.psi.tools.validator.rules.codedrule.ObjectRule;
 import uk.ac.ebi.intact.services.validator.context.ValidatorWebContent;
 import uk.ac.ebi.intact.services.validator.context.ValidatorWebContext;
+import uk.ac.ebi.intact.services.validator.context.ValidatorWebContextException;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -38,7 +37,7 @@ public class ValidatorFactory {
     private static final String mimixRules = "config/psi_mi/mimix-rules.xml";
     private static final String imexRules = "config/psi_mi/imex-rules.xml";
 
-    public Mi25Validator getReInitialisedValidator(ValidationScope scope, DataModel dataModel){
+    public Mi25Validator getReInitialisedValidator(ValidationScope scope, DataModel dataModel) throws ValidatorWebContextException {
         if (dataModel == null){
             throw new IllegalArgumentException("The dataModel cannot be null.");
         }
@@ -70,7 +69,7 @@ public class ValidatorFactory {
         }
     }
 
-    public Mi25Validator getValidator(ValidationScope scope, DataModel dataModel){
+    public Mi25Validator getValidator(ValidationScope scope, DataModel dataModel) throws ValidatorWebContextException {
         if (dataModel == null){
             throw new IllegalArgumentException("The dataModel cannot be null.");
         }
@@ -112,8 +111,8 @@ public class ValidatorFactory {
         validator.setUserPreferences(preferences);
     }
 
-    private Mi25Validator createPsiParValidator(ValidationScope scope){
-        FacesContext context = FacesContext.getCurrentInstance();
+    private Mi25Validator createPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
+        ValidatorWebContext context = ValidatorWebContext.getInstance();
 
         try {
             // We read the configuration file, included inside the jar
@@ -148,21 +147,20 @@ public class ValidatorFactory {
             return validator;
 
         } catch (Throwable t) {
-
-            log.error( "An error occured while configuring the PAR validator", t );
-
-            FacesMessage message = new FacesMessage( "An error occured while configuring the validator: " + t.getMessage() );
-            context.addMessage( null, message );
-
-            return null;
+            throw new ValidatorWebContextException("An error occured while configuring the PAR validator.", t);
         }
     }
 
-    private Mi25Validator getPsiParValidator(ValidationScope scope){
-        FacesContext context = FacesContext.getCurrentInstance();
+    private Mi25Validator getPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
+        ValidatorWebContext context = ValidatorWebContext.getInstance();
+
+        if (context == null){
+            throw new ValidatorWebContextException("It is not possible to get the pre-instantiated psi-par environment because" +
+                    " the ValidatorWebContext is not initialized yet.");
+        }
 
         try {
-            ValidatorWebContent validatorContent = ValidatorWebContext.getInstance().getValidatorWebContent();
+            ValidatorWebContent validatorContent = context.getValidatorWebContent();
 
             // We get the pre-instantiated ontologyManager and object rules
             OntologyManager ontologymanager = validatorContent.getPsiParOntologyManager();
@@ -190,20 +188,20 @@ public class ValidatorFactory {
 
         } catch (Throwable t) {
 
-            log.error( "An error occured while configuring the PAR validator", t );
-
-            FacesMessage message = new FacesMessage( "An error occured while configuring the validator: " + t.getMessage() );
-            context.addMessage( null, message );
-
-            return null;
+            throw new ValidatorWebContextException("An error occured while configuring the PAR validator.", t);
         }
     }
 
-    private Mi25Validator getPsiMiValidator(ValidationScope scope){
-        FacesContext context = FacesContext.getCurrentInstance();
+    private Mi25Validator getPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
+        ValidatorWebContext context = ValidatorWebContext.getInstance();
+
+        if (context == null){
+            throw new ValidatorWebContextException("It is not possible to get the pre-instantiated psi-mi environment because" +
+                    " the ValidatorWebContext is not initialized yet.");
+        }
 
         try {
-            ValidatorWebContent validatorContent = ValidatorWebContext.getInstance().getValidatorWebContent();
+            ValidatorWebContent validatorContent = context.getValidatorWebContent();
 
             // We get the pre-instantiated ontologyManager and object rules
             OntologyManager ontologymanager = validatorContent.getPsiMiOntologyManager();
@@ -241,17 +239,12 @@ public class ValidatorFactory {
 
         } catch (Throwable t) {
 
-            log.error( "An error occured while configuring the MI validator", t );
-
-            FacesMessage message = new FacesMessage( "An error occured while configuring the validator: " + t.getMessage() );
-            context.addMessage( null, message );
-
-            return null;
+            throw new ValidatorWebContextException("An error occured while configuring the MI validator.", t);            
         }
     }
 
-    private Mi25Validator createPsiMiValidator(ValidationScope scope){
-        FacesContext context = FacesContext.getCurrentInstance();
+    private Mi25Validator createPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
+        ValidatorWebContext context = ValidatorWebContext.getInstance();
 
         try {
 
@@ -319,12 +312,7 @@ public class ValidatorFactory {
 
         }catch (Throwable t) {
 
-            log.error( "An error occured while configuring the MI validator", t );
-
-            FacesMessage message = new FacesMessage( "An error occured while configuring the validator: " + t.getMessage() );
-            context.addMessage( null, message );
-
-            return null;
+            throw new ValidatorWebContextException("An error occured while configuring the MI validator.", t);
         }
     }
 

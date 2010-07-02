@@ -6,13 +6,12 @@ package uk.ac.ebi.intact.services.validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.trinidad.model.UploadedFile;
-import org.apache.myfaces.trinidad.model.DefaultBoundedRangeModel;
+import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
+import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.component.core.input.CoreInputText;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
-import org.apache.myfaces.trinidad.event.PollEvent;
-import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
+import org.apache.myfaces.trinidad.model.DefaultBoundedRangeModel;
+import org.apache.myfaces.trinidad.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.faces.controller.BaseController;
@@ -25,8 +24,8 @@ import javax.faces.event.ValueChangeEvent;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the managed bean that contains the model of the information show to the user. From this bean,
@@ -37,10 +36,10 @@ import java.util.ArrayList;
  * @version $Id$
  * @since 2.0
  */
-@Controller( "psiValidatorBean" )
+@Controller( "psiValidatorController" )
 @Scope( "conversation.access" )
 @ViewController( viewIds = "/start.xhtml" )
-public class PsiValidatorBean extends BaseController {
+public class PsiValidatorController extends BaseController {
 
     static private List<String> PROGRESS_STEPS;
 
@@ -61,7 +60,7 @@ public class PsiValidatorBean extends BaseController {
     /**
      * Logging is an essential part of an application
      */
-    private static final Log log = LogFactory.getLog( PsiValidatorBean.class );
+    private static final Log log = LogFactory.getLog( PsiValidatorController.class );
 
     /**
      * If true, a local file is selected to be uploaded
@@ -101,7 +100,7 @@ public class PsiValidatorBean extends BaseController {
     /**
      * Constructor
      */
-    public PsiValidatorBean() {
+    public PsiValidatorController() {
         this.uploadLocalFile = true;
     }
 
@@ -213,7 +212,7 @@ public class PsiValidatorBean extends BaseController {
     // This is the method invoked when pressing the valdidate button, names after thte variable to be updated.
     public void onPsiFileUpload( ValueChangeEvent event ) {
 
-        System.out.println( "PsiValidatorBean.psiFile: uploadLocalFile=" + uploadLocalFile );
+        System.out.println( "PsiValidatorController.psiFile: uploadLocalFile=" + uploadLocalFile );
 
         if ( uploadLocalFile ) {
             psiFile = ( UploadedFile ) event.getNewValue();

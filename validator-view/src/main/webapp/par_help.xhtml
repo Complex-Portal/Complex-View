@@ -13,7 +13,7 @@
         <tr:panelHeader text="PSI-PAR Validation Scopes">
 
             The validation scopes described below define the the stringency of the validation rules applied to a dataset.
-            As the image below illustrates, the currently supported scopes are built on top of one another. Increasing
+            As the image below illustrates, the currently supported levels are built on top of one another. Increasing
             progressively their specificity.
 
             <br/>
@@ -35,19 +35,19 @@
                     <li><tr:goLink destination="http://psidev.sourceforge.net/mi/rel25/src/MIF254.xsd" targetFrame="_blank">PSI-MI XML 2.5.4</tr:goLink></li>
                 </ul>
 
-                <tr:outputText value="You can also look at the alto-generated documentation of the schema "/>
+                <tr:outputText value="You can also look at the auto-generated documentation of the schema "/>
                 <tr:goLink destination="http://psidev.sourceforge.net/mi/rel25/doc/" targetFrame="_blank">2.5.3</tr:goLink>
 
                 <br/>
                 <br/>
 
-                <tr:outputText value="Note: If your document doesn't pass this validation stage, none of the scope below can be executed."/>
+                <tr:outputText value="Note: If your document does not pass this validation stage, none of the levels below can be executed."/>
 
             </tr:panelHeader>
 
             <tr:panelHeader text="Controlled Vocabulary Usage">
 
-                This scope makes sure that the use of controlled vocabularies is correct. That is, for each controlled
+                This ensures sure that the use of controlled vocabularies is correct. That is, for each controlled
                 vocabulary place-holder, it checks that one uses the appropriate set of terms as defined in the
                 <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR" targetFrame="_blank"> PSI-PAR ontology</tr:goLink>.
 
@@ -59,7 +59,6 @@
                     <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0495&amp;termName=experimental%20role" targetFrame="_blank">Participant's experimental roles</tr:goLink></li>
                     <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0500&amp;termName=biological%20role" targetFrame="_blank">Participant's biological roles</tr:goLink></li>
                     <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0003&amp;termName=feature%20detection%20dethod" targetFrame="_blank">Participant's Feature detection method</tr:goLink></li>
-                    <li><tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0003&amp;termName=feature%20detection%20dethod" targetFrame="_blank">Experiment's feature detection method</tr:goLink></li>
                     <li>Participant's feature type (in
                         <tr:goLink destination="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=PAR&amp;termId=PAR%3A0116&amp;termName=feature%20type" targetFrame="_blank"> PSI-MI </tr:goLink>
                         or
