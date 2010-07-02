@@ -18,7 +18,7 @@
         
     <ui:debug hotkey="e" rendered="#{facesContext.application.projectStage == 'Development'}"/>
 
-        <h:form id="editorForm" prependId="false" enctype="multipart/form-data">
+        <h:form id="editorForm" prependId="false">
 
 
             <p:growl id="growl" showDetail="true"/>
@@ -98,7 +98,7 @@
                                         <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
                                         <p:watermark for="queryTxt" value="search query"/>
                                         <h:inputText id="queryTxt" value="#{searchController.query}"/>
-                                        <h:commandButton value="Search" action="#{searchController.doSearch}" />
+                                        <p:commandButton value="Search" action="#{searchController.doSearch}" ajax="false"/>
                                     </h:panelGrid>
                                 </td>
                             </tr>

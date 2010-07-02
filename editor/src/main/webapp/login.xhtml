@@ -11,6 +11,8 @@
     <h:head>
         <title>Editor: #{generalAppController.database}</title>
 
+        <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact.css"></link>
+
         <style type="text/css">
             #outer {
                 position: absolute;
@@ -54,11 +56,11 @@
                         }
                     </script>
 
-                    <h:commandButton type="button" value="Login as ADMIN" onclick="ia_login('admin', 'admin')"/>
-                    <h:commandButton type="button" value="Login as Sam" onclick="ia_login('skerrien', '240178')"/>
-                    <h:commandButton type="button" value="Login as Bruno" onclick="ia_login('baranda', 'baranda')"/>
-                    <h:commandButton type="button" value="Login as Sandra" onclick="ia_login('orchard', 'orchard')"/>
-                    <h:commandButton type="button" value="Have a coffee instead" onclick="alert('What?? Oh come on! just login!')"/>
+                    <p:commandButton type="button" value="Login as ADMIN" onclick="ia_login('admin', 'admin')"/>
+                    <p:commandButton type="button" value="Login as Sam" onclick="ia_login('skerrien', '240178')"/>
+                    <p:commandButton type="button" value="Login as Bruno" onclick="ia_login('baranda', 'baranda')"/>
+                    <p:commandButton type="button" value="Login as Sandra" onclick="ia_login('orchard', 'orchard')"/>
+                    <p:commandButton value="Have a coffee instead" onclick="alert('What?? Oh come on! just login!')"/>
 
                 </h:panelGroup>
 

@@ -17,14 +17,12 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ActionEvent;
@@ -42,9 +40,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     private static final Log log = LogFactory.getLog( AnnotatedObjectController.class );
 
     private Date lastSaved;
-
-    @Autowired
-    private CvObjectService cvObjectService;
 
     public AnnotatedObjectController() {
     }

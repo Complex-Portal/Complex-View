@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -29,12 +30,13 @@ import java.util.concurrent.TimeUnit;
  * @since 2.0
  */
 @Controller
-@Scope( "session" )
+@Scope( "conversation.access" )
+@ConversationName ("search")
 public class SearchController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( SearchController.class );
 
-    public String query;
+    private String query;
 
     @Autowired
     private DaoFactory daoFactory;

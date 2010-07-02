@@ -60,12 +60,12 @@
 
         </p:outputPanel>
 
-        <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="#{cc.attrs.modal}" fixedCenter="true">
+        <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="#{cc.attrs.modal}" position="center">
             <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
             Loading organisms...
         </p:dialog>
 
-        <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" fixedCenter="true">
+        <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" position="center">
            <p:outputPanel id="bioSourceBrowserDialog">
 
                 <h:panelGrid columns="1">

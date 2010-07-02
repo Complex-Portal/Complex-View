@@ -8,6 +8,7 @@
         <intercept-url pattern="/login.jsf" filters="none"/>
         <intercept-url pattern="/javax.faces.resource/**" filters="none"/>
         <intercept-url pattern="/primefaces_resource/**" filters="none" />
+        <intercept-url pattern="/resources/**" filters="none" />
 
         <!-- Role-based restrictions -->
         <intercept-url pattern="/admin/**" access="ROLE_ADMIN"/>
@@ -17,7 +18,7 @@
         <form-login login-page="/login.jsf" default-target-url="/dashboard/dashboard.jsf" authentication-failure-url="/"/>
         <!--<logout logout-url="/logout" invalidate-session="true"/>-->
 
-        <concurrent-session-control max-sessions="1" />
+        <concurrent-session-control max-sessions="2" />
     </http>
 
     <beans:bean class="uk.ac.ebi.intact.editor.security.EditorAuthenticationProvider">

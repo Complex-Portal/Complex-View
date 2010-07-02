@@ -249,6 +249,10 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    private String createExperimentShortLabel() {
+        return getFirstAuthor()+"-"+getYear();
+    }
+
     public String getAc() {
         if ( ac == null && publication != null ) {
             return publication.getAc();

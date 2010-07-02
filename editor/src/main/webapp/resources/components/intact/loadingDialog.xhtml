@@ -18,7 +18,7 @@
     <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <p:dialog header="#{cc.attrs.header}" widgetVar="#{cc.attrs.widgetVar}" modal="#{cc.attrs.modal}" fixedCenter="true" close="false">
+        <p:dialog header="#{cc.attrs.header}" widgetVar="#{cc.attrs.widgetVar}" modal="#{cc.attrs.modal}">
             <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
             #{cc.attrs.message}
         </p:dialog>

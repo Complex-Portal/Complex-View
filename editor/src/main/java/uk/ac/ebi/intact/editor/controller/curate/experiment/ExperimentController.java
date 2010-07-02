@@ -29,8 +29,8 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.Interaction;
+import uk.ac.ebi.intact.model.Publication;
 
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 
 /**
@@ -93,11 +93,11 @@ public class ExperimentController extends AnnotatedObjectController {
 
         return saved;
     }
-    
-    public void newExperiment(ActionEvent evt) {
-        System.out.println("New experiment");
+
+    public void newExperiment(Publication publication) {
         this.experiment = new Experiment(getIntactContext().getInstitution(), createExperimentShortLabel(), null);
-        publicationController.getPublication().addExperiment(experiment);
+        publication.addExperiment(experiment);
+        publicationController.setPublication(publication);
     }
 
     private String createExperimentShortLabel() {

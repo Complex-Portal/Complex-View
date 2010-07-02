@@ -129,15 +129,11 @@ public class ParticipantController extends AnnotatedObjectController {
     }
 
     public String getAuthorGivenName() {
-        System.out.println( "ParticipantController.getAuthorGivenName" );
         return findAliasName( CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
     }
 
     public void setAuthorGivenName( String name ) {
-        System.out.println( "ParticipantController.setAuthorGivenName(" + name + ")" );
-        System.out.println( "alias count: " + getParticipant().getAliases().size() );
         addOrReplace(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
-        System.out.println( "alias count after : " + getParticipant().getAliases().size() );
     }
 
     public CvExperimentalPreparation getFirstExperimentalPreparation( Component participant ) {
