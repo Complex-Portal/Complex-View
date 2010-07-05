@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.component.inputcvobject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.component.tree.Tree;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.transaction.TransactionStatus;
@@ -30,10 +29,9 @@ import uk.ac.ebi.intact.model.CvTopic;
 
 import javax.faces.component.FacesComponent;
 import javax.faces.component.NamingContainer;
+import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
-import javax.faces.context.FacesContext;
 import javax.persistence.Query;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -42,7 +40,7 @@ import java.util.List;
  * @version $Id$
  */
 @FacesComponent("uk.ac.ebi.intact.editor.InputCvObject")
-public class InputCvObject extends Tree implements NamingContainer, Serializable {
+public class InputCvObject extends UIInput implements NamingContainer, Serializable {
 
     private static final Log log = LogFactory.getLog( InputCvObject.class );
 
@@ -55,26 +53,6 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
     public String getFamily() {
       return UINamingContainer.COMPONENT_FAMILY;
    }
-
-    @Override
-    public void decode(FacesContext context) {
-        super.decode(context);
-    }
-
-    @Override
-    public void encodeBegin(FacesContext context) throws IOException {
-        super.encodeBegin(context);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context) throws IOException {
-        super.encodeEnd(context);
-    }
-
-    @Override
-    public void encodePartially(FacesContext facesContext) throws IOException {
-        super.encodePartially(facesContext);
-    }
 
     public void load( String cvClass, String id ) {
         log.trace( "Loading CvObject with class '" + cvClass+"' and id '"+id+"'" );
@@ -124,6 +102,8 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
     }
 
     public String getDescription(CvObject cvObject) {
+        if (cvObject == null) return null;
+        
         final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         Query query = IntactContext.getCurrentInstance().getDaoFactory().getEntityManager()
                 .createQuery("select a.annotationText from CvObject cv join cv.annotations as a where cv.ac = :cvAc and " +
@@ -145,6 +125,9 @@ public class InputCvObject extends Tree implements NamingContainer, Serializable
     }
 
     public TreeNode getRoot() {
+        if (root == null) {
+            return new DefaultTreeNode(null, null);
+        }
         return root;
     }
 
