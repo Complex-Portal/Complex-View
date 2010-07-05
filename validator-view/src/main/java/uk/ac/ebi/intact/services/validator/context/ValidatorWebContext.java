@@ -105,8 +105,8 @@ public class ValidatorWebContext {
         emailRecipients.clear();
 
         emailRecipients.add("marine@ebi.ac.uk");
-        //emailRecipients.add("baranda@ebi.ac.uk");
-        //emailRecipients.add("skerrien@ebi.ac.uk");
+        emailRecipients.add("baranda@ebi.ac.uk");
+        emailRecipients.add("skerrien@ebi.ac.uk");
     }
 
     /**
