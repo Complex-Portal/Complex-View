@@ -31,10 +31,7 @@ import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.faces.event.ComponentSystemEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -113,6 +110,15 @@ public class InteractionController extends AnnotatedObjectController {
             experimentController.setExperiment( interaction.getExperiments().iterator().next() );
         }
 
+        refreshExperimentLists();
+
+
+        if (interaction != null) {
+            refreshParticipants();
+        }
+    }
+
+    private void refreshExperimentLists() {
         // initialize the experiment lists
         List<String> source  = new ArrayList<String>();
         List<String> target  = new ArrayList<String>();
@@ -134,10 +140,6 @@ public class InteractionController extends AnnotatedObjectController {
         }
 
         experimentLists = new DualListModel<String>( source, target);
-
-        if (interaction != null) {
-            refreshParticipants();
-        }
     }
 
     @Override
@@ -161,6 +163,14 @@ public class InteractionController extends AnnotatedObjectController {
         refreshParticipants();
 
         return saved;
+    }
+
+    public void newInteraction(Experiment experiment) {
+        Collection<Experiment> experiments = Collections.singletonList(experiment);
+        interaction = new InteractionImpl(experiments, new ArrayList<Component>(), null, null, "unk-unk-1", IntactContext.getCurrentInstance().getInstitution());
+        experiment.addInteraction(interaction);
+
+        refreshExperimentLists();
     }
 
     public void refreshParticipants() {
