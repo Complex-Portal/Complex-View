@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * TODO comment this
+ * The factory which returns a new instance of the Validator depending on the ValidationScope and Validator scope
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
@@ -37,6 +37,13 @@ public class ValidatorFactory {
     private static final String mimixRules = "config/psi_mi/mimix-rules.xml";
     private static final String imexRules = "config/psi_mi/imex-rules.xml";
 
+    /**
+     *
+     * @param scope
+     * @param dataModel
+     * @return A new instance of the validator which has reloaded the ontologies and rules from the configuration files
+     * @throws ValidatorWebContextException
+     */
     public Mi25Validator getReInitialisedValidator(ValidationScope scope, DataModel dataModel) throws ValidatorWebContextException {
         if (dataModel == null){
             throw new IllegalArgumentException("The dataModel cannot be null.");
@@ -69,6 +76,13 @@ public class ValidatorFactory {
         }
     }
 
+    /**
+     *
+     * @param scope
+     * @param dataModel
+     * @return A new instance of the validator which uses the OntologyManager instance of the ValidatorWebContext
+     * @throws ValidatorWebContextException
+     */
     public Mi25Validator getValidator(ValidationScope scope, DataModel dataModel) throws ValidatorWebContextException {
         if (dataModel == null){
             throw new IllegalArgumentException("The dataModel cannot be null.");
@@ -101,6 +115,10 @@ public class ValidatorFactory {
         }
     }
 
+    /**
+     * Set up the user preferences
+     * @param validator
+     */
     private void setUpUserPreferences(Mi25Validator validator){
         // set work directory
         UserPreferences preferences = new UserPreferences();
@@ -111,6 +129,12 @@ public class ValidatorFactory {
         validator.setUserPreferences(preferences);
     }
 
+    /**
+     * This method will re-load the ontologies and rules from the configuration files
+     * @param scope
+     * @return a new Validator initialized for a PSI-PAR validation with the specific scope
+     * @throws ValidatorWebContextException
+     */
     private Mi25Validator createPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
@@ -151,6 +175,12 @@ public class ValidatorFactory {
         }
     }
 
+    /**
+     * This method will re-use the ontologies and rules from the ValidatorWebContext
+     * @param scope
+     * @return a new Validator initialized for a PSI-PAR validation with the specific scope
+     * @throws ValidatorWebContextException
+     */
     private Mi25Validator getPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
@@ -192,6 +222,12 @@ public class ValidatorFactory {
         }
     }
 
+    /**
+     * This method will re-use the ontologies and rules from the ValidatorWebContext
+     * @param scope
+     * @return a new Validator initialized for a PSI-MI validation with the specific scope
+     * @throws ValidatorWebContextException
+     */
     private Mi25Validator getPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
@@ -243,6 +279,12 @@ public class ValidatorFactory {
         }
     }
 
+    /**
+     * This method will re-load the ontologies and rules from the configuration files
+     * @param scope
+     * @return a new Validator initialized for a PSI-MI validation with the specific scope
+     * @throws ValidatorWebContextException
+     */
     private Mi25Validator createPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
@@ -316,6 +358,11 @@ public class ValidatorFactory {
         }
     }
 
+    /**
+     * 
+     * @param dataModel
+     * @return The default Validation scope for the specific data model
+     */
     public ValidationScope getDefaultValidationScope(DataModel dataModel){
         if (dataModel == null){
             throw new IllegalArgumentException("The dataModel cannot be null.");
@@ -333,26 +380,50 @@ public class ValidatorFactory {
         }
     }
 
+    /**
+     *
+     * @return The ontology configuration file for PSI-PAR
+     */
     public static String getPsiParOntology() {
         return psiParOntology;
     }
 
+    /**
+     *
+     * @return The ontology configuration file for PSI-MI
+     */
     public static String getPsiMiOntology() {
         return psiMiOntology;
     }
 
+    /**
+     *
+     * @return The Cv mapping configuration file for PSI-MI
+     */
     public static String getPsiMiCvMapping() {
         return psiMiCvMapping;
     }
 
+    /**
+     *
+     * @return The Cv mapping configuration file for PSI-PAR
+     */
     public static String getPsiParCvMapping() {
         return psiParCvMapping;
     }
 
+    /**
+     *
+     * @return the object rules configuration file for MIMIx
+     */
     public static String getMimixRules() {
         return mimixRules;
     }
 
+    /**
+     *
+     * @return the object rules configuration file for IMEx
+     */
     public static String getImexRules() {
         return imexRules;
     }

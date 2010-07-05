@@ -120,14 +120,18 @@ public class PsiReportBuilder {
                 log.debug( "The model in use is: " + model );
             }
 
+            // Create a new Validator factory
             ValidatorFactory factory = new ValidatorFactory();
 
+            // get the default validatorScope if it is null
             if (validationScope == null){
                 validationScope = factory.getDefaultValidationScope(model);
             }
 
+            // create a new validator
             Mi25Validator validator =  factory.getValidator(validationScope, model);
 
+            // validate the file
             validateFile(report, file, validator);
 
             /*if( model.equals( DataModel.PSI_MI ) ) {

@@ -8,7 +8,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
- * TODO comment this
+ * This listener will initialize the validatorWebContext of the application
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$

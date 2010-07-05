@@ -31,16 +31,38 @@ public class ValidatorWebContext {
      */
     private ValidatorWebContent validatorWebContent;
 
+    /**
+     * The MailSender
+     */
     private MailSender mailSender;
+
+    /**
+     * The e-mail sender
+     */
     private final String emailSender = "validator-admin-noreply@gmail.com";
+
+    /**
+     * The recipients of the e-mails to send
+     */
     private List<String> emailRecipients = new ArrayList<String>();
+
+    /**
+     * The subject prefix in the e-mails to send
+     */
     private final String emailSubjectPrefix = "[Validator-view]";
 
+    /**
+     *
+     * @return the current instance of the ValidatorWebContext
+     */
     public static ValidatorWebContext getInstance() {
 
         return ourInstance;
     }
 
+    /**
+     * Create a new ValidatorWebContent. It will instantiate the ValidatorWebContent and MailSender
+     */
     private ValidatorWebContext(){
         // Initialize Spring for emails
         String[] configFiles = new String[]{"/beans.spring.xml"};
@@ -50,6 +72,7 @@ public class ValidatorWebContext {
         setUpEMailRecipients();
 
         try {
+            // Create a new ValidatorWebContent
             this.validatorWebContent = new ValidatorWebContent();
         } catch (ValidatorWebContextException e) {
             String body = "The validator web content has not been properly initialized." + ExceptionUtils.getFullStackTrace(e);
@@ -58,14 +81,26 @@ public class ValidatorWebContext {
         }
     }
 
+    /**
+     * The method doesn't need to be synchronized yet as it is only an atomic operation, but it could be modified later.
+     * @return The validator web content
+     */
     public synchronized ValidatorWebContent getValidatorWebContent() {
         return validatorWebContent;
     }
 
+    /**
+     * Set the ValidatorWebContent
+     * The method doesn't need to be synchronized yet as it is only an atomic operation, but it could be modified later.
+     * @param validatorWebContent
+     */
     public synchronized void setValidatorWebContent(ValidatorWebContent validatorWebContent) {
         this.validatorWebContent = validatorWebContent;
     }
 
+    /**
+     * Set up the e-mail recipients
+     */
     private void setUpEMailRecipients(){
         emailRecipients.clear();
 
@@ -74,6 +109,11 @@ public class ValidatorWebContext {
         //emailRecipients.add("skerrien@ebi.ac.uk");
     }
 
+    /**
+     * Send an e-mail with a title and body to the different e-mail recipients which were set in the constructor
+     * @param title : title of the e-mail
+     * @param body : body of the e-mail
+     */
     public synchronized void sendEmail( String title, String body ) {
         if ( mailSender != null ) {
             final SimpleMailMessage message = new SimpleMailMessage();

@@ -1,7 +1,7 @@
 package uk.ac.ebi.intact.services.validator.context;
 
 /**
- * TODO comment this
+ * The exception thrown when there is a problem related with the ValidatorWebContent or ValidatorWebContext
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
