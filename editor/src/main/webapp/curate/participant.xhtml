@@ -59,7 +59,7 @@
                     </tr>
                     <tr>
                         <td class="firstCell">
-                            <h:outputLabel value="#{participant.interactor.cvInteractorType.shortLabel}: " for="interactorTxt"/>
+                            <h:outputLabel value="#{participant.interactor != null? participant.interactor.cvInteractorType.shortLabel : 'Interactor'}: " for="interactorTxt"/>
                         </td>
                         <td colspan="2">
                             <h:inputText id="interactorTxt" value="#{participant.interactor.shortLabel}"
@@ -134,6 +134,12 @@
             <p:tabView id="participantTabs">
 
                 <p:tab title="Features (#{participant.bindingDomains.size()})">
+
+                    <div class="intact-buttonBar">
+                        <p:commandButton value="New feature" actionListener="#{featureController.newFeature(participantController.participant)}"
+                                             action="/curate/feature" ajax="false"/>
+                     </div>
+
                     <ia:featureTable value="#{participant.bindingDomains}"
                              render="#{not empty participant.bindingDomains}" />
                 </p:tab>

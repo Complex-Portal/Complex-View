@@ -27,10 +27,7 @@ import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Feature;
-import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ComponentSystemEvent;
 
@@ -103,6 +100,14 @@ public class FeatureController extends AnnotatedObjectController {
         }
     }
 
+    public void newFeature(Component participant) {
+       feature = new Feature("feature", participant, new CvFeatureType());
+       feature.setShortLabel(null);
+       feature.setCvFeatureType(null);
+
+       participant.addBindingDomain(feature);
+    }
+
     public String getAc() {
         if ( ac == null && feature != null ) {
             return feature.getAc();
@@ -121,4 +126,6 @@ public class FeatureController extends AnnotatedObjectController {
     public void setFeature( Feature feature ) {
         this.feature = feature;
     }
+
+
 }

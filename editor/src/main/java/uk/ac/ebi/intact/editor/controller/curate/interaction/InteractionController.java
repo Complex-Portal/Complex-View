@@ -168,6 +168,8 @@ public class InteractionController extends AnnotatedObjectController {
     public void newInteraction(Experiment experiment) {
         Collection<Experiment> experiments = Collections.singletonList(experiment);
         interaction = new InteractionImpl(experiments, new ArrayList<Component>(), null, null, "new-interaction-1", IntactContext.getCurrentInstance().getInstitution());
+        interaction.setShortLabel(null);
+        
         experiment.addInteraction(interaction);
 
         refreshExperimentLists();

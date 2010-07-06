@@ -105,6 +105,15 @@ public class ParticipantController extends AnnotatedObjectController {
         }
     }
 
+    public void newParticipant(Interaction interaction) {
+        participant = new Component("N/A", interaction, new ProteinImpl(), new CvExperimentalRole(), new CvBiologicalRole());
+        participant.setInteractor(null);
+        participant.getExperimentalRoles().clear();
+        participant.setCvBiologicalRole(null);
+
+        interaction.addComponent(participant);
+    }
+
     public String getAc() {
         if ( ac == null && participant != null ) {
             return participant.getAc();

@@ -106,7 +106,12 @@
             <p:tabView id="interactionTabs">
                 <p:tab title="Participants (#{interactionController.participants.size()})">
 
-                    <p:commandButton value="Import participants" type="button" onclick="importParticipantDialog.show()"/>
+                     <div class="intact-buttonBar">
+                        <p:commandButton value="New participant" actionListener="#{participantController.newParticipant(interactionController.interaction)}"
+                                             action="/curate/participant" ajax="false"/>
+                         <p:commandButton value="Import..." type="button" onclick="importParticipantDialog.show()"/>
+                     </div>
+
                     <ia:spacer height="10" />
 
                     <ui:include src="dialog_import_participant.xhtml"/>
