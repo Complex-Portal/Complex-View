@@ -167,7 +167,7 @@ public class InteractionController extends AnnotatedObjectController {
 
     public void newInteraction(Experiment experiment) {
         Collection<Experiment> experiments = Collections.singletonList(experiment);
-        interaction = new InteractionImpl(experiments, new ArrayList<Component>(), null, null, "unk-unk-1", IntactContext.getCurrentInstance().getInstitution());
+        interaction = new InteractionImpl(experiments, new ArrayList<Component>(), null, null, "new-interaction-1", IntactContext.getCurrentInstance().getInstitution());
         experiment.addInteraction(interaction);
 
         refreshExperimentLists();
@@ -241,6 +241,8 @@ public class InteractionController extends AnnotatedObjectController {
             loadData(null);
         } else if (interaction == null || (ac != null && !ac.equals(interaction.getAc()))) {
             loadData(null);
+        } else {
+            participantWrappers = new ArrayList<ParticipantWrapper>();
         }
         return participantWrappers;
     }
