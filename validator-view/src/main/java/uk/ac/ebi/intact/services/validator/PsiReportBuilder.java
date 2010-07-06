@@ -368,6 +368,11 @@ public class PsiReportBuilder {
                         }
                     }
 
+                    if (status == null){
+                        status = PsiReport.VALID;
+                        report.setSemanticsReport("Validation successful but finished with "+ report.getValidatorMessages().size() +" messages");
+                    }
+
                     report.setSemanticsStatus( status );
                 }
 
@@ -498,6 +503,11 @@ public class PsiReportBuilder {
                             report.setSemanticsReport("Validation failed  ("+ report.getValidatorMessages().size() +" messages)");
                             break;
                         }
+                    }
+
+                    if (status == null){
+                        status = PsiReport.VALID;
+                        report.setSemanticsReport("Validation successful but finished with "+ report.getValidatorMessages().size() +" messages");
                     }
 
                     report.setSemanticsStatus( status );

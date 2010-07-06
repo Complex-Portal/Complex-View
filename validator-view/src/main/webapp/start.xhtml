@@ -319,7 +319,7 @@
                          and aggregate the errors into the same report.
                     -->
 
-                    <trh:rowLayout rendered="#{psiValidatorController.currentPsiReport.semanticsStatus != null}">
+                    <trh:rowLayout rendered="#{psiValidatorController.currentPsiReport.semanticReportAvailable}">
                         <trh:cellFormat>
                             <tr:image source="images/icon_success_sml.gif"
                                       rendered="#{psiValidatorController.currentPsiReport.xmlSemanticValid}"/>

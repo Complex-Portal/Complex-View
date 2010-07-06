@@ -55,6 +55,8 @@ public class ValidatorContextUpdater implements Job {
             // the new ValidatorWebContent
             ValidatorWebContent newWebContent = null;
 
+            final long start = System.currentTimeMillis();
+
             // the ontology manager for PSI-MI is up to date but not the one for PSI-PAR
             if (isPsiMiUpToDate && !isPsiParUpToDate){
                 // We will create a new validator web content which re-loads the ontologies for PSI-PAR but re-use the loaded ontologies for PSI-MI
@@ -96,10 +98,14 @@ public class ValidatorContextUpdater implements Job {
                     // we set the ValidatorWebContent of the current ValidatorWebContext
                     validatorContext.setValidatorWebContent(newWebContent);
 
+                    final long stop = System.currentTimeMillis();
+                    log.trace( "Time to update the ontology': " + (stop - start) + "ms" );
+
                     // We can inform the developers of the update
                     String body = "A new update of the ontology has been done recently and the validatorWebContext successfully refreshed its webContent" +
                             "(validator rules, CvMapping and OntologyManager).";
                     validatorContext.sendEmail("Update of the ontology and validator rules", body);
+
                 }
             }
 
@@ -125,7 +131,7 @@ public class ValidatorContextUpdater implements Job {
      * @throws OntologyLoaderException
      */
     private boolean checkOntology(ValidatorWebContext validatorContext, OntologyManager ontologyManager) throws OntologyLoaderException {
-        
+
         if (ontologyManager == null){
             String body = "A problem occurred when uploading the ontology and " +
                     "consequently the ontology manager is null. \n" +

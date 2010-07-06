@@ -114,7 +114,7 @@ public class ValidatorWebContext {
      * @param title : title of the e-mail
      * @param body : body of the e-mail
      */
-    public synchronized void sendEmail( String title, String body ) {
+    public void sendEmail( String title, String body ) {
         if ( mailSender != null ) {
             final SimpleMailMessage message = new SimpleMailMessage();
             message.setTo( emailRecipients.toArray( new String[]{} ) );

@@ -127,8 +127,7 @@ public class PsiReport {
     }
 
     public boolean isSemanticReportAvailable() {
-        return INVALID.equals(semanticsStatus) ||
-               WARNINGS.equals(semanticsStatus);
+        return semanticsStatus != null;
     }
 
     public void setSemanticsStatus(String semanticsStatus) {
