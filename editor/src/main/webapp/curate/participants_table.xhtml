@@ -17,10 +17,18 @@
             <div style="width: 960px; #{(status.index % 2) == 0 ? 'background-color: #f8f8ff;' : ''}};">
 
                 <ia:collapsiblePanel open="false"
-                                    title="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
-                                    titleStyle="#{wrapper.deleted? 'color:red; text-decoration:line-through' : participant.ac == null? 'color:blue' :''}"
                                     titleRight="#{interactor.cvInteractorType.shortLabel} | #{interactor.bioSource.shortLabel} | #{interactor.fullName}"
                                     titleRightStyle="color:#999999;">
+
+                    <f:facet name="title">
+                        <h:panelGroup>
+                            <h:link outcome="/curate/participant" value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
+                                    style="#{wrapper.deleted? 'color:red; text-decoration:line-through' : participant.ac == null? 'color:blue' :''}"
+                                    includeViewParams="true">
+                                    <f:param name="ac" value="#{participant.ac}"/>
+                            </h:link>
+                        </h:panelGroup>
+                    </f:facet>
 
                     <f:facet name="right">
                         <p:menuButton value="Options">
@@ -34,18 +42,10 @@
 
                     <table class="tableBasicForm" width="900px" style="padding-left: 50px;">
                         <tr>
-                            <td class="firstCell">
-                                <p:graphicImage alt="starIcon" url="/resources/images/shallow-star.png" onclick="alert('Favorite not implemented yet!');" />
-                                &#160;&#160;&#160;
-                                <h:link outcome="/curate/participant" value="Edit" includeViewParams="true">
-                                    <f:param name="ac" value="#{participant.ac}"/>
-                                </h:link>
-                                <!--<h:commandButton value="Edit" action="/curate/participant">-->
-                                    <!--<f:setPropertyActionListener value="#{participant.ac}" target="#{participantController.ac}" />-->
-                                <!--</h:commandButton>-->
-                            </td>
                             <td >
                                 <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
+                             </td>
+                            <td>
                                 <h:inputText id="acTxt" value="#{participant.ac}"
                                              size="10" disabled="true" class="intact-disabled"/>
                             </td>
