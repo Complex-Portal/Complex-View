@@ -243,7 +243,7 @@ public class InteractionController extends AnnotatedObjectController {
             loadData(null);
         } else if (interaction == null || (ac != null && !ac.equals(interaction.getAc()))) {
             loadData(null);
-        } else {
+        } else if (participantWrappers == null) {
             participantWrappers = new ArrayList<ParticipantWrapper>();
         }
         return participantWrappers;

@@ -202,7 +202,7 @@
 	</servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>/index.jsf</welcome-file>
+        <welcome-file>/dashboard/dashboard.jsf</welcome-file>
     </welcome-file-list>
 
     <session-config>

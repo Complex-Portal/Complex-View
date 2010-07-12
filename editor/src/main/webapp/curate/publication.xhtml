@@ -52,7 +52,7 @@
                             <ia:panelMessage level="warn">
                                 This publication is <b>on-hold</b>. Reason: #{publicationController.onHold}
                                 &#160;&#160;&#160;
-                                <h:commandButton value="Clear" type="button" onclick="document.getElementById('basicInfoPanel:clearOnHoldBtn').click();return false;" />
+                                <p:commandButton value="Clear" onclick="document.getElementById('clearOnHoldBtn').click();" />
                             </ia:panelMessage>
                         </h:panelGroup>
 
@@ -190,7 +190,7 @@
                                                     execute="@this" listener="#{publicationController.changed}"/>
                                         </h:inputText>
                                         <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{publicationController.setUnsavedChanges(true)}"
-                                                         onclick="document.getElementById('basicInfoPanel:onHoldTxt').value = ''"
+                                                         onclick="document.getElementById('onHoldTxt').value = ''"
                                                          update="infoPanels,annotationsPanel,changesPanel"/>
                                     </h:panelGroup>
                                 </td>
