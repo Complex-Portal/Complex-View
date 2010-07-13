@@ -42,4 +42,25 @@ public class UnsavedChange {
     public IntactObject getUnsavedObject() {
         return unsavedObject;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UnsavedChange that = (UnsavedChange) o;
+
+        if (action != null ? !action.equals(that.action) : that.action != null) return false;
+        if (unsavedObject != null ? !unsavedObject.equals(that.unsavedObject) : that.unsavedObject != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = unsavedObject != null ? unsavedObject.hashCode() : 0;
+        result = 31 * result + (action != null ? action.hashCode() : 0);
+        return result;
+    }
 }

@@ -18,10 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.model.IntactObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -29,16 +26,18 @@ import java.util.List;
  */
 public class UnsavedChangeManager {
 
-    private List<UnsavedChange> changes;
+    private Set<UnsavedChange> changes;
     private boolean unsavedChanges;
 
     public UnsavedChangeManager() {
-        changes = new ArrayList<UnsavedChange>();
+        changes = new HashSet<UnsavedChange>();
     }
 
     public void markToDelete(IntactObject object) {
-        unsavedChanges = true;
-        changes.add(new UnsavedChange(object, UnsavedChange.DELETED));
+        if (object.getAc() != null) {
+            unsavedChanges = true;
+            changes.add(new UnsavedChange(object, UnsavedChange.DELETED));
+        }
     }
 
     public void revert(IntactObject object) {
@@ -97,7 +96,7 @@ public class UnsavedChangeManager {
         return ios;
     }
 
-    public List<UnsavedChange> getChanges() {
+    public Collection<UnsavedChange> getChanges() {
         return changes;
     }
 

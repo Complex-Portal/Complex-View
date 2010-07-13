@@ -140,8 +140,10 @@
                                              action="/curate/feature" ajax="false"/>
                      </div>
 
-                    <ia:featureTable value="#{participant.bindingDomains}"
-                             render="#{not empty participant.bindingDomains}" />
+                    <ui:include src="features_table.xhtml">
+                        <ui:param name="value" value="#{participant.bindingDomains}"/>
+                        <ui:param name="unsavedChangeManager" value="#{participantController.unsavedChangeManager}"/>
+                    </ui:include>
                 </p:tab>
 
                 <p:tab title="Properties">

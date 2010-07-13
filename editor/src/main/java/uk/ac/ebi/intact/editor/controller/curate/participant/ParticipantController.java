@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantWrapper;
@@ -112,6 +113,14 @@ public class ParticipantController extends AnnotatedObjectController {
         participant.setCvBiologicalRole(null);
 
         interaction.addComponent(participant);
+    }
+
+    public void markFeatureToDelete(Feature feature, UnsavedChangeManager unsavedChangeManager) {
+        if (feature.getAc() == null) {
+            participant.removeBindingDomain(feature);
+        } else {
+            unsavedChangeManager.markToDelete(feature);
+        }
     }
 
     public String getAc() {

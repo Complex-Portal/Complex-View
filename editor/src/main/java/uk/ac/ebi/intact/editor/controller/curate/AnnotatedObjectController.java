@@ -70,7 +70,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         for (IntactObject intactObject : deletedObjects) {
             if (intactObject.getAc() != null) {
-                if (log.isDebugEnabled()) log.debug("Deleting: "+ DebugUtil.intactObjectToString(intactObject, false));
+                if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
 
                 getDaoFactory().getIntactObjectDao().deleteByAc(intactObject.getAc());
             }

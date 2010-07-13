@@ -23,12 +23,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 
 /**
@@ -105,7 +107,21 @@ public class FeatureController extends AnnotatedObjectController {
        feature.setShortLabel(null);
        feature.setCvFeatureType(null);
 
+        feature.addRange(new Range());
+
        participant.addBindingDomain(feature);
+    }
+    
+    public void newRange(ActionEvent evt) {
+        feature.addRange(new Range());
+    }
+
+    public void markRangeToDelete(Range range, UnsavedChangeManager unsavedChangeManager) {
+        if (range.getAc() == null) {
+            feature.removeRange(range);
+        } else {
+            unsavedChangeManager.markToDelete(range);
+        }
     }
 
     public String getAc() {
@@ -126,6 +142,4 @@ public class FeatureController extends AnnotatedObjectController {
     public void setFeature( Feature feature ) {
         this.feature = feature;
     }
-
-
 }

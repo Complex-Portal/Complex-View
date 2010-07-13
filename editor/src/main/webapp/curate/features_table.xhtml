@@ -5,34 +5,39 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
-                xmlns:composite="http://java.sun.com/jsf/composite">
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
-    <!-- INTERFACE -->
-    <composite:interface>
-        <composite:attribute name="value" type="java.util.Collection" required="true"/>
-        <composite:attribute name="render" type="java.util.Boolean" default="true"/>
-    </composite:interface>
+    <h:panelGroup id="featuresTable">
 
-    <!-- IMPLEMENTATION -->
-    <composite:implementation>
+    <ui:param name="featuresToDeleteCount" value="#{unsavedChangeManager.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Feature').size()}"/>
 
-        <p:outputPanel rendered="#{cc.attrs.render}">
+            <h:panelGroup rendered="#{featuresToDeleteCount gt 0}">
+                <ia:panelMessage level="info">
+                    <h:outputText value="#{featuresToDeleteCount} features will be deleted on save."/>
+                </ia:panelMessage>
+            </h:panelGroup>
 
-            <p:dataTable var="feature" value="#{cc.attrs.value}"
-                         paginator="#{cc.attrs.value.size() > 10}" rows="10" lazy="true" dynamic="true">
+            <p:dataTable var="feature" value="#{value}"
+                         paginator="#{value.size() > 10}" rows="10" lazy="true" dynamic="true">
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="AC"/>
                     </f:facet>
-                    <h:link outcome="/curate/feature" value="#{feature.ac}" includeViewParams="true">
-                        <f:param name="ac" value="#{feature.ac}"/>
-                    </h:link>
+                     <h:outputText value="#{feature.ac}" styleClass="#{unsavedChangeManager.isDeletedAc(feature.ac)? 'intact-deleted' : ''}"/>
                 </p:column>
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="Shortlabel"/>
                     </f:facet>
-                    <h:outputText value="#{feature.shortLabel}"/>
+                     <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(feature.ac)}">
+                         <h:link outcome="/curate/feature" value="#{feature.shortLabel}" includeViewParams="true">
+                             <f:param name="ac" value="#{feature.ac}"/>
+                         </h:link>
+                     </h:panelGroup>
+                    <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(feature.ac)}">
+                        <h:outputText value="#{feature.shortLabel}"/>
+                    </h:panelGroup>
+
                 </p:column>
                 <p:column>
                     <f:facet name="header">
@@ -67,14 +72,17 @@
                     <f:facet name="header">
                         <h:outputText value="Actions"/>
                     </f:facet>
-                    <h:link onclick="alert('Not implemented yet.'); return false;">
-                        <p:graphicImage alt="Delete" url="/resources/images/bin.png" style="border: 0px;"/>
-                    </h:link>
+                    <p:commandLink title="Mark to be deleted" actionListener="#{participantController.markFeatureToDelete(feature, unsavedChangeManager)}"
+                                   update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(feature.ac)}">
+                        <h:graphicImage library="images" name="bin.png" alt="Delete" style="border: 0px;"/>
+                    </p:commandLink>
+                    <p:commandLink title="Revert" actionListener="#{unsavedChangeManager.revert(feature)}"
+                                   update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(feature.ac)}">
+                        <h:graphicImage library="images" name="undo.png" alt="Revert" style="border: 0px;"/>
+                    </p:commandLink>
                 </p:column>
             </p:dataTable>
 
-        </p:outputPanel>
-
-    </composite:implementation>
+    </h:panelGroup>
 
 </ui:composition>

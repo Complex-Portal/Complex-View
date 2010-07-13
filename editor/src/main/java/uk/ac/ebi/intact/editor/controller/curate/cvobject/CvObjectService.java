@@ -87,6 +87,9 @@ public class CvObjectService extends JpaAwareController {
     private List<CvFeatureType> featureTypes;
     private List<SelectItem> featureTypeSelectItems;
 
+    private List<CvFuzzyType> fuzzyTypes;
+    private List<SelectItem> fuzzyTypeSelectItems;
+
     public CvObjectService() {
     }
 
@@ -176,6 +179,9 @@ public class CvObjectService extends JpaAwareController {
 
         featureTypes = getSortedList( CvFeatureType.class, cvObjectsByClass );
         featureTypeSelectItems = createSelectItems( featureTypes, "-- Select type --" );
+
+        fuzzyTypes = getSortedList( CvFuzzyType.class, cvObjectsByClass );
+        fuzzyTypeSelectItems = createSelectItems( fuzzyTypes, "-- Select type --" );
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
     }
@@ -347,6 +353,10 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getExperimentalRoleSelectItems() {
         return experimentalRoleSelectItems;
+    }
+
+    public List<SelectItem> getFuzzyTypeSelectItems() {
+        return fuzzyTypeSelectItems;
     }
 
     private class CvObjectComparator implements Comparator<CvObject> {

@@ -91,7 +91,17 @@
              <p:tabView id="featureTabs">
 
                 <p:tab title="Ranges (#{feature.ranges.size()})">
-                    <ia:rangeTable value="#{feature.ranges}" render="#{not empty feature.ranges}" />
+
+                    <div class="intact-buttonBar">
+                        <p:commandButton value="New range" actionListener="#{featureController.newRange}" update="rangeTable"/>
+                     </div>
+
+                    <p:outputPanel id="rangeTable">
+                        <ui:include src="ranges_table.xhtml">
+                            <ui:param name="value" value="#{feature.ranges}"/>
+                            <ui:param name="unsavedChangeManager" value="#{featureController.unsavedChangeManager}"/>
+                        </ui:include>
+                    </p:outputPanel>
                 </p:tab>
 
                 <p:tab title="Properties">

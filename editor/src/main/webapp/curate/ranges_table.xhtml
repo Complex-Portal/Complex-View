@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
+
+    <h:panelGroup id="rangesTable">
+
+    <ui:param name="rangeToDeleteCount" value="#{unsavedChangeManager.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Range').size()}"/>
+
+            <h:panelGroup rendered="#{rangeToDeleteCount gt 0}">
+                <ia:panelMessage level="info">
+                    <h:outputText value="#{rangeToDeleteCount} ranges will be deleted on save."/>
+                </ia:panelMessage>
+            </h:panelGroup>
+
+            <p:dataTable var="range" value="#{value}"
+                         paginator="#{value.size() > 10}" rows="10" lazy="true" dynamic="true">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="AC"/>
+                    </f:facet>
+                    <h:outputText value="#{range.ac}" styleClass="#{unsavedChangeManager.isDeletedAc(range.ac)? 'intact-deleted' : ''}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="From type"/>
+                    </f:facet>
+                    <h:selectOneMenu value="#{range.fromCvFuzzyType}" converter="cvObjectConverter">
+                    <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
+                </h:selectOneMenu>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="From"/>
+                    </f:facet>
+                    <h:inputText value="#{range.fromIntervalStart}" size="3"/>
+                    -
+                    <h:inputText value="#{range.fromIntervalEnd}" size="3"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="To type"/>
+                    </f:facet>
+                    <h:selectOneMenu value="#{range.toCvFuzzyType}" converter="cvObjectConverter">
+                    <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
+                </h:selectOneMenu>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="To"/>
+                    </f:facet>
+                    <h:inputText value="#{range.toIntervalStart}" size="3"/>
+                    -
+                    <h:inputText value="#{range.toIntervalEnd}" size="3"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Undetermined"/>
+                    </f:facet>
+                    <h:selectBooleanCheckbox value="#{range.undetermined}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Linked"/>
+                    </f:facet>
+                    <h:outputText value="#{feature.boundDomain != null? 'Yes' : 'No'}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Actions"/>
+                    </f:facet>
+                    <p:commandLink title="Mark to be deleted" actionListener="#{featureController.markRangeToDelete(range, unsavedChangeManager)}"
+                                   update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(range.ac)}">
+                        <h:graphicImage library="images" name="bin.png" alt="Delete" style="border: 0px;"/>
+                    </p:commandLink>
+                    <p:commandLink title="Revert" actionListener="#{unsavedChangeManager.revert(range)}"
+                                   update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(range.ac)}">
+                        <h:graphicImage library="images" name="undo.png" alt="Revert" style="border: 0px;"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+
+    </h:panelGroup>
+
+</ui:composition>
