@@ -163,7 +163,7 @@
             <p:outputPanel id="annotationsPanel">
                 <ia:collapsiblePanel title="Annotations (#{participant.annotations.size()})">
                     <ia:annotationsTable annotatedObjectController="#{participantController}"
-                                         topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
+                                         topicSelectItems="#{cvObjectService.participantTopicSelectItems}"
                                          update="annotationsPanel changesPanel"
                                          valueChangeRender=":editorForm:basic :editorForm:changesPanel"
                                          valueChangeAwareObject="#{annotatedObjectController}"

@@ -63,12 +63,20 @@
                                          size="10" disabled="true" class="intact-disabled"/>
                         </td>
                     </tr>
-                    <tr>
+                     <tr>
                         <td class="firstCell">
                             <h:outputLabel value="Fullname: " for="fullnameTxt"/>
                         </td>
                         <td colspan="2">
-                            <ia:inputBioSource id="fullnameTxt" value="#{interactor.fullName}"
+                            <h:inputText id="fullnameTxt" value="#{interactor.fullName}""/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Organism: " for="organismTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <ia:inputBioSource id="organismTxt" value="#{interactor.fullName}"
                                     selectItems="#{bioSourceService.bioSourceSelectItems}"/>
                         </td>
                     </tr>
@@ -118,7 +126,7 @@
             <p:outputPanel id="annotationsPanel">
                 <ia:collapsiblePanel open="false" title="Annotations (#{interactor.annotations.size()})">
                     <ia:annotationsTable annotatedObjectController="#{interactorController}"
-                                         topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
+                                         topicSelectItems="#{cvObjectService.interactorTopicSelectItems}"
                                          update="annotationsPanel"
                                          style="margin-top: -20px;"/>
                 </ia:collapsiblePanel>

@@ -32,6 +32,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -50,9 +51,20 @@ public class CvObjectService extends JpaAwareController {
     private List<CvTopic> publicationTopics;
     private List<CvTopic> experimentTopics;
     private List<CvTopic> interactionTopics;
+    private List<CvTopic> interactorTopics;
+    private List<CvTopic> participantTopics;
+    private List<CvTopic> featureTopics;
+    private List<CvTopic> cvObjectTopics;
+    private List<CvTopic> bioSourceTopics;
+
     private List<SelectItem> publicationTopicSelectItems;
     private List<SelectItem> experimentTopicSelectItems;
     private List<SelectItem> interactionTopicSelectItems;
+    private List<SelectItem> interactorTopicSelectItems;
+    private List<SelectItem> participantTopicSelectItems;
+    private List<SelectItem> featureTopicSelectItems;
+    private List<SelectItem> cvObjectTopicSelectItems;
+    private List<SelectItem> bioSourceTopicSelectItems;
 
     private List<CvDatabase> databases;
     private List<SelectItem> databaseSelectItems;
@@ -89,6 +101,8 @@ public class CvObjectService extends JpaAwareController {
 
     private List<CvFuzzyType> fuzzyTypes;
     private List<SelectItem> fuzzyTypeSelectItems;
+    private Multimap<String, CvTopic> cvObjectsByUsedInClass;
+    private Multimap<Class, CvObject> cvObjectsByClass;
 
     public CvObjectService() {
     }
@@ -100,7 +114,7 @@ public class CvObjectService extends JpaAwareController {
     }
 
     @Transactional
-    public void refresh( ActionEvent evt ) {
+    public synchronized void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading Controlled Vocabularies" );
 
         final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
@@ -112,8 +126,8 @@ public class CvObjectService extends JpaAwareController {
         allCvObjectMap = new HashMap<CvKey, CvObject>( allCvObjects.size() * 2 );
         acCvObjectMap = new HashMap<String, CvObject>( allCvObjects.size() );
 
-        Multimap<String, CvTopic> cvObjectsByUsedInClass = new HashMultimap<String, CvTopic>();
-        Multimap<Class, CvObject> cvObjectsByClass = new HashMultimap<Class, CvObject>();
+        cvObjectsByUsedInClass = new HashMultimap<String, CvTopic>();
+        cvObjectsByClass = new HashMultimap<Class, CvObject>();
 
         for ( CvObject cvObject : allCvObjects ) {
             acCvObjectMap.put( cvObject.getAc(), cvObject );
@@ -139,53 +153,65 @@ public class CvObjectService extends JpaAwareController {
             }
         }
 
-        publicationTopics = getSortedTopicList( Experiment.class.getName(), cvObjectsByUsedInClass );
-        experimentTopics = getSortedTopicList( Experiment.class.getName(), cvObjectsByUsedInClass );
-        interactionTopics = getSortedTopicList( Interaction.class.getName(), cvObjectsByUsedInClass );
+        publicationTopics = getSortedTopicList( Experiment.class.getName(), cvObjectsByUsedInClass);
+        experimentTopics = getSortedTopicList( Experiment.class.getName(), cvObjectsByUsedInClass);
+        interactionTopics = getSortedTopicList( Interaction.class.getName(), cvObjectsByUsedInClass);
+        interactorTopics = getSortedTopicList( Interactor.class.getName(), cvObjectsByUsedInClass);
+        participantTopics = getSortedTopicList( Component.class.getName(), cvObjectsByUsedInClass);
+        featureTopics = getSortedTopicList( Feature.class.getName(), cvObjectsByUsedInClass);
+        bioSourceTopics = getSortedTopicList( Feature.class.getName(), cvObjectsByUsedInClass);
+
+        cvObjectTopics = getSortedTopicList( CvObject.class.getName(), cvObjectsByUsedInClass);
+        cvObjectTopics.addAll(getSortedTopicList("no_class", cvObjectsByUsedInClass));
 
         publicationTopicSelectItems = createSelectItems( publicationTopics, "-- Select topic --" );
         experimentTopicSelectItems = createSelectItems( experimentTopics, "-- Select topic --" );
         interactionTopicSelectItems = createSelectItems( interactionTopics, "-- Select topic --" );
+        interactorTopicSelectItems = createSelectItems( interactorTopics, "-- Select topic --" );
+        participantTopicSelectItems = createSelectItems( participantTopics, "-- Select topic --" );
+        featureTopicSelectItems = createSelectItems( featureTopics, "-- Select topic --" );
+        cvObjectTopicSelectItems = createSelectItems( cvObjectTopics, "-- Select topic --" );
+        bioSourceTopicSelectItems = createSelectItems( bioSourceTopics, "-- Select topic --" );
 
-        databases = getSortedList( CvDatabase.class, cvObjectsByClass );
+        databases = getSortedList( CvDatabase.class, cvObjectsByClass);
         databaseSelectItems = createSelectItems( databases, "-- Select database --" );
 
-        qualifiers = getSortedList( CvXrefQualifier.class, cvObjectsByClass );
+        qualifiers = getSortedList( CvXrefQualifier.class, cvObjectsByClass);
         qualifierSelectItems = createSelectItems( qualifiers, "-- Select qualifier --" );
 
-        aliasTypes = getSortedList( CvAliasType.class, cvObjectsByClass );
+        aliasTypes = getSortedList( CvAliasType.class, cvObjectsByClass);
         aliasTypeSelectItems = createSelectItems( aliasTypes, "-- Select type --" );
 
-        interactionDetectionMethods = getSortedList( CvInteraction.class, cvObjectsByClass );
+        interactionDetectionMethods = getSortedList( CvInteraction.class, cvObjectsByClass);
         interactionDetectionMethodSelectItems = createSelectItems( interactionDetectionMethods, "-- Select method --" );
 
-        participantDetectionMethods = getSortedList( CvIdentification.class, cvObjectsByClass );
+        participantDetectionMethods = getSortedList( CvIdentification.class, cvObjectsByClass);
         participantDetectionMethodSelectItems = createSelectItems( participantDetectionMethods, "-- Select method --" );
 
-        participantExperimentalPreparations = getSortedList( CvExperimentalPreparation.class, cvObjectsByClass );
+        participantExperimentalPreparations = getSortedList( CvExperimentalPreparation.class, cvObjectsByClass);
         participantExperimentalPreparationsSelectItems = createSelectItems( participantExperimentalPreparations, "-- Select experimental preparation --" );
         
-        interactionTypes = getSortedList( CvInteractionType.class, cvObjectsByClass );
+        interactionTypes = getSortedList( CvInteractionType.class, cvObjectsByClass);
         interactionTypeSelectItems = createSelectItems( interactionTypes, "-- Select type --" );
 
-        experimentalRoles = getSortedList( CvExperimentalRole.class, cvObjectsByClass );
+        experimentalRoles = getSortedList( CvExperimentalRole.class, cvObjectsByClass);
         experimentalRoleSelectItems = createSelectItems( experimentalRoles, "-- Select role --" );
 
-        biologicalRoles = getSortedList( CvBiologicalRole.class, cvObjectsByClass );
+        biologicalRoles = getSortedList( CvBiologicalRole.class, cvObjectsByClass);
         biologicalRoleSelectItems = createSelectItems( biologicalRoles, "-- Select role --" );
 
-        featureDetectionMethods = getSortedList( CvFeatureIdentification.class, cvObjectsByClass );
+        featureDetectionMethods = getSortedList( CvFeatureIdentification.class, cvObjectsByClass);
         featureDetectionMethodSelectItems = createSelectItems( featureDetectionMethods, "-- Select method --" );
 
-        featureTypes = getSortedList( CvFeatureType.class, cvObjectsByClass );
+        featureTypes = getSortedList( CvFeatureType.class, cvObjectsByClass);
         featureTypeSelectItems = createSelectItems( featureTypes, "-- Select type --" );
 
-        fuzzyTypes = getSortedList( CvFuzzyType.class, cvObjectsByClass );
+        fuzzyTypes = getSortedList( CvFuzzyType.class, cvObjectsByClass);
         fuzzyTypeSelectItems = createSelectItems( fuzzyTypes, "-- Select type --" );
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
     }
-
+    
     public List<CvTopic> getSortedTopicList( String key, Multimap<String, CvTopic> topicMultimap ) {
         if ( topicMultimap.containsKey( key ) ) {
             List<CvTopic> list = new ArrayList<CvTopic>( topicMultimap.get( key ) );
@@ -218,8 +244,8 @@ public class CvObjectService extends JpaAwareController {
         }
     }
 
-    private List<SelectItem> createSelectItems( Collection<? extends CvObject> cvObjects, String noSelectionText ) {
-        List<SelectItem> selectItems = new ArrayList<SelectItem>( cvObjects.size() );
+    public List<SelectItem> createSelectItems( Collection<? extends CvObject> cvObjects, String noSelectionText ) {
+        List<SelectItem> selectItems = new CopyOnWriteArrayList<SelectItem>();
 
         if ( noSelectionText != null ) {
             selectItems.add( new SelectItem( null, noSelectionText, noSelectionText, false, false, true ) );
@@ -255,7 +281,7 @@ public class CvObjectService extends JpaAwareController {
     }
 
 
-    private class CvKey {
+    public class CvKey {
         private String id;
         private String className;
         private String classSimpleName;
@@ -311,6 +337,26 @@ public class CvObjectService extends JpaAwareController {
         return interactionTopicSelectItems;
     }
 
+    public List<SelectItem> getInteractorTopicSelectItems() {
+        return interactorTopicSelectItems;
+    }
+
+    public List<SelectItem> getParticipantTopicSelectItems() {
+        return participantTopicSelectItems;
+    }
+
+    public List<SelectItem> getFeatureTopicSelectItems() {
+        return featureTopicSelectItems;
+    }
+
+    public List<SelectItem> getCvObjectTopicSelectItems() {
+        return cvObjectTopicSelectItems;
+    }
+
+    public List<SelectItem> getBioSourceTopicSelectItems() {
+        return bioSourceTopicSelectItems;
+    }
+
     public List<SelectItem> getDatabaseSelectItems() {
         return databaseSelectItems;
     }
@@ -357,6 +403,18 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getFuzzyTypeSelectItems() {
         return fuzzyTypeSelectItems;
+    }
+
+    public List<CvObject> getAllCvObjects() {
+        return allCvObjects;
+    }
+
+    public Collection<CvObject> getCvObjectsByClass(Class clazz) {
+        return cvObjectsByClass.get(clazz);
+    }
+
+    public Collection<CvTopic> getCvTopicsByUsedInClass(String className) {
+        return cvObjectsByUsedInClass.get(className);
     }
 
     private class CvObjectComparator implements Comparator<CvObject> {
