@@ -109,8 +109,11 @@
 
                                 <h4>Features (#{participant.bindingDomains.size()})</h4>
 
-                                <ia:featureTable value="#{participant.bindingDomains}"
-                                                 render="#{not participant.bindingDomains.isEmpty()}"/>
+                                <h:panelGroup rendered="#{not participant.bindingDomains.isEmpty()}">
+                                    <ui:include src="features_table.xhtml">
+                                        <ui:param name="value" value="#{participant.bindingDomains}"/>
+                                    </ui:include>
+                                </h:panelGroup>
                             </td>
                         </tr>
                     </table>
