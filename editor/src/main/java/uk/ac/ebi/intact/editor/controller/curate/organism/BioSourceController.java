@@ -46,6 +46,11 @@ public class BioSourceController extends AnnotatedObjectController {
         }
     }
 
+    public String newOrganism() {
+        bioSource = new BioSource();
+        return "/curate/organism";
+    }
+
     public String getAc() {
         return ac;
     }
@@ -61,4 +66,6 @@ public class BioSourceController extends AnnotatedObjectController {
     public void setBioSource(BioSource bioSource) {
         this.bioSource = bioSource;
     }
+
+
 }

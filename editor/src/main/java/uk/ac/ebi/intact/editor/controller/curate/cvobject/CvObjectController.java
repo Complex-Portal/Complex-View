@@ -10,7 +10,6 @@ import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvDagObject;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.model.util.CvObjectUtils;
 
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
@@ -81,7 +80,7 @@ public class CvObjectController extends AnnotatedObjectController {
 
         return obj;
     }
-
+    
     @Override
     public boolean doSaveDetails() {
         cvObjectService.refresh(null);
@@ -158,6 +157,5 @@ public class CvObjectController extends AnnotatedObjectController {
     public void setCvObjectSelectItems(List<SelectItem> cvObjectSelectItems) {
         this.cvObjectSelectItems = cvObjectSelectItems;
     }
-
 
 }
