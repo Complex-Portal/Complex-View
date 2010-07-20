@@ -53,6 +53,10 @@
                         <td style="text-align: right; font-weight: bold;">Features</td>
                         <td>AC, shortlabel</td>
                     </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;">Organisms</td>
+                        <td>AC, shortlabel, fullName, Tax Id</td>
+                    </tr>
                 </table>
             </blockquote>
 
@@ -294,7 +298,7 @@
 
      <ia:collapsiblePanel id="featuresPanel" open="#{searchController.matchesSingleType()}"
                              display="#{searchController.features.rowCount > 0}"
-                             title="Controlled Vocabularies (#{searchController.features.rowCount})">
+                             title="Features (#{searchController.features.rowCount})">
 
               <p:dataTable id="searchFeaturesTable" var="feature" value="#{searchController.features}"
                          paginator="#{searchController.features.rowCount > 10}"
@@ -318,6 +322,44 @@
             </p:dataTable>
 
         </ia:collapsiblePanel>
+
+        <ia:collapsiblePanel id="organismsPanel" open="#{searchController.matchesSingleType()}"
+                             display="#{searchController.organisms.rowCount > 0}"
+                             title="Organisms (#{searchController.organisms.rowCount})">
+
+              <p:dataTable id="organismFeaturesTable" var="organism" value="#{searchController.organisms}"
+                         paginator="#{searchController.organisms.rowCount > 10}"
+                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Shortlabel"/>
+                    </f:facet>
+                    <h:link outcome="/curate/cvobject" value="#{organism.shortLabel}" includeViewParams="true">
+                        <f:param name="ac" value="#{organism.ac}"/>
+                    </h:link>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Name"/>
+                    </f:facet>
+                    <h:outputText value="#{organism.fullName}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Tax ID"/>
+                    </f:facet>
+                    <h:outputText value="#{organism.taxId}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="AC"/>
+                    </f:facet>
+                    <h:outputText value="#{organism.ac}"/>
+                </p:column>
+            </p:dataTable>
+
+        </ia:collapsiblePanel>
+
 
 
     </ui:define>

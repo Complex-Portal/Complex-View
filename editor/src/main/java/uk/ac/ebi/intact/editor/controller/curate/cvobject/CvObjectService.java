@@ -101,6 +101,13 @@ public class CvObjectService extends JpaAwareController {
 
     private List<CvFuzzyType> fuzzyTypes;
     private List<SelectItem> fuzzyTypeSelectItems;
+
+    private List<CvCellType> cellTypes;
+    private List<SelectItem> cellTypeSelectItems;
+
+    private List<CvTissue> tissues;
+    private List<SelectItem> tissueSelectItems;
+
     private Multimap<String, CvTopic> cvObjectsByUsedInClass;
     private Multimap<Class, CvObject> cvObjectsByClass;
 
@@ -208,6 +215,12 @@ public class CvObjectService extends JpaAwareController {
 
         fuzzyTypes = getSortedList( CvFuzzyType.class, cvObjectsByClass);
         fuzzyTypeSelectItems = createSelectItems( fuzzyTypes, "-- Select type --" );
+
+        cellTypes = getSortedList( CvCellType.class, cvObjectsByClass);
+        cellTypeSelectItems = createSelectItems( cellTypes, "-- Select cell type --" );
+
+        tissues = getSortedList( CvTissue.class, cvObjectsByClass);
+        tissueSelectItems = createSelectItems( tissues, "-- Select tissue --" );
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
     }
@@ -403,6 +416,14 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getFuzzyTypeSelectItems() {
         return fuzzyTypeSelectItems;
+    }
+
+    public List<SelectItem> getTissueSelectItems() {
+        return tissueSelectItems;
+    }
+
+    public List<SelectItem> getCellTypeSelectItems() {
+        return cellTypeSelectItems;
     }
 
     public List<CvObject> getAllCvObjects() {

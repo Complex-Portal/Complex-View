@@ -1,0 +1,132 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+
+                template="/curate/curate_template.xhtml">
+
+    <ui:param name="annotatedObjectController" value="#{bioSourceController}"/>
+
+    <ui:define name="curateContent">
+        <f:metadata>
+            <f:viewParam name="ac" value="#{bioSourceController.ac}"/>
+            <f:event type="preRenderView" listener="#{bioSourceController.loadData}"/>
+        </f:metadata>
+
+        <h:panelGroup rendered="#{bioSourceController.bioSource == null}">
+            No Organism loaded!
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{bioSourceController.bioSource != null}">
+            <div id="auditInfo" class="intact-auditPanel">
+                <ia:creatorUpdator annotatedObject="#{bioSourceController.bioSource}" />
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup id="info" rendered="#{bioSourceController.bioSource != null}">
+
+            <h2>CV Object: #{bioSourceController.bioSource.class.simpleName}</h2>
+
+            <p:outputPanel id="basic">
+
+                <table class="intact-tableBasicForm">
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+                        </td>
+                        <td>
+                            <h:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30"/>
+                        </td>
+                        <td style="padding-left: 50px;">
+                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
+                            <h:inputText id="acTxt" value="#{bioSourceController.bioSource.ac}"
+                                         size="10" disabled="true" class="intact-disabled"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Fullname: " for="fullnameTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}"/>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Tax ID: " for="taxIdTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <h:inputText id="taxIdTxt" value="#{bioSourceController.bioSource.taxId}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Cell type: " for="cellTypeTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <h:selectOneMenu id="cellTypeTxt" value="#{bioSourceController.bioSource.cvCellType}">
+                                <f:selectItems value="#{cvObjectService.cellTypeSelectItems}"/>
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Tissue: " for="tissueTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <h:selectOneMenu id="tissueTxt" value="#{bioSourceController.bioSource.cvTissue}">
+                                <f:selectItems value="#{cvObjectService.tissueSelectItems}"/>
+                            </h:selectOneMenu>
+                        </td>
+                    </tr>
+
+
+                </table>
+
+            </p:outputPanel>
+
+            <h3>Properties</h3>
+
+            <p:outputPanel id="xrefsPanel">
+                <ia:collapsiblePanel open="true" title="Xrefs (#{bioSourceController.bioSource.xrefs.size()})">
+                            <ia:xrefsTable annotatedObjectController="#{bioSourceController}"
+                                           databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                           qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                           update="xrefsPanel changesPanel"
+                                           style="margin-top: -20px;"
+                                           valueChangeRender=":editorForm:changesPanel"
+                                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                        </ia:collapsiblePanel>
+            </p:outputPanel>
+
+             <p:outputPanel id="annotationsPanel">
+                        <ia:collapsiblePanel open="true" title="Annotations (#{bioSourceController.bioSource.annotations.size()})">
+                            <ia:annotationsTable annotatedObjectController="#{bioSourceController}"
+                                                 topicSelectItems="#{cvObjectService.cvObjectTopicSelectItems}"
+                                                 update="annotationsPanel changesPanel"
+                                                 style="margin-top: -20px;"
+                                                 valueChangeRender=":editorForm:changesPanel"
+                                                 valueChangeAwareObject="#{annotatedObjectController}"/>
+                        </ia:collapsiblePanel>
+                    </p:outputPanel>
+
+                    <p:outputPanel id="aliasesPanel">
+                        <ia:collapsiblePanel open="true" title="Aliases (#{bioSourceController.bioSource.aliases.size()})">
+                            <ia:aliasTable annotatedObjectController="#{bioSourceController}"
+                                           aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                                           update="aliasesPanel changesPanel"
+                                           style="margin-top: -20px;"
+                                           valueChangeRender=":editorForm:changesPanel"
+                                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                        </ia:collapsiblePanel>
+                    </p:outputPanel>
+            
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>

@@ -53,6 +53,8 @@ public class SearchController extends JpaAwareController {
 
     private LazyDataModel<Feature> features;
 
+    private LazyDataModel<BioSource> organisms;
+
     //////////////////
     // Constructors
 
@@ -94,6 +96,10 @@ public class SearchController extends JpaAwareController {
         return features;
     }
 
+    public LazyDataModel<BioSource> getOrganisms() {
+        return organisms;
+    }
+
     ///////////////
     // Actions
 
@@ -110,10 +116,10 @@ public class SearchController extends JpaAwareController {
 
             q = q.replaceAll( "\\*", "%" );
             q = q.replaceAll( "\\?", "%" );
-            if ( !query.startsWith( "%" ) ) {
+            if ( !q.startsWith( "%" ) ) {
                 q = "%" + q;
             }
-            if ( !query.endsWith( "%" ) ) {
+            if ( !q.endsWith( "%" ) ) {
                 q = q + "%";
             }
 
@@ -171,12 +177,20 @@ public class SearchController extends JpaAwareController {
                 }
             };
 
+            Runnable runnableOrganisms = new Runnable() {
+                @Override
+                public void run() {
+                   loadOrganisms( finalQuery, originalQuery );
+                }
+            };
+
             executorService.submit(runnablePub);
             executorService.submit(runnableExp);
             executorService.submit(runnableInt);
             executorService.submit(runnableMol);
             executorService.submit(runnableCvs);
             executorService.submit(runnableFeatures);
+            executorService.submit(runnableOrganisms);
 
             executorService.shutdown();
 
@@ -210,7 +224,8 @@ public class SearchController extends JpaAwareController {
                && ( interactions != null && interactions.getRowCount() == 0 )
                && ( molecules != null && molecules.getRowCount() == 0 )
                && ( cvobjects != null && cvobjects.getRowCount() == 0 )
-               && ( features != null && features.getRowCount() == 0 );
+               && ( features != null && features.getRowCount() == 0 )
+               && ( organisms != null && organisms.getRowCount() == 0 );
     }
 
     public boolean matchesSingleType() {
@@ -222,6 +237,7 @@ public class SearchController extends JpaAwareController {
         if ( molecules != null && molecules.getRowCount() > 0 ) matches++;
         if ( cvobjects != null && cvobjects.getRowCount() > 0 ) matches++;
         if ( features != null && features.getRowCount() > 0 ) matches++;
+        if ( organisms != null && organisms.getRowCount() > 0 ) matches++;
 
         return matches == 1;
     }
@@ -422,6 +438,34 @@ public class SearchController extends JpaAwareController {
                                                                  params );
 
         log.info( "Features found: " + features.getRowCount() );
+    }
+
+    private void loadOrganisms( String query, String originalQuery ) {
+        log.info( "Searching for organisms matching '" + query + "'..." );
+
+        final HashMap<String, String> params = Maps.newHashMap();
+        params.put( "query", query );
+        params.put( "ac", originalQuery );
+
+        // Load experiment eagerly to avoid LazyInitializationException when redering the view
+        organisms = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+
+                                                                 "select distinct b " +
+                                                                 "from BioSource b " +
+                                                                 "where    b.ac = :ac " +
+                                                                 "      or lower(b.shortLabel) like :query " +
+                                                                 "      or lower(b.taxId) like :query " +
+                                                                 "order by b.updated desc",
+
+                                                                 "select count(distinct b) " +
+                                                                 "from BioSource b " +
+                                                                 "where    b.ac = :ac " +
+                                                                 "      or lower(b.shortLabel) like :query " +
+                                                                 "      or lower(b.taxId) like :query ",
+
+                                                                 params );
+
+        log.info( "Organisms found: " + organisms.getRowCount() );
     }
 
     public int countExperimentsForPublication( Publication publication ) {

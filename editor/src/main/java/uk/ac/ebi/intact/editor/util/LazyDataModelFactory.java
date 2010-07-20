@@ -47,16 +47,21 @@ public class LazyDataModelFactory {
 
         log.debug( "HQL Count: " + countQuery );
 
-        Query q = entityManager.createQuery( countQuery );
+        int totalNumRows = 0;
+        try {
+            Query q = entityManager.createQuery( countQuery );
 
-        if ( params != null ) {
-            for ( Map.Entry<String, String> entry : params.entrySet() ) {
-                log.debug( "HQL Count param: " + entry.getKey() + " -> " + entry.getValue() );
-                q.setParameter( entry.getKey(), entry.getValue() );
+            if ( params != null ) {
+                for ( Map.Entry<String, String> entry : params.entrySet() ) {
+                    log.debug( "HQL Count param: " + entry.getKey() + " -> " + entry.getValue() );
+                    q.setParameter( entry.getKey(), entry.getValue() );
+                }
             }
-        }
 
-        int totalNumRows = ( ( Long ) q.getSingleResult() ).intValue();
+            totalNumRows = ( ( Long ) q.getSingleResult() ).intValue();
+        } catch (Throwable e) {
+            throw new IllegalArgumentException("Problem running query: "+query, e);
+        }
 
         return createLazyDataModel( entityManager, query, totalNumRows, params );
     }
