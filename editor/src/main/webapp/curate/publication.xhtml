@@ -117,33 +117,11 @@
                                 <td class="firstCell">
                                     <h:outputLabel value="Title: " for="titleTxt"/>
                                 </td>
-                                <td colspan="3">
+                                <td colspan="2">
                                     <h:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1">
                                         <f:ajax event="valueChange" render=":editorForm:changesPanel"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputTextarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="firstCell">
-                                    <h:outputLabel value="Authors: " for="authorsTxt"/>
-                                </td>
-                                <td colspan="3">
-                                    <h:inputText id="authorsTxt" value="#{publicationController.authors}" size="80">
-                                        <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
-                                                execute="@this" listener="#{publicationController.changed}"/>
-                                    </h:inputText>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="1" class="firstCell">
-                                    <h:outputLabel value="Journal: " for="journalTxt"/>
-                                </td>
-                                <td colspan="2">
-                                    <h:inputText id="journalTxt" value="#{publicationController.journal}" size="50">
-                                        <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
-                                                execute="@this" listener="#{publicationController.changed}"/>
-                                    </h:inputText>
                                 </td>
                                 <td colspan="1" style="text-align: right;">
                                     <h:outputLabel value="Year: " for="yearTxt"/>
@@ -151,6 +129,28 @@
                                         <f:convertNumber pattern="#"/>
                                         <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
                                                 execute="@this" listener="#{publicationController.changed}" />
+                                    </h:inputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1" class="firstCell">
+                                    <h:outputLabel value="Author submitted: " for="submittedTxt"/>
+                                </td>
+                                <td colspan="3">
+                                    <h:inputText id="submittedTxt" value="#{publicationController.submitted}" size="50">
+                                        <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
+                                                execute="@this" listener="#{publicationController.changed}"/>
+                                    </h:inputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1" class="firstCell">
+                                    <h:outputLabel value="Curation request: " for="curationReqTxt"/>
+                                </td>
+                                <td colspan="3">
+                                    <h:inputText id="curationReqTxt" value="#{publicationController.curationRequest}" size="50">
+                                        <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
+                                                execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
                                 </td>
                             </tr>

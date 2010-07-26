@@ -45,6 +45,9 @@ public class PublicationController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( PublicationController.class );
 
+    public static final String SUBMITTED = "MI:0878";
+    public static final String CURATION_REQUEST = "MI:0873";
+
     private Publication publication;
     private String ac;
 
@@ -272,13 +275,39 @@ public class PublicationController extends AnnotatedObjectController {
         this.publication = publication;
     }
 
+
     public String getJournal() {
         final String annot = findAnnotationText( CvTopic.JOURNAL_MI_REF );
         return annot;
     }
 
+
     public void setJournal( String journal ) {
         setAnnotation( CvTopic.JOURNAL_MI_REF, journal );
+    }
+
+    public String getContactEmail() {
+        return findAnnotationText( CvTopic.CONTACT_EMAIL_MI_REF );
+    }
+
+    public void setContactEmail( String contactEmail ) {
+        setAnnotation( CvTopic.CONTACT_EMAIL_MI_REF, contactEmail );
+    }
+
+    public String getSubmitted() {
+        return findAnnotationText(SUBMITTED);
+    }
+
+    public void setSubmitted( String submitted ) {
+        setAnnotation(SUBMITTED, submitted );
+    }
+
+    public String getCurationRequest() {
+        return findAnnotationText(CURATION_REQUEST);
+    }
+
+    public void setCurationRequest( String requestedCuration ) {
+        setAnnotation(CURATION_REQUEST, requestedCuration );
     }
 
     public Short getYear() {
