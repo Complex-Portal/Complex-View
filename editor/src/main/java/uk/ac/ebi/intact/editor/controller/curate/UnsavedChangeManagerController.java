@@ -113,4 +113,10 @@ public class UnsavedChangeManagerController extends BaseController {
             throw new IllegalArgumentException("No view defined for object with type: "+iaClass);
         }
     }
+
+    public void removeFromUnsaved(IntactObject object) {
+        for (UnsavedChangeManager ucm : unsavedMap.values()) {
+            ucm.removeFromUnsaved(object);
+        }
+    }
 }

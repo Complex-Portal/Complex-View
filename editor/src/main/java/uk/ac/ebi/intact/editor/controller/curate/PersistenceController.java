@@ -18,6 +18,9 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.ejb.HibernateEntityManager;
+import org.hibernate.engine.PersistenceContext;
+import org.hibernate.impl.SessionImpl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.IllegalTransactionStateException;
@@ -25,10 +28,12 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.IntactObject;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
+import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -57,6 +62,19 @@ public class PersistenceController extends JpaAwareController {
             getIntactContext().getCorePersister().saveOrUpdate( annotatedObject );
 
             addInfoMessage( simpleName +" saved", "AC: " + annotatedObject.getAc() );
+
+            // clear the unsaved changes using the entity manager
+            final HibernateEntityManager em = (HibernateEntityManager) getIntactContext().getDaoFactory().getEntityManager();
+            final PersistenceContext persistenceContext = ((SessionImpl) em.getSession()).getPersistenceContext();
+
+            UnsavedChangeManagerController unsavedChangeManagerController = (UnsavedChangeManagerController) getSpringContext().getBean("unsavedChangeManagerController");
+
+            Collection<Object> entities = persistenceContext.getEntitiesByKey().values();
+            for (Object entity : entities) {
+                if (entity instanceof IntactObject) {
+                    unsavedChangeManagerController.removeFromUnsaved((IntactObject)entity);
+                }
+            }
 
             return true;
 
