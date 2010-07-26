@@ -9,7 +9,7 @@
 
     <h:panelGroup id="participantsTable">
 
-<c:forEach items="#{value}" var="wrapper" varStatus="status">
+<ui:repeat value="#{value}" var="wrapper" varStatus="status">
 
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
@@ -122,7 +122,7 @@
 
             </div>
 
-        </c:forEach>
+        </ui:repeat>
 
     </h:panelGroup>
 

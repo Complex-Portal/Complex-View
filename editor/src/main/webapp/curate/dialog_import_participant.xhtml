@@ -46,7 +46,7 @@
                                      actionListener="#{participantImportController.addSelectedToInteraction}"
                                      onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); candidatesDialog.show();"
                                      oncomplete="adding_load.hide();  "
-                                     update="growl,interactionTabs,changesPanel" process="candidatesDialog"/>
+                                     update="growl,editorForm,changesPanel" process="candidatesDialog"/>
                     <p:commandButton type="button" value="Back" rendered="#{empty participantImportController.importCandidates}"
                                      onclick="candidatesDialog.hide(); importParticipantDialog.show()"/>
                     </h:panelGroup>
