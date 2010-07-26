@@ -60,19 +60,17 @@
 
         </p:outputPanel>
 
-        <p:dialog header="Please wait" widgetVar="#{dialogWidgetId}_load" modal="#{cc.attrs.modal}" position="center">
-            <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
-            Loading organisms...
-        </p:dialog>
+        <ia:loadingDialog widgetVar="#{dialogWidgetId}_load" message="Loading organisms..."/>
 
-        <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" position="center">
+        <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" position="center"
+                width="400" height="500">
            <p:outputPanel id="bioSourceBrowserDialog">
 
                 <h:panelGrid columns="1">
                     <h:panelGroup>
                         <h:inputText value="#{cc.query}"/>
                         <p:commandButton value="Search" actionListener="#{cc.search}" update="bioSourceTable"/>
-                        <h:commandButton value="New..." title="Not yet implemented" disabled="true"/>
+                        <p:commandButton value="New..." title="Not yet implemented" disabled="true"/>
                     </h:panelGroup>
 
                     <h:outputScript>

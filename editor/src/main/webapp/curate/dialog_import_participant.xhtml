@@ -11,11 +11,11 @@
 
         <ia:panelDialogLayout>
             <f:facet name="buttonBar">
-                <p:commandButton value="Search" actionListener="#{participantImportController.importParticipants}"
+                <p:commandButton id="participantSearchBtn" value="Search" actionListener="#{participantImportController.importParticipants}"
                                  update="growl,candidatesContent"
                                  onstart="searching_load.show()"
                                  oncomplete="searching_load.hide(); importParticipantDialog.hide(); candidatesDialog.show()"
-                                 process="ipDialog"/>
+                                 process="searchParticipantTxt,participantSearchBtn" />
             </f:facet>
 
             <h:panelGrid columns="2">
@@ -28,6 +28,7 @@
                                  converter="arrayConverter"
                                  cols="15"/>
             </h:panelGrid>
+
         </ia:panelDialogLayout>
     </p:dialog>
 
@@ -50,6 +51,7 @@
                                      onclick="candidatesDialog.hide(); importParticipantDialog.show()"/>
                     </h:panelGroup>
                 </f:facet>
+
 
                 <p:dataTable id="candidatesTable" var="candidate" rendered="#{not empty participantImportController.importCandidates}"
                              value="#{participantImportController.importCandidates}">

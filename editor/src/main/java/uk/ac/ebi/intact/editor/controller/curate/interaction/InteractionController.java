@@ -95,19 +95,19 @@ public class InteractionController extends AnnotatedObjectController {
         }
 
         if( interaction.getExperiments().isEmpty() ) {
-            addWarningMessage( "This interaction isn't attached to an experiment", "Abort experiment loading." );
-            return;
-        }
+            addWarningMessage( "This interaction isn't attached to an experiment", "Plase add one or delete it" );
+        } else {
 
-        // check if the publication or experiment are null in their controllers (this happens when the interaction
-        // page is loaded directly using a URL)
-        if ( publicationController.getPublication() == null ) {
-            Publication publication = interaction.getExperiments().iterator().next().getPublication();
-            publicationController.setPublication( publication );
-        }
+            // check if the publication or experiment are null in their controllers (this happens when the interaction
+            // page is loaded directly using a URL)
+            if ( publicationController.getPublication() == null ) {
+                Publication publication = interaction.getExperiments().iterator().next().getPublication();
+                publicationController.setPublication( publication );
+            }
 
-        if ( experimentController.getExperiment() == null ) {
-            experimentController.setExperiment( interaction.getExperiments().iterator().next() );
+            if ( experimentController.getExperiment() == null ) {
+                experimentController.setExperiment( interaction.getExperiments().iterator().next() );
+            }
         }
 
         refreshExperimentLists();
@@ -132,10 +132,12 @@ public class InteractionController extends AnnotatedObjectController {
             source.add( e.getShortLabel() );
         }
 
-        final Publication pub = publicationController.getPublication();
-        for ( Experiment e : pub.getExperiments() ) {
-            if( ! source.contains( e.getShortLabel() ) ) {
-                target.add( e.getShortLabel() );
+        if (publicationController.getPublication() != null) {
+            final Publication pub = publicationController.getPublication();
+            for ( Experiment e : pub.getExperiments() ) {
+                if( ! source.contains( e.getShortLabel() ) ) {
+                    target.add( e.getShortLabel() );
+                }
             }
         }
 

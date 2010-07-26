@@ -76,6 +76,11 @@ public class ParticipantImportController extends BaseController {
         cvExperimentalRole = daoFactory.getCvObjectDao(CvExperimentalRole.class).getByPsiMiRef(CvExperimentalRole.UNSPECIFIED_PSI_REF);
         cvBiologicalRole = daoFactory.getCvObjectDao(CvBiologicalRole.class).getByPsiMiRef(CvBiologicalRole.UNSPECIFIED_PSI_REF);
 
+        if (participantsToImport == null) {
+            addErrorMessage("No participants to import", "Please add at least one identifier in the box");
+            return;
+        }
+
         for (String participantToImport : participantsToImport) {
             List<ImportCandidate> candidates = importParticipant(participantToImport);
 

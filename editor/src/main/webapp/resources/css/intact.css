@@ -257,5 +257,9 @@ a img {
 }
 
 
-
+/** picklist **/
+.ui-picklist-source, .ui-picklist-target {
+    height:100px;
+    width:100px;
+}
 

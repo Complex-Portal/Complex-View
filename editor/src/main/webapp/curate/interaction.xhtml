@@ -91,7 +91,7 @@
                             <h:outputLabel value="Experiment: " for="experimentLists"/>
                         </td>
                         <td colspan="3" >
-                            <p:pickList id="experimentLists" 
+                            <p:pickList id="experimentLists"
                                         value="#{interactionController.experimentLists}"
                                         var="exp" itemLabel="#{exp}" itemValue="#{exp}" />
                         </td>
@@ -115,8 +115,6 @@
                     <ia:spacer height="10" />
 
                     <ui:include src="dialog_import_participant.xhtml"/>
-
-                    <!--<ia:participantsTable id="participantTable" value="#{interactionController.participants}"/>-->
 
                     <ui:include src="participants_table.xhtml">
                         <ui:param name="value" value="#{interactionController.participants}"/>

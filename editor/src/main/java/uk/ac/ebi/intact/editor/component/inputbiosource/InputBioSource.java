@@ -27,10 +27,9 @@ import javax.faces.component.FacesComponent;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.persistence.EntityManager;
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ import java.util.Map;
  * @version $Id$
  */
 @FacesComponent("uk.ac.ebi.intact.editor.InputBioSource")
-public class InputBioSource extends UIInput implements NamingContainer {
+public class InputBioSource extends UIInput implements NamingContainer, Serializable {
 
     private static final Log log = LogFactory.getLog(InputBioSource.class);
     
@@ -51,26 +50,6 @@ public class InputBioSource extends UIInput implements NamingContainer {
     public String getFamily() {
       return UINamingContainer.COMPONENT_FAMILY;
    }
-
-    @Override
-    public void decode(FacesContext context) {
-        if (log.isTraceEnabled()) log.trace("InputBioSource.decode");
-        super.decode(context);
-    }
-
-    @Override
-    public void encodeBegin(FacesContext context) throws IOException {
-        if (log.isTraceEnabled()) log.trace("InputBioSource.encodeBegin");
-        super.encodeBegin(context);
-    }
-
-    @Override
-    public void encodeEnd(FacesContext context) throws IOException {
-        if (log.isTraceEnabled()) log.trace("InputBioSource.encodeEnd");
-        super.encodeEnd(context);
-    }
-
-
 
     public void loadBioSources( ActionEvent evt ) {
         if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES");
@@ -116,7 +95,7 @@ public class InputBioSource extends UIInput implements NamingContainer {
     public LazyDataModel<BioSource> getBioSources() {
         if (log.isTraceEnabled()) log.trace("InputBioSource.getBioSources ["+hashCode()+"]");
 
-        final LazyDataModel<BioSource> bioSources = (LazyDataModel<BioSource>) getStateHelper().eval("biosources");
+        final LazyDataModel<BioSource> bioSources = (LazyDataModel<BioSource>) getStateHelper().eval("bioSources");
 
         if (log.isTraceEnabled()) log.trace("\tBIOSOURCES: "+((bioSources == null)? null : bioSources.getRowCount()));
         refreshTable(bioSources);
@@ -141,7 +120,7 @@ public class InputBioSource extends UIInput implements NamingContainer {
         if (log.isTraceEnabled()) log.trace("InputBioSource.setBioSources: "+((bioSources == null)? null : bioSources.getRowCount()));
 
         if (bioSources != null) {
-            getStateHelper().put("biosources", bioSources);
+            getStateHelper().put("bioSources", bioSources);
         }
     }
 
