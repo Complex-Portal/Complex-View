@@ -59,8 +59,10 @@
                 <p:menuitem value="Save &amp; Close" onclick="save()" ajax="false"
                             rendered="#{annotatedObjectController.annotatedObject != null}"/>
             </p:submenu>
-            <!--<p:submenu label="Experiments" rendered="#{publicationController.publication != null}"/>-->
-            <!--<p:submenu label="Interactions" rendered="#{publicationController.publication != null}"/>-->
+
+            <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development'}">
+                <p:menuitem value="Changes" action="/curate/debug/changes" ajax="false"/>
+            </p:submenu>
         </p:menubar>
     </ui:define>
 

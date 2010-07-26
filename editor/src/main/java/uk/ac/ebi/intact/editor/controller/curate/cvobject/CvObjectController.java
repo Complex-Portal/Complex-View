@@ -78,6 +78,8 @@ public class CvObjectController extends AnnotatedObjectController {
             e.printStackTrace();
         }
 
+        getUnsavedChangeManager().markAsUnsaved(obj);
+
         return obj;
     }
     

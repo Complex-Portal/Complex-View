@@ -41,7 +41,7 @@ public class AnnotatedObjectWrapper {
                     IntactContext.getCurrentInstance().getSpringContext().getBean("unsavedChangeManagerController");
 
             if (getAnnotatedObject() != null) {
-                unsavedChangeManager = unsavedChangeManagerController.getUnsavedChangeManager(getAnnotatedObject().getAc());
+                unsavedChangeManager = unsavedChangeManagerController.getUnsavedChangeManager(System.identityHashCode(getAnnotatedObject()));
             } else {
                 unsavedChangeManager = new UnsavedChangeManager();
             }

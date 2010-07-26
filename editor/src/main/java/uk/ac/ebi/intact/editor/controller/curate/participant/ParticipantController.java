@@ -113,6 +113,8 @@ public class ParticipantController extends AnnotatedObjectController {
         participant.setCvBiologicalRole(null);
 
         interaction.addComponent(participant);
+
+        getUnsavedChangeManager().markAsUnsaved(participant);
     }
 
     public void markFeatureToDelete(Feature feature, UnsavedChangeManager unsavedChangeManager) {

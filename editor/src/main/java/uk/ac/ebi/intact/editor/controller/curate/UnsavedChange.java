@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
+import uk.ac.ebi.intact.core.util.DebugUtil;
+import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
 /**
@@ -43,6 +45,14 @@ public class UnsavedChange {
         return unsavedObject;
     }
 
+    public String getDescription(IntactObject intactObject) {
+        if (intactObject instanceof AnnotatedObject) {
+            return ((AnnotatedObject)intactObject).getShortLabel();
+        }
+        
+        return DebugUtil.intactObjectToString(intactObject, true);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,7 +61,7 @@ public class UnsavedChange {
         UnsavedChange that = (UnsavedChange) o;
 
         if (action != null ? !action.equals(that.action) : that.action != null) return false;
-        if (unsavedObject != null ? !unsavedObject.equals(that.unsavedObject) : that.unsavedObject != null)
+        if (unsavedObject != null ? System.identityHashCode(unsavedObject) != System.identityHashCode(that.unsavedObject) : that.unsavedObject != null)
             return false;
 
         return true;
@@ -59,7 +69,7 @@ public class UnsavedChange {
 
     @Override
     public int hashCode() {
-        int result = unsavedObject != null ? unsavedObject.hashCode() : 0;
+        int result = unsavedObject != null ? System.identityHashCode(unsavedObject) : 0;
         result = 31 * result + (action != null ? action.hashCode() : 0);
         return result;
     }

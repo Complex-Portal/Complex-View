@@ -98,6 +98,8 @@ public class ExperimentController extends AnnotatedObjectController {
         this.experiment = new Experiment(getIntactContext().getInstitution(), createExperimentShortLabel(), null);
         publication.addExperiment(experiment);
         publicationController.setPublication(publication);
+
+        getUnsavedChangeManager().markAsUnsaved(experiment);
     }
 
     private String createExperimentShortLabel() {

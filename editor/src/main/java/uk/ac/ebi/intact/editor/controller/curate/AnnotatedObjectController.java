@@ -246,6 +246,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void setUnsavedChanges(boolean unsavedChanges) {
         getUnsavedChangeManager().setUnsavedChanges(unsavedChanges);
+
+        if (unsavedChanges) {
+            getUnsavedChangeManager().markAsUnsaved(getAnnotatedObject());
+        } else {
+            getUnsavedChangeManager().removeFromUnsaved(getAnnotatedObject());
+        }
     }
 
     public Date getLastSaved() {

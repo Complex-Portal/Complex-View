@@ -132,6 +132,8 @@ public class PublicationController extends AnnotatedObjectController {
         autocomplete( publication, identifier );
 
         identifier = null;
+
+        getUnsavedChangeManager().markAsUnsaved(publication);
     }
 
     public void doFormAutocomplete( ActionEvent evt ) {
@@ -155,6 +157,7 @@ public class PublicationController extends AnnotatedObjectController {
 
             if ( citation == null ) {
                 addErrorMessage( "No citation was found", "PMID: " + id );
+                setPublication(null);
                 return;
             }
 
@@ -196,6 +199,8 @@ public class PublicationController extends AnnotatedObjectController {
 
         publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
         ac = null;
+
+        getUnsavedChangeManager().markAsUnsaved(publication);
     }
 
     public void openByPmid( ActionEvent evt ) {

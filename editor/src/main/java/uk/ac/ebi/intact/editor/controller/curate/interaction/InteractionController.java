@@ -175,6 +175,8 @@ public class InteractionController extends AnnotatedObjectController {
         experiment.addInteraction(interaction);
 
         refreshExperimentLists();
+
+        getUnsavedChangeManager().markAsUnsaved(interaction);
     }
 
     public void refreshParticipants() {

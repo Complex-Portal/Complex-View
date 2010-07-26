@@ -37,7 +37,24 @@ public class UnsavedChangeManager {
         if (object.getAc() != null) {
             unsavedChanges = true;
             changes.add(new UnsavedChange(object, UnsavedChange.DELETED));
+
+            removeFromUnsaved(object);
         }
+    }
+
+    public void markAsUnsaved(IntactObject object) {
+        unsavedChanges = true;
+
+        if (object.getAc() != null) {
+            changes.add(new UnsavedChange(object, UnsavedChange.UPDATED));
+        } else {
+            changes.add(new UnsavedChange(object, UnsavedChange.CREATED));
+        }
+    }
+
+    public void removeFromUnsaved(IntactObject object) {
+        changes.remove(new UnsavedChange(object, UnsavedChange.CREATED));
+        changes.remove(new UnsavedChange(object, UnsavedChange.UPDATED));
     }
 
     public void revert(IntactObject object) {

@@ -17,9 +17,21 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import psidev.psi.mi.xml.model.Participant;
 import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
+import uk.ac.ebi.intact.editor.controller.curate.feature.FeatureController;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
+import uk.ac.ebi.intact.editor.controller.curate.interactor.InteractorController;
+import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceController;
+import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantController;
+import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
+import uk.ac.ebi.intact.model.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,23 +44,73 @@ import java.util.Map;
 @Scope("session")
 public class UnsavedChangeManagerController extends BaseController {
 
-    private Map<String,UnsavedChangeManager> unsavedMap;
+    private Map<Object,UnsavedChangeManager> unsavedMap;
 
     public UnsavedChangeManagerController() {
-        this.unsavedMap = new HashMap<String, UnsavedChangeManager>();
+        this.unsavedMap = new HashMap<Object, UnsavedChangeManager>();
     }
 
-    public UnsavedChangeManager getUnsavedChangeManager(String ac) {
-        if (unsavedMap.containsKey(ac)) {
-            return unsavedMap.get(ac);
+    public UnsavedChangeManager getUnsavedChangeManager(Object key) {
+        if (unsavedMap.containsKey(key)) {
+            return unsavedMap.get(key);
         }
 
         UnsavedChangeManager unsavedChangeManager = new UnsavedChangeManager();
 
-        if (ac != null) {
-            unsavedMap.put(ac, unsavedChangeManager);
+        if (key != null) {
+            unsavedMap.put(key, unsavedChangeManager);
         }
 
         return unsavedChangeManager; 
+    }
+
+    public List<UnsavedChange> getAllChanges() {
+        List<UnsavedChange> unsavedChanges = new ArrayList<UnsavedChange>(unsavedMap.size() * 2);
+
+        for (UnsavedChangeManager ucm : unsavedMap.values()) {
+            unsavedChanges.addAll(ucm.getChanges());
+        }
+
+        return unsavedChanges;
+    }
+
+    public String edit(IntactObject intactObject) {
+        Class<?> iaClass = intactObject.getClass();
+
+        if (Publication.class.isAssignableFrom(iaClass)) {
+            PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
+            publicationController.setPublication((Publication)intactObject);
+            return "/curate/publication";
+        } else if (Experiment.class.isAssignableFrom(iaClass)) {
+            ExperimentController experimentController = (ExperimentController) getSpringContext().getBean("experimentController");
+            experimentController.setExperiment((Experiment)intactObject);
+            return "/curate/experiment";
+        } else if (Interaction.class.isAssignableFrom(iaClass)) {
+            InteractionController interactionController = (InteractionController) getSpringContext().getBean("interactionController");
+            interactionController.setInteraction((Interaction)intactObject);
+            return "/curate/interaction";
+        } else if (Interactor.class.isAssignableFrom(iaClass)) {
+            InteractorController interactorController = (InteractorController) getSpringContext().getBean("interactorController");
+            interactorController.setInteractor((Interactor)intactObject);
+            return "/curate/interactor";
+        } else if (Participant.class.isAssignableFrom(iaClass)) {
+            ParticipantController participantController = (ParticipantController) getSpringContext().getBean("participantController");
+            participantController.setParticipant((Component) intactObject);
+            return "/curate/participant";
+        } else if (Feature.class.isAssignableFrom(iaClass)) {
+            FeatureController featureController = (FeatureController) getSpringContext().getBean("featureController");
+            featureController.setFeature((Feature) intactObject);
+            return "/curate/feature";
+        } else if (CvObject.class.isAssignableFrom(iaClass)) {
+            CvObjectController cvObjectController = (CvObjectController) getSpringContext().getBean("cvObjectController");
+            cvObjectController.setCvObject((CvObject) intactObject);
+            return "/curate/cvobject";
+        } else if (BioSource.class.isAssignableFrom(iaClass)) {
+            BioSourceController bioSourceController = (BioSourceController) getSpringContext().getBean("bioSourceController");
+            bioSourceController.setBioSource((BioSource) intactObject);
+            return "/curate/organism";
+        } else {
+            throw new IllegalArgumentException("No view defined for object with type: "+iaClass);
+        }
     }
 }
