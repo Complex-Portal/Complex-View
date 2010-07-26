@@ -83,6 +83,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         if (getAnnotatedObject().getAc() != null) {
             final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+            
             getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
             IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         }
@@ -94,11 +95,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return false;
     }
 
+    @Transactional(propagation = Propagation.NEVER)
     public void doRevertChanges( ActionEvent evt ) {
-        getCoreEntityManager().clear();
+//        getCoreEntityManager().clear();
 //        getCoreEntityManager().refresh(getAnnotatedObject());
         if (getAnnotatedObject().getAc() != null) {
-            setAnnotatedObject(getDaoFactory().getAnnotatedObjectDao(getAnnotatedObject().getClass()).getByAc(getAnnotatedObject().getAc()));
+            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+            getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         } else {
             setAnnotatedObject(null);
         }
@@ -245,8 +250,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void setUnsavedChanges(boolean unsavedChanges) {
-        getUnsavedChangeManager().setUnsavedChanges(unsavedChanges);
-
         if (unsavedChanges) {
             getUnsavedChangeManager().markAsUnsaved(getAnnotatedObject());
         } else {

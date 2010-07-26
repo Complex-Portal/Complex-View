@@ -122,10 +122,6 @@ public class UnsavedChangeManager {
     }
 
     public boolean isUnsavedChanges() {
-        return unsavedChanges;
-    }
-
-    public void setUnsavedChanges(boolean unsavedChanges) {
-        this.unsavedChanges = unsavedChanges;
+        return !changes.isEmpty();
     }
 }
