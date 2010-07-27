@@ -78,6 +78,25 @@
         <p:messages id="messagesComponent" showDetail="true"/>
 
         <div style="width:100%;">
+            <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
+                <h:panelGroup id="unsavedChangesInfo" style="float: right; margin-right: 20px">
+                    <ui:insert name="curateTopRight">
+                        <h:panelGroup rendered="#{unsavedChangeManagerController.allChanges.size() gt 0}">
+                            <ia:panelMessage level="warn" showIcon="true">
+                                <p:commandLink value="#{unsavedChangeManagerController.allChanges.size()} unsaved changes"
+                                               update="unsavedTable"
+                                               onclick="unsavedChangesDialog.show()"/>
+                            </ia:panelMessage>
+
+                        </h:panelGroup>
+                        <ui:include src="dialog_unsaved_changes.xhtml"/>
+                    </ui:insert>
+                </h:panelGroup>
+
+                <ui:insert name="breadcrumbs"/>
+
+            </h:panelGroup>
+
             <ui:insert name="curateContent"/>
 
             <p:outputPanel id="changesPanel">

@@ -11,6 +11,16 @@
 
     <ui:param name="annotatedObjectController" value="#{experimentController}"/>
 
+    <ui:define name="breadcrumbs">
+        <p:breadCrumb>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publicationController.publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publicationController.publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem value="#{experimentController.experiment.shortLabel}"/>
+        </p:breadCrumb>
+    </ui:define>
+
     <ui:define name="curateContent">
         <f:metadata>
             <f:viewParam name="ac" value="#{experimentController.ac}"/>
@@ -22,15 +32,6 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{experimentController.experiment != null}">
-
-            <h:link outcome="/curate/publication"
-                    onclick="loadDialog.show()"
-                    value="#{publicationController.publication.shortLabel}" 
-                    title="#{publicationController.publication.fullName}"
-                    includeViewParams="true"/>
-            &#160;>&#160;
-            #{experimentController.experiment.shortLabel}
-
             <ia:loadingDialog widgetVar="loadDialog"/>
 
             <br/><br/>
@@ -51,7 +52,7 @@
                             </td>
                             <td>
                                 <h:inputText id="shortLabelTxt" value="#{experimentController.experiment.shortLabel}" size="20">
-                                    <f:ajax event="valueChange" render=":editorForm:changesPanel"
+                                    <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                             listener="#{experimentController.changed}"/>
                                 </h:inputText>
                             </td>
@@ -72,7 +73,7 @@
                             <td colspan="3">
                                 <ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"
                                     selectItems="#{bioSourceService.bioSourceSelectItems}"
-                                    valueChangeRender=":editorForm:changesPanel"
+                                    valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                     valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
@@ -84,7 +85,7 @@
                                 <ia:inputCvObject id="detMethodTxt" value="#{experimentController.experiment.cvInteraction}"
                                                   selectItems="#{cvObjectService.interactionDetectionMethodSelectItems}"
                                                   cvIdentifier="MI:0001"
-                                                  valueChangeRender=":editorForm:changesPanel"
+                                                  valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                                   valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
@@ -94,7 +95,7 @@
                                 <ia:inputCvObject id="partDetMethodTxt" value="#{experimentController.experiment.cvIdentification}"
                                                   selectItems="#{cvObjectService.participantDetectionMethodSelectItems}"
                                                   cvIdentifier="MI:0002"
-                                                  valueChangeRender=":editorForm:changesPanel"
+                                                  valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                                   valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
@@ -128,9 +129,9 @@
                             <ia:xrefsTable annotatedObjectController="#{experimentController}"
                                            databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                                            qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                           update="xrefsPanel changesPanel"
+                                           update="xrefsPanel changesPanel unsavedChangesInfo"
                                            style="margin-top: -20px;"
-                                           valueChangeRender=":editorForm:changesPanel"
+                                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                         </ia:collapsiblePanel>
                     </p:outputPanel>
@@ -139,9 +140,9 @@
                         <ia:collapsiblePanel open="true" title="Annotations (#{experimentController.experiment.annotations.size()})">
                             <ia:annotationsTable annotatedObjectController="#{experimentController}"
                                                  topicSelectItems="#{cvObjectService.experimentTopicSelectItems}"
-                                                 update="annotationsPanel changesPanel"
+                                                 update="annotationsPanel changesPanel unsavedChangesInfo"
                                                  style="margin-top: -20px;"
-                                                 valueChangeRender=":editorForm:changesPanel"
+                                                 valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                                  valueChangeAwareObject="#{annotatedObjectController}"/>
                         </ia:collapsiblePanel>
                     </p:outputPanel>
@@ -150,9 +151,9 @@
                         <ia:collapsiblePanel open="true" title="Aliases (#{experimentController.experiment.aliases.size()})">
                             <ia:aliasTable annotatedObjectController="#{experimentController}"
                                            aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
-                                           update="aliasesPanel changesPanel"
+                                           update="aliasesPanel changesPanel unsavedChangesInfo"
                                            style="margin-top: -20px;"
-                                           valueChangeRender=":editorForm:changesPanel"
+                                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                         </ia:collapsiblePanel>
                     </p:outputPanel>

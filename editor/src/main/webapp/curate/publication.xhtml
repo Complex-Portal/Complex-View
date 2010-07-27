@@ -12,6 +12,15 @@
 
     <ui:param name="annotatedObjectController" value="#{publicationController}"/>
 
+    <ui:define name="breadcrumbs">
+        <p:breadCrumb>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publicationController.publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publicationController.publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+        </p:breadCrumb>
+    </ui:define>
+
     <ui:define name="curateContent">
         <p:hotkey bind="alt+s" actionListener="#{publicationController.doSave}"
                   update="publicationDetails,northUnit,growl,changesPanel"/>
@@ -20,6 +29,8 @@
             <f:viewParam name="ac" value="#{publicationController.ac}"/>
             <f:event type="preRenderView" listener="#{publicationController.loadData}"/>
         </f:metadata>
+
+        <br/><br/>
 
         <h:panelGroup rendered="#{publicationController.publication == null}">
             <ia:panelMessage level="warn">

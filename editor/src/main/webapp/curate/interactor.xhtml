@@ -15,6 +15,21 @@
     <ui:param name="interaction" value="#{interactionController.interaction}" />
     <ui:param name="experiment" value="#{experimentController.experiment}" />
     <ui:param name="publication" value="#{publicationController.publication}" />
+    
+    <ui:define name="breadcrumbs">
+        <p:breadCrumb>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{experiment.shortLabel}"
+                        action="/curate/experiment?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{interaction.shortLabel}"
+                        action="/curate/interaction?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem value="#{participant.interactor.shortLabel}"/>
+        </p:breadCrumb>
+    </ui:define>
+
 
     <ui:define name="curateContent">
         <f:metadata>
@@ -33,17 +48,6 @@
         </h:panelGroup>
 
         <h:panelGroup id="info" rendered="#{interactor != null}">
-
-            <h:link outcome="/curate/publication"
-                    value="#{publicationController.publication.shortLabel}"
-                    title="#{publicationController.publication.fullName}"
-                    includeViewParams="true"/>
-            &#160;>&#160;
-            <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true"/>
-            &#160;>&#160;
-            <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true"/>
-            &#160;>&#160;
-            #{participant.interactor.shortLabel}
 
             <h2>#{interactorController.moleculeType}}</h2>
 

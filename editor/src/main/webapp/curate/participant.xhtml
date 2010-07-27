@@ -16,6 +16,20 @@
     <ui:param name="experiment" value="#{experimentController.experiment}" />
     <ui:param name="publication" value="#{publicationController.publication}" />
 
+    <ui:define name="breadcrumbs">
+        <p:breadCrumb>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{experiment.shortLabel}"
+                        action="/curate/experiment?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{interaction.shortLabel}"
+                        action="/curate/interaction?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem value="#{participant.interactor.shortLabel}"/>
+        </p:breadCrumb>
+    </ui:define>
+
     <ui:define name="curateContent">
         <f:metadata>
             <f:viewParam name="ac" value="#{participantController.ac}"/>
@@ -27,18 +41,6 @@
         </h:panelGroup>
 
         <h:panelGroup id="info" rendered="#{participant != null}">
-
-            <h:link outcome="/curate/publication"
-                    value="#{publicationController.publication.shortLabel}"
-                    title="#{publicationController.publication.fullName}"
-                    includeViewParams="true" rendered="#{publicationController.publication != null}"/>
-            <h:outputText value="&#160;>&#160;" rendered="#{publicationController.publication != null}"/>
-            <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true"
-                    rendered="#{experimentController.experiment != null}"/>
-            <h:outputText value="&#160;>&#160;" rendered="#{experimentController.experiment != null}"/>
-            <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true"/>
-            &#160;>&#160;
-            #{participant.interactor.shortLabel}
 
             <br/><br/>
 

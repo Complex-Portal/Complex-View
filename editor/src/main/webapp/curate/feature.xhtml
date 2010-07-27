@@ -17,6 +17,22 @@
     <ui:param name="experiment" value="#{experimentController.experiment}" />
     <ui:param name="publication" value="#{publicationController.publication}" />
 
+    <ui:define name="breadcrumbs">
+        <p:breadCrumb>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{experiment.shortLabel}"
+                        action="/curate/experiment?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{interaction.shortLabel}"
+                        action="/curate/interaction?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{participant.interactor != null? participant.interactor.shortLabel : 'Not Defined'}"
+                        action="/curate/participant?includeViewParams=true&amp;faces-redirect=true"/>
+            <p:menuitem value="#{feature.shortLabel}"/>
+        </p:breadCrumb>
+    </ui:define>
+
     <ui:define name="curateContent">
         <f:metadata>
             <f:viewParam name="ac" value="#{featureController.ac}"/>
@@ -28,19 +44,6 @@
         </h:panelGroup>
 
         <h:panelGroup id="info" rendered="#{feature != null}">
-
-            <h:link outcome="/curate/publication"
-                    value="#{publicationController.publication.shortLabel}"
-                    title="#{publicationController.publication.fullName}"
-                    includeViewParams="true"/>
-            &#160;>&#160;
-            <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true"/>
-            &#160;>&#160;
-            <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true"/>
-            &#160;>&#160;
-            <h:link outcome="/curate/participant" value="#{participant.interactor.shortLabel}" includeViewParams="true"/>
-            &#160;>&#160;
-            #{feature.shortLabel}
 
             <br/><br/>
 
