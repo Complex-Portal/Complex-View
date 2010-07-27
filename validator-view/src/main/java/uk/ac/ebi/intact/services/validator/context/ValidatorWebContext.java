@@ -39,7 +39,7 @@ public class ValidatorWebContext {
     /**
      * The e-mail sender
      */
-    private final String emailSender = "validator-admin-noreply@gmail.com";
+    private final String emailSender = "validator-admin-noreply@ebi.ac.uk";
 
     /**
      * The recipients of the e-mails to send
