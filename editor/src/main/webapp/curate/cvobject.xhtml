@@ -40,7 +40,8 @@
                             <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                         </td>
                         <td>
-                            <h:inputText id="shortlabelTxt" value="#{cvObjectController.cvObject.shortLabel}" size="30"/>
+                            <h:inputText id="shortlabelTxt" value="#{cvObjectController.cvObject.shortLabel}" size="30"
+                                    onchange="markAsUnsaved()"/>
                         </td>
                         <td style="padding-left: 50px;">
                             <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
@@ -53,7 +54,8 @@
                             <h:outputLabel value="Fullname: " for="fullnameTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="fullnameTxt" value="#{cvObjectController.cvObject.fullName}"/>
+                            <h:inputText id="fullnameTxt" value="#{cvObjectController.cvObject.fullName}"
+                                         onchange="markAsUnsaved()"/>
                         </td>
                     </tr>
                      <tr>
@@ -61,7 +63,8 @@
                             <h:outputLabel value="Parent term: " for="parentTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:selectOneMenu id="parentTxt" value="#{cvObjectController.parentCvObjects}">
+                            <h:selectOneMenu id="parentTxt" value="#{cvObjectController.parentCvObjects}"
+                                    onchange="markAsUnsaved()">
                                 <f:selectItems value="#{cvObjectController.cvObjectSelectItems}"/>
                             </h:selectOneMenu>
                         </td>
@@ -72,7 +75,8 @@
                                 <h:outputLabel value="Used in: " for="usedInTxt"/>
                             </td>
                             <td colspan="2">
-                                <h:selectManyCheckbox id="usedInTxt" value="#{cvObjectController.usedIn}">
+                                <h:selectManyCheckbox id="usedInTxt" value="#{cvObjectController.usedIn}"
+                                        onchange="markAsUnsaved()">
                                     <f:selectItem itemLabel="Publication" itemValue="uk.ac.ebi.intact.model.Publication"/>
                                     <f:selectItem itemLabel="Experiment" itemValue="uk.ac.ebi.intact.model.Experiment"/>
                                     <f:selectItem itemLabel="Interaction" itemValue="uk.ac.ebi.intact.model.Interaction"/>

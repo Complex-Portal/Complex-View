@@ -39,7 +39,8 @@
                             <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                         </td>
                         <td>
-                            <h:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30"/>
+                            <h:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30"
+                                    onchange="markAsUnsaved()"/>
                         </td>
                         <td style="padding-left: 50px;">
                             <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
@@ -52,7 +53,7 @@
                             <h:outputLabel value="Fullname: " for="fullnameTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}"/>
+                            <h:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}" onchange="markAsUnsaved()"/>
                         </td>
                     </tr>
                      <tr>
@@ -60,7 +61,7 @@
                             <h:outputLabel value="Tax ID: " for="taxIdTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="taxIdTxt" value="#{bioSourceController.bioSource.taxId}"/>
+                            <h:inputText id="taxIdTxt" value="#{bioSourceController.bioSource.taxId}" onchange="markAsUnsaved()"/>
                         </td>
                     </tr>
                     <tr>
@@ -69,7 +70,7 @@
                         </td>
                         <td colspan="2">
                             <h:selectOneMenu id="cellTypeTxt" value="#{bioSourceController.bioSource.cvCellType}">
-                                <f:selectItems value="#{cvObjectService.cellTypeSelectItems}"/>
+                                <f:selectItems value="#{cvObjectService.cellTypeSelectItems}" onchange="markAsUnsaved()"/>
                             </h:selectOneMenu>
                         </td>
                     </tr>

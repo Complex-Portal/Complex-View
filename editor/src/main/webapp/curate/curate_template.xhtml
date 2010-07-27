@@ -71,6 +71,10 @@
         <p:hotkey bind="alt+o" oncomplete="openByPmidDlg.show()"/>
         <p:hotkey bind="alt+s" oncomplete="save(); return false"/>
 
+        <p:remoteCommand name="markAsUnsaved" update="changesPanel,unsavedChangesInfo"
+                                 actionListener="#{annotatedObjectController.changed(null)}"/>
+
+        <ia:loadingDialog widgetVar="loadDialog"/>
         
         <br />
         <p>&#160;</p>

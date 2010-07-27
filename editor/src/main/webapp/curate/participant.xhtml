@@ -75,7 +75,10 @@
                             <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" />
+                            <h:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" >
+                                <f:ajax event="valueChange" execute="@this"
+                                            listener="#{annotatedObjectController.changed}"/>
+                             </h:inputText>
                         </td>
                     </tr>
                     <tr>
@@ -94,7 +97,9 @@
                         <td colspan="2">
                             <ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"
                                               value="#{participant.cvBiologicalRole}"
-                                              selectItems="#{cvObjectService.biologicalRoleSelectItems}" />
+                                              selectItems="#{cvObjectService.biologicalRoleSelectItems}"
+                                              valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                              valueChangeAwareObject="#{annotatedObjectController}"/>
                             <!--<h:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />-->
                         </td>
                     </tr>
@@ -106,11 +111,14 @@
                          <!-- TODO handle the multiple experimental role -->
                          <ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
                                            value="#{participantController.participantWrapper.firstExperimentalRole}"
-                                           selectItems="#{cvObjectService.experimentalRoleSelectItems}"/>
+                                           selectItems="#{cvObjectService.experimentalRoleSelectItems}"
+                                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                           valueChangeAwareObject="#{annotatedObjectController}"/>
                      </td>
                      <td style="padding-left: 150px;">
                          <h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>
-                         <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" stepFactor="1" maxlength="3" size="3"/>
+                         <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}"
+                                    stepFactor="1" maxlength="3" size="3" onchange="markAsUnsaved()"/>
                      </td>
                  </tr>
                  <tr>
@@ -121,7 +129,9 @@
                          <!-- TODO handle the multiple delivery methods -->
                          <ia:inputCvObject id="deliveryTxt" cvIdentifier="MI:0346"
                                            selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"
-                                           value="#{participantController.participantWrapper.firstExperimentalPreparation}" />
+                                           value="#{participantController.participantWrapper.firstExperimentalPreparation}"
+                                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                           valueChangeAwareObject="#{annotatedObjectController}"/>
                          <h:outputText value="#{fn:length(participant.experimentalPreparations) - 1} more..."
                                        rendered="#{fn:length(participant.experimentalPreparations) > 1}" />
                      </td>

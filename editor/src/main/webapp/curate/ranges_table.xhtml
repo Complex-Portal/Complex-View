@@ -29,7 +29,7 @@
                     <f:facet name="header">
                         <h:outputText value="From type"/>
                     </f:facet>
-                    <h:selectOneMenu value="#{range.fromCvFuzzyType}" converter="cvObjectConverter">
+                    <h:selectOneMenu value="#{range.fromCvFuzzyType}" converter="cvObjectConverter" onchange="markAsUnsaved()">
                     <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
                 </h:selectOneMenu>
                 </p:column>
@@ -45,7 +45,7 @@
                     <f:facet name="header">
                         <h:outputText value="To type"/>
                     </f:facet>
-                    <h:selectOneMenu value="#{range.toCvFuzzyType}" converter="cvObjectConverter">
+                    <h:selectOneMenu value="#{range.toCvFuzzyType}" converter="cvObjectConverter" onchange="markAsUnsaved()">
                     <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
                 </h:selectOneMenu>
                 </p:column>
@@ -74,7 +74,8 @@
                         <h:outputText value="Actions"/>
                     </f:facet>
                     <p:commandLink title="Mark to be deleted" actionListener="#{featureController.markRangeToDelete(range, unsavedChangeManager)}"
-                                   update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(range.ac)}">
+                                   update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(range.ac)}"
+                                   onclick="markAsUnsaved()">
                         <h:graphicImage library="images" name="bin.png" alt="Delete" style="border: 0px;"/>
                     </p:commandLink>
                     <p:commandLink title="Revert" actionListener="#{unsavedChangeManager.revert(range)}"

@@ -32,8 +32,6 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{experimentController.experiment != null}">
-            <ia:loadingDialog widgetVar="loadDialog"/>
-
             <br/><br/>
 
             <p:panel id="basic" header="Experiment Details">
@@ -52,7 +50,7 @@
                             </td>
                             <td>
                                 <h:inputText id="shortLabelTxt" value="#{experimentController.experiment.shortLabel}" size="20">
-                                    <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                    <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo" execute="@this"
                                             listener="#{experimentController.changed}"/>
                                 </h:inputText>
                             </td>
