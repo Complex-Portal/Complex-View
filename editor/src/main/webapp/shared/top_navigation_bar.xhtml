@@ -5,13 +5,17 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui">
 
-    <h:link value="Dashboard" outcome="/dashboard/dashboard" disabled="#{selected == 'dashboard'}"/>
-    &#160;|&#160;
-    <h:link value="Search" outcome="/search/search" disabled="#{selected == 'search'}"/>
-    &#160;|&#160;
-    <h:link value="Curate" outcome="/curate/publication" includeViewParams="true"
+    <p:panel style="padding: 0">
+
+    <p:commandButton value="Dashboard" action="/dashboard/dashboard?faces-redirect=true" disabled="#{selected == 'dashboard'}"/>
+    &#160;
+    <p:commandButton value="Search" action="/search/search?faces-redirect=true" disabled="#{selected == 'search'}"/>
+    &#160;
+    <p:commandButton value="Curate" action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
             disabled="#{selected == 'curate'}"/>
-    &#160;|&#160;
-    <h:link value="Admin" outcome="/admin/dashboard" disabled="#{selected == 'admin'}"/>
+    &#160;
+    <p:commandButton value="Admin" action="/admin/dashboard?faces-redirect=true" disabled="#{selected == 'admin'}"/>
+
+    </p:panel>
 
 </ui:composition>
