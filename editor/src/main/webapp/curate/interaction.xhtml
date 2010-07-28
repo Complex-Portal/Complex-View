@@ -54,7 +54,8 @@
                             <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                         </td>
                         <td>
-                            <h:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30">
+                            <h:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"
+                                    required="true" requiredMessage="Shortlabel is required">
                                 <f:ajax event="valueChange" execute="@this"
                                             listener="#{annotatedObjectController.changed}"/>
                             </h:inputText>
@@ -77,6 +78,7 @@
                             <ia:inputCvObject id="interactionTypeTxt" cvIdentifier="MI:0190"
                                               value="#{interaction.cvInteractionType}"
                                               selectItems="#{cvObjectService.interactionTypeSelectItems}"
+                                              required="true" requiredMessage="Interaction type is required"
                                               valueChangeRender=":editorForm:changesPanel"
                                               valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
@@ -88,6 +90,7 @@
                         <td colspan="3" >
                             <p:pickList id="experimentLists"
                                         value="#{interactionController.experimentLists}"
+                                        required="true" requiredMessage="An experiment is required"
                                         var="exp" itemLabel="#{exp}" itemValue="#{exp}" />
                         </td>
                     </tr>

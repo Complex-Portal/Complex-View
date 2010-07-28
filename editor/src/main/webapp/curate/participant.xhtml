@@ -98,6 +98,7 @@
                             <ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"
                                               value="#{participant.cvBiologicalRole}"
                                               selectItems="#{cvObjectService.biologicalRoleSelectItems}"
+                                              required="true" requiredMessage="Biological role is required"
                                               valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                               valueChangeAwareObject="#{annotatedObjectController}"/>
                             <!--<h:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />-->
@@ -112,6 +113,7 @@
                          <ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
                                            value="#{participantController.participantWrapper.firstExperimentalRole}"
                                            selectItems="#{cvObjectService.experimentalRoleSelectItems}"
+                                           required="true" requiredMessage="Experimental role is required"
                                            valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                      </td>

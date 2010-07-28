@@ -94,7 +94,8 @@
                                 </td>
                                 <td>
                                     <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
-                                                 size="10" required="true" onkeyup="enableAutocomplete()">
+                                                 size="10" onkeyup="enableAutocomplete()"
+                                                 required="true" requiredMessage="Identifier is required">
                                         <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:xrefsPanel"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>

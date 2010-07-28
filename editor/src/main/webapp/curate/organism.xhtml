@@ -40,6 +40,7 @@
                         </td>
                         <td>
                             <h:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30"
+                                         required="true" requiredMessage="Shortlabel is required"
                                     onchange="markAsUnsaved()"/>
                         </td>
                         <td style="padding-left: 50px;">
@@ -61,7 +62,8 @@
                             <h:outputLabel value="Tax ID: " for="taxIdTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="taxIdTxt" value="#{bioSourceController.bioSource.taxId}" onchange="markAsUnsaved()"/>
+                            <h:inputText id="taxIdTxt" value="#{bioSourceController.bioSource.taxId}" onchange="markAsUnsaved()"
+                                    required="true" requiredMessage="Tax ID is required"/>
                         </td>
                     </tr>
                     <tr>

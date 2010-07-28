@@ -43,20 +43,20 @@
                 <h:outputText value="Interaction detection method"/>
             </f:facet>
             <p:inplace>
-                <h:inputText value="#{experiment.cvInteraction.shortLabel}"/>
+                <h:inputText value="#{experiment.cvInteraction != null? experiment.cvInteraction.shortLabel : ''}"/>
             </p:inplace>
         </p:column>
         <p:column>
             <f:facet name="header">
                 <h:outputText value="Participant detection method"/>
             </f:facet>
-            <h:outputText value="#{experiment.cvIdentification.shortLabel}"/>
+            <h:outputText value="#{experiment.cvIdentification != null? experiment.cvIdentification.shortLabel : ''}"/>
         </p:column>
         <p:column>
             <f:facet name="header">
                 <h:outputText value="Host organism"/>
             </f:facet>
-            <h:outputText value="#{experiment.bioSource.shortLabel} (#{experiment.bioSource.taxId})"/>
+            <h:outputText value="#{experiment.bioSource != null? experiment.bioSource.shortLabel : ''} (#{experiment.bioSource != null? experiment.bioSource.taxId : ''})"/>
         </p:column>
         <p:column>
             <f:facet name="header">

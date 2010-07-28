@@ -41,7 +41,8 @@
                         </td>
                         <td>
                             <h:inputText id="shortlabelTxt" value="#{cvObjectController.cvObject.shortLabel}" size="30"
-                                    onchange="markAsUnsaved()"/>
+                                         required="true" requiredMessage="Shortlabel is required"
+                                         onchange="markAsUnsaved()"/>
                         </td>
                         <td style="padding-left: 50px;">
                             <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
@@ -76,6 +77,7 @@
                             </td>
                             <td colspan="2">
                                 <h:selectManyCheckbox id="usedInTxt" value="#{cvObjectController.usedIn}"
+                                                      required="true" requiredMessage="Used in is required"
                                         onchange="markAsUnsaved()">
                                     <f:selectItem itemLabel="Publication" itemValue="uk.ac.ebi.intact.model.Publication"/>
                                     <f:selectItem itemLabel="Experiment" itemValue="uk.ac.ebi.intact.model.Experiment"/>
@@ -84,6 +86,7 @@
                                     <f:selectItem itemLabel="Participant" itemValue="uk.ac.ebi.intact.model.Component"/>
                                     <f:selectItem itemLabel="Feature" itemValue="uk.ac.ebi.intact.model.Feature"/>
                                     <f:selectItem itemLabel="Cv Object" itemValue="uk.ac.ebi.intact.model.CvObject"/>
+                                    <f:selectItem itemLabel="Organism" itemValue="uk.ac.ebi.intact.model.BioSource"/>
                                 </h:selectManyCheckbox>
                             </td>
                         </tr>

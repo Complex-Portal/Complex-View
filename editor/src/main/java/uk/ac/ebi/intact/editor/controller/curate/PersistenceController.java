@@ -82,14 +82,14 @@ public class PersistenceController extends JpaAwareController {
             if (log.isWarnEnabled()) log.warn("IllegalTransactionStateException happened when saving. It seems to be harmless " +
                     "but we should keep an eye on this: "+ itse.getMessage());
             return true;
-        } catch ( Exception e ) {
+        } catch ( Throwable e ) {
             addErrorMessage( "Problem persisting object", "AC: " + annotatedObject.getAc() );
             FacesContext ctx = FacesContext.getCurrentInstance();
             ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
             ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
 
             return false;
-        }
+        } 
     }
 
 
