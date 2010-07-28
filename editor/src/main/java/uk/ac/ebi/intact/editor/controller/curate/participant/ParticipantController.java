@@ -83,6 +83,11 @@ public class ParticipantController extends AnnotatedObjectController {
             if ( participant != null ) ac = participant.getAc();
         }
 
+        if (participant == null) {
+            addErrorMessage("No participant loaded", "That's annoying!");
+            return;
+        }
+
         // check if the publication, experiment and interaction are null in their controllers (this happens when the
         // participant page is loaded directly using a URL)
 

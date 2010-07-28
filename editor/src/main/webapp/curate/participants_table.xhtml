@@ -21,20 +21,28 @@
                                     titleRightStyle="color:#999999;">
 
                     <f:facet name="title">
-                        <h:panelGroup>
-                            <h:link outcome="/curate/participant" value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
-                                    style="#{wrapper.deleted? 'color:red; text-decoration:line-through' : participant.ac == null? 'color:blue' :''}"
-                                    includeViewParams="true">
-                                    <f:param name="ac" value="#{participant.ac}"/>
-                            </h:link>
+                        <h:panelGroup rendered="#{not wrapper.deleted}">
+                            <p:commandLink onclick="load_participant.show()" action="/curate/participant?faces-redirect=true&amp;includeViewParams=true"
+                                           style="#{participant.ac == null? 'color:blue' :''}"
+                                            value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})" ajax="false">
+                                <f:setPropertyActionListener value="#{wrapper.participant}" target="#{participantController.participant}"/>
+                            </p:commandLink>
                         </h:panelGroup>
+                        <h:outputText value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
+                                      rendered="#{wrapper.deleted}" style="color:red; text-decoration:line-through"/>
                     </f:facet>
 
                     <f:facet name="right">
                         <p:menuButton value="Options">
-                            <p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>
+                            <!--<p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>-->
                             <p:menuitem value="Duplicate" onclick="alert('Not implemented')"/>
-                            <p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(wrapper)}" update="participantsTable,growl,changesPanel,messagesComponent"/>
+                            <p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(wrapper)}"
+                                        rendered="#{not wrapper.deleted}"
+                                        update="participantsTable,growl,changesPanel,messagesComponent"/>
+                            <p:menuitem value="Revert" actionListener="#{interactionController.revertParticipant(wrapper)}"
+                                        icon="/resources/images/undo.png"
+                                        rendered="#{wrapper.deleted}"
+                                        update="participantsTable,growl,changesPanel,messagesComponent"/>
                         </p:menuButton>
                     </f:facet>
 
@@ -123,6 +131,8 @@
             </div>
 
         </ui:repeat>
+
+        <ia:loadingDialog widgetVar="load_participant" message="Loading participant..."/>
 
     </h:panelGroup>
 

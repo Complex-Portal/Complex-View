@@ -81,7 +81,11 @@ public class ParticipantWrapper {
         this.deleted = deleted;
 
         if (participant.getAc() != null) {
-           unsavedChangeManager.markToDelete(participant);
+            if (deleted) {
+                unsavedChangeManager.markToDelete(participant);
+            } else {
+                unsavedChangeManager.removeFromDeleted(participant);
+            }
         }
     }
 }

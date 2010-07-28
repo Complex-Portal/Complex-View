@@ -42,6 +42,10 @@ public class UnsavedChangeManager {
         }
     }
 
+    public void removeFromDeleted(IntactObject object) {
+        changes.remove(new UnsavedChange(object, UnsavedChange.DELETED));
+    }
+
     public void markAsUnsaved(IntactObject object) {
         unsavedChanges = true;
 

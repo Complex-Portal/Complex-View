@@ -31,13 +31,14 @@
                     <h:outputText value="Shortlabel"/>
                 </f:facet>
                 <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(interaction.ac)}">
-                    <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true"
-                            onclick="load_int.show()">
-                        <f:param name="ac" value="#{interaction.ac}"/>
-                    </h:link>
+                    <p:commandLink onclick="load_int.show()" action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"
+                               style="#{interaction.ac == null? 'color:blue' :''}"
+                               value="#{interaction.shortLabel}" ajax="false">
+                        <f:setPropertyActionListener value="#{interaction}" target="#{interactionController.interaction}"/>
+                    </p:commandLink>
                 </h:panelGroup>
                 <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(interaction.ac)}">
-                    <h:outputText value="#{interaction.shortLabel}"/>
+                    <h:outputText value="#{interaction.shortLabel}" style="color:red; text-decoration:line-through"/>
                 </h:panelGroup>
             </p:column>                                                     
             <p:column>

@@ -30,21 +30,21 @@
             </f:facet>
 
             <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(experiment.ac)}">
-                <h:link onclick="load_exp.show()" outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true">
-                    <f:param name="ac" value="#{experiment.ac}"/>
-                </h:link>
+                <p:commandLink onclick="load_exp.show()" action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"
+                               style="#{experiment.ac == null? 'color:blue' :''}"
+                               value="#{experiment.shortLabel}" ajax="false">
+                    <f:setPropertyActionListener value="#{experiment}" target="#{experimentController.experiment}"/>
+                </p:commandLink>
             </h:panelGroup>
             <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(experiment.ac)}">
-                <h:outputText value="#{experiment.shortLabel}"/>
+                <h:outputText value="#{experiment.shortLabel}" style="color:red; text-decoration:line-through"/>
             </h:panelGroup>
         </p:column>
         <p:column>
             <f:facet name="header">
                 <h:outputText value="Interaction detection method"/>
             </f:facet>
-            <p:inplace>
-                <h:inputText value="#{experiment.cvInteraction != null? experiment.cvInteraction.shortLabel : ''}"/>
-            </p:inplace>
+            <h:outputText value="#{experiment.cvInteraction != null? experiment.cvInteraction.shortLabel : ''}"/>
         </p:column>
         <p:column>
             <f:facet name="header">

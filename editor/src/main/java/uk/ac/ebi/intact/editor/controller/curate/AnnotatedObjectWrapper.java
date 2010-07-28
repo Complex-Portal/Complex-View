@@ -49,4 +49,12 @@ public class AnnotatedObjectWrapper {
 
         return unsavedChangeManager;
     }
+
+    public boolean isDeleted() {
+        if (annotatedObject.getAc() != null) {
+            return getUnsavedChangeManager().isDeletedAc(annotatedObject.getAc());
+        }
+
+        return false;
+    }
 }

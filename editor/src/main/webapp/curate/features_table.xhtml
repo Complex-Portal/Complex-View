@@ -30,12 +30,14 @@
                         <h:outputText value="Shortlabel"/>
                     </f:facet>
                      <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(feature.ac)}">
-                         <h:link outcome="/curate/feature" value="#{feature.shortLabel}" includeViewParams="true">
-                             <f:param name="ac" value="#{feature.ac}"/>
-                         </h:link>
+                         <p:commandLink onclick="load_feature.show()" action="/curate/feature?faces-redirect=true&amp;includeViewParams=true"
+                               style="#{feature.ac == null? 'color:blue' :''}"
+                               value="#{feature.shortLabel}" ajax="false">
+                            <f:setPropertyActionListener value="#{feature}" target="#{featureController.interaction}"/>
+                        </p:commandLink>
                      </h:panelGroup>
                     <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(feature.ac)}">
-                        <h:outputText value="#{feature.shortLabel}"/>
+                        <h:outputText value="#{feature.shortLabel}" style="color:red; text-decoration:line-through"/>
                     </h:panelGroup>
 
                 </p:column>
@@ -82,6 +84,8 @@
                     </p:commandLink>
                 </p:column>
             </p:dataTable>
+
+        <ia:loadingDialog widgetVar="load_feature" message="Loading feature..."/>
 
     </h:panelGroup>
 

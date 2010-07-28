@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate.interaction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -30,6 +31,7 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.*;
 
@@ -82,7 +84,7 @@ public class InteractionController extends AnnotatedObjectController {
 
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
-            if ( interaction == null || !ac.equals( interaction.getAc() ) ) {
+            if ( interaction == null || !ac.equals( interaction.getAc() ) || !Hibernate.isInitialized(interaction.getExperiments())) {
                 interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
             }
         } else {
@@ -208,6 +210,15 @@ public class InteractionController extends AnnotatedObjectController {
         return interaction.getExperiments().iterator().next();
     }
 
+    @Override
+    public void doRevertChanges(ActionEvent evt) {
+        super.doRevertChanges(evt);
+
+        for (ParticipantWrapper wrapper : participantWrappers) {
+            revertParticipant(wrapper);
+        }
+    }
+
     public void deleteParticipant(ParticipantWrapper participantWrapper) {
         participantWrapper.setDeleted(true);
 
@@ -228,6 +239,24 @@ public class InteractionController extends AnnotatedObjectController {
         }
 
         addInfoMessage("Removed participant", participantInfo.toString());
+    }
+
+    public void revertParticipant(ParticipantWrapper participantWrapper) {
+        participantWrapper.setDeleted(false);
+
+        Component participant = participantWrapper.getParticipant();
+        setUnsavedChanges(false);
+
+        StringBuilder participantInfo = new StringBuilder();
+
+        if (participant.getInteractor() != null) {
+            participantInfo.append(participant.getInteractor().getShortLabel());
+            participantInfo.append(" ");
+        }
+
+        if (participant.getAc() != null) {
+            participantInfo.append("(").append(participant.getAc()+")");
+        }
     }
 
     public void setAc( String ac ) {
