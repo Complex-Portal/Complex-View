@@ -27,10 +27,13 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
+import uk.ac.ebi.intact.editor.controller.curate.util.EditorIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.util.InteractionIntactCloner;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
+import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.model.util.InteractionShortLabelGenerator;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.faces.event.ActionEvent;
@@ -191,6 +194,10 @@ public class InteractionController extends AnnotatedObjectController {
     public void addParticipant(Component component) {
         interaction.addComponent(component);
         participantWrappers.add(new ParticipantWrapper( component, getUnsavedChangeManager() ));
+
+        updateShortLabel();
+
+        getUnsavedChangeManager().markAsUnsaved(interaction);
     }
 
     public String getAc() {
@@ -236,7 +243,14 @@ public class InteractionController extends AnnotatedObjectController {
             participantInfo.append("(").append(participant.getAc()+")");
         }
 
+        updateShortLabel();
+
         addInfoMessage("Removed participant", participantInfo.toString());
+    }
+
+    private void updateShortLabel() {
+        String shortLabel = InteractionShortLabelGenerator.createCandidateShortLabel(getInteraction());
+        interaction.setShortLabel(shortLabel);
     }
 
     public void revertParticipant(ParticipantWrapper participantWrapper) {
@@ -254,6 +268,21 @@ public class InteractionController extends AnnotatedObjectController {
 
         if (participant.getAc() != null) {
             participantInfo.append("(").append(participant.getAc()+")");
+        }
+    }
+
+    public void cloneParticipant(ParticipantWrapper participantWrapper) {
+        Component participant = participantWrapper.getParticipant();
+
+        IntactCloner cloner = new EditorIntactCloner();
+        cloner.setExcludeACs(true);
+        
+        try {
+            Component clone = cloner.clone(participant);
+            addParticipant(clone);
+        } catch (IntactClonerException e) {
+            addErrorMessage("Problem cloning participant", e.getMessage());
+            handleException(e);
         }
     }
 

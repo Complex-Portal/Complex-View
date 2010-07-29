@@ -35,10 +35,12 @@
                     <f:facet name="right">
                         <p:menuButton value="Options">
                             <!--<p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>-->
-                            <p:menuitem value="Duplicate" onclick="alert('Not implemented')"/>
+                            <p:menuitem value="Duplicate" actionListener="#{interactionController.cloneParticipant(wrapper)}"
+                                        onclick="clone_articipant_dialog.show()" oncomplete="clone_articipant_dialog.hide()"
+                                    update="participantsTable,growl,changesPanel,messagesComponent,shortlabelTxt"/>
                             <p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(wrapper)}"
                                         rendered="#{not wrapper.deleted}"
-                                        update="participantsTable,growl,changesPanel,messagesComponent"/>
+                                        update="participantsTable,growl,changesPanel,messagesComponent,shortlabelTxt"/>
                             <p:menuitem value="Revert" actionListener="#{interactionController.revertParticipant(wrapper)}"
                                         icon="/resources/images/undo.png"
                                         rendered="#{wrapper.deleted}"
@@ -133,6 +135,7 @@
         </ui:repeat>
 
         <ia:loadingDialog widgetVar="load_participant" message="Loading participant..."/>
+        <ia:loadingDialog widgetVar="clone_articipant_dialog" message="Cloning participant..."/>
 
     </h:panelGroup>
 
