@@ -42,11 +42,11 @@ import java.util.Map;
  */
 @Controller
 @Scope("session")
-public class UnsavedChangeManagerController extends BaseController {
+public class CuratorContextController extends BaseController {
 
     private Map<Object,UnsavedChangeManager> unsavedMap;
 
-    public UnsavedChangeManagerController() {
+    public CuratorContextController() {
         this.unsavedMap = new HashMap<Object, UnsavedChangeManager>();
     }
 

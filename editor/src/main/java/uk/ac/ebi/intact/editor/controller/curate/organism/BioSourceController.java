@@ -68,6 +68,7 @@ public class BioSourceController extends AnnotatedObjectController {
 
     public void setBioSource(BioSource bioSource) {
         this.bioSource = bioSource;
+        this.ac = bioSource.getAc();
     }
 
 

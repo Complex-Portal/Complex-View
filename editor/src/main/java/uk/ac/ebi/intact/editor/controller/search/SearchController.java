@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName ("search")
+@SuppressWarnings("unchecked")
 public class SearchController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( SearchController.class );
@@ -254,7 +255,7 @@ public class SearchController extends JpaAwareController {
         cvobjects = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                               "select distinct i " +
-                                                              "from CvObject i inner join fetch i.xrefs as x " +
+                                                              "from CvObject i left join fetch i.xrefs as x " +
                                                               "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
@@ -263,7 +264,7 @@ public class SearchController extends JpaAwareController {
                                                               "order by i.updated desc",
 
                                                               "select count(distinct i) " +
-                                                              "from CvObject i inner join i.xrefs as x " +
+                                                              "from CvObject i left join i.xrefs as x " +
                                                               "where   (i.ac = :ac " +
                                                               "      or lower(i.identifier) like :query " +
                                                               "      or lower(i.shortLabel) like :query " +
@@ -287,7 +288,7 @@ public class SearchController extends JpaAwareController {
         molecules = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                               "select distinct i " +
-                                                              "from InteractorImpl i inner join fetch i.xrefs as x " +
+                                                              "from InteractorImpl i left join fetch i.xrefs as x " +
                                                               "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(x.primaryId) like :query ) " +
@@ -295,7 +296,7 @@ public class SearchController extends JpaAwareController {
                                                               "order by i.updated desc",
 
                                                               "select count(distinct i) " +
-                                                              "from InteractorImpl i inner join i.xrefs as x " +
+                                                              "from InteractorImpl i left join i.xrefs as x " +
                                                               "where   (i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(x.primaryId) like :query )" +
@@ -331,15 +332,15 @@ public class SearchController extends JpaAwareController {
         interactions = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                  "select distinct i " +
-                                                                 "from InteractionImpl i inner join i.xrefs as x " +
-                                                                 "                       inner join fetch i.experiments as e " +
+                                                                 "from InteractionImpl i left join i.xrefs as x " +
+                                                                 "                       left join fetch i.experiments as e " +
                                                                  "where    i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
                                                                  "      or lower(x.primaryId) like :query " +
                                                                  "order by i.updated desc",
 
-                                                                 "select count(distinct i) " +
-                                                                 "from InteractionImpl i inner join i.xrefs as x " +
+                                                                 "select count(i.ac) " +
+                                                                 "from InteractionImpl i left join i.xrefs as x " +
                                                                  "where    i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
                                                                  "      or lower(x.primaryId) like :query ",
@@ -350,6 +351,10 @@ public class SearchController extends JpaAwareController {
     }
 
     public Experiment getFirstExperiment( Interaction interaction ) {
+        if (interaction.getExperiments().isEmpty()) {
+            return null;
+        }
+
         return interaction.getExperiments().iterator().next();
     }
 
@@ -364,14 +369,14 @@ public class SearchController extends JpaAwareController {
         experiments = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                 "select distinct e " +
-                                                                "from Experiment e inner join e.xrefs as x " +
+                                                                "from Experiment e left join e.xrefs as x " +
                                                                 "where    e.ac = :ac " +
                                                                 "      or lower(e.shortLabel) like :query " +
                                                                 "      or lower(x.primaryId) like :query " +
                                                                 "order by e.updated desc",
 
                                                                 "select count(distinct e) " +
-                                                                "from Experiment e inner join e.xrefs as x " +
+                                                                "from Experiment e left join e.xrefs as x " +
                                                                 "where    e.ac = :ac " +
                                                                 "      or lower(e.shortLabel) like :query " +
                                                                 "      or lower(x.primaryId) like :query ",
@@ -392,7 +397,7 @@ public class SearchController extends JpaAwareController {
         publications = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                  "select distinct p " +
-                                                                 "from Publication p inner join p.xrefs as x " +
+                                                                 "from Publication p left join p.xrefs as x " +
                                                                  "where    p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
@@ -400,7 +405,7 @@ public class SearchController extends JpaAwareController {
                                                                  "order by p.updated desc",
 
                                                                  "select count(distinct p) " +
-                                                                 "from Publication p inner join p.xrefs as x " +
+                                                                 "from Publication p left join p.xrefs as x " +
                                                                  "where    p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
@@ -421,7 +426,7 @@ public class SearchController extends JpaAwareController {
         features = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                  "select distinct p " +
-                                                                 "from Feature p inner join p.xrefs as x " +
+                                                                 "from Feature p left join p.xrefs as x " +
                                                                  "where    p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
@@ -429,7 +434,7 @@ public class SearchController extends JpaAwareController {
                                                                  "order by p.updated desc",
 
                                                                  "select count(distinct p) " +
-                                                                 "from Feature p inner join p.xrefs as x " +
+                                                                 "from Feature p left join p.xrefs as x " +
                                                                  "where    p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +

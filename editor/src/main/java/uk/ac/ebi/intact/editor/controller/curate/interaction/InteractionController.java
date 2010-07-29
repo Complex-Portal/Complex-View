@@ -27,13 +27,18 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
+import uk.ac.ebi.intact.editor.controller.curate.util.InteractionIntactCloner;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -169,16 +174,9 @@ public class InteractionController extends AnnotatedObjectController {
         return saved;
     }
 
-    public void newInteraction(Experiment experiment) {
-        Collection<Experiment> experiments = Collections.singletonList(experiment);
-        interaction = new InteractionImpl(experiments, new ArrayList<Component>(), null, null, "new-interaction-1", IntactContext.getCurrentInstance().getInstitution());
-        interaction.setShortLabel(null);
-        
-        experiment.addInteraction(interaction);
-
-        refreshExperimentLists();
-
-        getUnsavedChangeManager().markAsUnsaved(interaction);
+    @Override
+    protected IntactCloner newClonerInstance() {
+        return new InteractionIntactCloner();
     }
 
     public void refreshParticipants() {
@@ -269,6 +267,7 @@ public class InteractionController extends AnnotatedObjectController {
 
     public void setInteraction( Interaction interaction ) {
         this.interaction = interaction;
+        this.ac = interaction.getAc();
     }
 
     public Collection<ParticipantWrapper> getParticipants() {

@@ -151,6 +151,7 @@ public class ParticipantController extends AnnotatedObjectController {
 
     public void setParticipant( Component participant ) {
         this.participant = participant;
+        this.ac = participant.getAc();
     }
 
     public String getAuthorGivenName() {

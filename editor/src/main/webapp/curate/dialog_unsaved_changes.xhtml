@@ -9,9 +9,9 @@
               position="center"
               width="500">
 
-        <p:dataTable id="unsavedTable" var="change" value="#{unsavedChangeManagerController.allChanges}">
+        <p:dataTable id="unsavedTable" var="change" value="#{curatorContextController.allChanges}">
             <p:column>
-                <h:commandButton value="Edit" action="#{unsavedChangeManagerController.edit(change.unsavedObject)}"/>
+                <h:commandButton value="Edit" action="#{curatorContextController.edit(change.unsavedObject)}"/>
             </p:column>
             <p:column>
                 <f:facet name="header"><h:outputText value="Modification"/></f:facet>

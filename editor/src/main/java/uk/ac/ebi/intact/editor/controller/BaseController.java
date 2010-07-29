@@ -21,6 +21,8 @@ import org.springframework.context.ApplicationContext;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 import java.io.Serializable;
 
 /**
@@ -60,6 +62,12 @@ public abstract class BaseController implements Serializable {
 
     protected ApplicationContext getSpringContext() {
         return applicationContext;
+    }
+
+    protected void handleException(Throwable e) {
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
+        ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
     }
 }
 

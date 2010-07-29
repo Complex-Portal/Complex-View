@@ -60,6 +60,11 @@
                             rendered="#{annotatedObjectController.annotatedObject != null}"/>
             </p:submenu>
 
+            <p:submenu label="Tools">
+                <p:menuitem value="Clone" action="#{annotatedObjectController.clone}" ajax="false"
+                        onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
+            </p:submenu>
+
             <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development'}">
                 <p:menuitem value="Changes" action="/curate/debug/changes" ajax="false"/>
             </p:submenu>
@@ -85,9 +90,9 @@
             <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
                 <h:panelGroup id="unsavedChangesInfo" style="float: right; margin-right: 20px">
                     <ui:insert name="curateTopRight">
-                        <h:panelGroup rendered="#{unsavedChangeManagerController.allChanges.size() gt 0}">
+                        <h:panelGroup rendered="#{curatorContextController.allChanges.size() gt 0}">
                             <ia:panelMessage level="warn" showIcon="true">
-                                <p:commandLink value="#{unsavedChangeManagerController.allChanges.size()} unsaved changes"
+                                <p:commandLink value="#{curatorContextController.allChanges.size()} unsaved changes"
                                                update="unsavedTable"
                                                onclick="unsavedChangesDialog.show()"/>
                             </ia:panelMessage>
@@ -135,6 +140,7 @@
 
         <ia:loadingDialog widgetVar="saveDialog" message="Saving #{annotatedObjectController.annotatedObject.class.simpleName}..."/>
         <ia:loadingDialog widgetVar="revertDialog" message="Reverting changes..."/>
+        <ia:loadingDialog widgetVar="cloningDialog" message="Cloning object..."/>
     </ui:define>
 
 </ui:composition>

@@ -75,9 +75,14 @@
             <hr/>
         </p:outputPanel>
 
-        <ia:collapsiblePanel id="publicationPanel" open="#{searchController.matchesSingleType()}"
-                             display="#{searchController.publications.rowCount > 0}"
-                             title="Publications (#{searchController.publications.rowCount})">
+        <p:accordionPanel>
+              <p:tab title="Publications (#{searchController.publications.rowCount})"
+                     disabled="#{searchController.publications.rowCount == 0}">
+
+
+        <!--<ia:collapsiblePanel id="publicationPanel" open="#{searchController.matchesSingleType()}"-->
+                             <!--display="#{searchController.publications.rowCount > 0}"-->
+                             <!--title="Publications (#{searchController.publications.rowCount})">-->
 
             <p:dataTable id="searchPublicationTable" var="publication" value="#{searchController.publications}"
                          paginator="#{searchController.publications.rowCount > 10}"
@@ -112,11 +117,16 @@
                 </p:column>
             </p:dataTable>
 
-        </ia:collapsiblePanel>
+        <!--</ia:collapsiblePanel>-->
 
-        <ia:collapsiblePanel id="experimentPanel" open="#{searchController.matchesSingleType()}"
-                             display="#{searchController.experiments.rowCount > 0}"
-                             title="Experiments (#{searchController.experiments.rowCount})">
+              </p:tab>
+
+              <p:tab title="Experiments (#{searchController.experiments.rowCount})"
+                      disabled="#{searchController.experiments.rowCount == 0}">
+
+        <!--<ia:collapsiblePanel id="experimentPanel" open="#{searchController.matchesSingleType()}"-->
+                             <!--display="#{searchController.experiments.rowCount > 0}"-->
+                             <!--title="Experiments (#{searchController.experiments.rowCount})">-->
 
             <p:dataTable id="searchExperimentTable" var="experiment" value="#{searchController.experiments}"
                          paginator="#{searchController.experiments.rowCount > 10}"
@@ -167,11 +177,16 @@
                 </p:column>
             </p:dataTable>
 
-        </ia:collapsiblePanel>
+        <!--</ia:collapsiblePanel>-->
 
-        <ia:collapsiblePanel id="interactionPanel" open="#{searchController.matchesSingleType()}"
-                             display="#{searchController.interactions.rowCount > 0}"
-                             title="Interactions (#{searchController.interactions.rowCount})">
+              </p:tab>
+
+              <p:tab title="Interactions (#{searchController.interactions.rowCount})"
+                      disabled="#{searchController.interactions.rowCount == 0}">
+
+        <!--<ia:collapsiblePanel id="interactionPanel" open="#{searchController.matchesSingleType()}"-->
+                             <!--display="#{searchController.interactions.rowCount > 0}"-->
+                             <!--title="Interactions (#{searchController.interactions.rowCount})">-->
 
             <p:dataTable id="searchInteractionTable" var="interaction" value="#{searchController.interactions}"
                          paginator="#{searchController.interactions.rowCount > 10}"
@@ -181,9 +196,16 @@
                         <h:outputText value="Experiment"/>
                     </f:facet>
                     <ot:separateConversationContext>
-                        <h:link outcome="/curate/experiment" value="#{searchController.getFirstExperiment(interaction).shortLabel}" includeViewParams="true">
+                        <ui:param name="experiment" value="#{searchController.getFirstExperiment(interaction)}"/>
+                        <h:link outcome="/curate/experiment" value="#{searchController.getFirstExperiment(interaction).shortLabel}" includeViewParams="true"
+                                rendered="#{experiment != null}">
                             <f:param name="ac" value="#{searchController.getFirstExperiment(interaction).ac}"/>
                         </h:link>
+                        <h:panelGroup rendered="#{experiment == null}">
+                            <h:graphicImage library="images" name="warn.gif"/>
+                            &#160;
+                            <h:outputText value="No experiment!"/>
+                        </h:panelGroup>
                     </ot:separateConversationContext>
                 </p:column>
                 <p:column>
@@ -191,16 +213,20 @@
                         <h:outputText value="Publication ID"/>
                     </f:facet>
                     <ot:separateConversationContext>
-                        <h:link outcome="/curate/publication" value="#{searchController.getFirstExperiment(interaction).publication.shortLabel}" includeViewParams="true">
+                        <ui:param name="publication" value="#{searchController.getFirstExperiment(interaction) != null? searchController.getFirstExperiment(interaction).publication : null}"/>
+                        <h:link outcome="/curate/publication" value="#{searchController.getFirstExperiment(interaction).publication.shortLabel}" includeViewParams="true"
+                                rendered="#{publication != null}">
                             <f:param name="ac" value="#{searchController.getFirstExperiment(interaction).publication.ac}"/>
                         </h:link>
                     </ot:separateConversationContext>
                 </p:column>
                 <p:column>
                     <f:facet name="header">
-                        <h:outputText value="shortLabel"/>
+                        <h:outputText value="ShortLabel"/>
                     </f:facet>
-                    <h:outputText value="#{interaction.shortLabel}"/>
+                    <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true">
+                        <f:param name="ac" value="#{interaction.ac}"/>
+                    </h:link>
                 </p:column>
                 <p:column>
                     <f:facet name="header">
@@ -216,11 +242,16 @@
                 </p:column>
             </p:dataTable>
 
-        </ia:collapsiblePanel>
+        <!--</ia:collapsiblePanel>-->
 
-        <ia:collapsiblePanel id="moleculePanel" open="#{searchController.matchesSingleType()}"
-                             display="#{searchController.molecules.rowCount > 0}"
-                             title="Molecules (#{searchController.molecules.rowCount})">
+              </p:tab>
+
+              <p:tab title="Molecules (#{searchController.molecules.rowCount})"
+                      disabled="#{searchController.molecules.rowCount == 0}">
+
+        <!--<ia:collapsiblePanel id="moleculePanel" open="#{searchController.matchesSingleType()}"-->
+                             <!--display="#{searchController.molecules.rowCount > 0}"-->
+                             <!--title="Molecules (#{searchController.molecules.rowCount})">-->
 
             <p:dataTable id="searchMoleculeTable" var="molecule" value="#{searchController.molecules}"
                          paginator="#{searchController.molecules.rowCount > 10}"
@@ -257,11 +288,16 @@
                 </p:column>
             </p:dataTable>
 
-        </ia:collapsiblePanel>
+        <!--</ia:collapsiblePanel>-->
 
-        <ia:collapsiblePanel id="cvPanel" open="#{searchController.matchesSingleType()}"
-                             display="#{searchController.cvobjects.rowCount > 0}"
-                             title="Controlled Vocabularies (#{searchController.cvobjects.rowCount})">
+              </p:tab>
+
+              <p:tab title="Controlled Vocabularies (#{searchController.cvobjects.rowCount})"
+                      disabled="#{searchController.cvobjects.rowCount == 0}">
+
+        <!--<ia:collapsiblePanel id="cvPanel" open="#{searchController.matchesSingleType()}"-->
+                             <!--display="#{searchController.cvobjects.rowCount > 0}"-->
+                             <!--title="Controlled Vocabularies (#{searchController.cvobjects.rowCount})">-->
 
               <p:dataTable id="searchCvObjectTable" var="cvobject" value="#{searchController.cvobjects}"
                          paginator="#{searchController.cvobjects.rowCount > 10}"
@@ -294,11 +330,15 @@
                 </p:column>
             </p:dataTable>
 
-        </ia:collapsiblePanel>
+        <!--</ia:collapsiblePanel>-->
+              </p:tab>
 
-     <ia:collapsiblePanel id="featuresPanel" open="#{searchController.matchesSingleType()}"
-                             display="#{searchController.features.rowCount > 0}"
-                             title="Features (#{searchController.features.rowCount})">
+               <p:tab title="Features (#{searchController.features.rowCount})"
+                       disabled="#{searchController.features.rowCount == 0}">
+
+     <!--<ia:collapsiblePanel id="featuresPanel" open="#{searchController.matchesSingleType()}"-->
+                             <!--display="#{searchController.features.rowCount > 0}"-->
+                             <!--title="Features (#{searchController.features.rowCount})">-->
 
               <p:dataTable id="searchFeaturesTable" var="feature" value="#{searchController.features}"
                          paginator="#{searchController.features.rowCount > 10}"
@@ -321,11 +361,16 @@
                 </p:column>
             </p:dataTable>
 
-        </ia:collapsiblePanel>
+        <!--</ia:collapsiblePanel>-->
 
-        <ia:collapsiblePanel id="organismsPanel" open="#{searchController.matchesSingleType()}"
-                             display="#{searchController.organisms.rowCount > 0}"
-                             title="Organisms (#{searchController.organisms.rowCount})">
+              </p:tab>
+
+              <p:tab title="Organisms (#{searchController.organisms.rowCount})"
+                      disabled="#{searchController.organisms.rowCount == 0}">
+
+        <!--<ia:collapsiblePanel id="organismsPanel" open="#{searchController.matchesSingleType()}"-->
+                             <!--display="#{searchController.organisms.rowCount > 0}"-->
+                             <!--title="Organisms (#{searchController.organisms.rowCount})">-->
 
               <p:dataTable id="organismFeaturesTable" var="organism" value="#{searchController.organisms}"
                          paginator="#{searchController.organisms.rowCount > 10}"
@@ -358,9 +403,11 @@
                 </p:column>
             </p:dataTable>
 
-        </ia:collapsiblePanel>
+        <!--</ia:collapsiblePanel>-->
+        
+        </p:tab>
 
-
+        </p:accordionPanel>
 
     </ui:define>
 

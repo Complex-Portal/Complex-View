@@ -126,6 +126,7 @@ public class CvObjectController extends AnnotatedObjectController {
 
     public void setCvObject(CvObject cvObject) {
         this.cvObject = (CvDagObject) cvObject;
+        this.ac = cvObject.getAc();
     }
 
     public String getCvClassName() {

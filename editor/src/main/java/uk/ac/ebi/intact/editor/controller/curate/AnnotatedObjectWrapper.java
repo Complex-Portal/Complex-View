@@ -37,11 +37,11 @@ public class AnnotatedObjectWrapper {
 
     public UnsavedChangeManager getUnsavedChangeManager() {
         if (unsavedChangeManager == null) {
-            UnsavedChangeManagerController unsavedChangeManagerController = (UnsavedChangeManagerController)
-                    IntactContext.getCurrentInstance().getSpringContext().getBean("unsavedChangeManagerController");
+            CuratorContextController curatorContextController = (CuratorContextController)
+                    IntactContext.getCurrentInstance().getSpringContext().getBean("curatorContextController");
 
             if (getAnnotatedObject() != null) {
-                unsavedChangeManager = unsavedChangeManagerController.getUnsavedChangeManager(System.identityHashCode(getAnnotatedObject()));
+                unsavedChangeManager = curatorContextController.getUnsavedChangeManager(System.identityHashCode(getAnnotatedObject()));
             } else {
                 unsavedChangeManager = new UnsavedChangeManager();
             }

@@ -278,6 +278,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setPublication( Publication publication ) {
         this.publication = publication;
+        this.ac = publication.getAc();
     }
 
 

@@ -30,9 +30,6 @@ import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
-import javax.faces.context.FacesContext;
-import javax.faces.event.ExceptionQueuedEvent;
-import javax.faces.event.ExceptionQueuedEventContext;
 import java.util.Collection;
 
 /**
@@ -67,12 +64,12 @@ public class PersistenceController extends JpaAwareController {
             final HibernateEntityManager em = (HibernateEntityManager) getIntactContext().getDaoFactory().getEntityManager();
             final PersistenceContext persistenceContext = ((SessionImpl) em.getSession()).getPersistenceContext();
 
-            UnsavedChangeManagerController unsavedChangeManagerController = (UnsavedChangeManagerController) getSpringContext().getBean("unsavedChangeManagerController");
+            CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
 
             Collection<Object> entities = persistenceContext.getEntitiesByKey().values();
             for (Object entity : entities) {
                 if (entity instanceof IntactObject) {
-                    unsavedChangeManagerController.removeFromUnsaved((IntactObject)entity);
+                    curatorContextController.removeFromUnsaved((IntactObject)entity);
                 }
             }
 
@@ -84,13 +81,10 @@ public class PersistenceController extends JpaAwareController {
             return true;
         } catch ( Throwable e ) {
             addErrorMessage( "Problem persisting object", "AC: " + annotatedObject.getAc() );
-            FacesContext ctx = FacesContext.getCurrentInstance();
-            ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
-            ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
+            handleException(e);
 
             return false;
         } 
     }
-
 
 }

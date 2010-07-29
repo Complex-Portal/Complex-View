@@ -99,8 +99,11 @@
                                         <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
                                         <p:watermark for="queryTxt" value="search query"/>
                                         <h:inputText id="queryTxt" value="#{searchController.query}"/>
-                                        <p:commandButton value="Search" action="#{searchController.doSearch}" ajax="false"/>
+                                        <p:commandButton value="Search" action="#{searchController.doSearch}" ajax="false"
+                                                onclick="searchDialog.show()"/>
                                     </h:panelGrid>
+
+                                    <ia:loadingDialog widgetVar="searchDialog" message="Searching..."/>
                                 </td>
                             </tr>
                             <tr>

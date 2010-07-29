@@ -17,13 +17,17 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.curate.util.EditorIntactCloner;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.clone.IntactCloner;
+import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -40,6 +44,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     private static final Log log = LogFactory.getLog( AnnotatedObjectController.class );
 
     private Date lastSaved;
+
+    @Autowired
+    private CuratorContextController curatorContextController;
 
     public AnnotatedObjectController() {
     }
@@ -117,6 +124,28 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public void changed(AjaxBehaviorEvent evt) {
         setUnsavedChanges(true);
     }
+
+    public String clone() {
+        IntactCloner cloner = newClonerInstance();
+
+        AnnotatedObject clone = null;
+
+        try {
+            clone = cloner.clone(getAnnotatedObject());
+        } catch (IntactClonerException e) {
+            addErrorMessage("Could not clone object", e.getMessage());
+            handleException(e);
+        }
+
+        addInfoMessage("Cloned annotated object", null);
+
+        return curatorContextController.edit(clone);
+    }
+
+    protected IntactCloner newClonerInstance() {
+        return new EditorIntactCloner();
+    }
+
 
     // XREFS
     ///////////////////////////////////////////////

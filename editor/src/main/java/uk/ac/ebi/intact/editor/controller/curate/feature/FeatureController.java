@@ -143,5 +143,6 @@ public class FeatureController extends AnnotatedObjectController {
 
     public void setFeature( Feature feature ) {
         this.feature = feature;
+        this.ac = feature.getAc();
     }
 }
