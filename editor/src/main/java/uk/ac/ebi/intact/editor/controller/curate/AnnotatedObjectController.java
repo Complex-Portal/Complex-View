@@ -137,9 +137,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             handleException(e);
         }
 
+        modifyClone(clone);
+
         addInfoMessage("Cloned annotated object", null);
 
         return curatorContextController.edit(clone);
+    }
+
+    public void modifyClone(AnnotatedObject clone) {
+        // nothing by default
     }
 
     protected IntactCloner newClonerInstance() {

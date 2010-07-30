@@ -62,6 +62,7 @@ public class ExperimentController extends AnnotatedObjectController {
         setExperiment((Experiment)annotatedObject);
     }
 
+    @SuppressWarnings("unchecked")
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( experiment == null || !ac.equals( experiment.getAc() ) ) {

@@ -33,9 +33,12 @@ public class AppController extends BaseController {
     private Collection<User> loggedInUsers;
 
     private String database;
+    private String theme;
 
     public AppController() {
         loggedInUsers = new ArrayList<User>();
+
+        theme = "ebi";
     }
 
     public String getDatabase() {
@@ -56,5 +59,13 @@ public class AppController extends BaseController {
 
     public String getLoggedInUserCount() {
         return String.valueOf( loggedInUsers.size() );
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 }

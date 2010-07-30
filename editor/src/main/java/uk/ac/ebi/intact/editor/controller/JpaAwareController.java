@@ -57,7 +57,7 @@ public abstract class JpaAwareController extends BaseController {
         return usersEntityManager;
     }
 
-    protected DaoFactory getDaoFactory() {
+    public DaoFactory getDaoFactory() {
         return daoFactory;
     }
 

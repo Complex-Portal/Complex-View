@@ -35,6 +35,11 @@ public class EditorIntactCloner extends IntactCloner {
     }
 
     @Override
+    public CvObject cloneCvObject(CvObject cvObject) throws IntactClonerException {
+        return cvObject;
+    }
+
+    @Override
     public Institution cloneInstitution(Institution institution) throws IntactClonerException {
         return institution;
     }

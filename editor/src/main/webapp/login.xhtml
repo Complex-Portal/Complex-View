@@ -11,8 +11,9 @@
     <h:head>
         <title>Editor: #{generalAppController.database}</title>
 
-        <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact.css"></link>
-
+        <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>
+        <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css"></link>
+        
         <style type="text/css">
             #outer {
                 position: absolute;

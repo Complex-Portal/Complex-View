@@ -88,10 +88,17 @@
                             <h:outputLabel value="Experiment: " for="experimentLists"/>
                         </td>
                         <td colspan="3" >
-                            <p:pickList id="experimentLists" 
-                                        value="#{interactionController.experimentLists}"
-                                        required="true" requiredMessage="An experiment is required"
-                                        var="exp" itemLabel="#{exp}" itemValue="#{exp}" />
+                            <h:selectOneMenu id="experimentLists"
+                                             value="#{interactionController.experiment}"
+                                             valueChangeListener="#{interactionController.experimentChanged}"
+                                             required="true" requiredMessage="An experiment is required">
+                                 <f:selectItems value="#{interactionController.experimentSelectItems}"/>
+                            </h:selectOneMenu>
+                            <!--<p:pickList id="experimentLists"-->
+                                        <!--valueChangeListener="#{interactionController.experimentChanged}"-->
+                                        <!--value="#{interactionController.experimentLists}"-->
+                                        <!--required="true" requiredMessage="An experiment is required"-->
+                                        <!--var="exp" itemLabel="#{exp}" itemValue="#{exp}" />-->
                         </td>
                     </tr>
                 </table>
@@ -104,11 +111,11 @@
             <p:tabView id="interactionTabs">
                 <p:tab title="Participants (#{interactionController.participants.size()})">
 
-                     <div class="intact-buttonBar">
+                     <p:panel style="padding:0">
                         <p:commandButton value="New participant" actionListener="#{participantController.newParticipant(interactionController.interaction)}"
                                              action="/curate/participant" ajax="false"/>
                          <p:commandButton value="Import..." type="button" onclick="importParticipantDialog.show()"/>
-                     </div>
+                     </p:panel>
 
                     <ia:spacer height="10" />
 

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
@@ -33,11 +34,14 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.model.util.IllegalLabelFormatException;
 import uk.ac.ebi.intact.model.util.InteractionShortLabelGenerator;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -59,9 +63,14 @@ public class InteractionController extends AnnotatedObjectController {
 
     private Interaction interaction;
     private String ac;
+
     private DualListModel<String> experimentLists;
+    private List<SelectItem> experimentSelectItems;
 
     private List<ParticipantWrapper> participantWrappers;
+
+    private Experiment experiment;
+    private List<Experiment> experimentsToUpdate;
 
     @Autowired
     private PublicationController publicationController;
@@ -70,6 +79,7 @@ public class InteractionController extends AnnotatedObjectController {
     private ExperimentController experimentController;
 
     public InteractionController() {
+        experimentsToUpdate = new ArrayList<Experiment>();
     }
 
     @Override
@@ -105,7 +115,7 @@ public class InteractionController extends AnnotatedObjectController {
         }
 
         if( interaction.getExperiments().isEmpty() ) {
-            addWarningMessage( "This interaction isn't attached to an experiment", "Plase add one or delete it" );
+            addErrorMessage( "This interaction isn't attached to an experiment", "Plase add one or delete it" );
         } else {
 
             // check if the publication or experiment are null in their controllers (this happens when the interaction
@@ -129,33 +139,50 @@ public class InteractionController extends AnnotatedObjectController {
     }
 
     private void refreshExperimentLists() {
+        this.experimentSelectItems = new ArrayList<SelectItem>();
+
+        SelectItem selectItem = new SelectItem(null, "Select experiment");
+        selectItem.setNoSelectionOption(true);
+
+        experimentSelectItems.add(selectItem);
+
         // initialize the experiment lists
-        List<String> source  = new ArrayList<String>();
-        List<String> target  = new ArrayList<String>();
+//        List<String> source  = new ArrayList<String>();
+//        List<String> target  = new ArrayList<String>();
 
 
         if(  interaction.getExperiments().size() > 1 ) {
-            addWarningMessage( "There are more than one experiment attached to this interaction", "" );
+            addWarningMessage( "There are more than one experiment attached to this interaction",
+                    DebugUtil.acList(interaction.getExperiments()).toString());
         }
 
         for ( Experiment e : interaction.getExperiments() ) {
-            source.add( e.getShortLabel() );
+//            source.add( e.getShortLabel() );
+
+            experimentSelectItems.add(new SelectItem(e, e.getShortLabel(), e.getFullName()));
+        }
+
+        if (!interaction.getExperiments().isEmpty()) {
+            experiment = interaction.getExperiments().iterator().next();
         }
 
         if (publicationController.getPublication() != null) {
             final Publication pub = publicationController.getPublication();
             for ( Experiment e : pub.getExperiments() ) {
-                if( ! source.contains( e.getShortLabel() ) ) {
-                    target.add( e.getShortLabel() );
-                }
+//                if( ! source.contains( e.getShortLabel() ) ) {
+//                    target.add( e.getShortLabel() );
+//                }
+                experimentSelectItems.add(new SelectItem(e, e.getShortLabel(), e.getFullName()));
             }
         }
 
-        experimentLists = new DualListModel<String>( source, target);
+//        experimentLists = new DualListModel<String>( source, target);
     }
 
     @Override
     public boolean doSaveDetails() {
+        updateShortLabel();
+
         boolean saved = false;
 
         for (ParticipantWrapper pw : participantWrappers) {
@@ -163,18 +190,62 @@ public class InteractionController extends AnnotatedObjectController {
 
             if (pw.isDeleted() && component.getAc() != null) {
                 interaction.removeComponent(component);
-                IntactContext.getCurrentInstance().getDaoFactory().getComponentDao().delete(component);
+                getDaoFactory().getComponentDao().delete(component);
             }
             if (component.getAc() == null) {
-                IntactContext.getCurrentInstance().getCorePersister().saveOrUpdate(component);
+                getCorePersister().saveOrUpdate(component);
             }
 
             saved = true;
         }
 
+        for (Experiment experimentToUpdate : experimentsToUpdate) {
+            getCorePersister().saveOrUpdate(experimentToUpdate);
+        }
+
+        experiment = reload(experiment);
+
+        interaction.addExperiment(experiment);
+        getCorePersister().saveOrUpdate(experiment);
+
+        experimentController.setExperiment(experiment);
+
         refreshParticipants();
 
         return saved;
+    }
+
+    public void experimentChanged(ValueChangeEvent evt) {
+        if (evt.getOldValue() != null) {
+            Experiment oldExp = (Experiment) evt.getOldValue();
+
+            oldExp = reload(oldExp);
+
+            interaction.removeExperiment(oldExp);
+        }
+
+        Experiment newExp = (Experiment) evt.getNewValue();
+
+        newExp = reload(newExp);
+
+        interaction.addExperiment(newExp);
+
+        experimentsToUpdate.add(newExp);
+    }
+
+    private Experiment reload(Experiment oldExp) {
+        if (oldExp.getAc() != null &&
+                !Hibernate.isInitialized(oldExp.getInteractions()) &&
+                !Hibernate.isInitialized(oldExp.getAnnotations())) {
+            oldExp = getDaoFactory().getExperimentDao().getByAc(oldExp.getAc());
+        }
+        return oldExp;
+    }
+
+    @Override
+    public void modifyClone(AnnotatedObject clone) {
+        Interaction clonedInteraction = (Interaction) clone;
+        updateShortLabel(clonedInteraction);
     }
 
     @Override
@@ -249,7 +320,17 @@ public class InteractionController extends AnnotatedObjectController {
     }
 
     private void updateShortLabel() {
-        String shortLabel = InteractionShortLabelGenerator.createCandidateShortLabel(getInteraction());
+        updateShortLabel(getInteraction());
+    }
+
+    private void updateShortLabel(Interaction interaction) {
+        String shortLabel = InteractionShortLabelGenerator.createCandidateShortLabel(interaction);
+        try {
+            shortLabel = InteractionShortLabelGenerator.nextAvailableShortlabel(shortLabel);
+        } catch (IllegalLabelFormatException e) {
+            addWarningMessage("Illegal shortLabel", e.getMessage());
+            handleException(e);
+        }
         interaction.setShortLabel(shortLabel);
     }
 
@@ -275,7 +356,6 @@ public class InteractionController extends AnnotatedObjectController {
         Component participant = participantWrapper.getParticipant();
 
         IntactCloner cloner = new EditorIntactCloner();
-        cloner.setExcludeACs(true);
         
         try {
             Component clone = cloner.clone(participant);
@@ -290,8 +370,20 @@ public class InteractionController extends AnnotatedObjectController {
         this.ac = ac;
     }
 
+    public List<SelectItem> getExperimentSelectItems() {
+        return experimentSelectItems;
+    }
+
     public Interaction getInteraction() {
         return interaction;
+    }
+
+    public Experiment getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(Experiment experiment) {
+        this.experiment = experiment;
     }
 
     public void setInteraction( Interaction interaction ) {
