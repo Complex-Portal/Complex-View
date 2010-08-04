@@ -366,6 +366,14 @@ public class InteractionController extends AnnotatedObjectController {
         }
     }
 
+    public String getImexId() {
+        return findXrefPrimaryId(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF);
+    }
+
+    public void setImexId(String imexId) {
+        setXref( CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId );
+    }
+
     public void setAc( String ac ) {
         this.ac = ac;
     }

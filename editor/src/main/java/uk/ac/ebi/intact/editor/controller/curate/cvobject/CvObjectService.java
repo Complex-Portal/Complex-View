@@ -31,6 +31,7 @@ import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -44,6 +45,8 @@ public class CvObjectService extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( CvObjectService.class );
 
+    public static final String NO_CLASS = "no_class";
+
     private List<CvObject> allCvObjects;
     private Map<CvKey, CvObject> allCvObjectMap;
     private Map<String, CvObject> acCvObjectMap;
@@ -56,6 +59,7 @@ public class CvObjectService extends JpaAwareController {
     private List<CvTopic> featureTopics;
     private List<CvTopic> cvObjectTopics;
     private List<CvTopic> bioSourceTopics;
+    private List<CvTopic> noClassTopics;
 
     private List<SelectItem> publicationTopicSelectItems;
     private List<SelectItem> experimentTopicSelectItems;
@@ -65,6 +69,7 @@ public class CvObjectService extends JpaAwareController {
     private List<SelectItem> featureTopicSelectItems;
     private List<SelectItem> cvObjectTopicSelectItems;
     private List<SelectItem> bioSourceTopicSelectItems;
+    private List<SelectItem> noClassSelectItems;
 
     private List<CvDatabase> databases;
     private List<SelectItem> databaseSelectItems;
@@ -155,30 +160,62 @@ public class CvObjectService extends JpaAwareController {
                 }
 
                 if ( usedInClasses.length == 0 ) {
-                    cvObjectsByUsedInClass.put( "no_class", ( CvTopic ) cvObject );
+                    cvObjectsByUsedInClass.put(NO_CLASS, ( CvTopic ) cvObject );
                 }
             }
         }
 
-        publicationTopics = getSortedTopicList( Experiment.class.getName(), cvObjectsByUsedInClass);
-        experimentTopics = getSortedTopicList( Experiment.class.getName(), cvObjectsByUsedInClass);
+        // topics
+        publicationTopics = getSortedTopicList(Publication.class.getName(), cvObjectsByUsedInClass);
+        experimentTopics = getSortedTopicList(Experiment.class.getName(), cvObjectsByUsedInClass);
         interactionTopics = getSortedTopicList( Interaction.class.getName(), cvObjectsByUsedInClass);
         interactorTopics = getSortedTopicList( Interactor.class.getName(), cvObjectsByUsedInClass);
         participantTopics = getSortedTopicList( Component.class.getName(), cvObjectsByUsedInClass);
         featureTopics = getSortedTopicList( Feature.class.getName(), cvObjectsByUsedInClass);
         bioSourceTopics = getSortedTopicList( Feature.class.getName(), cvObjectsByUsedInClass);
-
         cvObjectTopics = getSortedTopicList( CvObject.class.getName(), cvObjectsByUsedInClass);
-        cvObjectTopics.addAll(getSortedTopicList("no_class", cvObjectsByUsedInClass));
+        noClassTopics = getSortedTopicList( NO_CLASS, cvObjectsByUsedInClass);
 
-        publicationTopicSelectItems = createSelectItems( publicationTopics, "-- Select topic --" );
+        // select items
+        noClassSelectItems = createSelectItems(noClassTopics, null);
+
+        SelectItemGroup noClassSelectItemGroup = new SelectItemGroup("Not classified");
+        noClassSelectItemGroup.setSelectItems(noClassSelectItems.toArray(new SelectItem[noClassSelectItems.size()]));
+
+        SelectItemGroup pubSelectItemGroup = new SelectItemGroup("Publication");
+        List<SelectItem> pubTopicSelectItems = createSelectItems(publicationTopics, null);
+        pubSelectItemGroup.setSelectItems(pubTopicSelectItems.toArray(new SelectItem[pubTopicSelectItems.size()]));
+
+        SelectItemGroup expSelectItemGroup = new SelectItemGroup("Experiment");
+        List<SelectItem> expTopicSelectItems = createSelectItems(experimentTopics, null);
+        expSelectItemGroup.setSelectItems(expTopicSelectItems.toArray(new SelectItem[expTopicSelectItems.size()]));
+
+        publicationTopicSelectItems = new ArrayList<SelectItem>();
+        publicationTopicSelectItems.add( new SelectItem( null, "-- Select topic --", "-- Select topic --", false, false, true ) );
+        publicationTopicSelectItems.add(pubSelectItemGroup);
+        publicationTopicSelectItems.add(expSelectItemGroup);
+        publicationTopicSelectItems.add(noClassSelectItemGroup);
+        
         experimentTopicSelectItems = createSelectItems( experimentTopics, "-- Select topic --" );
+        experimentTopicSelectItems.add(noClassSelectItemGroup);
+
         interactionTopicSelectItems = createSelectItems( interactionTopics, "-- Select topic --" );
+        interactionTopicSelectItems.add(noClassSelectItemGroup);
+
         interactorTopicSelectItems = createSelectItems( interactorTopics, "-- Select topic --" );
+        interactorTopicSelectItems.add(noClassSelectItemGroup);
+
         participantTopicSelectItems = createSelectItems( participantTopics, "-- Select topic --" );
+        participantTopicSelectItems.add(noClassSelectItemGroup);
+
         featureTopicSelectItems = createSelectItems( featureTopics, "-- Select topic --" );
+        featureTopicSelectItems.add(noClassSelectItemGroup);
+
         cvObjectTopicSelectItems = createSelectItems( cvObjectTopics, "-- Select topic --" );
+        cvObjectTopicSelectItems.add(noClassSelectItemGroup);
+
         bioSourceTopicSelectItems = createSelectItems( bioSourceTopics, "-- Select topic --" );
+        bioSourceTopicSelectItems.add(noClassSelectItemGroup);
 
         databases = getSortedList( CvDatabase.class, cvObjectsByClass);
         databaseSelectItems = createSelectItems( databases, "-- Select database --" );
@@ -228,6 +265,7 @@ public class CvObjectService extends JpaAwareController {
     public List<CvTopic> getSortedTopicList( String key, Multimap<String, CvTopic> topicMultimap ) {
         if ( topicMultimap.containsKey( key ) ) {
             List<CvTopic> list = new ArrayList<CvTopic>( topicMultimap.get( key ) );
+
             Collections.sort( list, new CvObjectComparator() );
             return list;
         } else {

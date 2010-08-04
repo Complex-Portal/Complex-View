@@ -385,6 +385,14 @@ public class PublicationController extends AnnotatedObjectController {
         setAnnotation( CvTopic.ACCEPTED, message );
     }
 
+    public String getImexId() {
+        return findXrefPrimaryId(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF);
+    }
+
+    public void setImexId(String imexId) {
+        setXref( CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId );
+    }
+
 
     public String getFirstAuthor() {
         final String authors = getAuthors();
