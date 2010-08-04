@@ -67,7 +67,7 @@
 
             <p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER')}">
                 <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}" 
-                        update="infoPanels"/>
+                        update="editorForm"/>
             </p:submenu>
 
             <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development'}">
@@ -120,9 +120,11 @@
 
             <div class="intact-notSavedPanel">
                     Changes not yet saved &#160;
-                <p:commandButton type="button" id="unsavedSaveButton" value="Save" onclick="save(); return false"/>
+                <p:commandButton type="button" id="unsavedSaveButton"
+                                 style="opacity: 1.0; font-weight: bold"
+                                 value="Save" onclick="save(); return false"/>
                 &#160;-&#160;
-                <p:commandLink id="unsavedRevertLink" value="Revert"
+                <p:commandLink id="unsavedRevertLink" value="Revert" style="opacity: 1.0; font-weight: bold"
                                actionListener="#{annotatedObjectController.doRevertChanges}"
                                update="editorForm,growl,messagesComponent"
                                onclick="revertDialog.show()" oncomplete="revertDialog.hide()"/>

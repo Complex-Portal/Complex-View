@@ -28,6 +28,7 @@ import uk.ac.ebi.intact.editor.controller.curate.util.EditorIntactCloner;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -188,6 +189,17 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public String findXrefPrimaryId( String databaseId, String qualifierId ) {
         return getAnnotatedObjectHelper().findXrefPrimaryId(databaseId, qualifierId);
+    }
+
+    public boolean isXrefValid(Xref xref) {
+        if (xref == null) return false;
+        if (xref.getPrimaryId() == null) return false;
+        if (xref.getCvDatabase() == null) return true;
+
+        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(xref.getCvDatabase(), CvTopic.XREF_VALIDATION_REGEXP_MI_REF);
+        if (annotation == null) return true;
+
+        return xref.getPrimaryId().matches(annotation.getAnnotationText());
     }
 
     // ANNOTATIONS

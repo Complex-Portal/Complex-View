@@ -137,12 +137,7 @@
                                 </td>
                                 <td colspan="1" style="text-align: right;">
                                     <h:outputLabel value="Year: " for="yearTxt"/>
-                                    <!--<h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4">-->
-                                        <!--<f:convertNumber pattern="#"/>-->
-                                        <!--<f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"-->
-                                                <!--execute="@this" listener="#{publicationController.changed}" />-->
-                                    <!--</h:inputText>-->
-                                    <p:spinner id="yearTxt" value="#{publicationController.year}" 
+                                    <p:spinner id="yearTxt" value="#{publicationController.year}"
                                                min="1950" max="2020" maxlength="4" stepFactor="1"
                                                validatorMessage="Invalid year"
                                                style="width:50px"
@@ -237,29 +232,26 @@
 
 
                     <p:tab title="Properties">
+                        <p:panel id="xrefsPanel" header="Xrefs (#{publicationController.publication.xrefs.size()})"
+                                toggleable="true">
+                            <ia:xrefsTable annotatedObjectController="#{publicationController}"
+                                           databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                                           qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                                           update="xrefsPanel changesPanel"
+                                           valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                        </p:panel>
 
-                        <p:outputPanel id="xrefsPanel">
-                            <ia:collapsiblePanel open="true" title="Xrefs (#{publicationController.publication.xrefs.size()})">
-                                <ia:xrefsTable annotatedObjectController="#{publicationController}"
-                                               databaseSelectItems="#{cvObjectService.databaseSelectItems}"
-                                               qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                               update="xrefsPanel changesPanel"
-                                               valueChangeRender=":editorForm:basic :editorForm:changesPanel"
-                                               valueChangeAwareObject="#{annotatedObjectController}"
-                                               style="margin-top: -20px;"/>
-                            </ia:collapsiblePanel>
-                        </p:outputPanel>
+                        <br/>
 
-                        <p:outputPanel id="annotationsPanel">
-                            <ia:collapsiblePanel open="true" title="Annotations (#{publicationController.publication.annotations.size()})">
-                                <ia:annotationsTable annotatedObjectController="#{publicationController}"
+                        <p:panel id="annotationsPanel" header="Annotations (#{publicationController.publication.annotations.size()})"
+                                toggleable="true">
+                            <ia:annotationsTable annotatedObjectController="#{publicationController}"
                                                      topicSelectItems="#{cvObjectService.publicationTopicSelectItems}"
                                                      update="annotationsPanel changesPanel"
                                                      valueChangeRender=":editorForm:basic :editorForm:changesPanel"
-                                                     valueChangeAwareObject="#{annotatedObjectController}"
-                                                     style="margin-top: -20px;"/>
-                            </ia:collapsiblePanel>
-                        </p:outputPanel>
+                                                     valueChangeAwareObject="#{annotatedObjectController}"/>
+                        </p:panel>
 
                     </p:tab>
                 </p:tabView>

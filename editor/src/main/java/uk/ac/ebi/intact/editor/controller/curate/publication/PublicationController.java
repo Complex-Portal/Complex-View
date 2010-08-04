@@ -407,7 +407,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void acceptPublication(ActionEvent actionEvent) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
-        setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date())+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
+        setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
     }
 
     public List<SelectItem> getDatasetsSelectItems() {
