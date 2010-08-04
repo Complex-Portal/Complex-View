@@ -91,10 +91,8 @@
                             <f:facet name="header">
                                 <h:outputText value="Actions"/>
                             </f:facet>
-                            <h:commandLink immediate="true"
-                                           actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeXref(xref)}">
-                               <p:graphicImage alt="Delete" url="/resources/images/bin.png" style="border: 0px;"/>    
-                            </h:commandLink>
+                            <p:commandLink immediate="true" styleClass="ui-icon ui-icon-closethick"
+                               actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeXref(xref)}"/>
                         </p:column>
                     </p:dataTable>
 

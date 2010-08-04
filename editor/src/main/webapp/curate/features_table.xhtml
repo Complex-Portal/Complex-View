@@ -74,14 +74,12 @@
                     <f:facet name="header">
                         <h:outputText value="Actions"/>
                     </f:facet>
-                    <p:commandLink title="Mark to be deleted" actionListener="#{participantController.markFeatureToDelete(feature, unsavedChangeManager)}"
-                                   update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(feature.ac)}">
-                        <h:graphicImage library="images" name="bin.png" alt="Delete" style="border: 0px;"/>
-                    </p:commandLink>
-                    <p:commandLink title="Revert" actionListener="#{unsavedChangeManager.revert(feature)}"
-                                   update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(feature.ac)}">
-                        <h:graphicImage library="images" name="undo.png" alt="Revert" style="border: 0px;"/>
-                    </p:commandLink>
+                    <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
+                               actionListener="#{participantController.markFeatureToDelete(feature, unsavedChangeManager)}"
+                               update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(feature.ac)}"/>
+                    <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
+                               actionListener="#{unsavedChangeManager.revert(feature)}"
+                               update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(feature.ac)}"/>
                 </p:column>
             </p:dataTable>
 

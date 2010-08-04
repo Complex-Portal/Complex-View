@@ -137,11 +137,16 @@
                                 </td>
                                 <td colspan="1" style="text-align: right;">
                                     <h:outputLabel value="Year: " for="yearTxt"/>
-                                    <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4">
-                                        <f:convertNumber pattern="#"/>
-                                        <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
-                                                execute="@this" listener="#{publicationController.changed}" />
-                                    </h:inputText>
+                                    <!--<h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4">-->
+                                        <!--<f:convertNumber pattern="#"/>-->
+                                        <!--<f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"-->
+                                                <!--execute="@this" listener="#{publicationController.changed}" />-->
+                                    <!--</h:inputText>-->
+                                    <p:spinner id="yearTxt" value="#{publicationController.year}" 
+                                               min="1950" max="2020" maxlength="4" stepFactor="1"
+                                               validatorMessage="Invalid year"
+                                               style="width:50px"
+                                               onchange="markAsUnsaved()"/>
                                 </td>
                             </tr>
                             <tr>
