@@ -29,10 +29,7 @@ import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantControll
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Keeps the changes for each annotated object by AC.
@@ -117,6 +114,19 @@ public class CuratorContextController extends BaseController {
     public void removeFromUnsaved(IntactObject object) {
         for (UnsavedChangeManager ucm : unsavedMap.values()) {
             ucm.removeFromUnsaved(object);
+        }
+    }
+
+    public void removeFromUnsavedByAc(String ac) {
+        for (UnsavedChangeManager ucm : unsavedMap.values()) {
+            final Iterator<UnsavedChange> changeIterator = ucm.getChanges().iterator();
+
+            while (changeIterator.hasNext()) {
+                UnsavedChange unsavedChange = changeIterator.next();
+                if (ac.equals(unsavedChange.getUnsavedObject().getAc())) {
+                    changeIterator.remove();
+                }
+            }
         }
     }
 }

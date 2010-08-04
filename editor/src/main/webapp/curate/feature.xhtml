@@ -120,41 +120,11 @@
 
                 <p:tab title="Properties">
 
-            <p:outputPanel id="xrefsPanel">
-                <ia:collapsiblePanel title="Xrefs (#{feature.xrefs.size()})">
-                    <ia:xrefsTable annotatedObjectController="#{featureController}"
-                                   databaseSelectItems="#{cvObjectService.databaseSelectItems}"
-                                   qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                   update="xrefsPanel changesPanel"
-                                   valueChangeRender=":editorForm:changesPanel"
-                                   valueChangeAwareObject="#{annotatedObjectController}"
-                                   style="margin-top: -20px;"/>
-                </ia:collapsiblePanel>
-            </p:outputPanel>
+                    <ui:include src="properties.xhtml">
+                            <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.featureTopicSelectItems}"/>
+                    </ui:include>
 
-            <p:outputPanel id="annotationsPanel">
-                <ia:collapsiblePanel title="Annotations (#{feature.annotations.size()})">
-                    <ia:annotationsTable annotatedObjectController="#{featureController}"
-                                         topicSelectItems="#{cvObjectService.featureTopicSelectItems}"
-                                         update="annotationsPanel changesPanel"
-                                         valueChangeRender=":editorForm:changesPanel"
-                                         valueChangeAwareObject="#{annotatedObjectController}"
-                                         style="margin-top: -20px;"/>
-                </ia:collapsiblePanel>
-            </p:outputPanel>
-
-            <p:outputPanel id="aliasesPanel">
-                <ia:collapsiblePanel title="Aliases (#{feature.aliases.size()})">
-                    <ia:aliasTable annotatedObjectController="#{featureController}"
-                                   aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
-                                   update="aliasesPanel changesPanel"
-                                   valueChangeRender=":editorForm:changesPanel"
-                                   valueChangeAwareObject="#{annotatedObjectController}"
-                                   style="margin-top: -20px;"/>
-                </ia:collapsiblePanel>
-            </p:outputPanel>
-
-            </p:tab>
+                </p:tab>
             </p:tabView>
 
         </h:panelGroup>

@@ -23,12 +23,11 @@
         <table style="#{cc.attrs.style}">
             <tr>
                 <td>
-                    <h:panelGroup>
-                <div style="text-align: right; margin-bottom: 5px">
-                Actions:&#160;
-                <p:commandLink value="New" update="#{cc.attrs.update}" actionListener="#{cc.attrs.annotatedObjectController.newAnnotation}"/>
-                </div>
-            </h:panelGroup>
+
+        <div class="intact-buttonBar">
+                <p:commandButton value="New Annotation" actionListener="#{cc.attrs.annotatedObjectController.newAnnotation}"
+                                 update="#{cc.attrs.update}"/>
+        </div>
 
         <p:dataTable var="annotation" value="#{cc.attrs.annotatedObjectController.annotations}">
             <p:column>
@@ -58,7 +57,8 @@
                      <h:outputText value="Actions"/>
                 </f:facet>
                 <p:commandLink immediate="true" styleClass="ui-icon ui-icon-closethick" 
-                               actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"/>
+                               actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"
+                               update="#{cc.attrs.update}"/>
             </p:column>
         </p:dataTable>
                 </td>

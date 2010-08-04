@@ -232,26 +232,10 @@
 
 
                     <p:tab title="Properties">
-                        <p:panel id="xrefsPanel" header="Xrefs (#{publicationController.publication.xrefs.size()})"
-                                toggleable="true">
-                            <ia:xrefsTable annotatedObjectController="#{publicationController}"
-                                           databaseSelectItems="#{cvObjectService.databaseSelectItems}"
-                                           qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                                           update="xrefsPanel changesPanel"
-                                           valueChangeRender=":editorForm:basic :editorForm:changesPanel"
-                                           valueChangeAwareObject="#{annotatedObjectController}"/>
-                        </p:panel>
 
-                        <br/>
-
-                        <p:panel id="annotationsPanel" header="Annotations (#{publicationController.publication.annotations.size()})"
-                                toggleable="true">
-                            <ia:annotationsTable annotatedObjectController="#{publicationController}"
-                                                     topicSelectItems="#{cvObjectService.publicationTopicSelectItems}"
-                                                     update="annotationsPanel changesPanel"
-                                                     valueChangeRender=":editorForm:basic :editorForm:changesPanel"
-                                                     valueChangeAwareObject="#{annotatedObjectController}"/>
-                        </p:panel>
+                        <ui:include src="properties.xhtml">
+                            <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.publicationTopicSelectItems}"/>
+                        </ui:include>
 
                     </p:tab>
                 </p:tabView>

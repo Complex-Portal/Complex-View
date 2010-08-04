@@ -72,6 +72,7 @@
 
             <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development'}">
                 <p:menuitem value="Changes" action="/curate/debug/changes" ajax="false"/>
+                <p:menuitem value="Refresh" update="contentSection"/>
             </p:submenu>
         </p:menubar>
     </ui:define>

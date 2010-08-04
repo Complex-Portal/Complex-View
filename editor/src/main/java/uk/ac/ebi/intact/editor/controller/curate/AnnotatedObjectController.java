@@ -94,6 +94,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             
             getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
             IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+
+            CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
+            curatorContextController.removeFromUnsavedByAc(getAnnotatedObject().getAc());
         }
         
         getUnsavedChangeManager().clearChanges();

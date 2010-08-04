@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
+
+    <p:panel id="xrefsPanel" header="Xrefs (#{annotatedObjectController.annotatedObject.xrefs.size()})"
+             toggleable="true">
+        <ia:xrefsTable annotatedObjectController="#{annotatedObjectController}"
+                       databaseSelectItems="#{cvObjectService.databaseSelectItems}"
+                       qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                       update="xrefsPanel changesPanel"
+                       valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                       valueChangeAwareObject="#{annotatedObjectController}"/>
+    </p:panel>
+
+    <br/>
+
+    <p:panel id="annotationsPanel" header="Annotations (#{annotatedObjectController.annotatedObject.annotations.size()})"
+             toggleable="true">
+        <ia:annotationsTable annotatedObjectController="#{annotatedObjectController}"
+                             topicSelectItems="#{annotatedObjectSelectItems}"
+                             update="annotationsPanel changesPanel"
+                             valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                             valueChangeAwareObject="#{annotatedObjectController}"/>
+    </p:panel>
+
+    <p:panel id="aliasesPanel" header="Aliases (#{annotatedObjectController.annotatedObject.aliases.size()})"
+             toggleable="true">
+        <ia:aliasTable annotatedObjectController="#{annotatedObjectController}"
+                       aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                       update="aliasesPanel changesPanel unsavedChangesInfo"
+                       valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                       valueChangeAwareObject="#{annotatedObjectController}"/>
+     </p:panel>
+
+
+
+</ui:composition>

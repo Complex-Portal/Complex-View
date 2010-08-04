@@ -31,6 +31,8 @@ import uk.ac.ebi.intact.model.*;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -107,9 +109,17 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public boolean isCitexploreOnline() {
+        if (log.isDebugEnabled()) log.debug("Checking citexplore status");
+        
         try {
-            CitexploreClient citexploreClient = new CitexploreClient();
+            URL url = new URL("http://www.ebi.ac.uk/webservices/citexplore/v1.0/service?wsdl");
+            final URLConnection urlConnection = url.openConnection();
+            urlConnection.setConnectTimeout(1000);
+            urlConnection.setReadTimeout(1000);
+            urlConnection.connect();
         } catch ( Exception e ) {
+            log.debug("\tCitexplore is not reachable");
+
             return false;
         }
 
