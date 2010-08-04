@@ -65,6 +65,11 @@
                         onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
             </p:submenu>
 
+            <p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER')}">
+                <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}" 
+                        update="infoPanels"/>
+            </p:submenu>
+
             <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development'}">
                 <p:menuitem value="Changes" action="/curate/debug/changes" ajax="false"/>
             </p:submenu>

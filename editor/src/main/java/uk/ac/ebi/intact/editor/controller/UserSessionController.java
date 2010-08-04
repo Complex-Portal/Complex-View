@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
 
 /**
@@ -43,6 +44,24 @@ public class UserSessionController extends BaseController implements DisposableB
 
     public void setCurrentUser( User currentUser ) {
         this.currentUser = currentUser;
+    }
+
+    public boolean hasRole(String role) {
+        if (role == null) throw new NullPointerException("Role is null");
+
+        for (Role userRole : currentUser.getRoles()) {
+            if ("ADMIN".equals(userRole.getName())) {
+                return true;
+            }
+        }
+
+        for (Role userRole : currentUser.getRoles()) {
+            if (role.equals(userRole.getName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

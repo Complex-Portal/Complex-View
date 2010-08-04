@@ -12,9 +12,11 @@
     <p:commandButton value="Search" action="/search/search?faces-redirect=true" disabled="#{selected == 'search'}"/>
     &#160;
     <p:commandButton value="Curate" action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
-            disabled="#{selected == 'curate'}"/>
+                     rendered="#{userSessionController.hasRole('CURATOR')}"
+                     disabled="#{selected == 'curate'}"/>
     &#160;
-    <p:commandButton value="Admin" action="/admin/dashboard?faces-redirect=true" disabled="#{selected == 'admin'}"/>
+    <p:commandButton value="Admin" action="/admin/dashboard?faces-redirect=true" disabled="#{selected == 'admin'}"
+            rendered="#{userSessionController.hasRole('ADMIN')}"/>
 
     </p:panel>
 

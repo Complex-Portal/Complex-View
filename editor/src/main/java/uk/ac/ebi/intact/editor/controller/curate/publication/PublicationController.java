@@ -24,13 +24,16 @@ import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -393,6 +396,12 @@ public class PublicationController extends AnnotatedObjectController {
         return null;
     }
 
+    public void acceptPublication(ActionEvent actionEvent) {
+        UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+
+        setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date())+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
+    }
+
     public List<SelectItem> getDatasetsSelectItems() {
         return datasetsSelectItems;
     }
@@ -416,4 +425,6 @@ public class PublicationController extends AnnotatedObjectController {
     public DatasetPopulator getDatasetPopulator() {
         return ( DatasetPopulator ) IntactContext.getCurrentInstance().getSpringContext().getBean( "datasetPopulator" );
     }
+
+
 }
