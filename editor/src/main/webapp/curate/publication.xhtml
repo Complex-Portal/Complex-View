@@ -53,9 +53,17 @@
                 <p:panel id="basic" header="Publication Details">
 
                     <p:outputPanel id="infoPanels">
-                        <h:panelGroup rendered="#{not empty publicationController.acceptedMessage}">
+                        <h:panelGroup rendered="#{publicationController.accepted}">
                             <ia:panelMessage level="info">
-                                This publication is <b>accepted</b>. #{publicationController.acceptedMessage}
+                                This publication is <b>accepted</b>.&#160;
+                                <h:outputText value="#{publicationController.acceptedMessage}" rendered="#{publicationController.acceptedMessage != null}"/>
+
+                                <h:panelGroup rendered="#{publicationController.acceptedMessage == null}">
+                                      <h:outputText value="(All its experiments are accepted)" rendered="#{publicationController.acceptedMessage == null}"/>
+                                      &#160;
+                                    <p:commandLink value="Add annotation to publication" actionListener="#{publicationController.acceptPublication}"
+                                                   update="centralUnit"/>
+                                </h:panelGroup>
                             </ia:panelMessage>
                         </h:panelGroup>
 

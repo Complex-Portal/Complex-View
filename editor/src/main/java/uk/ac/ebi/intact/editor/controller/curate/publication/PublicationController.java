@@ -27,8 +27,10 @@ import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.ExperimentUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -409,8 +411,16 @@ public class PublicationController extends AnnotatedObjectController {
         return findAnnotationText( CvTopic.ACCEPTED );
     }
 
+    public boolean isAccepted() {
+        return ExperimentUtils.areAllAccepted(publication.getExperiments());
+    }
+
     public void setAcceptedMessage( String message ) {
         setAnnotation( CvTopic.ACCEPTED, message );
+
+        for (Experiment experiment : publication.getExperiments()) {
+            new AnnotatedObjectHelper(experiment).setAnnotation(CvTopic.ACCEPTED, message);
+        }
     }
 
     public String getImexId() {
