@@ -91,7 +91,8 @@
                         </p:panel>
                     </div>
 
-                    <div id="topSection" style="float: right; margin-right: 100px; ">
+                <h:panelGroup id="topSection">
+                    <div style="float: right; margin-right: 100px; ">
                         <table>
                             <tr style="vertical-align: middle;">
 
@@ -119,6 +120,7 @@
                             </tr>
                         </table>
                     </div>
+                </h:panelGroup>
 
                 <div id="menuSection" style="width:100%; position:fixed; margin-top: 70px;">
                     <ui:insert name="menuBar"/>
@@ -130,7 +132,7 @@
                 <!--<p:layoutUnit position="center" scrollable="true">-->
             <div style="width:100%; padding-top:50px; margin-left:5px; margin-right:5px">
 
-                    <div id="feedback" class="intact-feedback">
+                    <div id="feedback" class="intact-feedback" onmouseover="this.style.top = Math.floor(Math.random()*350)+'px'">
                         <a href="http://code.google.com/p/intact/issues/entry?template=Editor%20mockup%20feedback"
                            target="_blank"> 
                             <h:graphicImage alt="feedbackIcon" url="/resources/images/feedback.png"/>
