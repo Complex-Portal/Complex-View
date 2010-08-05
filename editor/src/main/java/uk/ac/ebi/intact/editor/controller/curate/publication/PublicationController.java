@@ -62,6 +62,8 @@ public class PublicationController extends AnnotatedObjectController {
     private String[] datasetsToRemove;
     private List<SelectItem> datasetsSelectItems;
 
+    private boolean isCitexploreActive;
+
     public PublicationController() {
     }
 
@@ -109,6 +111,9 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public boolean isCitexploreOnline() {
+        if (isCitexploreActive) {
+            return true;
+        }
         if (log.isDebugEnabled()) log.debug("Checking citexplore status");
         
         try {
@@ -120,9 +125,11 @@ public class PublicationController extends AnnotatedObjectController {
         } catch ( Exception e ) {
             log.debug("\tCitexplore is not reachable");
 
+            isCitexploreActive = false;
             return false;
         }
 
+        isCitexploreActive = true;
         return true;
     }
 

@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
@@ -41,7 +41,7 @@ import javax.faces.event.ComponentSystemEvent;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class ParticipantController extends AnnotatedObjectController {
+public class ParticipantController extends ParameterizableObjectController {
 
     private static final Log log = LogFactory.getLog( ParticipantController.class );
 

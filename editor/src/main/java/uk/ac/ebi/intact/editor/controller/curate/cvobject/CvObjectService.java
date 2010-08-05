@@ -113,6 +113,15 @@ public class CvObjectService extends JpaAwareController {
     private List<CvTissue> tissues;
     private List<SelectItem> tissueSelectItems;
 
+    private List<CvParameterType> parameterTypes;
+    private List<SelectItem> parameterTypeSelectItems;
+
+    private List<CvParameterUnit> parameterUnits;
+    private List<SelectItem> parameterUnitSelectItems;
+
+    private List<CvConfidenceType> confidenceTypes;
+    private List<SelectItem> confidenceTypeSelectItems;
+
     private Multimap<String, CvTopic> cvObjectsByUsedInClass;
     private Multimap<Class, CvObject> cvObjectsByClass;
 
@@ -258,6 +267,15 @@ public class CvObjectService extends JpaAwareController {
 
         tissues = getSortedList( CvTissue.class, cvObjectsByClass);
         tissueSelectItems = createSelectItems( tissues, "-- Select tissue --" );
+
+        parameterTypes = getSortedList( CvParameterType.class, cvObjectsByClass);
+        parameterTypeSelectItems = createSelectItems( parameterTypes, "-- Select type --" );
+
+        parameterUnits = getSortedList( CvParameterUnit.class, cvObjectsByClass);
+        parameterUnitSelectItems = createSelectItems( parameterUnits, "-- Select unit --" );
+
+        confidenceTypes = getSortedList( CvConfidenceType.class, cvObjectsByClass);
+        confidenceTypeSelectItems = createSelectItems( confidenceTypes, "-- Select type --" );
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
     }
@@ -474,6 +492,18 @@ public class CvObjectService extends JpaAwareController {
 
     public Collection<CvTopic> getCvTopicsByUsedInClass(String className) {
         return cvObjectsByUsedInClass.get(className);
+    }
+
+    public List<SelectItem> getParameterTypeSelectItems() {
+        return parameterTypeSelectItems;
+    }
+
+    public List<SelectItem> getParameterUnitSelectItems() {
+        return parameterUnitSelectItems;
+    }
+
+    public List<SelectItem> getConfidenceTypeSelectItems() {
+        return confidenceTypeSelectItems;
     }
 
     private class CvObjectComparator implements Comparator<CvObject> {

@@ -118,13 +118,10 @@
                     </p:outputPanel>
                 </p:tab>
 
-                <p:tab title="Properties">
-
-                    <ui:include src="properties.xhtml">
+                    <ui:include src="propertiesTabs.xhtml">
                             <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.featureTopicSelectItems}"/>
                     </ui:include>
 
-                </p:tab>
             </p:tabView>
 
         </h:panelGroup>

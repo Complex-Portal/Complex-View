@@ -90,13 +90,15 @@
 
                 </table>
 
-            </p:outputPanel>
+            <br/>
 
-            <h3>Properties</h3>
+            <p:tabView id="cvobjectTabs">
 
-            <ui:include src="properties.xhtml">
-                 <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.bioSourceTopicSelectItems}"/>
-            </ui:include>
+                <ui:include src="propertiesTabs.xhtml">
+                     <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.bioSourceTopicSelectItems}"/>
+                </ui:include>
+
+            </p:tabView>
             
         </h:panelGroup>
 

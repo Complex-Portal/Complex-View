@@ -160,13 +160,21 @@
                     </ui:include>
                 </p:tab>
 
-                <p:tab title="Properties">
-
-            <ui:include src="properties.xhtml">
+            <ui:include src="propertiesTabs.xhtml">
                  <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.participantTopicSelectItems}"/>
             </ui:include>
 
-            </p:tab>
+                <p:tab id="parametersTab" title="Parameters (#{participant.parameters.size()})">
+
+                   <ia:parametersTable annotatedObjectController="#{annotatedObjectController}"
+                       parameterTypeSelectItems="#{cvObjectService.parameterTypeSelectItems}"
+                       parameterUnitSelectItems="#{cvObjectService.parameterUnitSelectItems}"
+                       update="parametersTab changesPanel unsavedChangesInfo"
+                       valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                       valueChangeAwareObject="#{annotatedObjectController}"/>
+
+                </p:tab>
+
             </p:tabView>
             
         </h:panelGroup>

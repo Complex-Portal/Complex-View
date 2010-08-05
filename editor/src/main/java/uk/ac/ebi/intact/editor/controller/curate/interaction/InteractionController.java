@@ -25,10 +25,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.util.DebugUtil;
-import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.controller.curate.util.EditorIntactCloner;
+import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.editor.controller.curate.util.InteractionIntactCloner;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
@@ -42,10 +43,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -54,7 +52,7 @@ import java.util.List;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class InteractionController extends AnnotatedObjectController {
+public class InteractionController extends ParameterizableObjectController {
 
     private static final Log log = LogFactory.getLog( InteractionController.class );
 
@@ -427,6 +425,20 @@ public class InteractionController extends AnnotatedObjectController {
             }
         }
         return sb.toString();
+    }
+
+     // Confidence
+    ///////////////////////////////////////////////
+
+    public void newConfidence() {
+        Confidence confidence = new Confidence();
+        interaction.addConfidence(confidence);
+    }
+
+    public List<Confidence> getConfidences() {
+        final List<Confidence> confidences = new ArrayList<Confidence>( interaction.getConfidences() );
+        Collections.sort( confidences, new IntactObjectComparator() );
+        return confidences;
     }
 
 }

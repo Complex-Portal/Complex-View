@@ -127,13 +127,33 @@
                 </p:tab>
 
 
-                <p:tab title="Properties">
 
-                   <ui:include src="properties.xhtml">
+                   <ui:include src="propertiesTabs.xhtml">
                             <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactionTopicSelectItems}"/>
                     </ui:include>
                     
+
+                <p:tab id="parametersTab" title="Parameters (#{interaction.parameters.size()})">
+
+                   <ia:parametersTable annotatedObjectController="#{annotatedObjectController}"
+                       parameterTypeSelectItems="#{cvObjectService.parameterTypeSelectItems}"
+                       parameterUnitSelectItems="#{cvObjectService.parameterUnitSelectItems}"
+                       update="parametersTab changesPanel unsavedChangesInfo"
+                       valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                       valueChangeAwareObject="#{annotatedObjectController}"/>
+
                 </p:tab>
+
+                <p:tab id="confidencesTab" title="Confidences (#{interaction.confidences.size()})">
+
+                   <ia:confidencesTable annotatedObjectController="#{annotatedObjectController}"
+                       confidenceTypeSelectItems="#{cvObjectService.confidenceTypeSelectItems}"
+                       update="confidencesTab changesPanel unsavedChangesInfo"
+                       valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                       valueChangeAwareObject="#{annotatedObjectController}"/>
+
+                </p:tab>
+
             </p:tabView>
 
         </h:panelGroup>

@@ -150,7 +150,7 @@
                                 </td>
                                 <td colspan="3">
                                     <h:inputText id="submittedTxt" value="#{publicationController.submitted}" size="50">
-                                        <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
+                                        <f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:changesPanel"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
                                 </td>
@@ -161,7 +161,7 @@
                                 </td>
                                 <td colspan="3">
                                     <h:inputText id="curationReqTxt" value="#{publicationController.curationRequest}" size="50">
-                                        <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:changesPanel"
+                                        <f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:changesPanel"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
                                 </td>
@@ -181,13 +181,13 @@
                                         </h:selectManyMenu>
 
                                         <p:commandButton value="Remove" actionListener="#{publicationController.removeDatasets}"
-                                                         update="datasetsMenu,annotationsPanel,changesPanel"
+                                                         update="datasetsMenu,publicationTabs,changesPanel"
                                                          rendered="#{not empty publicationController.datasetsSelectItems}"/>
                                         <h:selectOneMenu value="#{publicationController.datasetToAdd}">
                                             <f:selectItems value="#{datasetPopulator.allDatasetSelectItems}"/>
                                         </h:selectOneMenu>
                                         <p:commandButton value="Add" actionListener="#{publicationController.addDataset}"
-                                                         update="datasetsMenu,annotationsPanel,changesPanel"/>
+                                                         update="datasetsMenu,publicationTabs,changesPanel"/>
                                     </h:panelGroup>
                                 </td>
                             </tr>
@@ -231,13 +231,11 @@
                     </p:tab>
 
 
-                    <p:tab title="Properties">
 
-                        <ui:include src="properties.xhtml">
+                        <ui:include src="propertiesTabs.xhtml">
                             <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.publicationTopicSelectItems}"/>
                         </ui:include>
 
-                    </p:tab>
                 </p:tabView>
 
             </h:panelGroup>

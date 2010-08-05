@@ -27,8 +27,8 @@
 
         <ui:param name="dialogWidgetId" value="#{cc.friendlyWidgetId}"/>
 
-         <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'visible'"
-                 onmouseout="document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'hidden'">
+         <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:cvButtons').style.visibility = 'visible';"
+                 onmouseout="document.getElementById('#{cc.clientId}:cvButtons').style.visibility = 'hidden';">
 
                 <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="cvObjectConverter"
                                  required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}">
@@ -38,11 +38,16 @@
                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </h:selectOneMenu>
 
-                <p:commandButton id="selectBtn" value="Browse" style="visibility: hidden" immediate="true"
+             <h:panelGroup id="cvButtons" style="visibility: hidden">
+                <p:commandButton id="selectBtn" value="Browse"  immediate="true"
                                  onclick="#{dialogWidgetId}_load.show()"
                         oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();" process="#{cc.clientId}"
                         actionListener="#{cc.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
                         update="cvObjectBrowserDialog,growl"/>
+
+                 <p:commandButton id="editBtn" value="Edit" immediate="true"
+                            action="#{curatorContextController.edit(cc.attrs.value)}" ajax="false"/>
+             </h:panelGroup>
 
        <!--<h:commandButton id="selectBtn" value="Browse" onclick="#{dialogWidgetId}.show();">-->
             <!--<f:ajax event="click"-->

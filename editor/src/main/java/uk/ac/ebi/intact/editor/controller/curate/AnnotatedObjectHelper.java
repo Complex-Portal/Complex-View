@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
+import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
@@ -57,7 +58,6 @@ public class AnnotatedObjectHelper {
             ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
         }
 
-        xref.setOwner( IntactContext.getCurrentInstance().getInstitution() );
         return xref;
     }
     
@@ -390,15 +390,6 @@ public class AnnotatedObjectHelper {
     
     protected CvObjectService getCvObjectService() {
         return (CvObjectService) getIntactContext().getSpringContext().getBean("cvObjectService");
-    }
-
-    
-    private class IntactObjectComparator implements Comparator<IntactObject> {
-        @Override
-        public int compare( IntactObject o1, IntactObject o2 ) {
-            if ( o1.getAc() != null ) return 1;
-            return 0;
-        }
     }
 
     public AnnotatedObject getAnnotatedObject() {
