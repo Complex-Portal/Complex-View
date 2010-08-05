@@ -240,6 +240,24 @@ public class InteractionController extends ParameterizableObjectController {
         return oldExp;
     }
 
+    public String newInteraction(Publication publication, Experiment exp) {
+        Interaction interaction = new InteractionImpl();
+
+        setInteraction(interaction);
+
+        if (publication != null) {
+            publicationController.setPublication(publication);
+        }
+
+        if (exp != null) {
+            experimentController.setExperiment(exp);
+        }
+
+        refreshExperimentLists();
+
+        return "/curate/interaction";
+    }
+
     @Override
     public void modifyClone(AnnotatedObject clone) {
         Interaction clonedInteraction = (Interaction) clone;
@@ -440,5 +458,4 @@ public class InteractionController extends ParameterizableObjectController {
         Collections.sort( confidences, new IntactObjectComparator() );
         return confidences;
     }
-
 }

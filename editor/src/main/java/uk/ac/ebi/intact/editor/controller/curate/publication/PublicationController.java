@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate.publication;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.cdb.webservice.Author;
@@ -26,6 +27,7 @@ import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ActionEvent;
@@ -64,6 +66,8 @@ public class PublicationController extends AnnotatedObjectController {
 
     private boolean isCitexploreActive;
 
+    private LazyDataModel<Interaction> interactionDataModel;
+
     public PublicationController() {
     }
 
@@ -94,6 +98,13 @@ public class PublicationController extends AnnotatedObjectController {
                 }
 
             }
+
+            interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+                                                                                 "select i from InteractionImpl i join fetch i.experiments as exp " +
+                                                                                         "where exp.publication.ac = '" + ac + "' order by exp.shortLabel asc",
+                                                                                 "select count(i) from InteractionImpl i join i.experiments as exp " +
+                                                                                         "where exp.publication.ac = '" + ac + "'" );
+
         } else if ( publication != null ) {
             ac = publication.getAc();
         }
@@ -451,5 +462,8 @@ public class PublicationController extends AnnotatedObjectController {
         return ( DatasetPopulator ) IntactContext.getCurrentInstance().getSpringContext().getBean( "datasetPopulator" );
     }
 
+    public LazyDataModel<Interaction> getInteractionDataModel() {
+        return interactionDataModel;
+    }
 
 }

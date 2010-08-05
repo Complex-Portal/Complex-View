@@ -110,11 +110,11 @@
 
             <p:tabView id="experimentTabs">
 
-                <p:tab title="Interactions (#{experimentController.countInteractionsByExperimentAc(experimentController.ac)})">
+                <p:tab title="Interactions (#{experimentController.interactionDataModel.rowCount})">
                     <!--<ia:interactionsTable value="#{experimentController.interactionDataModel}"-->
                                           <!--unsavedChangeManager="#{experimentController.unsavedChangeManager}"/>-->
                     <div class="intact-buttonBar">
-                        <p:commandButton value="New interaction" actionListener="#{interactionController.newInteraction(experimentController.experiment)}"
+                        <p:commandButton value="New interaction" actionListener="#{interactionController.newInteraction(experimentController.experiment.publication, experimentController.experiment)}"
                                              action="/curate/interaction" ajax="false"/>
                         </div>
 

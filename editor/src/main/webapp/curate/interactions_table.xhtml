@@ -40,7 +40,13 @@
                 <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(interaction.ac)}">
                     <h:outputText value="#{interaction.shortLabel}" style="color:red; text-decoration:line-through"/>
                 </h:panelGroup>
-            </p:column>                                                     
+            </p:column>
+            <p:column rendered="#{showExperiments}">
+                <f:facet name="header">
+                    <h:outputText value="Experiment"/>
+                </f:facet>
+                <h:outputText value="#{not empty interaction.experiments? interaction.experiments[0].shortLabel : ''}"/>
+            </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Type"/>
