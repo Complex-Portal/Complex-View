@@ -577,10 +577,10 @@
         </repository>
 
         <!-- Mojarra... -->
-        <repository>
-            <id>java.net 2</id>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
+        <!--<repository>-->
+            <!--<id>java.net 2</id>-->
+            <!--<url>http://download.java.net/maven/2</url>-->
+        <!--</repository>-->
 
     </repositories>
 

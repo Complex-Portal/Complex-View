@@ -77,12 +77,12 @@
                                     <h:outputText value="#{editorConfig.instanceName}" title="Database: #{editorConfig.databaseUrl}"/>
                                 </td>
                                 <td class="verticalTop" style="padding-left: 20px;">
-                                    <h:outputLink value="/editor/j_spring_security_logout" title="Logout">
+                                    <h:outputLink value="#{facesContext.externalContext.request.contextPath}/j_spring_security_logout" title="Logout">
                                         <h:graphicImage border="0" url="/resources/images/logout.jpg" alt="Logout"/>
                                     </h:outputLink>
                                 </td>
                                 <td class="verticalTop" style="padding-left: 5px;">
-                                    <h:outputLink value="/editor/j_spring_security_logout" title="Logout">
+                                    <h:outputLink value="#{facesContext.externalContext.request.contextPath}/j_spring_security_logout" title="Logout">
                                         <h:outputText value="logout"/>
                                     </h:outputLink>
                                 </td>
