@@ -19,8 +19,8 @@
                 </h:panelGroup>
 
                 <h:outputLabel for="pmid" value="PMID:"/>
-                <h:inputText id="pmid" value="#{publicationController.identifier}" required="true"
-                             requiredMessage="A PMID is required">
+
+                <h:inputText id="pmid" value="#{publicationController.identifier}">
                     <p:tooltip value="Type a PMID and click on auto-complete" showDelay="2000"
                                showEvent="focus" hideEvent="blur" position="topRight"/>
                 </h:inputText>
@@ -30,7 +30,7 @@
                 <br/>
 
                 <div style="width:100%; text-align:right">
-                    <h:commandLink value="Create empty" actionListener="#{publicationController.newEmpty}"
+                    <h:commandLink value="Create empty (unassigned)" actionListener="#{publicationController.newEmpty}"
                                    action="/curate/publication">
                      </h:commandLink>
                 </div>

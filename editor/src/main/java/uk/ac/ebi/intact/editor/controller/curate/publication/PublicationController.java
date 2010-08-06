@@ -21,9 +21,12 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
+import uk.ac.ebi.intact.core.config.SequenceCreationException;
+import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.users.utils.SchemaUtils;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
@@ -32,6 +35,7 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
+import uk.ac.ebi.intact.model.util.PublicationUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -221,14 +225,22 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional
     public void newEmpty( ActionEvent evt ) {
-        // check if already exists
+        SequenceManager sequenceManager = (SequenceManager) getSpringContext().getBean("sequenceManager");
+        try {
+            sequenceManager.createSequenceIfNotExists("unassigned_seq");
+        } catch (SequenceCreationException e) {
+            handleException(e);
+        }
+
+        identifier = PublicationUtils.nextUnassignedId(getIntactContext());
+
+        // check if already exists, so we skip this unassigned
         Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
 
         if ( existingPublication != null ) {
-            publication = existingPublication;
-            addInfoMessage( "Publication already exists", "Loaded from the database" );
-            return;
+            newEmpty(evt);
         }
 
         publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
@@ -289,6 +301,10 @@ public class PublicationController extends AnnotatedObjectController {
             }
             setUnsavedChanges( true );
         }
+    }
+
+    public boolean isUnassigned() {
+        return publication.getShortLabel() != null && publication.getShortLabel().startsWith("unassigned");
     }
 
     private String createExperimentShortLabel() {

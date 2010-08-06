@@ -26,10 +26,7 @@ import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ComponentSystemEvent;
 
@@ -95,16 +92,34 @@ public class ExperimentController extends AnnotatedObjectController {
         return saved;
     }
 
-    public void newExperiment(Publication publication) {
+    public String newExperiment(Publication publication) {
         this.experiment = new Experiment(getIntactContext().getInstitution(), createExperimentShortLabel(), null);
         publication.addExperiment(experiment);
         publicationController.setPublication(publication);
 
+        if (publication.getPublicationId() != null) {
+            CvDatabase pubmed = getDaoFactory().getCvObjectDao(CvDatabase.class).getByIdentifier(CvDatabase.PUBMED_MI_REF);
+            CvXrefQualifier primaryRef = getDaoFactory().getCvObjectDao(CvXrefQualifier.class).getByIdentifier(CvXrefQualifier.PRIMARY_REFERENCE_MI_REF);
+
+            experiment.addXref(new ExperimentXref(pubmed, publication.getShortLabel(), primaryRef));
+        }
+
         getUnsavedChangeManager().markAsUnsaved(experiment);
+
+        return "/curate/experiment";
     }
 
     private String createExperimentShortLabel() {
-        return publicationController.getFirstAuthor()+"-"+publicationController.getYear();
+        String shortLabel;
+
+        if (publicationController.getFirstAuthor() == null) {
+            shortLabel = "anonymous-"+publicationController.getYear();
+            addWarningMessage("The current publication does not have the authors annotation.","Created anonymous short label.");
+        } else {
+            shortLabel = publicationController.getFirstAuthor()+"-"+publicationController.getYear();
+        }
+
+        return shortLabel;
     }
 
     public int countInteractionsByExperimentAc( String ac ) {

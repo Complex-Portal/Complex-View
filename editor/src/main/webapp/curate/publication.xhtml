@@ -75,7 +75,7 @@
                             </ia:panelMessage>
                         </h:panelGroup>
 
-                        <h:panelGroup rendered="#{publicationController.publication.shortLabel != null and empty publicationController.publication.fullName}">
+                        <h:panelGroup rendered="#{publicationController.publication.shortLabel != null and empty publicationController.publication.fullName and not publicationController.unassigned}">
                             <ia:panelMessage level="error">
                                 This publication does not contain some essential data (e.g. title).
                                 <p:commandButton value="Try to fix" actionListener="#{publicationController.doFormAutocomplete}"
@@ -228,7 +228,7 @@
                     <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
                         <!--<ia:experimentsTable value="#{publicationController.publication.experiments}"/>-->
                         <div class="intact-buttonBar">
-                             <p:commandButton value="New experiment" action="#{interactionController.newInteraction(publication, null)}" ajax="false"/>
+                             <p:commandButton value="New experiment" action="#{experimentController.newExperiment(publicationController.publication)}" ajax="false"/>
                         </div>
 
                         <ui:include src="experiments_table.xhtml">
