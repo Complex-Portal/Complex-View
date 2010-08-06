@@ -67,7 +67,7 @@
 
             <p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER')}">
                 <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}" 
-                        update="editorForm"/>
+                        update="centralUnit,topSection"/>
             </p:submenu>
 
             <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development'}">
@@ -127,7 +127,7 @@
                 &#160;-&#160;
                 <p:commandLink id="unsavedRevertLink" value="Revert" style="opacity: 1.0; font-weight: bold"
                                actionListener="#{annotatedObjectController.doRevertChanges}"
-                               update="editorForm,growl,messagesComponent"
+                               update="centralUnit,topSection,growl,messagesComponent"
                                onclick="revertDialog.show()" oncomplete="revertDialog.hide()"/>
             </div>
 
@@ -136,7 +136,7 @@
         </div>
 
         <p:remoteCommand name="save" actionListener="#{annotatedObjectController.doSave}"
-                        update="editorForm,growl,messagesComponent" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton'); input.disabled = true; input.value = 'Saving...'"
+                        update="centralUnit,topSection,growl,messagesComponent" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton'); input.disabled = true; input.value = 'Saving...'"
                         onerror="alert('Error: '+error+' '+status)"
                         oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton'); input.disabled = false; input.value = 'Save'"/>
         
