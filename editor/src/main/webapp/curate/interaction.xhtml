@@ -18,11 +18,11 @@
     <ui:define name="breadcrumbs">
         <p:breadCrumb>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
-                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true" immediate="true"/>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
-                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true"/>
+                        action="/curate/publication?includeViewParams=true&amp;faces-redirect=true" immediate="true"/>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{experiment.shortLabel}"
-                        action="/curate/experiment?includeViewParams=true&amp;faces-redirect=true"/>
+                        action="/curate/experiment?includeViewParams=true&amp;faces-redirect=true" immediate="true"/>
             <p:menuitem value="#{interaction.shortLabel}"/>
         </p:breadCrumb>
     </ui:define>
