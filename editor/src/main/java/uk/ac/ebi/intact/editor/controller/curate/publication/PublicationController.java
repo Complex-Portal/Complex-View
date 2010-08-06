@@ -25,6 +25,7 @@ import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.users.utils.SchemaUtils;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
@@ -474,6 +475,12 @@ public class PublicationController extends AnnotatedObjectController {
 
     public LazyDataModel<Interaction> getInteractionDataModel() {
         return interactionDataModel;
+    }
+
+    public static void main(String[] args) {
+        for (String str : SchemaUtils.generateCreateSchemaDDLForOracle()) {
+            System.out.println(str);
+        }
     }
 
 }

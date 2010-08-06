@@ -43,7 +43,8 @@
         <db.users.url>jdbc:h2:editorusers;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.users.url>
         <db.users.user>sa</db.users.user>
         <db.users.password></db.users.password>
-        <db.users.driver>org.hibernate.dialect.H2Dialect</db.users.driver>
+        <db.users.dialect>org.hibernate.dialect.H2Dialect</db.users.dialect>
+        <db.users.driver>org.h2.Driver</db.users.driver>
 
         <!-- other property defaults -->
         <webapp.logo.url>http://www.ebi.ac.uk/~intact/images/intact_logo.png</webapp.logo.url>
