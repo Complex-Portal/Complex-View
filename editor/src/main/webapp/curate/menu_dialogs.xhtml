@@ -58,4 +58,32 @@
 
     </p:dialog>
 
+    <!-- CvObject -->
+    <p:dialog header="Open by PMID" width="400" widgetVar="newCvObjectDialog" visible="false" draggable="false"
+              modal="true" position="center">
+         <h:panelGrid columns="1" style="margin-bottom:10px">
+            <h:form>
+                <h:outputLabel for="cvType" value="Type: "/>
+                <h:selectOneMenu id="cvType" value="#{cvObjectController.newCvObjectType}">
+                    <f:selectItem itemLabel="-- Select --" noSelectionOption="true"/>
+                    <f:selectItem itemLabel="Alias type" itemValue="uk.ac.ebi.intact.model.CvAliasType"/>
+                    <f:selectItem itemLabel="Biological role" itemValue="uk.ac.ebi.intact.model.CvBiologicalRole"/>
+                    <f:selectItem itemLabel="Cell type" itemValue="uk.ac.ebi.intact.model.CvCellType"/>
+                    <f:selectItem itemLabel="Confidence type" itemValue="uk.ac.ebi.intact.model.CvConfidenceType"/>
+                    <f:selectItem itemLabel="Database" itemValue="uk.ac.ebi.intact.model.CvDatabase"/>
+                    <f:selectItem itemLabel="Experimental role" itemValue="uk.ac.ebi.intact.model.CvExperimentalRole"/>
+                    <f:selectItem itemLabel="Experimental preparation" itemValue="uk.ac.ebi.intact.model.CvExperimentalPreparation"/>
+                    <f:selectItem itemLabel="Fuzzy type" itemValue="uk.ac.ebi.intact.model.CvFuzzyType"/>
+                    <f:selectItem itemLabel="Parameter type" itemValue="uk.ac.ebi.intact.model.CvParameterType"/>
+                    <f:selectItem itemLabel="Parameter unit" itemValue="uk.ac.ebi.intact.model.CvParameterUnit"/>
+                    <f:selectItem itemLabel="Tissue" itemValue="uk.ac.ebi.intact.model.CvTissue"/>
+                    <f:selectItem itemLabel="Topic" itemValue="uk.ac.ebi.intact.model.CvTopic"/>
+                    <f:selectItem itemLabel="Xref qualifier" itemValue="uk.ac.ebi.intact.model.CvXrefQualifier"/>
+                </h:selectOneMenu>
+
+                <p:commandButton value="Create" action="#{cvObjectController.newCvObject}" ajax="false"/>
+            </h:form>
+        </h:panelGrid>
+    </p:dialog>
+
 </ui:composition>

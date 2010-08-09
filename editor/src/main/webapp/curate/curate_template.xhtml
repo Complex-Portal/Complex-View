@@ -49,11 +49,11 @@
                     <p:menuitem value="New" icon="/resources/images/new.png"/>
                 </f:facet>
                 <p:menuitem value="Publication" onclick="newPublicationDlg.show();" helpText="ALT+N"/>
-                <!--<p:menuitem value="CV Object" action="#{cvObjectController.newCvObject}"/>-->
+                <p:menuitem value="CV Object..." onclick="newCvObjectDialog.show(); "/>
                 <p:menuitem value="Organism" action="#{bioSourceController.newOrganism}" ajax="false"/>
             </p:submenu>
                 <!--<p:menuitem value="New" onclick="newPublicationDlg.show();"/>-->
-                <p:menuitem value="Open by PMID" onclick="openByPmidDlg.show(); " helpText="ALT+O" icon="/resources/images/open.png"/>
+                <p:menuitem value="Open by PMID..." onclick="openByPmidDlg.show(); " helpText="ALT+O" icon="/resources/images/open.png"/>
                 <p:menuitem value="Save" oncomplete="save()" helpText="ALT+S" icon="/resources/images/save.gif"
                         rendered="#{annotatedObjectController.annotatedObject != null}"/>
                 <p:menuitem value="Save &amp; Close" onclick="save()" ajax="false"

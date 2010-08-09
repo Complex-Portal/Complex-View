@@ -35,6 +35,8 @@ public class CvObjectController extends AnnotatedObjectController {
     private String cvClassName;
     private List<SelectItem> cvObjectSelectItems;
 
+    private String newCvObjectType;
+
     private boolean isTopic;
 
     @Override
@@ -54,6 +56,10 @@ public class CvObjectController extends AnnotatedObjectController {
             cvObject = newInstance(cvClassName);
         }
 
+        prepareView();
+    }
+
+    private void prepareView() {
         if (cvObject != null) {
             cvObjectSelectItems = new ArrayList<SelectItem>(256);
 
@@ -64,6 +70,16 @@ public class CvObjectController extends AnnotatedObjectController {
                 isTopic = true;
             }
         }
+    }
+
+    public String newCvObject() {
+        if (newCvObjectType != null) {
+            this.cvObject = newInstance(newCvObjectType);
+        }
+
+        prepareView();
+        
+        return "/curate/cvobject";
     }
 
     private CvDagObject newInstance(String cvClassName) {
@@ -161,4 +177,11 @@ public class CvObjectController extends AnnotatedObjectController {
         this.cvObjectSelectItems = cvObjectSelectItems;
     }
 
+    public String getNewCvObjectType() {
+        return newCvObjectType;
+    }
+
+    public void setNewCvObjectType(String newCvObjectType) {
+        this.newCvObjectType = newCvObjectType;
+    }
 }
