@@ -19,6 +19,25 @@
                 <p:commandButton value="Submit" process="globalTxt" update="messagesComponent"/>
             </h:panelGrid>
          </p:panel>
+
+        <br/>
+
+        <p:panel header="Look &amp; Feel">
+            <h:panelGrid columns="3">
+                <h:outputLabel for="themeSel" value="Default theme: "/>
+                <h:selectOneMenu id="themeSel" value="#{appController.theme}">
+                    <f:selectItem itemLabel="Black-Tie" itemValue="black-tie"/>
+                    <f:selectItem itemLabel="Casablanca" itemValue="casablanca"/>
+                    <f:selectItem itemLabel="EBI" itemValue="ebi"/>
+                    <f:selectItem itemLabel="Eggplant" itemValue="eggplant"/>
+                    <f:selectItem itemLabel="Sunny" itemValue="sunny"/>
+                    <f:selectItem itemLabel="UI-Lightness" itemValue="ui-lightness"/>
+                </h:selectOneMenu>
+                <p:commandButton value="Submit" ajax="false"/>
+            </h:panelGrid>
+         </p:panel>
+
+        <br/>
         
         <p:panel header="Database">
             <h:panelGrid columns="2">
