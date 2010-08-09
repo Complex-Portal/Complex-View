@@ -26,14 +26,14 @@
                                showEvent="focus" hideEvent="blur" position="topRight"/>
                 </h:inputText>
 
-                <h:commandButton value="Auto-complete" actionListener="#{publicationController.newAutocomplete}"
+                <p:commandButton value="Auto-complete" actionListener="#{publicationController.newAutocomplete}" ajax="false"
                                  action="/curate/publication" disabled="#{not publicationController.citexploreOnline}"/>
                 <br/>
 
                 <div style="width:100%; text-align:right">
                     <ot:separateConversationContext>
-                        <h:commandLink value="Create empty (unassigned)"
-                                       actionListener="#{publicationController.newEmpty}"
+                        <p:commandLink value="Create empty (unassigned)" ajax="false"
+                                       actionListener="#{publicationController.newEmptyUnassigned}"
                                        action="/curate/publication"/>
                     </ot:separateConversationContext>
                 </div>
@@ -51,7 +51,8 @@
                 <h:outputLabel for="pmid" value="PMID:"/>
                 <h:inputText id="pmid" value="#{publicationController.identifier}"/>
 
-                <h:commandButton value="Open" actionListener="#{publicationController.openByPmid}"
+                <p:commandButton value="Open" actionListener="#{publicationController.openByPmid}"
+                                 ajax="false"
                                  action="/curate/publication"/>
             </h:form>
         </h:panelGrid>

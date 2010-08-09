@@ -8,6 +8,18 @@
                 template="/admin/admin_template.xhtml">
 
     <ui:define name="adminContent">
+        <p:panel header="Notifications">
+            <h:panelGrid columns="3">
+                <h:outputLabel for="urgentTxt" value="Global urgent notification: "/>
+                <h:inputText id="urgentTxt" value="#{notificationController.globalUrgentNotification}" size="80"/>
+                <p:commandButton value="Submit" process="urgentTxt" update="messagesComponent"/>
+
+                <h:outputLabel for="globalTxt" value="Global notification: "/>
+                <h:inputText id="globalTxt" value="#{notificationController.globalNotification}" size="80"/>
+                <p:commandButton value="Submit" process="globalTxt" update="messagesComponent"/>
+            </h:panelGrid>
+         </p:panel>
+        
         <p:panel header="Database">
             <h:panelGrid columns="2">
 

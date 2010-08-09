@@ -131,7 +131,7 @@
                 <!--</p:layoutUnit>-->
 
                 <!--<p:layoutUnit position="center" scrollable="true">-->
-            <div style="width:100%; padding-top:50px; margin-left:5px; margin-right:5px">
+            <div style="width:100%; padding-top:105px; margin-left:5px; margin-right:5px">
 
                     <div id="feedback" class="intact-feedback" onmouseover="this.style.top = Math.floor(Math.random()*350)+'px'">
                         <a href="http://code.google.com/p/intact/issues/entry?template=Editor%20mockup%20feedback"
@@ -140,8 +140,25 @@
                         </a>
                     </div>
 
-                    <h:panelGroup id="centralUnit">
-                        <div id="contentSection" style="width:100%">
+                <h:panelGroup id="centralUnit">
+
+                    <h:panelGroup id="messagesComponent">
+                        <h:panelGroup rendered="#{not empty notificationController.globalUrgentNotification}">
+                            <ia:panelMessage level="warn" showIcon="true" >
+                                <h:outputText value="#{notificationController.globalUrgentNotification}"/>
+                            </ia:panelMessage>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{not empty notificationController.globalNotification}">
+                            <ia:panelMessage level="info" showIcon="true">
+                                <h:outputText value="#{notificationController.globalNotification}"/>
+                            </ia:panelMessage>
+                        </h:panelGroup>
+
+                        <p:messages showSummary="true" showDetail="true"/>
+                    </h:panelGroup>
+
+                    <div id="contentSection" style="width:100%">
                             <ui:insert name="content"/>
                         </div>
 

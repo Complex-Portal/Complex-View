@@ -30,8 +30,6 @@
             <f:event type="preRenderView" listener="#{publicationController.loadData}"/>
         </f:metadata>
 
-        <br/><br/>
-
         <h:panelGroup rendered="#{publicationController.publication == null}">
             <ia:panelMessage level="warn">
                 No publication loaded!
