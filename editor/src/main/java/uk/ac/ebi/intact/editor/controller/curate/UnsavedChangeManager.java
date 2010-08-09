@@ -47,6 +47,8 @@ public class UnsavedChangeManager {
     }
 
     public void markAsUnsaved(IntactObject object) {
+        if (object == null) return;
+        
         unsavedChanges = true;
 
         if (object.getAc() != null) {
