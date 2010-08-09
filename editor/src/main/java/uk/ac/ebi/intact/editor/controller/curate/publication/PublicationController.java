@@ -168,19 +168,12 @@ public class PublicationController extends AnnotatedObjectController {
             return;
         }
 
-        newEmpty(null);
+        newEmpty(false);
         autocomplete( publication, identifier );
 
         identifier = null;
 
         getUnsavedChangeManager().markAsUnsaved(publication);
-
-        interactionDataModel = new LazyDataModel<Interaction>() {
-            @Override
-            public List<Interaction> fetchLazyData(int i, int i1) {
-                return Collections.EMPTY_LIST;
-            }
-        };
     }
 
     public void doFormAutocomplete( ActionEvent evt ) {
@@ -235,21 +228,28 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     @Transactional
-    public void newEmpty( ActionEvent evt ) {
-        SequenceManager sequenceManager = (SequenceManager) getSpringContext().getBean("sequenceManager");
-        try {
-            sequenceManager.createSequenceIfNotExists("unassigned_seq");
-        } catch (SequenceCreationException e) {
-            handleException(e);
-        }
+    public void newEmptyUnassigned( ActionEvent evt ) {
+        newEmpty(true);
+    }
 
-        identifier = PublicationUtils.nextUnassignedId(getIntactContext());
+    @Transactional
+    public void newEmpty( boolean unassigned ) {
+        if (unassigned) {
+            SequenceManager sequenceManager = (SequenceManager) getSpringContext().getBean("sequenceManager");
+            try {
+                sequenceManager.createSequenceIfNotExists("unassigned_seq");
+            } catch (SequenceCreationException e) {
+                handleException(e);
+            }
 
-        // check if already exists, so we skip this unassigned
-        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
+            identifier = PublicationUtils.nextUnassignedId(getIntactContext());
 
-        if ( existingPublication != null ) {
-            newEmpty(evt);
+            // check if already exists, so we skip this unassigned
+            Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
+
+            if ( existingPublication != null ) {
+                newEmpty(true);
+            }
         }
 
         publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
@@ -264,6 +264,7 @@ public class PublicationController extends AnnotatedObjectController {
             }
         };
     }
+
 
     public void openByPmid( ActionEvent evt ) {
         if ( identifier == null || identifier.trim().length() == 0 ) {
