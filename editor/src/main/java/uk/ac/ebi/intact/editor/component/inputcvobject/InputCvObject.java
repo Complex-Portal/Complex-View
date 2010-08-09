@@ -31,7 +31,9 @@ import javax.faces.component.FacesComponent;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
+import javax.faces.context.FacesContext;
 import javax.persistence.Query;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -54,33 +56,27 @@ public class InputCvObject extends UIInput implements NamingContainer, Serializa
       return UINamingContainer.COMPONENT_FAMILY;
    }
 
-    public void load( String cvClass, String id ) {
-        log.trace( "Loading CvObject with class '" + cvClass+"' and id '"+id+"'" );
+    @Override
+    public void encodeBegin(FacesContext context) throws IOException {
+        load((String) getAttributes().get("cvIdentifier"));
+        super.encodeBegin(context);
+    }
 
-        if (cvClass == null) {
-            throw new NullPointerException("cvClass is null");
-        }
+    public void load( String id ) {
+        log.trace( "Loading CvObject with id '"+id+"'" );
 
         if (id == null) {
             throw new NullPointerException("cvClass is null");
         }
 
-        Class clazz;
-
-        try {
-            clazz = Class.forName( cvClass );
-       } catch ( ClassNotFoundException e ) {
-            throw new IllegalArgumentException( "Could not load data for class " + cvClass, e );
-        }
-
         final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         DaoFactory daoFactory = IntactContext.getCurrentInstance().getDaoFactory();
-        CvObjectDao<CvDagObject> cvDAO = daoFactory.getCvObjectDao(clazz);
-        CvDagObject rootCv = cvDAO.getByPsiMiRef(id);
+        CvObjectDao cvDAO = daoFactory.getCvObjectDao();
+        CvDagObject rootCv = (CvDagObject) cvDAO.getByPsiMiRef(id);
 
         if (rootCv == null) {
-            throw new IllegalArgumentException("Root does not exist: " + cvClass + " ID: " + id);
+            throw new IllegalArgumentException("Root does not exist: " + id);
         }
 
         root = buildTreeNode(rootCv, null);

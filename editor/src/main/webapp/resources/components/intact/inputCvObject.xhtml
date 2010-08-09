@@ -41,9 +41,7 @@
              <h:panelGroup id="cvButtons" style="visibility: hidden">
                 <p:commandButton id="selectBtn" value="Browse"  immediate="true"
                                  onclick="#{dialogWidgetId}_load.show()"
-                        oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();" process="#{cc.clientId}"
-                        actionListener="#{cc.load(cc.attrs.value.class.name, cc.attrs.cvIdentifier)}"
-                        update="cvObjectBrowserDialog,growl"/>
+                        oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"/>
 
                  <p:commandButton id="editBtn" value="Edit" immediate="true"
                             action="#{curatorContextController.edit(cc.attrs.value)}" ajax="false"/>
@@ -62,7 +60,7 @@
         </p:dialog>
         
         <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true" position="center"
-                  widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}">
+                  widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" width="500">
             <p:outputPanel id="cvObjectBrowserDialog">
             <div style="height: 500px; overflow-x: auto;">
                 <!--<h:panelGroup>-->
@@ -72,8 +70,8 @@
                 <!--</h:panelGroup>-->
 
                 <div style="overflow-x: auto;">
+  
                     <p:treeTable id="tree" var="cvObject"
-                            widgetVar="#{cc.friendlyWidgetId}__tree"
                             value="#{cc.root}">
                         <p:column>
                             <f:facet name="header"><h:outputText value="Label"/></f:facet>
