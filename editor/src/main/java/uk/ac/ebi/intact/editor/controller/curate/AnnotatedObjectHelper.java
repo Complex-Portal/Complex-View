@@ -264,6 +264,12 @@ public class AnnotatedObjectHelper {
 
         final ArrayList<Annotation> annotations = new ArrayList<Annotation>( getAnnotatedObject().getAnnotations() );
         Collections.sort( annotations, new IntactObjectComparator() );
+
+        System.out.println("\nHELPER ANNOTS: ");
+        for (Annotation annot: annotations) {
+            System.out.println("ANNOT: "+annot);
+        }
+
         return annotations;
     }
 

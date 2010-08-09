@@ -21,12 +21,20 @@
 
     <p:tab title="Annotations (#{annotatedObjectController.annotatedObject.annotations.size()})">
          <h:panelGrid id="annotationsPanel">
-        <ia:annotationsTable annotatedObjectController="#{annotatedObjectController}"
-                             topicSelectItems="#{annotatedObjectSelectItems}"
-                             update="annotationsPanel changesPanel"
-                             valueChangeRender=":editorForm:basic :editorForm:changesPanel"
-                             valueChangeAwareObject="#{annotatedObjectController}"/>
+        <!--<ia:annotationsTable annotatedObjectController="#{annotatedObjectController}"-->
+                             <!--topicSelectItems="#{annotatedObjectSelectItems}"-->
+                             <!--update="annotationsPanel changesPanel"-->
+                             <!--valueChangeRender=":editorForm:basic :editorForm:changesPanel"-->
+                             <!--valueChangeAwareObject="#{annotatedObjectController}"/>-->
+             <ui:include src="annotations_table.xhtml">
+            <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
+            <ui:param name="topicSelectItems" value="#{annotatedObjectSelectItems}"/>
+            <ui:param name="update" value="annotationsPanel changesPanel"/>
+            <ui:param name="valueChangeRender" value=":editorForm:basic :editorForm:changesPanel"/>
+            <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
+        </ui:include>
          </h:panelGrid>
+
     </p:tab>
 
     <p:tab id="aliasesPanel" title="Aliases (#{annotatedObjectController.annotatedObject.aliases.size()})">

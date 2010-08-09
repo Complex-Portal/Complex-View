@@ -2,11 +2,12 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:p="http://primefaces.prime.com.tr/ui">
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ot="http://myfaces.apache.org/orchestra">
 
     <!-- New publication -->
     <p:dialog header="New publication" width="425" widgetVar="newPublicationDlg" visible="false" draggable="false"
-              modal="true" position="center" >
+              modal="true" position="center">
 
         <h:panelGrid columns="1" style="margin-bottom:10px">
             <h:form>
@@ -30,9 +31,11 @@
                 <br/>
 
                 <div style="width:100%; text-align:right">
-                    <h:commandLink value="Create empty (unassigned)" actionListener="#{publicationController.newEmpty}"
-                                   action="/curate/publication">
-                     </h:commandLink>
+                    <ot:separateConversationContext>
+                        <h:commandLink value="Create empty (unassigned)"
+                                       actionListener="#{publicationController.newEmpty}"
+                                       action="/curate/publication"/>
+                    </ot:separateConversationContext>
                 </div>
             </h:form>
         </h:panelGrid>

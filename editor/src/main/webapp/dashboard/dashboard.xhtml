@@ -23,6 +23,8 @@
         <p>&#160;</p>
         <br/>
 
+        <p:messages id="messagesComponent" showSummary="true" showDetail="true"/>
+
         <p>Hello #{userSessionController.currentUser.firstName}</p>
 
         <h:panelGroup rendered="#{dashboardController.allPublications.rowCount == 0}"> 

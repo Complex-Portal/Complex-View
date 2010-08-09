@@ -319,6 +319,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return getAnnotatedObjectWrapper().getUnsavedChangeManager();
     }
 
+    public CuratorContextController getCuratorContextController() {
+        return curatorContextController;
+    }
+
     private class IntactObjectComparator implements Comparator<IntactObject> {
         @Override
         public int compare( IntactObject o1, IntactObject o2 ) {

@@ -28,7 +28,6 @@ import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.users.utils.SchemaUtils;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
@@ -43,10 +42,7 @@ import javax.faces.model.SelectItem;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -106,15 +102,21 @@ public class PublicationController extends AnnotatedObjectController {
 
             }
 
-            interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                                 "select i from InteractionImpl i join fetch i.experiments as exp " +
-                                                                                         "where exp.publication.ac = '" + ac + "' order by exp.shortLabel asc",
-                                                                                 "select count(i) from InteractionImpl i join i.experiments as exp " +
-                                                                                         "where exp.publication.ac = '" + ac + "'" );
+            refreshDataModels();
+
+            getCuratorContextController().removeFromUnsavedByAc(ac);
 
         } else if ( publication != null ) {
             ac = publication.getAc();
         }
+    }
+
+    private void refreshDataModels() {
+        interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+                                                                             "select i from InteractionImpl i join fetch i.experiments as exp " +
+                                                                                     "where exp.publication.ac = '" + ac + "' order by exp.shortLabel asc",
+                                                                             "select count(i) from InteractionImpl i join i.experiments as exp " +
+                                                                                     "where exp.publication.ac = '" + ac + "'" );
     }
 
     private void loadFormFields() {
@@ -166,12 +168,19 @@ public class PublicationController extends AnnotatedObjectController {
             return;
         }
 
-        publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
+        newEmpty(null);
         autocomplete( publication, identifier );
 
         identifier = null;
 
         getUnsavedChangeManager().markAsUnsaved(publication);
+
+        interactionDataModel = new LazyDataModel<Interaction>() {
+            @Override
+            public List<Interaction> fetchLazyData(int i, int i1) {
+                return Collections.EMPTY_LIST;
+            }
+        };
     }
 
     public void doFormAutocomplete( ActionEvent evt ) {
@@ -247,6 +256,13 @@ public class PublicationController extends AnnotatedObjectController {
         ac = null;
 
         getUnsavedChangeManager().markAsUnsaved(publication);
+
+        interactionDataModel = new LazyDataModel<Interaction>() {
+            @Override
+            public List<Interaction> fetchLazyData(int i, int i1) {
+                return Collections.EMPTY_LIST;
+            }
+        };
     }
 
     public void openByPmid( ActionEvent evt ) {
@@ -491,12 +507,6 @@ public class PublicationController extends AnnotatedObjectController {
 
     public LazyDataModel<Interaction> getInteractionDataModel() {
         return interactionDataModel;
-    }
-
-    public static void main(String[] args) {
-        for (String str : SchemaUtils.generateCreateSchemaDDLForOracle()) {
-            System.out.println(str);
-        }
     }
 
 }

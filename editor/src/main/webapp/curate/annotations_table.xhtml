@@ -1,0 +1,52 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
+
+
+        <div class="intact-buttonBar">
+                <p:commandButton value="New Annotation" actionListener="#{annotatedObjectController.newAnnotation}"
+                                 update="#{update}"/>
+        </div>
+
+        <p:dataTable var="annotation" value="#{annotatedObjectController.annotations}">
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Topic"/>
+                </f:facet>
+                <h:selectOneMenu value="#{annotation.cvTopic}" required="true" requiredMessage="Topic is required">
+                    <f:selectItems value="#{topicSelectItems}"/>
+                    <f:ajax event="valueChange" render="#{valueChangeRender}" execute="@this"
+                                        disabled="#{valueChangeAwareObject == null}"
+                                        listener="#{valueChangeAwareObject.changed}"/>
+                </h:selectOneMenu>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Text"/>
+                </f:facet>
+                     <h:inputTextarea value="#{annotation.annotationText}" cols="50"
+                             rows="#{(fn:length(annotation.annotationText) / 50)+1}">
+                         <f:ajax event="valueChange" render="#{valueChangeRender} @this" execute="@this"
+                                        disabled="#{valueChangeAwareObject == null}"
+                                        listener="#{valueChangeAwareObject.changed}"/>
+                    </h:inputTextarea>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                     <h:outputText value="Actions"/>
+                </f:facet>
+                <p:commandLink immediate="true" styleClass="ui-icon ui-icon-closethick" 
+                               actionListener="#{annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"
+                               update="#{update}"/>
+            </p:column>
+        </p:dataTable>
+
+
+
+
+</ui:composition>

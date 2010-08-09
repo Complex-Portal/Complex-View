@@ -145,11 +145,18 @@
                                 </td>
                                 <td colspan="1" style="text-align: right;">
                                     <h:outputLabel value="Year: " for="yearTxt"/>
-                                    <p:spinner id="yearTxt" value="#{publicationController.year}"
-                                               min="1950" max="2020" maxlength="4" stepFactor="1"
-                                               validatorMessage="Invalid year"
-                                               style="width:50px"
-                                               onchange="markAsUnsaved()"/>
+                                    <!--<p:spinner id="yearTxt" value="#{publicationController.year}"-->
+                                               <!--min="1950" max="2020" maxlength="4" stepFactor="1"-->
+                                               <!--validatorMessage="Invalid year"-->
+                                               <!--style="width:50px"-->
+                                               <!--onchange="markAsUnsaved(); refreshTabs()"/>-->
+                                    <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4"
+                                            validatorMessage="Year provided is invalid">
+                                        <f:convertNumber maxFractionDigits="0" pattern="#" />
+                                         <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:annotationsPanel"
+                                                execute="@this" listener="#{publicationController.changed}"/>
+                                    </h:inputText>
+
                                 </td>
                             </tr>
                             <tr>
@@ -221,6 +228,8 @@
 
                 </p:panel>
 
+                <p:remoteCommand name="refreshTabs" update="publicationTabs,messagesComponent"/>
+
                 <br/>
 
                 <p:tabView id="publicationTabs">
@@ -237,7 +246,7 @@
                     </ui:include>
                     </p:tab>
 
-                    <p:tab title="Interactions (#{publicationController.interactionDataModel.rowCount})">
+                    <p:tab title="Interactions (#{publicationController.interactionDataModel != null? publicationController.interactionDataModel.rowCount : 0})">
                         <!--<ia:experimentsTable value="#{publicationController.publication.experiments}"/>-->
                         <div class="intact-buttonBar">
                              <p:commandButton value="New interaction" action="#{interactionController.newInteraction(publicationController.publication, null)}" ajax="false"/>
