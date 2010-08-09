@@ -20,8 +20,6 @@
           <f:event type="preRenderView" listener="#{dashboardController.loadData}"/>
         </f:metadata>
 
-        <p:messages id="messagesComponent" showSummary="true" showDetail="true"/>
-
         <p>Hello #{userSessionController.currentUser.firstName}</p>
 
         <h:panelGroup rendered="#{dashboardController.allPublications.rowCount == 0}"> 

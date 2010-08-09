@@ -15,8 +15,6 @@
             <f:viewParam name="query" value="#{searchController.query}"/>
         </f:metadata>
 
-        <p:messages id="messagesComponent" showSummary="true" showDetail="true"/>
-
         <p:outputPanel rendered="#{searchController.hasNoResults() and not searchController.isEmptyQuery()}">
             Your query (<b>#{searchController.query}</b>) didn't return any results.
             <br/>
