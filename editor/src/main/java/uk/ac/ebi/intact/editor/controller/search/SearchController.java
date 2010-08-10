@@ -38,6 +38,7 @@ public class SearchController extends JpaAwareController {
     private static final Log log = LogFactory.getLog( SearchController.class );
 
     private String query;
+    private String quickQuery;
 
     @Autowired
     private DaoFactory daoFactory;
@@ -103,6 +104,11 @@ public class SearchController extends JpaAwareController {
 
     ///////////////
     // Actions
+    @Transactional( readOnly = true )
+    public String doQuickSearch() {
+        this.query = quickQuery;
+        return doSearch();
+    }
 
     @Transactional( readOnly = true )
     public String doSearch() {
@@ -480,5 +486,13 @@ public class SearchController extends JpaAwareController {
 
     public int countInteractionsForPublication( Publication publication ) {
         return getDaoFactory().getPublicationDao().countInteractionsForPublicationAc( publication.getAc() );
+    }
+
+    public String getQuickQuery() {
+        return quickQuery;
+    }
+
+    public void setQuickQuery(String quickQuery) {
+        this.quickQuery = quickQuery;
     }
 }

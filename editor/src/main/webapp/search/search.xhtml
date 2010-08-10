@@ -22,6 +22,7 @@
                 <h:outputLabel for="mainQueryTxt" value="Search: "/>
                 <h:inputText id="mainQueryTxt" value="#{searchController.query}"/>
                 <p:commandButton value="Search" action="#{searchController.doSearch}" ajax="false"
+                                 process="centralUnit"
                                  onclick="searchDialog.show()"/>
             </h:panelGrid>
         </p:panel>

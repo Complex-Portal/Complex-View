@@ -101,8 +101,8 @@
                                     <h:panelGrid columns="4">
                                         <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
                                         <!--<p:watermark for="queryTxt" value="search query"/>-->
-                                        <h:inputText id="queryTxt" value="#{searchController.query}"/>
-                                        <p:commandButton value="Search" action="#{searchController.doSearch}" ajax="false"
+                                        <h:inputText id="queryTxt" value="#{searchController.quickQuery}"/>
+                                        <p:commandButton value="Search" action="#{searchController.doQuickSearch}" ajax="false"
                                                 onclick="searchDialog.show()"/>
                                     </h:panelGrid>
 
