@@ -26,12 +26,14 @@ import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.core.persistence.dao.ProteinDao;
+import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
+import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,7 +68,13 @@ public class ParticipantImportController extends BaseController {
     private CvBiologicalRole cvBiologicalRole;
     private BioSource expressedIn;
     private CvExperimentalPreparation cvExperimentalPreparation;
-    private float stoichiometry = 1;
+    private float stoichiometry;
+
+    @PostConstruct
+    public void init() {
+        EditorConfig editorConfig = getEditorConfig();
+        stoichiometry = editorConfig.getDefaultStoichiometry();
+    }
 
     public void importParticipants( ActionEvent evt ) {
         importCandidates = new ArrayList<ImportCandidate>();

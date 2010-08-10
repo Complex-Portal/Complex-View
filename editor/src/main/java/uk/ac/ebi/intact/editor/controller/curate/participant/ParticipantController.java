@@ -116,6 +116,7 @@ public class ParticipantController extends ParameterizableObjectController {
         participant.setInteractor(null);
         participant.getExperimentalRoles().clear();
         participant.setCvBiologicalRole(null);
+        participant.setStoichiometry(getEditorConfig().getDefaultStoichiometry());
 
         interaction.addComponent(participant);
 

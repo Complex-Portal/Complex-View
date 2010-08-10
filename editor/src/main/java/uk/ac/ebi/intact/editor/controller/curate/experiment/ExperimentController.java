@@ -119,7 +119,7 @@ public class ExperimentController extends AnnotatedObjectController {
             shortLabel = publicationController.getFirstAuthor()+"-"+publicationController.getYear();
         }
 
-        return shortLabel;
+        return shortLabel.toLowerCase();
     }
 
     public int countInteractionsByExperimentAc( String ac ) {

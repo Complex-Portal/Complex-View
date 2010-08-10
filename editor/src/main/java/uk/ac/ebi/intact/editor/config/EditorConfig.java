@@ -27,6 +27,8 @@ public class EditorConfig {
     private String databaseUrl;
     private String logoUrl;
 
+    private float defaultStoichiometry = 0;
+
     public EditorConfig() {
     }
 
@@ -52,5 +54,13 @@ public class EditorConfig {
 
     public void setLogoUrl( String logoUrl ) {
         this.logoUrl = logoUrl;
+    }
+
+    public float getDefaultStoichiometry() {
+        return defaultStoichiometry;
+    }
+
+    public void setDefaultStoichiometry(float defaultStoichiometry) {
+        this.defaultStoichiometry = defaultStoichiometry;
     }
 }

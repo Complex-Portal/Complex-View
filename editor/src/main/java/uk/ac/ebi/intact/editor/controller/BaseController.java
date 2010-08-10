@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import uk.ac.ebi.intact.editor.config.EditorConfig;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -62,6 +63,10 @@ public abstract class BaseController implements Serializable {
 
     protected ApplicationContext getSpringContext() {
         return applicationContext;
+    }
+
+    protected EditorConfig getEditorConfig() {
+        return (EditorConfig) getSpringContext().getBean("editorConfig");
     }
 
     protected void handleException(Throwable e) {

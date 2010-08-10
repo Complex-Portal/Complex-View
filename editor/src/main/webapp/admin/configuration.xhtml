@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/admin/admin_template.xhtml">
+
+    <ui:define name="adminContent">
+
+        <p:panel header="Look &amp; Feel">
+            <h:panelGrid columns="3">
+                <h:outputLabel for="themeSel" value="Default theme: "/>
+                <h:selectOneMenu id="themeSel" value="#{appController.theme}">
+                    <f:selectItem itemLabel="Black-Tie" itemValue="black-tie"/>
+                    <f:selectItem itemLabel="Casablanca" itemValue="casablanca"/>
+                    <f:selectItem itemLabel="EBI" itemValue="ebi"/>
+                    <f:selectItem itemLabel="Eggplant" itemValue="eggplant"/>
+                    <f:selectItem itemLabel="Sunny" itemValue="sunny"/>
+                    <f:selectItem itemLabel="UI-Lightness" itemValue="ui-lightness"/>
+                </h:selectOneMenu>
+                <p:commandButton value="Change" ajax="false"/>
+            </h:panelGrid>
+         </p:panel>
+
+        <br/>
+
+        <p:panel id="defaultsPanel" header="Defaults">
+            <h:panelGrid columns="2">
+                <h:outputLabel for="stoichiometryTxt" value="Stoichiometry: "/>
+                <h:inputText id="stoichiometryTxt" value="#{editorConfig.defaultStoichiometry}" size="3">
+                    <f:convertNumber/>
+                </h:inputText>
+
+                <p:commandButton value="Update" process="defaultsPanel"/>
+            </h:panelGrid>
+         </p:panel>
+
+        <br/>
+
+
+
+    </ui:define>
+
+</ui:composition>
