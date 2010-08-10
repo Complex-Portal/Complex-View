@@ -242,6 +242,10 @@ public class InteractionController extends ParameterizableObjectController {
 
     public String newInteraction(Publication publication, Experiment exp) {
         Interaction interaction = new InteractionImpl();
+        interaction.setOwner(getIntactContext().getInstitution());
+
+        CvInteractorType type = getDaoFactory().getCvObjectDao(CvInteractorType.class).getByPsiMiRef(CvInteractorType.INTERACTION_MI_REF);
+        interaction.setCvInteractorType(type);
 
         setInteraction(interaction);
 
@@ -251,6 +255,7 @@ public class InteractionController extends ParameterizableObjectController {
 
         if (exp != null) {
             experimentController.setExperiment(exp);
+            interaction.addExperiment(exp);
         }
 
         refreshExperimentLists();
