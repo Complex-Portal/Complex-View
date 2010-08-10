@@ -41,7 +41,8 @@
              <h:panelGroup id="cvButtons" style="visibility: hidden">
                 <p:commandButton id="selectBtn" value="Browse"  immediate="true"
                                  onclick="#{dialogWidgetId}_load.show()"
-                        oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"/>
+                        oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"
+                       />
 
                  <p:commandButton id="editBtn" value="Edit" immediate="true"
                             action="#{curatorContextController.edit(cc.attrs.value)}" ajax="false"/>
