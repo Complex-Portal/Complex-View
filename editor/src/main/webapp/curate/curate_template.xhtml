@@ -62,17 +62,23 @@
 
             <p:submenu label="Tools">
                 <p:menuitem value="Clone" action="#{annotatedObjectController.clone}" ajax="false"
+
                         onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
             </p:submenu>
 
             <p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER')}">
-                <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}" 
+                <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}"
+                        rendered="#{annotatedObjectController.annotatedObject != null and annotatedObjectController.annotatedObject.class.simpleName == 'Publication'}"
+                        update="centralUnit,topSection"/>
+                <p:menuitem value="Accept experiment" actionListener="#{experimentController.acceptExperiment}"
+                        rendered="#{annotatedObjectController.annotatedObject != null and annotatedObjectController.annotatedObject.class.simpleName == 'Experiment'}"
                         update="centralUnit,topSection"/>
             </p:submenu>
 
             <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development'}">
                 <p:menuitem value="Changes" action="/curate/debug/changes" ajax="false"/>
                 <p:menuitem value="Refresh" update="contentSection"/>
+                <p:menuitem value="Revert" actionListener="#{annotatedObjectController.doRevertChanges}" update="centralUnit,topSection"/>
             </p:submenu>
         </p:menubar>
     </ui:define>

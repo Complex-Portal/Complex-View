@@ -180,11 +180,21 @@
 
             <!--</p:layout>-->
 
+            <p:hotkey bind="ctrl+e" oncomplete="debugEggDialog.show()"/>
+
+        <p:dialog widgetVar="debugEggDialog"
+                  header="Debug" modal="true" position="center" width="700" height="350" resizable="false">
+
+            <iframe src="#{facesContext.externalContext.request.contextPath}/admin/other/devPopup.html" style="width:600px; height:300px; border-width: 0; overflow: hidden;"></iframe>
+        </p:dialog>
+
         </h:form>
 
         <ui:insert name="dialogs"/>
 
         <ui:include src="main_dialogs.xhtml"/>
+
+
 
     </h:body>
 

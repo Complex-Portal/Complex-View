@@ -23,12 +23,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
+import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.ExperimentUtils;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -124,6 +129,32 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public int countInteractionsByExperimentAc( String ac ) {
         return getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc( ac );
+    }
+
+    public void acceptExperiment(ActionEvent actionEvent) {
+           UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+
+           setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
+    }
+
+    public boolean isAccepted() {
+        return ExperimentUtils.isAccepted(experiment);
+    }
+
+    public String getAcceptedMessage() {
+        return findAnnotationText( CvTopic.ACCEPTED );
+    }
+
+    public void setAcceptedMessage( String message ) {
+        setAnnotation( CvTopic.ACCEPTED, message );
+    }
+
+    public String getOnHold() {
+        return findAnnotationText( CvTopic.ON_HOLD );
+    }
+
+    public void setOnHold( String reason ) {
+        setAnnotation( CvTopic.ON_HOLD, reason );
     }
 
     public String getAc() {
