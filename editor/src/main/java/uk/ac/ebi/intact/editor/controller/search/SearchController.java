@@ -220,13 +220,14 @@ public class SearchController extends JpaAwareController {
     }
 
     public boolean hasNoResults() {
-        return ( publications != null && publications.getRowCount() == 0 )
-               && ( experiments != null && experiments.getRowCount() == 0 )
-               && ( interactions != null && interactions.getRowCount() == 0 )
-               && ( molecules != null && molecules.getRowCount() == 0 )
-               && ( cvobjects != null && cvobjects.getRowCount() == 0 )
-               && ( features != null && features.getRowCount() == 0 )
-               && ( organisms != null && organisms.getRowCount() == 0 );
+        return publications == null || (publications.getRowCount() == 0)
+                && (experiments != null && experiments.getRowCount() == 0)
+                && (interactions != null && interactions.getRowCount() == 0)
+                && (molecules != null && molecules.getRowCount() == 0)
+                && (cvobjects != null && cvobjects.getRowCount() == 0)
+                && (features != null && features.getRowCount() == 0)
+                && (organisms != null && organisms.getRowCount() == 0);
+
     }
 
     public boolean matchesSingleType() {

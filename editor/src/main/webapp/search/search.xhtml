@@ -15,13 +15,26 @@
             <f:viewParam name="query" value="#{searchController.query}"/>
         </f:metadata>
 
-        <p:outputPanel rendered="#{searchController.hasNoResults() and not searchController.isEmptyQuery()}">
+        <p:focus for="mainQueryTxt"/>
+
+        <p:panel>
+            <h:panelGrid columns="4">
+                <h:outputLabel for="mainQueryTxt" value="Search: "/>
+                <h:inputText id="mainQueryTxt" value="#{searchController.query}"/>
+                <p:commandButton value="Search" action="#{searchController.doSearch}" ajax="false"
+                                 onclick="searchDialog.show()"/>
+            </h:panelGrid>
+        </p:panel>
+
+        <br/>
+
+        <p:outputPanel rendered="#{searchController.hasNoResults() and not searchController.emptyQuery}">
             Your query (<b>#{searchController.query}</b>) didn't return any results.
             <br/>
             <br/>
         </p:outputPanel>
 
-        <p:outputPanel rendered="#{searchController.hasNoResults()}">
+        <p:outputPanel rendered="#{searchController.hasNoResults() and searchController.emptyQuery}">
 
             When searching for a keyword, the following objects and their respective attributes are being search on:
             <br/>
@@ -68,14 +81,13 @@
             </table>
         </p:outputPanel>
 
-        <p:outputPanel rendered="#{not searchController.isEmptyQuery() and not searchController.hasNoResults()}">
-            Result for query: <b>#{searchController.query}</b>
+        <p:outputPanel rendered="#{not searchController.emptyQuery and not searchController.hasNoResults()}">
+            Results for query: <b>#{searchController.query}</b>
             <hr/>
-        </p:outputPanel>
 
         <p:accordionPanel>
               <p:tab title="Publications (#{searchController.publications.rowCount})"
-                     disabled="#{searchController.publications.rowCount == 0}">
+                     rendered="#{searchController.publications.rowCount != 0}">
 
 
         <!--<ia:collapsiblePanel id="publicationPanel" open="#{searchController.matchesSingleType()}"-->
@@ -120,7 +132,7 @@
               </p:tab>
 
               <p:tab title="Experiments (#{searchController.experiments.rowCount})"
-                      disabled="#{searchController.experiments.rowCount == 0}">
+                      rendered="#{searchController.experiments.rowCount != 0}">
 
         <!--<ia:collapsiblePanel id="experimentPanel" open="#{searchController.matchesSingleType()}"-->
                              <!--display="#{searchController.experiments.rowCount > 0}"-->
@@ -180,7 +192,7 @@
               </p:tab>
 
               <p:tab title="Interactions (#{searchController.interactions.rowCount})"
-                      disabled="#{searchController.interactions.rowCount == 0}">
+                      rendered="#{searchController.interactions.rowCount != 0}">
 
         <!--<ia:collapsiblePanel id="interactionPanel" open="#{searchController.matchesSingleType()}"-->
                              <!--display="#{searchController.interactions.rowCount > 0}"-->
@@ -245,7 +257,7 @@
               </p:tab>
 
               <p:tab title="Molecules (#{searchController.molecules.rowCount})"
-                      disabled="#{searchController.molecules.rowCount == 0}">
+                      rendered="#{searchController.molecules.rowCount != 0}">
 
         <!--<ia:collapsiblePanel id="moleculePanel" open="#{searchController.matchesSingleType()}"-->
                              <!--display="#{searchController.molecules.rowCount > 0}"-->
@@ -291,7 +303,7 @@
               </p:tab>
 
               <p:tab title="Controlled Vocabularies (#{searchController.cvobjects.rowCount})"
-                      disabled="#{searchController.cvobjects.rowCount == 0}">
+                      rendered="#{searchController.cvobjects.rowCount != 0}">
 
         <!--<ia:collapsiblePanel id="cvPanel" open="#{searchController.matchesSingleType()}"-->
                              <!--display="#{searchController.cvobjects.rowCount > 0}"-->
@@ -332,7 +344,7 @@
               </p:tab>
 
                <p:tab title="Features (#{searchController.features.rowCount})"
-                       disabled="#{searchController.features.rowCount == 0}">
+                       rendered="#{searchController.features.rowCount != 0}">
 
      <!--<ia:collapsiblePanel id="featuresPanel" open="#{searchController.matchesSingleType()}"-->
                              <!--display="#{searchController.features.rowCount > 0}"-->
@@ -364,7 +376,7 @@
               </p:tab>
 
               <p:tab title="Organisms (#{searchController.organisms.rowCount})"
-                      disabled="#{searchController.organisms.rowCount == 0}">
+                      rendered="#{searchController.organisms.rowCount != 0}">
 
         <!--<ia:collapsiblePanel id="organismsPanel" open="#{searchController.matchesSingleType()}"-->
                              <!--display="#{searchController.organisms.rowCount > 0}"-->
@@ -406,6 +418,8 @@
         </p:tab>
 
         </p:accordionPanel>
+
+    </p:outputPanel>
 
     </ui:define>
 
