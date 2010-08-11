@@ -205,6 +205,19 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return xref.getPrimaryId().matches(annotation.getAnnotationText());
     }
 
+    public String externalLink( Xref xref ) {
+        if (xref == null) return null;
+        if (xref.getPrimaryId() == null) return null;
+        if (xref.getCvDatabase() == null) return null;
+
+        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(xref.getCvDatabase(), CvTopic.SEARCH_URL_MI_REF);
+        if (annotation == null) return null;
+
+        String extUrl = annotation.getAnnotationText();
+        return extUrl.replaceAll("\\{ac\\}", xref.getPrimaryId());
+
+    }
+
     // ANNOTATIONS
     ///////////////////////////////////////////////
 

@@ -65,6 +65,19 @@
                                                     <!--title="Does not match the expected regular expression"/>-->
                                 </h:panelGroup>
                             </h:panelGroup>
+
+                                <h:panelGroup id="linkPanel">
+                                <!--<h:panelGroup rendered="#{annotatedObjectController.isXrefValid(xref)}">-->
+                                    <!--<span class="ui-icon ui-icon-circle-check" title="Matches the expected regular expression"/>-->
+                                <!--</h:panelGroup>-->
+                                <h:panelGroup rendered="#{annotatedObjectController.externalLink(xref) != null}">
+                                    <h:outputLink value="#{annotatedObjectController.externalLink(xref)}" target="_blank">
+                                        <span class="ui-icon ui-icon-extlink" style="display:inline-block"
+                                              title="Does not match the expected regular expression"/>
+                                    </h:outputLink>
+                                </h:panelGroup>
+                            </h:panelGroup>
+
                             </h:panelGroup>
                         </p:column>
                         <p:column>

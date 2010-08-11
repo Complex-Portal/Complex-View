@@ -77,7 +77,7 @@
                             <ia:panelMessage level="error">
                                 This publication does not contain some essential data (e.g. title).
                                 <p:commandButton value="Try to fix" actionListener="#{publicationController.doFormAutocomplete}"
-                                                 update="basic,publicationTabs,changesPanel">
+                                                 update="basic,publicationTabs,changesPanel,messagesComponent">
                                     <f:setPropertyActionListener value="#{true}" target="#{publicationController.unsavedChanges}"/>
                                 </p:commandButton>
 
