@@ -130,8 +130,7 @@ public class InteractionController extends ParameterizableObjectController {
 
         refreshExperimentLists();
 
-
-        if (interaction != null) {
+        if (interaction != null && participantWrappers == null) {
             refreshParticipants();
         }
     }
@@ -337,7 +336,7 @@ public class InteractionController extends ParameterizableObjectController {
 
         updateShortLabel();
 
-        addInfoMessage("Removed participant", participantInfo.toString());
+        addInfoMessage("Participant marked to be removed.", participantInfo.toString());
     }
 
     private void updateShortLabel() {
@@ -421,13 +420,6 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public Collection<ParticipantWrapper> getParticipants() {
-        if (participantWrappers == null && ac != null) {
-            loadData(null);
-        } else if (interaction == null || (ac != null && !ac.equals(interaction.getAc()))) {
-            loadData(null);
-        } else if (participantWrappers == null) {
-            participantWrappers = new ArrayList<ParticipantWrapper>();
-        }
         return participantWrappers;
     }
 

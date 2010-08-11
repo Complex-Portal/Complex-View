@@ -22,12 +22,12 @@
 
                     <f:facet name="title">
                         <h:panelGroup rendered="#{not wrapper.deleted}">
-                            <p:commandLink onclick="load_participant.show()" action="/curate/participant?faces-redirect=true&amp;includeViewParams=true"
+                            <p:commandLink onclick="load_participant.show()" action="#{curatorContextController.edit(participant)}"
                                            style="#{participant.ac == null? 'color:blue' :''}"
-                                            value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})" ajax="false">
-                                <f:setPropertyActionListener value="#{wrapper.participant}" target="#{participantController.participant}"/>
-                            </p:commandLink>
+                                            value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
+                                            ajax="false"/>
                         </h:panelGroup>
+
                         <h:outputText value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
                                       rendered="#{wrapper.deleted}" style="color:red; text-decoration:line-through"/>
                     </f:facet>
@@ -37,14 +37,16 @@
                             <!--<p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>-->
                             <p:menuitem value="Duplicate" actionListener="#{interactionController.cloneParticipant(wrapper)}"
                                         onclick="clone_articipant_dialog.show()" oncomplete="clone_articipant_dialog.hide()"
-                                    update="participantsTable,growl,changesPanel,messagesComponent,shortlabelTxt"/>
+                                    update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>
                             <p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(wrapper)}"
                                         rendered="#{not wrapper.deleted}"
-                                        update="participantsTable,growl,changesPanel,messagesComponent,shortlabelTxt"/>
+                                        onclick="delParticipantDialog.show()" oncomplete="delParticipantDialog.hide()"
+                                        update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>
                             <p:menuitem value="Revert" actionListener="#{interactionController.revertParticipant(wrapper)}"
                                         icon="/resources/images/undo.png"
                                         rendered="#{wrapper.deleted}"
-                                        update="participantsTable,growl,changesPanel,messagesComponent"/>
+                                        onclick="revdelParticipantDialog.show()" oncomplete="revdelParticipantDialog.hide()"
+                                        update="participantsTable,changesPanel,messagesComponent"/>
                         </p:menuButton>
                     </f:facet>
 
@@ -135,6 +137,8 @@
         </ui:repeat>
 
         <ia:loadingDialog widgetVar="load_participant" message="Loading participant..."/>
+        <ia:loadingDialog widgetVar="delParticipantDialog" message="Marking participant to be deleted..."/>
+        <ia:loadingDialog widgetVar="revdelParticipantDialog" message="Reverting participant..."/>
         <ia:loadingDialog widgetVar="clone_articipant_dialog" message="Cloning participant..."/>
 
     </h:panelGroup>
