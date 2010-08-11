@@ -54,7 +54,7 @@
 
 
                 <p:dataTable id="candidatesTable" var="candidate" rendered="#{not empty participantImportController.importCandidates}"
-                             value="#{participantImportController.importCandidates}">
+                             value="#{participantImportController.importCandidates}" paginator="true" rows="10">
                     <p:column>
                         <f:facet name="header"><h:outputText value="Select"/></f:facet>
                         <h:selectBooleanCheckbox value="#{candidate.selected}"/>

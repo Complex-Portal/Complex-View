@@ -199,10 +199,6 @@ public class ParticipantImportController extends BaseController {
 
         candidate.setSecondaryAcs(secondaryAcs);
 
-        if (interactor.getBioSource() != null) {
-            candidate.setOrganism(interactor.getBioSource().getShortLabel());
-        }
-
         return candidate;
     }
 

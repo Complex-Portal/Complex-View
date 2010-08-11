@@ -23,6 +23,10 @@ public class ImportCandidate {
     public ImportCandidate(String query, Interactor interactor) {
         this.query = query;
         this.interactor = interactor;
+
+        if (interactor.getBioSource() != null) {
+            this.organism = interactor.getBioSource().getFullName();
+        }
     }
 
     public ImportCandidate(String query, UniprotProtein uniprotProtein) {
