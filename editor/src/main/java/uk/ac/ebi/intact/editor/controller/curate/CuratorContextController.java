@@ -74,38 +74,40 @@ public class CuratorContextController extends BaseController {
     public String edit(IntactObject intactObject) {
         Class<?> iaClass = intactObject.getClass();
 
+        String suffix = (intactObject.getAc() != null)? "?faces-redirect=true&includeViewParams=true" : "";
+
         if (Publication.class.isAssignableFrom(iaClass)) {
             PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
             publicationController.setPublication((Publication)intactObject);
-            return "/curate/publication";
+            return "/curate/publication"+suffix;
         } else if (Experiment.class.isAssignableFrom(iaClass)) {
             ExperimentController experimentController = (ExperimentController) getSpringContext().getBean("experimentController");
             experimentController.setExperiment((Experiment)intactObject);
-            return "/curate/experiment";
+            return "/curate/experiment"+suffix;
         } else if (Interaction.class.isAssignableFrom(iaClass)) {
             InteractionController interactionController = (InteractionController) getSpringContext().getBean("interactionController");
             interactionController.setInteraction((Interaction)intactObject);
-            return "/curate/interaction";
+            return "/curate/interaction"+suffix;
         } else if (Interactor.class.isAssignableFrom(iaClass)) {
             InteractorController interactorController = (InteractorController) getSpringContext().getBean("interactorController");
             interactorController.setInteractor((Interactor)intactObject);
-            return "/curate/interactor";
+            return "/curate/interactor"+suffix;
         } else if (Participant.class.isAssignableFrom(iaClass)) {
             ParticipantController participantController = (ParticipantController) getSpringContext().getBean("participantController");
             participantController.setParticipant((Component) intactObject);
-            return "/curate/participant";
+            return "/curate/participant"+suffix;
         } else if (Feature.class.isAssignableFrom(iaClass)) {
             FeatureController featureController = (FeatureController) getSpringContext().getBean("featureController");
             featureController.setFeature((Feature) intactObject);
-            return "/curate/feature";
+            return "/curate/feature"+suffix;
         } else if (CvObject.class.isAssignableFrom(iaClass)) {
             CvObjectController cvObjectController = (CvObjectController) getSpringContext().getBean("cvObjectController");
             cvObjectController.setCvObject((CvObject) intactObject);
-            return "/curate/cvobject";
+            return "/curate/cvobject"+suffix;
         } else if (BioSource.class.isAssignableFrom(iaClass)) {
             BioSourceController bioSourceController = (BioSourceController) getSpringContext().getBean("bioSourceController");
             bioSourceController.setBioSource((BioSource) intactObject);
-            return "/curate/organism";
+            return "/curate/organism"+suffix;
         } else {
             throw new IllegalArgumentException("No view defined for object with type: "+iaClass);
         }

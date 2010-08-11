@@ -30,11 +30,9 @@
             </f:facet>
 
             <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(experiment.ac)}">
-                <p:commandLink onclick="load_exp.show()" action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"
+                <p:commandLink onclick="load_exp.show()" action="#{curatorContextController.edit(experiment)}"
                                style="#{experiment.ac == null? 'color:blue' :''}"
-                               value="#{experiment.shortLabel}" ajax="false">
-                    <f:setPropertyActionListener value="#{experiment}" target="#{experimentController.experiment}"/>
-                </p:commandLink>
+                               value="#{experiment.shortLabel}" ajax="false"/>
             </h:panelGroup>
             <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(experiment.ac)}">
                 <h:outputText value="#{experiment.shortLabel}" style="color:red; text-decoration:line-through"/>
