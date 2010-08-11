@@ -76,13 +76,16 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         // delete from the unsaved manager
         final List<IntactObject> deletedObjects = getAnnotatedObjectWrapper().getUnsavedChangeManager().getAllDeleted();
 
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         for (IntactObject intactObject : deletedObjects) {
             if (intactObject.getAc() != null) {
                 if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
 
-                getDaoFactory().getIntactObjectDao().deleteByAc(intactObject.getAc());
+                IntactObject managedEntity = getDaoFactory().getEntityManager().merge(intactObject);
+                getDaoFactory().getEntityManager().remove(managedEntity);
             }
         }
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         if (saved) {
             lastSaved = new Date();
@@ -90,10 +93,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         if (getAnnotatedObject().getAc() != null) {
-            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+            final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
             
             getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus2);
 
             CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
             curatorContextController.removeFromUnsavedByAc(getAnnotatedObject().getAc());
