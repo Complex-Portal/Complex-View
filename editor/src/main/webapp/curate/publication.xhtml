@@ -159,21 +159,10 @@
                             </tr>
                             <tr>
                                 <td colspan="1" class="firstCell">
-                                    <h:outputLabel value="Author submitted: " for="submittedTxt"/>
+                                    <h:outputLabel value="Contact email: " for="contactTxt"/>
                                 </td>
                                 <td colspan="3">
-                                    <h:inputText id="submittedTxt" value="#{publicationController.submitted}" size="50">
-                                        <f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:changesPanel"
-                                                execute="@this" listener="#{publicationController.changed}"/>
-                                    </h:inputText>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="1" class="firstCell">
-                                    <h:outputLabel value="Curation request: " for="curationReqTxt"/>
-                                </td>
-                                <td colspan="3">
-                                    <h:inputText id="curationReqTxt" value="#{publicationController.curationRequest}" size="50">
+                                    <h:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50">
                                         <f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:changesPanel"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
