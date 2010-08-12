@@ -190,9 +190,11 @@
 
         </h:form>
 
-        <ui:insert name="dialogs"/>
+        <h:form id="dialogsForm">
+            <ui:insert name="dialogs"/>
 
-        <ui:include src="main_dialogs.xhtml"/>
+            <ui:include src="main_dialogs.xhtml"/>
+        </h:form>
 
 
 
