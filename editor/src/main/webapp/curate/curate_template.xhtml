@@ -62,7 +62,7 @@
 
             <p:submenu label="Tools">
                 <p:menuitem value="Clone" action="#{annotatedObjectController.clone}" ajax="false"
-
+                        rendered="#{not annotatedObjectController.annotatedObject.class.simpleName == 'Publication'}"
                         onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
             </p:submenu>
 
