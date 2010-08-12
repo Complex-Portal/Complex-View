@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.xml.model.Participant;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
@@ -92,7 +91,7 @@ public class CuratorContextController extends BaseController {
             InteractorController interactorController = (InteractorController) getSpringContext().getBean("interactorController");
             interactorController.setInteractor((Interactor)intactObject);
             return "/curate/interactor"+suffix;
-        } else if (Participant.class.isAssignableFrom(iaClass)) {
+        } else if (Component.class.isAssignableFrom(iaClass)) {
             ParticipantController participantController = (ParticipantController) getSpringContext().getBean("participantController");
             participantController.setParticipant((Component) intactObject);
             return "/curate/participant"+suffix;
