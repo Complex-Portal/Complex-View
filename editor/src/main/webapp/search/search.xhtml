@@ -235,9 +235,8 @@
                     <f:facet name="header">
                         <h:outputText value="ShortLabel"/>
                     </f:facet>
-                    <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true">
-                        <f:param name="ac" value="#{interaction.ac}"/>
-                    </h:link>
+                    <p:commandLink value="#{interaction.shortLabel}" action="#{curatorContextController.edit(interaction)}"
+                                   ajax="false"/>
                 </p:column>
                 <p:column>
                     <f:facet name="header">
