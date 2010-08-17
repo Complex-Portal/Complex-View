@@ -64,10 +64,13 @@
                             <h:outputLabel value="Interactor (#{participant.interactor != null? participant.interactor.cvInteractorType.shortLabel : ''}): " for="interactorTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="interactorTxt" value="#{participant.interactor.shortLabel}"
+                            <h:inputText id="interactorTxt" value="#{participantController.interactor}"
                                     disabled="true"/>
                             <!--<ia:inputInteractor value="#{participant.interactor}" />-->
-                            <p:commandButton value="Modify" action="TODO" onclick="alert('Not implemented!')"/>
+                            <p:commandButton value="Import" onclick="importInteractorDialog.show();"/>
+                            <p:commandButton value="New" onclick="newInteractorDialog.show();"/>
+
+                            <ui:include src="dialog_import_interactor.xhtml"/>
                         </td>
                     </tr>
                     <tr>

@@ -114,7 +114,7 @@ public class ParticipantImportController extends BaseController {
 
 
 
-    private List<ImportCandidate> importParticipant(String participantToImport) {
+    public List<ImportCandidate> importParticipant(String participantToImport) {
         log.debug( "Importing participant: "+ participantToImport );
 
         List<ImportCandidate> candidates = importFromIntAct(participantToImport);

@@ -25,12 +25,16 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantWrapper;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.List;
 
 /**
  * Participant controller.
@@ -46,6 +50,9 @@ public class ParticipantController extends ParameterizableObjectController {
     private static final Log log = LogFactory.getLog( ParticipantController.class );
 
     private Component participant;
+
+    private String interactor;
+    private List<ImportCandidate> interactorCandidates;
 
     /**
      * The AC of the participant to be loaded.
@@ -109,10 +116,14 @@ public class ParticipantController extends ParameterizableObjectController {
         if( interactionController.getInteraction() == null ) {
             interactionController.setInteraction( participant.getInteraction() );
         }
+
+        if (participant.getInteractor() != null) {
+            interactor = participant.getInteractor().getShortLabel();
+        }
     }
 
     public void newParticipant(Interaction interaction) {
-        participant = new Component("N/A", interaction, new ProteinImpl(), new CvExperimentalRole(), new CvBiologicalRole());
+        participant = new Component("N/A", interaction, new InteractorImpl(), new CvExperimentalRole(), new CvBiologicalRole());
         participant.setInteractor(null);
         participant.getExperimentalRoles().clear();
         participant.setCvBiologicalRole(null);
@@ -121,6 +132,23 @@ public class ParticipantController extends ParameterizableObjectController {
         interaction.addComponent(participant);
 
         getUnsavedChangeManager().markAsUnsaved(participant);
+    }
+
+    public void importInteractor(ActionEvent evt) {
+        ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
+        interactorCandidates = participantImportController.importParticipant(interactor);
+
+        if (interactorCandidates.size() == 1) {
+            interactorCandidates.get(0).setSelected(true);
+        }
+    }
+
+    public void addInteractorToParticipant(ActionEvent evt) {
+        for (ImportCandidate importCandidate : interactorCandidates) {
+            if (importCandidate.isSelected()) {
+                participant.setInteractor(importCandidate.getInteractor());
+            }
+        }
     }
 
     public void markFeatureToDelete(Feature feature, UnsavedChangeManager unsavedChangeManager) {
@@ -171,5 +199,21 @@ public class ParticipantController extends ParameterizableObjectController {
         }
 
         return null;
+    }
+
+    public String getInteractor() {
+        return interactor;
+    }
+
+    public void setInteractor(String interactor) {
+        this.interactor = interactor;
+    }
+
+    public List<ImportCandidate> getInteractorCandidates() {
+        return interactorCandidates;
+    }
+
+    public void setInteractorCandidates(List<ImportCandidate> interactorCandidates) {
+        this.interactorCandidates = interactorCandidates;
     }
 }

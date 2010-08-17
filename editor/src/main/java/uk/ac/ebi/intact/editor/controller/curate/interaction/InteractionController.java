@@ -131,6 +131,9 @@ public class InteractionController extends ParameterizableObjectController {
         refreshExperimentLists();
 
         if (interaction != null && participantWrappers == null) {
+            if (!Hibernate.isInitialized(interaction.getComponents())) {
+                interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
+            }
             refreshParticipants();
         }
     }
@@ -451,6 +454,8 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public List<Confidence> getConfidences() {
+        if (interaction == null) return Collections.EMPTY_LIST;
+        
         final List<Confidence> confidences = new ArrayList<Confidence>( interaction.getConfidences() );
         Collections.sort( confidences, new IntactObjectComparator() );
         return confidences;

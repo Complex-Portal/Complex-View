@@ -29,7 +29,7 @@
 
         <h:panelGroup id="info" rendered="#{bioSourceController.bioSource != null}">
 
-            <h2>Organism</h2>
+            <p:panel id="basic" header="Organism Details">
 
                 <table class="intact-tableBasicForm">
                     <tr>
@@ -88,7 +88,9 @@
 
                 </table>
 
-            <br/>
+            </p:panel>
+
+             <br/>
 
             <p:tabView id="cvobjectTabs">
 
