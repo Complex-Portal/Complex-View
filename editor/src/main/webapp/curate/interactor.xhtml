@@ -9,6 +9,7 @@
 
                 template="/curate/curate_template.xhtml">
 
+    <ui:param name="annotatedObjectController" value="#{interactorController}"/>
 
     <ui:param name="interactor" value="#{interactorController.interactor}" />
     <ui:param name="participant" value="#{participantController.participant}" />
@@ -33,13 +34,9 @@
 
     <ui:define name="curateContent">
         <f:metadata>
-            <f:viewParam name="ac" value="#{interactorController.ac}"/>
+            <f:viewParam name="ac" value="#{interactorController.interactor.ac}"/>
             <f:event type="preRenderView" listener="#{interactorController.loadData}"/>
         </f:metadata>
-
-        <h:panelGroup rendered="#{participant == null}">
-            No participant loaded!
-        </h:panelGroup>
 
         <h:panelGroup rendered="#{interactor != null}">
             <div id="auditInfo" class="intact-auditPanel">
@@ -49,7 +46,7 @@
 
         <h:panelGroup id="info" rendered="#{interactor != null}">
 
-            <h2>#{interactorController.moleculeType}}</h2>
+            <h2>#{interactorController.moleculeType}</h2>
 
             <p:outputPanel id="basic">
 
@@ -73,7 +70,8 @@
                             <h:outputLabel value="Fullname: " for="fullnameTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="fullnameTxt" value="#{interactor.fullName}""/>
+                            <h:inputText id="fullnameTxt" value="#{interactor.fullName}" size="80"
+                                    onchange="markAsUnsaved()"/>
                         </td>
                     </tr>
                     <tr>
@@ -88,31 +86,42 @@
                     </tr>
                     <tr>
                         <td class="firstCell">
-                            <h:outputLabel value="#{interactor.cvInteractorType.shortLabel}: " for="interactorTxt"/>
+                            <h:outputLabel value="Type: " for="interactorTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="interactorTxt" value="#{interactor.shortLabel}"
-                                    disabled="true"/>
-                            <h:commandButton value="Change" action="TODO"/>
+                             <!--<ia:inputCvObject id="interactorTxt" value="#{interactor.cvInteractorType}"-->
+                                                  <!--selectItems="#{cvObjectService.interactorTypeSelectItems}"-->
+                                                  <!--cvIdentifier="MI:0313"-->
+                                                  <!--required="true" requiredMessage="Interaction type is required"-->
+                                                  <!--valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"-->
+                                                  <!--valueChangeAwareObject="#{annotatedObjectController}"/>-->
+                            <h:inputText id="interactorTxt" value="#{interactorController.moleculeType}" readonly="true"/>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Sequence: " for="sequenceTxt"/>
-                        </td>
-                        <td colspan="2">
-                            <h:inputText id="sequenceTxt" value="#{interactor.sequence}"   />
-                        </td>
-                    </tr>
+                    <h:panelGroup rendered="#{interactorController.polymer}">
+                        <tr>
+                            <td class="firstCell">
+                                <h:outputLabel value="Sequence: " for="sequenceTxt"/>
+                            </td>
+                            <td colspan="2">
+                                <h:inputTextarea id="sequenceTxt" value="#{interactor.sequence}" rows="5" cols="100"
+                                        onchange="markAsUnsaved()"/>
+                            </td>
+                        </tr>
+                    </h:panelGroup>
                 </table>
 
             </p:outputPanel>
 
-            <h3>Properties</h3>
+            <br/>
 
-            <ui:include src="propertiesTabs.xhtml">
-                 <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactorTopicSelectItems}"/>
-            </ui:include>
+            <p:tabView id="interactorTabs">
+
+               <ui:include src="propertiesTabs.xhtml">
+                     <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactorTopicSelectItems}"/>
+                </ui:include>
+
+            </p:tabView>
             
         </h:panelGroup>
 

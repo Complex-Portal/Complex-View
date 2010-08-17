@@ -49,6 +49,7 @@
                     <p:menuitem value="New" icon="/resources/images/new.png"/>
                 </f:facet>
                 <p:menuitem value="Publication" onclick="newPublicationDlg.show();" helpText="ALT+N"/>
+                <p:menuitem value="Interactor..." onclick="newInteractorDialog.show(); "/>
                 <p:menuitem value="CV Object..." onclick="newCvObjectDialog.show(); "/>
                 <p:menuitem value="Organism" action="#{bioSourceController.newOrganism}" ajax="false"/>
             </p:submenu>
@@ -143,6 +144,54 @@
                         onerror="alert('Error: '+error+' '+status)"
                         oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton'); input.disabled = false; input.value = 'Save'"/>
         
+
+        <!-- CvObject -->
+    <p:dialog header="New CV Object" width="400" widgetVar="newCvObjectDialog" visible="false" draggable="false"
+              modal="true" position="center" resizable="false">
+         <ia:panelDialogLayout>
+             <f:facet name="buttonBar">
+                 <p:commandButton value="Create" action="#{cvObjectController.newCvObject}" ajax="false"/>
+             </f:facet>
+
+                <h:outputLabel for="cvType" value="Type: "/>
+                <h:selectOneMenu id="cvType" value="#{cvObjectController.newCvObjectType}">
+                    <f:selectItem itemLabel="-- Select --" noSelectionOption="true"/>
+                    <f:selectItem itemLabel="Alias type" itemValue="uk.ac.ebi.intact.model.CvAliasType"/>
+                    <f:selectItem itemLabel="Biological role" itemValue="uk.ac.ebi.intact.model.CvBiologicalRole"/>
+                    <f:selectItem itemLabel="Cell type" itemValue="uk.ac.ebi.intact.model.CvCellType"/>
+                    <f:selectItem itemLabel="Confidence type" itemValue="uk.ac.ebi.intact.model.CvConfidenceType"/>
+                    <f:selectItem itemLabel="Database" itemValue="uk.ac.ebi.intact.model.CvDatabase"/>
+                    <f:selectItem itemLabel="Experimental role" itemValue="uk.ac.ebi.intact.model.CvExperimentalRole"/>
+                    <f:selectItem itemLabel="Experimental preparation" itemValue="uk.ac.ebi.intact.model.CvExperimentalPreparation"/>
+                    <f:selectItem itemLabel="Fuzzy type" itemValue="uk.ac.ebi.intact.model.CvFuzzyType"/>
+                    <f:selectItem itemLabel="Parameter type" itemValue="uk.ac.ebi.intact.model.CvParameterType"/>
+                    <f:selectItem itemLabel="Parameter unit" itemValue="uk.ac.ebi.intact.model.CvParameterUnit"/>
+                    <f:selectItem itemLabel="Tissue" itemValue="uk.ac.ebi.intact.model.CvTissue"/>
+                    <f:selectItem itemLabel="Topic" itemValue="uk.ac.ebi.intact.model.CvTopic"/>
+                    <f:selectItem itemLabel="Xref qualifier" itemValue="uk.ac.ebi.intact.model.CvXrefQualifier"/>
+                </h:selectOneMenu>
+
+        </ia:panelDialogLayout>
+    </p:dialog>
+
+    <!-- Interactor -->
+    <p:dialog header="New Interactor" width="400" widgetVar="newInteractorDialog" visible="false" draggable="false"
+              modal="true" position="center" resizable="false">
+         <ia:panelDialogLayout>
+             <f:facet name="buttonBar">
+                 <p:commandButton value="Create" action="#{interactorController.newInteractor}" ajax="false"/>
+             </f:facet>
+             
+                <h:panelGrid columns="2">
+                    <h:outputLabel for="interactorTxt" value="Type: "/>
+                    <ia:inputCvObject id="interactorTxt" value="#{interactorController.newInteractorType}"
+                                                      selectItems="#{cvObjectService.interactorTypeSelectItems}"
+                                                      cvIdentifier="MI:0313"
+                                                      required="true" requiredMessage="Interaction type is required"/>
+                </h:panelGrid>
+
+         </ia:panelDialogLayout>
+    </p:dialog>
 
     </ui:define>
 

@@ -92,6 +92,9 @@ public class CvObjectService extends JpaAwareController {
     private List<CvInteractionType> interactionTypes;
     private List<SelectItem> interactionTypeSelectItems;
 
+    private List<CvInteractorType> interactorTypes;
+    private List<SelectItem> interactorTypeSelectItems;
+
     private List<CvExperimentalRole> experimentalRoles;
     private List<SelectItem> experimentalRoleSelectItems;
 
@@ -246,6 +249,9 @@ public class CvObjectService extends JpaAwareController {
         
         interactionTypes = getSortedList( CvInteractionType.class, cvObjectsByClass);
         interactionTypeSelectItems = createSelectItems( interactionTypes, "-- Select type --" );
+
+        interactorTypes = getSortedList( CvInteractorType.class, cvObjectsByClass);
+        interactorTypeSelectItems = createSelectItems( interactorTypes, "-- Select type --" );
 
         experimentalRoles = getSortedList( CvExperimentalRole.class, cvObjectsByClass);
         experimentalRoleSelectItems = createSelectItems( experimentalRoles, "-- Select role --" );
@@ -452,6 +458,10 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getInteractionTypeSelectItems() {
         return interactionTypeSelectItems;
+    }
+
+    public List<SelectItem> getInteractorTypeSelectItems() {
+        return interactorTypeSelectItems;
     }
 
     public List<SelectItem> getFeatureDetectionMethodSelectItems() {
