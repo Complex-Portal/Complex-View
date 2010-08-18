@@ -20,7 +20,7 @@
 
             <h:panelGrid columns="2">
                 <p>
-                    Import interactor by UniprotKB accession, interactor accession or short label:<br/>
+                    Import interactor by UniprotKB accession, interactor accession, short label or xref:<br/>
                 </p>
 
                 <h:inputText id="searchInteractorTxt" value="#{participantController.interactor}"/>
@@ -64,10 +64,10 @@
                         <f:facet name="header"><h:outputText value="Source"/></f:facet>
                         <h:outputText value="#{candidate.source}"/>
                     </p:column>
-                    <p:column>
-                        <f:facet name="header"><h:outputText value="Primary AC"/></f:facet>
-                        <h:outputText value="#{candidate.primaryAc}"/>
-                    </p:column>
+                        <ui:repeat value="#{candidate.primaryAcs}" var="ac">
+                            <h:outputText value="#{ac}"/>
+                            <br/>
+                        </ui:repeat>
                     <p:column>
                         <f:facet name="header"><h:outputText value="Secondary ACs"/></f:facet>
                         <ui:repeat value="#{candidate.secondaryAcs}" var="ac">

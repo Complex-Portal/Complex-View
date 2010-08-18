@@ -29,7 +29,7 @@ import uk.ac.ebi.intact.core.persistence.dao.ProteinDao;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.ProteinUtils;
+import uk.ac.ebi.intact.model.util.XrefUtils;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
@@ -154,13 +154,21 @@ public class ParticipantImportController extends BaseController {
             if (interactorByLabel != null) {
                 candidates.add(toImportCandidate(participantToImport, interactorByLabel));
             } else {
+                final Interactor interactorByXref = interactorDao.getByXref(participantToImport);
+
+                if (interactorByXref != null) {
+                    candidates.add(toImportCandidate(participantToImport, interactorByXref));
+                }
+            }
+
+//            if (candidates.isEmpty()) {
                 // uniprot AC
                 Collection<ProteinImpl> proteins = proteinDao.getByUniprotId(participantToImport);
 
                 for (Protein protein : proteins) {
                     candidates.add(toImportCandidate(participantToImport, protein));
                 }
-            }
+//            }
         }
 
         return candidates;
@@ -185,15 +193,24 @@ public class ParticipantImportController extends BaseController {
     private ImportCandidate toImportCandidate(String participantToImport, Interactor interactor) {
         ImportCandidate candidate = new ImportCandidate(participantToImport, interactor);
         candidate.setSource(IntactContext.getCurrentInstance().getInstitution().getShortLabel());
-        candidate.setPrimaryAc(ProteinUtils.getUniprotXref(interactor).getPrimaryId());
+
+        final Collection<InteractorXref> identityXrefs = XrefUtils.getIdentityXrefs(interactor);
+
+        if (!identityXrefs.isEmpty()) {
+            List<String> ids = new ArrayList<String>(identityXrefs.size());
+
+            for (InteractorXref xref : identityXrefs) {
+                ids.add(xref.getPrimaryId());
+            }
+
+            candidate.setPrimaryAcs(ids);
+        }
 
         List<String> secondaryAcs = new ArrayList<String>();
 
         for (Xref xref : interactor.getXrefs()) {
-            if (CvDatabase.UNIPROT_MI_REF.equals(xref.getCvDatabase().getIdentifier())) {
-                if (xref.getCvXrefQualifier() != null && CvXrefQualifier.SECONDARY_AC_MI_REF.equals(xref.getCvXrefQualifier().getIdentifier())) {
-                    secondaryAcs.add(xref.getPrimaryId());
-                }
+            if (xref.getCvXrefQualifier() != null && CvXrefQualifier.SECONDARY_AC_MI_REF.equals(xref.getCvXrefQualifier().getIdentifier())) {
+                secondaryAcs.add(xref.getPrimaryId());
             }
         }
 
@@ -236,7 +253,7 @@ public class ParticipantImportController extends BaseController {
         Protein protein = new ProteinImpl(owner, organism, uniprotProtein.getId().toLowerCase(), type);
         protein.setFullName(uniprotProtein.getDescription());
 
-        InteractorXref xref = new InteractorXref(owner, uniprotkb, candidate.getPrimaryAc(), identity);
+        InteractorXref xref = new InteractorXref(owner, uniprotkb, candidate.getPrimaryAcs().iterator().next(), identity);
         protein.addXref(xref);
 
 //        InteractorEnricher interactorEnricher = enricherService.getInteractorEnricher();

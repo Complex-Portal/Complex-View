@@ -20,7 +20,7 @@
 
             <h:panelGrid columns="2">
                 <p>
-                    Import participants by UniprotKB accession, interactor accession or short label:<br/>
+                    mport interactor by UniprotKB accession, interactor accession, short label or xref:<br/>
                     (comma or line separated)
                 </p>
 
@@ -69,7 +69,10 @@
                     </p:column>
                     <p:column>
                         <f:facet name="header"><h:outputText value="Primary AC"/></f:facet>
-                        <h:outputText value="#{candidate.primaryAc}"/>
+                        <ui:repeat value="#{candidate.primaryAcs}" var="ac">
+                            <h:outputText value="#{ac}"/>
+                            <br/>
+                        </ui:repeat>
                     </p:column>
                     <p:column>
                         <f:facet name="header"><h:outputText value="Secondary ACs"/></f:facet>

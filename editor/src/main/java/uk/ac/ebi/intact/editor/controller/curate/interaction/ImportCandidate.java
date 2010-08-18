@@ -3,6 +3,7 @@ package uk.ac.ebi.intact.editor.controller.curate.interaction;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public class ImportCandidate {
     private boolean selected = true;
     private String query;
     private String organism;
-    private String primaryAc;
+    private List<String> primaryAcs;
     private List<String> secondaryAcs;
     private String source;
     private Interactor interactor;
@@ -33,7 +34,9 @@ public class ImportCandidate {
         this.query = query;
         this.uniprotProtein = uniprotProtein;
 
-        primaryAc = uniprotProtein.getPrimaryAc();
+        primaryAcs = new ArrayList<String>(1);
+
+        primaryAcs.add(uniprotProtein.getPrimaryAc());
         secondaryAcs = uniprotProtein.getSecondaryAcs();
         organism = uniprotProtein.getOrganism().getName();
     }
@@ -62,12 +65,12 @@ public class ImportCandidate {
         this.interactor = interactor;
     }
 
-    public String getPrimaryAc() {
-        return primaryAc;
+    public List<String> getPrimaryAcs() {
+        return primaryAcs;
     }
 
-    public void setPrimaryAc(String primaryAc) {
-        this.primaryAc = primaryAc;
+    public void setPrimaryAcs(List<String> primaryAcs) {
+        this.primaryAcs = primaryAcs;
     }
 
     public List<String> getSecondaryAcs() {
