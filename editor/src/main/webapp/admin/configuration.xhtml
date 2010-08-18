@@ -20,9 +20,10 @@
                     <f:selectItem itemLabel="Sunny" itemValue="sunny"/>
                     <f:selectItem itemLabel="UI-Lightness" itemValue="ui-lightness"/>
                 </h:selectOneMenu>
-                <p:commandButton value="Change" ajax="false"/>
             </h:panelGrid>
-         </p:panel>
+
+            <p:commandButton value="Change" ajax="false"/>
+        </p:panel>
 
         <br/>
 
@@ -33,9 +34,39 @@
                     <f:convertNumber/>
                 </h:inputText>
 
-                <p:commandButton value="Update" process="defaultsPanel"/>
             </h:panelGrid>
-         </p:panel>
+
+            <p:commandButton value="Update" process="defaultsPanel"/>
+        </p:panel>
+
+        <br/>
+
+        <p:panel id="intactCorePanel" header="IntAct Core Configuration">
+            <h:panelGrid columns="2">
+                <h:outputLabel for="acPrefixTxt" value="AC prefix: "/>
+                <h:inputText id="acPrefixTxt" value="#{intactConfig.acPrefix}"/>
+
+                <h:outputLabel for="cvPrefixTxt" value="Local CV prefix: "/>
+                <h:inputText id="cvPrefixTxt" value="#{intactConfig.localCvPrefix}"/>
+
+                <h:outputLabel for="institutionSel" value="Default institution: "/>
+                <h:selectOneMenu id="institutionSel" value="#{intactConfig.defaultInstitution}">
+                    <f:selectItems value="#{applicationInfo.availableInstitutions}"/>
+                </h:selectOneMenu>
+
+                <h:outputLabel for="expLabelTxt" value="Auto-update experiment label: "/>
+                <h:selectBooleanCheckbox id="expLabelTxt" value="#{intactConfig.autoUpdateExperimentLabel}"/>
+
+                <h:outputLabel for="interactionLabelTxt" value="Auto-update interaction label: "/>
+                <h:selectBooleanCheckbox id="interactionLabelTxt" value="#{intactConfig.autoUpdateExperimentLabel}"/>
+
+                <h:outputLabel for="skipTxt" value="Skip schema check: "/>
+                <h:selectBooleanCheckbox id="skipTxt" value="#{intactConfig.skipSchemaCheck}"/>
+
+            </h:panelGrid>
+
+            <p:commandButton value="Update" process="intactCorePanel"/>
+        </p:panel>
 
         <br/>
 

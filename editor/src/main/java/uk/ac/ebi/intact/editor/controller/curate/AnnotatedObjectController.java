@@ -111,8 +111,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Transactional(propagation = Propagation.NEVER)
     public void doRevertChanges( ActionEvent evt ) {
-//        getCoreEntityManager().clear();
-//        getCoreEntityManager().refresh(getAnnotatedObject());
+
         if (getAnnotatedObject().getAc() != null) {
             final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 

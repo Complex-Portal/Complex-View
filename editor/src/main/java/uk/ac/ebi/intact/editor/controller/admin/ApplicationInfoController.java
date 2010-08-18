@@ -6,6 +6,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DbInfoDao;
 import uk.ac.ebi.intact.core.util.DebugUtil;
+import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.model.Institution;
 import uk.ac.ebi.intact.model.meta.DbInfo;
 import uk.ac.ebi.kraken.uuw.services.remoting.UniProtJAPI;
 
@@ -23,7 +25,7 @@ import java.util.Map;
  */
 @Controller("applicationInfo")
 @Lazy
-public class ApplicationInfoController {
+public class ApplicationInfoController extends JpaAwareController {
 
     private String uniprotJapiVersion;
     private String schemaVersion;
@@ -60,6 +62,10 @@ public class ApplicationInfoController {
             value = "<unknown>";
         }
         return value;
+    }
+
+    public List<Institution> getAvailableInstitutions() {        
+        return getDaoFactory().getInstitutionDao().getAll();
     }
 
     public List<Map.Entry<String,DataSource>> getDataSources() {
