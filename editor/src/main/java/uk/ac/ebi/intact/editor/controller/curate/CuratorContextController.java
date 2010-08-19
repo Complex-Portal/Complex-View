@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.BaseController;
@@ -39,6 +40,9 @@ import java.util.*;
 @Controller
 @Scope("session")
 public class CuratorContextController extends BaseController {
+
+    @Autowired
+    private PersistenceController persistenceController;
 
     private Map<Object,UnsavedChangeManager> unsavedMap;
 
@@ -113,13 +117,13 @@ public class CuratorContextController extends BaseController {
     }
 
     public void removeFromUnsaved(IntactObject object) {
-        for (UnsavedChangeManager ucm : unsavedMap.values()) {
+        for (UnsavedChangeManager ucm : getUnsavedChangeManagers()) {
             ucm.removeFromUnsaved(object);
         }
     }
 
     public void removeFromUnsavedByAc(String ac) {
-        for (UnsavedChangeManager ucm : unsavedMap.values()) {
+        for (UnsavedChangeManager ucm : getUnsavedChangeManagers()) {
             final Iterator<UnsavedChange> changeIterator = ucm.getChanges().iterator();
 
             while (changeIterator.hasNext()) {
@@ -129,5 +133,13 @@ public class CuratorContextController extends BaseController {
                 }
             }
         }
+    }
+
+    public Collection<UnsavedChangeManager> getUnsavedChangeManagers() {
+        return unsavedMap.values();
+    }
+
+    public void clear() {
+        unsavedMap.clear();
     }
 }

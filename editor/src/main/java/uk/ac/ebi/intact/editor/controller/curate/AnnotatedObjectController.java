@@ -22,7 +22,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.util.EditorIntactCloner;
 import uk.ac.ebi.intact.model.*;
@@ -76,16 +75,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         // delete from the unsaved manager
         final List<IntactObject> deletedObjects = getAnnotatedObjectWrapper().getUnsavedChangeManager().getAllDeleted();
 
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         for (IntactObject intactObject : deletedObjects) {
-            if (intactObject.getAc() != null) {
-                if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
-
-                IntactObject managedEntity = getDaoFactory().getEntityManager().merge(intactObject);
-                getDaoFactory().getEntityManager().remove(managedEntity);
-            }
+            persistenceController.doDelete(intactObject);
         }
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         if (saved) {
             lastSaved = new Date();
@@ -111,21 +103,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Transactional(propagation = Propagation.NEVER)
     public void doRevertChanges( ActionEvent evt ) {
-
-        if (getAnnotatedObject().getAc() != null) {
-            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-
-            getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
-        } else {
-            setAnnotatedObject(null);
-        }
+        PersistenceController persistenceController = getPersistenceController();
+        persistenceController.doRevert(getAnnotatedObject());
 
         getUnsavedChangeManager().clearChanges();
 
         addInfoMessage("Changes reverted", "");
     }
-
+    
     @Override
     public void changed(AjaxBehaviorEvent evt) {
         setUnsavedChanges(true);

@@ -6,10 +6,11 @@
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
     <p:dialog id="unsavedChangesDialog" widgetVar="unsavedChangesDialog" header="Unsaved changes" modal="true"
-              position="center"
+              position="center" 
               width="500">
 
-        <p:dataTable id="unsavedTable" var="change" value="#{curatorContextController.allChanges}">
+        <p:dataTable id="unsavedTable" var="change" value="#{curatorContextController.allChanges}" paginator="true" rows="10"
+                paginatorAlwaysVisible="false">
             <p:column>
                 <h:commandButton value="Edit" action="#{curatorContextController.edit(change.unsavedObject)}"/>
             </p:column>
@@ -30,8 +31,24 @@
                 <h:outputText value="#{change.getDescription(change.unsavedObject)}"/>
             </p:column>
 
+
         </p:dataTable>
 
+            <br/>
+
+             <div class="dialogButtonBar">
+                <p:commandButton value="Save All" actionListener="#{persistenceController.saveAll}"
+                                 onclick="saveAllDlg.show()" oncomplete="unsavedChangesDialog.hide(); saveAllDlg.hide()"
+                                 update="centralUnit,topSection,messagesComponent"/>
+                 &#160;
+                <p:commandLink value="Revert All" actionListener="#{persistenceController.revertAll}"
+                               onclick="revertAllDlg.show()" oncomplete="unsavedChangesDialog.hide(); revertAllDlg.hide()"
+                               update="centralUnit,topSection,messagesComponent"/>
+            </div>
+
     </p:dialog>
+
+    <ia:loadingDialog widgetVar="saveAllDlg" message="Saving all..."/>
+    <ia:loadingDialog widgetVar="revertAllDlg" message="Saving all..."/>
 
 </ui:composition>

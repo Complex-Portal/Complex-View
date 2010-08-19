@@ -119,6 +119,19 @@ public class UnsavedChangeManager {
         return ios;
     }
 
+    public List<IntactObject> getAllUnsaved() {
+        List<IntactObject> ios = new ArrayList<IntactObject>();
+
+        for (UnsavedChange change : changes) {
+            if (UnsavedChange.UPDATED.equals(change.getAction()) || UnsavedChange.CREATED.equals(change.getAction())) {
+                IntactObject intactObject = change.getUnsavedObject();
+                ios.add(intactObject);
+            }
+        }
+
+        return ios;
+    }
+
     public Collection<UnsavedChange> getChanges() {
         return changes;
     }

@@ -21,15 +21,20 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.engine.PersistenceContext;
 import org.hibernate.impl.SessionImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.IllegalTransactionStateException;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
+import javax.faces.event.ActionEvent;
 import java.util.Collection;
 
 /**
@@ -43,6 +48,9 @@ import java.util.Collection;
 public class PersistenceController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( PersistenceController.class );
+
+    @Autowired
+    private CuratorContextController curatorContextController;
 
     @Transactional("core")
     public boolean doSave( AnnotatedObject<?,?> annotatedObject ) {
@@ -69,6 +77,7 @@ public class PersistenceController extends JpaAwareController {
             Collection<Object> entities = persistenceContext.getEntitiesByKey().values();
             for (Object entity : entities) {
                 if (entity instanceof IntactObject) {
+                    if (log.isDebugEnabled()) log.debug("\tIndirectly saving: "+DebugUtil.intactObjectToString((IntactObject)entity, false)+" / removed from unsaved");
                     curatorContextController.removeFromUnsaved((IntactObject)entity);
                 }
             }
@@ -87,4 +96,64 @@ public class PersistenceController extends JpaAwareController {
         } 
     }
 
+    @Transactional(propagation = Propagation.NEVER)
+    public void doRevert(IntactObject intactObject) {
+        if (intactObject.getAc() != null) {
+            if (log.isDebugEnabled()) log.debug("Reverting: " + DebugUtil.intactObjectToString(intactObject, false));
+
+            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+            getDaoFactory().getEntityManager().refresh(intactObject);
+
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+        }
+    }
+
+    @Transactional(propagation = Propagation.NEVER)
+    public void doDelete(IntactObject intactObject) {
+        if (intactObject.getAc() != null) {
+            if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
+
+            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+            IntactObject managedEntity = getDaoFactory().getEntityManager().merge(intactObject);
+            getDaoFactory().getEntityManager().remove(managedEntity);
+
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+        }
+    }
+
+    @Transactional(propagation = Propagation.NEVER)
+    public void saveAll(ActionEvent actionEvent) {
+
+        for (UnsavedChangeManager ucm : curatorContextController.getUnsavedChangeManagers()) {
+            for (IntactObject intactObject : ucm.getAllUnsaved()) {
+
+                if (intactObject instanceof AnnotatedObject) {
+                    doSave((AnnotatedObject) intactObject);
+                }
+            }
+
+            for (IntactObject intactObject : ucm.getAllDeleted()) {
+                doDelete(intactObject);
+            }
+
+            ucm.clearChanges();
+        }
+
+        curatorContextController.clear();
+    }
+
+    @Transactional(propagation = Propagation.NEVER)
+    public void revertAll(ActionEvent actionEvent) {
+        for (UnsavedChangeManager ucm : curatorContextController.getUnsavedChangeManagers()) {
+            for (IntactObject intactObject : ucm.getAllUnsaved()) {
+                doRevert(intactObject);
+            }
+
+            ucm.clearChanges();
+        }
+
+         curatorContextController.clear();
+    }
 }

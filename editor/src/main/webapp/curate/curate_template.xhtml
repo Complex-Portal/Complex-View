@@ -96,7 +96,7 @@
 
         <div style="width:100%;">
             <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
-                <h:panelGroup id="unsavedChangesInfo" style="float: right; margin-right: 20px">
+                <h:panelGroup id="unsavedChangesInfo" style="float: right; margin-right: 40px">
                     <ui:insert name="curateTopRight">
                         <h:panelGroup rendered="#{curatorContextController.allChanges.size() gt 0}">
                             <ia:panelMessage level="warn" showIcon="true">
@@ -104,8 +104,9 @@
                                                update="unsavedTable"
                                                onclick="unsavedChangesDialog.show()"/>
                             </ia:panelMessage>
-
                         </h:panelGroup>
+
+
                         <ui:include src="dialog_unsaved_changes.xhtml"/>
                     </ui:insert>
                 </h:panelGroup>
@@ -119,7 +120,27 @@
             <ui:insert name="curateContent"/>
 
             <p:outputPanel id="changesPanel">
+
             <h:panelGroup rendered="#{annotatedObjectController.unsavedChanges}">
+
+                <!--<h:outputScript>-->
+                    <!--YAHOO.util.Event.addListener(window, 'beforeunload', function(e) {-->
+                    <!--//if (! confirm('You have unsaved changes, leave this page? You can save the data later')) {-->
+                    <!--//   YAHOO.util.Event.stopEvent(e);-->
+                    <!--//}-->
+
+                      <!--autoSave();-->
+                    <!--});-->
+                <!--</h:outputScript>-->
+
+                <!-- Interactor -->
+                   <p:confirmDialog message="Are you sure you want to leave without saving?" widgetVar="unsavedWarnDialog">
+                       <p:commandButton value="Save Now" onclick="save(); return false; " oncomplete="unsavedWarnDialog.hide()"/>
+                       <p:commandButton value="I will save it later" type="button" onclick="unsavedWarnDialog.hide()"/>
+                       <p:commandButton value="Discard changes" actionListener="#{annotatedObjectController.doRevertChanges}"
+                                        update="centralUnit,topSection,growl,messagesComponent" oncomplete="unsavedWarnDialog.hide()"/>
+                   </p:confirmDialog>
+
 
             <p>&#160;</p>
 
@@ -140,10 +161,12 @@
         </div>
 
         <p:remoteCommand name="save" actionListener="#{annotatedObjectController.doSave}"
-                        update="centralUnit,topSection,growl,messagesComponent" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton'); input.disabled = true; input.value = 'Saving...'"
+                        update="centralUnit,topSection,messagesComponent" onstart="saveDialog.show(); var input = document.getElementById('topSaveButton'); input.disabled = true; input.value = 'Saving...'"
                         onerror="alert('Error: '+error+' '+status)"
                         oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton'); input.disabled = false; input.value = 'Save'"/>
-        
+
+        <p:remoteCommand name="autoSave" actionListener="#{annotatedObjectController.doSave}" async="true"/>
+
 
         <!-- CvObject -->
     <p:dialog header="New CV Object" width="400" widgetVar="newCvObjectDialog" visible="false" draggable="false"
