@@ -33,7 +33,9 @@ import uk.ac.ebi.intact.model.util.ExperimentUtils;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -108,6 +110,14 @@ public class ExperimentController extends AnnotatedObjectController {
 
             experiment.addXref(new ExperimentXref(pubmed, publication.getShortLabel(), primaryRef));
         }
+
+        interactionDataModel = new LazyDataModel<Interaction>() {
+            @Override
+            public List<Interaction> fetchLazyData(int i, int i1) {
+                List<Interaction> interactions = new ArrayList<Interaction>(experiment.getInteractions());
+                return interactions.subList(i, Math.min(interactions.size(), i1));
+            }
+        };
 
         getUnsavedChangeManager().markAsUnsaved(experiment);
 

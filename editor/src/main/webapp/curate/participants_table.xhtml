@@ -22,7 +22,7 @@
 
                     <f:facet name="title">
                         <h:panelGroup rendered="#{not wrapper.deleted}">
-                            <p:commandLink onclick="load_participant.show()" action="#{curatorContextController.edit(participant)}"
+                            <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
                                            style="#{participant.ac == null? 'color:blue' :''}"
                                             value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
                                             ajax="false"/>

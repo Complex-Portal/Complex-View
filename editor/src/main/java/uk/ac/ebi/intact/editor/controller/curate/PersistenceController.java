@@ -18,9 +18,6 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.engine.PersistenceContext;
-import org.hibernate.impl.SessionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -35,7 +32,6 @@ import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
 import javax.faces.event.ActionEvent;
-import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -59,29 +55,8 @@ public class PersistenceController extends JpaAwareController {
             return false;
         }
 
-        final String simpleName = annotatedObject.getClass().getSimpleName();
-
-        if ( log.isDebugEnabled() ) log.debug( "Saving annotated object: " + DebugUtil.annotatedObjectToString(annotatedObject, false));
-
         try {
             getIntactContext().getCorePersister().saveOrUpdate( annotatedObject );
-
-            addInfoMessage( simpleName +" saved", "AC: " + annotatedObject.getAc() );
-
-            // clear the unsaved changes using the entity manager
-            final HibernateEntityManager em = (HibernateEntityManager) getIntactContext().getDaoFactory().getEntityManager();
-            final PersistenceContext persistenceContext = ((SessionImpl) em.getSession()).getPersistenceContext();
-
-            CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
-
-            Collection<Object> entities = persistenceContext.getEntitiesByKey().values();
-            for (Object entity : entities) {
-                if (entity instanceof IntactObject) {
-                    if (log.isDebugEnabled()) log.debug("\tIndirectly saving: "+DebugUtil.intactObjectToString((IntactObject)entity, false)+" / removed from unsaved");
-                    curatorContextController.removeFromUnsaved((IntactObject)entity);
-                }
-            }
-
             return true;
 
         } catch (IllegalTransactionStateException itse) {

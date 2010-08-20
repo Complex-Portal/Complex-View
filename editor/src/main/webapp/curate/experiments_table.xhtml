@@ -30,7 +30,7 @@
             </f:facet>
 
             <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(experiment.ac)}">
-                <p:commandLink onclick="load_exp.show()" action="#{curatorContextController.edit(experiment)}"
+                <p:commandLink onclick="load_exp.show()" action="#{curateController.edit(experiment)}"
                                style="#{experiment.ac == null? 'color:blue' :''}"
                                value="#{experiment.shortLabel}" ajax="false"/>
             </h:panelGroup>

@@ -132,7 +132,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         addInfoMessage("Cloned annotated object", null);
 
-        return curatorContextController.edit(clone);
+        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+        return curateController.edit(clone);
     }
 
     public void modifyClone(AnnotatedObject clone) {
@@ -142,7 +143,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     protected IntactCloner newClonerInstance() {
         return new EditorIntactCloner();
     }
-
 
     // XREFS
     ///////////////////////////////////////////////

@@ -12,7 +12,7 @@
         <p:dataTable id="unsavedTable" var="change" value="#{curatorContextController.allChanges}" paginator="true" rows="10"
                 paginatorAlwaysVisible="false">
             <p:column>
-                <h:commandButton value="Edit" action="#{curatorContextController.edit(change.unsavedObject)}"/>
+                <h:commandButton value="Edit" action="#{curateController.edit(change.unsavedObject)}"/>
             </p:column>
             <p:column>
                 <f:facet name="header"><h:outputText value="Modification"/></f:facet>

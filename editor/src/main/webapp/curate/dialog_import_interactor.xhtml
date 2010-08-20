@@ -51,6 +51,7 @@
 
 
                 <p:dataTable id="candidatesTable" var="candidate" rendered="#{not empty participantController.interactorCandidates}"
+                             paginatorAlwaysVisible="false"
                              value="#{participantController.interactorCandidates}" paginator="true"  rows="10">
                     <p:column>
                         <f:facet name="header"><h:outputText value="Select"/></f:facet>

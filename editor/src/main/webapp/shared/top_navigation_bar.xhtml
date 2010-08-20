@@ -7,15 +7,19 @@
 
     <p:panel style="padding: 0">
 
-    <p:commandButton value="Dashboard" action="/dashboard/dashboard?faces-redirect=true" disabled="#{selected == 'dashboard'}"/>
+    <p:commandButton value="Dashboard" action="/dashboard/dashboard?faces-redirect=true" disabled="#{selected == 'dashboard'}"
+            ajax="false"/>
     &#160;
-    <p:commandButton value="Search" action="/search/search?faces-redirect=true" disabled="#{selected == 'search'}"/>
+    <p:commandButton value="Search" action="/search/search?faces-redirect=true" disabled="#{selected == 'search'}"
+            ajax="false"/>
     &#160;
     <p:commandButton value="Curate" action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
                      rendered="#{userSessionController.hasRole('CURATOR')}"
+                     ajax="false"
                      disabled="#{selected == 'curate'}"/>
     &#160;
     <p:commandButton value="Admin" action="/admin/dashboard?faces-redirect=true" disabled="#{selected == 'admin'}"
+                     ajax="false"
             rendered="#{userSessionController.hasRole('ADMIN')}"/>
 
     </p:panel>

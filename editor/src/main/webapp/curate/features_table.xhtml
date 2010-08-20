@@ -30,7 +30,7 @@
                         <h:outputText value="Shortlabel"/>
                     </f:facet>
                      <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(feature.ac)}">
-                         <p:commandLink onclick="load_feature.show()" action="#{curatorContextController.edit(feature)}"
+                         <p:commandLink onclick="load_feature.show()" action="#{curateController.edit(feature)}"
                                style="#{feature.ac == null? 'color:blue' :''}"
                                value="#{feature.shortLabel}" ajax="false"/>
                      </h:panelGroup>

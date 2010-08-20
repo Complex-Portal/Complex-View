@@ -261,6 +261,7 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         refreshExperimentLists();
+        refreshParticipants();
 
         return "/curate/interaction";
     }

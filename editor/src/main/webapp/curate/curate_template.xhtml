@@ -220,7 +220,7 @@
     <ui:define name="dialogs">
         <ui:include src="menu_dialogs.xhtml"/>
 
-        <ia:loadingDialog widgetVar="saveDialog" message="Saving #{annotatedObjectController.annotatedObject.class.simpleName}..."/>
+        <ia:loadingDialog widgetVar="saveDialog" message="Saving #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}..."/>
         <ia:loadingDialog widgetVar="revertDialog" message="Reverting changes..."/>
         <ia:loadingDialog widgetVar="cloningDialog" message="Cloning object..."/>
     </ui:define>
