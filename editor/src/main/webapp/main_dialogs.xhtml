@@ -7,9 +7,31 @@
 
     <!-- Logged in users -->
     <p:dialog header="Currently logged in users" width="400" widgetVar="loggedUsersDlg"
-              visible="false" draggable="false" modal="true" position="center">
+              draggable="false" modal="true" position="center">
 
-        <ia:loggedUsers/>
+        <p:dataTable id="loggedUsersTable" var="user" value="#{userManagerController.loggedInUsers}"
+                paginator="true" paginatorAlwaysVisible="false" rows="10">
+             <p:column>
+                 <f:facet name="header">
+                     <h:outputText value="Login"/>
+                 </f:facet>
+                 <h:outputText value="#{user.login}"/>
+             </p:column>
+             <p:column>
+                 <f:facet name="header">
+                     <h:outputText value="Login time"/>
+                 </f:facet>
+                 <h:outputText value="#{user.lastLogin}">
+                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                 </h:outputText>
+             </p:column>
+             <!--<p:column>-->
+                 <!--<f:facet name="header">-->
+                     <!--<h:outputText value="Locks"/>-->
+                 <!--</f:facet>-->
+                 <!--<h:outputText value="TODO"/>-->
+             <!--</p:column>-->
+         </p:dataTable>
 
     </p:dialog>
 

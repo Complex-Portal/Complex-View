@@ -65,9 +65,9 @@
                                     <h:graphicImage url="/resources/images/users.png" alt="Curators:"/>
                                 </td>
                                 <td class="verticalTop" style="padding-left: 5px;">
-                                    <h:outputLink onclick="loggedUsersDlg.show(); return false;" >
-                                        <h:outputText value="#{appController.loggedInUserCount}"/>
-                                    </h:outputLink>
+                                    <p:commandLink onclick="loggedUsersDlg.show();" update="loggedUsersTable" >
+                                        <h:outputText value="#{userManagerController.loggedInUserCount}"/>
+                                    </p:commandLink>
                                 </td>
                             </tr>
                             <tr>
@@ -188,12 +188,12 @@
             <iframe src="#{facesContext.externalContext.request.contextPath}/admin/other/devPopup.html" style="width:600px; height:300px; border-width: 0; overflow: hidden;"></iframe>
         </p:dialog>
 
+            <ui:include src="main_dialogs.xhtml"/>
+
         </h:form>
 
         <h:form id="dialogsForm">
-            <ui:insert name="dialogs"/>
-
-            <ui:include src="main_dialogs.xhtml"/>
+            <ui:insert name="dialogs"/>            
         </h:form>
 
 

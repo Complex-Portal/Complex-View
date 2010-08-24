@@ -15,29 +15,21 @@
  */
 package uk.ac.ebi.intact.editor.controller;
 
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.core.users.model.User;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
 @Controller
-@Scope( "singleton" )
 public class AppController extends BaseController {
 
-    private Collection<User> loggedInUsers;
+
 
     private String database;
     private String theme;
 
     public AppController() {
-        loggedInUsers = new ArrayList<User>();
-
         theme = "ebi";
     }
 
@@ -47,18 +39,6 @@ public class AppController extends BaseController {
 
     public void setDatabase( String database ) {
         this.database = database;
-    }
-
-    public Collection<User> getLoggedInUsers() {
-        return loggedInUsers;
-    }
-
-    public void setLoggedInUsers( Collection<User> loggedInUsers ) {
-        this.loggedInUsers = loggedInUsers;
-    }
-
-    public String getLoggedInUserCount() {
-        return String.valueOf( loggedInUsers.size() );
     }
 
     public String getTheme() {
