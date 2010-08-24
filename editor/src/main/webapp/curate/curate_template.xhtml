@@ -134,12 +134,12 @@
                 <!--</h:outputScript>-->
 
                 <!-- Interactor -->
-                   <p:confirmDialog message="Are you sure you want to leave without saving?" widgetVar="unsavedWarnDialog">
-                       <p:commandButton value="Save Now" onclick="save(); return false; " oncomplete="unsavedWarnDialog.hide()"/>
-                       <p:commandButton value="I will save it later" type="button" onclick="unsavedWarnDialog.hide()"/>
-                       <p:commandButton value="Discard changes" actionListener="#{annotatedObjectController.doRevertChanges}"
-                                        update="centralUnit,topSection,growl,messagesComponent" oncomplete="unsavedWarnDialog.hide()"/>
-                   </p:confirmDialog>
+                   <!--<p:confirmDialog message="Are you sure you want to leave without saving?" widgetVar="unsavedWarnDialog">-->
+                       <!--<p:commandButton value="Save Now" onclick="save(); return false; " oncomplete="unsavedWarnDialog.hide()"/>-->
+                       <!--<p:commandButton value="I will save it later" type="button" onclick="unsavedWarnDialog.hide()"/>-->
+                       <!--<p:commandButton value="Discard changes" actionListener="#{annotatedObjectController.doRevertChanges}"-->
+                                        <!--update="centralUnit,topSection,growl,messagesComponent" oncomplete="unsavedWarnDialog.hide()"/>-->
+                   <!--</p:confirmDialog>-->
 
 
             <p>&#160;</p>

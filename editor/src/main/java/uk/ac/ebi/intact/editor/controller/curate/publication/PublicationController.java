@@ -104,7 +104,7 @@ public class PublicationController extends AnnotatedObjectController {
 
             refreshDataModels();
 
-            getCuratorContextController().removeFromUnsavedByAc(ac);
+            //getCuratorContextController().removeFromUnsavedByAc(ac);
 
         } else if ( publication != null ) {
             ac = publication.getAc();

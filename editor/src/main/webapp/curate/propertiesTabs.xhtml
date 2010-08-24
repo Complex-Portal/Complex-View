@@ -7,19 +7,19 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
-    <p:tab title="Xrefs (#{annotatedObjectController.annotatedObject.xrefs.size()})">
+    <p:tab id="xrefsTab" title="Xrefs (#{annotatedObjectController.annotatedObject.xrefs.size()})">
         <h:panelGrid id="xrefsPanel">
         <ia:xrefsTable annotatedObjectController="#{annotatedObjectController}"
                        databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                        qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
                        update="xrefsPanel changesPanel"
-                       valueChangeRender=":editorForm:basic :editorForm:changesPanel"
+                       valueChangeRender="#{updateOnChange} :editorForm:changesPanel"
                        valueChangeAwareObject="#{annotatedObjectController}"/>
         </h:panelGrid>
 
     </p:tab>
 
-    <p:tab title="Annotations (#{annotatedObjectController.annotatedObject.annotations.size()})">
+    <p:tab id="annotationsTab" title="Annotations (#{annotatedObjectController.annotatedObject.annotations.size()})">
          <h:panelGrid id="annotationsPanel">
         <!--<ia:annotationsTable annotatedObjectController="#{annotatedObjectController}"-->
                              <!--topicSelectItems="#{annotatedObjectSelectItems}"-->
@@ -30,14 +30,14 @@
             <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
             <ui:param name="topicSelectItems" value="#{annotatedObjectSelectItems}"/>
             <ui:param name="update" value="annotationsPanel changesPanel"/>
-            <ui:param name="valueChangeRender" value=":editorForm:basic :editorForm:changesPanel"/>
+            <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
             <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
         </ui:include>
          </h:panelGrid>
 
     </p:tab>
 
-    <p:tab id="aliasesPanel" title="Aliases (#{annotatedObjectController.annotatedObject.aliases.size()})">
+    <p:tab id="aliasesTab" title="Aliases (#{annotatedObjectController.annotatedObject.aliases.size()})">
         <ia:aliasTable annotatedObjectController="#{annotatedObjectController}"
                        aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
                        update="aliasesPanel changesPanel unsavedChangesInfo"

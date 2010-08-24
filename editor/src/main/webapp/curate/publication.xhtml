@@ -23,7 +23,7 @@
 
     <ui:define name="curateContent">
         <p:hotkey bind="alt+s" actionListener="#{publicationController.doSave}"
-                  update="publicationDetails,northUnit,growl,changesPanel"/>
+                  update="publicationDetails,northUnit,messagesComponent,changesPanel"/>
 
         <f:metadata>
             <f:viewParam name="ac" value="#{publicationController.ac}"/>
@@ -102,7 +102,7 @@
                                     <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
                                                  size="10" onkeyup="enableAutocomplete()"
                                                  required="true" requiredMessage="Identifier is required">
-                                        <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:xrefsPanel"
+                                        <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:publicationTabs"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
 
@@ -114,7 +114,7 @@
                                     <p:commandButton id="autocompleteBtn" value="Auto-complete"
                                                      disabled="#{not requestScope.autocompleteEnabled}"
                                                      actionListener="#{publicationController.doFormAutocomplete}" async="true"
-                                                     update="publicationDetails,northUnit,growl">
+                                                     update="publicationDetails,northUnit,messagesComponent">
                                         <!--<p:confirmDialog yesLabel="Auto-complete" noLabel="Not now" width="300px"-->
                                         <!--draggable="false"-->
                                         <!--message="Auto-completing an existing publication will update its cross references and annotations. Are you sure?"-->
@@ -124,11 +124,11 @@
                                 <td style="padding-left: 45px;">
                                     <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
                                     <h:inputText id="acTxt" value="#{publicationController.publication.ac}"
-                                                 size="10" disabled="true" class="intact-disabled"/>
+                                                 size="10" readonly="true" class="intact-disabled"/>
                                 </td>
                                 <td style="text-align:right;">
                                     <h:outputLabel value="IMEx Id: " for="imexIdTxt" class="intact-disabled"/>
-                                    <h:inputText id="imexIdTxt" value="#{publicationController.imexId}" size="10" disabled="true" class="intact-disabled"/>
+                                    <h:inputText id="imexIdTxt" value="#{publicationController.imexId}" size="10" readonly="true" class="intact-disabled"/>
                                 </td>
                             </tr>
                             <tr>
@@ -137,7 +137,7 @@
                                 </td>
                                 <td colspan="2">
                                     <h:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1">
-                                        <f:ajax event="valueChange" render=":editorForm:changesPanel"
+                                        <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputTextarea>
                                 </td>
@@ -151,7 +151,7 @@
                                     <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4"
                                             validatorMessage="Year provided is invalid">
                                         <f:convertNumber maxFractionDigits="0" pattern="#" />
-                                         <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:annotationsPanel"
+                                         <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:publicationTabs"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
 
@@ -163,7 +163,7 @@
                                 </td>
                                 <td colspan="3">
                                     <h:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50">
-                                        <f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:changesPanel"
+                                        <f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:unsavedChangesInfo :editorForm:changesPanel"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
                                 </td>
@@ -200,12 +200,12 @@
                                 <td colspan="3">
                                     <h:panelGroup>
                                         <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70">
-                                            <f:ajax event="valueChange" render=":editorForm:annotationsPanel :editorForm:infoPanels :editorForm:changesPanel"
+                                            <f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:infoPanels :editorForm:changesPanel"
                                                     execute="@this" listener="#{publicationController.changed}"/>
                                         </h:inputText>
                                         <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{publicationController.setUnsavedChanges(true)}"
                                                          onclick="document.getElementById('onHoldTxt').value = ''"
-                                                         update="infoPanels,annotationsPanel,changesPanel"/>
+                                                         update="infoPanels,publicationTabs,changesPanel"/>
                                     </h:panelGroup>
                                 </td>
                             </tr>
@@ -250,6 +250,7 @@
 
                         <ui:include src="propertiesTabs.xhtml">
                             <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.publicationTopicSelectItems}"/>
+                            <ui:param name="updateOnChange" value=":editorForm:basic"/>
                         </ui:include>
 
                 </p:tabView>
