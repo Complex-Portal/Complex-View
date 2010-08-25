@@ -25,17 +25,6 @@
 
         <h:outputScript name="intact.js" library="javascript" target="head"/>
 
-        <h:outputStylesheet>
-			.yui-skin-sam .yui-ac {
-				width:200px;
-			}
-
-            .yui-ac-input {
-               margin-top: -12px;
-            margin-left: -2px;
-            }
-        </h:outputStylesheet>
-
         <ui:param name="dialogWidgetId" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}_bioSourceDlg"/>
 
         <h:panelGroup onmouseover="document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'visible'"
@@ -49,12 +38,9 @@
                     listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
         </h:selectOneMenu>
 
-        <p:commandButton id="selectBtn" type="button" value="Browse" style="visibility: hidden" onclick="#{dialogWidgetId}_load.show()">
-            <p:ajax event="click" oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"
-                    actionListener="#{cc.loadBioSources}"
-                    process="#{cc.clientId}"
-                    update="bioSourceBrowserDialog"/>
-        </p:commandButton>
+        <p:commandButton id="selectBtn" value="Browse" style="visibility: hidden" onclick="#{dialogWidgetId}_load.show()"
+                          oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"
+                actionListener="#{cc.loadBioSources}" process="#{cc.clientId}" update="bioSourceBrowserDialog"/>
 
         </h:panelGroup>
 
@@ -66,26 +52,19 @@
         <ia:loadingDialog widgetVar="#{dialogWidgetId}_load" message="Loading organisms..."/>
 
         <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" position="center"
-                width="400" height="500">
+                width="600">
            <p:outputPanel id="bioSourceBrowserDialog">
 
                 <h:panelGrid columns="1">
                     <h:panelGroup>
                         <h:inputText value="#{cc.query}"/>
-                        <p:commandButton value="Search" actionListener="#{cc.search}" update="bioSourceTable"/>
-                        <p:commandButton value="New..." title="Not yet implemented" disabled="true"/>
+                        <p:commandButton value="Search" actionListener="#{cc.search}" update="bioSourceBrowserDialog"/>
                     </h:panelGroup>
-
-                    <h:outputScript>
-                        function ia_update(bioSourceAc, bioSourceLabel) {
-                            document.getElementById('#{cc.clientId}:selectObject').value = bioSourceAc;
-                            #{dialogWidgetId}.hide();
-                        }
-                    </h:outputScript>
 
                     <p:dataTable id="bioSourceTable"
                                  var="bioSource" value="#{cc.bioSources}"
-                                 paginator="#{cc.bioSources.rowCount gt 10}" rows="10" lazy="true" dynamic="true"
+                                 paginator="true" paginatorAlwaysVisible="false"
+                                 rows="10" lazy="true" dynamic="true"
                                  paginatorPosition="top">
                         <p:column>
                             <p:commandLink value="Select" process="#{cc.clientId}"

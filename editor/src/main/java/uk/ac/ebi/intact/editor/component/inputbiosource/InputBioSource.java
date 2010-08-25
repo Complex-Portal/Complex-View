@@ -43,7 +43,7 @@ public class InputBioSource extends UIInput implements NamingContainer, Serializ
     private static final Log log = LogFactory.getLog(InputBioSource.class);
     
     public InputBioSource() {
-        if (log.isTraceEnabled()) log.trace("InputBioSource.InputBioSource");
+        if (log.isTraceEnabled()) log.trace("InputBioSource.InputBioSource - New instance ["+hashCode()+"]");
     }
 
     @Override
@@ -52,21 +52,19 @@ public class InputBioSource extends UIInput implements NamingContainer, Serializ
    }
 
     public void loadBioSources( ActionEvent evt ) {
-        if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES");
+        if (log.isTraceEnabled()) log.trace("Load Biosources");
         setQuery(null);
-        if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES 2");
+
         LazyDataModel<BioSource> bioSources = LazyDataModelFactory.createLazyDataModel( getEntityManager(), "select b from BioSource b order by b.shortLabel",
                                                                "select count(b) from BioSource b" );
 
-        if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES 3");
         setBioSources(bioSources);
-        if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES 4");
     }
 
     public void search(ActionEvent evt) {
         String query = getQuery();
 
-        if (log.isTraceEnabled()) log.trace("QUERY: "+query);
+        if (log.isTraceEnabled()) log.trace("Searching with query: "+query);
 
         if (query == null) {
             return;

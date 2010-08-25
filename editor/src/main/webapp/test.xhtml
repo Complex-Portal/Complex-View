@@ -18,27 +18,28 @@
     <h:body>
         <h:form id="testForm" prependId="false">
 
-            <ia:inputCvObject id="partDetMethodTxt" value="#{testController.cvIdentification}"
-                                                  selectItems="#{cvObjectService.participantDetectionMethodSelectItems}"
-                                                  cvIdentifier="MI:0002"/>
+            <!--<ui:debug />-->
+
+            <ia:inputBioSource id="bioSource" value="#{testController.bioSource3}"
+                                                  selectItems="#{bioSourceService.bioSourceSelectItems}"/>
 
             <hr/>
 
-            <p:treeTable id="tree" var="cvObject"
-                            value="#{testController.cvRoot}">
-                        <p:column>
-                            <f:facet name="header"><h:outputText value="Label"/></f:facet>
-                            <a href="#">#{cvObject.shortLabel}</a>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header"><h:outputText value="Identifier"/></f:facet>
-                            <h:outputText value="#{cvObject.identifier}" />
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header"><h:outputText value="Full name"/></f:facet>
-                            <h:outputText value="#{cvObject.fullName}" />
-                        </p:column>
-                    </p:treeTable>
+            <!--<p:treeTable id="tree" var="cvObject"-->
+                            <!--value="#{testController.cvRoot}">-->
+                        <!--<p:column>-->
+                            <!--<f:facet name="header"><h:outputText value="Label"/></f:facet>-->
+                            <!--<a href="#">#{cvObject.shortLabel}</a>-->
+                        <!--</p:column>-->
+                        <!--<p:column>-->
+                            <!--<f:facet name="header"><h:outputText value="Identifier"/></f:facet>-->
+                            <!--<h:outputText value="#{cvObject.identifier}" />-->
+                        <!--</p:column>-->
+                        <!--<p:column>-->
+                            <!--<f:facet name="header"><h:outputText value="Full name"/></f:facet>-->
+                            <!--<h:outputText value="#{cvObject.fullName}" />-->
+                        <!--</p:column>-->
+                    <!--</p:treeTable>-->
 
         </h:form>
     </h:body>
