@@ -54,10 +54,13 @@ public class InputBioSource extends UIInput implements NamingContainer, Serializ
     public void loadBioSources( ActionEvent evt ) {
         if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES");
         setQuery(null);
+        if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES 2");
         LazyDataModel<BioSource> bioSources = LazyDataModelFactory.createLazyDataModel( getEntityManager(), "select b from BioSource b order by b.shortLabel",
                                                                "select count(b) from BioSource b" );
 
+        if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES 3");
         setBioSources(bioSources);
+        if (log.isTraceEnabled()) log.trace("LOAD BIOSOURCES 4");
     }
 
     public void search(ActionEvent evt) {
@@ -120,6 +123,7 @@ public class InputBioSource extends UIInput implements NamingContainer, Serializ
         if (log.isTraceEnabled()) log.trace("InputBioSource.setBioSources: "+((bioSources == null)? null : bioSources.getRowCount()));
 
         if (bioSources != null) {
+            log.trace("Storing bioSources in stateHelper");
             getStateHelper().put("bioSources", bioSources);
         }
     }

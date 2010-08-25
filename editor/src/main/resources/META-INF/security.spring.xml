@@ -15,7 +15,7 @@
         <intercept-url pattern="/**" access="ROLE_CURATOR, ROLE_ADMIN"/>
 
         <!-- Login/Logout navigation -->
-        <form-login login-page="/login.jsf" default-target-url="/dashboard/dashboard.jsf" authentication-failure-url="/"/>
+        <form-login login-page="/login.jsf" default-target-url="/dashboard/" authentication-failure-url="/"/>
         <!--<logout logout-url="/logout" invalidate-session="true"/>-->
 
         <concurrent-session-control max-sessions="2" />
