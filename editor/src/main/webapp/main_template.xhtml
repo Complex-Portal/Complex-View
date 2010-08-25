@@ -16,8 +16,8 @@
     </h:head>
 
     <h:body style="margin: 0 0 0 0;">
-        
-    <ui:debug hotkey="e" rendered="#{facesContext.application.projectStage == 'Development'}"/>
+        <!-- The debug element is causing problems with the Browse Cv Objects trees in dialogs... -->
+        <!--<ui:debug hotkey="e" rendered="#{facesContext.application.projectStage == 'Development'}"/>-->
 
         <!--<p:growl id="growl" showDetail="true" life="3000"/>-->
         <h:panelGroup id="growl"/>
