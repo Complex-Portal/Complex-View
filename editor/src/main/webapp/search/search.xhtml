@@ -12,7 +12,9 @@
     <ui:define name="content">
 
         <f:metadata>
+            <f:event type="preRenderView" listener="#{searchController.searchIfQueryPresent}"/>
             <f:viewParam name="query" value="#{searchController.query}"/>
+            <f:viewParam name="quickQuery" value="#{searchController.quickQuery}"/>
         </f:metadata>
 
         <p:focus for="mainQueryTxt"/>

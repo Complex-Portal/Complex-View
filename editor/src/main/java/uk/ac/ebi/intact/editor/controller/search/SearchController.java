@@ -16,6 +16,7 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
+import javax.faces.event.ComponentSystemEvent;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -63,47 +64,15 @@ public class SearchController extends JpaAwareController {
     public SearchController() {
     }
 
-    ///////////////////////////
-    // Getters and Setters
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery( String query ) {
-        this.query = query;
-    }
-
-    public LazyDataModel<Publication> getPublications() {
-        return publications;
-    }
-
-    public LazyDataModel<Experiment> getExperiments() {
-        return experiments;
-    }
-
-    public LazyDataModel<Interaction> getInteractions() {
-        return interactions;
-    }
-
-    public LazyDataModel<Interactor> getMolecules() {
-        return molecules;
-    }
-
-    public LazyDataModel<CvObject> getCvobjects() {
-        return cvobjects;
-    }
-
-     public LazyDataModel<Feature> getFeatures() {
-        return features;
-    }
-
-    public LazyDataModel<BioSource> getOrganisms() {
-        return organisms;
-    }
-
     ///////////////
     // Actions
+
+    public void searchIfQueryPresent(ComponentSystemEvent evt) {
+        if (query != null && !query.isEmpty()) {
+            doSearch();
+        }
+    }
+
     @Transactional( readOnly = true )
     public String doQuickSearch() {
         this.query = quickQuery;
@@ -486,6 +455,45 @@ public class SearchController extends JpaAwareController {
 
     public int countInteractionsForPublication( Publication publication ) {
         return getDaoFactory().getPublicationDao().countInteractionsForPublicationAc( publication.getAc() );
+    }
+
+    ///////////////////////////
+    // Getters and Setters
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery( String query ) {
+        this.query = query;
+    }
+
+    public LazyDataModel<Publication> getPublications() {
+        return publications;
+    }
+
+    public LazyDataModel<Experiment> getExperiments() {
+        return experiments;
+    }
+
+    public LazyDataModel<Interaction> getInteractions() {
+        return interactions;
+    }
+
+    public LazyDataModel<Interactor> getMolecules() {
+        return molecules;
+    }
+
+    public LazyDataModel<CvObject> getCvobjects() {
+        return cvobjects;
+    }
+
+     public LazyDataModel<Feature> getFeatures() {
+        return features;
+    }
+
+    public LazyDataModel<BioSource> getOrganisms() {
+        return organisms;
     }
 
     public String getQuickQuery() {
