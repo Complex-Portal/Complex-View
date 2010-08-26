@@ -27,27 +27,45 @@
 
         <ui:param name="dialogWidgetId" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}_bioSourceDlg"/>
 
-        <h:panelGroup onmouseover="document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'visible'"
-                 onmouseout="document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'hidden'">
+        <h:outputScript>
+            function #{cc.clientId}_displayButtons() {
+                document.getElementById('#{cc.clientId}:selectBtn').style.display = 'inline'
+                document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'visible'
+                document.getElementById('#{cc.clientId}:info').style.display = 'none'
+                document.getElementById('#{cc.clientId}:info').style.visibility = 'hidden'
+            }
 
-        <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="bioSourceConverter"
-                required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}">
-            <f:selectItems value="#{cc.attrs.selectItems}"/>
-            <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
-                    disabled="#{cc.attrs.valueChangeAwareObject == null}"
-                    listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
-        </h:selectOneMenu>
+            function #{cc.clientId}_displayInfo() {
+                document.getElementById('#{cc.clientId}:selectBtn').style.display = 'none'
+                document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'hidden'
+                document.getElementById('#{cc.clientId}:info').style.display = 'inline'
+                document.getElementById('#{cc.clientId}:info').style.visibility = 'visible'
+            }
+        </h:outputScript>
 
-        <p:commandButton id="selectBtn" value="Browse" style="visibility: hidden" onclick="#{dialogWidgetId}_load.show()"
-                          oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"
-                actionListener="#{cc.loadBioSources}" process="#{cc.clientId}" update="bioSourceBrowserDialog"/>
+        <h:panelGroup onmouseover="#{cc.clientId}_displayButtons()" onmouseout="#{cc.clientId}_displayInfo()">
+
+            <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="bioSourceConverter"
+                    required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}">
+                <f:selectItems value="#{cc.attrs.selectItems}"/>
+                <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender} info" execute="@this"
+                        disabled="#{cc.attrs.valueChangeAwareObject == null}"
+                        listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
+            </h:selectOneMenu>
+
+            <p:commandButton id="selectBtn" value="Browse" style="visibility: hidden; display:none" onclick="#{dialogWidgetId}_load.show()"
+                             oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"
+                             actionListener="#{cc.loadBioSources}" process="#{cc.clientId}" update="bioSourceBrowserDialog"/>
+
+           <h:panelGroup id="info" style="color: gray">
+               <h:panelGroup rendered="#{cc.attrs.value != null}">
+                   <h:outputText value=" #{cc.attrs.value.taxId} | #{cc.attrs.value.fullName}"/>
+                   <h:outputText value=" | #{cc.attrs.value.cvTissue.fullName}" rendered="#{cc.attrs.value.cvTissue != null}"/>
+                   <h:outputText value=" | #{cc.attrs.value.cvCellType.fullName}" rendered="#{cc.attrs.value.cvCellType != null}"/>
+               </h:panelGroup>
+           </h:panelGroup>
 
         </h:panelGroup>
-
-        <p:outputPanel id="javascriptPanel">
-
-
-        </p:outputPanel>
 
         <ia:loadingDialog widgetVar="#{dialogWidgetId}_load" message="Loading organisms..."/>
 
@@ -55,22 +73,37 @@
                 width="600">
            <p:outputPanel id="bioSourceBrowserDialog">
 
-                <h:panelGrid columns="1">
+                <h:panelGrid columns="1" >
                     <h:panelGroup>
-                        <h:inputText value="#{cc.query}"/>
+                        <h:inputText value="#{cc.query}">
+                            <!--<f:ajax event="keyup" render="bioSourceBrowserDialog" execute="@this"-->
+                                <!--listener="#{cc.autoSearch}"/>-->
+                        </h:inputText>
                         <p:commandButton value="Search" actionListener="#{cc.search}" update="bioSourceBrowserDialog"/>
                     </h:panelGroup>
 
-                    <p:dataTable id="bioSourceTable"
+                    <h:outputScript>
+                        function ia_update(bioSourceAc, bioSourceLabel) {
+                            var selectList = document.getElementById('#{cc.clientId}:selectObject');
+                            selectList.value = bioSourceAc;
+                            jsf.ajax.request('hostOrganismTxt:selectObject',null,{execute:'@this',render:'#{cc.clientId}:info','javax.faces.behavior.event':'valueChange'});
+                            #{dialogWidgetId}.hide();
+                        }
+                    </h:outputScript>
+
+                    <h:panelGroup rendered="#{empty cc.bioSources}">
+                        <p>No results for query: <b>#{cc.query}</b></p>
+                    </h:panelGroup>
+
+                    <p:dataTable id="bioSourceTable" rendered="#{not empty cc.bioSources}"
                                  var="bioSource" value="#{cc.bioSources}"
                                  paginator="true" paginatorAlwaysVisible="false"
-                                 rows="10" lazy="true" dynamic="true"
+                                 rows="10"
                                  paginatorPosition="top">
                         <p:column>
-                            <p:commandLink value="Select" process="#{cc.clientId}"
-                                           onclick="ia_update('#{bioSource.ac}', '#{bioSource.shortLabel}')"
-                                           actionListener="#{cc.selectBioSource(bioSource)}">
-                            </p:commandLink>
+                            <p:commandButton value="Select"
+                                           onclick="ia_update('#{bioSource.ac}', '#{bioSource.shortLabel}')" type="button">
+                            </p:commandButton>
                         </p:column>
                         <p:column>
                             <f:facet name="header">

@@ -44,6 +44,7 @@ public class BioSourceService extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( BioSourceService.class );
 
+    private List<BioSource> allBioSources;
     private List<SelectItem> bioSourceSelectItems;
 
     @Autowired
@@ -62,13 +63,13 @@ public class BioSourceService extends JpaAwareController {
 
         final TransactionStatus transactionStatus = dataContext.beginTransaction();
 
-        List<BioSource> bioSources = bioSourceDao.getAllSorted(0,Integer.MAX_VALUE, "shortLabel", true);
+        allBioSources = bioSourceDao.getAllSorted(0,Integer.MAX_VALUE, "shortLabel", true);
 
-        bioSourceSelectItems = new ArrayList<SelectItem>(bioSources.size());
+        bioSourceSelectItems = new ArrayList<SelectItem>(allBioSources.size());
 
         bioSourceSelectItems.add( new SelectItem( null, "-- Select BioSource --", "-- Select BioSource --", false, false, true ) );
 
-        for (BioSource bioSource : bioSources) {
+        for (BioSource bioSource : allBioSources) {
             bioSourceSelectItems.add(new SelectItem(bioSource, bioSource.getShortLabel(), bioSource.getFullName()));
         }
 
@@ -82,5 +83,9 @@ public class BioSourceService extends JpaAwareController {
 
     public List<SelectItem> getBioSourceSelectItems() {
         return bioSourceSelectItems;
+    }
+
+    public List<BioSource> getAllBioSources() {
+        return allBioSources;
     }
 }

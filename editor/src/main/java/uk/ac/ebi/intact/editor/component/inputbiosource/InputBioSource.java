@@ -17,10 +17,8 @@ package uk.ac.ebi.intact.editor.component.inputbiosource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.component.datatable.DataTable;
-import org.primefaces.model.LazyDataModel;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceService;
 import uk.ac.ebi.intact.model.BioSource;
 
 import javax.faces.component.FacesComponent;
@@ -28,10 +26,11 @@ import javax.faces.component.NamingContainer;
 import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -55,10 +54,16 @@ public class InputBioSource extends UIInput implements NamingContainer, Serializ
         if (log.isTraceEnabled()) log.trace("Load Biosources");
         setQuery(null);
 
-        LazyDataModel<BioSource> bioSources = LazyDataModelFactory.createLazyDataModel( getEntityManager(), "select b from BioSource b order by b.shortLabel",
-                                                               "select count(b) from BioSource b" );
+        BioSourceService bioSourceService = (BioSourceService) IntactContext.getCurrentInstance().getSpringContext().getBean("bioSourceService");
+        List<BioSource> bioSources = bioSourceService.getAllBioSources();
 
         setBioSources(bioSources);
+    }
+
+    public void autoSearch(AjaxBehaviorEvent evt) {
+        if (getQuery().length() >= 2) {
+            search(null);
+        }
     }
 
     public void search(ActionEvent evt) {
@@ -70,18 +75,17 @@ public class InputBioSource extends UIInput implements NamingContainer, Serializ
             return;
         }
 
-        Map<String,String> params = new HashMap<String,String>();
-        params.put("shortLabel", query+"%");
-        params.put("fullName", query+"%");
-        params.put("taxId", query);
+        Query jpaQuery = IntactContext.getCurrentInstance().getDaoFactory().getEntityManager()
+                .createQuery("select b from BioSource b " +
+                        "where lower(b.shortLabel) like lower(:shortLabel) or " +
+                        "lower(b.fullName) like lower(:fullName) or " +
+                        "b.taxId = :taxId");
+        jpaQuery.setParameter("shortLabel", query+"%");
+        jpaQuery.setParameter("fullName", query+"%");
+        jpaQuery.setParameter("taxId", query);
 
-        String whereClause = "where lower(b.shortLabel) like lower(:shortLabel) or " +
-                "lower(b.fullName) like lower(:fullName) or " +
-                "b.taxId = :taxId";
 
-        LazyDataModel<BioSource> bioSources = LazyDataModelFactory.createLazyDataModel( getEntityManager(), "select b from BioSource b " + whereClause +
-                " order by b.shortLabel",
-                "select count(b) from BioSource b " + whereClause, params );
+        List<BioSource> bioSources = jpaQuery.getResultList();
         setBioSources(bioSources);
     }
 
@@ -93,35 +97,14 @@ public class InputBioSource extends UIInput implements NamingContainer, Serializ
         setSelectedBioSource( bioSource );
     }
 
-    public LazyDataModel<BioSource> getBioSources() {
-        if (log.isTraceEnabled()) log.trace("InputBioSource.getBioSources ["+hashCode()+"]");
-
-        final LazyDataModel<BioSource> bioSources = (LazyDataModel<BioSource>) getStateHelper().eval("bioSources");
-
-        if (log.isTraceEnabled()) log.trace("\tBIOSOURCES: "+((bioSources == null)? null : bioSources.getRowCount()));
-        refreshTable(bioSources);
+    public List<BioSource> getBioSources() {
+        final List<BioSource> bioSources = (List<BioSource>) getStateHelper().eval("bioSources");
 
         return bioSources;
     }
 
-    private void refreshTable(LazyDataModel<BioSource> bioSources) {
-       if (bioSources != null) {
-            DataTable dt = (DataTable) findComponent(getClientId()+":bioSourceTable");
-
-            if (dt != null) {
-                int rowIndex = dt.getRowIndex();
-                if (log.isTraceEnabled()) log.trace("\tIndex: "+rowIndex);
-                bioSources.setRowIndex(rowIndex);
-                dt.setValue(bioSources);
-            }
-        }
-    }
-
-    public void setBioSources( LazyDataModel<BioSource> bioSources ) {
-        if (log.isTraceEnabled()) log.trace("InputBioSource.setBioSources: "+((bioSources == null)? null : bioSources.getRowCount()));
-
+    public void setBioSources( List<BioSource> bioSources ) {
         if (bioSources != null) {
-            log.trace("Storing bioSources in stateHelper");
             getStateHelper().put("bioSources", bioSources);
         }
     }
