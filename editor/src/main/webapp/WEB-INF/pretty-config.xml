@@ -15,6 +15,11 @@
 		<!--<view-id>/login.jsf</view-id>-->
 	<!--</url-mapping>-->
 
+    <url-mapping id="viewExpired">
+		<pattern value="/viewExpired" />
+		<view-id>/viewExpired.jsf</view-id>
+	</url-mapping>
+
 	<url-mapping id="dashboard">
 		<pattern value="/dashboard" />
 		<view-id>/dashboard/dashboard.jsf</view-id>
