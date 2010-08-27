@@ -551,9 +551,20 @@
         </repository>
 
         <repository>
+            <id>apache.releases</id>
+            <name>Apache Releases Repository</name>
+            <url>https://repository.apache.org/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>apache.snapshots</id>
             <name>Apache Snapshots Repository</name>
-            <url>http://repository.apache.org/snapshots</url>
+            <url>https://repository.apache.org/content/repositories/snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -600,7 +611,7 @@
         <pluginRepository>
             <id>apache.snapshots</id>
             <name>Apache Snapshots Repository</name>
-            <url>http://repository.apache.org/snapshots</url>
+            <url>https://repository.apache.org/content/repositories/snapshots/</url>
         </pluginRepository>
         <pluginRepository>
             <id>jboss-plugins</id>
