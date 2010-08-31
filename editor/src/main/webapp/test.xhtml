@@ -18,30 +18,57 @@
     <h:body>
         <h:form id="testForm" prependId="false">
 
-            <!--<ui:debug />-->
+     <p:dataTable var="car" value="#{testController2.lazyModel}" paginator="true" rows="10" lazy="true"
+                  paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                  rowsPerPageTemplate="5,10,15"
+                  selection="#{testController2.selectedCar}" selectionMode="single"
+                  onRowSelectComplete="carDialog.show()" onRowSelectUpdate="display">
 
-            <ia:inputBioSource id="bioSource" value="#{testController.bioSource3}"
-                                                  selectItems="#{bioSourceService.bioSourceSelectItems}"/>
+         <f:facet name="header">
+             Displaying 100,000,000 Cars
+         </f:facet>
 
-            <hr/>
+         <p:column headerText="Model" sortBy="#{car.model}">
+             <h:outputText value="#{car.model}" />
+         </p:column>
 
-            <!--<p:treeTable id="tree" var="cvObject"-->
-                            <!--value="#{testController.cvRoot}">-->
-                        <!--<p:column>-->
-                            <!--<f:facet name="header"><h:outputText value="Label"/></f:facet>-->
-                            <!--<a href="#">#{cvObject.shortLabel}</a>-->
-                        <!--</p:column>-->
-                        <!--<p:column>-->
-                            <!--<f:facet name="header"><h:outputText value="Identifier"/></f:facet>-->
-                            <!--<h:outputText value="#{cvObject.identifier}" />-->
-                        <!--</p:column>-->
-                        <!--<p:column>-->
-                            <!--<f:facet name="header"><h:outputText value="Full name"/></f:facet>-->
-                            <!--<h:outputText value="#{cvObject.fullName}" />-->
-                        <!--</p:column>-->
-                    <!--</p:treeTable>-->
+         <p:column headerText="Year" sortBy="#{car.year}">
+             <h:outputText value="#{car.year}" />
+         </p:column>
 
-        </h:form>
+         <p:column headerText="Manufacturer" sortBy="#{car.manufacturer}">
+             <h:outputText value="#{car.manufacturer}" />
+         </p:column>
+
+         <p:column headerText="Color" sortBy="#{car.color}">
+             <h:outputText value="#{car.color}" />
+         </p:column>
+     </p:dataTable>
+
+     <p:dialog header="Car Detail" widgetVar="carDialog" resizable="false"
+               width="200" showEffect="explode" hideEffect="explode">
+
+         <h:panelGrid id="display" columns="2" cellpadding="4">
+
+             <f:facet name="header">
+                 <p:graphicImage value="/images/cars/#{testController2.selectedCar.manufacturer}.jpg"/>
+             </f:facet>
+
+             <h:outputText value="Model:" />
+             <h:outputText value="#{testController2.selectedCar.model}"/>
+
+             <h:outputText value="Year:" />
+             <h:outputText value="#{testController2.selectedCar.year}"/>
+
+             <h:outputText value="Manufacturer:" />
+             <h:outputText value="#{testController2.selectedCar.manufacturer}"/>
+
+             <h:outputText value="Color:" />
+             <h:outputText value="#{testController2.selectedCar.color}"/>
+         </h:panelGrid>
+     </p:dialog>
+
+ </h:form>
     </h:body>
 </f:view>
 </html>

@@ -259,7 +259,7 @@ public class PublicationController extends AnnotatedObjectController {
 
         interactionDataModel = new LazyDataModel<Interaction>() {
             @Override
-            public List<Interaction> fetchLazyData(int i, int i1) {
+            public List<Interaction> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
                 return Collections.EMPTY_LIST;
             }
         };
@@ -513,4 +513,7 @@ public class PublicationController extends AnnotatedObjectController {
         return interactionDataModel;
     }
 
+    public void setInteractionDataModel(LazyDataModel<Interaction> interactionDataModel) {
+        this.interactionDataModel = interactionDataModel;
+    }
 }

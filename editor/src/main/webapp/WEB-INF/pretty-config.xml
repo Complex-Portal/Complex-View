@@ -20,6 +20,11 @@
 		<view-id>/viewExpired.jsf</view-id>
 	</url-mapping>
 
+    <url-mapping id="error">
+		<pattern value="/error" />
+		<view-id>/error.jsf</view-id>
+	</url-mapping>
+
 	<url-mapping id="dashboard">
 		<pattern value="/dashboard" />
 		<view-id>/dashboard/dashboard.jsf</view-id>

@@ -33,9 +33,10 @@ import uk.ac.ebi.intact.model.util.ExperimentUtils;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -113,9 +114,8 @@ public class ExperimentController extends AnnotatedObjectController {
 
         interactionDataModel = new LazyDataModel<Interaction>() {
             @Override
-            public List<Interaction> fetchLazyData(int i, int i1) {
-                List<Interaction> interactions = new ArrayList<Interaction>(experiment.getInteractions());
-                return interactions.subList(i, Math.min(interactions.size(), i1));
+            public List<Interaction> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
+                return Collections.EMPTY_LIST;
             }
         };
 

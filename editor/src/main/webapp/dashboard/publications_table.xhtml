@@ -10,9 +10,11 @@
 
 
     <p:dataTable var="publication" value="#{publicationsDataModel}"
+                 rows="10" lazy="true" dynamic="true"
                  paginator="true"
                  paginatorAlwaysVisible="false"
-                 rows="10" dynamic="true" lazy="true">
+                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                 rowsPerPageTemplate="10,25,50">
         <p:column>
             <f:facet name="header">
                 <h:outputText value="Publication ID"/>

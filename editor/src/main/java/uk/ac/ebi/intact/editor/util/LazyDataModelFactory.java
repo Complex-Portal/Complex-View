@@ -70,6 +70,10 @@ public class LazyDataModelFactory {
                                                      String query,
                                                      int totalNumRows,
                                                      Map<String, String> params ) {
-        return new HqlLazyDataModel( entityManager, query, totalNumRows, params );
+        LazyDataModel lazyDataModel = new HqlLazyDataModel( entityManager, query, params );
+        //lazyDataModel.setPageSize(10);
+        lazyDataModel.setRowCount(totalNumRows);
+
+        return lazyDataModel;
     }
 }

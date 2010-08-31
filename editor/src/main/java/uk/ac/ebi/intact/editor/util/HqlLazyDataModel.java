@@ -36,16 +36,18 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T> {
     private String hqlQuery;
     private Map<String, String> queryParameters;
 
-    public HqlLazyDataModel( EntityManager entityManager, String hqlQuery, int totalNumRows, Map<String, String> params ) {
-        super( totalNumRows );
+    public HqlLazyDataModel( EntityManager entityManager, String hqlQuery, Map<String, String> params ) {
+        super();
         this.entityManager = entityManager;
         this.hqlQuery = hqlQuery;
         this.queryParameters = params;
+        //setRowCount(totalNumRows);
     }
 
     @Override
-    public List<T> fetchLazyData( int firstResult, int maxResults ) {
-        log.debug( "HqlLazyDataModel.fetchLazyData" );
+    public List<T> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
+        log.debug("Loading the lazy data between "+first+" and "+(first+pageSize));
+
         Query query = entityManager.createQuery( hqlQuery );
         log.debug( "HQL: " + hqlQuery );
 
@@ -56,10 +58,12 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T> {
             }
         }
 
-        query.setFirstResult( firstResult );
-        query.setMaxResults( maxResults );
+        query.setFirstResult( first );
+        query.setMaxResults( pageSize );
 
         List<T> results = query.getResultList();
+
+        log.debug("Returning "+results.size()+" results");
 
         return results;
     }

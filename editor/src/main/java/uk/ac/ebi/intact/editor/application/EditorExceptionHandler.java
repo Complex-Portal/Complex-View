@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.editor.application;
 
 
+import org.primefaces.context.DefaultRequestContext;
 import org.primefaces.util.Constants;
 
 import javax.faces.FacesException;
@@ -38,11 +39,11 @@ import java.util.Iterator;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class ViewExpiredExceptionHandler extends ExceptionHandlerWrapper {
+public class EditorExceptionHandler extends ExceptionHandlerWrapper {
 
   private ExceptionHandler wrapped;
 
-    public ViewExpiredExceptionHandler(ExceptionHandler wrapped) {
+    public EditorExceptionHandler(ExceptionHandler wrapped) {
         this.wrapped = wrapped;
     }
 
@@ -60,10 +61,11 @@ public class ViewExpiredExceptionHandler extends ExceptionHandlerWrapper {
 
             Throwable t = context.getException();
 
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
+
             if (t instanceof ViewExpiredException) {
                 ViewExpiredException vee = (ViewExpiredException) t;
-                FacesContext fc = FacesContext.getCurrentInstance();
-                HttpSession session = (HttpSession) fc.getExternalContext().getSession(true);
                 try {
                     // Push some useful stuff to the request scope for use in the page
                     session.setAttribute("currentViewId", vee.getViewId());
@@ -72,12 +74,24 @@ public class ViewExpiredExceptionHandler extends ExceptionHandlerWrapper {
                 } finally {
                     i.remove();
                 }
-                doRedirect(fc, redirectPage);
+                //doRedirect(facesContext, redirectPage);
+            } else {
+                try {
+                // Push some useful stuff to the request scope for use in the page
+                session.setAttribute("throwable", t);
+
+                    redirectPage = "/error";
+                } finally {
+                    i.remove();
+                }
+
+                //doRedirect(facesContext, redirectPage);
             }
+
+            doRedirect(facesContext, redirectPage);
+            break;
         }
 
-        // At this point, the queue will not contain any ViewExpiredEvents.
-        // Therefore, let the parent handle them.
         getWrapped().handle();
     }
 
@@ -86,7 +100,7 @@ public class ViewExpiredExceptionHandler extends ExceptionHandlerWrapper {
 
         try {
             // workaround for PrimeFaces
-            //new RequestContextImpl(ec);
+            new DefaultRequestContext();
 
             if (ec.getRequestParameterMap().containsKey(Constants.PARTIAL_PROCESS_PARAM)
                     && !ec.getRequestParameterMap().get(Constants.PARTIAL_PROCESS_PARAM).equals("@all")) {
@@ -112,8 +126,7 @@ public class ViewExpiredExceptionHandler extends ExceptionHandlerWrapper {
 
             ec.redirect(ec.getRequestContextPath() + (redirectPage != null ? redirectPage : ""));
         } catch (IOException e) {
-            System.out.println("Redirect to the specified page '" + redirectPage + "' failed");
-            throw new FacesException(e);
+            throw new FacesException("Redirect to the specified page '" + redirectPage + "' failed", e);
         }
     }
 }

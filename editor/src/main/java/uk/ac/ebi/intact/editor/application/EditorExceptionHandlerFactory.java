@@ -22,17 +22,17 @@ package uk.ac.ebi.intact.editor.application;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerFactory;
 
-public class ViewExpiredExceptionHandlerFactory extends ExceptionHandlerFactory {
+public class EditorExceptionHandlerFactory extends ExceptionHandlerFactory {
 
     private ExceptionHandlerFactory parent;
 
-    public ViewExpiredExceptionHandlerFactory(ExceptionHandlerFactory parent) {
+    public EditorExceptionHandlerFactory(ExceptionHandlerFactory parent) {
         this.parent = parent;
     }
 
     @Override
     public ExceptionHandler getExceptionHandler() {
         ExceptionHandler result = parent.getExceptionHandler();
-        return new ViewExpiredExceptionHandler(result);
+        return new EditorExceptionHandler(result);
     }
 }
