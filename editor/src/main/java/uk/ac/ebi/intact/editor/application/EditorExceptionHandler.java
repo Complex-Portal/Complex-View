@@ -30,8 +30,11 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Iterator;
 
 
@@ -77,8 +80,23 @@ public class EditorExceptionHandler extends ExceptionHandlerWrapper {
                 //doRedirect(facesContext, redirectPage);
             } else {
                 try {
-                // Push some useful stuff to the request scope for use in the page
-                session.setAttribute("throwable", t);
+                    final String viewId = facesContext.getViewRoot().getViewId();
+
+                    final HttpServletRequest req = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+                    final String referer = req.getHeader("referer");
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    PrintStream ps = new PrintStream(baos);
+                    ps.println("ViewId: "+viewId);
+                    ps.println("Referer: "+referer);
+                    ps.println("---------------------------------------------");
+                    t.printStackTrace(ps);
+                    ps.close();
+
+                    session.setAttribute("currentViewId", viewId);
+                    session.setAttribute("referer", referer);
+                    session.setAttribute("throwable", t);
+                    session.setAttribute("message", baos.toString());
 
                     redirectPage = "/error";
                 } finally {

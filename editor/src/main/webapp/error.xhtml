@@ -10,7 +10,7 @@
 <f:view contentType="text/html">
 
     <h:head>
-        <title>Test case</title>
+        <title>Editor error!</title>
         <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>
         <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css"></link>
     </h:head>
@@ -18,7 +18,20 @@
     <h:body>
         <h:form id="errorForm" prependId="false">
 
-     An ERROR occurred
+     <h1>Ouch! We were not expecting this to happen :(</h1>
+
+
+            <h:inputTextarea value="#{sessionScope['message']}" readonly="true" rows="15" cols="100"/>
+
+            <p>You may want to create an issue in the
+                <a href="http://code.google.com/p/intact/issues/list" target="_blank">editor tracker</a>.
+                Copy the whole contents of the box above and explain what you were trying to do.
+            </p>
+
+            <h:panelGroup rendered="#{sessionScope['referer'] != null}">
+            <p><b>Go back to the
+                <a href="#{sessionScope['referer']}">previous page</a></b></p>
+            </h:panelGroup>
 
  </h:form>
     </h:body>
