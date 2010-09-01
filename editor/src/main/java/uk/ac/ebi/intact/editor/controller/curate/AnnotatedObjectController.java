@@ -29,12 +29,8 @@ import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -122,17 +118,17 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         // TODO maybe implement a history mechanism to be safe
         // We rely on the fact that when creating a new object, the URL still shows the previous one (we do a POST)
-        final ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        final HttpServletRequest req = (HttpServletRequest) externalContext.getRequest();
-        final String requestUrl = req.getRequestURL().toString();
-
-        System.out.println("\n\nREQ URL: "+requestUrl);
-
-        try {
-            externalContext.redirect(requestUrl);
-        } catch (IOException e) {
-            handleException(e);
-        }
+//        final ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+//        final HttpServletRequest req = (HttpServletRequest) externalContext.getRequest();
+//        final String requestUrl = req.getRequestURL().toString();
+//
+//        System.out.println("\n\nREQ URL: "+requestUrl);
+//
+//        try {
+//            externalContext.redirect(requestUrl);
+//        } catch (IOException e) {
+//            handleException(e);
+//        }
 
     }
     

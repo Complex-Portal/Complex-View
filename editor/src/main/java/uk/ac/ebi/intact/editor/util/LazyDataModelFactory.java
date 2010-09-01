@@ -71,7 +71,7 @@ public class LazyDataModelFactory {
                                                      int totalNumRows,
                                                      Map<String, String> params ) {
         LazyDataModel lazyDataModel = new HqlLazyDataModel( entityManager, query, params );
-        //lazyDataModel.setPageSize(10);
+        lazyDataModel.setPageSize(10);
         lazyDataModel.setRowCount(totalNumRows);
 
         return lazyDataModel;
