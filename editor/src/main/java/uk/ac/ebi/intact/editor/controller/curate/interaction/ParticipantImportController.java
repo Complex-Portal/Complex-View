@@ -115,6 +115,10 @@ public class ParticipantImportController extends BaseController {
 
 
     public List<ImportCandidate> importParticipant(String participantToImport) {
+        if (participantToImport == null) {
+            addErrorMessage("No participant to import", "Provide one");
+            return Collections.EMPTY_LIST;
+        }
         log.debug( "Importing participant: "+ participantToImport );
 
         List<ImportCandidate> candidates = importFromIntAct(participantToImport);

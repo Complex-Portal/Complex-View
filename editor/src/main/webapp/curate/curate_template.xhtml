@@ -151,9 +151,18 @@
                                  value="Save" onclick="save(); return false"/>
                 &#160;-&#160;
                 <p:commandLink id="unsavedRevertLink" value="Revert" style="opacity: 1.0; font-weight: bold"
+                               rendered="#{annotatedObjectController.annotatedObject.ac != null}"
+                               immediate="true"
                                actionListener="#{annotatedObjectController.doRevertChanges}"
                                update="centralUnit,topSection,growl,messagesComponent"
                                onclick="revertDialog.show()" oncomplete="revertDialog.hide()"/>
+
+                <p:commandLink id="unsavedCancelLink" value="Cancel" style="opacity: 1.0; font-weight: bold"
+                               rendered="#{annotatedObjectController.annotatedObject.ac == null}"
+                               immediate="true"
+                               actionListener="#{annotatedObjectController.doCancelEdition}"
+                               update="centralUnit,topSection,messagesComponent"
+                               onclick="revertDialog.show()" oncomplete="revertDialog.hide(); history.back()"/>
             </div>
 
             </h:panelGroup>

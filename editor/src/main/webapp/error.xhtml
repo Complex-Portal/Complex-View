@@ -21,7 +21,8 @@
      <h1>Ouch! We were not expecting this to happen :(</h1>
 
 
-            <h:inputTextarea value="#{sessionScope['message']}" readonly="true" rows="15" cols="100"/>
+            <h:inputTextarea id="errorStacktrace" value="#{sessionScope['message']}" readonly="true" rows="15" cols="100"/>
+            <p:resizable for="errorStacktrace" />
 
             <p>You may want to create an issue in the
                 <a href="http://code.google.com/p/intact/issues/list" target="_blank">editor tracker</a>.

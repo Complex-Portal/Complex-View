@@ -15,9 +15,20 @@ a img {
 
 
 /** Custom classes **/
+.label, .value {
+border-right:0 none !important;
+}
 
 .verticalTop {
     vertical-align: top;
+}
+
+.intact-new {
+    color:blue;
+}
+
+.intact-deleted {
+    color:red; text-decoration:line-through
 }
 
 .intact-infoPanel {

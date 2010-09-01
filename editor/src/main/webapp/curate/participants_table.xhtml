@@ -9,132 +9,228 @@
 
     <h:panelGroup id="participantsTable">
 
-<ui:repeat value="#{value}" var="wrapper" varStatus="status">
+        <p:dataTable var="wrapper" value="#{value}"
+                     rowStyleClass="#{wrapper.participant.ac == null? 'intact-new' : wrapper.deleted? 'intact-deleted' : null}">
 
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
 
-            <div style="width: 960px; #{(status.index % 2) == 0 ? 'background-color: #f8f8ff;' : ''}};">
+            <p:column expansion="true" />
 
-                <ia:collapsiblePanel open="false"
-                                    titleRight="#{interactor.cvInteractorType.shortLabel} | #{interactor.bioSource.shortLabel} | #{interactor.fullName}"
-                                    titleRightStyle="color:#999999;">
+            <p:column>
+                <f:facet name="header"><h:outputText value="Name"/></f:facet>
+                <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
+                               value="#{interactor.shortLabel}"
+                               ajax="false"/>
+            </p:column>
 
-                    <f:facet name="title">
-                        <h:panelGroup rendered="#{not wrapper.deleted}">
-                            <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
-                                           style="#{participant.ac == null? 'color:blue' :''}"
-                                            value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
-                                            ajax="false"/>
-                        </h:panelGroup>
+            <p:column>
+                <f:facet name="header"><h:outputText value="Identity"/></f:facet>
+                <h:outputText value="#{interactionController.getInteractorIdentity(participant.interactor)}" />
+            </p:column>
 
-                        <h:outputText value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"
-                                      rendered="#{wrapper.deleted}" style="color:red; text-decoration:line-through"/>
-                    </f:facet>
+            <p:column>
+                <f:facet name="header"><h:outputText value="Expressed in"/></f:facet>
+                <h:selectOneMenu id="expressedInTxt" value="#{wrapper.participant.expressedIn}">
+                        <f:selectItems value="#{bioSourceService.bioSourceSelectItems}" />
+                </h:selectOneMenu>
+            </p:column>
 
-                    <f:facet name="right">
-                        <p:menuButton value="Options">
-                            <!--<p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>-->
-                            <p:menuitem value="Duplicate" actionListener="#{interactionController.cloneParticipant(wrapper)}"
-                                        onclick="clone_articipant_dialog.show()" oncomplete="clone_articipant_dialog.hide()"
-                                    update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>
-                            <p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(wrapper)}"
-                                        rendered="#{not wrapper.deleted}"
-                                        onclick="delParticipantDialog.show()" oncomplete="delParticipantDialog.hide()"
-                                        update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>
-                            <p:menuitem value="Revert" actionListener="#{interactionController.revertParticipant(wrapper)}"
-                                        icon="/resources/images/undo.png"
-                                        rendered="#{wrapper.deleted}"
-                                        onclick="revdelParticipantDialog.show()" oncomplete="revdelParticipantDialog.hide()"
-                                        update="participantsTable,changesPanel,messagesComponent"/>
-                        </p:menuButton>
-                    </f:facet>
+            <p:column>
+                <f:facet name="header"><h:outputText value="Experimental role"/></f:facet>
+                <h:selectOneMenu id="expRoleTxt" value="#{wrapper.participant.cvExperimentalRole}">
+                        <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
+                </h:selectOneMenu>
+            </p:column>
+
+             <p:column>
+                <f:facet name="header"><h:outputText value="Biological role"/></f:facet>
+                <h:selectOneMenu id="bioRoleTxt" value="#{wrapper.participant.cvBiologicalRole}">
+                        <f:selectItems value="#{cvObjectService.biologicalRoleSelectItems}" />
+                </h:selectOneMenu>
+            </p:column>
+
+            <p:column>
+                <f:facet name="header"><h:outputText value="# Feat."/></f:facet>
+                <h:outputText value="#{participant.bindingDomains.size()}" />
+            </p:column>
+
+             <p:column>
+                <f:facet name="header"><h:outputText value="Stoich."/></f:facet>
+                <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" stepFactor="1" size="3" maxlength="2"/>
+            </p:column>
+
+            <p:column>
+                <f:facet name="header"><h:outputText value="Options"/></f:facet>
+                <p:menuButton value="Options">
+                    <!--<p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>-->
+                    <p:menuitem value="Duplicate" actionListener="#{interactionController.cloneParticipant(wrapper)}"
+                                onclick="clone_articipant_dialog.show()" oncomplete="clone_articipant_dialog.hide()"
+                                update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>
+                    <p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(wrapper)}"
+                                rendered="#{not wrapper.deleted}"
+                                onclick="delParticipantDialog.show()" oncomplete="delParticipantDialog.hide()"
+                                update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>
+                    <p:menuitem value="Revert" actionListener="#{interactionController.revertParticipant(wrapper)}"
+                                icon="/resources/images/undo.png"
+                                rendered="#{wrapper.deleted}"
+                                onclick="revdelParticipantDialog.show()" oncomplete="revdelParticipantDialog.hide()"
+                                update="participantsTable,changesPanel,messagesComponent"/>
+                </p:menuButton>
+            </p:column>
+
+            <f:facet name="expansion">
+                <h:panelGroup>
+             <h:panelGrid id="display" columns="6" cellpadding="4" style="width:600px"
+                           columnClasses="label, value, label, value, label, value">
+
+                    <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
+                    <h:inputText id="acTxt" value="#{wrapper.participant.ac}"
+                                 size="10" readonly="true" class="intact-disabled"/>
+
+                    <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
+                    <h:inputText id="authorGivenNameTxt" value="#{wrapper.authorGivenName}" size="10">
+                        <f:ajax event="valueChange" listener="#{interactionController.changed}"/>
+                    </h:inputText>
+
+                    <!--<h:outputLabel value="Delivery method: " for="deliveryInTxt"/>-->
+                    <!--<h:selectManyMenu id="deliveryInTxt" value="#{wrapper.participant.experimentalPreparations}"-->
+                            <!--converter="cvObjectConverter">-->
+                        <!--<f:selectItems value="#{cvObjectService.participantExperimentalPreparationsSelectItems}" />-->
+                    <!--</h:selectManyMenu>-->
+
+                    <h:outputLabel value="Delivery method: " for="deliveryInTxt"/>
+                    <h:inputText id="deliveryInTxt" value="#{wrapper.firstExperimentalPreparation}"
+                                 size="20" readonly="true" class="intact-disabled"/>
+
+                    </h:panelGrid>
+
+                    <h4>Features (#{wrapper.participant.bindingDomains.size()}):</h4>
+
+                    <h:panelGroup rendered="#{not wrapper.participant.bindingDomains.isEmpty()}">
+                        <ui:include src="features_table.xhtml">
+                            <ui:param name="value" value="#{wrapper.participant.bindingDomains}"/>
+                        </ui:include>
+                    </h:panelGroup>
+
+                </h:panelGroup>
+                <!--<h:panelGroup>-->
+                    <!--<table class="tableBasicForm" width="900px" style="padding-left: 50px;">-->
+
+          
+                        <!--<tr>-->
+                            <!--<td class="firstCell">-->
+                                <!--<h:outputLabel value="Experimental role(s): " for="expRoleTxt"/>-->
+                            <!--</td>-->
+                            <!--<td >-->
+                                <!--<ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"-->
+                                                  <!--value="#{wrapper.participant.cvExperimentalRole}"-->
+                                                  <!--selectItems="#{cvObjectService.experimentalRoleSelectItems}" />-->
+                            <!--</td>-->
+                            <!--<td style="padding-left: 150px;">-->
+                                <!--<h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>-->
+                                <!--<p:spinner id="stoichiometryTxt" value="#{wrapper.participant.stoichiometry}" stepFactor="1" size="3" maxlength="2"/>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td class="firstCell">-->
+                                <!--<h:outputLabel value="Biological role: " for="bioRoleTxt"/>-->
+                            <!--</td>-->
+                            <!--<td colspan="2">-->
+                                <!--<ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"-->
+                                                  <!--value="#{wrapper.participant.cvBiologicalRole}"-->
+                                                  <!--selectItems="#{cvObjectService.biologicalRoleSelectItems}" />-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td class="firstCell">-->
+                                <!--<h:outputLabel value="Expressed in: " for="expressedInTxt"/>-->
+                            <!--</td>-->
+                            <!--<td>-->
+                                <!--<ia:inputBioSource id="expressedInTxt" value="#{wrapper.participant.expressedIn}"-->
+                                                   <!--selectItems="#{bioSourceService.bioSourceSelectItems}"/>-->
+                            <!--</td>-->
+                            <!--<td style="padding-left: 150px;">-->
+                                <!--<h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>-->
+                                <!--<h:inputText id="authorGivenNameTxt" value="#{wrapper.authorGivenName}" size="10">-->
+                                    <!--<f:ajax event="valueChange" listener="#{interactionController.changed}"/>-->
+                                <!--</h:inputText>-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td class="firstCell">-->
+                                <!--<h:outputLabel value="Delivery method: " for="deliveryInTxt"/>-->
+                            <!--</td>-->
+                            <!--<td colspan="2">-->
+                                <!--<ia:inputCvObject id="deliveryInTxt" cvIdentifier="MI:0346"-->
+                                                  <!--selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"-->
+                                                  <!--value="#{wrapper.firstExperimentalPreparation}" />-->
+                                <!--<h:outputText value="#{fn:length(wrapper.participant.experimentalPreparations) - 1} more..."-->
+                                              <!--rendered="#{fn:length(wrapper.participant.experimentalPreparations) > 1}" />-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--<tr>-->
+                            <!--<td colspan="3">-->
+
+
+                            <!--</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</h:panelGroup>-->
+            </f:facet>
+
+        </p:dataTable>
+
+<!--<ui:repeat value="#{value}" var="wrapper" varStatus="status">-->
+
+            <!--<ui:param name="participant" value="#{wrapper.participant}" />-->
+            <!--<ui:param name="interactor" value="#{participant.interactor}" />-->
+
+            <!--<div style="width: 960px; #{(status.index % 2) == 0 ? 'background-color: #f8f8ff;' : ''}};">-->
+
+                <!--<ia:collapsiblePanel open="false"-->
+                                    <!--titleRight="#{interactor.cvInteractorType.shortLabel} | #{interactor.bioSource.shortLabel} | #{interactor.fullName}"-->
+                                    <!--titleRightStyle="color:#999999;">-->
+
+                    <!--<f:facet name="title">-->
+                        <!--<h:panelGroup rendered="#{not wrapper.deleted}">-->
+                            <!--<p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"-->
+                                           <!--style="#{participant.ac == null? 'color:blue' :''}"-->
+                                            <!--value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"-->
+                                            <!--ajax="false"/>-->
+                        <!--</h:panelGroup>-->
+
+                        <!--<h:outputText value="#{interactor.shortLabel} (#{interactionController.getInteractorIdentity(participant.interactor)})"-->
+                                      <!--rendered="#{wrapper.deleted}" style="color:red; text-decoration:line-through"/>-->
+                    <!--</f:facet>-->
+
+                    <!--<f:facet name="right">-->
+                        <!--<p:menuButton value="Options">-->
+                            <!--&lt;!&ndash;<p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>&ndash;&gt;-->
+                            <!--<p:menuitem value="Duplicate" actionListener="#{interactionController.cloneParticipant(wrapper)}"-->
+                                        <!--onclick="clone_articipant_dialog.show()" oncomplete="clone_articipant_dialog.hide()"-->
+                                    <!--update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>-->
+                            <!--<p:menuitem value="Delete" actionListener="#{interactionController.deleteParticipant(wrapper)}"-->
+                                        <!--rendered="#{not wrapper.deleted}"-->
+                                        <!--onclick="delParticipantDialog.show()" oncomplete="delParticipantDialog.hide()"-->
+                                        <!--update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>-->
+                            <!--<p:menuitem value="Revert" actionListener="#{interactionController.revertParticipant(wrapper)}"-->
+                                        <!--icon="/resources/images/undo.png"-->
+                                        <!--rendered="#{wrapper.deleted}"-->
+                                        <!--onclick="revdelParticipantDialog.show()" oncomplete="revdelParticipantDialog.hide()"-->
+                                        <!--update="participantsTable,changesPanel,messagesComponent"/>-->
+                        <!--</p:menuButton>-->
+                    <!--</f:facet>-->
 
 
 
-                    <table class="tableBasicForm" width="900px" style="padding-left: 50px;">
-                        <tr>
-                            <td >
-                                <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                             </td>
-                            <td>
-                                <h:inputText id="acTxt" value="#{participant.ac}"
-                                             size="10" disabled="true" class="intact-disabled"/>
-                            </td>
-                            <td style="text-align: right;">
+                    <!---->
 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="firstCell">
-                                <h:outputLabel value="Experimental role(s): " for="expRoleTxt"/>
-                            </td>
-                            <td >
-                                <ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
-                                                  value="#{participant.cvExperimentalRole}"
-                                                  selectItems="#{cvObjectService.experimentalRoleSelectItems}" />
-                            </td>
-                            <td style="padding-left: 150px;">
-                                <h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>
-                                <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" stepFactor="1" size="3" maxlength="2"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="firstCell">
-                                <h:outputLabel value="Biological role: " for="bioRoleTxt"/>
-                            </td>
-                            <td colspan="2">
-                                <ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"
-                                                  value="#{participant.cvBiologicalRole}"
-                                                  selectItems="#{cvObjectService.biologicalRoleSelectItems}" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="firstCell">
-                                <h:outputLabel value="Expressed in: " for="expressedInTxt"/>
-                            </td>
-                            <td>
-                                <ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"
-                                                   selectItems="#{bioSourceService.bioSourceSelectItems}"/>
-                            </td>
-                            <td style="padding-left: 150px;">
-                                <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
-                                <h:inputText id="authorGivenNameTxt" value="#{wrapper.authorGivenName}" size="10">
-                                    <f:ajax event="valueChange" listener="#{interactionController.changed}"/>
-                                </h:inputText>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="firstCell">
-                                <h:outputLabel value="Delivery method: " for="deliveryInTxt"/>
-                            </td>
-                            <td colspan="2">
-                                <ia:inputCvObject id="deliveryInTxt" cvIdentifier="MI:0346"
-                                                  selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"
-                                                  value="#{wrapper.firstExperimentalPreparation}" />
-                                <h:outputText value="#{fn:length(participant.experimentalPreparations) - 1} more..."
-                                              rendered="#{fn:length(participant.experimentalPreparations) > 1}" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
+               <!--</ia:collapsiblePanel>-->
 
-                                <h4>Features (#{participant.bindingDomains.size()})</h4>
+            <!--</div>-->
 
-                                <h:panelGroup rendered="#{not participant.bindingDomains.isEmpty()}">
-                                    <ui:include src="features_table.xhtml">
-                                        <ui:param name="value" value="#{participant.bindingDomains}"/>
-                                    </ui:include>
-                                </h:panelGroup>
-                            </td>
-                        </tr>
-                    </table>
-
-               </ia:collapsiblePanel>
-
-            </div>
-
-        </ui:repeat>
+        <!--</ui:repeat>-->
 
         <ia:loadingDialog widgetVar="load_participant" message="Loading participant..."/>
         <ia:loadingDialog widgetVar="delParticipantDialog" message="Marking participant to be deleted..."/>

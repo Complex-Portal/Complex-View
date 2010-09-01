@@ -19,6 +19,7 @@
 
     <lifecycle>
         <phase-listener>uk.ac.ebi.intact.editor.application.DebugPhaseListener</phase-listener>
+        <phase-listener>uk.ac.ebi.intact.editor.application.HistoryPhaseListener</phase-listener>
     </lifecycle>
 
     <!--<component>-->

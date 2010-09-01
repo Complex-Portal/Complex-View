@@ -17,8 +17,8 @@
                 </ia:panelMessage>
             </h:panelGroup>
 
-            <p:dataTable var="feature" value="#{value}"
-                         paginator="#{value.size() > 10}" rows="10" lazy="true" dynamic="true">
+            <p:dataTable var="feature" value="#{value}" emptyMessage="No features defined"
+                         paginator="#{value.size() > 10}" rows="10">
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="AC"/>

@@ -94,6 +94,7 @@ public class CuratorContextController extends BaseController {
     }
 
     public String intactObjectSimpleName(IntactObject io) {
+        if (io == null) return null;
         return io.getClass().getSimpleName().replaceAll("Impl", "");
     }
 }
