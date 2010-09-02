@@ -18,7 +18,7 @@
             </h:panelGroup>
 
             <p:dataTable var="range" value="#{value}"
-                         paginator="#{value.size() > 10}" rows="10" lazy="true" dynamic="true">
+                         paginator="true" rows="10" paginatorAlwaysVisible="false" >
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="AC"/>
