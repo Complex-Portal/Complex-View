@@ -61,9 +61,8 @@
                             rendered="#{annotatedObjectController.annotatedObject != null}"/>
             </p:submenu>
 
-            <p:submenu label="Tools">
-                <p:menuitem value="Clone" action="#{annotatedObjectController.clone}" ajax="false"
-                        rendered="#{not annotatedObjectController.annotatedObject.class.simpleName == 'Publication'}"
+            <p:submenu label="Tools" rendered="#{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject) != 'Publication'}">
+                <p:menuitem value="Clone #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}" action="#{annotatedObjectController.clone}" ajax="false"
                         onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
             </p:submenu>
 
