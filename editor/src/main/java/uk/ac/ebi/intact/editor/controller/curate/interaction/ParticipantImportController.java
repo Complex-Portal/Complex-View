@@ -62,7 +62,7 @@ public class ParticipantImportController extends BaseController {
 
     private List<ImportCandidate> importCandidates;
     private List<String> queriesNoResults;
-    private String[] participantsToImport;
+    private String[] participantsToImport = new String[0];
 
     private CvExperimentalRole cvExperimentalRole;
     private CvBiologicalRole cvBiologicalRole;

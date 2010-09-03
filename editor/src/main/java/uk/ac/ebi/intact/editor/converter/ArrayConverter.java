@@ -30,7 +30,7 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@FacesConverter( value = "arrayConverter", forClass = String[].class )
+@FacesConverter( value = "arrayConverter" )
 public class ArrayConverter implements Converter {
 
     @Override

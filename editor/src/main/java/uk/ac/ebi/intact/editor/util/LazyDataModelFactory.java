@@ -22,6 +22,8 @@ import org.primefaces.model.LazyDataModel;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +36,15 @@ public class LazyDataModelFactory {
 
     private LazyDataModelFactory() {
 
+    }
+
+    public static <T> LazyDataModel<T> createEmptyDataModel() {
+        return new LazyDataModel<T>() {
+            @Override
+            public List<T> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
+                return Collections.EMPTY_LIST;
+            }
+        };
     }
 
     public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, String countQuery ) {

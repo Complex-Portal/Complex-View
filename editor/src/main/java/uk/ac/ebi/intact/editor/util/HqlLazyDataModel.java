@@ -41,10 +41,9 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T> {
         this.entityManager = entityManager;
         this.hqlQuery = hqlQuery;
         this.queryParameters = params;
-        //setRowCount(totalNumRows);
     }
 
-    @Override
+
     public List<T> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
         log.debug("Loading the lazy data between "+first+" and "+(first+pageSize));
 

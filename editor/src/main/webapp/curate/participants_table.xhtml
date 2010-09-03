@@ -15,7 +15,7 @@
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
 
-            <p:column expansion="true" />
+            <!--<p:column expansion="true" />-->
 
             <p:column>
                 <f:facet name="header"><h:outputText value="Name"/></f:facet>
@@ -79,43 +79,43 @@
                 </p:menuButton>
             </p:column>
 
-            <f:facet name="expansion">
-                <h:panelGroup>
-             <h:panelGrid id="display" columns="6" cellpadding="4" style="width:600px"
-                           columnClasses="label, value, label, value, label, value">
+            <!--<f:facet name="expansion">-->
+                <!--<h:panelGroup>-->
+             <!--<h:panelGrid id="display" columns="6" cellpadding="4" style="width:600px"-->
+                           <!--columnClasses="label, value, label, value, label, value">-->
 
-                    <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                    <h:inputText id="acTxt" value="#{wrapper.participant.ac}"
-                                 size="10" readonly="true" class="intact-disabled"/>
+                    <!--<h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>-->
+                    <!--<h:inputText id="acTxt" value="#{wrapper.participant.ac}"-->
+                                 <!--size="10" readonly="true" class="intact-disabled"/>-->
 
-                    <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
-                    <h:inputText id="authorGivenNameTxt" value="#{wrapper.authorGivenName}" size="10">
-                        <f:ajax event="valueChange" listener="#{interactionController.changed}"/>
-                    </h:inputText>
+                    <!--<h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>-->
+                    <!--<h:inputText id="authorGivenNameTxt" value="#{wrapper.authorGivenName}" size="10">-->
+                        <!--<f:ajax event="valueChange" listener="#{interactionController.changed}"/>-->
+                    <!--</h:inputText>-->
+
+                    <!--&lt;!&ndash;<h:outputLabel value="Delivery method: " for="deliveryInTxt"/>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<h:selectManyMenu id="deliveryInTxt" value="#{wrapper.participant.experimentalPreparations}"&ndash;&gt;-->
+                            <!--&lt;!&ndash;converter="cvObjectConverter">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<f:selectItems value="#{cvObjectService.participantExperimentalPreparationsSelectItems}" />&ndash;&gt;-->
+                    <!--&lt;!&ndash;</h:selectManyMenu>&ndash;&gt;-->
 
                     <!--<h:outputLabel value="Delivery method: " for="deliveryInTxt"/>-->
-                    <!--<h:selectManyMenu id="deliveryInTxt" value="#{wrapper.participant.experimentalPreparations}"-->
-                            <!--converter="cvObjectConverter">-->
-                        <!--<f:selectItems value="#{cvObjectService.participantExperimentalPreparationsSelectItems}" />-->
-                    <!--</h:selectManyMenu>-->
+                    <!--<h:inputText id="deliveryInTxt" value="#{wrapper.firstExperimentalPreparation}"-->
+                                 <!--size="20" readonly="true" class="intact-disabled"/>-->
 
-                    <h:outputLabel value="Delivery method: " for="deliveryInTxt"/>
-                    <h:inputText id="deliveryInTxt" value="#{wrapper.firstExperimentalPreparation}"
-                                 size="20" readonly="true" class="intact-disabled"/>
+                    <!--</h:panelGrid>-->
 
-                    </h:panelGrid>
+                    <!--<h4>Features (#{wrapper.participant.bindingDomains.size()}):</h4>-->
 
-                    <h4>Features (#{wrapper.participant.bindingDomains.size()}):</h4>
+                    <!--<h:panelGroup rendered="#{not wrapper.participant.bindingDomains.isEmpty()}">-->
+                        <!--<ui:include src="features_table.xhtml">-->
+                            <!--<ui:param name="value" value="#{wrapper.participant.bindingDomains}"/>-->
+                        <!--</ui:include>-->
+                    <!--</h:panelGroup>-->
 
-                    <h:panelGroup rendered="#{not wrapper.participant.bindingDomains.isEmpty()}">
-                        <ui:include src="features_table.xhtml">
-                            <ui:param name="value" value="#{wrapper.participant.bindingDomains}"/>
-                        </ui:include>
-                    </h:panelGroup>
+                <!--</h:panelGroup>-->
 
-                </h:panelGroup>
-
-            </f:facet>
+            <!--</f:facet>-->
 
         </p:dataTable>
 

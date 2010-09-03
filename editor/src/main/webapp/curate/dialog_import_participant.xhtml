@@ -12,21 +12,20 @@
         <ia:panelDialogLayout>
             <f:facet name="buttonBar">
                 <p:commandButton id="participantSearchBtn" value="Search" actionListener="#{participantImportController.importParticipants}"
-                                 update="growl,candidatesContent"
+                                 update="messagesComponent,candidatesContent"
                                  onstart="searching_load.show()"
-                                 oncomplete="searching_load.hide(); importParticipantDialog.hide(); candidatesDialog.show()"
-                                 process="searchParticipantTxt,participantSearchBtn" />
+                                 oncomplete="searching_load.hide(); importParticipantDialog.hide(); candidatesDialog.show()" />
             </f:facet>
 
             <h:panelGrid columns="2">
                 <p>
-                    Import interactor by UniprotKB accession, interactor accession, short label or xref:<br/>
+                    Import participants by UniprotKB accession, interactor accession, short label or xref:<br/>
                     (comma or line separated)
                 </p>
 
                 <h:inputTextarea id="searchParticipantTxt" value="#{participantImportController.participantsToImport}"
                                  converter="arrayConverter"
-                                 cols="15"/>
+                                 cols="30" rows="5"/>
             </h:panelGrid>
 
         </ia:panelDialogLayout>

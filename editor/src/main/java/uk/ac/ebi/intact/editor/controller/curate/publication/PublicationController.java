@@ -42,7 +42,10 @@ import javax.faces.model.SelectItem;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -257,12 +260,7 @@ public class PublicationController extends AnnotatedObjectController {
 
         getUnsavedChangeManager().markAsUnsaved(publication);
 
-        interactionDataModel = new LazyDataModel<Interaction>() {
-            @Override
-            public List<Interaction> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
-                return Collections.EMPTY_LIST;
-            }
-        };
+        interactionDataModel = LazyDataModelFactory.createEmptyDataModel();
     }
 
 
