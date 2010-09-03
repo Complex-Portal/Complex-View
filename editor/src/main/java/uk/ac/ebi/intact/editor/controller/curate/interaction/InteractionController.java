@@ -146,20 +146,9 @@ public class InteractionController extends ParameterizableObjectController {
 
         experimentSelectItems.add(selectItem);
 
-        // initialize the experiment lists
-//        List<String> source  = new ArrayList<String>();
-//        List<String> target  = new ArrayList<String>();
-
-
         if(  interaction.getExperiments().size() > 1 ) {
             addWarningMessage( "There are more than one experiment attached to this interaction",
                     DebugUtil.acList(interaction.getExperiments()).toString());
-        }
-
-        for ( Experiment e : interaction.getExperiments() ) {
-//            source.add( e.getShortLabel() );
-
-            experimentSelectItems.add(new SelectItem(e, e.getShortLabel(), e.getFullName()));
         }
 
         if (!interaction.getExperiments().isEmpty()) {
@@ -169,14 +158,9 @@ public class InteractionController extends ParameterizableObjectController {
         if (publicationController.getPublication() != null) {
             final Publication pub = publicationController.getPublication();
             for ( Experiment e : pub.getExperiments() ) {
-//                if( ! source.contains( e.getShortLabel() ) ) {
-//                    target.add( e.getShortLabel() );
-//                }
                 experimentSelectItems.add(new SelectItem(e, e.getShortLabel(), e.getFullName()));
             }
         }
-
-//        experimentLists = new DualListModel<String>( source, target);
     }
 
     @Override
