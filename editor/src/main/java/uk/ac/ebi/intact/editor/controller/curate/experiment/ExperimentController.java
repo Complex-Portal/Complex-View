@@ -97,6 +97,15 @@ public class ExperimentController extends AnnotatedObjectController {
         return saved;
     }
 
+    @Override
+    public void modifyClone(AnnotatedObject clone) {
+        clone.setShortLabel(createExperimentShortLabel());
+        interactionDataModel = LazyDataModelFactory.createEmptyDataModel();
+
+        final Experiment exp = (Experiment) clone;
+        exp.getPublication().addExperiment(exp);
+    }
+
     public String newExperiment(Publication publication) {
         this.experiment = new Experiment(getIntactContext().getInstitution(), createExperimentShortLabel(), null);
         publication.addExperiment(experiment);
@@ -126,7 +135,9 @@ public class ExperimentController extends AnnotatedObjectController {
             shortLabel = publicationController.getFirstAuthor()+"-"+publicationController.getYear();
         }
 
-        return shortLabel.toLowerCase();
+        String expLabel = shortLabel.toLowerCase();
+
+        return ExperimentUtils.syncShortLabelWithDb(expLabel, ExperimentUtils.getPubmedId(experiment));
     }
 
     public int countInteractionsByExperimentAc( String ac ) {

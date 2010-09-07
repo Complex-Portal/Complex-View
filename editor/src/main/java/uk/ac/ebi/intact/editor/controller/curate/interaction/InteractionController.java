@@ -218,7 +218,7 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     private Experiment reload(Experiment oldExp) {
-        if (oldExp.getAc() != null &&
+        if (oldExp != null && oldExp.getAc() != null &&
                 !Hibernate.isInitialized(oldExp.getInteractions()) &&
                 !Hibernate.isInitialized(oldExp.getAnnotations())) {
             oldExp = getDaoFactory().getExperimentDao().getByAc(oldExp.getAc());

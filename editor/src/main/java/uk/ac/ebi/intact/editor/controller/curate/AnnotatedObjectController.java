@@ -65,7 +65,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     @Transactional(propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
         PersistenceController persistenceController = getPersistenceController();
-        boolean saved = persistenceController.doSave(getAnnotatedObject());
+        AnnotatedObject annotatedObject = getAnnotatedObject();
+
+        boolean isNew = (getAnnotatedObject().getAc() == null);
+
+        boolean saved = persistenceController.doSave(annotatedObject);
 
         // saves specific elements for each annotated object (e.g. components in interactions)
         boolean detailsSaved = doSaveDetails();
@@ -84,17 +88,29 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             setUnsavedChanges(false);
         }
 
-        if (getAnnotatedObject().getAc() != null) {
+        if (annotatedObject.getAc() != null) {
             final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-            
-            getDaoFactory().getEntityManager().refresh(getAnnotatedObject());
+
+            if (!isNew) {
+                getDaoFactory().getEntityManager().refresh(annotatedObject);
+            } else {
+                annotatedObject = getDaoFactory().getEntityManager().find(annotatedObject.getClass(), annotatedObject.getAc());
+            }
             IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus2);
 
             CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
-            curatorContextController.removeFromUnsavedByAc(getAnnotatedObject().getAc());
+            curatorContextController.removeFromUnsavedByAc(annotatedObject.getAc());
         }
+
+        setAnnotatedObject(annotatedObject);
         
         getUnsavedChangeManager().clearChanges();
+    }
+
+    public void doSaveIfNecessary(ActionEvent evt) {
+        if (getAnnotatedObject().getAc() == null) {
+            doSave(null);
+        }
     }
 
     public boolean doSaveDetails() {
@@ -152,6 +168,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         modifyClone(clone);
 
         addInfoMessage("Cloned annotated object", null);
+
+        setAnnotatedObject(clone);
 
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
         return curateController.edit(clone);

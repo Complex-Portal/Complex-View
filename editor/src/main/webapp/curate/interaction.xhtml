@@ -88,8 +88,7 @@
                         <td colspan="3" >
                             <h:selectOneMenu id="experimentLists"
                                              value="#{interactionController.experiment}"
-                                             valueChangeListener="#{interactionController.experimentChanged}"
-                                             required="true" requiredMessage="An experiment is required">
+                                             valueChangeListener="#{interactionController.experimentChanged}">
                                  <f:selectItems value="#{interactionController.experimentSelectItems}"/>
                             </h:selectOneMenu>
                             <!--<p:pickList id="experimentLists"-->

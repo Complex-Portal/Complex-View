@@ -13,6 +13,7 @@
             <f:facet name="buttonBar">
                 <p:commandButton id="participantSearchBtn" value="Search" actionListener="#{participantImportController.importParticipants}"
                                  update="messagesComponent,candidatesContent"
+                                 process="ipDialog"
                                  onstart="searching_load.show()"
                                  oncomplete="searching_load.hide(); importParticipantDialog.hide(); candidatesDialog.show()" />
             </f:facet>
