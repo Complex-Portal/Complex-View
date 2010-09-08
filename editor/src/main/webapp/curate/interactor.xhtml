@@ -57,6 +57,7 @@
                         </td>
                         <td>
                             <h:inputText id="shortlabelTxt" value="#{interactor.shortLabel}" size="30"
+                                         validator="#{annotatedObjectController.validateAnnotatedObject}"
                                     required="true" requiredMessage="Shortlabel is required"/>
                         </td>
                         <td style="padding-left: 50px;">

@@ -100,6 +100,7 @@
                                 </td>
                                 <td>
                                     <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
+                                                 validator="#{annotatedObjectController.validateAnnotatedObject}"
                                                  size="10" onkeyup="enableAutocomplete()"
                                                  required="true" requiredMessage="Identifier is required">
                                         <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:publicationTabs"

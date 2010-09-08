@@ -41,6 +41,7 @@
                         </td>
                         <td>
                             <h:inputText id="shortlabelTxt" value="#{cvObjectController.cvObject.shortLabel}" size="30"
+                                         validator="#{annotatedObjectController.validateAnnotatedObject}"
                                          required="true" requiredMessage="Shortlabel is required"
                                          onchange="markAsUnsaved()"/>
                         </td>

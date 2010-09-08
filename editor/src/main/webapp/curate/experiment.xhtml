@@ -68,6 +68,7 @@
                             </td>
                             <td>
                                 <h:inputText id="shortLabelTxt" value="#{experimentController.experiment.shortLabel}" size="20"
+                                             validator="#{annotatedObjectController.validateAnnotatedObject}"
                                         required="true" requiredMessage="Short label is required">
                                     <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo" execute="@this"
                                             listener="#{experimentController.changed}"/>
@@ -76,7 +77,7 @@
                             <td style="padding-left: 50px;" colspan="2">
                                 <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
                                 <h:inputText id="acTxt" value="#{experimentController.experiment.ac}"
-                                             size="10" disabled="true" class="intact-disabled"/>
+                                             size="10" readonly="true" class="intact-disabled"/>
                             </td>
                         </tr>
                         <tr>

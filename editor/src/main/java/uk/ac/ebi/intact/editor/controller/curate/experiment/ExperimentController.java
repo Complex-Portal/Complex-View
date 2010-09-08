@@ -120,7 +120,7 @@ public class ExperimentController extends AnnotatedObjectController {
 
         interactionDataModel = LazyDataModelFactory.createEmptyDataModel();
 
-        getUnsavedChangeManager().markAsUnsaved(experiment);
+        //getUnsavedChangeManager().markAsUnsaved(experiment);
 
         return "/curate/experiment";
     }

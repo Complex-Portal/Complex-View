@@ -111,11 +111,12 @@ public class FeatureController extends AnnotatedObjectController {
 
        participant.addBindingDomain(feature);
 
-        getUnsavedChangeManager().markAsUnsaved(feature);
+        //getUnsavedChangeManager().markAsUnsaved(feature);
     }
     
     public void newRange(ActionEvent evt) {
         feature.addRange(new Range());
+        getUnsavedChangeManager().markAsUnsaved(feature);
     }
 
     public void markRangeToDelete(Range range, UnsavedChangeManager unsavedChangeManager) {

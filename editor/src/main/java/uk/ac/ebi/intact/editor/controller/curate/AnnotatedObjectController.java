@@ -22,6 +22,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.Finder;
+import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.util.EditorIntactCloner;
 import uk.ac.ebi.intact.model.*;
@@ -29,8 +31,12 @@ import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.validator.ValidatorException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -115,6 +121,21 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public boolean doSaveDetails() {
         return false;
+    }
+
+    public void validateAnnotatedObject(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        // if the annotated object does not have an ac, check if another one similar exists in the db
+        if (getAnnotatedObject().getAc() == null) {
+            Finder finder = (Finder) getSpringContext().getBean("finder");
+
+            final String ac = finder.findAc(getAnnotatedObject());
+
+            if (ac != null) {
+                AnnotatedObject existingAo = getDaoFactory().getEntityManager().find(getAnnotatedObject().getClass(), ac);
+                final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "An identical object exists: " + DebugUtil.annotatedObjectToString(existingAo, false), "Cannot save identical objects");
+                throw new ValidatorException(message);
+            }
+        }
     }
 
     @Transactional(propagation = Propagation.NEVER)

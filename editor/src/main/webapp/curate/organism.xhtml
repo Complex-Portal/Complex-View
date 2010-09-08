@@ -38,6 +38,7 @@
                         </td>
                         <td>
                             <h:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30"
+                                         validator="#{annotatedObjectController.validateAnnotatedObject}"
                                          required="true" requiredMessage="Shortlabel is required"
                                     onchange="markAsUnsaved()"/>
                         </td>
