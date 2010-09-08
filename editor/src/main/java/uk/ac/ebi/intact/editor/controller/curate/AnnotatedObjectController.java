@@ -132,8 +132,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
             if (ac != null) {
                 AnnotatedObject existingAo = getDaoFactory().getEntityManager().find(getAnnotatedObject().getClass(), ac);
-                final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "An identical object exists: " + DebugUtil.annotatedObjectToString(existingAo, false), "Cannot save identical objects");
-                throw new ValidatorException(message);
+                addErrorMessage("An identical object exists: " + DebugUtil.annotatedObjectToString(existingAo, false), "Cannot save identical objects");
+                FacesContext.getCurrentInstance().renderResponse();
             }
         }
     }

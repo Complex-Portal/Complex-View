@@ -129,7 +129,7 @@
                     <!--<ia:interactionsTable value="#{experimentController.interactionDataModel}"-->
                                           <!--unsavedChangeManager="#{experimentController.unsavedChangeManager}"/>-->
                     <div class="intact-buttonBar">
-                        <p:commandButton value="New interaction" actionListener="#{annotatedObjectController.doSaveIfNecessary}"
+                        <p:commandButton value="New interaction" actionListener="#{annotatedObjectController.doSaveIfNecessary}" process="editorForm"
                                              action="#{interactionController.newInteraction(experimentController.experiment.publication, experimentController.experiment)}" ajax="false" />
                         </div>
 
