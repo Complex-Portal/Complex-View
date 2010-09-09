@@ -14,7 +14,8 @@
                  paginator="true"
                  paginatorAlwaysVisible="false"
                  paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                 rowsPerPageTemplate="10,25,50">
+                 rowsPerPageTemplate="10,25,50"
+                 rowStyleClass="#{publicationController.isAccepted(publication)? 'ia-accepted' : 'ia-not-accepted'}">
         <p:column>
             <f:facet name="header">
                 <h:outputText value="Publication ID"/>
@@ -30,6 +31,18 @@
                 <h:outputText value="Title"/>
             </f:facet>
             <h:outputText value="#{publication.fullName}"/>
+        </p:column>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="# Exps."/>
+            </f:facet>
+            <h:outputText value="#{publicationController.countExperiments(publication)}"/>
+        </p:column>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="# Inter."/>
+            </f:facet>
+            <h:outputText value="#{publicationController.countInteractions(publication)}"/>
         </p:column>
         <p:column>
             <f:facet name="header">

@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate.publication;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -326,6 +327,24 @@ public class PublicationController extends AnnotatedObjectController {
         return getFirstAuthor()+"-"+getYear();
     }
 
+    public int countExperiments(Publication pub) {
+        if (Hibernate.isInitialized(pub.getExperiments())) {
+            return pub.getExperiments().size();
+        } else if (pub.getAc() != null) {
+            return getDaoFactory().getPublicationDao().countExperimentsForPublicationAc(pub.getAc());
+        }
+
+        return -1;
+    }
+
+    public int countInteractions(Publication pub) {
+        if (pub.getAc() != null) {
+            return getDaoFactory().getPublicationDao().countInteractionsForPublicationAc(pub.getAc());
+        }
+
+        return -1;
+    }
+
     public String getAc() {
         if ( ac == null && publication != null ) {
             return publication.getAc();
@@ -448,6 +467,18 @@ public class PublicationController extends AnnotatedObjectController {
 
     public boolean isAccepted() {
         return ExperimentUtils.areAllAccepted(publication.getExperiments());
+    }
+
+    public boolean isAccepted(Publication pub) {
+        if (!Hibernate.isInitialized(pub.getExperiments())) {
+            pub = getDaoFactory().getPublicationDao().getByAc(pub.getAc());
+        }
+
+        if (pub.getExperiments().isEmpty()) {
+            return false;
+        }
+
+        return PublicationUtils.isAccepted(pub);
     }
 
     public void setAcceptedMessage( String message ) {

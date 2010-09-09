@@ -138,3 +138,11 @@ border-right:0 none !important;
     width:250px;
 }
 
+.ia-accepted {
+   background: #dcecd7 !important;
+}
+
+.ia-not-accepted {
+   background: #f8cfcf !important;
+}
+
