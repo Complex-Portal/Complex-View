@@ -5,22 +5,24 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui">
 
-    <p:panel style="padding: 0">
+    <p:panel id="topNavPanel" style="padding: 0">
 
     <p:commandButton value="Dashboard" action="/dashboard/dashboard?faces-redirect=true" disabled="#{selected == 'dashboard'}"
-            ajax="false"/>
+            ajax="false" immediate="true"/>
     &#160;
     <p:commandButton value="Search" action="/search/search?faces-redirect=true" disabled="#{selected == 'search'}"
-            ajax="false"/>
+            ajax="false" immediate="true"/>
     &#160;
     <p:commandButton value="Curate" action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
                      rendered="#{userSessionController.hasRole('CURATOR')}"
                      ajax="false"
-                     disabled="#{selected == 'curate'}"/>
+                     disabled="#{selected == 'curate'}"
+                     immediate="true"/>
     &#160;
     <p:commandButton value="Admin" action="/admin/dashboard?faces-redirect=true" disabled="#{selected == 'admin'}"
                      ajax="false"
-            rendered="#{userSessionController.hasRole('ADMIN')}"/>
+            rendered="#{userSessionController.hasRole('ADMIN')}"
+             immediate="true"/>
 
     </p:panel>
 
