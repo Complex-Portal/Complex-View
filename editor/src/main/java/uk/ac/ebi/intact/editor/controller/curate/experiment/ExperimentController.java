@@ -137,6 +137,10 @@ public class ExperimentController extends AnnotatedObjectController {
 
         String expLabel = shortLabel.toLowerCase();
 
+        if (experiment.getPublication() == null) {
+            experiment.setPublication(publicationController.getPublication());
+        }
+
         return ExperimentUtils.syncShortLabelWithDb(expLabel, ExperimentUtils.getPubmedId(experiment));
     }
 
