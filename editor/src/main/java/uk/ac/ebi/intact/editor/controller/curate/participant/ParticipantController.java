@@ -122,6 +122,13 @@ public class ParticipantController extends ParameterizableObjectController {
         }
     }
 
+    @Override
+    public void doSave(ActionEvent evt) {
+        interactionController.getInteraction().addComponent(participant);
+        interactionController.refreshParticipants();
+        super.doSave(evt);
+    }
+
     public void newParticipant(Interaction interaction) {
         participant = new Component("N/A", interaction, new InteractorImpl(), new CvExperimentalRole(), new CvBiologicalRole());
         participant.setInteractor(null);
@@ -129,7 +136,7 @@ public class ParticipantController extends ParameterizableObjectController {
         participant.setCvBiologicalRole(null);
         participant.setStoichiometry(getEditorConfig().getDefaultStoichiometry());
 
-        interaction.addComponent(participant);
+        //interaction.addComponent(participant);
 
         //getUnsavedChangeManager().markAsUnsaved(participant);
     }

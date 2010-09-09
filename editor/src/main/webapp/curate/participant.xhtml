@@ -90,7 +90,9 @@
                         </td>
                         <td colspan="2">
                             <ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"
-                                               selectItems="#{bioSourceService.bioSourceSelectItems}"/>
+                                               selectItems="#{bioSourceService.bioSourceSelectItems}"
+                                               valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                               valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
                     </tr>
                     <tr>
