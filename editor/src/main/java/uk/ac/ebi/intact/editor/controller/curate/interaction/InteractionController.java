@@ -332,6 +332,10 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     private void updateShortLabel(Interaction interaction) {
+        if (participantWrappers.isEmpty()) {
+            return;
+        }
+
         String shortLabel = InteractionShortLabelGenerator.createCandidateShortLabel(interaction);
         try {
             shortLabel = InteractionShortLabelGenerator.nextAvailableShortlabel(shortLabel);

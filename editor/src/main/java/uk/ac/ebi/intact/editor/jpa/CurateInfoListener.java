@@ -4,6 +4,7 @@ import org.hibernate.event.*;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.curate.CuratorContextController;
+import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
 /**
@@ -16,7 +17,7 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
     public void onPostUpdate(PostUpdateEvent event) {
         final Object entity = event.getEntity();
 
-        if (entity instanceof IntactObject) {
+        if (entity instanceof AnnotatedObject) {
             IntactObject io = (IntactObject) entity;
             getCuratorContextController()
                 .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" updated", "- "+DebugUtil.intactObjectToString(io, false) );
