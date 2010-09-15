@@ -141,6 +141,8 @@ public class AnnotatedObjectHelper {
         xref.setCvDatabase( db );
         xref.setCvXrefQualifier( qual );
         xref.setPrimaryId( primaryId );
+        xref.setCreated(new Date());
+        xref.setUpdated(new Date());
 
         getAnnotatedObject().addXref( xref );
     }
@@ -170,6 +172,8 @@ public class AnnotatedObjectHelper {
                 }
             }
         };
+        annotationWithNullTopic.setCreated(new Date());
+        annotationWithNullTopic.setUpdated(new Date());
         getAnnotatedObject().addAnnotation( annotationWithNullTopic );
         
     }
@@ -179,6 +183,8 @@ public class AnnotatedObjectHelper {
 
         Annotation annotation = new Annotation( getIntactContext().getInstitution(), dataset );
         annotation.setAnnotationText( text );
+        annotation.setCreated(new Date());
+        annotation.setUpdated(new Date());
 
         getAnnotatedObject().addAnnotation( annotation );
     }
@@ -289,6 +295,8 @@ public class AnnotatedObjectHelper {
         }
 
         alias.setOwner( getIntactContext().getInstitution() );
+        alias.setCreated(new Date());
+        alias.setUpdated(new Date());
         return alias;
     }
 
