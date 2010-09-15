@@ -327,7 +327,7 @@ public class InteractionController extends ParameterizableObjectController {
         addInfoMessage("Participant marked to be removed.", participantInfo.toString());
     }
 
-    private void updateShortLabel() {
+    public void updateShortLabel() {
         updateShortLabel(getInteraction());
     }
 

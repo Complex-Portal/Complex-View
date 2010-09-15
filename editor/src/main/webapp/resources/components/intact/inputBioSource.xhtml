@@ -25,17 +25,18 @@
 
         <h:outputScript name="intact.js" library="javascript" target="head"/>
 
-        <ui:param name="dialogWidgetId" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}_bioSourceDlg"/>
+        <ui:param name="namespace" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}"/>
+        <ui:param name="dialogWidgetId" value="#{namespace}_bioSourceDlg"/>
 
         <h:outputScript>
-            function #{cc.clientId}_displayButtons() {
+            function #{namespace}_displayButtons() {
                 document.getElementById('#{cc.clientId}:selectBtn').style.display = 'inline'
                 document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'visible'
                 document.getElementById('#{cc.clientId}:info').style.display = 'none'
                 document.getElementById('#{cc.clientId}:info').style.visibility = 'hidden'
             }
 
-            function #{cc.clientId}_displayInfo() {
+            function #{namespace}_displayInfo() {
                 document.getElementById('#{cc.clientId}:selectBtn').style.display = 'none'
                 document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'hidden'
                 document.getElementById('#{cc.clientId}:info').style.display = 'inline'
@@ -43,7 +44,7 @@
             }
         </h:outputScript>
 
-        <h:panelGroup onmouseover="#{cc.clientId}_displayButtons()" onmouseout="#{cc.clientId}_displayInfo()">
+        <h:panelGroup onmouseover="#{namespace}_displayButtons()" onmouseout="#{namespace}_displayInfo()">
 
             <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="bioSourceConverter"
                     required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}">

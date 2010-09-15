@@ -32,21 +32,23 @@
 
             <p:column>
                 <f:facet name="header"><h:outputText value="Expressed in"/></f:facet>
-                <h:selectOneMenu id="expressedInTxt" value="#{wrapper.participant.expressedIn}">
-                        <f:selectItems value="#{bioSourceService.bioSourceSelectItems}" />
+                <h:selectOneMenu id="expressedInTxt" value="#{wrapper.participant.expressedIn}" onchange="markAsUnsaved()">
+                    <f:selectItems value="#{bioSourceService.bioSourceSelectItems}" />
                 </h:selectOneMenu>
             </p:column>
 
             <p:column>
                 <f:facet name="header"><h:outputText value="Experimental role"/></f:facet>
-                <h:selectOneMenu id="expRoleTxt" value="#{wrapper.participant.cvExperimentalRole}">
+                <h:selectOneMenu id="expRoleTxt" value="#{wrapper.participant.cvExperimentalRole}" onchange="markAsUnsaved()">
                         <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
+                    <f:ajax execute="@this" event="valueChange"
+                            listener="#{interactionController.updateShortLabel()}" render=":editorForm:shortlabelTxt"/>
                 </h:selectOneMenu>
             </p:column>
 
              <p:column>
                 <f:facet name="header"><h:outputText value="Biological role"/></f:facet>
-                <h:selectOneMenu id="bioRoleTxt" value="#{wrapper.participant.cvBiologicalRole}">
+                <h:selectOneMenu id="bioRoleTxt" value="#{wrapper.participant.cvBiologicalRole}" onchange="markAsUnsaved()">
                         <f:selectItems value="#{cvObjectService.biologicalRoleSelectItems}" />
                 </h:selectOneMenu>
             </p:column>
@@ -58,7 +60,7 @@
 
              <p:column>
                 <f:facet name="header"><h:outputText value="Stoich."/></f:facet>
-                <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" stepFactor="1" size="3" maxlength="2"/>
+                <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" stepFactor="1" size="3" maxlength="2" onchange="markAsUnsaved()"/>
             </p:column>
 
             <p:column>

@@ -1,5 +1,7 @@
 package uk.ac.ebi.intact.editor.jpa;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.event.*;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.util.DebugUtil;
@@ -13,6 +15,8 @@ import uk.ac.ebi.intact.model.IntactObject;
  */
 public class CurateInfoListener implements PostUpdateEventListener, PostInsertEventListener, PostDeleteEventListener {
 
+    private static final Log log = LogFactory.getLog( CurateInfoListener.class );
+
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
         final Object entity = event.getEntity();
@@ -23,6 +27,8 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
                 .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" updated", "- "+DebugUtil.intactObjectToString(io, false) );
 
             getCuratorContextController().removeFromUnsaved(io);
+
+            if (log.isDebugEnabled()) log.debug("Updated: "+DebugUtil.intactObjectToString(io, false));
         }
     }
 
@@ -36,6 +42,8 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
                 .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" deleted", "- "+DebugUtil.intactObjectToString(io, false) );
 
             getCuratorContextController().removeFromUnsaved(io);
+
+            if (log.isDebugEnabled()) log.debug("Deleted: "+DebugUtil.intactObjectToString(io, false));
         }
     }
 
@@ -49,6 +57,8 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
                 .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" created", "- "+DebugUtil.intactObjectToString(io, false) );
 
             getCuratorContextController().removeFromUnsaved(io);
+
+            if (log.isDebugEnabled()) log.debug("Created: "+DebugUtil.intactObjectToString(io, false));
         }
     }
 
