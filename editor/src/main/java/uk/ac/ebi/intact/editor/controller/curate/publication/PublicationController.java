@@ -100,6 +100,11 @@ public class PublicationController extends AnnotatedObjectController {
             if ( publication == null || !ac.equals( publication.getAc() ) ) {
                 publication = getDaoFactory().getPublicationDao().getByAc( ac );
 
+                if (publication == null) {
+                    publication = getDaoFactory().getPublicationDao().getByPubmedId(ac);
+                    if (publication != null) ac = publication.getAc();
+                }
+
                 if ( publication != null ) {
                     loadFormFields();
                 }

@@ -188,6 +188,7 @@ public class ParticipantImportController extends BaseController {
         for (UniprotProtein uniprotProtein : uniprotProteins) {
             ImportCandidate candidate = new ImportCandidate(participantToImport, uniprotProtein);
             candidate.setSource("uniprotkb");
+            candidate.setInteractor(toProtein(candidate));
             candidates.add(candidate);
         }
 
@@ -224,13 +225,13 @@ public class ParticipantImportController extends BaseController {
     }
 
     private Component toParticipant(ImportCandidate candidate, Interaction interaction) {
-        Interactor interactor;
+        Interactor interactor = candidate.getInteractor();
 
-        if (candidate.getInteractor() != null) {
-            interactor = candidate.getInteractor();
-        } else {
-            interactor = toProtein(candidate);
-        }
+//        if (candidate.getInteractor() != null) {
+//            interactor = candidate.getInteractor();
+//        } else {
+//            interactor = toProtein(candidate);
+//        }
 
         Component component = new Component(IntactContext.getCurrentInstance().getInstitution(),
                 interaction, interactor, cvExperimentalRole, cvBiologicalRole );

@@ -34,6 +34,7 @@ import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.servlet.http.HttpServlet;
 import java.util.List;
 
 /**
@@ -123,10 +124,13 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     @Override
-    public void doSave(ActionEvent evt) {
+    public void doPreSave() {
+        if (participant.getAc() != null && participant.getInteractor().getAc() == null) {
+            getCorePersister().saveOrUpdate(participant.getInteractor());
+        }
+
         interactionController.getInteraction().addComponent(participant);
         interactionController.refreshParticipants();
-        super.doSave(evt);
     }
 
     public void newParticipant(Interaction interaction) {
@@ -154,6 +158,7 @@ public class ParticipantController extends ParameterizableObjectController {
         for (ImportCandidate importCandidate : interactorCandidates) {
             if (importCandidate.isSelected()) {
                 participant.setInteractor(importCandidate.getInteractor());
+                setUnsavedChanges(true);
             }
         }
     }

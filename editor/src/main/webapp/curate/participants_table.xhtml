@@ -21,8 +21,18 @@
             <p:column>
                 <f:facet name="header"><h:outputText value="Name"/></f:facet>
                 <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
-                               value="#{interactor.shortLabel}"
+                               value="#{interactor.shortLabel}" rendered="#{interactor != null}"
                                ajax="false"/>
+
+                <h:panelGroup rendered="#{interactor == null}">
+                    <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
+                                   value="(no interactor)" rendered="#{interactor == null}"
+                                   style="font-style: italic;"
+                                   ajax="false"/>
+
+                                    <span class="ui-icon ui-icon-alert" style="display:inline-block"
+                                          title="No interactor for this participant"/>
+                </h:panelGroup>
             </p:column>
 
             <p:column>
@@ -66,7 +76,9 @@
             <p:column>
                 <f:facet name="header"><h:outputText value="Options"/></f:facet>
                 <p:menuButton value="Options">
-                    <!--<p:menuitem value="Copy attributes..." onclick="alert('Not implemented')"/>-->
+                    <p:menuitem value="Edit" action="#{curateController.edit(participant)}"
+                                onclick="load_participant.show()" oncomplete="load_participant.hide()"
+                                ajax="false"/>
                     <p:menuitem value="Duplicate" actionListener="#{interactionController.cloneParticipant(wrapper)}"
                                 onclick="clone_articipant_dialog.show()" oncomplete="clone_articipant_dialog.hide()"
                                 update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>

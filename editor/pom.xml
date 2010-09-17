@@ -441,7 +441,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>2.2.M1-intact-SNAPSHOT</version>
+            <version>2.2.RC1-intact-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>

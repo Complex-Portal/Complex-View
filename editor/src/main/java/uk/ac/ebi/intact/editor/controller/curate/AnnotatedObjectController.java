@@ -69,6 +69,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Transactional(propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
+        doPreSave();
+
         PersistenceController persistenceController = getPersistenceController();
         AnnotatedObject annotatedObject = getAnnotatedObject();
 
@@ -116,6 +118,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         if (getAnnotatedObject().getAc() == null) {
             doSave(null);
         }
+    }
+
+    public void doPreSave() {
     }
 
     public boolean doSaveDetails() {
