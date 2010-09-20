@@ -98,7 +98,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         if (annotatedObject.getAc() != null) {
             final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
-            if (!isNew) {
+            if (!isNew && getDaoFactory().getEntityManager().contains(annotatedObject)) {
                 getDaoFactory().getEntityManager().refresh(annotatedObject);
             } else {
                 annotatedObject = getDaoFactory().getEntityManager().find(annotatedObject.getClass(), annotatedObject.getAc());
@@ -149,7 +149,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     @Transactional(propagation = Propagation.NEVER)
     public void doRevertChanges( ActionEvent evt ) {
         PersistenceController persistenceController = getPersistenceController();
-        persistenceController.doRevert(getAnnotatedObject());
+        setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
 
         getUnsavedChangeManager().clearChanges();
 

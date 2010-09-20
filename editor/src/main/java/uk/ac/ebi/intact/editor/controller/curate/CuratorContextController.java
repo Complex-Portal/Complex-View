@@ -67,6 +67,10 @@ public class CuratorContextController extends BaseController {
     }
 
     public void removeFromUnsaved(IntactObject object) {
+        if (object.getAc() != null) {
+            removeFromUnsavedByAc(object.getAc());
+        }
+
         for (UnsavedChangeManager ucm : getUnsavedChangeManagers()) {
             ucm.removeFromUnsaved(object);
         }

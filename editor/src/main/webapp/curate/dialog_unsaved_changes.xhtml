@@ -12,7 +12,11 @@
         <p:dataTable id="unsavedTable" var="change" value="#{curatorContextController.allChanges}" paginator="true" rows="10"
                 paginatorAlwaysVisible="false">
             <p:column>
-                <h:commandButton value="Edit" action="#{curateController.edit(change.unsavedObject)}"/>
+                <p:commandButton value="Edit" action="#{curateController.edit(change.unsavedObject)}"/>
+                <p:commandButton value="Save" actionListener="#{curateController.save(change.unsavedObject)}" update="unsavedTable, messagesComponent, unsavedChangesInfo"
+                        onclick="saveDlg.show()" oncomplete="saveDlg.hide()"/>
+                <p:commandButton value="Discard" actionListener="#{curateController.discard(change.unsavedObject)}" update="unsavedTable, messagesComponent, unsavedChangesInfo"
+                                 onclick="revertDlg.show()" oncomplete="revertDlg.hide()"/>
             </p:column>
             <p:column>
                 <f:facet name="header"><h:outputText value="Modification"/></f:facet>
@@ -48,6 +52,8 @@
 
     </p:dialog>
 
+    <ia:loadingDialog widgetVar="saveDlg" message="Saving..."/>
+    <ia:loadingDialog widgetVar="revertDlg" message="Reverting..."/>
     <ia:loadingDialog widgetVar="saveAllDlg" message="Saving all..."/>
     <ia:loadingDialog widgetVar="revertAllDlg" message="Reverting all..."/>
 

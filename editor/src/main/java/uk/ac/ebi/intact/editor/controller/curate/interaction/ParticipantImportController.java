@@ -35,10 +35,7 @@ import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -180,8 +177,8 @@ public class ParticipantImportController extends BaseController {
 
 
 
-    private List<ImportCandidate> importFromUniprot(String participantToImport) {
-        List<ImportCandidate> candidates = new ArrayList<ImportCandidate>();
+    private Set<ImportCandidate> importFromUniprot(String participantToImport) {
+        Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
 
         final Collection<UniprotProtein> uniprotProteins = uniprotRemoteService.retrieve(participantToImport);
 

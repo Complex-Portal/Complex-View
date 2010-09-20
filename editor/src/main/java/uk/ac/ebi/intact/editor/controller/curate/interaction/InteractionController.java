@@ -138,7 +138,7 @@ public class InteractionController extends ParameterizableObjectController {
         }
     }
 
-    private void refreshExperimentLists() {
+    public void refreshExperimentLists() {
         this.experimentSelectItems = new ArrayList<SelectItem>();
 
         SelectItem selectItem = new SelectItem(null, "Select experiment");
@@ -187,12 +187,14 @@ public class InteractionController extends ParameterizableObjectController {
             getCorePersister().saveOrUpdate(experimentToUpdate);
         }
 
-        experiment = reload(experiment);
+        if (experiment != null) {
+            experiment = reload(experiment);
 
-        interaction.addExperiment(experiment);
-        getCorePersister().saveOrUpdate(experiment);
+            interaction.addExperiment(experiment);
+            getCorePersister().saveOrUpdate(experiment);
 
-        experimentController.setExperiment(experiment);
+            experimentController.setExperiment(experiment);
+        }
 
         refreshParticipants();
 
