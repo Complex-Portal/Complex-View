@@ -165,7 +165,9 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Override
     public boolean doSaveDetails() {
-        updateShortLabel();
+        if (interaction.getAc() == null) {
+            updateShortLabel();
+        }
 
         boolean saved = false;
 

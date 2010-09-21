@@ -85,6 +85,10 @@ public class ExperimentController extends AnnotatedObjectController {
     @Override
     @Transactional
     public boolean doSaveDetails() {
+        if (experiment.getAc() == null) {
+            experiment.setShortLabel(createExperimentShortLabel());
+        }
+
         InteractionDao interactionDao = getDaoFactory().getInteractionDao();
 
         boolean saved = false;
