@@ -141,11 +141,24 @@ public class ExperimentController extends AnnotatedObjectController {
 
         String expLabel = shortLabel.toLowerCase();
 
-        if (experiment.getPublication() == null) {
+
+        if (experiment != null && experiment.getPublication() == null) {
             experiment.setPublication(publicationController.getPublication());
         }
 
-        return ExperimentUtils.syncShortLabelWithDb(expLabel, ExperimentUtils.getPubmedId(experiment));
+        String pmid = null;
+
+        if (experiment != null) {
+            pmid = ExperimentUtils.getPubmedId(experiment);
+        } else if (publicationController.getPublication() != null) {
+            pmid = publicationController.getPublication().getShortLabel();
+        }
+
+        if (pmid != null) {
+             return ExperimentUtils.syncShortLabelWithDb(expLabel, pmid);
+        } else {
+            return expLabel;
+        }
     }
 
     public int countInteractionsByExperimentAc( String ac ) {
