@@ -20,19 +20,44 @@
 
      <h1>Ouch! We were not expecting this to happen :(</h1>
 
+            <p:messages id="messagesComponent" showDetail="true"/>
 
-            <h:inputTextarea id="errorStacktrace" value="#{sessionScope['message']}" readonly="true" rows="15" cols="100"/>
+            <h:panelGroup rendered="#{errorController.issueSubmissionAvalable}">
+                <h3>What were you doing?</h3>
+
+                <p>Please, explain what were you doing with as much details as possible:</p>
+                <h:inputTextarea id="whatdoing" value="#{errorController.explanation}" rows="10" cols="100"
+                        required="true" requiredMessage="Explanation is required"/>
+                <br/>
+
+                <p>Write a sentence that summarises the problem:</p>
+                <h:inputText id="issueTitle" value="#{errorController.title}" size="50" required="true" requiredMessage="Sentence is required"/>
+
+                <p:commandButton id="issueSubmitBtn" value="Submit Issue" actionListener="#{errorController.submitIssue}"
+                        update="messagesComponent"/>
+
+            </h:panelGroup>
+
+
+            <h3>Exception stack trace (for your information)</h3>
+
+
+            <h:inputTextarea id="errorStacktrace" value="#{errorController.createExceptionMessage()}" readonly="true" rows="15" cols="100"/>
             <p:resizable for="errorStacktrace" />
 
-            <p>You may want to create an issue in the
-                <a href="http://code.google.com/p/intact/issues/list" target="_blank">editor tracker</a>.
-                Copy the whole contents of the box above and explain what you were trying to do. <br/>
-                If the message is too large, please attach the above exception message in an text file to the issue.
-            </p>
+            <h:panelGroup rendered="#{not errorController.issueSubmissionAvalable}">
 
-            <h:panelGroup rendered="#{sessionScope['referer'] != null}">
+                <p>You may want to create an issue in the
+                    <a href="http://code.google.com/p/intact/issues/list" target="_blank">editor tracker</a>.
+                    Copy the whole contents of the box above and explain what you were trying to do. <br/>
+                    If the message is too large, please attach the above exception message in an text file to the issue.
+                </p>
+
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{errorController.referer != null}">
             <p><b>Go back to the
-                <a href="#{sessionScope['referer']}">previous page</a></b></p>
+                <a href="#{errorController.referer}">previous page</a></b></p>
             </h:panelGroup>
 
  </h:form>

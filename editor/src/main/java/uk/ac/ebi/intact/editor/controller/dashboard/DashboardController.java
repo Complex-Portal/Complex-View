@@ -23,6 +23,7 @@ import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.Publication;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 
 /**
@@ -56,6 +57,10 @@ public class DashboardController extends JpaAwareController {
         updatedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                     "select p from Publication p where p.updator = '"+userId+"' order by p.updated desc",
                                                                     "select count(p) from Publication p where p.updator = '"+userId+"'" );
+    }
+
+    public void firePanicException(ActionEvent evt) {
+        throw new IllegalStateException("Relaaax, don't panic!");
     }
 
     public LazyDataModel<Publication> getAllPublications() {

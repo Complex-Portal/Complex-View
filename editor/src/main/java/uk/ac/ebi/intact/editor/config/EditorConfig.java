@@ -26,6 +26,8 @@ public class EditorConfig {
     private String instanceName;
     private String databaseUrl;
     private String logoUrl;
+    private String googleUsername;
+    private String googlePassword;
 
     private float defaultStoichiometry = 0;
 
@@ -62,5 +64,21 @@ public class EditorConfig {
 
     public void setDefaultStoichiometry(float defaultStoichiometry) {
         this.defaultStoichiometry = defaultStoichiometry;
+    }
+
+    public String getGoogleUsername() {
+        return googleUsername;
+    }
+
+    public void setGoogleUsername(String googleUsername) {
+        this.googleUsername = googleUsername;
+    }
+
+    public String getGooglePassword() {
+        return googlePassword;
+    }
+
+    public void setGooglePassword(String googlePassword) {
+        this.googlePassword = googlePassword;
     }
 }

@@ -150,8 +150,8 @@ public class CvObjectService extends JpaAwareController {
         allCvObjectMap = new HashMap<CvKey, CvObject>( allCvObjects.size() * 2 );
         acCvObjectMap = new HashMap<String, CvObject>( allCvObjects.size() );
 
-        cvObjectsByUsedInClass = new HashMultimap<String, CvTopic>();
-        cvObjectsByClass = new HashMultimap<Class, CvObject>();
+        cvObjectsByUsedInClass = HashMultimap.create();
+        cvObjectsByClass = HashMultimap.create();
 
         for ( CvObject cvObject : allCvObjects ) {
             acCvObjectMap.put( cvObject.getAc(), cvObject );

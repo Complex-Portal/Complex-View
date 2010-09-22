@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.editor.application;
 
 import org.primefaces.context.DefaultRequestContext;
 import org.primefaces.util.Constants;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.editor.controller.misc.ErrorController;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
@@ -32,9 +34,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Iterator;
 
 
@@ -85,18 +85,11 @@ public class EditorExceptionHandler extends ExceptionHandlerWrapper {
                     final HttpServletRequest req = (HttpServletRequest) facesContext.getExternalContext().getRequest();
                     final String referer = req.getHeader("referer");
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    PrintStream ps = new PrintStream(baos);
-                    ps.println("ViewId: "+viewId);
-                    ps.println("Referer: "+referer);
-                    ps.println("---------------------------------------------");
-                    t.printStackTrace(ps);
-                    ps.close();
-
-                    session.setAttribute("currentViewId", viewId);
-                    session.setAttribute("referer", referer);
-                    session.setAttribute("throwable", t);
-                    session.setAttribute("message", baos.toString());
+                    ErrorController errorController = (ErrorController) IntactContext.getCurrentInstance().getSpringContext()
+                            .getBean("errorController");
+                    errorController.setViewId(viewId);
+                    errorController.setReferer(referer);
+                    errorController.setThrowable(t);
 
                     redirectPage = "/error";
                 } finally {
