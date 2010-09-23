@@ -80,6 +80,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             persistenceController.doDelete(intactObject);
         }
 
+        // annotated objects specific tasks to prepare the save
         doPreSave();
 
 
@@ -93,8 +94,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         boolean detailsSaved = doSaveDetails();
 
         if (detailsSaved) saved = true;
-
-
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 

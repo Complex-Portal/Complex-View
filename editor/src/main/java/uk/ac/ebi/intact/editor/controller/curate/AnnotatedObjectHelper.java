@@ -58,6 +58,8 @@ public class AnnotatedObjectHelper {
             ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
         }
 
+         initAudit(xref);
+
         return xref;
     }
     
@@ -172,8 +174,7 @@ public class AnnotatedObjectHelper {
                 }
             }
         };
-        annotationWithNullTopic.setCreated(new Date());
-        annotationWithNullTopic.setUpdated(new Date());
+        initAudit(annotationWithNullTopic);
         getAnnotatedObject().addAnnotation( annotationWithNullTopic );
         
     }
@@ -183,8 +184,7 @@ public class AnnotatedObjectHelper {
 
         Annotation annotation = new Annotation( getIntactContext().getInstitution(), dataset );
         annotation.setAnnotationText( text );
-        annotation.setCreated(new Date());
-        annotation.setUpdated(new Date());
+        initAudit(annotation);
 
         getAnnotatedObject().addAnnotation( annotation );
     }
@@ -295,8 +295,8 @@ public class AnnotatedObjectHelper {
         }
 
         alias.setOwner( getIntactContext().getInstitution() );
-        alias.setCreated(new Date());
-        alias.setUpdated(new Date());
+        initAudit(alias);
+
         return alias;
     }
 
@@ -387,6 +387,13 @@ public class AnnotatedObjectHelper {
 
     // OTHER
     ////////////////////////////////////////////////////
+
+    private void initAudit(Auditable auditable) {
+        auditable.setCreated(new Date());
+        auditable.setCreator(IntactContext.getCurrentInstance().getUserContext().getUserId());
+        auditable.setUpdated(new Date());
+        auditable.setUpdator(IntactContext.getCurrentInstance().getUserContext().getUserId());
+    }
 
     protected PersistenceController getPersistenceController() {
         return (PersistenceController)getIntactContext().getSpringContext().getBean("persistenceController");
