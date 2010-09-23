@@ -21,8 +21,10 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
@@ -125,9 +127,27 @@ public class ParticipantController extends ParameterizableObjectController {
 
     @Override
     public void doPreSave() {
+        // remove features to delete
+
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+        for (UnsavedChange change : getUnsavedChangeManager().getChanges()) {
+            if (change.getUnsavedObject() instanceof Feature) {
+                Feature feat = (Feature) change.getUnsavedObject();
+
+                if (participant.getBindingDomains().contains(feat)) {
+                    participant.removeBindingDomain(feat);
+                    getCoreEntityManager().remove(feat);
+                }
+            }
+        }
+
+        // save the interactor, if it didn't exist and the participant is just being updated
         if (participant.getAc() != null && participant.getInteractor().getAc() == null) {
             getCorePersister().saveOrUpdate(participant.getInteractor());
         }
+
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         interactionController.getInteraction().addComponent(participant);
         interactionController.refreshParticipants();
