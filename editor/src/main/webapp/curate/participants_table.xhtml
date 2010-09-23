@@ -79,6 +79,8 @@
                     <p:menuitem value="Edit" action="#{curateController.edit(participant)}"
                                 onclick="load_participant.show()" oncomplete="load_participant.hide()"
                                 ajax="false"/>
+                    <p:menuitem value="Edit"  action="#{curateController.edit(participant)}"
+                                onclick="load_participant.show()" oncomplete="load_participant.hide()" ajax="false"/>
                     <p:menuitem value="Duplicate" actionListener="#{interactionController.cloneParticipant(wrapper)}"
                                 onclick="clone_articipant_dialog.show()" oncomplete="clone_articipant_dialog.hide()"
                                 update="participantsTable,changesPanel,messagesComponent,shortlabelTxt"/>

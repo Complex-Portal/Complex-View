@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.curate.util.CoreDeleter;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
@@ -48,7 +49,9 @@ public class PersistenceController extends JpaAwareController {
     @Autowired
     private CuratorContextController curatorContextController;
 
-    @Transactional("core")
+    @Autowired
+    private CoreDeleter coreDeleter;
+
     public boolean doSave( AnnotatedObject<?,?> annotatedObject ) {
         if ( annotatedObject == null ) {
             addErrorMessage( "No annotated object to save", "How did I get here?" );
@@ -90,17 +93,17 @@ public class PersistenceController extends JpaAwareController {
         return intactObject;
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+//    @Transactional(propagation = Propagation.NEVER)
     public void doDelete(IntactObject intactObject) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
 
-            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+//            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
-            IntactObject managedEntity = getDaoFactory().getEntityManager().merge(intactObject);
-            getDaoFactory().getEntityManager().remove(managedEntity);
+            coreDeleter.delete(intactObject);
 
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+
+            //IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         }
     }
 

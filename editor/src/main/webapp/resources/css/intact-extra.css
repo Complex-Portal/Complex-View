@@ -27,9 +27,11 @@ border-right:0 none !important;
     color:blue;
 }
 
-.intact-deleted {
-    color:red; text-decoration:line-through
+.intact-deleted, .intact-deleted td span {
+    color:red;
+    text-decoration:line-through
 }
+
 
 .intact-infoPanel {
    background-color:#a7cf9b;

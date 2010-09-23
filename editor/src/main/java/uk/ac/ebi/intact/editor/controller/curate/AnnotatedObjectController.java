@@ -69,9 +69,20 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Transactional(propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
-        doPreSave();
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+        // delete from the unsaved manager
+        final List<IntactObject> deletedObjects = getAnnotatedObjectWrapper().getUnsavedChangeManager().getAllDeleted();
 
         PersistenceController persistenceController = getPersistenceController();
+
+        for (IntactObject intactObject : deletedObjects) {
+            persistenceController.doDelete(intactObject);
+        }
+
+        doPreSave();
+
+
         AnnotatedObject annotatedObject = getAnnotatedObject();
 
         boolean isNew = (getAnnotatedObject().getAc() == null);
@@ -83,12 +94,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         if (detailsSaved) saved = true;
 
-        // delete from the unsaved manager
-        final List<IntactObject> deletedObjects = getAnnotatedObjectWrapper().getUnsavedChangeManager().getAllDeleted();
 
-        for (IntactObject intactObject : deletedObjects) {
-            persistenceController.doDelete(intactObject);
-        }
+
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         if (saved) {
             lastSaved = new Date();
