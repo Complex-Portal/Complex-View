@@ -15,6 +15,14 @@
         <source>facelets/components/miscel/InputAutocomplete.xhtml</source>
     </tag>
 
+    <tag>
+        <tag-name>collapsibleIterator</tag-name>
+        <component>
+            <component-type>uk.ac.ebi.intact.view.CollapsibleIterator</component-type>
+            <renderer-type>uk.ac.ebi.intact.view.CollapsibleIteratorRenderer</renderer-type>
+        </component>
+    </tag>
+
     <function>
         <function-name>valueFromConverter</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.JsfUtils</function-class>

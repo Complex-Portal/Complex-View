@@ -14,7 +14,7 @@
         <ui:param name="itemPerLine" value="#{itemPerLine == null? false : sf:convertToBoolean(itemPerLine)}"/>
         <ui:param name="itemDisabled" value="#{itemPerLine == null? false : sf:convertToBoolean(disableLinks)}"/>
 
-        <ui:repeat var="xref" value="#{value}" varStatus="rowStatus" rows="0">
+        <ui:repeat var="xref" value="#{value}" varStatus="rowStatus">
 
             <ui:param name="text" value="#{onlyText? xref.text : xref.identifier}"/>
 

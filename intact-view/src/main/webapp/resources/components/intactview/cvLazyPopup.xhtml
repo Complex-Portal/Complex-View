@@ -28,8 +28,8 @@
             <f:setPropertyActionListener value="#{true}" target="#{cvLazyPopupController.dialogRendered}"/>
         </p:commandLink>
 
-        <p:dialog widgetVar="#{dialogVar}" header="#{cc.attrs.text}" draggable="true" fixedCenter="true"
-                  style="width:720px; height:500px; background:white" closeListener="#{cvLazyPopupController.closeDialog}" onCloseUpdate="cvDetailsPanel">
+        <p:dialog widgetVar="#{dialogVar}" header="#{cc.attrs.text}" draggable="true"
+                  width="720" height="500" closeListener="#{cvLazyPopupController.closeDialog}" onCloseUpdate="cvDetailsPanel">
 
             <h:panelGroup id="cvDetailsPanel">
                 <h:panelGroup rendered="#{cvLazyPopupController.dialogRendered}">

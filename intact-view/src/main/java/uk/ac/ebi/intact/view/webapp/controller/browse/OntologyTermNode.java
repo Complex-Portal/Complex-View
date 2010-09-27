@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.List;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class OntologyTermNode extends TreeNode {
+public class OntologyTermNode extends DefaultTreeNode {
 
     
 

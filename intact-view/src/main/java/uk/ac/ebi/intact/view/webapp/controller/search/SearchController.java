@@ -6,6 +6,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.hupo.psi.mi.psicquic.registry.client.PsicquicRegistryClientException;
+import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -199,7 +200,12 @@ public class SearchController extends JpaBaseController {
     }
 
 
-
+    public void onTabChanged(TabChangeEvent evt) {
+        if (evt.getTab().getTitle().equals("Lists")) {
+            System.out.println("LISTS!!!");
+            doInteractorsSearch();
+        }
+    }
 
 
     private LazySearchResultDataModel createInteractionDataModel(SolrQuery query) {
@@ -208,7 +214,10 @@ public class SearchController extends JpaBaseController {
         }
 
         SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
-        return new LazySearchResultDataModel(solrServer, query);
+
+        final LazySearchResultDataModel resultDataModel = new LazySearchResultDataModel(solrServer, query);
+        resultDataModel.setPageSize(getUserQuery().getPageSize());
+        return resultDataModel;
     }
 
     public void doInteractorsSearch() {
@@ -253,6 +262,7 @@ public class SearchController extends JpaBaseController {
                 = new InteractorSearchResultDataModel(intactViewConfiguration.getInteractionSolrServer(),
                                                       solrQuery,
                                                       interactorTypeMis);
+        interactorResults.setPageSize(getUserQuery().getPageSize());
         return interactorResults;
     }
 

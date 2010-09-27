@@ -66,35 +66,35 @@
                         <ul style="margin-top:0px">
                             <li>
                                 <h:outputText value="Gene name: e.g. "/>
-                                <h:commandLink value="BRCA2" action="#{searchBean.doBinarySearchAction}">
+                                <p:commandLink value="BRCA2" action="#{searchBean.doBinarySearchAction}" ajax="false">
                                     <f:setPropertyActionListener value="BRCA2"
                                                                  target="#{userQuery.searchQuery}"/>
                                     <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                                </h:commandLink>
+                                </p:commandLink>
                             </li>
                             <li>
                                 <h:outputText value="UniProtKB Ac: e.g. "/>
-                                <h:commandLink value="Q06609" action="#{searchBean.doBinarySearchAction}">
+                                <p:commandLink value="Q06609" action="#{searchBean.doBinarySearchAction}" ajax="false">
                                     <f:setPropertyActionListener value="Q06609"
                                                                  target="#{userQuery.searchQuery}"/>
                                     <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                                </h:commandLink>
+                                </p:commandLink>
                             </li>
                             <li>
                                 <h:outputText value="UniProtKB Id: e.g. "/>
-                                <h:commandLink value="dmc1" action="#{searchBean.doBinarySearchAction}">
+                                <p:commandLink value="dmc1" action="#{searchBean.doBinarySearchAction}" ajax="false">
                                     <f:setPropertyActionListener value="dmc1"
                                                                  target="#{userQuery.searchQuery}"/>
                                     <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                                </h:commandLink>
+                                </p:commandLink>
                             </li>
                             <li>
                                 <h:outputText value=" Pubmed Id: e.g. "/>
-                                <h:commandLink value="10831611" action="#{searchBean.doBinarySearchAction}">
+                                <p:commandLink value="10831611" action="#{searchBean.doBinarySearchAction}" ajax="false">
                                     <f:setPropertyActionListener value="10831611"
                                                                  target="#{userQuery.searchQuery}"/>
                                     <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                                </h:commandLink>
+                                </p:commandLink>
                             </li>
                         </ul>
                     </iv:panelLabelAndMessage>

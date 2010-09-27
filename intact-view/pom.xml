@@ -477,12 +477,12 @@
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
-            <version>2.0.0</version>
+            <version>2.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-impl</artifactId>
-            <version>2.0.0</version>
+            <version>2.0.2-SNAPSHOT</version>
         </dependency>
 
         <!-- JSF (Mojarra) -->
@@ -550,7 +550,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>2.0.2-intact-SNAPSHOT</version>
+            <version>2.2.RC1-intact-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>

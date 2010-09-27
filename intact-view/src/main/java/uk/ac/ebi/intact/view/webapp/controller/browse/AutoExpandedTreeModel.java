@@ -15,18 +15,14 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
-import org.apache.commons.lang.StringUtils;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
-
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class AutoExpandedTreeModel extends TreeNode {
+public class AutoExpandedTreeModel extends DefaultTreeNode {
 
 //    public AutoExpandedTreeModel(Object o, String property) {
 //        super(o, property);

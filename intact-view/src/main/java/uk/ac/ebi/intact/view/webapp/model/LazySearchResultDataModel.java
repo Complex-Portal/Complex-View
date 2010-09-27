@@ -34,6 +34,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO comment that class header
@@ -62,7 +63,7 @@ public class LazySearchResultDataModel extends LazyDataModel<IntactBinaryInterac
     }
 
     @Override
-    public List<IntactBinaryInteraction> fetchLazyData(int first, int pageSize) {
+    public List<IntactBinaryInteraction> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
         if (solrQuery == null) {
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
@@ -101,7 +102,7 @@ public class LazySearchResultDataModel extends LazyDataModel<IntactBinaryInterac
 
     public int getRowCount() {
         if (result == null) {
-            fetchLazyData(0,0);
+            load(0,0, null, false, null);
         }
         return Long.valueOf(result.getTotalCount()).intValue();
     }

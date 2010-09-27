@@ -39,7 +39,7 @@ import java.util.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class InteractorSearchResultDataModel extends LazyDataModel {
+public class InteractorSearchResultDataModel extends LazyDataModel<InteractorIdCount> {
 
     private static final Log log = LogFactory.getLog(InteractorSearchResultDataModel.class);
 
@@ -75,8 +75,9 @@ public class InteractorSearchResultDataModel extends LazyDataModel {
         this.interactorTypeMis = interactorTypeMis;
     }
 
+
     @Override
-    public List fetchLazyData(int i, int i1) {
+    public List<InteractorIdCount> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
         if (solrQuery == null) {
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
@@ -102,7 +103,7 @@ public class InteractorSearchResultDataModel extends LazyDataModel {
 
     public int getRowCount() {
         if (idCounts == null) {
-            fetchLazyData(0,0);
+            this.load(0,0, null, false, null);
         }
         return idCounts.size();
     }

@@ -1,0 +1,55 @@
+a img {
+    border: 0;
+}
+
+/** status **/
+.busyStatus {
+    right: 0px; top: 0px;
+    background-color: red;
+    color: white;
+    margin: 5px; padding: 3px;
+    z-index: 50;
+
+    position: fixed;
+}
+
+/** labels **/
+.textLabel {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/** interactions table **/
+td.notSameThanPrevious {
+    border-top: 1px solid #CDCDCD !important;
+}
+
+/** interactor table **/
+td.compoundStructure {
+    background-color:white;
+    vertical-align:middle;
+    text-align: center;
+}
+
+
+.newInteractionRow {
+    border-top: 1px solid #CDCDCD !important;
+    border-left: 1px solid #CDCDCD !important;
+    border-right: 1px solid #CDCDCD !important;
+    border-bottom: 0 !important;
+}
+
+.sameInteractionRow {
+    border-top: 0 !important;
+    border-left: 1px solid #CDCDCD !important;
+    border-right: 1px solid #CDCDCD !important;
+    border-bottom: 0 !important;
+
+}
+
+/** Overriden **/
+#mainPanels {
+    background: white !important;
+}
+
+

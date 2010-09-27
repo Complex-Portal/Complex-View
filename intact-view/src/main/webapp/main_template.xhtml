@@ -11,7 +11,7 @@
 
     <ui:define name="dialogs">
         <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
-                  draggable="false" close="false" zindex="200" height="30px" fixedCenter="true">
+                  draggable="false" closable="false" zindex="200" height="30" >
                 <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
                                 style="vertical-align:middle;"/>
                 &#160;
@@ -38,10 +38,12 @@
 
         </h:form>
 
-        <h:form id="intactForm" prependId="false"> 
+        <h:form id="intactForm" prependId="false">
+
+            [TAB: #{contextController.activeTabIndex}]
 
         <p:tabView id="mainPanels" cache="false" dynamic="true" activeIndex="#{contextController.activeTabIndex}"
-                   widgetVar="mainTabsWidget" ontabchange="if (mainTabsWiget.get('activeTab') == 4) { document.getElementById('activate_4_submit').click() }">
+                   widgetVar="mainTabsWidget" tabChangeListener="#{searchBean.onTabChanged}" >
             <p:tab title="Home">
                         <p:messages/>
                         <ui:insert name="aboutTabContent"/>
@@ -63,24 +65,8 @@
             </p:tab>
 
             <p:tab title="Lists" disabled="#{searchBean.totalResults == 0}">
-                <script type="text/javascript">
-                    document.getElementById('activate_4_submit').click();
-                </script>
-                
-                <h:panelGroup id="content_4">
-                    <p:commandButton id="activate_4"
-                                     actionListener="#{searchBean.doInteractorsSearch()}"
-                                     update="content_4" style="display:none"
-                            onstart="statusDialog.show();" oncomplete="statusDialog.hide();" global="false">
-                        <f:setPropertyActionListener value="4" target="#{contextController.activeTabIndex}"/>
-                        <f:setPropertyActionListener value="4" target="#{contextController.tabLoaded}"/>
-                    </p:commandButton>
-
-                    <h:panelGroup rendered="#{contextController.activeTabIndex == 4}">
                         <p:messages/>
                         <ui:insert name="listTabContent"/>
-                    </h:panelGroup>
-                </h:panelGroup>
             </p:tab>
 
             <p:tab title="Interaction Details" disabled="#{detailsBean.interaction == null}">

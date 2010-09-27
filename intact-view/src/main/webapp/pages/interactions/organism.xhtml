@@ -3,7 +3,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html">
 
-        <ui:repeat var="organism" value="#{organism}" rows="0">
+        <ui:repeat var="organism" value="#{organism}">
 
             <ui:include src="/pages/interactions/organismXrefs.xhtml">
                 <ui:param name="xrefs" value="#{organism.identifiers}"/>

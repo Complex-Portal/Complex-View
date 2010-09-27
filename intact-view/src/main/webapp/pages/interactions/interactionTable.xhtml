@@ -6,8 +6,7 @@
 
                 xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-
+                xmlns:miscel="http://intact.ebi.ac.uk/miscel"
                 xmlns:iam="http://java.sun.com/jsf/composite/components/miscel"
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
 
@@ -38,7 +37,7 @@
                          onclick="columnsDialog.show()" />
     </p:panel>
 
-    <p:dialog header="Columns displayed" fixedCenter="true" widgetVar="columnsDialog" width="300px" height="400px">
+    <p:dialog header="Columns displayed" widgetVar="columnsDialog" width="300" height="400">
         Select:
         <p:commandLink value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection"/>
         &#160;|&#160;
@@ -59,7 +58,8 @@
     <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
                      rows="#{userQuery.pageSize}"
                      dynamic="true" lazy="true" rowIndexVar="row"
-                     paginator="#{searchBean.results.rowCount gt userQuery.pageSize}">
+                     paginator="#{searchBean.results.rowCount gt userQuery.pageSize}"
+                     rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'}">
         <p:column>
                 <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
                     <h:commandLink action="details">
@@ -122,11 +122,11 @@
             <f:facet name="header"><h:outputText value="#{messages['moleculeA.aliases']}"/></f:facet>
 
             <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-                <iam:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
+                <miscel:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
                                          value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorA.alternativeIdentifiers,null,'rogid')}"
                                          maxShown="3">
                     <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
-                </iam:collapsibleIterator>
+                </miscel:collapsibleIterator>
             </h:panelGroup>
         </p:column>
 
@@ -135,11 +135,11 @@
             <f:facet name="header"><h:outputText value="#{messages['moleculeB.aliases']}"/></f:facet>
 
             <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-                <iam:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
+                <miscel:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
                                          value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorB.alternativeIdentifiers,null,'rogid')}"
                                          maxShown="3">
                     <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
-                </iam:collapsibleIterator>
+                </miscel:collapsibleIterator>
             </h:panelGroup>
         </p:column>
 
@@ -218,7 +218,7 @@
             <f:facet name="header"><h:outputText value="#{messages['interaction.ac']}"/></f:facet>
 
                 <ui:repeat var="xref" value="#{binaryInteraction.interactionAcs}"
-                           varStatus="rowStatus" rows="0">
+                           varStatus="rowStatus">
                     <h:panelGroup rendered="#{xref.database == 'intact'}">
                         <h:panelGroup>
                             <h:commandLink action="details" value="#{xref.identifier}">
@@ -282,25 +282,25 @@
         <p:column rendered="#{columnContext.isColumnVisible('moleculeA.properties')}"
                   styleClass="cellTextCompound">
             <f:facet name="header"><h:outputText value="#{messages['moleculeA.properties']}"/></f:facet>
-            <iam:collapsibleIterator  disclosed="#{searchBean.showProperties}"
+            <miscel:collapsibleIterator  disclosed="#{searchBean.showProperties}"
                                      value="#{binaryInteraction.interactorA.properties}"
                                      maxShown="5">
                 <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
                 <h:outputLink value="#{xrefUrl}" title="#{item.text}"
                               target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
-            </iam:collapsibleIterator>
+            </miscel:collapsibleIterator>
         </p:column>
 
     <p:column rendered="#{columnContext.isColumnVisible('moleculeB.properties')}"
                   styleClass="cellTextCompound">
             <f:facet name="header"><h:outputText value="#{messages['moleculeB.properties']}"/></f:facet>
-            <iam:collapsibleIterator disclosed="#{searchBean.showProperties}"
+            <miscel:collapsibleIterator disclosed="#{searchBean.showProperties}"
                                      value="#{binaryInteraction.interactorB.properties}"
                                      maxShown="5">
                 <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
                 <h:outputLink value="#{xrefUrl}" title="#{item.text}"
                               target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
-            </iam:collapsibleIterator>
+            </miscel:collapsibleIterator>
         </p:column>
 
      <p:column rendered="#{columnContext.isColumnVisible('moleculeA.interactortype')}"
@@ -338,7 +338,7 @@
         <p:column rendered="#{columnContext.isColumnVisible('interaction.dataset')}"
                      styleClass="cellTextInteraction">
                <f:facet name="header"><h:outputText value="#{messages['interaction.dataset']}"/></f:facet>
-               <ui:repeat var="dataset" value="#{binaryInteraction.dataset}" rows="0">
+               <ui:repeat var="dataset" value="#{binaryInteraction.dataset}">
                     <span style="display:block">
                             <h:outputText value="#{dataset}" style="white-space:nowrap"/>
                     </span>

@@ -85,7 +85,7 @@
                 </tr>
 
                 <!-- Table Body-->
-                <ui:repeat value="#{matrix.similarInteractions}" var="si" rows="0" varStatus="status">
+                <ui:repeat value="#{matrix.similarInteractions}" var="si" varStatus="status">
 
                     <tr>
                         <td align="right">
@@ -96,7 +96,7 @@
                                 <!--<tr:spacer width="10" />-->
                         </td>
 
-                        <ui:repeat value="#{matrix.members}" var="member" rows="0" varStatus="index">
+                        <ui:repeat value="#{matrix.members}" var="member" varStatus="index">
 
                             <ui:param name="style" value="#{(index.index eq fn:length(matrix.members) ? 'border-left: solid 1px #cdcdcd; border-right: solid 1px #cdcdcd;' : 'border-left: solid 1px #cdcdcd;')}" />
 
