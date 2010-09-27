@@ -40,8 +40,6 @@
 
         <h:form id="intactForm" prependId="false">
 
-            [TAB: #{contextController.activeTabIndex}]
-
         <p:tabView id="mainPanels" cache="false" dynamic="true" activeIndex="#{contextController.activeTabIndex}"
                    widgetVar="mainTabsWidget" tabChangeListener="#{searchBean.onTabChanged}" >
             <p:tab title="Home">
