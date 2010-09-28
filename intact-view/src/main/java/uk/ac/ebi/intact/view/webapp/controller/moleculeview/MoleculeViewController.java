@@ -70,6 +70,11 @@ public class MoleculeViewController extends JpaBaseController{
 
     }
 
+    public String open(String interactorAc) {
+        setInteractorAc(interactorAc);
+        return "/pages/molecule/molecule.xhtml?faces-redirect=true&includeViewParams=true";
+    }
+
     public String getInteractorAc() {
         return interactorAc;
     }

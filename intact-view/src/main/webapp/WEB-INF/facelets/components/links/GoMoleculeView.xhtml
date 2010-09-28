@@ -1,22 +1,19 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
-                xmlns:iaf="http://intact.ebi.ac.uk/functions">
+                 xmlns:p="http://primefaces.prime.com.tr/ui">
 
     <ui:param name="showLogoOnly" value="#{onlyLogo != null? ebisf:convertToBoolean(onlyLogo) : false}"/>
 
-        <h:commandLink action="molecule"
-                 disabled="#{disabled != null? ebisf:convertToBoolean(disabled) : false}">
+        <p:commandLink action="molecule" ajax="false">
             <f:setPropertyActionListener value="#{query}" target="#{moleculeViewBean.interactorAc}"/>
 
             <h:graphicImage alt="dastyLogo" url="/images/logos/dasty2_logo_50.png" style="border-width:0"
                           rendered="#{showLogoOnly}"/>
             <h:outputText value="#{(text != null)? text : query}" rendered="#{!showLogoOnly}"/>
 
-        </h:commandLink>
+        </p:commandLink>
 
 </ui:composition>

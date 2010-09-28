@@ -201,8 +201,7 @@ public class SearchController extends JpaBaseController {
 
 
     public void onTabChanged(TabChangeEvent evt) {
-        if (evt.getTab().getTitle().equals("Lists")) {
-            System.out.println("LISTS!!!");
+        if (evt.getTab() != null && "Lists".equals(evt.getTab().getTitle()) || "Browse".equals(evt.getTab().getTitle())) {
             doInteractorsSearch();
         }
     }

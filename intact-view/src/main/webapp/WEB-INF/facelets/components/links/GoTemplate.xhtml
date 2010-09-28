@@ -13,7 +13,7 @@
         <ot:separateConversationContext>
             <h:outputLink value="#{queryUrl}" target="_blank" title="#{termName}"
                      disabled="#{disabled != null? ebisf:convertToBoolean(disabled) : false}" rendered="#{showDrugPort}">
-                    <h:graphicImage alt="logo" url="#{imageSource}" style="border-width:0" title="#{query}"
+                    <h:graphicImage alt="#{text} logo" url="#{imageSource}" style="border-width:0" title="#{query}"
                               rendered="#{showLogoOnly}"/>
                 <h:outputText value="#{(text != null)? text : query}" rendered="#{!showLogoOnly}"/>
             </h:outputLink>

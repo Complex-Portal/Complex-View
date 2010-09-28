@@ -28,6 +28,17 @@
 
     <h2>Proteins (#{searchBean.proteinTotalResults})</h2>
 
+    <p:panel header="Numerous interactors available"
+                 rendered="#{displayWarning}" style="float:right; width: 300px">
+            <h:outputText value="Please be aware that due to the number of interaction currently available in
+                                      your dataset, only the first #{browseBean.maxSize} interactor identifiers will be passed on to
+                                      third party resources. In order to make this clear, we will display the icon"/>
+            &#160;
+            <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"/>
+            &#160;
+            <h:outputText value="whenever this restriction applies."/>
+        </p:panel>
+
     <h:panelGroup style="text-align:left; vertical-align:top">
 
         <table style="text-align:left" border="0" cellSpacing="5" cellPadding="0" width="300">
@@ -37,7 +48,7 @@
 
                 </td>
                 <td>
-                    <h:commandLink value="List All" action="list.proteins"/>
+                    <p:commandLink value="List All" action="list.proteins" ajax="false"/>
                 </td>
             </tr>
 
@@ -46,7 +57,7 @@
 
                 </td>
                 <td>
-                    <h:commandLink value="By UniProt Taxonomy" action="browse.taxonomybrowser"/>
+                    <p:commandLink value="By UniProt Taxonomy" action="browse.taxonomybrowser" ajax="false"/>
                 </td>
             </tr>
 
@@ -55,13 +66,14 @@
 
                 </td>
                 <td>
-                    <h:commandLink value="By Gene Ontology (GO)" action="browse.gobrowser"/>
+                    <p:commandLink value="By Gene Ontology (GO)" action="browse.gobrowser" ajax="false"/>
                 </td>
             </tr>
 
             <tr>
                 <td style="text-align: center" width="15">
-                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png" rendered="#{displayWarning}"/>
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                    rendered="#{displayWarning}" title="Numerous interactors available"/>
                 </td>
                 <td>
                     <h:outputLink target="_blank"
@@ -71,7 +83,8 @@
 
             <tr>
                 <td style="text-align: center" width="15">
-                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png" rendered="#{displayWarning}"/>
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                    rendered="#{displayWarning}" title="Numerous interactors available"/>
                 </td>
                 <td>
 
@@ -83,7 +96,8 @@
 
             <tr>
                 <td style="text-align: center" width="15">
-                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png" rendered="#{displayWarning}"/>
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                    rendered="#{displayWarning}" title="Numerous interactors available"/>
                 </td>
                 <td>
                     <h:outputLink target="_blank"
@@ -93,7 +107,8 @@
 
             <tr>
                 <td style="text-align: center" width="15">
-                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png" rendered="#{displayWarning}"/>
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                    rendered="#{displayWarning}" title="Numerous interactors available"/>
                 </td>
                 <td>
                     <h:outputLink target="_blank"
@@ -102,17 +117,6 @@
             </tr>
 
         </table>
-
-        <p:panel header="Numerous interactors available"
-                 rendered="#{displayWarning}">
-            <h:outputText value="Please be aware that due to the number of interaction currently available in
-                                      your dataset, only the first #{browseBean.maxSize} interactor identifiers will be passed on to
-                                      third party resources. In order to make this clear, we will display the icon"/>
-            &#160;
-            <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"/>
-            &#160;
-            <h:outputText value="whenever this restriction applies."/>
-        </p:panel>
 
     </h:panelGroup>
 

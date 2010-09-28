@@ -34,7 +34,17 @@ public class CurrentSearchScope extends SessionScope implements ApplicationConte
 
     public Object get(String name, ObjectFactory objectFactory) {
         String searchQuery = getSearchQuery();
-        return super.get(name+"::"+searchQuery, objectFactory);
+
+        final String uniqueName = name + "::" + simplify(searchQuery);
+
+        return super.get(uniqueName, objectFactory);
+    }
+
+    private String simplify(String searchQuery) {
+        if ("*".equals(searchQuery)) {
+            return "";
+        }
+        return searchQuery;
     }
 
     public Object remove(String name) {
