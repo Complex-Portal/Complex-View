@@ -31,9 +31,7 @@ import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
-import uk.ac.ebi.intact.view.webapp.util.ExternalDbLinker;
 
-import javax.faces.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -52,6 +50,11 @@ public class BrowseController extends JpaBaseController {
 
     private static final Log log = LogFactory.getLog( BrowseController.class );
 
+    //identifier separators
+    public static final String INTERPRO_SEPERATOR = ",";
+    public static final String CHROMOSOME_SEPERATOR = ";id=";
+    public static final String EXPRESSION_SEPERATOR = "+";
+
     private int maxSize = 200;
 
     private List<String> uniprotAcs;
@@ -67,26 +70,16 @@ public class BrowseController extends JpaBaseController {
     public BrowseController() {
     }
 
-     /**
-     * A DiscloserListener that generates the urls for all the links in the browse page
-     *
-     * @param evt DisclosureEvent
-     */
-//    public void createListofIdentifiers( DisclosureEvent evt ) {
-//         SearchController searchController = (SearchController) getBean("searchBean");
-//         //searchController.onListDisclosureChanged(evt);
-//         buildListOfIdentifiers();
-//    }
-
-    public void createListofIdentifiers( ActionEvent evt ) {
-        buildListOfIdentifiers();
-    }
 
     public String createListofIdentifiersAndBrowse() {
+        createListOfIdentifiers();
+        return "browse";
+    }
+
+    public void createListOfIdentifiers() {
         buildListOfIdentifiers();
         SearchController searchController = (SearchController) getBean("searchBean");
         searchController.doInteractorsSearch();
-        return "browse";
     }
 
     private void buildListOfIdentifiers() {
@@ -140,9 +133,9 @@ public class BrowseController extends JpaBaseController {
         if (log.isDebugEnabled()) log.debug("Browse uniprot ACs: "+uniprotAcs);
         if (log.isDebugEnabled()) log.debug("Browse gene names: "+geneNames);
 
-        this.interproIdentifierList = appendIdentifiers( uniprotAcs, ExternalDbLinker.INTERPRO_SEPERATOR);
-        this.chromosomalLocationIdentifierList = appendIdentifiers( uniprotAcs, ExternalDbLinker.CHROMOSOME_SEPERATOR);
-        this.mRNAExpressionIdentifierList = appendIdentifiers( uniprotAcs, ExternalDbLinker.EXPRESSION_SEPERATOR);
+        this.interproIdentifierList = appendIdentifiers( uniprotAcs, INTERPRO_SEPERATOR);
+        this.chromosomalLocationIdentifierList = appendIdentifiers( uniprotAcs, CHROMOSOME_SEPERATOR);
+        this.mRNAExpressionIdentifierList = appendIdentifiers( uniprotAcs, EXPRESSION_SEPERATOR);
         this.reactomeIdentifierList =  uniprotAcs.toArray( new String[uniprotAcs.size()] );
     }
 
@@ -192,13 +185,6 @@ public class BrowseController extends JpaBaseController {
 
     public void setReactomeIdentifierList( String[] reactomeIdentifierList ) {
         this.reactomeIdentifierList = reactomeIdentifierList;
-    }
-
-    public void goReactome( ActionEvent evt ) {
-        String[] selected = reactomeIdentifierList;
-        //the carriage return has to be escaped as it is used in the JavaScript
-        ExternalDbLinker dbLinker = (ExternalDbLinker) getBean("externalDbLinker");
-        dbLinker.reactomeLinker( ExternalDbLinker.REACTOMEURL, "\\r", selected, "/view/pages/browse/browse.xhtml" );
     }
 
     public int getMaxSize() {

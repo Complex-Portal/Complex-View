@@ -32,36 +32,7 @@
             <h:outputLink target="_blank"
                           value="http://www.ebi.ac.uk/interpro/ISpy?ac=#{fn:join(proteinListController.selectedUniprotIds,',')}">Domains</h:outputLink>
             &#160;|&#160;
-            <a href="javascript:void(0)" onclick="submitToReactome('#{fn:join(proteinListController.selectedUniprotIds,',')}')">Pathways</a>
-
-            <h:outputScript target="head">
-                function submitToReactome(selectedIds) {
-                    var reactomeForm = document.createElement('form');
-                    reactomeForm.method='post';
-                    reactomeForm.action='http://www.reactome.org/cgi-bin/skypainter2';
-                    reactomeForm.enctype='multipart/form-data';
-                    reactomeForm.name='skypainter';
-                    reactomeForm.target='_blank';
-
-                    var inputQuery = createHiddenInput('QUERY', selectedIds);
-                    var inputDb = createHiddenInput('DB', 'gk_current');
-                    var inputSubmit = createHiddenInput('SUBMIT', '1');
-                    reactomeForm.appendChild(inputQuery);
-                    reactomeForm.appendChild(inputDb);
-                    reactomeForm.appendChild(inputSubmit);
-                
-                    document.getElementById('intactForm').parentNode.appendChild(reactomeForm);
-                    reactomeForm.submit();
-                }
-
-                function createHiddenInput(name,value) {
-                    var input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = name;
-                    input.value = value;
-                    return input;
-                }
-            </h:outputScript>
+            <a href="javascript:void(0)" onclick="ia_submitToReactome('#{fn:join(proteinListController.selectedUniprotIds,',')}')">Pathways</a>
 
             &#160;|&#160;
             <h:outputLink target="_blank"

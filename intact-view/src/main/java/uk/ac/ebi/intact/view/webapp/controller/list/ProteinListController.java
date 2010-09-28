@@ -17,16 +17,13 @@ package uk.ac.ebi.intact.view.webapp.controller.list;
 
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.InteractorXref;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
-import uk.ac.ebi.intact.view.webapp.util.ExternalDbLinker;
 
-import javax.faces.event.ActionEvent;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -43,9 +40,6 @@ import java.util.Set;
 @Scope( "conversation.access" )
 @ConversationName( "general" )
 public class ProteinListController extends InteractorListController {
-
-    @Autowired
-    private ExternalDbLinker dbLinker;
 
     public ProteinListController() {
     }
@@ -72,11 +66,5 @@ public class ProteinListController extends InteractorListController {
         }
 
         return uniprotIds.toArray( new String[uniprotIds.size()] );
-    }
-
-    public void goReactome( ActionEvent evt ) {
-        String[] selected = getSelectedUniprotIds();
-        //the carriage return has to be escaped as it is used in the JavaScript
-        dbLinker.reactomeLinker( dbLinker.REACTOMEURL, "\\r", selected, "/view/pages/list/protein_list.xhtml" );
     }
 }

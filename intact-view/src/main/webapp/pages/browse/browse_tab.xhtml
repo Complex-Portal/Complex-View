@@ -48,7 +48,7 @@
 
                 </td>
                 <td>
-                    <p:commandLink value="List All" action="list.proteins" ajax="false"/>
+                    <p:commandLink value="List All" action="/pages/list/protein_list?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
                 </td>
             </tr>
 
@@ -57,7 +57,7 @@
 
                 </td>
                 <td>
-                    <p:commandLink value="By UniProt Taxonomy" action="browse.taxonomybrowser" ajax="false"/>
+                    <p:commandLink value="By UniProt Taxonomy" action="/pages/browse/taxonomybrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
                 </td>
             </tr>
 
@@ -66,31 +66,7 @@
 
                 </td>
                 <td>
-                    <p:commandLink value="By Gene Ontology (GO)" action="browse.gobrowser" ajax="false"/>
-                </td>
-            </tr>
-
-            <tr>
-                <td style="text-align: center" width="15">
-                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
-                                    rendered="#{displayWarning}" title="Numerous interactors available"/>
-                </td>
-                <td>
-                    <h:outputLink target="_blank"
-                                  url="http://www.ebi.ac.uk/interpro/ISpy?ac=#{browseBean.interproIdentifierList}&amp;mode=protein&amp;sort=ac">By Interpro Domain</h:outputLink>
-                </td>
-            </tr>
-
-            <tr>
-                <td style="text-align: center" width="15">
-                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
-                                    rendered="#{displayWarning}" title="Numerous interactors available"/>
-                </td>
-                <td>
-
-                    <p:commandLink actionListener="#{browseBean.goReactome}"
-                                   value="By Reactome Pathway [NOT IMPLEMENTED]"/>
-
+                    <p:commandLink value="By Gene Ontology (GO)" action="/pages/browse/gobrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
                 </td>
             </tr>
 
@@ -101,7 +77,21 @@
                 </td>
                 <td>
                     <h:outputLink target="_blank"
-                                  url="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{browseBean.chromosomalLocationIdentifierList}">By Chromosomal Location</h:outputLink>
+                                  value="http://www.ebi.ac.uk/interpro/ISpy?ac=#{browseBean.interproIdentifierList}&amp;mode=protein&amp;sort=ac">By Interpro Domain</h:outputLink>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="text-align: center" width="15">
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                    rendered="#{displayWarning}" title="Numerous interactors available"/>
+                </td>
+                <td>
+
+                    <h:outputLink value="javascript:void(0)" onclick="ia_submitToReactome('#{fn:join(browseBean.reactomeIdentifierList,',')}')">
+                        <h:outputText value="By Reactome Pathway"/>
+                    </h:outputLink>
+
                 </td>
             </tr>
 
@@ -112,7 +102,18 @@
                 </td>
                 <td>
                     <h:outputLink target="_blank"
-                                  url="http://www.ebi.ac.uk/microarray-as/atlas/qrs?gprop_0=&amp;gval_0=#{browseBean.MRNAExpressionIdentifierList}&amp;fexp_0=UP_DOWN&amp;fact_0=&amp;specie_0=&amp;fval_0=(all+conditions)&amp;view=hm">By mRNA expression</h:outputLink>
+                                  value="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{browseBean.chromosomalLocationIdentifierList}">By Chromosomal Location</h:outputLink>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="text-align: center" width="15">
+                    <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                    rendered="#{displayWarning}" title="Numerous interactors available"/>
+                </td>
+                <td>
+                    <h:outputLink target="_blank"
+                                  value="http://www.ebi.ac.uk/microarray-as/atlas/qrs?gprop_0=&amp;gval_0=#{browseBean.MRNAExpressionIdentifierList}&amp;fexp_0=UP_DOWN&amp;fact_0=&amp;specie_0=&amp;fval_0=(all+conditions)&amp;view=hm">By mRNA expression</h:outputLink>
                 </td>
             </tr>
 
@@ -129,7 +130,7 @@
 
             </td>
             <td>
-                <h:commandLink value="List All" action="list.compounds"
+                <h:commandLink value="List All" action="/pages/list/compound_list?faces-redirect=true&amp;includeViewParams=true"
                                disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
             </td>
         </tr>
@@ -139,7 +140,7 @@
 
             </td>
             <td>
-                <h:commandLink value="By ChEBI Ontology (CHEBI)" action="browse.chebibrowser"
+                <h:commandLink value="By ChEBI Ontology (CHEBI)" action="/pages/browse/chebibrowser?faces-redirect=true&amp;includeViewParams=true"
                                disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
             </td>
         </tr>
@@ -157,7 +158,7 @@
 
             </td>
             <td>
-                <h:commandLink value="List All" action="list.nucleicacids"
+                <h:commandLink value="List All" action="/pages/list/nucleicacid?faces-redirect=true&amp;includeViewParams=true"
                                disabled="#{searchBean.nucleicAcidTotalResults == 0}"/>
             </td>
         </tr>

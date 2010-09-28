@@ -12,7 +12,7 @@
         <f:viewParam name="query" value="#{userQuery.searchQuery}"/>
         <f:viewParam name="ontologyQuery" value="#{userQuery.ontologySearchQuery}"/>
         <f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>
-        <f:event type="preRenderView" listener="#{searchBean.doInteractorsSearch}"/>
+        <f:event type="preRenderView" listener="#{browseBean.createListOfIdentifiers()}"/>
     </f:metadata>
 
 </ui:composition>
