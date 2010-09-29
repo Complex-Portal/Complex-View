@@ -11,8 +11,29 @@
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
 
 
-    <p:panel>
-        Export to:&#160;
+    <p:toolbar>
+
+        <!--<p:menuButton value="Export to...">-->
+             <!--<p:menuitem value="MI-TAB"-->
+                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=mitab"-->
+                         <!--target="_blank" />-->
+             <!--<p:menuitem value="MI-TAB (Expanded)"-->
+                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=mitab_intact"-->
+                         <!--target="_blank" />-->
+             <!--<p:menuitem value="MI-XML 2.5.3"-->
+                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_53"-->
+                         <!--target="_blank"-->
+                         <!--disabled="#{searchBean.results.rowCount ge 1000}"/>-->
+             <!--<p:menuitem value="MI-XML 2.5.4"-->
+                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_54"-->
+                         <!--target="_blank"-->
+                         <!--disabled="#{searchBean.results.rowCount ge 1000}"/>-->
+             <!--<p:menuitem value="MI-XML 2.5 (HTML View)"-->
+                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_html"-->
+                         <!--target="_blank"-->
+                         <!--disabled="#{searchBean.results.rowCount ge 1000}"/>-->
+        <!--</p:menuButton>-->
+
         <h:selectOneMenu id="exportFormatSelect"
                                 label="Export to:" unselectedLabel="Select format..."
                                 value="#{searchBean.exportFormat}">
@@ -27,15 +48,18 @@
                                disabled="#{searchBean.results.rowCount ge 500}"/>
             </h:selectOneMenu>
 
-            <h:commandButton type="button" id="exportBtn" value="Export"
+            <p:commandButton type="button" id="exportBtn" value="Export"
                          disabled="#{searchBean.exportFormat == null}"
                          onclick="var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
 
-        &#160;|&#160;
 
-        <p:commandButton type="button" value="Add / remove table columns"
-                         onclick="columnsDialog.show()" />
-    </p:panel>
+        <p:divider/>
+
+        <p:commandButton type="button" value="Add / Remove table columns" onclick="columnsDialog.show()" />
+
+    </p:toolbar>
+
+    <br/>
 
     <p:dialog header="Columns displayed" widgetVar="columnsDialog" width="300" height="400">
         Select:

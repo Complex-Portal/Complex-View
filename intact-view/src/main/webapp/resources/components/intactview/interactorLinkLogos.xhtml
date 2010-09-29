@@ -25,11 +25,11 @@
             <h:panelGroup rendered="#{xref.database == 'uniprotkb'}">
                 <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
                 <br/>
-                <h:commandLink action="molecule">
+                <p:commandLink action="/pages/molecule/molecule?faces-redirect=true&amp;includeViewParams=true" ajax="false">
                     <f:setPropertyActionListener value="#{iamf:getIntactIdentifierFromCrossReferences(cc.attrs.interactor.identifiers)}"
                                                  target="#{moleculeViewBean.interactorAc}"/>
                     <h:graphicImage alt="dastyLogo" url="/images/logos/dasty2_logo_50.png" style="border-width:0"/>
-                </h:commandLink>
+                </p:commandLink>
             </h:panelGroup>
             <h:panelGroup rendered="#{xref.database == 'chebi'}">
                 <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>

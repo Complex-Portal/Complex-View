@@ -28,14 +28,14 @@
                          rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"
                          disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
-            <h:commandButton id="quickSearchBtn"
+            <p:commandButton id="quickSearchBtn" ajax="false"
                              value="Search"
                              disabled="#{userQuery.showNewFieldPanel}"
                              action="#{searchBean.doBinarySearchAction}">
                 <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-            </h:commandButton>
+            </p:commandButton>
             &#160;
-            <h:commandButton type="button" id="clearSearchBtn" value="Clear"
+            <p:commandButton type="button" id="clearSearchBtn" value="Clear"
                              onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
                              disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
