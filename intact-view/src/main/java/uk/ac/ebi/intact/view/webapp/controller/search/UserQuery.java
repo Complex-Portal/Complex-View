@@ -21,12 +21,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
+import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyTermWrapper;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.util.JsfUtils;
 import uk.ac.ebi.intact.view.webapp.util.OntologyTerm;
@@ -99,6 +102,8 @@ public class UserQuery extends BaseController {
     private Map<String,SearchField> searchFieldsMap;
 
     private String searchBrowseName;
+
+    private TreeNode selectedSearchTerm;
 
     public UserQuery() {
         this.queryTokenList = new ArrayList<QueryToken>();
@@ -417,6 +422,10 @@ public class UserQuery extends BaseController {
 
         //termMap.put( param,termName );
 
+        doAddParamToQuery(operand, field, query);
+    }
+
+    public void doAddParamToQuery(String operand, String field, String query) {
         doAddFieldToQuery(new QueryToken(query, field, BooleanOperand.valueOf(operand)));
     }
 
@@ -450,6 +459,12 @@ public class UserQuery extends BaseController {
 
     public void doUnselectDatasets(ActionEvent evt) {
         datasets = new String[0];
+    }
+
+    public void doSelectCvTerm(NodeSelectEvent evt) {
+        final OntologyTermWrapper data = (OntologyTermWrapper) evt.getTreeNode().getData();
+
+        newQueryToken.setQuery(data.getTerm().getId());
     }
 
     private void addToTokenList(String fieldName, String value) {
@@ -651,5 +666,13 @@ public class UserQuery extends BaseController {
 
     public void setOntologyTerm(OntologyTerm ontologyTerm) {
         this.ontologyTerm = ontologyTerm;
+    }
+
+    public TreeNode getSelectedSearchTerm() {
+        return selectedSearchTerm;
+    }
+
+    public void setSelectedSearchTerm(TreeNode selectedSearchTerm) {
+        this.selectedSearchTerm = selectedSearchTerm;
     }
 }

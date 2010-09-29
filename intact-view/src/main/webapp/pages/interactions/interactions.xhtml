@@ -15,42 +15,4 @@
         <f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>
     </f:metadata>
 
-    <ui:define name="dialogs">
-        <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
-                  draggable="false" closable="false" zindex="200" height="30">
-                <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
-                                style="vertical-align:middle;"/>
-                &#160;
-                <h:outputText value="Loading content..."/>
-        </p:dialog>
-        
-        <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
-                  width="700" height="500" modal="true">
-            <div style="width:690px; height:490px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
-            </div>
-        </p:dialog>
-
-        <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog"
-                  width="700" height="500" modal="true">
-            <div style="width:690px; height:490px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
-            </div>
-        </p:dialog>
-
-        <p:dialog header="PSICQUIC" widgetVar="psicquicDialog"
-                  width="700" height="500" modal="true">
-            <div style="width:690px; height:490px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
-            </div>
-        </p:dialog>
-
-        <p:dialog header="IMEx" widgetVar="psicquicImexDialog"
-                  width="700" height="500" modal="true">
-            <div style="width:690px; height:490px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
-            </div>
-        </p:dialog>
-    </ui:define>
-
 </ui:composition>

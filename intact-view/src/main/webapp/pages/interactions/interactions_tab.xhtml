@@ -20,9 +20,9 @@
     <h:graphicImage alt="browseImg" url="/images/browse.png"/>
     <h:outputText value=" Browse by "/>
     <h:panelGroup>
-        <h:commandLink value="taxonomy" action="browse.taxonomybrowser"/>,&#160;
-        <h:commandLink value="gene ontology" action="browse.gobrowser"/>,&#160;
-        <h:commandLink value="ChEBI ontology" action="browse.chebibrowser"
+        <p:commandLink value="taxonomy" action="/pages/browse/taxonomybrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>,&#160;
+        <p:commandLink value="gene ontology" action="/pages/browse/gobrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>,&#160;
+        <p:commandLink value="ChEBI ontology" action="/pages/browse/chebibrowser?faces-redirect=true&amp;includeViewParams=true"
                 rendered="#{facetController.interactorTypeCount.smallMoleculeCount > 0}"/>
     </h:panelGroup>
 </h:panelGroup>

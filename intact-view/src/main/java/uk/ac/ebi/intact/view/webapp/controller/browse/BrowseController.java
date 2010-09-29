@@ -66,14 +66,13 @@ public class BrowseController extends JpaBaseController {
     private String mRNAExpressionIdentifierList;
     private String[] reactomeIdentifierList;
 
-   
     public BrowseController() {
     }
 
 
     public String createListofIdentifiersAndBrowse() {
         createListOfIdentifiers();
-        return "browse";
+        return "/pages/browse/browse?faces-redirect=true&includeViewParams=true";
     }
 
     public void createListOfIdentifiers() {

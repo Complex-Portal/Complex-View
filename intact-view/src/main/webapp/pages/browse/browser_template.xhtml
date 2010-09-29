@@ -15,19 +15,29 @@
 
         <h:panelGroup>
             <h:graphicImage alt="Back" url="/images/back_arrow.gif" />
-            <h:commandLink value="Back to Browse options" action="#{browseBean.createListofIdentifiersAndBrowse}"/>
+            <p:commandLink value="Back to Browse options" action="/pages/browse/browse?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
         </h:panelGroup>
 
         <br/>
 
         <h2>#{title}</h2>
 
+        <p:remoteCommand name="selectNode" actionListener="#{browserController.searchNode}">
+                                 <f:param name="operand" value="AND"/>
+                                 <f:param name="field" value="#{browserController.fieldName}"/>
+                                 <!--<f:param name="queryValue" value="#{otw.term.id}" />-->
+                            </p:remoteCommand>
+
         <p:tree var="otw" value="#{browserController.ontologyTreeNode}"
-                dynamic="true" cache="true">
+                dynamic="true" cache="true"
+                selectionMode="single" selection="#{browserController.selectedNode}"
+                nodeSelectListener="#{browserController.searchNode}">
             <p:treeNode>
-                <h:outputText value="#{otw.term.name} - #{otw.interactionCount}"/>
+                <h:outputText value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
             </p:treeNode>
         </p:tree>
+
+
 
                 <!--<tr:treeTable id="browsertTree" var="otw" value="#{browserController.ontologyTreeModel}" rootNodeRendered="false"-->
                         <!--expandAllEnabled="false">-->

@@ -27,7 +27,9 @@ import java.util.List;
  */
 public class OntologyTermNode extends DefaultTreeNode {
 
-    
+    public OntologyTermNode(OntologyTermWrapper ontologyTermWrapper) {
+        this(ontologyTermWrapper, null);
+    }
 
     public OntologyTermNode(OntologyTermWrapper ontologyTermWrapper, TreeNode parent) {
         super(ontologyTermWrapper, null);
@@ -36,21 +38,27 @@ public class OntologyTermNode extends DefaultTreeNode {
 
     @Override
     public List<TreeNode> getChildren() {
-        OntologyTermWrapper otw = (OntologyTermWrapper) getData();
+        OntologyTermWrapper otw = getOntologyTermWrapper();
         final List<OntologyTermWrapper> ontologyTermWrappers = otw.getChildren();
 
-        List<TreeNode> treeNodes = new ArrayList<TreeNode>(ontologyTermWrappers.size());
+        List<TreeNode> treeNodes = new ArrayList<TreeNode>();
 
         for (OntologyTermWrapper otwChild : ontologyTermWrappers) {
-            super.addChild(new OntologyTermNode(otwChild, this));
+            treeNodes.add(new OntologyTermNode(otwChild, this));
         }
 
-        return super.getChildren();
+        setChildren(treeNodes);
+
+        return treeNodes;
     }
 
     @Override
     public boolean isLeaf() {
         OntologyTermWrapper otw = (OntologyTermWrapper) getData();
         return otw.isLeaf();
+    }
+
+    protected OntologyTermWrapper getOntologyTermWrapper() {
+        return (OntologyTermWrapper) getData();
     }
 }

@@ -51,12 +51,11 @@ public class TaxonomyBrowserController extends OntologyBrowserController {
 
     @Override
     protected TreeNode createRootTreeNode(OntologyTermWrapper otwRoot) {
-        throw new UnsupportedOperationException("Not yet implemented");
-//        if (skipIntermediateTaxons) {
-//            return new AutoExpandedTreeModel( otwRoot, "children");
-//        } else {
-//            return super.createRootTreeNode(otwRoot);
-//        }
+        if (skipIntermediateTaxons) {
+            return new AutoExpandedTreeNode(otwRoot);
+        } else {
+            return super.createRootTreeNode(otwRoot);
+        }
     }
 
     @Override

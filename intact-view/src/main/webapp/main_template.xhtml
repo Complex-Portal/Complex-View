@@ -15,8 +15,44 @@
                 <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
                                 style="vertical-align:middle;"/>
                 &#160;
-                <h:outputText value="Loading content..."/>
+                <h:outputText value="Loading..."/>
         </p:dialog>
+
+        <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
+                  width="700" height="500" modal="true">
+            <div style="width:690px; height:490px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
+            </div>
+        </p:dialog>
+
+        <p:dialog header="What is this view?" widgetVar="whatIsBrowseDialog"
+                  width="700" height="500">
+            <div style="width:690px; height:490px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/whatis_browser.xhtml"/>
+            </div>
+        </p:dialog>
+
+        <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog"
+                  width="700" height="500" modal="true">
+            <div style="width:690px; height:490px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
+            </div>
+        </p:dialog>
+
+        <p:dialog header="PSICQUIC" widgetVar="psicquicDialog"
+                  width="700" height="500" modal="true">
+            <div style="width:690px; height:490px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
+            </div>
+        </p:dialog>
+
+        <p:dialog header="IMEx" widgetVar="psicquicImexDialog"
+                  width="700" height="500" modal="true">
+            <div style="width:690px; height:490px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
+            </div>
+        </p:dialog>
+
     </ui:define>
 
     <ui:define name="content">

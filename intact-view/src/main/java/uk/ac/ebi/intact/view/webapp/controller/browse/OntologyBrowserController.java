@@ -22,15 +22,19 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.params.FacetParams;
+import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
+import uk.ac.ebi.intact.view.webapp.controller.ContextController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +60,8 @@ public abstract class OntologyBrowserController extends BaseController {
     private BrowserCache browserCache;
 
     private TreeNode ontologyTreeNode;
+
+    private TreeNode selectedNode;
 
     public OntologyBrowserController() {
     }
@@ -121,11 +127,31 @@ public abstract class OntologyBrowserController extends BaseController {
         return treeNode;
     }
 
+    public void searchNode(NodeSelectEvent evt) {
+        ContextController contextController = (ContextController) getBean("contextController");
+        SearchController searchController = (SearchController) getBean("searchBean");
+
+        final OntologyTermWrapper otw = (OntologyTermWrapper) evt.getTreeNode().getData();
+
+        userQuery.doAddParamToQuery("AND", getFieldName(), otw.getTerm().getId());
+
+        FacesContext.getCurrentInstance().getApplication().getNavigationHandler()
+                .handleNavigation(FacesContext.getCurrentInstance(), null, searchController.doBinarySearchAction());
+    }
+
     protected TreeNode createRootTreeNode(OntologyTermWrapper otwRoot) {
         return new OntologyTermNode(otwRoot, null);
     }
 
     public TreeNode getOntologyTreeNode() {
         return ontologyTreeNode;
+    }
+
+    public TreeNode getSelectedNode() {
+        return selectedNode;
+    }
+
+    public void setSelectedNode(TreeNode selectedNode) {
+        this.selectedNode = selectedNode;
     }
 }

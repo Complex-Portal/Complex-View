@@ -40,7 +40,7 @@
                              disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
             <p:commandLink id="addFieldBtn" value="Show Advanced Fields »"
-                           style="font-weight:bold"
+                           style="font-weight:bold" process="addFieldBtn"
                            actionListener="#{userQuery.doShowAddFieldPanel}"
                            disabled="#{userQuery.showNewFieldPanel}"
                            update="searchPanelDetails,searchPanel"/>
@@ -68,20 +68,44 @@
 
                 <h:selectOneMenu id="newQueryField" label="Field: " value="#{userQuery.newQueryToken.field}"
                                  immediate="true">
-                    <p:ajax event="change" update="newQueryPanel"/>
+                    <p:ajax event="change" update="newQueryPanel" process="newQueryField"/>
                     <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
                 </h:selectOneMenu>
                 &#160;
 
                 <h:panelGroup id="newQueryPanel">
-                    <h:inputText value="#{userQuery.newQueryToken.query}" columns="50"
-                                 rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list and
-                                                  not userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"/>
+                    <h:inputText value="#{userQuery.newQueryToken.query}" columns="50"/>
 
                     <h:selectOneMenu value="#{userQuery.newQueryToken.query}"
                                      rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}">
                         <f:selectItems value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].selectItems}"/>
                     </h:selectOneMenu>
+
+                    <h:panelGroup rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}">
+                        <p:commandLink onclick="browseCvDialog.show()">
+                            <h:graphicImage alt="Browse" url="/images/magnify.png"/>
+                        </p:commandLink>
+
+                        <p:dialog header="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].displayName}" widgetVar="browseCvDialog" fixedCenter="true"
+                              width="600" height="600">
+                        <div style="width:580px; height:590px; overflow-y: auto">
+                            <p><b>Choose a term by clicking on its name. The identifier will be used as the value for the search.</b></p>
+                            <br/>
+
+                            <p:tree var="otw" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.ontologyTreeNode}"
+                                    selectionMode="single" selection="#{userQuery.selectedSearchTerm}"
+                                    nodeSelectListener="#{userQuery.doSelectCvTerm}"
+                                    update="newQueryPanel"
+                                    onselectComplete="browseCvDialog.hide()">
+                                <p:treeNode>
+                                    <h:outputText value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
+                                </p:treeNode>
+                            </p:tree>
+                        </div>
+                    </p:dialog>
+
+                    </h:panelGroup>
+
 
                     <!--<tr:inputListOfValues value="#{userQuery.newQueryToken.query}" columns="50"-->
                     <!--rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"-->
@@ -100,7 +124,7 @@
                     <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
                 </h:commandButton>
                 &#160;
-                <p:commandButton id="cancelFieldBtn" value="Cancel"
+                <p:commandButton id="cancelFieldBtn" value="Cancel" process="cancelFieldBtn"
                                  actionListener="#{userQuery.doCancelAddField}"
                                  update="searchPanel,searchPanelDetails"/>
 

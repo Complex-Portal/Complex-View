@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.view.webapp.controller.browse.OntologyBrowserController;
+
 import javax.faces.model.SelectItem;
 import java.util.List;
 
@@ -98,6 +101,10 @@ public class SearchField {
 
     public boolean isOntologyBrowser() {
         return (browserControllerName != null);
+    }
+
+    public OntologyBrowserController getBrowser() {
+        return (OntologyBrowserController) IntactContext.getCurrentInstance().getSpringContext().getBean(browserControllerName);
     }
 
     @Override
