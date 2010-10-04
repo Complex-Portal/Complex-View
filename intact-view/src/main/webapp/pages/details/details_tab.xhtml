@@ -180,6 +180,8 @@
 
     <h2>Participant#{(participantCount > 1 ? text : '')}</h2>
 
+   <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
+
     <p:dataTable var="participant" value="#{interaction.components}" paginator="false" dynamic="false" lazy="false">
 
         <ui:param name="interactor" value="#{participant.interactor}"/>
@@ -248,7 +250,7 @@
         <f:facet name="header">
             <h:outputText value="Experimental role"/>
         </f:facet>
-        <iv:cvLazyPopup cvIdentifier="#{participant.cvExperimentalRole.identifier}"
+        <iv:cvLazyPopup cvIdentifier="#{participant.cvExperimentalRole.identifier}"  dialogVar="cvInfoDialog"
                         text="#{participant.cvExperimentalRole.shortLabel}"
                         cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"/>
     </p:column>
@@ -257,7 +259,7 @@
         <f:facet name="header">
             <h:outputText value="Biological role"/>
         </f:facet>
-        <iv:cvLazyPopup cvIdentifier="#{participant.cvBiologicalRole.identifier}"
+        <iv:cvLazyPopup cvIdentifier="#{participant.cvBiologicalRole.identifier}"  dialogVar="cvInfoDialog"
                         text="#{participant.cvBiologicalRole.shortLabel}"
                         cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"/>
     </p:column>
@@ -266,7 +268,7 @@
         <f:facet name="header">
             <h:outputText value="Interactor type"/>
         </f:facet>
-        <iv:cvLazyPopup cvIdentifier="#{interactor.cvInteractorType.identifier}"
+        <iv:cvLazyPopup cvIdentifier="#{interactor.cvInteractorType.identifier}"  dialogVar="cvInfoDialog"
                         text="#{interactor.cvInteractorType.shortLabel}"
                         cvClassName="uk.ac.ebi.intact.model.CvInteractorType"/>
     </p:column>

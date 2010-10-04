@@ -16,30 +16,15 @@
       <composite:attribute name="text" type="java.lang.String" required="true"/>
       <composite:attribute name="cvIdentifier" type="java.lang.String" required="true"/>
       <composite:attribute name="cvClassName" type="java.lang.String" required="true"/>
+      <composite:attribute name="dialogVar" type="java.lang.String" default="#{cc.clientId}_cvDlg"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <ui:param name="dialogVar" value="#{requestConfigBean.toFriendlyJavascriptVar(cc.clientId)}_cvDlg"/>
-
-        <p:commandLink id="cvLink" type="button" onclick="#{dialogVar}.show();" value="#{cc.attrs.text}"
-                       update="cvDetailsPanel" global="true">
-            <f:setPropertyActionListener value="#{true}" target="#{cvLazyPopupController.dialogRendered}"/>
-        </p:commandLink>
-
-        <p:dialog widgetVar="#{dialogVar}" header="#{cc.attrs.text}" draggable="true"
-                  width="720" height="500" closeListener="#{cvLazyPopupController.closeDialog}" onCloseUpdate="cvDetailsPanel">
-
-            <h:panelGroup id="cvDetailsPanel">
-                <h:panelGroup rendered="#{cvLazyPopupController.dialogRendered}">
-                      <iframe src="#{requestConfigBean.absoluteContextPath}/pages/interactions/cvobjectView.xhtml?identifier=#{cc.attrs.cvIdentifier}&amp;className=#{cc.attrs.cvClassName}&amp;visible=#{cvLazyPopupController.dialogRendered}"
-                              style="border:0; width:700px; height:500px"></iframe>
-
-                    </h:panelGroup>
-            </h:panelGroup>
-
-        </p:dialog>
+        <h:outputLink id="cvLink" onclick="#{cc.attrs.dialogVar}.show(); document.getElementById('#{cc.attrs.dialogVar}_content').src='#{requestConfigBean.absoluteContextPath}/pages/interactions/cvobjectView.xhtml?identifier=#{cc.attrs.cvIdentifier}&amp;className=#{cc.attrs.cvClassName}'"
+                      value="javascript:void(0)">#{cc.attrs.text}
+        </h:outputLink>
 
     </composite:implementation>
 
