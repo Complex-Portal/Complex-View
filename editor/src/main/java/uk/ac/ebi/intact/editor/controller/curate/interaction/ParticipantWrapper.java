@@ -82,9 +82,9 @@ public class ParticipantWrapper {
 
         if (participant.getAc() != null) {
             if (deleted) {
-                unsavedChangeManager.markToDelete(participant);
+                unsavedChangeManager.markToDelete(participant, participant.getInteraction());
             } else {
-                unsavedChangeManager.removeFromDeleted(participant);
+                unsavedChangeManager.removeFromDeleted(participant, participant.getInteraction());
             }
         }
     }

@@ -30,11 +30,17 @@ public class UnsavedChange {
     public static final String UPDATED = "updated";
 
     private IntactObject unsavedObject;
+    private AnnotatedObject parentObject;
     private String action;
 
     public UnsavedChange(IntactObject unsavedObject, String action) {
         this.unsavedObject = unsavedObject;
         this.action = action;
+    }
+
+    public UnsavedChange(IntactObject unsavedObject, String action, AnnotatedObject parentObject) {
+        this(unsavedObject, action);
+        this.parentObject = parentObject;
     }
 
     public String getAction() {
@@ -43,6 +49,10 @@ public class UnsavedChange {
 
     public IntactObject getUnsavedObject() {
         return unsavedObject;
+    }
+
+    public AnnotatedObject getParentObject() {
+        return parentObject;
     }
 
     public String getDescription(IntactObject intactObject) {

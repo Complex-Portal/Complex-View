@@ -167,7 +167,7 @@ public class ParticipantController extends ParameterizableObjectController {
         if (feature.getAc() == null) {
             participant.removeBindingDomain(feature);
         } else {
-            unsavedChangeManager.markToDelete(feature);
+            unsavedChangeManager.markToDelete(feature, feature.getComponent());
         }
     }
 

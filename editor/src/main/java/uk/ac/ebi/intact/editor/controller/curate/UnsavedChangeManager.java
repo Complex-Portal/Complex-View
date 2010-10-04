@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.editor.controller.curate;
 
 import uk.ac.ebi.intact.core.util.DebugUtil;
+import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
 import java.util.*;
@@ -33,17 +34,17 @@ public class UnsavedChangeManager {
         changes = new HashSet<UnsavedChange>();
     }
 
-    public void markToDelete(IntactObject object) {
+    public void markToDelete(IntactObject object, AnnotatedObject parent) {
         if (object.getAc() != null) {
             unsavedChanges = true;
-            changes.add(new UnsavedChange(object, UnsavedChange.DELETED));
+            changes.add(new UnsavedChange(object, UnsavedChange.DELETED, parent));
 
             removeFromUnsaved(object);
         }
     }
 
-    public void removeFromDeleted(IntactObject object) {
-        changes.remove(new UnsavedChange(object, UnsavedChange.DELETED));
+    public void removeFromDeleted(IntactObject object, AnnotatedObject parent) {
+        changes.remove(new UnsavedChange(object, UnsavedChange.DELETED, parent));
     }
 
     public void markAsUnsaved(IntactObject object) {
@@ -117,6 +118,18 @@ public class UnsavedChangeManager {
         }
 
         return ios;
+    }
+    
+    public List<UnsavedChange> getAllUnsavedDeleted() {
+        List<UnsavedChange> unsaved = new ArrayList<UnsavedChange>();
+
+        for (UnsavedChange change : changes) {
+            if (UnsavedChange.DELETED.equals(change.getAction())) {
+                unsaved.add(change);
+            }
+        }
+
+        return unsaved;
     }
 
     public List<IntactObject> getAllUnsaved() {

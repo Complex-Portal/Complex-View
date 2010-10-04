@@ -72,12 +72,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         // delete from the unsaved manager
-        final List<IntactObject> deletedObjects = getAnnotatedObjectWrapper().getUnsavedChangeManager().getAllDeleted();
+        final List<UnsavedChange> deletedObjects = getAnnotatedObjectWrapper().getUnsavedChangeManager().getAllUnsavedDeleted();
 
         PersistenceController persistenceController = getPersistenceController();
 
-        for (IntactObject intactObject : deletedObjects) {
-            persistenceController.doDelete(intactObject);
+        for (UnsavedChange unsaved : deletedObjects) {
+            // remove the object to delete from its parent
+            AnnotatedObjectUtils.removeChild(unsaved.getParentObject(), unsaved.getUnsavedObject());
+
+            persistenceController.doDelete(unsaved.getUnsavedObject());
         }
 
         // annotated objects specific tasks to prepare the save

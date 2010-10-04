@@ -87,6 +87,11 @@ public class FeatureController extends AnnotatedObjectController {
             if ( feature != null ) ac = feature.getAc();
         }
 
+        if (feature == null) {
+            super.addErrorMessage("Feature does not exist", ac);
+            return;
+        }
+
         if( interactionController.getInteraction() == null ) {
             final Interaction interaction = feature.getComponent().getInteraction();
             interactionController.setInteraction( interaction );
@@ -123,7 +128,7 @@ public class FeatureController extends AnnotatedObjectController {
         if (range.getAc() == null) {
             feature.removeRange(range);
         } else {
-            unsavedChangeManager.markToDelete(range);
+            unsavedChangeManager.markToDelete(range, range.getFeature());
         }
     }
 
