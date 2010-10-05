@@ -40,7 +40,7 @@ public class CoreDeleter extends JpaAwareController {
     }
 
     private void deleteFeature(Feature feature) {
-        if (feature != null && feature.getComponent != null) {
+        if (feature != null && feature.getComponent() != null) {
             feature.getComponent().removeBindingDomain(feature);
         }
     }
