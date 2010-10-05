@@ -84,6 +84,38 @@
         <!--<param-value>uk.ac.ebi.intact.editor.component</param-value>-->
     <!--</context-param>-->
 
+    <!-- MyFaces orchestra params -->
+    <context-param>
+        <description>
+            Controls whether two threads are prevented from accessing the same ConversationContext concurrently, or not.
+            This is generally a bad idea as it can lead to ugly race conditions, so it is TRUE by default.
+
+            It is possible for multiple requests associated with the same http session to be received concurrently. By
+            default, a servlet engine simply processes all requests concurrently in different threads. However that can
+            cause all sorts of unexpected problems with objects in scopes that are visible to both threads
+            (session-scoped and conversation-scoped objects).
+
+            When enabled, this option will block the thread for any request which will access the same Orchestra
+            ConversationContext as a thread that is already running, and release it only when the earlier request has
+            completed. This protects all orchestra conversation-scoped objects from concurrent access, but does not
+            protect any session-scoped objects.
+
+            When using Orchestra, it is recommended that session-scoped objects are avoided conversation-scoped beans
+            used instead. If there is no session-scoped data in use by an application then it is safe to allow
+            concurrent requests to the same http session. If you do wish to protect normal session-scoped objects as
+            well, then the standard solution is to write a filter that uses standard java synchronisation on a
+            session-scoped object, taking the lock on request entry and releasing it on request exit.
+
+            Note that the expression "serialize requests" as used here means requests are processed serially, ie one
+            after the other rather than concurrently. This has nothing to do with java.io.Serializable.
+        </description>
+        <param-name>org.apache.myfaces.orchestra.CoreConfig:SERIALIZE_REQUESTS</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+
+
+    <!-- Primefaces params -->
     <context-param>
         <param-name>primefaces.skin</param-name>
         <param-value>none</param-value>
