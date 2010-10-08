@@ -65,7 +65,7 @@ public class InteractionController extends ParameterizableObjectController {
     private DualListModel<String> experimentLists;
     private List<SelectItem> experimentSelectItems;
 
-    private List<ParticipantWrapper> participantWrappers;
+    private LinkedList<ParticipantWrapper> participantWrappers;
 
     private Experiment experiment;
     private List<Experiment> experimentsToUpdate;
@@ -267,7 +267,7 @@ public class InteractionController extends ParameterizableObjectController {
 
     public void refreshParticipants() {
         final Collection<Component> components = interaction.getComponents();
-        participantWrappers = new ArrayList<ParticipantWrapper>( components.size() );
+        participantWrappers = new LinkedList<ParticipantWrapper>();
 
         for ( Component component : components ) {
             participantWrappers.add( new ParticipantWrapper( component, getUnsavedChangeManager() ) );
@@ -276,9 +276,13 @@ public class InteractionController extends ParameterizableObjectController {
 
     public void addParticipant(Component component) {
         interaction.addComponent(component);
-        participantWrappers.add(new ParticipantWrapper( component, getUnsavedChangeManager() ));
+        participantWrappers.addFirst(new ParticipantWrapper( component, getUnsavedChangeManager() ));
 
-        updateShortLabel();
+        try {
+            updateShortLabel();
+        } catch (Exception e) {
+            addErrorMessage("Problem updating shortLabel", e.getMessage());
+        }
 
         getUnsavedChangeManager().markAsUnsaved(interaction);
     }

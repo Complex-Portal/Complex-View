@@ -79,7 +79,7 @@ public class PersistenceController extends JpaAwareController {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Reverting: " + DebugUtil.intactObjectToString(intactObject, false));
 
-            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction(getClass().getSimpleName());
 
             if (getDaoFactory().getEntityManager().contains(intactObject)) {
                 getDaoFactory().getEntityManager().refresh(intactObject);

@@ -141,7 +141,7 @@ public class CvObjectService extends JpaAwareController {
     public synchronized void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading Controlled Vocabularies" );
 
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction(getClass().getSimpleName());
 
         publicationTopicSelectItems = new ArrayList<SelectItem>();
 

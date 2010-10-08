@@ -13,9 +13,25 @@
         <title>Editor</title>
         <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>
         <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css"></link>
+
+        <script type="text/javascript">
+            function fnCallback(e) {
+                document.getElementById("intact-blockingDiv").style.display = 'none';
+                //blockingDialog.hide();
+            }
+            YAHOO.util.Event.addListener(window, "load", fnCallback);
+        </script>
+
     </h:head>
 
     <h:body style="margin: 0 0 0 0;">
+        <div id="intact-blockingDiv"></div>
+        <!--<ia:loadingDialog widgetVar="blockingDialog" modal="true" message="Loading page..."/>-->
+
+        <!--<script type="text/javascript">-->
+            <!--blockingDialog.show();-->
+        <!--</script>-->
+
         <!-- The debug element is causing problems with the Browse Cv Objects trees in dialogs... -->
         <!--<ui:debug hotkey="e" rendered="#{facesContext.application.projectStage == 'Development'}"/>-->
 

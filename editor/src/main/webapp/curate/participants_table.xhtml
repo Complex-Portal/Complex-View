@@ -10,7 +10,7 @@
     <h:panelGroup id="participantsTable">
 
         <p:dataTable var="wrapper" value="#{value}"
-                     rows="15" paginatorAlwaysVisible="false"
+                     rows="15" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="both"
                      rowStyleClass="#{wrapper.participant.ac == null? 'intact-new' : wrapper.deleted? 'intact-deleted' : null}">
 
             <ui:param name="participant" value="#{wrapper.participant}" />

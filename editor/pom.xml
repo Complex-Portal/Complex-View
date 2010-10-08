@@ -534,7 +534,7 @@
         <repository>
             <id>intact.nexus</id>
             <name>IntAct Nexus</name>
-            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public/</url>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
         </repository>
 
 <!--
@@ -616,7 +616,7 @@
       <pluginRepository>
             <id>intact.nexus</id>
             <name>IntAct Nexus</name>
-            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public/</url>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
        </pluginRepository>
         
    </pluginRepositories>
