@@ -24,14 +24,18 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
+import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.FeatureUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Feature controller.
@@ -47,6 +51,8 @@ public class FeatureController extends AnnotatedObjectController {
     private static final Log log = LogFactory.getLog( FeatureController.class );
 
     private Feature feature;
+    private List<RangeWrapper> rangeWrappers;
+    private boolean containsInvalidRanges;
 
     /**
      * The AC of the feature to be loaded.
@@ -64,6 +70,8 @@ public class FeatureController extends AnnotatedObjectController {
 
     @Autowired
     private ParticipantController participantController;
+
+    private String newRangeValue;
 
     public FeatureController() {
     }
@@ -92,18 +100,46 @@ public class FeatureController extends AnnotatedObjectController {
             return;
         }
 
+        final Component participant = feature.getComponent();
+        
+        if (participantController.getParticipant() == null) {
+            participantController.setParticipant(participant);
+        }
+        
         if( interactionController.getInteraction() == null ) {
-            final Interaction interaction = feature.getComponent().getInteraction();
+            final Interaction interaction = participant.getInteraction();
             interactionController.setInteraction( interaction );
         }
 
         if ( publicationController.getPublication() == null ) {
-            Publication publication = feature.getComponent().getInteraction().getExperiments().iterator().next().getPublication();
+            Publication publication = participant.getInteraction().getExperiments().iterator().next().getPublication();
             publicationController.setPublication( publication );
         }
 
         if ( experimentController.getExperiment() == null ) {
-            experimentController.setExperiment( feature.getComponent().getInteraction().getExperiments().iterator().next() );
+            experimentController.setExperiment( participant.getInteraction().getExperiments().iterator().next() );
+        }
+
+        refreshRangeWrappers();
+
+        if (containsInvalidRanges) {
+            addWarningMessage("This feature contains invalid ranges", "Ranges must be fixed before being able to save");
+        }
+    }
+
+    public void refreshRangeWrappers() {
+        this.rangeWrappers = new ArrayList<RangeWrapper>(feature.getRanges().size());
+
+        String sequence = getSequence();
+
+        containsInvalidRanges = false;
+
+        for (Range range : feature.getRanges()) {
+            rangeWrappers.add(new RangeWrapper(range, sequence));
+
+            if (!containsInvalidRanges && FeatureUtils.isABadRange(range, sequence)) {
+                containsInvalidRanges = true;
+            }
         }
     }
 
@@ -112,16 +148,62 @@ public class FeatureController extends AnnotatedObjectController {
        feature.setShortLabel(null);
        feature.setCvFeatureType(null);
 
-        feature.addRange(new Range());
-
        participant.addBindingDomain(feature);
+
+        refreshRangeWrappers();
 
         //getUnsavedChangeManager().markAsUnsaved(feature);
     }
     
     public void newRange(ActionEvent evt) {
-        feature.addRange(new Range());
+        if (newRangeValue == null && newRangeValue.isEmpty()) {
+            addErrorMessage("Range value field is empty", "Please provide a range value before clicking on the New Range button");
+            return;
+        }
+
+        newRangeValue = newRangeValue.trim();
+
+        if (!newRangeValue.contains("-")) {
+            addErrorMessage("Illegal range value", "The range must contain a hyphen");
+            return;
+        }
+
+        String sequence = getSequence();
+
+        if (FeatureUtils.isABadRange(newRangeValue, sequence)) {
+            String problemMsg = FeatureUtils.getBadRangeInfo(newRangeValue, sequence);
+            addErrorMessage("Range is not valid", problemMsg);
+            return;
+        }
+
+        Range newRange = FeatureUtils.createRangeFromString(newRangeValue, sequence);
+
+        // replace CVs by ones with ACs
+
+        CvObjectService cvObjectService = (CvObjectService) getSpringContext().getBean("cvObjectService");
+        CvFuzzyType fromFuzzyType = cvObjectService.findCvObjectByIdentifier(CvFuzzyType.class, newRange.getFromCvFuzzyType().getIdentifier());
+        CvFuzzyType toFuzzyType = cvObjectService.findCvObjectByIdentifier(CvFuzzyType.class, newRange.getToCvFuzzyType().getIdentifier());
+
+        newRange.setFromCvFuzzyType(fromFuzzyType);
+        newRange.setToCvFuzzyType(toFuzzyType);
+
+        feature.addRange(newRange);
+
+        refreshRangeWrappers();
+
         getUnsavedChangeManager().markAsUnsaved(feature);
+    }
+
+    private String getSequence() {
+        Interactor interactor = feature.getComponent().getInteractor();
+
+        String sequence = null;
+
+        if (interactor instanceof Polymer) {
+            Polymer polymer = (Polymer) interactor;
+            sequence = polymer.getSequence();
+        }
+        return sequence;
     }
 
     public void markRangeToDelete(Range range, UnsavedChangeManager unsavedChangeManager) {
@@ -130,6 +212,10 @@ public class FeatureController extends AnnotatedObjectController {
         } else {
             unsavedChangeManager.markToDelete(range, range.getFeature());
         }
+    }
+
+    public List<RangeWrapper> getWrappedRanges() {
+        return rangeWrappers;
     }
 
     public String getAc() {
@@ -150,5 +236,21 @@ public class FeatureController extends AnnotatedObjectController {
     public void setFeature( Feature feature ) {
         this.feature = feature;
         this.ac = feature.getAc();
+    }
+
+    public String getNewRangeValue() {
+        return newRangeValue;
+    }
+
+    public void setNewRangeValue(String newRangeValue) {
+        this.newRangeValue = newRangeValue;
+    }
+
+    public boolean isContainsInvalidRanges() {
+        return containsInvalidRanges;
+    }
+
+    public void setContainsInvalidRanges(boolean containsInvalidRanges) {
+        this.containsInvalidRanges = containsInvalidRanges;
     }
 }

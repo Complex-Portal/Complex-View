@@ -7,15 +7,6 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
-    <h:panelGroup id="rangesTable">
-
-    <ui:param name="rangeToDeleteCount" value="#{unsavedChangeManager.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Range').size()}"/>
-
-            <h:panelGroup rendered="#{rangeToDeleteCount gt 0}">
-                <ia:panelMessage level="info">
-                    <h:outputText value="#{rangeToDeleteCount} ranges will be deleted on save."/>
-                </ia:panelMessage>
-            </h:panelGroup>
 
             <p:dataTable var="range" value="#{value}"
                          paginator="true" rows="10" paginatorAlwaysVisible="false" >
@@ -57,12 +48,12 @@
                     -
                     <h:inputText value="#{range.toIntervalEnd}" size="3"/>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Undetermined"/>
-                    </f:facet>
-                    <h:selectBooleanCheckbox value="#{range.undetermined}"/>
-                </p:column>
+                <!--<p:column>-->
+                    <!--<f:facet name="header">-->
+                        <!--<h:outputText value="Undetermined"/>-->
+                    <!--</f:facet>-->
+                    <!--<h:selectBooleanCheckbox value="#{range.undetermined}"/>-->
+                <!--</p:column>-->
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="Linked"/>
@@ -82,7 +73,4 @@
                                update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(range.ac)}"/>
                 </p:column>
             </p:dataTable>
-
-    </h:panelGroup>
-
 </ui:composition>

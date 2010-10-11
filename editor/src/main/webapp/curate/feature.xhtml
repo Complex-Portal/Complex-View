@@ -103,16 +103,32 @@
                 <p:tab title="Ranges (#{feature.ranges.size()})">
 
                     <div class="intact-buttonBar">
-                        <p:commandButton value="New range" actionListener="#{featureController.newRange}" update="rangeTable"
+                        <h:inputText id="newRangeTxt" value="#{featureController.newRangeValue}"/>
+                        <p:tooltip value="e.g. 23-25" forElement="newRangeTxt" targetPosition="topRight" position="bottomLeft"/>
+
+                        <p:commandButton value="New range" actionListener="#{featureController.newRange}" update="rangeTable messagesComponent"
                                 onclick="markAsUnsaved()"/>
                      </div>
 
                     <p:outputPanel id="rangeTable">
-                        <ui:include src="ranges_table.xhtml">
-                            <ui:param name="value" value="#{feature.ranges}"/>
+                        <h:panelGroup id="rangesTable">
+
+                        <ui:param name="rangeToDeleteCount" value="#{unsavedChangeManager.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Range').size()}"/>
+
+                        <h:panelGroup rendered="#{rangeToDeleteCount gt 0}">
+                            <ia:panelMessage level="info">
+                                <h:outputText value="#{rangeToDeleteCount} ranges will be deleted on save."/>
+                            </ia:panelMessage>
+                        </h:panelGroup>
+
+                        <ui:include src="ranges_wrapped_table.xhtml">
+                            <ui:param name="value" value="#{featureController.wrappedRanges}"/>
                             <ui:param name="unsavedChangeManager" value="#{featureController.unsavedChangeManager}"/>
                         </ui:include>
+
+                        </h:panelGroup>
                     </p:outputPanel>
+
                 </p:tab>
 
                     <ui:include src="propertiesTabs.xhtml">

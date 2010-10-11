@@ -1,0 +1,87 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
+
+
+
+            <p:dataTable var="rangeWrapper" value="#{value}"
+                         paginator="true" rows="10" paginatorAlwaysVisible="false" >
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="AC"/>
+                    </f:facet>
+                    <h:outputText value="#{rangeWrapper.range.ac}" styleClass="#{unsavedChangeManager.isDeletedAc(range.ac)? 'intact-deleted' : ''}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Value"/>
+                    </f:facet>
+                    <h:inputText value="#{rangeWrapper.rangeAsString}"
+                                 valueChangeListener="#{rangeWrapper.onRangeAsStringChanged}"
+                                 validator="#{rangeWrapper.validateRange}"
+                                 required="true"
+                                 requiredMessage="Range value is required"
+                                 readonly="#{unsavedChangeManager.isDeletedAc(range.ac)}"
+                                 styleClass="#{unsavedChangeManager.isDeletedAc(range.ac)? 'intact-deleted' : ''}"
+                                 style="font-family: monospace">
+                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable"/>
+                    </h:inputText>
+
+                     <h:panelGroup id="validityPanel">
+
+                         <h:panelGroup rendered="#{not rangeWrapper.validRange}">
+                                    <span class="ui-icon ui-icon-alert" style="display:inline-block"
+                                          title="#{rangeWrapper.badRangeInfo}"/>
+                         </h:panelGroup>
+                     </h:panelGroup>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="From type"/>
+                    </f:facet>
+                    <h:selectOneMenu value="#{rangeWrapper.range.fromCvFuzzyType}" converter="cvObjectConverter" onchange="markAsUnsaved()"
+                            valueChangeListener="#{rangeWrapper.onFuzzyTypeChanged}"
+                            required="true"
+                            requiredMessage="Range from CvFuzzyType is required">
+                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable"/>
+                        <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
+                    </h:selectOneMenu>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="To type"/>
+                    </f:facet>
+                    <h:selectOneMenu value="#{rangeWrapper.range.toCvFuzzyType}" converter="cvObjectConverter" onchange="markAsUnsaved()"
+                            valueChangeListener="#{rangeWrapper.onFuzzyTypeChanged}"
+                            required="true"
+                            requiredMessage="Range to CvFuzzyType is required">
+                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable"/>
+                        <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
+                    </h:selectOneMenu>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Linked"/>
+                    </f:facet>
+                    <h:outputText value="#{feature.boundDomain != null? 'Yes' : 'No'}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Actions"/>
+                    </f:facet>
+                    <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
+                               actionListener="#{featureController.markRangeToDelete(range, unsavedChangeManager)}"
+                               update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(range.ac)}"
+                               onclick="markAsUnsaved()"/>
+                    <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
+                               actionListener="#{unsavedChangeManager.revert(range)}"
+                               update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(range.ac)}"/>
+                </p:column>
+            </p:dataTable>
+
+</ui:composition>

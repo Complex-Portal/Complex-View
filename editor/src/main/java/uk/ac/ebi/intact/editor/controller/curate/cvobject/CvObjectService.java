@@ -342,6 +342,10 @@ public class CvObjectService extends JpaAwareController {
         return acCvObjectMap.get( ac );
     }
 
+    public <T extends CvObject> T findCvObjectByIdentifier( Class<T> cvClass, String identifier ) {
+        return (T) allCvObjectMap.get( new CvKey(identifier, cvClass) );
+    }
+
     public <T extends CvObject> T findCvObject( Class<T> clazz, String idOrLabel ) {
         CvKey keyId = new CvKey( idOrLabel, clazz );
         CvKey keyLabel = new CvKey( idOrLabel, clazz );
