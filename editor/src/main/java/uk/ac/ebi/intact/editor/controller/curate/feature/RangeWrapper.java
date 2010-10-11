@@ -77,6 +77,7 @@ public class RangeWrapper {
             valueHolder.setValid(false);
 
             context.addMessage(component.getClientId(), new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid range", "Range syntax is invalid: "+rangeAsStr));
+            context.renderResponse();
         }
     }
 

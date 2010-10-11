@@ -29,7 +29,7 @@
                                  readonly="#{unsavedChangeManager.isDeletedAc(range.ac)}"
                                  styleClass="#{unsavedChangeManager.isDeletedAc(range.ac)? 'intact-deleted' : ''}"
                                  style="font-family: monospace">
-                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable"/>
+                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
                     </h:inputText>
 
                      <h:panelGroup id="validityPanel">
@@ -48,7 +48,7 @@
                             valueChangeListener="#{rangeWrapper.onFuzzyTypeChanged}"
                             required="true"
                             requiredMessage="Range from CvFuzzyType is required">
-                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable"/>
+                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
                         <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
                     </h:selectOneMenu>
                 </p:column>
@@ -60,7 +60,7 @@
                             valueChangeListener="#{rangeWrapper.onFuzzyTypeChanged}"
                             required="true"
                             requiredMessage="Range to CvFuzzyType is required">
-                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable"/>
+                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
                         <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
                     </h:selectOneMenu>
                 </p:column>

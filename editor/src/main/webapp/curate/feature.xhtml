@@ -104,7 +104,7 @@
 
                     <div class="intact-buttonBar">
                         <h:inputText id="newRangeTxt" value="#{featureController.newRangeValue}"/>
-                        <p:tooltip value="e.g. 23-25" forElement="newRangeTxt" targetPosition="topRight" position="bottomLeft"/>
+                        <p:tooltip value="Type a range (e.g. '23-25') and then click the 'New Range' button" forElement="newRangeTxt" targetPosition="topRight" position="bottomLeft"/>
 
                         <p:commandButton value="New range" actionListener="#{featureController.newRange}" update="rangeTable messagesComponent"
                                 onclick="markAsUnsaved()"/>
