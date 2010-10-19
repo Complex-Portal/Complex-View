@@ -38,7 +38,7 @@ public class EditorCorePersister extends CorePersisterImpl {
         super(intactContext, finder);
     }
 
-    @Transactional
+    @Transactional(value = "core")
     public PersisterStatistics saveOrUpdate( EntityManager em, AnnotatedObject ao ) {
 
         em.setFlushMode(FlushModeType.COMMIT);
@@ -56,7 +56,7 @@ public class EditorCorePersister extends CorePersisterImpl {
         return getStatistics();
     }
 
-    @Transactional
+    @Transactional(value = "core")
     public PersisterStatistics saveOrUpdate( AnnotatedObject ao ) {
         throw new UnsupportedOperationException("Use saveOrUpdate(EntityManager, AnnotatedObject) instead");
     }

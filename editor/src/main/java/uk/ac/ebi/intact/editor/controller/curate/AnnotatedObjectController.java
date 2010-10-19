@@ -67,7 +67,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return new AnnotatedObjectHelper(getAnnotatedObject());
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(value = "core", propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
         final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
@@ -156,7 +156,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(value = "core", propagation = Propagation.NEVER)
     public void doRevertChanges( ActionEvent evt ) {
         PersistenceController persistenceController = getPersistenceController();
         setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
@@ -185,6 +185,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 //            handleException(e);
 //        }
 
+    }
+
+    public void changed() {
+        setUnsavedChanges(true);
     }
     
     @Override

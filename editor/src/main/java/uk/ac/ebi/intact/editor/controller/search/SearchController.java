@@ -73,13 +73,13 @@ public class SearchController extends JpaAwareController {
         }
     }
 
-    @Transactional( readOnly = true )
+    @Transactional( value = "core", readOnly = true )
     public String doQuickSearch() {
         this.query = quickQuery;
         return doSearch();
     }
 
-    @Transactional( readOnly = true )
+    @Transactional( value = "core", readOnly = true )
     public String doSearch() {
 
         log.info( "Searching for '" + query + "'..." );

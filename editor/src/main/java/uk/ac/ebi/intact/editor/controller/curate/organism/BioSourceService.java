@@ -55,7 +55,7 @@ public class BioSourceService extends JpaAwareController {
         refresh( null );
     }
 
-    @Transactional
+    @Transactional(value = "core", readOnly = true)
     public void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading BioSources" );
 

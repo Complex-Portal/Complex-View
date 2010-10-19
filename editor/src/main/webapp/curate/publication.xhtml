@@ -164,8 +164,10 @@
                                 </td>
                                 <td colspan="3">
                                     <h:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50">
-                                        <f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:unsavedChangesInfo :editorForm:changesPanel"
-                                                execute="@this" listener="#{publicationController.changed}"/>
+                                        <!--<p:ajax event="valueChange" update="publicationTabs unsavedChangesInfo changesPanel" process="@this"-->
+                                                <!--listener="#{publicationController.changed}"/>-->
+                                        <!--<f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:unsavedChangesInfo :editorForm:changesPanel"-->
+                                                <!--execute="@this" listener="#{publicationController.changed}"/>-->
                                     </h:inputText>
                                 </td>
                             </tr>

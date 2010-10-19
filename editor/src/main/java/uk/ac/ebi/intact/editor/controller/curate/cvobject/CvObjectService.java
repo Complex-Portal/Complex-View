@@ -137,7 +137,7 @@ public class CvObjectService extends JpaAwareController {
         refresh( null );
     }
 
-    @Transactional
+    @Transactional(value = "core", readOnly = true)
     public synchronized void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading Controlled Vocabularies" );
 

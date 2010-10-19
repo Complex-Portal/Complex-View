@@ -34,13 +34,13 @@ public class CurateController extends JpaAwareController {
         return "/curate/"+metadata.getSlug()+suffix;
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(value = "core", propagation = Propagation.NEVER)
     public void save(IntactObject intactObject) {
         AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
         annotatedObjectController.doSave(null);
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(value = "core", propagation = Propagation.NEVER)
     public void discard(IntactObject intactObject) {
         CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
         curatorContextController.removeFromUnsaved(intactObject);

@@ -110,7 +110,7 @@
             after the other rather than concurrently. This has nothing to do with java.io.Serializable.
         </description>
         <param-name>org.apache.myfaces.orchestra.CoreConfig:SERIALIZE_REQUESTS</param-name>
-        <param-value>false</param-value>
+        <param-value>true</param-value>
     </context-param>
 
 

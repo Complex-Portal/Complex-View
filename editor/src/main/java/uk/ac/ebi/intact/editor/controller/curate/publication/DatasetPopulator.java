@@ -52,7 +52,7 @@ public class DatasetPopulator extends JpaAwareController {
         refresh( null );
     }
 
-    @Transactional
+    @Transactional(value = "core", readOnly = true)
     public void refresh( ActionEvent evt ) {
         if ( log.isInfoEnabled() ) log.info( "Loading datasets" );
 

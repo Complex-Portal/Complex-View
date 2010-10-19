@@ -22,7 +22,7 @@
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
-        <property name="dataSource" ref="intactViewDataSource"/>
+        <property name="dataSource" ref="coreDataSource"/>
 
         <qualifier value="core"/>
     </bean>
@@ -33,7 +33,7 @@
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="intact-core-default"/>
-        <property name="dataSource" ref="intactViewDataSource"/>
+        <property name="dataSource" ref="coreDataSource"/>
 
         <property name="jpaProperties">
             <props>
@@ -54,7 +54,7 @@
 
     </bean>
 
-    <jee:jndi-lookup id="intactViewDataSource" jndi-name="${db.jndi}"/>
+    <jee:jndi-lookup id="coreDataSource" jndi-name="${db.jndi}"/>
 
     <!-- intact-users -->
 

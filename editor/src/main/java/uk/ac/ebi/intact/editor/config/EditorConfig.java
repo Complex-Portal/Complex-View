@@ -25,6 +25,7 @@ public class EditorConfig {
 
     private String instanceName;
     private String databaseUrl;
+    private String usersDatabaseUrl;
     private String logoUrl;
     private String googleUsername;
     private String googlePassword;
@@ -80,5 +81,13 @@ public class EditorConfig {
 
     public void setGooglePassword(String googlePassword) {
         this.googlePassword = googlePassword;
+    }
+
+    public String getUsersDatabaseUrl() {
+        return usersDatabaseUrl;
+    }
+
+    public void setUsersDatabaseUrl(String usersDatabaseUrl) {
+        this.usersDatabaseUrl = usersDatabaseUrl;
     }
 }

@@ -16,6 +16,7 @@
     <bean name="editorConfig" class="uk.ac.ebi.intact.editor.config.EditorConfig">
         <property name="instanceName" value="${intact.instance.name}"/>
         <property name="databaseUrl" value="${db.url}"/>
+        <property name="usersDatabaseUrl" value="${db.users.url}"/>
         <property name="logoUrl" value="${webapp.logo.url}"/>
         <property name="googleUsername" value="${google.username}"/>
         <property name="googlePassword" value="${google.password}"/>

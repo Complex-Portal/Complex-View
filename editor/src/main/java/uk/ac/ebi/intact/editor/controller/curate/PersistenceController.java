@@ -65,6 +65,7 @@ public class PersistenceController extends JpaAwareController {
         } catch (IllegalTransactionStateException itse) {
             if (log.isWarnEnabled()) log.warn("IllegalTransactionStateException happened when saving. It seems to be harmless " +
                     "but we should keep an eye on this: "+ itse.getMessage());
+            itse.printStackTrace();
             return true;
         } catch ( Throwable e ) {
             addErrorMessage( "Problem persisting object", "AC: " + annotatedObject.getAc() );
@@ -74,7 +75,7 @@ public class PersistenceController extends JpaAwareController {
         } 
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(value = "core", propagation = Propagation.NEVER)
     public IntactObject doRevert(IntactObject intactObject) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Reverting: " + DebugUtil.intactObjectToString(intactObject, false));
@@ -107,7 +108,7 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(value = "core", propagation = Propagation.NEVER)
     public void saveAll(ActionEvent actionEvent) {
 
         for (UnsavedChangeManager ucm : curatorContextController.getUnsavedChangeManagers()) {
@@ -128,7 +129,7 @@ public class PersistenceController extends JpaAwareController {
         curatorContextController.clear();
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(value = "core", propagation = Propagation.NEVER)
     public void revertAll(ActionEvent actionEvent) {
         for (UnsavedChangeManager ucm : curatorContextController.getUnsavedChangeManagers()) {
             for (IntactObject intactObject : ucm.getAllUnsaved()) {

@@ -236,12 +236,12 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional
+    @Transactional(value = "core")
     public void newEmptyUnassigned( ActionEvent evt ) {
         newEmpty(true);
     }
 
-    @Transactional
+    @Transactional(value = "core")
     public void newEmpty( boolean unassigned ) {
         if (unassigned) {
             SequenceManager sequenceManager = (SequenceManager) getSpringContext().getBean("sequenceManager");
