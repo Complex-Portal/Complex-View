@@ -51,9 +51,11 @@ public class InteractorController extends AnnotatedObjectController {
     }
 
     public String newInteractor() {
-        interactor = newInstance(newInteractorType);
+        Interactor interactor = newInstance(newInteractorType);
         interactor.setOwner(getIntactContext().getInstitution());
         interactor.setCvInteractorType(newInteractorType);
+
+        setInteractor(interactor);
 
         getUnsavedChangeManager().markAsUnsaved(interactor);
 

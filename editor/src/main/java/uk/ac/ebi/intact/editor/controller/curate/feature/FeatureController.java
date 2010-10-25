@@ -144,9 +144,11 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     public void newFeature(Component participant) {
-       feature = new Feature("feature", participant, new CvFeatureType());
+       Feature feature = new Feature("feature", participant, new CvFeatureType());
        feature.setShortLabel(null);
        feature.setCvFeatureType(null);
+
+        setFeature(feature);
 
        participant.addBindingDomain(feature);
 

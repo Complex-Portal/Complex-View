@@ -74,7 +74,8 @@ public class CvObjectController extends AnnotatedObjectController {
 
     public String newCvObject() {
         if (newCvObjectType != null) {
-            this.cvObject = newInstance(newCvObjectType);
+            CvObject cvObject = newInstance(newCvObjectType);
+            setCvObject(cvObject);
         }
 
         prepareView();

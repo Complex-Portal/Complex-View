@@ -15,13 +15,15 @@
  */
 package uk.ac.ebi.intact.editor.config;
 
+import uk.ac.ebi.intact.editor.controller.BaseController;
+
 /**
  * Holds the configuration of the application.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class EditorConfig {
+public class EditorConfig extends BaseController {
 
     private String instanceName;
     private String databaseUrl;

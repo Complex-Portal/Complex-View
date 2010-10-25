@@ -68,7 +68,7 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>7.1.5.v20100705</version>
+                <version>7.2.0.RC0</version>
                 <configuration>
                     <connectors>
                         <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
@@ -209,13 +209,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.5.6</version>
+            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.6</version>
-            <optional>true</optional>
+            <version>1.6.1</version>
+<!--            <optional>true</optional>-->
         </dependency>
 
         <!-- Intact -->
@@ -361,6 +361,7 @@
         </dependency>
 
         <!-- JSP 2.2 support (methods etc). May not be needed in recent J2EE 6 app containers -->
+<!--
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>el-api</artifactId>
@@ -373,7 +374,7 @@
             <version>2.2</version>
             <scope>runtime</scope>
         </dependency>
-
+-->
          <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>

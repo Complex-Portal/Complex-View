@@ -110,9 +110,14 @@ public class ExperimentController extends AnnotatedObjectController {
         exp.getPublication().addExperiment(exp);
     }
 
+    public void doPreSave() {
+        publicationController.getPublication().addExperiment(experiment);
+    }
+
     public String newExperiment(Publication publication) {
-        this.experiment = new Experiment(getIntactContext().getInstitution(), createExperimentShortLabel(), null);
-        publication.addExperiment(experiment);
+        Experiment experiment = new Experiment(getIntactContext().getInstitution(), createExperimentShortLabel(), null);
+        setExperiment(experiment);
+
         publicationController.setPublication(publication);
 
         if (publication.getPublicationId() != null) {
@@ -193,7 +198,7 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public String getAc() {
         if ( ac == null && experiment != null ) {
-            return experiment.getAc();
+            ac = experiment.getAc();
         }
         return ac;
     }

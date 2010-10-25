@@ -172,7 +172,7 @@ public class PublicationController extends AnnotatedObjectController {
         Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
 
         if ( existingPublication != null ) {
-            publication = existingPublication;
+            setPublication(existingPublication);
             addWarningMessage( "Publication already exists", "Loaded from the database" );
             return;
         }
@@ -261,8 +261,8 @@ public class PublicationController extends AnnotatedObjectController {
             }
         }
 
-        publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
-        ac = null;
+        Publication publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
+        setPublication(publication);
 
         getUnsavedChangeManager().markAsUnsaved(publication);
 

@@ -134,11 +134,13 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     public void newParticipant(Interaction interaction) {
-        participant = new Component("N/A", interaction, new InteractorImpl(), new CvExperimentalRole(), new CvBiologicalRole());
+        Component participant = new Component("N/A", interaction, new InteractorImpl(), new CvExperimentalRole(), new CvBiologicalRole());
         participant.setInteractor(null);
         participant.getExperimentalRoles().clear();
         participant.setCvBiologicalRole(null);
         participant.setStoichiometry(getEditorConfig().getDefaultStoichiometry());
+
+        setParticipant(participant);
 
         //interaction.addComponent(participant);
 
