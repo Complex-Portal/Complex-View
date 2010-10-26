@@ -116,7 +116,7 @@ public class UserAdminController extends JpaAwareController {
         List<String> target = new ArrayList<String>();
 
         Collection<Role> allRoles = getUsersDaoFactory().getRoleDao().getAll();
-        log.info( "Found " + allRoles.size() + " role(s) in the database." );
+        log.debug( "Found " + allRoles.size() + " role(s) in the database." );
         if ( user == null ) {
             for ( Role role : allRoles ) {
                 source.add( role.getName() );

@@ -118,7 +118,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         refreshCurrentViewObject();
     }
 
-    private AnnotatedObject refresh(AnnotatedObject annotatedObject) {
+     private AnnotatedObject refresh(AnnotatedObject annotatedObject) {
         final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         boolean isNew = (getAnnotatedObject().getAc() == null);
