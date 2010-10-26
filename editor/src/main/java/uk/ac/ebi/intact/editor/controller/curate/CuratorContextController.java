@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.model.IntactObject;
 
 import java.util.*;
@@ -36,13 +37,19 @@ public class CuratorContextController extends BaseController {
     @Autowired
     private PersistenceController persistenceController;
 
-    private Map<Object,UnsavedChangeManager> unsavedMap;
-
     public CuratorContextController() {
-        this.unsavedMap = new HashMap<Object, UnsavedChangeManager>();
+    }
+
+    public Map<Object,UnsavedChangeManager> getUnsavedMap() {
+        UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+        GeneralChangesController generalChangesController = (GeneralChangesController) getSpringContext().getBean("generalChangesController");
+
+        return generalChangesController.getUnsavedMapForUser(userSessionController.getCurrentUser().getLogin());
     }
 
     public UnsavedChangeManager getUnsavedChangeManager(Object key) {
+        Map<Object,UnsavedChangeManager> unsavedMap = getUnsavedMap();
+
         if (unsavedMap.containsKey(key)) {
             return unsavedMap.get(key);
         }
@@ -57,6 +64,8 @@ public class CuratorContextController extends BaseController {
     }
 
     public List<UnsavedChange> getAllChanges() {
+        Map<Object,UnsavedChangeManager> unsavedMap = getUnsavedMap();
+
         List<UnsavedChange> unsavedChanges = new ArrayList<UnsavedChange>(unsavedMap.size() * 2);
 
         for (UnsavedChangeManager ucm : unsavedMap.values()) {
@@ -90,10 +99,12 @@ public class CuratorContextController extends BaseController {
     }
 
     public Collection<UnsavedChangeManager> getUnsavedChangeManagers() {
+        Map<Object,UnsavedChangeManager> unsavedMap = getUnsavedMap();
         return unsavedMap.values();
     }
 
     public void clear() {
+        Map<Object,UnsavedChangeManager> unsavedMap = getUnsavedMap();
         unsavedMap.clear();
     }
 

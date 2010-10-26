@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 
 import java.util.*;
@@ -30,7 +31,7 @@ import java.util.*;
  * @version $Id$
  */
 @Controller
-public class UserManagerController extends BaseController {
+public class UserManagerController extends BaseController implements UserListener {
 
     private static final Log log = LogFactory.getLog( UserManagerController.class );
 
@@ -52,7 +53,12 @@ public class UserManagerController extends BaseController {
         return String.valueOf( loggedInUsers.size() );
     }
 
-    public void notifyLogin(User user) {
+    public void notifyLogout(User user) {
+        loggedInUsers.remove(user);
+    }
+
+    @Override
+    public void userLoggedIn(User user) {
         user.setLastLogin(new Date());
         UserSessionController userSessionController = ( UserSessionController ) getSpringContext().getBean( "userSessionController" );
         userSessionController.setCurrentUser(user);
@@ -63,7 +69,8 @@ public class UserManagerController extends BaseController {
         loggedInUsers.add(user);
     }
 
-    public void notifyLogout(User user) {
+    @Override
+    public void userLoggedOut(User user) {
         loggedInUsers.remove(user);
     }
 }

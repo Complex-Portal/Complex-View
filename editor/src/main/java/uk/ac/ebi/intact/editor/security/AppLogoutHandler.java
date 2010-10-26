@@ -6,12 +6,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.Authentication;
 import org.springframework.security.ui.logout.LogoutHandler;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
-import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 /**
  * Custom behaviour at logout.
@@ -39,29 +40,16 @@ public class AppLogoutHandler implements LogoutHandler {
 
         final ConfigurableApplicationContext springContext = IntactContext.getCurrentInstance().getSpringContext();
         UserSessionController userSessionController = ( UserSessionController ) springContext.getBean( "userSessionController" );
-        UserManagerController userManagerController = ( UserManagerController ) springContext.getBean( "userManagerController" );
-
 
         if ( userSessionController != null ) {
             log.debug( "Destroying session for user " + authentication.getPrincipal() + ": " + session.getId() );
 
-            userManagerController.notifyLogout(userSessionController.getCurrentUser());
-//            final Collection<User> users = userManagerController.getLoggedInUsers();
-//            boolean found = false;
-//            for ( Iterator<User> iterator = users.iterator(); iterator.hasNext(); ) {
-//                User user = iterator.next();
-//                if ( user.getLogin().equals( authentication.getPrincipal() ) ) {
-//                    found = true;
-//                    iterator.remove();
-//                    log.debug( "Removed user user " + authentication.getPrincipal() + " from the list of connected users, " +
-//                               appController.getLoggedInUsers().size() + " remaining." );
-//                    break;
-//                }
-//            }
+            // get all the "user listener" beans and notify the logout
+            final Map<String,UserListener> userListeners = springContext.getBeansOfType(UserListener.class);
 
-//            if ( !found ) {
-//                log.error( "Could not find user '" + userSessionController.getCurrentUser().getLogin() + "' in the list of logged in users" );
-//            }
+            for (UserListener userListener : userListeners.values()) {
+                userListener.userLoggedIn(userSessionController.getCurrentUser());
+            }
         } else {
             throw new IllegalStateException( "Destroying HTTP session - no UserSessionController available." );
         }

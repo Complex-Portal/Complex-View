@@ -156,4 +156,13 @@ public class UnsavedChangeManager {
     public boolean isUnsavedChanges() {
         return !changes.isEmpty();
     }
+
+    public boolean constainsAc(String ac) {
+        for (UnsavedChange change : getChanges()) {
+            if (ac.equals(change.getUnsavedObject().getAc())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

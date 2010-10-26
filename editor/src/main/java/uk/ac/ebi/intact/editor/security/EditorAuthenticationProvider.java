@@ -28,9 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
+import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -76,12 +78,16 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
             throw new DisabledException( "User " + user.getLogin() + " has been disabled, please contact the IntAct team." );
         }
 
-        UserManagerController userManagerController = ( UserManagerController ) applicationContext.getBean( "userManagerController" );
+
 
         if ( log.isInfoEnabled() ) log.info( "Authentication successful for user: " + authentication.getPrincipal() );
 
-        // register the user as logged-in
-        userManagerController.notifyLogin(user);
+        // get all the "user listener" beans and notify the login
+        final Map<String,UserListener> userListeners = applicationContext.getBeansOfType(UserListener.class);
+
+        for (UserListener userListener : userListeners.values()) {
+            userListener.userLoggedIn(user);
+        }
 
         Collection<GrantedAuthority> authorities = Lists.newArrayList();
         log.info( user.getLogin() + " roles: " + user.getRoles() );
