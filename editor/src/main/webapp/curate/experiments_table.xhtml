@@ -67,7 +67,7 @@
                 <h:outputText value="Actions"/>
             </f:facet>
             <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
-                               actionListener="#{unsavedChangeManager.markToDelete(experiment)}"
+                               actionListener="#{unsavedChangeManager.markToDelete(experiment, publicationController.publication)}"
                                update="experimentsTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(experiment.ac)}"/>
             <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
                                actionListener="#{unsavedChangeManager.revert(experiment)}"

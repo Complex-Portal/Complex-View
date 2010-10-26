@@ -143,7 +143,7 @@ public class FeatureController extends AnnotatedObjectController {
         }
     }
 
-    public void newFeature(Component participant) {
+    public String newFeature(Component participant) {
        Feature feature = new Feature("feature", participant, new CvFeatureType());
        feature.setShortLabel(null);
        feature.setCvFeatureType(null);
@@ -155,6 +155,8 @@ public class FeatureController extends AnnotatedObjectController {
         refreshRangeWrappers();
 
         //getUnsavedChangeManager().markAsUnsaved(feature);
+
+        return navigateToObject(feature);
     }
     
     public void newRange(ActionEvent evt) {

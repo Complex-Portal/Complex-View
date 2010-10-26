@@ -133,7 +133,7 @@ public class ParticipantController extends ParameterizableObjectController {
         interactionController.refreshParticipants();
     }
 
-    public void newParticipant(Interaction interaction) {
+    public String newParticipant(Interaction interaction) {
         Component participant = new Component("N/A", interaction, new InteractorImpl(), new CvExperimentalRole(), new CvBiologicalRole());
         participant.setInteractor(null);
         participant.getExperimentalRoles().clear();
@@ -145,6 +145,8 @@ public class ParticipantController extends ParameterizableObjectController {
         //interaction.addComponent(participant);
 
         //getUnsavedChangeManager().markAsUnsaved(participant);
+
+        return navigateToObject(participant);
     }
 
     public void importInteractor(ActionEvent evt) {

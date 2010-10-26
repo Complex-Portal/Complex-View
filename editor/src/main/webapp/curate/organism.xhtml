@@ -15,6 +15,7 @@
         <f:metadata>
             <f:viewParam name="ac" value="#{bioSourceController.ac}"/>
             <f:event type="preRenderView" listener="#{bioSourceController.loadData}"/>
+            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(bioSourceController)}"/>
         </f:metadata>
 
         <h:panelGroup rendered="#{bioSourceController.bioSource == null}">

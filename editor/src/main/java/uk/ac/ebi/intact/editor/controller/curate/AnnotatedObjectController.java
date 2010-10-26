@@ -86,10 +86,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         // annotated objects specific tasks to prepare the save
         doPreSave();
 
-
         AnnotatedObject annotatedObject = getAnnotatedObject();
-
-        boolean isNew = (getAnnotatedObject().getAc() == null);
 
         boolean saved = persistenceController.doSave(annotatedObject);
 
@@ -106,14 +103,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         if (annotatedObject.getAc() != null) {
-            final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-
-            if (!isNew && getDaoFactory().getEntityManager().contains(annotatedObject)) {
-                getDaoFactory().getEntityManager().refresh(annotatedObject);
-            } else {
-                annotatedObject = getDaoFactory().getEntityManager().find(annotatedObject.getClass(), annotatedObject.getAc());
-            }
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus2);
+            annotatedObject = refresh(annotatedObject);
 
             CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
             curatorContextController.removeFromUnsavedByAc(annotatedObject.getAc());
@@ -124,6 +114,34 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         getUnsavedChangeManager().clearChanges();
 
         doPostSave();
+
+        refreshCurrentViewObject();
+    }
+
+    private AnnotatedObject refresh(AnnotatedObject annotatedObject) {
+        final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+        boolean isNew = (getAnnotatedObject().getAc() == null);
+
+        if (!isNew && getDaoFactory().getEntityManager().contains(annotatedObject)) {
+            getDaoFactory().getEntityManager().refresh(annotatedObject);
+        } else {
+            annotatedObject = getDaoFactory().getEntityManager().find(annotatedObject.getClass(), annotatedObject.getAc());
+        }
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus2);
+        return annotatedObject;
+    }
+
+    protected void refreshCurrentViewObject() {
+        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+        final AnnotatedObject currentAo = curateController.getCurrentAnnotatedObjectController().getAnnotatedObject();
+
+        if (currentAo.getAc() != null && !currentAo.getAc().equals(getAnnotatedObject().getAc())) {
+            if (log.isDebugEnabled()) log.debug("Refreshing object in view: "+DebugUtil.annotatedObjectToString(currentAo, false));
+
+            refresh(currentAo);
+        }
     }
 
     public void doSaveIfNecessary(ActionEvent evt) {
@@ -290,6 +308,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         String extUrl = annotation.getAnnotationText();
         return extUrl.replaceAll("\\{ac\\}", xref.getPrimaryId());
 
+    }
+
+    protected String navigateToObject(AnnotatedObject annotatedObject) {
+        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+        setAnnotatedObject(annotatedObject);
+        return curateController.newIntactObject(annotatedObject);
     }
 
     // ANNOTATIONS

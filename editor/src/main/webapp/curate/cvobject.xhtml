@@ -16,6 +16,7 @@
             <f:viewParam name="ac" value="#{cvObjectController.ac}"/>
             <f:viewParam name="class" value="#{cvObjectController.cvClassName}"/>
             <f:event type="preRenderView" listener="#{cvObjectController.loadData}"/>
+            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(cvObjectController)}"/>
         </f:metadata>
 
         <h:panelGroup rendered="#{cvObjectController.cvObject == null}">

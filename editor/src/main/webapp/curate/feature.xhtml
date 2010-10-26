@@ -37,6 +37,7 @@
         <f:metadata>
             <f:viewParam name="ac" value="#{featureController.ac}"/>
             <f:event type="preRenderView" listener="#{featureController.loadData}"/>
+            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(featureController)}"/>
         </f:metadata>
 
         <h:panelGroup rendered="#{feature == null}">

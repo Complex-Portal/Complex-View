@@ -27,10 +27,13 @@ import uk.ac.ebi.intact.model.*;
 @ConversationName( "general" )
 public class CurateController extends JpaAwareController {
 
+    private AnnotatedObjectController currentAnnotatedObjectController;
+
     public String edit(IntactObject intactObject) {
         String suffix = (intactObject.getAc() != null)? "?faces-redirect=true&includeViewParams=true" : "";
 
         CurateObjectMetadata metadata = getMetadata(intactObject);
+        setCurrentAnnotatedObjectController(metadata.getAnnotatedObjectController());
         return "/curate/"+metadata.getSlug()+suffix;
     }
 
@@ -47,6 +50,13 @@ public class CurateController extends JpaAwareController {
 
         AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
         annotatedObjectController.doRevertChanges(null);
+    }
+
+    public String newIntactObject(IntactObject intactObject) {
+        final CurateObjectMetadata metadata = getMetadata(intactObject);
+        setCurrentAnnotatedObjectController(metadata.getAnnotatedObjectController());
+
+        return "/curate/"+metadata.getSlug();
     }
 
     public CurateObjectMetadata getMetadata(IntactObject intactObject) {
@@ -109,4 +119,11 @@ public class CurateController extends JpaAwareController {
         }
     }
 
+    public AnnotatedObjectController getCurrentAnnotatedObjectController() {
+        return currentAnnotatedObjectController;
+    }
+
+    public void setCurrentAnnotatedObjectController(AnnotatedObjectController currentAnnotatedObjectController) {
+        this.currentAnnotatedObjectController = currentAnnotatedObjectController;
+    }
 }

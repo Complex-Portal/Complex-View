@@ -94,17 +94,19 @@ public class PersistenceController extends JpaAwareController {
         return intactObject;
     }
 
-//    @Transactional(propagation = Propagation.NEVER)
+   @Transactional(propagation = Propagation.NEVER)
     public void doDelete(IntactObject intactObject) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
 
-//            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
             coreDeleter.delete(intactObject);
 
+            addInfoMessage("Deleted object", DebugUtil.intactObjectToString(intactObject, false));
 
-            //IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         }
     }
 

@@ -118,6 +118,8 @@ public class ExperimentController extends AnnotatedObjectController {
         Experiment experiment = new Experiment(getIntactContext().getInstitution(), createExperimentShortLabel(), null);
         setExperiment(experiment);
 
+        publication.addExperiment(experiment);
+
         publicationController.setPublication(publication);
 
         if (publication.getPublicationId() != null) {
@@ -131,21 +133,34 @@ public class ExperimentController extends AnnotatedObjectController {
 
         //getUnsavedChangeManager().markAsUnsaved(experiment);
 
-        return "/curate/experiment";
+        return navigateToObject(experiment);
     }
 
     private String createExperimentShortLabel() {
-        String shortLabel;
+        String author;
 
         if (publicationController.getFirstAuthor() == null) {
-            shortLabel = "anonymous-"+publicationController.getYear();
             addWarningMessage("The current publication does not have the authors annotation.","Created anonymous short label.");
+
+            author = "anonymous";
+
         } else {
-            shortLabel = publicationController.getFirstAuthor()+"-"+publicationController.getYear();
+            author = publicationController.getFirstAuthor();
         }
 
-        String expLabel = shortLabel.toLowerCase();
+        String year;
 
+        if (publicationController.getYear() == null) {
+            addWarningMessage("The current publication does not have the year annotation.","Correct the label if necessary and add a year it to the publication.");
+
+            year = new SimpleDateFormat("yyyy").format(new Date());
+        } else {
+             year = String.valueOf(publicationController.getYear());
+        }
+
+        String shortLabel = author+"-"+year;
+
+        String expLabel = shortLabel.toLowerCase();
 
         if (experiment != null && experiment.getPublication() == null) {
             experiment.setPublication(publicationController.getPublication());

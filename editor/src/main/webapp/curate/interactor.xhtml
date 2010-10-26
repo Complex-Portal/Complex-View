@@ -36,6 +36,7 @@
         <f:metadata>
             <f:viewParam name="ac" value="#{interactorController.interactor.ac}"/>
             <f:event type="preRenderView" listener="#{interactorController.loadData}"/>
+            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(participantController)}"/>
         </f:metadata>
 
         <h:panelGroup rendered="#{interactor != null}">

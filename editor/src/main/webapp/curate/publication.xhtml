@@ -28,6 +28,7 @@
         <f:metadata>
             <f:viewParam name="ac" value="#{publicationController.ac}"/>
             <f:event type="preRenderView" listener="#{publicationController.loadData}"/>
+            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(publicationController)}"/>
         </f:metadata>
 
         <h:panelGroup rendered="#{publicationController.publication == null}">

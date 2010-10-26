@@ -27,6 +27,7 @@
         <f:metadata>
             <f:viewParam name="ac" value="#{experimentController.ac}"/>
             <f:event type="preRenderView" listener="#{experimentController.loadData}"/>
+            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(experimentController)}"/>
         </f:metadata>
 
         <h:panelGroup rendered="#{experimentController.experiment == null}">

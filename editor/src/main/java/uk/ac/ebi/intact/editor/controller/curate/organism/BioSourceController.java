@@ -47,11 +47,12 @@ public class BioSourceController extends AnnotatedObjectController {
     }
 
     public String newOrganism() {
-        bioSource = new BioSource();
+        BioSource bioSource = new BioSource();
+        setBioSource(bioSource);
 
-        getUnsavedChangeManager().markAsUnsaved(bioSource);
+        //getUnsavedChangeManager().markAsUnsaved(bioSource);
 
-        return "/curate/organism";
+        return navigateToObject(bioSource);
     }
 
     public String getAc() {

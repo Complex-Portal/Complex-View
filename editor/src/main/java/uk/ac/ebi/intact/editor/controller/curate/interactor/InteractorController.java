@@ -59,11 +59,7 @@ public class InteractorController extends AnnotatedObjectController {
 
         getUnsavedChangeManager().markAsUnsaved(interactor);
 
-        if (interactor instanceof Interaction) {
-            return "/curate/interaction";
-        }
-
-        return "/curate/interactor";
+        return navigateToObject(interactor);
     }
 
     public Interactor newInstance(CvInteractorType interactorType) {

@@ -31,6 +31,7 @@
         <f:metadata>
             <f:viewParam name="ac" value="#{interactionController.ac}"/>
             <f:event type="preRenderView" listener="#{interactionController.loadData}"/>
+            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(interactionController)}"/>
         </f:metadata>
 
         <h:panelGroup rendered="#{interaction == null}">
@@ -110,8 +111,8 @@
                 <p:tab title="Participants (#{interactionController.participants.size()})">
 
                      <p:panel style="padding:0">
-                        <p:commandButton value="New participant" actionListener="#{participantController.newParticipant(interactionController.interaction)}"
-                                             action="/curate/participant" ajax="false"/>
+                        <p:commandButton value="New participant" action="#{participantController.newParticipant(interactionController.interaction)}"
+                                             ajax="false"/>
                          <p:commandButton value="Import..." type="button" onclick="importParticipantDialog.show()"/>
                      </p:panel>
 

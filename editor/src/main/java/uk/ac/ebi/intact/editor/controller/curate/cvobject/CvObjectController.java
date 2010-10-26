@@ -80,7 +80,7 @@ public class CvObjectController extends AnnotatedObjectController {
 
         prepareView();
         
-        return "/curate/cvobject";
+        return navigateToObject(cvObject);
     }
 
     private CvDagObject newInstance(String cvClassName) {

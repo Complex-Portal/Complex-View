@@ -26,7 +26,9 @@ public class CoreDeleter extends JpaAwareController {
     }
 
     private void deleteExperiment(Experiment experiment) {
-        experiment.getPublication().removeExperiment(experiment);
+        if (experiment.getPublication() != null) {
+            experiment.getPublication().removeExperiment(experiment);
+        }
     }
 
     private void deleteInteraction(Interaction interaction) {
@@ -36,7 +38,9 @@ public class CoreDeleter extends JpaAwareController {
     }
 
     private void deleteParticipant(Component participant) {
-        participant.getInteraction().removeComponent(participant);
+        if (participant.getInteraction() != null) {
+            participant.getInteraction().removeComponent(participant);
+        }
     }
 
     private void deleteFeature(Feature feature) {
