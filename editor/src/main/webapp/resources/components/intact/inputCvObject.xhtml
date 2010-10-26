@@ -42,7 +42,7 @@
              <h:panelGrid columns="2" id="cvButtons" style="visibility: hidden">
                 <p:commandButton id="selectBtn" value="Browse"  immediate="true"
                                  onclick="#{dialogWidgetId}_load.show()"
-                        oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"
+                        oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show(); document.getElementById('cvTableContainer').style.display = 'block'"
                        />
 
                  <p:commandButton id="editBtn" value="Edit" immediate="true" disabled="#{cc.attrs.value == null}"
@@ -71,7 +71,7 @@
                     <!--<h:commandButton type="button" value="New..." disabled="true"/>-->
                 <!--</h:panelGroup>-->
 
-                <div style="overflow-x: auto;">
+                <div id="cvTableContainer" style="overflow-x: auto; display: none;">
   
                     <p:treeTable id="tree" var="cvObject"
                             value="#{cc.root}">
