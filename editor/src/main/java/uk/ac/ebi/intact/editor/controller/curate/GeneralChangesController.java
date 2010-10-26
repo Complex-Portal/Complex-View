@@ -69,7 +69,6 @@ public class GeneralChangesController extends BaseController implements UserList
     }
 
     public Map<Object,UnsavedChangeManager> getUnsavedMapForUser(String username) {
-        System.out.println("\n\nUNSAVED FOR USER: "+username);
         Map<Object,UnsavedChangeManager> unsavedMap;
 
         if (userUnsavedMap.containsKey(username)) {
