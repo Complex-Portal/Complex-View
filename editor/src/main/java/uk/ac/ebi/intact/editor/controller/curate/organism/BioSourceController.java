@@ -44,6 +44,8 @@ public class BioSourceController extends AnnotatedObjectController {
         } else {
             bioSource = new BioSource();
         }
+
+        generalLoadChecks();
     }
 
     public String newOrganism() {

@@ -32,7 +32,6 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
-import uk.ac.ebi.intact.editor.controller.curate.GeneralChangesController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
@@ -94,14 +93,7 @@ public class PublicationController extends AnnotatedObjectController {
 
         loadByAc();
 
-        if (getAnnotatedObject() != null) {
-            GeneralChangesController generalChangesController = (GeneralChangesController) getSpringContext().getBean("generalChangesController");
-            if (generalChangesController.isObjectBeingEdited(getAnnotatedObject(), false)) {
-                String who = generalChangesController.whoIsEditingObject(getAnnotatedObject());
-
-                addWarningMessage("This object is already being edited", who+" is editing this object");
-            }
-        }
+        generalLoadChecks();
     }
 
     private void loadByAc() {

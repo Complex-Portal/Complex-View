@@ -67,6 +67,17 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return new AnnotatedObjectHelper(getAnnotatedObject());
     }
 
+    protected void generalLoadChecks() {
+        if (getAnnotatedObject() != null) {
+            GeneralChangesController generalChangesController = (GeneralChangesController) getSpringContext().getBean("generalChangesController");
+            if (generalChangesController.isObjectBeingEdited(getAnnotatedObject(), false)) {
+                String who = generalChangesController.whoIsEditingObject(getAnnotatedObject());
+
+                addWarningMessage("This object is already being edited by: "+who, "Modifications may be lost or affect current work by the other curator");
+            }
+        }
+    }
+
     @Transactional(value = "core", propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
         //final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();

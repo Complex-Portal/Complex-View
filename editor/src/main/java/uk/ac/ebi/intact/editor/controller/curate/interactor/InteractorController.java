@@ -48,6 +48,8 @@ public class InteractorController extends AnnotatedObjectController {
         } else {
             if ( interactor != null ) ac = interactor.getAc();
         }
+
+        generalLoadChecks();
     }
 
     public String newInteractor() {

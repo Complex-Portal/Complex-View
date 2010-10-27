@@ -136,6 +136,8 @@ public class InteractionController extends ParameterizableObjectController {
             }
             refreshParticipants();
         }
+
+        generalLoadChecks();
     }
 
     public void refreshExperimentLists() {

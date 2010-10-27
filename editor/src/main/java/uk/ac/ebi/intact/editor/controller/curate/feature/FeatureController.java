@@ -125,6 +125,8 @@ public class FeatureController extends AnnotatedObjectController {
         if (containsInvalidRanges) {
             addWarningMessage("This feature contains invalid ranges", "Ranges must be fixed before being able to save");
         }
+
+        generalLoadChecks();
     }
 
     public void refreshRangeWrappers() {

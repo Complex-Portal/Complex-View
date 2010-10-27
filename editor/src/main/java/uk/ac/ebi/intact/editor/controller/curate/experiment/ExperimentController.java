@@ -80,6 +80,8 @@ public class ExperimentController extends AnnotatedObjectController {
         if ( experiment != null && publicationController.getPublication() == null ) {
             publicationController.setPublication( experiment.getPublication() );
         }
+
+        generalLoadChecks();
     }
 
     @Override

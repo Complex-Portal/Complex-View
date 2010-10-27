@@ -57,6 +57,8 @@ public class CvObjectController extends AnnotatedObjectController {
         }
 
         prepareView();
+
+        generalLoadChecks();
     }
 
     private void prepareView() {
