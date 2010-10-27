@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor;
 
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
-import org.primefaces.model.TreeTableModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
@@ -29,6 +28,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.SelectItem;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,6 +45,9 @@ public class TestController {
     private CvAliasType cvAliasType;
     private CvIdentification cvIdentification;
 
+
+    private List<SelectItem> selectItems;
+
     private TreeNode cvRoot;
 
     private BioSource bioSource3;
@@ -57,6 +61,7 @@ public class TestController {
         cvAliasType = mockBuilder.createCvObject(CvAliasType.class, CvAliasType.GENE_NAME_MI_REF, CvAliasType.GENE_NAME);
         cvIdentification = mockBuilder.createCvObject(CvIdentification.class, CvIdentification.PREDETERMINED_MI_REF, CvIdentification.PREDETERMINED);
 
+        this.selectItems = new ArrayList<SelectItem>();
 
         try {
             final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
@@ -148,6 +153,14 @@ public class TestController {
 
     public void setCvRoot(TreeNode cvRoot) {
         this.cvRoot = cvRoot;
+    }
+
+    public List<SelectItem> getSelectItems() {
+        return selectItems;
+    }
+
+    public void setSelectItems(List<SelectItem> selectItems) {
+        this.selectItems = selectItems;
     }
 
     public class Lala {

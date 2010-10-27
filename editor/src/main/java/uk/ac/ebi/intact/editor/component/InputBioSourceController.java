@@ -13,44 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.component.inputbiosource;
+package uk.ac.ebi.intact.editor.component;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceService;
 import uk.ac.ebi.intact.model.BioSource;
 
-import javax.faces.component.FacesComponent;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIInput;
-import javax.faces.component.UINamingContainer;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ComponentSystemEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@FacesComponent("uk.ac.ebi.intact.editor.InputBioSource")
-public class InputBioSource extends UIInput implements NamingContainer, Serializable {
+@Component
+@Scope("request")
+public class InputBioSourceController extends BaseController {
 
-    private static final Log log = LogFactory.getLog(InputBioSource.class);
-    
-    public InputBioSource() {
-        if (log.isTraceEnabled()) log.trace("InputBioSource.InputBioSource - New instance ["+hashCode()+"]");
+    private static final Log log = LogFactory.getLog(InputBioSourceController.class);
+
+    private String query;
+    private BioSource selected;
+    private List<BioSource> bioSources;
+
+    public InputBioSourceController() {
     }
 
-    @Override
-    public String getFamily() {
-      return UINamingContainer.COMPONENT_FAMILY;
-   }
 
-    public void loadBioSources( ActionEvent evt ) {
+    public void loadBioSources( ComponentSystemEvent evt) {
         if (log.isTraceEnabled()) log.trace("Load Biosources");
         setQuery(null);
 
@@ -66,6 +65,7 @@ public class InputBioSource extends UIInput implements NamingContainer, Serializ
         }
     }
 
+    @SuppressWarnings({"JpaQlInspection", "unchecked"})
     public void search(ActionEvent evt) {
         String query = getQuery();
 
@@ -98,30 +98,26 @@ public class InputBioSource extends UIInput implements NamingContainer, Serializ
     }
 
     public List<BioSource> getBioSources() {
-        final List<BioSource> bioSources = (List<BioSource>) getStateHelper().eval("bioSources");
-
         return bioSources;
     }
 
     public void setBioSources( List<BioSource> bioSources ) {
-        if (bioSources != null) {
-            getStateHelper().put("bioSources", bioSources);
-        }
+        this.bioSources = bioSources;
     }
 
     public BioSource getSelectedBioSource() {
-        return (BioSource) getStateHelper().eval("selectedBioSource");
+        return selected;
     }
 
     public void setSelectedBioSource( BioSource selectedBioSource ) {
-        getStateHelper().put("selectedBioSource", selectedBioSource);
+        this.selected = selectedBioSource;
     }
 
     public String getQuery() {
-        return (String) getStateHelper().eval("query");
+        return query;
     }
 
     public void setQuery(String query) {
-        getStateHelper().put("query", query);
+        this.query = query;
     }  
 }

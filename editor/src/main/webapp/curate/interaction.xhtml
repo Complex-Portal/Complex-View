@@ -79,8 +79,8 @@
                                               value="#{interaction.cvInteractionType}"
                                               selectItems="#{cvObjectService.interactionTypeSelectItems}"
                                               required="true" requiredMessage="Interaction type is required"
-                                              valueChangeRender=":editorForm:changesPanel"
-                                              valueChangeAwareObject="#{annotatedObjectController}"/>
+                                              valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                              valueChangeAwareObject="#{experimentController}"/>
                         </td>
                     </tr>
                     <tr>
@@ -89,7 +89,7 @@
                         </td>
                         <td colspan="3" >
                             <h:selectOneMenu id="experimentLists"
-                                             value="#{interactionController.experiment}"
+                                             value="#{interactionController.experiment}" onchange="markAsUnsaved()"
                                              valueChangeListener="#{interactionController.experimentChanged}">
                                  <f:selectItems value="#{interactionController.experimentSelectItems}"/>
                             </h:selectOneMenu>

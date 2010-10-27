@@ -9,7 +9,7 @@
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
-  <composite:interface componentType="uk.ac.ebi.intact.editor.InputCvObject">
+  <composite:interface>
       <composite:attribute name="value" type="uk.ac.ebi.intact.model.CvObject" required="true" />
       <composite:attribute name="cvIdentifier" required="true" shortDescription="Identifier of the CvObject"/>
       <composite:attribute name="size" default="30"/>
@@ -26,7 +26,14 @@
     <composite:implementation>
          <h:outputScript name="intact.js" library="javascript" target="head"/>
 
-        <ui:param name="dialogWidgetId" value="#{cc.friendlyWidgetId}"/>
+        <ui:param name="dialogWidgetId" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}_widget"/>
+
+        <h:outputScript library="javascript" name="inputCvObject.js" target="head"/>
+
+        <script type="text/javascript">
+            var #{dialogWidgetId}_icv = new InputCvObject('#{cc.clientId}');
+            #{dialogWidgetId}_icv.setUrl('#{facesContext.externalContext.requestContextPath}/comp/inputcvobject_inner.jsf?identifier=#{cc.attrs.cvIdentifier}&amp;dialogId=#{dialogWidgetId}&amp;clientId=#{cc.clientId}&amp;visible=true');
+        </script>
 
          <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:cvButtons').style.visibility = 'visible';"
                  onmouseout="document.getElementById('#{cc.clientId}:cvButtons').style.visibility = 'hidden';">
@@ -40,10 +47,8 @@
                 </h:selectOneMenu>
 
              <h:panelGrid columns="2" id="cvButtons" style="visibility: hidden">
-                <p:commandButton id="selectBtn" value="Browse"  immediate="true"
-                                 onclick="#{dialogWidgetId}_load.show()"
-                        oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show(); document.getElementById('cvTableContainer').style.display = 'block'"
-                       />
+                <p:commandButton id="selectBtn" value="Browse"  type="button"
+                                 onclick="#{dialogWidgetId}_icv.browse(#{dialogWidgetId})"/>
 
                  <p:commandButton id="editBtn" value="Edit" immediate="true" disabled="#{cc.attrs.value == null}"
                             action="#{curateController.edit(cc.attrs.value)}" ajax="false"/>
@@ -62,7 +67,7 @@
         </p:dialog>
         
         <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true" position="center"
-                  widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" width="500">
+                  widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" width="510">
             <p:outputPanel id="cvObjectBrowserDialog">
             <div style="height: 500px; overflow-x: auto;">
                 <!--<h:panelGroup>-->
@@ -71,25 +76,9 @@
                     <!--<h:commandButton type="button" value="New..." disabled="true"/>-->
                 <!--</h:panelGroup>-->
 
-                <div id="cvTableContainer" style="overflow-x: auto; display: none;">
-  
-                    <p:treeTable id="tree" var="cvObject"
-                            value="#{cc.root}">
-                        <p:column>
-                            <f:facet name="header"><h:outputText value="Label"/></f:facet>
-                            <a href="#" onclick="#{dialogWidgetId}.hide(); document.getElementById('#{cc.clientId}:selectObject').value = '#{cvObject.ac}';"
-                                    title="#{cc.getDescription(cvObject)}">#{cvObject.shortLabel}</a>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header"><h:outputText value="Identifier"/></f:facet>
-                            <h:outputText value="#{cvObject.identifier}" />
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header"><h:outputText value="Full name"/></f:facet>
-                            <h:outputText value="#{cvObject.fullName}" />
-                        </p:column>
-                    </p:treeTable>
-                </div>
+                <iframe id="#{cc.clientId}_cvFrame" src="" style="height: 470px; width: 470px; border: 0; overflow-x: auto;">
+                    Loading...
+                </iframe>
             </div>
         </p:outputPanel>
     </p:dialog>

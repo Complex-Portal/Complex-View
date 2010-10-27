@@ -117,7 +117,7 @@
 
     <!-- Primefaces params -->
     <context-param>
-        <param-name>primefaces.skin</param-name>
+        <param-name>primefaces.SKIN</param-name>
         <param-value>none</param-value>
     </context-param>
 

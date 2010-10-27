@@ -1,0 +1,52 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>
+            <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css"></link>
+
+        </h:head>
+        <h:body>
+            <h:form>
+            <f:metadata>
+                <f:viewParam name="identifier" value="#{inputCvObjectController.id}"/>
+                <f:viewParam name="className" value="#{inputCvObjectController.cvClass}"/>
+                <f:viewParam name="visible" value="#{requestScope.visible}"/>
+                <f:viewParam name="dialogId" value="#{requestScope.dialogId}"/>
+                <f:viewParam name="clientId" value="#{requestScope.clientId}"/>
+                <f:event type="preRenderView" listener="#{inputCvObjectController.load}"/>
+            </f:metadata>
+
+                <h:panelGroup rendered="#{requestScope.visible}">
+
+                <div id="cvTableContainer" style="overflow-x: auto;">
+
+                    <p:treeTable id="tree" var="cvObject"
+                            value="#{inputCvObjectController.root}">
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Label"/></f:facet>
+                            <a href="#" onclick="parent.#{requestScope.dialogId}_icv.update('#{cvObject.ac}', '#{cvObject.shortLabel}', parent.#{requestScope.dialogId})"
+                                    title="#{inputCvObjectController.getDescription(cvObject)}">#{cvObject.shortLabel}</a>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Identifier"/></f:facet>
+                            <h:outputText value="#{cvObject.identifier}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header"><h:outputText value="Full name"/></f:facet>
+                            <h:outputText value="#{cvObject.fullName}" />
+                        </p:column>
+                    </p:treeTable>
+                </div>
+
+                </h:panelGroup>
+
+             </h:form>
+        </h:body>
+    </f:view>
+
+</ui:composition>

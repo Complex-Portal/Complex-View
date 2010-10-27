@@ -13,60 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.component.inputcvobject;
+package uk.ac.ebi.intact.editor.component;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.CvDagObject;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.model.CvTopic;
 
-import javax.faces.component.FacesComponent;
-import javax.faces.component.NamingContainer;
-import javax.faces.component.UIInput;
-import javax.faces.component.UINamingContainer;
-import javax.faces.context.FacesContext;
+import javax.faces.event.ComponentSystemEvent;
 import javax.persistence.Query;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@FacesComponent("uk.ac.ebi.intact.editor.InputCvObject")
-public class InputCvObject extends UIInput implements NamingContainer, Serializable {
+@Component
+@Scope("request")
+public class InputCvObjectController extends BaseController{
 
-    private static final Log log = LogFactory.getLog( InputCvObject.class );
+    private static final Log log = LogFactory.getLog( InputCvObjectController.class );
 
     private TreeNode root;
 
-    public InputCvObject() {
+    private String id;
+    private String cvClass;
+
+    private CvObject selected;
+
+    public InputCvObjectController() {
     }
 
-    @Override
-    public String getFamily() {
-      return UINamingContainer.COMPONENT_FAMILY;
-   }
-
-    @Override
-    public void encodeBegin(FacesContext context) throws IOException {
-        load((String) getAttributes().get("cvIdentifier"));
-        super.encodeBegin(context);
-    }
-
-    public void load( String id ) {
+    public void load( ComponentSystemEvent evt) {
         log.trace( "Loading CvObject with id '"+id+"'" );
 
         if (id == null) {
-            throw new NullPointerException("cvClass is null");
+            throw new NullPointerException("id is null");
         }
 
         final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
@@ -97,6 +89,7 @@ public class InputCvObject extends UIInput implements NamingContainer, Serializa
         return childNode;
     }
 
+    @SuppressWarnings({"JpaQlInspection"})
     public String getDescription(CvObject cvObject) {
         if (cvObject == null) return null;
         
@@ -144,15 +137,25 @@ public class InputCvObject extends UIInput implements NamingContainer, Serializa
 //    }
 
     public CvObject getSelected() {
-        return (CvObject) getStateHelper().eval("selectedCv");
+        return selected;
     }
 
     public void setSelected(CvObject selected) {
-        getStateHelper().put("selectedCv", selected);
+        this.selected = selected;
+    }
+    public String getId() {
+        return id;
     }
 
-    public String getFriendlyWidgetId() {
-        return getClientId().replaceAll(":", "__")+"__dlg";
+    public void setId(String id) {
+        this.id = id;
     }
 
+    public String getCvClass() {
+        return cvClass;
+    }
+
+    public void setCvClass(String cvClass) {
+        this.cvClass = cvClass;
+    }
 }

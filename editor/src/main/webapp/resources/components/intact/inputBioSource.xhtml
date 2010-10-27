@@ -9,7 +9,7 @@
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
-    <composite:interface componentType="uk.ac.ebi.intact.editor.InputBioSource">
+    <composite:interface>
         <composite:attribute name="value" type="uk.ac.ebi.intact.model.BioSource" required="true"/>
         <composite:attribute name="size" default="30"/>
         <composite:attribute name="selectItems" required="true"/>
@@ -28,23 +28,15 @@
         <ui:param name="namespace" value="#{intactComponentUtils.toJavascriptFriendlyVar(cc.clientId)}"/>
         <ui:param name="dialogWidgetId" value="#{namespace}_bioSourceDlg"/>
 
-        <h:outputScript>
-            function #{namespace}_displayButtons() {
-                document.getElementById('#{cc.clientId}:selectBtn').style.display = 'inline'
-                document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'visible'
-                document.getElementById('#{cc.clientId}:info').style.display = 'none'
-                document.getElementById('#{cc.clientId}:info').style.visibility = 'hidden'
-            }
+        <h:outputScript library="javascript" name="inputBioSource.js" target="head"/>
 
-            function #{namespace}_displayInfo() {
-                document.getElementById('#{cc.clientId}:selectBtn').style.display = 'none'
-                document.getElementById('#{cc.clientId}:selectBtn').style.visibility = 'hidden'
-                document.getElementById('#{cc.clientId}:info').style.display = 'inline'
-                document.getElementById('#{cc.clientId}:info').style.visibility = 'visible'
-            }
-        </h:outputScript>
+        <script type="text/javascript">
+            var #{dialogWidgetId}_ibs = new InputBioSource('#{cc.clientId}');
+            #{dialogWidgetId}_ibs.setUrl('#{facesContext.externalContext.requestContextPath}/comp/inputbiosource_inner.jsf?dialogId=#{dialogWidgetId}&amp;clientId=#{cc.clientId}');
+        </script>
 
-        <h:panelGroup onmouseover="#{namespace}_displayButtons()" onmouseout="#{namespace}_displayInfo()">
+
+        <h:panelGroup onmouseover="#{dialogWidgetId}_ibs.displayButtons()" onmouseout="#{dialogWidgetId}_ibs.displayInfo()">
 
             <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="bioSourceConverter"
                     required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}">
@@ -54,9 +46,8 @@
                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
             </h:selectOneMenu>
 
-            <p:commandButton id="selectBtn" value="Browse" style="visibility: hidden; display:none" onclick="#{dialogWidgetId}_load.show()"
-                             oncomplete="#{dialogWidgetId}_load.hide(); #{dialogWidgetId}.show();"
-                             actionListener="#{cc.loadBioSources}" process="#{cc.clientId}" update="bioSourceBrowserDialog"/>
+            <p:commandButton id="selectBtn" value="Browse" style="visibility: hidden; display:none" onclick="#{dialogWidgetId}_ibs.browse(#{dialogWidgetId})"
+                             type="button"/>
 
            <h:panelGroup id="info" style="color: gray">
                <h:panelGroup rendered="#{cc.attrs.value != null}">
@@ -70,76 +61,13 @@
 
         <ia:loadingDialog widgetVar="#{dialogWidgetId}_load" message="Loading organisms..."/>
 
-        <p:dialog header="Organism selection" widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" position="center"
-                width="600">
-           <p:outputPanel id="bioSourceBrowserDialog">
+        <p:dialog id="organismSelector" header="Organism selection" widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" position="center"
+                width="600" closeOnEscape="true">
 
-                <h:panelGrid columns="1" >
-                    <h:panelGroup>
-                        <h:inputText value="#{cc.query}">
-                            <!--<f:ajax event="keyup" render="bioSourceBrowserDialog" execute="@this"-->
-                                <!--listener="#{cc.autoSearch}"/>-->
-                        </h:inputText>
-                        <p:commandButton value="Search" actionListener="#{cc.search}" update="bioSourceBrowserDialog"/>
-                    </h:panelGroup>
+            <iframe id="#{cc.clientId}_bioSourceFrame" src="" style="height: 570px; width: 570px; border: 0; overflow-x: auto;">
+                    Loading...
+            </iframe>
 
-                    <h:outputScript>
-                        function ia_update(bioSourceAc, bioSourceLabel) {
-                            var selectList = document.getElementById('#{cc.clientId}:selectObject');
-                            selectList.value = bioSourceAc;
-                            jsf.ajax.request('hostOrganismTxt:selectObject',null,{execute:'@this',render:'#{cc.clientId}:info','javax.faces.behavior.event':'valueChange'});
-                            #{dialogWidgetId}.hide();
-                        }
-                    </h:outputScript>
-
-                    <h:panelGroup rendered="#{empty cc.bioSources}">
-                        <p>No results for query: <b>#{cc.query}</b></p>
-                    </h:panelGroup>
-
-                    <p:dataTable id="bioSourceTable" rendered="#{not empty cc.bioSources}"
-                                 var="bioSource" value="#{cc.bioSources}"
-                                 paginator="true" paginatorAlwaysVisible="false"
-                                 rows="10"
-                                 paginatorPosition="top">
-                        <p:column>
-                            <a href="#" onclick="ia_update('#{bioSource.ac}', '#{bioSource.shortLabel}')" type="button">Select
-                            </a>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Tax ID"/>
-                            </f:facet>
-                            <h:outputText value="#{bioSource.taxId}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header" >
-                                <h:outputText value="Shortlabel"/>
-                            </f:facet>
-                            <h:outputText value="#{bioSource.shortLabel}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Full name"/>
-                            </f:facet>
-                            <h:outputText value="#{bioSource.fullName}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Tissue"/>
-                            </f:facet>
-                            <h:outputText value="#{bioSource.cvTissue.shortLabel}" rendered="#{bioSource.cvTissue != null}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Cell type"/>
-                            </f:facet>
-                            <h:outputText value="#{bioSource.cvCellType.shortLabel}" rendered="#{bioSource.cvCellType != null}"/>
-                        </p:column>
-                    </p:dataTable>
-
-                </h:panelGrid>
-
-            </p:outputPanel>
         </p:dialog>
 
 
