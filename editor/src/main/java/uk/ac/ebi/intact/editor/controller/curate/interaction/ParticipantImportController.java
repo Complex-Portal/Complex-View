@@ -87,7 +87,7 @@ public class ParticipantImportController extends BaseController {
         }
 
         for (String participantToImport : participantsToImport) {
-            List<ImportCandidate> candidates = importParticipant(participantToImport);
+            Set<ImportCandidate> candidates = importParticipant(participantToImport);
 
             if (candidates.isEmpty()) {
                 queriesNoResults.add(participantToImport);
@@ -111,14 +111,14 @@ public class ParticipantImportController extends BaseController {
 
 
 
-    public List<ImportCandidate> importParticipant(String participantToImport) {
+    public Set<ImportCandidate> importParticipant(String participantToImport) {
         if (participantToImport == null) {
-            addErrorMessage("No participant to import", "Provide one");
-            return Collections.EMPTY_LIST;
+            addErrorMessage("No participant to import", "Provide one or more accessions");
+            return Collections.EMPTY_SET;
         }
         log.debug( "Importing participant: "+ participantToImport );
 
-        List<ImportCandidate> candidates = importFromIntAct(participantToImport);
+        Set<ImportCandidate> candidates = importFromIntAct(participantToImport);
 
         if (candidates.isEmpty()) {
             candidates.addAll(importFromUniprot(participantToImport));
@@ -127,8 +127,8 @@ public class ParticipantImportController extends BaseController {
         return candidates;
     }
 
-    private List<ImportCandidate> importFromIntAct(String participantToImport) {
-        List<ImportCandidate> candidates = new ArrayList<ImportCandidate>();
+    private Set<ImportCandidate> importFromIntAct(String participantToImport) {
+        Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
 
         final IntactContext context = IntactContext.getCurrentInstance();
         final ComponentDao componentDao = context.getDaoFactory().getComponentDao();
@@ -162,14 +162,14 @@ public class ParticipantImportController extends BaseController {
                 }
             }
 
-//            if (candidates.isEmpty()) {
+            if (candidates.isEmpty()) {
                 // uniprot AC
                 Collection<ProteinImpl> proteins = proteinDao.getByUniprotId(participantToImport);
 
                 for (Protein protein : proteins) {
                     candidates.add(toImportCandidate(participantToImport, protein));
                 }
-//            }
+            }
         }
 
         return candidates;

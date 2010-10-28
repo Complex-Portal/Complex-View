@@ -34,6 +34,7 @@ import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -153,7 +154,7 @@ public class ParticipantController extends ParameterizableObjectController {
 
     public void importInteractor(ActionEvent evt) {
         ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
-        interactorCandidates = participantImportController.importParticipant(interactor);
+        interactorCandidates = new ArrayList<ImportCandidate>(participantImportController.importParticipant(interactor));
 
         if (interactorCandidates.size() == 1) {
             interactorCandidates.get(0).setSelected(true);
