@@ -43,7 +43,7 @@ public class InteractorController extends AnnotatedObjectController {
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( interactor == null ) {
-                interactor = IntactContext.getCurrentInstance().getDaoFactory().getInteractorDao().getByAc( ac );
+                interactor = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractorDao(), ac);
             }
         } else {
             if ( interactor != null ) ac = interactor.getAc();

@@ -68,7 +68,7 @@ public class ExperimentController extends AnnotatedObjectController {
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
-                experiment = IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao().getByAc( ac );
+                experiment = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao(), ac);
             }
             interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                                  "select i from InteractionImpl i join i.experiments as exp where exp.ac = '" + ac + "'",

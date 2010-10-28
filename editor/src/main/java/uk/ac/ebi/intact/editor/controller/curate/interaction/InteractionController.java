@@ -37,7 +37,6 @@ import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.IllegalLabelFormatException;
 import uk.ac.ebi.intact.model.util.InteractionShortLabelGenerator;
-import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -55,9 +54,6 @@ import java.util.*;
 public class InteractionController extends ParameterizableObjectController {
 
     private static final Log log = LogFactory.getLog( InteractionController.class );
-
-    @Autowired
-    private UniprotRemoteService uniprotRemoteService;
 
     private Interaction interaction;
     private String ac;
@@ -101,7 +97,7 @@ public class InteractionController extends ParameterizableObjectController {
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( interaction == null || !ac.equals( interaction.getAc() ) || !Hibernate.isInitialized(interaction.getExperiments())) {
-                interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
+                interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), ac);
             }
         } else {
             ac = interaction.getAc();

@@ -84,7 +84,7 @@ public class ParticipantController extends ParameterizableObjectController {
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( participant == null || !ac.equals( participant.getAc() ) ) {
-                participant = IntactContext.getCurrentInstance().getDaoFactory().getComponentDao().getByAc( ac );
+                participant = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getComponentDao(), ac);
             }
         } else {
             if ( participant != null ) ac = participant.getAc();

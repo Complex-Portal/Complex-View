@@ -5,6 +5,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvDagObject;
@@ -51,7 +52,7 @@ public class CvObjectController extends AnnotatedObjectController {
 
     public void loadData(ComponentSystemEvent evt) {
         if (ac != null) {
-           cvObject = (CvDagObject) getDaoFactory().getCvObjectDao().getByAc(ac);
+           cvObject = (CvDagObject) loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(), ac);
         } else if (cvClassName != null) {
             cvObject = newInstance(cvClassName);
         }

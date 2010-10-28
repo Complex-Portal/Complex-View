@@ -83,10 +83,10 @@ public class PersistenceController extends JpaAwareController {
             final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction(getClass().getSimpleName());
 
             if (getDaoFactory().getEntityManager().contains(intactObject)) {
-                getDaoFactory().getEntityManager().refresh(intactObject);
-            } else {
-                intactObject = getDaoFactory().getEntityManager().find(intactObject.getClass(), intactObject.getAc());
+                getDaoFactory().getEntityManager().detach(intactObject);
             }
+
+            intactObject = getDaoFactory().getEntityManager().find(intactObject.getClass(), intactObject.getAc());
 
             IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         }

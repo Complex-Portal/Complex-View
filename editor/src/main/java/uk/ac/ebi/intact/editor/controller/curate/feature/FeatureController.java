@@ -89,7 +89,7 @@ public class FeatureController extends AnnotatedObjectController {
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( feature == null || !ac.equals( feature.getAc() ) ) {
-                feature = IntactContext.getCurrentInstance().getDaoFactory().getFeatureDao().getByAc( ac );
+                feature = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getFeatureDao(), ac);
             }
         } else {
             if ( feature != null ) ac = feature.getAc();

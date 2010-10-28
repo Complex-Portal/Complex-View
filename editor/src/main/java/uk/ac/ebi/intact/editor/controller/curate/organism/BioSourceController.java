@@ -4,6 +4,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.AnnotatedObject;
@@ -40,7 +41,7 @@ public class BioSourceController extends AnnotatedObjectController {
 
     public void loadData(ComponentSystemEvent evt) {
         if (ac != null) {
-            bioSource = getDaoFactory().getBioSourceDao().getByAc(ac);
+            bioSource = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getBioSourceDao(), ac);
         } else {
             bioSource = new BioSource();
         }
