@@ -209,7 +209,13 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         getUnsavedChangeManager().clearChanges();
 
+        postRevert();
+
         addInfoMessage("Changes reverted", "");
+    }
+
+    protected void postRevert(){
+        // nothing by default
     }
 
     public void doCancelEdition( ActionEvent evt ) {

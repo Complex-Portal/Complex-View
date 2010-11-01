@@ -132,8 +132,6 @@ public class InteractionController extends ParameterizableObjectController {
             }
             refreshParticipants();
         }
-
-        generalLoadChecks();
     }
 
     public void refreshExperimentLists() {
@@ -368,6 +366,11 @@ public class InteractionController extends ParameterizableObjectController {
         if (participant.getAc() != null) {
             participantInfo.append("(").append(participant.getAc()+")");
         }
+    }
+
+    @Override
+    protected void postRevert() {
+        refreshParticipants();
     }
 
     public void cloneParticipant(ParticipantWrapper participantWrapper) {
