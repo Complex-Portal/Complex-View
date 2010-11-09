@@ -132,4 +132,12 @@ public class InteractorController extends AnnotatedObjectController {
     public void setNewInteractorType(CvInteractorType newInteractorType) {
         this.newInteractorType = newInteractorType;
     }
+
+    public String getAc() {
+        return ac;
+    }
+
+    public void setAc(String ac) {
+        this.ac = ac;
+    }
 }

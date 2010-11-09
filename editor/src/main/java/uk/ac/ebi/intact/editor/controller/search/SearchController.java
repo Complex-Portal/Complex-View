@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -17,6 +18,7 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ComponentSystemEvent;
+import javax.persistence.Query;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -231,7 +233,7 @@ public class SearchController extends JpaAwareController {
         cvobjects = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                               "select distinct i " +
-                                                              "from CvObject i left join fetch i.xrefs as x " +
+                                                              "from CvObject i left join i.xrefs as x " +
                                                               "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
@@ -264,7 +266,7 @@ public class SearchController extends JpaAwareController {
         molecules = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                               "select distinct i " +
-                                                              "from InteractorImpl i left join fetch i.xrefs as x " +
+                                                              "from InteractorImpl i left join i.xrefs as x " +
                                                               "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(x.primaryId) like :query ) " +
@@ -289,7 +291,16 @@ public class SearchController extends JpaAwareController {
 
     public String getIdentityXref( Interactor molecule ) {
         // TODO handle multiple identities (return xref and iterate to display them all)
-        final Collection<InteractorXref> xrefs = AnnotatedObjectUtils.searchXrefsByQualifier( molecule, CvXrefQualifier.IDENTITY_MI_REF );
+        Collection<InteractorXref> xrefs;
+
+        if (!Hibernate.isInitialized(molecule.getXrefs())) {
+            Interactor reloadedMolecule = getDaoFactory().getInteractorDao().getByAc(molecule.getAc());
+            xrefs = AnnotatedObjectUtils.searchXrefsByQualifier( reloadedMolecule, CvXrefQualifier.IDENTITY_MI_REF );
+        } else {
+            xrefs = AnnotatedObjectUtils.searchXrefsByQualifier( molecule, CvXrefQualifier.IDENTITY_MI_REF );
+        }
+
+
         if ( xrefs.isEmpty() ) {
             return "-";
         }
@@ -309,7 +320,6 @@ public class SearchController extends JpaAwareController {
 
                                                                  "select distinct i " +
                                                                  "from InteractionImpl i left join i.xrefs as x " +
-                                                                 "                       left join fetch i.experiments as e " +
                                                                  "where    i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
                                                                  "      or lower(x.primaryId) like :query " +
@@ -327,11 +337,23 @@ public class SearchController extends JpaAwareController {
     }
 
     public Experiment getFirstExperiment( Interaction interaction ) {
-        if (interaction.getExperiments().isEmpty()) {
+        Collection<Experiment> exps;
+
+        if (Hibernate.isInitialized(interaction.getExperiments())) {
+            exps = interaction.getExperiments();
+        } else {
+            Query query = getDaoFactory().getEntityManager().createQuery("select e from Experiment e join e.interactions as i " +
+                                                                  "where i.ac = :interactionAc");
+            query.setParameter("interactionAc", interaction.getAc());
+
+            exps = query.getResultList();
+        }
+
+        if (exps.isEmpty()) {
             return null;
         }
 
-        return interaction.getExperiments().iterator().next();
+        return exps.iterator().next();
     }
 
     private void loadExperiments( String query, String originalQuery ) {

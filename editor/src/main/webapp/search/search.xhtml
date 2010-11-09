@@ -12,7 +12,7 @@
     <ui:define name="content">
 
         <f:metadata>
-            <f:event type="preRenderView" listener="#{searchController.searchIfQueryPresent}"/>
+            <!--<f:event type="preRenderView" listener="#{searchController.searchIfQueryPresent}"/>-->
             <f:viewParam name="query" value="#{searchController.query}"/>
             <f:viewParam name="quickQuery" value="#{searchController.quickQuery}"/>
         </f:metadata>
@@ -202,7 +202,7 @@
                              <!--title="Interactions (#{searchController.interactions.rowCount})">-->
 
             <p:dataTable id="searchInteractionTable" var="interaction" value="#{searchController.interactions}"
-                         paginator="#{searchController.interactions.rowCount > 10}"
+                         paginator="true" paginatorAlwaysVisible="false"
                          rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
                 <p:column>
                     <f:facet name="header">
@@ -273,7 +273,9 @@
                     <f:facet name="header">
                         <h:outputText value="AC"/>
                     </f:facet>
-                    <h:outputText value="#{molecule.ac}"/>
+                    <h:link outcome="/curate/interactor" value="#{molecule.ac}" includeViewParams="true">
+                        <f:param name="ac" value="#{molecule.ac}"/>
+                    </h:link>
                 </p:column>
                 <p:column>
                     <f:facet name="header">

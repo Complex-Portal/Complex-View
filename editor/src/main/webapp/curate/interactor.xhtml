@@ -34,7 +34,7 @@
 
     <ui:define name="curateContent">
         <f:metadata>
-            <f:viewParam name="ac" value="#{interactorController.interactor.ac}"/>
+            <f:viewParam name="ac" value="#{interactorController.ac}"/>
             <f:event type="preRenderView" listener="#{interactorController.loadData}"/>
             <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(participantController)}"/>
         </f:metadata>
@@ -81,7 +81,7 @@
                             <h:outputLabel value="Organism: " for="organismTxt"/>
                         </td>
                         <td colspan="2">
-                            <ia:inputBioSource id="organismTxt" value="#{interactor.fullName}"
+                            <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
                                     required="true" requiredMessage="Organism is required"
                                     selectItems="#{bioSourceService.bioSourceSelectItems}"/>
                         </td>

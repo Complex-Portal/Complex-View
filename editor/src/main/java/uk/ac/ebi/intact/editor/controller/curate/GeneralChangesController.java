@@ -46,6 +46,8 @@ public class GeneralChangesController extends BaseController implements UserList
 
     @Override
     public void userLoggedIn(User user) {
+        if (user == null) return;
+
         userUnsavedMap.put(user.getLogin(), new HashMap<Object, UnsavedChangeManager>());
     }
 
