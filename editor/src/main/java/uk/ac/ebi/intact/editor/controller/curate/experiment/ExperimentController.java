@@ -113,6 +113,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public void doPreSave() {
+        experiment.setPublication(null);
         publicationController.getPublication().addExperiment(experiment);
     }
 
