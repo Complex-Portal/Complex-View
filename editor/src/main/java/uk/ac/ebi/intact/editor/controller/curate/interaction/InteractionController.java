@@ -126,7 +126,7 @@ public class InteractionController extends ParameterizableObjectController {
 
         refreshExperimentLists();
 
-        if (interaction != null && participantWrappers == null) {
+        if (interaction != null) {
             if (!Hibernate.isInitialized(interaction.getComponents())) {
                 interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
             }
@@ -172,7 +172,18 @@ public class InteractionController extends ParameterizableObjectController {
 
             if (pw.isDeleted() && component.getAc() != null) {
                 interaction.removeComponent(component);
-                getDaoFactory().getComponentDao().delete(component);
+
+                Component compToDelete;
+
+                if (!getDaoFactory().getEntityManager().contains(component)) {
+                    compToDelete = getDaoFactory().getComponentDao().getByAc(component.getAc());
+                } else {
+                    compToDelete = component;
+                }
+
+                if (compToDelete != null) {
+                    getDaoFactory().getComponentDao().delete(compToDelete);
+                }
             }
             if (component.getAc() == null) {
                 getCorePersister().saveOrUpdate(component);
@@ -189,7 +200,7 @@ public class InteractionController extends ParameterizableObjectController {
             experiment = reload(experiment);
 
             interaction.addExperiment(experiment);
-            getCorePersister().saveOrUpdate(experiment);
+            getDaoFactory().getExperimentDao().update(experiment);
 
             experimentController.setExperiment(experiment);
         }
@@ -218,9 +229,7 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     private Experiment reload(Experiment oldExp) {
-        if (oldExp != null && oldExp.getAc() != null &&
-                !Hibernate.isInitialized(oldExp.getInteractions()) &&
-                !Hibernate.isInitialized(oldExp.getAnnotations())) {
+        if (oldExp != null && oldExp.getAc() != null) {
             oldExp = getDaoFactory().getExperimentDao().getByAc(oldExp.getAc());
         }
         return oldExp;
