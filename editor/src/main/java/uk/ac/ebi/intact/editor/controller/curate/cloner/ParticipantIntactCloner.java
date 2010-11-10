@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.controller.curate.util;
+package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
-import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.Component;
 import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
@@ -24,30 +24,20 @@ import uk.ac.ebi.intact.model.clone.IntactClonerException;
  * Editor specific cloning routine for interactions.
  *
  * @author Prem Anand (prem@ebi.ac.uk)
- * @version $Id$
+ * @version $Id: InteractionIntactCloner.java 14783 2010-07-29 12:52:28Z brunoaranda $
  * @since 2.0.1-SNAPSHOT
  */
-public class InteractionIntactCloner extends EditorIntactCloner {
+public class ParticipantIntactCloner extends EditorIntactCloner {
 
-    /**
-     * This cloner will be used by the editor to clone the
-     * interaction. As some experiment has 1000s of experiment,
-     * the system unnecessarily attempts to clone experiments,
-     * which is not needed.
-     *
-     * @param experiment, the experiment to be cloned
-     * @return null (experiment is not cloned)
-     * @throws IntactClonerException
-     */
     @Override
-    public Experiment cloneExperiment( Experiment experiment ) throws IntactClonerException {
-        return new Experiment();
+    public Interaction cloneInteraction(Interaction interaction) throws IntactClonerException {
+        return interaction;
     }
 
     @Override
     protected IntactObject cloneIntactObjectCommon( IntactObject ao, IntactObject clone ) throws IntactClonerException {
 
-        if (clone == null || clone instanceof Interaction ) {
+        if (clone == null || clone instanceof Component) {
             return null;
         }
 

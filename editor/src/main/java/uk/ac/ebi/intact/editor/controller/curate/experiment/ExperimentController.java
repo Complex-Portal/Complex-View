@@ -25,11 +25,10 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.cloner.ExperimentIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.clone.IntactCloner;
-import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 
 import javax.faces.event.ActionEvent;
@@ -114,22 +113,13 @@ public class ExperimentController extends AnnotatedObjectController {
         exp.getPublication().addExperiment(exp);
     }
 
-    public void cloneWithInteractions() {
-        IntactCloner cloner = new IntactCloner(true) {
-           @Override
-           public Publication clonePublication( Publication publication ) throws IntactClonerException {
-                return publication;
-            }
+    @Override
+    public String clone() {
+        return clone(new ExperimentIntactCloner(false));
+    }
 
-            protected AnnotatedObject cloneAnnotatedObjectCommon( AnnotatedObject<?, ?> ao, AnnotatedObject clone ) throws IntactClonerException {
-                if (clone instanceof Publication) {
-                    return clone;
-                }
-                return super.cloneAnnotatedObjectCommon(ao, clone);
-            }
-        };
-
-        super.clone(cloner);
+    public String cloneWithInteractions() {
+        return clone(new ExperimentIntactCloner(true));
     }
 
     public void doPreSave() {

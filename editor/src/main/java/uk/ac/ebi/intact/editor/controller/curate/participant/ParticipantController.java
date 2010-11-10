@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
+import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
@@ -31,6 +32,7 @@ import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportCo
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantWrapper;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.clone.IntactCloner;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -134,6 +136,11 @@ public class ParticipantController extends ParameterizableObjectController {
 
         interactionController.getInteraction().addComponent(participant);
         interactionController.refreshParticipants();
+    }
+
+    @Override
+    protected IntactCloner newClonerInstance() {
+        return new ParticipantIntactCloner();
     }
 
     public String newParticipant(Interaction interaction) {

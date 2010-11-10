@@ -13,35 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.controller.curate.util;
+package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.clone.IntactCloner;
+import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class EditorIntactCloner extends IntactCloner {
+public class ExperimentIntactCloner extends EditorIntactCloner {
 
-    public EditorIntactCloner() {
-        setExcludeACs(true);
-    }
+    private boolean cloneInteractions;
 
-    @Override
-    public BioSource cloneBioSource(BioSource bioSource) throws IntactClonerException {
-        return bioSource;
-    }
-
-    @Override
-    public CvObject cloneCvObject(CvObject cvObject) throws IntactClonerException {
-        return cvObject;
-    }
-
-    @Override
-    public Institution cloneInstitution(Institution institution) throws IntactClonerException {
-        return institution;
+    public ExperimentIntactCloner(boolean cloneInteractions) {
+        super();
+        this.cloneInteractions = cloneInteractions;
     }
 
     @Override
@@ -51,12 +40,14 @@ public class EditorIntactCloner extends IntactCloner {
             return null;
         }
 
-        if (clone instanceof Interaction) {
-            Interaction interaction = (Interaction)clone;
-            interaction.getExperiments().clear();
-        } else if (clone instanceof Experiment) {
-            Experiment experiment = (Experiment)clone;
-            experiment.getInteractions().clear();
+        if (!cloneInteractions) {
+            if (clone instanceof Interaction) {
+                Interaction interaction = (Interaction)clone;
+                interaction.getExperiments().clear();
+            } else if (clone instanceof Experiment) {
+                Experiment experiment = (Experiment)clone;
+                experiment.getInteractions().clear();
+            }
         }
 
         if (ao == clone) {
