@@ -42,6 +42,7 @@
                 </f:facet>
                 <p:commandLink styleClass="ui-icon ui-icon-closethick" process="@this"
                                actionListener="#{annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"
+                               oncomplete="markAsUnsaved()"
                                update="#{update}"/>
             </p:column>
         </p:dataTable>

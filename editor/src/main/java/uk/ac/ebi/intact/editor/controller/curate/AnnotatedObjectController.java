@@ -299,10 +299,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void replaceOrCreateXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
         getAnnotatedObjectHelper().replaceOrCreateXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
+        setUnsavedChanges( true );
     }
 
     public void removeXref( String databaseIdOrLabel, String qualifierIdOrLabel ) {
         getAnnotatedObjectHelper().removeXref(databaseIdOrLabel, qualifierIdOrLabel);
+        setUnsavedChanges( true );
     }
 
     public void removeXref( Xref xref ) {
@@ -312,6 +314,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void addXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
         getAnnotatedObjectHelper().addXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
+        setUnsavedChanges( true );
     }
 
     public String findXrefPrimaryId( String databaseId, String qualifierId ) {
@@ -362,14 +365,17 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void replaceOrCreateAnnotation( String topicOrShortLabel, String text ) {
         getAnnotatedObjectHelper().replaceOrCreateAnnotation(topicOrShortLabel, text);
+        setUnsavedChanges( true );
     }
 
     public void removeAnnotation( String topicIdOrLabel ) {
         getAnnotatedObjectHelper().removeAnnotation(topicIdOrLabel);
+        setUnsavedChanges( true );
     }
 
     public void removeAnnotation( String topicIdOrLabel, String text ) {
         getAnnotatedObjectHelper().removeAnnotation(topicIdOrLabel, text);
+        setUnsavedChanges( true );
     }
 
     public void removeAnnotation( Annotation annotation ) {
@@ -411,6 +417,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void removeAlias( String aliasTypeIdOrLabel ) {
         getAnnotatedObjectHelper().removeAlias(aliasTypeIdOrLabel);
+        setUnsavedChanges( true );
     }
 
     public List<Alias> getAliases() {

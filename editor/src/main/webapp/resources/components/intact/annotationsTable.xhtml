@@ -58,6 +58,7 @@
                 </f:facet>
                 <p:commandLink immediate="true" styleClass="ui-icon ui-icon-closethick" 
                                actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"
+                               oncomplete="markAsUnsaved()"
                                update="#{cc.attrs.update}"/>
             </p:column>
         </p:dataTable>
