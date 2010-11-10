@@ -21,8 +21,7 @@
             <h:form>
 
             <f:metadata>
-                <f:viewParam name="dialogId" value="#{requestScope.dialogId}"/>
-                <f:viewParam name="clientId" value="#{requestScope.clientId}"/>
+                <f:viewParam name="dialogId" value="#{inputBioSourceController.dialogId}"/>
                 <f:event type="preRenderView" listener="#{inputBioSourceController.loadBioSources}"/>
             </f:metadata>
 
@@ -47,7 +46,7 @@
                                  rows="10"
                                  paginatorPosition="top">
                         <p:column>
-                            <a href="#" onclick="parent.#{requestScope.dialogId}_ibs.update('#{bioSource.ac}', '#{bioSource.shortLabel}', parent.#{requestScope.dialogId})" type="button">Select
+                            <a href="#" onclick="parent.#{inputBioSourceController.dialogId}_ibs.update('#{bioSource.ac}', '#{bioSource.shortLabel}', parent.#{inputBioSourceController.dialogId})" type="button">Select
                             </a>
                         </p:column>
                         <p:column>

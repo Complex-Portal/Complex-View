@@ -36,7 +36,7 @@ import java.util.List;
  * @version $Id$
  */
 @Component
-@Scope("request")
+@Scope("conversation.access")
 public class InputBioSourceController extends BaseController {
 
     private static final Log log = LogFactory.getLog(InputBioSourceController.class);
@@ -44,6 +44,7 @@ public class InputBioSourceController extends BaseController {
     private String query;
     private BioSource selected;
     private List<BioSource> bioSources;
+    private String dialogId;
 
     public InputBioSourceController() {
     }
@@ -119,5 +120,13 @@ public class InputBioSourceController extends BaseController {
 
     public void setQuery(String query) {
         this.query = query;
-    }  
+    }
+
+    public String getDialogId() {
+        return dialogId;
+    }
+
+    public void setDialogId(String dialogId) {
+        this.dialogId = dialogId;
+    }
 }
