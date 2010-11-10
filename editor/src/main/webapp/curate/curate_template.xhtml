@@ -64,6 +64,7 @@
             <p:submenu label="Tools" rendered="#{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject) != 'Publication'}">
                 <p:menuitem value="Clone #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}" action="#{annotatedObjectController.clone}" ajax="false"
                         onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
+                <ui:insert name="toolsContextual"/>
             </p:submenu>
 
             <p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER')}">

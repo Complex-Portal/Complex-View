@@ -28,6 +28,8 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.clone.IntactCloner;
+import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 
 import javax.faces.event.ActionEvent;
@@ -112,9 +114,29 @@ public class ExperimentController extends AnnotatedObjectController {
         exp.getPublication().addExperiment(exp);
     }
 
+    public void cloneWithInteractions() {
+        IntactCloner cloner = new IntactCloner(true) {
+           @Override
+           public Publication clonePublication( Publication publication ) throws IntactClonerException {
+                return publication;
+            }
+
+            protected AnnotatedObject cloneAnnotatedObjectCommon( AnnotatedObject<?, ?> ao, AnnotatedObject clone ) throws IntactClonerException {
+                if (clone instanceof Publication) {
+                    return clone;
+                }
+                return super.cloneAnnotatedObjectCommon(ao, clone);
+            }
+        };
+
+        super.clone(cloner);
+    }
+
     public void doPreSave() {
-        experiment.setPublication(null);
-        publicationController.getPublication().addExperiment(experiment);
+        if (experiment.getPublication() != publicationController.getPublication()) {
+            experiment.setPublication(null);
+            publicationController.getPublication().addExperiment(experiment);
+        }
     }
 
     public String newExperiment(Publication publication) {

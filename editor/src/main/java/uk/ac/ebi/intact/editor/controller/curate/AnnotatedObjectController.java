@@ -249,8 +249,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public String clone() {
-        IntactCloner cloner = newClonerInstance();
+        return clone(newClonerInstance());
+    }
 
+    protected String clone(IntactCloner cloner) {
         AnnotatedObject clone = null;
 
         try {
@@ -258,6 +260,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         } catch (IntactClonerException e) {
             addErrorMessage("Could not clone object", e.getMessage());
             handleException(e);
+            return "";
         }
 
         modifyClone(clone);

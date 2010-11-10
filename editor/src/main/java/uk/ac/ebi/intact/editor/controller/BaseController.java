@@ -73,6 +73,7 @@ public abstract class BaseController implements Serializable {
         FacesContext ctx = FacesContext.getCurrentInstance();
         ExceptionQueuedEventContext eventContext = new ExceptionQueuedEventContext( ctx, e );
         ctx.getApplication().publishEvent( ctx, ExceptionQueuedEvent.class, eventContext );
+        e.printStackTrace();
     }
 }
 
