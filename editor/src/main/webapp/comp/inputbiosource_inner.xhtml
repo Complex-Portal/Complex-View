@@ -46,7 +46,7 @@
                                  rows="10"
                                  paginatorPosition="top">
                         <p:column>
-                            <a href="#" onclick="parent.#{inputBioSourceController.dialogId}_ibs.update('#{bioSource.ac}', '#{bioSource.shortLabel}', parent.#{inputBioSourceController.dialogId})" type="button">Select
+                            <a href="#" onclick="parent.#{inputBioSourceController.dialogId}_ibs.update('#{bioSource.ac}', '#{bioSource.shortLabel}', parent.#{inputBioSourceController.dialogId}); parent.markAsUnsaved()" type="button">Select
                             </a>
                         </p:column>
                         <p:column>

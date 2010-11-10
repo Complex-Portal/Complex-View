@@ -15,13 +15,12 @@
             <f:metadata>
                 <f:viewParam name="identifier" value="#{inputCvObjectController.id}"/>
                 <f:viewParam name="className" value="#{inputCvObjectController.cvClass}"/>
-                <f:viewParam name="visible" value="#{requestScope.visible}"/>
-                <f:viewParam name="dialogId" value="#{requestScope.dialogId}"/>
-                <f:viewParam name="clientId" value="#{requestScope.clientId}"/>
+                <f:viewParam name="visible" value="#{inputCvObjectController.visible}"/>
+                <f:viewParam name="dialogId" value="#{inputCvObjectController.dialogId}"/>
                 <f:event type="preRenderView" listener="#{inputCvObjectController.load}"/>
             </f:metadata>
 
-                <h:panelGroup rendered="#{requestScope.visible}">
+                <h:panelGroup rendered="#{inputCvObjectController.visible}">
 
                 <div id="cvTableContainer" style="overflow-x: auto;">
 
@@ -29,7 +28,7 @@
                             value="#{inputCvObjectController.root}">
                         <p:column>
                             <f:facet name="header"><h:outputText value="Label"/></f:facet>
-                            <a href="#" onclick="parent.#{requestScope.dialogId}_icv.update('#{cvObject.ac}', '#{cvObject.shortLabel}', parent.#{requestScope.dialogId})"
+                            <a href="#" onclick="parent.#{inputCvObjectController.dialogId}_icv.update('#{cvObject.ac}', '#{cvObject.shortLabel}', parent.#{inputCvObjectController.dialogId})"
                                     title="#{inputCvObjectController.getDescription(cvObject)}">#{cvObject.shortLabel}</a>
                         </p:column>
                         <p:column>

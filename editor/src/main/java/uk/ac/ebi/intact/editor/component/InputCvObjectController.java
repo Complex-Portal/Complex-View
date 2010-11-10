@@ -39,7 +39,7 @@ import java.util.List;
  * @version $Id$
  */
 @Component
-@Scope("request")
+@Scope("conversation.access")
 public class InputCvObjectController extends BaseController{
 
     private static final Log log = LogFactory.getLog( InputCvObjectController.class );
@@ -48,6 +48,8 @@ public class InputCvObjectController extends BaseController{
 
     private String id;
     private String cvClass;
+    private boolean visible;
+    private String dialogId;
 
     private CvObject selected;
 
@@ -157,5 +159,21 @@ public class InputCvObjectController extends BaseController{
 
     public void setCvClass(String cvClass) {
         this.cvClass = cvClass;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public String getDialogId() {
+        return dialogId;
+    }
+
+    public void setDialogId(String dialogId) {
+        this.dialogId = dialogId;
     }
 }
