@@ -249,14 +249,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public String clone() {
-        return clone(newClonerInstance());
+        return clone(getAnnotatedObject(), newClonerInstance());
     }
 
-    protected String clone(IntactCloner cloner) {
+    protected String clone(AnnotatedObject ao, IntactCloner cloner) {
         AnnotatedObject clone = null;
 
         try {
-            clone = cloner.clone(getAnnotatedObject());
+            clone = cloner.clone(ao);
         } catch (IntactClonerException e) {
             addErrorMessage("Could not clone object", e.getMessage());
             handleException(e);

@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.editor.controller.curate.experiment;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -62,7 +63,7 @@ public class ExperimentController extends AnnotatedObjectController {
 
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setExperiment((Experiment)annotatedObject);
+        setExperiment((Experiment) annotatedObject);
     }
 
     @SuppressWarnings("unchecked")
@@ -71,9 +72,7 @@ public class ExperimentController extends AnnotatedObjectController {
             if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
                 experiment = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao(), ac);
             }
-            interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                                 "select i from InteractionImpl i join i.experiments as exp where exp.ac = '" + ac + "'",
-                                                                                 "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '" + ac + "'" );
+            refreshInteractions();
         } else if ( experiment != null ) {
             ac = experiment.getAc();
         }
@@ -83,6 +82,19 @@ public class ExperimentController extends AnnotatedObjectController {
         }
 
         generalLoadChecks();
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private void refreshInteractions() {
+        LazyDataModel dataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+                "select i from InteractionImpl i join i.experiments as exp where exp.ac = '" + experiment.getAc() + "'",
+                "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '" + experiment.getAc() + "'");
+
+        if (dataModel.getRowCount() > 0) {
+            interactionDataModel = dataModel;
+        } else {
+            interactionDataModel = LazyDataModelFactory.createLazyDataModel(experiment.getInteractions());
+        }
     }
 
     @Override
@@ -107,24 +119,28 @@ public class ExperimentController extends AnnotatedObjectController {
     @Override
     public void modifyClone(AnnotatedObject clone) {
         clone.setShortLabel(createExperimentShortLabel());
-        interactionDataModel = LazyDataModelFactory.createEmptyDataModel();
 
-        final Experiment exp = (Experiment) clone;
-        exp.getPublication().addExperiment(exp);
+        setExperiment((Experiment) clone);
+        refreshInteractions();
+
+        experiment.setPublication(null);
+        publicationController.getPublication().addExperiment(experiment);
     }
 
     @Override
     public String clone() {
-        return clone(new ExperimentIntactCloner(false));
+        return clone(experiment, new ExperimentIntactCloner(false));
     }
 
+    @Transactional
     public String cloneWithInteractions() {
-        return clone(new ExperimentIntactCloner(true));
+        Hibernate.initialize(experiment.getInteractions());
+
+        return clone(experiment, new ExperimentIntactCloner(true));
     }
 
     public void doPreSave() {
-        if (experiment.getPublication() != publicationController.getPublication()) {
-            experiment.setPublication(null);
+        if (experiment.getPublication() == null) {
             publicationController.getPublication().addExperiment(experiment);
         }
     }
@@ -144,7 +160,7 @@ public class ExperimentController extends AnnotatedObjectController {
             experiment.addXref(new ExperimentXref(pubmed, publication.getShortLabel(), primaryRef));
         }
 
-        interactionDataModel = LazyDataModelFactory.createEmptyDataModel();
+        refreshInteractions();
 
         //getUnsavedChangeManager().markAsUnsaved(experiment);
 

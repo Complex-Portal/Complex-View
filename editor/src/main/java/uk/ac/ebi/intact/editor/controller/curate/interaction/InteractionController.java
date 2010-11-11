@@ -211,6 +211,11 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void experimentChanged(ValueChangeEvent evt) {
+        if (evt.getNewValue() == null) {
+            addErrorMessage("No experiment selected", "Select an experiment in the drop down list");
+            return;
+        }
+
         if (evt.getOldValue() != null) {
             Experiment oldExp = (Experiment) evt.getOldValue();
 
@@ -222,6 +227,8 @@ public class InteractionController extends ParameterizableObjectController {
         Experiment newExp = (Experiment) evt.getNewValue();
 
         newExp = reload(newExp);
+
+        experimentController.setExperiment(newExp);
 
         interaction.addExperiment(newExp);
 
@@ -301,6 +308,12 @@ public class InteractionController extends ParameterizableObjectController {
 
     public int countParticipantsByInteractionAc( String ac ) {
         return getDaoFactory().getInteractionDao().countInteractorsByInteractionAc( ac );
+    }
+
+    public int countParticipantsByInteraction( Interaction interaction) {
+        if (interaction.getAc() != null) return countParticipantsByInteractionAc(interaction.getAc());
+
+        return interaction.getComponents().size();
     }
 
     public Experiment getFirstExperiment( Interaction interaction ) {

@@ -22,9 +22,7 @@ import org.primefaces.model.LazyDataModel;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -84,6 +82,28 @@ public class LazyDataModelFactory {
         LazyDataModel lazyDataModel = new HqlLazyDataModel( entityManager, query, params );
         lazyDataModel.setPageSize(10);
         lazyDataModel.setRowCount(totalNumRows);
+
+        return lazyDataModel;
+    }
+
+    public static <T> LazyDataModel<T> createLazyDataModel( final Collection<T> collection ) {
+        LazyDataModel<T> lazyDataModel = new LazyDataModel<T>() {
+
+            public List<T> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
+                List<T> list = new ArrayList<T>(collection);
+
+                if (first >= list.size()) {
+                    return Collections.EMPTY_LIST;
+                }
+
+                list.subList(first, Math.min(first+pageSize, list.size()-1));
+
+                return list;
+            }
+        };
+
+        lazyDataModel.setPageSize(10);
+        lazyDataModel.setRowCount(collection.size());
 
         return lazyDataModel;
     }

@@ -53,21 +53,25 @@ public class GeneralChangesController extends BaseController implements UserList
 
     @Override
     public void userLoggedOut(User user) {
-        final Map<Object, UnsavedChangeManager> unsavedMap = userUnsavedMap.get(user.getLogin());
+        userLoggedOut(user.getLogin());
+    }
+
+    private void userLoggedOut(String user) {
+         final Map<Object, UnsavedChangeManager> unsavedMap = userUnsavedMap.get(user);
 
         if (unsavedMap == null) {
-            throw new IllegalStateException("No unsaved changes map found for user: "+user.getLogin());
+            throw new IllegalStateException("No unsaved changes map found for user: "+user);
         }
 
         if (!unsavedMap.isEmpty()) {
-            if (log.isInfoEnabled()) log.info("User logged out with "+unsavedMap.size()+" pending changes: "+user.getLogin());
+            if (log.isInfoEnabled()) log.info("User logged out with "+unsavedMap.size()+" pending changes: "+user);
 
             for (UnsavedChangeManager unsavedChangeManager : unsavedMap.values()) {
                 unsavedChangeManager.clearChanges();
             }
         }
 
-        userUnsavedMap.remove(user.getLogin());
+        userUnsavedMap.remove(user);
     }
 
     public Map<Object,UnsavedChangeManager> getUnsavedMapForUser(String username) {

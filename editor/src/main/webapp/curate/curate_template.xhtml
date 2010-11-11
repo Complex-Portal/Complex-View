@@ -8,6 +8,8 @@
 
                 template="/main_template.xhtml">
 
+    <ui:param name="title" value="#{annotatedObjectController.annotatedObject != null? curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject) : ''}: #{annotatedObjectController.annotatedObject != null? annotatedObjectController.annotatedObject.shortLabel : ''} | Curate | Editor"/>
+
     <ui:define name="topNavigation">
         <ui:include src="/shared/top_navigation_bar.xhtml">
             <ui:param name="selected" value="curate"/>
@@ -89,8 +91,8 @@
         <p:hotkey bind="alt+o" oncomplete="openByPmidDlg.show()"/>
         <p:hotkey bind="alt+s" oncomplete="save(); return false"/>
 
-        <p:remoteCommand name="markAsUnsaved" update="messagesComponent,changesPanel,unsavedChangesInfo"
-                                 actionListener="#{annotatedObjectController.changed(null)}"/>
+        <p:remoteCommand id="markAsUnsavedCmd" name="markAsUnsaved" update="messagesComponent,changesPanel,unsavedChangesInfo"
+                                 actionListener="#{annotatedObjectController.changed(null)}" process="markAsUnsavedCmd"/>
 
         <ia:loadingDialog widgetVar="loadDialog"/>
 

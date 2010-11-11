@@ -53,12 +53,20 @@ public class UserManagerController extends BaseController implements UserListene
         return String.valueOf( loggedInUsers.size() );
     }
 
-    public void notifyLogout(User user) {
-        loggedInUsers.remove(user);
+    public User getUser(String userId) {
+        for (User user : loggedInUsers) {
+            if (userId.equals(user.getLogin())) {
+                return user;
+            }
+        }
+
+        return null;
     }
 
     @Override
     public void userLoggedIn(User user) {
+        if (user == null) return;
+
         user.setLastLogin(new Date());
         UserSessionController userSessionController = ( UserSessionController ) getSpringContext().getBean( "userSessionController" );
         userSessionController.setCurrentUser(user);

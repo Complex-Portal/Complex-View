@@ -30,6 +30,11 @@ public class EditorIntactCloner extends IntactCloner {
     }
 
     @Override
+    public Publication clonePublication(Publication publication) throws IntactClonerException {
+        return publication;
+    }
+
+    @Override
     public BioSource cloneBioSource(BioSource bioSource) throws IntactClonerException {
         return bioSource;
     }

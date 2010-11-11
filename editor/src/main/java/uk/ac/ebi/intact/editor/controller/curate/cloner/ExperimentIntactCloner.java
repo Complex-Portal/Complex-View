@@ -34,6 +34,16 @@ public class ExperimentIntactCloner extends EditorIntactCloner {
     }
 
     @Override
+    public Experiment cloneExperiment(Experiment experiment) throws IntactClonerException {
+        return super.cloneExperiment(experiment);
+    }
+
+    @Override
+    public Interaction cloneInteraction(Interaction interaction) throws IntactClonerException {
+        return super.cloneInteraction(interaction);
+    }
+
+    @Override
     protected AnnotatedObject cloneAnnotatedObjectCommon(AnnotatedObject<?, ?> ao, AnnotatedObject clone) throws IntactClonerException {
 
         if(clone==null){

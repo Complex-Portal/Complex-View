@@ -10,7 +10,7 @@
 <f:view contentType="text/html">
 
     <h:head>
-        <title>Editor</title>
+        <title>#{title != null? title : 'Editor'}</title>
         <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>
         <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css"></link>
 
