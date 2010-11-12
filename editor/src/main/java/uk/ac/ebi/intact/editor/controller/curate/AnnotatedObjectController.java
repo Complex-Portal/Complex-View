@@ -22,6 +22,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.Finder;
 import uk.ac.ebi.intact.core.util.DebugUtil;
@@ -31,6 +32,8 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.util.go.GoServerProxy;
+import uk.ac.ebi.intact.util.go.GoTerm;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -283,6 +286,61 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     // XREFS
     ///////////////////////////////////////////////
+    public void xrefChanged(AjaxBehaviorEvent evt) {
+        changed(evt);
+
+        GoServerProxy goServerProxy = new GoServerProxy();
+
+        CvDatabase goDb = null;
+
+        for (Xref xref : getXrefs()) {
+            if (xref.getPrimaryId() != null &&
+                   xref.getPrimaryId().startsWith("go:") ||
+                   xref.getPrimaryId().startsWith("GO:")) {
+
+                xref.setPrimaryId(xref.getPrimaryId().toUpperCase());
+
+                try {
+                    GoTerm goTerm = goServerProxy.query(xref.getPrimaryId());
+
+                    if (goTerm != null) {
+                        if (goDb == null) goDb = getDaoFactory().getCvObjectDao(CvDatabase.class).getByIdentifier(CvDatabase.GO_MI_REF);
+
+                        xref.setCvDatabase(goDb);
+                        xref.setSecondaryId(goTerm.getDefinition());
+
+                        CvXrefQualifier qualifier = calculateQualifier(goTerm.getCategory());
+                        xref.setCvXrefQualifier(qualifier);
+                    }
+                } catch (GoServerProxy.GoIdNotFoundException notFoundExc) {
+                    continue;
+                } catch (Throwable e) {
+                    handleException(e);
+                    return;
+                }
+            }
+        }
+    }
+
+    private CvXrefQualifier calculateQualifier(GoTerm category) {
+        if (category == null) return null;
+
+        String goId = category.getId();
+
+        CvObjectDao<CvXrefQualifier> cvObjectDao = getDaoFactory().getCvObjectDao(CvXrefQualifier.class);
+
+        if ("GO:0008150".equals(goId)) {
+            return cvObjectDao.getByIdentifier(CvXrefQualifier.PROCESS_MI_REF);
+        } else if ("GO:0005554".equals(goId)) {
+            return cvObjectDao.getByIdentifier(CvXrefQualifier.FUNCTION_MI_REF);
+        } else if ("GO:0005575".equals(goId)) {
+            return cvObjectDao.getByIdentifier(CvXrefQualifier.COMPONENT_MI_REF);
+        }
+
+        if (log.isWarnEnabled()) log.warn("No qualifier found for category: "+goId);
+
+        return null;
+    }
 
     public void newXref( ActionEvent evt ) {
         getAnnotatedObjectHelper().newXref();
@@ -299,7 +357,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void replaceOrCreateXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
         getAnnotatedObjectHelper().replaceOrCreateXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
-        setUnsavedChanges( true );
+        setUnsavedChanges(true);
     }
 
     public void removeXref( String databaseIdOrLabel, String qualifierIdOrLabel ) {
@@ -308,7 +366,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void removeXref( Xref xref ) {
-        getAnnotatedObjectHelper().removeXref( xref );
+        getAnnotatedObjectHelper().removeXref(xref);
         setUnsavedChanges( true );
     }
 
@@ -356,7 +414,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void newAnnotation( ActionEvent evt ) {
         getAnnotatedObjectHelper().newAnnotation();
-        setUnsavedChanges( true );
+        setUnsavedChanges(true);
     }
 
     public void addAnnotation( String topicIdOrLabel, String text ) {
@@ -365,7 +423,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void replaceOrCreateAnnotation( String topicOrShortLabel, String text ) {
         getAnnotatedObjectHelper().replaceOrCreateAnnotation(topicOrShortLabel, text);
-        setUnsavedChanges( true );
+        setUnsavedChanges(true);
     }
 
     public void removeAnnotation( String topicIdOrLabel ) {
@@ -380,7 +438,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void removeAnnotation( Annotation annotation ) {
         getAnnotatedObjectHelper().removeAnnotation( annotation );
-        setUnsavedChanges( true );
+        setUnsavedChanges(true);
     }
 
     public void setAnnotation( String topicIdOrLabel, Object value ) {
@@ -400,7 +458,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void newAlias( ActionEvent evt ) {
         getAnnotatedObjectHelper().newAlias();
-        setUnsavedChanges( true );
+        setUnsavedChanges(true);
     }
 
     public void addAlias( String aliasTypeIdOrLabel, String text ) {
@@ -417,7 +475,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void removeAlias( String aliasTypeIdOrLabel ) {
         getAnnotatedObjectHelper().removeAlias(aliasTypeIdOrLabel);
-        setUnsavedChanges( true );
+        setUnsavedChanges(true);
     }
 
     public List<Alias> getAliases() {
