@@ -1,7 +1,10 @@
 package uk.ac.ebi.intact.editor.controller.curate.util;
 
+import org.hibernate.Hibernate;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.*;
+
+import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -32,7 +35,15 @@ public class CoreDeleter extends JpaAwareController {
     }
 
     private void deleteInteraction(Interaction interaction) {
-        for (Experiment exp : interaction.getExperiments()) {
+        Collection<Experiment> experiments;
+
+        if (Hibernate.isInitialized(interaction.getExperiments())) {
+            experiments = interaction.getExperiments();
+        } else {
+            experiments = getDaoFactory().getInteractionDao().getByAc(interaction.getAc()).getExperiments();
+        }
+
+        for (Experiment exp : experiments) {
             exp.removeInteraction(interaction);
         }
     }
