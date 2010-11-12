@@ -122,6 +122,7 @@
 
                         <ui:include src="participants_table.xhtml">
                             <ui:param name="value" value="#{interactionController.participants}"/>
+                            <ui:param name="unsavedChangeManager" value="#{experimentController.unsavedChangeManager}"/>
                         </ui:include>
                 </p:tab>
 

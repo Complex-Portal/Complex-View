@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import java.util.*;
 
@@ -40,6 +41,8 @@ public class UnsavedChangeManager {
             changes.add(new UnsavedChange(object, UnsavedChange.DELETED, parent));
 
             removeFromUnsaved(object);
+        } else {
+            AnnotatedObjectUtils.removeChild(parent, object);
         }
     }
 
