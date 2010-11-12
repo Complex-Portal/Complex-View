@@ -95,6 +95,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Transactional(value = "core", propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
+        // adjust any xref, just if the curator introduced a value in the primaryId of the xref
+        // and clicked on save without focusing on another field first (which would trigger
+        // a change event and field the values with ajax)
+        xrefChanged(null);
+
         //final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         // delete from the unsaved manager
