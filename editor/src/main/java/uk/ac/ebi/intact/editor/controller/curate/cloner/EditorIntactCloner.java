@@ -65,6 +65,14 @@ public class EditorIntactCloner extends IntactCloner {
             return ao;
         }
 
+        if (clone instanceof Publication ||
+                clone instanceof BioSource ||
+                clone instanceof CvObject ||
+                clone instanceof Institution ||
+                clone instanceof Interactor) {
+            return clone;
+        }
+
         return super.cloneAnnotatedObjectCommon(ao, clone);
     }
 }

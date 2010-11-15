@@ -15,8 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
+import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.IntactObject;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
@@ -28,6 +28,12 @@ import uk.ac.ebi.intact.model.clone.IntactClonerException;
  * @since 2.0.1-SNAPSHOT
  */
 public class InteractionIntactCloner extends EditorIntactCloner {
+
+    private Experiment defaultExperiment;
+
+    public InteractionIntactCloner(Experiment defaultExperiment) {
+        this.defaultExperiment = defaultExperiment;
+    }
 
     /**
      * This cloner will be used by the editor to clone the
@@ -41,17 +47,20 @@ public class InteractionIntactCloner extends EditorIntactCloner {
      */
     @Override
     public Experiment cloneExperiment( Experiment experiment ) throws IntactClonerException {
-        return new Experiment();
+        return defaultExperiment;
     }
 
     @Override
-    protected IntactObject cloneIntactObjectCommon( IntactObject ao, IntactObject clone ) throws IntactClonerException {
-
+    protected AnnotatedObject cloneAnnotatedObjectCommon(AnnotatedObject<?, ?> ao, AnnotatedObject clone) throws IntactClonerException {
         if (clone == null || clone instanceof Interaction ) {
             return null;
         }
 
-        return super.cloneIntactObjectCommon( ao, clone );
+        if (clone instanceof Experiment) {
+            return clone;
+        }
+
+        return super.cloneAnnotatedObjectCommon( ao, clone );
     }
 }
 

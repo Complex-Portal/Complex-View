@@ -108,7 +108,7 @@ public class InteractionController extends ParameterizableObjectController {
             return;
         }
 
-        if( interaction.getExperiments().isEmpty() ) {
+        if ( interaction.getExperiments().isEmpty() ) {
             addErrorMessage( "This interaction isn't attached to an experiment", "Plase add one or delete it" );
         } else {
 
@@ -142,7 +142,7 @@ public class InteractionController extends ParameterizableObjectController {
 
         experimentSelectItems.add(selectItem);
 
-        if(  interaction.getExperiments().size() > 1 ) {
+        if ( interaction.getExperiments().size() > 1 ) {
             addWarningMessage( "There are more than one experiment attached to this interaction",
                     DebugUtil.acList(interaction.getExperiments()).toString());
         }
@@ -267,6 +267,11 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     @Override
+    public String clone() {
+        return super.clone();
+    }
+
+    @Override
     public void modifyClone(AnnotatedObject clone) {
         Interaction clonedInteraction = (Interaction) clone;
         updateShortLabel(clonedInteraction);
@@ -274,7 +279,7 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Override
     protected IntactCloner newClonerInstance() {
-        return new InteractionIntactCloner();
+        return new InteractionIntactCloner(reload(experiment));
     }
 
     public void refreshParticipants() {
