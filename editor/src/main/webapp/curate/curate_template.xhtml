@@ -63,10 +63,13 @@
                             <!--rendered="#{annotatedObjectController.annotatedObject != null}"/>-->
             </p:submenu>
 
-            <p:submenu label="Tools" rendered="#{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject) != 'Publication'}">
+            <p:submenu label="Tools">
                 <p:menuitem value="Clone #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}" action="#{annotatedObjectController.clone}" ajax="false"
-                        onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
+                        onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"
+                        rendered="#{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject) != 'Publication'}"/>
                 <ui:insert name="toolsContextual"/>
+                <p:menuitem value="Delete #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}" action="#{annotatedObjectController.doDelete}" ajax="false"
+                        onclick="if (confirm('Are you sure you sure you want to delete this sucker?')) { deletingDialog.show() } else { return false }" oncomplete="deletingDialog.hide()" />
             </p:submenu>
 
             <p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER')}">
@@ -234,7 +237,8 @@
 
         <ia:loadingDialog widgetVar="saveDialog" message="Saving #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}..."/>
         <ia:loadingDialog widgetVar="revertDialog" message="Reverting changes..."/>
-        <ia:loadingDialog widgetVar="cloningDialog" message="Cloning object..."/>
+        <ia:loadingDialog widgetVar="cloningDialog" message="Cloning #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}..."/>
+        <ia:loadingDialog widgetVar="deletingDialog" message="Deleting #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}..."/>
     </ui:define>
 
 </ui:composition>

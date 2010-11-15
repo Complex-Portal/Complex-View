@@ -63,6 +63,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public abstract AnnotatedObject getAnnotatedObject();
     public abstract void setAnnotatedObject(AnnotatedObject annotatedObject);
 
+    public String goToParent() {
+        return "/curate/publication?faces-redirect=true";
+    }
+
     public AnnotatedObjectWrapper getAnnotatedObjectWrapper() {
         return new AnnotatedObjectWrapper(getAnnotatedObject());
     }
@@ -287,6 +291,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     protected IntactCloner newClonerInstance() {
         return new EditorIntactCloner();
+    }
+
+    public String doDelete() {
+        PersistenceController persistenceController = getPersistenceController();
+        persistenceController.doDelete(getAnnotatedObject());
+
+        setAnnotatedObject(null);
+
+        return goToParent();
     }
 
     // XREFS

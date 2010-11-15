@@ -86,6 +86,11 @@ public class FeatureController extends AnnotatedObjectController {
         setFeature((Feature)annotatedObject);
     }
 
+    @Override
+    public String goToParent() {
+        return "/curate/participant?faces-redirect=true&includeViewParams=true";
+    }
+
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( feature == null || !ac.equals( feature.getAc() ) ) {

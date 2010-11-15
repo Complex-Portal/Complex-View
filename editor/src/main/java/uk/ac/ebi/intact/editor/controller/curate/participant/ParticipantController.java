@@ -84,6 +84,11 @@ public class ParticipantController extends ParameterizableObjectController {
         setParticipant((Component)annotatedObject);
     }
 
+    @Override
+    public String goToParent() {
+        return "/curate/interaction?faces-redirect=true&includeViewParams=true";
+    }
+
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
             if ( participant == null || !ac.equals( participant.getAc() ) ) {

@@ -86,6 +86,11 @@ public class InteractionController extends ParameterizableObjectController {
         setInteraction((Interaction)annotatedObject);
     }
 
+    @Override
+    public String goToParent() {
+        return "/curate/experiment?faces-redirect=true&includeViewParams=true";
+    }
+
     public DualListModel<String> getExperimentLists() {
         return experimentLists;
     }
@@ -264,11 +269,6 @@ public class InteractionController extends ParameterizableObjectController {
         refreshParticipants();
 
         return navigateToObject(interaction);
-    }
-
-    @Override
-    public String clone() {
-        return super.clone();
     }
 
     @Override

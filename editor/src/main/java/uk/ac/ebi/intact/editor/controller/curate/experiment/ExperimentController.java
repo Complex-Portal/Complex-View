@@ -66,6 +66,11 @@ public class ExperimentController extends AnnotatedObjectController {
         setExperiment((Experiment) annotatedObject);
     }
 
+    @Override
+    public String goToParent() {
+        return "/curate/publication?faces-redirect=true&includeViewParams=true";
+    }
+
     @SuppressWarnings("unchecked")
     public void loadData( ComponentSystemEvent event ) {
         if ( ac != null ) {
