@@ -32,12 +32,14 @@ public class InteractorController extends AnnotatedObjectController {
     public InteractorController() {
     }
 
-    public Interactor getInteractor() {
-        return interactor;
+    @Override
+    public AnnotatedObject getAnnotatedObject() {
+        return getInteractor();
     }
 
-    public void setInteractor( Interactor interactor ) {
-        this.interactor = interactor;
+    @Override
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
+        setInteractor((Interactor)annotatedObject);
     }
 
     public void loadData( ComponentSystemEvent event ) {
@@ -111,14 +113,29 @@ public class InteractorController extends AnnotatedObjectController {
         return "Interactor";
     }
 
-    @Override
-    public AnnotatedObject getAnnotatedObject() {
-        return getInteractor();
+    public Interactor getInteractor() {
+        return interactor;
     }
 
-    @Override
-    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setInteractor((Interactor)annotatedObject);
+    public void setInteractor( Interactor interactor ) {
+        this.interactor = interactor;
+        this.ac = interactor.getAc();
+    }
+
+    public String getSequence() {
+        if (interactor instanceof Polymer) {
+            Polymer polymer = (Polymer) interactor;
+            return polymer.getSequence();
+        }
+
+        return null;
+    }
+
+    public void setSequence(String sequence) {
+        if (interactor instanceof Polymer) {
+            Polymer polymer = (Polymer) interactor;
+            polymer.setSequence(sequence);
+        }
     }
 
     public boolean isPolymer() {

@@ -36,7 +36,7 @@
         <f:metadata>
             <f:viewParam name="ac" value="#{interactorController.ac}"/>
             <f:event type="preRenderView" listener="#{interactorController.loadData}"/>
-            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(participantController)}"/>
+            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(interactorController)}"/>
         </f:metadata>
 
         <h:panelGroup rendered="#{interactor != null}">
@@ -106,8 +106,9 @@
                                 <h:outputLabel value="Sequence: " for="sequenceTxt"/>
                             </td>
                             <td colspan="2">
-                                <h:inputTextarea id="sequenceTxt" value="#{interactor.sequence}" rows="5" cols="100"
-                                        onchange="markAsUnsaved()"/>
+                                <h:inputTextarea id="sequenceTxt" value="#{interactorController.sequence}"
+                                                 rows="5" cols="100"
+                                                 onchange="markAsUnsaved()"/>
                             </td>
                         </tr>
                     </h:panelGroup>
