@@ -264,7 +264,10 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public void setExperiment( Experiment experiment ) {
         this.experiment = experiment;
-        this.ac = experiment.getAc();
+
+        if (experiment != null) {
+            this.ac = experiment.getAc();
+        }
     }
 
     public LazyDataModel<Interaction> getInteractionDataModel() {

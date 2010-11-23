@@ -138,10 +138,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         if (annotatedObject.getAc() != null) {
-            annotatedObject = refresh(annotatedObject);
 
             CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
             curatorContextController.removeFromUnsavedByAc(annotatedObject.getAc());
+
+            annotatedObject = refresh(annotatedObject);
         }
 
         setAnnotatedObject(annotatedObject);
@@ -172,7 +173,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         final AnnotatedObject currentAo = curateController.getCurrentAnnotatedObjectController().getAnnotatedObject();
 
-        if (currentAo.getAc() != null && !currentAo.getAc().equals(getAnnotatedObject().getAc())) {
+        if (currentAo != null && currentAo.getAc() != null && getAnnotatedObject() != null && !currentAo.getAc().equals(getAnnotatedObject().getAc())) {
             if (log.isDebugEnabled()) log.debug("Refreshing object in view: "+DebugUtil.annotatedObjectToString(currentAo, false));
 
             refresh(currentAo);
@@ -280,6 +281,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         addInfoMessage("Cloned annotated object", null);
 
         setAnnotatedObject(clone);
+
+        setUnsavedChanges(true);
 
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
         return curateController.edit(clone);

@@ -69,7 +69,7 @@ public class EditorIntactCloner extends IntactCloner {
                 clone instanceof BioSource ||
                 clone instanceof CvObject ||
                 clone instanceof Institution ||
-                clone instanceof Interactor) {
+                clone instanceof Interactor && !(clone instanceof Interaction)) {
             return clone;
         }
 
