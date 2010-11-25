@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
 /**
@@ -52,7 +51,7 @@ public class InteractionIntactCloner extends EditorIntactCloner {
 
     @Override
     protected AnnotatedObject cloneAnnotatedObjectCommon(AnnotatedObject<?, ?> ao, AnnotatedObject clone) throws IntactClonerException {
-        if (clone == null || clone instanceof Interaction ) {
+        if (clone == null ) {
             return null;
         }
 

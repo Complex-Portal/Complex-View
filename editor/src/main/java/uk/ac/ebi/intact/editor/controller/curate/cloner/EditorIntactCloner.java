@@ -65,11 +65,11 @@ public class EditorIntactCloner extends IntactCloner {
             return ao;
         }
 
-        if (clone instanceof Publication ||
+        if (!(clone instanceof Interaction) && (clone instanceof Publication ||
                 clone instanceof BioSource ||
                 clone instanceof CvObject ||
                 clone instanceof Institution ||
-                clone instanceof Interactor && !(clone instanceof Interaction)) {
+                clone instanceof Interactor)) {
             return clone;
         }
 
