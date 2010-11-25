@@ -27,6 +27,14 @@
         </p:breadCrumb>
     </ui:define>
 
+    <ui:define name="toolsContextual">
+        <p:menuitem value="Copy to Experiment" ajax="true"
+                        onclick="copyToExperimentDialog.show()" />
+        <p:menuitem value="Move to Experiment" ajax="true"
+                        onclick="moveToExperimentDialog.show()" />
+
+    </ui:define>
+
     <ui:define name="curateContent">
         <f:metadata>
             <f:viewParam name="ac" value="#{interactionController.ac}"/>
@@ -157,6 +165,32 @@
             </p:tabView>
 
         </h:panelGroup>
+
+        <!-- DIALOGS -->
+        <!-- Copy to Exp dialog -->
+        <p:dialog header="Copy to Experiment" width="400" widgetVar="copyToExperimentDialog" draggable="false"
+                  modal="true" position="center">
+            <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <h:outputLabel for="expToCopy" value="Experiment AC or label:"/>
+                    <h:inputText id="expToCopy" value="#{interactionController.experimentToCopyTo}"/>
+
+                    <p:commandButton value="Copy" action="#{interactionController.copyToExperiment}"
+                                     ajax="false" oncomplete="copyToExperimentDialog.hide()"/>
+            </h:panelGrid>
+        </p:dialog>
+
+        <!-- Move to Exp dialog -->
+        <p:dialog header="Move to Experiment" width="400" widgetVar="moveToExperimentDialog" draggable="false"
+                  modal="true" position="center">
+            <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <h:outputLabel for="expToMove" value="Experiment AC or label:"/>
+                    <h:inputText id="expToMove" value="#{interactionController.experimentToMoveTo}"/>
+
+                    <p:commandButton value="Move" action="#{interactionController.moveToExperiment}"
+                                     process="expToMove"
+                                     ajax="false" oncomplete="moveToExperimentDialog.hide()"/>
+            </h:panelGrid>
+        </p:dialog>
 
     </ui:define>
 

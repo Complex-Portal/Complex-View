@@ -57,6 +57,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     @Autowired
     private CuratorContextController curatorContextController;
 
+    @Autowired
+    private CurateController curateController;
+
     public AnnotatedObjectController() {
     }
 
@@ -266,26 +269,33 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     protected String clone(AnnotatedObject ao, IntactCloner cloner) {
-        AnnotatedObject clone = null;
+        AnnotatedObject clone = cloneAnnotatedObject(ao, cloner);
+
+        if (clone == null) return null;
+
+        addInfoMessage("Cloned annotated object", null);
+
+        setAnnotatedObject(clone);
+
+        getUnsavedChangeManager().markAsUnsaved(clone);
+
+        return getCurateController().edit(clone);
+    }
+
+    protected <T extends AnnotatedObject> T cloneAnnotatedObject(T ao, IntactCloner cloner) {
+        T clone = null;
 
         try {
             clone = cloner.clone(ao);
         } catch (IntactClonerException e) {
             addErrorMessage("Could not clone object", e.getMessage());
             handleException(e);
-            return "";
+            return null;
         }
 
         modifyClone(clone);
 
-        addInfoMessage("Cloned annotated object", null);
-
-        setAnnotatedObject(clone);
-
-        setUnsavedChanges(true);
-
-        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
-        return curateController.edit(clone);
+        return clone;
     }
 
     public void modifyClone(AnnotatedObject clone) {
@@ -550,6 +560,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public CuratorContextController getCuratorContextController() {
         return curatorContextController;
+    }
+
+    public CurateController getCurateController() {
+        return curateController;
     }
 
     private class IntactObjectComparator implements Comparator<IntactObject> {

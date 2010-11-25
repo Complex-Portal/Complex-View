@@ -66,6 +66,9 @@ public class InteractionController extends ParameterizableObjectController {
     private Experiment experiment;
     private List<Experiment> experimentsToUpdate;
 
+    private String experimentToCopyTo;
+    private String experimentToMoveTo;
+
     @Autowired
     private PublicationController publicationController;
 
@@ -119,14 +122,7 @@ public class InteractionController extends ParameterizableObjectController {
 
             // check if the publication or experiment are null in their controllers (this happens when the interaction
             // page is loaded directly using a URL)
-            if ( publicationController.getPublication() == null ) {
-                Publication publication = interaction.getExperiments().iterator().next().getPublication();
-                publicationController.setPublication( publication );
-            }
-
-            if ( experimentController.getExperiment() == null ) {
-                experimentController.setExperiment( interaction.getExperiments().iterator().next() );
-            }
+            refreshParentControllers();
         }
 
         refreshExperimentLists();
@@ -136,6 +132,17 @@ public class InteractionController extends ParameterizableObjectController {
                 interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
             }
             refreshParticipants();
+        }
+    }
+
+    private void refreshParentControllers() {
+        if ( publicationController.getPublication() == null ) {
+            Publication publication = interaction.getExperiments().iterator().next().getPublication();
+            publicationController.setPublication( publication );
+        }
+
+        if ( experimentController.getExperiment() == null ) {
+            experimentController.setExperiment( interaction.getExperiments().iterator().next() );
         }
     }
 
@@ -304,6 +311,72 @@ public class InteractionController extends ParameterizableObjectController {
         getUnsavedChangeManager().markAsUnsaved(interaction);
     }
 
+    public String copyToExperiment() {
+        Interaction newInteraction = null;
+
+        if (experimentToCopyTo != null && !experimentToCopyTo.isEmpty()) {
+            Experiment experiment = findExperimentByAcOrLabel(experimentToCopyTo);
+
+            if (experiment == null) {
+                addErrorMessage("Cannot copy", "No experiment found with this AC or short label: "+experimentToMoveTo);
+                return null;
+            }
+
+            newInteraction = cloneAnnotatedObject(interaction, newClonerInstance());
+
+            newInteraction.getExperiments().clear();
+
+            experiment.addInteraction(newInteraction);
+
+        } else {
+            return null;
+        }
+
+        setInteraction(newInteraction);
+        setUnsavedChanges(true);
+
+        addInfoMessage("Copied interaction", "To experiment: "+experimentToCopyTo);
+
+        return getCurateController().edit(newInteraction);
+    }
+
+    public String moveToExperiment() {
+        if (experimentToMoveTo != null && !experimentToMoveTo.isEmpty()) {
+            Experiment experiment = findExperimentByAcOrLabel(experimentToMoveTo);
+
+            if (experiment == null) {
+                addErrorMessage("Cannot move", "No experiment found with this AC or short label: "+experimentToMoveTo);
+                return null;
+            }
+
+            interaction.getExperiments().clear();
+            interaction.getExperiments().add(experiment);
+            experiment.getInteractions().add(interaction);
+
+        } else {
+            return null;
+        }
+
+        setInteraction(interaction);
+
+        refreshExperimentLists();
+
+        setUnsavedChanges(true);
+
+        addInfoMessage("Moved interaction", "To experiment: "+experimentToMoveTo);
+
+        return null;
+    }
+
+    private Experiment findExperimentByAcOrLabel(String acOrLabel) {
+        Experiment experiment = getDaoFactory().getExperimentDao().getByAc(acOrLabel.trim());
+
+        if (experiment == null) {
+            experiment = getDaoFactory().getExperimentDao().getByShortLabel(acOrLabel);
+        }
+        return experiment;
+    }
+
     public String getAc() {
         if ( ac == null && interaction != null ) {
             return interaction.getAc();
@@ -444,11 +517,34 @@ public class InteractionController extends ParameterizableObjectController {
 
     public void setInteraction( Interaction interaction ) {
         this.interaction = interaction;
-        this.ac = interaction.getAc();
+
+        if (interaction != null) {
+            this.ac = interaction.getAc();
+
+            if (Hibernate.isInitialized(interaction.getExperiments()) && !interaction.getExperiments().isEmpty()) {
+                experimentController.setExperiment(interaction.getExperiments().iterator().next());
+            }
+        }
     }
 
     public Collection<ParticipantWrapper> getParticipants() {
         return participantWrappers;
+    }
+
+    public String getExperimentToMoveTo() {
+        return experimentToMoveTo;
+    }
+
+    public void setExperimentToMoveTo(String experimentToMoveTo) {
+        this.experimentToMoveTo = experimentToMoveTo;
+    }
+
+    public String getExperimentToCopyTo() {
+        return experimentToCopyTo;
+    }
+
+    public void setExperimentToCopyTo(String experimentToCopyTo) {
+        this.experimentToCopyTo = experimentToCopyTo;
     }
 
     //////////////////////////////////

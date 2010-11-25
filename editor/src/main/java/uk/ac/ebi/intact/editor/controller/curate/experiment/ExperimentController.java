@@ -274,6 +274,10 @@ public class ExperimentController extends AnnotatedObjectController {
 
         if (experiment != null) {
             this.ac = experiment.getAc();
+
+            if (experiment.getPublication() != null) {
+                publicationController.setPublication(experiment.getPublication());
+            }
         }
     }
 
