@@ -228,7 +228,14 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public boolean isAccepted() {
-        return ExperimentUtils.isAccepted(experiment);
+        Experiment exp;
+
+        if (!Hibernate.isInitialized(experiment.getAnnotations())) {
+            exp = getDaoFactory().getExperimentDao().getByAc(experiment.getAc());
+        } else {
+            exp = experiment;
+        }
+        return ExperimentUtils.isAccepted(exp);
     }
 
     public String getAcceptedMessage() {
