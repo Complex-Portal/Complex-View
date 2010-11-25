@@ -338,7 +338,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                         if (goDb == null) goDb = getDaoFactory().getCvObjectDao(CvDatabase.class).getByIdentifier(CvDatabase.GO_MI_REF);
 
                         xref.setCvDatabase(goDb);
-                        xref.setSecondaryId(goTerm.getDefinition());
+                        xref.setSecondaryId(goTerm.getName());
 
                         CvXrefQualifier qualifier = calculateQualifier(goTerm.getCategory());
                         xref.setCvXrefQualifier(qualifier);
