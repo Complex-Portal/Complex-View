@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.users.persistence.dao.UserDao;
 import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
+import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 
@@ -33,6 +35,11 @@ import java.util.List;
 public class UserAdminController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( UserAdminController.class );
+
+    private static final String CURATION_DEPTH = "curation.depth";
+
+    @Autowired
+    private EditorConfig editorConfig;
 
     @Autowired
     private UsersDaoFactory daoFactory;
@@ -62,6 +69,44 @@ public class UserAdminController extends JpaAwareController {
 
     public void setLoginParam( String loginParam ) {
         this.loginParam = loginParam;
+    }
+
+    public String getCurationDepth() {
+        return findPreference(CURATION_DEPTH, editorConfig.getDefaultCurationDepth());
+    }
+
+    public void setCurationDepth(String curationDepth) {
+        setPreference(CURATION_DEPTH, curationDepth);
+    }
+
+    private String findPreference(String prefKey) {
+        return findPreference(prefKey, null);
+    }
+
+    private String findPreference(String prefKey, String defaultValue) {
+        for (Preference pref : user.getPreferences()) {
+            if (prefKey.equals(pref.getKey())) {
+                return pref.getValue();
+            }
+        }
+        return defaultValue;
+    }
+
+    private void setPreference(String prefKey, String prefValue) {
+        Preference preference = null;
+
+        for (Preference pref : user.getPreferences()) {
+            if (prefKey.equals(pref.getKey())) {
+                preference = pref;
+            }
+        }
+
+        if (preference == null) {
+            preference = new Preference(user, prefKey);
+            user.getPreferences().add(preference);
+        }
+
+        preference.setValue(prefValue);
     }
 
     ///////////////
@@ -99,6 +144,15 @@ public class UserAdminController extends JpaAwareController {
         }
 
         userDao.saveOrUpdate( user );
+
+//        for (Preference pref : user.getPreferences()) {
+//            if (pref.getPk() == null) {
+//                daoFactory.getPreferenceDao().persist(pref);
+//            } else {
+//                daoFactory.getPreferenceDao().update(pref);
+//            }
+//
+//        }
 
         addInfoMessage( "User " + user.getLogin() + " was " + ( created ? "created" : "updated" ) + " successfully", "" );
 
@@ -171,7 +225,7 @@ public class UserAdminController extends JpaAwareController {
     }
 
     public void loadData() {
-        log.info( "UserAdminController.loadData" );
+        log.debug( "UserAdminController.loadData" );
         allUsers = LazyDataModelFactory.createLazyDataModel( getUsersEntityManager(),
                                                              "select u from User u order by u.login asc",
                                                              "select count(u) from User u" );
@@ -181,8 +235,7 @@ public class UserAdminController extends JpaAwareController {
         if (allUsers == null) {
             loadData();
         }
-        
-        log.info( "getAllUsers(): " + allUsers.getRowCount() );
+
         return allUsers;
     }
 

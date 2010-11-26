@@ -29,6 +29,7 @@ import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
@@ -61,6 +62,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     public static final String SUBMITTED = "MI:0878";
     public static final String CURATION_REQUEST = "MI:0873";
+    private static final String CURATION_DEPTH = "MI:0955";
 
     private Publication publication;
     private String ac;
@@ -269,6 +271,17 @@ public class PublicationController extends AnnotatedObjectController {
         getUnsavedChangeManager().markAsUnsaved(publication);
 
         interactionDataModel = LazyDataModelFactory.createEmptyDataModel();
+
+        String defaultCurationDepth;
+        final Preference curDepthPref = getCurrentUser().getPreference("curation.depth");
+
+        if (curDepthPref != null) {
+            defaultCurationDepth = curDepthPref.getValue();
+        } else {
+            defaultCurationDepth = getEditorConfig().getDefaultCurationDepth();
+        }
+
+        setCurationDepth(defaultCurationDepth);
     }
 
 
@@ -470,6 +483,14 @@ public class PublicationController extends AnnotatedObjectController {
 
     public String getAcceptedMessage() {
         return findAnnotationText( CvTopic.ACCEPTED );
+    }
+
+    public String getCurationDepth() {
+        return findAnnotationText(CURATION_DEPTH);
+    }
+
+    public void setCurationDepth(String curationDepth) {
+        setAnnotation(CURATION_DEPTH, curationDepth);
     }
 
     public boolean isAccepted() {

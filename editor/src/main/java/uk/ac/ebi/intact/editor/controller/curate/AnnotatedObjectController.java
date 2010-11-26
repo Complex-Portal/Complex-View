@@ -25,8 +25,10 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.Finder;
+import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
@@ -564,6 +566,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public CurateController getCurateController() {
         return curateController;
+    }
+
+    public User getCurrentUser() {
+        UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+        return userSessionController.getCurrentUser();
     }
 
     private class IntactObjectComparator implements Comparator<IntactObject> {

@@ -33,6 +33,7 @@ public class EditorConfig extends BaseController {
     private String googlePassword;
 
     private float defaultStoichiometry = 0;
+    private String defaultCurationDepth = "imex curation";
 
     public EditorConfig() {
     }
@@ -91,5 +92,13 @@ public class EditorConfig extends BaseController {
 
     public void setUsersDatabaseUrl(String usersDatabaseUrl) {
         this.usersDatabaseUrl = usersDatabaseUrl;
+    }
+
+    public String getDefaultCurationDepth() {
+        return defaultCurationDepth;
+    }
+
+    public void setDefaultCurationDepth(String defaultCurationDepth) {
+        this.defaultCurationDepth = defaultCurationDepth;
     }
 }

@@ -20,8 +20,12 @@
         <h:panelGroup rendered="#{publicationController.publication != null}">
             <h:link outcome="/curate/publication" value="#{publicationController.firstAuthor} et al (#{publicationController.year})" rendered="#{publicationController.firstAuthor != null}"/>
 
-            <h:panelGroup rendered="#{publicationController.publication.shortLabel != null}">
-                (&#160;<h:outputText value="#{publicationController.publication.shortLabel}"/> )
+            <h:panelGroup rendered="#{publicationController.publication.publicationId != null}">
+                (&#160;<h:outputText value="#{publicationController.publication.publicationId}"/> )&#160;&#160;
+                <h:outputLink value="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=#{publicationController.publication.publicationId}&amp;dataSource=MED"
+                        target="_blank">CiteXplore
+                    <span class="ui-icon ui-icon-extlink" style="display:inline-block; vertical-align: bottom"/>
+                </h:outputLink>
             </h:panelGroup>
         </h:panelGroup>
     </ui:define>

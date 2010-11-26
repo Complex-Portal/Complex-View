@@ -199,6 +199,23 @@
                             </tr>
                             <tr>
                                 <td class="firstCell">
+                                    <h:outputLabel value="Curation depth: " for="curationDepthMenu"/>
+                                </td>
+                                <td colspan="3">
+                                    <h:panelGroup id="curationDepthMenu">
+                                        <h:selectOneMenu value="#{publicationController.curationDepth}" >
+                                            <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:publicationTabs"
+                                                execute="@this" listener="#{publicationController.changed}"/>
+
+                                            <f:selectItem itemLabel="-- Not specified --"/>
+                                            <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
+                                            <f:selectItem itemLabel="MIMIx" itemValue="mimix curation"/>
+                                        </h:selectOneMenu>
+                                    </h:panelGroup>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="firstCell">
                                     <h:outputLabel value="On hold: " for="onHoldTxt"/>
                                 </td>
                                 <td colspan="3">
