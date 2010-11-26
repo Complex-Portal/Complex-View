@@ -165,7 +165,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         boolean isNew = (getAnnotatedObject().getAc() == null);
 
         if (!isNew && getDaoFactory().getEntityManager().contains(annotatedObject)) {
-            getDaoFactory().getEntityManager().refresh(annotatedObject);
+            // the following line is commented because it seems to cause problems when deleting an xref - it is not deleted.
+            // I should write some comments so I could remember why I did add it in the first place...
+
+            //getDaoFactory().getEntityManager().refresh(annotatedObject);
         } else {
             annotatedObject = getDaoFactory().getEntityManager().find(annotatedObject.getClass(), annotatedObject.getAc());
         }

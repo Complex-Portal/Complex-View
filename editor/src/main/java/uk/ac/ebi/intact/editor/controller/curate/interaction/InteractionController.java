@@ -164,7 +164,13 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         if (publicationController.getPublication() != null) {
-            final Publication pub = publicationController.getPublication();
+            Publication pub = publicationController.getPublication();
+
+            if (!Hibernate.isInitialized(pub.getExperiments())) {
+                pub = getDaoFactory().getPublicationDao().getByAc(pub.getAc());
+                publicationController.setPublication(pub);
+            }
+
             for ( Experiment e : pub.getExperiments() ) {
                 experimentSelectItems.add(new SelectItem(e, e.getShortLabel(), e.getFullName()));
             }

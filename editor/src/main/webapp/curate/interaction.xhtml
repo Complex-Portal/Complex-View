@@ -143,22 +143,26 @@
 
                 <p:tab id="parametersTab" title="Parameters (#{interaction.parameters.size()})">
 
-                   <ia:parametersTable annotatedObjectController="#{annotatedObjectController}"
-                       parameterTypeSelectItems="#{cvObjectService.parameterTypeSelectItems}"
-                       parameterUnitSelectItems="#{cvObjectService.parameterUnitSelectItems}"
-                       update="parametersTab changesPanel unsavedChangesInfo"
-                       valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                       valueChangeAwareObject="#{annotatedObjectController}"/>
+                    <h:panelGroup id="parametersPanel">
+                       <ia:parametersTable annotatedObjectController="#{annotatedObjectController}"
+                           parameterTypeSelectItems="#{cvObjectService.parameterTypeSelectItems}"
+                           parameterUnitSelectItems="#{cvObjectService.parameterUnitSelectItems}"
+                           update="parametersPanel parametersTab changesPanel unsavedChangesInfo"
+                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                    </h:panelGroup>
 
                 </p:tab>
 
                 <p:tab id="confidencesTab" title="Confidences (#{interaction.confidences.size()})">
 
-                   <ia:confidencesTable annotatedObjectController="#{annotatedObjectController}"
-                       confidenceTypeSelectItems="#{cvObjectService.confidenceTypeSelectItems}"
-                       update="confidencesTab changesPanel unsavedChangesInfo"
-                       valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                       valueChangeAwareObject="#{annotatedObjectController}"/>
+                    <h:panelGroup id="confidencesPanel">
+                       <ia:confidencesTable annotatedObjectController="#{annotatedObjectController}"
+                           confidenceTypeSelectItems="#{cvObjectService.confidenceTypeSelectItems}"
+                           update="confidencesPanel confidencesTab changesPanel unsavedChangesInfo"
+                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                    </h:panelGroup>
 
                 </p:tab>
 

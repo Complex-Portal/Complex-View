@@ -8,19 +8,19 @@
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
     <p:tab id="xrefsTab" title="Xrefs (#{annotatedObjectController.annotatedObject.xrefs.size()})">
-        <h:panelGrid id="xrefsPanel">
+        <h:panelGroup id="xrefsPanel">
         <ia:xrefsTable annotatedObjectController="#{annotatedObjectController}"
                        databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                        qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
                        update="xrefsPanel changesPanel messagesComponent #{updateOnChange}"
                        valueChangeRender="#{updateOnChange} :editorForm:changesPanel"
                        valueChangeAwareObject="#{annotatedObjectController}"/>
-        </h:panelGrid>
+        </h:panelGroup>
 
     </p:tab>
 
     <p:tab id="annotationsTab" title="Annotations (#{annotatedObjectController.annotatedObject.annotations.size()})">
-         <h:panelGrid id="annotationsPanel">
+         <h:panelGroup id="annotationsPanel">
         <!--<ia:annotationsTable annotatedObjectController="#{annotatedObjectController}"-->
                              <!--topicSelectItems="#{annotatedObjectSelectItems}"-->
                              <!--update="annotationsPanel changesPanel"-->
@@ -33,16 +33,18 @@
                  <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
                  <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
              </ui:include>
-         </h:panelGrid>
+         </h:panelGroup>
 
     </p:tab>
 
     <p:tab id="aliasesTab" title="Aliases (#{annotatedObjectController.annotatedObject.aliases.size()})">
-        <ia:aliasTable annotatedObjectController="#{annotatedObjectController}"
-                       aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
-                       update="aliasesPanel changesPanel unsavedChangesInfo messagesComponent #{updateOnChange}"
-                       valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                       valueChangeAwareObject="#{annotatedObjectController}"/>
+         <h:panelGroup id="aliasesPanel">
+            <ia:aliasTable annotatedObjectController="#{annotatedObjectController}"
+                           aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                           update="aliasesPanel changesPanel unsavedChangesInfo messagesComponent #{updateOnChange}"
+                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                           valueChangeAwareObject="#{annotatedObjectController}"/>
+        </h:panelGroup>
      </p:tab>
 
 
