@@ -43,6 +43,10 @@
             <from-outcome>documentation.local_installation</from-outcome>
             <to-view-id>/pages/documentation/local_installation.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>documentation.news</from-outcome>
+            <to-view-id>/pages/documentation/news.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
 
 	<navigation-rule>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site">
+
+    <h1>Validator news</h1>
+
+    <h2>Version 2.1.0</h2>
+
+    <tr:outputText value="This version contains major updates of the IMEx rules. You can look at the "/>
+    <tr:commandLink text="documentation" action="documentation.help"/>
+    <tr:outputText value=" (section Validation scopes/IMEx curation Standards) for more information about the implemented rules."/> 
+
+
+    <br/>
+    <tr:outputText value="Update of the psi-xml library : the validator is now using psi25-xml 1.7.7-SNAPSHOT which fixed several bugs of the parser such as "/>
+    <ul>
+        <li><tr:outputText value="Not handling interactions as participants of an interaction."/></li>
+        <li><tr:outputText value="Not writting and reading annotations of the participant."/></li>
+        <li><tr:outputText value="Not handling experiments without any Pubmed IDs or DOI numbers but only with attributes."/></li>
+    </ul>
+
+    <br/>
+    <tr:outputText value="One new rule have been added for general PSI-MI validation : "/>
+
+    <ul>
+        <li><tr:outputText value="Database cross reference Check : Checks that the each database cross reference is using a valid database accession which matches the regular expression of the database."/></li>
+    </ul>
+
+    <br/>
+    <tr:outputText value="One new rule have been added for MIMIx validation : "/>
+
+    <ul>
+        <li><tr:outputText value="Feature range Check : Checks that the each interactor's feature range is valid. It cannot be out of bound (inferior to 1 or superior to the sequence length), not overlapping and compliant with the feature range status."/>
+            <br/>
+            <tr:outputText value="WARNING : the status 'c-terminal' and 'n-terminal' cannot be used anymore for n-terminal and c-terminal features where the exact positions are not known. It is recommended to use the new terms 'c-terminal range' (MI:1039) and 'n-terminal range' (MI:1040) for such features"></tr:outputText>
+            </li>
+    </ul>
+
+</ui:composition>

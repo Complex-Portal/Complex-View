@@ -101,10 +101,11 @@ public class ValidatorContextUpdater implements Job {
                     final long stop = System.currentTimeMillis();
                     log.trace( "Time to update the ontology': " + (stop - start) + "ms" );
 
+                    //TODO an email is sent every 6 hours, need to check that the methods to know if the ontologies are really up to date are wroking properly
                     // We can inform the developers of the update
-                    String body = "A new update of the ontology has been done recently and the validatorWebContext successfully refreshed its webContent" +
-                            "(validator rules, CvMapping and OntologyManager).";
-                    validatorContext.sendEmail("Update of the ontology and validator rules", body);
+                    //String body = "A new update of the ontology has been done recently and the validatorWebContext successfully refreshed its webContent" +
+                     //       "(validator rules, CvMapping and OntologyManager).";
+                    //validatorContext.sendEmail("Update of the ontology and validator rules", body);
 
                 }
             }

@@ -29,11 +29,8 @@
                         <h1><tr:outputText value="The PSI-MI 2.5 Validator" styleClass="text-align:center"/></h1>
                         <trh:tableLayout width="70%" borderWidth="0">
                             <trh:rowLayout>
-                                <trh:cellFormat halign="center" valign="middle">
-                                    <tr:image source="images/beta_icon.jpg" styleClass="border:0"/>
-                                </trh:cellFormat>
                                 <trh:cellFormat halign="left" valign="middle">
-                                    <tr:outputText value="This is a beta version of the PSI-MI Semantic Validator v2.0" />
+                                    <tr:outputText value="This is the version 2.1.0 of the PSI-MI Semantic Validator" />
                                     <br/>
                                 </trh:cellFormat>
                             </trh:rowLayout>
@@ -65,6 +62,9 @@
 
             <tr:panelBox text="Documentation">
                 <ul>
+                    <li>
+                        <tr:commandLink text="News" action="documentation.news"/>
+                    </li>
                     <li>
                         <tr:goLink destination="http://www3.interscience.wiley.com/journal/122651438/abstract?CRETRY=1&amp;SRETRY=0" targetFrame="_blank">
                             <tr:outputText value="Publication"/>
