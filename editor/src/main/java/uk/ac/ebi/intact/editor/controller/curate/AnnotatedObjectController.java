@@ -80,6 +80,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public AnnotatedObjectHelper getAnnotatedObjectHelper() {
         AnnotatedObject ao = getAnnotatedObject();
 
+        if (ao == null) {
+            throw new IllegalStateException("No annotated object found when getting the helper (it was null)");
+        }
+
         if (!Hibernate.isInitialized(ao.getAnnotations())) {
             ao = getDaoFactory().getEntityManager().find(ao.getClass(), ao.getAc());
             setAnnotatedObject(ao);

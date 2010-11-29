@@ -19,7 +19,7 @@
             <map>
               <entry key="conversation.manual">
                 <bean class="org.apache.myfaces.orchestra.conversation.spring.SpringConversationScope">
-                  <property name="timeout" value="30" />
+                  <property name="timeout" value="600" />
                   <property name="advices">
                     <list>
                       <ref bean="persistentContextConversationInterceptor"/>
@@ -30,7 +30,7 @@
 
               <entry key="conversation.access">
                 <bean class="org.apache.myfaces.orchestra.conversation.spring.SpringConversationScope">
-                  <property name="timeout" value="30" />
+                  <property name="timeout" value="600" />
                   <property name="advices">
                     <list>
                       <ref bean="persistentContextConversationInterceptor"/>
