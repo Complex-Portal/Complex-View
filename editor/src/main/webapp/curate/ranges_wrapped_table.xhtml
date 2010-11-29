@@ -29,7 +29,8 @@
                                  readonly="#{unsavedChangeManager.isDeletedAc(range.ac)}"
                                  styleClass="#{unsavedChangeManager.isDeletedAc(range.ac)? 'intact-deleted' : ''}"
                                  style="font-family: monospace">
-                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
+                        <f:ajax event="valueChange" execute="@this" onevent="markAsUnsaved()"
+                                render=":editorForm:rangesTable :editorForm:messagesComponent"/>
                     </h:inputText>
 
                      <h:panelGroup id="validityPanel">
