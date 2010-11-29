@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
@@ -77,7 +78,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public AnnotatedObjectHelper getAnnotatedObjectHelper() {
-        return new AnnotatedObjectHelper(getAnnotatedObject());
+        AnnotatedObject ao = getAnnotatedObject();
+
+        if (!Hibernate.isInitialized(ao.getAnnotations())) {
+            ao = getDaoFactory().getEntityManager().find(ao.getClass(), ao.getAc());
+            setAnnotatedObject(ao);
+        }
+
+        return new AnnotatedObjectHelper(ao);
     }
 
     protected void generalLoadChecks() {
@@ -380,7 +388,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void newXref( ActionEvent evt ) {
         getAnnotatedObjectHelper().newXref();
-        setUnsavedChanges( true );
+        setUnsavedChanges(true);
     }
 
     public List<Xref> getXrefs() {
@@ -469,7 +477,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void removeAnnotation( String topicIdOrLabel, String text ) {
         getAnnotatedObjectHelper().removeAnnotation(topicIdOrLabel, text);
-        setUnsavedChanges( true );
+        setUnsavedChanges(true);
     }
 
     public void removeAnnotation( Annotation annotation ) {
