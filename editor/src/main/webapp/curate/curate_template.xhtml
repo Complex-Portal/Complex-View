@@ -76,13 +76,8 @@
                         onclick="if (confirm('Are you sure you sure you want to delete this sucker?')) { deletingDialog.show() } else { return false }" oncomplete="deletingDialog.hide()" />
             </p:submenu>
 
-            <p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER')}">
-                <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}"
-                        rendered="#{annotatedObjectController.annotatedObject != null and annotatedObjectController.annotatedObject.class.simpleName == 'Publication'}"
-                        update="centralUnit,topSection"/>
-                <p:menuitem value="Accept experiment" actionListener="#{experimentController.acceptExperiment}"
-                        rendered="#{annotatedObjectController.annotatedObject != null and annotatedObjectController.annotatedObject.class.simpleName == 'Experiment'}"
-                        update="centralUnit,topSection"/>
+            <p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER') and annotatedObjectController.annotatedObject != null}">
+                <ui:insert name="reviewerContextual"/>
             </p:submenu>
 
             <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development'}">

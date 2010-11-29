@@ -21,6 +21,12 @@
         </p:breadCrumb>
     </ui:define>
 
+    <ui:define name="reviewerContextual">
+        <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}"
+                        update="centralUnit,topSection"/>
+        <p:menuitem value="Reject publication" onclick="rejectPublicationDialog.show()"/>
+    </ui:define>
+
     <ui:define name="curateContent">
         <p:hotkey bind="alt+s" actionListener="#{publicationController.doSave}"
                   update="publicationDetails,northUnit,messagesComponent,changesPanel"/>
@@ -63,6 +69,14 @@
                                     <p:commandLink value="Add annotation to publication" actionListener="#{publicationController.acceptPublication}"
                                                    update="centralUnit"/>
                                 </h:panelGroup>
+                            </ia:panelMessage>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{not empty publicationController.toBeReviewed}">
+                            <ia:panelMessage level="warn">
+                                <b>To be reviewed: </b> #{publicationController.toBeReviewed}
+                                &#160;&#160;&#160;
+                                <p:commandButton value="Clear" actionListener="#{publicationController.clearToBeReviewed}" update="centralUnit"/>
                             </ia:panelMessage>
                         </h:panelGroup>
 
@@ -280,6 +294,19 @@
             </h:panelGroup>
 
         </h:panelGroup>
+
+    <!-- DIALOGS -->
+     <p:dialog header="Reject publication" width="400" widgetVar="rejectPublicationDialog" draggable="false"
+                  modal="true" position="center">
+            <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <h:outputLabel for="reasonRejTxt" value="Reason of rejection:"/>
+                    <h:inputText id="reasonRejTxt" value="#{publicationController.reasonForRejection}"/>
+
+                    <p:commandButton value="Reject" actionListener="#{publicationController.rejectPublication}"
+                                     process="reasonRejTxt"
+                                     ajax="false"/>
+            </h:panelGrid>
+        </p:dialog>
 
     </ui:define>
 

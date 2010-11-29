@@ -73,6 +73,8 @@ public class PublicationController extends AnnotatedObjectController {
     private String[] datasetsToRemove;
     private List<SelectItem> datasetsSelectItems;
 
+    private String reasonForRejection;
+
     private boolean isCitexploreActive;
 
     private LazyDataModel<Interaction> interactionDataModel;
@@ -542,6 +544,22 @@ public class PublicationController extends AnnotatedObjectController {
         setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
     }
 
+    public void rejectPublication(ActionEvent actionEvent) {
+        setToBeReviewed(reasonForRejection);
+    }
+
+    public void setToBeReviewed(String toBeReviewed) {
+        setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
+    }
+
+    public String getToBeReviewed() {
+        return findAnnotationText(CvTopic.TO_BE_REVIEWED);
+    }
+
+    public void clearToBeReviewed(ActionEvent evt) {
+        removeAnnotation(CvTopic.TO_BE_REVIEWED);
+    }
+
     public List<SelectItem> getDatasetsSelectItems() {
         return datasetsSelectItems;
     }
@@ -572,5 +590,13 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setInteractionDataModel(LazyDataModel<Interaction> interactionDataModel) {
         this.interactionDataModel = interactionDataModel;
+    }
+
+    public String getReasonForRejection() {
+        return reasonForRejection;
+    }
+
+    public void setReasonForRejection(String reasonForRejection) {
+        this.reasonForRejection = reasonForRejection;
     }
 }

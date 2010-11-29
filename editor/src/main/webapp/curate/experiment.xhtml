@@ -25,7 +25,13 @@
 
     <ui:define name="toolsContextual">
         <p:menuitem value="Clone w/ Interactions" action="#{experimentController.cloneWithInteractions}" ajax="false"
-                        onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
+                    onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
+    </ui:define>
+
+    <ui:define name="reviewerContextual">
+        <p:menuitem value="Accept experiment" actionListener="#{experimentController.acceptExperiment}"
+                        update="centralUnit,topSection"/>
+        <p:menuitem value="Reject experiment" onclick="rejectExperimentDialog.show()"/>
     </ui:define>
 
     <ui:define name="curateContent">
@@ -51,12 +57,19 @@
                         </ia:panelMessage>
                     </h:panelGroup>
 
+                    <h:panelGroup rendered="#{not empty experimentController.toBeReviewed}">
+                            <ia:panelMessage level="warn">
+                                <b>To be reviewed: </b> #{experimentController.toBeReviewed}
+                                &#160;&#160;&#160;
+                                <p:commandButton value="Clear" actionListener="#{experimentController.clearToBeReviewed}" update="centralUnit"/>
+                            </ia:panelMessage>
+                    </h:panelGroup>
+
                     <h:panelGroup rendered="#{not empty experimentController.onHold}">
                         <ia:panelMessage level="warn">
                             This experiment is <b>on-hold</b>. Reason: #{experimentController.onHold}
                         </ia:panelMessage>
                     </h:panelGroup>
-
                 </p:outputPanel>
 
 
@@ -152,6 +165,19 @@
 
 
         </h:panelGroup>
+
+     <!-- DIALOGS -->
+     <p:dialog header="Reject experiment" width="400" widgetVar="rejectExperimentDialog" draggable="false"
+                  modal="true" position="center">
+            <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <h:outputLabel for="reasonRejTxt" value="Reason of rejection:"/>
+                    <h:inputText id="reasonRejTxt" value="#{experimentController.reasonForRejection}"/>
+
+                    <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
+                                     process="reasonRejTxt"
+                                     ajax="false"/>
+            </h:panelGrid>
+        </p:dialog>
 
     </ui:define>
 

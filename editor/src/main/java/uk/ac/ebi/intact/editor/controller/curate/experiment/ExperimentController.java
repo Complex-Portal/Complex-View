@@ -50,6 +50,8 @@ public class ExperimentController extends AnnotatedObjectController {
     private String ac;
     private LazyDataModel<Interaction> interactionDataModel;
 
+    private String reasonForRejection;
+
     @Autowired
     private PublicationController publicationController;
 
@@ -227,6 +229,22 @@ public class ExperimentController extends AnnotatedObjectController {
            setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
     }
 
+    public void rejectExperiment(ActionEvent actionEvent) {
+        setToBeReviewed(reasonForRejection);
+    }
+
+    public void setToBeReviewed(String toBeReviewed) {
+        setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
+    }
+
+    public String getToBeReviewed() {
+        return findAnnotationText(CvTopic.TO_BE_REVIEWED);
+    }
+
+    public void clearToBeReviewed(ActionEvent evt) {
+        removeAnnotation(CvTopic.TO_BE_REVIEWED);
+    }
+
     public boolean isAccepted() {
         Experiment exp;
 
@@ -287,5 +305,13 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public void setInteractionDataModel(LazyDataModel<Interaction> interactionDataModel) {
         this.interactionDataModel = interactionDataModel;
+    }
+
+    public String getReasonForRejection() {
+        return reasonForRejection;
+    }
+
+    public void setReasonForRejection(String reasonForRejection) {
+        this.reasonForRejection = reasonForRejection;
     }
 }
