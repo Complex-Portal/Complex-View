@@ -218,6 +218,8 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     public void markRangeToDelete(Range range, UnsavedChangeManager unsavedChangeManager) {
+        if (range == null) return;
+
         if (range.getAc() == null) {
             feature.removeRange(range);
         } else {
