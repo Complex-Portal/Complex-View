@@ -54,7 +54,7 @@ public class NotesController extends JpaAwareController {
 
         if (pref == null) {
             pref = new Preference(user, "editor.notes");
-            pref.setValue("This is an example of notes. \nYou can link to publications like publication:EBI-2928483 or an interaction:EBI-2928497.\n" +
+            pref.setValue("This is an example of notes. \nYou can link to publications like publication:EBI-2928483 or an interaction interaction:EBI-2928497.\n" +
                     "You can use it as well for experiments, participants, etc.");
 
             user.getPreferences().add(pref);
