@@ -43,7 +43,7 @@
                 <f:facet name="buttonBar">
                     <h:panelGroup>
                     <p:commandButton value="Import selected" rendered="#{not empty participantImportController.importCandidates}"
-                                     actionListener="#{participantImportController.addSelectedToInteraction}"
+                                     actionListener="#{participantImportController.importSelected}"
                                      onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); candidatesDialog.show();"
                                      oncomplete="adding_load.hide();  "
                                      update="growl,centralUnit,topSection,changesPanel" process="candidatesDialog"/>

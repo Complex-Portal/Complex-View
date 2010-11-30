@@ -554,6 +554,8 @@ public class PublicationController extends AnnotatedObjectController {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
         setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
+
+        setUnsavedChanges(true);
     }
 
     public void rejectPublication(ActionEvent actionEvent) {

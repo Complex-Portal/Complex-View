@@ -46,6 +46,8 @@ public class PublicationSyncWriter implements ItemWriter<Publication> {
                 Experiment exp = pub.getExperiments().iterator().next();
 
                 pub.setFullName( exp.getFullName() );
+                pub.setCreated(exp.getCreated());
+                pub.setUpdated(exp.getUpdated());
 
                 for ( ExperimentXref expXref : exp.getXrefs() ) {
                     if ( !hasXrefWithPrimaryId( expXref.getPrimaryId(), pub ) ) {
@@ -59,8 +61,7 @@ public class PublicationSyncWriter implements ItemWriter<Publication> {
 
                 for ( Annotation expAnnot : exp.getAnnotations() ) {
                     if ( !hasAnnotWithTopicId( expAnnot.getCvTopic().getIdentifier(), pub ) ) {
-                        Annotation pubAnnot = new Annotation( IntactContext.getCurrentInstance().getInstitution(),
-                                                              expAnnot.getCvTopic(), expAnnot.getAnnotationText() );
+                        Annotation pubAnnot = new Annotation( expAnnot.getCvTopic(), expAnnot.getAnnotationText() );
                         pub.addAnnotation( pubAnnot );
                         entityManager.merge( pubAnnot );
                     }

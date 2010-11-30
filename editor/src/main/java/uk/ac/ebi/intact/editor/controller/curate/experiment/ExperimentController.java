@@ -224,9 +224,11 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public void acceptExperiment(ActionEvent actionEvent) {
-           UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+        UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
-           setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
+        setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
+
+        setUnsavedChanges(true);
     }
 
     public void rejectExperiment(ActionEvent actionEvent) {

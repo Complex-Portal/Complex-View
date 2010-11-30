@@ -26,6 +26,8 @@ import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.core.persistence.dao.ProteinDao;
+import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
+import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.*;
@@ -35,6 +37,7 @@ import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -97,7 +100,7 @@ public class ParticipantImportController extends BaseController {
         }
     }
 
-    public void addSelectedToInteraction(ActionEvent evt) {
+    public void importSelected(ActionEvent evt) {
         for (ImportCandidate candidate : importCandidates) {
             if (candidate.isSelected()) {
                 final Interaction interaction = interactionController.getInteraction();
@@ -107,6 +110,10 @@ public class ParticipantImportController extends BaseController {
                 interactionController.setUnsavedChanges(true);
             }
         }
+
+//        ProteinUpdateProcessorConfig config = new ProteinUpdateProcessorConfig();
+//
+//        ProteinUpdateProcessor proteinUpdateProcessor = new ProteinUpdateProcessor();
     }
 
 
@@ -334,5 +341,82 @@ public class ParticipantImportController extends BaseController {
 
     public void setStoichiometry(float stoichiometry) {
         this.stoichiometry = stoichiometry;
+    }
+
+    private class EditorReportHandler implements UpdateReportHandler {
+        @Override
+        public ReportWriter getPreProcessedWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getProcessedWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getDuplicatedWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getDeletedWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getCreatedWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getNonUniprotProteinWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getUpdateCasesWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getSequenceChangedWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getRangeChangedWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getInvalidRangeWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getDeadProteinWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getOutOfDateParticipantWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getPreProcessErrorWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public ReportWriter getSecondaryProteinsWriter() throws IOException {
+            return null;
+        }
+
+        @Override
+        public void close() throws IOException {
+
+        }
     }
 }

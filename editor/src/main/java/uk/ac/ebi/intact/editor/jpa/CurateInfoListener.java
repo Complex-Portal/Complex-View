@@ -3,6 +3,8 @@ package uk.ac.ebi.intact.editor.jpa;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.event.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.curate.CuratorContextController;
@@ -19,10 +21,13 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
+        if (!isHttpSessionAvailable()) return;
+
         final Object entity = event.getEntity();
 
         if (entity instanceof AnnotatedObject) {
             IntactObject io = (IntactObject) entity;
+
             getCuratorContextController()
                 .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" updated", "- "+DebugUtil.intactObjectToString(io, false) );
 
@@ -32,11 +37,16 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
         }
     }
 
+
+
     @Override
     public void onPostDelete(PostDeleteEvent event) {
+        if (!isHttpSessionAvailable()) return;
+
          final Object entity = event.getEntity();
 
         if (entity instanceof IntactObject) {
+
             IntactObject io = (IntactObject) entity;
             getCuratorContextController()
                 .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" deleted", "- "+DebugUtil.intactObjectToString(io, false) );
@@ -49,6 +59,8 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
 
     @Override
     public void onPostInsert(PostInsertEvent event) {
+        if (!isHttpSessionAvailable()) return;
+
         final Object entity = event.getEntity();
 
         if (entity instanceof IntactObject) {
@@ -64,5 +76,10 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
 
     public CuratorContextController getCuratorContextController() {
         return (CuratorContextController) IntactContext.getCurrentInstance().getSpringContext().getBean("curatorContextController");
+    }
+
+    public boolean isHttpSessionAvailable() {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        return (attr != null);
     }
 }
