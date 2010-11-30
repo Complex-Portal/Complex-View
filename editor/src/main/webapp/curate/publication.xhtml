@@ -296,11 +296,11 @@
         </h:panelGroup>
 
     <!-- DIALOGS -->
-     <p:dialog header="Reject publication" width="400" widgetVar="rejectPublicationDialog" draggable="false"
+     <p:dialog header="Reject publication" width="600" widgetVar="rejectPublicationDialog" draggable="false"
                   modal="true" position="center">
             <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <h:outputLabel for="reasonRejTxt" value="Reason of rejection:"/>
-                    <h:inputText id="reasonRejTxt" value="#{publicationController.reasonForRejection}"/>
+                    <h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>
+                    <h:inputTextarea id="reasonRejTxt" value="#{publicationController.reasonForRejection}" rows="4" cols="60"/>
 
                     <p:commandButton value="Reject" actionListener="#{publicationController.rejectPublication}"
                                      process="reasonRejTxt"

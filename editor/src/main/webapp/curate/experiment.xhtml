@@ -167,11 +167,11 @@
         </h:panelGroup>
 
      <!-- DIALOGS -->
-     <p:dialog header="Reject experiment" width="400" widgetVar="rejectExperimentDialog" draggable="false"
+     <p:dialog header="Reject experiment" width="600" widgetVar="rejectExperimentDialog" draggable="false"
                   modal="true" position="center">
             <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <h:outputLabel for="reasonRejTxt" value="Reason of rejection:"/>
-                    <h:inputText id="reasonRejTxt" value="#{experimentController.reasonForRejection}"/>
+                    <h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>
+                    <h:inputTextarea id="reasonRejTxt" value="#{experimentController.reasonForRejection}" rows="4" cols="60"/>
 
                     <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
                                      process="reasonRejTxt"
