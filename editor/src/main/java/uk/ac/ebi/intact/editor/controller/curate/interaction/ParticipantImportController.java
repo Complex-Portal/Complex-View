@@ -90,6 +90,12 @@ public class ParticipantImportController extends BaseController {
         }
 
         for (String participantToImport : participantsToImport) {
+            participantToImport = participantToImport.trim();
+
+            if (participantToImport.isEmpty()) {
+                continue;
+            }
+
             Set<ImportCandidate> candidates = importParticipant(participantToImport);
 
             if (candidates.isEmpty()) {

@@ -83,134 +83,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         AnnotatedObject ao = getAnnotatedObject();
 
         if (ao == null) {
-            return new AnnotatedObjectHelper(null) {
-                @Override
-                public void newXref() {
-
-                }
-
-                @Override
-                public List<Xref> getXrefs() {
-                    return Collections.EMPTY_LIST;
-                }
-
-                @Override
-                public void setXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
-
-                }
-
-                @Override
-                public void replaceOrCreateXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
-                }
-
-                @Override
-                public void removeXref(String databaseIdOrLabel, String qualifierIdOrLabel) {
-                }
-
-                @Override
-                public void removeXref(Xref xref) {
-                }
-
-                @Override
-                public void addXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
-                }
-
-                @Override
-                public String findXrefPrimaryId(String databaseId, String qualifierId) {
-                    return null;
-                }
-
-                @Override
-                public void newAnnotation() {
-                }
-
-                @Override
-                public void addAnnotation(String topicIdOrLabel, String text) {
-                }
-
-                @Override
-                public void replaceOrCreateAnnotation(String topicOrShortLabel, String text) {
-                }
-
-                @Override
-                public void removeAnnotation(String topicIdOrLabel) {
-                }
-
-                @Override
-                public void removeAnnotation(String topicIdOrLabel, String text) {
-                }
-
-                @Override
-                public void removeAnnotation(Annotation annotation) {
-                }
-
-                @Override
-                public void setAnnotation(String topicIdOrLabel, Object value) {
-                }
-
-                @Override
-                public String findAnnotationText(String topicId) {
-                    return null;
-                }
-
-                @Override
-                public List<Annotation> getAnnotations() {
-                    return Collections.EMPTY_LIST;
-                }
-
-                @Override
-                public void newAlias() {
-                }
-
-                @Override
-                public void addAlias(String aliasTypeIdOrLabel, String text) { }
-
-                @Override
-                public void setAlias(String aliasTypeIdOrLabel, Object value) {
-                }
-
-                @Override
-                public void removeAlias(String aliasTypeIdOrLabel, String text) {
-                }
-
-                @Override
-                public void removeAlias(String aliasTypeIdOrLabel) {
-                }
-
-                @Override
-                public List<Alias> getAliases() {
-                    return Collections.EMPTY_LIST;
-                }
-
-                @Override
-                public String findAliasName(String aliasTypeId) {
-                    return null;
-                }
-
-                @Override
-                public void addOrReplace(String aliasTypeIdOrLabel, String text) {
-                }
-
-                @Override
-                protected PersistenceController getPersistenceController() {
-                    return super.getPersistenceController();
-                }
-
-                @Override
-                protected IntactContext getIntactContext() {
-                    return super.getIntactContext();
-                }
-
-                @Override
-                protected CvObjectService getCvObjectService() {
-                    return super.getCvObjectService();
-                }
-
-                @Override
-                public AnnotatedObject getAnnotatedObject() {
-                    return null;
-                }
-            };
+            return new EmptyAnnotatedObjectHelper();
         }
 
         if (!Hibernate.isInitialized(ao.getAnnotations())) {
@@ -715,6 +588,119 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public User getCurrentUser() {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         return userSessionController.getCurrentUser();
+    }
+
+    private static class EmptyAnnotatedObjectHelper extends AnnotatedObjectHelper {
+        public EmptyAnnotatedObjectHelper() {
+            super(null);
+        }
+
+        @Override
+        public void newXref() {}
+
+        @Override
+        public List<Xref> getXrefs() {
+            return Collections.EMPTY_LIST;
+        }
+
+        @Override
+        public void setXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {}
+
+        @Override
+        public void replaceOrCreateXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {}
+
+        @Override
+        public void removeXref(String databaseIdOrLabel, String qualifierIdOrLabel) {}
+
+        @Override
+        public void removeXref(Xref xref) {}
+
+        @Override
+        public void addXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {}
+
+        @Override
+        public String findXrefPrimaryId(String databaseId, String qualifierId) {
+            return null;
+        }
+
+        @Override
+        public void newAnnotation() {}
+
+        @Override
+        public void addAnnotation(String topicIdOrLabel, String text) {}
+
+        @Override
+        public void replaceOrCreateAnnotation(String topicOrShortLabel, String text) {}
+
+        @Override
+        public void removeAnnotation(String topicIdOrLabel) {}
+
+        @Override
+        public void removeAnnotation(String topicIdOrLabel, String text) {}
+
+        @Override
+        public void removeAnnotation(Annotation annotation) {}
+
+        @Override
+        public void setAnnotation(String topicIdOrLabel, Object value) {}
+
+        @Override
+        public String findAnnotationText(String topicId) {
+            return null;
+        }
+
+        @Override
+        public List<Annotation> getAnnotations() {
+            return Collections.EMPTY_LIST;
+        }
+
+        @Override
+        public void newAlias() {}
+
+        @Override
+        public void addAlias(String aliasTypeIdOrLabel, String text) {}
+
+        @Override
+        public void setAlias(String aliasTypeIdOrLabel, Object value) {}
+
+        @Override
+        public void removeAlias(String aliasTypeIdOrLabel, String text) {}
+
+        @Override
+        public void removeAlias(String aliasTypeIdOrLabel) {}
+
+        @Override
+        public List<Alias> getAliases() {
+            return Collections.EMPTY_LIST;
+        }
+
+        @Override
+        public String findAliasName(String aliasTypeId) {
+            return null;
+        }
+
+        @Override
+        public void addOrReplace(String aliasTypeIdOrLabel, String text) {}
+
+        @Override
+        protected PersistenceController getPersistenceController() {
+            return super.getPersistenceController();
+        }
+
+        @Override
+        protected IntactContext getIntactContext() {
+            return super.getIntactContext();
+        }
+
+        @Override
+        protected CvObjectService getCvObjectService() {
+            return super.getCvObjectService();
+        }
+
+        @Override
+        public AnnotatedObject getAnnotatedObject() {
+            return null;
+        }
     }
 
     private class IntactObjectComparator implements Comparator<IntactObject> {
