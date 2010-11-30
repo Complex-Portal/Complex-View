@@ -519,6 +519,18 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    public boolean isToBeReviewed(Publication pub) {
+        if (!Hibernate.isInitialized(pub.getExperiments())) {
+            pub = getDaoFactory().getPublicationDao().getByAc(pub.getAc());
+        }
+
+        if (pub.getExperiments().isEmpty()) {
+            return false;
+        }
+
+        return PublicationUtils.isToBeReviewed(pub);
+    }
+
     public String getImexId() {
         return findXrefPrimaryId(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF);
     }
@@ -546,6 +558,8 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void rejectPublication(ActionEvent actionEvent) {
         setToBeReviewed(reasonForRejection);
+
+        setUnsavedChanges(true);
     }
 
     public void setToBeReviewed(String toBeReviewed) {

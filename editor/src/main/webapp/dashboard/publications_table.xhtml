@@ -15,7 +15,7 @@
                  paginatorAlwaysVisible="false"
                  paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                  rowsPerPageTemplate="10,25,50"
-                 rowStyleClass="#{publicationController.isAccepted(publication)? 'ia-accepted' : 'ia-not-accepted'}">
+                 rowStyleClass="#{publicationController.isAccepted(publication)? 'ia-accepted' : publicationController.isToBeReviewed(publication)? 'ia-to-be-reviewed' : 'ia-not-accepted'}">
         <p:column>
             <f:facet name="header">
                 <h:outputText value="Publication ID"/>

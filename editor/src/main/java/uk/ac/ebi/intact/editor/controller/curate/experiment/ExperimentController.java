@@ -231,6 +231,8 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public void rejectExperiment(ActionEvent actionEvent) {
         setToBeReviewed(reasonForRejection);
+
+        setUnsavedChanges(true);
     }
 
     public void setToBeReviewed(String toBeReviewed) {
@@ -262,6 +264,14 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public void setAcceptedMessage( String message ) {
         setAnnotation( CvTopic.ACCEPTED, message );
+    }
+
+    public boolean isAccepted(Experiment exp) {
+        return ExperimentUtils.isAccepted(exp);
+    }
+
+    public boolean isToBeReviewed(Experiment exp) {
+        return ExperimentUtils.isToBeReviewed(exp);
     }
 
     public String getOnHold() {
