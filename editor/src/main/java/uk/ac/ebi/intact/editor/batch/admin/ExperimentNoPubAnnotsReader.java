@@ -15,30 +15,16 @@
  */
 package uk.ac.ebi.intact.editor.batch.admin;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import uk.ac.ebi.intact.model.Experiment;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-
 /**
+ * TODO comment this class header.
+ *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class ExperimentSyncWriter implements ItemWriter<Experiment> {
+public class ExperimentNoPubAnnotsReader extends JpaPagingItemReader<Experiment> {
 
-    private static final Log log = LogFactory.getLog( ExperimentSyncWriter.class );
 
-    @PersistenceContext( unitName = "intact-core-default" )
-    private EntityManager entityManager;
-
-    @Override
-    public void write( List<? extends Experiment> items ) throws Exception {
-        for ( Experiment exp : items ) {
-             // TODO synchronize publication labels to experiment if not present
-        }
-    }
 }

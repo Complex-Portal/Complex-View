@@ -24,6 +24,11 @@
             rendered="#{userSessionController.hasRole('ADMIN')}"
              immediate="true"/>
 
+    &#160;
+    <p:commandButton value="Notes" action="/notes/notes?faces-redirect=true" disabled="#{selected == 'notes'}"
+                     ajax="false"
+             immediate="true"/>
+
     </p:panel>
 
 </ui:composition>
