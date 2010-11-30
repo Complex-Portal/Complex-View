@@ -232,7 +232,10 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public void rejectExperiment(ActionEvent actionEvent) {
-        setToBeReviewed(reasonForRejection);
+        UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+        String date = "Rejected " +new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase();
+
+        setToBeReviewed(date+". "+reasonForRejection);
 
         setUnsavedChanges(true);
     }
