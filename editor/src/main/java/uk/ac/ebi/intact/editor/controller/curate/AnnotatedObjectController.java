@@ -31,6 +31,7 @@ import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
+import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
@@ -43,6 +44,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.validator.ValidatorException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -79,6 +81,137 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public AnnotatedObjectHelper getAnnotatedObjectHelper() {
         AnnotatedObject ao = getAnnotatedObject();
+
+        if (ao == null) {
+            return new AnnotatedObjectHelper(null) {
+                @Override
+                public void newXref() {
+
+                }
+
+                @Override
+                public List<Xref> getXrefs() {
+                    return Collections.EMPTY_LIST;
+                }
+
+                @Override
+                public void setXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
+
+                }
+
+                @Override
+                public void replaceOrCreateXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
+                }
+
+                @Override
+                public void removeXref(String databaseIdOrLabel, String qualifierIdOrLabel) {
+                }
+
+                @Override
+                public void removeXref(Xref xref) {
+                }
+
+                @Override
+                public void addXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
+                }
+
+                @Override
+                public String findXrefPrimaryId(String databaseId, String qualifierId) {
+                    return null;
+                }
+
+                @Override
+                public void newAnnotation() {
+                }
+
+                @Override
+                public void addAnnotation(String topicIdOrLabel, String text) {
+                }
+
+                @Override
+                public void replaceOrCreateAnnotation(String topicOrShortLabel, String text) {
+                }
+
+                @Override
+                public void removeAnnotation(String topicIdOrLabel) {
+                }
+
+                @Override
+                public void removeAnnotation(String topicIdOrLabel, String text) {
+                }
+
+                @Override
+                public void removeAnnotation(Annotation annotation) {
+                }
+
+                @Override
+                public void setAnnotation(String topicIdOrLabel, Object value) {
+                }
+
+                @Override
+                public String findAnnotationText(String topicId) {
+                    return null;
+                }
+
+                @Override
+                public List<Annotation> getAnnotations() {
+                    return Collections.EMPTY_LIST;
+                }
+
+                @Override
+                public void newAlias() {
+                }
+
+                @Override
+                public void addAlias(String aliasTypeIdOrLabel, String text) { }
+
+                @Override
+                public void setAlias(String aliasTypeIdOrLabel, Object value) {
+                }
+
+                @Override
+                public void removeAlias(String aliasTypeIdOrLabel, String text) {
+                }
+
+                @Override
+                public void removeAlias(String aliasTypeIdOrLabel) {
+                }
+
+                @Override
+                public List<Alias> getAliases() {
+                    return Collections.EMPTY_LIST;
+                }
+
+                @Override
+                public String findAliasName(String aliasTypeId) {
+                    return null;
+                }
+
+                @Override
+                public void addOrReplace(String aliasTypeIdOrLabel, String text) {
+                }
+
+                @Override
+                protected PersistenceController getPersistenceController() {
+                    return super.getPersistenceController();
+                }
+
+                @Override
+                protected IntactContext getIntactContext() {
+                    return super.getIntactContext();
+                }
+
+                @Override
+                protected CvObjectService getCvObjectService() {
+                    return super.getCvObjectService();
+                }
+
+                @Override
+                public AnnotatedObject getAnnotatedObject() {
+                    return null;
+                }
+            };
+        }
 
         if (!Hibernate.isInitialized(ao.getAnnotations())) {
             ao = getDaoFactory().getEntityManager().find(ao.getClass(), ao.getAc());
@@ -416,7 +549,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void addXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
         getAnnotatedObjectHelper().addXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
-        setUnsavedChanges( true );
+        setUnsavedChanges(true);
     }
 
     public String findXrefPrimaryId( String databaseId, String qualifierId ) {
