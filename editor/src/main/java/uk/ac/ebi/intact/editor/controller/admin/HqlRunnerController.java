@@ -66,7 +66,6 @@ public class HqlRunnerController extends JpaAwareController {
 
         } catch (Throwable e) {
             addErrorMessage("Problem running query", e.getMessage());
-            handleException(e);
         }
     }
 
@@ -88,7 +87,6 @@ public class HqlRunnerController extends JpaAwareController {
 
         } catch (Throwable e) {
             addErrorMessage("Problem executing query", e.getMessage());
-            handleException(e);
         }
     }
 
