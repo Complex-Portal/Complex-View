@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.batch.admin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ItemWriter;
+import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.model.Experiment;
 
 import javax.persistence.EntityManager;
@@ -38,7 +39,9 @@ public class ExperimentSyncWriter implements ItemWriter<Experiment> {
     @Override
     public void write( List<? extends Experiment> items ) throws Exception {
         for ( Experiment exp : items ) {
-             // TODO synchronize publication labels to experiment if not present
+             if ( log.isDebugEnabled() ) log.debug( "Processing experiment: " + exp.getShortLabel() );
+
+            CurateUtils.copyPublicationAnnotationsToExperiment(exp);
         }
     }
 }

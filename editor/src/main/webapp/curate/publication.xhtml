@@ -21,6 +21,11 @@
         </p:breadCrumb>
     </ui:define>
 
+    <ui:define name="toolsContextual">
+        <p:menuitem value="Copy annotations to Experiments" actionListener="#{publicationController.copyAnnotationsToExperiments}"
+                    ajax="false"/>
+    </ui:define>
+
     <ui:define name="reviewerContextual">
         <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}"
                         update="centralUnit,topSection"/>

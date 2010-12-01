@@ -26,6 +26,8 @@
     <ui:define name="toolsContextual">
         <p:menuitem value="Clone w/ Interactions" action="#{experimentController.cloneWithInteractions}" ajax="false"
                     onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
+        <p:menuitem value="Copy Publication annotations" actionListener="#{experimentController.copyPublicationAnnotations}"
+                    ajax="false"/>
     </ui:define>
 
     <ui:define name="reviewerContextual">

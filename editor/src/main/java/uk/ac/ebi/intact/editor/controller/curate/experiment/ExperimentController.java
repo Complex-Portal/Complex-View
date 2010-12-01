@@ -28,6 +28,7 @@ import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ExperimentIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
+import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
@@ -167,6 +168,8 @@ public class ExperimentController extends AnnotatedObjectController {
             experiment.addXref(new ExperimentXref(pubmed, publication.getShortLabel(), primaryRef));
         }
 
+        copyPublicationAnnotations(null);
+
         refreshInteractions();
 
         //getUnsavedChangeManager().markAsUnsaved(experiment);
@@ -220,7 +223,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public int countInteractionsByExperimentAc( String ac ) {
-        return getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc( ac );
+        return getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc(ac);
     }
 
     public void acceptExperiment(ActionEvent actionEvent) {
@@ -277,6 +280,15 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public boolean isToBeReviewed(Experiment exp) {
         return ExperimentUtils.isToBeReviewed(exp);
+    }
+
+    @Transactional
+    public void copyPublicationAnnotations(ActionEvent evt) {
+        CurateUtils.copyPublicationAnnotationsToExperiment(experiment);
+
+        addInfoMessage("Annotations copied from publication", "");
+
+        setUnsavedChanges(true);
     }
 
     public String getOnHold() {

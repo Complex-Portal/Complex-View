@@ -33,6 +33,7 @@ import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
+import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
@@ -555,6 +556,10 @@ public class PublicationController extends AnnotatedObjectController {
 
         setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
 
+        addInfoMessage("Publication accepted", "");
+
+        copyAnnotationsToExperiments(null);
+
         setUnsavedChanges(true);
     }
 
@@ -563,6 +568,10 @@ public class PublicationController extends AnnotatedObjectController {
         String date = "Rejected " +new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase();
 
         setToBeReviewed(date+". "+reasonForRejection);
+
+        addInfoMessage("Publication rejected", "");
+
+        copyAnnotationsToExperiments(null);
 
         setUnsavedChanges(true);
     }
@@ -577,6 +586,17 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void clearToBeReviewed(ActionEvent evt) {
         removeAnnotation(CvTopic.TO_BE_REVIEWED);
+    }
+
+    @Transactional
+    public void copyAnnotationsToExperiments(ActionEvent evt) {
+        for (Experiment exp : publication.getExperiments()) {
+            CurateUtils.copyPublicationAnnotationsToExperiment(exp);
+        }
+
+        addInfoMessage("Annotations copied", publication.getExperiments().size()+" experiments were modified");
+
+        setUnsavedChanges(true);
     }
 
     public List<SelectItem> getDatasetsSelectItems() {

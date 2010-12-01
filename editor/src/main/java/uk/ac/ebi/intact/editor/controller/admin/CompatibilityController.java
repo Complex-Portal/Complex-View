@@ -53,6 +53,18 @@ public class CompatibilityController extends BaseController {
 
         String jobId = String.valueOf( System.currentTimeMillis() );
 
+        launchJob(job, jobId);
+    }
+
+    public void launchExperimentSync( ActionEvent evt ) {
+        Job job = getJob( "experimentSyncJob" );
+
+        String jobId = String.valueOf( System.currentTimeMillis() );
+
+        launchJob(job, jobId);
+    }
+
+    private void launchJob(Job job, String jobId) {
         Map<String, JobParameter> jobParameterMap = new HashMap<String, JobParameter>();
         jobParameterMap.put( "jobId", new JobParameter( jobId ) );
 
