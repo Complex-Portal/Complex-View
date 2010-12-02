@@ -27,6 +27,7 @@ import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.core.persistence.dao.ProteinDao;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
+import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriterImpl;
 import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
@@ -38,6 +39,7 @@ import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
 /**
@@ -117,9 +119,23 @@ public class ParticipantImportController extends BaseController {
             }
         }
 
-//        ProteinUpdateProcessorConfig config = new ProteinUpdateProcessorConfig();
+//        StringWriter sw = new StringWriter();
 //
-//        ProteinUpdateProcessor proteinUpdateProcessor = new ProteinUpdateProcessor();
+//        ProteinUpdateProcessorConfig config = new ProteinUpdateProcessorConfig(new EditorReportHandler(sw));
+//        config.setGlobalProteinUpdate(false);
+//        config.setDeleteProteinTranscriptWithoutInteractions(false);
+//
+//        ProteinUpdateProcessor proteinUpdateProcessor = new ProteinUpdateProcessor(config);
+//        //proteinUpdateProcessor.
+//
+//        String outcome = sw.toString();
+//
+//        try {
+//            sw.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
 
@@ -350,74 +366,86 @@ public class ParticipantImportController extends BaseController {
     }
 
     private class EditorReportHandler implements UpdateReportHandler {
+
+        private Writer writer;
+        private ReportWriter reportWriter;
+
+        public EditorReportHandler(Writer writer) {
+            try {
+                this.reportWriter = new ReportWriterImpl(writer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         @Override
         public ReportWriter getPreProcessedWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getProcessedWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getDuplicatedWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getDeletedWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getCreatedWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getNonUniprotProteinWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getUpdateCasesWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getSequenceChangedWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getRangeChangedWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getInvalidRangeWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getDeadProteinWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getOutOfDateParticipantWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getPreProcessErrorWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override
         public ReportWriter getSecondaryProteinsWriter() throws IOException {
-            return null;
+            return reportWriter;
         }
 
         @Override

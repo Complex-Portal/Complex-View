@@ -7,10 +7,11 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
-
-
             <p:dataTable var="rangeWrapper" value="#{value}"
-                         paginator="true" rows="10" paginatorAlwaysVisible="false" >
+                         paginator="true" rows="10" paginatorAlwaysVisible="false">
+                <p:column style="width:16px">
+                    <p:rowToggler/>
+                </p:column>
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="AC"/>
@@ -83,6 +84,20 @@
                                actionListener="#{unsavedChangeManager.revert(range)}"
                                update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(range.ac)}"/>
                 </p:column>
+
+                <f:facet name="expansion">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Sequence:"/>
+                        <h:inputTextarea value="#{rangeWrapper.range.fullSequence}" readonly="true" cols="60" rows="3"/>
+
+                        <h:outputText value="Upstream sequence:"/>
+                        <h:inputTextarea value="#{rangeWrapper.range.upStreamSequence}" readonly="true" cols="60" rows="3"/>
+
+                        <h:outputText value="Downstream sequence:"/>
+                        <h:inputTextarea value="#{rangeWrapper.range.downStreamSequence}" readonly="true" cols="60" rows="3"/>
+                    </h:panelGrid>
+                </f:facet>
+
             </p:dataTable>
 
 </ui:composition>
