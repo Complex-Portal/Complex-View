@@ -131,8 +131,9 @@ public class MyNotesController extends JpaAwareController {
             }
 
             matcher.appendReplacement(sb, replacement);
-            matcher.appendTail(sb);
         }
+
+        matcher.appendTail(sb);
 
         return sb.toString();
     }
