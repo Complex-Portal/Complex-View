@@ -28,8 +28,10 @@ import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.model.*;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,11 +48,19 @@ public class MyNotesController extends JpaAwareController {
 
     private String rawNotes;
     private boolean editMode;
+    private String absoluteContextPath;
 
     @Autowired
     private UserSessionController userSessionController;
 
     public MyNotesController() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+
+        this.absoluteContextPath = request.getScheme() + "://" +
+               request.getServerName() + ":" +
+               request.getServerPort() +
+               request.getContextPath();
     }
 
     @Transactional("users")
@@ -122,7 +132,7 @@ public class MyNotesController extends JpaAwareController {
                     urlFolderName = "cvobject";
                 }
 
-                replacement = "<a href=\"/editor/"+urlFolderName+"/"+ac+"\">"+ac+"</a>";
+                replacement = "<a href=\""+absoluteContextPath+"/"+urlFolderName+"/"+ac+"\">"+ac+"</a>";
 
             } catch (Throwable e) {
                 addWarningMessage("Accession problem", "Some accession numbers in the note could not be auto-linked because there is no object type for that accession");
