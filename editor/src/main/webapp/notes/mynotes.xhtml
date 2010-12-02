@@ -11,37 +11,37 @@
 
     <ui:define name="topNavigation">
         <ui:include src="/shared/top_navigation_bar.xhtml">
-            <ui:param name="selected" value="notes"/>
+            <ui:param name="selected" value="mynotes"/>
         </ui:include>
     </ui:define>
 
     <ui:define name="content">
         <f:metadata>
-          <f:event type="preRenderView" listener="#{notesController.loadPage}"/>
+          <f:event type="preRenderView" listener="#{myNotesController.loadPage}"/>
         </f:metadata>
 
         <h:panelGroup id="notesPanel">
 
-            <h:panelGroup rendered="#{notesController.editMode}">
+            <h:panelGroup rendered="#{myNotesController.editMode}">
 
-                <h:inputTextarea id="notesArea" value="#{notesController.rawNotes}" rows="15" cols="80"/>
+                <h:inputTextarea id="notesArea" value="#{myNotesController.rawNotes}" rows="15" cols="80"/>
 
                 <br/>
-                <p:commandButton value="Save Notes" actionListener="#{notesController.saveNotes}"
+                <p:commandButton value="Save Notes" actionListener="#{myNotesController.saveNotes}"
                                  process="notesArea"
                                  update="notesPanel"/>
 
             </h:panelGroup>
 
-            <h:panelGroup rendered="#{not notesController.editMode}">
+            <h:panelGroup rendered="#{not myNotesController.editMode}">
 
                 <p>
-                    <p:commandButton value="Edit Notes" actionListener="#{notesController.setEditMode(true)}"
+                    <p:commandButton value="Edit Notes" actionListener="#{myNotesController.setEditMode(true)}"
                                      process="@this"
                                      update="notesPanel"/>
                 </p>
 
-                   <h:outputFormat value="#{notesController.formattedNotes}" escape="false"/>
+                   <h:outputFormat value="#{myNotesController.formattedNotes}" escape="false"/>
             </h:panelGroup>
 
         </h:panelGroup>
