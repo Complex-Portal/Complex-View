@@ -89,9 +89,6 @@ public class MyNotesController extends JpaAwareController {
 
         String acPrefix = getIntactContext().getConfig().getAcPrefix();
 
-        //Rewriter rewriter = new Rewriter("(\\w+):("+acPrefix+"-\\d+)", "<a href=\"/editor/{1}/{2}\">{2}</a>");
-        //formatted = rewriter.rewrite(formatted);
-
         Pattern pattern = Pattern.compile(acPrefix+"-\\d+");
         Matcher matcher = pattern.matcher(formatted);
 
@@ -125,7 +122,7 @@ public class MyNotesController extends JpaAwareController {
                     urlFolderName = "cvobject";
                 }
 
-                replacement = "<a href=\"/editor/"+urlFolderName+"/"+ac+">"+ac+"</a>";
+                replacement = "<a href=\"/editor/"+urlFolderName+"/"+ac+"\">"+ac+"</a>";
 
             } catch (Throwable e) {
                 addWarningMessage("Accession problem", "Some accession numbers in the note could not be auto-linked because there is no object type for that accession");
@@ -153,21 +150,5 @@ public class MyNotesController extends JpaAwareController {
 
     public void setEditMode(boolean editMode) {
         this.editMode = editMode;
-    }
-
-    public static void main(String[] args) {
-        Pattern pattern = Pattern.compile("EBI-\\d+");
-
-        Matcher matcher = pattern.matcher("lalala EBI-1234 lololo EBI-32234, lili EBI-23123 jo");
-
-        StringBuffer sb = new StringBuffer();
-
-        while (matcher.find()) {
-            String ac = matcher.group();
-
-            matcher.appendReplacement(sb, "OOO"+ac+"oooo");
-        }
-
-        System.out.println(sb);
     }
 }
