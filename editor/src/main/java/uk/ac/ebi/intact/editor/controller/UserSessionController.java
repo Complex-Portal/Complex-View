@@ -29,7 +29,7 @@ import uk.ac.ebi.intact.core.users.model.User;
  */
 @Controller
 @Scope( "session" )
-public class UserSessionController extends BaseController implements DisposableBean {
+public class UserSessionController extends JpaAwareController implements DisposableBean {
 
     private static final Log log = LogFactory.getLog( UserSessionController.class );
 
@@ -39,6 +39,14 @@ public class UserSessionController extends BaseController implements DisposableB
     }
 
     public User getCurrentUser() {
+        return getCurrentUser(false);
+    }
+
+    public User getCurrentUser(boolean refresh) {
+        if (refresh) {
+            currentUser = getUsersDaoFactory().getUserDao().getByLogin(currentUser.getLogin());
+        }
+
         return currentUser;
     }
 

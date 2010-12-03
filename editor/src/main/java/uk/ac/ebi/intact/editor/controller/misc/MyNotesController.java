@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.editor.controller.misc;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -26,12 +27,18 @@ import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
+import uk.ac.ebi.intact.editor.controller.admin.UserAdminController;
 import uk.ac.ebi.intact.model.*;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,19 +48,27 @@ import java.util.regex.Pattern;
  * @version $Id$
  */
 @Controller
-@Scope("session")
+@Scope( "conversation.access" )
+@ConversationName( "notes" )
 public class MyNotesController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog(MyNotesController.class);
+    private static final int MAX_RESULTS = 200;
+
+
 
     private String rawNotes;
+    private String formattedNotes;
     private boolean editMode;
     private String absoluteContextPath;
+    private List<QueryMacro> queryMacros;
 
     @Autowired
     private UserSessionController userSessionController;
 
     public MyNotesController() {
+        this.queryMacros = new ArrayList<QueryMacro>();
+
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
@@ -65,12 +80,12 @@ public class MyNotesController extends JpaAwareController {
 
     @Transactional("users")
     public void loadPage(ComponentSystemEvent evt) {
-        User user = userSessionController.getCurrentUser();
+        User user = userSessionController.getCurrentUser(true);
 
-        Preference pref = user.getPreference("editor.notes");
+        Preference pref = user.getPreference(UserAdminController.RAW_NOTES);
 
         if (pref == null) {
-            pref = new Preference(user, "editor.notes");
+            pref = new Preference(user, UserAdminController.RAW_NOTES);
             pref.setValue("These are your notes. You can write anything you wish here. \nYou can link to publications like EBI-2928483 or an interaction EBI-2928497.\n" +
                     "You can use it as well for experiments, participants, etc.");
 
@@ -80,29 +95,110 @@ public class MyNotesController extends JpaAwareController {
         }
 
         rawNotes = pref.getValue();
+
+        processNotes();
     }
 
     @Transactional("users")
     public void saveNotes(ActionEvent evt) {
         User user = userSessionController.getCurrentUser();
 
-        Preference pref = user.getPreference("editor.notes");
+        Preference pref = user.getPreference(UserAdminController.RAW_NOTES);
         pref.setValue(rawNotes);
 
         getUsersDaoFactory().getPreferenceDao().update(pref);
 
+        processNotes();
+
         editMode = false;
     }
 
-    public String getFormattedNotes() {
-        String formatted = rawNotes.replaceAll("\n", "<br/>");
+    private void processNotes() {
+        queryMacros.clear();
+
+        String[] lines = rawNotes.split("\n");
 
         String acPrefix = getIntactContext().getConfig().getAcPrefix();
+        Pattern acPattern = Pattern.compile(acPrefix + "-\\d+");
 
-        Pattern pattern = Pattern.compile(acPrefix+"-\\d+");
-        Matcher matcher = pattern.matcher(formatted);
+        Pattern macroPattern = Pattern.compile("\\{(\\w+):(\\w+)\\s(.+)\\}");
 
-        StringBuffer sb = new StringBuffer(formatted.length()*2);
+        StringBuilder sb = new StringBuilder();
+
+        for (String line : lines) {
+
+            if (line.trim().startsWith("{")) {
+                line = "<strong>"+processMacro(line, macroPattern)+"</strong>";
+            } else {
+                line = replaceACs(line, acPattern);
+            }
+
+            sb.append(line+"<br/>");
+        }
+
+        formattedNotes = sb.toString();
+    }
+
+    private String processMacro(String line, Pattern pattern) {
+        String macro = line.trim();
+
+        Matcher matcher = pattern.matcher(macro);
+
+        String outcome = "";
+
+        while (matcher.find()) {
+            if (matcher.groupCount() < 3) {
+                outcome = "[invalid macro: "+macro+"]";
+            } else {
+                String macroType = matcher.group(1);
+                String macroName = matcher.group(2);
+                String macroStatement = matcher.group(3);
+
+                if ("query".equals(macroType)) {
+                    if (!macroStatement.toLowerCase().startsWith("select")) {
+                        outcome = "[only select queries allowed]";
+                    } else {
+                        try {
+                            Collection<? extends IntactObject> results = findResults(macroStatement);
+
+                            QueryMacro queryMacro = new QueryMacro(macroName, macroStatement, results);
+                            queryMacros.add(queryMacro);
+
+                            outcome = "<a href=\"#\" onclick=\"ia_toggleDisplayById(''qm_"+macroName+"'')\">[query: "+macroName+"]</a><br/>" +
+                                    "<div id=\"qm_"+macroName+"\" style=\"display:none\"><iframe src=\""+absoluteContextPath+"/notes/querymacro.jsf?macroName="+macroName+"\" style=\"width:95%; height: 600px\"></iframe></div>";
+                        } catch (Exception e) {
+                            addErrorMessage("Cannot run query: "+macroName, e.getMessage());
+                            outcome = "[query cannot be run: "+macroName+"]";
+                        }
+                    }
+
+
+                } else {
+                    outcome = "[macro with unexpected type: "+macroName+"]";
+                    addErrorMessage("Invalid macro", "Macro with unexpected type: "+macroName);
+                }
+            }
+        }
+
+        return outcome;
+    }
+
+    private Collection<? extends IntactObject> findResults(String hqlQuery) {
+        EntityManager em = getCoreEntityManager();
+        Query query = em.createQuery(hqlQuery);
+        query.setMaxResults(MAX_RESULTS);
+
+        return query.getResultList();
+    }
+
+    public String getFormattedNotes() {
+        return formattedNotes;
+    }
+
+    private String replaceACs(String line, Pattern pattern) {
+        Matcher matcher = pattern.matcher(line);
+
+        StringBuffer sb = new StringBuffer(line.length()*2);
 
         while (matcher.find()) {
             String ac = matcher.group();
@@ -162,5 +258,25 @@ public class MyNotesController extends JpaAwareController {
 
     public void setEditMode(boolean editMode) {
         this.editMode = editMode;
+    }
+
+    public List<QueryMacro> getQueryMacros() {
+        return queryMacros;
+    }
+
+    public void setQueryMacros(List<QueryMacro> queryMacros) {
+        this.queryMacros = queryMacros;
+    }
+
+    public static void main(String[] args) {
+        Pattern p = Pattern.compile("\\{(\\w+):(\\w+)\\s(.+)\\}");
+
+        Matcher matcher = p.matcher("{query:Lalalala select exp from Experiment exp where exp.bioSource.cvTissue.ac = 'EBI-2609142'}");
+
+        while (matcher.find()) {
+            System.out.println(matcher.group(1));
+            System.out.println(matcher.group(2));
+            System.out.println(matcher.group(3));
+        }
     }
 }

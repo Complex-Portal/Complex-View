@@ -27,59 +27,9 @@
                                  update="queryPanel, messagesComponent"/>
 
 
-
-            <p:dataTable var="intactObject" value="#{hqlRunnerController.results}"
-                         rendered="#{hqlRunnerController.results != null}"
-                         rows="20"
-                         paginator="true"
-                         paginatorAlwaysVisible="false"
-                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                         rowsPerPageTemplate="10,25,50">
-                <p:column>
-                    <f:facet name="header"><h:outputText value="AC"/></f:facet>
-
-                    <h:outputText value="#{intactObject.ac}" rendered="#{not hqlRunnerController.isAnnotatedObject(intactObject)}"/>
-
-                    <p:commandLink value="#{intactObject.ac}" action="#{curateController.edit(intactObject)}"
-                                   rendered="#{hqlRunnerController.isAnnotatedObject(intactObject)}" ajax="false"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header"><h:outputText value="ShortLabel"/></f:facet>
-
-                    <h:commandLink value="#{intactObject.shortLabel}" action="#{curateController.edit(intactObject)}"
-                                   rendered="#{hqlRunnerController.isAnnotatedObject(intactObject)}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header"><h:outputText value="Full name"/></f:facet>
-                    <h:outputText value="#{intactObject.fullName}"
-                                   rendered="#{hqlRunnerController.isAnnotatedObject(intactObject)}"/>
-                </p:column>
-                <p:column>
-            <f:facet name="header">
-                <h:outputText value="Creator"/>
-            </f:facet>
-                    <h:outputText value="#{intactObject.creator}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Created"/>
-                    </f:facet>
-                    <h:outputText value="#{intactObject.created}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Updator"/>
-                    </f:facet>
-                    <h:outputText value="#{intactObject.updator}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Updated"/>
-                    </f:facet>
-                    <h:outputText value="#{intactObject.updated}"/>
-                </p:column>
-
-            </p:dataTable>
+            <ui:include src="/shared/intactObjects_table.xhtml">
+                <ui:param name="intactObjects" value="#{hqlRunnerController.results}"/>
+            </ui:include>
 
         </h:panelGroup>
 

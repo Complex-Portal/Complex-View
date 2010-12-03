@@ -37,6 +37,7 @@ public class UserAdminController extends JpaAwareController {
     private static final Log log = LogFactory.getLog( UserAdminController.class );
 
     private static final String CURATION_DEPTH = "curation.depth";
+    public static final String RAW_NOTES = "editor.notes";
 
     @Autowired
     private EditorConfig editorConfig;
@@ -77,6 +78,14 @@ public class UserAdminController extends JpaAwareController {
 
     public void setCurationDepth(String curationDepth) {
         setPreference(CURATION_DEPTH, curationDepth);
+    }
+
+    public String getRawNotes() {
+        return findPreference(RAW_NOTES, null);
+    }
+
+    public void setRawNotes(String notes) {
+        setPreference(RAW_NOTES, notes);
     }
 
     private String findPreference(String prefKey) {

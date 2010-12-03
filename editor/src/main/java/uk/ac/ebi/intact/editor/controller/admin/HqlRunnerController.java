@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.editor.controller.admin;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
 import javax.faces.event.ActionEvent;
@@ -92,14 +91,6 @@ public class HqlRunnerController extends JpaAwareController {
 
     private String cleanQuery(String hqlQuery) {
         return hqlQuery.replaceAll(";", "");
-    }
-
-    public boolean isAnnotatedObject(Object obj) {
-        return (obj instanceof AnnotatedObject);
-    }
-
-    public boolean isIntactObject(Object obj) {
-        return (obj instanceof IntactObject);
     }
 
     public String getHqlQuery() {

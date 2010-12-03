@@ -3,7 +3,9 @@ input,
 textarea,
 select,
 a,
-span {
+span,
+table,
+td {
    font-family:helvetica,"trebuchet MS",arial,sans-serif;
     font-size:9pt;
 }

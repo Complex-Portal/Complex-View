@@ -101,6 +101,14 @@ public class CurateController extends JpaAwareController {
         }
     }
 
+    public boolean isAnnotatedObject(Object obj) {
+        return (obj instanceof AnnotatedObject);
+    }
+
+    public boolean isIntactObject(Object obj) {
+        return (obj instanceof IntactObject);
+    }
+
     public class CurateObjectMetadata {
         private String slug;
         private AnnotatedObjectController annotatedObjectController;

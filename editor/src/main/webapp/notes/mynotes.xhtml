@@ -16,6 +16,8 @@
     </ui:define>
 
     <ui:define name="content">
+        <h:outputScript name="intact.js" library="javascript" target="head"/>
+
         <f:metadata>
           <f:event type="preRenderView" listener="#{myNotesController.loadPage}"/>
         </f:metadata>
@@ -42,6 +44,10 @@
                 </p>
 
                    <h:outputFormat value="#{myNotesController.formattedNotes}" escape="false"/>
+
+                <br/>
+
+
             </h:panelGroup>
 
         </h:panelGroup>
