@@ -231,7 +231,7 @@ public class MyNotesController extends JpaAwareController {
                 replacement = "<a href=\""+absoluteContextPath+"/"+urlFolderName+"/"+ac+"\">"+ac+"</a>";
 
             } catch (Throwable e) {
-                addWarningMessage("Accession problem", "Some accession numbers in the note could not be auto-linked because there is no object type for that accession");
+                addWarningMessage("Accession problem: "+ac, "Some accession numbers in the note could not be auto-linked because there is no object type for that accession, or it does not exist in the database");
 
                 replacement = ac;
             }
