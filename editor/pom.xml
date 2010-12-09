@@ -4,7 +4,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>38</version>
+        <version>40</version>
     </parent>
 
     <groupId>uk.ac.ebi.intact.service</groupId>
@@ -83,6 +83,8 @@
                     </webAppConfig>
                 </configuration>
                 <dependencies>
+
+
                     <dependency>
                         <groupId>javax.servlet.jsp</groupId>
                         <artifactId>jsp-api</artifactId>
@@ -524,80 +526,6 @@
             <name>IntAct Nexus</name>
             <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
         </repository>
-
-<!--
-        <repository>
-            <id>ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ebi-repo-snapshots</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>apache.releases</id>
-            <name>Apache Releases Repository</name>
-            <url>https://repository.apache.org/content/repositories/releases/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>apache.snapshots</id>
-            <name>Apache Snapshots Repository</name>
-            <url>https://repository.apache.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>com.springsource.repository.bundles.release</id>
-            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
-            <url>http://repository.springsource.com/maven/bundles/release</url>
-            <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>com.springsource.repository.bundles.external</id>
-            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
-            <url>http://repository.springsource.com/maven/bundles/external</url>
-            <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-
-        <repository>
-            <id>prime-repo</id>
-            <name>Prime Technology Maven Repository</name>
-            <url>http://repository.prime.com.tr/</url>
-            <layout>default</layout>
-        </repository>
-
-
-        <repository>
-            <id>mandubian-mvn</id>
-            <url>http://mandubian-mvn.googlecode.com/svn/trunk/mandubian-mvn/repository</url>
-        </repository>
--->
     </repositories>
 
     <pluginRepositories>
