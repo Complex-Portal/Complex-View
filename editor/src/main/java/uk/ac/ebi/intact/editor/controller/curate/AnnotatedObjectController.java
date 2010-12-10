@@ -126,7 +126,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         //final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         // delete from the unsaved manager
-        final List<UnsavedChange> deletedObjects = getAnnotatedObjectWrapper().getUnsavedChangeManager().getAllUnsavedDeleted();
+        final List<UnsavedChange> deletedObjects = getUnsavedChangeManager().getAllUnsavedDeleted();
 
         PersistenceController persistenceController = getPersistenceController();
 

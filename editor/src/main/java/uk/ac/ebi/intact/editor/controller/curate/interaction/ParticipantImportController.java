@@ -378,13 +378,29 @@ public class ParticipantImportController extends BaseController {
             }
         }
 
+//        @Override
+//        public ReportWriter getPreProcessedWriter() throws IOException {
+//            return reportWriter;
+//        }
+//
+//        @Override
+//        public ReportWriter getProcessedWriter() throws IOException {
+//            return reportWriter;
+//        }
+
+
         @Override
-        public ReportWriter getPreProcessedWriter() throws IOException {
+        public ReportWriter getOutOfDateRangeWriter() throws IOException {
             return reportWriter;
         }
 
         @Override
-        public ReportWriter getProcessedWriter() throws IOException {
+        public ReportWriter getTranscriptWithSameSequenceWriter() throws IOException {
+            return reportWriter;
+        }
+
+        @Override
+        public ReportWriter getIntactParentWriter() throws IOException {
             return reportWriter;
         }
 

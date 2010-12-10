@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
@@ -166,7 +167,7 @@ public class InteractionController extends ParameterizableObjectController {
         if (publicationController.getPublication() != null) {
             Publication pub = publicationController.getPublication();
 
-            if (!Hibernate.isInitialized(pub.getExperiments())) {
+            if (!IntactCore.isInitialized(pub.getExperiments())) {
                 pub = getDaoFactory().getPublicationDao().getByAc(pub.getAc());
                 publicationController.setPublication(pub);
             }
@@ -446,6 +447,11 @@ public class InteractionController extends ParameterizableObjectController {
             return;
         }
 
+        //Issue 208: Interaction short-labels will be handled manually when in complexes
+        if (belongsToCuratedComplex()) {
+            return;
+        }
+
         String shortLabel = InteractionShortLabelGenerator.createCandidateShortLabel(interaction);
         try {
             shortLabel = InteractionShortLabelGenerator.nextAvailableShortlabel(shortLabel);
@@ -454,6 +460,18 @@ public class InteractionController extends ParameterizableObjectController {
             handleException(e);
         }
         interaction.setShortLabel(shortLabel);
+    }
+
+    private boolean belongsToCuratedComplex() {
+        for (Experiment exp : interaction.getExperiments()) {
+            for (Annotation annot : exp.getAnnotations()) {
+                if (CvTopic.CURATED_COMPLEX.equals(annot.getCvTopic().getShortLabel())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public void revertParticipant(ParticipantWrapper participantWrapper) {
