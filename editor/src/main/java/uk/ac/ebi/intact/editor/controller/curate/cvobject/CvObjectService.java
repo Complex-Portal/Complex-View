@@ -55,6 +55,8 @@ public class CvObjectService extends JpaAwareController {
     private List<CvTopic> experimentTopics;
     private List<CvTopic> interactionTopics;
     private List<CvTopic> interactorTopics;
+    private List<CvTopic> proteinTopics;
+    private List<CvTopic> nucleicAcidTopics;
     private List<CvTopic> participantTopics;
     private List<CvTopic> featureTopics;
     private List<CvTopic> cvObjectTopics;
@@ -65,6 +67,8 @@ public class CvObjectService extends JpaAwareController {
     private List<SelectItem> experimentTopicSelectItems;
     private List<SelectItem> interactionTopicSelectItems;
     private List<SelectItem> interactorTopicSelectItems;
+    private List<SelectItem> proteinTopicSelectItems;
+    private List<SelectItem> nucleicAcidTopicSelectItems;
     private List<SelectItem> participantTopicSelectItems;
     private List<SelectItem> featureTopicSelectItems;
     private List<SelectItem> cvObjectTopicSelectItems;
@@ -181,7 +185,8 @@ public class CvObjectService extends JpaAwareController {
         publicationTopics = getSortedTopicList(Publication.class.getName(), cvObjectsByUsedInClass);
         experimentTopics = getSortedTopicList(Experiment.class.getName(), cvObjectsByUsedInClass);
         interactionTopics = getSortedTopicList( Interaction.class.getName(), cvObjectsByUsedInClass);
-        interactorTopics = getSortedTopicList( Interactor.class.getName(), cvObjectsByUsedInClass);
+        interactorTopics = getSortedTopicList( NucleicAcid.class.getName(), cvObjectsByUsedInClass);
+        proteinTopics = getSortedTopicList( Protein.class.getName(), cvObjectsByUsedInClass);
         participantTopics = getSortedTopicList( Component.class.getName(), cvObjectsByUsedInClass);
         featureTopics = getSortedTopicList( Feature.class.getName(), cvObjectsByUsedInClass);
         bioSourceTopics = getSortedTopicList( Feature.class.getName(), cvObjectsByUsedInClass);
@@ -214,7 +219,18 @@ public class CvObjectService extends JpaAwareController {
         interactionTopicSelectItems = createSelectItems( interactionTopics, "-- Select topic --" );
         interactionTopicSelectItems.add(noClassSelectItemGroup);
 
-        interactorTopicSelectItems = createSelectItems( interactorTopics, "-- Select topic --" );
+        SelectItemGroup proteinSelectItemGroup = new SelectItemGroup("Protein");
+        proteinTopicSelectItems = createSelectItems(proteinTopics, null);
+        proteinSelectItemGroup.setSelectItems(proteinTopicSelectItems.toArray(new SelectItem[proteinTopicSelectItems.size()]));
+
+        SelectItemGroup nucleicAcidSelectItemGroup = new SelectItemGroup("Nucleic Acid");
+        nucleicAcidTopicSelectItems = createSelectItems(interactorTopics, null);
+        nucleicAcidSelectItemGroup.setSelectItems(nucleicAcidTopicSelectItems.toArray(new SelectItem[nucleicAcidTopicSelectItems.size()]));
+
+        interactorTopicSelectItems = new ArrayList<SelectItem>();
+        interactorTopicSelectItems.add( new SelectItem( null, "-- Select topic --", "-- Select topic --", false, false, true ) );
+        interactorTopicSelectItems.add(proteinSelectItemGroup);
+        interactorTopicSelectItems.add(nucleicAcidSelectItemGroup);
         interactorTopicSelectItems.add(noClassSelectItemGroup);
 
         participantTopicSelectItems = createSelectItems( participantTopics, "-- Select topic --" );
@@ -434,6 +450,22 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getBioSourceTopicSelectItems() {
         return bioSourceTopicSelectItems;
+    }
+
+    public List<SelectItem> getProteinTopicSelectItems() {
+        return proteinTopicSelectItems;
+    }
+
+    public void setProteinTopicSelectItems(List<SelectItem> proteinTopicSelectItems) {
+        this.proteinTopicSelectItems = proteinTopicSelectItems;
+    }
+
+    public List<SelectItem> getNucleicAcidTopicSelectItems() {
+        return nucleicAcidTopicSelectItems;
+    }
+
+    public void setNucleicAcidTopicSelectItems(List<SelectItem> nucleicAcidTopicSelectItems) {
+        this.nucleicAcidTopicSelectItems = nucleicAcidTopicSelectItems;
     }
 
     public List<SelectItem> getDatabaseSelectItems() {

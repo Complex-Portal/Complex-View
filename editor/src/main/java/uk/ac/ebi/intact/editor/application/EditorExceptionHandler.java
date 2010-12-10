@@ -80,7 +80,7 @@ public class EditorExceptionHandler extends ExceptionHandlerWrapper {
                 //doRedirect(facesContext, redirectPage);
             } else {
                 try {
-                    final String viewId = facesContext.getViewRoot().getViewId();
+                    final String viewId = (facesContext.getViewRoot() != null)? facesContext.getViewRoot().getViewId() : "unknown";
 
                     final HttpServletRequest req = (HttpServletRequest) facesContext.getExternalContext().getRequest();
                     final String referer = req.getHeader("referer");

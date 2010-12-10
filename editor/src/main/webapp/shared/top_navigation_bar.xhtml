@@ -19,6 +19,12 @@
                      disabled="#{selected == 'curate'}"
                      immediate="true"/>
     &#160;
+    <p:commandButton value="Bulk Op." action="/bulk/bulk_default?faces-redirect=true&amp;includeViewParams=true"
+                     rendered="#{userSessionController.hasRole('CURATOR')}"
+                     ajax="false"
+                     disabled="#{selected == 'bulk'}"
+                     immediate="true"/>
+    &#160;
     <p:commandButton value="Admin" action="/admin/dashboard?faces-redirect=true" disabled="#{selected == 'admin'}"
                      ajax="false"
             rendered="#{userSessionController.hasRole('ADMIN')}"
