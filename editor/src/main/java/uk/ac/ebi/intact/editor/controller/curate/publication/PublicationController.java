@@ -492,6 +492,14 @@ public class PublicationController extends AnnotatedObjectController {
         return findAnnotationText(CURATION_DEPTH);
     }
 
+    public String getShowCurationDepth() {
+        String depth = getCurationDepth();
+        if ( depth == null ) {
+            depth = "curation depth undefined";
+        }
+        return depth;
+    }
+
     public void setCurationDepth(String curationDepth) {
         setAnnotation(CURATION_DEPTH, curationDepth);
     }

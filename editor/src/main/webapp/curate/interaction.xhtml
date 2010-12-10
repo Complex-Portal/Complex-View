@@ -19,7 +19,7 @@
         <p:breadCrumb>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
                         action="#{curateController.edit(publicationController.publication)}" process="@this"/>
-            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel} (#{publicationController.showCurationDepth})"
                         action="#{curateController.edit(publicationController.publication)}" process="@this"/>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{experiment.shortLabel}"
                         action="#{curateController.edit(experiment)}" process="@this"/>
