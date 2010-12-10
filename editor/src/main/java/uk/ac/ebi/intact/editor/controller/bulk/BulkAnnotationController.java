@@ -79,11 +79,11 @@ public class BulkAnnotationController extends JpaAwareController {
                 List<String> acsList = Arrays.asList(acs);
                 List<String> updatedAcsList = Arrays.asList(updatedAcs);
 
-                Collection<String> couldNotUpdateList = CollectionUtils.removeAll(acsList, updatedAcsList);
+                Collection<String> couldNotUpdateList = CollectionUtils.subtract(acsList, updatedAcsList);
                 couldNotUpdateAcs = couldNotUpdateList.toArray(new String[couldNotUpdateList.size()]);
 
                 addWarningMessage("Finished with warnings", updatedAcs.length + " objects were updated, "+
-                        couldNotUpdateAcs.length+" objects couldn't be updated");
+                        couldNotUpdateAcs.length+" objects couldn't be updated (do they exist?)");
             } else {
                 addInfoMessage("Operation successful", updatedAcs.length+" objects were updated");
             }
