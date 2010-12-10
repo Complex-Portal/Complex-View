@@ -48,6 +48,7 @@ public class BulkAnnotationController extends JpaAwareController {
     private String couldNotUpdateAcs[];
     private String aoClassName;
     private List<SelectItem> topicSelectItems;
+    private boolean replaceIfTopicExists = true;
 
     private Annotation annotation;
 
@@ -69,7 +70,7 @@ public class BulkAnnotationController extends JpaAwareController {
         try {
             aoClass = Thread.currentThread().getContextClassLoader().loadClass(aoClassName);
 
-            updatedAcs = bulkOperations.addAnnotation(annotation, acs, aoClass);
+            updatedAcs = bulkOperations.addAnnotation(annotation, acs, aoClass, replaceIfTopicExists);
 
             if (acs.length > 0 && updatedAcs.length == 0) {
                 addErrorMessage("Operation failed", "None of the ACs could be updated (do they exist?)");
@@ -165,5 +166,13 @@ public class BulkAnnotationController extends JpaAwareController {
 
     public void setCouldNotUpdateAcs(String[] couldNotUpdateAcs) {
         this.couldNotUpdateAcs = couldNotUpdateAcs;
+    }
+
+    public boolean isReplaceIfTopicExists() {
+        return replaceIfTopicExists;
+    }
+
+    public void setReplaceIfTopicExists(boolean replaceIfTopicExists) {
+        this.replaceIfTopicExists = replaceIfTopicExists;
     }
 }

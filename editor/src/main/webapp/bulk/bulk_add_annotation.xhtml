@@ -77,6 +77,9 @@
                                <h:inputText id="annotText" value="#{bulkAnnotationController.annotation.annotationText}"
                                        size="60"/>
 
+                               <h:outputLabel for="replaceBool" value="Replace if topic exists:"/>
+                               <h:selectBooleanCheckbox id="replaceBool" value="#{bulkAnnotationController.replaceIfTopicExists}"/>
+
                                <h:outputLabel for="acListArea" value="List of accessions&lt;br/>(comma or line separated):" escape="false"/>
                                <h:inputTextarea id="acListArea" value="#{bulkAnnotationController.acs}"
                                                 required="true" requiredMessage="Accessions are required"
