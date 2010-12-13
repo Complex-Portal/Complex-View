@@ -93,6 +93,10 @@ public class UserAdminController extends JpaAwareController {
     }
 
     private String findPreference(String prefKey, String defaultValue) {
+        if (user.getPreferences() == null) {
+            user.setPreferences(new ArrayList<Preference>());
+        }
+
         for (Preference pref : user.getPreferences()) {
             if (prefKey.equals(pref.getKey())) {
                 return pref.getValue();
