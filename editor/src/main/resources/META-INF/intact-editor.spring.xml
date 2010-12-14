@@ -20,9 +20,9 @@
         <property name="autoUpdateInteractionLabel" value="true"/>
     </bean>
 
-    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext" scope="hybridSession">
+    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext" scope="session">
         <property name="userId" value="EDITOR_USER"/>
-        <!--<aop:scoped-proxy/>-->
+        <aop:scoped-proxy/>
     </bean>
 
     <!-- Spring scopes -->
