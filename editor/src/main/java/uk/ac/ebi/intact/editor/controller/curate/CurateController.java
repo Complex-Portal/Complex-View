@@ -1,6 +1,7 @@
 package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,6 +28,9 @@ import uk.ac.ebi.intact.model.*;
 @ConversationName( "general" )
 public class CurateController extends JpaAwareController {
 
+    @Autowired
+    private ChangesController changesController;
+
     private AnnotatedObjectController currentAnnotatedObjectController;
 
     public String edit(IntactObject intactObject) {
@@ -45,8 +49,7 @@ public class CurateController extends JpaAwareController {
 
     @Transactional(value = "core", propagation = Propagation.NEVER)
     public void discard(IntactObject intactObject) {
-        CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
-        curatorContextController.removeFromUnsaved(intactObject);
+        changesController.removeFromUnsaved(intactObject);
 
         AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
         annotatedObjectController.doRevertChanges(null);

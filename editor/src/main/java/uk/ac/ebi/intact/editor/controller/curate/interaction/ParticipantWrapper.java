@@ -1,7 +1,7 @@
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
-import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.model.Component;
 import uk.ac.ebi.intact.model.CvAliasType;
 import uk.ac.ebi.intact.model.CvExperimentalPreparation;
@@ -18,14 +18,14 @@ public class ParticipantWrapper {
 
     private Component participant;
     private AnnotatedObjectHelper annotatedObjectHelper;
-    private UnsavedChangeManager unsavedChangeManager;
+    private ChangesController changesController;
 
     private boolean deleted;
     
-    public ParticipantWrapper( Component participant, UnsavedChangeManager unsavedChangeManager ) {
+    public ParticipantWrapper( Component participant, ChangesController changesController ) {
         this.participant = participant;
         this.annotatedObjectHelper = new AnnotatedObjectHelper(participant);
-        this.unsavedChangeManager = unsavedChangeManager;
+        this.changesController = changesController;
     }
 
     public Component getParticipant() {
@@ -82,9 +82,9 @@ public class ParticipantWrapper {
 
         if (participant.getAc() != null) {
             if (deleted) {
-                unsavedChangeManager.markToDelete(participant, participant.getInteraction());
+                changesController.markToDelete(participant, participant.getInteraction());
             } else {
-                unsavedChangeManager.removeFromDeleted(participant, participant.getInteraction());
+                changesController.removeFromDeleted(participant, participant.getInteraction());
             }
         }
     }

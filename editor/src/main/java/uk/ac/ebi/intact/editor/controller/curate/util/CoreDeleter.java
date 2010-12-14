@@ -1,6 +1,6 @@
 package uk.ac.ebi.intact.editor.controller.curate.util;
 
-import org.hibernate.Hibernate;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.*;
 
@@ -24,8 +24,8 @@ public class CoreDeleter extends JpaAwareController {
             deleteFeature((Feature) io);
         }
 
-        IntactObject managedEntity = getDaoFactory().getEntityManager().merge(io);
-        getDaoFactory().getEntityManager().remove(managedEntity);
+        //IntactObject managedEntity = getDaoFactory().getEntityManager().merge(io);
+        //getDaoFactory().getEntityManager().remove(managedEntity);
     }
 
     private void deleteExperiment(Experiment experiment) {
@@ -35,16 +35,18 @@ public class CoreDeleter extends JpaAwareController {
     }
 
     private void deleteInteraction(Interaction interaction) {
-        Collection<Experiment> experiments;
+        if (interaction.getAc() == null) {
+            Collection<Experiment> experiments;
 
-        if (Hibernate.isInitialized(interaction.getExperiments())) {
-            experiments = interaction.getExperiments();
-        } else {
-            experiments = getDaoFactory().getInteractionDao().getByAc(interaction.getAc()).getExperiments();
-        }
+            if (IntactCore.isInitialized(interaction.getExperiments())) {
+                experiments = interaction.getExperiments();
+            } else {
+                experiments = getDaoFactory().getInteractionDao().getByAc(interaction.getAc()).getExperiments();
+            }
 
-        for (Experiment exp : experiments) {
-            exp.removeInteraction(interaction);
+            for (Experiment exp : experiments) {
+                exp.removeInteraction(interaction);
+            }
         }
     }
 

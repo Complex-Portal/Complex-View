@@ -61,7 +61,7 @@ public class InteractorController extends AnnotatedObjectController {
 
         setInteractor(interactor);
 
-        getUnsavedChangeManager().markAsUnsaved(interactor);
+        getChangesController().markAsUnsaved(interactor);
 
         return navigateToObject(interactor);
     }

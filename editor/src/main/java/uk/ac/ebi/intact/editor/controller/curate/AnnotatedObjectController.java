@@ -65,6 +65,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     @Autowired
     private CurateController curateController;
 
+    @Autowired
+    private ChangesController changesController;
+
     public AnnotatedObjectController() {
     }
 
@@ -76,7 +79,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public AnnotatedObjectWrapper getAnnotatedObjectWrapper() {
-        return new AnnotatedObjectWrapper(getAnnotatedObject());
+        return new AnnotatedObjectWrapper(changesController, getAnnotatedObject());
     }
 
     public AnnotatedObjectHelper getAnnotatedObjectHelper() {
@@ -96,7 +99,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     protected void generalLoadChecks() {
         if (getAnnotatedObject() != null) {
-            GeneralChangesController generalChangesController = (GeneralChangesController) getSpringContext().getBean("generalChangesController");
+            ChangesController generalChangesController = (ChangesController) getSpringContext().getBean("changesController");
             if (generalChangesController.isObjectBeingEdited(getAnnotatedObject(), false)) {
                 String who = generalChangesController.whoIsEditingObject(getAnnotatedObject());
 
@@ -106,8 +109,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
      protected <T extends AnnotatedObject> T loadByAc(IntactObjectDao<T> dao, String ac) {
-        CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
-        T ao = (T) curatorContextController.findByAc(ac);
+        T ao = (T) changesController.findByAc(ac);
 
         if (ao == null) {
             ao = dao.getByAc( ac );
@@ -126,13 +128,16 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         //final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         // delete from the unsaved manager
-        final List<UnsavedChange> deletedObjects = getUnsavedChangeManager().getAllUnsavedDeleted();
+        final List<UnsavedChange> deletedObjects = changesController.getAllUnsavedDeleted();
 
         PersistenceController persistenceController = getPersistenceController();
 
         for (UnsavedChange unsaved : deletedObjects) {
             // remove the object to delete from its parent
-            AnnotatedObjectUtils.removeChild(unsaved.getParentObject(), unsaved.getUnsavedObject());
+
+            if (AnnotatedObjectUtils.isChildrenInitialized(unsaved.getParentObject(), unsaved.getUnsavedObject())) {
+                AnnotatedObjectUtils.removeChild(unsaved.getParentObject(), unsaved.getUnsavedObject());
+            }
 
             persistenceController.doDelete(unsaved.getUnsavedObject());
         }
@@ -158,15 +163,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         if (annotatedObject.getAc() != null) {
 
-            CuratorContextController curatorContextController = (CuratorContextController) getSpringContext().getBean("curatorContextController");
-            curatorContextController.removeFromUnsavedByAc(annotatedObject.getAc());
+            ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+            changesController.removeFromUnsaved(annotatedObject);
 
             annotatedObject = refresh(annotatedObject);
         }
 
         setAnnotatedObject(annotatedObject);
         
-        getUnsavedChangeManager().clearChanges();
+        changesController.clearCurrentUserChanges();
 
         doPostSave();
 
@@ -242,7 +247,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         PersistenceController persistenceController = getPersistenceController();
         setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
 
-        getUnsavedChangeManager().clearChanges();
+        changesController.clearCurrentUserChanges();
 
         postRevert();
 
@@ -256,7 +261,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public void doCancelEdition( ActionEvent evt ) {
         addInfoMessage("Canceled", "");
 
-        getUnsavedChangeManager().clearChanges();
+        changesController.clearCurrentUserChanges();
 
         // TODO maybe implement a history mechanism to be safe
         // We rely on the fact that when creating a new object, the URL still shows the previous one (we do a POST)
@@ -296,7 +301,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         setAnnotatedObject(clone);
 
-        getUnsavedChangeManager().markAsUnsaved(clone);
+        changesController.markAsUnsaved(clone);
 
         return getCurateController().edit(clone);
     }
@@ -554,14 +559,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public boolean isUnsavedChanges() {
-        return getUnsavedChangeManager().isUnsavedChanges();
+        return changesController.isUnsaved(getAnnotatedObject());
     }
 
     public void setUnsavedChanges(boolean unsavedChanges) {
         if (unsavedChanges) {
-            getUnsavedChangeManager().markAsUnsaved(getAnnotatedObject());
+            changesController.markAsUnsaved(getAnnotatedObject());
         } else {
-            getUnsavedChangeManager().removeFromUnsaved(getAnnotatedObject());
+            changesController.removeFromUnsaved(getAnnotatedObject());
         }
     }
 
@@ -571,10 +576,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public void setLastSaved(Date lastSaved) {
         this.lastSaved = lastSaved;
-    }
-
-    public UnsavedChangeManager getUnsavedChangeManager() {
-        return getAnnotatedObjectWrapper().getUnsavedChangeManager();
     }
 
     public CuratorContextController getCuratorContextController() {
@@ -588,6 +589,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public User getCurrentUser() {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         return userSessionController.getCurrentUser();
+    }
+
+    public ChangesController getChangesController() {
+        return changesController;
     }
 
     private static class EmptyAnnotatedObjectHelper extends AnnotatedObjectHelper {

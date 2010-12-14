@@ -71,6 +71,10 @@ public class UnsavedChange {
         UnsavedChange that = (UnsavedChange) o;
 
         if (action != null ? !action.equals(that.action) : that.action != null) return false;
+        if (unsavedObject != null && unsavedObject.getAc() != null && that.unsavedObject != null && that.unsavedObject.getAc() != null) {
+            return unsavedObject.getAc().equals(that.unsavedObject.getAc());
+        }
+
         if (unsavedObject != null ? System.identityHashCode(unsavedObject) != System.identityHashCode(that.unsavedObject) : that.unsavedObject != null)
             return false;
 
@@ -79,8 +83,14 @@ public class UnsavedChange {
 
     @Override
     public int hashCode() {
-        int result = unsavedObject != null ? System.identityHashCode(unsavedObject) : 0;
-        result = 31 * result + (action != null ? action.hashCode() : 0);
+        int result = action != null ? action.hashCode() : 0;
+
+        if (unsavedObject != null && unsavedObject.getAc() != null) {
+            return 31 * (result + unsavedObject.getAc().hashCode());
+        }
+
+        result = 31 * result + (unsavedObject != null ? System.identityHashCode(unsavedObject) : 0);
+
         return result;
     }
 }

@@ -47,7 +47,7 @@ public class PersistenceController extends JpaAwareController {
     private static final Log log = LogFactory.getLog( PersistenceController.class );
 
     @Autowired
-    private CuratorContextController curatorContextController;
+    private ChangesController changesController;
 
     @Autowired
     private CoreDeleter coreDeleter;
@@ -94,7 +94,7 @@ public class PersistenceController extends JpaAwareController {
         return intactObject;
     }
 
-   @Transactional(propagation = Propagation.NEVER)
+   @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void doDelete(IntactObject intactObject) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
@@ -113,34 +113,27 @@ public class PersistenceController extends JpaAwareController {
     @Transactional(value = "core", propagation = Propagation.NEVER)
     public void saveAll(ActionEvent actionEvent) {
 
-        for (UnsavedChangeManager ucm : curatorContextController.getUnsavedChangeManagers()) {
-            for (IntactObject intactObject : ucm.getAllUnsaved()) {
+        for (IntactObject intactObject : changesController.getAllUnsaved()) {
 
-                if (intactObject instanceof AnnotatedObject) {
-                    doSave((AnnotatedObject) intactObject);
-                }
+            if (intactObject instanceof AnnotatedObject) {
+                doSave((AnnotatedObject) intactObject);
             }
-
-            for (IntactObject intactObject : ucm.getAllDeleted()) {
-                doDelete(intactObject);
-            }
-
-            ucm.clearChanges();
         }
 
-        curatorContextController.clear();
+        for (IntactObject intactObject : changesController.getAllDeleted()) {
+            doDelete(intactObject);
+        }
+
+        changesController.clearCurrentUserChanges();
+
     }
 
     @Transactional(value = "core", propagation = Propagation.NEVER)
     public void revertAll(ActionEvent actionEvent) {
-        for (UnsavedChangeManager ucm : curatorContextController.getUnsavedChangeManagers()) {
-            for (IntactObject intactObject : ucm.getAllUnsaved()) {
-                doRevert(intactObject);
-            }
-
-            ucm.clearChanges();
+        for (IntactObject intactObject : changesController.getAllUnsaved()) {
+            doRevert(intactObject);
         }
 
-         curatorContextController.clear();
+         changesController.clearCurrentUserChanges();
     }
 }

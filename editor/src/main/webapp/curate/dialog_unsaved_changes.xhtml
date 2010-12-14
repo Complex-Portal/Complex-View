@@ -9,7 +9,7 @@
               position="center" 
               width="500">
 
-        <p:dataTable id="unsavedTable" var="change" value="#{curatorContextController.allChanges}" paginator="true" rows="10"
+        <p:dataTable id="unsavedTable" var="change" value="#{changesController.unsavedChangesForCurrentUser}" paginator="true" rows="10"
                 paginatorAlwaysVisible="false">
             <p:column>
                 <p:commandButton value="Edit" action="#{curateController.edit(change.unsavedObject)}" ajax="false"/>

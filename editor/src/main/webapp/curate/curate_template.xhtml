@@ -103,9 +103,9 @@
             <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
                 <h:panelGroup id="unsavedChangesInfo" style="float: right; margin-right: 40px">
                     <ui:insert name="curateTopRight">
-                        <h:panelGroup rendered="#{curatorContextController.allChanges.size() gt 0}">
+                        <h:panelGroup rendered="#{changesController.unsavedChangesForCurrentUser.size() gt 0}">
                             <ia:panelMessage level="warn" showIcon="true">
-                                <p:commandLink value="#{curatorContextController.allChanges.size()} unsaved changes"
+                                <p:commandLink value="#{changesController.unsavedChangesForCurrentUser.size()} unsaved changes"
                                                update="unsavedTable"
                                                onclick="unsavedChangesDialog.show()"/>
                             </ia:panelMessage>

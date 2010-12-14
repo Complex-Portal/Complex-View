@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
-import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
@@ -202,7 +201,7 @@ public class FeatureController extends AnnotatedObjectController {
 
         refreshRangeWrappers();
 
-        getUnsavedChangeManager().markAsUnsaved(feature);
+        getChangesController().markAsUnsaved(feature);
     }
 
     private String getSequence() {
@@ -217,13 +216,13 @@ public class FeatureController extends AnnotatedObjectController {
         return sequence;
     }
 
-    public void markRangeToDelete(Range range, UnsavedChangeManager unsavedChangeManager) {
+    public void markRangeToDelete(Range range) {
         if (range == null) return;
 
         if (range.getAc() == null) {
             feature.removeRange(range);
         } else {
-            unsavedChangeManager.markToDelete(range, range.getFeature());
+            getChangesController().markToDelete(range, range.getFeature());
         }
     }
 

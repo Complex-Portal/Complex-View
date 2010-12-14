@@ -96,6 +96,10 @@ public class MyNotesController extends JpaAwareController {
 
         rawNotes = pref.getValue();
 
+        if (rawNotes == null) {
+            rawNotes = "";
+        }
+
         processNotes();
     }
 

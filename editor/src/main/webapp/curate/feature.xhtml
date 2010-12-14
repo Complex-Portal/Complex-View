@@ -114,7 +114,7 @@
                     <p:outputPanel id="rangeTable">
                         <h:panelGroup id="rangesTable">
 
-                        <ui:param name="rangeToDeleteCount" value="#{unsavedChangeManager.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Range').size()}"/>
+                        <ui:param name="rangeToDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Range').size()}"/>
 
                         <h:panelGroup rendered="#{rangeToDeleteCount gt 0}">
                             <ia:panelMessage level="info">
@@ -124,7 +124,6 @@
 
                         <ui:include src="ranges_wrapped_table.xhtml">
                             <ui:param name="value" value="#{featureController.wrappedRanges}"/>
-                            <ui:param name="unsavedChangeManager" value="#{featureController.unsavedChangeManager}"/>
                         </ui:include>
 
                         </h:panelGroup>

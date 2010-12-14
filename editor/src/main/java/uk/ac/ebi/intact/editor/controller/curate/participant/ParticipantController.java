@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
-import uk.ac.ebi.intact.editor.controller.curate.UnsavedChangeManager;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
@@ -182,11 +181,11 @@ public class ParticipantController extends ParameterizableObjectController {
         }
     }
 
-    public void markFeatureToDelete(Feature feature, UnsavedChangeManager unsavedChangeManager) {
+    public void markFeatureToDelete(Feature feature) {
         if (feature.getAc() == null) {
             participant.removeBindingDomain(feature);
         } else {
-            unsavedChangeManager.markToDelete(feature, feature.getComponent());
+           getChangesController().markToDelete(feature, feature.getComponent());
         }
     }
 
@@ -206,7 +205,7 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     public ParticipantWrapper getParticipantWrapper() {
-        return new ParticipantWrapper( participant, getUnsavedChangeManager() );
+        return new ParticipantWrapper( participant, getChangesController() );
     }
 
     public void setParticipant( Component participant ) {

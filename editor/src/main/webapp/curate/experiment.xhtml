@@ -147,8 +147,6 @@
             <p:tabView id="experimentTabs">
 
                 <p:tab title="Interactions (#{experimentController.interactionDataModel.rowCount})">
-                    <!--<ia:interactionsTable value="#{experimentController.interactionDataModel}"-->
-                                          <!--unsavedChangeManager="#{experimentController.unsavedChangeManager}"/>-->
                     <div class="intact-buttonBar">
                         <p:commandButton value="New interaction" actionListener="#{annotatedObjectController.doSaveIfNecessary}" process="editorForm"
                                              action="#{interactionController.newInteraction(experimentController.experiment.publication, experimentController.experiment)}" ajax="false" />
@@ -156,7 +154,6 @@
 
                     <ui:include src="interactions_table.xhtml">
                         <ui:param name="value" value="#{experimentController.interactionDataModel}"/>
-                        <ui:param name="unsavedChangeManager" value="#{experimentController.unsavedChangeManager}"/>
                     </ui:include>
                 </p:tab>
 

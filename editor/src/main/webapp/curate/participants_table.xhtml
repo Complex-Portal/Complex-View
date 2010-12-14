@@ -9,7 +9,7 @@
 
     <h:panelGroup id="participantsTable">
 
-        <ui:param name="toDeleteCount" value="#{unsavedChangeManager.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Component').size()}"/>
+        <ui:param name="toDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Component').size()}"/>
 
             <h:panelGroup rendered="#{toDeleteCount gt 0}">
                 <ia:panelMessage level="info">
@@ -29,10 +29,10 @@
             <p:column>
                 <f:facet name="header"><h:outputText value="Name"/></f:facet>
                 <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
-                               value="#{interactor.shortLabel}" rendered="#{interactor != null and not unsavedChangeManager.isDeletedAc(participant.ac)}"
+                               value="#{interactor.shortLabel}" rendered="#{interactor != null and not changesController.isDeletedAc(participant.ac)}"
                                style="#{participant.ac == null? 'color:blue' :''}"
                                ajax="false"/>
-                <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(participant.ac)}">
+                <h:panelGroup rendered="#{changesController.isDeletedAc(participant.ac)}">
                     <h:outputText value="#{interactor.shortLabel}" style="color:red; text-decoration:line-through"/>
                 </h:panelGroup>
 
@@ -50,7 +50,7 @@
             <p:column>
                 <f:facet name="header"><h:outputText value="Identity"/></f:facet>
                 <h:outputText value="#{interactionController.getInteractorIdentity(participant.interactor)}"
-                        style="#{unsavedChangeManager.isDeletedAc(participant.ac)? 'color:red; text-decoration:line-through' : ''}"/>
+                        style="#{changesController.isDeletedAc(participant.ac)? 'color:red; text-decoration:line-through' : ''}"/>
             </p:column>
 
             <p:column>
@@ -90,22 +90,22 @@
                 <f:facet name="header"><h:outputText value="Options"/></f:facet>
                 <div style="float:right">
                     <p:commandLink process="@this" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
-                                   actionListener="#{unsavedChangeManager.markToDelete(participant, interactionController.interaction)}"
+                                   actionListener="#{changesController.markToDelete(participant, interactionController.interaction)}"
                                    update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent"
                                    oncomplete="markAsUnsaved()"
-                                   rendered="#{not unsavedChangeManager.isDeletedAc(participant.ac)}"/>
+                                   rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
                 <div style="float:right">
                 <p:commandLink process="@this" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
-                               actionListener="#{unsavedChangeManager.revert(participant)}"
+                               actionListener="#{changesController.revert(participant)}"
                                update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent"
-                               rendered="#{unsavedChangeManager.isDeletedAc(participant.ac)}"/>
+                               rendered="#{changesController.isDeletedAc(participant.ac)}"/>
                 </div>
                 <div style="float:left">
                 <p:commandLink process="@this" title="Duplicate" styleClass="ui-icon ui-icon-newwin"
                                actionListener="#{interactionController.cloneParticipant(wrapper)}"
                                update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent"
-                               rendered="#{not unsavedChangeManager.isDeletedAc(participant.ac)}"/>
+                               rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
             </p:column>
 

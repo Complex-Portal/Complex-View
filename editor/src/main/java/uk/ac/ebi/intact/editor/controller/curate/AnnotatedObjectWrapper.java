@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 
 /**
@@ -24,10 +23,11 @@ import uk.ac.ebi.intact.model.AnnotatedObject;
  */
 public class AnnotatedObjectWrapper {
 
-    private UnsavedChangeManager unsavedChangeManager;
+    private ChangesController changesController;
     private AnnotatedObject annotatedObject;
 
-    protected AnnotatedObjectWrapper(AnnotatedObject annotatedObject) {
+    protected AnnotatedObjectWrapper(ChangesController changesController, AnnotatedObject annotatedObject) {
+        this.changesController = changesController;
         this.annotatedObject = annotatedObject;
     }
 
@@ -35,29 +35,9 @@ public class AnnotatedObjectWrapper {
         return annotatedObject;
     }
 
-    public UnsavedChangeManager getUnsavedChangeManager() {
-        if (unsavedChangeManager == null) {
-            CuratorContextController curatorContextController = (CuratorContextController)
-                    IntactContext.getCurrentInstance().getSpringContext().getBean("curatorContextController");
-
-            if (getAnnotatedObject() != null) {
-                if (getAnnotatedObject().getAc() != null) {
-                    unsavedChangeManager = curatorContextController.getUnsavedChangeManager(getAnnotatedObject().getAc());
-                } else {
-                     unsavedChangeManager = curatorContextController.getUnsavedChangeManager(System.identityHashCode(getAnnotatedObject()));
-                }
-
-            } else {
-                unsavedChangeManager = new UnsavedChangeManager();
-            }
-        }
-
-        return unsavedChangeManager;
-    }
-
     public boolean isDeleted() {
         if (annotatedObject.getAc() != null) {
-            return getUnsavedChangeManager().isDeletedAc(annotatedObject.getAc());
+            return changesController.isDeletedAc(annotatedObject.getAc());
         }
 
         return false;

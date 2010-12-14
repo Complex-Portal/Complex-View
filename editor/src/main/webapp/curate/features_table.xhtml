@@ -9,7 +9,7 @@
 
     <h:panelGroup id="featuresTable">
 
-    <ui:param name="featuresToDeleteCount" value="#{unsavedChangeManager.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Feature').size()}"/>
+    <ui:param name="featuresToDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Feature').size()}"/>
 
             <h:panelGroup rendered="#{featuresToDeleteCount gt 0}">
                 <ia:panelMessage level="info">
@@ -23,18 +23,18 @@
                     <f:facet name="header">
                         <h:outputText value="AC"/>
                     </f:facet>
-                     <h:outputText value="#{feature.ac}" styleClass="#{unsavedChangeManager.isDeletedAc(feature.ac)? 'intact-deleted' : ''}"/>
+                     <h:outputText value="#{feature.ac}" styleClass="#{changesController.isDeletedAc(feature.ac)? 'intact-deleted' : ''}"/>
                 </p:column>
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="Shortlabel"/>
                     </f:facet>
-                     <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(feature.ac)}">
+                     <h:panelGroup rendered="#{not changesController.isDeletedAc(feature.ac)}">
                          <p:commandLink onclick="load_feature.show()" action="#{curateController.edit(feature)}"
                                style="#{feature.ac == null? 'color:blue' :''}"
                                value="#{feature.shortLabel}" ajax="false"/>
                      </h:panelGroup>
-                    <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(feature.ac)}">
+                    <h:panelGroup rendered="#{changesController.isDeletedAc(feature.ac)}">
                         <h:outputText value="#{feature.shortLabel}" style="color:red; text-decoration:line-through"/>
                     </h:panelGroup>
 
@@ -73,11 +73,11 @@
                         <h:outputText value="Actions"/>
                     </f:facet>
                     <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
-                               actionListener="#{participantController.markFeatureToDelete(feature, unsavedChangeManager)}"
-                               update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(feature.ac)}"/>
+                               actionListener="#{participantController.markFeatureToDelete(feature)}"
+                               update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{not changesController.isDeletedAc(feature.ac)}"/>
                     <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
-                               actionListener="#{unsavedChangeManager.revert(feature)}"
-                               update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(feature.ac)}"/>
+                               actionListener="#{changesController.revert(feature)}"
+                               update="featuresTable,growl,changesPanel,messagesComponent" rendered="#{changesController.isDeletedAc(feature.ac)}"/>
                 </p:column>
             </p:dataTable>
 

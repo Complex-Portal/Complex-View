@@ -189,7 +189,7 @@ public class PublicationController extends AnnotatedObjectController {
 
         identifier = null;
 
-        getUnsavedChangeManager().markAsUnsaved(publication);
+        getChangesController().markAsUnsaved(publication);
     }
 
     public void doFormAutocomplete( ActionEvent evt ) {
@@ -271,7 +271,7 @@ public class PublicationController extends AnnotatedObjectController {
         Publication publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
         setPublication(publication);
 
-        getUnsavedChangeManager().markAsUnsaved(publication);
+        getChangesController().markAsUnsaved(publication);
 
         interactionDataModel = LazyDataModelFactory.createEmptyDataModel();
 

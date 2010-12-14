@@ -301,13 +301,13 @@ public class InteractionController extends ParameterizableObjectController {
         participantWrappers = new LinkedList<ParticipantWrapper>();
 
         for ( Component component : components ) {
-            participantWrappers.add( new ParticipantWrapper( component, getUnsavedChangeManager() ) );
+            participantWrappers.add( new ParticipantWrapper( component, getChangesController() ) );
         }
     }
 
     public void addParticipant(Component component) {
         interaction.addComponent(component);
-        participantWrappers.addFirst(new ParticipantWrapper( component, getUnsavedChangeManager() ));
+        participantWrappers.addFirst(new ParticipantWrapper( component, getChangesController() ));
 
         try {
             updateShortLabel();
@@ -315,7 +315,7 @@ public class InteractionController extends ParameterizableObjectController {
             addErrorMessage("Problem updating shortLabel", e.getMessage());
         }
 
-        getUnsavedChangeManager().markAsUnsaved(interaction);
+        getChangesController().markAsUnsaved(interaction);
     }
 
     public String copyToExperiment() {

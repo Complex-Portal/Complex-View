@@ -10,7 +10,7 @@
 
         <h:panelGroup id="interactionTable">
 
-            <ui:param name="toDeleteCount" value="#{unsavedChangeManager.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Interaction').size()}"/>
+            <ui:param name="toDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Interaction').size()}"/>
 
             <h:panelGroup rendered="#{toDeleteCount gt 0}">
                 <ia:panelMessage level="info">
@@ -25,20 +25,20 @@
                 <f:facet name="header">
                     <h:outputText value="AC"/>
                 </f:facet>
-                    <h:outputText value="#{interaction.ac}" styleClass="#{unsavedChangeManager.isDeletedAc(interaction.ac)? 'intact-deleted' : ''}"/>
+                    <h:outputText value="#{interaction.ac}" styleClass="#{changesController.isDeletedAc(interaction.ac)? 'intact-deleted' : ''}"/>
             </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Shortlabel"/>
                 </f:facet>
-                <h:panelGroup rendered="#{not unsavedChangeManager.isDeletedAc(interaction.ac)}">
+                <h:panelGroup rendered="#{not changesController.isDeletedAc(interaction.ac)}">
                     <p:commandLink onclick="load_int.show()" action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"
                                style="#{interaction.ac == null? 'color:blue' :''}"
                                value="#{interaction.shortLabel}" ajax="false">
                         <f:setPropertyActionListener value="#{interaction}" target="#{interactionController.interaction}"/>
                     </p:commandLink>
                 </h:panelGroup>
-                <h:panelGroup rendered="#{unsavedChangeManager.isDeletedAc(interaction.ac)}">
+                <h:panelGroup rendered="#{changesController.isDeletedAc(interaction.ac)}">
                     <h:outputText value="#{interaction.shortLabel}" style="color:red; text-decoration:line-through"/>
                 </h:panelGroup>
             </p:column>
@@ -65,11 +65,11 @@
                     <h:outputText value="Actions"/>
                 </f:facet>
                 <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
-                               actionListener="#{unsavedChangeManager.markToDelete(interaction, experimentController.experiment)}"
-                               update="interactionTable,growl,changesPanel,messagesComponent" rendered="#{not unsavedChangeManager.isDeletedAc(interaction.ac)}"/>
+                               actionListener="#{changesController.markToDelete(interaction, experimentController.experiment)}"
+                               update="interactionTable,growl,changesPanel,messagesComponent" rendered="#{not changesController.isDeletedAc(interaction.ac)}"/>
                 <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
-                               actionListener="#{unsavedChangeManager.revert(interaction)}"
-                               update="interactionTable,growl,changesPanel,messagesComponent" rendered="#{unsavedChangeManager.isDeletedAc(interaction.ac)}"/>
+                               actionListener="#{changesController.revert(interaction)}"
+                               update="interactionTable,growl,changesPanel,messagesComponent" rendered="#{changesController.isDeletedAc(interaction.ac)}"/>
             </p:column>
         </p:dataTable>
 
