@@ -123,6 +123,7 @@ public class ChangesController extends BaseController implements UserListener {
     }
 
     public boolean isUnsaved(IntactObject io) {
+        if (io == null) return false;
         if (io.getAc() == null) return true;
 
         return isUnsavedAc(io.getAc());
