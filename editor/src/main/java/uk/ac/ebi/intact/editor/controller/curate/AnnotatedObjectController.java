@@ -175,6 +175,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         doPostSave();
 
+        addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
+
         refreshCurrentViewObject();
     }
 

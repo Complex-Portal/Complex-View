@@ -13,8 +13,10 @@
                 paginatorAlwaysVisible="false">
             <p:column>
                 <p:commandButton value="Edit" action="#{curateController.edit(change.unsavedObject)}" ajax="false"/>
-                <p:commandButton value="Save" actionListener="#{curateController.save(change.unsavedObject)}" update="unsavedTable, messagesComponent, unsavedChangesInfo"/>
-                <p:commandButton value="Discard" actionListener="#{curateController.discard(change.unsavedObject)}" update="unsavedTable, messagesComponent, unsavedChangesInfo"
+                <p:commandButton value="Save" actionListener="#{curateController.save(change.unsavedObject)}"
+                                 update="unsavedTable, messagesComponent, unsavedChangesInfo, changesPanel"/>
+                <p:commandButton value="Discard" actionListener="#{curateController.discard(change.unsavedObject)}"
+                                 update="unsavedTable, messagesComponent, unsavedChangesInfo, changesPanel"
                                  onclick="revertDlg.show()" oncomplete="revertDlg.hide()"/>
             </p:column>
             <p:column>

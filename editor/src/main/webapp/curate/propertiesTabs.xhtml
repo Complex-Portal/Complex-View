@@ -12,7 +12,7 @@
         <ia:xrefsTable annotatedObjectController="#{annotatedObjectController}"
                        databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                        qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
-                       update="xrefsPanel changesPanel messagesComponent #{updateOnChange}"
+                       update="xrefsPanel changesPanel unsavedChangesInfo messagesComponent #{updateOnChange}"
                        valueChangeRender="#{updateOnChange} :editorForm:changesPanel"
                        valueChangeAwareObject="#{annotatedObjectController}"/>
         </h:panelGroup>
@@ -29,7 +29,7 @@
              <ui:include src="annotations_table.xhtml">
                  <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
                  <ui:param name="topicSelectItems" value="#{annotatedObjectSelectItems}"/>
-                 <ui:param name="update" value="annotationsPanel changesPanel messagesComponent #{updateOnChange}"/>
+                 <ui:param name="update" value="annotationsPanel changesPanel unsavedChangesInfo messagesComponent #{updateOnChange}"/>
                  <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
                  <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
              </ui:include>
