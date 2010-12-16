@@ -16,6 +16,26 @@
         <p:dataTable var="annotation" value="#{annotatedObjectController.annotations}">
             <p:column>
                 <f:facet name="header">
+                    <h:outputText value="AC"/>
+                </f:facet>
+                <h:outputText value="#{annotation.ac}"/>
+
+                <h:panelGroup rendered="#{annotation.ac != null}">
+                    <h:panelGroup rendered="#{annotatedObjectController.getParentsByAnnotationAc(annotation.ac).size() gt 1}">
+                        <span class="ui-icon ui-icon-alert" style="display:inline-block"
+                                  title="This annotation is shared by multiple objects: #{curatorContextController.acList(annotatedObjectController.getParentsByAnnotationAc(annotation.ac))}"/>
+
+                        <p:commandLink value="(copy)"
+                                       actionListener="#{myNotesController.copyToNotes(curatorContextController.acList(annotatedObjectController.getParentsByAnnotationAc(annotation.ac)), 'Parent Accessions copied')}"
+                                       update="messagesComponent">
+
+                        </p:commandLink>
+                    </h:panelGroup>
+
+                </h:panelGroup>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
                 <h:selectOneMenu value="#{annotation.cvTopic}" required="true" requiredMessage="Topic is required">

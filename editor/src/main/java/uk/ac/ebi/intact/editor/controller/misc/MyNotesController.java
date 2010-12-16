@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.misc;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -115,6 +116,14 @@ public class MyNotesController extends JpaAwareController {
         processNotes();
 
         editMode = false;
+    }
+
+    public void copyToNotes(String newContent, String message) {
+        addInfoMessage("Information copied", message);
+
+        rawNotes = rawNotes + "\n\n=== Copied "+new DateTime().toString()+" ===\n\n"+newContent;
+
+        saveNotes(null);
     }
 
     private void processNotes() {

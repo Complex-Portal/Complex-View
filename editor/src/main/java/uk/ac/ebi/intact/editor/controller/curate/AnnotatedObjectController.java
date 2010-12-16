@@ -508,6 +508,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return getAnnotatedObjectHelper().getAnnotations();
     }
 
+    public List<AnnotatedObject> getParentsByAnnotationAc(String annotationAc) {
+        return getDaoFactory().getAnnotationDao().getParentsWithAnnotationAc(annotationAc);
+    }
+
     // ALIASES
     ///////////////////////////////////////////////
 

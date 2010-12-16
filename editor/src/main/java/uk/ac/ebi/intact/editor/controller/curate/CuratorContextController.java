@@ -18,8 +18,12 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
+
+import java.util.Collection;
 
 /**
  * Keeps the changes for each annotated object by AC.
@@ -40,5 +44,13 @@ public class CuratorContextController extends BaseController {
     public String intactObjectSimpleName(IntactObject io) {
         if (io == null) return null;
         return io.getClass().getSimpleName().replaceAll("Impl", "");
+    }
+
+    public String annotatedObjectToString(AnnotatedObject ao) {
+        return DebugUtil.annotatedObjectToString(ao, false);
+    }
+
+    public String acList(Collection<? extends IntactObject> aos) {
+        return DebugUtil.acList(aos).toString();
     }
 }
