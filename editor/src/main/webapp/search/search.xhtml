@@ -76,10 +76,10 @@
 
             <table>
                 <tr><td>
-                    <h:graphicImage alt="infoIcon" url="/resources/images/info.jpeg"/>&#160;Queries are not case-sensitive
+                    <h:graphicImage alt="infoIcon" url="/resources/images/info.png"/>&#160;Queries are not case-sensitive
                 </td></tr>
                 <tr><td>
-                    <h:graphicImage alt="infoIcon" url="/resources/images/info.jpeg"/>&#160;Leading and trailing blank characters in your query are automatically removed.
+                    <h:graphicImage alt="infoIcon" url="/resources/images/info.png"/>&#160;Leading and trailing blank characters in your query are automatically removed.
                 </td></tr>
             </table>
         </p:outputPanel>
@@ -88,183 +88,42 @@
             Results for query: <b>#{searchController.query}</b>
             <hr/>
 
+            <ui:param name="annotatedObjectController" value="#{interactorController}"/>
+
         <p:accordionPanel autoHeight="false">
               <p:tab title="Publications (#{searchController.publications.rowCount})"
                      rendered="#{searchController.publications.rowCount != 0}">
 
-
-        <!--<ia:collapsiblePanel id="publicationPanel" open="#{searchController.matchesSingleType()}"-->
-                             <!--display="#{searchController.publications.rowCount > 0}"-->
-                             <!--title="Publications (#{searchController.publications.rowCount})">-->
-
-            <p:dataTable id="searchPublicationTable" var="publication" value="#{searchController.publications}"
-                         paginator="#{searchController.publications.rowCount > 10}"
-                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Publication ID"/>
-                    </f:facet>
-                    <ot:separateConversationContext>
-                        <h:link outcome="/curate/publication" value="#{publication.shortLabel}" includeViewParams="true">
-                            <f:param name="ac" value="#{publication.ac}"/>
-                        </h:link>
-                    </ot:separateConversationContext>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Title"/>
-                    </f:facet>
-                    <h:outputText value="#{publication.fullName}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="#Experiments"/>
-                    </f:facet>
-                    <h:outputText value="#{searchController.countExperimentsForPublication(publication)}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="#Interactions"/>
-                    </f:facet>
-                    <h:outputText value="#{searchController.countInteractionsForPublication(publication)}"/>
-                </p:column>
-            </p:dataTable>
-
-        <!--</ia:collapsiblePanel>-->
+            <ui:include src="/dashboard/publications_table.xhtml">
+                <ui:param name="publicationsDataModel" value="#{searchController.publications}"/>
+            </ui:include>
 
               </p:tab>
 
               <p:tab title="Experiments (#{searchController.experiments.rowCount})"
                       rendered="#{searchController.experiments.rowCount != 0}">
 
-        <!--<ia:collapsiblePanel id="experimentPanel" open="#{searchController.matchesSingleType()}"-->
-                             <!--display="#{searchController.experiments.rowCount > 0}"-->
-                             <!--title="Experiments (#{searchController.experiments.rowCount})">-->
-
-            <p:dataTable id="searchExperimentTable" var="experiment" value="#{searchController.experiments}"
-                         paginator="#{searchController.experiments.rowCount > 10}"
-                         rows="10" dynamic="true" lazy="true"  paginatorPosition="bottom">
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Experiment"/>
-                    </f:facet>
-                    <ot:separateConversationContext>
-                        <h:link outcome="/curate/experiment" value="#{experiment.shortLabel}" includeViewParams="true">
-                            <f:param name="ac" value="#{experiment.ac}"/>
-                        </h:link>
-                    </ot:separateConversationContext>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Publication ID"/>
-                    </f:facet>
-                    <ot:separateConversationContext>
-                        <h:link outcome="/curate/publication" value="#{experiment.publication.shortLabel}" includeViewParams="true">
-                            <f:param name="ac" value="#{experiment.publication.ac}"/>
-                        </h:link>
-                    </ot:separateConversationContext>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Host organism"/>
-                    </f:facet>
-                    <h:outputText value="#{experiment.bioSource.fullName}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Interaction detection method"/>
-                    </f:facet>
-                    <h:outputText value="#{experiment.cvInteraction.shortLabel}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Participant detection method"/>
-                    </f:facet>
-                    <h:outputText value="#{experiment.cvIdentification.shortLabel}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="#Interactions"/>
-                    </f:facet>
-                    <h:outputText value="#{experimentController.countInteractionsByExperimentAc(experiment.ac)}"/>
-                </p:column>
-            </p:dataTable>
-
-        <!--</ia:collapsiblePanel>-->
+                  <ui:include src="/curate/experiments_table.xhtml">
+                      <ui:param name="value" value="#{searchController.experiments}"/>
+                      <ui:param name="lazy" value="#{true}"/>
+                      <ui:param name="readonly" value="#{true}"/>
+                  </ui:include>
 
               </p:tab>
 
               <p:tab title="Interactions (#{searchController.interactions.rowCount})"
                       rendered="#{searchController.interactions.rowCount != 0}">
 
-        <!--<ia:collapsiblePanel id="interactionPanel" open="#{searchController.matchesSingleType()}"-->
-                             <!--display="#{searchController.interactions.rowCount > 0}"-->
-                             <!--title="Interactions (#{searchController.interactions.rowCount})">-->
-
-            <p:dataTable id="searchInteractionTable" var="interaction" value="#{searchController.interactions}"
-                         paginator="true" paginatorAlwaysVisible="false"
-                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Experiment"/>
-                    </f:facet>
-                    <ot:separateConversationContext>
-                        <ui:param name="experiment" value="#{searchController.getFirstExperiment(interaction)}"/>
-                        <h:link outcome="/curate/experiment" value="#{searchController.getFirstExperiment(interaction).shortLabel}" includeViewParams="true"
-                                rendered="#{experiment != null}">
-                            <f:param name="ac" value="#{searchController.getFirstExperiment(interaction).ac}"/>
-                        </h:link>
-                        <h:panelGroup rendered="#{experiment == null}">
-                            <h:graphicImage library="images" name="warn.gif"/>
-                            &#160;
-                            <h:outputText value="No experiment!"/>
-                        </h:panelGroup>
-                    </ot:separateConversationContext>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Publication ID"/>
-                    </f:facet>
-                    <ot:separateConversationContext>
-                        <ui:param name="publication" value="#{searchController.getFirstExperiment(interaction) != null? searchController.getFirstExperiment(interaction).publication : null}"/>
-                        <h:link outcome="/curate/publication" value="#{searchController.getFirstExperiment(interaction).publication.shortLabel}" includeViewParams="true"
-                                rendered="#{publication != null}">
-                            <f:param name="ac" value="#{searchController.getFirstExperiment(interaction).publication.ac}"/>
-                        </h:link>
-                    </ot:separateConversationContext>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="ShortLabel"/>
-                    </f:facet>
-                    <h:link outcome="/curate/interaction" value="#{interaction.shortLabel}" includeViewParams="true">
-                        <f:param name="ac" value="#{interaction.ac}"/>
-                    </h:link>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Type"/>
-                    </f:facet>
-                    <h:outputText value="#{interaction.cvInteractionType.shortLabel}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="#Participants"/>
-                    </f:facet>
-                    <h:outputText value="#{interactionController.countParticipantsByInteractionAc(interaction.ac)}"/>
-                </p:column>
-            </p:dataTable>
-
-        <!--</ia:collapsiblePanel>-->
+                  <ui:include src="/curate/interactions_table.xhtml">
+                      <ui:param name="value" value="#{searchController.interactions}"/>
+                      <ui:param name="readonly" value="#{true}"/>
+                  </ui:include>
 
               </p:tab>
 
               <p:tab title="Molecules (#{searchController.molecules.rowCount})"
                       rendered="#{searchController.molecules.rowCount != 0}">
 
-        <!--<ia:collapsiblePanel id="moleculePanel" open="#{searchController.matchesSingleType()}"-->
-                             <!--display="#{searchController.molecules.rowCount > 0}"-->
-                             <!--title="Molecules (#{searchController.molecules.rowCount})">-->
 
             <p:dataTable id="searchMoleculeTable" var="molecule" value="#{searchController.molecules}"
                          paginator="#{searchController.molecules.rowCount > 10}"
@@ -276,6 +135,15 @@
                     <h:link outcome="/curate/interactor" value="#{molecule.ac}" includeViewParams="true">
                         <f:param name="ac" value="#{molecule.ac}"/>
                     </h:link>
+                </p:column>
+                <p:column>
+                    <ui:include src="/curate/common_column_notifications.xhtml">
+                        <ui:param name="ao" value="#{molecule}"/>
+                    </ui:include>
+                    <h:panelGroup rendered="#{annotatedObjectController.isNoUniprotUpdate(molecule)}">
+                        <h:graphicImage alt="no uniprot update" library="images" name="no_uni_update.png"
+                                        title="No Uniprot Update"/>
+                    </h:panelGroup>
                 </p:column>
                 <p:column>
                     <f:facet name="header">
@@ -303,16 +171,10 @@
                 </p:column>
             </p:dataTable>
 
-        <!--</ia:collapsiblePanel>-->
-
               </p:tab>
 
               <p:tab title="Controlled Vocabularies (#{searchController.cvobjects.rowCount})"
                       rendered="#{searchController.cvobjects.rowCount != 0}">
-
-        <!--<ia:collapsiblePanel id="cvPanel" open="#{searchController.matchesSingleType()}"-->
-                             <!--display="#{searchController.cvobjects.rowCount > 0}"-->
-                             <!--title="Controlled Vocabularies (#{searchController.cvobjects.rowCount})">-->
 
               <p:dataTable id="searchCvObjectTable" var="cvobject" value="#{searchController.cvobjects}"
                          paginator="#{searchController.cvobjects.rowCount > 10}"
@@ -325,6 +187,11 @@
                         <f:param name="ac" value="#{cvobject.ac}"/>
                     </h:link>
                 </p:column>
+                <p:column>
+                      <ui:include src="/curate/common_column_notifications.xhtml">
+                          <ui:param name="ao" value="#{cvobject}"/>
+                      </ui:include>
+                  </p:column>
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="Type"/>
@@ -345,15 +212,10 @@
                 </p:column>
             </p:dataTable>
 
-        <!--</ia:collapsiblePanel>-->
               </p:tab>
 
                <p:tab title="Features (#{searchController.features.rowCount})"
                        rendered="#{searchController.features.rowCount != 0}">
-
-     <!--<ia:collapsiblePanel id="featuresPanel" open="#{searchController.matchesSingleType()}"-->
-                             <!--display="#{searchController.features.rowCount > 0}"-->
-                             <!--title="Features (#{searchController.features.rowCount})">-->
 
               <p:dataTable id="searchFeaturesTable" var="feature" value="#{searchController.features}"
                          paginator="#{searchController.features.rowCount > 10}"
@@ -368,7 +230,12 @@
                         </h:link>
                     </ot:separateConversationContext>
                 </p:column>
-                <p:column>
+                  <p:column>
+                      <ui:include src="/curate/common_column_notifications.xhtml">
+                          <ui:param name="ao" value="#{feature}"/>
+                      </ui:include>
+                  </p:column>
+                  <p:column>
                     <f:facet name="header">
                         <h:outputText value="Name"/>
                     </f:facet>
@@ -376,16 +243,10 @@
                 </p:column>
             </p:dataTable>
 
-        <!--</ia:collapsiblePanel>-->
-
               </p:tab>
 
               <p:tab title="Organisms (#{searchController.organisms.rowCount})"
                       rendered="#{searchController.organisms.rowCount != 0}">
-
-        <!--<ia:collapsiblePanel id="organismsPanel" open="#{searchController.matchesSingleType()}"-->
-                             <!--display="#{searchController.organisms.rowCount > 0}"-->
-                             <!--title="Organisms (#{searchController.organisms.rowCount})">-->
 
               <p:dataTable id="organismFeaturesTable" var="organism" value="#{searchController.organisms}"
                          paginator="#{searchController.organisms.rowCount > 10}"
@@ -398,7 +259,12 @@
                         <f:param name="ac" value="#{organism.ac}"/>
                     </h:link>
                 </p:column>
-                <p:column>
+                  <p:column>
+                      <ui:include src="/curate/common_column_notifications.xhtml">
+                          <ui:param name="ao" value="#{organism}"/>
+                      </ui:include>
+                  </p:column>
+                  <p:column>
                     <f:facet name="header">
                         <h:outputText value="Name"/>
                     </f:facet>
@@ -417,8 +283,6 @@
                     <h:outputText value="#{organism.ac}"/>
                 </p:column>
             </p:dataTable>
-
-        <!--</ia:collapsiblePanel>-->
         
         </p:tab>
 

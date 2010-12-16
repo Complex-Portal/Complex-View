@@ -17,12 +17,12 @@
     <composite:implementation>
 
         <h:panelGroup>
-            <ui:param name="levelColor" value="#{cc.attrs.level == 'info'? 'intact-infoPanel' : cc.attrs.level == 'warn'? 'intact-warnPanel' : cc.attrs.level == 'error'? 'intact-errorPanel' : ''}"/>
-
-            <div class="#{levelColor}" style="padding: 5px; ">
+            <div class="intact-panelMessage-#{cc.attrs.level}" style="padding: 5px; ">
 
                 <h:panelGroup rendered="#{cc.attrs.showIcon}">
-                    <h:graphicImage library="images" name="info.jpeg" rendered="#{cc.attrs.level == 'info'}"
+                    <h:graphicImage library="images" name="info.png" rendered="#{cc.attrs.level == 'ok'}"
+                            style="vertical-align: middle"/>
+                    <h:graphicImage library="images" name="info.png" rendered="#{cc.attrs.level == 'info'}"
                             style="vertical-align: middle"/>
                     <h:graphicImage library="images" name="warn.gif" rendered="#{cc.attrs.level == 'warn'}"
                             style="vertical-align: middle"/>

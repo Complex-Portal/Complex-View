@@ -48,9 +48,19 @@
             </p:column>
 
             <p:column>
+                <ui:include src="common_column_notifications.xhtml">
+                    <ui:param name="ao" value="#{participant}"/>
+                </ui:include>
+                <h:panelGroup rendered="#{annotatedObjectController.isNoUniprotUpdate(participant.interactor)}">
+                    <h:graphicImage alt="no uniprot update" library="images" name="no_uni_update.png"
+                                    title="No Uniprot Update"/>
+                </h:panelGroup>
+            </p:column>
+
+            <p:column>
                 <f:facet name="header"><h:outputText value="Identity"/></f:facet>
                 <h:outputText value="#{interactionController.getInteractorIdentity(participant.interactor)}"
-                        style="#{changesController.isDeletedAc(participant.ac)? 'color:red; text-decoration:line-through' : ''}"/>
+                              style="#{changesController.isDeletedAc(participant.ac)? 'color:red; text-decoration:line-through' : ''}"/>
             </p:column>
 
             <p:column>

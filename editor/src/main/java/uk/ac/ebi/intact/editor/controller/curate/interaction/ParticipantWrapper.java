@@ -1,11 +1,9 @@
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
-import uk.ac.ebi.intact.model.Component;
-import uk.ac.ebi.intact.model.CvAliasType;
-import uk.ac.ebi.intact.model.CvExperimentalPreparation;
-import uk.ac.ebi.intact.model.CvExperimentalRole;
+import uk.ac.ebi.intact.model.*;
 
 /**
  * Wrapped participant to allow handling of special fields (eg. author given name) from the interaction view. 
@@ -24,7 +22,7 @@ public class ParticipantWrapper {
     
     public ParticipantWrapper( Component participant, ChangesController changesController ) {
         this.participant = participant;
-        this.annotatedObjectHelper = new AnnotatedObjectHelper(participant);
+        this.annotatedObjectHelper = newAnnotatedObjectHelper(participant);
         this.changesController = changesController;
     }
 
@@ -87,5 +85,12 @@ public class ParticipantWrapper {
                 changesController.removeFromDeleted(participant, participant.getInteraction());
             }
         }
+    }
+
+    private AnnotatedObjectHelper newAnnotatedObjectHelper(AnnotatedObject annotatedObject) {
+        AnnotatedObjectHelper helper = (AnnotatedObjectHelper) IntactContext.getCurrentInstance().getSpringContext().getBean("annotatedObjectHelper");
+        helper.setAnnotatedObject(annotatedObject);
+
+        return helper;
     }
 }

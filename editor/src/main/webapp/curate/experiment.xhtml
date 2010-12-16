@@ -72,6 +72,8 @@
                             This experiment is <b>on-hold</b>. Reason: #{experimentController.onHold}
                         </ia:panelMessage>
                     </h:panelGroup>
+
+                    <ui:include src="common_info_panels.xhtml"/>
                 </p:outputPanel>
 
 
@@ -154,6 +156,7 @@
 
                     <ui:include src="interactions_table.xhtml">
                         <ui:param name="value" value="#{experimentController.interactionDataModel}"/>
+                        <ui:param name="readonly" value="#{false}"/>
                     </ui:include>
                 </p:tab>
 

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ExperimentIntactCloner;
@@ -275,11 +276,24 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public boolean isAccepted(Experiment exp) {
-        return ExperimentUtils.isAccepted(exp);
+        Experiment e = refreshIfNeeded(exp);
+        return ExperimentUtils.isAccepted(e);
     }
 
+
+
     public boolean isToBeReviewed(Experiment exp) {
-        return ExperimentUtils.isToBeReviewed(exp);
+        Experiment e = refreshIfNeeded(exp);
+        return ExperimentUtils.isToBeReviewed(e);
+    }
+
+    private Experiment refreshIfNeeded(Experiment exp) {
+        Experiment e = exp;
+
+        if (!IntactCore.isInitialized(exp.getAnnotations())) {
+           e = getDaoFactory().getExperimentDao().getByAc(exp.getAc());
+        }
+        return e;
     }
 
     @Transactional

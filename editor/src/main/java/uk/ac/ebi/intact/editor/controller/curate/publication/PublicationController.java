@@ -32,7 +32,6 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
-import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
@@ -137,7 +136,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     private void loadFormFields() {
         for ( Annotation annotation : publication.getAnnotations() ) {
-            if ( CvTopic.DATASET_MI_REF.equals( annotation.getCvTopic().getIdentifier() ) ) {
+            if ( annotation.getCvTopic() != null && CvTopic.DATASET_MI_REF.equals( annotation.getCvTopic().getIdentifier() ) ) {
                 String datasetText = annotation.getAnnotationText();
 
                 SelectItem datasetSelectItem = getDatasetPopulator().createSelectItem( datasetText );
@@ -524,7 +523,7 @@ public class PublicationController extends AnnotatedObjectController {
         setAnnotation( CvTopic.ACCEPTED, message );
 
         for (Experiment experiment : publication.getExperiments()) {
-            new AnnotatedObjectHelper(experiment).setAnnotation(CvTopic.ACCEPTED, message);
+            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.ACCEPTED, message);
         }
     }
 

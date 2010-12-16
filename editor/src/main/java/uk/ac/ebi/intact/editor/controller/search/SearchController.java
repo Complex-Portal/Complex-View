@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -36,12 +36,14 @@ import java.util.concurrent.TimeUnit;
 @Scope( "conversation.access" )
 @ConversationName ("search")
 @SuppressWarnings("unchecked")
-public class SearchController extends JpaAwareController {
+public class SearchController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( SearchController.class );
 
     private String query;
     private String quickQuery;
+
+    private AnnotatedObject annotatedObject;
 
     @Autowired
     private DaoFactory daoFactory;
@@ -64,6 +66,16 @@ public class SearchController extends JpaAwareController {
     // Constructors
 
     public SearchController() {
+    }
+
+    @Override
+    public AnnotatedObject getAnnotatedObject() {
+        return annotatedObject;
+    }
+
+    @Override
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
+        this.annotatedObject = annotatedObject;
     }
 
     ///////////////

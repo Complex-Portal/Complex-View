@@ -64,7 +64,7 @@
 
                     <p:outputPanel id="infoPanels">
                         <h:panelGroup rendered="#{publicationController.accepted}">
-                            <ia:panelMessage level="info">
+                            <ia:panelMessage level="ok">
                                 This publication is <b>accepted</b>.&#160;
                                 <h:outputText value="#{publicationController.acceptedMessage}" rendered="#{publicationController.acceptedMessage != null}"/>
 
@@ -103,6 +103,8 @@
 
                             </ia:panelMessage>
                         </h:panelGroup>
+
+                        <ui:include src="common_info_panels.xhtml"/>
                     </p:outputPanel>
 
                     <h:panelGroup rendered="#{publicationController.publication != null}">
@@ -268,8 +270,10 @@
                         </div>
 
                         <ui:include src="experiments_table.xhtml">
-                        <ui:param name="value" value="#{publicationController.publication.experiments}"/>
-                    </ui:include>
+                            <ui:param name="value" value="#{publicationController.publication.experiments}"/>
+                            <ui:param name="lazy" value="#{false}"/>
+                            <ui:param name="readonly" value="#{false}"/>
+                        </ui:include>
                     </p:tab>
 
                     <p:tab title="Interactions (#{publicationController.interactionDataModel != null? publicationController.interactionDataModel.rowCount : 0})">
@@ -281,6 +285,7 @@
                         <ui:include src="interactions_table.xhtml">
                             <ui:param name="value" value="#{publicationController.interactionDataModel}"/>
                             <ui:param name="showExperiments" value="#{true}"/>
+                            <ui:param name="readonly" value="#{false}"/>
                         </ui:include>
 
                     </p:tab>

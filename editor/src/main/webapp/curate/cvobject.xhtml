@@ -23,17 +23,27 @@
             No CV Object loaded!
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{cvObjectController.cvObject != null}">
-            <div id="auditInfo" class="intact-auditPanel">
-                <ia:creatorUpdator annotatedObject="#{cvObjectController.cvObject}" />
-            </div>
-        </h:panelGroup>
-
         <h:panelGroup id="info" rendered="#{cvObjectController.cvObject != null}">
 
             <h2>CV Object: #{cvObjectController.cvObject.class.simpleName}</h2>
 
             <p:panel id="basic" header="CV Object Details">
+
+                <p:outputPanel id="infoPanels">
+                    <ui:include src="common_info_panels.xhtml"/>
+
+                    <h:panelGroup rendered="#{participantController.isNoUniprotUpdate(participant.interactor)}">
+                        <ia:panelMessage level="warn">
+                            <b>No Uniprot Update: </b>The interactor for this participant won't be updated using Uniprot.
+                        </ia:panelMessage>
+                    </h:panelGroup>
+                </p:outputPanel>
+
+                <h:panelGroup rendered="#{cvObjectController.cvObject != null}">
+                    <div id="auditInfo" class="intact-auditPanel">
+                        <ia:creatorUpdator annotatedObject="#{cvObjectController.cvObject}" />
+                    </div>
+                </h:panelGroup>
 
                 <table class="intact-tableBasicForm">
                     <tr>
@@ -49,7 +59,7 @@
                         <td style="padding-left: 50px;">
                             <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
                             <h:inputText id="acTxt" value="#{cvObjectController.cvObject.ac}"
-                                         size="10" disabled="true" class="intact-disabled"/>
+                                         size="10" readonly="true" />
                         </td>
                     </tr>
                     <tr>

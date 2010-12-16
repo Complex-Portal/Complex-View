@@ -27,6 +27,11 @@
             </ot:separateConversationContext>
         </p:column>
         <p:column>
+            <ui:include src="/curate/common_column_notifications.xhtml">
+                <ui:param name="ao" value="#{publication}"/>
+            </ui:include>
+        </p:column>
+        <p:column>
             <f:facet name="header">
                 <h:outputText value="Title"/>
             </f:facet>
@@ -63,5 +68,12 @@
             <h:outputText value="#{publication.updated}"/>
         </p:column>
     </p:dataTable>
+
+    <div class="legend" style="margin-top: 5px; margin-left: 15px">
+        <b>Legend:</b>
+        <div class="ia-accepted" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;Accepted
+        <div class="ia-to-be-reviewed" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;To Be Reviewed
+        <div class="ia-not-accepted" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;No Action
+    </div>
 
 </ui:composition>

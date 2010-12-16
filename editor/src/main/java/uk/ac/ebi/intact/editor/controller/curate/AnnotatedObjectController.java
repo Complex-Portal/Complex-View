@@ -94,7 +94,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             setAnnotatedObject(ao);
         }
 
-        return new AnnotatedObjectHelper(ao);
+        return newAnnotatedObjectHelper(ao);
     }
 
     protected void generalLoadChecks() {
@@ -560,6 +560,24 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     // OTHER
     ////////////////////////////////////////////////////
 
+    public String getCautionMessage() {
+        return findAnnotationText(CvTopic.CAUTION_MI_REF);
+    }
+
+    public String getCautionMessage(AnnotatedObject ao) {
+        return newAnnotatedObjectHelper(ao).findAnnotationText(CvTopic.CAUTION_MI_REF);
+    }
+
+    public String getInternalRemarkMessage() {
+        return findAnnotationText(CvTopic.INTERNAL_REMARK);
+    }
+
+    public boolean isNoUniprotUpdate(Interactor interactor) {
+        if (interactor == null) return false;
+
+        return newAnnotatedObjectHelper(interactor).findAnnotationText(CvTopic.NON_UNIPROT) != null;
+    }
+
     protected PersistenceController getPersistenceController() {
         return (PersistenceController)getSpringContext().getBean("persistenceController");
     }
@@ -601,9 +619,16 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return changesController;
     }
 
+    protected AnnotatedObjectHelper newAnnotatedObjectHelper(AnnotatedObject annotatedObject) {
+        AnnotatedObjectHelper helper = (AnnotatedObjectHelper) getSpringContext().getBean("annotatedObjectHelper");
+        helper.setAnnotatedObject(annotatedObject);
+
+        return helper;
+    }
+
     private static class EmptyAnnotatedObjectHelper extends AnnotatedObjectHelper {
         public EmptyAnnotatedObjectHelper() {
-            super(null);
+            super();
         }
 
         @Override

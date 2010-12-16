@@ -49,6 +49,11 @@
         <h:panelGroup id="info" rendered="#{interaction != null}">
 
             <p:panel id="basic" header="Interaction Details">
+
+                <p:outputPanel id="infoPanels">
+                    <ui:include src="common_info_panels.xhtml"/>
+                </p:outputPanel>
+
                 <h:panelGroup rendered="#{interaction != null}">
                     <div id="auditInfo" class="intact-auditPanel">
                         <ia:creatorUpdator annotatedObject="#{interaction}" />
@@ -71,11 +76,11 @@
                         <td style="padding-left: 50px;">
                             <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
                             <h:inputText id="acTxt" value="#{interaction.ac}"
-                                         size="10" disabled="true" class="intact-disabled"/>
+                                         size="10" readonly="true"/>
                         </td>
                         <td style="padding-left: 50px;">
                              <h:outputLabel value="IMEx ID: " for="imexIdTxt" class="intact-disabled"/>
-                                <h:inputText id="imexIdTxt" value="#{interactionController.imexId}" size="10" disabled="true" class="intact-disabled"/>
+                                <h:inputText id="imexIdTxt" value="#{interactionController.imexId}" size="10" readonly="true"/>
                         </td>
                     </tr>
                     <tr>

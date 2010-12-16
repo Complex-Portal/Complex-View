@@ -34,20 +34,23 @@ border-right:0 none !important;
     text-decoration:line-through
 }
 
-
-.intact-infoPanel {
+.intact-panelMessage-ok {
    background-color:#a7cf9b;
 }
 
-.intact-warnPanel {
+.intact-panelMessage-info {
+   background-color:#bde5f8;
+}
+
+.intact-panelMessage-warn {
     background-color:#ffd98f;
 }
 
-.intact-errorPanel {
+.intact-panelMessage-error {
     background-color:#f4b6b6;
 }
 
-.intact-infoPanel, .intact-warnPanel, .intact-errorPanel {
+.intact-panelMessage-ok, .intact-panelMessage-info, .intact-panelMessage-warn, .intact-panelMessage-error {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border: 1px solid gray;
@@ -158,10 +161,11 @@ border-right:0 none !important;
 }
 
 .ia-not-accepted {
-   background: #f8cfcf !important;
+   /*background: #f8cfcf !important;*/
 }
 
 .ia-to-be-reviewed {
-   background: #fafad2 !important;
+    background: #f8cfcf !important;
+   /*/background: #fafad2 !important;*/
 }
 

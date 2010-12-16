@@ -157,4 +157,8 @@ public class InteractorController extends AnnotatedObjectController {
     public void setAc(String ac) {
         this.ac = ac;
     }
+
+    public boolean isNoUniprotUpdate() {
+        return super.isNoUniprotUpdate((Interactor)getAnnotatedObject());
+    }
 }

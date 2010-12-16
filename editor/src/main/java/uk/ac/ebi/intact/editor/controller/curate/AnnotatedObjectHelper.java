@@ -15,7 +15,11 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.model.*;
@@ -30,12 +34,13 @@ import java.util.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller
+@Scope("prototype")
 public class AnnotatedObjectHelper {
     
     private AnnotatedObject annotatedObject;
-    
-    public AnnotatedObjectHelper(AnnotatedObject annotatedObject) {
-        this.annotatedObject = annotatedObject;
+
+    public AnnotatedObjectHelper() {
     }
     
      // XREFS
@@ -250,10 +255,18 @@ public class AnnotatedObjectHelper {
         }
     }
 
+    @Transactional
     public String findAnnotationText( String topicId ) {
         if (getAnnotatedObject() == null) return null;
-        
-        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( getAnnotatedObject(), topicId );
+
+        AnnotatedObject ao = getAnnotatedObject();
+
+        if (!IntactCore.isInitialized(ao.getAnnotations())) {
+            ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
+                .getByAc(getAnnotatedObject().getAc());
+        }
+
+        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, topicId );
 
         if ( annotation != null ) {
             return annotation.getAnnotationText();
@@ -409,5 +422,9 @@ public class AnnotatedObjectHelper {
 
     public AnnotatedObject getAnnotatedObject() {
         return annotatedObject;
+    }
+
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
+        this.annotatedObject = annotatedObject;
     }
 }
