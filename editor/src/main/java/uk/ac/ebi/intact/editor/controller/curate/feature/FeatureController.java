@@ -31,8 +31,11 @@ import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationControll
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.FeatureUtils;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.validator.ValidatorException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -203,6 +206,14 @@ public class FeatureController extends AnnotatedObjectController {
 
         getChangesController().markAsUnsaved(feature);
     }
+
+    public void validateFeature(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+
+        if (feature.getRanges().isEmpty()) {
+            addErrorMessage("Feature without ranges", "One range is mandatory");
+            FacesContext.getCurrentInstance().renderResponse();
+        }
+     }
 
     private String getSequence() {
         Interactor interactor = feature.getComponent().getInteractor();

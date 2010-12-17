@@ -69,6 +69,7 @@
                         </td>
                         <td>
                             <h:inputText id="shortlabelTxt" value="#{feature.shortLabel}" size="30"
+                                         validator="#{featureController.validateFeature}"
                                     required="true" requiredMessage="Shortlabel is required">
                                 <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo" execute="@this"
                                             listener="#{annotatedObjectController.changed}"/>
