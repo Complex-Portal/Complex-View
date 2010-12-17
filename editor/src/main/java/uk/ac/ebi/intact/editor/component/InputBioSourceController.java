@@ -27,7 +27,6 @@ import uk.ac.ebi.intact.model.BioSource;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -52,12 +51,14 @@ public class InputBioSourceController extends BaseController {
 
     public void loadBioSources( ComponentSystemEvent evt) {
         if (log.isTraceEnabled()) log.trace("Load Biosources");
-        setQuery(null);
+//        setQuery(null);
+//
+        if (query == null) {
+            BioSourceService bioSourceService = (BioSourceService) IntactContext.getCurrentInstance().getSpringContext().getBean("bioSourceService");
+            List<BioSource> bioSources = bioSourceService.getAllBioSources();
 
-        BioSourceService bioSourceService = (BioSourceService) IntactContext.getCurrentInstance().getSpringContext().getBean("bioSourceService");
-        List<BioSource> bioSources = bioSourceService.getAllBioSources();
-
-        setBioSources(bioSources);
+            setBioSources(bioSources);
+        }
     }
 
     public void autoSearch(AjaxBehaviorEvent evt) {
@@ -86,12 +87,7 @@ public class InputBioSourceController extends BaseController {
         jpaQuery.setParameter("taxId", query);
 
 
-        List<BioSource> bioSources = jpaQuery.getResultList();
-        setBioSources(bioSources);
-    }
-
-    private EntityManager getEntityManager() {
-        return IntactContext.getCurrentInstance().getDaoFactory().getEntityManager();
+        this.bioSources = jpaQuery.getResultList();
     }
 
     public void selectBioSource( BioSource bioSource ) {

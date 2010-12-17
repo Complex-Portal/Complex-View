@@ -8,17 +8,9 @@
         <h:head>
             <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>
             <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css"></link>
-
-            <script type="text/javascript">
-                function hideLoading() {
-                    //parent.#{requestScope.dialogId}_load.hide();
-                    //parent.#{requestScope.dialogId}.visible = false;
-                }
-            </script>
-
         </h:head>
-        <h:body onload="hideLoading()">
-            <h:form>
+        <h:body>
+            <h:form prependId="false">
 
             <f:metadata>
                 <f:viewParam name="dialogId" value="#{inputBioSourceController.dialogId}"/>
@@ -29,16 +21,19 @@
 
                 <h:panelGrid columns="1" >
                     <h:panelGroup>
-                        <h:inputText value="#{inputBioSourceController.query}">
+                        <h:inputText id="biosourceQuery" value="#{inputBioSourceController.query}">
                             <!--<f:ajax event="keyup" render="bioSourceBrowserDialog" execute="@this"-->
                                 <!--listener="#{cc.autoSearch}"/>-->
                         </h:inputText>
-                        <p:commandButton value="Search" actionListener="#{inputBioSourceController.search}" update="bioSourceBrowserPanel"/>
+                        <p:commandButton value="Search" actionListener="#{inputBioSourceController.search}"
+                                         update="bioSourceBrowserPanel"/>
                     </h:panelGroup>
 
                     <h:panelGroup rendered="#{empty inputBioSourceController.bioSources}">
                         <p>No results for query: <b>#{inputBioSourceController.query}</b></p>
                     </h:panelGroup>
+
+                    #{inputBioSourceController.query}
 
                     <p:dataTable id="bioSourceTable" rendered="#{not empty inputBioSourceController.bioSources}"
                                  var="bioSource" value="#{inputBioSourceController.bioSources}"
