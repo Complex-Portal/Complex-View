@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
@@ -255,7 +254,6 @@ public class AnnotatedObjectHelper {
         }
     }
 
-    @Transactional
     public String findAnnotationText( String topicId ) {
         if (getAnnotatedObject() == null) return null;
 
