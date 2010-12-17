@@ -13,7 +13,7 @@
     <p:commandButton value="Search" action="/search/search?faces-redirect=true" disabled="#{selected == 'search'}"
             ajax="false" immediate="true"/>
     &#160;
-    <p:commandButton value="Curate" action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
+    <p:commandButton value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
                      rendered="#{userSessionController.hasRole('CURATOR')}"
                      ajax="false"
                      disabled="#{selected == 'curate'}"

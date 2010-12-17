@@ -6,12 +6,13 @@
                 xmlns:ot="http://myfaces.apache.org/orchestra"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
+
     <!-- New publication -->
     <p:dialog header="New publication" width="425" widgetVar="newPublicationDlg" visible="false" draggable="false"
               modal="true" position="center">
 
-        <h:panelGrid columns="1" style="margin-bottom:10px">
-            <h:form>
+        <h:panelGrid id="newPublicationContent" columns="1" style="margin-bottom:10px">
+
                 <h:panelGroup rendered="#{not publicationController.citexploreOnline}">
                     <div style="background-color:#F5A9A9; padding: 5px">
                         Citexplore is down at the moment. <br/>
@@ -20,25 +21,44 @@
                     <br/>
                 </h:panelGroup>
 
-                <h:outputLabel for="pmid" value="PMID:"/>
+                <h:outputLabel for="newPmid" value="PMID:"/>
 
-                <h:inputText id="pmid" value="#{publicationController.identifier}">
+                <h:inputText id="newPmid" value="#{publicationController.identifier}">
                     <p:tooltip value="Type a PMID and click on auto-complete" showDelay="2000"
                                showEvent="focus" hideEvent="blur" position="topRight"/>
                 </h:inputText>
 
                 <p:commandButton value="Auto-complete" actionListener="#{publicationController.newAutocomplete}" ajax="false"
+                                 process="newPmid"
                                  action="/curate/publication" disabled="#{not publicationController.citexploreOnline}"/>
                 <br/>
 
                 <div style="width:100%; text-align:right">
                     <ot:separateConversationContext>
                         <p:commandLink value="Create empty (unassigned)" ajax="false"
+                                       process="newPmid"
                                        actionListener="#{publicationController.newEmptyUnassigned}"
                                        action="/curate/publication"/>
                     </ot:separateConversationContext>
                 </div>
-            </h:form>
+        </h:panelGrid>
+
+    </p:dialog>
+
+    <!-- Open by AC -->
+    <p:dialog header="Open by AC" width="400" widgetVar="openByAcDlg" visible="false" draggable="false"
+              modal="true" position="center">
+
+        <h:panelGrid id="openAcContent" columns="1" style="margin-bottom:10px">
+            <h:panelGroup>
+                <h:outputLabel for="openAc" value="AC:"/>
+                <h:inputText id="openAc" value="#{curateController.acToOpen}"/>
+
+                <p:commandButton value="Open"
+                                 process="openAc"
+                                 ajax="false"
+                                 action="#{curateController.openByAc}"/>
+            </h:panelGroup>
         </h:panelGrid>
 
     </p:dialog>
@@ -47,19 +67,19 @@
     <p:dialog header="Open by PMID" width="400" widgetVar="openByPmidDlg" visible="false" draggable="false"
               modal="true" position="center">
 
-        <h:panelGrid columns="1" style="margin-bottom:10px">
-            <h:form>
-                <h:outputLabel for="pmid" value="PMID:"/>
-                <h:inputText id="pmid" value="#{publicationController.identifier}"/>
+        <h:panelGrid id="openPmidContent" columns="1" style="margin-bottom:10px">
+            <h:panelGroup>
+                <h:outputLabel for="openPmid" value="PMID:"/>
+                <h:inputText id="openPmid" value="#{publicationController.identifier}"/>
 
                 <p:commandButton value="Open" actionListener="#{publicationController.openByPmid}"
+                                 process="openPmid"
                                  ajax="false"
                                  action="/curate/publication"/>
-            </h:form>
+              </h:panelGroup>
         </h:panelGrid>
 
     </p:dialog>
 
-    
     
 </ui:composition>

@@ -11,7 +11,21 @@
 
 
     <ui:define name="curateContent">
-       Curate section
+
+                <p>
+                    You may want to:
+                </p>
+           <ul>
+               <li>
+                   <p:commandLink value="Create a new publication" onclick="newPublicationDlg.show();"/>
+               </li>
+               <li>
+                   <p:commandLink value="Load a publication by PMID" onclick="openByPmidDlg.show();"/>
+               </li>
+               <li>
+                   <p:commandLink value="Load any annotated object by AC" onclick="openByAcDlg.show();"/>
+               </li>
+           </ul>
 
     </ui:define>
 

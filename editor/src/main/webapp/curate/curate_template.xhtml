@@ -60,8 +60,13 @@
                     <p:menuitem value="Organism" action="#{bioSourceController.newOrganism}" ajax="false"/>
                 </p:submenu>
                 <!--<p:menuitem value="New" onclick="newPublicationDlg.show();"/>-->
-                <p:menuitem value="Open by PMID..." onclick="openByPmidDlg.show(); " helpText="ALT+O"
-                            icon="/resources/images/open.png"/>
+                <p:submenu>
+                     <f:facet name="label">
+                        <p:menuitem value="Open" icon="/resources/images/open.png"/>
+                    </f:facet>
+                    <p:menuitem value="by AC..." onclick="openByAcDlg.show(); " helpText="ALT+O"/>
+                    <p:menuitem value="by PMID..." onclick="openByPmidDlg.show(); "/>
+                </p:submenu>
                 <p:menuitem value="Save" oncomplete="save()" helpText="ALT+S" icon="/resources/images/save.gif"
                             rendered="#{annotatedObjectController.annotatedObject != null}"/>
                 <!--<p:menuitem value="Save &amp; Close" onclick="save()" ajax="false"-->
@@ -91,7 +96,7 @@
 
     <ui:define name="content">
         <p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>
-        <p:hotkey bind="alt+o" oncomplete="openByPmidDlg.show()"/>
+        <p:hotkey bind="alt+o" oncomplete="openByAcDlg.show()"/>
         <p:hotkey bind="alt+s" oncomplete="save(); return false"/>
 
         <p:remoteCommand id="markAsUnsavedCmd" name="markAsUnsaved" update="messagesComponent,changesPanel,unsavedChangesInfo"

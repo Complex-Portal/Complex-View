@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
@@ -16,6 +17,8 @@ import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
+
+import javax.faces.context.FacesContext;
 
 /**
  * Helper controller on conversation scope, that helps to load/save objects within the same transaction as the other AnnotatedObjectControllers.
@@ -31,6 +34,8 @@ public class CurateController extends JpaAwareController {
     @Autowired
     private ChangesController changesController;
 
+    private String acToOpen;
+
     private AnnotatedObjectController currentAnnotatedObjectController;
 
     public String edit(IntactObject intactObject) {
@@ -39,6 +44,26 @@ public class CurateController extends JpaAwareController {
         CurateObjectMetadata metadata = getMetadata(intactObject);
         setCurrentAnnotatedObjectController(metadata.getAnnotatedObjectController());
         return "/curate/"+metadata.getSlug()+suffix;
+    }
+
+    public String edit(String ac) {
+        if (ac == null) {
+            addErrorMessage("Illegal AC", "No AC provided");
+            FacesContext.getCurrentInstance().renderResponse();
+            return "";
+        }
+
+        ac = ac.trim();
+
+        Class<? extends AnnotatedObject> aoClass = IntactCore.classForAc(getIntactContext(), ac);
+
+        if (aoClass == null) {
+            addErrorMessage("Illegal AC", "No annotated object found with this AC: "+ac);
+            FacesContext.getCurrentInstance().renderResponse();
+        }
+
+        AnnotatedObject ao = getDaoFactory().getAnnotatedObjectDao(aoClass).getByAc(ac);
+        return edit(ao);
     }
 
     @Transactional(value = "core", propagation = Propagation.NEVER)
@@ -104,6 +129,10 @@ public class CurateController extends JpaAwareController {
         }
     }
 
+    public String openByAc() {
+        return edit(acToOpen);
+    }
+
     public boolean isAnnotatedObject(Object obj) {
         return (obj instanceof AnnotatedObject);
     }
@@ -136,5 +165,13 @@ public class CurateController extends JpaAwareController {
 
     public void setCurrentAnnotatedObjectController(AnnotatedObjectController currentAnnotatedObjectController) {
         this.currentAnnotatedObjectController = currentAnnotatedObjectController;
+    }
+
+    public String getAcToOpen() {
+        return acToOpen;
+    }
+
+    public void setAcToOpen(String acToOpen) {
+        this.acToOpen = acToOpen;
     }
 }
