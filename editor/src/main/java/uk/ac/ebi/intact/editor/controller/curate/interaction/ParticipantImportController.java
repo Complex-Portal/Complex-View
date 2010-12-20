@@ -100,7 +100,11 @@ public class ParticipantImportController extends BaseController {
 
             // only import if the query has more than 4 chars (to avoid massive queries) {
 
-            if (participantToImport.length() > 4) {
+            if (participantToImport.length() < 4) {
+                queriesNoResults.add(participantToImport+" (short query - less than 4 chars.)");
+            } else if (participantToImport.contains("*")) {
+                queriesNoResults.add(participantToImport+" (wildcards not allowed)");
+            } else {
                 Set<ImportCandidate> candidates = importParticipant(participantToImport);
 
                 if (candidates.isEmpty()) {
@@ -108,11 +112,7 @@ public class ParticipantImportController extends BaseController {
                 } else {
                     importCandidates.addAll(candidates);
                 }
-            } else {
-                queriesNoResults.add(participantToImport+" (short query - less than 4 chars.)");
             }
-
-
         }
     }
 
