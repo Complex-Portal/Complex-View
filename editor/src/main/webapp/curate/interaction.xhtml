@@ -69,8 +69,7 @@
                             <h:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"
                                          validator="#{annotatedObjectController.validateAnnotatedObject}"
                                     required="true" requiredMessage="Shortlabel is required">
-                                <f:ajax event="valueChange" execute="@this"
-                                            listener="#{annotatedObjectController.changed}"/>
+                                <f:ajax event="valueChange" execute="@this" onevent="markAsUnsaved()"/>
                             </h:inputText>
                         </td>
                         <td style="padding-left: 50px;">

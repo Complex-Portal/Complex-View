@@ -1,12 +1,10 @@
 package uk.ac.ebi.intact.editor.controller.curate.organism;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
-import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.BioSource;
 
@@ -21,13 +19,8 @@ import javax.faces.event.ComponentSystemEvent;
 @ConversationName( "general" )
 public class BioSourceController extends AnnotatedObjectController {
 
-    @Autowired
-    private CvObjectService cvObjectService;
-
     private String ac;
     private BioSource bioSource;
-
-    private boolean isTopic;
 
     @Override
     public AnnotatedObject getAnnotatedObject() {

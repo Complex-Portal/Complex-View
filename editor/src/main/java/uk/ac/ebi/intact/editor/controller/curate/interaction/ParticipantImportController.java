@@ -98,13 +98,21 @@ public class ParticipantImportController extends BaseController {
                 continue;
             }
 
-            Set<ImportCandidate> candidates = importParticipant(participantToImport);
+            // only import if the query has more than 4 chars (to avoid massive queries) {
 
-            if (candidates.isEmpty()) {
-                queriesNoResults.add(participantToImport);
+            if (participantToImport.length() > 4) {
+                Set<ImportCandidate> candidates = importParticipant(participantToImport);
+
+                if (candidates.isEmpty()) {
+                    queriesNoResults.add(participantToImport);
+                } else {
+                    importCandidates.addAll(candidates);
+                }
             } else {
-                importCandidates.addAll(candidates);
+                queriesNoResults.add(participantToImport+" (short query - less than 4 chars.)");
             }
+
+
         }
     }
 
@@ -209,6 +217,7 @@ public class ParticipantImportController extends BaseController {
     private Set<ImportCandidate> importFromUniprot(String participantToImport) {
         Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
 
+        //TODO http://code.google.com/p/intact/issues/detail?id=220
         final Collection<UniprotProtein> uniprotProteins = uniprotRemoteService.retrieve(participantToImport);
 
         for (UniprotProtein uniprotProtein : uniprotProteins) {

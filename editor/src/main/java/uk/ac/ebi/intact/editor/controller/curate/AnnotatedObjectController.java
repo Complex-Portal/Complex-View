@@ -125,6 +125,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return ao;
     }
 
+    /**
+     * Executes the deletions and save the current object using the <code>CorePersister</code>. It invokes preSave()
+     * before saving just in case a specific controller needs to prepare the object for the save operation. After invoking
+     * the CorePersister's save(), it invokes the doSaveDetails() callback that can be used to handle whatever is not handled
+     * by the CorePersister (ie. wrapped components). At the end, the current object is refreshed from the database.
+     *
+     * @param evt the action faces event
+     */
     @Transactional(value = "core", propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
         // adjust any xref, just if the curator introduced a value in the primaryId of the xref
@@ -177,10 +185,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         setAnnotatedObject(annotatedObject);
-        
-        changesController.clearCurrentUserChanges();
-
-        doPostSave();
 
         addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
 
@@ -223,9 +227,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void doPreSave() {
-    }
-
-    public void doPostSave() {
     }
 
     public boolean doSaveDetails() {
@@ -271,20 +272,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         addInfoMessage("Canceled", "");
 
         changesController.clearCurrentUserChanges();
-
-        // TODO maybe implement a history mechanism to be safe
-        // We rely on the fact that when creating a new object, the URL still shows the previous one (we do a POST)
-//        final ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-//        final HttpServletRequest req = (HttpServletRequest) externalContext.getRequest();
-//        final String requestUrl = req.getRequestURL().toString();
-//
-//        System.out.println("\n\nREQ URL: "+requestUrl);
-//
-//        try {
-//            externalContext.redirect(requestUrl);
-//        } catch (IOException e) {
-//            handleException(e);
-//        }
 
         return goToParent();
 

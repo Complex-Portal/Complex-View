@@ -40,6 +40,9 @@ public class ChangesController extends BaseController implements UserListener {
 
     private static final Log log = LogFactory.getLog(ChangesController.class);
 
+    /**
+     * Map containing the user name as the key, and a list with his/her changes.
+     */
     private Map<String,List<UnsavedChange>> changesPerUser;
 
     public ChangesController() {
@@ -252,6 +255,7 @@ public class ChangesController extends BaseController implements UserListener {
         return false;
     }
 
+    //TODO: probably this should be a list
     public String whoIsEditingObject(IntactObject io) {
         if (io.getAc() == null) return null;
 

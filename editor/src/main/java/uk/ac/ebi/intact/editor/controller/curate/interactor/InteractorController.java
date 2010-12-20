@@ -66,6 +66,7 @@ public class InteractorController extends AnnotatedObjectController {
         return navigateToObject(interactor);
     }
 
+    // TODO migrate to intact core as this is generic functionality
     public Interactor newInstance(CvInteractorType interactorType) {
         // re-attach xrefs
         interactorType = getDaoFactory().getCvObjectDao(CvInteractorType.class).getByAc(interactorType.getAc());
