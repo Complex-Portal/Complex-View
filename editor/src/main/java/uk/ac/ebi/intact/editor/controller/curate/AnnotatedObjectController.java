@@ -32,6 +32,7 @@ import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
+import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
@@ -75,7 +76,13 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public abstract void setAnnotatedObject(AnnotatedObject annotatedObject);
 
     public String goToParent() {
-        return "/curate/publication?faces-redirect=true";
+        PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
+
+        if (publicationController.getPublication() == null) {
+            return "/curate/curate?faces-redirect=true";
+        }
+
+        return "/curate/publication?faces-redirect=true&includeViewParams=true";
     }
 
     public AnnotatedObjectWrapper getAnnotatedObjectWrapper() {
@@ -260,7 +267,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         // nothing by default
     }
 
-    public void doCancelEdition( ActionEvent evt ) {
+    public String doCancelEdition() {
         addInfoMessage("Canceled", "");
 
         changesController.clearCurrentUserChanges();
@@ -278,6 +285,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 //        } catch (IOException e) {
 //            handleException(e);
 //        }
+
+        return goToParent();
 
     }
 
