@@ -22,14 +22,23 @@ import org.hibernate.Hibernate;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import psidev.psi.mi.tab.PsimiTabWriter;
+import psidev.psi.mi.tab.expansion.SpokeWithoutBaitExpansion;
+import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.xml.PsimiXmlVersion;
+import psidev.psi.mi.xml.PsimiXmlWriter;
+import psidev.psi.mi.xml.model.EntrySet;
 import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.entry.IntactEntryFactory;
 import uk.ac.ebi.intact.core.users.model.Preference;
+import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
@@ -37,17 +46,22 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 import uk.ac.ebi.intact.model.util.PublicationUtils;
+import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
+import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
+import javax.faces.application.StateManager;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
+import javax.persistence.FlushModeType;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -339,6 +353,108 @@ public class PublicationController extends AnnotatedObjectController {
             }
             setUnsavedChanges( true );
         }
+    }
+
+    public void exportToXml254(ActionEvent evt) {
+        EntrySet entrySet = createEntrySet();
+
+        String filename = getPublication().getPublicationId() + ".xml";
+
+        PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
+
+        try {
+            PrintWriter out = getOutPrintWriter(filename, "application/xml");
+
+            writer.write(entrySet, out);
+
+            out.close();
+
+            FacesContext fc = FacesContext.getCurrentInstance();
+            StateManager stateManager = fc.getApplication().getStateManager();
+            stateManager.saveView(fc);
+
+            fc.responseComplete();
+        } catch (Exception e) {
+            addErrorMessage("Export failed", "Problem exporting to PSI-MI XML: "+e.getMessage());
+            handleException(e);
+            return;
+        }
+    }
+
+    public void exportToMitab25(ActionEvent evt) {
+        String filename = getPublication().getPublicationId() + ".mitab.txt";
+        exportToMitab(filename, new PsimiTabWriter());
+    }
+
+    public void exportToMitab25Extended(ActionEvent evt) {
+        String filename = getPublication().getPublicationId() + ".ext-mitab.txt";
+        exportToMitab(filename, new IntactPsimiTabWriter());
+    }
+
+    public void exportToMitab(String filename, PsimiTabWriter psimitabWriter) {
+         EntrySet entrySet = createEntrySet();
+
+        // Setup a interaction expansion strategy that is going to transform n-ary interactions into binaries using
+        // the spoke expansion algorithm
+        IntactXml2Tab xml2tab = new IntactXml2Tab();
+        xml2tab.setExpansionStrategy( new SpokeWithoutBaitExpansion() );
+
+        // Perform the conversion and collect binary interactions
+
+        try {
+            Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
+
+            psimitabWriter.setHeaderEnabled(false);
+
+             //Setup the output
+            PrintWriter out = getOutPrintWriter(filename, "plain/text");
+
+            psimitabWriter.write(binaryInteractions, out);
+
+            out.close();
+
+            FacesContext fc = FacesContext.getCurrentInstance();
+
+            StateManager stateManager = fc.getApplication().getStateManager();
+            stateManager.saveView(fc);
+
+            fc.responseComplete();
+
+        } catch (Exception e) {
+            addErrorMessage("Export failed", "Problem exporting to MITAB: "+e.getMessage());
+            handleException(e);
+            return;
+        }
+
+    }
+
+    private EntrySet createEntrySet() {
+                final TransactionStatus transactionStatus = getIntactContext().getDataContext().beginTransaction();
+        getIntactContext().getDataContext().getDaoFactory().getEntityManager().setFlushMode(FlushModeType.COMMIT);
+
+        // When exporting, we need to create an IntactEntry object, which contains the interactions
+        // and all the related information (e.g. interactors, experiments, features...) that we want
+        // to export
+        IntactEntry intactEntry = IntactEntryFactory.createIntactEntry(getIntactContext()).addPublicationId(publication.getPublicationId());
+
+        // This is the main method to export data. An EntrySet is the equivalent to the IntactEntry object
+        // but is a member of the PSI-MI model (IntactEntry is for the Intact model)
+        PsiExchange psiExchange = (PsiExchange) IntactContext.getCurrentInstance().getSpringContext().getBean("psiExchange");
+        EntrySet entrySet = psiExchange.exportToEntrySet(intactEntry);
+
+        // we rollback as we don't need to commit any change
+        getIntactContext().getDataContext().rollbackTransaction(transactionStatus);
+
+        return entrySet;
+    }
+
+    protected PrintWriter getOutPrintWriter(String filename, String contentType) throws IOException {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpServletResponse response = (HttpServletResponse)fc.getExternalContext().getResponse();
+        response.setHeader("Content-disposition", "attachment; filename=" + filename);
+        response.setContentType(contentType);
+
+        return response.getWriter();
     }
 
     public boolean isUnassigned() {
