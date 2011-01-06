@@ -39,7 +39,7 @@
                           value="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{fn:join(proteinListController.selectedUniprotIds,';id=')}">Chromosome Location</h:outputLink>
             &#160;|&#160;
             <h:outputLink target="_blank"
-                          value="http://www.ebi.ac.uk/microarray-as/atlas/qrs?gprop_0=&amp;fexp_0=UP_DOWN&amp;fact_0=&amp;specie_0=&amp;fval_0=(all+conditions)&amp;view=hm&amp;gval_0=#{fn:join(proteinListController.selectedUniprotIds,'+')}">mRNA Expression</h:outputLink>
+                          value="http://www.ebi.ac.uk/gxa/qrs?gprop_0=&amp;gval_0=#{fn:join(proteinListController.selectedUniprotIds,'+')}&amp;fexp_0=UP_DOWN&amp;fact_0=&amp;specie_0=&amp;fval_0=&amp;view=h">mRNA Expression</h:outputLink>
         </h:panelGroup>
     </p:panel>
 
