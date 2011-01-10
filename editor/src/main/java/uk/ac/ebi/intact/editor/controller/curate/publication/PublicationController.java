@@ -19,7 +19,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.StreamedContent;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
@@ -49,13 +51,14 @@ import uk.ac.ebi.intact.model.util.PublicationUtils;
 import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
-import javax.faces.application.StateManager;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
 import javax.persistence.FlushModeType;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -94,6 +97,10 @@ public class PublicationController extends AnnotatedObjectController {
     private boolean isCitexploreActive;
 
     private LazyDataModel<Interaction> interactionDataModel;
+
+    private StreamedContent xml254File;
+    private StreamedContent mitab25File;
+    private StreamedContent mitab25ExtendedFile;
 
     public PublicationController() {
     }
@@ -372,17 +379,13 @@ public class PublicationController extends AnnotatedObjectController {
         PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
 
         try {
-            PrintWriter out = getOutPrintWriter(filename, "application/xml");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            writer.write(entrySet, out);
+            writer.write(entrySet, baos);
 
-            out.close();
+            baos.close();
 
-            FacesContext fc = FacesContext.getCurrentInstance();
-            StateManager stateManager = fc.getApplication().getStateManager();
-            stateManager.saveView(fc);
-
-            fc.responseComplete();
+            xml254File = createStreamedContent(baos, "application/xml", filename);
         } catch (Exception e) {
             addErrorMessage("Export failed", "Problem exporting to PSI-MI XML: "+e.getMessage());
             handleException(e);
@@ -390,17 +393,18 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+
     public void exportToMitab25(ActionEvent evt) {
         String filename = getPublication().getPublicationId() + ".mitab.txt";
-        exportToMitab(filename, new PsimiTabWriter());
+        mitab25File = exportToMitab(filename, new PsimiTabWriter());
     }
 
     public void exportToMitab25Extended(ActionEvent evt) {
         String filename = getPublication().getPublicationId() + ".ext-mitab.txt";
-        exportToMitab(filename, new IntactPsimiTabWriter());
+        mitab25ExtendedFile = exportToMitab(filename, new IntactPsimiTabWriter());
     }
 
-    public void exportToMitab(String filename, PsimiTabWriter psimitabWriter) {
+    public StreamedContent exportToMitab(String filename, PsimiTabWriter psimitabWriter) {
          EntrySet entrySet = createEntrySet();
 
         // Setup a interaction expansion strategy that is going to transform n-ary interactions into binaries using
@@ -408,33 +412,29 @@ public class PublicationController extends AnnotatedObjectController {
         IntactXml2Tab xml2tab = new IntactXml2Tab();
         xml2tab.setExpansionStrategy( new SpokeWithoutBaitExpansion() );
 
-        // Perform the conversion and collect binary interactions
-
         try {
             Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
 
             psimitabWriter.setHeaderEnabled(false);
 
-             //Setup the output
-            PrintWriter out = getOutPrintWriter(filename, "plain/text");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            psimitabWriter.write(binaryInteractions, baos);
+            baos.close();
 
-            psimitabWriter.write(binaryInteractions, out);
-
-            out.close();
-
-            FacesContext fc = FacesContext.getCurrentInstance();
-
-            StateManager stateManager = fc.getApplication().getStateManager();
-            stateManager.saveView(fc);
-
-            fc.responseComplete();
+            return createStreamedContent(baos, "plain/text", filename);
 
         } catch (Exception e) {
             addErrorMessage("Export failed", "Problem exporting to MITAB: "+e.getMessage());
             handleException(e);
-            return;
+            return null;
         }
 
+    }
+
+    private StreamedContent createStreamedContent(ByteArrayOutputStream baos, String contentType, String filename ) {
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+
+        return new DefaultStreamedContent(bais, contentType, filename);
     }
 
     private EntrySet createEntrySet() {
@@ -785,5 +785,29 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setIdentifierToImport(String identifierToImport) {
         this.identifierToImport = identifierToImport;
+    }
+
+    public StreamedContent getMitab25File() {
+        return mitab25File;
+    }
+
+    public void setMitab25File(StreamedContent mitab25File) {
+        this.mitab25File = mitab25File;
+    }
+
+    public StreamedContent getMitab25ExtendedFile() {
+        return mitab25ExtendedFile;
+    }
+
+    public void setMitab25ExtendedFile(StreamedContent mitab25ExtendedFile) {
+        this.mitab25ExtendedFile = mitab25ExtendedFile;
+    }
+
+    public StreamedContent getXml254File() {
+        return xml254File;
+    }
+
+    public void setXml254File(StreamedContent xml254File) {
+        this.xml254File = xml254File;
     }
 }
