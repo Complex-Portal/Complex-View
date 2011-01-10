@@ -11,15 +11,27 @@
 
     <h1>Validator news</h1>
 
+    <h2>Version 2.1.1</h2>
+
+    <tr:outputText value="This new version has fixed bugs : "/>
+
+    <ul>
+        <li><tr:outputText value="Update of the PSI-XML library : the validator is now using psi25-xml 1.7.9-SNAPSHOT which fixed one bug of the writer (Not able to write PSI MI files having several entries in a same entryset) "/></li>
+
+        <li><tr:outputText value="The Database cross reference Check was not looking at all the cross references (only experiment xRef, experiment Bibref and interaction Xref). It should also look at the interactor cross references, controlled vocabularies xrefs, etc."/></li>
+
+        <li><tr:outputText value="One dependency of type interaction detection method - interaction type was wrong : When having ipac - association, it is not required to have than one bait."/></li>
+    </ul>
+
     <h2>Version 2.1.0</h2>
 
     <tr:outputText value="This version contains major updates of the IMEx rules. You can look at the "/>
     <tr:commandLink text="documentation" action="documentation.help"/>
-    <tr:outputText value=" (section Validation scopes/IMEx curation Standards) for more information about the implemented rules."/> 
+    <tr:outputText value=" (section Validation scopes/IMEx curation Standards) for more information about the implemented rules."/>
 
 
     <br/>
-    <tr:outputText value="Update of the psi-xml library : the validator is now using psi25-xml 1.7.7-SNAPSHOT which fixed several bugs of the parser such as "/>
+    <tr:outputText value="Update of the PSI-XML library : the validator is now using psi25-xml 1.7.7-SNAPSHOT which fixed several bugs of the parser such as "/>
     <ul>
         <li><tr:outputText value="Not handling interactions as participants of an interaction."/></li>
         <li><tr:outputText value="Not writting and reading annotations of the participant."/></li>
@@ -40,7 +52,7 @@
         <li><tr:outputText value="Feature range Check : Checks that the each interactor's feature range is valid. It cannot be out of bound (inferior to 1 or superior to the sequence length), not overlapping and compliant with the feature range status."/>
             <br/>
             <tr:outputText value="WARNING : the status 'c-terminal' and 'n-terminal' cannot be used anymore for n-terminal and c-terminal features where the exact positions are not known. It is recommended to use the new terms 'c-terminal range' (MI:1039) and 'n-terminal range' (MI:1040) for such features"></tr:outputText>
-            </li>
+        </li>
     </ul>
 
 </ui:composition>
