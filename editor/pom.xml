@@ -209,8 +209,14 @@
         <!-- PSIMI -->
         <dependency>
             <groupId>psidev.psi.mi</groupId>
+            <artifactId>psimitab</artifactId>
+            <version>1.7.9-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab-search</artifactId>
-            <version>1.7.8</version>
+            <version>1.7.9-SNAPSHOT</version>
         </dependency>
 
         <!-- Logging -->
@@ -281,18 +287,6 @@
                     <artifactId>axis-saaj</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <!-- psidev -->
-         <dependency>
-            <groupId>psidev.psi.mi</groupId>
-            <artifactId>psi25-xml</artifactId>
-            <version>1.7.8</version>
-         </dependency>
-         <dependency>
-            <groupId>psidev.psi.mi</groupId>
-            <artifactId>psimitab</artifactId>
-            <version>1.7.8</version>
         </dependency>
 
         <!-- PSICQUIC -->
