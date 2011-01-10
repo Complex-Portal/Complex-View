@@ -99,7 +99,7 @@ public class ExperimentController extends AnnotatedObjectController {
                 "select i from InteractionImpl i join i.experiments as exp where exp.ac = '" + experiment.getAc() + "'",
                 "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '" + experiment.getAc() + "'");
 
-        if (dataModel.getRowCount() > 0) {
+        if (dataModel.getRowCount() > 0 || !IntactCore.isInitialized(experiment.getInteractions())) {
             interactionDataModel = dataModel;
         } else {
             interactionDataModel = LazyDataModelFactory.createLazyDataModel(experiment.getInteractions());
