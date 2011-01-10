@@ -414,6 +414,11 @@ public class ParticipantImportController extends BaseController {
         }
 
         @Override
+        public ReportWriter getProteinMappingWriter() throws IOException {
+            return reportWriter;
+        }
+
+        @Override
         public ReportWriter getDuplicatedWriter() throws IOException {
             return reportWriter;
         }
