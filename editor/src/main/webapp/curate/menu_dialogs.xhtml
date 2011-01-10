@@ -21,9 +21,10 @@
                     <br/>
                 </h:panelGroup>
 
+            <h:panelGroup>
                 <h:outputLabel for="newPmid" value="PMID:"/>
 
-                <h:inputText id="newPmid" value="#{publicationController.identifier}">
+                <h:inputText id="newPmid" value="#{publicationController.identifierToImport}">
                     <p:tooltip value="Type a PMID and click on auto-complete" showDelay="2000"
                                showEvent="focus" hideEvent="blur" position="topRight"/>
                 </h:inputText>
@@ -41,6 +42,7 @@
                                        action="/curate/publication"/>
                     </ot:separateConversationContext>
                 </div>
+            </h:panelGroup>
         </h:panelGrid>
 
     </p:dialog>
@@ -70,7 +72,7 @@
         <h:panelGrid id="openPmidContent" columns="1" style="margin-bottom:10px">
             <h:panelGroup>
                 <h:outputLabel for="openPmid" value="PMID:"/>
-                <h:inputText id="openPmid" value="#{publicationController.identifier}"/>
+                <h:inputText id="openPmid" value="#{publicationController.identifierToOpen}"/>
 
                 <p:commandButton value="Open" actionListener="#{publicationController.openByPmid}"
                                  process="openPmid"

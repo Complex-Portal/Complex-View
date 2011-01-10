@@ -82,6 +82,8 @@ public class PublicationController extends AnnotatedObjectController {
     private String ac;
 
     private String identifier;
+    private String identifierToOpen;
+    private String identifierToImport;
 
     private String datasetToAdd;
     private String[] datasetsToRemove;
@@ -183,6 +185,8 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void newAutocomplete( ActionEvent evt ) {
+        identifier = identifierToImport;
+
         if ( identifier == null ) {
             addErrorMessage( "Cannot auto-complete", "ID is empty" );
             return;
@@ -201,6 +205,7 @@ public class PublicationController extends AnnotatedObjectController {
         autocomplete( publication, identifier );
 
         identifier = null;
+        identifierToImport = null;
 
         getChangesController().markAsUnsaved(publication);
     }
@@ -302,6 +307,8 @@ public class PublicationController extends AnnotatedObjectController {
 
 
     public void openByPmid( ActionEvent evt ) {
+        identifier = identifierToOpen;
+
         if ( identifier == null || identifier.trim().length() == 0 ) {
             addErrorMessage( "PMID is empty", "No PMID was supplied" );
         } else {
@@ -313,6 +320,8 @@ public class PublicationController extends AnnotatedObjectController {
                 publication = publicationToOpen;
                 ac = publication.getAc();
             }
+
+            identifierToOpen = null;
         }
 
     }
@@ -760,5 +769,21 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setReasonForRejection(String reasonForRejection) {
         this.reasonForRejection = reasonForRejection;
+    }
+
+    public String getIdentifierToOpen() {
+        return identifierToOpen;
+    }
+
+    public void setIdentifierToOpen(String identifierToOpen) {
+        this.identifierToOpen = identifierToOpen;
+    }
+
+    public String getIdentifierToImport() {
+        return identifierToImport;
+    }
+
+    public void setIdentifierToImport(String identifierToImport) {
+        this.identifierToImport = identifierToImport;
     }
 }
