@@ -28,6 +28,9 @@
                     onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
         <p:menuitem value="Copy Publication annotations" actionListener="#{experimentController.copyPublicationAnnotations}"
                     ajax="false"/>
+        <p:menuitem value="Move to Publication" ajax="true"
+                        onclick="moveToPublicationDialog.show()" />
+
     </ui:define>
 
     <ui:define name="reviewerContextual">
@@ -178,6 +181,20 @@
                     <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
                                      process="reasonRejTxt"
                                      ajax="false"/>
+            </h:panelGrid>
+        </p:dialog>
+
+
+        <!-- Move to Publication dialog -->
+        <p:dialog header="Move to Publication" width="400" widgetVar="moveToPublicationDialog" draggable="false"
+                  modal="true" position="center">
+            <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <h:outputLabel for="pubToMove" value="Publication AC or PMID:"/>
+                    <h:inputText id="pubToMove" value="#{experimentController.publicationToMoveTo}"/>
+
+                    <p:commandButton value="Move" action="#{experimentController.moveToPublication}"
+                                     process="pubToMove"
+                                     ajax="false" oncomplete="moveToPublicationDialog.hide()"/>
             </h:panelGrid>
         </p:dialog>
 

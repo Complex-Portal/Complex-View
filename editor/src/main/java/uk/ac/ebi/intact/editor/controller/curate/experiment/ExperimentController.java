@@ -53,6 +53,7 @@ public class ExperimentController extends AnnotatedObjectController {
     private LazyDataModel<Interaction> interactionDataModel;
 
     private String reasonForRejection;
+    private String publicationToMoveTo;
 
     @Autowired
     private PublicationController publicationController;
@@ -313,6 +314,42 @@ public class ExperimentController extends AnnotatedObjectController {
         setAnnotation( CvTopic.ON_HOLD, reason );
     }
 
+    public String moveToPublication() {
+        if (publicationToMoveTo != null && !publicationToMoveTo.isEmpty()) {
+            Publication publication = findPublicationByAcOrLabel(publicationToMoveTo);
+
+            if (publication == null) {
+                addErrorMessage("Cannot move", "No publication found with this AC or PMID: "+publicationToMoveTo);
+                return null;
+            }
+
+            experiment.getPublication().removeExperiment(experiment);
+
+            experiment.setPublication(publication);
+            publication.getExperiments().add(experiment);
+
+        } else {
+            return null;
+        }
+
+        loadData(null);
+
+        setUnsavedChanges(true);
+
+        addInfoMessage("Moved experiment", "To publication: "+publicationToMoveTo);
+
+        return null;
+    }
+
+    private Publication findPublicationByAcOrLabel(String acOrLabel) {
+        Publication publication = getDaoFactory().getPublicationDao().getByAc(acOrLabel.trim());
+
+        if (publication == null) {
+            publication = getDaoFactory().getPublicationDao().getByPubmedId(acOrLabel);
+        }
+        return publication;
+    }
+
     public String getAc() {
         if ( ac == null && experiment != null ) {
             ac = experiment.getAc();
@@ -354,5 +391,17 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public void setReasonForRejection(String reasonForRejection) {
         this.reasonForRejection = reasonForRejection;
+    }
+
+    public String getPublicationToMoveTo() {
+        return publicationToMoveTo;
+    }
+
+    public void setPublicationToMoveTo(String publicationToMoveTo) {
+        this.publicationToMoveTo = publicationToMoveTo;
+    }
+
+    private PublicationController getPublicationController() {
+        return (PublicationController) getSpringContext().getBean("publicationController");
     }
 }
