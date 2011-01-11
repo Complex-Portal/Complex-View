@@ -70,19 +70,19 @@ public class ValidatorWebContent {
      * Create a new instance of the web content with new instances of the validator ontology manager, cvmapping and object rules
      * @throws ValidatorWebContextException
      */
-    public ValidatorWebContent() throws ValidatorWebContextException {
-        // new cv rule reader
-        cvRulesReader = new CvRuleReader();
+    public ValidatorWebContent(boolean isLocal) throws ValidatorWebContextException {
+            // new cv rule reader
+            cvRulesReader = new CvRuleReader();
 
-        // new validator factory
-        ValidatorFactory factory = new ValidatorFactory();
+            // new validator factory
+            ValidatorFactory factory = new ValidatorFactory();
 
-        // set up validator environment for PSI-MI
-        setUpPsiMiScopes();
-        setUpPsiMiValidatorEnvironments(factory);
-        // set up validator environment for PSI-PAR
-        setUpPsiParScopes();
-        setUpPsiParValidatorEnvironments(factory);
+            // set up validator environment for PSI-MI
+            setUpPsiMiScopes();
+            setUpPsiMiValidatorEnvironments(factory, isLocal);
+            // set up validator environment for PSI-PAR
+            setUpPsiParScopes();
+            setUpPsiParValidatorEnvironments(factory, isLocal);
     }
 
     /**
@@ -99,7 +99,7 @@ public class ValidatorWebContent {
 
         // set up validator environment for PSI-PAR
         setUpPsiParScopes();
-        setUpPsiParValidatorEnvironments(factory);
+        setUpPsiParValidatorEnvironments(factory, false);
 
         // Re-use previous validator environment for PSI-MI
         setUpPsiMiScopes();
@@ -122,7 +122,7 @@ public class ValidatorWebContent {
 
         // set up validator environment for PSI-MI
         setUpPsiMiScopes();
-        setUpPsiMiValidatorEnvironments(factory);
+        setUpPsiMiValidatorEnvironments(factory, false);
 
         // Re-use previous validator environment for PSI-PAR
         setUpPsiParScopes();
@@ -365,8 +365,8 @@ public class ValidatorWebContent {
      * @param factory : the validator factory
      * @throws ValidatorWebContextException
      */
-    private void setUpPsiParValidatorEnvironments(ValidatorFactory factory) throws ValidatorWebContextException {
-        Mi25Validator validator = factory.getReInitialisedValidator(ValidationScope.CV_ONLY, DataModel.PSI_PAR);
+    private void setUpPsiParValidatorEnvironments(ValidatorFactory factory, boolean isLocal) throws ValidatorWebContextException {
+        Mi25Validator validator = factory.getReInitialisedValidator(ValidationScope.CV_ONLY, DataModel.PSI_PAR, isLocal);
         setPsiParOntologyManager(validator.getOntologyMngr());
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
@@ -386,14 +386,14 @@ public class ValidatorWebContent {
      * @param factory : the validator factory
      * @throws ValidatorWebContextException
      */
-    private void setUpPsiMiValidatorEnvironments(ValidatorFactory factory) throws ValidatorWebContextException {
-        Mi25Validator validator = factory.getReInitialisedValidator(ValidationScope.MIMIX, DataModel.PSI_MI);
+    private void setUpPsiMiValidatorEnvironments(ValidatorFactory factory, boolean isLocal) throws ValidatorWebContextException {
+        Mi25Validator validator = factory.getReInitialisedValidator(ValidationScope.MIMIX, DataModel.PSI_MI, isLocal);
         setPsiMiOntologyManager(validator.getOntologyMngr());
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
         this.psiMiObjectRules.put(ValidationScope.MIMIX, validator.getObjectRules());
 
-        validator = factory.getReInitialisedValidator(ValidationScope.IMEX, DataModel.PSI_MI);
+        validator = factory.getReInitialisedValidator(ValidationScope.IMEX, DataModel.PSI_MI, isLocal);
 
         this.psiMiObjectRules.put(ValidationScope.IMEX, validator.getObjectRules());
 
