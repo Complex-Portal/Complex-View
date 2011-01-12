@@ -16,11 +16,10 @@
         <p:toolbarGroup align="left">
 
         <h:selectOneMenu id="exportFormatSelect"
-                                label="Export to:" unselectedLabel="Select format..."
                                 value="#{searchBean.exportFormat}">
             <p:ajax event="change" onstart="document.getElementById('exportBtn').disabled=true"
                     update="exportBtn"/>
-                <f:selectItem itemLabel="-- Select format --" itemValue="#{null}"/>
+                <f:selectItem itemLabel="-- Select format to Download --" itemValue="#{null}"/>
                 <f:selectItem itemLabel="MI-TAB" itemValue="mitab"/>
                 <f:selectItem itemLabel="MI-TAB (Expanded)" itemValue="mitab_intact"/>
                 <f:selectItem itemLabel="MI-XML 2.5.3" itemValue="xml_2_53" disabled="#{searchBean.results.rowCount ge 500}"/>
@@ -29,7 +28,7 @@
                                disabled="#{searchBean.results.rowCount ge 500}"/>
             </h:selectOneMenu>
 
-            <p:commandButton type="button" id="exportBtn" value="Export"
+            <p:commandButton type="button" id="exportBtn" value="Download"
                          disabled="#{searchBean.exportFormat == null}"
                          onclick="var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
 
@@ -37,7 +36,7 @@
         </p:toolbarGroup>
         <p:toolbarGroup align="right">
 
-          <p:menuButton value="Change visualization...">
+          <p:menuButton value="Change table preset...">
               <p:menuitem value="Minimal" ajax="false"
                           actionListener="#{columnContext.selectMininumColumns()}" action="interactions"/>
               <p:menuitem value="Basic" ajax="false"

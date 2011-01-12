@@ -102,7 +102,7 @@ public class ColumnContextController {
                 selectExpandedColumns();
             }
         } else {
-            selectBasicColumns();
+            selectStandardColumns();
         }
 
         String showIconsCookie = readCookie(COOKIE_SHOWICONS_NAME);
@@ -110,7 +110,7 @@ public class ColumnContextController {
         if (showIconsCookie != null) {
             showTypeRoleIcons = Boolean.valueOf(showIconsCookie);
         } else {
-            setShowTypeRoleIcons(false);
+            setShowTypeRoleIcons(true);
         }
     }
 
