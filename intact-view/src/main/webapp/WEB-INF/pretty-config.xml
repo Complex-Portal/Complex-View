@@ -1,0 +1,78 @@
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.0.2"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.0.2
+                                   		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.0.2.xsd">
+
+   <!-- Begin RewriteRules -->
+
+   <!--<rewrite trailingSlash="append" toCase="lowercase" />-->
+   <!--<rewrite match="^/old-url/(\w+)/$" substitute="/new_url/$1/" redirect="301" />-->
+
+   <!-- Begin UrlMappings -->
+
+    <url-mapping id="main">
+		<pattern value="/" />
+		<view-id>/main.xhtml</view-id>
+	</url-mapping>
+
+	<url-mapping id="browse">
+		<pattern value="/browse" />
+		<view-id>/browse/browse.xhtml</view-id>
+	</url-mapping>
+
+    <url-mapping id="interactions">
+		<pattern value="/query/#{query}/" />
+		<view-id>/pages/interactions/interactions.xhtml</view-id>
+	</url-mapping>
+
+    <url-mapping id="molecule">
+        <pattern value="/molecule/#{interactorAc}/" />
+        <view-id>/pages/molecule/molecule.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="details">
+        <pattern value="/interaction/#{interactionAc}/" />
+        <view-id>/pages/details/details.xhtml</view-id>
+    </url-mapping>
+
+    <!--<url-mapping id="publication">-->
+        <!--<pattern value="/publication/#{ac}" />-->
+        <!--<view-id>/curate/publication.jsf</view-id>-->
+    <!--</url-mapping>-->
+
+    <!--<url-mapping id="experiment">-->
+        <!--<pattern value="/experiment/#{ac}" />-->
+        <!--<view-id>/curate/experiment.jsf</view-id>-->
+    <!--</url-mapping>-->
+
+    <!--<url-mapping id="interaction">-->
+        <!--<pattern value="/interaction/#{ac}" />-->
+        <!--<view-id>/curate/interaction.jsf</view-id>-->
+    <!--</url-mapping>-->
+
+    <!--<url-mapping id="interactor">-->
+        <!--<pattern value="/interactor/#{ac}" />-->
+        <!--<view-id>/curate/interactor.jsf</view-id>-->
+    <!--</url-mapping>-->
+
+    <!--<url-mapping id="participant">-->
+        <!--<pattern value="/participant/#{ac}" />-->
+        <!--<view-id>/curate/participant.jsf</view-id>-->
+    <!--</url-mapping>-->
+
+    <!--<url-mapping id="feature">-->
+        <!--<pattern value="/feature/#{ac}" />-->
+        <!--<view-id>/curate/feature.jsf</view-id>-->
+    <!--</url-mapping>-->
+
+    <!--<url-mapping id="organism">-->
+        <!--<pattern value="/organism/#{ac}" />-->
+        <!--<view-id>/curate/organism.jsf</view-id>-->
+    <!--</url-mapping>-->
+
+    <!--<url-mapping id="cvobject">-->
+        <!--<pattern value="/cv/#{ac}" />-->
+        <!--<view-id>/curate/cvobject.jsf</view-id>-->
+    <!--</url-mapping>-->
+
+</pretty-config>

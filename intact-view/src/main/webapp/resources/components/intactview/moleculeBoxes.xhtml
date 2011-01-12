@@ -14,25 +14,25 @@
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-         <table cellspacing="1" cellpadding="0" style="text-align:left; border-width:0px">
+         <table cellspacing="1" cellpadding="0" style="text-align:left; border-width:0px; width: 45px">
         <tr>
                 <ui:param name="cvtype" value="#{iaf:getCvObjectFromIdentifier(facesContext,cc.attrs.interactor.interactorType.identifier,'uk.ac.ebi.intact.model.CvInteractorType')}"/>
-            <td style="text-align:center; width:15px; background: background:#{iconGeneratorImpl.typeColourMap[interactor.interactorType.identifier].colourHex};color:#555555;font-size:7pt; border:#ADADAD dotted 1px">
-                    <h:outputText value="#{iconGeneratorImpl.typeColourMap[cvtype.identifier].initials}" shortDesc="#{cvtype.shortLabel}"/>
+            <td style="text-align:center; width:15px; padding: 0; background:#{iconGeneratorImpl.typeColourMap[interactor.interactorType.identifier].colourHex};color:#555555;font-size:7pt; border:#ADADAD dotted 1px">
+                    <h:outputText value="#{iconGeneratorImpl.typeColourMap[cvtype.identifier].initials}" title="Type: #{cvtype.shortLabel}"/>
             </td>
 
             <ui:repeat var="cvXref" value="#{cc.attrs.interactor.experimentalRoles}">
                 <ui:param name="cvobject"
                        value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'uk.ac.ebi.intact.model.CvExperimentalRole')}"/>
-                <td style="text-align:center; width:15px; background: background:#{iconGeneratorImpl.typeColourMap[cvXref.identifier].colourHex};color:#555555;font-size:7pt; border:#ADADAD solid 1px">
-                    <h:outputText value="#{iconGeneratorImpl.expRoleColourMap[cvobject.identifier].initials}" shortDesc="#{cvobject.shortLabel}"/>
+                <td style="text-align:center; width:15px; padding: 0; background:#{iconGeneratorImpl.expRoleColourMap[cvXref.identifier].colourHex};color:#555555;font-size:7pt; border:#ADADAD solid 1px">
+                    <h:outputText value="#{iconGeneratorImpl.expRoleColourMap[cvobject.identifier].initials}" title="Experimental role: #{cvobject.shortLabel}"/>
                 </td>
             </ui:repeat>
             <ui:repeat var="cvXref" value="#{cc.attrs.interactor.biologicalRoles}">
                 <ui:param name="cvobject"
                        value="#{iaf:getCvObjectFromIdentifier(facesContext,cvXref.identifier,'uk.ac.ebi.intact.model.CvBiologicalRole')}"/>
-                <td style="text-align:center; width:15px; background: background:#{iconGeneratorImpl.typeColourMap[cvXref.text].colourHex};color:#555555;font-size:7pt; border:#ADADAD dashed 1px">
-                    <h:outputText value="#{iconGeneratorImpl.bioRoleColourMap[cvobject.identifier].initials}" shortDesc="#{cvobject.shortLabel}"/>
+                <td style="text-align:center; width:15px; padding: 0; background:#{iconGeneratorImpl.bioRoleColourMap[cvXref.identifier].colourHex};color:#555555;font-size:7pt; border:#ADADAD dashed 1px">
+                    <h:outputText value="#{iconGeneratorImpl.bioRoleColourMap[cvobject.identifier].initials}" title="Biological role: #{cvobject.shortLabel}"/>
                 </td>
             </ui:repeat>
         </tr>

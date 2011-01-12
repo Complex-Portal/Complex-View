@@ -22,7 +22,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -39,6 +44,14 @@ import java.util.ResourceBundle;
 public class ColumnContextController {
 
     private static final Log log = LogFactory.getLog( ColumnContextController.class );
+
+    private static String COOKIE_COLS_NAME = "intact.cols.view";
+    private static String COOKIE_SHOWICONS_NAME = "intact.icons.show";
+
+    private static String COOKIE_MINIMAL_VALUE = "min cols";
+    private static String COOKIE_BASIC_VALUE = "basic cols";
+    private static String COOKIE_STANDARD_VALUE = "std cols";
+    private static String COOKIE_EXPANDED_VALUE = "ext cols";
 
     private String[] selectedColumns;
     private List<SelectItem> columnsSelectItems;
@@ -69,15 +82,59 @@ public class ColumnContextController {
     private static String EXPANSION_METHOD = "interaction.expansionmethod";
     private static String DATASET = "interaction.dataset";
 
+    private boolean showTypeRoleIcons;
+
     public ColumnContextController() {
     }
 
     @PostConstruct
     public void loadColumns() {
-        if ( log.isDebugEnabled() ) {
-            log.debug( "Preloading columns" );
+        String colsCookie = readCookie(COOKIE_COLS_NAME);
+
+        if (colsCookie != null) {
+            if (COOKIE_MINIMAL_VALUE.equals(colsCookie)) {
+                selectMininumColumns();
+            } else if (COOKIE_BASIC_VALUE.equals(colsCookie)) {
+                selectBasicColumns();
+            } else if (COOKIE_STANDARD_VALUE.equals(colsCookie)) {
+                selectStandardColumns();
+            } else if (COOKIE_EXPANDED_VALUE.equals(colsCookie)) {
+                selectExpandedColumns();
+            }
+        } else {
+            selectBasicColumns();
         }
-        selectStandardColumns();
+
+        String showIconsCookie = readCookie(COOKIE_SHOWICONS_NAME);
+
+        if (showIconsCookie != null) {
+            showTypeRoleIcons = Boolean.valueOf(showIconsCookie);
+        } else {
+            setShowTypeRoleIcons(false);
+        }
+    }
+
+    private void writeCookie(String name, String value) {
+        final ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+
+        Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(3600 * 24 * 200);
+
+        HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
+        response.addCookie(cookie);
+    }
+
+    private String readCookie(String name) {
+        final ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
+
+        for (Cookie cookie : request.getCookies()) {
+            if (name.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+
+        return null;
     }
 
     private String[] getSimpleColumns() {
@@ -85,6 +142,10 @@ public class ColumnContextController {
             MOLECULE_A_NAME, MOLECULE_A_LINKS, MOLECULE_B_NAME, MOLECULE_B_LINKS, MOLECULE_A_ALIASES, MOLECULE_B_ALIASES, MOLECULE_A_SPECIES, MOLECULE_B_SPECIES,
                 FIRST_AUTHOR, PUBMED_IDENTIFIER, INTERACTION_DETECTION_METHOD, INTERACTION_AC, EXPANSION_METHOD
         };
+    }
+
+    private String[] getBasicColumns() {
+        return new String[] { MOLECULE_A_NAME, MOLECULE_A_LINKS, MOLECULE_B_NAME, MOLECULE_B_LINKS, INTERACTION_DETECTION_METHOD, INTERACTION_AC};
     }
 
     private String[] getExpandedColumns() {
@@ -102,14 +163,22 @@ public class ColumnContextController {
 
     public void selectStandardColumns() {
         selectedColumns = getSimpleColumns();
+        writeCookie(COOKIE_COLS_NAME, COOKIE_STANDARD_VALUE);
     }
 
     public void selectExpandedColumns() {
         selectedColumns = getExpandedColumns();
+        writeCookie(COOKIE_COLS_NAME, COOKIE_EXPANDED_VALUE);
+    }
+
+    public void selectBasicColumns() {
+        this.selectedColumns = getBasicColumns();
+        writeCookie(COOKIE_COLS_NAME, COOKIE_BASIC_VALUE);
     }
 
     public void selectMininumColumns() {
         this.selectedColumns = getMinimumColumns();
+        writeCookie(COOKIE_COLS_NAME, COOKIE_MINIMAL_VALUE);
     }
 
     public boolean isColumnVisible(String columnKey) {
@@ -143,5 +212,15 @@ public class ColumnContextController {
             columnsSelectItems = createSelectItems();
         }
         return columnsSelectItems;
+    }
+
+    public boolean isShowTypeRoleIcons() {
+        return showTypeRoleIcons;
+    }
+
+    public void setShowTypeRoleIcons(boolean showTypeRoleIcons) {
+        this.showTypeRoleIcons = showTypeRoleIcons;
+
+        writeCookie(COOKIE_SHOWICONS_NAME, String.valueOf(showTypeRoleIcons));
     }
 }

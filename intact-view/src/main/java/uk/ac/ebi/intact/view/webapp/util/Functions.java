@@ -19,8 +19,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
@@ -160,7 +162,23 @@ public final class Functions {
         String xrefUrl = null;
 
         if (db != null) {
-            Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(db, CvTopic.SEARCH_URL);
+            Annotation annotation = null;
+
+            if (IntactCore.isInitialized(db.getAnnotations())) {
+                annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(db, CvTopic.SEARCH_URL);
+            } else {
+
+                    TransactionStatus transaction = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+                    CvDatabase reloadedDb = IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(CvDatabase.class)
+                            .getByAc(db.getAc());
+                    annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(reloadedDb, CvTopic.SEARCH_URL);
+
+
+                    IntactContext.getCurrentInstance().getDataContext().commitTransaction(transaction);
+
+            }
+
 
             if (annotation != null) {
                 xrefUrl = annotation.getAnnotationText();

@@ -138,14 +138,19 @@
                 </iv:panelLabelAndMessage>
 
                 <table border="0">
+                    <h:panelGroup rendered="#{not empty interaction.xrefs}">
                     <tr>
                         <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
                         <td><iv:xrefTable xrefs="#{interaction.xrefs}" /></td>
                     </tr>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{not empty interaction.annotations}">
                     <tr>
                         <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
                         <td><iv:annotationTable annotations="#{interaction.annotations}" /></td>
                     </tr>
+                    </h:panelGroup>
                 </table>
             </td>
 

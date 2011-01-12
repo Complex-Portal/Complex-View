@@ -11,28 +11,9 @@
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
 
 
-    <p:toolbar>
+    <p:toolbar >
 
-        <!--<p:menuButton value="Export to...">-->
-             <!--<p:menuitem value="MI-TAB"-->
-                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=mitab"-->
-                         <!--target="_blank" />-->
-             <!--<p:menuitem value="MI-TAB (Expanded)"-->
-                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=mitab_intact"-->
-                         <!--target="_blank" />-->
-             <!--<p:menuitem value="MI-XML 2.5.3"-->
-                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_53"-->
-                         <!--target="_blank"-->
-                         <!--disabled="#{searchBean.results.rowCount ge 1000}"/>-->
-             <!--<p:menuitem value="MI-XML 2.5.4"-->
-                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_2_54"-->
-                         <!--target="_blank"-->
-                         <!--disabled="#{searchBean.results.rowCount ge 1000}"/>-->
-             <!--<p:menuitem value="MI-XML 2.5 (HTML View)"-->
-                         <!--url="#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=xml_html"-->
-                         <!--target="_blank"-->
-                         <!--disabled="#{searchBean.results.rowCount ge 1000}"/>-->
-        <!--</p:menuButton>-->
+        <p:toolbarGroup align="left">
 
         <h:selectOneMenu id="exportFormatSelect"
                                 label="Export to:" unselectedLabel="Select format..."
@@ -53,10 +34,32 @@
                          onclick="var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
 
 
-        <p:divider/>
+        </p:toolbarGroup>
+        <p:toolbarGroup align="right">
 
-        <p:commandButton type="button" value="Add / Remove table columns" onclick="columnsDialog.show()" />
+          <p:menuButton value="Change visualization...">
+              <p:menuitem value="Minimal" ajax="false"
+                          actionListener="#{columnContext.selectMininumColumns()}" action="interactions"/>
+              <p:menuitem value="Basic" ajax="false"
+                          actionListener="#{columnContext.selectBasicColumns()}" action="interactions"/>
+              <p:menuitem value="Standard" ajax="false"
+                          actionListener="#{columnContext.selectStandardColumns()}" action="interactions"/>
+              <p:menuitem value="Expanded" ajax="false"
+                          actionListener="#{columnContext.selectExpandedColumns()}" action="interactions"/>
+          </p:menuButton>
 
+            <p:divider/>
+
+            <p:commandButton type="button" value="Show/hide columns" onclick="columnsDialog.show()" />
+
+            <p:divider/>
+
+            <h:selectBooleanCheckbox id="showTypeBool" value="#{columnContext.showTypeRoleIcons}">
+                <f:ajax event="valueChange" render="resultsTable" execute="@this"/>
+            </h:selectBooleanCheckbox>
+            <h:outputLabel for="showTypeBool" value="Show type/role icons"/>
+
+        </p:toolbarGroup>
     </p:toolbar>
 
     <br/>
@@ -88,15 +91,19 @@
                      rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'}">
         <p:column>
                 <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-                    <h:commandLink action="details">
-                        <f:setPropertyActionListener value="#{searchBean.getIntactAc(binaryInteraction)}"
-                                                     target="#{detailsBean.interactionAc}"/>
-                        <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
+                    <h:link outcome="/pages/details/details?faces-redirect=true&amp;includeViewParams=true">
+                        <f:param name="interactionAc" value="#{searchBean.getIntactAc(binaryInteraction)}"/>
+                        <!--<f:setPropertyActionListener value="#{searchBean.getIntactAc(binaryInteraction)}"-->
+                                                     <!--target="#{detailsBean.interactionAc}"/>-->
+                        <!--<f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>-->
                         <h:graphicImage url="/images/magnify.png" alt="details" />
-                    </h:commandLink>
+                    </h:link>
                 </h:panelGroup>
             </p:column>
         <p:column>
+            <f:facet name="header">
+                    <h:outputText value="#"/>
+                </f:facet>
               <h:outputText value="#{row + 1}"/>
         </p:column>
 
@@ -108,7 +115,9 @@
                     <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
                 </h:panelGroup>
 
+                <h:panelGroup rendered="#{columnContext.showTypeRoleIcons}">
                     <iv:moleculeBoxes interactor="#{binaryInteraction.interactorA}"/>
+                </h:panelGroup>
             </p:column>
 
             <p:column rendered="#{columnContext.isColumnVisible('moleculeA.links')}">
@@ -131,7 +140,9 @@
 
                 </h:panelGroup>
 
-                <iv:moleculeBoxes interactor="#{binaryInteraction.interactorB}"/>
+                <h:panelGroup rendered="#{columnContext.showTypeRoleIcons}">
+                    <iv:moleculeBoxes interactor="#{binaryInteraction.interactorB}"/>
+                </h:panelGroup>
             </p:column>
 
             <p:column styleClass="cellTextCompound"
