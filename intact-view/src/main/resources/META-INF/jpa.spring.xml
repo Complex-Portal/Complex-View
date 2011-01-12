@@ -48,8 +48,20 @@
 
     <bean id="intactViewDataSource" class="org.apache.myfaces.orchestra.connectionManager.ConnectionManagerDataSource">
         <property name="dataSource">
-            <bean class="org.springframework.jndi.JndiObjectFactoryBean">
-                <property name="jndiName" value="java:comp/env/${db.jndi}"/>
+            <!--<bean class="org.springframework.jndi.JndiObjectFactoryBean">-->
+                <!--<property name="jndiName" value="java:comp/env/${db.jndi}"/>-->
+            <!--</bean>-->
+            <bean class="org.apache.commons.dbcp.BasicDataSource">
+                <property name="url" value="${db.url}"/>
+                <property name="username" value="${db.user}"/>
+                <property name="password" value="${db.password}"/>
+                <property name="driverClassName" value="${db.driver}"/>
+                <property name="maxActive" value="30"/>
+                <property name="maxIdle" value="10"/>
+                <property name="minIdle" value="2"/>
+                <property name="maxWait" value="5000"/>
+                <property name="minEvictableIdleTimeMillis" value="25000"/>
+                <property name="timeBetweenEvictionRunsMillis" value="30000"/>
             </bean>
         </property>
     </bean>

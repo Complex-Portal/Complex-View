@@ -13,12 +13,16 @@
 
     <ui:param name="uniprotAc" value="#{iaf:getIdentifierForDasty(moleculeViewBean.interactor)}"/>
 
-    <h:inputText label="#{intactView['webapp.name']} AC: " value="#{moleculeViewBean.interactor.ac}"
-                 readOnly="true"/>
-    <h:inputText label="Short label: " value="#{moleculeViewBean.interactor.shortLabel}"
-                 readOnly="true"/>
-    <h:inputText label="Uniprot AC: " value="#{uniprotAc}"
-                 readOnly="true"/>
+    <h:panelGrid columns="2">
+        <h:outputLabel for="acTxt" value="#{intactView['webapp.name']} AC: "/>
+        <h:outputText id="acTxt" value="#{moleculeViewBean.interactor.ac}"/>
+
+        <h:outputLabel for="labelTxt" value="Short label: "/>
+        <h:outputText id="labelTxt" value="#{moleculeViewBean.interactor.shortLabel}"/>
+
+        <h:outputLabel for="uniprotTxt" value="Uniprot AC: "/>
+        <h:outputText id="uniprotTxt" value="#{uniprotAc}"/>
+    </h:panelGrid>
 
     <h2>Dasty2 visualization</h2>
 

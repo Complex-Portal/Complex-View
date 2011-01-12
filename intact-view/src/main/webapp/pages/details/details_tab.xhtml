@@ -103,7 +103,7 @@
 
                 <p:panel id="publicationLinks" header="Links">
                     <h:commandLink value="Show all interactions" action="#{searchBean.doBinarySearchAction}">
-                        <f:setPropertyActionListener value="#{pmid}" target="#{userQuery.searchQuery}"/>
+                        <f:setPropertyActionListener value="pubid:#{pmid}" target="#{userQuery.searchQuery}"/>
                         <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
                     </h:commandLink>
                 </p:panel>

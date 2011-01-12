@@ -54,6 +54,7 @@
     </h:head>
 
     <h:body>
+        <h:form id="intactForm" prependId="false">
 
         <ui:insert name="dialogs"/>
 
@@ -83,9 +84,7 @@
                                 <!-- InstanceBeginEditable name="leftnav" -->
 
                                 <!-- start left menu here  -->
-                                <h:form id="sidebarForm" prependId="false">
                                     <ui:insert name="sidebar"/>
-                                </h:form>
 
                             </div>
                         </td>
@@ -182,8 +181,8 @@
 
              <!-- To avoid expired sessions, poll every 25 mins -->
 
-        <h:form>
-            <p:poll interval="#{25*60*1000}"/>
+        <p:poll interval="#{25*60*1000}" process="@this"/>
+
         </h:form>
 
     </h:body>

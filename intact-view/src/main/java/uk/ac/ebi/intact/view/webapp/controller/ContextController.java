@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Controller
 @Scope("currentSearch")
-public class ContextController {
+public class ContextController extends BaseController {
 
     private int activeTabIndex;
     private int interactorActiveTabIndex;

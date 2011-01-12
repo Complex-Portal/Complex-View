@@ -57,8 +57,6 @@
 
     <ui:define name="content">
 
-        <h:form id="topForm" prependId="false">
-
         <h:panelGroup>
 
             <h:panelGroup>
@@ -72,48 +70,46 @@
 
         <ui:include src="pages/search/search_panel.xhtml"/>
 
-        </h:form>
 
-        <h:form id="intactForm" prependId="false">
 
         <p:tabView id="mainPanels" cache="false" dynamic="true" activeIndex="#{contextController.activeTabIndex}"
                    widgetVar="mainTabsWidget" tabChangeListener="#{searchBean.onTabChanged}" >
-            <p:tab title="Home">
+            <p:tab id="homeTab" title="Home">
                         <p:messages/>
                         <ui:insert name="aboutTabContent"/>
             </p:tab>
 
-            <p:tab title="Search">
+            <p:tab id="searchTab" title="Search">
                         <p:messages/>
                         <ui:insert name="searchTabContent"/>
             </p:tab>
 
-            <p:tab title="Interactions (#{searchBean.totalResults})" disabled="#{searchBean.totalResults == 0}">
+            <p:tab id="interactionsTab" title="Interactions (#{searchBean.totalResults})" disabled="#{searchBean.totalResults == 0}">
                         <p:messages/>
                         <ui:insert name="interactionsTabContent"/>
             </p:tab>
 
-            <p:tab title="Browse" disabled="#{searchBean.totalResults == 0}">
+            <p:tab id="browseTab" title="Browse" disabled="#{searchBean.totalResults == 0}">
                         <p:messages/>
                         <ui:insert name="browseTabContent"/>
             </p:tab>
 
-            <p:tab title="Lists" disabled="#{searchBean.totalResults == 0}">
+            <p:tab id="listsTab" title="Lists" disabled="#{searchBean.totalResults == 0}">
                         <p:messages/>
                         <ui:insert name="listTabContent"/>
             </p:tab>
 
-            <p:tab title="Interaction Details" disabled="#{detailsBean.interaction == null}">
+            <p:tab id="detailsTab" title="Interaction Details" disabled="#{detailsBean.interaction == null}">
                         <p:messages/>
                         <ui:insert name="detailsTabContent"/>
             </p:tab>
 
-            <p:tab title="Molecule View" disabled="#{moleculeViewBean.interactor == null}">
+            <p:tab id="moleculeViewTab" title="Molecule View" disabled="#{moleculeViewBean.interactor == null}">
                         <p:messages/>
                         <ui:insert name="moleculeTabContent"/>
             </p:tab>
 
-            <p:tab title="Graph"
+            <p:tab id="graphTab" title="Graph"
                                shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
                                disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount }">
                         <p:messages/>
@@ -121,8 +117,6 @@
             </p:tab>
 
         </p:tabView>
-
-        </h:form>
 
     </ui:define>
 

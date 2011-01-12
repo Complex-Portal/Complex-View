@@ -88,6 +88,9 @@
         <attribute>
             <name>baseUrl</name>
         </attribute>
+        <attribute>
+            <name>useUrl</name>
+        </attribute>
     </tag>
     <tag>
         <name>goReactomeSkyPainter</name>

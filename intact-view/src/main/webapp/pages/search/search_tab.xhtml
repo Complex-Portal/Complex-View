@@ -82,7 +82,7 @@
                                               action="#{searchBean.doNewBinarySearch}"/>
                         </f:facet>
 
-                        <h:inputText size="30" value="#{userQuery.searchQuery}"
+                        <h:inputText id="searchInTabTxt" size="30" value="#{userQuery.searchQuery}"
                                       onfocus="this.select()"
                                       onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
                     </iv:panelLabelAndMessage>
@@ -104,23 +104,6 @@
 
 
                     <iv:panelLabelAndMessage label="Ontology query:" width="400px">
-                        <!--<iam:inputAutocomplete id="ontologySearchQuery"-->
-                                               <!--value="#{userQuery.ontologySearchQuery}"-->
-                                               <!--columns="30"-->
-                                               <!--readOnly="false"-->
-                                               <!--locateBackingBean="#{ontologyBean}"-->
-                                               <!--locateActionListenerName="fillAutocomplete"-->
-                                               <!--locateValueFieldName="identifier"-->
-                                               <!--locateVisibleFieldName="identifier"-->
-                                               <!--maxSuggestions="#{intactViewConfiguration.maxOntologySuggestions}"-->
-                                               <!--var="ontologyTerm">-->
-
-                            <!--<span style="font-weight:bold; color: #e65555; display:inline;">#{ontologyTerm.identifier}</span>-->
-                            <!--<span style="display:inline;">-->
-                            <!--<h:outputFormat value="#{ontologyTerm.label}"/></span>-->
-                            <!--<span style="font-weight:bold; color: #00cc99; display:inline;">(#{ontologyTerm.count})</span>-->
-
-                        <!--</iam:inputAutocomplete>-->
 
                         <p:autoComplete value="#{userQuery.ontologyTerm}"
                                         converter="ontologyTermConverter"

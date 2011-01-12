@@ -14,6 +14,7 @@ import psidev.psi.mi.tab.model.BinaryInteraction;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.view.webapp.controller.ContextController;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
+import uk.ac.ebi.intact.view.webapp.controller.browse.BrowseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.details.DetailsController;
 import uk.ac.ebi.intact.view.webapp.controller.list.InteractorListController;
@@ -201,8 +202,12 @@ public class SearchController extends JpaBaseController {
 
 
     public void onTabChanged(TabChangeEvent evt) {
-        if (evt.getTab() != null && "Lists".equals(evt.getTab().getTitle()) || "Browse".equals(evt.getTab().getTitle())) {
+        if (evt.getTab() != null && "Lists".equals(evt.getTab().getTitle())) {
             doInteractorsSearch();
+
+        } else if ("Browse".equals(evt.getTab().getTitle())){
+            BrowseController browseController = (BrowseController) getBean("browseBean");
+            browseController.createListOfIdentifiers();
         }
     }
 

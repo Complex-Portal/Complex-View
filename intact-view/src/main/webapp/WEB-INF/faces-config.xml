@@ -21,6 +21,10 @@
 		</resource-bundle>
 	</application>
 
+    <lifecycle>
+        <phase-listener>uk.ac.ebi.intact.view.webapp.application.CacheControlPhaseListener</phase-listener>
+    </lifecycle>
+
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>main</from-outcome>
