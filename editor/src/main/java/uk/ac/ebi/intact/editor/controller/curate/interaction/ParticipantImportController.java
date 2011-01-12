@@ -192,9 +192,9 @@ public class ParticipantImportController extends BaseController {
             if (interactorByLabel != null) {
                 candidates.add(toImportCandidate(participantToImport, interactorByLabel));
             } else {
-                final Interactor interactorByXref = interactorDao.getByXref(participantToImport);
+                final Collection<InteractorImpl> interactorsByXref = interactorDao.getByIdentityXref(participantToImport);
 
-                if (interactorByXref != null) {
+                for (Interactor interactorByXref : interactorsByXref) {
                     candidates.add(toImportCandidate(participantToImport, interactorByXref));
                 }
             }
