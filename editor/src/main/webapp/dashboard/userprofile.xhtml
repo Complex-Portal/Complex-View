@@ -1,0 +1,60 @@
+    <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+
+                template="/dashboard/dashboard_template.xhtml">
+
+    <ui:define name="content">
+
+        <h:outputScript name="javascript/security/sha1.js" target="head"/>
+
+        <f:metadata>
+          <f:event type="preRenderView" listener="#{userProfileController.loadData}"/>
+        </f:metadata>
+
+        <h2>User Profile</h2>
+
+        <h:panelGrid columns="2">
+            <h:outputLabel for="usernameTxt" value="Username: "/>
+            <h:inputText id="usernameTxt" value="#{userProfileController.user.login}" readonly="true"/>
+
+            <h:outputLabel for="firstTxt" value="First name: "/>
+            <h:inputText id="firstTxt" value="#{userProfileController.user.firstName}"/>
+
+            <h:outputLabel for="lastTxt" value="Last name: "/>
+            <h:inputText id="lastTxt" value="#{userProfileController.user.lastName}"/>
+        </h:panelGrid>
+
+        <h3>New password</h3>
+
+        <p>Use the following to change your password:</p>
+
+        <!-- Field in which the hashed password gets stored -->
+        <h:inputHidden id="editUser_passwordHash" value="#{userProfileController.hashedPassword}" />
+
+        <h:panelGrid columns="2">
+            <h:outputLabel for="pass1" value="Password: "/>
+            <p:password id="pass1" minLength="5" inline="true"
+                        value="#{userProfileController.newPassword1}"
+                        onkeyup="document.getElementById('editUser_passwordHash').value = hex_sha1(this.value)"/>
+
+            <h:outputLabel for="pass2" value="Repeat password: "/>
+            <p:password id="pass2" minLength="5" inline="true"
+                        value="#{userProfileController.newPassword2}"/>
+        </h:panelGrid>
+
+        <div class="intact-buttonBar">
+            <p:commandButton value="Save" action="#{userProfileController.updateProfile}"
+                              ajax="false" />
+            <p:commandLink value="Cancel" immediate="true"
+                             action="/dashboard/dashboard?faces-redirect=true" ajax="false" />
+        </div>
+
+    </ui:define>
+
+</ui:composition>

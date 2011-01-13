@@ -7,6 +7,12 @@
 
                 template="/main_template.xhtml">
 
+    <ui:define name="topNavigation">
+        <ui:include src="/shared/top_navigation_bar.xhtml">
+            <ui:param name="selected" value="dashboard"/>
+        </ui:include>
+    </ui:define>
+
     <ui:define name="top">
         
     </ui:define>

@@ -59,7 +59,6 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
         if ( log.isDebugEnabled() ) {
             log.debug( "Currently, there are " + userManagerController.getLoggedInUsers().size() + " users connected." );
             log.debug( "Authenticating user: " + authentication.getPrincipal() );
-            log.debug( "Credentials: '" + authentication.getCredentials() + "'" );
         }
 
         final User user = usersDaoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );

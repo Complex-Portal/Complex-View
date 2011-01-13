@@ -129,8 +129,6 @@ public class UserAdminController extends JpaAwareController {
     public String saveUser() {
         final UserDao userDao = daoFactory.getUserDao();
 
-        log.debug( "user.getPassword(): " + user.getPassword() );
-
         boolean created = false;
         if ( !userDao.isManaged( user ) && !userDao.isDetached( user ) ) {
             userDao.persist( user );
