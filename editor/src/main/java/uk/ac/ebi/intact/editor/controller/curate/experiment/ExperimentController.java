@@ -144,7 +144,7 @@ public class ExperimentController extends AnnotatedObjectController {
 
     @Transactional
     public String cloneWithInteractions() {
-        Hibernate.initialize(experiment.getInteractions());
+        IntactCore.initialize(experiment.getInteractions());
 
         return clone(experiment, new ExperimentIntactCloner(true));
     }
@@ -189,6 +189,10 @@ public class ExperimentController extends AnnotatedObjectController {
 
         } else {
             author = publicationController.getFirstAuthor();
+
+            // clean reserved characters
+            author = author.replaceAll("-", "_");
+            author = author.replaceAll(" ", "_");
         }
 
         String year;
