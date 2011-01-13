@@ -170,7 +170,9 @@ public class CvObjectController extends AnnotatedObjectController {
     }
 
     public void setParentCvObjects(CvDagObject parentCvObjects) {
-        cvObject.setParents(Arrays.asList(parentCvObjects));
+        if (parentCvObjects != null) {
+            cvObject.setParents(Arrays.asList(parentCvObjects));
+        }
     }
 
     public List<SelectItem> getCvObjectSelectItems() {
