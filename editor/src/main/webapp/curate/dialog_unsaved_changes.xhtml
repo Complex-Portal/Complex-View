@@ -43,17 +43,17 @@
 
              <div class="dialogButtonBar">
                 <p:commandButton value="Save All" actionListener="#{persistenceController.saveAll}"
-                                 onclick="saveAllDlg.show()" oncomplete="unsavedChangesDialog.hide(); saveAllDlg.hide()"
+                                 onstart="saveAllDlg.show()" onsuccess="saveAllDlg.hide()" oncomplete="unsavedChangesDialog.hide();"
                                  update="centralUnit,topSection,messagesComponent"/>
                  &#160;
                 <p:commandLink value="Revert All" actionListener="#{persistenceController.revertAll}"
-                               onclick="revertAllDlg.show()" oncomplete="unsavedChangesDialog.hide(); revertAllDlg.hide()"
+                               onclick="revertAllDlg.show()" onsuccess="unsavedChangesDialog.hide()" oncomplete="revertAllDlg.hide();"
                                update="centralUnit,topSection,messagesComponent"/>
             </div>
 
     </p:dialog>
 
-    <ia:loadingDialog widgetVar="saveDlg" message="Saving..."/>
+    <ia:loadingDialog widgetVar="saveDlg" message="Saving..." />
     <ia:loadingDialog widgetVar="revertDlg" message="Reverting..."/>
     <ia:loadingDialog widgetVar="saveAllDlg" message="Saving all..."/>
     <ia:loadingDialog widgetVar="revertAllDlg" message="Reverting all..."/>
