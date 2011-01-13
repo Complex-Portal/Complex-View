@@ -46,7 +46,7 @@ public class CurateController extends JpaAwareController {
         return "/curate/"+metadata.getSlug()+suffix;
     }
 
-    public String edit(String ac) {
+    public String editByAc(String ac) {
         if (ac == null) {
             addErrorMessage("Illegal AC", "No AC provided");
             FacesContext.getCurrentInstance().renderResponse();
@@ -130,7 +130,7 @@ public class CurateController extends JpaAwareController {
     }
 
     public String openByAc() {
-        return edit(acToOpen);
+        return editByAc(acToOpen);
     }
 
     public boolean isAnnotatedObject(Object obj) {

@@ -58,11 +58,9 @@
                              value="#{participantImportController.importCandidates}" paginator="true" rows="10">
                     <p:column>
                         <f:facet name="header"><h:outputText value="Select"/></f:facet>
-                        <h:selectBooleanCheckbox value="#{candidate.selected}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header"><h:outputText value="Query"/></f:facet>
-                        <h:outputText value="#{candidate.query}"/>
+                        <h:selectBooleanCheckbox value="#{candidate.selected}" disabled="#{candidate.proteinTranscript}"/>
+                        <h:outputText value="&lt;br/>(Not&lt;br/>implemented)" style="color: gray"
+                                      escape="false" rendered="#{candidate.proteinTranscript}"/>
                     </p:column>
                     <p:column>
                         <f:facet name="header"><h:outputText value="Source"/></f:facet>
@@ -93,6 +91,10 @@
                     <p:column>
                         <f:facet name="header"><h:outputText value="IntAct label"/></f:facet>
                         <h:outputText value="#{candidate.interactor.shortLabel}" rendered="#{candidate.interactor != null}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header"><h:outputText value="Query"/></f:facet>
+                        <h:outputText value="#{candidate.query}"/>
                     </p:column>
                 </p:dataTable>
 

@@ -2,6 +2,7 @@ package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
+import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ImportCandidate {
     private List<String> secondaryAcs;
     private String source;
     private Interactor interactor;
-    private UniprotProtein uniprotProtein;
+    private UniprotProteinLike uniprotProtein;
 
     public ImportCandidate(String query, Interactor interactor) {
         this.query = query;
@@ -30,15 +31,19 @@ public class ImportCandidate {
         }
     }
 
-    public ImportCandidate(String query, UniprotProtein uniprotProtein) {
+    public ImportCandidate(String query, UniprotProteinLike uniprotProteinLike) {
         this.query = query;
-        this.uniprotProtein = uniprotProtein;
+        this.uniprotProtein = uniprotProteinLike;
 
         primaryAcs = new ArrayList<String>(1);
 
         primaryAcs.add(uniprotProtein.getPrimaryAc());
         secondaryAcs = uniprotProtein.getSecondaryAcs();
         organism = uniprotProtein.getOrganism().getName();
+
+        if (isProteinTranscript()) {
+            selected = false;
+        }
     }
 
     public boolean isSelected() {
@@ -97,11 +102,15 @@ public class ImportCandidate {
         this.organism = organism;
     }
 
-    public UniprotProtein getUniprotProtein() {
+    public UniprotProteinLike getUniprotProtein() {
         return uniprotProtein;
     }
 
     public void setUniprotProtein(UniprotProtein uniprotProtein) {
         this.uniprotProtein = uniprotProtein;
+    }
+
+    public boolean isProteinTranscript() {
+        return uniprotProtein != null && (!(uniprotProtein instanceof UniprotProtein));
     }
 }

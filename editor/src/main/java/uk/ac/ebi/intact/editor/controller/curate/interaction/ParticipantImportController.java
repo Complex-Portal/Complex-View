@@ -33,7 +33,7 @@ import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.XrefUtils;
-import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
+import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.annotation.PostConstruct;
@@ -217,10 +217,9 @@ public class ParticipantImportController extends BaseController {
     private Set<ImportCandidate> importFromUniprot(String participantToImport) {
         Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
 
-        //TODO http://code.google.com/p/intact/issues/detail?id=220
-        final Collection<UniprotProtein> uniprotProteins = uniprotRemoteService.retrieve(participantToImport);
+        final Collection<UniprotProteinLike> uniprotProteins = uniprotRemoteService.retrieveAny(participantToImport);
 
-        for (UniprotProtein uniprotProtein : uniprotProteins) {
+        for (UniprotProteinLike uniprotProtein : uniprotProteins) {
             ImportCandidate candidate = new ImportCandidate(participantToImport, uniprotProtein);
             candidate.setSource("uniprotkb");
             candidate.setInteractor(toProtein(candidate));
@@ -282,14 +281,14 @@ public class ParticipantImportController extends BaseController {
 
     private Interactor toProtein(ImportCandidate candidate) {
         final Institution owner = IntactContext.getCurrentInstance().getInstitution();
-        final UniprotProtein uniprotProtein = candidate.getUniprotProtein();
+        final UniprotProteinLike uniprotProtein = candidate.getUniprotProtein();
 
         final DaoFactory daoFactory = IntactContext.getCurrentInstance().getDaoFactory();
         CvInteractorType type = daoFactory.getCvObjectDao(CvInteractorType.class).getByPsiMiRef(CvInteractorType.PROTEIN_MI_REF);
         CvDatabase uniprotkb = daoFactory.getCvObjectDao(CvDatabase.class).getByPsiMiRef(CvDatabase.UNIPROT_MI_REF);
         CvXrefQualifier identity = daoFactory.getCvObjectDao(CvXrefQualifier.class).getByPsiMiRef(CvXrefQualifier.IDENTITY_MI_REF);
 
-        BioSource organism = new BioSource(owner, uniprotProtein.getOrganism().getName(), String.valueOf(uniprotProtein.getOrganism().getTaxid()));
+        BioSource organism = new BioSource(uniprotProtein.getOrganism().getName(), String.valueOf(uniprotProtein.getOrganism().getTaxid()));
         Protein protein = new ProteinImpl(owner, organism, uniprotProtein.getId().toLowerCase(), type);
         protein.setFullName(uniprotProtein.getDescription());
 
