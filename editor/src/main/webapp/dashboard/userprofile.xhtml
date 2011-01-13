@@ -28,6 +28,16 @@
 
             <h:outputLabel for="lastTxt" value="Last name: "/>
             <h:inputText id="lastTxt" value="#{userProfileController.user.lastName}"/>
+
+            <h:outputLabel for="emailTxt" value="Email: "/>
+            <h:inputText id="emailTxt" value="#{userProfileController.user.email}"/>
+
+            <h:outputLabel value="Default curation depth:"/>
+            <h:selectOneMenu value="#{userProfileController.curationDepth}" >
+                <f:selectItem itemLabel="-- Not specified --"/>
+                <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
+                <f:selectItem itemLabel="MIMIx" itemValue="mimix curation"/>
+            </h:selectOneMenu>
         </h:panelGrid>
 
         <h3>New password</h3>

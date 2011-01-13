@@ -11,14 +11,14 @@
     <ui:define name="adminContent">
 
         <f:metadata>
-          <f:event type="preRenderView" listener="#{userAdminController.loadData}"/>
+          <f:event type="preRenderView" listener="#{abstractUserController.loadData}"/>
         </f:metadata>
 
-        <h3>Users (#{userAdminController.allUsers.rowCount})</h3>
+        <h3>Users (#{abstractUserController.allUsers.rowCount})</h3>
 
         <!-- TODO: if the user is disabled, show the line red. -->
-        <p:dataTable id="usersTable" var="user" value="#{userAdminController.allUsers}"
-                     paginator="#{userAdminController.allUsers.rowCount > 10}" rows="10" dynamic="true" lazy="true">
+        <p:dataTable id="usersTable" var="user" value="#{abstractUserController.allUsers}"
+                     paginator="#{abstractUserController.allUsers.rowCount > 10}" rows="10" dynamic="true" lazy="true">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Login"/>
@@ -58,7 +58,7 @@
                 <f:facet name="header">
                     <h:outputText value="Roles"/>
                 </f:facet>
-                <ui:repeat value="#{userAdminController.createRoleList( user )}" var="role" varStatus="status">
+                <ui:repeat value="#{abstractUserController.createRoleList( user )}" var="role" varStatus="status">
                       <h:outputText value="#{role.name}"/>
                       <h:outputText value=", " rendered="#{not status.last}"/>
                 </ui:repeat>

@@ -3,8 +3,8 @@ package uk.ac.ebi.intact.editor.controller.dashboard;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.intact.core.users.model.User;
-import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
+import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
@@ -15,9 +15,7 @@ import javax.faces.event.ComponentSystemEvent;
  */
 @Component
 @Scope("conversation.access")
-public class UserProfileController extends JpaAwareController {
-
-    private User user;
+public class UserProfileController extends AbstractUserController {
 
     private String hashedPassword;
     private String newPassword1;
@@ -27,7 +25,8 @@ public class UserProfileController extends JpaAwareController {
         UserSessionController userSessionController = getUserSessionController();
         //userSessionController.getCurrentUser();
 
-        user =  getUsersDaoFactory().getUserDao().getByLogin(userSessionController.getCurrentUser().getLogin());
+        User user =  getUsersDaoFactory().getUserDao().getByLogin(userSessionController.getCurrentUser().getLogin());
+        setUser(user);
     }
 
     public String updateProfile() {
@@ -55,10 +54,6 @@ public class UserProfileController extends JpaAwareController {
 
     private UserSessionController getUserSessionController() {
         return (UserSessionController) getSpringContext().getBean("userSessionController");
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public String getNewPassword1() {

@@ -4,17 +4,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.LazyDataModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.users.persistence.dao.UserDao;
-import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
-import uk.ac.ebi.intact.editor.config.EditorConfig;
-import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 
 import javax.faces.event.ComponentSystemEvent;
@@ -32,37 +28,21 @@ import java.util.List;
 @Controller
 @Scope( "session" )
 //@ConversationName( "admin" )
-public class UserAdminController extends JpaAwareController {
+public class UserAdminController extends AbstractUserController {
 
     private static final Log log = LogFactory.getLog( UserAdminController.class );
 
     private static final String CURATION_DEPTH = "curation.depth";
     public static final String RAW_NOTES = "editor.notes";
 
-    @Autowired
-    private EditorConfig editorConfig;
-
-    @Autowired
-    private UsersDaoFactory daoFactory;
-
     private String loginParam;
 
     private DualListModel<String> roles;
-
-    private User user;
 
     private LazyDataModel<User> allUsers;
 
     /////////////////
     // Users
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser( User user ) {
-        this.user = user;
-    }
 
     public String getLoginParam() {
         return loginParam;
@@ -72,62 +52,14 @@ public class UserAdminController extends JpaAwareController {
         this.loginParam = loginParam;
     }
 
-    public String getCurationDepth() {
-        return findPreference(CURATION_DEPTH, editorConfig.getDefaultCurationDepth());
-    }
-
-    public void setCurationDepth(String curationDepth) {
-        setPreference(CURATION_DEPTH, curationDepth);
-    }
-
-    public String getRawNotes() {
-        return findPreference(RAW_NOTES, null);
-    }
-
-    public void setRawNotes(String notes) {
-        setPreference(RAW_NOTES, notes);
-    }
-
-    private String findPreference(String prefKey) {
-        return findPreference(prefKey, null);
-    }
-
-    private String findPreference(String prefKey, String defaultValue) {
-        if (user.getPreferences() == null) {
-            user.setPreferences(new ArrayList<Preference>());
-        }
-
-        for (Preference pref : user.getPreferences()) {
-            if (prefKey.equals(pref.getKey())) {
-                return pref.getValue();
-            }
-        }
-        return defaultValue;
-    }
-
-    private void setPreference(String prefKey, String prefValue) {
-        Preference preference = null;
-
-        for (Preference pref : user.getPreferences()) {
-            if (prefKey.equals(pref.getKey())) {
-                preference = pref;
-            }
-        }
-
-        if (preference == null) {
-            preference = new Preference(user, prefKey);
-            user.getPreferences().add(preference);
-        }
-
-        preference.setValue(prefValue);
-    }
-
     ///////////////
     // Actions
 
     @Transactional( "users" )
     public String saveUser() {
-        final UserDao userDao = daoFactory.getUserDao();
+        final UserDao userDao = getUsersDaoFactory().getUserDao();
+
+        User user = getUser();
 
         boolean created = false;
         if ( !userDao.isManaged( user ) && !userDao.isDetached( user ) ) {
@@ -175,13 +107,16 @@ public class UserAdminController extends JpaAwareController {
 
     public void loadRoles( ComponentSystemEvent event ) {
 
-        log.info( "UserAdminController.loadRoles" );
+        log.info( "AbstractUserController.loadRoles" );
 
         List<String> source = new ArrayList<String>();
         List<String> target = new ArrayList<String>();
 
         Collection<Role> allRoles = getUsersDaoFactory().getRoleDao().getAll();
         log.debug( "Found " + allRoles.size() + " role(s) in the database." );
+
+        User user = getUser();
+
         if ( user == null ) {
             for ( Role role : allRoles ) {
                 source.add( role.getName() );
@@ -216,13 +151,13 @@ public class UserAdminController extends JpaAwareController {
 
     public void loadUserToUpdate( ComponentSystemEvent event ) {
 
-        log.info( "UserAdminController.loadUserToUpdate" );
+        log.info( "AbstractUserController.loadUserToUpdate" );
 
         if ( loginParam != null ) {
             // load user and prepare for update
             log.debug( "Loading user by login '" + loginParam + "'..." );
-            user = getUsersDaoFactory().getUserDao().getByLogin( loginParam );
-
+            User user = getUsersDaoFactory().getUserDao().getByLogin( loginParam );
+            setUser(user);
 
             if ( user == null ) {
                 addWarningMessage( "Could not find user by login: " + loginParam, "Please try again." );
@@ -231,12 +166,12 @@ public class UserAdminController extends JpaAwareController {
             }
         } else {
             // prepare for the creation of the new user
-            user = new User();
+            setUser(new User());
         }
     }
 
     public void loadData() {
-        log.debug( "UserAdminController.loadData" );
+        log.debug( "AbstractUserController.loadData" );
         allUsers = LazyDataModelFactory.createLazyDataModel( getUsersEntityManager(),
                                                              "select u from User u order by u.login asc",
                                                              "select count(u) from User u" );
