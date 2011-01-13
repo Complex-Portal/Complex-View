@@ -18,16 +18,16 @@
     <ui:param name="publication" value="#{publicationController.publication}" />
     
     <ui:define name="breadcrumbs">
-        <p:breadCrumb>
-            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
+        <p:breadCrumb rendered="#{publication != null}">
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}" rendered="#{publication != null}"
                         action="#{curateController.edit(publicationController.publication)}" process="@this"/>
-            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel} (#{publicationController.showCurationDepth})"
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel} (#{publicationController.showCurationDepth})" rendered="#{publication != null}"
                         action="#{curateController.edit(publicationController.publication)}" process="@this"/>
-            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{experiment.shortLabel}"
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{experiment.shortLabel}" rendered="#{experiment != null}"
                         action="#{curateController.edit(experiment)}" process="@this"/>
-            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{interaction.shortLabel}"
+            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{interaction.shortLabel}" rendered="#{interaction != null}"
                         action="#{curateController.edit(interaction)}" process="@this"/>
-            <p:menuitem value="#{participant.interactor.shortLabel}"/>
+            <p:menuitem value="#{participant.interactor.shortLabel}" rendered="#{participant != null}"/>
         </p:breadCrumb>
     </ui:define>
 
