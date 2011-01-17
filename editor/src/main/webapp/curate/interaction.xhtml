@@ -169,6 +169,17 @@
 
                 </p:tab>
 
+                <p:tab id="advancedTab" title="Advanced">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel for="kdTxt" value="Kd: "/>
+                        <h:inputText id="kdTxt" value="#{interactionController.interaction.KD}" size="5"
+                                 onchange="markAsUnsaved()"/>
+
+                        <h:outputLabel for="crcTxt" value="CRC: "/>
+                        <h:inputText id="crcTxt" value="#{interactionController.interaction.crc}" size="20" readonly="true"/>
+                    </h:panelGrid>
+                </p:tab>
+
             </p:tabView>
 
         </h:panelGroup>
