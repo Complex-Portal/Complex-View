@@ -109,6 +109,10 @@ public class ChangesController extends BaseController implements UserListener {
         changes.remove(new UnsavedChange(io, UnsavedChange.UPDATED));
     }
 
+    public void removeFromDeleted(UnsavedChange unsavedChange) {
+        getUnsavedChangesForCurrentUser().remove(unsavedChange);
+    }
+
      public void removeFromDeleted(IntactObject object, AnnotatedObject parent) {
         getUnsavedChangesForCurrentUser().remove(new UnsavedChange(object, UnsavedChange.DELETED, parent));
     }
@@ -130,6 +134,16 @@ public class ChangesController extends BaseController implements UserListener {
         if (io.getAc() == null) return true;
 
         return isUnsavedAc(io.getAc());
+    }
+
+    public boolean isUnsavedOrDeleted(IntactObject io) {
+        if (isUnsaved(io)) {
+            return true;
+        } else if (io.getAc() != null && isDeletedAc(io.getAc())) {
+            return true;
+        }
+
+        return false;
     }
 
     public boolean isUnsavedAc(String ac) {

@@ -29,10 +29,12 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
         if (entity instanceof AnnotatedObject) {
             IntactObject io = (IntactObject) entity;
 
-            getCuratorContextController()
-                .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" updated", "- "+DebugUtil.intactObjectToString(io, false) );
+            if (io.getAc() == null || !getChangesController().isDeletedAc(io.getAc())) {
+                getCuratorContextController()
+                    .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" updated", "- "+DebugUtil.intactObjectToString(io, false) );
 
-            getChangesController().removeFromUnsaved(io);
+                getChangesController().removeFromUnsaved(io);
+            }
 
             if (log.isDebugEnabled()) log.debug("Updated: "+DebugUtil.intactObjectToString(io, false));
         }

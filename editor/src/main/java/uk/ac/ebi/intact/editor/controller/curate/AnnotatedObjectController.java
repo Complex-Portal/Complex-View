@@ -135,12 +135,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
      */
     @Transactional(value = "core", propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+
         // adjust any xref, just if the curator introduced a value in the primaryId of the xref
         // and clicked on save without focusing on another field first (which would trigger
         // a change event and field the values with ajax)
-        xrefChanged(null);
-
-        //final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        //xrefChanged(null);
 
         // delete from the unsaved manager
         final List<UnsavedChange> deletedObjects = changesController.getAllUnsavedDeleted();
@@ -155,6 +155,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             }
 
             persistenceController.doDelete(unsaved.getUnsavedObject());
+
+            changesController.removeFromDeleted(unsaved);
         }
 
         // annotated objects specific tasks to prepare the save
@@ -169,16 +171,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         if (detailsSaved) saved = true;
 
-        //IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
-
         if (saved) {
             lastSaved = new Date();
             setUnsavedChanges(false);
         }
 
         if (annotatedObject.getAc() != null) {
-
-            ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
             changesController.removeFromUnsaved(annotatedObject);
 
             annotatedObject = refresh(annotatedObject);
