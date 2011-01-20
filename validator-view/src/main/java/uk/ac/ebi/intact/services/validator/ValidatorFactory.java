@@ -30,8 +30,8 @@ public class ValidatorFactory {
      * Logging, logging!
      */
     private static final Log log = LogFactory.getLog(ValidatorFactory.class);
-    private static final String psiParOntology = "config/psi_par/ontologies.xml";
-    private static final String psiMiOntology = "config/psi_mi/ontologies.xml";
+    //private static final String psiParOntology = "config/psi_par/ontologies.xml";
+    //private static final String psiMiOntology = "config/psi_mi/ontologies.xml";
     private static final String localPsiParOntology = "validator/config/psi_par/ontologies-local.xml";
     private static final String localPsiMiOntology = "validator/config/psi_mi/ontologies-local.xml";
     private static final String psiMiCvMapping = "config/psi_mi/cv-mapping.xml";
@@ -46,7 +46,7 @@ public class ValidatorFactory {
      * @return A new instance of the validator which has reloaded the ontologies and rules from the configuration files
      * @throws ValidatorWebContextException
      */
-    public Mi25Validator getReInitialisedValidator(ValidationScope scope, DataModel dataModel, boolean isLocal) throws ValidatorWebContextException {
+    public Mi25Validator getReInitialisedValidator(ValidationScope scope, DataModel dataModel) throws ValidatorWebContextException {
         if (dataModel == null){
             throw new IllegalArgumentException("The dataModel cannot be null.");
         }
@@ -62,7 +62,7 @@ public class ValidatorFactory {
                 log.warn( "The application didn't get a valid validation scope (null), setting PAR default to CV Mapping." );
                 scope = ValidationScope.CV_ONLY;
             }
-            return createPsiParValidator(scope, isLocal);
+            return createPsiParValidator(scope);
         }
         else if (dataModel.equals( DataModel.PSI_MI)){
             if (scope == null){
@@ -70,7 +70,7 @@ public class ValidatorFactory {
                 log.warn( "The application didn't get a valid validation scope (null), setting MI default to MIMIx." );
                 scope = ValidationScope.MIMIX;
             }
-            return createPsiMiValidator(scope, isLocal);
+            return createPsiMiValidator(scope);
         }
         else {
             throw new IllegalStateException( "Unknown data model: " + dataModel );
@@ -137,18 +137,18 @@ public class ValidatorFactory {
      * @return a new Validator initialized for a PSI-PAR validation with the specific scope
      * @throws ValidatorWebContextException
      */
-    private Mi25Validator createPsiParValidator(ValidationScope scope, boolean isLocal) throws ValidatorWebContextException {
-        ValidatorWebContext context = ValidatorWebContext.getInstance();
+    private Mi25Validator createPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
 
         try {
             // We read the configuration file, included inside the jar
-            InputStream ontologyCfg = null;
-            if (!isLocal){
+            InputStream ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiParOntology );;
+
+            /*if (!isLocal){
                 ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psiParOntology );
             }
             else {
                 ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiParOntology );
-            }
+            } */
             InputStream cvMappingCfg = null;
             InputStream ruleCfg = null;
 
@@ -293,18 +293,19 @@ public class ValidatorFactory {
      * @return a new Validator initialized for a PSI-MI validation with the specific scope
      * @throws ValidatorWebContextException
      */
-    private Mi25Validator createPsiMiValidator(ValidationScope scope, boolean isLocal) throws ValidatorWebContextException {
+    private Mi25Validator createPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
 
         try {
 
             // We read the configuration file, included inside the jar
-            InputStream ontologyCfg = null;
-            if (!isLocal){
+            InputStream ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiMiOntology );
+
+            /*if (!isLocal){
                 ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psiMiOntology );
             }
             else {
                 ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiMiOntology );
-            }
+            }*/
             InputStream cvMappingCfg = null;
             InputStream ruleCfg = null;
 
@@ -398,7 +399,7 @@ public class ValidatorFactory {
      * @return The ontology configuration file for PSI-PAR
      */
     public static String getPsiParOntology() {
-        return psiParOntology;
+        return localPsiParOntology;
     }
 
     /**
@@ -406,7 +407,7 @@ public class ValidatorFactory {
      * @return The ontology configuration file for PSI-MI
      */
     public static String getPsiMiOntology() {
-        return psiMiOntology;
+        return localPsiMiOntology;
     }
 
     /**

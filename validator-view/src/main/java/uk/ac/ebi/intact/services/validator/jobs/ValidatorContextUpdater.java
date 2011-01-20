@@ -70,7 +70,7 @@ public class ValidatorContextUpdater implements Job {
             // Both the ontology managers for PSI-MI and PSI-PAR are not up to date
             else if (!isPsiMiUpToDate && !isPsiParUpToDate){
                 // We will create a new validator web content which re-loads all the ontologies
-                newWebContent = new ValidatorWebContent(false);
+                newWebContent = new ValidatorWebContent();
             }
 
             // If the new Validator web content has been instantiated because one of the ontologies is not up-to-date

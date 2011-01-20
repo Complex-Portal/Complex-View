@@ -73,22 +73,12 @@ public class ValidatorWebContext {
 
         try {
             // Create a new ValidatorWebContent
-            this.validatorWebContent = new ValidatorWebContent(false);
+            this.validatorWebContent = new ValidatorWebContent();
         } catch (ValidatorWebContextException e) {
-            String body = "The validator web content has not been properly initialized. It will rely on a local ontology." + ExceptionUtils.getFullStackTrace(e);
+            String body = "The validator web content has not been properly initialized." + ExceptionUtils.getFullStackTrace(e);
 
             sendEmail("Problem initializing the validator web content", body);
 
-            try {
-                // Create a new ValidatorWebContent looking inot local ontology
-                this.validatorWebContent = new ValidatorWebContent(true);
-            } catch (ValidatorWebContextException e2) {
-                String body2 = "The validator web content has not been properly initialized and it is impossible to find a local ontology to rely on." + ExceptionUtils.getFullStackTrace(e2);
-
-                sendEmail("Problem initializing the validator web content", body2);
-
-
-            }
         }
     }
 
