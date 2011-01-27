@@ -39,6 +39,7 @@ import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.entry.IntactEntryFactory;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
@@ -629,7 +630,14 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public boolean isAccepted() {
-        return ExperimentUtils.areAllAccepted(publication.getExperiments());
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            Publication refreshedPub = getDaoFactory().getPublicationDao().getByAc(publication.getAc());
+            experiments = refreshedPub.getExperiments();
+        }
+
+        return ExperimentUtils.areAllAccepted(experiments);
     }
 
     public boolean isAccepted(Publication pub) {

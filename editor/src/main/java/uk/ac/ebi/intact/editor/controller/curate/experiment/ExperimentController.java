@@ -96,6 +96,8 @@ public class ExperimentController extends AnnotatedObjectController {
 
     @SuppressWarnings({"unchecked"})
     private void refreshInteractions() {
+        if (experiment == null) return;
+
         LazyDataModel dataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
                 "select i from InteractionImpl i join i.experiments as exp where exp.ac = '" + experiment.getAc() + "'",
                 "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '" + experiment.getAc() + "'");

@@ -26,12 +26,11 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.CoreDeleter;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.editor.controller.curate.util.CoreDeleter;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
-import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ActionEvent;
 
@@ -95,7 +94,7 @@ public class PersistenceController extends JpaAwareController {
         return intactObject;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.NEVER)
     public void doDelete(IntactObject intactObject) {
           if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
@@ -105,34 +104,6 @@ public class PersistenceController extends JpaAwareController {
             coreDeleter.delete(intactObject);
 
             addInfoMessage("Deleted object", DebugUtil.intactObjectToString(intactObject, false));
-
-
-//            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
-        }
-    }
-
-   @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void doDelete(UnsavedChange unsaved) {
-       IntactObject intactObject = unsaved.getUnsavedObject();
-        if (intactObject.getAc() != null) {
-            if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
-
-//            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-
-            if (AnnotatedObjectUtils.isChildrenInitialized(unsaved.getParentObject(), unsaved.getUnsavedObject())) {
-                AnnotatedObjectUtils.removeChild(unsaved.getParentObject(), unsaved.getUnsavedObject());
-            } else {
-                // reload the parent
-                AnnotatedObject refreshedParent = getDaoFactory().getAnnotatedObjectDao(unsaved.getParentObject().getClass()).getByAc(unsaved.getParentObject().getAc());
-                IntactObject refreshedChild = getDaoFactory().getEntityManager().find(unsaved.getUnsavedObject().getClass(), unsaved.getUnsavedObject().getAc());
-
-                AnnotatedObjectUtils.removeChild(refreshedParent, refreshedChild);
-            }
-
-            coreDeleter.delete(intactObject);
-
-            addInfoMessage("Deleted object", DebugUtil.intactObjectToString(intactObject, false));
-
 
 //            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         }
