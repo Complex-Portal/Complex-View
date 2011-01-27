@@ -332,7 +332,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return new EditorIntactCloner();
     }
 
-    @Transactional(value = "core", propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "core", propagation = Propagation.NEVER)
     public String doDelete() {
         PersistenceController persistenceController = getPersistenceController();
         persistenceController.doDelete(getAnnotatedObject());
