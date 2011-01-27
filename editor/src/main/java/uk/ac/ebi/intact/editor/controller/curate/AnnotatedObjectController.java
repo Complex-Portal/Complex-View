@@ -150,11 +150,17 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         for (UnsavedChange unsaved : deletedObjects) {
             // remove the object to delete from its parent
 
-            if (AnnotatedObjectUtils.isChildrenInitialized(unsaved.getParentObject(), unsaved.getUnsavedObject())) {
-                AnnotatedObjectUtils.removeChild(unsaved.getParentObject(), unsaved.getUnsavedObject());
-            }
+//            if (AnnotatedObjectUtils.isChildrenInitialized(unsaved.getParentObject(), unsaved.getUnsavedObject())) {
+//                AnnotatedObjectUtils.removeChild(unsaved.getParentObject(), unsaved.getUnsavedObject());
+//            } else {
+//                // reload the parent
+//                AnnotatedObject refreshedParent = getDaoFactory().getAnnotatedObjectDao(unsaved.getParentObject().getClass()).getByAc(unsaved.getParentObject().getAc());
+//                IntactObject refreshedChild = getDaoFactory().getEntityManager().find(unsaved.getUnsavedObject().getClass(), unsaved.getUnsavedObject().getAc());
+//
+//                AnnotatedObjectUtils.removeChild(refreshedParent, refreshedChild);
+//            }
 
-            persistenceController.doDelete(unsaved.getUnsavedObject());
+            persistenceController.doDelete(unsaved);
 
             changesController.removeFromDeleted(unsaved);
         }

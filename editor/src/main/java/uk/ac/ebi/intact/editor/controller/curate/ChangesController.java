@@ -97,8 +97,14 @@ public class ChangesController extends BaseController implements UserListener {
             AnnotatedObjectUtils.removeChild(parent, object);
         }
 
-        if (parent.getAc() != null) {
+        if (parent != null && parent.getAc() != null) {
             addChange(new UnsavedChange(parent, UnsavedChange.UPDATED));
+        }
+    }
+
+    public void markToDeleteInteraction(IntactObject object, Collection parents) {
+        for (Object parent : parents) {
+            markToDelete(object, (AnnotatedObject) parent);
         }
     }
 
