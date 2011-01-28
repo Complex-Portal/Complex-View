@@ -98,7 +98,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
 
         return new UsernamePasswordAuthenticationToken( authentication.getPrincipal(),
                                                         authentication.getCredentials(),
-                                                        authorities.toArray( new GrantedAuthority[]{} ) );
+                                                        authorities.toArray( new GrantedAuthority[authorities.size()] ) );
     }
 
     public boolean supports( Class authentication ) {
