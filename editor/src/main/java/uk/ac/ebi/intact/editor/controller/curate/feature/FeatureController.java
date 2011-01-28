@@ -23,12 +23,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.util.FeatureUtils;
 
 import javax.faces.component.UIComponent;
@@ -150,6 +152,11 @@ public class FeatureController extends AnnotatedObjectController {
                 containsInvalidRanges = true;
             }
         }
+    }
+
+    @Override
+    protected IntactCloner newClonerInstance() {
+        return new FeatureIntactCloner();
     }
 
     public String newFeature(Component participant) {
