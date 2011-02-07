@@ -55,6 +55,35 @@ public class UserAdminController extends AbstractUserController {
     ///////////////
     // Actions
 
+    public void loadUserToUpdate( ComponentSystemEvent event ) {
+
+        log.info( "AbstractUserController.loadUserToUpdate" );
+
+        if ( loginParam != null ) {
+            // load user and prepare for update
+            log.debug( "Loading user by login '" + loginParam + "'..." );
+            User user = getUsersDaoFactory().getUserDao().getByLogin( loginParam );
+            setUser(user);
+
+            if ( user == null ) {
+                addWarningMessage( "Could not find user by login: " + loginParam, "Please try again." );
+            } else {
+                log.debug( "User password hash: " + user.getPassword() );
+            }
+        } else {
+            // prepare for the creation of the new user
+            setUser(new User());
+        }
+    }
+
+    public void loadData() {
+        log.debug( "AbstractUserController.loadData" );
+        allUsers = LazyDataModelFactory.createLazyDataModel( getUsersEntityManager(),
+                "select u from User u order by u.login asc",
+                "select count(u) from User u" );
+    }
+
+
     @Transactional( "users" )
     public String saveUser() {
         final UserDao userDao = getUsersDaoFactory().getUserDao();
@@ -105,6 +134,12 @@ public class UserAdminController extends AbstractUserController {
         return "admin.users.list";
     }
 
+    public String newUser() {
+        loginParam = null;
+        setUser(null);
+        return "/admin/users/edit?faces-redirect=true";
+    }
+
     public void loadRoles( ComponentSystemEvent event ) {
 
         log.info( "AbstractUserController.loadRoles" );
@@ -147,34 +182,6 @@ public class UserAdminController extends AbstractUserController {
 
     public DualListModel<String> getRoles() {
         return roles;
-    }
-
-    public void loadUserToUpdate( ComponentSystemEvent event ) {
-
-        log.info( "AbstractUserController.loadUserToUpdate" );
-
-        if ( loginParam != null ) {
-            // load user and prepare for update
-            log.debug( "Loading user by login '" + loginParam + "'..." );
-            User user = getUsersDaoFactory().getUserDao().getByLogin( loginParam );
-            setUser(user);
-
-            if ( user == null ) {
-                addWarningMessage( "Could not find user by login: " + loginParam, "Please try again." );
-            } else {
-                log.debug( "User password hash: " + user.getPassword() );
-            }
-        } else {
-            // prepare for the creation of the new user
-            setUser(new User());
-        }
-    }
-
-    public void loadData() {
-        log.debug( "AbstractUserController.loadData" );
-        allUsers = LazyDataModelFactory.createLazyDataModel( getUsersEntityManager(),
-                                                             "select u from User u order by u.login asc",
-                                                             "select count(u) from User u" );
     }
 
     public LazyDataModel<User> getAllUsers() {

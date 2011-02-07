@@ -20,7 +20,7 @@
                 <p:menuitem value="Job summary" action="/admin/jobSummary?faces-redirect=true" ajax="false"/>
             </p:submenu>
             <p:submenu label="Users">
-                <p:menuitem value="New user" action="/admin/users/edit?faces-redirect=true" ajax="false"/>
+                <p:menuitem value="New user" action="#{userAdminController.newUser}" ajax="false"/>
                 <p:menuitem value="List users" action="/admin/users/list?faces-redirect=true" ajax="false" />
             </p:submenu>
             <p:submenu label="DB Update">
