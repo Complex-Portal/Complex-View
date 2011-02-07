@@ -32,9 +32,18 @@
                          disabled="#{searchBean.exportFormat == null}"
                          onclick="var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
 
+            <p:divider/>
 
-        </p:toolbarGroup>
-        <p:toolbarGroup align="right">
+
+            <p:commandButton type="button" value="Show/hide columns" onclick="columnsDialog.show()" />
+
+
+            <h:selectBooleanCheckbox id="showTypeBool" value="#{columnContext.showTypeRoleIcons}">
+                <f:ajax event="valueChange" render="resultsTable" execute="@this"/>
+            </h:selectBooleanCheckbox>
+            <h:outputLabel for="showTypeBool" value="Show type/role icons"/>
+
+            <p:divider/>
 
           <p:menuButton value="Change table preset...">
               <p:menuitem value="Minimal" ajax="false"
@@ -47,16 +56,8 @@
                           actionListener="#{columnContext.selectExpandedColumns()}" action="interactions"/>
           </p:menuButton>
 
-            <p:divider/>
 
-            <p:commandButton type="button" value="Show/hide columns" onclick="columnsDialog.show()" />
 
-            <p:divider/>
-
-            <h:selectBooleanCheckbox id="showTypeBool" value="#{columnContext.showTypeRoleIcons}">
-                <f:ajax event="valueChange" render="resultsTable" execute="@this"/>
-            </h:selectBooleanCheckbox>
-            <h:outputLabel for="showTypeBool" value="Show type/role icons"/>
 
         </p:toolbarGroup>
     </p:toolbar>
