@@ -18,13 +18,17 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.util.DebugUtil;
-import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.IntactObject;
+import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import java.util.*;
@@ -36,7 +40,7 @@ import java.util.*;
  * @version $Id$
  */
 @Component
-public class ChangesController extends BaseController implements UserListener {
+public class ChangesController extends JpaAwareController implements UserListener {
 
     private static final Log log = LogFactory.getLog(ChangesController.class);
 
@@ -102,9 +106,18 @@ public class ChangesController extends BaseController implements UserListener {
         }
     }
 
-    public void markToDeleteInteraction(IntactObject object, Collection parents) {
-        for (Object parent : parents) {
-            markToDelete(object, (AnnotatedObject) parent);
+    @Transactional
+    public void markToDeleteInteraction(Interaction interaction, Collection<Experiment> experiments) {
+        Collection<Experiment> parents;
+
+        if (IntactCore.isInitialized(experiments)) {
+            parents = experiments;
+        } else {
+            parents = getDaoFactory().getInteractionDao().getByAc(interaction.getAc()).getExperiments();
+        }
+
+        for (Experiment parent : parents) {
+            markToDelete(interaction, parent);
         }
     }
 

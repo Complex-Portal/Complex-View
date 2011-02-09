@@ -114,6 +114,14 @@ public class InteractorController extends AnnotatedObjectController {
         return "Interactor";
     }
 
+    public boolean isOrganismApplicable() {
+        if (interactor == null || interactor.getCvInteractorType() == null) {
+            return true;
+        }
+
+        return !(CvInteractorType.SMALL_MOLECULE_MI_REF.equals(interactor.getCvInteractorType().getIdentifier()));
+    }
+
     public Interactor getInteractor() {
         return interactor;
     }

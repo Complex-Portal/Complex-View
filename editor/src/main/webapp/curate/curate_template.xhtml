@@ -97,6 +97,8 @@
         <p:hotkey bind="alt+o" oncomplete="openByAcDlg.show()"/>
         <p:hotkey bind="alt+s" oncomplete="save(); return false"/>
 
+        <h:panelGroup rendered="#{annotatedObjectController != null}">
+
         <p:remoteCommand id="markAsUnsavedCmd" name="markAsUnsaved" update="messagesComponent,changesPanel,unsavedChangesInfo"
                                  actionListener="#{annotatedObjectController.changed(null)}" process="markAsUnsavedCmd"/>
 
@@ -184,6 +186,8 @@
                         oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton'); input.disabled = false; input.value = 'Save'"/>
 
         <p:remoteCommand name="autoSave" actionListener="#{annotatedObjectController.doSave}" async="true"/>
+
+     </h:panelGroup>
 
 
         <!-- CvObject -->

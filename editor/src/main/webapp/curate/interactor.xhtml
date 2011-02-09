@@ -86,28 +86,25 @@
                                     onchange="markAsUnsaved()"/>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Organism: " for="organismTxt"/>
-                        </td>
-                        <td colspan="2">
-                            <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
-                                    required="true" requiredMessage="Organism is required"
-                                    selectItems="#{bioSourceService.bioSourceSelectItems}"/>
-                        </td>
-                    </tr>
+                    <h:panelGroup rendered="#{interactorController.organismApplicable}">
+                        <tr>
+                            <td class="firstCell">
+                                <h:outputLabel value="Organism: " for="organismTxt"/>
+                            </td>
+                            <td colspan="2">
+                                <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
+                                        selectItems="#{bioSourceService.bioSourceSelectItems}"/>
+                            </td>
+                        </tr>
+                    </h:panelGroup>
                     <tr>
                         <td class="firstCell">
                             <h:outputLabel value="Type: " for="interactorTxt"/>
                         </td>
                         <td colspan="2">
-                             <!--<ia:inputCvObject id="interactorTxt" value="#{interactor.cvInteractorType}"-->
-                                                  <!--selectItems="#{cvObjectService.interactorTypeSelectItems}"-->
-                                                  <!--cvIdentifier="MI:0313"-->
-                                                  <!--required="true" requiredMessage="Interaction type is required"-->
-                                                  <!--valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"-->
-                                                  <!--valueChangeAwareObject="#{annotatedObjectController}"/>-->
-                            <h:inputText id="interactorTxt" value="#{interactorController.moleculeType}" readonly="true"/>
+                            <h:inputText id="interactorTxt" value="#{interactorController.moleculeType}"
+                                         size="50"
+                                         readonly="true"/>
                         </td>
                     </tr>
                     <h:panelGroup rendered="#{interactorController.polymer}">
