@@ -264,6 +264,10 @@ public class AnnotatedObjectHelper {
                 .getByAc(getAnnotatedObject().getAc());
         }
 
+        if (ao == null) { // this can happen if the object has been removed in the same request just before
+            return null;
+        }
+
         Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, topicId );
 
         if ( annotation != null ) {
