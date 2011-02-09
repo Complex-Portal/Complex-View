@@ -78,6 +78,10 @@ public abstract class AbstractUserController extends JpaAwareController {
     }
 
     private void setPreference(String prefKey, String prefValue) {
+        if (user.getPreferences() == null) {
+            user.setPreferences(new ArrayList<Preference>());
+        }
+
         Preference preference = null;
 
         for (Preference pref : user.getPreferences()) {
