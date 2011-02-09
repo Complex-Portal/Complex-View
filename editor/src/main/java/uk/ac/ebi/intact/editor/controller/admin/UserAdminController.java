@@ -32,7 +32,6 @@ public class UserAdminController extends AbstractUserController {
 
     private static final Log log = LogFactory.getLog( UserAdminController.class );
 
-    private static final String CURATION_DEPTH = "curation.depth";
     public static final String RAW_NOTES = "editor.notes";
 
     private String loginParam;

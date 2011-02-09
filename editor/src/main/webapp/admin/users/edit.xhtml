@@ -52,6 +52,9 @@
                 <f:selectItem itemLabel="MIMIx" itemValue="mimix curation"/>
             </h:selectOneMenu>
 
+            <h:outputLabel for="guTxt" value="Google username: "/>
+            <h:inputText id="guTxt" value="#{userAdminController.googleUsername}"/>
+
             <h:outputLabel value="My Notes:"/>
             <h:inputTextarea id="notesArea" value="#{userAdminController.rawNotes}" rows="10" cols="80"/>
 

@@ -21,16 +21,16 @@
 
         <h:panelGrid columns="2">
             <h:outputLabel for="usernameTxt" value="Username: "/>
-            <h:inputText id="usernameTxt" value="#{userProfileController.user.login}" readonly="true"/>
+            <p:inputText id="usernameTxt" value="#{userProfileController.user.login}" readonly="true"/>
 
             <h:outputLabel for="firstTxt" value="First name: "/>
-            <h:inputText id="firstTxt" value="#{userProfileController.user.firstName}"/>
+            <p:inputText id="firstTxt" value="#{userProfileController.user.firstName}"/>
 
             <h:outputLabel for="lastTxt" value="Last name: "/>
-            <h:inputText id="lastTxt" value="#{userProfileController.user.lastName}"/>
+            <p:inputText id="lastTxt" value="#{userProfileController.user.lastName}"/>
 
             <h:outputLabel for="emailTxt" value="Email: "/>
-            <h:inputText id="emailTxt" value="#{userProfileController.user.email}"/>
+            <p:inputText id="emailTxt" value="#{userProfileController.user.email}"  size="40"/>
 
             <h:outputLabel value="Default curation depth:"/>
             <h:selectOneMenu value="#{userProfileController.curationDepth}" >
@@ -38,7 +38,21 @@
                 <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
                 <f:selectItem itemLabel="MIMIx" itemValue="mimix curation"/>
             </h:selectOneMenu>
+
+            <h:outputLabel for="guTxt" value="Google username: "/>
+            <p:inputText id="guTxt" value="#{userProfileController.googleUsername}" size="40"/>
+
         </h:panelGrid>
+
+         <br/>
+
+        <div class="intact-buttonBar">
+            <p:commandButton value="Save" action="#{userProfileController.updateProfile}"
+                              ajax="false" />
+            &#160;
+            <p:commandLink value="Cancel" immediate="true"
+                             action="/dashboard/dashboard?faces-redirect=true" ajax="false" />
+        </div>
 
         <h3>New password</h3>
 
@@ -58,9 +72,12 @@
                         value="#{userProfileController.newPassword2}"/>
         </h:panelGrid>
 
+        <br/>
+
         <div class="intact-buttonBar">
             <p:commandButton value="Save" action="#{userProfileController.updateProfile}"
                               ajax="false" />
+            &#160;
             <p:commandLink value="Cancel" immediate="true"
                              action="/dashboard/dashboard?faces-redirect=true" ajax="false" />
         </div>

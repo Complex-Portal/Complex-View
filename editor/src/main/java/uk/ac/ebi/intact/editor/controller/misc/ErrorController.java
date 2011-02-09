@@ -19,15 +19,14 @@ import com.google.gdata.client.projecthosting.ProjectHostingService;
 import com.google.gdata.data.HtmlTextConstruct;
 import com.google.gdata.data.Person;
 import com.google.gdata.data.PlainTextConstruct;
-import com.google.gdata.data.projecthosting.IssueCommentsEntry;
-import com.google.gdata.data.projecthosting.IssuesEntry;
-import com.google.gdata.data.projecthosting.Label;
-import com.google.gdata.data.projecthosting.Status;
+import com.google.gdata.data.projecthosting.*;
 import com.google.gdata.util.AuthenticationException;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import uk.ac.ebi.intact.core.users.model.Preference;
+import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
@@ -69,6 +68,8 @@ public class ErrorController extends BaseController {
             throw new IllegalArgumentException("Problem with the google credentials to submit the issue: "+editorConfig.getGoogleUsername(), e);
         }
 
+        User currentUser = userSessionController.getCurrentUser();
+
         // Create the entry to insert
         IssuesEntry entry = new IssuesEntry();
         entry.setTitle(new PlainTextConstruct(title));
@@ -82,17 +83,17 @@ public class ErrorController extends BaseController {
         entry.addLabel(new Label("Type-Defect"));
 
         Person author = new Person();
-        author.setName(userSessionController.getCurrentUser().getLogin());
+        author.setName(currentUser.getLogin());
         entry.getAuthors().add(author);
 
-//        final Cc cc = new Cc();
-//        final Username username = new Username(userSessionController.getCurrentUser().getEmail());
-//        cc.setUsername(username);
-//        entry.addCc(cc);
-//
-//        Owner owner = new Owner();
-//        owner.setUsername(username);
-//        entry.setOwner(owner);
+        Preference googleUsernamePref = currentUser.getPreference(AbstractUserController.GOOGLE_USERNAME);
+
+        if (googleUsernamePref != null) {
+            final Cc cc = new Cc();
+            final Username username = new Username(googleUsernamePref.getValue());
+            cc.setUsername(username);
+            entry.addCc(cc);
+        }
 
         IssuesEntry insertedIssue = null;
 

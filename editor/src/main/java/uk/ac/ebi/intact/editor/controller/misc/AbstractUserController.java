@@ -21,6 +21,7 @@ public abstract class AbstractUserController extends JpaAwareController {
 
     private static final String CURATION_DEPTH = "curation.depth";
     public static final String RAW_NOTES = "editor.notes";
+    public static final String GOOGLE_USERNAME = "google.username";
 
     private User user;
 
@@ -49,6 +50,14 @@ public abstract class AbstractUserController extends JpaAwareController {
 
     public void setRawNotes(String notes) {
         setPreference(RAW_NOTES, notes);
+    }
+
+    public String getGoogleUsername() {
+        return findPreference(GOOGLE_USERNAME, null);
+    }
+
+    public void setGoogleUsername(String notes) {
+        setPreference(GOOGLE_USERNAME, notes);
     }
 
     private String findPreference(String prefKey) {
