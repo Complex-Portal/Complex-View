@@ -65,25 +65,35 @@
 
             <p:column>
                 <f:facet name="header"><h:outputText value="Expressed in"/></f:facet>
-                <h:selectOneMenu id="expressedInTxt" value="#{wrapper.participant.expressedIn}" onchange="markAsUnsaved()">
+                <h:selectOneMenu id="expressedInTxt" value="#{wrapper.participant.expressedIn}" onchange="markAsUnsaved()"
+                                 rendered="#{value.size() lt 5}">
                     <f:selectItems value="#{bioSourceService.bioSourceSelectItems}" />
                 </h:selectOneMenu>
+                <h:outputText value="#{wrapper.participant.expressedIn != null? wrapper.participant.expressedIn.shortLabel : ''}"
+                        rendered="#{value.size() ge 5}"/>
             </p:column>
 
             <p:column>
                 <f:facet name="header"><h:outputText value="Experimental role"/></f:facet>
-                <h:selectOneMenu id="expRoleTxt" value="#{wrapper.participant.cvExperimentalRole}" onchange="markAsUnsaved()">
+                <h:selectOneMenu id="expRoleTxt" value="#{wrapper.participant.cvExperimentalRole}" onchange="markAsUnsaved()"
+                        rendered="#{value.size() lt 5}">
                         <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
                     <f:ajax execute="@this" event="valueChange"
                             listener="#{interactionController.updateShortLabel()}" render=":editorForm:shortlabelTxt"/>
                 </h:selectOneMenu>
+                <h:outputText value="#{wrapper.participant.cvExperimentalRole != null? wrapper.participant.cvExperimentalRole.shortLabel : ''}"
+                        rendered="#{value.size() ge 5}"/>
             </p:column>
 
              <p:column>
                 <f:facet name="header"><h:outputText value="Biological role"/></f:facet>
-                <h:selectOneMenu id="bioRoleTxt" value="#{wrapper.participant.cvBiologicalRole}" onchange="markAsUnsaved()">
+                <h:selectOneMenu id="bioRoleTxt" value="#{wrapper.participant.cvBiologicalRole}"
+                                 rendered="#{value.size() lt 5}"
+                                 onchange="markAsUnsaved()">
                         <f:selectItems value="#{cvObjectService.biologicalRoleSelectItems}" />
                 </h:selectOneMenu>
+                 <h:outputText value="#{wrapper.participant.cvBiologicalRole != null? wrapper.participant.cvBiologicalRole.shortLabel : ''}"
+                         rendered="#{value.size() ge 5}"/>
             </p:column>
 
             <p:column>

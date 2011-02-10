@@ -288,7 +288,12 @@ public class InteractionController extends ParameterizableObjectController {
     @Override
     public void modifyClone(AnnotatedObject clone) {
         Interaction clonedInteraction = (Interaction) clone;
-        updateShortLabel(clonedInteraction);
+
+        try {
+            updateShortLabel(clonedInteraction);
+        } catch (IllegalLabelFormatException e) {
+            addErrorMessage("Couldn't auto-create label", e.getMessage());
+        }
     }
 
     @Override
@@ -439,10 +444,14 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void updateShortLabel() {
-        updateShortLabel(getInteraction());
+        try {
+            updateShortLabel(getInteraction());
+        } catch (IllegalLabelFormatException e) {
+            addErrorMessage("Couldn't auto-create label", e.getMessage());
+        }
     }
 
-    private void updateShortLabel(Interaction interaction) {
+    private void updateShortLabel(Interaction interaction) throws IllegalLabelFormatException {
         if (participantWrappers.isEmpty()) {
             return;
         }
@@ -453,12 +462,8 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         String shortLabel = InteractionShortLabelGenerator.createCandidateShortLabel(interaction);
-        try {
-            shortLabel = InteractionShortLabelGenerator.nextAvailableShortlabel(shortLabel);
-        } catch (IllegalLabelFormatException e) {
-            addWarningMessage("Illegal shortLabel", e.getMessage());
-            handleException(e);
-        }
+        shortLabel = InteractionShortLabelGenerator.nextAvailableShortlabel(shortLabel);
+
         interaction.setShortLabel(shortLabel);
     }
 

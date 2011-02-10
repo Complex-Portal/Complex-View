@@ -114,6 +114,8 @@ public class ParticipantImportController extends BaseController {
                 }
             }
         }
+
+        participantsToImport = new String[0];
     }
 
     public void importSelected(ActionEvent evt) {
