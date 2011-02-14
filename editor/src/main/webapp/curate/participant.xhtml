@@ -188,6 +188,18 @@
 
                 </p:tab>
 
+                <p:tab id="confidencesTab" title="Confidences (#{participant.confidences.size()})">
+
+                    <h:panelGroup id="confidencesPanel">
+                       <ia:confidencesTable annotatedObjectController="#{annotatedObjectController}"
+                           confidenceTypeSelectItems="#{cvObjectService.confidenceTypeSelectItems}"
+                           update="confidencesPanel confidencesTab changesPanel unsavedChangesInfo"
+                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                    </h:panelGroup>
+
+                </p:tab>
+
             </p:tabView>
             
         </h:panelGroup>

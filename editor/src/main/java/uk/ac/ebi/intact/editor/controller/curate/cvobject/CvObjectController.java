@@ -108,9 +108,9 @@ public class CvObjectController extends AnnotatedObjectController {
         cvObjectService.refresh(null);
 
         for (CvDagObject parent : cvObject.getParents()) {
-            getDaoFactory().getCvObjectDao().refresh(parent);
-            parent.addChild(cvObject);
-            getDaoFactory().getCvObjectDao().update(parent);
+            CvDagObject refreshedParent = (CvDagObject) getDaoFactory().getCvObjectDao().getByAc(parent.getAc());
+            refreshedParent.addChild(cvObject);
+            getDaoFactory().getCvObjectDao().update(refreshedParent);
             getDaoFactory().getCvObjectDao().update(cvObject);
         }
         

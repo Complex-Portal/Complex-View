@@ -30,12 +30,14 @@ import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionControll
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantWrapper;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
+import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -245,5 +247,21 @@ public class ParticipantController extends ParameterizableObjectController {
 
     public void setInteractorCandidates(List<ImportCandidate> interactorCandidates) {
         this.interactorCandidates = interactorCandidates;
+    }
+
+    // Confidence
+    ///////////////////////////////////////////////
+
+    public void newConfidence() {
+        ComponentConfidence confidence = new ComponentConfidence();
+        participant.addConfidence(confidence);
+    }
+
+    public List<ComponentConfidence> getConfidences() {
+        if (participant == null) return Collections.EMPTY_LIST;
+
+        final List<ComponentConfidence> confidences = new ArrayList<ComponentConfidence>( participant.getConfidences() );
+        Collections.sort( confidences, new IntactObjectComparator() );
+        return confidences;
     }
 }
