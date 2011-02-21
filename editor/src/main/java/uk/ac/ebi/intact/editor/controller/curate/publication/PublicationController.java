@@ -117,9 +117,11 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void loadData( ComponentSystemEvent event ) {
-        datasetsSelectItems = new ArrayList<SelectItem>();
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            datasetsSelectItems = new ArrayList<SelectItem>();
 
-        loadByAc();
+            loadByAc();
+        }
 
         generalLoadChecks();
     }

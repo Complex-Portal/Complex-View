@@ -7,7 +7,10 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.BioSource;
+import uk.ac.ebi.intact.model.CvDatabase;
+import uk.ac.ebi.intact.model.CvXrefQualifier;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 
 /**
@@ -33,10 +36,18 @@ public class BioSourceController extends AnnotatedObjectController {
     }
 
     public void loadData(ComponentSystemEvent evt) {
-        if (ac != null) {
-            bioSource = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getBioSourceDao(), ac);
-        } else {
-            bioSource = new BioSource();
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            if (ac != null) {
+                bioSource = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getBioSourceDao(), ac);
+            } else {
+                bioSource = new BioSource();
+            }
+
+        }
+
+        final String taxId = getTaxId();
+        if (taxId != null && !taxId.endsWith(bioSource.getTaxId())) {
+            this.bioSource.setTaxId(taxId);
         }
 
         generalLoadChecks();
@@ -66,6 +77,15 @@ public class BioSourceController extends AnnotatedObjectController {
     public void setBioSource(BioSource bioSource) {
         this.bioSource = bioSource;
         this.ac = bioSource.getAc();
+    }
+
+    public void setTaxId(String taxId) {
+        bioSource.setTaxId(taxId);
+        replaceOrCreateXref(CvDatabase.NEWT_MI_REF, CvXrefQualifier.IDENTITY, taxId);
+    }
+
+    public String getTaxId() {
+        return findXrefPrimaryId( CvDatabase.NEWT_MI_REF, CvXrefQualifier.IDENTITY );
     }
 
 

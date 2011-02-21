@@ -50,18 +50,14 @@
         <p:menubar id="menubar">
             <ui:insert name="menuBarContextual"/>
             <p:submenu label="Main">
-                    <f:facet name="label">
-                        <p:menuitem value="New" icon="/resources/images/new.png"/>
-                    </f:facet>
+                <p:submenu label="New" icon="/resources/images/new.png">
                     <p:menuitem value="Publication" onclick="newPublicationDlg.show();" helpText="ALT+N"/>
                     <p:menuitem value="Interactor..." onclick="newInteractorDialog.show(); "/>
                     <p:menuitem value="CV Object..." onclick="newCvObjectDialog.show(); "/>
                     <p:menuitem value="Organism" action="#{bioSourceController.newOrganism}" ajax="false"/>
                 <!--<p:menuitem value="New" onclick="newPublicationDlg.show();"/>-->
-                <p:submenu>
-                     <f:facet name="label">
-                        <p:menuitem value="Open" icon="/resources/images/open.png"/>
-                    </f:facet>
+                </p:submenu>
+                <p:submenu label="Open" icon="/resources/images/open.png">
                     <p:menuitem value="by AC..." onclick="openByAcDlg.show(); " helpText="ALT+O"/>
                     <p:menuitem value="by PMID..." onclick="openByPmidDlg.show(); "/>
                 </p:submenu>

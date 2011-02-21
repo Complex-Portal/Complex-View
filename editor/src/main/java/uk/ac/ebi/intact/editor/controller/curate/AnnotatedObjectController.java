@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,6 +25,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.Finder;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
@@ -96,7 +96,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             return new EmptyAnnotatedObjectHelper();
         }
 
-        if (!Hibernate.isInitialized(ao.getAnnotations())) {
+        if (!IntactCore.isInitialized(ao.getAnnotations())) {
             ao = getDaoFactory().getEntityManager().find(ao.getClass(), ao.getAc());
             setAnnotatedObject(ao);
         }

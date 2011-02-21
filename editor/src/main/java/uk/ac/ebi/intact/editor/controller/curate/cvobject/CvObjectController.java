@@ -12,6 +12,7 @@ import uk.ac.ebi.intact.model.CvDagObject;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.model.CvTopic;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
 import java.util.ArrayList;
@@ -51,14 +52,15 @@ public class CvObjectController extends AnnotatedObjectController {
     }
 
     public void loadData(ComponentSystemEvent evt) {
-        if (ac != null) {
-           cvObject = (CvDagObject) loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(), ac);
-        } else if (cvClassName != null) {
-            cvObject = newInstance(cvClassName);
-        }
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            if (ac != null) {
+               cvObject = (CvDagObject) loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(), ac);
+            } else if (cvClassName != null) {
+                cvObject = newInstance(cvClassName);
+            }
 
-        prepareView();
-
+            prepareView();
+         }
         generalLoadChecks();
     }
 

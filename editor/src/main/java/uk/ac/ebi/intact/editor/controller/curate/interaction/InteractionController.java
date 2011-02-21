@@ -39,6 +39,7 @@ import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.IllegalLabelFormatException;
 import uk.ac.ebi.intact.model.util.InteractionShortLabelGenerator;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ValueChangeEvent;
@@ -104,36 +105,40 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void loadData( ComponentSystemEvent event ) {
-        if ( ac != null ) {
-            if ( interaction == null || !ac.equals( interaction.getAc() ) || !Hibernate.isInitialized(interaction.getExperiments())) {
-                interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), ac);
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            if ( ac != null ) {
+                if ( interaction == null || !ac.equals( interaction.getAc() ) || !Hibernate.isInitialized(interaction.getExperiments())) {
+                    interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), ac);
+                }
+            } else {
+                ac = interaction.getAc();
             }
-        } else {
-            ac = interaction.getAc();
-        }
 
-        if (interaction == null) {
-            addErrorMessage("No interaction with this AC", ac);
-            return;
-        }
-
-        if ( interaction.getExperiments().isEmpty() ) {
-            addErrorMessage( "This interaction isn't attached to an experiment", "Plase add one or delete it" );
-        } else {
-
-            // check if the publication or experiment are null in their controllers (this happens when the interaction
-            // page is loaded directly using a URL)
-            refreshParentControllers();
-        }
-
-        refreshExperimentLists();
-
-        if (interaction != null) {
-            if (!Hibernate.isInitialized(interaction.getComponents())) {
-                interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
+            if (interaction == null) {
+                addErrorMessage("No interaction with this AC", ac);
+                return;
             }
-            refreshParticipants();
+
+            if ( interaction.getExperiments().isEmpty() ) {
+                addErrorMessage( "This interaction isn't attached to an experiment", "Plase add one or delete it" );
+            } else {
+
+                // check if the publication or experiment are null in their controllers (this happens when the interaction
+                // page is loaded directly using a URL)
+                refreshParentControllers();
+            }
+
+            refreshExperimentLists();
+
+            if (interaction != null) {
+                if (!Hibernate.isInitialized(interaction.getComponents())) {
+                    interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
+                }
+                refreshParticipants();
+            }
         }
+
+        generalLoadChecks();
     }
 
     private void refreshParentControllers() {

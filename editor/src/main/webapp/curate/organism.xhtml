@@ -66,8 +66,10 @@
                             <h:outputLabel value="Tax ID: " for="taxIdTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="taxIdTxt" value="#{bioSourceController.bioSource.taxId}" onchange="markAsUnsaved()"
-                                    required="true" requiredMessage="Tax ID is required"/>
+                            <h:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()"
+                                    required="true" requiredMessage="Tax ID is required">
+                                <f:ajax event="valueChange" render="cvobjectTabs"/>
+                            </h:inputText>
                         </td>
                     </tr>
                     <tr>

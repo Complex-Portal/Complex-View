@@ -9,6 +9,7 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 
 /**
@@ -43,12 +44,14 @@ public class InteractorController extends AnnotatedObjectController {
     }
 
     public void loadData( ComponentSystemEvent event ) {
-        if ( ac != null ) {
-            if ( interactor == null || !ac.equals(interactor.getAc())) {
-                interactor = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractorDao(), ac);
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            if ( ac != null ) {
+                if ( interactor == null || !ac.equals(interactor.getAc())) {
+                    interactor = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractorDao(), ac);
+                }
+            } else {
+                if ( interactor != null ) ac = interactor.getAc();
             }
-        } else {
-            if ( interactor != null ) ac = interactor.getAc();
         }
 
         generalLoadChecks();

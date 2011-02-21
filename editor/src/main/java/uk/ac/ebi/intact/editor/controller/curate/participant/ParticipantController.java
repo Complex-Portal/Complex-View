@@ -34,6 +34,7 @@ import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.ArrayList;
@@ -91,43 +92,45 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     public void loadData( ComponentSystemEvent event ) {
-        if ( ac != null ) {
-            if ( participant == null || !ac.equals( participant.getAc() ) ) {
-                participant = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getComponentDao(), ac);
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            if ( ac != null ) {
+                if ( participant == null || !ac.equals( participant.getAc() ) ) {
+                    participant = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getComponentDao(), ac);
+                }
+            } else {
+                if ( participant != null ) ac = participant.getAc();
             }
-        } else {
-            if ( participant != null ) ac = participant.getAc();
-        }
 
-        if (participant == null) {
-            addErrorMessage("No participant loaded", "That's annoying!");
-            return;
-        }
+            if (participant == null) {
+                addErrorMessage("No participant loaded", "That's annoying!");
+                return;
+            }
 
-        // check if the publication, experiment and interaction are null in their controllers (this happens when the
-        // participant page is loaded directly using a URL)
+            // check if the publication, experiment and interaction are null in their controllers (this happens when the
+            // participant page is loaded directly using a URL)
 
-        if( participant.getInteraction().getExperiments().isEmpty()) {
-            addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
-                               "Abort experiment loading." );
-            return;
-        }
+            if( participant.getInteraction().getExperiments().isEmpty()) {
+                addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
+                                   "Abort experiment loading." );
+                return;
+            }
 
-        if ( publicationController.getPublication() == null ) {
-            Publication publication = participant.getInteraction().getExperiments().iterator().next().getPublication();
-            publicationController.setPublication( publication );
-        }
+            if ( publicationController.getPublication() == null ) {
+                Publication publication = participant.getInteraction().getExperiments().iterator().next().getPublication();
+                publicationController.setPublication( publication );
+            }
 
-        if ( experimentController.getExperiment() == null ) {
-            experimentController.setExperiment( participant.getInteraction().getExperiments().iterator().next() );
-        }
+            if ( experimentController.getExperiment() == null ) {
+                experimentController.setExperiment( participant.getInteraction().getExperiments().iterator().next() );
+            }
 
-        if( interactionController.getInteraction() == null ) {
-            interactionController.setInteraction( participant.getInteraction() );
-        }
+            if( interactionController.getInteraction() == null ) {
+                interactionController.setInteraction( participant.getInteraction() );
+            }
 
-        if (participant.getInteractor() != null) {
-            interactor = participant.getInteractor().getShortLabel();
+            if (participant.getInteractor() != null) {
+                interactor = participant.getInteractor().getShortLabel();
+            }
         }
 
         generalLoadChecks();

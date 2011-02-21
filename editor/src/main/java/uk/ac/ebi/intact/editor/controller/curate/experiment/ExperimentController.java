@@ -34,6 +34,7 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.text.SimpleDateFormat;
@@ -78,17 +79,19 @@ public class ExperimentController extends AnnotatedObjectController {
 
     @SuppressWarnings("unchecked")
     public void loadData( ComponentSystemEvent event ) {
-        if ( ac != null ) {
-            if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
-                experiment = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao(), ac);
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            if ( ac != null ) {
+                if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
+                    experiment = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao(), ac);
+                }
+                refreshInteractions();
+            } else if ( experiment != null ) {
+                ac = experiment.getAc();
             }
-            refreshInteractions();
-        } else if ( experiment != null ) {
-            ac = experiment.getAc();
-        }
 
-        if ( experiment != null && publicationController.getPublication() == null ) {
-            publicationController.setPublication( experiment.getPublication() );
+            if ( experiment != null && publicationController.getPublication() == null ) {
+                publicationController.setPublication( experiment.getPublication() );
+            }
         }
 
         generalLoadChecks();
