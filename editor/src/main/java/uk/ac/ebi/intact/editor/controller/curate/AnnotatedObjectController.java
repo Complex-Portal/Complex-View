@@ -182,6 +182,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
 
         refreshCurrentViewObject();
+
+        doPostSave();
     }
 
      private AnnotatedObject refresh(AnnotatedObject annotatedObject) {
@@ -220,6 +222,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void doPreSave() {
+    }
+
+    public void doPostSave() {
     }
 
     public boolean doSaveDetails() {

@@ -61,65 +61,47 @@
                     </div>
                 </h:panelGroup>
 
-                <table class="intact-tableBasicForm">
-                    <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
-                        </td>
-                        <td>
-                            <h:inputText id="shortlabelTxt" value="#{interactor.shortLabel}" size="30"
-                                         validator="#{annotatedObjectController.validateAnnotatedObject}"
-                                    required="true" requiredMessage="Shortlabel is required"/>
-                        </td>
-                        <td style="padding-left: 50px;">
-                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                            <h:inputText id="acTxt" value="#{interactor.ac}"
-                                         size="10" readonly="true"/>
-                        </td>
-                    </tr>
-                     <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Fullname: " for="fullnameTxt"/>
-                        </td>
-                        <td colspan="2">
-                            <h:inputText id="fullnameTxt" value="#{interactor.fullName}" size="80"
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
+                    <h:inputText id="acTxt" value="#{interactor.ac}"
+                                 size="10" readonly="true"/>
+
+                    <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+                    <h:inputText id="shortlabelTxt" value="#{interactor.shortLabel}" size="30"
+                                 validator="#{annotatedObjectController.validateAnnotatedObject}"
+                                 required="true" requiredMessage="Shortlabel is required"/>
+
+                    <h:outputLabel value="Fullname: " for="fullnameTxt"/>
+                    <h:inputText id="fullnameTxt" value="#{interactor.fullName}" size="80"
                                     onchange="markAsUnsaved()"/>
-                        </td>
-                    </tr>
-                    <h:panelGroup rendered="#{interactorController.organismApplicable}">
-                        <tr>
-                            <td class="firstCell">
-                                <h:outputLabel value="Organism: " for="organismTxt"/>
-                            </td>
-                            <td colspan="2">
-                                <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
+
+                    <h:outputLabel value="Organism: " for="organismTxt"/>
+                    <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
                                         selectItems="#{bioSourceService.bioSourceSelectItems}"/>
-                            </td>
-                        </tr>
-                    </h:panelGroup>
-                    <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Type: " for="interactorTxt"/>
-                        </td>
-                        <td colspan="2">
-                            <h:inputText id="interactorTxt" value="#{interactorController.moleculeType}"
+
+                    <h:outputLabel value="Type: " for="interactorTxt"/>
+                    <h:inputText id="interactorTxt" value="#{interactorController.moleculeType}"
                                          size="50"
                                          readonly="true"/>
-                        </td>
-                    </tr>
-                    <h:panelGroup rendered="#{interactorController.polymer}">
-                        <tr>
-                            <td class="firstCell">
-                                <h:outputLabel value="Sequence: " for="sequenceTxt"/>
-                            </td>
-                            <td colspan="2">
-                                <h:inputTextarea id="sequenceTxt" value="#{interactorController.sequence}"
-                                                 rows="5" cols="100"
-                                                 onchange="markAsUnsaved()"/>
-                            </td>
-                        </tr>
-                    </h:panelGroup>
-                </table>
+
+                    <!--<h:panelGroup id="seqSection" style="display:#{interactorController.changedSequence? 'block' : 'none'}}">-->
+                    <!--<h:outputText value=" " rendered="#{interactorController.changedSequence}"/>-->
+                    <!--<h:panelGroup rendered="#{interactorController.changedSequence}">-->
+                        <!--<ia:panelMessage level="warn" showIcon="true">-->
+                            <!--Sequence updated, illegal characters were found in the sequence and were replaced automatically-->
+                        <!--</ia:panelMessage>-->
+                    <!--</h:panelGroup>-->
+                    <!--</h:panelGroup>-->
+
+                    <h:outputLabel value="Sequence: " for="sequenceTxt"/>
+                    <h:inputTextarea id="sequenceTxt" value="#{interactorController.sequence}"
+                                     rows="5" cols="100">
+                        <!--<f:ajax event="keyup" listener="#{interactorController.cleanSequence}" execute="sequenceTxt"-->
+                                <!--render="basic messagesComponent"/>-->
+                    </h:inputTextarea>
+
+                </h:panelGrid>
+
 
             </p:panel>
 

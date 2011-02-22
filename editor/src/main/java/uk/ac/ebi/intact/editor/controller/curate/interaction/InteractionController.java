@@ -236,7 +236,9 @@ public class InteractionController extends ParameterizableObjectController {
 
     public void experimentChanged(ValueChangeEvent evt) {
         if (evt.getNewValue() == null) {
-            addErrorMessage("No experiment selected", "Select an experiment in the drop down list");
+            if (evt.getOldValue() != null) {
+                addErrorMessage("No experiment selected", "Select an experiment in the drop down list");
+            }
             return;
         }
 

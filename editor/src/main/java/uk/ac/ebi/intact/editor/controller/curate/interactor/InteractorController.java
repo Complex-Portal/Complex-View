@@ -10,6 +10,7 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
 
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
 
 /**
@@ -40,7 +41,7 @@ public class InteractorController extends AnnotatedObjectController {
 
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setInteractor((Interactor)annotatedObject);
+        setInteractor((Interactor) annotatedObject);
     }
 
     public void loadData( ComponentSystemEvent event ) {
@@ -52,9 +53,20 @@ public class InteractorController extends AnnotatedObjectController {
             } else {
                 if ( interactor != null ) ac = interactor.getAc();
             }
-        }
+
+            reset();
+        } 
 
         generalLoadChecks();
+    }
+
+    private void reset() {
+    }
+
+    @Override
+    public void doPreSave() {
+        super.doPostSave();
+        cleanSequence(null);
     }
 
     public String newInteractor() {
@@ -123,6 +135,38 @@ public class InteractorController extends AnnotatedObjectController {
         }
 
         return !(CvInteractorType.SMALL_MOLECULE_MI_REF.equals(interactor.getCvInteractorType().getIdentifier()));
+    }
+
+//    public void validateSequence(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+//        String seq = getSequence();
+//
+//        if (seq != null) {
+//            if (seq.contains(" ") || seq.contains("\n") || seq.contains("\r")) {
+//                addErrorMessage("Invalid sequence", "Illegal characters were found in the sequence (e.g. spaces, return chars...)");
+//                FacesContext.getCurrentInstance().renderResponse();
+//            }
+//        }
+//    }
+
+    public void cleanSequence(AjaxBehaviorEvent evt) {
+        String seq = getSequence();
+        String originalSeq = seq;
+
+        boolean changedSequence = false;
+
+        if (seq != null) {
+            // remove all non-alphabetical characters
+            seq = seq.replaceAll("\\P{Alpha}", "");
+            seq = seq.toUpperCase();
+
+            changedSequence = !(seq.equals(originalSeq));
+
+            if (changedSequence) {
+                setSequence(seq);
+
+                addWarningMessage("Sequence updated", "Illegal characters were found in the sequence and were removed automatically");
+            }
+        }
     }
 
     public Interactor getInteractor() {
