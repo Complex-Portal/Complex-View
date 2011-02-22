@@ -321,10 +321,12 @@ public class InteractionController extends ParameterizableObjectController {
         interaction.addComponent(component);
         participantWrappers.addFirst(new ParticipantWrapper( component, getChangesController() ));
 
-        try {
-            updateShortLabel();
-        } catch (Exception e) {
-            addErrorMessage("Problem updating shortLabel", e.getMessage());
+        if (participantWrappers.size() > 1) {
+            try {
+                updateShortLabel();
+            } catch (Exception e) {
+                addErrorMessage("Problem updating shortLabel", e.getMessage());
+            }
         }
 
         getChangesController().markAsUnsaved(interaction);

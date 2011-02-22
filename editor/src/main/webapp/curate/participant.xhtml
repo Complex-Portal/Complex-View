@@ -78,6 +78,8 @@
                             <!--<ia:inputInteractor value="#{participant.interactor}" />-->
                             <p:commandButton value="Import" onclick="importInteractorDialog.show();"/>
                             <p:commandButton value="New" onclick="newInteractorDialog.show();"/>
+                            <p:commandButton value="View" rendered="#{participant.interactor != null}"
+                                             action="#{curateController.edit(participant.interactor)}" ajax="false"/>
 
                             <ui:include src="dialog_import_interactor.xhtml"/>
                         </td>
