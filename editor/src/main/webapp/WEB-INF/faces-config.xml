@@ -18,8 +18,9 @@
    </factory>
 
     <lifecycle>
-        <phase-listener>uk.ac.ebi.intact.editor.application.DebugPhaseListener</phase-listener>
+        <!--<phase-listener>uk.ac.ebi.intact.editor.application.DebugPhaseListener</phase-listener>-->
         <phase-listener>uk.ac.ebi.intact.editor.application.HistoryPhaseListener</phase-listener>
+        <phase-listener>uk.ac.ebi.intact.editor.application.LastActivityPhaseListener</phase-listener>
         <phase-listener>uk.ac.ebi.intact.editor.application.CacheControlPhaseListener</phase-listener>
     </lifecycle>
 

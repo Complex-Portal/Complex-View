@@ -17,11 +17,16 @@ package uk.ac.ebi.intact.editor.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
+import uk.ac.ebi.intact.core.users.persistence.dao.UserDao;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -32,6 +37,9 @@ import uk.ac.ebi.intact.core.users.model.User;
 public class UserSessionController extends JpaAwareController implements DisposableBean {
 
     private static final Log log = LogFactory.getLog( UserSessionController.class );
+
+    @Autowired
+    private UserDao userDao;
 
     private User currentUser;
 
@@ -70,6 +78,26 @@ public class UserSessionController extends JpaAwareController implements Disposa
         }
 
         return false;
+    }
+
+    @Transactional
+    public void notifyLastActivity() {
+        DateTime dateTime = new DateTime();
+        String dateTimeStr = dateTime.toString("dd/MM/yyyy HH:mm");
+
+        if (currentUser != null) {
+            Preference pref = currentUser.getPreference("last.activity");
+
+            if (pref == null) {
+                pref = new Preference(currentUser, "last.activity");
+            }
+
+            pref.setValue(dateTimeStr);
+
+            currentUser.getPreferences().add(pref);
+
+            userDao.saveOrUpdate(currentUser);
+        }
     }
 
     @Override

@@ -25,6 +25,12 @@
                      <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                  </h:outputText>
              </p:column>
+            <p:column>
+                 <f:facet name="header">
+                     <h:outputText value="Last activity"/>
+                 </f:facet>
+                 <h:outputText value="#{user.getPreference('last.activity').value}"/>
+             </p:column>
              <!--<p:column>-->
                  <!--<f:facet name="header">-->
                      <!--<h:outputText value="Locks"/>-->
