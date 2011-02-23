@@ -7,7 +7,6 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.BioSource;
-import uk.ac.ebi.intact.model.CvDatabase;
 import uk.ac.ebi.intact.model.CvXrefQualifier;
 
 import javax.faces.context.FacesContext;
@@ -81,11 +80,11 @@ public class BioSourceController extends AnnotatedObjectController {
 
     public void setTaxId(String taxId) {
         bioSource.setTaxId(taxId);
-        replaceOrCreateXref(CvDatabase.NEWT_MI_REF, CvXrefQualifier.IDENTITY, taxId);
+        replaceOrCreateXref("MI:0942", CvXrefQualifier.IDENTITY, taxId);
     }
 
     public String getTaxId() {
-        return findXrefPrimaryId( CvDatabase.NEWT_MI_REF, CvXrefQualifier.IDENTITY );
+        return findXrefPrimaryId( "MI:0942", CvXrefQualifier.IDENTITY );
     }
 
 
