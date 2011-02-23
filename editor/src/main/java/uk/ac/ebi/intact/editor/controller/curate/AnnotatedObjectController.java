@@ -451,7 +451,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         if (annotation == null) return null;
 
         String extUrl = annotation.getAnnotationText();
-        return extUrl.replaceAll("\\{ac\\}", xref.getPrimaryId());
+        return extUrl.replaceAll("\\$\\{ac\\}", xref.getPrimaryId());
 
     }
 
