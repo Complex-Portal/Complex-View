@@ -44,11 +44,6 @@ public class BioSourceController extends AnnotatedObjectController {
 
         }
 
-        final String taxId = getTaxId();
-        if (taxId != null && !taxId.endsWith(bioSource.getTaxId())) {
-            this.bioSource.setTaxId(taxId);
-        }
-
         generalLoadChecks();
     }
 

@@ -2,6 +2,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
@@ -71,10 +72,12 @@
                                     <!--<span class="ui-icon ui-icon-circle-check" title="Matches the expected regular expression"/>-->
                                 <!--</h:panelGroup>-->
                                 <h:panelGroup rendered="#{annotatedObjectController.externalLink(xref) != null}">
-                                    <h:outputLink value="#{annotatedObjectController.externalLink(xref)}" target="_blank">
-                                        <span class="ui-icon ui-icon-extlink" style="display:inline-block"
-                                              title="Does not match the expected regular expression"/>
-                                    </h:outputLink>
+                                    <ot:separateConversationContext>
+                                        <h:outputLink value="#{annotatedObjectController.externalLink(xref)}" target="_blank">
+                                            <span class="ui-icon ui-icon-extlink" style="display:inline-block"
+                                                  title="External link to #{xref.cvDatabase.shortLabel}"/>
+                                        </h:outputLink>
+                                    </ot:separateConversationContext>
                                 </h:panelGroup>
                             </h:panelGroup>
 
