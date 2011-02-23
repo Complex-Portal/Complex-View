@@ -84,7 +84,7 @@ public class BioSourceController extends AnnotatedObjectController {
     }
 
     public String getTaxId() {
-        return findXrefPrimaryId( "MI:0942", CvXrefQualifier.IDENTITY );
+        return bioSource.getTaxId();
     }
 
 
