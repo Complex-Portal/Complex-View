@@ -63,7 +63,7 @@
                                  onchange="markAsUnsaved()"/>
 
                     <h:outputLabel value="Fullname: " for="fullnameTxt"/>
-                    <h:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}" onchange="markAsUnsaved()"/>
+                    <h:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}" onchange="markAsUnsaved()" size="50"/>
 
                     <h:outputLabel value="Cell type: " for="cellTypeTxt"/>
                     <h:selectOneMenu id="cellTypeTxt" value="#{bioSourceController.bioSource.cvCellType}">

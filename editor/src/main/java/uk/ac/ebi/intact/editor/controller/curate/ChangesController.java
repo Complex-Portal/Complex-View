@@ -116,8 +116,11 @@ public class ChangesController extends JpaAwareController implements UserListene
             parents = getDaoFactory().getInteractionDao().getByAc(interaction.getAc()).getExperiments();
         }
 
-        for (Experiment parent : parents) {
-            markToDelete(interaction, parent);
+        // using an array to avoid a concurrent modification exception, which happens when trying to remove the interaction from its experiments
+        final Experiment[] array = parents.toArray(new Experiment[parents.size()]);
+
+        for (int i=0; i<array.length; i++) {
+            markToDelete(interaction, array[i]);
         }
     }
 
