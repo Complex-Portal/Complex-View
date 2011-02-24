@@ -36,71 +36,52 @@
                     </div>
                 </h:panelGroup>
 
-                <table class="intact-tableBasicForm">
-                    <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
-                        </td>
-                        <td>
-                            <h:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30"
-                                         validator="#{annotatedObjectController.validateAnnotatedObject}"
-                                         required="true" requiredMessage="Shortlabel is required"
-                                    onchange="markAsUnsaved()"/>
-                        </td>
-                        <td style="padding-left: 50px;">
-                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                            <h:inputText id="acTxt" value="#{bioSourceController.bioSource.ac}"
-                                         size="10" readonly="true" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Fullname: " for="fullnameTxt"/>
-                        </td>
-                        <td colspan="2">
-                            <h:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}" onchange="markAsUnsaved()"/>
-                        </td>
-                    </tr>
-                     <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Tax ID: " for="taxIdTxt"/>
-                        </td>
-                        <td colspan="2">
-                            <h:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()"
-                                    required="true" requiredMessage="Tax ID is required">
-                                <f:ajax event="valueChange" render="cvobjectTabs"/>
-                            </h:inputText>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Cell type: " for="cellTypeTxt"/>
-                        </td>
-                        <td colspan="2">
-                            <h:selectOneMenu id="cellTypeTxt" value="#{bioSourceController.bioSource.cvCellType}">
-                                <f:selectItems value="#{cvObjectService.cellTypeSelectItems}" onchange="markAsUnsaved()"/>
-                            </h:selectOneMenu>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="firstCell">
-                            <h:outputLabel value="Tissue: " for="tissueTxt"/>
-                        </td>
-                        <td colspan="2">
-                            <h:selectOneMenu id="tissueTxt" value="#{bioSourceController.bioSource.cvTissue}">
-                                <f:selectItems value="#{cvObjectService.tissueSelectItems}"/>
-                            </h:selectOneMenu>
-                        </td>
-                    </tr>
 
+                <h:panelGrid columns="2">
 
-                </table>
+                    <h:outputLabel value="Tax ID: " for="taxIdTxt"/>
+
+                    <h:panelGroup>
+                    <h:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()"
+                                 required="true" requiredMessage="Tax ID is required">
+                        <f:ajax event="valueChange" render="organismTabs"/>
+                    </h:inputText>
+
+                        <p:commandButton id="autoFillBtn" value="Auto-fill" actionListener="#{bioSourceController.autoFill}"
+                                         update="basic organismTabs" process="autoFillBtn"/>
+
+                    </h:panelGroup>
+
+                    <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
+                    <h:inputText id="acTxt" value="#{bioSourceController.bioSource.ac}"
+                                 size="10" readonly="true"/>
+
+                    <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+                    <h:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30"
+                                 validator="#{annotatedObjectController.validateAnnotatedObject}"
+                                 required="true" requiredMessage="Shortlabel is required"
+                                 onchange="markAsUnsaved()"/>
+
+                    <h:outputLabel value="Fullname: " for="fullnameTxt"/>
+                    <h:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}" onchange="markAsUnsaved()"/>
+
+                    <h:outputLabel value="Cell type: " for="cellTypeTxt"/>
+                    <h:selectOneMenu id="cellTypeTxt" value="#{bioSourceController.bioSource.cvCellType}">
+                        <f:selectItems value="#{cvObjectService.cellTypeSelectItems}" onchange="markAsUnsaved()"/>
+                    </h:selectOneMenu>
+
+                    <h:outputLabel value="Tissue: " for="tissueTxt"/>
+                    <h:selectOneMenu id="tissueTxt" value="#{bioSourceController.bioSource.cvTissue}">
+                        <f:selectItems value="#{cvObjectService.tissueSelectItems}"/>
+                    </h:selectOneMenu>
+
+                </h:panelGrid>
 
             </p:panel>
 
              <br/>
 
-            <p:tabView id="cvobjectTabs">
+            <p:tabView id="organismTabs">
 
                 <ui:include src="propertiesTabs.xhtml">
                      <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.bioSourceTopicSelectItems}"/>
