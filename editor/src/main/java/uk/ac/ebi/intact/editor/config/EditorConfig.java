@@ -25,6 +25,8 @@ import uk.ac.ebi.intact.editor.controller.BaseController;
  */
 public class EditorConfig extends BaseController {
 
+    private String buildVersion;
+    private String buildTimestamp;
     private String instanceName;
     private String databaseUrl;
     private String usersDatabaseUrl;
@@ -36,6 +38,22 @@ public class EditorConfig extends BaseController {
     private String defaultCurationDepth = "imex curation";
 
     public EditorConfig() {
+    }
+
+    public String getBuildVersion() {
+        return buildVersion;
+    }
+
+    public void setBuildVersion(String buildVersion) {
+        this.buildVersion = buildVersion;
+    }
+
+    public String getBuildTimestamp() {
+        return buildTimestamp;
+    }
+
+    public void setBuildTimestamp(String buildTimestamp) {
+        this.buildTimestamp = buildTimestamp;
     }
 
     public String getInstanceName() {

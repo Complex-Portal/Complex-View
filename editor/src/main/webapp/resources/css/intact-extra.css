@@ -62,12 +62,33 @@ border-right:0 none !important;
     position: fixed;
     top:auto;
     background-color: #ffd98f;
-    bottom: 0;
+    bottom: 18px;
     z-index: 2000;
     border:3px solid #feba12;
     font-weight: bold;
     text-align: center;
-    width:98%
+    width:98%;
+}
+
+.footer-bar {
+    background-color: #666666;
+    bottom: 0;
+
+    padding-left: 10px;
+    position: fixed;
+    top:auto;
+    width:100%;
+    z-index: 2000;
+}
+
+.footer-bar, .footer-bar a {
+   color: white;
+    text-decoration: none;
+}
+
+.footer-bar a:hover {
+   color: yellow;
+    text-decoration: underline;
 }
 
 .intact-disabled {
