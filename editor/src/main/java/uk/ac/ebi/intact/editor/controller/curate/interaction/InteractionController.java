@@ -120,7 +120,7 @@ public class InteractionController extends ParameterizableObjectController {
             }
 
             if ( interaction.getExperiments().isEmpty() ) {
-                addErrorMessage( "This interaction isn't attached to an experiment", "Plase add one or delete it" );
+                addErrorMessage( "This interaction isn't attached to an experiment", "Please add one or delete it" );
             } else {
 
                 // check if the publication or experiment are null in their controllers (this happens when the interaction
@@ -185,10 +185,6 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Override
     public boolean doSaveDetails() {
-        if (interaction.getAc() == null) {
-            updateShortLabel();
-        }
-
         boolean saved = false;
 
         for (ParticipantWrapper pw : participantWrappers) {
@@ -224,12 +220,17 @@ public class InteractionController extends ParameterizableObjectController {
             experiment = reload(experiment);
 
             interaction.addExperiment(experiment);
+            interaction.addExperiment(experiment);
             getDaoFactory().getExperimentDao().update(experiment);
 
             experimentController.setExperiment(experiment);
         }
 
         refreshParticipants();
+
+        if (interaction.getAc() == null) {
+            updateShortLabel();
+        }
 
         return saved;
     }
@@ -328,6 +329,7 @@ public class InteractionController extends ParameterizableObjectController {
                 addErrorMessage("Problem updating shortLabel", e.getMessage());
             }
         }
+
 
         getChangesController().markAsUnsaved(interaction);
     }
@@ -502,7 +504,7 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         if (participant.getAc() != null) {
-            participantInfo.append("(").append(participant.getAc()+")");
+            participantInfo.append("(").append(participant.getAc()).append(")");
         }
     }
 

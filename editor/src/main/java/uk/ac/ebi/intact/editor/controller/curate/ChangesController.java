@@ -335,9 +335,8 @@ public class ChangesController extends JpaAwareController implements UserListene
      private void addChange(UnsavedChange unsavedChange) {
         List<UnsavedChange> unsavedChanges = getUnsavedChangesForCurrentUser();
 
-        if (!unsavedChanges.contains(unsavedChange)) {
-            unsavedChanges.add(unsavedChange);
-        }
+         unsavedChanges.remove(unsavedChange);
+         unsavedChanges.add(unsavedChange);
     }
 
     private void removeUserFromUnsaved(String user) {

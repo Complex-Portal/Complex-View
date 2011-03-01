@@ -51,6 +51,7 @@ public class ParticipantWrapper {
 
     public void setFirstExperimentalRole(CvExperimentalRole role) {
         if( ! participant.getExperimentalRoles().contains( role ) ) {
+            participant.getExperimentalRoles().clear();
             participant.getExperimentalRoles().add( role );
         }
     }
