@@ -184,6 +184,15 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     @Override
+    public void doPreSave() {
+        Experiment exp = interaction.getExperiments().iterator().next();
+        Experiment reloaded = getDaoFactory().getExperimentDao().getByAc(exp.getAc());
+
+        interaction.getExperiments().clear();
+        interaction.getExperiments().add(reloaded);
+    }
+
+    @Override
     public boolean doSaveDetails() {
         boolean saved = false;
 
@@ -220,7 +229,7 @@ public class InteractionController extends ParameterizableObjectController {
             experiment = reload(experiment);
 
             interaction.addExperiment(experiment);
-            interaction.addExperiment(experiment);
+
             getDaoFactory().getExperimentDao().update(experiment);
 
             experimentController.setExperiment(experiment);
@@ -328,8 +337,8 @@ public class InteractionController extends ParameterizableObjectController {
             } catch (Exception e) {
                 addErrorMessage("Problem updating shortLabel", e.getMessage());
             }
-        }
 
+     }
 
         getChangesController().markAsUnsaved(interaction);
     }
@@ -555,7 +564,14 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void setExperiment(Experiment experiment) {
-        this.experiment = experiment;
+        if (!this.experiment.equals(experiment)) {
+            this.experiment = experiment;
+
+            interaction.getExperiments().clear();
+            interaction.getExperiments().add(experiment);
+
+            experimentController.setExperiment(experiment);
+        }
     }
 
     public void setInteraction( Interaction interaction ) {
