@@ -420,6 +420,16 @@ public class ParticipantImportController extends BaseController {
         }
 
         @Override
+        public ReportWriter getSequenceChangedCautionWriter() throws IOException {
+            return reportWriter;
+        }
+
+        @Override
+        public ReportWriter getDeletedComponentWriter() throws IOException {
+            return reportWriter;
+        }
+
+        @Override
         public ReportWriter getDuplicatedWriter() throws IOException {
             return reportWriter;
         }
