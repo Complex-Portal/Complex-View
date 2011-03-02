@@ -28,6 +28,9 @@
 
     <h:body style="margin: 0 0 0 0;">
         <div id="intact-blockingDiv"></div>
+
+        <h:outputScript library="javascript" name="intact.js"/>
+
         <!--<ia:loadingDialog widgetVar="blockingDialog" modal="true" message="Loading page..."/>-->
 
         <!--<script type="text/javascript">-->
@@ -120,8 +123,8 @@
                                     <h:panelGrid columns="4">
                                         <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
                                         <!--<p:watermark for="queryTxt" value="search query"/>-->
-                                        <h:inputText id="queryTxt" value="#{searchController.quickQuery}"/>
-                                        <p:commandButton value="Search" action="#{searchController.doQuickSearch}" ajax="false"
+                                        <h:inputText id="queryTxt" value="#{searchController.quickQuery}" converter="trimmingConverter" onkeyup="handleReturnKey(event, 'topSearchBtn')"/>
+                                        <p:commandButton id="topSearchBtn" value="Search" action="#{searchController.doQuickSearch}" ajax="false"
                                                 onclick="searchDialog.show()"/>
                                     </h:panelGrid>
 

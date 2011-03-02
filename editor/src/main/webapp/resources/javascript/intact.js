@@ -1,5 +1,11 @@
 /** Collapsible Panel **/
 
+function handleReturnKey(event, btnId) {
+    if (event.keyCode == 13) {
+        document.getElementById(btnId).click();
+    }
+}
+
 /**
  * Toggle the visibility of a triplet of components.
  *
