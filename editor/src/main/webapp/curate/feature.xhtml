@@ -69,7 +69,7 @@
                         </td>
                         <td>
                             <h:inputText id="shortlabelTxt" value="#{feature.shortLabel}" size="30"
-                                         validator="#{featureController.validateFeature}"
+                                         validator="#{featureController.validateFeature}" converter="trimmingConverter"
                                     required="true" requiredMessage="Shortlabel is required">
                                 <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo" execute="@this"
                                             listener="#{annotatedObjectController.changed}"/>
@@ -115,7 +115,7 @@
                 <p:tab title="Ranges (#{feature.ranges.size()})">
 
                     <div class="intact-buttonBar">
-                        <h:inputText id="newRangeTxt" value="#{featureController.newRangeValue}"/>
+                        <h:inputText id="newRangeTxt" value="#{featureController.newRangeValue}" converter="trimmingConverter"/>
                         <p:tooltip value="Type a range (e.g. '23-25') and then click the 'New Range' button" forElement="newRangeTxt" targetPosition="topRight" position="bottomLeft"/>
 
                         <p:commandButton value="New range" actionListener="#{featureController.newRange}" update="rangeTable messagesComponent"

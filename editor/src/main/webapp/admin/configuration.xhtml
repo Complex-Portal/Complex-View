@@ -30,7 +30,7 @@
         <p:panel id="defaultsPanel" header="Defaults">
             <h:panelGrid columns="2">
                 <h:outputLabel for="stoichiometryTxt" value="Stoichiometry: "/>
-                <h:inputText id="stoichiometryTxt" value="#{editorConfig.defaultStoichiometry}" size="3">
+                <h:inputText id="stoichiometryTxt" value="#{editorConfig.defaultStoichiometry}" size="3" converter="trimmingConverter">
                     <f:convertNumber/>
                 </h:inputText>
 
@@ -44,16 +44,16 @@
         <p:panel id="editorConfigPanel" header="Editor Configuration">
             <h:panelGrid columns="2">
                 <h:outputLabel for="instanceNameTxt" value="Instance name: "/>
-                <h:inputText id="instanceNameTxt" value="#{editorConfig.instanceName}"/>
+                <h:inputText id="instanceNameTxt" value="#{editorConfig.instanceName}" converter="trimmingConverter"/>
 
                 <h:outputLabel for="logoUrlTxt" value="Logo URL: "/>
-                <h:inputText id="logoUrlTxt" value="#{editorConfig.logoUrl}"/>
+                <h:inputText id="logoUrlTxt" value="#{editorConfig.logoUrl}" converter="trimmingConverter"/>
 
                 <h:outputLabel for="googleUserTxt" value="Google user (Reporting): "/>
-                <h:inputText id="googleUserTxt" value="#{editorConfig.googleUsername}"/>
+                <h:inputText id="googleUserTxt" value="#{editorConfig.googleUsername}" converter="trimmingConverter"/>
 
                 <h:outputLabel for="googlePassTxt" value="Google password: "/>
-                <h:inputText id="googlePassTxt" value="#{editorConfig.googlePassword}"/>
+                <h:inputText id="googlePassTxt" value="#{editorConfig.googlePassword}" converter="trimmingConverter"/>
 
             </h:panelGrid>
 
@@ -65,10 +65,10 @@
         <p:panel id="intactCorePanel" header="IntAct Core Configuration">
             <h:panelGrid columns="2">
                 <h:outputLabel for="acPrefixTxt" value="AC prefix: "/>
-                <h:inputText id="acPrefixTxt" value="#{intactConfig.acPrefix}"/>
+                <h:inputText id="acPrefixTxt" value="#{intactConfig.acPrefix}" converter="trimmingConverter"/>
 
                 <h:outputLabel for="cvPrefixTxt" value="Local CV prefix: "/>
-                <h:inputText id="cvPrefixTxt" value="#{intactConfig.localCvPrefix}"/>
+                <h:inputText id="cvPrefixTxt" value="#{intactConfig.localCvPrefix}" converter="trimmingConverter"/>
 
                 <h:outputLabel for="institutionSel" value="Default institution: "/>
                 <h:selectOneMenu id="institutionSel" value="#{intactConfig.defaultInstitution}">

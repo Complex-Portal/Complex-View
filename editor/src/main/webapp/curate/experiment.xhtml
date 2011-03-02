@@ -94,7 +94,7 @@
                             </td>
                             <td>
                                 <h:inputText id="shortLabelTxt" value="#{experimentController.experiment.shortLabel}" size="20"
-                                             validator="#{annotatedObjectController.validateAnnotatedObject}"
+                                             validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                                         required="true" requiredMessage="Short label is required">
                                     <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo" execute="@this"
                                             listener="#{experimentController.changed}"/>
@@ -176,7 +176,7 @@
                   modal="true" position="center">
             <h:panelGrid columns="3" style="margin-bottom:10px">
                     <h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>
-                    <h:inputTextarea id="reasonRejTxt" value="#{experimentController.reasonForRejection}" rows="4" cols="60"/>
+                    <h:inputTextarea id="reasonRejTxt" value="#{experimentController.reasonForRejection}" rows="4" cols="60" converter="trimmingConverter"/>
 
                     <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
                                      process="reasonRejTxt"
@@ -190,7 +190,7 @@
                   modal="true" position="center">
             <h:panelGrid columns="3" style="margin-bottom:10px">
                     <h:outputLabel for="pubToMove" value="Publication AC or PMID:"/>
-                    <h:inputText id="pubToMove" value="#{experimentController.publicationToMoveTo}"/>
+                    <h:inputText id="pubToMove" value="#{experimentController.publicationToMoveTo}" converter="trimmingConverter"/>
 
                     <p:commandButton value="Move" action="#{experimentController.moveToPublication}"
                                      process="pubToMove"

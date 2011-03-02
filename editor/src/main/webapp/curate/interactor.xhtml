@@ -69,11 +69,11 @@
                     <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                     <h:inputText id="shortlabelTxt" value="#{interactor.shortLabel}" size="30"
                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
-                                 required="true" requiredMessage="Shortlabel is required"/>
+                                 required="true" requiredMessage="Shortlabel is required" converter="trimmingConverter"/>
 
                     <h:outputLabel value="Fullname: " for="fullnameTxt"/>
                     <h:inputText id="fullnameTxt" value="#{interactor.fullName}" size="80"
-                                    onchange="markAsUnsaved()"/>
+                                    onchange="markAsUnsaved()" converter="trimmingConverter"/>
 
                     <h:outputLabel value="Organism: " for="organismTxt"/>
                     <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
@@ -95,7 +95,7 @@
 
                     <h:outputLabel value="Sequence: " for="sequenceTxt"/>
                     <h:inputTextarea id="sequenceTxt" value="#{interactorController.sequence}"
-                                     rows="5" cols="100">
+                                     rows="5" cols="100" converter="trimmingConverter">
                         <!--<f:ajax event="keyup" listener="#{interactorController.cleanSequence}" execute="sequenceTxt"-->
                                 <!--render="basic messagesComponent"/>-->
                     </h:inputTextarea>

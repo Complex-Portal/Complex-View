@@ -140,6 +140,7 @@
                                     <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
                                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
                                                  size="10" onkeyup="enableAutocomplete()"
+                                                 converter="trimmingConverter"
                                                  required="true" requiredMessage="Identifier is required">
                                         <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:publicationTabs"
                                                 execute="@this" listener="#{publicationController.changed}"/>
@@ -175,7 +176,8 @@
                                     <h:outputLabel value="Title: " for="titleTxt"/>
                                 </td>
                                 <td colspan="2">
-                                    <h:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1">
+                                    <h:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1"
+                                            converter="trimmingConverter">
                                         <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                                 execute="@this" listener="#{publicationController.changed}"/>
                                     </h:inputTextarea>
@@ -201,7 +203,7 @@
                                     <h:outputLabel value="Contact email: " for="contactTxt"/>
                                 </td>
                                 <td colspan="3">
-                                    <h:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50">
+                                    <h:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50" converter="trimmingConverter">
                                         <!--<p:ajax event="valueChange" update="publicationTabs unsavedChangesInfo changesPanel" process="@this"-->
                                                 <!--listener="#{publicationController.changed}"/>-->
                                         <!--<f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:unsavedChangesInfo :editorForm:changesPanel"-->
@@ -257,7 +259,7 @@
                                 </td>
                                 <td colspan="3">
                                     <h:panelGroup>
-                                        <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70">
+                                        <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70" converter="trimmingConverter">
                                             <f:ajax event="valueChange" render=":editorForm:publicationTabs :editorForm:infoPanels :editorForm:changesPanel"
                                                     execute="@this" listener="#{publicationController.changed}"/>
                                         </h:inputText>
@@ -324,7 +326,7 @@
                   modal="true" position="center">
             <h:panelGrid columns="3" style="margin-bottom:10px">
                     <h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>
-                    <h:inputTextarea id="reasonRejTxt" value="#{publicationController.reasonForRejection}" rows="4" cols="60"/>
+                    <h:inputTextarea id="reasonRejTxt" value="#{publicationController.reasonForRejection}" rows="4" cols="60" converter="trimmingConverter"/>
 
                     <p:commandButton value="Reject" actionListener="#{publicationController.rejectPublication}"
                                      process="reasonRejTxt"

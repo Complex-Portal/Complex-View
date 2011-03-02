@@ -24,7 +24,7 @@
             <h:panelGroup>
                 <h:outputLabel for="newPmid" value="PMID:"/>
 
-                <h:inputText id="newPmid" value="#{publicationController.identifierToImport}">
+                <h:inputText id="newPmid" value="#{publicationController.identifierToImport}" converter="trimmingConverter">
                     <p:tooltip value="Type a PMID and click on auto-complete" showDelay="2000"
                                showEvent="focus" hideEvent="blur" position="topRight"/>
                 </h:inputText>
@@ -55,7 +55,7 @@
         <h:panelGrid id="openAcContent" columns="1" style="margin-bottom:10px">
             <h:panelGroup>
                 <h:outputLabel for="openAc" value="AC:"/>
-                <h:inputText id="openAc" value="#{curateController.acToOpen}"/>
+                <h:inputText id="openAc" value="#{curateController.acToOpen}" converter="trimmingConverter"/>
 
                 <p:commandButton value="Open"
                                  process="openAc"
@@ -73,7 +73,7 @@
         <h:panelGrid id="openPmidContent" columns="1" style="margin-bottom:10px">
             <h:panelGroup>
                 <h:outputLabel for="openPmid" value="PMID:"/>
-                <h:inputText id="openPmid" value="#{publicationController.identifierToOpen}"/>
+                <h:inputText id="openPmid" value="#{publicationController.identifierToOpen}" converter="trimmingConverter"/>
 
                 <p:commandButton value="Open" actionListener="#{publicationController.openByPmid}"
                                  process="openPmid"

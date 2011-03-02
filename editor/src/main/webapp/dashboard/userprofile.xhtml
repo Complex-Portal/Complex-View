@@ -24,13 +24,13 @@
             <p:inputText id="usernameTxt" value="#{userProfileController.user.login}" readonly="true"/>
 
             <h:outputLabel for="firstTxt" value="First name: "/>
-            <p:inputText id="firstTxt" value="#{userProfileController.user.firstName}"/>
+            <p:inputText id="firstTxt" value="#{userProfileController.user.firstName}" converter="trimmingConverter"/>
 
             <h:outputLabel for="lastTxt" value="Last name: "/>
-            <p:inputText id="lastTxt" value="#{userProfileController.user.lastName}"/>
+            <p:inputText id="lastTxt" value="#{userProfileController.user.lastName}" converter="trimmingConverter"/>
 
             <h:outputLabel for="emailTxt" value="Email: "/>
-            <p:inputText id="emailTxt" value="#{userProfileController.user.email}"  size="40"/>
+            <p:inputText id="emailTxt" value="#{userProfileController.user.email}"  size="40" converter="trimmingConverter"/>
 
             <h:outputLabel value="Default curation depth:"/>
             <h:selectOneMenu value="#{userProfileController.curationDepth}" >
@@ -40,7 +40,7 @@
             </h:selectOneMenu>
 
             <h:outputLabel for="guTxt" value="Google username: "/>
-            <p:inputText id="guTxt" value="#{userProfileController.googleUsername}" size="40"/>
+            <p:inputText id="guTxt" value="#{userProfileController.googleUsername}" size="40" converter="trimmingConverter"/>
 
         </h:panelGrid>
 

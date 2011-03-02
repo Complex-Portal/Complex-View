@@ -53,6 +53,7 @@
                         <td>
                             <h:inputText id="shortlabelTxt" value="#{cvObjectController.cvObject.shortLabel}" size="30"
                                          validator="#{annotatedObjectController.validateAnnotatedObject}"
+                                         converter="trimmingConverter"
                                          required="true" requiredMessage="Shortlabel is required"
                                          onchange="markAsUnsaved()"/>
                         </td>
@@ -68,7 +69,7 @@
                         </td>
                         <td colspan="2">
                             <h:inputText id="fullnameTxt" value="#{cvObjectController.cvObject.fullName}" size="80"
-                                         onchange="markAsUnsaved()"/>
+                                         onchange="markAsUnsaved()" converter="trimmingConverter"/>
                         </td>
                     </tr>
                      <tr>

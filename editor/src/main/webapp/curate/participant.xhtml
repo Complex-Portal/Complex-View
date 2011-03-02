@@ -89,7 +89,7 @@
                             <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" >
+                            <h:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" converter="trimmingConverter">
                                 <f:ajax event="valueChange" execute="@this"
                                             listener="#{annotatedObjectController.changed}"/>
                              </h:inputText>

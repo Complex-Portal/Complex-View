@@ -49,7 +49,7 @@
                 <f:facet name="header">
                     <h:outputText value="Value"/>
                 </f:facet>
-                     <h:inputText value="#{confidence.value}" required="true" requiredMessage="Confidence value is required">
+                     <h:inputText value="#{confidence.value}" required="true" requiredMessage="Confidence value is required" converter="trimmingConverter">
                         <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>

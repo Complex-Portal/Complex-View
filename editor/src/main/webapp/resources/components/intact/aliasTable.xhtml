@@ -49,13 +49,13 @@
                 <f:facet name="header">
                     <h:outputText value="Name"/>
                 </f:facet>
-                     <h:inputText value="#{alias.name}" size="50" rendered="#{alias.name != null}">
+                     <h:inputText value="#{alias.name}" size="50" rendered="#{alias.name != null}" converter="trimmingConverter">
                         <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
                 <h:inputText value="#{alias.name}" size="50" rendered="#{alias.name == null}"
-                        required="true" requiredMessage="Alias names are required">
+                        required="true" requiredMessage="Alias names are required" converter="trimmingConverter">
                         <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>

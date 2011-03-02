@@ -52,7 +52,7 @@
                             <h:inputText value="#{xref.primaryId}" size="15">
                                 <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender} validityPanel databaseSel secondaryTxt qualifierSel" execute="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
-                                        listener="#{annotatedObjectController.xrefChanged}"/>
+                                        listener="#{annotatedObjectController.xrefChanged}" converter="trimmingConverter"/>
                             </h:inputText>
 
                             <h:panelGroup id="validityPanel">
@@ -87,7 +87,7 @@
                             <f:facet name="header">
                                 <h:outputText value="Secondary"/>
                             </f:facet>
-                            <h:inputText id="secondaryTxt" value="#{xref.secondaryId}" size="15">
+                            <h:inputText id="secondaryTxt" value="#{xref.secondaryId}" size="15" converter="trimmingConverter">
                                 <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
@@ -108,7 +108,7 @@
                             <f:facet name="header">
                                 <h:outputText value="Version"/>
                             </f:facet>
-                            <h:inputText value="#{xref.dbRelease}" size="5">
+                            <h:inputText value="#{xref.dbRelease}" size="5" converter="trimmingConverter">
                                 <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>

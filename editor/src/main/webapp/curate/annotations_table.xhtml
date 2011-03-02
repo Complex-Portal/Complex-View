@@ -49,8 +49,8 @@
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                     <h:inputTextarea value="#{annotation.annotationText}" cols="50"
-                             rows="#{(fn:length(annotation.annotationText) / 50)+1}">
+                   <h:inputTextarea value="#{annotation.annotationText}" cols="50" rows="#{(fn:length(annotation.annotationText) / 50)+1}"
+                             converter="trimmingConverter">
                          <f:ajax event="valueChange" render="#{valueChangeRender} @this" execute="@this"
                                         disabled="#{valueChangeAwareObject == null}"
                                         listener="#{valueChangeAwareObject.changed}"/>

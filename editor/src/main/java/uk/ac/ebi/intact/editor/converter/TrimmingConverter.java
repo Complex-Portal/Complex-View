@@ -15,10 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.converter;
 
-import uk.ac.ebi.intact.model.CvObject;
-
-import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
@@ -29,16 +27,23 @@ import javax.faces.convert.FacesConverter;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@FacesConverter( value = "trimmingConverter", forClass = String.class )
+@FacesConverter( value = "trimmingConverter" )
 public class TrimmingConverter implements Converter {
 
     public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-        if (value == null) return "";
+        if (value == null) return null;
 
-        return value.trim();
+        if (component instanceof UIInput) {
+            return value.trim();
+        }
+
+//        System.out.println("VALUE: "+value);
+
+        return value;
     }
 
     public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
+//        System.out.println("OBJECT: "+value);
         return (value == null)? null : value.toString();
     }
 
