@@ -37,14 +37,12 @@ public class TrimmingConverter implements Converter {
             return value.trim();
         }
 
-//        System.out.println("VALUE: "+value);
 
         return value;
     }
 
     public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
-//        System.out.println("OBJECT: "+value);
-        return (value == null)? null : value.toString();
+        return (value == null)? "" : value.toString();
     }
 
 }
