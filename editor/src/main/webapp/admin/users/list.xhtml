@@ -8,11 +8,13 @@
 
                 template="/admin/admin_template.xhtml">
 
-    <ui:define name="adminContent">
-
+    <ui:define name="metadata">
         <f:metadata>
-          <f:event type="preRenderView" listener="#{userAdminController.loadData}"/>
+            <f:event type="preRenderView" listener="#{userAdminController.loadData}"/>
         </f:metadata>
+    </ui:define>
+
+    <ui:define name="adminContent">
 
         <h3>Users (#{userAdminController.allUsers.rowCount})</h3>
 

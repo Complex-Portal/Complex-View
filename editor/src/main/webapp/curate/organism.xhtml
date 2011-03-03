@@ -11,12 +11,15 @@
 
     <ui:param name="annotatedObjectController" value="#{bioSourceController}"/>
 
-    <ui:define name="curateContent">
+    <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="ac" value="#{bioSourceController.ac}"/>
             <f:event type="preRenderView" listener="#{bioSourceController.loadData}"/>
             <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(bioSourceController)}"/>
         </f:metadata>
+    </ui:define>
+
+    <ui:define name="curateContent">
 
         <h:panelGroup rendered="#{bioSourceController.bioSource == null}">
             No Organism loaded!

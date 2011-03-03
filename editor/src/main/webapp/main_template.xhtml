@@ -8,6 +8,8 @@
 
 <f:view contentType="text/html">
 
+    <ui:insert name="metadata"/>
+
     <h:head>
         <title>#{title != null? title : 'Editor'}</title>
         <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>

@@ -5,6 +5,14 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui">
 
     <f:view contentType="text/html">
+        <f:metadata>
+            <f:viewParam name="identifier" value="#{inputCvObjectController.id}"/>
+            <f:viewParam name="className" value="#{inputCvObjectController.cvClass}"/>
+            <f:viewParam name="visible" value="#{inputCvObjectController.visible}"/>
+            <f:viewParam name="dialogId" value="#{inputCvObjectController.dialogId}"/>
+            <f:event type="preRenderView" listener="#{inputCvObjectController.load}"/>
+        </f:metadata>
+
         <h:head>
             <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>
             <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css"></link>
@@ -12,13 +20,6 @@
         </h:head>
         <h:body>
             <h:form>
-            <f:metadata>
-                <f:viewParam name="identifier" value="#{inputCvObjectController.id}"/>
-                <f:viewParam name="className" value="#{inputCvObjectController.cvClass}"/>
-                <f:viewParam name="visible" value="#{inputCvObjectController.visible}"/>
-                <f:viewParam name="dialogId" value="#{inputCvObjectController.dialogId}"/>
-                <f:event type="preRenderView" listener="#{inputCvObjectController.load}"/>
-            </f:metadata>
 
                 <h:panelGroup rendered="#{inputCvObjectController.visible}">
 

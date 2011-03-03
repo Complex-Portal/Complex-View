@@ -6,16 +6,18 @@
 
                 template="/admin/admin_template.xhtml">
 
-    <ui:define name="adminContent">
-
-        <h:outputScript name="javascript/security/sha1.js" target="head"/>
-
-        <f:metadata>
+    <ui:define name="metadata">
+         <f:metadata>
             <f:viewParam name="login" value="#{userAdminController.loginParam}"/>
 
             <f:event type="preRenderView" listener="#{userAdminController.loadUserToUpdate}"/>
             <f:event type="preRenderView" listener="#{userAdminController.loadRoles}"/>
         </f:metadata>
+    </ui:define>
+
+    <ui:define name="adminContent">
+
+        <h:outputScript name="javascript/security/sha1.js" target="head"/>
 
         <!-- Field in which the hashed password gets stored -->
         <h:inputHidden id="editUser_passwordHash" value="#{userAdminController.user.password}" />

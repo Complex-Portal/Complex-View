@@ -15,12 +15,14 @@
         </ui:include>
     </ui:define>
 
-    <ui:define name="content">
-        <h:outputScript name="intact.js" library="javascript" target="head"/>
-
+    <ui:define name="metadata">
         <f:metadata>
-          <f:event type="preRenderView" listener="#{myNotesController.loadPage}"/>
+            <f:event type="preRenderView" listener="#{myNotesController.loadPage}"/>
         </f:metadata>
+    </ui:define>
+
+        <ui:define name="content">
+        <h:outputScript name="intact.js" library="javascript" target="head"/>
 
         <h:panelGroup id="notesPanel">
 

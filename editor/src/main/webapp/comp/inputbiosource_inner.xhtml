@@ -5,6 +5,11 @@
                 xmlns:p="http://primefaces.prime.com.tr/ui">
 
     <f:view contentType="text/html">
+        <f:metadata>
+            <f:viewParam name="dialogId" value="#{inputBioSourceController.dialogId}"/>
+            <f:event type="preRenderView" listener="#{inputBioSourceController.loadBioSources}"/>
+        </f:metadata>
+
         <h:head>
             <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>
             <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css"></link>
@@ -12,10 +17,6 @@
         <h:body>
             <h:form prependId="false">
 
-            <f:metadata>
-                <f:viewParam name="dialogId" value="#{inputBioSourceController.dialogId}"/>
-                <f:event type="preRenderView" listener="#{inputBioSourceController.loadBioSources}"/>
-            </f:metadata>
 
                  <p:outputPanel id="bioSourceBrowserPanel">
 

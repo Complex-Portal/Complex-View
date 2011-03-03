@@ -11,13 +11,16 @@
 
     <ui:param name="annotatedObjectController" value="#{cvObjectController}"/>
 
-    <ui:define name="curateContent">
+    <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="ac" value="#{cvObjectController.ac}"/>
             <f:viewParam name="class" value="#{cvObjectController.cvClassName}"/>
             <f:event type="preRenderView" listener="#{cvObjectController.loadData}"/>
             <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(cvObjectController)}"/>
         </f:metadata>
+    </ui:define>
+
+    <ui:define name="curateContent">
 
         <h:panelGroup rendered="#{cvObjectController.cvObject == null}">
             No CV Object loaded!

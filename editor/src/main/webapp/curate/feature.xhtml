@@ -17,6 +17,14 @@
     <ui:param name="experiment" value="#{experimentController.experiment}" />
     <ui:param name="publication" value="#{publicationController.publication}" />
 
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="ac" value="#{featureController.ac}"/>
+            <f:event type="preRenderView" listener="#{featureController.loadData}"/>
+            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(featureController)}"/>
+        </f:metadata>
+    </ui:define>
+
     <ui:define name="breadcrumbs">
         <p:breadCrumb>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publication.shortLabel}"
@@ -34,11 +42,6 @@
     </ui:define>
 
     <ui:define name="curateContent">
-        <f:metadata>
-            <f:viewParam name="ac" value="#{featureController.ac}"/>
-            <f:event type="preRenderView" listener="#{featureController.loadData}"/>
-            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(featureController)}"/>
-        </f:metadata>
 
         <h:panelGroup rendered="#{feature == null}">
             No feature loaded!
