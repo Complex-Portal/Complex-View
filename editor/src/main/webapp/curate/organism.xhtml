@@ -6,6 +6,7 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
 
                 template="/curate/curate_template.xhtml">
 
@@ -47,7 +48,8 @@
                     <h:panelGroup>
                     <h:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()" converter="trimmingConverter"
                                  required="true" requiredMessage="Tax ID is required">
-                        <f:ajax event="valueChange" render="organismTabs"/>
+                        <ed:ajax event="keyup" update="organismTabs"
+                                beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"/>
                     </h:inputText>
 
                         <p:commandButton id="autoFillBtn" value="Auto-fill" actionListener="#{bioSourceController.autoFill}"

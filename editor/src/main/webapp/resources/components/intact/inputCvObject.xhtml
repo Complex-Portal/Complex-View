@@ -6,20 +6,24 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
   <composite:interface>
-      <composite:attribute name="value" type="uk.ac.ebi.intact.model.CvObject" required="true" />
+      <composite:attribute name="beforeTimeoutEvent" default=""/>
       <composite:attribute name="cvIdentifier" required="true" shortDescription="Identifier of the CvObject"/>
-      <composite:attribute name="size" default="30"/>
-      <composite:attribute name="required" default="false"/>
       <composite:attribute name="immediate" default="false"/>
+      <composite:attribute name="modal" type="java.lang.Boolean" default="true"/>
+      <composite:attribute name="oncomplete"/>
+      <composite:attribute name="required" default="false"/>
       <composite:attribute name="requiredMessage"/>
       <composite:attribute name="selectItems" required="true"/>
-      <composite:attribute name="valueChangeRender"/>
+      <composite:attribute name="size" default="30"/>
+      <composite:attribute name="timeout" default="0"/>
+      <composite:attribute name="update"/>
+      <composite:attribute name="value" type="uk.ac.ebi.intact.model.CvObject" required="true" />
       <composite:attribute name="valueChangeAwareObject" type="uk.ac.ebi.intact.editor.controller.curate.ValueChangeAware"/>
-      <composite:attribute name="modal" type="java.lang.Boolean" default="true"/>
   </composite:interface>
 
     <!-- IMPLEMENTATION -->
@@ -42,7 +46,8 @@
                                  required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}"
                                  immediate="#{cc.attrs.immediate}" onchange="markAsUnsaved()">
                     <f:selectItems value="#{cc.attrs.selectItems}"/>
-                    <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender} editBtn" execute="@this"
+                    <ed:ajax event="valueChange" update="#{cc.attrs.update} editBtn" process="@this"
+                             timeout="#{cc.attrs.timeout}" beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </h:selectOneMenu>

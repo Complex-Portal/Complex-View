@@ -5,6 +5,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
@@ -52,7 +53,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.factor}" required="true" requiredMessage="Parameter value is required">
                          <f:convertNumber/>
-                        <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
+                        <ed:ajax event="keyup" render="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
@@ -75,7 +76,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.base}">
                          <f:convertNumber/>
-                        <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
+                        <ed:ajax event="keyup" render="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
@@ -86,7 +87,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.exponent}">
                          <f:convertNumber/>
-                        <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
+                        <ed:ajax event="keyup" render="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
@@ -97,7 +98,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.uncertainty}">
                          <f:convertNumber/>
-                        <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
+                        <ed:ajax event="keyup" render="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>

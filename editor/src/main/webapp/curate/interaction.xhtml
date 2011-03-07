@@ -6,6 +6,7 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
 
                 template="/curate/curate_template.xhtml">
 
@@ -72,7 +73,8 @@
                             <h:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"
                                          validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                                     required="true" requiredMessage="Shortlabel is required">
-                                <f:ajax event="valueChange" execute="@this" onevent="markAsUnsaved()"/>
+                                <ed:ajax event="keyup" process="@this" onevent="markAsUnsaved()"
+                                        beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"/>
                             </h:inputText>
                         </td>
                         <td style="padding-left: 50px;">
@@ -94,7 +96,8 @@
                                               value="#{interaction.cvInteractionType}"
                                               selectItems="#{cvObjectService.interactionTypeSelectItems}"
                                               required="true" requiredMessage="Interaction type is required"
-                                              valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                              beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                                              update="changesPanel unsavedChangesInfo"
                                               valueChangeAwareObject="#{experimentController}"/>
                         </td>
                     </tr>

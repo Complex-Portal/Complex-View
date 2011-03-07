@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+		version="2.0">
+	<namespace>http://ebi.ac.uk/intact/editor/ui</namespace>
+
+    <tag>
+        <description>
+            Custom AjaxBehavior, with a delay
+        </description>
+
+        <tag-name>ajax</tag-name>
+
+        <behavior>
+            <behavior-id>uk.ac.ebi.intact.editor.component.DelayedAjaxBehavior</behavior-id>
+            <handler-class>uk.ac.ebi.intact.editor.component.DelayedAjaxBehaviorHandler</handler-class>
+        </behavior>
+
+        <!--<handler-class>uk.ac.ebi.intact.editor.component.DelayedAjaxBehaviorHandler</handler-class>-->
+
+        <attribute>
+            <description>
+                Timeout for the delay
+            </description>
+            <name>timeout</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                Javascript to be run before the timeout
+            </description>
+            <name>beforeTimeoutEvent</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+
+        <attribute>
+			<description></description>
+			<name>listener</name>
+			<required>false</required>
+			<type>javax.el.MethodExpression</type>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>immediate</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>async</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>process</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>update</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>onstart</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>oncomplete</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>onerror</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>onsuccess</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>global</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+        <attribute>
+			<description></description>
+			<name>disabled</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+        <attribute>
+			<description></description>
+			<name>event</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+    </tag>
+
+
+    </facelet-taglib>

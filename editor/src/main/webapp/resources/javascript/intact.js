@@ -95,3 +95,21 @@ function ia_selectById(id) {
 function ia_select(e) {
    e.select();
 }
+
+function ia_disableButton(id, innerHTML) {
+    var e = document.getElementById(id);
+
+    if(e != null) {
+        e.disabled = true;
+        e.innerHTML = innerHTML;
+    }
+}
+
+function ia_enableButton(id, innerHTML) {
+    var e = document.getElementById(id);
+
+    if(e != null) {
+        e.disabled = false;
+        e.innerHTML = innerHTML;
+    }
+}

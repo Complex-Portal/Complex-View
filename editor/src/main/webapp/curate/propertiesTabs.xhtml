@@ -12,6 +12,7 @@
         <ia:xrefsTable annotatedObjectController="#{annotatedObjectController}"
                        databaseSelectItems="#{cvObjectService.databaseSelectItems}"
                        qualifierSelectItems="#{cvObjectService.qualifierSelectItems}"
+                       beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                        update="xrefsPanel changesPanel unsavedChangesInfo messagesComponent #{updateOnChange}"
                        valueChangeRender="#{updateOnChange} :editorForm:changesPanel"
                        valueChangeAwareObject="#{annotatedObjectController}"/>
@@ -41,6 +42,7 @@
          <h:panelGroup id="aliasesPanel">
             <ia:aliasTable annotatedObjectController="#{annotatedObjectController}"
                            aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
+                           beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                            update="aliasesPanel changesPanel unsavedChangesInfo messagesComponent #{updateOnChange}"
                            valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                            valueChangeAwareObject="#{annotatedObjectController}"/>

@@ -6,6 +6,7 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
 
                 template="/curate/curate_template.xhtml">
 
@@ -99,8 +100,9 @@
                                 <h:inputText id="shortLabelTxt" value="#{experimentController.experiment.shortLabel}" size="20"
                                              validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                                         required="true" requiredMessage="Short label is required">
-                                    <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo" execute="@this"
-                                            listener="#{experimentController.changed}"/>
+                                    <ed:ajax event="keyup" update="changesPanel unsavedChangesInfo" process="@this"
+                                             beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                                            listener="#{experimentController.changed()}"/>
                                 </h:inputText>
                             </td>
                             <td style="padding-left: 50px;" colspan="2">
@@ -117,7 +119,8 @@
                                 <ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"
                                     selectItems="#{bioSourceService.bioSourceSelectItems}"
                                     required="true" requiredMessage="Host organism is required"
-                                    valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                     beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                                    update="changesPanel unsavedChangesInfo"
                                     valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
@@ -129,8 +132,9 @@
                                 <ia:inputCvObject id="detMethodTxt" value="#{experimentController.experiment.cvInteraction}"
                                                   selectItems="#{cvObjectService.interactionDetectionMethodSelectItems}"
                                                   cvIdentifier="MI:0001"
+                                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                   required="true" requiredMessage="Interaction detection method is required"
-                                                  valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                                  update="changesPanel unsavedChangesInfo"
                                                   valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
@@ -140,8 +144,9 @@
                                 <ia:inputCvObject id="partDetMethodTxt" value="#{experimentController.experiment.cvIdentification}"
                                                   selectItems="#{cvObjectService.participantDetectionMethodSelectItems}"
                                                   cvIdentifier="MI:0002"
+                                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                   required="true" requiredMessage="Interaction detection method is required"
-                                                  valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                                  update="changesPanel unsavedChangesInfo"
                                                   valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>

@@ -278,6 +278,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public void changed() {
         setUnsavedChanges(true);
     }
+
+    public void changed(ActionEvent evt) {
+        setUnsavedChanges(true);
+    }
     
     @Override
     public void changed(AjaxBehaviorEvent evt) {
@@ -338,6 +342,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     // XREFS
     ///////////////////////////////////////////////
+    public void xrefChanged() {
+        xrefChanged(null);
+    }
+
     public void xrefChanged(AjaxBehaviorEvent evt) {
         changed(evt);
 
@@ -347,8 +355,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         for (Xref xref : getXrefs()) {
             if (xref.getPrimaryId() != null &&
-                   xref.getPrimaryId().startsWith("go:") ||
-                   xref.getPrimaryId().startsWith("GO:")) {
+                   (xref.getPrimaryId().startsWith("go:") ||
+                   xref.getPrimaryId().startsWith("GO:"))) {
 
                 xref.setPrimaryId(xref.getPrimaryId().toUpperCase());
 

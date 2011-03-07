@@ -5,7 +5,8 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
-                xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui">
 
 
         <div class="intact-buttonBar">
@@ -51,7 +52,8 @@
                 </f:facet>
                    <h:inputTextarea value="#{annotation.annotationText}" cols="50" rows="#{(fn:length(annotation.annotationText) / 50)+1}"
                              converter="trimmingConverter">
-                         <f:ajax event="valueChange" render="#{valueChangeRender} @this" execute="@this"
+                         <ed:ajax event="keyup" update="#{update} @this" process="@this"
+                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                         disabled="#{valueChangeAwareObject == null}"
                                         listener="#{valueChangeAwareObject.changed}"/>
                     </h:inputTextarea>

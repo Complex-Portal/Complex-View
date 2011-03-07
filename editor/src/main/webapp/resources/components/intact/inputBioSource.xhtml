@@ -6,18 +6,22 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
     <composite:interface>
-        <composite:attribute name="value" type="uk.ac.ebi.intact.model.BioSource" required="true"/>
-        <composite:attribute name="size" default="30"/>
+        <composite:attribute name="beforeTimeoutEvent" default=""/>
+        <composite:attribute name="modal" type="java.lang.Boolean" default="true"/>
+        <composite:attribute name="oncomplete" default=""/>
         <composite:attribute name="selectItems" required="true"/>
+        <composite:attribute name="size" default="30"/>
+        <composite:attribute name="timeout" default="0"/>
+        <composite:attribute name="update"/>
         <composite:attribute name="required" default="false"/>
         <composite:attribute name="requiredMessage"/>
-        <composite:attribute name="valueChangeRender"/>
+        <composite:attribute name="value" type="uk.ac.ebi.intact.model.BioSource" required="true"/>
         <composite:attribute name="valueChangeAwareObject" type="uk.ac.ebi.intact.editor.controller.curate.ValueChangeAware"/>
-        <composite:attribute name="modal" type="java.lang.Boolean" default="true"/>
     </composite:interface>
 
     <!-- IMPLEMENTATION -->
@@ -41,6 +45,10 @@
             <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="bioSourceConverter"
                     required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}">
                 <f:selectItems value="#{cc.attrs.selectItems}"/>
+                <ed:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
+                             timeout="#{cc.attrs.timeout}" beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
+                        disabled="#{cc.attrs.valueChangeAwareObject == null}"
+                        listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
             </h:selectOneMenu>
 
             <p:commandButton id="selectBtn" value="Browse" style="visibility: hidden; display:none" onclick="#{dialogWidgetId}_ibs.browse(#{dialogWidgetId})"

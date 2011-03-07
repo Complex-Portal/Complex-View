@@ -80,6 +80,8 @@
 
                     <h:outputLabel value="Organism: " for="organismTxt"/>
                     <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
+                                       beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
+                                       update="changesPanel unsavedChangesInfo"
                                         selectItems="#{bioSourceService.bioSourceSelectItems}"/>
 
                     <h:outputLabel value="Type: " for="interactorTxt"/>
