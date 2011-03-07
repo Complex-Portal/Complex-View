@@ -17,6 +17,12 @@
 
             <p:commandButton value="Experiment Sync" actionListener="#{compatibilityController.launchExperimentSync}" update="messagesComponent"/>
             <h:outputText value="Copies the annotations from the publication to its experiment, updating the annotation if existed"/>
+
+            <p:commandButton value="CvObject Sync" actionListener="#{cvObjectService.refresh}" update="messagesComponent"/>
+            <h:outputText value="Updates the drop down lists for CvObjects if changes have been made externally"/>
+
+            <p:commandButton value="BioSource Sync" actionListener="#{bioSourceService.refresh}" update="messagesComponent"/>
+            <h:outputText value="Updates the drop down lists for organisms if changes have been made externally"/>
         </h:panelGrid>
 
     </ui:define>

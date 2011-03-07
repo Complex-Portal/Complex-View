@@ -90,6 +90,12 @@ public class BioSourceController extends AnnotatedObjectController {
         }
     }
 
+    @Override
+    public void doPostSave() {
+        BioSourceService bioSourceService = (BioSourceService) getSpringContext().getBean("bioSourceService");
+        bioSourceService.refresh(null);
+    }
+
     public String getAc() {
         return ac;
     }
