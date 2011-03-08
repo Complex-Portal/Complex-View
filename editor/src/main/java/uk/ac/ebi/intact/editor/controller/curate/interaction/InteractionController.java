@@ -279,7 +279,7 @@ public class InteractionController extends ParameterizableObjectController {
         return oldExp;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String newInteraction(Publication publication, Experiment exp) {
         Interaction interaction = new InteractionImpl();
         interaction.setOwner(getIntactContext().getInstitution());

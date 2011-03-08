@@ -631,6 +631,7 @@ public class PublicationController extends AnnotatedObjectController {
         setAnnotation(CURATION_DEPTH, curationDepth);
     }
 
+    @Transactional(readOnly = true)
     public boolean isAccepted() {
         Collection<Experiment> experiments = publication.getExperiments();
 
@@ -642,6 +643,7 @@ public class PublicationController extends AnnotatedObjectController {
         return ExperimentUtils.areAllAccepted(experiments);
     }
 
+    @Transactional(readOnly = true)
     public boolean isAccepted(Publication pub) {
         if (!Hibernate.isInitialized(pub.getExperiments())) {
             pub = getDaoFactory().getPublicationDao().getByAc(pub.getAc());
