@@ -23,6 +23,7 @@ import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
@@ -278,6 +279,7 @@ public class InteractionController extends ParameterizableObjectController {
         return oldExp;
     }
 
+    @Transactional
     public String newInteraction(Publication publication, Experiment exp) {
         Interaction interaction = new InteractionImpl();
         interaction.setOwner(getIntactContext().getInstitution());
@@ -292,8 +294,15 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         if (exp != null) {
-            experimentController.setExperiment(exp);
-            interaction.addExperiment(exp);
+
+            Experiment reloadedExp = exp;
+
+            if (!IntactCore.isInitialized(exp.getInteractions())) {
+                reloadedExp = getDaoFactory().getExperimentDao().getByAc(exp.getAc());
+            }
+
+            experimentController.setExperiment(reloadedExp);
+            interaction.addExperiment(reloadedExp);
         }
 
         refreshExperimentLists();
