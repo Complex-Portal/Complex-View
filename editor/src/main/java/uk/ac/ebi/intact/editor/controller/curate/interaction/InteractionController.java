@@ -105,6 +105,7 @@ public class InteractionController extends ParameterizableObjectController {
         this.experimentLists = experimentLists;
     }
 
+    @Transactional(readOnly = true)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if ( ac != null ) {
@@ -119,6 +120,8 @@ public class InteractionController extends ParameterizableObjectController {
                 addErrorMessage("No interaction with this AC", ac);
                 return;
             }
+
+             setInteraction(interaction);
 
             if ( interaction.getExperiments().isEmpty() ) {
                 addErrorMessage( "This interaction isn't attached to an experiment", "Please add one or delete it" );
