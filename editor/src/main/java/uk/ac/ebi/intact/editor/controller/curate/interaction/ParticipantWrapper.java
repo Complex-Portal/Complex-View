@@ -68,6 +68,7 @@ public class ParticipantWrapper {
 
     public void setFirstExperimentalPreparation( CvExperimentalPreparation prep ) {
             if( ! participant.getExperimentalPreparations().contains( prep ) ) {
+                participant.getExperimentalPreparations().clear();
                 participant.getExperimentalPreparations().add( prep );
             }
     }
