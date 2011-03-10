@@ -5,6 +5,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
     <h:panelGroup id="participantsTable">
@@ -78,8 +79,9 @@
                 <h:selectOneMenu id="expRoleTxt" value="#{wrapper.participant.cvExperimentalRole}" onchange="markAsUnsaved()"
                         rendered="#{value.size() lt 5}">
                         <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
-                    <f:ajax execute="@this" event="valueChange"
-                            listener="#{interactionController.updateShortLabel()}" render=":editorForm:shortlabelTxt"/>
+                    <ed:ajax process="@this" event="valueChange"
+                             timeout="0" beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                            listener="#{interactionController.updateShortLabel()}" update="shortlabelTxt"/>
                 </h:selectOneMenu>
                 <h:outputText value="#{wrapper.participant.cvExperimentalRole != null? wrapper.participant.cvExperimentalRole.shortLabel : ''}"
                         rendered="#{value.size() ge 5}"/>
@@ -128,44 +130,6 @@
                                rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
             </p:column>
-
-            <!--<f:facet name="expansion">-->
-                <!--<h:panelGroup>-->
-             <!--<h:panelGrid id="display" columns="6" cellpadding="4" style="width:600px"-->
-                           <!--columnClasses="label, value, label, value, label, value">-->
-
-                    <!--<h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>-->
-                    <!--<h:inputText id="acTxt" value="#{wrapper.participant.ac}"-->
-                                 <!--size="10" readonly="true" class="intact-disabled"/>-->
-
-                    <!--<h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>-->
-                    <!--<h:inputText id="authorGivenNameTxt" value="#{wrapper.authorGivenName}" size="10">-->
-                        <!--<f:ajax event="valueChange" listener="#{interactionController.changed}"/>-->
-                    <!--</h:inputText>-->
-
-                    <!--&lt;!&ndash;<h:outputLabel value="Delivery method: " for="deliveryInTxt"/>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<h:selectManyMenu id="deliveryInTxt" value="#{wrapper.participant.experimentalPreparations}"&ndash;&gt;-->
-                            <!--&lt;!&ndash;converter="cvObjectConverter">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<f:selectItems value="#{cvObjectService.participantExperimentalPreparationsSelectItems}" />&ndash;&gt;-->
-                    <!--&lt;!&ndash;</h:selectManyMenu>&ndash;&gt;-->
-
-                    <!--<h:outputLabel value="Delivery method: " for="deliveryInTxt"/>-->
-                    <!--<h:inputText id="deliveryInTxt" value="#{wrapper.firstExperimentalPreparation}"-->
-                                 <!--size="20" readonly="true" class="intact-disabled"/>-->
-
-                    <!--</h:panelGrid>-->
-
-                    <!--<h4>Features (#{wrapper.participant.bindingDomains.size()}):</h4>-->
-
-                    <!--<h:panelGroup rendered="#{not wrapper.participant.bindingDomains.isEmpty()}">-->
-                        <!--<ui:include src="features_table.xhtml">-->
-                            <!--<ui:param name="value" value="#{wrapper.participant.bindingDomains}"/>-->
-                        <!--</ui:include>-->
-                    <!--</h:panelGroup>-->
-
-                <!--</h:panelGroup>-->
-
-            <!--</f:facet>-->
 
         </p:dataTable>
 
