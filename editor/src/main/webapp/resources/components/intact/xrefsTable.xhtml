@@ -53,11 +53,11 @@
                                 <h:outputText value="Identifier"/>
                             </f:facet>
                             <h:panelGroup style="display:block; white-space:nowrap;">
-                            <h:inputText value="#{xref.primaryId}" size="15">
+                            <h:inputText value="#{xref.primaryId}" size="15" converter="trimmingConverter">
                                 <ed:ajax event="keyup" update="#{cc.attrs.update} validityPanel linkPanel databaseSel secondaryTxt qualifierSel" process="@this"
                                          beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
-                                        listener="#{annotatedObjectController.xrefChanged}" converter="trimmingConverter"/>
+                                        listener="#{annotatedObjectController.xrefChanged}"/>
                             </h:inputText>
 
                             <h:panelGroup id="validityPanel">
@@ -93,7 +93,7 @@
                                 <h:outputText value="Secondary"/>
                             </f:facet>
                             <h:inputText id="secondaryTxt" value="#{xref.secondaryId}" size="15" converter="trimmingConverter">
-                                <ed:ajax event="keyup" render="#{cc.attrs.update}" process="@this"
+                                <ed:ajax event="keyup" update="#{cc.attrs.update}" process="@this"
                                          beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
