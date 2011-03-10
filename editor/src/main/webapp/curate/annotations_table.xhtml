@@ -53,7 +53,11 @@
                    <h:inputTextarea value="#{annotation.annotationText}" cols="50" rows="#{(fn:length(annotation.annotationText) / 50)+1}"
                              converter="trimmingConverter">
                          <ed:ajax event="keyup" update="#{update} @this" process="@this"
-                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                                  timeout="5000" beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                                        disabled="#{valueChangeAwareObject == null}"
+                                        listener="#{valueChangeAwareObject.changed}"/>
+                       <ed:ajax event="valueChange" update="#{update} @this" process="@this"
+                                  timeout="0" beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                         disabled="#{valueChangeAwareObject == null}"
                                         listener="#{valueChangeAwareObject.changed}"/>
                     </h:inputTextarea>
