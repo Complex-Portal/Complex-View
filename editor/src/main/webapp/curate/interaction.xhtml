@@ -157,6 +157,7 @@
                            parameterTypeSelectItems="#{cvObjectService.parameterTypeSelectItems}"
                            parameterUnitSelectItems="#{cvObjectService.parameterUnitSelectItems}"
                            update="parametersPanel parametersTab changesPanel unsavedChangesInfo"
+                           beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                            valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                            valueChangeAwareObject="#{annotatedObjectController}"/>
                     </h:panelGroup>
@@ -169,6 +170,7 @@
                        <ia:confidencesTable annotatedObjectController="#{annotatedObjectController}"
                            confidenceTypeSelectItems="#{cvObjectService.confidenceTypeSelectItems}"
                            update="confidencesPanel confidencesTab changesPanel unsavedChangesInfo"
+                           beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                            valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                            valueChangeAwareObject="#{annotatedObjectController}"/>
                     </h:panelGroup>

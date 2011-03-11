@@ -14,7 +14,9 @@
       <composite:attribute name="annotatedObjectController"
                            type="uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController"
                            required="true"/>
+      <composite:attribute name="beforeTimeoutEvent" default=""/>
       <composite:attribute name="update"/>
+       <composite:attribute name="oncomplete"/>
       <composite:attribute name="parameterTypeSelectItems"/>
       <composite:attribute name="parameterUnitSelectItems"/>
       <composite:attribute name="style" default=""/>
@@ -53,7 +55,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.factor}" required="true" requiredMessage="Parameter value is required">
                          <f:convertNumber/>
-                        <ed:ajax event="keyup" render="#{cc.attrs.update}" process="@this"
+                        <ed:ajax event="keyup" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
@@ -64,7 +66,8 @@
                 </f:facet>
                 <h:selectOneMenu value="#{parameter.cvParameterUnit}" rendered="#{cc.attrs.parameterUnitSelectItems != null}">
                     <f:selectItems value="#{cc.attrs.parameterUnitSelectItems}"/>
-                    <f:ajax event="valueChange" render="#{cc.attrs.valueChangeRender}" execute="@this"
+                    <ed:ajax event="valueChange" update="#{cc.attrs.update}" execute="@this"
+                             timeout="0" beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </h:selectOneMenu>
@@ -76,7 +79,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.base}">
                          <f:convertNumber/>
-                        <ed:ajax event="keyup" render="#{cc.attrs.update}" process="@this"
+                        <ed:ajax event="keyup" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
@@ -87,7 +90,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.exponent}">
                          <f:convertNumber/>
-                        <ed:ajax event="keyup" render="#{cc.attrs.update}" process="@this"
+                        <ed:ajax event="keyup" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
@@ -98,7 +101,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.uncertainty}">
                          <f:convertNumber/>
-                        <ed:ajax event="keyup" render="#{cc.attrs.update}" process="@this"
+                        <ed:ajax event="keyup" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
