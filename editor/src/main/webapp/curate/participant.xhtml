@@ -94,7 +94,7 @@
                         </td>
                         <td colspan="2">
                             <h:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" converter="trimmingConverter">
-                                <ed:ajax event="keyup" process="@this"
+                                <ed:ajax event="valueChange" timeout="0" process="@this"
                                          beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                             listener="#{annotatedObjectController.changed}"/>
                              </h:inputText>

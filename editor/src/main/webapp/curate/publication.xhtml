@@ -145,7 +145,7 @@
                                                  size="10" onkeyup="enableAutocomplete()"
                                                  converter="trimmingConverter"
                                                  required="true" requiredMessage="Identifier is required">
-                                        <ed:ajax event="keyup" update="changesPanel unsavedChangesInfo publicationTabs"
+                                        <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo publicationTabs"
                                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                 process="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
@@ -182,7 +182,7 @@
                                 <td colspan="2">
                                     <h:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1"
                                             converter="trimmingConverter">
-                                        <ed:ajax event="keyup" update="changesPanel unsavedChangesInfo"
+                                        <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo"
                                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                 process="@this" listener="#{publicationController.changed}"/>
                                     </h:inputTextarea>
@@ -197,7 +197,7 @@
                                     <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4"
                                             validatorMessage="Year provided is invalid">
                                         <f:convertNumber maxFractionDigits="0" pattern="#" />
-                                         <ed:ajax event="keyup" update="changesPanel unsavedChangesInfo publicationTabs"
+                                         <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo publicationTabs"
                                                   beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                 process="@this" listener="#{publicationController.changed}"/>
                                     </h:inputText>
@@ -210,7 +210,7 @@
                                 </td>
                                 <td colspan="3">
                                     <h:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50" converter="trimmingConverter">
-                                        <ed:ajax event="keyup" update="publicationTabs unsavedChangesInfo changesPanel" process="@this"
+                                        <ed:ajax event="valueChange" timeout="0" update="publicationTabs unsavedChangesInfo changesPanel" process="@this"
                                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                 listener="#{publicationController.changed}"/>
                                     </h:inputText>
@@ -265,7 +265,7 @@
                                 <td colspan="3">
                                     <h:panelGroup>
                                         <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70" converter="trimmingConverter">
-                                            <ed:ajax event="keyup" update="publicationTabs infoPanels changesPanel"
+                                            <ed:ajax event="valueChange" timeout="0" update="publicationTabs infoPanels changesPanel"
                                                      beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                     process="@this" listener="#{publicationController.changed}"/>
                                         </h:inputText>

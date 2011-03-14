@@ -23,7 +23,7 @@
                 <h:panelGrid columns="1" >
                     <h:panelGroup>
                         <h:inputText id="biosourceQuery" value="#{inputBioSourceController.query}" converter="trimmingConverter">
-                            <!--<f:ajax event="keyup" render="bioSourceBrowserDialog" execute="@this"-->
+                            <!--<f:ajax event="valueChange" timeout="0" render="bioSourceBrowserDialog" execute="@this"-->
                                 <!--listener="#{cc.autoSearch}"/>-->
                         </h:inputText>
                         <p:commandButton value="Search" actionListener="#{inputBioSourceController.search}"

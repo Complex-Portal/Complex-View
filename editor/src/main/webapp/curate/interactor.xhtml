@@ -101,7 +101,7 @@
                     <h:outputLabel value="Sequence: " for="sequenceTxt"/>
                     <h:inputTextarea id="sequenceTxt" value="#{interactorController.sequence}"
                                      rows="5" cols="100" converter="trimmingConverter">
-                        <!--<f:ajax event="keyup" listener="#{interactorController.cleanSequence}" execute="sequenceTxt"-->
+                        <!--<f:ajax event="valueChange" timeout="0" listener="#{interactorController.cleanSequence}" execute="sequenceTxt"-->
                                 <!--render="basic messagesComponent"/>-->
                     </h:inputTextarea>
 

@@ -31,7 +31,7 @@
                                  readonly="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"
                                  styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
                                  style="font-family: monospace">
-                        <ed:ajax event="keyup" process="@this" onevent="markAsUnsaved()"
+                        <ed:ajax event="valueChange" timeout="0" process="@this" onevent="markAsUnsaved()"
                                 update="rangesTable messagesComponent"/>
                     </h:inputText>
 

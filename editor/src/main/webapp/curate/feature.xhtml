@@ -75,7 +75,7 @@
                             <h:inputText id="shortlabelTxt" value="#{feature.shortLabel}" size="30"
                                          validator="#{featureController.validateFeature}" converter="trimmingConverter"
                                     required="true" requiredMessage="Shortlabel is required">
-                                <ed:ajax event="keyup" render="changesPanel unsavedChangesInfo" process="@this"
+                                <ed:ajax event="valueChange" timeout="0" render="changesPanel unsavedChangesInfo" process="@this"
                                          beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                             listener="#{annotatedObjectController.changed}"/>
                             </h:inputText>

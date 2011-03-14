@@ -55,7 +55,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.factor}" required="true" requiredMessage="Parameter value is required">
                          <f:convertNumber/>
-                        <ed:ajax event="keyup" update="#{cc.attrs.update}" process="@this"
+                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
@@ -79,7 +79,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.base}">
                          <f:convertNumber/>
-                        <ed:ajax event="keyup" update="#{cc.attrs.update}" process="@this"
+                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
@@ -90,7 +90,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.exponent}">
                          <f:convertNumber/>
-                        <ed:ajax event="keyup" update="#{cc.attrs.update}" process="@this"
+                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>
@@ -101,7 +101,7 @@
                 </f:facet>
                      <h:inputText value="#{parameter.uncertainty}">
                          <f:convertNumber/>
-                        <ed:ajax event="keyup" update="#{cc.attrs.update}" process="@this"
+                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </h:inputText>

@@ -73,7 +73,7 @@
                             <h:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"
                                          validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                                     required="true" requiredMessage="Shortlabel is required">
-                                <ed:ajax event="keyup" process="@this" onevent="markAsUnsaved()"
+                                <ed:ajax event="valueChange" timeout="0" process="@this" onevent="markAsUnsaved()"
                                         beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"/>
                             </h:inputText>
                         </td>

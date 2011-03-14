@@ -48,7 +48,7 @@
                     <h:panelGroup>
                     <h:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()" converter="trimmingConverter"
                                  required="true" requiredMessage="Tax ID is required">
-                        <ed:ajax event="keyup" update="organismTabs"
+                        <ed:ajax event="valueChange" update="organismTabs"
                                 beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"/>
                     </h:inputText>
 
