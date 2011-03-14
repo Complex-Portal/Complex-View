@@ -109,7 +109,7 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
-    @Transactional(value = "core", propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void saveAll(ActionEvent actionEvent) {
 
         for (IntactObject intactObject : changesController.getAllUnsaved()) {
@@ -127,7 +127,7 @@ public class PersistenceController extends JpaAwareController {
 
     }
 
-    @Transactional(value = "core", propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void revertAll(ActionEvent actionEvent) {
         for (IntactObject intactObject : changesController.getAllUnsaved()) {
             doRevert(intactObject);

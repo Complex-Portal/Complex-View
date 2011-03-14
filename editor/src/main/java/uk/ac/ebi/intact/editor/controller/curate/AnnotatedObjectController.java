@@ -133,7 +133,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
      *
      * @param evt the action faces event
      */
-    @Transactional(value = "core", propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
 
@@ -254,7 +254,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     }
 
-    @Transactional(value = "core", propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void doRevertChanges( ActionEvent evt ) {
         PersistenceController persistenceController = getPersistenceController();
         setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
@@ -334,7 +334,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return new EditorIntactCloner();
     }
 
-    @Transactional(value = "core", propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public String doDelete() {
         PersistenceController persistenceController = getPersistenceController();
         persistenceController.doDelete(getAnnotatedObject());

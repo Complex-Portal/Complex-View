@@ -66,13 +66,13 @@ public class CurateController extends JpaAwareController {
         return edit(ao);
     }
 
-    @Transactional(value = "core", propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void save(IntactObject intactObject) {
         AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
         annotatedObjectController.doSave(null);
     }
 
-    @Transactional(value = "core", propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void discard(IntactObject intactObject) {
         changesController.removeFromUnsaved(intactObject);
 

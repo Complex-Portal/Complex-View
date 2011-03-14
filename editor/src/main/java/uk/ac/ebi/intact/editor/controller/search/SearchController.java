@@ -87,13 +87,13 @@ public class SearchController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional( value = "core", readOnly = true )
+    @Transactional( value = "transactionManager", readOnly = true )
     public String doQuickSearch() {
         this.query = quickQuery;
         return doSearch();
     }
 
-    @Transactional( value = "core", readOnly = true )
+    @Transactional( value = "transactionManager", readOnly = true )
     public String doSearch() {
 
         log.info( "Searching for '" + query + "'..." );

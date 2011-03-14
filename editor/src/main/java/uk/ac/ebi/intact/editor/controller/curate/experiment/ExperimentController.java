@@ -113,7 +113,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "core")
+    @Transactional(value = "transactionManager")
     public boolean doSaveDetails() {
         if (experiment.getAc() == null) {
             experiment.setShortLabel(createExperimentShortLabel());
