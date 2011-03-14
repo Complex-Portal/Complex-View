@@ -142,6 +142,25 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         // a change event and field the values with ajax)
         //xrefChanged(null);
 
+        // check if object already exists in the database before creating a new one
+         try {
+            // if the annotated object does not have an ac, check if another one similar exists in the db
+            if (getAnnotatedObject().getAc() == null) {
+                Finder finder = (Finder) getSpringContext().getBean("finder");
+
+                final String ac = finder.findAc(getAnnotatedObject());
+
+                if (ac != null) {
+                    AnnotatedObject existingAo = getDaoFactory().getEntityManager().find(getAnnotatedObject().getClass(), ac);
+                    addErrorMessage("An identical object exists: " + DebugUtil.annotatedObjectToString(existingAo, false), "Cannot save identical objects");
+                    FacesContext.getCurrentInstance().renderResponse();
+                    return;
+                }
+            }
+        } catch (Throwable t) {
+            handleException(t);
+        }
+
         // delete from the unsaved manager
         final List<UnsavedChange> deletedObjects = changesController.getAllUnsavedDeleted();
 
@@ -232,22 +251,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void validateAnnotatedObject(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        try {
-// if the annotated object does not have an ac, check if another one similar exists in the db
-            if (getAnnotatedObject().getAc() == null) {
-                Finder finder = (Finder) getSpringContext().getBean("finder");
 
-                final String ac = finder.findAc(getAnnotatedObject());
-
-                if (ac != null) {
-                    AnnotatedObject existingAo = getDaoFactory().getEntityManager().find(getAnnotatedObject().getClass(), ac);
-                    addErrorMessage("An identical object exists: " + DebugUtil.annotatedObjectToString(existingAo, false), "Cannot save identical objects");
-                    FacesContext.getCurrentInstance().renderResponse();
-                }
-            }
-        } catch (Throwable t) {
-            log.error("Cannot validate annotated object - checking if already an AC exists in the db for it", t);
-        }
     }
 
     @Transactional(value = "core", propagation = Propagation.NEVER)
