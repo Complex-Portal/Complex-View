@@ -178,7 +178,7 @@ public class FeatureController extends AnnotatedObjectController {
     }
     
     public void newRange(ActionEvent evt) {
-        if (newRangeValue == null && newRangeValue.isEmpty()) {
+        if (newRangeValue == null || newRangeValue.isEmpty()) {
             addErrorMessage("Range value field is empty", "Please provide a range value before clicking on the New Range button");
             return;
         }
