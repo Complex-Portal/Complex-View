@@ -576,6 +576,10 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void setExperiment(Experiment experiment) {
+        if (this.experiment == null) {
+            return;
+        }
+
         if (!this.experiment.equals(experiment)) {
             this.experiment = experiment;
 
