@@ -416,11 +416,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void setXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
-        getAnnotatedObjectHelper().setXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
+        getAnnotatedObjectHelper().setXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId, null);
     }
 
     public void replaceOrCreateXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
-        getAnnotatedObjectHelper().replaceOrCreateXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
+        replaceOrCreateXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId, null);
+    }
+
+    public void replaceOrCreateXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId, String secondaryId) {
+        getAnnotatedObjectHelper().replaceOrCreateXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId, secondaryId);
         setUnsavedChanges(true);
     }
 
@@ -435,7 +439,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void addXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
-        getAnnotatedObjectHelper().addXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId);
+        getAnnotatedObjectHelper().addXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId, null);
         setUnsavedChanges(true);
     }
 
@@ -648,10 +652,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         @Override
-        public void setXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {}
+        public void setXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId, String secondaryId) {}
 
         @Override
-        public void replaceOrCreateXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {}
+        public void replaceOrCreateXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId, String secondaryId) {}
 
         @Override
         public void removeXref(String databaseIdOrLabel, String qualifierIdOrLabel) {}
@@ -660,7 +664,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         public void removeXref(Xref xref) {}
 
         @Override
-        public void addXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {}
+        public void addXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId, String secondaryId) {}
 
         @Override
         public String findXrefPrimaryId(String databaseId, String qualifierId) {

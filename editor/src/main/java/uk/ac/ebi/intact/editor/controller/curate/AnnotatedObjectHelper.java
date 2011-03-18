@@ -77,15 +77,15 @@ public class AnnotatedObjectHelper {
         return xrefs;
     }
 
-    public void setXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
+    public void setXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId, String secondaryId ) {
         if ( primaryId != null && !primaryId.isEmpty() ) {
-            replaceOrCreateXref( databaseIdOrLabel, qualifierIdOrLabel, primaryId );
+            replaceOrCreateXref( databaseIdOrLabel, qualifierIdOrLabel, primaryId, secondaryId );
         } else {
             removeXref( databaseIdOrLabel, qualifierIdOrLabel );
         }
     }
 
-    public void replaceOrCreateXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
+    public void replaceOrCreateXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId, String secondaryId ) {
         AnnotatedObject parent = getAnnotatedObject();
 
         // modify if exists
@@ -101,11 +101,13 @@ public class AnnotatedObjectHelper {
                         if ( !primaryId.equals( xref.getPrimaryId() ) ) {
                             xref.setPrimaryId( primaryId );
                         }
+                        xref.setSecondaryId( secondaryId );
                     } else if ( qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getIdentifier() )
                                 || qualifierIdOrLabel.equals( xref.getCvXrefQualifier().getShortLabel() ) ) {
                         if ( !primaryId.equals( xref.getPrimaryId() ) ) {
                             xref.setPrimaryId( primaryId );
                         }
+                        xref.setSecondaryId( secondaryId );
                     }
 
                     exists = true;
@@ -115,7 +117,7 @@ public class AnnotatedObjectHelper {
 
         // create if not exists
         if ( !exists ) {
-            addXref( databaseIdOrLabel, qualifierIdOrLabel, primaryId );
+            addXref( databaseIdOrLabel, qualifierIdOrLabel, primaryId, secondaryId );
         }
     }
 
@@ -139,7 +141,7 @@ public class AnnotatedObjectHelper {
         
     }
 
-    public void addXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId ) {
+    public void addXref( String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId, String secondaryId ) {
         CvDatabase db = getCvObjectService().findCvObject( CvDatabase.class, databaseIdOrLabel );
         CvXrefQualifier qual = getCvObjectService().findCvObject( CvXrefQualifier.class, qualifierIdOrLabel );
 
@@ -147,6 +149,7 @@ public class AnnotatedObjectHelper {
         xref.setCvDatabase( db );
         xref.setCvXrefQualifier( qual );
         xref.setPrimaryId( primaryId );
+        xref.setSecondaryId( secondaryId );
         xref.setCreated(new Date());
         xref.setUpdated(new Date());
 

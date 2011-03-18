@@ -351,7 +351,9 @@ public class CvObjectService extends JpaAwareController {
 
     private SelectItem createSelectItem( CvObject cv ) {
         boolean obsolete = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( cv, CvTopic.OBSOLETE_MI_REF ) != null;
-        return new SelectItem( cv, cv.getShortLabel(), cv.getFullName(), obsolete );
+        return new SelectItem( cv, cv.getShortLabel()+((obsolete? " (obsolete)" : "")), cv.getFullName());
+
+        //return new SelectItem( cv, cv.getShortLabel(), cv.getFullName(), obsolete );
     }
 
     public CvObject findCvObjectByAc( String ac ) {

@@ -80,10 +80,12 @@ public class BioSourceController extends AnnotatedObjectController {
                 name = term.getScientificName();
             }
 
-            bioSource.setShortLabel(name.toLowerCase());
+            String commonName = name.toLowerCase();
+
+            bioSource.setShortLabel(commonName);
             bioSource.setFullName(term.getScientificName());
 
-            setTaxId(taxIdStr);
+            setTaxId(taxIdStr, commonName);
         } catch (Throwable e) {
             addErrorMessage("Problem auto-filling from Uniprot Taxonomy", e.getMessage());
             handleException(e);
@@ -114,8 +116,12 @@ public class BioSourceController extends AnnotatedObjectController {
     }
 
     public void setTaxId(String taxId) {
+        setTaxId(taxId, null);
+    }
+
+    public void setTaxId(String taxId, String organismName) {
         bioSource.setTaxId(taxId);
-        replaceOrCreateXref("MI:0942", CvXrefQualifier.IDENTITY, taxId);
+        replaceOrCreateXref("MI:0942", CvXrefQualifier.IDENTITY, taxId, organismName);
     }
 
     public String getTaxId() {
