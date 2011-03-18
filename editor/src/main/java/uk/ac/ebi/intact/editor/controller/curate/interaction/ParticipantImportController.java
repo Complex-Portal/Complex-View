@@ -297,6 +297,8 @@ public class ParticipantImportController extends BaseController {
         InteractorXref xref = new InteractorXref(owner, uniprotkb, candidate.getPrimaryAcs().iterator().next(), identity);
         protein.addXref(xref);
 
+        protein.setSequence(uniprotProtein.getSequence());
+
 //        InteractorEnricher interactorEnricher = enricherService.getInteractorEnricher();
 //        interactorEnricher.enrich(protein);
 
