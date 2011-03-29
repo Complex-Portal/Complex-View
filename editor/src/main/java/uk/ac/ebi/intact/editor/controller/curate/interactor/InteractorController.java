@@ -9,9 +9,12 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.validator.ValidatorException;
 
 /**
  * Interactor controller.
@@ -63,9 +66,16 @@ public class InteractorController extends AnnotatedObjectController {
     private void reset() {
     }
 
+    public void validateAnnotatedObject(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        if (!CvObjectUtils.isSmallMoleculeType(interactor.getCvInteractorType()) && interactor.getBioSource() == null) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Interactor type is mandatory", "No interactor type was defined");
+            throw new ValidatorException(message);
+        }
+    }
+
     @Override
     public void doPreSave() {
-        super.doPostSave();
+        super.doPreSave();
         cleanSequence(null);
     }
 
