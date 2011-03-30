@@ -129,6 +129,10 @@ public class MyNotesController extends JpaAwareController {
     private void processNotes() {
         queryMacros.clear();
 
+        if (rawNotes == null) {
+            rawNotes = "";
+        }
+
         String[] lines = rawNotes.split("\n");
 
         String acPrefix = getIntactContext().getConfig().getAcPrefix();
