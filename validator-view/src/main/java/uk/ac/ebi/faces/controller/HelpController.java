@@ -117,9 +117,11 @@ public class HelpController extends BaseController {
     private List<ObjectRule> extractImexRulesFrom(Set<ObjectRule> rules){
         List<ObjectRule> imexRules = new ArrayList<ObjectRule>();
 
-        for (ObjectRule rule : rules){
-            if (ValidationScope.IMEX.toString().equalsIgnoreCase(rule.getScope())){
-                imexRules.add(rule);
+        if (rules != null){
+            for (ObjectRule rule : rules){
+                if (ValidationScope.IMEX.toString().equalsIgnoreCase(rule.getScope())){
+                    imexRules.add(rule);
+                }
             }
         }
 
@@ -134,9 +136,11 @@ public class HelpController extends BaseController {
     private List<ObjectRule> extractMimixRulesFrom(Set<ObjectRule> rules){
         List<ObjectRule> mimixRules = new ArrayList<ObjectRule>();
 
-        for (ObjectRule rule : rules){
-            if (ValidationScope.MIMIX.toString().equalsIgnoreCase(rule.getScope())){
-                mimixRules.add(rule);
+        if (rules != null){
+            for (ObjectRule rule : rules){
+                if (ValidationScope.MIMIX.toString().equalsIgnoreCase(rule.getScope())){
+                    mimixRules.add(rule);
+                }
             }
         }
 
@@ -151,9 +155,11 @@ public class HelpController extends BaseController {
     private List<ObjectRule> extractObjectRulesFrom(Set<ObjectRule> rules){
         List<ObjectRule> simpleRules = new ArrayList<ObjectRule>();
 
-        for (ObjectRule rule : rules){
-            if (!ValidationScope.MIMIX.toString().equalsIgnoreCase(rule.getScope()) && !ValidationScope.IMEX.toString().equalsIgnoreCase(rule.getScope())){
-                simpleRules.add(rule);
+        if (rules != null){
+            for (ObjectRule rule : rules){
+                if (!ValidationScope.MIMIX.toString().equalsIgnoreCase(rule.getScope()) && !ValidationScope.IMEX.toString().equalsIgnoreCase(rule.getScope())){
+                    simpleRules.add(rule);
+                }
             }
         }
 
