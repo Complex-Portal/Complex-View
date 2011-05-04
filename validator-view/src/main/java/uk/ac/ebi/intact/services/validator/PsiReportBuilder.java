@@ -335,7 +335,7 @@ public class PsiReportBuilder {
                 report.setXmlSyntaxStatus(PsiReport.VALID);
             }
 
-            if( ! validationScope.involveSemanticValidation() ) {
+            if( ValidationScope.SYNTAX.equals(validationScope)) {
                 // there is no semantic involved so set message accoringly
                 report.setSemanticsStatus(PsiReport.NOT_RUN);
                 report.setSemanticsReport("Semantic validation was not requested");
@@ -472,7 +472,7 @@ public class PsiReportBuilder {
                 report.setXmlSyntaxStatus(PsiReport.VALID);
             }
 
-            if( ! validationScope.involveSemanticValidation() ) {
+            if( ValidationScope.SYNTAX.equals(validationScope) ) {
                 // there is no semantic involved so set message accoringly
                 report.setSemanticsStatus(PsiReport.NOT_RUN);
                 report.setSemanticsReport("Semantic validation was not requested");

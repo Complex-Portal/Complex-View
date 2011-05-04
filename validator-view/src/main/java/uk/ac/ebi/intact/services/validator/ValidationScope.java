@@ -13,27 +13,28 @@ package uk.ac.ebi.intact.services.validator;
  */
 public enum ValidationScope {
 
+    SYNTAX, CV_ONLY, MIMIX, IMEX
     /**
      * Only run XML syntax via a SAX parser.
      */
-    SYNTAX( "syntax" ),
+    //SYNTAX( "syntax" ),
 
     /**
      * Only run the Cv mapping (incl, XML syntax).
      */
-    CV_ONLY( "cv-only" ),
+    //CV_ONLY( "cv-only" ),
 
     /**
      * Run the MIMIx rules (incl. XML syntax and Cv Mapping).
      */
-    MIMIX( "mimix" ),
+    //MIMIX( "mimix" ),
 
     /**
      * Run the IMEx rules (incl. MIMIx rule, XML syntax and Cv Mapping).
      */
-    IMEX( "imex" );
+    //IMEX( "imex" );
 
-    private String name;
+    /*private String name;
 
     ValidationScope( String name ) {
         this.name = name;
@@ -75,5 +76,5 @@ public enum ValidationScope {
 
     public boolean involveSemanticValidation() {
         return isBroader( SYNTAX );
-    }
+    } */
 }

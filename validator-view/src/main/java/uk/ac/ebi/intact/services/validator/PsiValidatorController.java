@@ -70,7 +70,7 @@ public class PsiValidatorController extends BaseController {
     /**
      * The type of validation to be performed: syntax, cv, MIMIX, IMEx.
      */
-    private ValidationScope validationScope;
+    private ValidationScope validationScope = ValidationScope.MIMIX;
 
     /**
      * Data model to be validated. Default value is PSI-MI (Note: this should be reflected in the tabbedPanel)
@@ -124,13 +124,13 @@ public class PsiValidatorController extends BaseController {
      */
     public void validationScopeChangedMI( ValueChangeEvent vce ) {
         String type = ( String ) vce.getNewValue();
-        validationScope = ValidationScope.forName( type );
+        validationScope = ValidationScope.valueOf( type );
         if ( log.isDebugEnabled() ) log.debug( "MI Validation scope changed to '" + validationScope + "'" );
     }
 
     public void validationScopeChangedPAR( ValueChangeEvent vce ) {
         String type = ( String ) vce.getNewValue();
-        validationScope = ValidationScope.forName( type );
+        validationScope = ValidationScope.valueOf( type );
         if ( log.isDebugEnabled() ) log.debug( "PAR Validation scope changed to '" + validationScope + "'" );
     }
 
@@ -180,9 +180,10 @@ public class PsiValidatorController extends BaseController {
 
             if( modelParam.equalsIgnoreCase( "PAR" ) || modelParam.equalsIgnoreCase( "PSI-PAR" ) ) {
                 model = DataModel.PSI_PAR;
+                validationScope = ValidationScope.SYNTAX;
             } else if( modelParam.equalsIgnoreCase( "MI" ) || modelParam.equalsIgnoreCase( "PSI-MI" ) ) {
                 model = DataModel.PSI_MI;
-            } else {
+                validationScope = ValidationScope.MIMIX;
                 String msg = "You have tried to validate a file via URL, however the data model you have specified '"+
                              modelParam +"' was not recognized. Please use one of the following 'MI', 'PSI-MI' or " +
                              "'PAR', 'PSI-PAR'";

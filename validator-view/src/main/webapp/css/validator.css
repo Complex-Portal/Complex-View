@@ -1,0 +1,12 @@
+.errorContext {
+    display: block;
+    padding-bottom: 10px;
+}
+
+.errorContext a {
+    display: block;
+}
+
+.errorContextDetails {
+    display: none;
+}
