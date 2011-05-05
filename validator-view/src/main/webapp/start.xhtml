@@ -32,7 +32,7 @@
                         <trh:tableLayout width="70%" borderWidth="0">
                             <trh:rowLayout>
                                 <trh:cellFormat halign="left" valign="middle">
-                                    <tr:outputText value="This is the version 2.2.1 of the PSI-MI Semantic Validator" />
+                                    <tr:outputText value="This is the version 2.3 of the PSI-MI Semantic Validator" />
                                     <br/>
                                 </trh:cellFormat>
                             </trh:rowLayout>
@@ -137,7 +137,7 @@
 
 <!-- File upload -->
 
-<tr:panelHeader text="Upload PSI-MI XML 2.5 data">
+<tr:panelHeader text="PSI-MI XML 2.5 validation">
 
     <tr:panelGroupLayout layout="vertical">
 
@@ -149,20 +149,45 @@
 
             <trh:rowLayout>
                 <trh:cellFormat width="10%">
-                    <!-- source -->
-                    <tr:selectOneRadio id="sourceSelector" value="local"
-                                       label="Source:"
-                                       valueChangeListener="#{psiValidatorController.uploadTypeChanged}"
-                                       onclick="submit()">
-                        <tr:selectItem label="From local file" value="local"/>
-                        <tr:selectItem label="From URL" value="url"/>
-
-                    </tr:selectOneRadio>
+                    <tr:panelHeader text="File upload"/>
                 </trh:cellFormat>
                 <trh:cellFormat >
                     <tr:spacer width="60"/>
                 </trh:cellFormat>
                 <trh:cellFormat width="15%">
+                    <tr:panelHeader text="Model and scope selection"/>
+                </trh:cellFormat>
+                <trh:cellFormat width="70%">
+                </trh:cellFormat>
+            </trh:rowLayout>
+            <trh:rowLayout>
+                <trh:cellFormat width="10%" valign="top" halign="left">
+                    <!-- source -->
+                    <tr:selectOneRadio id="sourceSelector" value="#{psiValidatorController.uploadLocalFile}"
+                                       label="Source:"
+                                       onclick="submit()" inlineStyle="width:auto" >
+                        <tr:selectItem label="From local file" value="true"/>
+                        <tr:selectItem label="From URL" value="false"/>
+
+                    </tr:selectOneRadio>
+
+                    <!-- File/URL input -->
+
+                    <tr:group rendered="#{psiValidatorController.uploadLocalFile}">
+                        <tr:inputFile id="my_input_file" columns="60" label="File:"
+                                      value="#{psiValidatorController.psiFile}" />
+                    </tr:group>
+
+                    <tr:group rendered="#{!psiValidatorController.uploadLocalFile}">
+                        <tr:inputText id="inputUrl" label="URL:"
+                                      columns="70" value="#{psiValidatorController.psiUrl}"
+                                />
+                    </tr:group>
+                </trh:cellFormat>
+                <trh:cellFormat >
+                    <tr:spacer width="60"/>
+                </trh:cellFormat>
+                <trh:cellFormat width="15%" valign="top">
                     <!-- model & scope -->
                     <tr:panelTabbed position="above">
                         <tr:showDetailItem text="Molecular Interactions"
@@ -212,65 +237,10 @@
 
         </trh:tableLayout>
 
-        <!-- File/URL input -->
-        <tr:group>
-            <tr:group rendered="#{psiValidatorController.uploadLocalFile}">
-                <tr:inputFile id="my_input_file" columns="60" label="File:"
-                              valueChangeListener="#{psiValidatorController.onPsiFileUpload}" />
-            </tr:group>
-
-            <tr:group rendered="#{!psiValidatorController.uploadLocalFile}">
-                <tr:inputText id="inputUrl" label="URL:"
-                              columns="70" value="#{psiValidatorController.psiUrl}"
-                        />
-                <!-- validator="#{psiValidatorController.validateUrlFormat}" -->
-                <tr:message for="inputUrl" styleClass="error-message" />
-            </tr:group>
-        </tr:group>
-
-        <!--<tr:panelHorizontalLayout>-->
-
-        <table>
-            <tr>
-                <td>
-                    <tr:commandButton id="submit_button" text="Validate" actionListener="#{psiValidatorController.validate}"
-                                      onclick="document.getElementById('progress_image').style.display = 'block';
+        <tr:commandButton id="submit_button" text="Validate" actionListener="#{psiValidatorController.validate}"
+                          onclick="document.getElementById('progress_image').style.display = 'block';
                                        document.getElementById('submit_button').disabled=true"/>
-                </td>
-                <!--document.getElementById('progress_text').style.display = 'block';-->
-                <td>
-                    <tr:image id="progress_image" inlineStyle="display:none;" source="/images/wait_red_indicator.gif"/>
-                </td>
-                <!--<td>
-                    <tr:outputText id='progress_text' value="Be aware that IMEx validation may take up to 30 seconds to complete. Please be patient..."
-                           inlineStyle="display:none;" rendered="#{psiValidatorController.validationScope.name == 'imex'}" />
-                </td>-->
-            </tr>
-
-        </table>
-
-        <!--<tr:spacer width="20"/>-->
-
-        <!--<tr:poll interval="2000" id="pollid" /> --><!-- pollListener="#{psiValidatorController.onPoll}" -->
-        <!--<tr:panelGroupLayout layout="horizontal">-->
-        <!--<tr:spacer width="30"/>-->
-        <!--<tr:panelGroupLayout layout="vertical" partialTriggers="pollid" id="pg2">-->
-        <!--<c:forEach var="progressStep"-->
-        <!--varStatus="vs"-->
-        <!--begin="0"-->
-        <!--end="#{psiValidatorController.progressModel.maximum}"-->
-        <!--items="#{psiValidatorController.progressSteps}">-->
-
-        <!--<tr:panelGroupLayout layout="horizontal">-->
-        <!--<tr:outputText value="#{progressStep}"-->
-        <!--styleClass="AFFieldText"-->
-        <!--rendered="#{psiValidatorController.progressModel.value >= vs.index}"/>-->
-        <!--</tr:panelGroupLayout>-->
-        <!--</c:forEach>-->
-        <!--</tr:panelGroupLayout>-->
-        <!--</tr:panelGroupLayout>-->
-
-        <!--</tr:panelHorizontalLayout>-->
+        <tr:image id="progress_image" inlineStyle="display:none;" source="/images/wait_red_indicator.gif"/>
 
     </tr:panelGroupLayout>
 
@@ -418,6 +388,10 @@
 
                         <tr:panelLabelAndMessage label="Name:">
                             <tr:outputText value="#{msg.rule.name}"/>
+                        </tr:panelLabelAndMessage>
+
+                        <tr:panelLabelAndMessage label="Scope:">
+                            <tr:outputText value="#{msg.rule.scope}"/>
                         </tr:panelLabelAndMessage>
 
                         <tr:panelLabelAndMessage label="Description:">

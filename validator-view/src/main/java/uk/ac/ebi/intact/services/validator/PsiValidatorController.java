@@ -4,11 +4,11 @@
  */
 package uk.ac.ebi.intact.services.validator;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
-import org.apache.myfaces.trinidad.component.core.input.CoreInputText;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.model.DefaultBoundedRangeModel;
 import org.apache.myfaces.trinidad.model.UploadedFile;
@@ -17,15 +17,15 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.faces.controller.BaseController;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * This is the managed bean that contains the model of the information show to the user. From this bean,
@@ -42,6 +42,8 @@ import java.util.List;
 public class PsiValidatorController extends BaseController {
 
     static private List<String> PROGRESS_STEPS;
+    private static final String ZIP_EXTENSION = ".zip";
+    private static final String XML_EXTENSION = "xml";
 
     static {
         PROGRESS_STEPS = new ArrayList<String>();
@@ -104,35 +106,35 @@ public class PsiValidatorController extends BaseController {
         this.uploadLocalFile = true;
     }
 
-    /**
+    /*/**
      * This is a valueChangeEvent. When the selection of File/URL is changed, this event is fired.
      *
      * @param vce needed in valueChangeEvent methods. From it we get the new value
      */
-    public void uploadTypeChanged( ValueChangeEvent vce ) {
+    /*public void uploadTypeChanged( ValueChangeEvent vce ) {
         String type = ( String ) vce.getNewValue();
         uploadLocalFile = type.equals( "local" );
 
         if ( log.isDebugEnabled() )
             log.debug( "Upload type changed, is local file? " + uploadLocalFile );
-    }
+    }*/
 
-    /**
+    /*/**
      * This is a valueChangeEvent. When the selection of File/URL is changed, this event is fired.
      *
      * @param vce needed in valueChangeEvent methods. From it we get the new value
      */
-    public void validationScopeChangedMI( ValueChangeEvent vce ) {
+    /*public void validationScopeChangedMI( ValueChangeEvent vce ) {
         String type = ( String ) vce.getNewValue();
         validationScope = ValidationScope.valueOf( type );
         if ( log.isDebugEnabled() ) log.debug( "MI Validation scope changed to '" + validationScope + "'" );
-    }
+    } */
 
-    public void validationScopeChangedPAR( ValueChangeEvent vce ) {
+    /*public void validationScopeChangedPAR( ValueChangeEvent vce ) {
         String type = ( String ) vce.getNewValue();
         validationScope = ValidationScope.valueOf( type );
         if ( log.isDebugEnabled() ) log.debug( "PAR Validation scope changed to '" + validationScope + "'" );
-    }
+    }*/
 
     public void validationModelChangedMI( DisclosureEvent event ) {
         if ( event.isExpanded() ) {
@@ -185,8 +187,8 @@ public class PsiValidatorController extends BaseController {
                 model = DataModel.PSI_MI;
                 validationScope = ValidationScope.MIMIX;
                 String msg = "You have tried to validate a file via URL, however the data model you have specified '"+
-                             modelParam +"' was not recognized. Please use one of the following 'MI', 'PSI-MI' or " +
-                             "'PAR', 'PSI-PAR'";
+                        modelParam +"' was not recognized. Please use one of the following 'MI', 'PSI-MI' or " +
+                        "'PAR', 'PSI-PAR'";
                 FacesMessage message = new FacesMessage( msg );
                 context.addMessage( null, message );
                 return;
@@ -204,14 +206,14 @@ public class PsiValidatorController extends BaseController {
             }
         } else if( urlParam != null || modelParam != null ) {
             String msg = "You have tried to validate a file via URL, however you haven't provided all required " +
-                         "parameters. Please specify 'url' and 'model' ('PSI-MI' or 'PSI-PAR').";
-                FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_WARN, msg, null );
-                context.addMessage( null, message );
+                    "parameters. Please specify 'url' and 'model' ('PSI-MI' or 'PSI-PAR').";
+            FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_WARN, msg, null );
+            context.addMessage( null, message );
         }
     }
 
     // This is the method invoked when pressing the valdidate button, names after thte variable to be updated.
-    public void onPsiFileUpload( ValueChangeEvent event ) {
+    /*public void onPsiFileUpload( ValueChangeEvent event ) {
 
         System.out.println( "PsiValidatorController.psiFile: uploadLocalFile=" + uploadLocalFile );
 
@@ -221,12 +223,12 @@ public class PsiValidatorController extends BaseController {
                 FacesContext context = FacesContext.getCurrentInstance();
                 FacesMessage message = new FacesMessage(
                         "Successfully uploaded file " + psiFile.getFilename() +
-                        " (" + psiFile.getLength() + " bytes)" );
+                                " (" + psiFile.getLength() + " bytes)" );
                 context.addMessage( event.getComponent().getClientId( context ), message );
 
             }
         }
-    }
+    }*/
 
     /**
      * Validates the data entered by the user upon pressing the validate button.
@@ -238,11 +240,17 @@ public class PsiValidatorController extends BaseController {
         initializeProgressModel();
 
         try {
+            File f;
+
             if ( uploadLocalFile ) {
                 // we use a different upload method, depending on the user selection
-                uploadFromLocalFile();
+                f = uploadFromLocalFile();
             } else {
-                uploadFromUrl();
+                f = uploadFromUrl();
+            }
+
+            if (f != null){
+                validateFile(f);
             }
         } catch ( Throwable t ) {
             final String msg = "Failed to upload from " + ( uploadLocalFile ? "local file" : "URL" );
@@ -260,29 +268,9 @@ public class PsiValidatorController extends BaseController {
         progressModel.setValue( 0 );
     }
 
-    /**
-     * Reads the local file.
-     *
-     * @throws IOException if something has gone wrong with the file
-     */
-    private void uploadFromLocalFile() throws IOException {
-
-        if ( psiFile == null ) {
-            throw new IllegalStateException( "Failed to upload the file" );
-        }
-
-        if ( log.isInfoEnabled() ) {
-            log.info( "Uploading local file: " + psiFile.getFilename() );
-        }
-
-        // and now we can instantiate the builder to create the validation report,
-        // using the name of the file and the stream.
-        File f = storeAsTemporaryFile( psiFile.getInputStream() );
-        // we have the data on disk, clear memory
-        psiFile.dispose();
-
+    private void validateFile(File f) throws IOException {
         final long start = System.currentTimeMillis();
-        PsiReportBuilder builder = new PsiReportBuilder( psiFile.getFilename(), f, model, validationScope, progressModel );
+        PsiReportBuilder builder = new PsiReportBuilder( f.getName(), f, model, validationScope, progressModel );
         final long stop = System.currentTimeMillis();
         log.trace( "Time to load the validator: " + (stop - start) + "ms" );
 
@@ -293,6 +281,50 @@ public class PsiValidatorController extends BaseController {
         if ( log.isWarnEnabled() ) {
             log.warn( "After uploading a local file the report was " + ( this.currentPsiReport == null ? "not present" : "present" ) );
         }
+
+        f.delete();
+    }
+
+    /**
+     * Reads the local file and returns it.
+     *
+     * @throws IOException if something has gone wrong with the file
+     */
+    private File uploadFromLocalFile() throws IOException {
+
+        if ( psiFile == null ) {
+            throw new IllegalStateException( "Failed to upload the file" );
+        }
+
+        if ( log.isInfoEnabled() ) {
+            log.info( "Uploading local file: " + psiFile.getFilename() );
+        }
+
+        File f = null;
+
+        if (psiFile.getFilename().endsWith(ZIP_EXTENSION)){
+
+            f = unpackArchive(psiFile.getInputStream());
+        }
+        else{
+            // and now we can instantiate the builder to create the validation report,
+            // using the name of the file and the stream
+            f = storeAsTemporaryFile( psiFile.getInputStream(), psiFile.getFilename() );
+        }
+
+        if (f == null){
+            final String msg = "The given file ("+psiFile.getFilename()+") is not or does not contain any XML files to validate";
+            log.error( msg);
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_ERROR, msg, null );
+            context.addMessage( null, message );
+        }
+
+        // we have the data on disk, clear memory
+        psiFile.dispose();
+
+        return f;
     }
 
     /**
@@ -302,10 +334,14 @@ public class PsiValidatorController extends BaseController {
      * @return a File descriptor describing a temporary file storing the content of the given input stream.
      * @throws IOException if an IO error occur.
      */
-    private File storeAsTemporaryFile( InputStream is ) throws IOException {
+    private File storeAsTemporaryFile( InputStream is, String fileName ) throws IOException {
 
         if ( is == null ) {
             throw new IllegalArgumentException( "You must give a non null InputStream" );
+        }
+
+        if (!fileName.endsWith("." + XML_EXTENSION)){
+            return null;
         }
 
         BufferedReader in = new BufferedReader( new InputStreamReader( is ) );
@@ -318,10 +354,7 @@ public class PsiValidatorController extends BaseController {
             }
         }
 
-        long id = System.currentTimeMillis();
-
-        File tempFile = File.createTempFile( "validator." + id, ".xml", tempDirectory );
-        tempFile.deleteOnExit();
+        File tempFile = new File(tempDirectory, fileName);
 
         log.info( "The file is temporary store as: " + tempFile.getAbsolutePath() );
 
@@ -337,6 +370,38 @@ public class PsiValidatorController extends BaseController {
         out.flush();
         out.close();
 
+        // no need for that, will never be a directory
+
+        /*String [] xmlExtension = {XML_EXTENSION};
+        boolean recursive = true;
+
+        Collection<File> files = new ArrayList<File>();
+        if (tempFile.isDirectory()){
+            files = FileUtils.listFiles(tempFile, xmlExtension, recursive);
+        }
+        else {
+            files.add(tempFile);
+        }
+
+        if (files.size() > 1){
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_WARN, "The directory "+tempFile.getName()+" contained " + files.size() + " XML files. Only one will be validated.", null );
+            context.addMessage( null, message );
+        }
+
+        if (!files.isEmpty()){
+            File xmlFileToValidate = files.iterator().next();
+
+            FileUtils.copyFileToDirectory(xmlFileToValidate, tempDirectory);
+
+            tempFile.delete();
+
+            return new File(tempDirectory, xmlFileToValidate.getName());
+        }
+        else {
+            tempFile.delete();
+        }*/
+
         return tempFile;
     }
 
@@ -345,7 +410,10 @@ public class PsiValidatorController extends BaseController {
      *
      * @throws IOException if something goes wrong with the file or the connection
      */
-    private void uploadFromUrl() throws IOException {
+    private File uploadFromUrl() throws IOException {
+        if ( psiUrl == null ) {
+            throw new IllegalStateException( "Failed to read the URL" );
+        }
 
         if ( log.isInfoEnabled() ) {
             log.info( "Uploading Url: " + psiUrl );
@@ -355,20 +423,32 @@ public class PsiValidatorController extends BaseController {
             // we create the URL object with the string provided by the user in the form
             URL url = new URL( psiUrl );
 
-            File f = storeAsTemporaryFile( url.openStream() );
-
             // we only want the name of the file, and not the whole URL.
             // Gets the last part of the URL
-            String name = psiUrl.substring( psiUrl.lastIndexOf( "/" ) + 1, psiUrl.length() );
+            String name = psiUrl.substring( psiUrl.lastIndexOf( File.separator ) + 1, psiUrl.length() );
+            File f = null;
 
-            // and now we can instantiate the builder to create the validation report,
-            // using the name of the file and the URL.
-            PsiReportBuilder builder = new PsiReportBuilder( name, url, f, model, validationScope, progressModel );
+            if (name.endsWith(ZIP_EXTENSION)){
 
-            // we execute the method of the builder that actually creates the report
-            log.warn( "About to start building the PSI report" );
-            this.currentPsiReport = builder.createPsiReport();
-            log.warn( "After uploading a URL the report was " + ( this.currentPsiReport == null ? "not present" : "present" ) );
+                f = unpackArchive(url.openStream());
+            }
+            else{
+                // and now we can instantiate the builder to create the validation report,
+                // using the name of the file and the stream
+                f = storeAsTemporaryFile( url.openStream(), name );
+            }
+
+            if (f == null){
+                final String msg = "The given URL ("+psiUrl+") does not point to any XML files to validate";
+                log.error( msg);
+
+                FacesContext context = FacesContext.getCurrentInstance();
+                FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_ERROR, msg, null );
+                context.addMessage( null, message );
+            }
+
+            return f;
+
         }
         catch ( Throwable e ) {
             currentPsiReport = null;
@@ -378,10 +458,94 @@ public class PsiValidatorController extends BaseController {
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_WARN, msg, null );
             context.addMessage( null, message );
+
+            return null;
         }
     }
 
     /**
+     * Unpack a zip file
+     *
+     * @param in
+     * @return the file
+     * @throws IOException
+     */
+    private File unpackArchive(InputStream in) throws IOException {
+        final int BUFFER = 2048;
+
+        File tempDirectory = new File( System.getProperty( "java.io.tmpdir", "tmp" ) );
+        if ( !tempDirectory.exists() ) {
+            if ( !tempDirectory.mkdirs() ) {
+                throw new IOException( "Cannot create temp directory: " + tempDirectory.getAbsolutePath() );
+            }
+        }
+
+        long name = System.currentTimeMillis();
+
+        File archiveDirectory = new File(tempDirectory, Long.toString(name));
+        if ( !archiveDirectory.exists() ) {
+            if ( !archiveDirectory.mkdirs() ) {
+                throw new IOException( "Cannot create archive directory: " + archiveDirectory.getAbsolutePath() );
+            }
+        }
+
+        ZipInputStream zis = new ZipInputStream(in);
+        ZipEntry entry;
+        BufferedOutputStream dest = null;
+
+        while ((entry = zis.getNextEntry()) != null)
+        {
+            log.info("Extracting: " +entry.getName());
+            int count;
+            byte data[] = new byte[BUFFER];
+
+            String entryName = entry.getName().substring( entry.getName().lastIndexOf( File.separator ) + 1, entry.getName().length() );
+
+            // write the files to the disk
+            FileOutputStream fos = new
+                    FileOutputStream(archiveDirectory.getAbsolutePath() + File.separator + entryName);
+            dest = new
+                    BufferedOutputStream(fos, BUFFER);
+            while ((count = zis.read(data, 0, BUFFER))
+                    != -1) {
+                dest.write(data, 0, count);
+            }
+            dest.flush();
+            dest.close();
+        }
+        zis.close();
+
+        String [] xmlExtension = {XML_EXTENSION};
+        boolean recursive = true;
+        Collection<File> files = FileUtils.listFiles(archiveDirectory, xmlExtension, recursive);
+
+        archiveDirectory.deleteOnExit();
+
+        if (files.size() > 1){
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_WARN, "The Zip file contained " + files.size() + " XML files. Only one will be validated.", null );
+            context.addMessage( null, message );
+        }
+
+        if (!files.isEmpty()){
+            File xmlFileToValidate = files.iterator().next();
+
+            FileUtils.copyFileToDirectory(xmlFileToValidate, tempDirectory);
+
+            FileUtils.deleteDirectory(archiveDirectory);
+
+            return new File(tempDirectory, xmlFileToValidate.getName());
+        }
+        else {
+            log.info("Empty files");
+
+            archiveDirectory.delete();
+        }
+
+        return null;
+    }
+
+    /*/**
      * This method is a "validator" method. It has the arguments that JSF specifies for this kind of methods.
      * The objective is to validate the URL provided by the user, whether it is in the correct form
      * or the place where it points it does exist
@@ -390,7 +554,7 @@ public class PsiValidatorController extends BaseController {
      * @param toValidate The UIComponent to validate (this is a UIInput component), the controller of the text box
      * @param value      The value provided in the text box by the user
      */
-    public void validateUrlFormat( FacesContext context,
+    /*public void validateUrlFormat( FacesContext context,
                                    UIComponent toValidate,
                                    Object value ) {
         if ( log.isDebugEnabled() ) {
@@ -440,7 +604,7 @@ public class PsiValidatorController extends BaseController {
             inputCompToValidate.setValid( false );
             context.addMessage( toValidateClientId, new FacesMessage( "Could not read URL content." ) );
         }
-    }
+    }*/
 
     // ACCESSOR METHODS
 
