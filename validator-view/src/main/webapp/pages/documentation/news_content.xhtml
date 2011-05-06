@@ -12,7 +12,40 @@
     <h1>Validator news</h1>
 
     <h2>Version 2.3.0</h2>
-    <tr:outputText value="Some rules have been updated (mainly improvement of error messages)"/>
+
+    <h3>Rule update</h3>
+    <ul>
+        <li><tr:outputText value="Negative Interaction rule has been added for IMEx validation."/></li>
+
+        <li><tr:outputText value="When a sequence (protein, DNA, RNA) is not valid, it gives the invalid sequence portion and its positions."/></li>
+
+        <li><tr:outputText value="Bug fixed : if an interactor is a polysaccharide, the validator does not complain about the missing identity cross reference to a sequence database"/></li>
+    </ul>
+
+    <h3>Interface update</h3>
+    <ul>
+        <li><tr:outputText value="The form has been improved to be more user friendly (don't reload the page when selecting a file or scope)."/></li>
+
+        <li><tr:outputText value="Bug fixed : when selecting a file and then the validation scope, the file was lost. Now it is possible to select the file and then the validation scope without losing the file information."/></li>
+
+        <li><tr:outputText value="Bug fixed : if the validated file was of type 'expanded', the interactor links (in the context column) were not working properly properly"/></li>
+
+        <li><tr:outputText value="The HTML view can now display the experimental interactor(s) and experimental preparation(s) of a participant if it has been given."/></li>
+
+        <li><tr:outputText value="The validator messages are now clustered : an error message will appear only once and all the different contexts (interaction ids, experiment ids, feature ids and participant ids) will be listed in the 'context' column.
+        If the list of contexts is too long (more than three different contexts), only three contexts will be shown by default and a link is provided to show all the contexts if wanted."/></li>
+
+        <li><tr:outputText value="It is now possible to load a ZIP file containing one XML file. If several XML file are present in the ZIP file, only one XML file will be validated, the other files will be ignored. If the ZIP file contains other ZIP files
+        they will be ignored."/></li>
+    </ul>
+
+    <h3>Documentation update</h3>
+    <ul>
+        <li><tr:outputText value="The documentation about the IMEx dependency rules is now available in the user's guide ('Overview' section of the validator webpage)."/></li>
+
+        <li><tr:outputText value="The overview section of the validator has been improved : it is possible to go directly to the section of interest in the validator user's guide."/></li>
+
+    </ul>
 
     <h2>Version 2.2.1</h2>
     <tr:outputText value="Some rules have been updated (mainly improvement of error messages)"/>

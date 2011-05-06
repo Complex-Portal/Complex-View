@@ -7,10 +7,8 @@ package uk.ac.ebi.intact.services.validator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
-import org.apache.myfaces.trinidad.model.DefaultBoundedRangeModel;
 import org.apache.myfaces.trinidad.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -22,7 +20,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -40,23 +37,23 @@ import java.util.zip.ZipInputStream;
 @ViewController( viewIds = "/start.xhtml" )
 public class PsiValidatorController extends BaseController {
 
-    static private List<String> PROGRESS_STEPS;
+    //static private List<String> PROGRESS_STEPS;
     private static final String ZIP_EXTENSION = ".zip";
     private static final String XML_EXTENSION = "xml";
 
-    static {
-        PROGRESS_STEPS = new ArrayList<String>();
+    //static {
+        //PROGRESS_STEPS = new ArrayList<String>();
 
-        /* 0 */ PROGRESS_STEPS.add( "Uploading data to be validated" );
-        /* 1 */ PROGRESS_STEPS.add( "Configuring the validator" );
-        /* 2 */ PROGRESS_STEPS.add( "Running XML validation" );
-        /* 3 */ PROGRESS_STEPS.add( "Running controlled vocabulary mapping checks" );
-        /* 4 */ PROGRESS_STEPS.add( "Running semantic validation" );
-        /* 5 */ PROGRESS_STEPS.add( "Building validation report" );
-    }
+        ///* 0 */ PROGRESS_STEPS.add( "Uploading data to be validated" );
+        ///* 1 */ PROGRESS_STEPS.add( "Configuring the validator" );
+        ///* 2 */ PROGRESS_STEPS.add( "Running XML validation" );
+        ///* 3 */ PROGRESS_STEPS.add( "Running controlled vocabulary mapping checks" );
+        ///* 4 */ PROGRESS_STEPS.add( "Running semantic validation" );
+        ///* 5 */ PROGRESS_STEPS.add( "Building validation report" );
+    //}
 
-    public static final String URL_PARAM = "url";
-    public static final String MODEL_PARAM = "model";
+    //public static final String URL_PARAM = "url";
+    //public static final String MODEL_PARAM = "model";
 
     /**
      * Logging is an essential part of an application
@@ -66,7 +63,7 @@ public class PsiValidatorController extends BaseController {
     /**
      * If true, a local file is selected to be uploaded
      */
-    private boolean uploadLocalFile;
+    private boolean uploadLocalFile=true;
 
     /**
      * The type of validation to be performed: syntax, cv, MIMIX, IMEx.
@@ -91,19 +88,21 @@ public class PsiValidatorController extends BaseController {
     /**
      * dData model of the validation progress.
      */
-    protected volatile DefaultBoundedRangeModel progressModel;
+    //protected volatile DefaultBoundedRangeModel progressModel;
 
     /**
      * If we are viewing a report, this is the report viewed
      */
     private PsiReport currentPsiReport;
 
+    //private Collection<String> customizedRules = new ArrayList<String>();
+
     /**
      * Constructor
      */
-    public PsiValidatorController() {
-        this.uploadLocalFile = true;
-    }
+    //public PsiValidatorController() {
+        //this.uploadLocalFile = true;
+    //}
 
     /*/**
      * This is a valueChangeEvent. When the selection of File/URL is changed, this event is fired.
@@ -159,7 +158,7 @@ public class PsiValidatorController extends BaseController {
 //        }
 //    }
 
-    public List<String> getProgressSteps() {
+    /*public List<String> getProgressSteps() {
         return PROGRESS_STEPS;
     }
 
@@ -209,7 +208,7 @@ public class PsiValidatorController extends BaseController {
             FacesMessage message = new FacesMessage( FacesMessage.SEVERITY_WARN, msg, null );
             context.addMessage( null, message );
         }
-    }
+    }*/
 
     // This is the method invoked when pressing the valdidate button, names after thte variable to be updated.
     /*public void onPsiFileUpload( ValueChangeEvent event ) {
@@ -268,7 +267,7 @@ public class PsiValidatorController extends BaseController {
      */
     public String validate( ) {
 
-        initializeProgressModel();
+        // initializeProgressModel();
 
         try {
             File f;
@@ -296,14 +295,14 @@ public class PsiValidatorController extends BaseController {
         return "start";
     }
 
-    private void initializeProgressModel() {
+    /*private void initializeProgressModel() {
         progressModel = new DefaultBoundedRangeModel(-1, 5);
         progressModel.setValue( 0 );
-    }
+    }*/
 
     private void validateFile(File f) throws IOException {
         final long start = System.currentTimeMillis();
-        PsiReportBuilder builder = new PsiReportBuilder( f.getName(), f, model, validationScope, progressModel );
+        PsiReportBuilder builder = new PsiReportBuilder( f.getName(), f, model, validationScope );
         final long stop = System.currentTimeMillis();
         log.trace( "Time to load the validator: " + (stop - start) + "ms" );
 

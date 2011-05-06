@@ -6,7 +6,6 @@ package uk.ac.ebi.intact.services.validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.trinidad.model.DefaultBoundedRangeModel;
 import psidev.psi.mi.validator.ValidatorReport;
 import psidev.psi.mi.validator.extension.Mi25Validator;
 import psidev.psi.tools.validator.MessageLevel;
@@ -66,7 +65,7 @@ public class PsiReportBuilder {
      */
     private SourceType currentSourceType;
 
-    private DefaultBoundedRangeModel progressModel;
+    //private DefaultBoundedRangeModel progressModel;
 
     /**
      * Creates a PsiReportBuilder instance using an URL
@@ -74,13 +73,13 @@ public class PsiReportBuilder {
      * @param name The name of the file, only needed for information purposes
      * @param url  The URL with the PSI xml
      */
-    public PsiReportBuilder( String name, URL url, File tempFile, DataModel model, ValidationScope validationScope, DefaultBoundedRangeModel progressModel ) {
+    public PsiReportBuilder( String name, URL url, File tempFile, DataModel model, ValidationScope validationScope) {
         this.name = name;
         this.url = url;
         this.file = tempFile;
         this.validationScope = validationScope;
         this.model = model;
-        this.progressModel = progressModel;
+        //this.progressModel = progressModel;
 
         this.currentSourceType = SourceType.URL;
     }
@@ -93,12 +92,12 @@ public class PsiReportBuilder {
      *             resettable in order to build the report properly. The stream will be reset a few times, so the
      *             information is parsed in the different validation phases
      */
-    public PsiReportBuilder(String name, File file, DataModel model, ValidationScope validationScope, DefaultBoundedRangeModel progressModel) {
+    public PsiReportBuilder(String name, File file, DataModel model, ValidationScope validationScope) {
         this.name = name;
         this.file = file;
         this.validationScope = validationScope;
         this.model = model;
-        this.progressModel = progressModel;
+        //this.progressModel = progressModel;
 
         this.currentSourceType = SourceType.FILE;
     }
@@ -306,18 +305,18 @@ public class PsiReportBuilder {
         // Printwriter to get the stacktrace messages
         StringWriter sw = new StringWriter( 1024 );
 
-        progressModel.setValue( 1L );
+        //progressModel.setValue( 1L );
 
         try{
             log.debug("Validation starting");
-            progressModel.setValue( 4L );
+            //progressModel.setValue( 4L );
 
             final long start = System.currentTimeMillis();
             final ValidatorReport validatorReport = validator.validate( file );
             final long stop = System.currentTimeMillis();
             log.trace( "Time to validate using scope '"+validationScope+"': " + (stop - start) + "ms" );
 
-            progressModel.setValue( 5L );
+            //progressModel.setValue( 5L );
 
             if ( log.isInfoEnabled() ) {
                 log.info( "Validator reported " + validatorReport.getSyntaxMessages().size() + " syntax messages" );
@@ -433,7 +432,7 @@ public class PsiReportBuilder {
         // Printwriter to get the stacktrace messages
         StringWriter sw = new StringWriter( 1024 );
 
-        progressModel.setValue( 1L );
+        //progressModel.setValue( 1L );
 
         try{
             // set work directory
@@ -447,14 +446,14 @@ public class PsiReportBuilder {
             validator.setUserPreferences(preferences);
 
             log.debug("Validation starting");
-            progressModel.setValue( 4L );
+            //progressModel.setValue( 4L );
 
             final long start = System.currentTimeMillis();
             final ValidatorReport validatorReport = validator.validate( file );
             final long stop = System.currentTimeMillis();
             log.trace( "Time to validate using scope '"+validationScope+"': " + (stop - start) + "ms" );
 
-            progressModel.setValue( 5L );
+            //progressModel.setValue( 5L );
 
             if ( log.isInfoEnabled() ) {
                 log.info( "Validator reported " + validatorReport.getSyntaxMessages().size() + " syntax messages" );
