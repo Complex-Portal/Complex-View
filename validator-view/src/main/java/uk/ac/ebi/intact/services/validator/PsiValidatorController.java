@@ -18,7 +18,6 @@ import uk.ac.ebi.faces.controller.BaseController;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -235,7 +234,7 @@ public class PsiValidatorController extends BaseController {
      *
      * @param event
      */
-    public void validate( ActionEvent event ) {
+    /*public void validate( ActionEvent event ) {
 
         initializeProgressModel();
 
@@ -261,6 +260,40 @@ public class PsiValidatorController extends BaseController {
             FacesMessage message = new FacesMessage( msg );
             context.addMessage( event.getComponent().getClientId( context ), message );
         }
+    }*/
+
+        /**
+     * Validates the data entered by the user upon pressing the validate button.
+     *
+     */
+    public String validate( ) {
+
+        initializeProgressModel();
+
+        try {
+            File f;
+
+            if ( uploadLocalFile ) {
+                // we use a different upload method, depending on the user selection
+                f = uploadFromLocalFile();
+            } else {
+                f = uploadFromUrl();
+            }
+
+            if (f != null){
+                validateFile(f);
+            }
+        } catch ( Throwable t ) {
+            final String msg = "Failed to upload from " + ( uploadLocalFile ? "local file" : "URL" );
+
+            log.error( msg, t );
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( msg );
+            context.addMessage( null, message );
+        }
+
+        return "start";
     }
 
     private void initializeProgressModel() {
@@ -539,7 +572,7 @@ public class PsiValidatorController extends BaseController {
         else {
             log.info("Empty files");
 
-            archiveDirectory.delete();
+            FileUtils.deleteDirectory(archiveDirectory);
         }
 
         return null;

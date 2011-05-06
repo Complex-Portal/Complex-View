@@ -154,7 +154,7 @@
                 <trh:cellFormat >
                     <tr:spacer width="60"/>
                 </trh:cellFormat>
-                <trh:cellFormat width="15%">
+                <trh:cellFormat width="20%">
                     <tr:panelHeader text="Model and scope selection"/>
                 </trh:cellFormat>
                 <trh:cellFormat width="70%">
@@ -165,29 +165,27 @@
                     <!-- source -->
                     <tr:selectOneRadio id="sourceSelector" value="#{psiValidatorController.uploadLocalFile}"
                                        label="Source:"
-                                       onclick="submit()" inlineStyle="width:auto" >
+                                       inlineStyle="width:auto" onclick="displayFileUpload()">
                         <tr:selectItem label="From local file" value="true"/>
                         <tr:selectItem label="From URL" value="false"/>
 
                     </tr:selectOneRadio>
 
                     <!-- File/URL input -->
-
-                    <tr:group rendered="#{psiValidatorController.uploadLocalFile}">
-                        <tr:inputFile id="my_input_file" columns="60" label="File:"
-                                      value="#{psiValidatorController.psiFile}" />
-                    </tr:group>
-
-                    <tr:group rendered="#{!psiValidatorController.uploadLocalFile}">
-                        <tr:inputText id="inputUrl" label="URL:"
-                                      columns="70" value="#{psiValidatorController.psiUrl}"
-                                />
-                    </tr:group>
+                    <tr:inputFile id="my_input_file" columns="40" label="File:"
+                                  value="#{psiValidatorController.psiFile}" styleClass="localFileUpload"/>
+                    <tr:inputText id="inputUrl" label="URL:"
+                                  columns="50" value="#{psiValidatorController.psiUrl}"
+                                  styleClass="urlUpload"/>
+                    <tr:panelList>
+                       <tr:outputText value="Single XML file"/>
+                       <tr:outputText value="ZIP file containing one XML file (if several XML files, only one will be validated)"/>
+                    </tr:panelList>
                 </trh:cellFormat>
                 <trh:cellFormat >
-                    <tr:spacer width="60"/>
+                    <tr:spacer width="70"/>
                 </trh:cellFormat>
-                <trh:cellFormat width="15%" valign="top">
+                <trh:cellFormat width="20%" halign="left" valign="top">
                     <!-- model & scope -->
                     <tr:panelTabbed position="above">
                         <tr:showDetailItem text="Molecular Interactions"
@@ -234,13 +232,16 @@
                 <trh:cellFormat width="70%">
                 </trh:cellFormat>
             </trh:rowLayout>
+            <trh:rowLayout>
+                <trh:cellFormat halign="left" valign="top">
+                    <tr:commandButton id="submit_button" text="Validate" action="#{psiValidatorController.validate}"
+                                      onclick="document.getElementById('progress_image').style.display = 'block';
+                                       document.getElementById('submit_button').disabled=true" inlineStyle="float:left"/>
+                    <tr:image id="progress_image" inlineStyle="display:none; float:left" source="/images/wait_red_indicator.gif"/>
 
+                </trh:cellFormat>
+            </trh:rowLayout>
         </trh:tableLayout>
-
-        <tr:commandButton id="submit_button" text="Validate" actionListener="#{psiValidatorController.validate}"
-                          onclick="document.getElementById('progress_image').style.display = 'block';
-                                       document.getElementById('submit_button').disabled=true"/>
-        <tr:image id="progress_image" inlineStyle="display:none;" source="/images/wait_red_indicator.gif"/>
 
     </tr:panelGroupLayout>
 
