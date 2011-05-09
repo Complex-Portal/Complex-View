@@ -6,8 +6,13 @@ package uk.ac.ebi.intact.services.validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
 import psidev.psi.tools.validator.ValidatorMessage;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 /**

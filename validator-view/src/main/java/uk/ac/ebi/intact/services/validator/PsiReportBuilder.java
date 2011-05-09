@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.validator.ValidatorReport;
 import psidev.psi.mi.validator.extension.Mi25Validator;
+import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
 import psidev.psi.tools.validator.MessageLevel;
 import psidev.psi.tools.validator.ValidatorMessage;
 import psidev.psi.tools.validator.preferences.UserPreferences;
@@ -15,7 +16,6 @@ import psidev.psi.tools.validator.preferences.UserPreferences;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -38,68 +38,68 @@ public class PsiReportBuilder {
      */
     private String name;
 
-    /**
-     * If using a URL, the URL.
-     */
-    private URL url;
+    ///**
+    //* If using a URL, the URL.
+    //*/
+    //private URL url;
 
-    /**
-     * If using a File, this value won't be null.
-     */
-    private File file;
+    ///**
+    //* If using a File, this value won't be null.
+    //*/
+    //private File file;
 
     private ValidationScope validationScope;
 
     private DataModel model;
 
-    /**
-     * Handy enumeration to avoid null checks on the previous attributes, when trying to determine
-     * whether the info comes from URL or a stream.
-     */
-    private enum SourceType {
-        URL, FILE
-    }
+    ///**
+    //* Handy enumeration to avoid null checks on the previous attributes, when trying to determine
+    //* whether the info comes from URL or a stream.
+    //*/
+    //private enum SourceType {
+    //URL, FILE
+    //}
 
-    /**
-     * The current type used.
-     */
-    private SourceType currentSourceType;
+    ///**
+    //* The current type used.
+    //*/
+    //private SourceType currentSourceType;
 
     //private DefaultBoundedRangeModel progressModel;
 
-    /**
-     * Creates a PsiReportBuilder instance using an URL
-     *
-     * @param name The name of the file, only needed for information purposes
-     * @param url  The URL with the PSI xml
-     */
-    public PsiReportBuilder( String name, URL url, File tempFile, DataModel model, ValidationScope validationScope) {
+    ///**
+    //* Creates a PsiReportBuilder instance using an URL
+    //*
+    //* @param name The name of the file, only needed for information purposes
+    //* @param url  The URL with the PSI xml
+    //*/
+    /*public PsiReportBuilder( String name, DataModel model, ValidationScope validationScope) {
         this.name = name;
         this.url = url;
-        this.file = tempFile;
+        //this.file = tempFile;
         this.validationScope = validationScope;
         this.model = model;
         //this.progressModel = progressModel;
 
         this.currentSourceType = SourceType.URL;
-    }
+    }*/
 
     /**
      * Creates a PsiReportBuilder instance using an InputStream
      *
      * @param name The name of the file, only needed for information purposes
-     * @param file The file containing the PSI xml. This InputStream has to be
-     *             resettable in order to build the report properly. The stream will be reset a few times, so the
-     *             information is parsed in the different validation phases
+    //* @param file The file containing the PSI xml. This InputStream has to be
+    //*             resettable in order to build the report properly. The stream will be reset a few times, so the
+    //*             information is parsed in the different validation phases
      */
-    public PsiReportBuilder(String name, File file, DataModel model, ValidationScope validationScope) {
+    public PsiReportBuilder(String name, DataModel model, ValidationScope validationScope) {
         this.name = name;
-        this.file = file;
+        //this.file = file;
         this.validationScope = validationScope;
         this.model = model;
         //this.progressModel = progressModel;
 
-        this.currentSourceType = SourceType.FILE;
+        //this.currentSourceType = SourceType.FILE;
     }
 
     /**
@@ -108,7 +108,7 @@ public class PsiReportBuilder {
      * @return the report created, after all the validations
      * @throws IOException thrown if there is something wrong with the I/O stuff
      */
-    public PsiReport createPsiReport() throws IOException {
+    public PsiReport createPsiReport(InputStream streamToValidate) throws IOException {
         // new instance of the report, that will be filled with the validation information
         PsiReport report = new PsiReport(name);
 
@@ -131,7 +131,7 @@ public class PsiReportBuilder {
             Mi25Validator validator =  factory.getValidator(validationScope, model);
 
             // validate the file
-            validateFile(report, file, validator);
+            validateInputStream(report, streamToValidate, validator);
 
             /*if( model.equals( DataModel.PSI_MI ) ) {
                 validatePsiMiFile(report, file);
@@ -154,35 +154,55 @@ public class PsiReportBuilder {
             return report;
         }
 
+        return report;
+    }
+
+    /**
+     * Creates the HTML view using Xstl Transformation, and sets it to the report
+     *
+     * @param report The report to set the view
+     * @param is     The input stream with the PSI XML file
+     */
+    public void createHtmlView( PsiReport report, InputStream is ) {
         log.debug("Completed file validation ... about to build the report now ...");
 
         if (report.isXmlSyntaxValid()) {
-            // creating the view if the model supports it
-            if( model.hasHtmlViewBuilder() ) {
-                model.createHtmlView( report, getInputStream() );
+            String transformedOutput = null;
+            try {
+                // we transform the xml to html using an utility class that returns
+                // the output stream with the html content
+                final ByteArrayOutputStream os = new ByteArrayOutputStream( 4096 );
+                XslTransformerUtils.viewPsiMi25(is, os);
+                transformedOutput = os.toString();
             }
+            catch ( Exception e ) {
+                log.error( "Failed to produce the HTML view", e );
+                FacesContext context = FacesContext.getCurrentInstance();
+                FacesMessage message = new FacesMessage( "Failed to produce the HTML view of your data: " + e.getMessage() );
+                context.addMessage( null, message );
+            }
+            report.setHtmlView( transformedOutput );
         } else {
             //if the xml validation is wrong, the second validation won't be run
             report.setSemanticsStatus( PsiReport.NOT_RUN ); // not checked, XML syntax needs to be valid first
         }
 
-        return report;
     }
 
-    /**
-     * Returns the InputStream, independently of the origin of the information
-     *
-     * @return the stream with the info
-     * @throws IOException throw when there are I/O problems
-     */
-    private InputStream getInputStream() throws IOException {
+    ///**
+    //* Returns the InputStream, independently of the origin of the information
+    //*
+    //* @return the stream with the info
+    //* @throws IOException throw when there are I/O problems
+    //*/
+    /*private InputStream getInputStream() throws IOException {
         // uses the currentSourceType to determine how to open and return the inputStream
         if (currentSourceType == SourceType.URL) {
             return url.openStream();
         } else {
             return new FileInputStream( file );
         }
-    }
+    }*/
 
     /**
      * Validates PSI-MI data.
@@ -301,7 +321,7 @@ public class PsiReportBuilder {
         }
     }
 
-    private void validateFile(PsiReport report, File file, Mi25Validator validator){
+    private void validateInputStream(PsiReport report, InputStream streamToValidate, Mi25Validator validator){
         // Printwriter to get the stacktrace messages
         StringWriter sw = new StringWriter( 1024 );
 
@@ -312,7 +332,7 @@ public class PsiReportBuilder {
             //progressModel.setValue( 4L );
 
             final long start = System.currentTimeMillis();
-            final ValidatorReport validatorReport = validator.validate( file );
+            final ValidatorReport validatorReport = validator.validate( streamToValidate );
             final long stop = System.currentTimeMillis();
             log.trace( "Time to validate using scope '"+validationScope+"': " + (stop - start) + "ms" );
 
