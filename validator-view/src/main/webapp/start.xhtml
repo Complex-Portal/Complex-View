@@ -312,6 +312,9 @@
                             <tr:outputText value="#{psiValidatorController.currentPsiReport.xmlSyntaxStatus}"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
+                            <tr:outputText value="#{psiValidatorController.currentPsiReport.numberOfSyntaxMessages} messages" rendered="#{psiValidatorController.currentPsiReport.numberOfSyntaxMessages > 0}"/>
+                        </trh:cellFormat>
+                        <trh:cellFormat>
                             <tr:panelHorizontalLayout rendered="#{psiValidatorController.currentPsiReport.xmlSyntaxInvalid}">
                                 <tr:goLink destination="#xml_report">
                                     <tr:outputText value="Report"/>
@@ -342,6 +345,9 @@
                         </trh:cellFormat>
                         <trh:cellFormat>
                             <tr:outputText value="#{psiValidatorController.currentPsiReport.semanticsStatus}"/>
+                        </trh:cellFormat>
+                        <trh:cellFormat>
+                            <tr:outputText value="#{psiValidatorController.currentPsiReport.numberOfSemanticMessages} messages" rendered="#{psiValidatorController.currentPsiReport.numberOfSemanticMessages > 0}"/>
                         </trh:cellFormat>
                         <trh:cellFormat>
                             <tr:goLink destination="#semantics_report" rendered="#{psiValidatorController.currentPsiReport.xmlSemanticInvalid}">
