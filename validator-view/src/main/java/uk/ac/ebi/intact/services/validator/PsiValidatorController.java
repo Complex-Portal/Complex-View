@@ -92,17 +92,85 @@ public class PsiValidatorController extends BaseController {
      */
     private PsiReport currentPsiReport;
 
-    ///**
-     //* The list of items to select for rule customization
-     //*/
-    //private Collection<SelectItem> customizedRules = new ArrayList<SelectItem>();
+    /**
+     * The list of items to select for rule customization
+     */
+    //private Collection<SelectItem> itemRules;
+
+    //private int[] customizedRules;
+
+    //private Map<Integer, ObjectRule> mapOfRules;
+
+    //private boolean useCustomizedRules = false;
 
     /**
      * Constructor
      */
-    //public PsiValidatorController() {
+    /*public PsiValidatorController() {
     //this.uploadLocalFile = true;
-    //}
+        this.mapOfRules = new HashMap<Integer, ObjectRule>();
+
+        ValidatorWebContext context = ValidatorWebContext.getInstance();
+
+        ValidatorWebContent content = context.getValidatorWebContent();
+
+        Map<ValidationScope, Set<ObjectRule>> rules = content.getPsiMiObjectRules();
+
+        Set<ValidationScope> scopes = rules.keySet();
+
+        itemRules = new ArrayList<SelectItem>(rules.get(ValidationScope.IMEX).size() + scopes.size());
+
+        initialiseMapOfRules(rules.get(ValidationScope.IMEX));
+    }*/
+
+    /*private void initialiseMapOfRules(Set<ObjectRule> rules){
+        Integer index = 0;
+        Map<String, List<Integer>> groupOfItems = new HashMap<String, List<Integer>>();
+
+        for (ObjectRule rule : rules){
+            this.mapOfRules.put(index, rule);
+
+            String scope = rule.getScope().toUpperCase();
+
+            if (scope == null){
+                scope = "others";
+            }
+
+            if (groupOfItems.containsKey(scope)){
+                groupOfItems.get(scope).add(index);
+            }
+            else{
+                List<Integer> ruleIds = new ArrayList<Integer>();
+                ruleIds.add(index);
+
+                groupOfItems.put(scope, ruleIds);
+            }
+
+            index++;
+        }
+
+        initializeListOfItems(groupOfItems);
+    }
+
+    private void initializeListOfItems(Map<String, List<Integer>> groupOfItems){
+
+        for (Map.Entry<String, List<Integer>> entry : groupOfItems.entrySet()){
+
+            SelectItem [] selectedItemsForGroup = new SelectItem [entry.getValue().size()];
+
+            for (int j = 0; j < entry.getValue().size(); j++){
+                Integer ruleId = entry.getValue().get(j);
+                ObjectRule rule = this.mapOfRules.get(ruleId);
+
+                if (rule != null){
+                    selectedItemsForGroup[j] = new SelectItem(ruleId, rule.getName());
+                }
+            }
+
+            SelectItemGroup group = new SelectItemGroup(entry.getKey(), null, false, selectedItemsForGroup);
+            this.itemRules.add(group);
+        }
+    }*/
 
     /*/**
      * This is a valueChangeEvent. When the selection of File/URL is changed, this event is fired.
@@ -670,4 +738,28 @@ public class PsiValidatorController extends BaseController {
     public void setValidationScope(ValidationScope validationScope) {
         this.validationScope = validationScope;
     }
+
+    /*public int[] getCustomizedRules() {
+        return customizedRules;
+    }
+
+    public void setCustomizedRules(int[] customizedRules) {
+        this.customizedRules = customizedRules;
+    }
+
+    public Collection<SelectItem> getItemRules() {
+        return itemRules;
+    }
+
+    public Map<Integer, ObjectRule> getMapOfRules() {
+        return mapOfRules;
+    }
+
+    public boolean isUseCustomizedRules() {
+        return useCustomizedRules;
+    }
+
+    public void setUseCustomizedRules(boolean useCustomizedRules) {
+        this.useCustomizedRules = useCustomizedRules;
+    }*/
 }

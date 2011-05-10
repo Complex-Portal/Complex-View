@@ -190,14 +190,14 @@
                                   columns="50" value="#{psiValidatorController.psiUrl}"
                                   styleClass="urlUpload"/>
                     <tr:panelList>
-                       <tr:outputText value="Single XML file"/>
-                       <tr:outputText value="ZIP file containing one XML file (if several XML files, only one will be validated)"/>
+                        <tr:outputText value="Single XML file"/>
+                        <tr:outputText value="ZIP file containing one XML file (if several XML files, only one will be validated)"/>
                     </tr:panelList>
                 </trh:cellFormat>
                 <trh:cellFormat >
                     <tr:spacer width="70"/>
                 </trh:cellFormat>
-                <trh:cellFormat width="20%" halign="left" valign="top">
+                <trh:cellFormat width="30%" halign="left" valign="top">
                     <!-- model & scope -->
                     <tr:panelTabbed position="above">
                         <tr:showDetailItem text="Molecular Interactions"
@@ -218,6 +218,13 @@
                                     <tr:selectItem label="IMEx" shortDesc="International Molecular Exchange guidelines" value="IMEX"/>
                                 </tr:selectOneRadio>
                             </tr:panelHorizontalLayout>
+                            <!--<tr:panelHorizontalLayout valign="top">
+                                <tr:selectBooleanCheckbox styleClass="selectRuleCustomization" id="ruleSelector" label="Customized rules" value="#{psiValidatorController.useCustomizedRules}" onclick="displayRuleCustomization();"/>
+
+                                <h:selectManyCheckbox styleClass="customizeRules" value="#{psiValidatorController.customizedRules}" layout="pageDirection">
+                                    <f:selectItems value="#{psiValidatorController.itemRules}"/>
+                                </h:selectManyCheckbox>
+                            </tr:panelHorizontalLayout> -->
 
                         </tr:showDetailItem>
 
@@ -241,23 +248,24 @@
                         </tr:showDetailItem>
                     </tr:panelTabbed>
                 </trh:cellFormat>
-                <trh:cellFormat width="70%">
+                <trh:cellFormat width="60%">
                 </trh:cellFormat>
             </trh:rowLayout>
             <trh:rowLayout>
                 <trh:cellFormat halign="left" valign="top">
                     <tr:commandButton id="submit_button" text="Validate" action="#{psiValidatorController.validate}"
                                       onclick="document.getElementById('progress_image').style.display = 'block';
-                                       document.getElementById('submit_button').disabled=true" inlineStyle="float:left"/>
+                                       document.getElementById('submit_button').disabled=true" inlineStyle="float:left;"/>
                     <tr:image id="progress_image" inlineStyle="display:none; float:left" source="/images/wait_red_indicator.gif"/>
 
                 </trh:cellFormat>
             </trh:rowLayout>
         </trh:tableLayout>
-
     </tr:panelGroupLayout>
 
 </tr:panelHeader>
+
+<br/>
 
 <tr:messages globalOnly="true"/>
 

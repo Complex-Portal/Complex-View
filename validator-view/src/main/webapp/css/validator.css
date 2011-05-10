@@ -10,3 +10,7 @@
 .errorContextDetails {
     display: none;
 }
+
+.selectRuleCustomization {
+    halign: left
+}

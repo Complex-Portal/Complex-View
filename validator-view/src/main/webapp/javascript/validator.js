@@ -11,6 +11,15 @@ function displayFileUpload(){
     }
 }
 
+function displayRuleCustomization(){
+    if (document.forms['ebiForm']['ruleSelector'].checked){
+        dojo.query('.customizeRules').style('display', 'block');
+    }
+    else{
+        dojo.query('.customizeRules').style('display', 'none');
+    }
+}
+
 dojo.addOnLoad(function(){
     dojo.query('.showErrorContextDetails').onclick(function(){
         var thisList = new dojo.NodeList(this);
@@ -25,4 +34,5 @@ dojo.addOnLoad(function(){
     });
 
     displayFileUpload();
+    displayRuleCustomization();
 });
