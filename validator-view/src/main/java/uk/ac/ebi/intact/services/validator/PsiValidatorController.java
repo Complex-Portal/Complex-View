@@ -37,6 +37,7 @@ public class PsiValidatorController extends BaseController {
     //static private List<String> PROGRESS_STEPS;
     private static final String ZIP_EXTENSION = ".zip";
     private static final String XML_EXTENSION = ".xml";
+    private static final String SAMPLE_URL="http://psimi.googlecode.com/svn/trunk/validator/psimi-schema-validator/xml_samples/10366597.xml";
 
     //static {
     //PROGRESS_STEPS = new ArrayList<String>();
@@ -83,7 +84,7 @@ public class PsiValidatorController extends BaseController {
     private String psiUrl;
 
     /**
-     * dData model of the validation progress.
+     * Data model of the validation progress.
      */
     //protected volatile DefaultBoundedRangeModel progressModel;
 
@@ -92,13 +93,19 @@ public class PsiValidatorController extends BaseController {
      */
     private PsiReport currentPsiReport;
 
-    /**
-     * The list of items to select for rule customization
-     */
-    //private Collection<SelectItem> itemRules;
+    ///**
+     //* The list of items to select for rule customization grouped by scopes
+     //*/
+    //private Map<String, List<SelectItem>> itemRules;
 
-    //private int[] customizedRules;
+    ///**
+     //* The map of selected items
+     //*/
+    //private Map<String, List<Integer>> customizedRules;
 
+    ///**
+     //* The map of object rules
+     //*/
     //private Map<Integer, ObjectRule> mapOfRules;
 
     //private boolean useCustomizedRules = false;
@@ -296,11 +303,11 @@ public class PsiValidatorController extends BaseController {
         }
     }*/
 
-    /**
-     * Validates the data entered by the user upon pressing the validate button.
-     *
-     * @param event
-     */
+    ///**
+     //* Validates the data entered by the user upon pressing the validate button.
+     //*
+     //* @param event
+     //*/
     /*public void validate( ActionEvent event ) {
 
         initializeProgressModel();
@@ -328,6 +335,16 @@ public class PsiValidatorController extends BaseController {
             context.addMessage( event.getComponent().getClientId( context ), message );
         }
     }*/
+
+    public String loadExample(){
+
+        this.uploadLocalFile = false;
+        this.psiUrl = SAMPLE_URL;
+        this.model = DataModel.PSI_MI;
+        this.validationScope = ValidationScope.MIMIX;
+
+        return "start";
+    }
 
     /**
      * Validates the data entered by the user upon pressing the validate button.
