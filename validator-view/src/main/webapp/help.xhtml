@@ -17,11 +17,13 @@
 
     <tr:panelHeader text="Molecular interactions (PSI-MI ontology)">
 
-        The validator will execute a set of rules based on the PSI-MI ontology to check your file(s). It can check 4 possible
-        levels with lower levels being included in a higher rank verification.
+        The validator will execute a set of rules based on the PSI-MI ontology to check your file(s). It can check 5 possible
+        levels with lower levels being included in a higher rank verification. The 'Customized rules' level is a little different as it includes
+        the two first levels (XML syntax and usage of controlled vocabulary usage).
         <ul>
             <li>XML syntax</li>
             <li>Usage of controlled-vocabulary defined in the PSI-MI ontology</li>
+            <li>PSI-MI basic checks</li>
             <li>MIMIx-compliance</li>
             <li>IMEx-compliance</li>
         </ul>
@@ -41,11 +43,11 @@
 <br/>
 
 <a name="scopes"/>
-<tr:panelHeader text="Validation Scopes">
+<tr:panelHeader text="Validation Scope">
 
     The validation levels described below define the the stringency of the validation rules applied to a dataset.
-    As the image below illustrates, the currently supported scopes are built on top of one another. Progressively
-    increasing their specificity.
+    As the image below illustrates, the currently supported levels are built on top of one another except for the 'Customized rules' scope which includes XML syntax and controlled vocabulary usage
+    but then the object rules can be a mix of PSI-MI, MIMIx and IMEx.
 
     <br/>
     <br/>
@@ -156,6 +158,38 @@
 </tr:panelHeader>
 <br/>
 
+<a name ="psi-mi"/>
+<tr:panelHeader text="PSI-MI basic checks">
+
+    This scope includes a few basic rules which are not specified in MIMIx or IMEx but are important for the consitency of the file.
+    It checks the consistency of the database cross references using the PSI-MI ontology, the consistency of the participant's features as it is specified in the PSI-XML 2.5 documentation and the interactor sequences
+    (only for DNA, RNA or protein sequences)
+
+
+    <tr:panelHeader text="Description of the rules executed with the scope 'PSI-MI'">
+
+        <h:dataTable var="psiMiRules" value="#{helpController.psiMiRules}">
+            <h:column>
+                <h:outputText value="#{psiMiRules.scope}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="  "/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{psiMiRules.name}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="  "/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{psiMiRules.description}"/>
+            </h:column>
+        </h:dataTable>
+    </tr:panelHeader>
+
+</tr:panelHeader>
+<br/>
+
 <a name ="mimix"/>
 <tr:panelHeader text="MIMIx guidelines">
 
@@ -186,7 +220,7 @@
 <br/>
 
 <a name ="imex"/>
-<tr:panelHeader text="IMEx curation Standards">
+<tr:panelHeader text="IMEx Curation standards">
 
     This ensures that the curation standards agreed by the  International Molecular Exchange Consortium (<tr:goLink destination="http://imex.sourceforge.net/" targetFrame="_blank">IMEx</tr:goLink>) are respected.
     <br/>
@@ -235,7 +269,75 @@
     </tr:goLink>
 
 </tr:panelHeader>
+<br/>
 
+<a name ="customized"/>
+<tr:panelHeader text="Customized rules">
+
+    This scope allows the selection of the object rules among the PSI-MI, MIMIx and IMEx rules which will be used for validating the file.
+
+    <tr:panelHeader text="List of rules which can be selected with the scope 'customized rules'">
+
+        <h:dataTable var="psiMiRules" value="#{helpController.psiMiRules}">
+            <h:column>
+                <h:outputText value="#{psiMiRules.scope}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="  "/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{psiMiRules.name}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="  "/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{psiMiRules.description}"/>
+            </h:column>
+        </h:dataTable>
+
+        <br/>
+
+        <h:dataTable var="mimixRules" value="#{helpController.mimixRulesOnly}">
+            <h:column>
+                <h:outputText value="#{mimixRules.scope}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="  "/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{mimixRules.name}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="  "/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{mimixRules.description}"/>
+            </h:column>
+        </h:dataTable>
+
+        <br/>
+
+        <h:dataTable var="imexRules" value="#{helpController.imexRulesOnly}">
+            <h:column>
+                <h:outputText value="#{imexRules.scope}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="  "/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{imexRules.name}"/>
+            </h:column>
+            <h:column>
+                <h:outputText value="  "/>
+            </h:column>
+            <h:column>
+                <h:outputText value="#{imexRules.description}"/>
+            </h:column>
+        </h:dataTable>
+    </tr:panelHeader>
+
+</tr:panelHeader>
 <br/>
 <br/>
 

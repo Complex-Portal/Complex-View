@@ -12,11 +12,13 @@ import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
 import psidev.psi.tools.validator.MessageLevel;
 import psidev.psi.tools.validator.ValidatorMessage;
 import psidev.psi.tools.validator.preferences.UserPreferences;
+import psidev.psi.tools.validator.rules.codedrule.ObjectRule;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is the responsible of reading and validating the PSI File and creating a validation report
@@ -129,6 +131,56 @@ public class PsiReportBuilder {
 
             // create a new validator
             Mi25Validator validator =  factory.getValidator(validationScope, model);
+
+            // validate the file
+            validateInputStream(report, streamToValidate, validator);
+
+            /*if( model.equals( DataModel.PSI_MI ) ) {
+                validatePsiMiFile(report, file);
+            } else if( model.equals( DataModel.PSI_PAR ) ) {
+                validatePsiParFile(report, file);
+            } else {
+                throw new IllegalStateException( "Unknown data model: " + model );
+            }*/
+
+        } catch (Throwable t) {
+            log.error("Unexpected error thrown", t);
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Sorry, an unexpected error occur, please contact the " +
+                            "administrator of this web site if the issue persist.",
+                    t.getMessage());
+            context.addMessage(null, facesMessage);
+
+            return report;
+        }
+
+        return report;
+    }
+
+        /**
+     * Creates the PSI report using a customized list of rules
+     *
+     * @return the report created, after all the validations
+     * @throws IOException thrown if there is something wrong with the I/O stuff
+     */
+    public PsiReport createPsiReport(InputStream streamToValidate, List<ObjectRule> customizedRules) throws IOException {
+        // new instance of the report, that will be filled with the validation information
+        PsiReport report = new PsiReport(name);
+
+        // second validation: checks that the semantics is right
+        try {
+
+            if ( log.isDebugEnabled() ) {
+                log.debug( "The model in use is: " + DataModel.PSI_MI );
+            }
+
+            // Create a new Validator factory
+            ValidatorFactory factory = new ValidatorFactory();
+
+            // create a new validator
+            Mi25Validator validator =  factory.getValidator(customizedRules);
 
             // validate the file
             validateInputStream(report, streamToValidate, validator);

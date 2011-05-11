@@ -397,6 +397,10 @@ public class ValidatorWebContent {
 
         this.psiMiObjectRules.put(ValidationScope.IMEX, validator.getObjectRules());
 
+        validator = factory.getReInitialisedValidator(ValidationScope.PSI_MI, DataModel.PSI_MI);
+
+        this.psiMiObjectRules.put(ValidationScope.PSI_MI, validator.getObjectRules());
+
         InputStream cvConfig = Mi25Validator.class.getClassLoader().getResourceAsStream( ValidatorFactory.getPsiMiCvMapping() );
         try {
             setPsiMiCvMapping(cvRulesReader.read(cvConfig));

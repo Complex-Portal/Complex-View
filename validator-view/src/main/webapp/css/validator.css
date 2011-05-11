@@ -11,6 +11,29 @@
     display: none;
 }
 
-.selectRuleCustomization {
-    halign: left
+.unSelectAllRules {
+    display: none;
+}
+
+.selectAllPsimiRules {
+    halign: right;
+    float: right;
+}
+.unSelectAllPsimiRules {
+    float: right;
+    halign: right;
+}
+
+.selectAllMimixRules {
+    halign: right;
+}
+.unSelectAllMimixRules {
+    halign: right;
+}
+
+.selectAllImexRules {
+    halign: right;
+}
+.unSelectAllImexRules {
+    halign: right;
 }

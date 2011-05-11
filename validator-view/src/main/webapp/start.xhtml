@@ -110,33 +110,43 @@
         <tr:outputText value=" is a quick user's guide which describes : "/>
         <ul>
             <li>
-                <tr:goLink destination="/pages/documentation/help.xhtml#intro">
+                <tr:goLink destination="help.xhtml#intro">
                     <tr:outputText value="PSI-MI and PSI-PAR validation"/>
                 </tr:goLink>
             </li>
             <li>
-                <tr:goLink destination="/pages/documentation/help.xhtml#scopes">
+                <tr:goLink destination="help.xhtml#scopes">
                     <tr:outputText value="Validation scopes"/>
                 </tr:goLink>
             </li>
             <li>
-                <tr:goLink destination="/pages/documentation/help.xhtml#syntax">
+                <tr:goLink destination="help.xhtml#syntax">
                     <tr:outputText value="XML syntax"/>
                 </tr:goLink>
             </li>
             <li>
-                <tr:goLink destination="/pages/documentation/help.xhtml#controlled_vocabulary">
+                <tr:goLink destination="help.xhtml#controlled_vocabulary">
                     <tr:outputText value="PSI-MI controlled vocabulary"/>
                 </tr:goLink>
             </li>
             <li>
-                <tr:goLink destination="/pages/documentation/help.xhtml#mimix">
+                <tr:goLink destination="help.xhtml#psi-mi">
+                    <tr:outputText value="PSI-MI basic object rules"/>
+                </tr:goLink>
+            </li>
+            <li>
+                <tr:goLink destination="help.xhtml#mimix">
                     <tr:outputText value="MIMIx rules"/>
                 </tr:goLink>
             </li>
             <li>
-                <tr:goLink destination="/pages/documentation/help.xhtml#imex">
+                <tr:goLink destination="help.xhtml#imex">
                     <tr:outputText value="IMEx rules"/>
+                </tr:goLink>
+            </li>
+            <li>
+                <tr:goLink destination="help.xhtml#customized">
+                    <tr:outputText value="Customized rules"/>
                 </tr:goLink>
             </li>
         </ul>
@@ -192,7 +202,7 @@
                     <tr:panelList>
                         <tr:outputText value="Single XML file"/>
                         <tr:outputText value="ZIP file containing one XML file (if several XML files, only one will be validated)"/>
-                        <tr:commandLink styleClass="exampleMimix" action="#{psiValidatorController.loadExample}"><tr:outputText value="Load an example"/></tr:commandLink>
+                        <tr:commandLink action="#{psiValidatorController.loadExample}"><tr:outputText value="Load an example"/></tr:commandLink>
                     </tr:panelList>
                 </trh:cellFormat>
                 <trh:cellFormat >
@@ -204,28 +214,66 @@
                         <tr:showDetailItem text="Molecular Interactions"
                                            disclosureListener="#{psiValidatorController.validationModelChangedMI}">
 
-                            <tr:panelHorizontalLayout valign="top">
-                                <tr:outputText value="Validation scope " />
+                            <trh:tableLayout width="100%">
+                                <trh:rowLayout>
+                                    <trh:cellFormat>
+                                        <tr:outputText value="Validation scope " />
 
-                                <tr:commandLink action="dialog:miDocumentation" partialSubmit="true"
-                                                useWindow="true" windowHeight="400" windowWidth="500">
-                                    <tr:image source="images/icon_help.gif"/>
-                                </tr:commandLink>
+                                        <tr:commandLink action="dialog:miDocumentation" partialSubmit="true"
+                                                        useWindow="true" windowHeight="400" windowWidth="500">
+                                            <tr:image source="images/icon_help.gif"/>
+                                        </tr:commandLink>
 
-                                <tr:selectOneRadio id="scopeSelector" value="#{psiValidatorController.validationScope}">
-                                    <tr:selectItem label="XML Syntax Only" value="SYNTAX"/>
-                                    <tr:selectItem label="Controlled Vocabulary Usage" value="CV_ONLY"/>
-                                    <tr:selectItem label="MIMIx" shortDesc="Minimum Information about a Molecular Interaction guidelines" value="MIMIX"/>
-                                    <tr:selectItem label="IMEx" shortDesc="International Molecular Exchange guidelines" value="IMEX"/>
-                                </tr:selectOneRadio>
-                            </tr:panelHorizontalLayout>
-                            <!--<tr:panelHorizontalLayout valign="top">
-                                <tr:selectBooleanCheckbox styleClass="selectRuleCustomization" id="ruleSelector" label="Customized rules" value="#{psiValidatorController.useCustomizedRules}" onclick="displayRuleCustomization();"/>
-
-                                <h:selectManyCheckbox styleClass="customizeRules" value="#{psiValidatorController.customizedRules}" layout="pageDirection">
-                                    <f:selectItems value="#{psiValidatorController.itemRules}"/>
-                                </h:selectManyCheckbox>
-                            </tr:panelHorizontalLayout> -->
+                                        <tr:selectOneRadio id="scopeSelector" value="#{psiValidatorController.validationScope}" styleClass="validatorScopes">
+                                            <tr:selectItem label="XML Syntax Only" value="SYNTAX"/>
+                                            <tr:selectItem label="Controlled Vocabulary Usage" value="CV_ONLY"/>
+                                            <tr:selectItem label="PSI-MI" shortDesc="Basic checks for PSI-MI" value="PSI_MI"/>
+                                            <tr:selectItem label="MIMIx" shortDesc="Minimum Information about a Molecular Interaction guidelines" value="MIMIX"/>
+                                            <tr:selectItem label="IMEx" shortDesc="International Molecular Exchange guidelines" value="IMEX"/>
+                                            <tr:selectItem label="Customized rules" value="CUSTOMIZED"/>
+                                        </tr:selectOneRadio>
+                                    </trh:cellFormat>
+                                </trh:rowLayout>
+                                <trh:rowLayout>
+                                    <trh:cellFormat halign="left">
+                                        <tr:selectManyCheckbox id="psimiRules" styleClass="customizeRules" value="#{psiValidatorController.psiMiCustomizedRules}" rendered="#{psiValidatorController.numberOfPsiMiRules > 0}" layout="pageDirection" label="PSI-MI">
+                                            <f:selectItems value="#{psiValidatorController.psiMiItemRules}"/>
+                                        </tr:selectManyCheckbox>
+                                    </trh:cellFormat>
+                                    <trh:cellFormat halign="right" valign="top">
+                                        <tr:panelHorizontalLayout valign="top">
+                                            <tr:goButton styleClass="selectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Select All"/>
+                                            <tr:goButton styleClass="unSelectAllRules customizeRules" text="Unselect all" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}"/>
+                                        </tr:panelHorizontalLayout>
+                                    </trh:cellFormat>
+                                </trh:rowLayout>
+                                <trh:rowLayout>
+                                    <trh:cellFormat halign="left">
+                                        <tr:selectManyCheckbox id="mimixRules" styleClass="customizeRules" value="#{psiValidatorController.mimixCustomizedRules}" rendered="#{psiValidatorController.numberOfMimixRules > 0}" layout="pageDirection" label="MIMIx">
+                                            <f:selectItems value="#{psiValidatorController.mimixItemRules}" />
+                                        </tr:selectManyCheckbox>
+                                    </trh:cellFormat>
+                                    <trh:cellFormat halign="right" valign="top">
+                                        <tr:panelHorizontalLayout valign="top">
+                                            <tr:goButton styleClass="selectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Select All"/>
+                                            <tr:goButton styleClass="unSelectAllRules customizeRules" text="Unselect all" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}"/>
+                                        </tr:panelHorizontalLayout>
+                                    </trh:cellFormat>
+                                </trh:rowLayout>
+                                <trh:rowLayout>
+                                    <trh:cellFormat halign="left">
+                                        <tr:selectManyCheckbox id="imexRules" styleClass="customizeRules" value="#{psiValidatorController.imexCustomizedRules}" rendered="#{psiValidatorController.numberOfImexRules > 0}" layout="pageDirection" label="IMEx">
+                                            <f:selectItems value="#{psiValidatorController.imexItemRules}"/>
+                                        </tr:selectManyCheckbox>
+                                    </trh:cellFormat>
+                                    <trh:cellFormat halign="right" valign="top">
+                                        <tr:panelHorizontalLayout valign="top">
+                                            <tr:goButton styleClass="selectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Select All"/>
+                                            <tr:goButton styleClass="unSelectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Unselect all"/>
+                                        </tr:panelHorizontalLayout>
+                                    </trh:cellFormat>
+                                </trh:rowLayout>
+                            </trh:tableLayout>
 
                         </tr:showDetailItem>
 

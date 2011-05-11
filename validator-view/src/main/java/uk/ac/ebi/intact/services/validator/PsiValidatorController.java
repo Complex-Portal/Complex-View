@@ -11,12 +11,17 @@ import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import psidev.psi.tools.validator.rules.codedrule.ObjectRule;
 import uk.ac.ebi.faces.controller.BaseController;
+import uk.ac.ebi.intact.services.validator.context.ValidatorWebContent;
+import uk.ac.ebi.intact.services.validator.context.ValidatorWebContext;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import java.io.*;
 import java.net.URL;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -38,6 +43,9 @@ public class PsiValidatorController extends BaseController {
     private static final String ZIP_EXTENSION = ".zip";
     private static final String XML_EXTENSION = ".xml";
     private static final String SAMPLE_URL="http://psimi.googlecode.com/svn/trunk/validator/psimi-schema-validator/xml_samples/10366597.xml";
+    private static final String MIMIX="MIMIx";
+    private static final String IMEX="IMEx";
+    private static final String PSIMI="PSI-MI";
 
     //static {
     //PROGRESS_STEPS = new ArrayList<String>();
@@ -93,28 +101,26 @@ public class PsiValidatorController extends BaseController {
      */
     private PsiReport currentPsiReport;
 
-    ///**
-     //* The list of items to select for rule customization grouped by scopes
-     //*/
-    //private Map<String, List<SelectItem>> itemRules;
+    /**
+     * The list of items to select for rule customization grouped by scopes
+     */
+    private Map<ValidationScope, List<SelectItem>> itemRules;
 
-    ///**
-     //* The map of selected items
-     //*/
-    //private Map<String, List<Integer>> customizedRules;
+    /**
+     * The map of selected items
+     */
+    private Map<ValidationScope, List<Integer>> customizedRules;
 
-    ///**
-     //* The map of object rules
-     //*/
-    //private Map<Integer, ObjectRule> mapOfRules;
-
-    //private boolean useCustomizedRules = false;
+    /**
+     * The map of object rules
+     */
+    private Map<Integer, ObjectRule> mapOfRules;
 
     /**
      * Constructor
      */
-    /*public PsiValidatorController() {
-    //this.uploadLocalFile = true;
+    public PsiValidatorController() {
+        //this.uploadLocalFile = true;
         this.mapOfRules = new HashMap<Integer, ObjectRule>();
 
         ValidatorWebContext context = ValidatorWebContext.getInstance();
@@ -123,61 +129,92 @@ public class PsiValidatorController extends BaseController {
 
         Map<ValidationScope, Set<ObjectRule>> rules = content.getPsiMiObjectRules();
 
-        Set<ValidationScope> scopes = rules.keySet();
+        itemRules = new HashMap<ValidationScope, List<SelectItem>>();
+        customizedRules = new HashMap<ValidationScope, List<Integer>>();
 
-        itemRules = new ArrayList<SelectItem>(rules.get(ValidationScope.IMEX).size() + scopes.size());
-
-        initialiseMapOfRules(rules.get(ValidationScope.IMEX));
-    }*/
-
-    /*private void initialiseMapOfRules(Set<ObjectRule> rules){
-        Integer index = 0;
-        Map<String, List<Integer>> groupOfItems = new HashMap<String, List<Integer>>();
-
-        for (ObjectRule rule : rules){
-            this.mapOfRules.put(index, rule);
-
-            String scope = rule.getScope().toUpperCase();
-
-            if (scope == null){
-                scope = "others";
-            }
-
-            if (groupOfItems.containsKey(scope)){
-                groupOfItems.get(scope).add(index);
-            }
-            else{
-                List<Integer> ruleIds = new ArrayList<Integer>();
-                ruleIds.add(index);
-
-                groupOfItems.put(scope, ruleIds);
-            }
-
-            index++;
-        }
-
-        initializeListOfItems(groupOfItems);
+        initialiseCustomizedRules(rules);
     }
 
-    private void initializeListOfItems(Map<String, List<Integer>> groupOfItems){
+    private void initialiseCustomizedRules(Map<ValidationScope, Set<ObjectRule>> rules){
+        Integer index = 0;
 
-        for (Map.Entry<String, List<Integer>> entry : groupOfItems.entrySet()){
+        Set<ObjectRule> mimixRules = rules.get(ValidationScope.MIMIX);
 
-            SelectItem [] selectedItemsForGroup = new SelectItem [entry.getValue().size()];
+        for (ObjectRule rule : mimixRules){
+            ValidationScope scope;
 
-            for (int j = 0; j < entry.getValue().size(); j++){
-                Integer ruleId = entry.getValue().get(j);
-                ObjectRule rule = this.mapOfRules.get(ruleId);
-
-                if (rule != null){
-                    selectedItemsForGroup[j] = new SelectItem(ruleId, rule.getName());
-                }
+            if (rule.getScope() == null){
+                scope = null;
+            }
+            else if (rule.getScope().equalsIgnoreCase(MIMIX)){
+                scope = ValidationScope.MIMIX;
+            }
+            else if (rule.getScope().equalsIgnoreCase(PSIMI)){
+                scope = ValidationScope.PSI_MI;
+            }
+            else{
+                scope = null;
             }
 
-            SelectItemGroup group = new SelectItemGroup(entry.getKey(), null, false, selectedItemsForGroup);
-            this.itemRules.add(group);
+            if (scope != null && rule.getName() != null){
+                this.mapOfRules.put(index, rule);
+
+                if (itemRules.containsKey(scope)){
+                    itemRules.get(scope).add(new SelectItem(index, rule.getName()));
+                }
+                else{
+                    List<SelectItem> ruleItems = new ArrayList<SelectItem>();
+                    ruleItems.add(new SelectItem(index, rule.getName()));
+
+                    itemRules.put(scope, ruleItems);
+                }
+
+                if (customizedRules.containsKey(scope)){
+                    customizedRules.get(scope).add(index);
+                }
+                else{
+                    List<Integer> ruleIds = new ArrayList<Integer>();
+                    ruleIds.add(index);
+
+                    customizedRules.put(scope, ruleIds);
+                }
+
+                index++;
+            }
         }
-    }*/
+
+        Set<ObjectRule> imexRules = rules.get(ValidationScope.IMEX);
+
+        for (ObjectRule rule : imexRules){
+            ValidationScope scope;
+
+            if (rule.getScope() == null){
+                scope = null;
+            }
+            else if (rule.getScope().equalsIgnoreCase(IMEX)){
+                scope = ValidationScope.IMEX;
+            }
+            else{
+                scope = null;
+            }
+
+            if (scope != null && rule.getName() != null){
+                this.mapOfRules.put(index, rule);
+
+                if (itemRules.containsKey(scope)){
+                    itemRules.get(scope).add(new SelectItem(index, rule.getName()));
+                }
+                else{
+                    List<SelectItem> ruleItems = new ArrayList<SelectItem>();
+                    ruleItems.add(new SelectItem(index, rule.getName()));
+
+                    itemRules.put(scope, ruleItems);
+                }
+
+                index++;
+            }
+        }
+    }
 
     /*/**
      * This is a valueChangeEvent. When the selection of File/URL is changed, this event is fired.
@@ -304,10 +341,10 @@ public class PsiValidatorController extends BaseController {
     }*/
 
     ///**
-     //* Validates the data entered by the user upon pressing the validate button.
-     //*
-     //* @param event
-     //*/
+    //* Validates the data entered by the user upon pressing the validate button.
+    //*
+    //* @param event
+    //*/
     /*public void validate( ActionEvent event ) {
 
         initializeProgressModel();
@@ -356,6 +393,9 @@ public class PsiValidatorController extends BaseController {
 
         try {
 
+            if (currentPsiReport != null){
+                this.currentPsiReport = null;
+            }
             validateInputStream();
 
         } catch ( Throwable t ) {
@@ -441,11 +481,45 @@ public class PsiValidatorController extends BaseController {
         // we execute the method of the builder that actually creates the report
         log.info( "About to start building the PSI report" );
 
-        this.currentPsiReport = builder.createPsiReport(streamToValidate);
+        if (!validationScope.equals(ValidationScope.CUSTOMIZED)){
+            this.currentPsiReport = builder.createPsiReport(streamToValidate);
+        }
+        else{
+            List<ObjectRule> customizedRules = new ArrayList<ObjectRule>();
+
+            List<Integer> rules = this.customizedRules.get(ValidationScope.PSI_MI);
+
+            if (rules != null && !rules.isEmpty()){
+                extractSelectedRules(customizedRules, rules);
+            }
+
+            rules = this.customizedRules.get(ValidationScope.MIMIX);
+
+            if (rules != null && !rules.isEmpty()){
+                extractSelectedRules(customizedRules, rules);
+            }
+
+            rules = this.customizedRules.get(ValidationScope.IMEX);
+
+            if (rules != null && !rules.isEmpty()){
+                extractSelectedRules(customizedRules, rules);
+            }
+
+            this.currentPsiReport = builder.createPsiReport(streamToValidate, customizedRules);
+        }
+
         streamToValidate.close();
 
         builder.createHtmlView(this.currentPsiReport, streamToView);
         streamToView.close();
+    }
+
+    private void extractSelectedRules(List<ObjectRule> customizedRules, List<Integer> rules) {
+        for (Integer index : rules){
+            if (mapOfRules.containsKey(index)){
+                customizedRules.add(mapOfRules.get(index));
+            }
+        }
     }
 
     /**
@@ -756,27 +830,96 @@ public class PsiValidatorController extends BaseController {
         this.validationScope = validationScope;
     }
 
-    /*public int[] getCustomizedRules() {
-        return customizedRules;
+    public List<Integer> getPsiMiCustomizedRules() {
+        List<Integer> psimiRules = this.customizedRules.get(ValidationScope.PSI_MI);
+        if (psimiRules == null){
+            return Collections.EMPTY_LIST;
+        }
+
+        return psimiRules;
     }
 
-    public void setCustomizedRules(int[] customizedRules) {
-        this.customizedRules = customizedRules;
+    public void setPsiMiCustomizedRules(List<Integer> customizedRules) {
+        this.customizedRules.put(ValidationScope.PSI_MI, customizedRules);
     }
 
-    public Collection<SelectItem> getItemRules() {
-        return itemRules;
+    public List<Integer> getMimixCustomizedRules() {
+        List<Integer> mimixRules = this.customizedRules.get(ValidationScope.MIMIX);
+        if (mimixRules == null){
+            return Collections.EMPTY_LIST;
+        }
+
+        return mimixRules;
     }
 
-    public Map<Integer, ObjectRule> getMapOfRules() {
-        return mapOfRules;
+    public void setMimixCustomizedRules(List<Integer> customizedRules) {
+        this.customizedRules.put(ValidationScope.MIMIX, customizedRules);
     }
 
-    public boolean isUseCustomizedRules() {
-        return useCustomizedRules;
+    public List<Integer> getImexCustomizedRules() {
+        List<Integer> imexRules = this.customizedRules.get(ValidationScope.IMEX);
+        if (imexRules == null){
+            return Collections.EMPTY_LIST;
+        }
+
+        return imexRules;
     }
 
-    public void setUseCustomizedRules(boolean useCustomizedRules) {
-        this.useCustomizedRules = useCustomizedRules;
-    }*/
+    public void setImexCustomizedRules(List<Integer> customizedRules) {
+        this.customizedRules.put(ValidationScope.IMEX, customizedRules);
+    }
+
+    public List<SelectItem> getPsiMiItemRules() {
+        List<SelectItem> psimiRules = this.itemRules.get(ValidationScope.PSI_MI);
+        if (psimiRules == null){
+            return Collections.EMPTY_LIST;
+        }
+
+        return psimiRules;
+    }
+
+    public List<SelectItem> getMimixItemRules() {
+        List<SelectItem> mimixRules = this.itemRules.get(ValidationScope.MIMIX);
+        if (mimixRules == null){
+            return Collections.EMPTY_LIST;
+        }
+
+        return mimixRules;
+    }
+
+    public List<SelectItem> getImexItemRules() {
+        List<SelectItem> imexRules = this.itemRules.get(ValidationScope.IMEX);
+        if (imexRules == null){
+            return Collections.EMPTY_LIST;
+        }
+
+        return imexRules;
+    }
+
+    public int getNumberOfImexRules(){
+        List<SelectItem> imexRules = this.itemRules.get(ValidationScope.IMEX);
+        if (imexRules == null){
+            return 0;
+        }
+
+        return imexRules.size();
+    }
+
+    public int getNumberOfMimixRules(){
+        List<SelectItem> mimixRules = this.itemRules.get(ValidationScope.MIMIX);
+        if (mimixRules == null){
+            return 0;
+        }
+
+        return mimixRules.size();
+    }
+
+    public int getNumberOfPsiMiRules(){
+        List<SelectItem> psimiRules = this.itemRules.get(ValidationScope.PSI_MI);
+        if (psimiRules == null){
+            return 0;
+        }
+
+        return psimiRules.size();
+    }
 }

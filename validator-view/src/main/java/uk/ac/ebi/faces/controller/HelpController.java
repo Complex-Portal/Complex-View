@@ -51,6 +51,52 @@ public class HelpController extends BaseController {
 
     /**
      *
+     * @return the list of ObjectRules for IMEx
+     */
+    public List<ObjectRule> getImexRulesOnly(){
+        ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
+
+        ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
+
+        Set<ObjectRule> rules = validatorContent.getPsiMiObjectRules().get(ValidationScope.IMEX);
+
+        List<ObjectRule> imexRules = extractImexRulesFrom(rules);
+
+        return imexRules;
+    }
+
+    /**
+     *
+     * @return the list of ObjectRules executed during an 'PSI-MI' validation
+     */
+    public List<ObjectRule> getPsiMiRules(){
+        ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
+
+        ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
+
+        List<ObjectRule> rules = new ArrayList(validatorContent.getPsiMiObjectRules().get(ValidationScope.PSI_MI));
+
+        return rules;
+    }
+
+    /**
+     *
+     * @return the list of ObjectRules for MIMIx
+     */
+    public List<ObjectRule> getMimixRulesOnly(){
+        ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
+
+        ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
+
+        Set<ObjectRule> rules = validatorContent.getPsiMiObjectRules().get(ValidationScope.MIMIX);
+
+        List<ObjectRule> mimixRules = extractMimixRulesFrom(rules);
+
+        return mimixRules;
+    }
+
+    /**
+     *
      * @return the list of ObjectRules executed during a 'MIMIx' validation with this order :
      * MIMIx rules first and then PSI-MI rules
      */

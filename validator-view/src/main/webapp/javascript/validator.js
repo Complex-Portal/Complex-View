@@ -12,7 +12,7 @@ function displayFileUpload(){
 }
 
 function displayRuleCustomization(){
-    if (document.forms['ebiForm']['ruleSelector'].checked){
+    if (document.forms['ebiForm']['scopeSelector'][5].checked){
         dojo.query('.customizeRules').style('display', 'block');
     }
     else{
@@ -31,7 +31,29 @@ dojo.addOnLoad(function(){
         var thisList = new dojo.NodeList(this);
         thisList.parent().children('.errorContextDetails').style('display', 'none');
         thisList.parent().children('.showErrorContextDetails').style('display', null);
+
     });
+
+    dojo.query('.selectAllRules').onclick(function(){
+        var thisList = new dojo.NodeList(this);
+
+        var field = thisList.parent().parent().parent().parent().parent().closest('tr').query('input[type="checkbox"]')
+        for (i = 0; i < field.length; i++)
+            field[i].checked = true ;
+
+    });
+
+    dojo.query('.unSelectAllRules').onclick(function(){
+        var thisList = new dojo.NodeList(this);
+
+        var field = thisList.parent().parent().parent().parent().parent().closest('tr').query('input[type="checkbox"]')
+        for (i = 0; i < field.length; i++)
+            field[i].checked = false ;
+
+
+    });
+
+    dojo.query('.validatorScopes').onclick(displayRuleCustomization);
 
     displayFileUpload();
     displayRuleCustomization();

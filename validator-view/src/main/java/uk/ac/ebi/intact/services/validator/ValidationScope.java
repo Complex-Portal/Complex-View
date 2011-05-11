@@ -13,7 +13,7 @@ package uk.ac.ebi.intact.services.validator;
  */
 public enum ValidationScope {
 
-    SYNTAX, CV_ONLY, MIMIX, IMEX
+    SYNTAX, CV_ONLY, MIMIX, IMEX, CUSTOMIZED, PSI_MI
     /**
      * Only run XML syntax via a SAX parser.
      */
