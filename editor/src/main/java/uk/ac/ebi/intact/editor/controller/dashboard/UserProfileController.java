@@ -33,7 +33,7 @@ public class UserProfileController extends AbstractUserController {
         User user = getUser();
 
         // validate password if set
-         if (!newPassword1.isEmpty()) {
+         if (newPassword1 != null && !newPassword1.isEmpty()) {
              if (newPassword1.equals(newPassword2)) {
                 user.setPassword(hashedPassword);
              } else {
