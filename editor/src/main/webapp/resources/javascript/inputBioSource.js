@@ -5,6 +5,8 @@ InputBioSource = function(clientId) {
 InputBioSource.prototype.displayButtons = function() {
     document.getElementById(this.clientId + ':selectBtn').style.display = 'inline'
     document.getElementById(this.clientId + ':selectBtn').style.visibility = 'visible'
+    document.getElementById(this.clientId + ':refreshBtn').style.display = 'inline'
+    document.getElementById(this.clientId + ':refreshBtn').style.visibility = 'visible'
     document.getElementById(this.clientId + ':info').style.display = 'none'
     document.getElementById(this.clientId + ':info').style.visibility = 'hidden'
 };
@@ -12,6 +14,8 @@ InputBioSource.prototype.displayButtons = function() {
 InputBioSource.prototype.displayInfo = function () {
     document.getElementById(this.clientId + ':selectBtn').style.display = 'none'
     document.getElementById(this.clientId + ':selectBtn').style.visibility = 'hidden'
+    document.getElementById(this.clientId + ':refreshBtn').style.display = 'none'
+    document.getElementById(this.clientId + ':refreshBtn').style.visibility = 'hidden'
     document.getElementById(this.clientId + ':info').style.display = 'inline'
     document.getElementById(this.clientId + ':info').style.visibility = 'visible'
 };

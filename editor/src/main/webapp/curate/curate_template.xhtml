@@ -177,6 +177,7 @@
                 <p:commandLink id="unsavedRevertLink" value="Revert" style="opacity: 1.0; font-weight: bold"
                                rendered="#{annotatedObjectController.annotatedObject.ac != null}"
                                process="@this"
+                               update="centralUnit,topSection,messagesComponent"
                                actionListener="#{annotatedObjectController.doRevertChanges}"
                                onclick="revertDialog.show()" oncomplete="revertDialog.hide()"/>
 

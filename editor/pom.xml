@@ -234,6 +234,17 @@
             <version>1.6.1</version>
 <!--            <optional>true</optional>-->
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>99.0-does-not-exist</version>
+        </dependency>
 
         <!-- Intact -->
         <dependency>
@@ -400,7 +411,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>3.0.M2-intact-SNAPSHOT</version>
+            <version>3.0-intact-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
