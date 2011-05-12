@@ -188,25 +188,21 @@ public class ParticipantImportController extends BaseController {
                 }
             }
         } else {
-            // shortLabel
-            final Interactor interactorByLabel = interactorDao.getByShortLabel(participantToImport);
+            // uniprot AC
+            Collection<ProteinImpl> proteins = proteinDao.getByUniprotId(participantToImport);
 
-            if (interactorByLabel != null) {
-                candidates.add(toImportCandidate(participantToImport, interactorByLabel));
-            } else {
-                final Collection<InteractorImpl> interactorsByXref = interactorDao.getByIdentityXref(participantToImport);
-
-                for (Interactor interactorByXref : interactorsByXref) {
-                    candidates.add(toImportCandidate(participantToImport, interactorByXref));
-                }
+            for (Protein protein : proteins) {
+                candidates.add(toImportCandidate(participantToImport, protein));
             }
 
             if (candidates.isEmpty()) {
-                // uniprot AC
-                Collection<ProteinImpl> proteins = proteinDao.getByUniprotId(participantToImport);
+                // shortLabel
+                final Collection<InteractorImpl> interactorsByLabel = interactorDao.getByShortLabelLike(participantToImport);
 
-                for (Protein protein : proteins) {
-                    candidates.add(toImportCandidate(participantToImport, protein));
+                for (Interactor interactor : interactorsByLabel) {
+                    if (!(interactor instanceof Interaction)) {
+                        candidates.add(toImportCandidate(participantToImport, interactor));
+                    }
                 }
             }
         }
