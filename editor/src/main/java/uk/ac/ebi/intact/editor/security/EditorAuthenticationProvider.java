@@ -63,6 +63,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
 
         final User user = usersDaoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );
 
+        // initialize the user collections because we will access it often
         if (user != null) {
             Hibernate.initialize(user.getPreferences());
             Hibernate.initialize(user.getRoles());

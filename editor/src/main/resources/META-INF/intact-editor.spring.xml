@@ -39,6 +39,7 @@
                 </entry>
 
                 <!-- Custom scopes -->
+                <!-- probably not in use -->
                 <entry key="hybridSession">
                     <bean class="uk.ac.ebi.intact.editor.util.HybridSessionThreadScope"/>
                 </entry>
