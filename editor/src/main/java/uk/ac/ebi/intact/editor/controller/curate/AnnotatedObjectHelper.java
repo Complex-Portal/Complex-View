@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
@@ -72,7 +73,13 @@ public class AnnotatedObjectHelper {
             return Collections.EMPTY_LIST;
         }
 
-        final ArrayList<Xref> xrefs = new ArrayList<Xref>( annotatedObject.getXrefs() );
+        AnnotatedObject ao = annotatedObject;
+
+        if (!IntactCore.isInitialized(annotatedObject.getXrefs())) {
+            ao = getAnnotatedObjectDao().getByAc(annotatedObject.getAc());
+        }
+
+        final ArrayList<Xref> xrefs = new ArrayList<Xref>( ao.getXrefs() );
         Collections.sort( xrefs, new IntactObjectComparator() );
         return xrefs;
     }
@@ -431,5 +438,9 @@ public class AnnotatedObjectHelper {
 
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
         this.annotatedObject = annotatedObject;
+    }
+
+    private AnnotatedObjectDao<? extends AnnotatedObject> getAnnotatedObjectDao() {
+        return IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(annotatedObject.getClass());
     }
 }
