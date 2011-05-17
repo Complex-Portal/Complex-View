@@ -68,7 +68,7 @@ public class InteractorController extends AnnotatedObjectController {
 
     public void validateAnnotatedObject(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         if (!CvObjectUtils.isSmallMoleculeType(interactor.getCvInteractorType()) && interactor.getBioSource() == null) {
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Interactor type is mandatory", "No interactor type was defined");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Organism is mandatory", "No biosource was defined");
             throw new ValidatorException(message);
         }
     }
