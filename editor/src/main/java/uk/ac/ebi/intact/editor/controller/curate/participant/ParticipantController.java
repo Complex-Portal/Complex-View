@@ -189,7 +189,7 @@ public class ParticipantController extends ParameterizableObjectController {
 
     public void markFeatureToDelete(Feature feature) {
         if (feature.getAc() == null) {
-            participant.removeBindingDomain(feature);
+            participant.removeFeature(feature);
         } else {
            getChangesController().markToDelete(feature, feature.getComponent());
         }

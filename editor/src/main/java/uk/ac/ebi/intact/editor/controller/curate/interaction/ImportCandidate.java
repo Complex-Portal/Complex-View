@@ -1,8 +1,10 @@
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
 import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.uniprot.model.UniprotFeatureChain;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
+import uk.ac.ebi.intact.uniprot.model.UniprotSpliceVariant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +42,6 @@ public class ImportCandidate {
         primaryAcs.add(uniprotProtein.getPrimaryAc());
         secondaryAcs = uniprotProtein.getSecondaryAcs();
         organism = uniprotProtein.getOrganism().getName();
-
-        if (isProteinTranscript()) {
-            selected = false;
-        }
     }
 
     public boolean isSelected() {
@@ -110,7 +108,11 @@ public class ImportCandidate {
         this.uniprotProtein = uniprotProtein;
     }
 
-    public boolean isProteinTranscript() {
-        return uniprotProtein != null && (!(uniprotProtein instanceof UniprotProtein));
+    public boolean isIsoform() {
+        return uniprotProtein != null && (uniprotProtein instanceof UniprotSpliceVariant);
+    }
+
+    public boolean isChain() {
+        return uniprotProtein != null && (uniprotProtein instanceof UniprotFeatureChain);
     }
 }

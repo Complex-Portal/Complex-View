@@ -21,19 +21,24 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.core.persistence.dao.ProteinDao;
+import uk.ac.ebi.intact.dbupdate.prot.ProteinTranscript;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriterImpl;
 import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.InstitutionUtils;
 import uk.ac.ebi.intact.model.util.XrefUtils;
+import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
+import uk.ac.ebi.intact.uniprot.model.UniprotProteinTranscript;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 
 import javax.annotation.PostConstruct;
@@ -128,24 +133,6 @@ public class ParticipantImportController extends BaseController {
                 interactionController.setUnsavedChanges(true);
             }
         }
-
-//        StringWriter sw = new StringWriter();
-//
-//        ProteinUpdateProcessorConfig config = new ProteinUpdateProcessorConfig(new EditorReportHandler(sw));
-//        config.setGlobalProteinUpdate(false);
-//        config.setDeleteProteinTranscriptWithoutInteractions(false);
-//
-//        ProteinUpdateProcessor proteinUpdateProcessor = new ProteinUpdateProcessor(config);
-//        //proteinUpdateProcessor.
-//
-//        String outcome = sw.toString();
-//
-//        try {
-//            sw.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
 
@@ -160,7 +147,21 @@ public class ParticipantImportController extends BaseController {
         Set<ImportCandidate> candidates = importFromIntAct(participantToImport);
 
         if (candidates.isEmpty()) {
-            candidates.addAll(importFromUniprot(participantToImport));
+            Set<ImportCandidate> uniprotCandidates = importFromUniprot(participantToImport);
+
+            // only pre-select those that match the query
+            for (ImportCandidate candidate : uniprotCandidates) {
+                candidate.setSelected(false);
+
+                for (String primaryAc : candidate.getPrimaryAcs()) {
+                    if (candidate.getQuery().equalsIgnoreCase(primaryAc)) {
+                        candidate.setSelected(true);
+                        break;
+                    }
+                }
+            }
+
+            candidates.addAll(uniprotCandidates);
         }
 
         return candidates;
@@ -295,8 +296,26 @@ public class ParticipantImportController extends BaseController {
 
         protein.setSequence(uniprotProtein.getSequence());
 
-//        InteractorEnricher interactorEnricher = enricherService.getInteractorEnricher();
-//        interactorEnricher.enrich(protein);
+        // if it is an isoform or chain, we will create a stub annotation that will be completed when the protein is saved by
+        // creating its corresponding protein master and updating the accession.
+        if (candidate.isIsoform() || candidate.isChain()) {
+
+            CvXrefQualifier tempParentRef;
+
+            if (candidate.isIsoform()) {
+                tempParentRef = daoFactory.getCvObjectDao(CvXrefQualifier.class).getByIdentifier(CvXrefQualifier.ISOFORM_PARENT_MI_REF);
+            } else {
+                tempParentRef = daoFactory.getCvObjectDao(CvXrefQualifier.class).getByIdentifier(CvXrefQualifier.CHAIN_PARENT_MI_REF);
+            }
+
+            CvDatabase ownDatabase = InstitutionUtils.retrieveCvDatabase(IntactContext.getCurrentInstance(), owner);
+
+            UniprotProteinTranscript proteinTranscript = (UniprotProteinTranscript) uniprotProtein;
+
+            // temporary master accession instead of the IntAct AC, with this structure "?P12345"
+            InteractorXref tempIsoformParent = new InteractorXref(owner, ownDatabase, "?"+proteinTranscript.getMasterProtein().getPrimaryAc(), tempParentRef);
+            protein.addXref(tempIsoformParent);
+        }
 
         return protein;
     }

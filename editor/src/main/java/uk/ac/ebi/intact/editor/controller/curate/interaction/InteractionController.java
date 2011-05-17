@@ -28,6 +28,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.InteractionIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
@@ -194,6 +195,36 @@ public class InteractionController extends ParameterizableObjectController {
 
         interaction.getExperiments().clear();
         interaction.getExperiments().add(reloaded);
+
+        // save new master proteins
+        for (ParticipantWrapper pw : participantWrappers) {
+            Component component = pw.getParticipant();
+
+            if (component.getAc() == null && component.getInteractor() != null) {
+                for (Xref xref : component.getInteractor().getXrefs()) {
+                    if (xref.getCvXrefQualifier().getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
+                            xref.getCvXrefQualifier().getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
+                        if (xref.getPrimaryId().startsWith("?")) {
+                            String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
+
+                            ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
+                            Set<ImportCandidate> importCandidates = participantImportController.importParticipant(primaryId);
+
+                            if (!importCandidates.isEmpty()) {
+                                ImportCandidate candidate = importCandidates.iterator().next();
+                                Interactor interactor = candidate.getInteractor();
+
+                                getCorePersister().saveOrUpdate(interactor);
+
+                                xref.setPrimaryId(interactor.getAc());
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        }
     }
 
     @Override

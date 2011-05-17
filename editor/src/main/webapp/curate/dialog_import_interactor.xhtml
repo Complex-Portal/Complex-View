@@ -55,9 +55,7 @@
                              value="#{participantController.interactorCandidates}" paginator="true"  rows="10">
                     <p:column>
                         <f:facet name="header"><h:outputText value="Select"/></f:facet>
-                        <h:selectBooleanCheckbox value="#{candidate.selected}" disabled="#{candidate.proteinTranscript}"/>
-                        <h:outputText value="&lt;br/>(Not&lt;br/>implemented)" style="color: gray"
-                                      escape="false" rendered="#{candidate.proteinTranscript}"/>
+                        <h:selectBooleanCheckbox value="#{candidate.selected}"/>
                     </p:column>
                     <p:column>
                         <f:facet name="header"><h:outputText value="Source"/></f:facet>

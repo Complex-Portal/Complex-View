@@ -133,7 +133,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
      *
      * @param evt the action faces event
      */
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void doSave( ActionEvent evt ) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
 
