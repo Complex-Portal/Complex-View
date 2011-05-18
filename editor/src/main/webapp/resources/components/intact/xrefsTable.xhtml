@@ -53,7 +53,7 @@
                                 <h:outputText value="Identifier"/>
                             </f:facet>
                             <h:panelGroup style="display:block; white-space:nowrap;">
-                            <h:inputText value="#{xref.primaryId}" size="15" converter="trimmingConverter">
+                            <h:inputText value="#{xref.primaryId}" size="15" converter="trimmingConverter" required="true" requiredMessage="Primary identifier for xref is required">
                                 <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update} validityPanel linkPanel databaseSel secondaryTxt qualifierSel" process="@this"
                                          beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
