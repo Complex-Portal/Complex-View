@@ -209,9 +209,12 @@ public class InteractionController extends ParameterizableObjectController {
             Component component = pw.getParticipant();
 
             if (component.getAc() == null && component.getInteractor() != null) {
+
                 for (Xref xref : component.getInteractor().getXrefs()) {
-                    if (xref.getCvXrefQualifier().getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
-                            xref.getCvXrefQualifier().getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
+                    CvXrefQualifier qualifier = xref.getCvXrefQualifier();
+
+                    if (qualifier.getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
+                            qualifier.getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
                         if (xref.getPrimaryId().startsWith("?")) {
                             String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
 
