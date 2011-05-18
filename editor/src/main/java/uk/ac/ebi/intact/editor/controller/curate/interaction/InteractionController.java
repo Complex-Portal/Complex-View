@@ -208,6 +208,7 @@ public class InteractionController extends ParameterizableObjectController {
                         if (xref.getPrimaryId().startsWith("?")) {
                             String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
 
+                            // import the master protein from uniprot, then save it into the database
                             ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
                             Set<ImportCandidate> importCandidates = participantImportController.importParticipant(primaryId);
 
