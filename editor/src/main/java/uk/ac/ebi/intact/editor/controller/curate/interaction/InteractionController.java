@@ -189,11 +189,20 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Override
     public void doPreSave() {
-        Experiment exp = interaction.getExperiments().iterator().next();
-        Experiment reloaded = getDaoFactory().getExperimentDao().getByAc(exp.getAc());
 
+        if( interaction.getExperiments() == null || interaction.getExperiments().isEmpty() ) {
+            addWarningMessage( "Your interaction is not linked to an experiment.",
+                               "Please add an experiment to that interaction." );
+            return;
+        }
+
+        // Reload experiments
+        final Collection<Experiment> experiments = new ArrayList<Experiment>( interaction.getExperiments() );
         interaction.getExperiments().clear();
-        interaction.getExperiments().add(reloaded);
+        for ( Experiment exp : experiments ) {
+            Experiment reloaded = getDaoFactory().getExperimentDao().getByAc( exp.getAc() );
+            interaction.getExperiments().add( reloaded );
+        }
 
         // save new master proteins
         for (ParticipantWrapper pw : participantWrappers) {
@@ -219,10 +228,8 @@ public class InteractionController extends ParameterizableObjectController {
                             }
                         }
                     }
-
                 }
             }
-
         }
     }
 
