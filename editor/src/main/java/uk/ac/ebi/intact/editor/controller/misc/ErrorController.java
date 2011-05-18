@@ -123,7 +123,7 @@ public class ErrorController extends BaseController {
     private String createIssueContent() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
-        ps.println("<b>Reporter:</b> "+userSessionController.getCurrentUser().getLogin()+"<br/>");
+        ps.println("<b>Reporter:</b> "+userSessionController.getCurrentUser().getLogin()+" <br/>");
         ps.println("<b>ViewId:</b> "+viewId+"<br/>");
         ps.println("<b>Referer:</b> "+referer+"<br/>");
         ps.println("<b>Exception message:</b> "+throwable.getMessage()+"<br/>");
