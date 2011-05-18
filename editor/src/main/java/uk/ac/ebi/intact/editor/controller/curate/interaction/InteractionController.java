@@ -121,7 +121,7 @@ public class InteractionController extends ParameterizableObjectController {
                 return;
             }
 
-             setInteraction(interaction);
+            setInteraction(interaction);
 
             if ( interaction.getExperiments().isEmpty() ) {
                 addErrorMessage( "This interaction isn't attached to an experiment", "Please add one or delete it" );
@@ -192,7 +192,7 @@ public class InteractionController extends ParameterizableObjectController {
 
         if( interaction.getExperiments() == null || interaction.getExperiments().isEmpty() ) {
             addWarningMessage( "Your interaction is not linked to an experiment.",
-                               "Please add an experiment to that interaction." );
+                    "Please add an experiment to that interaction." );
             return;
         }
 
@@ -213,24 +213,27 @@ public class InteractionController extends ParameterizableObjectController {
                 for (Xref xref : component.getInteractor().getXrefs()) {
                     CvXrefQualifier qualifier = xref.getCvXrefQualifier();
 
-                    if (qualifier.getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
-                            qualifier.getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
-                        if (xref.getPrimaryId().startsWith("?")) {
-                            String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
+                    if (qualifier != null){
+                        if (qualifier.getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
+                                qualifier.getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
+                            if (xref.getPrimaryId().startsWith("?")) {
+                                String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
 
-                            ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
-                            Set<ImportCandidate> importCandidates = participantImportController.importParticipant(primaryId);
+                                ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
+                                Set<ImportCandidate> importCandidates = participantImportController.importParticipant(primaryId);
 
-                            if (!importCandidates.isEmpty()) {
-                                ImportCandidate candidate = importCandidates.iterator().next();
-                                Interactor interactor = candidate.getInteractor();
+                                if (!importCandidates.isEmpty()) {
+                                    ImportCandidate candidate = importCandidates.iterator().next();
+                                    Interactor interactor = candidate.getInteractor();
 
-                                getCorePersister().saveOrUpdate(interactor);
+                                    getCorePersister().saveOrUpdate(interactor);
 
-                                xref.setPrimaryId(interactor.getAc());
+                                    xref.setPrimaryId(interactor.getAc());
+                                }
                             }
                         }
                     }
+
                 }
             }
         }
@@ -390,7 +393,7 @@ public class InteractionController extends ParameterizableObjectController {
                 addErrorMessage("Problem updating shortLabel", e.getMessage());
             }
 
-     }
+        }
 
         getChangesController().markAsUnsaved(interaction);
     }
@@ -593,7 +596,7 @@ public class InteractionController extends ParameterizableObjectController {
         Component participant = participantWrapper.getParticipant();
 
         IntactCloner cloner = new EditorIntactCloner();
-        
+
         try {
             Component clone = cloner.clone(participant);
             addParticipant(clone);
@@ -679,7 +682,7 @@ public class InteractionController extends ParameterizableObjectController {
 
     public String getInteractorIdentity(Interactor interactor) {
         if (interactor == null) return null;
-        
+
         final Collection<InteractorXref> identities =
                 AnnotatedObjectUtils.searchXrefsByQualifier( interactor, CvXrefQualifier.IDENTITY_MI_REF );
         StringBuilder sb = new StringBuilder(64);
@@ -693,7 +696,7 @@ public class InteractionController extends ParameterizableObjectController {
         return sb.toString();
     }
 
-     // Confidence
+    // Confidence
     ///////////////////////////////////////////////
 
     public void newConfidence() {
@@ -703,7 +706,7 @@ public class InteractionController extends ParameterizableObjectController {
 
     public List<Confidence> getConfidences() {
         if (interaction == null) return Collections.EMPTY_LIST;
-        
+
         final List<Confidence> confidences = new ArrayList<Confidence>( interaction.getConfidences() );
         Collections.sort( confidences, new IntactObjectComparator() );
         return confidences;
