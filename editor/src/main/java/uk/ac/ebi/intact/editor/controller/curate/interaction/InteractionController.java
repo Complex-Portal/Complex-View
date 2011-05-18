@@ -28,7 +28,6 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
-import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.InteractionIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
@@ -204,6 +203,8 @@ public class InteractionController extends ParameterizableObjectController {
                 for (Xref xref : component.getInteractor().getXrefs()) {
                     if (xref.getCvXrefQualifier().getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
                             xref.getCvXrefQualifier().getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
+
+                        // a '?' symbol was set temporarily as the xref value during the isoform/chain import
                         if (xref.getPrimaryId().startsWith("?")) {
                             String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
 
