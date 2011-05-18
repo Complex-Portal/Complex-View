@@ -116,7 +116,7 @@ public class ErrorController extends BaseController {
 
         for (Throwable t : throwables) {
             // Create the entry to insert
-            createComment(service, author, insertedIssue.getIssueId().getValue(), ExceptionUtils.getStackTrace(throwable));
+            createComment(service, author, insertedIssue.getIssueId().getValue(), ExceptionUtils.getStackTrace(t));
         }
     }
 
