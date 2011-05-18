@@ -532,6 +532,18 @@ public class InteractionController extends ParameterizableObjectController {
 
     private boolean belongsToCuratedComplex() {
         for (Experiment exp : interaction.getExperiments()) {
+
+            // to avoid lazy initialization of annotations in the experiments, checks if it is initialized, if not reload them
+            Collection<Annotation> annotations;
+            if (!IntactCore.isInitialized(exp.getAnnotations())){
+                annotations = getDaoFactory().getAnnotationDao().getByParentAc(Experiment.class, exp.getAc());
+                exp.getAnnotations().clear();
+                exp.getAnnotations().addAll(annotations);
+            }
+            else{
+                annotations = exp.getAnnotations();
+            }
+
             for (Annotation annot : exp.getAnnotations()) {
                 if (CvTopic.CURATED_COMPLEX.equals(annot.getCvTopic().getShortLabel())) {
                     return true;
