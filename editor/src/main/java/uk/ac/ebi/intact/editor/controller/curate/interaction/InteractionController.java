@@ -203,12 +203,9 @@ public class InteractionController extends ParameterizableObjectController {
                 for (Xref xref : component.getInteractor().getXrefs()) {
                     if (xref.getCvXrefQualifier().getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
                             xref.getCvXrefQualifier().getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
-
-                        // a '?' symbol was set temporarily as the xref value during the isoform/chain import
                         if (xref.getPrimaryId().startsWith("?")) {
                             String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
 
-                            // import the master protein from uniprot, then save it into the database
                             ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
                             Set<ImportCandidate> importCandidates = participantImportController.importParticipant(primaryId);
 
