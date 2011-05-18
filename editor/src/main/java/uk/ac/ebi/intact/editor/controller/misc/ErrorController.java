@@ -80,7 +80,10 @@ public class ErrorController extends BaseController {
         entry.setStatus(new Status("New"));
         entry.addLabel(new Label("Component-Editor"));
         entry.addLabel(new Label("Priority-Medium"));
+        entry.addLabel(new Label("Difficulty-Unknown"));
         entry.addLabel(new Label("Type-Defect"));
+        entry.addLabel(new Label("Effect-Unstability"));
+        entry.addLabel(new Label("ReportedVersion-" + editorConfig.getBuildVersion()));
 
         Person author = new Person();
         author.setName(currentUser.getLogin());
