@@ -305,7 +305,7 @@
 
     <session-config>
         <!-- Timeout is currently 10h -->
-        <session-timeout>1</session-timeout>
+        <session-timeout>600</session-timeout>
     </session-config>
 
     <!--<resource-env-ref>-->
