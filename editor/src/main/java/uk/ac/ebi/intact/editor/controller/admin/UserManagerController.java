@@ -55,8 +55,15 @@ public class UserManagerController extends BaseController implements UserListene
 
     public User getUser(String userId) {
         for (User user : loggedInUsers) {
-            if (userId.equals(user.getLogin())) {
+            if (userId.equalsIgnoreCase(user.getLogin())) {
                 return user;
+            }
+        }
+
+        if ( log.isDebugEnabled() ) {
+            log.debug( "User " + userId + " not found, users available at this time are:" );
+            for ( User user : loggedInUsers ) {
+                log.debug( "- " + user.getLogin() );
             }
         }
 

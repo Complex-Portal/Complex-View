@@ -304,7 +304,8 @@
     </welcome-file-list>
 
     <session-config>
-        <session-timeout>600</session-timeout>
+        <!-- Timeout is currently 10h -->
+        <session-timeout>1</session-timeout>
     </session-config>
 
     <!--<resource-env-ref>-->

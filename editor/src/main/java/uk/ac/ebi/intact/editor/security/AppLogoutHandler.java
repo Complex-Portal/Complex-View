@@ -32,7 +32,7 @@ public class AppLogoutHandler implements LogoutHandler {
     @Override
     public void logout( HttpServletRequest request, HttpServletResponse response, Authentication authentication ) {
         if (authentication == null) {
-            log.debug("No authentication token");
+            log.warn("No authentication token");
             return;
         }
 

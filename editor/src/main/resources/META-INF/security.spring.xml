@@ -4,7 +4,14 @@
              xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
              http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
 
-    <http auto-config="false" session-fixation-protection="migrateSession">
+    <http auto-config="false" session-fixation-protection="none">
+
+        <!--
+             We have stopped using session-fixation-protection="migrateSession" as it interferes with the login of
+             users since we implemented that upon session destroyed (AppSessionListener) users are logged
+             automatically logged out (UserManagerController).
+          -->
+
         <intercept-url pattern="/login.jsf" filters="none"/>
         <intercept-url pattern="/test.jsf" filters="none"/>
         <intercept-url pattern="/viewExpired*" filters="none"/>
