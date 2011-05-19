@@ -32,7 +32,7 @@ public class AppLogoutHandler implements LogoutHandler {
     @Override
     public void logout( HttpServletRequest request, HttpServletResponse response, Authentication authentication ) {
         if (authentication == null) {
-            log.warn("No authentication token");
+            log.warn( "No authentication token" );
             return;
         }
 
@@ -53,7 +53,7 @@ public class AppLogoutHandler implements LogoutHandler {
                 userListener.userLoggedOut(user);
             }
         } else {
-            throw new IllegalStateException( "Destroying HTTP session - no User available:"+authentication.getPrincipal() );
+            log.debug( "Destroying HTTP session - no User available:"+authentication.getPrincipal() );
         }
     }
 }
