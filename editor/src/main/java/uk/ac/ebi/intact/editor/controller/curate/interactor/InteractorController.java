@@ -185,7 +185,10 @@ public class InteractorController extends AnnotatedObjectController {
 
     public void setInteractor( Interactor interactor ) {
         this.interactor = interactor;
-        this.ac = interactor.getAc();
+
+        if (interactor != null){
+            this.ac = interactor.getAc();
+        }
     }
 
     public String getSequence() {

@@ -267,7 +267,10 @@ public class FeatureController extends AnnotatedObjectController {
 
     public void setFeature( Feature feature ) {
         this.feature = feature;
-        this.ac = feature.getAc();
+
+        if (feature != null){
+            this.ac = feature.getAc();
+        }
     }
 
     public String getNewRangeValue() {

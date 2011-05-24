@@ -35,6 +35,10 @@ public class BioSourceController extends AnnotatedObjectController {
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
        this.bioSource = (BioSource) annotatedObject;
+
+        if (bioSource != null){
+            this.ac = annotatedObject.getAc();
+        }
     }
 
     public void loadData(ComponentSystemEvent evt) {

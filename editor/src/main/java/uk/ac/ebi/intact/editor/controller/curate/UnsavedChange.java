@@ -28,6 +28,7 @@ public class UnsavedChange {
     public static final String DELETED = "deleted";
     public static final String CREATED = "created";
     public static final String UPDATED = "updated";
+    public static final String CREATED_TRANSCRIPT = "created-transcript";
 
     private IntactObject unsavedObject;
     private AnnotatedObject parentObject;

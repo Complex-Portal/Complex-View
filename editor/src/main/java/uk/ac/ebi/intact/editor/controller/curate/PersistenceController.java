@@ -29,10 +29,12 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.CoreDeleter;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.IntactObject;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportController;
+import uk.ac.ebi.intact.model.*;
 
 import javax.faces.event.ActionEvent;
+import java.util.Set;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -94,7 +96,7 @@ public class PersistenceController extends JpaAwareController {
         return intactObject;
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void doDelete(IntactObject intactObject) {
           if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
@@ -109,9 +111,15 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void saveAll(ActionEvent actionEvent) {
 
+        // create master proteins from the unsaved manager and save the transcripts
+        for (IntactObject intactObject : changesController.getAllCreatedProteinTranscripts()) {
+
+            doSaveMasterProteins(intactObject);
+        }
+
+        // save created or updated
         for (IntactObject intactObject : changesController.getAllUnsaved()) {
 
             if (intactObject instanceof AnnotatedObject) {
@@ -125,6 +133,37 @@ public class PersistenceController extends JpaAwareController {
 
         changesController.clearCurrentUserChanges();
 
+    }
+
+    public void doSaveMasterProteins(IntactObject intactObject) {
+        if (intactObject instanceof Protein){
+            Protein proteinTranscript = (Protein) intactObject;
+
+            for (Xref xref : proteinTranscript.getXrefs()) {
+                CvXrefQualifier qualifier = xref.getCvXrefQualifier();
+
+                if (qualifier != null){
+                    if (qualifier.getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
+                            qualifier.getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
+                        if (xref.getPrimaryId().startsWith("?")) {
+                            String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
+
+                            ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
+                            Set<ImportCandidate> importCandidates = participantImportController.importParticipant(primaryId);
+
+                            if (!importCandidates.isEmpty()) {
+                                ImportCandidate candidate = importCandidates.iterator().next();
+                                Interactor interactor = candidate.getInteractor();
+
+                                doSave(interactor);
+
+                                xref.setPrimaryId(interactor.getAc());
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Transactional(value = "transactionManager", propagation = Propagation.NEVER)

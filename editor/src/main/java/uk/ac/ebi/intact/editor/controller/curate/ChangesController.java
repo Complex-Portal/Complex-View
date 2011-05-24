@@ -53,7 +53,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         changesPerUser = new HashMap<String, List<UnsavedChange>>();
     }
 
-     @Override
+    @Override
     public void userLoggedIn(User user) {
         if (user == null) return;
 
@@ -66,7 +66,7 @@ public class ChangesController extends JpaAwareController implements UserListene
     }
 
     private void userLoggedOut(String user) {
-         final List<UnsavedChange> unsavedChanges = getUnsavedChangesForUser(user);
+        final List<UnsavedChange> unsavedChanges = getUnsavedChangesForUser(user);
 
         if (unsavedChanges == null) {
             throw new IllegalStateException("No unsaved changes found for user: "+user);
@@ -106,6 +106,10 @@ public class ChangesController extends JpaAwareController implements UserListene
         }
     }
 
+    public void markToCreatedTranscriptWithoutMaster(IntactObject object) {
+        addChange(new UnsavedChange(object, UnsavedChange.CREATED_TRANSCRIPT));
+    }
+
     @Transactional
     public void markToDeleteInteraction(Interaction interaction, Collection<Experiment> experiments) {
         Collection<Experiment> parents;
@@ -131,11 +135,15 @@ public class ChangesController extends JpaAwareController implements UserListene
         changes.remove(new UnsavedChange(io, UnsavedChange.UPDATED));
     }
 
+    public void removeFromCreatedTranscriptWithoutProtein(UnsavedChange unsavedChange) {
+        getUnsavedChangesForCurrentUser().remove(unsavedChange);
+    }
+
     public void removeFromDeleted(UnsavedChange unsavedChange) {
         getUnsavedChangesForCurrentUser().remove(unsavedChange);
     }
 
-     public void removeFromDeleted(IntactObject object, AnnotatedObject parent) {
+    public void removeFromDeleted(IntactObject object, AnnotatedObject parent) {
         getUnsavedChangesForCurrentUser().remove(new UnsavedChange(object, UnsavedChange.DELETED, parent));
     }
 
@@ -181,7 +189,7 @@ public class ChangesController extends JpaAwareController implements UserListene
     }
 
     public boolean isDeletedAc(String ac) {
-         if (ac == null) return true;
+        if (ac == null) return true;
 
         for (UnsavedChange unsavedChange : getUnsavedChangesForCurrentUser()) {
             if (UnsavedChange.DELETED.equals(unsavedChange.getAction()) &&
@@ -258,6 +266,31 @@ public class ChangesController extends JpaAwareController implements UserListene
         return unsaved;
     }
 
+    public List<UnsavedChange> getAllUnsavedProteinTranscripts() {
+        List<UnsavedChange> unsaved = new ArrayList<UnsavedChange>();
+
+        for (UnsavedChange change : getUnsavedChangesForCurrentUser()) {
+            if (UnsavedChange.CREATED_TRANSCRIPT.equals(change.getAction())) {
+                unsaved.add(change);
+            }
+        }
+
+        return unsaved;
+    }
+
+    public List<IntactObject> getAllCreatedProteinTranscripts() {
+        List<IntactObject> ios = new ArrayList<IntactObject>();
+
+        for (UnsavedChange change : getUnsavedChangesForCurrentUser()) {
+            if (UnsavedChange.CREATED_TRANSCRIPT.equals(change.getAction())) {
+                IntactObject intactObject = change.getUnsavedObject();
+                ios.add(intactObject);
+            }
+        }
+
+        return ios;
+    }
+
     public IntactObject findByAc(String ac) {
         for (UnsavedChange change : getUnsavedChangesForCurrentUser()) {
             if (ac.equals(change.getUnsavedObject().getAc())) {
@@ -282,9 +315,9 @@ public class ChangesController extends JpaAwareController implements UserListene
             if (!includeMyself && user.equals(me)) continue;
 
             for (UnsavedChange unsavedChange : getUnsavedChangesForUser(user)) {
-                  if (io.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
-                      return true;
-                  }
+                if (io.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+                    return true;
+                }
             }
         }
 
@@ -297,9 +330,9 @@ public class ChangesController extends JpaAwareController implements UserListene
 
         for (String user : getUsernames()) {
             for (UnsavedChange unsavedChange : getUnsavedChangesForUser(user)) {
-                  if (io.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
-                      return user;
-                  }
+                if (io.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+                    return user;
+                }
             }
         }
 
@@ -332,11 +365,11 @@ public class ChangesController extends JpaAwareController implements UserListene
         return unsavedChanges;
     }
 
-     private void addChange(UnsavedChange unsavedChange) {
+    private void addChange(UnsavedChange unsavedChange) {
         List<UnsavedChange> unsavedChanges = getUnsavedChangesForCurrentUser();
 
-         unsavedChanges.remove(unsavedChange);
-         unsavedChanges.add(unsavedChange);
+        unsavedChanges.remove(unsavedChange);
+        unsavedChanges.add(unsavedChange);
     }
 
     private void removeUserFromUnsaved(String user) {

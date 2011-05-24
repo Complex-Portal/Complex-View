@@ -49,6 +49,10 @@ public class CvObjectController extends AnnotatedObjectController {
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
        this.cvObject = (CvDagObject) annotatedObject;
+
+        if (cvObject != null){
+            this.ac = annotatedObject.getAc();
+        }
     }
 
     public void loadData(ComponentSystemEvent evt) {

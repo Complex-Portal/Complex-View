@@ -111,7 +111,7 @@ public class ParticipantController extends ParameterizableObjectController {
 
             if( participant.getInteraction().getExperiments().isEmpty()) {
                 addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
-                                   "Abort experiment loading." );
+                        "Abort experiment loading." );
                 return;
             }
 
@@ -181,6 +181,9 @@ public class ParticipantController extends ParameterizableObjectController {
     public void addInteractorToParticipant(ActionEvent evt) {
         for (ImportCandidate importCandidate : interactorCandidates) {
             if (importCandidate.isSelected()) {
+                if (importCandidate.isChain() || importCandidate.isIsoform()){
+                    getChangesController().markToCreatedTranscriptWithoutMaster(importCandidate.getInteractor());
+                }
                 participant.setInteractor(importCandidate.getInteractor());
                 setUnsavedChanges(true);
             }
@@ -191,7 +194,7 @@ public class ParticipantController extends ParameterizableObjectController {
         if (feature.getAc() == null) {
             participant.removeFeature(feature);
         } else {
-           getChangesController().markToDelete(feature, feature.getComponent());
+            getChangesController().markToDelete(feature, feature.getComponent());
         }
     }
 
@@ -216,7 +219,10 @@ public class ParticipantController extends ParameterizableObjectController {
 
     public void setParticipant( Component participant ) {
         this.participant = participant;
-        this.ac = participant.getAc();
+
+        if (participant != null){
+            this.ac = participant.getAc();
+        }
     }
 
     public String getAuthorGivenName() {

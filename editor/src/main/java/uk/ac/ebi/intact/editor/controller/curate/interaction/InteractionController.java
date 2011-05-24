@@ -190,11 +190,11 @@ public class InteractionController extends ParameterizableObjectController {
     @Override
     public void doPreSave() {
 
-        if( interaction.getExperiments() == null || interaction.getExperiments().isEmpty() ) {
+        /*if( interaction.getExperiments() == null || interaction.getExperiments().isEmpty() ) {
             addWarningMessage( "Your interaction is not linked to an experiment.",
                     "Please add an experiment to that interaction." );
             return;
-        }
+        }*/
 
         // Reload experiments
         final Collection<Experiment> experiments = new ArrayList<Experiment>( interaction.getExperiments() );
@@ -202,40 +202,6 @@ public class InteractionController extends ParameterizableObjectController {
         for ( Experiment exp : experiments ) {
             Experiment reloaded = getDaoFactory().getExperimentDao().getByAc( exp.getAc() );
             interaction.getExperiments().add( reloaded );
-        }
-
-        // save new master proteins
-        for (ParticipantWrapper pw : participantWrappers) {
-            Component component = pw.getParticipant();
-
-            if (component.getAc() == null && component.getInteractor() != null) {
-
-                for (Xref xref : component.getInteractor().getXrefs()) {
-                    CvXrefQualifier qualifier = xref.getCvXrefQualifier();
-
-                    if (qualifier != null){
-                        if (qualifier.getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
-                                qualifier.getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
-                            if (xref.getPrimaryId().startsWith("?")) {
-                                String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
-
-                                ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
-                                Set<ImportCandidate> importCandidates = participantImportController.importParticipant(primaryId);
-
-                                if (!importCandidates.isEmpty()) {
-                                    ImportCandidate candidate = importCandidates.iterator().next();
-                                    Interactor interactor = candidate.getInteractor();
-
-                                    getCorePersister().saveOrUpdate(interactor);
-
-                                    xref.setPrimaryId(interactor.getAc());
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
         }
     }
 
@@ -546,17 +512,9 @@ public class InteractionController extends ParameterizableObjectController {
         for (Experiment exp : interaction.getExperiments()) {
 
             // to avoid lazy initialization of annotations in the experiments, checks if it is initialized, if not reload them
-            Collection<Annotation> annotations;
-            if (!IntactCore.isInitialized(exp.getAnnotations())){
-                annotations = getDaoFactory().getAnnotationDao().getByParentAc(Experiment.class, exp.getAc());
-                exp.getAnnotations().clear();
-                exp.getAnnotations().addAll(annotations);
-            }
-            else{
-                annotations = exp.getAnnotations();
-            }
+            Collection<Annotation> annotations = IntactCore.ensureInitializedAnnotations(exp);
 
-            for (Annotation annot : exp.getAnnotations()) {
+            for (Annotation annot : annotations) {
                 if (CvTopic.CURATED_COMPLEX.equals(annot.getCvTopic().getShortLabel())) {
                     return true;
                 }

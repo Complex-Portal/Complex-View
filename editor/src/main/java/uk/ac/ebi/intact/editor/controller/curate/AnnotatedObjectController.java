@@ -115,7 +115,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
     }
 
-     protected <T extends AnnotatedObject> T loadByAc(IntactObjectDao<T> dao, String ac) {
+    protected <T extends AnnotatedObject> T loadByAc(IntactObjectDao<T> dao, String ac) {
         T ao = (T) changesController.findByAc(ac);
 
         if (ao == null) {
@@ -142,7 +142,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         //xrefChanged(null);
 
         // check if object already exists in the database before creating a new one
-         try {
+        try {
             // if the annotated object does not have an ac, check if another one similar exists in the db
             if (getAnnotatedObject().getAc() == null) {
                 Finder finder = (Finder) getSpringContext().getBean("finder");
@@ -170,6 +170,16 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             persistenceController.doDelete(unsaved.getUnsavedObject());
 
             changesController.removeFromDeleted(unsaved);
+        }
+
+        // create master proteins from the unsaved manager
+        final List<UnsavedChange> transcriptCreated = changesController.getAllUnsavedProteinTranscripts();
+
+        for (UnsavedChange unsaved : transcriptCreated) {
+            IntactObject transcript = unsaved.getUnsavedObject();
+            persistenceController.doSaveMasterProteins(transcript);
+
+            changesController.removeFromCreatedTranscriptWithoutProtein(unsaved);
         }
 
         // annotated objects specific tasks to prepare the save
@@ -204,7 +214,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         doPostSave();
     }
 
-     private AnnotatedObject refresh(AnnotatedObject annotatedObject) {
+    private AnnotatedObject refresh(AnnotatedObject annotatedObject) {
         final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         boolean isNew = (getAnnotatedObject().getAc() == null);
@@ -285,7 +295,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public void changed(ActionEvent evt) {
         setUnsavedChanges(true);
     }
-    
+
     @Override
     public void changed(AjaxBehaviorEvent evt) {
         setUnsavedChanges(true);
@@ -358,8 +368,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         for (Xref xref : getXrefs()) {
             if (xref.getPrimaryId() != null &&
-                   (xref.getPrimaryId().startsWith("go:") ||
-                   xref.getPrimaryId().startsWith("GO:"))) {
+                    (xref.getPrimaryId().startsWith("go:") ||
+                            xref.getPrimaryId().startsWith("GO:"))) {
 
                 xref.setPrimaryId(xref.getPrimaryId().toUpperCase());
 
@@ -552,9 +562,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public List<Alias> getAliases() {
         return getAnnotatedObjectHelper().getAliases();
     }
-    
+
     public String findAliasName( String aliasTypeId ) {
-       return getAnnotatedObjectHelper().findAliasName(aliasTypeId);
+        return getAnnotatedObjectHelper().findAliasName(aliasTypeId);
     }
 
     /**

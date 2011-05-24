@@ -21,13 +21,11 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.core.persistence.dao.ProteinDao;
-import uk.ac.ebi.intact.dbupdate.prot.ProteinTranscript;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriterImpl;
 import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
@@ -36,7 +34,6 @@ import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.InstitutionUtils;
 import uk.ac.ebi.intact.model.util.XrefUtils;
-import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
 import uk.ac.ebi.intact.uniprot.model.UniprotProteinTranscript;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
@@ -266,6 +263,10 @@ public class ParticipantImportController extends BaseController {
 //            interactor = toProtein(candidate);
 //        }
 
+        if (candidate.isChain() || candidate.isIsoform()){
+            getInteractionController().getChangesController().markToCreatedTranscriptWithoutMaster(interactor);
+        }
+
         Component component = new Component(IntactContext.getCurrentInstance().getInstitution(),
                 interaction, interactor, cvExperimentalRole, cvBiologicalRole );
         component.setExpressedIn(expressedIn);
@@ -311,6 +312,9 @@ public class ParticipantImportController extends BaseController {
             CvDatabase ownDatabase = InstitutionUtils.retrieveCvDatabase(IntactContext.getCurrentInstance(), owner);
 
             UniprotProteinTranscript proteinTranscript = (UniprotProteinTranscript) uniprotProtein;
+
+            // set shortlabel differently for protein transcripts
+            protein.setShortLabel( proteinTranscript.getPrimaryAc().toLowerCase() );
 
             // temporary master accession instead of the IntAct AC, with this structure "?P12345"
             InteractorXref tempIsoformParent = new InteractorXref(owner, ownDatabase, "?"+proteinTranscript.getMasterProtein().getPrimaryAc(), tempParentRef);
