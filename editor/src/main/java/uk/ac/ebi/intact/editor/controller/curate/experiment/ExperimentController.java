@@ -155,7 +155,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public void doPreSave() {
-        if (experiment.getPublication() == null) {
+        if (experiment.getPublication() != null) {
             publicationController.getPublication().addExperiment(experiment);
         }
     }
@@ -163,8 +163,9 @@ public class ExperimentController extends AnnotatedObjectController {
     public String newExperiment(Publication publication) {
         Experiment experiment = new Experiment(getIntactContext().getInstitution(), createExperimentShortLabel(), null);
         setExperiment(experiment);
+        experiment.setPublication(publication);
 
-        publication.addExperiment(experiment);
+        //publication.addExperiment(experiment);
 
         publicationController.setPublication(publication);
 
