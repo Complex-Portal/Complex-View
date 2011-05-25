@@ -135,6 +135,10 @@ public class PersistenceController extends JpaAwareController {
 
     }
 
+    /**
+     * Save a master protein and update the cross reference of a protein transcript which will be created later
+     * @param intactObject
+     */
     public void doSaveMasterProteins(IntactObject intactObject) {
         if (intactObject instanceof Protein){
             Protein proteinTranscript = (Protein) intactObject;

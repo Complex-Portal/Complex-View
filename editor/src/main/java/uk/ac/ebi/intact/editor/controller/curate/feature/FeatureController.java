@@ -33,6 +33,7 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.util.FeatureUtils;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -162,13 +163,13 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     public String newFeature(Component participant) {
-       Feature feature = new Feature("feature", participant, new CvFeatureType());
-       feature.setShortLabel(null);
-       feature.setCvFeatureType(null);
+        Feature feature = new Feature("feature", participant, new CvFeatureType());
+        feature.setShortLabel(null);
+        feature.setCvFeatureType(null);
 
         setFeature(feature);
 
-       participant.addBindingDomain(feature);
+        //participant.addBindingDomain(feature);
 
         refreshRangeWrappers();
 
@@ -176,7 +177,7 @@ public class FeatureController extends AnnotatedObjectController {
 
         return navigateToObject(feature);
     }
-    
+
     public void newRange(ActionEvent evt) {
         if (newRangeValue == null || newRangeValue.isEmpty()) {
             addErrorMessage("Range value field is empty", "Please provide a range value before clicking on the New Range button");
@@ -219,10 +220,10 @@ public class FeatureController extends AnnotatedObjectController {
     public void validateFeature(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
         if (feature.getRanges().isEmpty()) {
-            addErrorMessage("Feature without ranges", "One range is mandatory");
-            FacesContext.getCurrentInstance().renderResponse();
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Feature without ranges", "One range is mandatory");
+            throw new ValidatorException(message);
         }
-     }
+    }
 
     private String getSequence() {
         Interactor interactor = feature.getComponent().getInteractor();
@@ -271,6 +272,12 @@ public class FeatureController extends AnnotatedObjectController {
         if (feature != null){
             this.ac = feature.getAc();
         }
+    }
+
+    @Override
+    public void doPreSave() {
+
+        participantController.getParticipant().addBindingDomain(feature);
     }
 
     public String getNewRangeValue() {

@@ -37,9 +37,7 @@ import uk.ac.ebi.intact.model.clone.IntactCloner;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Participant controller.
