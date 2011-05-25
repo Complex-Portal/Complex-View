@@ -165,6 +165,8 @@ public class ExperimentController extends AnnotatedObjectController {
         setExperiment(experiment);
         experiment.setPublication(publication);
 
+        experiment.setFullName(publication.getFullName());
+
         //publication.addExperiment(experiment);
 
         publicationController.setPublication(publication);

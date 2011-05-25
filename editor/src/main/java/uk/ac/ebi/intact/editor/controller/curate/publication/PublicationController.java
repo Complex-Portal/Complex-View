@@ -154,10 +154,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     private void refreshDataModels() {
         interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                             "select i from InteractionImpl i join fetch i.experiments as exp " +
-                                                                                     "where exp.publication.ac = '" + ac + "' order by exp.shortLabel asc",
-                                                                             "select count(i) from InteractionImpl i join i.experiments as exp " +
-                                                                                     "where exp.publication.ac = '" + ac + "'" );
+                "select i from InteractionImpl i join fetch i.experiments as exp " +
+                        "where exp.publication.ac = '" + ac + "' order by exp.shortLabel asc",
+                "select count(i) from InteractionImpl i join i.experiments as exp " +
+                        "where exp.publication.ac = '" + ac + "'" );
     }
 
     private void loadFormFields() {
@@ -176,7 +176,7 @@ public class PublicationController extends AnnotatedObjectController {
             return true;
         }
         if (log.isDebugEnabled()) log.debug("Checking citexplore status");
-        
+
         try {
             URL url = new URL("http://www.ebi.ac.uk/webservices/citexplore/v1.0/service?wsdl");
             final URLConnection urlConnection = url.openConnection();
@@ -249,7 +249,7 @@ public class PublicationController extends AnnotatedObjectController {
 
             publication.setFullName( citation.getTitle() );
             setJournal( citation.getJournalIssue().getJournal().getISOAbbreviation() + " (" +
-                        citation.getJournalIssue().getJournal().getISSN() + ")" );
+                    citation.getJournalIssue().getJournal().getISSN() + ")" );
             setYear( citation.getJournalIssue().getYearOfPublication() );
 
             StringBuilder sbAuthors = new StringBuilder( 64 );
@@ -408,7 +408,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public StreamedContent exportToMitab(String filename, PsimiTabWriter psimitabWriter) {
-         EntrySet entrySet = createEntrySet();
+        EntrySet entrySet = createEntrySet();
 
         // Setup a interaction expansion strategy that is going to transform n-ary interactions into binaries using
         // the spoke expansion algorithm
@@ -441,7 +441,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     private EntrySet createEntrySet() {
-                final TransactionStatus transactionStatus = getIntactContext().getDataContext().beginTransaction();
+        final TransactionStatus transactionStatus = getIntactContext().getDataContext().beginTransaction();
         getIntactContext().getDataContext().getDaoFactory().getEntityManager().setFlushMode(FlushModeType.COMMIT);
 
         // When exporting, we need to create an IntactEntry object, which contains the interactions
@@ -703,6 +703,7 @@ public class PublicationController extends AnnotatedObjectController {
         addInfoMessage("Publication accepted", "");
 
         copyAnnotationsToExperiments(null);
+        copyPublicationTitleToExperiments(null);
 
         setUnsavedChanges(true);
     }
@@ -716,6 +717,7 @@ public class PublicationController extends AnnotatedObjectController {
         addInfoMessage("Publication rejected", "");
 
         copyAnnotationsToExperiments(null);
+        copyPublicationTitleToExperiments(null);
 
         setUnsavedChanges(true);
     }
@@ -739,6 +741,17 @@ public class PublicationController extends AnnotatedObjectController {
         }
 
         addInfoMessage("Annotations copied", publication.getExperiments().size()+" experiments were modified");
+
+        setUnsavedChanges(true);
+    }
+
+    @Transactional
+    public void copyPublicationTitleToExperiments(ActionEvent evt) {
+        for (Experiment exp : publication.getExperiments()) {
+            exp.setFullName(publication.getFullName());
+        }
+
+        addInfoMessage("Publication title copied", publication.getExperiments().size()+" experiments were modified");
 
         setUnsavedChanges(true);
     }
