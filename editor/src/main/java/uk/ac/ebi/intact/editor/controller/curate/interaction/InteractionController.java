@@ -28,6 +28,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.InteractionIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
@@ -42,8 +43,8 @@ import uk.ac.ebi.intact.model.util.InteractionShortLabelGenerator;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import java.util.*;
 
@@ -196,6 +197,16 @@ public class InteractionController extends ParameterizableObjectController {
             return;
         }*/
 
+        // create master proteins from the unsaved manager
+        final List<UnsavedChange> transcriptCreated = super.getChangesController().getAllUnsavedProteinTranscripts();
+
+        for (UnsavedChange unsaved : transcriptCreated) {
+            IntactObject transcript = unsaved.getUnsavedObject();
+            super.getPersistenceController().doSaveMasterProteins(transcript);
+
+            super.getChangesController().removeFromCreatedTranscriptWithoutProtein(unsaved);
+        }
+
         // Reload experiments
         final Collection<Experiment> experiments = new ArrayList<Experiment>( interaction.getExperiments() );
         interaction.getExperiments().clear();
@@ -257,33 +268,17 @@ public class InteractionController extends ParameterizableObjectController {
         return saved;
     }
 
-    public void experimentChanged(ValueChangeEvent evt) {
-        if (evt.getNewValue() == null) {
-            if (evt.getOldValue() != null) {
-                addErrorMessage("No experiment selected", "Select an experiment in the drop down list");
-            }
-            return;
-        }
+    public void experimentChanged(AjaxBehaviorEvent evt) {
+        changed(evt);
 
-        if (evt.getOldValue() != null) {
-            Experiment oldExp = (Experiment) evt.getOldValue();
-
-            oldExp = reload(oldExp);
-
-            interaction.removeExperiment(oldExp);
-        }
-
-        Experiment newExp = (Experiment) evt.getNewValue();
-
-        newExp = reload(newExp);
+        Experiment newExp = reload(experiment);
 
         experimentController.setExperiment(newExp);
 
+        interaction.getExperiments().clear();
         interaction.addExperiment(newExp);
 
         experimentsToUpdate.add(newExp);
-
-        getChangesController().markAsUnsaved(interaction);
     }
 
     private Experiment reload(Experiment oldExp) {

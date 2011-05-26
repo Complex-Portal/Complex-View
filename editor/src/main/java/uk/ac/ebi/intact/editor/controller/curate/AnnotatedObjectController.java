@@ -172,16 +172,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             changesController.removeFromDeleted(unsaved);
         }
 
-        // create master proteins from the unsaved manager
-        final List<UnsavedChange> transcriptCreated = changesController.getAllUnsavedProteinTranscripts();
-
-        for (UnsavedChange unsaved : transcriptCreated) {
-            IntactObject transcript = unsaved.getUnsavedObject();
-            persistenceController.doSaveMasterProteins(transcript);
-
-            changesController.removeFromCreatedTranscriptWithoutProtein(unsaved);
-        }
-
         // annotated objects specific tasks to prepare the save
         doPreSave();
 
