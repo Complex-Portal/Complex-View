@@ -25,7 +25,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.validator.ValidatorException;
 
 /**
@@ -44,9 +44,8 @@ public class RangeWrapper {
         this.sequence = sequence;
     }
 
-    public void onRangeAsStringChanged(ValueChangeEvent evt) {
-        String rangeStr = (String) evt.getNewValue();
-        Range newRange = FeatureUtils.createRangeFromString(rangeStr, sequence);
+    public void onRangeAsStringChanged(AjaxBehaviorEvent evt) {
+        Range newRange = FeatureUtils.createRangeFromString(rangeAsString, sequence);
 
         this.range.setDownStreamSequence(newRange.getDownStreamSequence());
         this.range.setUpStreamSequence(newRange.getUpStreamSequence());
@@ -66,18 +65,22 @@ public class RangeWrapper {
         range.setToCvFuzzyType(toFuzzyType);
     }
 
-    public void onFuzzyTypeChanged(ValueChangeEvent evt) {
+    public void onFuzzyTypeChanged(AjaxBehaviorEvent evt) {
+
+        // reconvert positions if necessary (if status became undetermined, c-terminal region or n-terminal region position becomes 0, if n-terminal position =1 if c-terminal position = end of protein sequence or 0 if no protein sequence)
+        FeatureUtils.correctRangePositionsAccordingToType(range, sequence);
         this.rangeAsString = FeatureUtils.convertRangeIntoString(range);
     }
 
     public void validateRange(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+
         String rangeAsStr = (String) value;
         if (FeatureUtils.isABadRange(rangeAsStr, sequence)) {
             EditableValueHolder valueHolder = (EditableValueHolder) component;
             valueHolder.setValid(false);
 
-            context.addMessage(component.getClientId(), new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid range", "Range syntax is invalid: "+rangeAsStr));
-            context.renderResponse();
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid range", "Range syntax is invalid: "+rangeAsStr);
+            throw new ValidatorException(message);
         }
     }
 
