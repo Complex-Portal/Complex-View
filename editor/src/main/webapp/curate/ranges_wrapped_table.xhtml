@@ -25,13 +25,14 @@
                     </f:facet>
                     <h:inputText value="#{rangeWrapper.rangeAsString}"
                                  valueChangeListener="#{rangeWrapper.onRangeAsStringChanged}"
+                                 onchange="submit()"
                                  validator="#{rangeWrapper.validateRange}"
                                  required="true"
                                  requiredMessage="Range value is required"
                                  readonly="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"
                                  styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
                                  style="font-family: monospace">
-                        <ed:ajax event="valueChange" timeout="0" process="@this" onevent="markAsUnsaved()"
+                        <ed:ajax event="valueChange" timeout="0" process="@this" onevent="submit()"
                                 update="rangesTable messagesComponent"/>
                     </h:inputText>
 
@@ -47,11 +48,11 @@
                     <f:facet name="header">
                         <h:outputText value="From type"/>
                     </f:facet>
-                    <h:selectOneMenu value="#{rangeWrapper.range.fromCvFuzzyType}" converter="cvObjectConverter" onchange="markAsUnsaved()"
+                    <h:selectOneMenu value="#{rangeWrapper.range.fromCvFuzzyType}" converter="cvObjectConverter" onchange="submit()"
                             valueChangeListener="#{rangeWrapper.onFuzzyTypeChanged}"
                             required="true"
                             requiredMessage="Range from CvFuzzyType is required">
-                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
+                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent" onevent="submit()"/>
                         <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
                     </h:selectOneMenu>
                 </p:column>
@@ -59,11 +60,11 @@
                     <f:facet name="header">
                         <h:outputText value="To type"/>
                     </f:facet>
-                    <h:selectOneMenu value="#{rangeWrapper.range.toCvFuzzyType}" converter="cvObjectConverter" onchange="markAsUnsaved()"
+                    <h:selectOneMenu value="#{rangeWrapper.range.toCvFuzzyType}" converter="cvObjectConverter" onchange="submit()"
                             valueChangeListener="#{rangeWrapper.onFuzzyTypeChanged}"
                             required="true"
                             requiredMessage="Range to CvFuzzyType is required">
-                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
+                        <f:ajax event="valueChange" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent" onevent="submit()"/>
                         <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
                     </h:selectOneMenu>
                 </p:column>

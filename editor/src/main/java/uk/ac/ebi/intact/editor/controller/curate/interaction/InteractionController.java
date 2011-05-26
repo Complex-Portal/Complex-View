@@ -282,6 +282,8 @@ public class InteractionController extends ParameterizableObjectController {
         interaction.addExperiment(newExp);
 
         experimentsToUpdate.add(newExp);
+
+        getChangesController().markAsUnsaved(interaction);
     }
 
     private Experiment reload(Experiment oldExp) {
@@ -547,6 +549,7 @@ public class InteractionController extends ParameterizableObjectController {
      */
     @Override
     protected void postRevert() {
+        refreshExperimentLists();
         refreshParticipants();
     }
 
