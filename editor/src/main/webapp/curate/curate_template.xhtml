@@ -5,6 +5,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
 
                 template="/main_template.xhtml">
 
@@ -170,9 +171,14 @@
 
             <div class="intact-notSavedPanel">
                     Changes not yet saved &#160;
+                <!--<ed:delayedEvent forId="unsavedSaveButton" timeout="2000"/>-->
+
                 <p:commandButton type="button" id="unsavedSaveButton"
                                  style="opacity: 1.0; font-weight: bold"
-                                 value="Save" onclick="save(); return false"/>
+                                 value="Save" onclick="save(); return false">
+                </p:commandButton>
+
+
                 &#160;-&#160;
                 <p:commandLink id="unsavedRevertLink" value="Revert" style="opacity: 1.0; font-weight: bold"
                                rendered="#{annotatedObjectController.annotatedObject.ac != null}"

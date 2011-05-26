@@ -110,5 +110,37 @@
 		</attribute>
     </tag>
 
+     <tag>
+        <description>
+            Sets a timeout to an event for the specified component.
+        </description>
+
+        <tag-name>delayedEvent</tag-name>
+
+        <component>
+            <component-type>uk.ac.ebi.intact.editor.component.DelayedEvent</component-type>
+            <renderer-type>uk.ac.ebi.intact.editor.component.DelayedEventRenderer</renderer-type>
+        </component>
+
+        <!--<handler-class>uk.ac.ebi.intact.editor.component.DelayedAjaxBehaviorHandler</handler-class>-->
+
+        <attribute>
+            <description>
+                Timeout for the delay
+            </description>
+            <name>timeout</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                The id of the target component
+            </description>
+            <name>forId</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
 
     </facelet-taglib>

@@ -190,13 +190,6 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Override
     public void doPreSave() {
-
-        /*if( interaction.getExperiments() == null || interaction.getExperiments().isEmpty() ) {
-            addWarningMessage( "Your interaction is not linked to an experiment.",
-                    "Please add an experiment to that interaction." );
-            return;
-        }*/
-
         // create master proteins from the unsaved manager
         final List<UnsavedChange> transcriptCreated = super.getChangesController().getAllUnsavedProteinTranscripts();
 
@@ -213,6 +206,40 @@ public class InteractionController extends ParameterizableObjectController {
         for ( Experiment exp : experiments ) {
             Experiment reloaded = getDaoFactory().getExperimentDao().getByAc( exp.getAc() );
             interaction.getExperiments().add( reloaded );
+        }
+
+        // save new master proteins
+        for (ParticipantWrapper pw : participantWrappers) {
+            Component component = pw.getParticipant();
+
+            if (component.getAc() == null && component.getInteractor() != null) {
+
+                for (Xref xref : component.getInteractor().getXrefs()) {
+                    CvXrefQualifier qualifier = xref.getCvXrefQualifier();
+
+                    if (qualifier != null){
+                        if (qualifier.getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
+                                qualifier.getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
+                            if (xref.getPrimaryId().startsWith("?")) {
+                                String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
+
+                                ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
+                                Set<ImportCandidate> importCandidates = participantImportController.importParticipant(primaryId);
+
+                                if (!importCandidates.isEmpty()) {
+                                    ImportCandidate candidate = importCandidates.iterator().next();
+                                    Interactor interactor = candidate.getInteractor();
+
+                                    getCorePersister().saveOrUpdate(interactor);
+
+                                    xref.setPrimaryId(interactor.getAc());
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
         }
     }
 

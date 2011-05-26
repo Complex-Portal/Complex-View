@@ -1,12 +1,8 @@
 package uk.ac.ebi.intact.editor.security;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContext;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.context.UserContext;
 import uk.ac.ebi.intact.core.users.model.User;
@@ -16,7 +12,6 @@ import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import java.util.Enumeration;
 import java.util.Map;
 
 /**
@@ -28,7 +23,7 @@ import java.util.Map;
  */
 public class AppSessionListener implements HttpSessionListener {
 
-    private static final Log log = LogFactory.getLog( AppSessionListener.class );
+    private final Logger log = LoggerFactory.getLogger(AppSessionListener.class);
 
     @Override
     public void sessionCreated( HttpSessionEvent se ) {
@@ -38,7 +33,7 @@ public class AppSessionListener implements HttpSessionListener {
     @Override
     public void sessionDestroyed( HttpSessionEvent se ) {
         final HttpSession session = se.getSession();
-        log.debug( "Session destroyed [" + session.getId() + "]" );
+        log.debug( "Session destroyed [{}]", session.getId() );
 
         // We need access to the UserContext for the current session
         final UserContext userContext = ( UserContext ) session.getAttribute( "scopedTarget.userContext" );
@@ -55,11 +50,11 @@ public class AppSessionListener implements HttpSessionListener {
                 final Map<String,UserListener> userListeners = springContext.getBeansOfType(UserListener.class);
 
                 for (UserListener userListener : userListeners.values()) {
-                    log.debug( "Calling " + userListener.getClass().getName() + ".userLoggedOut("+ user.getLogin() +");" );
+                    log.debug( "Calling {}.userLoggedOut({});", userListener.getClass().getName(), user.getLogin() );
                     userListener.userLoggedOut(user);
                 }
             } else {
-                log.debug( "Destroying HTTP session - no User available to perform logout:"+userId );
+                log.debug( "Destroying HTTP session - no User available to perform logout: {}", userId );
             }
         } else {
             log.debug( "No UserContext available in the session !!!!" );
