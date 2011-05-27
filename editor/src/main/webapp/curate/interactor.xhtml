@@ -80,6 +80,7 @@
 
                     <h:outputLabel value="Organism: " for="organismTxt"/>
                     <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
+                                       valueChangeAwareObject="#{interactorController}"
                                         beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                        update="changesPanel unsavedChangesInfo"
                                         selectItems="#{bioSourceService.bioSourceSelectItems}"/>

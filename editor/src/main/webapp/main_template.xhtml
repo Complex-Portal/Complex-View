@@ -127,6 +127,7 @@
                                         <!--<p:watermark for="queryTxt" value="search query"/>-->
                                         <h:inputText id="queryTxt" value="#{searchController.quickQuery}" converter="trimmingConverter" onkeyup="handleReturnKey(event, 'topSearchBtn')"/>
                                         <p:commandButton id="topSearchBtn" value="Search" action="#{searchController.doQuickSearch}" ajax="false"
+                                                         process="queryTxt" global="true"
                                                 onclick="searchDialog.show()"/>
                                     </h:panelGrid>
 

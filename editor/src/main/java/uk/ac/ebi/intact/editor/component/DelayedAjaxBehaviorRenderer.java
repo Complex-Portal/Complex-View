@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.editor.component;
 
 
+import org.primefaces.component.behavior.ajax.AjaxBehavior;
 import org.primefaces.component.behavior.ajax.AjaxBehaviorRenderer;
 
 import javax.faces.application.ResourceDependencies;
@@ -46,7 +47,11 @@ public class DelayedAjaxBehaviorRenderer extends AjaxBehaviorRenderer {
 
     @Override
     public String getScript(ClientBehaviorContext behaviorContext, ClientBehavior behavior) {
-//        return super.getScript(behaviorContext, behavior);
+        AjaxBehavior ajaxBehavior = (AjaxBehavior) behavior;
+        if(ajaxBehavior.isDisabled()) {
+            return null;
+        }
+
         String timeout = "500";
         String beforeTimeout = "";
 
