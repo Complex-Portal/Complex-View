@@ -336,11 +336,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public String doDelete() {
         PersistenceController persistenceController = getPersistenceController();
-        persistenceController.doDelete(getAnnotatedObject());
 
-        setAnnotatedObject(null);
+        if (persistenceController.doDelete(getAnnotatedObject())){
+            setAnnotatedObject(null);
+            return goToParent();
+        }
 
-        return goToParent();
+        // if delete not successfull, just display the message and don't go to the parent because the message will be lost
+        return "/curate/curate";
     }
 
     // XREFS

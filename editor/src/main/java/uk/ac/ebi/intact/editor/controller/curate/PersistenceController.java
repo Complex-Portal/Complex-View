@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.CoreDeleter;
+import uk.ac.ebi.intact.core.persister.IntactObjectDeleteException;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
@@ -74,7 +75,7 @@ public class PersistenceController extends JpaAwareController {
             handleException(e);
 
             return false;
-        } 
+        }
     }
 
     @Transactional(propagation = Propagation.NEVER)
@@ -97,18 +98,27 @@ public class PersistenceController extends JpaAwareController {
     }
 
     @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
-    public void doDelete(IntactObject intactObject) {
-          if (intactObject.getAc() != null) {
+    public boolean doDelete(IntactObject intactObject) {
+        if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));
 
 //            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
-            coreDeleter.delete(intactObject);
+            try{
+                coreDeleter.delete(intactObject);
 
-            addInfoMessage("Deleted object", DebugUtil.intactObjectToString(intactObject, false));
+                addInfoMessage("Deleted object", DebugUtil.intactObjectToString(intactObject, false));
 
+                return true;
+            }
+            catch (IntactObjectDeleteException e){
+                addErrorMessage("Deletion not allowed", e.getMessage());
+            }
 //            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         }
+
+        addErrorMessage("Object not deleted", "Object is not saved so it cannot be deleted");
+        return false;
     }
 
     public void saveAll(ActionEvent actionEvent) {
@@ -176,6 +186,6 @@ public class PersistenceController extends JpaAwareController {
             doRevert(intactObject);
         }
 
-         changesController.clearCurrentUserChanges();
+        changesController.clearCurrentUserChanges();
     }
 }
