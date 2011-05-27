@@ -138,8 +138,10 @@ public class ExperimentController extends AnnotatedObjectController {
         setExperiment((Experiment) clone);
         refreshInteractions();
 
-        experiment.setPublication(null);
-        publicationController.getPublication().addExperiment(experiment);
+        experiment.setPublication(publicationController.getPublication());
+
+        // don't add the experiment to the oublication so when it reverts, the publication was not changed and the experiment can vanish
+        //publicationController.getPublication().addExperiment(experiment);
     }
 
     @Override
