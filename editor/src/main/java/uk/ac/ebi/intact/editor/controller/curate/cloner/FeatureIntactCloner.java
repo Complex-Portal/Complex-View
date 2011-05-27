@@ -38,7 +38,7 @@ public class FeatureIntactCloner extends EditorIntactCloner {
     @Override
     public Feature cloneFeature(Feature feature) throws IntactClonerException {
         Feature clone = super.cloneFeature(feature);
-        feature.getComponent().addFeature(clone);
+        // don't need to add it to the feature component because it is already done by the cloner
         return clone;
     }
 
