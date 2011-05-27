@@ -172,6 +172,11 @@ public class InteractionController extends ParameterizableObjectController {
 
         if (!interaction.getExperiments().isEmpty()) {
             experiment = interaction.getExperiments().iterator().next();
+
+            // reset the publication in case the experiment was in a different publication
+            if (experiment != null && experiment.getPublication() != null){
+                publicationController.setPublication(experiment.getPublication());
+            }
         }
 
         if (publicationController.getPublication() != null) {
@@ -371,9 +376,14 @@ public class InteractionController extends ParameterizableObjectController {
 
             newInteraction = cloneAnnotatedObject(interaction, newClonerInstance());
 
-            newInteraction.getExperiments().clear();
+            // remove all experiments attached to the new interaction
+            Collection<Experiment> experiments = new ArrayList(newInteraction.getExperiments());
+            for (Experiment exp : experiments){
+                 newInteraction.removeExperiment(exp);
+            }
 
-            experiment.addInteraction(newInteraction);
+            // add the new experiment
+            newInteraction.addExperiment(experiment);
 
         } else {
             return null;
@@ -396,9 +406,14 @@ public class InteractionController extends ParameterizableObjectController {
                 return null;
             }
 
-            interaction.getExperiments().clear();
-            interaction.getExperiments().add(experiment);
-            experiment.getInteractions().add(interaction);
+            // remove all experiments
+            Collection<Experiment> experiments = new ArrayList(interaction.getExperiments());
+            for (Experiment exp : experiments){
+                 interaction.removeExperiment(exp);
+            }
+
+            // add new experiment
+            interaction.addExperiment(experiment);
 
         } else {
             return null;
