@@ -282,6 +282,16 @@ public class ExperimentController extends AnnotatedObjectController {
         return ExperimentUtils.isAccepted(exp);
     }
 
+    /**
+     * When reverting, we need to refresh the collection of wrappers because they are not part of the IntAct model.
+     */
+    @Override
+    protected void postRevert() {
+        if (experiment.getPublication() != null){
+            publicationController.setPublication(experiment.getPublication());
+        }
+    }
+
     public String getAcceptedMessage() {
         return findAnnotationText( CvTopic.ACCEPTED );
     }
@@ -340,7 +350,8 @@ public class ExperimentController extends AnnotatedObjectController {
             experiment.getPublication().removeExperiment(experiment);
 
             experiment.setPublication(publication);
-            publication.getExperiments().add(experiment);
+
+            setExperiment(experiment);
 
         } else {
             return null;
