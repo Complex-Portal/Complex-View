@@ -207,40 +207,6 @@ public class InteractionController extends ParameterizableObjectController {
             Experiment reloaded = getDaoFactory().getExperimentDao().getByAc( exp.getAc() );
             interaction.getExperiments().add( reloaded );
         }
-
-        // save new master proteins
-        for (ParticipantWrapper pw : participantWrappers) {
-            Component component = pw.getParticipant();
-
-            if (component.getAc() == null && component.getInteractor() != null) {
-
-                for (Xref xref : component.getInteractor().getXrefs()) {
-                    CvXrefQualifier qualifier = xref.getCvXrefQualifier();
-
-                    if (qualifier != null){
-                        if (qualifier.getIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
-                                qualifier.getIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
-                            if (xref.getPrimaryId().startsWith("?")) {
-                                String primaryId = xref.getPrimaryId().replaceAll("\\?", "");
-
-                                ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
-                                Set<ImportCandidate> importCandidates = participantImportController.importParticipant(primaryId);
-
-                                if (!importCandidates.isEmpty()) {
-                                    ImportCandidate candidate = importCandidates.iterator().next();
-                                    Interactor interactor = candidate.getInteractor();
-
-                                    getCorePersister().saveOrUpdate(interactor);
-
-                                    xref.setPrimaryId(interactor.getAc());
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
     }
 
     @Override
@@ -296,13 +262,17 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void experimentChanged(AjaxBehaviorEvent evt) {
-        changed(evt);
 
         Experiment newExp = reload(experiment);
 
         experimentController.setExperiment(newExp);
 
-        interaction.getExperiments().clear();
+        Collection<Experiment> experiments = new ArrayList<Experiment>(interaction.getExperiments());
+        for (Experiment exp : experiments){
+            exp = reload(exp);
+            interaction.removeExperiment(exp);
+        }
+
         interaction.addExperiment(newExp);
 
         experimentsToUpdate.add(newExp);
@@ -573,6 +543,7 @@ public class InteractionController extends ParameterizableObjectController {
     protected void postRevert() {
         refreshExperimentLists();
         refreshParticipants();
+        refreshParentControllers();
     }
 
     public void cloneParticipant(ParticipantWrapper participantWrapper) {
@@ -620,9 +591,6 @@ public class InteractionController extends ParameterizableObjectController {
         }
         else if (!this.experiment.equals(experiment)) {
             this.experiment = experiment;
-
-            interaction.getExperiments().clear();
-            interaction.getExperiments().add(experiment);
 
             experimentController.setExperiment(experiment);
         }
