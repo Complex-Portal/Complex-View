@@ -352,6 +352,16 @@ public class PublicationController extends AnnotatedObjectController {
 
             addAnnotation( CvTopic.DATASET_MI_REF, datasetToAdd );
 
+            Collection<Experiment> experiments = publication.getExperiments();
+
+            if (!IntactCore.isInitialized(publication.getExperiments())) {
+                experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+            }
+
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
+            }
+
             setUnsavedChanges( true );
         }
     }
@@ -369,6 +379,16 @@ public class PublicationController extends AnnotatedObjectController {
                 }
 
                 removeAnnotation( CvTopic.DATASET_MI_REF, datasetToRemove );
+
+                Collection<Experiment> experiments = publication.getExperiments();
+
+                if (!IntactCore.isInitialized(publication.getExperiments())) {
+                    experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+                }
+
+                for (Experiment experiment : experiments) {
+                    newAnnotatedObjectHelper(experiment).removeAnnotation(CvTopic.DATASET_MI_REF, datasetToRemove);
+                }
             }
             setUnsavedChanges( true );
         }
@@ -535,6 +555,16 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setContactEmail( String contactEmail ) {
         setAnnotation( CvTopic.CONTACT_EMAIL_MI_REF, contactEmail );
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+
+        for (Experiment experiment : experiments) {
+            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, contactEmail);
+        }
     }
 
     public String getSubmitted() {
@@ -565,6 +595,16 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setYear( Short year ) {
         setAnnotation( CvTopic.PUBLICATION_YEAR_MI_REF, year );
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+
+        for (Experiment experiment : experiments) {
+            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, year);
+        }
     }
 
     public String getIdentifier() {
@@ -609,6 +649,16 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setOnHold( String reason ) {
         setAnnotation( CvTopic.ON_HOLD, reason );
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+
+        for (Experiment experiment : experiments) {
+            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.ON_HOLD, reason );
+        }
     }
 
     public String getAcceptedMessage() {
@@ -633,8 +683,7 @@ public class PublicationController extends AnnotatedObjectController {
         Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
-            Publication refreshedPub = getDaoFactory().getPublicationDao().getByAc(publication.getAc());
-            experiments = refreshedPub.getExperiments();
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
 
         for (Experiment experiment : experiments) {
@@ -647,8 +696,7 @@ public class PublicationController extends AnnotatedObjectController {
         Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
-            Publication refreshedPub = getDaoFactory().getPublicationDao().getByAc(publication.getAc());
-            experiments = refreshedPub.getExperiments();
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
 
         return ExperimentUtils.areAllAccepted(experiments);
@@ -673,8 +721,7 @@ public class PublicationController extends AnnotatedObjectController {
         Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
-            Publication refreshedPub = getDaoFactory().getPublicationDao().getByAc(publication.getAc());
-            experiments = refreshedPub.getExperiments();
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
 
         for (Experiment experiment : experiments) {
@@ -742,6 +789,16 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setToBeReviewed(String toBeReviewed) {
         setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+
+        for (Experiment experiment : experiments) {
+            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
+        }
     }
 
     public String getToBeReviewed() {
@@ -750,6 +807,16 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void clearToBeReviewed(ActionEvent evt) {
         removeAnnotation(CvTopic.TO_BE_REVIEWED);
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+
+        for (Experiment experiment : experiments) {
+            newAnnotatedObjectHelper(experiment).removeAnnotation(CvTopic.TO_BE_REVIEWED);
+        }
     }
 
     @Transactional
