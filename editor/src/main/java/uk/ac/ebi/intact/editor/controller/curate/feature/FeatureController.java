@@ -276,8 +276,7 @@ public class FeatureController extends AnnotatedObjectController {
 
     @Override
     public void doPreSave() {
-
-        participantController.getParticipant().addBindingDomain(feature);
+        participantController.getParticipant().addFeature(feature);
     }
 
     public String getNewRangeValue() {

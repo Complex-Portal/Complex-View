@@ -28,6 +28,7 @@ import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -36,7 +37,7 @@ import java.util.*;
  */
 @Controller
 @Scope("prototype")
-public class AnnotatedObjectHelper {
+public class AnnotatedObjectHelper implements Serializable {
 
     private AnnotatedObject annotatedObject;
 
@@ -442,7 +443,7 @@ public class AnnotatedObjectHelper {
         }
 
         if ( value != null && !value.toString().isEmpty() ) {
-            addOrReplace( aliasTypeIdOrLabel, value.toString() );
+            addOrReplace(aliasTypeIdOrLabel, value.toString());
         } else {
             removeAlias( aliasTypeIdOrLabel );
         }
