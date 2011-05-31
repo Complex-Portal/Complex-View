@@ -147,13 +147,37 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     private void refreshParentControllers() {
-        if ( publicationController.getPublication() == null ) {
-            Publication publication = interaction.getExperiments().iterator().next().getPublication();
-            publicationController.setPublication( publication );
+        Publication currentPublication = null;
+        Experiment currentExperiment = null;
+
+        if (!interaction.getExperiments().isEmpty()){
+            currentExperiment = interaction.getExperiments().iterator().next();
+
+            currentPublication = currentExperiment.getPublication();
+        }
+
+        // need to refresh experiment controller and publication controller for all these cases :
+        // - first time we load an interaction, publication controller and experiment controller is null and need to be set
+        // - the interaction does not have any publication and/or experiment and we set experiment and publication to null
+        // - the interaction loaded is from a different experiment and/or publication than the previous interaction loaded. In this case, we refresh the parents
+        if ( publicationController.getPublication() == null) {
+            publicationController.setPublication( currentPublication );
+        }
+        else if (currentPublication == null){
+            publicationController.setPublication( null );
+        }
+        else if (!publicationController.getPublication().getAc().equalsIgnoreCase(currentPublication.getAc())){
+            publicationController.setPublication( currentPublication );
         }
 
         if ( experimentController.getExperiment() == null ) {
-            experimentController.setExperiment( interaction.getExperiments().iterator().next() );
+            experimentController.setExperiment( currentExperiment );
+        }
+        else if (currentExperiment == null){
+            experimentController.setExperiment( null );
+        }
+        else if (!experimentController.getExperiment().getAc().equalsIgnoreCase(currentExperiment.getAc())){
+            experimentController.setExperiment( currentExperiment );
         }
     }
 
