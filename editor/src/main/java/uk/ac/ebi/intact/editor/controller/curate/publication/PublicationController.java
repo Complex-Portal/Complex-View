@@ -629,6 +629,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setCurationDepth(String curationDepth) {
         setAnnotation(CURATION_DEPTH, curationDepth);
+
+        for (Experiment experiment : publication.getExperiments()) {
+            newAnnotatedObjectHelper(experiment).setAnnotation(CURATION_DEPTH, curationDepth);
+        }
     }
 
     @Transactional(readOnly = true)
