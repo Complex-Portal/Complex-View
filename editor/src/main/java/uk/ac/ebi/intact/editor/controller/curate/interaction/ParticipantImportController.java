@@ -25,7 +25,6 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
-import uk.ac.ebi.intact.core.persistence.dao.ProteinDao;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriterImpl;
 import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
@@ -170,7 +169,6 @@ public class ParticipantImportController extends BaseController {
         final IntactContext context = IntactContext.getCurrentInstance();
         final ComponentDao componentDao = context.getDaoFactory().getComponentDao();
         final InteractorDao<InteractorImpl> interactorDao = context.getDaoFactory().getInteractorDao();
-        final ProteinDao proteinDao = context.getDaoFactory().getProteinDao();
 
         // id
         if (participantToImport.startsWith(context.getConfig().getAcPrefix())) {
@@ -186,11 +184,11 @@ public class ParticipantImportController extends BaseController {
                 }
             }
         } else {
-            // uniprot AC
-            Collection<ProteinImpl> proteins = proteinDao.getByUniprotId(participantToImport);
+            // identity xref
+            Collection<InteractorImpl> interactorsByXref = interactorDao.getByIdentityXref(participantToImport);
 
-            for (Protein protein : proteins) {
-                candidates.add(toImportCandidate(participantToImport, protein));
+            for (InteractorImpl interactorByXref : interactorsByXref) {
+                candidates.add(toImportCandidate(participantToImport, interactorByXref));
             }
 
             if (candidates.isEmpty()) {
