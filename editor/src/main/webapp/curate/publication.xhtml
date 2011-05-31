@@ -264,9 +264,10 @@
                                 </td>
                                 <td colspan="3">
                                     <h:panelGroup>
-                                        <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70" converter="trimmingConverter">
-                                            <ed:ajax event="valueChange" timeout="0" update="publicationTabs infoPanels changesPanel"
-                                                     beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                                        <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70"
+                                                     converter="trimmingConverter">
+                                            <p:ajax event="valueChange" update="publicationTabs infoPanels changesPanel"
+                                                    onstart="editorCuration.setUnsavedChanges(true)" oncomplete="ia_enableSave()" async="true"
                                                     process="@this" listener="#{publicationController.changed}"/>
                                         </h:inputText>
                                         <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{publicationController.setUnsavedChanges(true)}"

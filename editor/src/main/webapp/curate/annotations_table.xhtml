@@ -50,17 +50,14 @@
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                   <h:inputTextarea value="#{annotation.annotationText}" cols="50" rows="#{(fn:length(annotation.annotationText) / 50)+1}"
+                   <p:inputTextarea value="#{annotation.annotationText}" cols="50"
+                                    onchange="editorCuration.setUnsavedChanges(true)" autoResize="true"
                              converter="trimmingConverter">
-                         <ed:ajax event="valueChange" update="#{update} @this" process="@this"
-                                  timeout="5000" beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                        disabled="#{valueChangeAwareObject == null}"
-                                        listener="#{valueChangeAwareObject.changed}"/>
                        <ed:ajax event="valueChange" update="#{update} @this" process="@this"
                                   timeout="0" beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                         disabled="#{valueChangeAwareObject == null}"
                                         listener="#{valueChangeAwareObject.changed}"/>
-                    </h:inputTextarea>
+                    </p:inputTextarea>
             </p:column>
             <p:column>
                 <f:facet name="header">

@@ -92,6 +92,7 @@
 
     <ui:define name="content">
         <h:outputScript library="javascript" name="intact.js"/>
+        <h:outputScript library="javascript" name="editor.js"/>
 
         <script type="text/javascript">
             function ia_disableSave() {
@@ -106,6 +107,14 @@
                 ia_enableButton('unsavedSaveButton', buttonHTML);
             }
 
+            var editorCuration = new EditorCuration();
+
+//            function prepare(e) {
+//                editorCuration.setUnsavedChanges(#{annotatedObjectController.unsavedChanges});
+//            }
+//
+//            YAHOO.util.Event.addListener(window, 'load', prepare);
+
         </script>
 
         <!--<p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>-->
@@ -115,6 +124,7 @@
         <h:panelGroup rendered="#{annotatedObjectController != null}">
 
         <p:remoteCommand id="markAsUnsavedCmd" name="markAsUnsaved" update="messagesComponent,changesPanel,unsavedChangesInfo"
+                         onstart="editorCuration.showUnsavedBar()"
                                  actionListener="#{annotatedObjectController.changed(null)}" process="markAsUnsavedCmd"/>
 
         <ia:loadingDialog widgetVar="loadDialog"/>
@@ -144,28 +154,9 @@
 
             <ui:insert name="curateContent"/>
 
-            <p:outputPanel id="changesPanel">
+            <p:outputPanel id="changesPanel" style="display: none">
 
-            <h:panelGroup rendered="#{annotatedObjectController.unsavedChanges}">
-
-                <!--<h:outputScript>-->
-                    <!--YAHOO.util.Event.addListener(window, 'beforeunload', function(e) {-->
-                    <!--//if (! confirm('You have unsaved changes, leave this page? You can save the data later')) {-->
-                    <!--//   YAHOO.util.Event.stopEvent(e);-->
-                    <!--//}-->
-
-                      <!--autoSave();-->
-                    <!--});-->
-                <!--</h:outputScript>-->
-
-                <!-- Interactor -->
-                   <!--<p:confirmDialog message="Are you sure you want to leave without saving?" widgetVar="unsavedWarnDialog">-->
-                       <!--<p:commandButton value="Save Now" onclick="save(); return false; " oncomplete="unsavedWarnDialog.hide()"/>-->
-                       <!--<p:commandButton value="I will save it later" type="button" onclick="unsavedWarnDialog.hide()"/>-->
-                       <!--<p:commandButton value="Discard changes" actionListener="#{annotatedObjectController.doRevertChanges}"-->
-                                        <!--update="centralUnit,topSection,growl,messagesComponent" oncomplete="unsavedWarnDialog.hide()"/>-->
-                   <!--</p:confirmDialog>-->
-
+            <h:panelGroup>
 
             <p>&#160;</p>
 
@@ -194,6 +185,10 @@
                                update="centralUnit,topSection,messagesComponent"
                                onclick="revertDialog.show()" oncomplete="revertDialog.hide();"/>
             </div>
+
+                <script type="text/javascript">
+                    editorCuration.setUnsavedChanges(#{annotatedObjectController.unsavedChanges});
+                </script>
 
             </h:panelGroup>
         </p:outputPanel>

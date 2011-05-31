@@ -57,7 +57,6 @@ border-right:0 none !important;
 }
 
 .intact-notSavedPanel {
-    display: block;
     opacity: 0.8;
     position: fixed;
     top:auto;
