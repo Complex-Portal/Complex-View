@@ -394,6 +394,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional
     public void exportToXml254(ActionEvent evt) {
         EntrySet entrySet = createEntrySet();
 
@@ -417,11 +418,13 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
 
+    @Transactional
     public void exportToMitab25(ActionEvent evt) {
         String filename = getPublication().getPublicationId() + ".mitab.txt";
         mitab25File = exportToMitab(filename, new PsimiTabWriter());
     }
 
+    @Transactional
     public void exportToMitab25Extended(ActionEvent evt) {
         String filename = getPublication().getPublicationId() + ".ext-mitab.txt";
         mitab25ExtendedFile = exportToMitab(filename, new IntactPsimiTabWriter());

@@ -33,20 +33,20 @@
     <ui:define name="toolsContextual">
         <p:menuitem value="Copy annotations to Experiments" actionListener="#{publicationController.copyAnnotationsToExperiments}"
                     ajax="false"/>
-        <p:submenu label="Export">
-            <p:menuitem value="PSI-MI XML 2.5.4" actionListener="#{publicationController.exportToXml254}"
-                    ajax="false">
-                <p:fileDownload value="#{publicationController.xml254File}" />
-            </p:menuitem>
-            <p:menuitem value="Standard MITAB 2.5" actionListener="#{publicationController.exportToMitab25}"
-                    ajax="false">
-                <p:fileDownload value="#{publicationController.mitab25File}" />
-            </p:menuitem>
-            <p:menuitem value="Extended MITAB 2.5" actionListener="#{publicationController.exportToMitab25Extended}"
-                    ajax="false" global="true" >
-                <p:fileDownload value="#{publicationController.mitab25ExtendedFile}" />
-            </p:menuitem>
-        </p:submenu>
+        <!--<p:submenu label="Export">-->
+            <!--<p:menuitem value="PSI-MI XML 2.5.4" actionListener="#{publicationController.exportToXml254}"-->
+                    <!--ajax="false">-->
+                <!--<p:fileDownload value="#{publicationController.xml254File}" />-->
+            <!--</p:menuitem>-->
+            <!--<p:menuitem value="Standard MITAB 2.5" actionListener="#{publicationController.exportToMitab25}"-->
+                    <!--ajax="false">-->
+                <!--<p:fileDownload value="#{publicationController.mitab25File}" />-->
+            <!--</p:menuitem>-->
+            <!--<p:menuitem value="Extended MITAB 2.5" actionListener="#{publicationController.exportToMitab25Extended}"-->
+                    <!--ajax="false" global="true" >-->
+                <!--<p:fileDownload value="#{publicationController.mitab25ExtendedFile}" />-->
+            <!--</p:menuitem>-->
+        <!--</p:submenu>-->
 
 
     </ui:define>
