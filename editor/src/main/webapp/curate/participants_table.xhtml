@@ -112,7 +112,7 @@
                 <f:facet name="header"><h:outputText value="Options"/></f:facet>
                 <div style="float:right">
                     <p:commandLink process="@this" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
-                                   actionListener="#{changesController.markToDelete(participant, interactionController.interaction)}"
+                                   actionListener="#{interactionController.markParticipantToDelete(participant)}"
                                    update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent"
                                    oncomplete="markAsUnsaved()"
                                    rendered="#{not changesController.isDeletedAc(participant.ac)}"/>

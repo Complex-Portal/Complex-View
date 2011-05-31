@@ -238,6 +238,17 @@ public class InteractionController extends ParameterizableObjectController {
         }
     }
 
+    public void markParticipantToDelete(Component component) {
+        if (component == null) return;
+
+        if (component.getAc() == null) {
+            interaction.removeComponent(component);
+            refreshParticipants();
+        } else {
+            getChangesController().markToDelete(component, component.getInteraction());
+        }
+    }
+
     @Override
     public boolean doSaveDetails() {
         boolean saved = false;
@@ -245,6 +256,8 @@ public class InteractionController extends ParameterizableObjectController {
         for (ParticipantWrapper pw : participantWrappers) {
             Component component = pw.getParticipant();
 
+            // checks that the component has not been deleted before saving
+            // TODO : update the markToDelete method, it is not synchronized with the participant wrappers
             if (pw.isDeleted() && component.getAc() != null) {
                 interaction.removeComponent(component);
 
@@ -403,7 +416,7 @@ public class InteractionController extends ParameterizableObjectController {
             // remove all experiments attached to the new interaction
             Collection<Experiment> experiments = new ArrayList(newInteraction.getExperiments());
             for (Experiment exp : experiments){
-                 newInteraction.removeExperiment(exp);
+                newInteraction.removeExperiment(exp);
             }
 
             // add the new experiment
@@ -433,7 +446,7 @@ public class InteractionController extends ParameterizableObjectController {
             // remove all experiments
             Collection<Experiment> experiments = new ArrayList(interaction.getExperiments());
             for (Experiment exp : experiments){
-                 interaction.removeExperiment(exp);
+                interaction.removeExperiment(exp);
             }
 
             // add new experiment
@@ -628,8 +641,8 @@ public class InteractionController extends ParameterizableObjectController {
 
     public void setExperiment(Experiment experiment) {
         if (this.experiment == null){
-           this.experiment = experiment;
-           experimentController.setExperiment(experiment);
+            this.experiment = experiment;
+            experimentController.setExperiment(experiment);
         }
         else if (!this.experiment.equals(experiment)) {
             this.experiment = experiment;

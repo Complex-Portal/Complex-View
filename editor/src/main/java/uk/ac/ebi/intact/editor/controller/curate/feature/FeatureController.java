@@ -242,6 +242,7 @@ public class FeatureController extends AnnotatedObjectController {
 
         if (range.getAc() == null) {
             feature.removeRange(range);
+            refreshRangeWrappers();
         } else {
             getChangesController().markToDelete(range, range.getFeature());
         }
