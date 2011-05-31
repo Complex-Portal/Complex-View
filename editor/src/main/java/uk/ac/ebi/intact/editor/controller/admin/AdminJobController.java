@@ -82,28 +82,32 @@ public class AdminJobController extends BaseController {
     }
 
     public void restart( ActionEvent evt ) {
-        UIParameter param = ( UIParameter ) evt.getComponent().getChildren().iterator().next();
-        long executionId = ( Long ) param.getValue();
 
-        try {
-            jobOperator.restart( executionId );
+        if (!evt.getComponent().getChildren().isEmpty()){
+            UIParameter param = ( UIParameter ) evt.getComponent().getChildren().iterator().next();
 
-            addInfoMessage( "Job restarted", "Execution ID: " + executionId );
-        } catch ( JobInstanceAlreadyCompleteException e ) {
-            addErrorMessage( "Job is already complete", "Execution ID: " + executionId );
-            e.printStackTrace();
-        } catch ( NoSuchJobExecutionException e ) {
-            addErrorMessage( "Job execution does not exist", "Execution ID: " + executionId );
-            e.printStackTrace();
-        } catch ( NoSuchJobException e ) {
-            addErrorMessage( "Job does not exist", "Execution ID: " + executionId );
-            e.printStackTrace();
-        } catch ( JobRestartException e ) {
-            addErrorMessage( "Problem restarting job", "Execution ID: " + executionId );
-            e.printStackTrace();
-        } catch ( JobParametersInvalidException e ) {
-            addErrorMessage( "Job parameters are invalid", "Execution ID: " + executionId );
-            e.printStackTrace();
+            long executionId = ( Long ) param.getValue();
+
+            try {
+                jobOperator.restart( executionId );
+
+                addInfoMessage( "Job restarted", "Execution ID: " + executionId );
+            } catch ( JobInstanceAlreadyCompleteException e ) {
+                addErrorMessage( "Job is already complete", "Execution ID: " + executionId );
+                e.printStackTrace();
+            } catch ( NoSuchJobExecutionException e ) {
+                addErrorMessage( "Job execution does not exist", "Execution ID: " + executionId );
+                e.printStackTrace();
+            } catch ( NoSuchJobException e ) {
+                addErrorMessage( "Job does not exist", "Execution ID: " + executionId );
+                e.printStackTrace();
+            } catch ( JobRestartException e ) {
+                addErrorMessage( "Problem restarting job", "Execution ID: " + executionId );
+                e.printStackTrace();
+            } catch ( JobParametersInvalidException e ) {
+                addErrorMessage( "Job parameters are invalid", "Execution ID: " + executionId );
+                e.printStackTrace();
+            }
         }
     }
 

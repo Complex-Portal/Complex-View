@@ -481,6 +481,9 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public Experiment getFirstExperiment( Interaction interaction ) {
+        if (interaction.getExperiments().isEmpty()){
+            return null;
+        }
         return interaction.getExperiments().iterator().next();
     }
 

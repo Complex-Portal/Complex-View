@@ -114,13 +114,17 @@ public class ParticipantController extends ParameterizableObjectController {
                 return;
             }
 
-            if ( publicationController.getPublication() == null ) {
-                Publication publication = participant.getInteraction().getExperiments().iterator().next().getPublication();
-                publicationController.setPublication( publication );
-            }
-
-            if ( experimentController.getExperiment() == null ) {
-                experimentController.setExperiment( participant.getInteraction().getExperiments().iterator().next() );
+            if (participant.getInteraction() != null){
+                Collection<Experiment> exps = participant.getInteraction().getExperiments();
+                if (!exps.isEmpty()){
+                    if ( publicationController.getPublication() == null ) {
+                        Publication publication = exps.iterator().next().getPublication();
+                        publicationController.setPublication( publication );
+                    }
+                    if ( experimentController.getExperiment() == null ) {
+                        experimentController.setExperiment( exps.iterator().next() );
+                    }
+                }
             }
 
             if( interactionController.getInteraction() == null ) {
