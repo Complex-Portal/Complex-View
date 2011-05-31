@@ -54,15 +54,15 @@
                             <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                         </td>
                         <td>
-                            <h:inputText id="shortlabelTxt" value="#{cvObjectController.cvObject.shortLabel}" size="30"
+                            <p:inputText id="shortlabelTxt" value="#{cvObjectController.cvObject.shortLabel}" size="30"
                                          validator="#{annotatedObjectController.validateAnnotatedObject}"
                                          converter="trimmingConverter"
                                          required="true" requiredMessage="Shortlabel is required"
                                          onchange="markAsUnsaved()"/>
                         </td>
                         <td style="padding-left: 50px;">
-                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                            <h:inputText id="acTxt" value="#{cvObjectController.cvObject.ac}"
+                            <h:outputLabel value="AC: " for="acTxt" styleClass="intact-disabled"/>
+                            <p:inputText id="acTxt" value="#{cvObjectController.cvObject.ac}"
                                          size="10" readonly="true" />
                         </td>
                     </tr>
@@ -71,7 +71,7 @@
                             <h:outputLabel value="Fullname: " for="fullnameTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="fullnameTxt" value="#{cvObjectController.cvObject.fullName}" size="80"
+                            <p:inputText id="fullnameTxt" value="#{cvObjectController.cvObject.fullName}" size="80"
                                          onchange="markAsUnsaved()" converter="trimmingConverter"/>
                         </td>
                     </tr>
@@ -123,7 +123,7 @@
                 <p:tab id="advancedTab" title="Advanced">
                     <h:panelGrid columns="2">
                         <h:outputLabel for="idTxt" value="Identifier: "/>
-                        <h:inputText id="idTxt" value="#{cvObjectController.cvObject.identifier}" size="8"
+                        <p:inputText id="idTxt" value="#{cvObjectController.cvObject.identifier}" size="8"
                                  onchange="markAsUnsaved()" converter="trimmingConverter"/>
                     </h:panelGrid>
                 </p:tab>

@@ -26,12 +26,12 @@
                 <h3>What were you doing?</h3>
 
                 <p>Please, explain what were you doing with as much details as possible:</p>
-                <h:inputTextarea id="whatdoing" value="#{errorController.explanation}" rows="10" cols="100"
+                <p:inputTextarea id="whatdoing" value="#{errorController.explanation}" rows="10" cols="100"
                         required="true" requiredMessage="Explanation is required"/>
                 <br/>
 
                 <p>Write a sentence that summarises the problem:</p>
-                <h:inputText id="issueTitle" value="#{errorController.title}" size="50" required="true" requiredMessage="Sentence is required"/>
+                <p:inputText id="issueTitle" value="#{errorController.title}" size="50" required="true" requiredMessage="Sentence is required"/>
 
                 <p:commandButton id="issueSubmitBtn" value="Submit Issue" actionListener="#{errorController.submitIssue}"
                         update="messagesComponent" oncomplete="this.disabled = true"/>
@@ -42,7 +42,7 @@
             <h3>Exception stack trace (for your information)</h3>
 
 
-            <h:inputTextarea id="errorStacktrace" value="#{errorController.createExceptionMessage()}" readonly="true" rows="15" cols="100"/>
+            <p:inputTextarea id="errorStacktrace" value="#{errorController.createExceptionMessage()}" readonly="true" rows="15" cols="100"/>
             <p:resizable for="errorStacktrace" />
 
             <h:panelGroup rendered="#{not errorController.issueSubmissionAvalable}">

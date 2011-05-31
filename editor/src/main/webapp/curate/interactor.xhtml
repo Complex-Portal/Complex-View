@@ -65,17 +65,17 @@
                 </h:panelGroup>
 
                 <h:panelGrid columns="2">
-                    <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                    <h:inputText id="acTxt" value="#{interactor.ac}"
+                    <h:outputLabel value="AC: " for="acTxt" styleClass="intact-disabled"/>
+                    <p:inputText id="acTxt" value="#{interactor.ac}"
                                  size="10" readonly="true"/>
 
                     <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
-                    <h:inputText id="shortlabelTxt" value="#{interactor.shortLabel}" size="30"
+                    <p:inputText id="shortlabelTxt" value="#{interactor.shortLabel}" size="30"
                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
                                  required="true" requiredMessage="Shortlabel is required" converter="trimmingConverter"/>
 
                     <h:outputLabel value="Fullname: " for="fullnameTxt"/>
-                    <h:inputText id="fullnameTxt" value="#{interactor.fullName}" size="80"
+                    <p:inputText id="fullnameTxt" value="#{interactor.fullName}" size="80"
                                     onchange="markAsUnsaved()" converter="trimmingConverter"/>
 
                     <h:outputLabel value="Organism: " for="organismTxt"/>
@@ -86,7 +86,7 @@
                                         selectItems="#{bioSourceService.bioSourceSelectItems}"/>
 
                     <h:outputLabel value="Type: " for="interactorTxt"/>
-                    <h:inputText id="interactorTxt" value="#{interactorController.moleculeType}"
+                    <p:inputText id="interactorTxt" value="#{interactorController.moleculeType}"
                                          size="50"
                                          readonly="true"/>
 
@@ -100,11 +100,11 @@
                     <!--</h:panelGroup>-->
 
                     <h:outputLabel value="Sequence: " for="sequenceTxt"/>
-                    <h:inputTextarea id="sequenceTxt" value="#{interactorController.sequence}"
+                    <p:inputTextarea id="sequenceTxt" value="#{interactorController.sequence}"
                                      rows="5" cols="100" converter="trimmingConverter">
                         <!--<f:ajax event="valueChange" timeout="0" listener="#{interactorController.cleanSequence}" execute="sequenceTxt"-->
                                 <!--render="basic messagesComponent"/>-->
-                    </h:inputTextarea>
+                    </p:inputTextarea>
 
                 </h:panelGrid>
 

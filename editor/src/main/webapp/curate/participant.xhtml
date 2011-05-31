@@ -66,18 +66,18 @@
                 <table class="intact-tableBasicForm">
                     <tr>
                          <td class="firstCell">
-                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
+                            <h:outputLabel value="AC: " for="acTxt" styleClass="intact-disabled"/>
 
                         </td>
-                        <td><h:inputText id="acTxt" value="#{participant.ac}"
-                                         size="10" readonly="true" class="intact-disabled"/></td>
+                        <td><p:inputText id="acTxt" value="#{participant.ac}"
+                                         size="10" readonly="true" styleClass="intact-disabled"/></td>
                     </tr>
                     <tr>
                         <td class="firstCell">
                             <h:outputLabel value="Interactor (#{participant.interactor != null? participant.interactor.cvInteractorType.shortLabel : ''}): " for="interactorTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="interactorTxt" value="#{participantController.interactor}"
+                            <p:inputText id="interactorTxt" value="#{participantController.interactor}"
                                     readonly="true"/>
                             <!--<ia:inputInteractor value="#{participant.interactor}" />-->
                             <p:commandButton value="Import" onclick="importInteractorDialog.show();"/>
@@ -93,11 +93,11 @@
                             <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
                         </td>
                         <td colspan="2">
-                            <h:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" converter="trimmingConverter">
+                            <p:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" converter="trimmingConverter">
                                 <ed:ajax event="valueChange" timeout="0" process="@this"
                                          beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                             listener="#{annotatedObjectController.changed}"/>
-                             </h:inputText>
+                             </p:inputText>
                         </td>
                     </tr>
                     <tr>
@@ -124,7 +124,7 @@
                                               beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                               update="changesPanel unsavedChangesInfo"
                                               valueChangeAwareObject="#{annotatedObjectController}"/>
-                            <!--<h:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />-->
+                            <!--<p:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />-->
                         </td>
                     </tr>
                  <tr>

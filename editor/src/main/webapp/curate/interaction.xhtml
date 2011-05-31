@@ -70,20 +70,20 @@
                             <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                         </td>
                         <td>
-                            <h:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"
+                            <p:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"
                                          validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                                     required="true" requiredMessage="Shortlabel is required">
                                 <ed:ajax event="valueChange" timeout="0" process="@this" beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"/>
-                            </h:inputText>
+                            </p:inputText>
                         </td>
                         <td style="padding-left: 50px;">
-                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                            <h:inputText id="acTxt" value="#{interaction.ac}"
+                            <h:outputLabel value="AC: " for="acTxt" styleClass="intact-disabled"/>
+                            <p:inputText id="acTxt" value="#{interaction.ac}"
                                          size="10" readonly="true"/>
                         </td>
                         <td style="padding-left: 50px;">
-                             <h:outputLabel value="IMEx ID: " for="imexIdTxt" class="intact-disabled"/>
-                                <h:inputText id="imexIdTxt" value="#{interactionController.imexId}" size="10" readonly="true"/>
+                             <h:outputLabel value="IMEx ID: " for="imexIdTxt" styleClass="intact-disabled"/>
+                                <p:inputText id="imexIdTxt" value="#{interactionController.imexId}" size="10" readonly="true"/>
                         </td>
                     </tr>
                     <tr>
@@ -180,11 +180,11 @@
                 <p:tab id="advancedTab" title="Advanced">
                     <h:panelGrid columns="2">
                         <h:outputLabel for="kdTxt" value="Kd: "/>
-                        <h:inputText id="kdTxt" value="#{interactionController.interaction.KD}" size="5"
+                        <p:inputText id="kdTxt" value="#{interactionController.interaction.KD}" size="5"
                                  onchange="markAsUnsaved()" converter="trimmingConverter"/>
 
                         <h:outputLabel for="crcTxt" value="CRC: "/>
-                        <h:inputText id="crcTxt" value="#{interactionController.interaction.crc}" size="20" readonly="true"/>
+                        <p:inputText id="crcTxt" value="#{interactionController.interaction.crc}" size="20" readonly="true"/>
                     </h:panelGrid>
                 </p:tab>
 
@@ -198,7 +198,7 @@
                   modal="true" position="center">
             <h:panelGrid columns="3" style="margin-bottom:10px">
                     <h:outputLabel for="expToCopy" value="Experiment AC or label:"/>
-                    <h:inputText id="expToCopy" value="#{interactionController.experimentToCopyTo}" converter="trimmingConverter"/>
+                    <p:inputText id="expToCopy" value="#{interactionController.experimentToCopyTo}" converter="trimmingConverter"/>
 
                     <p:commandButton value="Copy" action="#{interactionController.copyToExperiment}"
                                      ajax="false" oncomplete="copyToExperimentDialog.hide()"/>
@@ -210,7 +210,7 @@
                   modal="true" position="center">
             <h:panelGrid columns="3" style="margin-bottom:10px">
                     <h:outputLabel for="expToMove" value="Experiment AC or label:"/>
-                    <h:inputText id="expToMove" value="#{interactionController.experimentToMoveTo}" converter="trimmingConverter"/>
+                    <p:inputText id="expToMove" value="#{interactionController.experimentToMoveTo}" converter="trimmingConverter"/>
 
                     <p:commandButton value="Move" action="#{interactionController.moveToExperiment}"
                                      process="expToMove"

@@ -28,7 +28,7 @@
 
             <h:panelGroup rendered="#{myNotesController.editMode}">
 
-                <h:inputTextarea id="notesArea" value="#{myNotesController.rawNotes}" rows="15" cols="80"/>
+                <p:inputTextarea id="notesArea" value="#{myNotesController.rawNotes}" rows="15" cols="80"/>
 
                 <br/>
                 <p:commandButton value="Save Notes" actionListener="#{myNotesController.saveNotes}"

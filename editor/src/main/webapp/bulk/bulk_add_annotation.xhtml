@@ -26,7 +26,7 @@
             <h:panelGroup rendered="#{not empty bulkAnnotationController.updatedAcs}">
                 Updated object ACs:<br/>
 
-                <h:inputTextarea value="#{bulkAnnotationController.updatedAcs}"
+                <p:inputTextarea value="#{bulkAnnotationController.updatedAcs}"
                                  readonly="true"
                                  converter="arrayConverter"
                                  cols="60" rows="5"/>
@@ -38,7 +38,7 @@
             <h:panelGroup rendered="#{not empty bulkAnnotationController.couldNotUpdateAcs}">
                 Could not update the following ACs:<br/>
 
-                <h:inputTextarea value="#{bulkAnnotationController.couldNotUpdateAcs}"
+                <p:inputTextarea value="#{bulkAnnotationController.couldNotUpdateAcs}"
                                  readonly="true"
                                  converter="arrayConverter"
                                  cols="60" rows="5"/>
@@ -78,7 +78,7 @@
                 </h:selectOneMenu>
 
                 <h:outputLabel for="annotText" value="Annotated text:"/>
-                <h:inputText id="annotText" value="#{bulkAnnotationController.annotation.annotationText}"
+                <p:inputText id="annotText" value="#{bulkAnnotationController.annotation.annotationText}"
                              size="60"/>
 
                 <h:outputLabel for="replaceBool" value="Replace if topic exists:"/>
@@ -86,7 +86,7 @@
 
                 <h:outputLabel for="acListArea" value="List of accessions&lt;br/>(comma or line separated):"
                                escape="false"/>
-                <h:inputTextarea id="acListArea" value="#{bulkAnnotationController.acs}"
+                <p:inputTextarea id="acListArea" value="#{bulkAnnotationController.acs}"
                                  required="true" requiredMessage="Accessions are required"
                                  converter="arrayConverter"
                                  cols="60" rows="5"/>

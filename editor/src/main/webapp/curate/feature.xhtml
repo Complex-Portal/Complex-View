@@ -72,17 +72,17 @@
                             <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                         </td>
                         <td>
-                            <h:inputText id="shortlabelTxt" value="#{feature.shortLabel}" size="30"
+                            <p:inputText id="shortlabelTxt" value="#{feature.shortLabel}" size="30"
                                          validator="#{featureController.validateFeature}" converter="trimmingConverter"
                                     required="true" requiredMessage="Shortlabel is required">
                                 <ed:ajax event="valueChange" timeout="0" process="@this"
                                          beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                             listener="#{annotatedObjectController.changed}"/>
-                            </h:inputText>
+                            </p:inputText>
                         </td>
                         <td style="padding-left: 50px;">
-                            <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                            <h:inputText id="acTxt" value="#{feature.ac}"
+                            <h:outputLabel value="AC: " for="acTxt" styleClass="intact-disabled"/>
+                            <p:inputText id="acTxt" value="#{feature.ac}"
                                          size="10" readonly="true"/>
                         </td>
                     </tr>
@@ -122,7 +122,7 @@
                 <p:tab title="Ranges (#{feature.ranges.size()})">
 
                     <div class="intact-buttonBar">
-                        <h:inputText id="newRangeTxt" value="#{featureController.newRangeValue}" converter="trimmingConverter"/>
+                        <p:inputText id="newRangeTxt" value="#{featureController.newRangeValue}" converter="trimmingConverter"/>
                         <p:tooltip value="Type a range (e.g. '23-25') and then click the 'New Range' button" forElement="newRangeTxt" targetPosition="topRight" position="bottomLeft"/>
 
                         <p:commandButton value="New range" actionListener="#{featureController.newRange}" update="rangeTable messagesComponent"

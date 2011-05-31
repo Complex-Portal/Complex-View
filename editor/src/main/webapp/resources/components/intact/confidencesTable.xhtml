@@ -53,12 +53,12 @@
                 <f:facet name="header">
                     <h:outputText value="Value"/>
                 </f:facet>
-                     <h:inputText value="#{confidence.value}" required="true" requiredMessage="Confidence value is required" converter="trimmingConverter">
+                     <p:inputText value="#{confidence.value}" required="true" requiredMessage="Confidence value is required" converter="trimmingConverter">
                         <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                  beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
-                    </h:inputText>
+                    </p:inputText>
             </p:column>
              <p:column>
                 <f:facet name="header">

@@ -53,19 +53,19 @@
                 <f:facet name="header">
                     <h:outputText value="Name"/>
                 </f:facet>
-                     <h:inputText value="#{alias.name}" size="50" rendered="#{alias.name != null}" converter="trimmingConverter">
+                     <p:inputText value="#{alias.name}" size="50" rendered="#{alias.name != null}" converter="trimmingConverter">
                         <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
-                    </h:inputText>
-                <h:inputText value="#{alias.name}" size="50" rendered="#{alias.name == null}"
+                    </p:inputText>
+                <p:inputText value="#{alias.name}" size="50" rendered="#{alias.name == null}"
                         required="true" requiredMessage="Alias names are required" converter="trimmingConverter">
                         <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
-                </h:inputText>
+                </p:inputText>
             </p:column>
             <p:column>
                 <f:facet name="header">

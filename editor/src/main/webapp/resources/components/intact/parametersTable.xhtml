@@ -53,12 +53,12 @@
                 <f:facet name="header">
                     <h:outputText value="Value"/>
                 </f:facet>
-                     <h:inputText value="#{parameter.factor}" required="true" requiredMessage="Parameter value is required">
+                     <p:inputText value="#{parameter.factor}" required="true" requiredMessage="Parameter value is required">
                          <f:convertNumber/>
                         <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
-                    </h:inputText>
+                    </p:inputText>
             </p:column>
             <p:column>
                 <f:facet name="header">
@@ -77,34 +77,34 @@
                 <f:facet name="header">
                     <h:outputText value="Base"/>
                 </f:facet>
-                     <h:inputText value="#{parameter.base}">
+                     <p:inputText value="#{parameter.base}">
                          <f:convertNumber/>
                         <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
-                    </h:inputText>
+                    </p:inputText>
             </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Exponent"/>
                 </f:facet>
-                     <h:inputText value="#{parameter.exponent}">
+                     <p:inputText value="#{parameter.exponent}">
                          <f:convertNumber/>
                         <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
-                    </h:inputText>
+                    </p:inputText>
             </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Uncertainty"/>
                 </f:facet>
-                     <h:inputText value="#{parameter.uncertainty}">
+                     <p:inputText value="#{parameter.uncertainty}">
                          <f:convertNumber/>
                         <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
-                    </h:inputText>
+                    </p:inputText>
             </p:column>
             <p:column>
                 <f:facet name="header">

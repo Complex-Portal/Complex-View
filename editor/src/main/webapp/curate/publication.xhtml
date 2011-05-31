@@ -140,7 +140,7 @@
                                     <h:outputLabel value="Identifier: " for="idTxt"/>
                                 </td>
                                 <td>
-                                    <h:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
+                                    <p:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
                                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
                                                  size="10" onkeyup="enableAutocomplete()"
                                                  converter="trimmingConverter"
@@ -148,7 +148,7 @@
                                         <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo publicationTabs"
                                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                 process="@this" listener="#{publicationController.changed}"/>
-                                    </h:inputText>
+                                    </p:inputText>
 
                                     <p:remoteCommand name="enableAutocomplete" update="autocompleteBtn" async="true">
                                         <f:setPropertyActionListener value="#{true}"
@@ -166,13 +166,13 @@
                                     </p:commandButton>
                                 </td>
                                 <td style="padding-left: 45px;">
-                                    <h:outputLabel value="AC: " for="acTxt" class="intact-disabled"/>
-                                    <h:inputText id="acTxt" value="#{publicationController.publication.ac}"
-                                                 size="10" readonly="true" class="intact-disabled"/>
+                                    <h:outputLabel value="AC: " for="acTxt" styleClass="intact-disabled"/>
+                                    <p:inputText id="acTxt" value="#{publicationController.publication.ac}"
+                                                 size="10" readonly="true" styleClass="intact-disabled"/>
                                 </td>
                                 <td style="text-align:right;">
-                                    <h:outputLabel value="IMEx Id: " for="imexIdTxt" class="intact-disabled"/>
-                                    <h:inputText id="imexIdTxt" value="#{publicationController.imexId}" size="10" readonly="true" class="intact-disabled"/>
+                                    <h:outputLabel value="IMEx Id: " for="imexIdTxt" styleClass="intact-disabled"/>
+                                    <p:inputText id="imexIdTxt" value="#{publicationController.imexId}" size="10" readonly="true" styleClass="intact-disabled"/>
                                 </td>
                             </tr>
                             <tr>
@@ -180,12 +180,12 @@
                                     <h:outputLabel value="Title: " for="titleTxt"/>
                                 </td>
                                 <td colspan="2">
-                                    <h:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1"
+                                    <p:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1"
                                             converter="trimmingConverter">
                                         <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo"
                                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                 process="@this" listener="#{publicationController.changed}"/>
-                                    </h:inputTextarea>
+                                    </p:inputTextarea>
                                 </td>
                                 <td colspan="1" style="text-align: right;">
                                     <h:outputLabel value="Year: " for="yearTxt"/>
@@ -194,13 +194,13 @@
                                                <!--validatorMessage="Invalid year"-->
                                                <!--style="width:50px"-->
                                                <!--onchange="markAsUnsaved(); refreshTabs()"/>-->
-                                    <h:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4"
+                                    <p:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4"
                                             validatorMessage="Year provided is invalid">
                                         <f:convertNumber maxFractionDigits="0" pattern="#" />
                                          <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo publicationTabs"
                                                   beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                 process="@this" listener="#{publicationController.changed}"/>
-                                    </h:inputText>
+                                    </p:inputText>
 
                                 </td>
                             </tr>
@@ -209,11 +209,11 @@
                                     <h:outputLabel value="Contact email: " for="contactTxt"/>
                                 </td>
                                 <td colspan="3">
-                                    <h:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50" converter="trimmingConverter">
+                                    <p:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50" converter="trimmingConverter">
                                         <ed:ajax event="valueChange" timeout="0" update="publicationTabs unsavedChangesInfo changesPanel" process="@this"
                                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                 listener="#{publicationController.changed}"/>
-                                    </h:inputText>
+                                    </p:inputText>
                                 </td>
                             </tr>
                             <tr>
@@ -264,12 +264,12 @@
                                 </td>
                                 <td colspan="3">
                                     <h:panelGroup>
-                                        <h:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70"
+                                        <p:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70"
                                                      converter="trimmingConverter">
                                             <p:ajax event="valueChange" update="publicationTabs infoPanels changesPanel"
                                                     onstart="editorCuration.setUnsavedChanges(true)" oncomplete="ia_enableSave()" async="true"
                                                     process="@this" listener="#{publicationController.changed}"/>
-                                        </h:inputText>
+                                        </p:inputText>
                                         <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{publicationController.setUnsavedChanges(true)}"
                                                          onclick="document.getElementById('onHoldTxt').value = ''"
                                                          update="infoPanels,publicationTabs,changesPanel"/>
@@ -333,7 +333,7 @@
                   modal="true" position="center">
             <h:panelGrid columns="3" style="margin-bottom:10px">
                     <h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>
-                    <h:inputTextarea id="reasonRejTxt" value="#{publicationController.reasonForRejection}" rows="4" cols="60" converter="trimmingConverter"/>
+                    <p:inputTextarea id="reasonRejTxt" value="#{publicationController.reasonForRejection}" rows="4" cols="60" converter="trimmingConverter"/>
 
                     <p:commandButton value="Reject" actionListener="#{publicationController.rejectPublication}"
                                      process="reasonRejTxt"

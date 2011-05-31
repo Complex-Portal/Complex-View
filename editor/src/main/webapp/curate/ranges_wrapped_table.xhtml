@@ -23,7 +23,7 @@
                     <f:facet name="header">
                         <h:outputText value="Value"/>
                     </f:facet>
-                    <h:inputText id="rangeTxt" value="#{rangeWrapper.rangeAsString}"
+                    <p:inputText id="rangeTxt" value="#{rangeWrapper.rangeAsString}"
                                  onblur="markToUnsaved()"
                                  validator="#{rangeWrapper.validateRange}"
                                  required="true"
@@ -32,7 +32,7 @@
                                  styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
                                  style="font-family: monospace">
                         <f:ajax event="valueChange" listener="#{rangeWrapper.onRangeAsStringChanged}" onevent="markAsUnsaved()" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
-                    </h:inputText>
+                    </p:inputText>
 
                      <h:panelGroup id="validityPanel">
 
@@ -88,13 +88,13 @@
                 <f:facet name="expansion">
                     <h:panelGrid columns="2">
                         <h:outputText value="Sequence:"/>
-                        <h:inputTextarea value="#{rangeWrapper.range.fullSequence}" readonly="true" cols="60" rows="3"/>
+                        <p:inputTextarea value="#{rangeWrapper.range.fullSequence}" readonly="true" cols="60" rows="3"/>
 
                         <h:outputText value="Upstream sequence:"/>
-                        <h:inputTextarea value="#{rangeWrapper.range.upStreamSequence}" readonly="true" cols="60" rows="3"/>
+                        <p:inputTextarea value="#{rangeWrapper.range.upStreamSequence}" readonly="true" cols="60" rows="3"/>
 
                         <h:outputText value="Downstream sequence:"/>
-                        <h:inputTextarea value="#{rangeWrapper.range.downStreamSequence}" readonly="true" cols="60" rows="3"/>
+                        <p:inputTextarea value="#{rangeWrapper.range.downStreamSequence}" readonly="true" cols="60" rows="3"/>
                     </h:panelGrid>
                 </f:facet>
 
