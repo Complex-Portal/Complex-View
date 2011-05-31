@@ -630,7 +630,14 @@ public class PublicationController extends AnnotatedObjectController {
     public void setCurationDepth(String curationDepth) {
         setAnnotation(CURATION_DEPTH, curationDepth);
 
-        for (Experiment experiment : publication.getExperiments()) {
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            Publication refreshedPub = getDaoFactory().getPublicationDao().getByAc(publication.getAc());
+            experiments = refreshedPub.getExperiments();
+        }
+
+        for (Experiment experiment : experiments) {
             newAnnotatedObjectHelper(experiment).setAnnotation(CURATION_DEPTH, curationDepth);
         }
     }
@@ -663,7 +670,14 @@ public class PublicationController extends AnnotatedObjectController {
     public void setAcceptedMessage( String message ) {
         setAnnotation( CvTopic.ACCEPTED, message );
 
-        for (Experiment experiment : publication.getExperiments()) {
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            Publication refreshedPub = getDaoFactory().getPublicationDao().getByAc(publication.getAc());
+            experiments = refreshedPub.getExperiments();
+        }
+
+        for (Experiment experiment : experiments) {
             newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.ACCEPTED, message);
         }
     }
