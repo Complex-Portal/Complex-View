@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
@@ -137,6 +138,16 @@ public class ParticipantController extends ParameterizableObjectController {
 
     @Override
     public void doPreSave() {
+        // create master proteins from the unsaved manager
+        final List<UnsavedChange> transcriptCreated = super.getChangesController().getAllUnsavedProteinTranscripts();
+
+        for (UnsavedChange unsaved : transcriptCreated) {
+            IntactObject transcript = unsaved.getUnsavedObject();
+            super.getPersistenceController().doSaveMasterProteins(transcript);
+
+            super.getChangesController().removeFromCreatedTranscriptWithoutProtein(unsaved);
+        }
+
         // save the interactor, if it didn't exist and the participant is just being updated
         if (participant.getAc() != null && participant.getInteractor().getAc() == null) {
             getCorePersister().saveOrUpdate(participant.getInteractor());
