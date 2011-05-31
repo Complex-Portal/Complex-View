@@ -11,7 +11,7 @@
     <artifactId>editor</artifactId>
     <packaging>war</packaging>
 
-    <version>1.0-beta-3-SNAPSHOT</version>
+    <version>1.0-beta-2-RC2</version>
 
     <name>Service :: IntAct Editor</name>
 
