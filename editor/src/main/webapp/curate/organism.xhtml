@@ -46,14 +46,17 @@
                     <h:outputLabel value="Tax ID: " for="taxIdTxt"/>
 
                     <h:panelGroup>
-                    <p:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()" converter="trimmingConverter"
-                                 required="true" requiredMessage="Tax ID is required">
-                        <ed:ajax event="valueChange" update="organismTabs"
-                                beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"/>
-                    </p:inputText>
+                        <p:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()" converter="trimmingConverter"
+                                     required="true" requiredMessage="Tax ID is required">
+                            <!--<ed:ajax event="valueChange" update="organismTabs"
+                          beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()" process="autoFillBtn"/>-->
+                        </p:inputText>
 
                         <p:commandButton id="autoFillBtn" value="Auto-fill" actionListener="#{bioSourceController.autoFill}"
-                                         update="basic organismTabs" process="autoFillBtn"/>
+                                         update="basic organismTabs" immediate="true">
+                            <!--This is a trick to be able to auto fill the biosource without forcing validation of shortlabel as it will be autocompleted-->
+                            <f:param name="skipvalidation" value="1" />
+                        </p:commandButton>
 
                     </h:panelGroup>
 
@@ -64,7 +67,7 @@
                     <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                     <p:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30" converter="trimmingConverter"
                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
-                                 required="true" requiredMessage="Shortlabel is required"
+                                 required="#{empty param['skipvalidation']}" requiredMessage="Shortlabel is required"
                                  onchange="markAsUnsaved()"/>
 
                     <h:outputLabel value="Fullname: " for="fullnameTxt"/>
@@ -84,16 +87,16 @@
 
             </p:panel>
 
-             <br/>
+            <br/>
 
             <p:tabView id="organismTabs">
 
                 <ui:include src="propertiesTabs.xhtml">
-                     <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.bioSourceTopicSelectItems}"/>
+                    <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.bioSourceTopicSelectItems}"/>
                 </ui:include>
 
             </p:tabView>
-            
+
         </h:panelGroup>
 
     </ui:define>
