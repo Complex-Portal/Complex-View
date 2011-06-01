@@ -504,12 +504,12 @@ public class InteractionController extends ParameterizableObjectController {
     public void doRevertChanges(ActionEvent evt) {
         super.doRevertChanges(evt);
 
-        for (ParticipantWrapper wrapper : participantWrappers) {
+        /*for (ParticipantWrapper wrapper : participantWrappers) {
             revertParticipant(wrapper);
-        }
+        }*/
     }
 
-    public void deleteParticipant(ParticipantWrapper participantWrapper) {
+    /*public void deleteParticipant(ParticipantWrapper participantWrapper) {
         participantWrapper.setDeleted(true);
 
         Component participant = participantWrapper.getParticipant();
@@ -531,7 +531,7 @@ public class InteractionController extends ParameterizableObjectController {
         updateShortLabel();
 
         addInfoMessage("Participant marked to be removed.", participantInfo.toString());
-    }
+    }*/
 
     public void updateShortLabel() {
         try {
@@ -573,7 +573,7 @@ public class InteractionController extends ParameterizableObjectController {
         return false;
     }
 
-    public void revertParticipant(ParticipantWrapper participantWrapper) {
+    /*public void revertParticipant(ParticipantWrapper participantWrapper) {
         participantWrapper.setDeleted(false);
 
         Component participant = participantWrapper.getParticipant();
@@ -589,7 +589,7 @@ public class InteractionController extends ParameterizableObjectController {
         if (participant.getAc() != null) {
             participantInfo.append("(").append(participant.getAc()).append(")");
         }
-    }
+    }*/
 
     /**
      * When reverting, we need to refresh the collection of wrappers because they are not part of the IntAct model.
