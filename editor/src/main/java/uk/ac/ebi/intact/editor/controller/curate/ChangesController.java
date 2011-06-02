@@ -85,9 +85,9 @@ public class ChangesController extends JpaAwareController implements UserListene
         if (io == null) return;
 
         if (io.getAc() != null) {
-            addChange(new UnsavedChange(io, UnsavedChange.UPDATED));
+            addChange(new UnsavedChange(io, UnsavedChange.UPDATED, null));
         } else {
-            addChange(new UnsavedChange(io, UnsavedChange.CREATED));
+            addChange(new UnsavedChange(io, UnsavedChange.CREATED, null));
         }
     }
 
@@ -95,7 +95,17 @@ public class ChangesController extends JpaAwareController implements UserListene
 
     public void markToDelete(IntactObject object, AnnotatedObject parent) {
         if (object.getAc() != null) {
-            addChange(new UnsavedChange(object, UnsavedChange.DELETED, parent));
+
+            String scope;
+
+            if (parent != null && parent.getAc() != null){
+                scope = parent.getAc();
+            }
+            else {
+                scope = null;
+            }
+
+            addChange(new UnsavedChange(object, UnsavedChange.DELETED, parent, scope));
             removeFromUnsaved(object);
         } else {
             AnnotatedObjectUtils.removeChild(parent, object);
@@ -106,8 +116,16 @@ public class ChangesController extends JpaAwareController implements UserListene
         }*/
     }
 
-    public void markToCreatedTranscriptWithoutMaster(IntactObject object) {
-        addChange(new UnsavedChange(object, UnsavedChange.CREATED_TRANSCRIPT));
+    public void markToCreatedTranscriptWithoutMaster(IntactObject object, AnnotatedObject parent) {
+        String scope;
+
+        if (parent != null && parent.getAc() != null){
+            scope = parent.getAc();
+        }
+        else {
+            scope = null;
+        }
+        addChange(new UnsavedChange(object, UnsavedChange.CREATED_TRANSCRIPT, scope));
     }
 
     @Transactional
@@ -131,8 +149,8 @@ public class ChangesController extends JpaAwareController implements UserListene
     public void removeFromUnsaved(IntactObject io) {
         List<UnsavedChange> changes = getUnsavedChangesForCurrentUser();
 
-        changes.remove(new UnsavedChange(io, UnsavedChange.CREATED));
-        changes.remove(new UnsavedChange(io, UnsavedChange.UPDATED));
+        changes.remove(new UnsavedChange(io, UnsavedChange.CREATED, null));
+        changes.remove(new UnsavedChange(io, UnsavedChange.UPDATED, null));
     }
 
     public void removeFromCreatedTranscriptWithoutProtein(UnsavedChange unsavedChange) {
@@ -144,7 +162,16 @@ public class ChangesController extends JpaAwareController implements UserListene
     }
 
     public void removeFromDeleted(IntactObject object, AnnotatedObject parent) {
-        getUnsavedChangesForCurrentUser().remove(new UnsavedChange(object, UnsavedChange.DELETED, parent));
+        String scope;
+
+        if (parent != null && parent.getAc() != null){
+            scope = parent.getAc();
+        }
+        else {
+            scope = null;
+        }
+
+        getUnsavedChangesForCurrentUser().remove(new UnsavedChange(object, UnsavedChange.DELETED, parent, scope));
     }
 
     public void revert(IntactObject io) {

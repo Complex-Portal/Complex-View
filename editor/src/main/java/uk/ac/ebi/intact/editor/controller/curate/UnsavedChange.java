@@ -34,14 +34,22 @@ public class UnsavedChange {
     private AnnotatedObject parentObject;
     private String action;
 
-    public UnsavedChange(IntactObject unsavedObject, String action) {
+    /**
+     * This is the global scope of change in case we delete an object from its parent. We know during which update we can save this change
+     * This scope is not affecting equals and hashcode. It is just a tag to be able to save deleted event or created transcript events
+     */
+    private String scope;
+
+    public UnsavedChange(IntactObject unsavedObject, String action, String scope) {
         this.unsavedObject = unsavedObject;
         this.action = action;
+        this.scope = scope;
     }
 
-    public UnsavedChange(IntactObject unsavedObject, String action, AnnotatedObject parentObject) {
-        this(unsavedObject, action);
+    public UnsavedChange(IntactObject unsavedObject, String action, AnnotatedObject parentObject, String scope) {
+        this(unsavedObject, action, scope);
         this.parentObject = parentObject;
+        this.scope = scope;
     }
 
     public String getAction() {
@@ -93,5 +101,9 @@ public class UnsavedChange {
         result = 31 * result + (unsavedObject != null ? System.identityHashCode(unsavedObject) : 0);
 
         return result;
+    }
+
+    public String getScope() {
+        return scope;
     }
 }

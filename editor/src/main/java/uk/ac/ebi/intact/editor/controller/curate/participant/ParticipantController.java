@@ -147,9 +147,17 @@ public class ParticipantController extends ParameterizableObjectController {
 
         for (UnsavedChange unsaved : transcriptCreated) {
             IntactObject transcript = unsaved.getUnsavedObject();
-            super.getPersistenceController().doSaveMasterProteins(transcript);
 
-            super.getChangesController().removeFromCreatedTranscriptWithoutProtein(unsaved);
+            String currentAc = participant != null ? participant.getAc() : null;
+
+            // the object to save is different from the current object. Checks that the scope of this object to save is the ac of the current object being saved
+            // if the scope is null or different, the object should not be saved at this stage because we only save the current object and changes associated with it
+            // if current ac is null, no unsaved event should be associated with it as this object has not been saved yet
+            if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)){
+                super.getPersistenceController().doSaveMasterProteins(transcript);
+
+                super.getChangesController().removeFromCreatedTranscriptWithoutProtein(unsaved);
+            }
         }
 
         // save the interactor, if it didn't exist and the participant is just being updated
@@ -206,7 +214,7 @@ public class ParticipantController extends ParameterizableObjectController {
         for (ImportCandidate importCandidate : interactorCandidates) {
             if (importCandidate.isSelected()) {
                 if (importCandidate.isChain() || importCandidate.isIsoform()){
-                    getChangesController().markToCreatedTranscriptWithoutMaster(importCandidate.getInteractor());
+                    getChangesController().markToCreatedTranscriptWithoutMaster(importCandidate.getInteractor(), participant);
                 }
                 participant.setInteractor(importCandidate.getInteractor());
                 setUnsavedChanges(true);

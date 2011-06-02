@@ -262,7 +262,7 @@ public class ParticipantImportController extends BaseController {
 //        }
 
         if (candidate.isChain() || candidate.isIsoform()){
-            getInteractionController().getChangesController().markToCreatedTranscriptWithoutMaster(interactor);
+            getInteractionController().getChangesController().markToCreatedTranscriptWithoutMaster(interactor, interaction);
         }
 
         Component component = new Component(IntactContext.getCurrentInstance().getInstitution(),

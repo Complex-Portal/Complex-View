@@ -176,13 +176,24 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
             IntactObject unsavedObject = unsaved.getUnsavedObject();
 
+            // the object to delete is the current object itself. Should delete it now
             if (unsavedObject.getAc() != null && unsavedObject.getAc().equals(currentAc)){
                 currentAnnotatedObjectDeleted = true;
-            }
-            // remove the object to delete from its parent
-            persistenceController.doDelete(unsavedObject);
 
-            changesController.removeFromDeleted(unsaved);
+                // remove the object to delete from its parent
+                persistenceController.doDelete(unsavedObject);
+
+                changesController.removeFromDeleted(unsaved);
+            }
+            // the object to delete is different from the current object. Checks that the scope of this object to delete is the ac of the current object being saved
+            // if the scope is null or different, the object should not be deleted at this stage because we only save the current object and changes associated with it
+            // if current ac is null, no deleted event should be associated with it as this object has not been saved yet
+            else if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)){
+                // remove the object to delete from its parent
+                persistenceController.doDelete(unsavedObject);
+
+                changesController.removeFromDeleted(unsaved);
+            }
         }
 
         AnnotatedObject annotatedObject = getAnnotatedObject();
