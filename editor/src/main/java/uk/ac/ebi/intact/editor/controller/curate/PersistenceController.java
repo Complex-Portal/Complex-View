@@ -143,6 +143,11 @@ public class PersistenceController extends JpaAwareController {
 
         changesController.clearCurrentUserChanges();
 
+        // refresh current view now
+        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+        final AnnotatedObjectController currentAoController = curateController.getCurrentAnnotatedObjectController();
+        currentAoController.forceRefreshCurrentViewObject();
     }
 
     /**
@@ -169,7 +174,9 @@ public class PersistenceController extends JpaAwareController {
                                 ImportCandidate candidate = importCandidates.iterator().next();
                                 Interactor interactor = candidate.getInteractor();
 
-                                doSave(interactor);
+                                if (interactor.getAc() == null){
+                                    doSave(interactor);
+                                }
 
                                 xref.setPrimaryId(interactor.getAc());
                             }

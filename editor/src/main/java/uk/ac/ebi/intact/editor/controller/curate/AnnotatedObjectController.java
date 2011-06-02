@@ -259,11 +259,25 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
             }
             else if (getAnnotatedObject() == null && currentAo != null){
-                 if (log.isDebugEnabled()) log.debug("Refreshing object in view: "+DebugUtil.annotatedObjectToString(currentAo, false));
+                if (log.isDebugEnabled()) log.debug("Refreshing object in view: "+DebugUtil.annotatedObjectToString(currentAo, false));
 
                 AnnotatedObject refreshedAo = refresh(currentAo);
                 curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
             }
+        }
+    }
+
+    public void forceRefreshCurrentViewObject() {
+        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+        final AnnotatedObject currentAo = curateController.getCurrentAnnotatedObjectController().getAnnotatedObject();
+
+        if (currentAo != null && currentAo.getAc() != null) {
+
+            if (log.isDebugEnabled()) log.debug("Refreshing object in view: "+DebugUtil.annotatedObjectToString(currentAo, false));
+
+            AnnotatedObject refreshedAo = refresh(currentAo);
+            curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
         }
     }
 

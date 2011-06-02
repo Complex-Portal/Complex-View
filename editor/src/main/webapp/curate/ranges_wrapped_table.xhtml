@@ -23,16 +23,15 @@
                     <f:facet name="header">
                         <h:outputText value="Value"/>
                     </f:facet>
-                    <p:inputText id="rangeTxt" value="#{rangeWrapper.rangeAsString}"
-                                 onblur="markToUnsaved()"
+                    <h:inputText id="rangeTxt" value="#{rangeWrapper.rangeAsString}"
                                  validator="#{rangeWrapper.validateRange}"
                                  required="true"
                                  requiredMessage="Range value is required"
                                  readonly="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"
                                  styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
                                  style="font-family: monospace">
-                        <f:ajax event="valueChange" listener="#{rangeWrapper.onRangeAsStringChanged}" onevent="markAsUnsaved()" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
-                    </p:inputText>
+                        <f:ajax event="valueChange" listener="#{rangeWrapper.onRangeAsStringChanged}" execute="@this" onevent="markAsUnsaved()" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
+                    </h:inputText>
 
                      <h:panelGroup id="validityPanel">
 

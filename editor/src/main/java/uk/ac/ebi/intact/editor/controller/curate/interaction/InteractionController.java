@@ -216,6 +216,17 @@ public class InteractionController extends ParameterizableObjectController {
             }
         }
     }
+    public void forceRefreshCurrentViewObject(){
+        super.forceRefreshCurrentViewObject();
+
+        if (interaction != null) {
+            if (!Hibernate.isInitialized(interaction.getComponents())) {
+                interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
+            }
+            refreshExperimentLists();
+            refreshParticipants();
+        }
+    }
 
     @Override
     public void doPreSave() {
